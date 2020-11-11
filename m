@@ -2,297 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF202AE725
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88A2AE728
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgKKDkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:40:04 -0500
-Received: from ns3.fnarfbargle.com ([103.4.19.87]:42376 "EHLO
-        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgKKDkC (ORCPT
+        id S1725900AbgKKDmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgKKDmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:40:02 -0500
-Received: from srv.home ([10.8.0.1] ident=heh29331)
-        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <brad@fnarfbargle.com>)
-        id 1kcgxd-000437-EU; Wed, 11 Nov 2020 11:38:17 +0800
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject; bh=1odn6iaRI4gALQJHByjERPVNF4/8V2emPjealNHoiIM=;
-        b=qyk35c8Ak2FdsS32UV5+Qn6CdeHAHquld+iqsMV1Jm33j6BXvTpcpjgfuKpmiWU0DYla+zNW3agaoiVmeEzKQehEI+/MrvrXe++jmG8P+UYSbGYQVmYSAePsF6vFaDYBIvq5siqz3hqeRMbaURLg0wFjykp03GKi3MLN8gzck7w=;
-Subject: [PATCH v4 1/1] applesmc: Re-work SMC comms
-From:   Brad Campbell <brad@fnarfbargle.com>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Jean Delvare <jdelvare@suse.com>,
-        Henrik Rydberg <rydberg@bitmath.org>
-References: <20200930105442.3f642f6c@aktux> <20201002002251.28462e64@aktux>
- <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
- <20201006090226.4275c824@kemnade.info>
- <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
- <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
- <20201104142057.62493c12@aktux>
- <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
- <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
- <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
- <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
- <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
- <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
- <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
- <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
- <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
- <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
- <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
- <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
- <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
-Message-ID: <4eca09dc-7b32-767c-eab0-b9ad8b41efcc@fnarfbargle.com>
-Date:   Wed, 11 Nov 2020 14:38:18 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 10 Nov 2020 22:42:15 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AB6C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:42:13 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x15so279222pll.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:42:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3RCk5Lg80tCKH2h84e6aWqwn6rIZrZeLyv6urQGsnrk=;
+        b=nDSsuklBIZ6PLGuj/KDWKEZDFoJ/cIPGYSaxv/eHUCvyCiR0swrdgUHEO+cof0xset
+         UA/IWOo2xczA8lSz/6XYBzeMnedQt+f3Vv0OiMQidxgiTBt2w7EpK0JO11EOuwwW9Hc0
+         XzCSgqCd2/l5p6CxxDuKsUq+lvPB20MOjtnmxtZ+8vc1jl+6G2Vu+c40pu0TzqDnY7Sz
+         sar5t7w7Nu0fL9yvErXSw5xYQGL2WNBcIMlowSSQT9SHMmTQdvaeCXLsR7X7nrv9GhJh
+         7Pi6VqHkdRryHB3Rw9928ks8EHXIC1Ah8QDpuG2WcGScmA0P6luXl/dQT5OVl4E2COwn
+         VyWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3RCk5Lg80tCKH2h84e6aWqwn6rIZrZeLyv6urQGsnrk=;
+        b=cKHuZgh/m6OqODFOfiM3QCot5UdnyZFOxGbdCuOsilbDYX1BIhYOy2sZ6nvXAgK9yH
+         dyAVLZNJyS08UfEItZfuEq75X+Fc1Pbek+Dg9s14xG9lcGabTW8vmf9koI6GgtXd9ZaL
+         J9xw8cBRGZ4Ku+q009gTBgb9tafUI31pYwFkubiSxEUr/8CamafkW75az6YP9vaQM3rM
+         TLj2pMZjNtUr2XGtu/ADyDDvgheHr1G4gCmCrxVzmX98kuapfyVxVFSV1o9O9i7E779+
+         VKaLwhkzubNTQzP9fZNsHDuMatgj8vuyt5KC8PfBO0SXCS2zrGtP4bQs8bd2wYdgAJO5
+         m3Zw==
+X-Gm-Message-State: AOAM533MGonPISFGVhXu10rYeR5rl86f3eeA+NOdj+ajUMd0BocNNDe4
+        9pP0nd0WG68ffgQRmdfrzkyoEE4cjhBJRlV/LZ4BaQ==
+X-Google-Smtp-Source: ABdhPJxF7ZRGO4wQDKRrKPCJgMcOEFMd947qOplSNFxKgHU19KphVlDhswATyIvHm7poYitt6oUJ8mgehNoWhFFmRFI=
+X-Received: by 2002:a17:90a:4749:: with SMTP id y9mr1747464pjg.229.1605066133283;
+ Tue, 10 Nov 2020 19:42:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-6-songmuchun@bytedance.com> <9dc62874-379f-b126-94a7-5bd477529407@oracle.com>
+In-Reply-To: <9dc62874-379f-b126-94a7-5bd477529407@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 11 Nov 2020 11:41:37 +0800
+Message-ID: <CAMZfGtV+_vP66N1WagwNfxs4r3QGwnrYoR60yimwutTs=awXag@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
-introduced an issue whereby communication with the SMC became
-unreliable with write errors like :
+On Wed, Nov 11, 2020 at 8:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 11/8/20 6:10 AM, Muchun Song wrote:
+> > On x86_64, vmemmap is always PMD mapped if the machine has hugepages
+> > support and if we have 2MB contiguos pages and PMD aligned. If we want
+> > to free the unused vmemmap pages, we have to split the huge pmd firstly.
+> > So we should pre-allocate pgtable to split PMD to PTE.
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index a0007902fafb..5c7be2ee7e15 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1303,6 +1303,108 @@ static inline void destroy_compound_gigantic_page(struct page *page,
+> ...
+> > +static inline void vmemmap_pgtable_init(struct page *page)
+> > +{
+> > +     page_huge_pte(page) = NULL;
+> > +}
+> > +
+> > +static void vmemmap_pgtable_deposit(struct page *page, pgtable_t pgtable)
+> > +{
+> > +     /* FIFO */
+> > +     if (!page_huge_pte(page))
+> > +             INIT_LIST_HEAD(&pgtable->lru);
+> > +     else
+> > +             list_add(&pgtable->lru, &page_huge_pte(page)->lru);
+> > +     page_huge_pte(page) = pgtable;
+> > +}
+> > +
+> > +static pgtable_t vmemmap_pgtable_withdraw(struct page *page)
+> > +{
+> > +     pgtable_t pgtable;
+> > +
+> > +     /* FIFO */
+> > +     pgtable = page_huge_pte(page);
+> > +     page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
+> > +                                                    struct page, lru);
+> > +     if (page_huge_pte(page))
+> > +             list_del(&pgtable->lru);
+> > +     return pgtable;
+> > +}
+> > +
+> > +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> > +{
+> > +     int i;
+> > +     pgtable_t pgtable;
+> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> > +
+> > +     if (!nr)
+> > +             return 0;
+> > +
+> > +     vmemmap_pgtable_init(page);
+> > +
+> > +     for (i = 0; i < nr; i++) {
+> > +             pte_t *pte_p;
+> > +
+> > +             pte_p = pte_alloc_one_kernel(&init_mm);
+> > +             if (!pte_p)
+> > +                     goto out;
+> > +             vmemmap_pgtable_deposit(page, virt_to_page(pte_p));
+> > +     }
+> > +
+> > +     return 0;
+> > +out:
+> > +     while (i-- && (pgtable = vmemmap_pgtable_withdraw(page)))
+> > +             pte_free_kernel(&init_mm, page_to_virt(pgtable));
+> > +     return -ENOMEM;
+> > +}
+> > +
+> > +static void vmemmap_pgtable_free(struct hstate *h, struct page *page)
+> > +{
+> > +     pgtable_t pgtable;
+> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> > +
+> > +     if (!nr)
+> > +             return;
+> > +
+> > +     pgtable = page_huge_pte(page);
+> > +     if (!pgtable)
+> > +             return;
+> > +
+> > +     while (nr-- && (pgtable = vmemmap_pgtable_withdraw(page)))
+> > +             pte_free_kernel(&init_mm, page_to_virt(pgtable));
+> > +}
+>
+> I may be confused.
+>
+> In patch 9 of this series, the first call to vmemmap_pgtable_free() is made:
+>
+> > @@ -1645,6 +1799,10 @@ void free_huge_page(struct page *page)
+> >
+> >  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+> >  {
+> > +     free_huge_page_vmemmap(h, page);
+> > +     /* Must be called before the initialization of @page->lru */
+> > +     vmemmap_pgtable_free(h, page);
+> > +
+> >       INIT_LIST_HEAD(&page->lru);
+> >       set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> >       set_hugetlb_cgroup(page, NULL);
+>
+> When I saw that comment in previous patch series, I assumed page->lru was
+> being used to store preallocated pages and pages to free.  However, unless
 
-[  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-[  120.378621] applesmc: LKSB: write data fail
-[  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-[  120.512787] applesmc: LKSB: write data fail
+Yeah, you are right.
 
-The original code appeared to be timing sensitive and was not reliable
-with the timing changes in the aforementioned commit.
+> I am reading the code incorrectly it does not appear page->lru (of the huge
+> page) is being used for this purpose.  Is that correct?
+>
+> If it is correct, would using page->lru of the huge page make this code
+> simpler?  I am just missing the reason why you are using
+> page_huge_pte(page)->lru
 
-This patch re-factors the SMC communication to remove the timing
-dependencies and restore function with the changes previously
-committed.
+For 1GB HugeTLB pages, we should pre-allocate more than one page
+table. So I use a linked list. The page_huge_pte(page) is the list head.
+Because the page->lru shares storage with page->pmd_huge_pte.
 
-Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
-MacBookAir3,1
++     /* Must be called before the initialization of @page->lru */
++     vmemmap_pgtable_free(h, page);
++
+       INIT_LIST_HEAD(&page->lru);
 
-Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
-Reported-by: Andreas Kemnade <andreas@kemnade.info>
-Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
-Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
+Here we initialize the lru. So the vmemmap_pgtable_free should
+be called before this. It seems like that I should point out this "share"
+in the comment.
 
----
-Changelog : 
-v1 : Initial attempt
-v2 : Address logic and coding style
-v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
-v4 : Re-factored logic based on Apple driver. Simplified wait_status loop
-Index: linux-stable/drivers/hwmon/applesmc.c
-===================================================================
---- linux-stable.orig/drivers/hwmon/applesmc.c
-+++ linux-stable/drivers/hwmon/applesmc.c
-@@ -32,6 +32,7 @@
- #include <linux/hwmon.h>
- #include <linux/workqueue.h>
- #include <linux/err.h>
-+#include <linux/bits.h>
- 
- /* data port used by Apple SMC */
- #define APPLESMC_DATA_PORT	0x300
-@@ -42,10 +43,14 @@
- 
- #define APPLESMC_MAX_DATA_LENGTH 32
- 
--/* wait up to 128 ms for a status change. */
--#define APPLESMC_MIN_WAIT	0x0010
--#define APPLESMC_RETRY_WAIT	0x0100
--#define APPLESMC_MAX_WAIT	0x20000
-+/* Apple SMC status bits */
-+#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting to be read */
-+#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
-+#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
-+
-+/* Exponential delay boundaries */
-+#define APPLESMC_MIN_WAIT	0x0008
-+#define APPLESMC_MAX_WAIT	0x100000
- 
- #define APPLESMC_READ_CMD	0x10
- #define APPLESMC_WRITE_CMD	0x11
-@@ -151,65 +156,73 @@ static unsigned int key_at_index;
- static struct workqueue_struct *applesmc_led_wq;
- 
- /*
-- * wait_read - Wait for a byte to appear on SMC port. Callers must
-- * hold applesmc_lock.
-+ * Wait for specific status bits with a mask on the SMC
-+ * Used before all transactions
-  */
--static int wait_read(void)
-+
-+static int wait_status(u8 val, u8 mask)
- {
--	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
- 	u8 status;
- 	int us;
- 
--	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
--		usleep_range(us, us * 16);
-+	for (us = APPLESMC_MIN_WAIT; us <= APPLESMC_MAX_WAIT; us <<= 1) {
- 		status = inb(APPLESMC_CMD_PORT);
--		/* read: wait for smc to settle */
--		if (status & 0x01)
-+		if ((status & mask) == val)
- 			return 0;
--		/* timeout: give up */
--		if (time_after(jiffies, end))
--			break;
-+	usleep_range(APPLESMC_MIN_WAIT, us);
- 	}
--
--	pr_warn("wait_read() fail: 0x%02x\n", status);
- 	return -EIO;
- }
- 
--/*
-- * send_byte - Write to SMC port, retrying when necessary. Callers
-- * must hold applesmc_lock.
-- */
-+/* send_byte - Write to SMC data port. Callers must hold applesmc_lock. */
-+
- static int send_byte(u8 cmd, u16 port)
- {
--	u8 status;
--	int us;
--	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
-+	int status;
- 
-+	status = wait_status(0, SMC_STATUS_IB_CLOSED);
-+	if (status)
-+		return status;
-+	status = wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY);
-+	if (status)
-+		return status;
- 	outb(cmd, port);
--	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
--		usleep_range(us, us * 16);
--		status = inb(APPLESMC_CMD_PORT);
--		/* write: wait for smc to settle */
--		if (status & 0x02)
--			continue;
--		/* ready: cmd accepted, return */
--		if (status & 0x04)
--			return 0;
--		/* timeout: give up */
--		if (time_after(jiffies, end))
--			break;
--		/* busy: long wait and resend */
--		udelay(APPLESMC_RETRY_WAIT);
--		outb(cmd, port);
--	}
--
--	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
--	return -EIO;
-+	return 0;
- }
- 
-+/* send_command - Write a command to the SMC. Callers must hold applesmc_lock. */
-+
- static int send_command(u8 cmd)
- {
--	return send_byte(cmd, APPLESMC_CMD_PORT);
-+	int ret;
-+
-+	ret = wait_status(0, SMC_STATUS_IB_CLOSED);
-+	if (ret)
-+		return ret;
-+	outb(cmd, APPLESMC_CMD_PORT);
-+	return 0;
-+}
-+
-+/* Based on logic from the Apple driver. This is issued before any interaction
-+ * If busy is stuck high, issue a read command to reset the SMC state
-+ * machine. If busy is stuck high after the command then the SMC is
-+ * jammed.
-+ */
-+
-+static int smc_sane(void)
-+{
-+	int ret;
-+
-+	ret = wait_status(0, SMC_STATUS_BUSY);
-+	if (!ret)
-+		return ret;
-+	ret = send_command(APPLESMC_READ_CMD);
-+	if (ret)
-+		return ret;
-+	ret = wait_status(0, SMC_STATUS_BUSY);
-+	if (!ret)
-+		return ret;
-+	return -EIO;
- }
- 
- static int send_argument(const char *key)
-@@ -226,6 +239,11 @@ static int read_smc(u8 cmd, const char *
- {
- 	u8 status, data = 0;
- 	int i;
-+	int ret;
-+
-+	ret = smc_sane();
-+	if (ret)
-+		return ret;
- 
- 	if (send_command(cmd) || send_argument(key)) {
- 		pr_warn("%.4s: read arg fail\n", key);
-@@ -239,7 +257,8 @@ static int read_smc(u8 cmd, const char *
- 	}
- 
- 	for (i = 0; i < len; i++) {
--		if (wait_read()) {
-+		if (wait_status(SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY,
-+				SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY) < 0) {
- 			pr_warn("%.4s: read data[%d] fail\n", key, i);
- 			return -EIO;
- 		}
-@@ -250,19 +269,24 @@ static int read_smc(u8 cmd, const char *
- 	for (i = 0; i < 16; i++) {
- 		udelay(APPLESMC_MIN_WAIT);
- 		status = inb(APPLESMC_CMD_PORT);
--		if (!(status & 0x01))
-+		if (!(status & SMC_STATUS_AWAITING_DATA))
- 			break;
- 		data = inb(APPLESMC_DATA_PORT);
- 	}
- 	if (i)
- 		pr_warn("flushed %d bytes, last value is: %d\n", i, data);
- 
--	return 0;
-+	return wait_status(0, SMC_STATUS_BUSY);
- }
- 
- static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
- {
- 	int i;
-+	int ret;
-+
-+	ret = smc_sane();
-+	if (ret)
-+		return ret;
- 
- 	if (send_command(cmd) || send_argument(key)) {
- 		pr_warn("%s: write arg fail\n", key);
-@@ -281,7 +305,7 @@ static int write_smc(u8 cmd, const char
- 		}
- 	}
- 
--	return 0;
-+	return wait_status(0, SMC_STATUS_BUSY);
- }
- 
- static int read_register_count(unsigned int *count)
+Thanks.
+
+>
+> --
+> Mike Kravetz
+
+
+
+-- 
+Yours,
+Muchun
