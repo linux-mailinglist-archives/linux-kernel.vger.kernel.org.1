@@ -2,273 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A272AF790
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450E52AF793
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgKKRtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
+        id S1727174AbgKKRt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKRtK (ORCPT
+        with ESMTP id S1725933AbgKKRt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:49:10 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D3BC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:49:10 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id p19so4559585wmg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:49:09 -0800 (PST)
+        Wed, 11 Nov 2020 12:49:26 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3247BC0613D1;
+        Wed, 11 Nov 2020 09:49:26 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id l10so634610oom.6;
+        Wed, 11 Nov 2020 09:49:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dxflwy28eDhlYIu6gOleg6G31J7w566728A9aheIIzc=;
-        b=OkPFBQNY33GuRT9kJslk4zchdnlSREwN8BMH8NjW94y72hywV1vCptYF2hPefFPqqO
-         dNKiLTAAN0rrNEg5YzOKoqh1t/KRzqEcqf8RZRaG0ofbsG/J9bGAeqyGsi54ecV5Xo4e
-         /108gm6u4JEQEhw9kIUqusxIeJUWD/VGKzUU9tmfrgj/2usRs6z6VTtMsZsP82vUKN9M
-         WrdFd9xIyhPNYSoD0ug+ToNErdNVDZZX9ha+yUwfKDVWUtMPfUVc/v+v/t3Zh+CbERYZ
-         x4UPVf5y4FK2S5HgpENxJS8Q1aRBlyPTqbWinkXNCtKBHNOrpVeimdC/r78WKFZgRf+6
-         i1yQ==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B2yxcAliu+rEA7dgtIDGwqpnjL9T+ErPIz7FeJL4aRE=;
+        b=WGBl3+kKRHTE9UPp/K2ucBP0G5f90r53Ix9/x1KPrbemcfWyxNcL7yjslrI9FUGE+o
+         F6+yoz+6MACZ9Ju4ULOitVAuoqtSzsdbyaeyw11yJAwkpck1nIgvP0jkB+polzx78q8H
+         H3lks7+wQqxWASnkirAF0iFsSCZFD+nTKP7d5woDwyfVmxrDbTf4oZs2wJjWoZ6WU++P
+         TlwU6p/tyYK7BW1ili4AQ9kV+P5K76uQm8U/NeAfBj8Yda1A8TfnpYYt8xe1VRs6AOk/
+         Mf5pkqpMCY2aigkuoWDvpSiSdFHEu8AoqpsdWHhCDuoo0/IgmiHg/Ya+ceo//bH6hdCu
+         Vhew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dxflwy28eDhlYIu6gOleg6G31J7w566728A9aheIIzc=;
-        b=WsxAEzFOLO5EI9hmsxCEv8SXS/JwMcC3vBWE+aR4O8b76sSyrswCpfNo9Rl0quGtWW
-         XI7FPyjHeccZx/f+pMA1exXcV58sTFF7YqxsMSJ82f/Zr+RzEW3io2vnNgbbep0X7fPV
-         9OF7ld66rXRVrlU8BRA1sxoxS+MPHgCs3n3+IEg/gaG5EDBPc5I6tLRjveDxX7+tFFtS
-         fosg1OzH/yYEzFsSJ48P2I/WgoPZDr/tQqQWtwasOTlEk/mVrIo7d4FaVROjxFIaLG2o
-         uJctYdgYjmqg3GaF8z2TOws6mQ0V7k44r577W+Cd2BpGcX3bUNfWYRMuAggD1kofNSXO
-         dP6w==
-X-Gm-Message-State: AOAM530kOlFJbOvRP8d3lyrUDjRSIFRNlpFKT6LIk+bI7VJQG5VmKeM4
-        U5X8RRbjkzDUURHtvwwqqQTcJQ==
-X-Google-Smtp-Source: ABdhPJwqQoAPIaDeXqszMd6JSDoa+iBReTA0TuaP7AoeyibVh5E4CU1FeUzT6c39m58y0Gxanoi+rA==
-X-Received: by 2002:a05:600c:2119:: with SMTP id u25mr5258800wml.53.1605116948480;
-        Wed, 11 Nov 2020 09:49:08 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id v19sm3486601wrf.40.2020.11.11.09.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 09:49:07 -0800 (PST)
-Date:   Wed, 11 Nov 2020 18:49:02 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/20] kasan: inline and rename kasan_unpoison_memory
-Message-ID: <20201111174902.GK517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <0a9b63bff116734ab63d99ebd09c244332d71958.1605046662.git.andreyknvl@google.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=B2yxcAliu+rEA7dgtIDGwqpnjL9T+ErPIz7FeJL4aRE=;
+        b=b57xDIINg6rQHL31KiQCYoSj9BMVLyV23de+/MNQUDZMlhc/uXAg4+c/lMK+UEYkcg
+         RUw1/ezQbnrKm7Ww1FN4Tu54nTx9Oh3D29rTjWgyWuLF1d39OZwnIbdJTErFkyLx5szh
+         9s5mApTjE7QLYFboDUcnsLd+yCe4klJjuadijKE3NDx8vWi8a6fh5nKJmbOtVcBdnude
+         cfvIEgyPoxfoyERhCrv9BLE+yWx2vq31cva1luEDR2Duwx3u+Gh43EoXBo0+6ygANx6k
+         oHQaG7ACpqHosA5gEvK+QZTA6SgjgBhl2H5fNx+WnjDlRIevHs1tH1AB+JFGHPNPYNOB
+         vvfQ==
+X-Gm-Message-State: AOAM533RW3q47W/oB+RNq+MRUjSS7eoFET1+PL0CvHWA5gR2p6Xiqf82
+        huWm8+e4+f7Btwva8cUiuIdXWqTxUMo=
+X-Google-Smtp-Source: ABdhPJzQz1Azu2GjTji3oH08jN74IbYydMPovPOQ6zOMpX/u+AMdFMJwaWVaNDjjEaUewGJ1K/TyQA==
+X-Received: by 2002:a4a:b209:: with SMTP id d9mr17745894ooo.70.1605116965458;
+        Wed, 11 Nov 2020 09:49:25 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n62sm629426ota.74.2020.11.11.09.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 09:49:24 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/1] watchdog: wdat_wdt: Fix missing kerneldoc reported by
+ W=1
+To:     vee.khee.wong@intel.com, Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201111172205.17215-1-vee.khee.wong@intel.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <32eae86b-2242-9feb-3db0-b3bab89506ec@roeck-us.net>
+Date:   Wed, 11 Nov 2020 09:49:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a9b63bff116734ab63d99ebd09c244332d71958.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201111172205.17215-1-vee.khee.wong@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> Currently kasan_unpoison_memory() is used as both an external annotation
-> and as an internal memory poisoning helper. Rename external annotation to
-> kasan_unpoison_data() and inline the internal helper for hardware
-> tag-based mode to avoid undeeded function calls.
-
-I don't understand why this needs to be renamed again. The users of
-kasan_unpoison_memory() outweigh those of kasan_unpoison_slab(), of
-which there seems to be only 1!
-
-So can't we just get rid of kasan_unpoison_slab() and just open-code it
-in mm/mempool.c:kasan_unpoison_element()? That function is already
-kasan-prefixed, so we can even place a small comment there (which would
-also be an improvement over current interface, since
-kasan_unpoison_slab() is not documented and its existence not quite
-justified).
-
-> There's the external annotation kasan_unpoison_slab() that is currently
-> defined as static inline and uses kasan_unpoison_memory(). With this
-> change it's turned into a function call. Overall, this results in the
-> same number of calls for hardware tag-based mode as
-> kasan_unpoison_memory() is now inlined.
+On 11/11/20 9:22 AM, vee.khee.wong@intel.com wrote:
+> From: Wong Vee Khee <vee.khee.wong@intel.com>
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Ia7c8b659f79209935cbaab3913bf7f082cc43a0e
+> Fix the following warning while compiling with W=1.
+> 
+> drivers/watchdog/wdat_wdt.c:48: warning: Function parameter or member 'instructions' not described in 'wdat_wdt'
+> 
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
 > ---
->  include/linux/kasan.h | 16 ++++++----------
->  kernel/fork.c         |  2 +-
->  mm/kasan/common.c     | 10 ++++++++++
->  mm/kasan/hw_tags.c    |  6 ------
->  mm/kasan/kasan.h      |  7 +++++++
->  mm/slab_common.c      |  2 +-
->  6 files changed, 25 insertions(+), 18 deletions(-)
+>  drivers/watchdog/wdat_wdt.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 53c8e8b12fbc..f1a5042ae4fc 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -74,14 +74,15 @@ static inline void kasan_disable_current(void) {}
->  
->  #ifdef CONFIG_KASAN
->  
-> -void kasan_unpoison_memory(const void *address, size_t size);
-> -
->  void kasan_alloc_pages(struct page *page, unsigned int order);
->  void kasan_free_pages(struct page *page, unsigned int order);
->  
->  void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->  			slab_flags_t *flags);
->  
-> +void kasan_unpoison_data(const void *address, size_t size);
-> +void kasan_unpoison_slab(const void *ptr);
-> +
->  void kasan_poison_slab(struct page *page);
->  void kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
->  void kasan_poison_object_data(struct kmem_cache *cache, void *object);
-> @@ -106,11 +107,6 @@ struct kasan_cache {
->  	int free_meta_offset;
->  };
->  
-> -size_t __ksize(const void *);
-> -static inline void kasan_unpoison_slab(const void *ptr)
-> -{
-> -	kasan_unpoison_memory(ptr, __ksize(ptr));
-> -}
->  size_t kasan_metadata_size(struct kmem_cache *cache);
->  
->  bool kasan_save_enable_multi_shot(void);
-> @@ -118,8 +114,6 @@ void kasan_restore_multi_shot(bool enabled);
->  
->  #else /* CONFIG_KASAN */
->  
-> -static inline void kasan_unpoison_memory(const void *address, size_t size) {}
-> -
->  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
->  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
->  
-> @@ -127,6 +121,9 @@ static inline void kasan_cache_create(struct kmem_cache *cache,
->  				      unsigned int *size,
->  				      slab_flags_t *flags) {}
->  
-> +static inline void kasan_unpoison_data(const void *address, size_t size) { }
-> +static inline void kasan_unpoison_slab(const void *ptr) { }
-> +
->  static inline void kasan_poison_slab(struct page *page) {}
->  static inline void kasan_unpoison_object_data(struct kmem_cache *cache,
->  					void *object) {}
-> @@ -166,7 +163,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
->  	return false;
->  }
->  
-> -static inline void kasan_unpoison_slab(const void *ptr) { }
->  static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
->  
->  #endif /* CONFIG_KASAN */
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 1c905e4290ab..883898487b3f 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -226,7 +226,7 @@ static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
->  			continue;
->  
->  		/* Mark stack accessible for KASAN. */
-> -		kasan_unpoison_memory(s->addr, THREAD_SIZE);
-> +		kasan_unpoison_data(s->addr, THREAD_SIZE);
+> diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
+> index 3065dd670a18..cec7917790e5 100644
+> --- a/drivers/watchdog/wdat_wdt.c
+> +++ b/drivers/watchdog/wdat_wdt.c
+> @@ -34,9 +34,9 @@ struct wdat_instruction {
+>   * @period: How long is one watchdog period in ms
+>   * @stopped_in_sleep: Is this watchdog stopped by the firmware in S1-S5
+>   * @stopped: Was the watchdog stopped by the driver in suspend
+> - * @actions: An array of instruction lists indexed by an action number from
+> - *           the WDAT table. There can be %NULL entries for not implemented
+> - *           actions.
+> + * @instructions: An array of instruction lists indexed by an action number from
+> + *                the WDAT table. There can be %NULL entries for not implemented
+> + *                actions.
+>   */
+>  struct wdat_wdt {
+>  	struct platform_device *pdev;
+> 
 
-... this change would become unnecessary.
-
->  		/* Clear stale pointers from reused stack. */
->  		memset(s->addr, 0, THREAD_SIZE);
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index a266b90636a1..4598c1364f19 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -184,6 +184,16 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
->  	return kasan_reset_tag(object) + cache->kasan_info.free_meta_offset;
->  }
->  
-> +void kasan_unpoison_data(const void *address, size_t size)
-> +{
-> +	kasan_unpoison_memory(address, size);
-> +}
-> +
-> +void kasan_unpoison_slab(const void *ptr)
-> +{
-> +	kasan_unpoison_memory(ptr, __ksize(ptr));
-> +}
-> +
-
-This function is so simple, I think just open-coding 
-
-	kasan_unpoison_memory(ptr, __ksize(ptr))
-
-wherever required is much simpler, also bearing in mind the changes that
-are coming to the rest of this series.
-
->  void kasan_poison_slab(struct page *page)
->  {
->  	unsigned long i;
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 0303e49904b4..838b29e44e32 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -30,12 +30,6 @@ void kasan_init_hw_tags(void)
->  	pr_info("KernelAddressSanitizer initialized\n");
->  }
->  
-> -void kasan_unpoison_memory(const void *address, size_t size)
-> -{
-> -	hw_set_mem_tag_range(kasan_reset_tag(address),
-> -			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
-> -}
-> -
->  void kasan_set_free_info(struct kmem_cache *cache,
->  				void *object, u8 tag)
->  {
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index ab7314418604..2d3c99125996 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -283,6 +283,12 @@ static inline void kasan_poison_memory(const void *address, size_t size, u8 valu
->  			round_up(size, KASAN_GRANULE_SIZE), value);
->  }
->  
-> +static inline void kasan_unpoison_memory(const void *address, size_t size)
-> +{
-> +	hw_set_mem_tag_range(kasan_reset_tag(address),
-> +			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
-> +}
-> +
->  static inline bool check_invalid_free(void *addr)
->  {
->  	u8 ptr_tag = get_tag(addr);
-> @@ -295,6 +301,7 @@ static inline bool check_invalid_free(void *addr)
->  #else /* CONFIG_KASAN_HW_TAGS */
->  
->  void kasan_poison_memory(const void *address, size_t size, u8 value);
-> +void kasan_unpoison_memory(const void *address, size_t size);
->  bool check_invalid_free(void *addr);
->  
->  #endif /* CONFIG_KASAN_HW_TAGS */
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 53d0f8bb57ea..f1b0c4a22f08 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1176,7 +1176,7 @@ size_t ksize(const void *objp)
->  	 * We assume that ksize callers could use whole allocated area,
->  	 * so we need to unpoison this area.
->  	 */
-> -	kasan_unpoison_memory(objp, size);
-> +	kasan_unpoison_data(objp, size);
-
-... this change would become unnecessary.
-
-Thanks,
--- Marco
