@@ -2,132 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61D62AEE12
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8527E2AEE1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgKKJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:48:42 -0500
-Received: from mga05.intel.com ([192.55.52.43]:45825 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgKKJsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:48:41 -0500
-IronPort-SDR: abQ4RE8/u+Zytxkr41f9hWK/Xvd/gr3MqVLphKQ6QnVs5WinG6JsXyYXgjntNsxUTYoowSO529
- xKkmlt/r3Wiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="254831217"
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="254831217"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 01:48:33 -0800
-IronPort-SDR: 0a/5dAA42owuPF8WikIMxMCIWJMVuHbslnMTJG6pKrT6c2RCnKBuzjpyFklNVJBSFT4+/0WEWH
- NCdqf9vu51Dg==
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="531632629"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 01:48:31 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kcmkv-005s6P-2n; Wed, 11 Nov 2020 11:49:33 +0200
-Date:   Wed, 11 Nov 2020 11:49:33 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Cc:     "kishon@ti.com" <kishon@ti.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>
-Subject: Re: [PATCH v2 2/2] phy: intel: Add Keem Bay USB PHY support
-Message-ID: <20201111094933.GG4077@smile.fi.intel.com>
-References: <20201109031654.22443-1-wan.ahmad.zainie.wan.mohamad@intel.com>
- <20201109031654.22443-3-wan.ahmad.zainie.wan.mohamad@intel.com>
- <20201109114102.GY4077@smile.fi.intel.com>
- <DM6PR11MB3721899F79D7A75BBEE85C5FDDE80@DM6PR11MB3721.namprd11.prod.outlook.com>
+        id S1726900AbgKKJvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgKKJvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:51:12 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006B5C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:51:10 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id r9so445237pjl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:51:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HRhA/9/dWDo5po8jcoZ8JRpSSGgd2ewUSLF6VW3aj9I=;
+        b=wiBeiEDmShIVDqF3zPzEIH56Oj+TQiU3sHEjdStNgmjYioOs8x0j89pLGPE1S1pPdB
+         VnPYf6QEgtHeW3kBOyGLT/LbjWS1GdXEjrwaKdFyttpKd2dUcHKzlcyPMqOBi8KHTFcd
+         4p19jmoq2bdFj8qj0Ujm6zyf8C3ADjOGjIJsEHl93DbvVi67tnFJMpIflgki3PyUwgS3
+         7LrU75tZGlaTpPZb5sIteCiLUT0kXbddaVQAVlh25Q1Y2ZOOiiullfFxzsp7tePF8Fnk
+         YxFGcZSvK9U8UOeOfT2Jo5YvxvDfvFNcAz6BM5AwS30Yuxu49Gqj3+XgpQSooJkK5CTH
+         eHCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HRhA/9/dWDo5po8jcoZ8JRpSSGgd2ewUSLF6VW3aj9I=;
+        b=qfq+gCcBYCdT3e2BnGZRpBVNUojsjJlIGUyIzNDvVimAyXZKM7okX1W2RizrAa/e4f
+         nuBOrm8IHXX7AO2HoGbjaCV/gb7n1KjCSK7g2L1WT7Mj2v4UQOD3IX2bWvsaui3Hiwtb
+         JrcaKq3H6AOciKuL9ms8IhAntgTArdED3byu0/wc3Lxmh0B6eAqlNidTUAyUkUwxCsPo
+         y9cewcSWoYPPOImYMp1HgzWBzSy2bjuvc/cwj5oSf0hJyRpuVyP2TDIy9lvStnwKL1aJ
+         MOJRpD1/AsbrqcrMfhYavVMtdTCzcD6jKiJtmZoxWdWRN7MnPi4h/F+k1gDYyp4GsFZf
+         8Kqg==
+X-Gm-Message-State: AOAM531mCWcq9U7tuE5MOD/GSOF4LnFfj4omHXvJ6oo4Htr3Crvvp2f+
+        uYCqcsNPoyKv/YvEL0RVIIShNA==
+X-Google-Smtp-Source: ABdhPJyy+YswJOhFdT8EBhMSAIQUSlQljZAOzPQtGgNfhVcb5qtVtJC22dSbp0OSqejC7zSnvQOEmg==
+X-Received: by 2002:a17:90b:1741:: with SMTP id jf1mr3047963pjb.144.1605088270466;
+        Wed, 11 Nov 2020 01:51:10 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id c3sm1863531pjv.27.2020.11.11.01.51.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Nov 2020 01:51:09 -0800 (PST)
+Date:   Wed, 11 Nov 2020 15:21:07 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thomas Renninger <trenn@suse.de>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: stats: Switch to ktime and msec instead of
+ jiffies and usertime
+Message-ID: <20201111095107.fanba37rgls536xn@vireshk-i7>
+References: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org>
+ <1832747.5iOEhN7m9D@c100>
+ <20201111051350.qxevqcca5775h2xa@vireshk-i7>
+ <2047155.4hzcE6bcFl@c100>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3721899F79D7A75BBEE85C5FDDE80@DM6PR11MB3721.namprd11.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <2047155.4hzcE6bcFl@c100>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:28:34AM +0000, Wan Mohamad, Wan Ahmad Zainie wrote:
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Sent: Monday, November 9, 2020 7:41 PM
-> > To: Wan Mohamad, Wan Ahmad Zainie
-> > On Mon, Nov 09, 2020 at 11:16:54AM +0800, Wan Ahmad Zainie wrote:
-
-...
-
-> > > +	usleep_range(30, 50);
-> > 
-> > Why 30-50?
+On 11-11-20, 09:13, Thomas Renninger wrote:
+> Am Mittwoch, 11. November 2020, 06:13:50 CET schrieb Viresh Kumar:
+> > On 10-11-20, 13:53, Thomas Renninger wrote:
+> > > Am Dienstag, 10. November 2020, 12:07:37 CET schrieb Viresh Kumar:
+> > > > The cpufreq and thermal core, both provide sysfs statistics to help
+> > > > userspace learn about the behavior of frequencies and cooling states.
+> > > > 
+> > > > This is how they look:
+> > > > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 399
+> > > > 
+> > > > The results look like this after this commit:
+> > > > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 3830
+> > > 
+> > > How would userspace know whether it's ms or 10ms?
 > 
-> I take this value from boot firmware.
-> There is a delay of 30us after clearing IDDQ_enable bit.
-> I believe the purpose is to ensure all analog blocks are powered up.
+> Again:
+> How would userspace know whether it's ms or 10ms?
 
-Then put it into comment.
+Yeah, I understand the problem you are pointing at.
 
-...
-
-> > > +	usleep_range(20, 50);
-> > 
-> > Why these numbers?
+> > > whatabout a new file with the same convention as cooling devices (adding ms):
+> > Keeping two files for same stuff is not great, and renaming the file
+> > breaks userspace ABI.
 > 
-> In Keem Bay data book, under USB initialization section,
-> there is step that there must be a minimum 20us wait
-> after clock enable, before bringing PHYs out of reset.
+> No exactly the other way around:
+> - Renaming, breaks the userspace ABI.
+> - Two files would be the super correct way to go:
+
+Yes, but then this is just some stats which a very limited number of
+people should be using and so ...
+
+>   - Deprecate the old file and keep the 10ms around for some years
+>     ./Documentation/ABI/obsolete
+>   - Add the new interface and document it in:
+>    ./Documentation/ABI/testing
 > 
-> 50 is the value that I picked randomly. Is usleep_range(20, 20)
-> Better?
+> As this is about a minor cpufreq_stat debug file, it is enough if
+> you rename to:
+> > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state_ms
 
-No, the better as I told you already few times is to comment "why?" these
-numbers. Above can be like:
-"According to datasheet this step requires 20us wait..."
+... I agree about this. Just rename the file accordingly. Which will
+also make sure that everyone follows that something got changed in the
+kernel.
 
-...
-
-> > > +	usleep_range(2, 10);
-> > 
-> > Ditto.
+> > I already fixed this recently and stats don't appear empty for fast
+> > switch anymore.
 > 
-> Under the same section above, there is a step for 2us wait.
-> I believe it is for register write to go through.
+> Then cpufreq_stats could be a module again?
 
-Ditto.
-
-> > 
-> > ...
-> > 
-> > > +	usleep_range(20, 50);
-> > 
-> > Ditto.
-> 
-> Under the same section above, there is a step to wait 20us
-> after setting SRAM load bit, before release the controller
-> reset.
-> 
-> I will add comment for those 4 delay above.
-
-Yes, please.
-
-...
-
-> Before I proceed with v3, I would like to know if I should
-> use udelay(), instead of usleep_range()?
-> I refer to https://www.kernel.org/doc/Documentation/timers/timers-howto.txt.
-
-You should know your code better than me. That howto is clear about when of
-which API calls can be used.
+No, not really. This is some code that needs to get called from
+cpufreq core, without any notifiers and as fast as possible as we may
+be in scheduler's hot path. So the module thing isn't going to work
+now.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+viresh
