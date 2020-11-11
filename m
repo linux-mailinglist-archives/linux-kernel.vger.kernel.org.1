@@ -2,83 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8952AF066
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0E62AF072
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgKKMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:18:17 -0500
-Received: from mga17.intel.com ([192.55.52.151]:6097 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726479AbgKKMQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:16:05 -0500
-IronPort-SDR: if+ilNbfvERO7DguXrCdYqWD3FXFIIZEYXRld43cPevjgRsfLe7rAEjJpAmKotthxieCZOrRRu
- m6Pd56CqeiXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="149984855"
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="149984855"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 04:15:29 -0800
-IronPort-SDR: P0pxOyGYOJXKe5WjlCj0CoXCOjRax99APokYTyNSKuPFTrHrvLEVn0MYLxrN2Co+5fOKc4Am2B
- nM6KIiM7rTug==
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="541768713"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 04:15:27 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1kcp37-005u0W-C7; Wed, 11 Nov 2020 14:16:29 +0200
-Date:   Wed, 11 Nov 2020 14:16:29 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pinctrl: intel: Fix Jasperlake hostown offset
-Message-ID: <20201111121629.GL4077@smile.fi.intel.com>
-References: <20201110144932.1.I54a30ec0a7eb1f1b791dc9d08d5e8416a1e8e1ef@changeid>
- <CAHp75VcfmJ6-cqCsZ6BjbghGDt+w-AbxGxLoWG61VVF2Knor-Q@mail.gmail.com>
- <CAE=gft4vdBytT2=tCbv2aE3RRoDut5CiHdBODjXJamGM5yB3Bw@mail.gmail.com>
+        id S1726111AbgKKMXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:23:05 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37978 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgKKMXD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 07:23:03 -0500
+Date:   Wed, 11 Nov 2020 12:22:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605097380;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HIqPjYYJfAb0E1+y40ZmCG9ZGL7udxK14w1qon3YJ8U=;
+        b=c2qKni+eNIqXJgpzUny0BzLi3ChItBQelhUy2J1cIkfzEuK3nPNweh9YnfPhs8yS5Wxgha
+        pxh6UJGzDksUgDrUh5SVYu/pK9aX7EBnaJUdM2cNGv0otGSVdmPcpsjFGZyozKp9MgDF+g
+        iPUVUMgwgAtvHZrZoTKb7Tx+fQ8XbGomu/G7YgA5XFWFQYr+HTFoPUFrf8Ck2mppWYz4aU
+        Fj6+6KaXfpnjiOBNppKZiYL5ozs/If9epu6LyNEci6bnbzW2mIghu/ptyZRm5Zcc2Yi87O
+        e3IpmdI23UcRc9Jv4SaO+WltAzn/n+M75dv67UuJxA0Iw7MYNwyvFVvoT9hFkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605097380;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HIqPjYYJfAb0E1+y40ZmCG9ZGL7udxK14w1qon3YJ8U=;
+        b=SxVQf1Vy2eUisW+uM3AHtoveupmK31subp23h2KsswpT4UER63wCo0MfA/TlzoBarzIF0S
+        8/QIsYmuVXbm0QCA==
+From:   "tip-bot2 for Jiri Slaby" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/platform/uv: Drop last traces of uv_flush_tlb_others
+Cc:     Jiri Slaby <jslaby@suse.cz>, Thomas Gleixner <tglx@linutronix.de>,
+        Mike Travis <mike.travis@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201109093653.2042-1-jslaby@suse.cz>
+References: <20201109093653.2042-1-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE=gft4vdBytT2=tCbv2aE3RRoDut5CiHdBODjXJamGM5yB3Bw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <160509737932.11244.2434801428950537873.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 04:03:57PM -0800, Evan Green wrote:
-> On Tue, Nov 10, 2020 at 3:48 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Wednesday, November 11, 2020, Evan Green <evgreen@chromium.org> wrote:
-> >>
-> >> GPIOs that attempt to use interrupts get thwarted with a message like:
-> >> "pin 161 cannot be used as IRQ" (for instance with SD_CD). This is because
-> >> the JSL_HOSTSW_OWN offset is incorrect, so every GPIO looks like it's
-> >> owned by ACPI.
-> >
-> >
-> > Funny, I have created a similar patch few hours ago. Are you sure this is enough? In mine I have also padcfglock updated. But I have to confirm that, that’s why I didn’t send it out.
-> 
-> Oh weird! I didn't check padcfglock since it didn't happen to be
-> involved in the bug I was tracking down. I was trying to clean out
-> some skeletons in my kernel closet [1] and debugged it down to this.
-> 
-> If you want to smash the two patches together I'm fine with that. Let
-> me know, and CC me if you do post something.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Can you test that 0x90 is correct value for padcfglock offset?
+Commit-ID:     b2896458b850ec7cb69b054b195b4b399f7e1f22
+Gitweb:        https://git.kernel.org/tip/b2896458b850ec7cb69b054b195b4b399f7e1f22
+Author:        Jiri Slaby <jslaby@suse.cz>
+AuthorDate:    Mon, 09 Nov 2020 10:36:53 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 11 Nov 2020 13:16:51 +01:00
 
-> [1] https://chromium.googlesource.com/chromiumos/overlays/board-overlays/+/master/overlay-dedede/sys-kernel/chromeos-kernel-5_4/files/0001-CHROMIUM-pinctrl-intel-Allow-pin-as-IRQ-even-in-ACPI.patch
+x86/platform/uv: Drop last traces of uv_flush_tlb_others
 
--- 
-With Best Regards,
-Andy Shevchenko
+Commit 39297dde7390 ("x86/platform/uv: Remove UV BAU TLB Shootdown
+Handler") removed uv_flush_tlb_others. Its declaration was removed also
+from asm/uv/uv.h. But only for the CONFIG_X86_UV=y case. The inline
+definition (!X86_UV case) is still in place.
 
+So remove this implementation with everything what was added to support
+uv_flush_tlb_others:
+* include of asm/tlbflush.h
+* forward declarations of struct cpumask, mm_struct, and flush_tlb_info
 
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Mike Travis <mike.travis@hpe.com>
+Acked-by: Steve Wahl <steve.wahl@hpe.com>
+Link: https://lore.kernel.org/r/20201109093653.2042-1-jslaby@suse.cz
+
+---
+ arch/x86/include/asm/uv/uv.h | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
+index 172d3e4..648eb23 100644
+--- a/arch/x86/include/asm/uv/uv.h
++++ b/arch/x86/include/asm/uv/uv.h
+@@ -2,14 +2,8 @@
+ #ifndef _ASM_X86_UV_UV_H
+ #define _ASM_X86_UV_UV_H
+ 
+-#include <asm/tlbflush.h>
+-
+ enum uv_system_type {UV_NONE, UV_LEGACY_APIC, UV_X2APIC};
+ 
+-struct cpumask;
+-struct mm_struct;
+-struct flush_tlb_info;
+-
+ #ifdef CONFIG_X86_UV
+ #include <linux/efi.h>
+ 
+@@ -44,10 +38,6 @@ static inline int is_uv_system(void)	{ return 0; }
+ static inline int is_uv_hubbed(int uv)	{ return 0; }
+ static inline void uv_cpu_init(void)	{ }
+ static inline void uv_system_init(void)	{ }
+-static inline const struct cpumask *
+-uv_flush_tlb_others(const struct cpumask *cpumask,
+-		    const struct flush_tlb_info *info)
+-{ return cpumask; }
+ 
+ #endif	/* X86_UV */
+ 
