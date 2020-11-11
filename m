@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D28A2AE7AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDA02AE7B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgKKE4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 23:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S1725929AbgKKFDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKKE4a (ORCPT
+        with ESMTP id S1725468AbgKKFDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 23:56:30 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519D9C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 20:56:30 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id t143so778835oif.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 20:56:30 -0800 (PST)
+        Wed, 11 Nov 2020 00:03:53 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BABC0613D1;
+        Tue, 10 Nov 2020 21:03:53 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id h4so100013pjk.0;
+        Tue, 10 Nov 2020 21:03:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cRAt4batTICDyiJ/8EINRniP/Smx50wMzUnQPTpJLC4=;
-        b=uBI8CuLzxljYP3u+E78DkW3m3Rfy6G2IhHNK/5HfWTn5eePeEUQoBcbrb/e078wTW2
-         6EhoCAzvv7vFr3n/UFqL9dIICXh8IwjE6dOAhzeyHQ68Y0lQHEIq49BU1QL+Z01xXGb0
-         PkhcFdkS+ysJYAWoKi1BLDq8ctgdAGizX6tKYZN0doev6pPWfGEUMEqzhS6Wno4EemL3
-         WGTF/wk1s9/qAHf3+Qnz0Fyg37I64BRCyRWtMp6juIYEg0Y30to+wWRkVfYJ8hYvSIah
-         WqyZKj1VHMW+QaBRHTZSYhhZRS6kIodIDDs/PIby2Fv1P393mKmwGe1ushuTb/bKGPTy
-         omFw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dYRnJX7E52Qr8q+Y6mWaepyoKc/zmQ6oafgF1OqoAbs=;
+        b=uEhw4nBRsv6FaF+7krKDl7sr30gt6Yj731sECCjJRsMnIht4l9rPIOtKXhiAq1tfS2
+         tMhrxyIkwny9Fg4OL9WmatdEcRZvXnw1ONJ009EkxIdOd3UT+c0ePTFg+VhLmW8xONFh
+         LRJXPNSTjaFZ/3cCk8ZuNXr6DmQyfY0G4RPi9BT3i3Nth0H9KZ3siKUgtSERUmIFG8ws
+         c3OXL10Z4HaUeJLfGDONBpedGrugvbAY3rNOyD5Ok7pQGcIukLubR6CKUymj9ChqZDFJ
+         962o8pJYh4Trv2bF9XvAyD8YSP+HV1Gy+gxBpuVIHNACpJWbuIFa1vuMe0epu0UD2bos
+         kbig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cRAt4batTICDyiJ/8EINRniP/Smx50wMzUnQPTpJLC4=;
-        b=hMjFcXYkxn3RE+1EDXfMAe0KT3FNBMvHLp8zd2oEisLDRQrj0Y0vkV/PUM0Ayze9kI
-         HqSm/1+LdmCMetB3ezY5C+vW/eh1hufpF+ZNRwgNnE2/CbaGKBhcVjj7l1f6Y6cgbFPC
-         otAuWQEmHGrFmdTUtbsnVQY9b+O/zO91FmzH6mQwkGIBZF8Fh1B6/ebocJ1ZYaCln8zW
-         xomgA0t6rVxBB2WPmyc7U6fzXvd63ED9iRBFCUnqQoRt/myQsLKurkEOENf1KFr3hlVl
-         f7FFWNHXx+mHzg5CQ/1FDf9NIZ0ThJ7TO9qPFSVRQo6u4TYiJiuH8+3fs8fDS44YkTeX
-         EQFQ==
-X-Gm-Message-State: AOAM530br8TTAzbJb7gqI40fB8xkRrPPatqa6W0ktUCBWodGafNNwKcn
-        6hvLrmKO+eFmyPU9uYcaVr5wbA==
-X-Google-Smtp-Source: ABdhPJzWDF0IOu9gSQFJfDqj3LfmtrAjDRSYMXzJ5+OE3Zhn38zbdsFXQi+R41CdnEX4GzqTp4n3sA==
-X-Received: by 2002:aca:c6cb:: with SMTP id w194mr1045129oif.27.1605070589680;
-        Tue, 10 Nov 2020 20:56:29 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y15sm277264otq.79.2020.11.10.20.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 20:56:28 -0800 (PST)
-Date:   Tue, 10 Nov 2020 22:56:27 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 11/11] arm64: dts: qcom: Add support for Microsoft Lumia
- 950 XL (Cityman)
-Message-ID: <20201111045627.GF173948@builder.lan>
-References: <20201005150313.149754-1-konradybcio@gmail.com>
- <20201005150313.149754-12-konradybcio@gmail.com>
- <CAMS8qEV3kFgCZ34GsOSoy19YceF9q=01JazQHknvxnVJg4thcA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMS8qEV3kFgCZ34GsOSoy19YceF9q=01JazQHknvxnVJg4thcA@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dYRnJX7E52Qr8q+Y6mWaepyoKc/zmQ6oafgF1OqoAbs=;
+        b=B8tuwmz1D4T6oN0m59d9THLBEYMjv4aCzg6gO2KwLgMTCyAEFm2odn6mVwui3J1Wk3
+         i9U6RWypD6436hrdHgq/Lo3gTJKAE9clmaM4S3vju2940vtraEXK2Ks5P+l+QKe7Tnii
+         TxVkZcnkxNVNIDyCfyGRtsNOmhyE+FDz5n+QRIzc4oj/c6uERIXHECD7uOBO3P9ZZ94d
+         1b8vfAkoO1jLCFWKfoytjocBuh7Th+sPVAWChkywOu/Y1SBmLWTFyZwD/iI8atR/O/rI
+         L+80rReBtsKy0of6rC26+la+DIpOTHAE6pZ11T77/VPhPjA6FzJq5nle9oruHxJXRJRD
+         0kBw==
+X-Gm-Message-State: AOAM533mbEp0BQbMXvR9z6yC5qv+0E3At/kON+Pku6r/lQ0UENFNpOBm
+        OL2sQT+drrsbUF89VO/8Mw==
+X-Google-Smtp-Source: ABdhPJx2jvTgyuea3Ejr0/Y0MbxVTWYXDd89GtP0F70JjQo3LU/KczLNudUpsIA27TZN1nl/1q2BQg==
+X-Received: by 2002:a17:90b:512:: with SMTP id r18mr2097099pjz.149.1605071032934;
+        Tue, 10 Nov 2020 21:03:52 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id t74sm800093pfc.47.2020.11.10.21.03.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Nov 2020 21:03:52 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH v3] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
+Date:   Wed, 11 Nov 2020 13:03:46 +0800
+Message-Id: <1605071026-25906-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 05 Oct 10:14 CDT 2020, Konrad Dybcio wrote:
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-> >+dtb-$(CONFIG_ARCH_QCOM)        += msm8994-msft-lumia-cityman.dts
-> 
-> I made a typo and instead of .dtb I wrote .dts here. Could that be
-> fixed when applying so that I don't have to spam you guys with 11 more
-> mails?
-> 
+The unsigned variable datasec_id is assigned a return value from the call
+to check_pseudo_btf_id(), which may return negative error code.
 
-Thanks for letting me know, I fixed this up and applied the series for
-5.11.
+Fixes coccicheck warning:
 
-Regards,
-Bjorn
+./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
+
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+v3:
+ -put the changes on the proper place.
+
+v2:
+ -split out datasec_id definition into a separate line.
+
+ kernel/bpf/verifier.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6200519582a6..6204ec705d80 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9572,12 +9572,13 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+ 			       struct bpf_insn *insn,
+ 			       struct bpf_insn_aux_data *aux)
+ {
+-	u32 datasec_id, type, id = insn->imm;
+ 	const struct btf_var_secinfo *vsi;
+ 	const struct btf_type *datasec;
+ 	const struct btf_type *t;
+ 	const char *sym_name;
+ 	bool percpu = false;
++	u32 type, id = insn->imm;
++	s32 datasec_id;
+ 	u64 addr;
+ 	int i;
+ 
+-- 
+2.20.0
+
