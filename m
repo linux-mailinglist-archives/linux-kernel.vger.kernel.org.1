@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C209A2AED00
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805C42AED0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgKKJMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:12:24 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7206 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbgKKJMR (ORCPT
+        id S1726647AbgKKJMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726989AbgKKJMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:12:17 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWJrj3WWnzkgWh;
-        Wed, 11 Nov 2020 17:11:49 +0800 (CST)
-Received: from [10.174.176.199] (10.174.176.199) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 11 Nov 2020 17:11:52 +0800
-To:     <fweisbec@gmail.com>, <tglx@linutronix.de>, <mingo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: [PATCH] tick/nohz: Reduce the critical region for jiffies_seq
-Message-ID: <ac822c72-673e-73e1-9622-c5f12591b373@huawei.com>
-Date:   Wed, 11 Nov 2020 17:11:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Wed, 11 Nov 2020 04:12:01 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59076C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:12:01 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id a9so1200295lfh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:12:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nbnt6veYw6qTwcMDRL4+mV8KXeaSuLnKhno6+5s2SFU=;
+        b=ty5YHZnWhYAcWsKkLNWiqJBKnBrNi5lXjTSZ32spL4wqL6UtA6AbHjprIxTz2iMOiE
+         7NvsJXhMLQXVaeyWfyE94zxEGVf4a01pagdCHqtXlvIdjqELf35c/jNzbcV3DDeU2odX
+         aIhx4RYmhkNYPo74YQ/Pfl2ewAKmoeUrL40WuyIxJ03UrfnVmanZnEEw+F0tR8vf2D79
+         yjDVk1rKlxp67wThAFS/KJqiEgssn3/2MiUCp8Z2YkNsnXdc4p1db9Gf9ilp3A2PguGA
+         Lvj0VM16+uUbPKSbLNMxTUGkl+Rq8zc3QrEknvEK6zb5emqqqP2QL6O3SgsTy/hhN/z/
+         UOvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nbnt6veYw6qTwcMDRL4+mV8KXeaSuLnKhno6+5s2SFU=;
+        b=a1o2wKZA/BhL34ER08EZXK11jYBX6FZDU6mo3IaVZdysXP+DdH2NhtJv5/bksdjMTz
+         6daWfNe9z/lE5MrdP1zHRfvrr4Idd3DaRn5vp4hlloQubRQ4NQdTfDltBfp5ymcE3Ysa
+         3eSav1Q/ohVCTllHyioUBRBewC4Nl+M+tJrJ9xjjen8RCEWnENQjwaFjg2m7yXcoS9wH
+         CyCPbk3dVmDkKNPLp9Oj+usWTeN5pvqapmK1fZuv1BPY9AYzP2/c5ew8MC78ikeJYSUh
+         5qqg0RTjgBPB8DSuVOVWep5Rcx0+OynO4aK90A43tNfecNByYtyXdhLGqAf0BHze0hrS
+         ViEw==
+X-Gm-Message-State: AOAM533AD3rAe54SQt+oH5u2fFBrLQAQS2riFTiciPk0YteuToomq0OM
+        P3qyWCaMJ6l2QZhGoPH4FwxnXI6HeD0qIjoUbPouj3Irb7eTtg==
+X-Google-Smtp-Source: ABdhPJwos4mzSJfmoOsowN+ImAeNCfboX3OCQ3wQdi+b27K1mVTdppGK3LmHg1zytVgXlWp7fxJcgNHKY9Yn6AOigTo=
+X-Received: by 2002:ac2:50c1:: with SMTP id h1mr8771651lfm.333.1605085919810;
+ Wed, 11 Nov 2020 01:11:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.199]
-X-CFilter-Loop: Reflected
+References: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
+ <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Nov 2020 10:11:48 +0100
+Message-ID: <CACRpkdbs__j01qQ5ZudiZ3HX7ifY0ENdF3Tk_8vpfKc9OW=7gg@mail.gmail.com>
+Subject: Re: arm: kasan: WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47 __arm_gen_branch
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When nohz or nohz_full is configured, the concurrency calls of
-tick_do_update_jiffies64 increases, and the conflict between
-jiffies_lock and jiffies_seq increases, especially in multi-core
-scenarios.
+On Wed, Nov 11, 2020 at 9:15 AM Ard Biesheuvel <ardb@kernel.org> wrote:
 
-However, it is unnecessary to update the jiffies_seq lock multiple
-times in a tick period, so the critical region of the jiffies_seq
-can be reduced to reduce latency overheads. By the way,
-last_jiffies_update is protected by jiffies_lock, so reducing the
-jiffies_seq critical area is safe.
+> (23552K kernel code, 9970K rwdata, 16736K rodata, 3072K init, 4849K
+> bss, 189072K reserved, 65536K cma-reserved, 2293756K highmem)
+>
+> and so the kernel text section is too large to resolve relative branches.
 
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
----
- kernel/time/tick-sched.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Hm, that's really exotic but it's bound to happen. It'd be great if we
+could warn about that. Maybe even at link
+time, I wonder how hard it would be?
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index f0199a4ba1ad..41fb1400439b 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -66,11 +66,11 @@ static void tick_do_update_jiffies64(ktime_t now)
-
- 	/* Reevaluate with jiffies_lock held */
- 	raw_spin_lock(&jiffies_lock);
--	write_seqcount_begin(&jiffies_seq);
-
- 	delta = ktime_sub(now, last_jiffies_update);
- 	if (delta >= tick_period) {
-
-+		write_seqcount_begin(&jiffies_seq);
- 		delta = ktime_sub(delta, tick_period);
- 		/* Pairs with the lockless read in this function. */
- 		WRITE_ONCE(last_jiffies_update,
-@@ -91,12 +91,11 @@ static void tick_do_update_jiffies64(ktime_t now)
-
- 		/* Keep the tick_next_period variable up to date */
- 		tick_next_period = ktime_add(last_jiffies_update, tick_period);
--	} else {
- 		write_seqcount_end(&jiffies_seq);
-+	} else {
- 		raw_spin_unlock(&jiffies_lock);
- 		return;
- 	}
--	write_seqcount_end(&jiffies_seq);
- 	raw_spin_unlock(&jiffies_lock);
- 	update_wall_time();
- }
--- 
-2.18.4
+Yours,
+Linus Walleij
