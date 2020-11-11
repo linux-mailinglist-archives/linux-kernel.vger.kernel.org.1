@@ -2,625 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0573C2AE57E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317812AE584
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732914AbgKKBQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:16:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732885AbgKKBP5 (ORCPT
+        id S1732973AbgKKBQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:16:26 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15800 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730894AbgKKBPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 20:15:57 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF62C0613D4;
-        Tue, 10 Nov 2020 17:15:56 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id h2so571158wmm.0;
-        Tue, 10 Nov 2020 17:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u5uFDBqUvNz+fydkkYDh5aPchuEuZonwIyID57mrW6w=;
-        b=XvcmsH8Sk0sBkLE8KYyc9/ISTFV5GpYV9P0IeBgZEkHKFiyO7ItCpEuxDMaGnNxmkH
-         v2KFdUHUJ/UOGRVnltkYxwTn2l6KhQELRKy9JlUQEDOsTGzCuGkQzblogP4a0elumdYq
-         0qwI9Hp4duGKWiJViXFbxKTKzQvB+i5Tvh2LyHOu7BefIcjHcQDZmSdpIjSYmGnHun/C
-         8Nz+xpWY6sMD7z6M8tlWXkvWRfAsmEjbWmxt/NBiS2FJSHLlhxn7GQGEC3I3r+q8proB
-         P9b/Z86e381RD+ivw3VHu9NBRO6+nxKQrwzzIFrYOApraEyWgy5NuQoaIcFZsauI5KAW
-         gMjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u5uFDBqUvNz+fydkkYDh5aPchuEuZonwIyID57mrW6w=;
-        b=Az00PVerWAynqvPG1E4kw+gYQaxd0GBH5JwEE0CeD58WZJshfKCL+cJTVPLtM/Hy0W
-         Le9yeZjIEktBJRN5H+Bkd+YQBg/Kh4dVuIIUo0mEJbafXwRTLCNEnRjKIYEwBaJSUaBs
-         E9+bSIkQHAfsXWyL0yA3YybZVP7uJzwxY+ylgfp0X/Kr3oANCfB2uWkMg8rBICkQHIeX
-         6sC4RdB94DSAScEG2J6rFz9YrhFGjVUbwBVXBju7KHVL9LMofRp+yc/bUUwN+hHg5J9S
-         0dJQAzbzSKZknVXhDGTs4hq3zqct23ODdyviA1zla4Iu7ExuH4b6+/IFw3hbQGxwJnsT
-         PaiA==
-X-Gm-Message-State: AOAM531RTJBqcT/rU8mETnpRy0L4vIYArhCiZCTPkrbQ75YCVMnEHORq
-        JwHyGbQXmU+MDzDEW+wTq+E=
-X-Google-Smtp-Source: ABdhPJzA17nc1eQJImS9Ck7gUbF13uTwyyAIYA1R6EObwv+tSdAbT2M2VuGyU0+zxeyAj3HPl7Cbyw==
-X-Received: by 2002:a1c:6704:: with SMTP id b4mr897802wmc.96.1605057355192;
-        Tue, 10 Nov 2020 17:15:55 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.gmail.com with ESMTPSA id g131sm564329wma.35.2020.11.10.17.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 17:15:54 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v8 26/26] ARM: tegra: Add DVFS properties to Tegra124 EMC and ACTMON device-tree nodes
-Date:   Wed, 11 Nov 2020 04:14:56 +0300
-Message-Id: <20201111011456.7875-27-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201111011456.7875-1-digetx@gmail.com>
-References: <20201111011456.7875-1-digetx@gmail.com>
+        Tue, 10 Nov 2020 20:15:53 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AB1FI0b003360;
+        Tue, 10 Nov 2020 17:15:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=4yv3hH6v+zgIgwItZGGEHuTOGby+KjeZPA8fQuSbjSA=;
+ b=cs4fnF3pDP+OJqBi+TPe6FoJ2izhy3WKYMrZOXHcPTCcJI4OJ/zJm0fuHl6IBqvf0xsA
+ 3hCk50+9SppkUaxfbwJ6JQO+i8j1WqBTElK0lOFJQB0ZKPXXwBBvQrNLAz/o3t1/ptmj
+ 7SlG+ArzLxAFwKuWKUTzLccA09kWxPe9oGw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34qye8j8cn-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 10 Nov 2020 17:15:31 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 10 Nov 2020 17:15:30 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P6s1B/aiPV+pndelt8RSfxVkacw2fH8jcZkM8UgyGeHLXB+PRcKbRCQHO6KmfUwMjzqT6CwansqEhJdlyjbWMgmxEUrWoAfct3fMtS5OFktoNS/Aj2tHAaoNEQ15GG8tGeOHZ7mNeXt/ZyZWpCYW1XawndCgIL+yP0rBjUtfcig3RVJ8Y/vefsCvM9vF2I626JtGmawcJ8Sex0aIF7ljJTbb98TqC5tuDiMLj13cPsQszOdkovAIGS2dcIRAHoSLpLAuy9E3VSvAb4m9OZdr1ftyEnv4NtWPGSpgSkkkqdQj8DJlzArFtEwuQsrkNI6/Cl3C5Y93CxolPgU4fnAkJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4yv3hH6v+zgIgwItZGGEHuTOGby+KjeZPA8fQuSbjSA=;
+ b=Bi0yoXpwaQaHHUEoaTD6J0WpwidtefI5DXHEOpXI8vv01+dC5Ndob3YNvTU39BCktY+/o+vBM9ogBkdCB7TSQFQeSQXjSGHPx7N3fEpccof80LCvqdIePio4IoTHJ362XNQUsLB4Rq0mctWNJ3qeCOV1fD87cb7Lmk7BD+J6pv/7yw8z15rZJN0xl6MlRyIWR1mV9GeGAdCto/Q07Y9LCYpK428D0bn3XuK3uNPBAv9c42XBvzNjggazA5yo7qafQoFvmDhXxBUh8AnvJ8nTHhY2yp6z2/AE1iRcp0/t8AaFGQ4yb41t+8AL5Hqs7dQ9kHWNIyX13Vw9tmprSP/XOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4yv3hH6v+zgIgwItZGGEHuTOGby+KjeZPA8fQuSbjSA=;
+ b=d36/RIfyyjsp2xMfOaBdnRsGaAo169wyRrZBrD2sT7cbab4pcjq0A8nGkJ2Dw/3BuA2h0dNal60eXCGbbH7OrHBAW5THOKpsiVJi0a9nl05YMSxBgasPluhTcggBQVvx5dTjTx3UI6FGNZAOeoJ25nNPsuCpcuvnDQ3o19RbuuQ=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2567.namprd15.prod.outlook.com (2603:10b6:a03:151::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 11 Nov
+ 2020 01:15:29 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
+ 01:15:29 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Alan Maguire" <alan.maguire@oracle.com>
+Subject: Re: [PATCH v4 bpf-next 5/5] tools/bpftool: add support for in-kernel
+ and named BTF in `btf show`
+Thread-Topic: [PATCH v4 bpf-next 5/5] tools/bpftool: add support for in-kernel
+ and named BTF in `btf show`
+Thread-Index: AQHWtwBlZiwFu4lmdkSb7Pyhw/89SanCIkiA
+Date:   Wed, 11 Nov 2020 01:15:29 +0000
+Message-ID: <8A2A9182-F22C-4A3B-AF52-6FC56D3057AA@fb.com>
+References: <20201110011932.3201430-1-andrii@kernel.org>
+ <20201110011932.3201430-6-andrii@kernel.org>
+In-Reply-To: <20201110011932.3201430-6-andrii@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:1f7d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0ed01e9d-6ab5-43da-3bca-08d885df479d
+x-ms-traffictypediagnostic: BYAPR15MB2567:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2567D485DC6B6E433188232BB3E80@BYAPR15MB2567.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:127;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BpNjihxERtTWL3NYcl4UtEWppfmmIc2+JLfvuznDdDLNCloXo++doqXr/9VD/+4312WV6qroDrU0/JEydscvsF0eyMb1O/Ps3Pr+wNQrnDW32wDzW4gh6VGLP3/hYPWqmxDC/Ecpynhnsd4sJHaJJ26vBTCulZrSHTT8YQGFlFRe/sXyprM7GfPQx0rXiyADY1k5H/o5+I0X7FmZIdMjGfDwlqhUo5r7H5QgJ7PeaZbYLansYfxww0vgb6DZE616nYHxZ78xIamdQ+NLvBbjr363mDrOrKiPJwMlQ4j5V8Yy9InBPrrBJJmanQJDbYXqyBLRFEKxMmnR6VwUKPyLKMdR/GLBcNyFeR173s0TUBB1rR7s3Qkcj15zk5/OLJnS
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(136003)(376002)(39860400002)(8936002)(8676002)(5660300002)(4326008)(6916009)(91956017)(76116006)(71200400001)(66556008)(64756008)(66446008)(66476007)(66946007)(316002)(33656002)(36756003)(86362001)(83380400001)(186003)(6486002)(2906002)(6512007)(54906003)(53546011)(6506007)(7416002)(4744005)(2616005)(478600001)(81973001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: zujtU+5Izk+IZS2eKK/dk6s15oAmbaxOdDFb7iJq3Isph+coj4jH+BalV8AFYuVijgus8j9yBCCfhG6aQrzgVHTkawcifp7gGeY1obp6Pmtk6e6Ht16yizFeOvZptNtphpnqoaaJVMo8QNooHZOT/+tuUeEvzukgAq8OOu2N4eG/9De/Mt0KrOUfjlcpD0ufwsA4LLW8AuQlXL+c3HDnPPqxqa8ktJ3PVFf+FVjluFZB1rU8ic7eCLpx03cdVDRohhhj1hSN0wW2b4fMPr4mI+wXGMNjCSJL8D1NAgDFaRdik02Pa8vO+l6T3rT1Cs52VztZGrmmMoNKAYm+Judpsn7mZltqbV+IMEg2gnr2PB2wcbhlMZSoS3H+fndpn0gQFQCQ+MALOXhWojMuHSNdgOeTYA/biM7YhyrqPRp8EQGT0XRowK1yCTpzarF68cdCl73gJ9r/YNY/bDgVKYDM3sIIyOLSS31FxEGaZa0RZ9LIEtovwhvSPyy5ORxaBzyQ7l3MtZHVV8UOdW7SHfCIvNeIQLOyyu7j1xpawerpOy1Exca/x0HKF2cGKVRd18fYNoOw9hw4nwmAbRkKZVxHCHAX7otGNA1UlWb68OmapINdf7SRZq57ytzY05gDhn9ln+DKi5ODpFn1DlJEMyglUR28qIYqV5QaN8chGomGjKWj8UkCU4sZapRFoQThP/5o8GG4lGpP756p5PVt1gu8kjDqibCatqe/6NBikZWOaloDHQzrv+hGEZGpnML/SpQSCRqJ7nzkUK/syRvFx37lOnS4Anngmqb17pPobmZ+/ttuETIx5t25drqkhqAY8jkvxiBkhHvsD9eXqw/pIU21gDW5Xwzi17VpiUjn4LMTAs8krCWbhwA5cYFcoxGLbWAh8m0iKgXHxf4ziDWW9Hy41SIQYRpJUKils9iE1jLoLO8=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5B4A2EB0F9F7A54D81DEA5EA8FE8AECF@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ed01e9d-6ab5-43da-3bca-08d885df479d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2020 01:15:29.7563
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8Y0UPVuUDj7YRNqsJbV3UlxRJ+EQmYO6kB8RwbmvAHB2I2RcInnKuzAQ1N8rPUPiEGCI53Ph8/UR01/5Zer4zQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2567
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_09:2020-11-10,2020-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0 adultscore=0
+ phishscore=0 suspectscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011110003
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add EMC OPP DVFS/DFS tables and interconnect paths that will be used for
-dynamic memory bandwidth scaling based on memory utilization statistics.
-Remove unsupported EMC OPPs from board device-trees.
 
-Note that ACTMON watches all memory interconnect paths, but we use a
-single CPU-READ interconnect path for driving memory bandwidth, for
-simplicity.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra124-apalis-emc.dtsi    |   8 +
- .../arm/boot/dts/tegra124-jetson-tk1-emc.dtsi |   8 +
- arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi  |  10 +
- .../arm/boot/dts/tegra124-nyan-blaze-emc.dtsi |  10 +
- .../boot/dts/tegra124-peripherals-opp.dtsi    | 419 ++++++++++++++++++
- arch/arm/boot/dts/tegra124.dtsi               |   6 +
- 6 files changed, 461 insertions(+)
- create mode 100644 arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
+> On Nov 9, 2020, at 5:19 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
 
-diff --git a/arch/arm/boot/dts/tegra124-apalis-emc.dtsi b/arch/arm/boot/dts/tegra124-apalis-emc.dtsi
-index 32401457ae71..a7ac805eeed5 100644
---- a/arch/arm/boot/dts/tegra124-apalis-emc.dtsi
-+++ b/arch/arm/boot/dts/tegra124-apalis-emc.dtsi
-@@ -1465,3 +1465,11 @@ timing-924000000 {
- 		};
- 	};
- };
-+
-+&emc_icc_dvfs_opp_table {
-+	/delete-node/ opp@1200000000,1100;
-+};
-+
-+&emc_bw_dfs_opp_table {
-+	/delete-node/ opp@1200000000;
-+};
-diff --git a/arch/arm/boot/dts/tegra124-jetson-tk1-emc.dtsi b/arch/arm/boot/dts/tegra124-jetson-tk1-emc.dtsi
-index 861d3f22116b..df4e463afbd1 100644
---- a/arch/arm/boot/dts/tegra124-jetson-tk1-emc.dtsi
-+++ b/arch/arm/boot/dts/tegra124-jetson-tk1-emc.dtsi
-@@ -2420,3 +2420,11 @@ timing-924000000 {
- 		};
- 	};
- };
-+
-+&emc_icc_dvfs_opp_table {
-+	/delete-node/ opp@1200000000,1100;
-+};
-+
-+&emc_bw_dfs_opp_table {
-+	/delete-node/ opp@1200000000;
-+};
-diff --git a/arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi b/arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi
-index c91647d13a50..a0f56cc9da5c 100644
---- a/arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi
-+++ b/arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi
-@@ -6649,3 +6649,13 @@ timing-792000000 {
- 		};
- 	};
- };
-+
-+&emc_icc_dvfs_opp_table {
-+	/delete-node/ opp@924000000,1100;
-+	/delete-node/ opp@1200000000,1100;
-+};
-+
-+&emc_bw_dfs_opp_table {
-+	/delete-node/ opp@924000000;
-+	/delete-node/ opp@1200000000;
-+};
-diff --git a/arch/arm/boot/dts/tegra124-nyan-blaze-emc.dtsi b/arch/arm/boot/dts/tegra124-nyan-blaze-emc.dtsi
-index d2beea0bd15f..35c98734d35f 100644
---- a/arch/arm/boot/dts/tegra124-nyan-blaze-emc.dtsi
-+++ b/arch/arm/boot/dts/tegra124-nyan-blaze-emc.dtsi
-@@ -2048,3 +2048,13 @@ timing-792000000 {
- 		};
- 	};
- };
-+
-+&emc_icc_dvfs_opp_table {
-+	/delete-node/ opp@924000000,1100;
-+	/delete-node/ opp@1200000000,1100;
-+};
-+
-+&emc_bw_dfs_opp_table {
-+	/delete-node/ opp@924000000;
-+	/delete-node/ opp@1200000000;
-+};
-diff --git a/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
-new file mode 100644
-index 000000000000..49d9420a3289
---- /dev/null
-+++ b/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
-@@ -0,0 +1,419 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/ {
-+	emc_icc_dvfs_opp_table: emc-dvfs-opp-table {
-+		compatible = "operating-points-v2";
-+
-+		opp@12750000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <12750000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@12750000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <12750000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@12750000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <12750000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@12750000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <12750000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@20400000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <20400000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@20400000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <20400000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@20400000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <20400000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@20400000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <20400000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@40800000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <40800000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@40800000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <40800000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@40800000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <40800000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@40800000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <40800000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@68000000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <68000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@68000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <68000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@68000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <68000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@68000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <68000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@102000000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <102000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@102000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <102000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@102000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <102000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@102000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <102000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@204000000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <204000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@204000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <204000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@204000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <204000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@204000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <204000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@264000000,800 {
-+			opp-microvolt = <800000 800000 1150000>;
-+			opp-hz = /bits/ 64 <264000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@264000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <264000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@264000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <264000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@264000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <264000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@300000000,850 {
-+			opp-microvolt = <850000 850000 1150000>;
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@300000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@300000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@300000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@348000000,850 {
-+			opp-microvolt = <850000 850000 1150000>;
-+			opp-hz = /bits/ 64 <348000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@348000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <348000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@348000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <348000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@348000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <348000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@396000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <396000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@396000000,1000 {
-+			opp-microvolt = <1000000 1000000 1150000>;
-+			opp-hz = /bits/ 64 <396000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@396000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <396000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@396000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <396000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@528000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <528000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@528000000,1000 {
-+			opp-microvolt = <1000000 1000000 1150000>;
-+			opp-hz = /bits/ 64 <528000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@528000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <528000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@528000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <528000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@600000000,950 {
-+			opp-microvolt = <950000 950000 1150000>;
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-supported-hw = <0x0008>;
-+		};
-+
-+		opp@600000000,1000 {
-+			opp-microvolt = <1000000 1000000 1150000>;
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+
-+		opp@600000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@600000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@792000000,1000 {
-+			opp-microvolt = <1000000 1000000 1150000>;
-+			opp-hz = /bits/ 64 <792000000>;
-+			opp-supported-hw = <0x000B>;
-+		};
-+
-+		opp@792000000,1050 {
-+			opp-microvolt = <1050000 1050000 1150000>;
-+			opp-hz = /bits/ 64 <792000000>;
-+			opp-supported-hw = <0x0010>;
-+		};
-+
-+		opp@792000000,1110 {
-+			opp-microvolt = <1110000 1110000 1150000>;
-+			opp-hz = /bits/ 64 <792000000>;
-+			opp-supported-hw = <0x0004>;
-+		};
-+
-+		opp@924000000,1100 {
-+			opp-microvolt = <1100000 1100000 1150000>;
-+			opp-hz = /bits/ 64 <924000000>;
-+			opp-supported-hw = <0x0013>;
-+		};
-+
-+		opp@1200000000,1100 {
-+			opp-microvolt = <1100000 1100000 1150000>;
-+			opp-hz = /bits/ 64 <1200000000>;
-+			opp-supported-hw = <0x0003>;
-+		};
-+	};
-+
-+	emc_bw_dfs_opp_table: emc-bandwidth-opp-table {
-+		compatible = "operating-points-v2";
-+
-+		opp@12750000 {
-+			opp-hz = /bits/ 64 <12750000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <204000>;
-+		};
-+
-+		opp@20400000 {
-+			opp-hz = /bits/ 64 <20400000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <326400>;
-+		};
-+
-+		opp@40800000 {
-+			opp-hz = /bits/ 64 <40800000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <652800>;
-+		};
-+
-+		opp@68000000 {
-+			opp-hz = /bits/ 64 <68000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <1088000>;
-+		};
-+
-+		opp@102000000 {
-+			opp-hz = /bits/ 64 <102000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <1632000>;
-+		};
-+
-+		opp@204000000 {
-+			opp-hz = /bits/ 64 <204000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <3264000>;
-+		};
-+
-+		opp@264000000 {
-+			opp-hz = /bits/ 64 <264000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <4224000>;
-+		};
-+
-+		opp@300000000 {
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <4800000>;
-+		};
-+
-+		opp@348000000 {
-+			opp-hz = /bits/ 64 <348000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <5568000>;
-+		};
-+
-+		opp@396000000 {
-+			opp-hz = /bits/ 64 <396000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <6336000>;
-+		};
-+
-+		opp@528000000 {
-+			opp-hz = /bits/ 64 <528000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <8448000>;
-+		};
-+
-+		opp@600000000 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <9600000>;
-+		};
-+
-+		opp@792000000 {
-+			opp-hz = /bits/ 64 <792000000>;
-+			opp-supported-hw = <0x001F>;
-+			opp-peak-kBps = <12672000>;
-+		};
-+
-+		opp@924000000 {
-+			opp-hz = /bits/ 64 <924000000>;
-+			opp-supported-hw = <0x0013>;
-+			opp-peak-kBps = <14784000>;
-+		};
-+
-+		opp@1200000000 {
-+			opp-hz = /bits/ 64 <1200000000>;
-+			opp-supported-hw = <0x0003>;
-+			opp-peak-kBps = <19200000>;
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/tegra124.dtsi b/arch/arm/boot/dts/tegra124.dtsi
-index 1801e30b1d3a..46441d10a3fc 100644
---- a/arch/arm/boot/dts/tegra124.dtsi
-+++ b/arch/arm/boot/dts/tegra124.dtsi
-@@ -8,6 +8,8 @@
- #include <dt-bindings/thermal/tegra124-soctherm.h>
- #include <dt-bindings/soc/tegra-pmc.h>
- 
-+#include "tegra124-peripherals-opp.dtsi"
-+
- / {
- 	compatible = "nvidia,tegra124";
- 	interrupt-parent = <&lic>;
-@@ -290,6 +292,9 @@ actmon@6000c800 {
- 		clock-names = "actmon", "emc";
- 		resets = <&tegra_car 119>;
- 		reset-names = "actmon";
-+		operating-points-v2 = <&emc_bw_dfs_opp_table>;
-+		interconnects = <&mc TEGRA124_MC_MPCORER &emc>;
-+		interconnect-names = "cpu-read";
- 	};
- 
- 	gpio: gpio@6000d000 {
-@@ -660,6 +665,7 @@ emc: external-memory-controller@7001b000 {
- 		clock-names = "emc";
- 
- 		nvidia,memory-controller = <&mc>;
-+		operating-points-v2 = <&emc_icc_dvfs_opp_table>;
- 
- 		#interconnect-cells = <0>;
- 	};
--- 
-2.29.2
+[...]
 
+> ...
+>=20
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+With one nit:
+
+> ---
+> tools/bpf/bpftool/btf.c | 28 +++++++++++++++++++++++++++-
+> 1 file changed, 27 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index c96b56e8e3a4..ed5e97157241 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -742,9 +742,14 @@ show_btf_plain(struct bpf_btf_info *info, int fd,
+> 	       struct btf_attach_table *btf_map_table)
+> {
+> 	struct btf_attach_point *obj;
+> +	const char *name =3D u64_to_ptr(info->name);
+> 	int n;
+>=20
+> 	printf("%u: ", info->id);
+> +	if (info->kernel_btf)
+> +		printf("name [%s]  ", name);
+> +	else if (name && name[0])
+> +		printf("name %s  ", name);
+
+Maybe explicitly say "name <anonymous>" for btf without a name? I think=20
+it will benefit plain output. =20
+
+> 	printf("size %uB", info->btf_size);
+>=20
+> 	n =3D 0;
+
+[...]
