@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4210C2AF84C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2293F2AF859
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgKKSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:39:07 -0500
-Received: from mail.monom.org ([188.138.9.77]:42210 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbgKKSjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:39:05 -0500
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id A727F500596;
-        Wed, 11 Nov 2020 19:39:02 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 3EFDF500108;
-        Wed, 11 Nov 2020 19:39:02 +0100 (CET)
-Date:   Wed, 11 Nov 2020 19:39:01 +0100
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
-Message-ID: <20201111183901.GA23846@beryllium>
-References: <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
- <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
- <20201104124746.74jdsig3dffomv3k@beryllium.lan>
- <20201104130930.llx56gtqt532h7c7@linutronix.de>
- <20201104160650.b63zqof74wohgpa2@beryllium.lan>
- <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
- <20201106161413.7c65uxenamy474uh@beryllium.lan>
- <20201109124718.ljf7inok4zakkjed@linutronix.de>
- <20201109143703.ps7gxhqrirhntilr@beryllium.lan>
- <20201109163143.tm5gjz77rr734lm5@linutronix.de>
+        id S1726634AbgKKSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgKKSmz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:42:55 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00315C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:42:54 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id j7so3545659wrp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:42:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VohxCgmaGc6F7Ktsca4rjVlrZ86gTh1fROnDD+cvua8=;
+        b=q5lLWorcNvq+9Yc6F6OpKuLSxNfpexysmfo67YGIJQm9USpyAY1a0El1997oZE4wkP
+         8oqytOtFLxzPFKfILJzTJgYc46xAEBJFyWtuM1LTEETuUfNL/KuH8ikBmZDq/UqQ/Id/
+         E76iFLtXpDU/wuvo8+MAmKHQCxr/+4O4OJqc5u5N9uJbn25p6NqFNx+WALMGSWhTODnh
+         kD66Fx1jLku1gDyfDnSOvkDgGCyu+iraGYhFX9JP4kQehD2F7J+O34XvINm9mbxUzcAS
+         hQoG/Tiqe7+nF2rMK/813dHUyO2G+HXvIe2S5qscLlRg2Xzo7BlnfmqUHUy+lnNI4FXY
+         5KCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VohxCgmaGc6F7Ktsca4rjVlrZ86gTh1fROnDD+cvua8=;
+        b=tN4nSlHgsTYp2Iy63fQp++xcaCgN5eiSgKu8Q/dQwBUg+M8gX+JYZJR/9h/CAujOj+
+         yVh+pWgbKegZHYbF6xCeiCGo13Rh6mMTFQuI1124w5Q1CF+PKt8HpIbJq5VFggK+DD66
+         SLgq8RuMTkqlWhx1rGOovDPyyNN4QtfXmAF7f5TuCotbMURujD9uBlTMKjRPo307h7CP
+         Wb+hPXNNYXuiW/dRVA11jGlyc/Xm4rIY/xG8KlnOt7F7Dsz+PcWkvZYwKOGcHSJ4ejO1
+         D5wWLohN5gTAR6mcMbcT9FZxHAKC+P0C8cGnzLPSR4YPJOTE0nTptHOj07wa6Vr6GdUO
+         +dUg==
+X-Gm-Message-State: AOAM53006DlNv/2jyVFSPg9AjKNDVenlZU4FF4eYnflxCfF/QsDbMqNA
+        A7Dj7S2+S+7hljzf18bQ9dVyEQ==
+X-Google-Smtp-Source: ABdhPJwhO/pOEHygpEN38k/rCWZcOpBcvG2IP4pMbw5LM7pzlX+NSLqrby7G/rFyaxB3/C6to3EXwQ==
+X-Received: by 2002:a5d:66c3:: with SMTP id k3mr26447563wrw.123.1605120173432;
+        Wed, 11 Nov 2020 10:42:53 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id n10sm3431496wrv.77.2020.11.11.10.42.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 10:42:52 -0800 (PST)
+Date:   Wed, 11 Nov 2020 19:42:46 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 13/20] kasan: simplify kasan_poison_kfree
+Message-ID: <20201111184246.GO517454@elver.google.com>
+References: <cover.1605046662.git.andreyknvl@google.com>
+ <a1c57043fb19effce240355e7c57b0d9a58d389e.1605046662.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201109163143.tm5gjz77rr734lm5@linutronix.de>
+In-Reply-To: <a1c57043fb19effce240355e7c57b0d9a58d389e.1605046662.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late response, I had to reinstall my system after a FS
-corruption...
+On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> kasan_poison_kfree() is currently only called for mempool allocations
+> that are backed by either kmem_cache_alloc() or kmalloc(). Therefore, the
+> page passed to kasan_poison_kfree() is always PageSlab() and there's no
+> need to do the check. Remove it.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Link: https://linux-review.googlesource.com/id/If31f88726745da8744c6bea96fb32584e6c2778c
+> ---
+>  mm/kasan/common.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
 
-On Mon, Nov 09, 2020 at 05:31:43PM +0100, Sebastian Andrzej Siewior wrote:
-> > These test run only very short with hackbench as worlkload (5 minutes).
-> > Though I running these tests now for more than year with v4.4-rt and
-> > some times the newer -rt releases and I've never seen the latency
-> > numbers above 200us unless something was broken. Given that 5 minutes is
-> > not really long, I'll let those test run for longer to see if I get the
-> > same results when they run for one hour.
+Reviewed-by: Marco Elver <elver@google.com>
 
-- 5.9.0-rc8-rt12, ca 5h
-  T: 0 (11626) P:80 C:15092432 Min:     17 Act:   34 Avg:   43 Max:     226
-
-- 5.9.0-rc8-rt13, ca 1.5h
-  T: 0 (24661) P:80 C:5581936 Min:     21 Act:   35 Avg:   45 Max:     250
-
-- 5.9.0-rc8-rt14, ca 1h
-  T: 0 (  942) P:80 C:6522320 Min:     20 Act:   27 Avg:   44 Max:     352
-
-This matches with the 5 minutes runs. -rt13 was still okay and -rt14
-is clearly worse.
-
-> > 5.10.0-rc2-rt4 vs 5.10.0-rc2-rt4(lazy preemption disabled)
-> >
-> >   0_cyclicdeadline     t2-max-latency       pass/pass                274.00/     61.00     349.18%
->
-> So the value went from 274us to 61us after disabling lazy-preempt?
-
-Yes, that was all I changed. I want to redo this measurement. It
-really looks a bit bogus. Though, one thing after the other :)
-
-Daniel
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 385863eaec2c..819403548f2e 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -432,16 +432,7 @@ void __kasan_poison_kfree(void *ptr, unsigned long ip)
+>  	struct page *page;
+>  
+>  	page = virt_to_head_page(ptr);
+> -
+> -	if (unlikely(!PageSlab(page))) {
+> -		if (ptr != page_address(page)) {
+> -			kasan_report_invalid_free(ptr, ip);
+> -			return;
+> -		}
+> -		kasan_poison_memory(ptr, page_size(page), KASAN_FREE_PAGE);
+> -	} else {
+> -		____kasan_slab_free(page->slab_cache, ptr, ip, false);
+> -	}
+> +	____kasan_slab_free(page->slab_cache, ptr, ip, false);
+>  }
+>  
+>  void __kasan_kfree_large(void *ptr, unsigned long ip)
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
+> 
