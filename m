@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFFB2AEF26
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107A92AEF29
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgKKLHR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 06:07:17 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:37586 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgKKLHQ (ORCPT
+        id S1726181AbgKKLHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgKKLHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:07:16 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 43AA6CECFD;
-        Wed, 11 Nov 2020 12:14:23 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 3/3] Bluetooth: hci_bcm: Ignore deprecated command fail
- case
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201014054746.2507-1-amitesh.chandra@gmail.com>
-Date:   Wed, 11 Nov 2020 12:07:13 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        amitesh.chandra@broadcom.com, ravi.nagarajan@broadcom.com,
-        cheneyni@google.com, Manoj Babulal <manoj.babulal@broadcom.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <53807E62-2444-46EA-A2C8-30442263B101@holtmann.org>
-References: <20201014054746.2507-1-amitesh.chandra@gmail.com>
-To:     Amitesh Chandra <amitesh.chandra@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Wed, 11 Nov 2020 06:07:32 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D97C0613D1;
+        Wed, 11 Nov 2020 03:07:32 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id u2so789131pls.10;
+        Wed, 11 Nov 2020 03:07:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N9WOVOySLT6I3GdZDGmxLF1+D/YdBUYGAyOrinwGECY=;
+        b=oZZajbZk62T0v6JILfrOwxWZwMHOQG80TMDS1INiNWCLQw6jEKqaFxs9ChXDprHVP4
+         gxa6et9kKWcofGqXNIV6Pj3mAqT6OvDNYMjUgevZ7YIp12por+sUFx+bupfb6yGREP9u
+         keh+ZRu+wRD2T40CMF/4fcH3KakueNJM+Aj+kJnpjGZKJy3c7RtAdkqBCSxsVzT5LZVo
+         rpjZpE0bQYC50BU/ubd+FEmKXZYys3/6V2k1aATD8cQ2O+0D6tN0VdnarHEQ6oWC5uop
+         djN8jpAPp10HtB862qnCYRnvOkKZbjmjVkEWzH2PRegzPiuJQre6kZgWVvMzazzu/K9t
+         k/aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N9WOVOySLT6I3GdZDGmxLF1+D/YdBUYGAyOrinwGECY=;
+        b=TUHQwxOOnnebCOAK2wR4IKl4fpPjbifPD1eGEQEP5w0B1F/fZLLSpl3Mt0OzF571YE
+         NpyfNWX7TMtU5qEJ1+9Q8uQs6e+MHsANc7Aq85OZZc/qyJfVk1B/sMZ0WaKQWR4XCK84
+         eLxw+vhGDvKv1yaQt45QXjrRjmQVksiHD/SZYxV8wzXKTjZkGAnMBCMoJn/PiryX7DxG
+         8verXN4n3eauCXW69eHD/I7H/mmx2WWaiF3bkr/LaS3K6O39W+YpqwuJ1ixAyDR6bVhQ
+         1gdB+nHWZYX4vhwHjDBUKrG9gARqZGwUedbyaS9DH2872Te2iAcnIgv0nnrd5MYcLhvO
+         0vVA==
+X-Gm-Message-State: AOAM5330utaGEzhXexNkvXxjwrJ07IL/0jy55eFm+5G+qJ6zkDmNZ8ol
+        iQ0Z6laTq2+4SSu7iQKfLiU=
+X-Google-Smtp-Source: ABdhPJyDttk9RAk/tJT2toeUMROv7QB4mIAfIhexx29xo3detoty5pzLTTKNL9F+EqpZxj3mDDzBjg==
+X-Received: by 2002:a17:90a:f691:: with SMTP id cl17mr3337938pjb.231.1605092852045;
+        Wed, 11 Nov 2020 03:07:32 -0800 (PST)
+Received: from bobo.ozlabs.ibm.com (27-32-36-31.tpgi.com.au. [27.32.36.31])
+        by smtp.gmail.com with ESMTPSA id 9sm2154943pfp.102.2020.11.11.03.07.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 03:07:31 -0800 (PST)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: [PATCH 0/3] powerpc: convert to use ARCH_ATOMIC
+Date:   Wed, 11 Nov 2020 21:07:20 +1000
+Message-Id: <20201111110723.3148665-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amitesh,
+This conversion seems to require generic atomic64 changes, looks
+like nothing else uses ARCH_ATOMIC and GENERIC_ATOMIC64 yet.
 
-> Broadcom VSC uart_clock_setting is deprecated in
-> newer controllers. Ignore error if the controller
-> returns invalid or bad request error code.
-> 
-> Signed-off-by: Amitesh Chandra <amitesh.chandra@broadcom.com>
-> Signed-off-by: Manoj Babulal <manoj.babulal@broadcom.com>
-> ---
-> drivers/bluetooth/hci_bcm.c | 15 +++++++++------
-> 1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
-> index 680478f..d316788 100644
-> --- a/drivers/bluetooth/hci_bcm.c
-> +++ b/drivers/bluetooth/hci_bcm.c
-> @@ -158,15 +158,18 @@ static int bcm_set_baudrate(struct hci_uart *hu, unsigned int speed)
-> 		skb = __hci_cmd_sync(hdev, 0xfc45, 1, &clock, HCI_INIT_TIMEOUT);
-> 		if (IS_ERR(skb)) {
-> 			int err = PTR_ERR(skb);
-> -			bt_dev_err(hdev, "BCM: failed to write clock (%d)",
-> -				   err);
-> -			return err;
-> +			/* Ignore err if command is deprecated in controller */
-> +			if (err != -EBADRQC) {
-> +				bt_dev_err(hdev, "BCM: failed to write "
-> +						"clock (%d)", err);
-> +				return err;
-> +			}
-> +		} else {
-> +			kfree_skb(skb);
-> 		}
-> -
-> -		kfree_skb(skb);
-> 	}
+Thanks,
+Nick
 
-So I really disliked try-and-error of HCI commands. Can we know up-front
-somehow if the controller supports a command or not. It is a total waste of
-time to send a command that might fail. So we better know this before
-sending it.
+Nicholas Piggin (3):
+  asm-generic/atomic64: Add support for ARCH_ATOMIC
+  powerpc/64s/iommu: don't use atomic_ function on atomic64_t type
+  powerpc: rewrite atomics to use ARCH_ATOMIC
 
-Regards
+ arch/powerpc/include/asm/atomic.h    | 681 ++++++++++-----------------
+ arch/powerpc/include/asm/cmpxchg.h   |  62 +--
+ arch/powerpc/mm/book3s64/iommu_api.c |   2 +-
+ include/asm-generic/atomic64.h       |  70 ++-
+ lib/atomic64.c                       |  36 +-
+ 5 files changed, 324 insertions(+), 527 deletions(-)
 
-Marcel
+-- 
+2.23.0
 
