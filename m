@@ -2,230 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164522AEF79
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F972AEF7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKKLUh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 06:20:37 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:55225 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbgKKLU3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:20:29 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 16C6FCECFE;
-        Wed, 11 Nov 2020 12:27:35 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v9 5/6] Bluetooth: Refactor read default sys config for
- various types
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201111150115.v9.5.I9231b35b0be815c32c3a3ec48dcd1d68fa65daf4@changeid>
-Date:   Wed, 11 Nov 2020 12:20:25 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        alainm@chromium.org, mmandlik@chromium.org, mcchou@chromium.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A5A4227D-58B7-4C08-AFC9-BC8A8D469179@holtmann.org>
-References: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
- <20201111150115.v9.5.I9231b35b0be815c32c3a3ec48dcd1d68fa65daf4@changeid>
-To:     Howard Chung <howardchung@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S1726240AbgKKLVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:21:53 -0500
+Received: from mga14.intel.com ([192.55.52.115]:46369 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726081AbgKKLVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:21:51 -0500
+IronPort-SDR: 3J+Qv1zQonDbYq5TavfPPlsXHjNQIS4iJLpGNEcZuyLZl1bCWuQi4oVbFD1NUYce8gA8F1VVT7
+ H/mwasmGtb2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="169348094"
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="169348094"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 03:21:46 -0800
+IronPort-SDR: i9GSmkJyDyBIgNUenUzEob8HffyiVM1iloRBkNIR5RKr3OWvt8faVtA8lgixlCVI87wZvLwsLv
+ +uMbvOCW4lJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="428716333"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Nov 2020 03:21:43 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 11 Nov 2020 13:21:42 +0200
+Date:   Wed, 11 Nov 2020 13:21:42 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Set partner
+ num_altmodes
+Message-ID: <20201111112142.GQ1224435@kuha.fi.intel.com>
+References: <20201110061535.2163599-1-pmalani@chromium.org>
+ <20201110061535.2163599-2-pmalani@chromium.org>
+ <20201110105015.GF1224435@kuha.fi.intel.com>
+ <ba6c1415-457b-1e8d-b604-fad603fe9be6@collabora.com>
+ <20201111102846.GP1224435@kuha.fi.intel.com>
+ <X6vDZXI3Cp1pqRUr@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6vDZXI3Cp1pqRUr@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Howard,
+On Wed, Nov 11, 2020 at 11:56:37AM +0100, Greg KH wrote:
+> On Wed, Nov 11, 2020 at 12:28:46PM +0200, Heikki Krogerus wrote:
+> > On Tue, Nov 10, 2020 at 05:01:04PM +0100, Enric Balletbo i Serra wrote:
+> > > Hi,
+> > > 
+> > > On 10/11/20 11:50, Heikki Krogerus wrote:
+> > > > On Mon, Nov 09, 2020 at 10:15:36PM -0800, Prashant Malani wrote:
+> > > >> Set the number of altmodes available for a registered partner using the
+> > > >> Type C connector class framework routine.
+> > > >>
+> > > >> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> > > > 
+> > > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > > 
+> > > 
+> > > Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > > 
+> > > Heikki, would you like to take these two through your tree? It'd help if you can
+> > > create an inmutable branch so I can pick other cros_ec_typec patches on top of it.
+> > 
+> > I'm sorry, but I don't actually maintain a tree for the USB Type-C
+> > stuff.
+> > 
+> > Greg, I'm sorry to bother you with this, but can you provide the
+> > immutable branch for Enric?
+> 
+> My usb tree branches are always immutable :)
+> 
+> > Maybe I should set up a tree for the USB Type-C stuff?
+> 
+> Or I can just take all of these patches as they depend on USB stuff more
+> than any other specific platform driver changes, right?
 
-> Refactor read default system configuration function so that it's capable
-> of returning different types than u16
-> 
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> ---
-> 
-> (no changes since v8)
-> 
-> Changes in v8:
-> - Update the commit title and message
-> 
-> net/bluetooth/mgmt_config.c | 140 +++++++++++++++++++++---------------
-> 1 file changed, 84 insertions(+), 56 deletions(-)
-> 
-> diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-> index 2d3ad288c78ac..282fbf82f3192 100644
-> --- a/net/bluetooth/mgmt_config.c
-> +++ b/net/bluetooth/mgmt_config.c
-> @@ -11,72 +11,100 @@
-> #include "mgmt_util.h"
-> #include "mgmt_config.h"
-> 
-> -#define HDEV_PARAM_U16(_param_code_, _param_name_) \
-> -{ \
-> -	{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-> -	{ cpu_to_le16(hdev->_param_name_) } \
-> -}
-> +#define HDEV_PARAM_U16(_param_name_) \
-> +	struct {\
-> +		struct mgmt_tlv entry; \
-> +		__le16 value; \
-> +	} __packed _param_name_
-> 
-> -#define HDEV_PARAM_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
-> -{ \
-> -	{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-> -	{ cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) } \
-> -}
-> +#define TLV_SET_U16(_param_code_, _param_name_) \
-> +	{ \
-> +		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-> +		cpu_to_le16(hdev->_param_name_) \
-> +	}
-> +
-> +#define TLV_SET_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
-> +	{ \
-> +		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-> +		cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) \
-> +	}
-> 
-> int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
-> 			   u16 data_len)
-> {
-> -	struct {
-> -		struct mgmt_tlv entry;
-> -		union {
-> -			/* This is a simplification for now since all values
-> -			 * are 16 bits.  In the future, this code may need
-> -			 * refactoring to account for variable length values
-> -			 * and properly calculate the required buffer size.
-> -			 */
-> -			__le16 value;
-> -		};
-> -	} __packed params[] = {
-> +	int ret;
-> +	struct mgmt_rp_read_def_system_config {
-> 		/* Please see mgmt-api.txt for documentation of these values */
-> -		HDEV_PARAM_U16(0x0000, def_page_scan_type),
-> -		HDEV_PARAM_U16(0x0001, def_page_scan_int),
-> -		HDEV_PARAM_U16(0x0002, def_page_scan_window),
-> -		HDEV_PARAM_U16(0x0003, def_inq_scan_type),
-> -		HDEV_PARAM_U16(0x0004, def_inq_scan_int),
-> -		HDEV_PARAM_U16(0x0005, def_inq_scan_window),
-> -		HDEV_PARAM_U16(0x0006, def_br_lsto),
-> -		HDEV_PARAM_U16(0x0007, def_page_timeout),
-> -		HDEV_PARAM_U16(0x0008, sniff_min_interval),
-> -		HDEV_PARAM_U16(0x0009, sniff_max_interval),
-> -		HDEV_PARAM_U16(0x000a, le_adv_min_interval),
-> -		HDEV_PARAM_U16(0x000b, le_adv_max_interval),
-> -		HDEV_PARAM_U16(0x000c, def_multi_adv_rotation_duration),
-> -		HDEV_PARAM_U16(0x000d, le_scan_interval),
-> -		HDEV_PARAM_U16(0x000e, le_scan_window),
-> -		HDEV_PARAM_U16(0x000f, le_scan_int_suspend),
-> -		HDEV_PARAM_U16(0x0010, le_scan_window_suspend),
-> -		HDEV_PARAM_U16(0x0011, le_scan_int_discovery),
-> -		HDEV_PARAM_U16(0x0012, le_scan_window_discovery),
-> -		HDEV_PARAM_U16(0x0013, le_scan_int_adv_monitor),
-> -		HDEV_PARAM_U16(0x0014, le_scan_window_adv_monitor),
-> -		HDEV_PARAM_U16(0x0015, le_scan_int_connect),
-> -		HDEV_PARAM_U16(0x0016, le_scan_window_connect),
-> -		HDEV_PARAM_U16(0x0017, le_conn_min_interval),
-> -		HDEV_PARAM_U16(0x0018, le_conn_max_interval),
-> -		HDEV_PARAM_U16(0x0019, le_conn_latency),
-> -		HDEV_PARAM_U16(0x001a, le_supv_timeout),
-> -		HDEV_PARAM_U16_JIFFIES_TO_MSECS(0x001b,
-> -						def_le_autoconnect_timeout),
-> -		HDEV_PARAM_U16(0x001d, advmon_allowlist_duration),
-> -		HDEV_PARAM_U16(0x001e, advmon_no_filter_duration),
-> +		HDEV_PARAM_U16(def_page_scan_type);
-> +		HDEV_PARAM_U16(def_page_scan_int);
-> +		HDEV_PARAM_U16(def_page_scan_window);
-> +		HDEV_PARAM_U16(def_inq_scan_type);
-> +		HDEV_PARAM_U16(def_inq_scan_int);
-> +		HDEV_PARAM_U16(def_inq_scan_window);
-> +		HDEV_PARAM_U16(def_br_lsto);
-> +		HDEV_PARAM_U16(def_page_timeout);
-> +		HDEV_PARAM_U16(sniff_min_interval);
-> +		HDEV_PARAM_U16(sniff_max_interval);
-> +		HDEV_PARAM_U16(le_adv_min_interval);
-> +		HDEV_PARAM_U16(le_adv_max_interval);
-> +		HDEV_PARAM_U16(def_multi_adv_rotation_duration);
-> +		HDEV_PARAM_U16(le_scan_interval);
-> +		HDEV_PARAM_U16(le_scan_window);
-> +		HDEV_PARAM_U16(le_scan_int_suspend);
-> +		HDEV_PARAM_U16(le_scan_window_suspend);
-> +		HDEV_PARAM_U16(le_scan_int_discovery);
-> +		HDEV_PARAM_U16(le_scan_window_discovery);
-> +		HDEV_PARAM_U16(le_scan_int_adv_monitor);
-> +		HDEV_PARAM_U16(le_scan_window_adv_monitor);
-> +		HDEV_PARAM_U16(le_scan_int_connect);
-> +		HDEV_PARAM_U16(le_scan_window_connect);
-> +		HDEV_PARAM_U16(le_conn_min_interval);
-> +		HDEV_PARAM_U16(le_conn_max_interval);
-> +		HDEV_PARAM_U16(le_conn_latency);
-> +		HDEV_PARAM_U16(le_supv_timeout);
-> +		HDEV_PARAM_U16(def_le_autoconnect_timeout);
-> +		HDEV_PARAM_U16(advmon_allowlist_duration);
-> +		HDEV_PARAM_U16(advmon_no_filter_duration);
-> +	} __packed rp = {
-> +		TLV_SET_U16(0x0000, def_page_scan_type),
-> +		TLV_SET_U16(0x0001, def_page_scan_int),
-> +		TLV_SET_U16(0x0002, def_page_scan_window),
-> +		TLV_SET_U16(0x0003, def_inq_scan_type),
-> +		TLV_SET_U16(0x0004, def_inq_scan_int),
-> +		TLV_SET_U16(0x0005, def_inq_scan_window),
-> +		TLV_SET_U16(0x0006, def_br_lsto),
-> +		TLV_SET_U16(0x0007, def_page_timeout),
-> +		TLV_SET_U16(0x0008, sniff_min_interval),
-> +		TLV_SET_U16(0x0009, sniff_max_interval),
-> +		TLV_SET_U16(0x000a, le_adv_min_interval),
-> +		TLV_SET_U16(0x000b, le_adv_max_interval),
-> +		TLV_SET_U16(0x000c, def_multi_adv_rotation_duration),
-> +		TLV_SET_U16(0x000d, le_scan_interval),
-> +		TLV_SET_U16(0x000e, le_scan_window),
-> +		TLV_SET_U16(0x000f, le_scan_int_suspend),
-> +		TLV_SET_U16(0x0010, le_scan_window_suspend),
-> +		TLV_SET_U16(0x0011, le_scan_int_discovery),
-> +		TLV_SET_U16(0x0012, le_scan_window_discovery),
-> +		TLV_SET_U16(0x0013, le_scan_int_adv_monitor),
-> +		TLV_SET_U16(0x0014, le_scan_window_adv_monitor),
-> +		TLV_SET_U16(0x0015, le_scan_int_connect),
-> +		TLV_SET_U16(0x0016, le_scan_window_connect),
-> +		TLV_SET_U16(0x0017, le_conn_min_interval),
-> +		TLV_SET_U16(0x0018, le_conn_max_interval),
-> +		TLV_SET_U16(0x0019, le_conn_latency),
-> +		TLV_SET_U16(0x001a, le_supv_timeout),
-> +		TLV_SET_U16_JIFFIES_TO_MSECS(0x001b,
-> +					     def_le_autoconnect_timeout),
-> +		TLV_SET_U16(0x001d, advmon_allowlist_duration),
-> +		TLV_SET_U16(0x001e, advmon_no_filter_duration),
-> 	};
-> -	struct mgmt_rp_read_def_system_config *rp = (void *)params;
-> 
-> 	bt_dev_dbg(hdev, "sock %p", sk);
-> 
-> -	return mgmt_cmd_complete(sk, hdev->id,
-> -				 MGMT_OP_READ_DEF_SYSTEM_CONFIG,
-> -				 0, rp, sizeof(params));
-> +	ret = mgmt_cmd_complete(sk, hdev->id,
-> +				MGMT_OP_READ_DEF_SYSTEM_CONFIG,
-> +				0, &rp, sizeof(rp));
-> +	return ret;
-> }
-> 
+Works for me.
 
-frankly I would prefer if we do the re-factoring first and only then add new
-parameters.
+Br,
 
-While I am looking at this, I am also really confused about this
-JIFFIES_TO_MSEC business. We should actually not store anything in jiffies
-or use it in an API. Is there a good reason to keep storing things in
-jiffies internally?
-
-Regards
-
-Marcel
-
+-- 
+heikki
