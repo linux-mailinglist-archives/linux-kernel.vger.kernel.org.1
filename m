@@ -2,168 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3612AF1D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456AA2AF1D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgKKNSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:18:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28021 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgKKNSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:18:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605100693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CPqyLxrjT7Zd3PVI4qxdWqJCxL2nuLkXikSg/vIQ4eQ=;
-        b=fim3+Z+aXXFRl31mkXY5lBueQgnJsgFGpT7t0iTwm15UIeywX87BXqT3e+vwvfXytXwMe2
-        riedOW84zI4Nzud3bFoL9Bgo0wFbKGdqsEfQjQ6e0ilvtptw5/z/usERWZL9XasL+XpZtG
-        vtyIqjcM81Mo6LFQkzSxv3+pvgqo/40=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-woxD8yTVOgKP2HhF13ZJQQ-1; Wed, 11 Nov 2020 08:18:10 -0500
-X-MC-Unique: woxD8yTVOgKP2HhF13ZJQQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726588AbgKKNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgKKNSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:18:37 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EF4A1007466;
-        Wed, 11 Nov 2020 13:18:09 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 517051002C2B;
-        Wed, 11 Nov 2020 13:18:02 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 08:17:59 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: remove unused macros
-Message-ID: <20201111131759.GD55072@madcap2.tricolour.ca>
-References: <1604651482-9780-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201110152310.GB55411@madcap2.tricolour.ca>
- <CAHC9VhQiQoZh8in+zoYa5hbTN_yL-=mt7nTQFN9GAyQZ+tz-Ww@mail.gmail.com>
- <20201111030359.GB55072@madcap2.tricolour.ca>
- <bae6d2fa-64d9-623b-6729-3827d745ed7a@linux.alibaba.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id BE975206CA;
+        Wed, 11 Nov 2020 13:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605100714;
+        bh=2UjjwH5biuFlA50cCFnf82KlU1eXrzuyTr+6/ZrA9eU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kswMQ0HCpUJxy8M8bcxw4/NcKntRa1348ErHx3OUNO+Ips8QtfBPgIdbOwulX37D4
+         j0Feoeuw7hV9UWdH+Tu3Lsru9fZuorX1RzbBnwthDjFLulnha+r5ryib8OlEoJVsbt
+         HNCIT9zMXs8AUs1LpCcbRdd3t3oUTZp9Bgiyls60=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcq1A-009lkV-Hr; Wed, 11 Nov 2020 13:18:32 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bae6d2fa-64d9-623b-6729-3827d745ed7a@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Nov 2020 13:18:32 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v1 15/24] kvm: arm64: Bootstrap PSCI SMC handler in nVHE
+ EL2
+In-Reply-To: <20201109113233.9012-16-dbrazdil@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-16-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <46c6df6087535d61146db7553a7b1e44@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-11 14:19, Alex Shi wrote:
-> Thanks for comments!
-> So here is the v2 according to your suggestion!
+On 2020-11-09 11:32, David Brazdil wrote:
+> Add a handler of PSCI SMCs in nVHE hyp code. The handler is initialized
+> with the version used by the host's PSCI driver and the function IDs it
+> was configured with. If the SMC function ID matches one of the
+> configured PSCI calls (for v0.1) or falls into the PSCI function ID
+> range (for v0.2+), the SMC is handled by the PSCI handler. For now, all
+> SMCs return PSCI_RET_NOT_SUPPORTED.
 > 
-> From 033425b6072ff4cee05d6bbffc97cd6a4c13166c Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Fri, 6 Nov 2020 16:31:22 +0800
-> Subject: [PATCH v2] kernel/audit: fix macros warning
-> 
-> Some unused macros could cause gcc warning:
-> kernel/audit.c:68:0: warning: macro "AUDIT_UNINITIALIZED" is not used
-> [-Wunused-macros]
-> kernel/auditsc.c:104:0: warning: macro "AUDIT_AUX_IPCPERM" is not used
-> [-Wunused-macros]
-> kernel/auditsc.c:82:0: warning: macro "AUDITSC_INVALID" is not used
-> [-Wunused-macros]
-> 
-> AUDIT_UNINITIALIZED and AUDITSC_INVALID are still meaningful and could
-> be used in code.
-
-"and should be incorporated"
-
-> Just remove AUDIT_AUX_IPCPERM.
-> 
-> Thanks comments from Richard Guy Briggs and Paul Moore.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: Eric Paris <eparis@redhat.com>
-> Cc: linux-audit@redhat.com
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
->  kernel/audit.c   |  2 +-
->  kernel/auditsc.c | 10 ++++------
->  2 files changed, 5 insertions(+), 7 deletions(-)
+>  arch/arm64/include/asm/kvm_hyp.h   |   4 ++
+>  arch/arm64/kvm/arm.c               |  13 ++++
+>  arch/arm64/kvm/hyp/nvhe/Makefile   |   2 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c |   4 ++
+>  arch/arm64/kvm/hyp/nvhe/psci.c     | 102 +++++++++++++++++++++++++++++
+>  include/uapi/linux/psci.h          |   1 +
+>  6 files changed, 125 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/psci.c
 > 
-> diff --git a/kernel/audit.c b/kernel/audit.c
-> index ac0aeaa99937..e22f22bdc000 100644
-> --- a/kernel/audit.c
-> +++ b/kernel/audit.c
-> @@ -67,7 +67,7 @@
->  #define AUDIT_DISABLED		-1
->  #define AUDIT_UNINITIALIZED	0
->  #define AUDIT_INITIALIZED	1
-> -static int	audit_initialized;
-> +static int	audit_initialized = AUDIT_UNINITIALIZED;
->  
->  u32		audit_enabled = AUDIT_OFF;
->  bool		audit_ever_enabled = !!AUDIT_OFF;
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 183d79cc2e12..ea0ed81ddee0 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -102,8 +102,6 @@ struct audit_aux_data {
->  	int			type;
->  };
->  
-> -#define AUDIT_AUX_IPCPERM	0
-> -
->  /* Number of target pids per aux struct. */
->  #define AUDIT_AUX_PIDS	16
->  
-> @@ -552,11 +550,11 @@ static int audit_filter_rules(struct task_struct *tsk,
->  			break;
->  
->  		case AUDIT_EXIT:
-> -			if (ctx && ctx->return_valid)
-> +			if (ctx && ctx->return_valid != AUDITSC_INVALID)
->  				result = audit_comparator(ctx->return_code, f->op, f->val);
->  			break;
->  		case AUDIT_SUCCESS:
-> -			if (ctx && ctx->return_valid) {
-> +			if (ctx && ctx->return_valid != AUDITSC_INVALID) {
->  				if (f->val)
->  					result = audit_comparator(ctx->return_valid, f->op, AUDITSC_SUCCESS);
->  				else
-> @@ -1488,7 +1486,7 @@ static void audit_log_exit(void)
->  			 context->arch, context->major);
->  	if (context->personality != PER_LINUX)
->  		audit_log_format(ab, " per=%lx", context->personality);
-> -	if (context->return_valid)
-> +	if (context->return_valid != AUDITSC_INVALID)
->  		audit_log_format(ab, " success=%s exit=%ld",
->  				 (context->return_valid==AUDITSC_SUCCESS)?"yes":"no",
->  				 context->return_code);
-> @@ -1625,7 +1623,7 @@ void __audit_free(struct task_struct *tsk)
->  	 * need to log via audit_log_exit().
+> diff --git a/arch/arm64/include/asm/kvm_hyp.h 
+> b/arch/arm64/include/asm/kvm_hyp.h
+> index a3289071f3d8..95a2bbbcc7e1 100644
+> --- a/arch/arm64/include/asm/kvm_hyp.h
+> +++ b/arch/arm64/include/asm/kvm_hyp.h
+> @@ -96,6 +96,10 @@ void deactivate_traps_vhe_put(void);
+> 
+>  u64 __guest_enter(struct kvm_vcpu *vcpu);
+> 
+> +#ifdef __KVM_NVHE_HYPERVISOR__
+> +bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt);
+> +#endif
+> +
+>  void __noreturn hyp_panic(void);
+>  #ifdef __KVM_NVHE_HYPERVISOR__
+>  void __noreturn __hyp_do_panic(bool restore_host, u64 spsr, u64 elr, 
+> u64 par);
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 1a57b6025937..28e3bc056225 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/kvm_irqfd.h>
+>  #include <linux/irqbypass.h>
+>  #include <linux/sched/stat.h>
+> +#include <linux/psci.h>
+>  #include <trace/events/kvm.h>
+> 
+>  #define CREATE_TRACE_POINTS
+> @@ -1498,6 +1499,17 @@ static void init_cpu_logical_map(void)
+>  		CHOOSE_NVHE_SYM(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
+>  }
+> 
+> +static void init_psci(void)
+
+nit: init_psci_relay?
+
+> +{
+> +	extern u32 kvm_nvhe_sym(kvm_host_psci_version);
+> +	extern u32 kvm_nvhe_sym(kvm_host_psci_function_id)[PSCI_FN_MAX];
+> +	int i;
+> +
+> +	CHOOSE_NVHE_SYM(kvm_host_psci_version) = psci_driver_version();
+> +	for (i = 0; i < PSCI_FN_MAX; ++i)
+> +		CHOOSE_NVHE_SYM(kvm_host_psci_function_id)[i] = 
+> psci_get_function_id(i);
+> +}
+> +
+>  static int init_common_resources(void)
+>  {
+>  	return kvm_set_ipa_limit();
+> @@ -1677,6 +1689,7 @@ static int init_hyp_mode(void)
+>  	}
+> 
+>  	init_cpu_logical_map();
+> +	init_psci();
+> 
+>  	return 0;
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile 
+> b/arch/arm64/kvm/hyp/nvhe/Makefile
+> index c45f440cce51..647b63337a51 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
+> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+> @@ -7,7 +7,7 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
+>  ccflags-y := -D__KVM_NVHE_HYPERVISOR__
+> 
+>  obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o 
+> host.o \
+> -	 hyp-main.o percpu.o
+> +	 hyp-main.o percpu.o psci.o
+>  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o 
+> ../entry.o \
+>  	 ../fpsimd.o ../hyp-entry.o
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index 8661bc7deaa9..69f34d4f2773 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -134,6 +134,10 @@ static void handle_host_smc(struct
+> kvm_cpu_context *host_ctxt)
 >  	 */
->  	if (tsk == current && !context->dummy && context->in_syscall) {
-> -		context->return_valid = 0;
-> +		context->return_valid = AUDITSC_INVALID;
->  		context->return_code = 0;
->  
->  		audit_filter_syscall(tsk, context,
-
-This all looks good, but I don't see the initialization of
-context->return_valid in audit_alloc_context() that was mentioned for
-completeness.
-
-> -- 
-> 1.8.3.1
+>  	skip_host_instruction();
 > 
+> +	/* Try to handle host's PSCI SMCs. */
+> +	if (kvm_host_psci_handler(host_ctxt))
+> +		return;
+> +
+>  	/* Forward SMC not handled in EL2 to EL3. */
+>  	forward_host_smc(host_ctxt);
+>  }
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci.c 
+> b/arch/arm64/kvm/hyp/nvhe/psci.c
+> new file mode 100644
+> index 000000000000..82d3b2c89658
+> --- /dev/null
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci.c
 
-- RGB
+nit: can we please name this psci-relay.c, or psci-proxy.c?
+We already have a psci.c in the tree, and having the same file name 
+messes
+with my editor... ;-)
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2020 - Google LLC
+> + * Author: David Brazdil <dbrazdil@google.com>
+> + */
+> +
+> +#include <asm/kvm_asm.h>
+> +#include <asm/kvm_hyp.h>
+> +#include <asm/kvm_mmu.h>
+> +#include <kvm/arm_hypercalls.h>
+> +#include <linux/arm-smccc.h>
+> +#include <linux/psci.h>
+> +#include <kvm/arm_psci.h>
+> +#include <uapi/linux/psci.h>
+> +
+> +/* Config options set by the host. */
+> +u32 kvm_host_psci_version = PSCI_VERSION(0, 0);
+> +u32 kvm_host_psci_function_id[PSCI_FN_MAX];
+> +
+> +static u64 get_psci_func_id(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	return host_ctxt->regs.regs[0];
+> +}
+> +
+> +static bool is_psci_0_1_call(u64 func_id)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(kvm_host_psci_function_id); ++i) {
+> +		if (func_id == kvm_host_psci_function_id[i])
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +static bool is_psci_0_2_fn_call(u64 func_id)
+> +{
+> +	u64 base = func_id & ~PSCI_0_2_FN_ID_MASK;
+> +
+> +	return base == PSCI_0_2_FN_BASE || base == PSCI_0_2_FN64_BASE;
 
+I couldn't spot in the spec where PSCI reserves 16bit worth of IDs in
+each range.
+
+> +}
+> +
+> +static bool is_psci_call(u64 func_id)
+> +{
+> +	if (kvm_host_psci_version == PSCI_VERSION(0, 0))
+> +		return false;
+> +	else if (kvm_host_psci_version == PSCI_VERSION(0, 1))
+> +		return is_psci_0_1_call(func_id);
+> +	else
+> +		return is_psci_0_2_fn_call(func_id);
+
+Consider using switch/case constructs for readability.
+
+> +}
+> +
+> +static unsigned long psci_0_1_handler(u64 func_id, struct
+> kvm_cpu_context *host_ctxt)
+> +{
+> +	return PSCI_RET_NOT_SUPPORTED;
+> +}
+> +
+> +static unsigned long psci_0_2_handler(u64 func_id, struct
+> kvm_cpu_context *host_ctxt)
+> +{
+> +	switch (func_id) {
+> +	default:
+> +		return PSCI_RET_NOT_SUPPORTED;
+> +	}
+> +}
+> +
+> +static unsigned long psci_1_0_handler(u64 func_id, struct
+> kvm_cpu_context *host_ctxt)
+> +{
+> +	int ret;
+> +
+> +	ret = psci_0_2_handler(func_id, host_ctxt);
+> +	if (ret != PSCI_RET_NOT_SUPPORTED)
+> +		return ret;
+> +
+> +	switch (func_id) {
+> +	default:
+> +		return PSCI_RET_NOT_SUPPORTED;
+> +	}
+
+It would probably help to adopt the same structure as we have in the
+KVM PSCI implementation:
+
+	switch(psci_fn) {
+	case PSCI_0_2_FN_PSCI_VERSION:
+		val = KVM_ARM_PSCI_1_0;
+		break;
+
+         [...]
+	default:
+		return kvm_psci_0_2_call(vcpu);
+
+which allows 1.0 to override some 0.2 functions, and otherwise leave
+it to the 0.2 backend.
+
+> +}
+> +
+> +bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	u64 func_id = get_psci_func_id(host_ctxt);
+> +	unsigned long ret;
+> +
+> +	if (!is_psci_call(func_id))
+> +		return false;
+> +
+> +	if (kvm_host_psci_version == PSCI_VERSION(0, 1))
+> +		ret = psci_0_1_handler(func_id, host_ctxt);
+> +	else if (kvm_host_psci_version == PSCI_VERSION(0, 2))
+> +		ret = psci_0_2_handler(func_id, host_ctxt);
+> +	else if (PSCI_VERSION_MAJOR(kvm_host_psci_version) >= 1)
+> +		ret = psci_1_0_handler(func_id, host_ctxt);
+> +	else
+> +		ret = PSCI_RET_NOT_SUPPORTED;
+
+Same remark about the use of switch/case.
+
+> +
+> +	host_ctxt->regs.regs[0] = ret;
+> +	host_ctxt->regs.regs[1] = 0;
+> +	host_ctxt->regs.regs[2] = 0;
+> +	host_ctxt->regs.regs[3] = 0;
+> +	return true;
+> +}
+> diff --git a/include/uapi/linux/psci.h b/include/uapi/linux/psci.h
+> index 2fcad1dd0b0e..0d52b8dbe8c2 100644
+> --- a/include/uapi/linux/psci.h
+> +++ b/include/uapi/linux/psci.h
+> @@ -29,6 +29,7 @@
+>  #define PSCI_0_2_FN64_BASE			\
+>  					(PSCI_0_2_FN_BASE + PSCI_0_2_64BIT)
+>  #define PSCI_0_2_FN64(n)			(PSCI_0_2_FN64_BASE + (n))
+> +#define PSCI_0_2_FN_ID_MASK			0xffff
+> 
+>  #define PSCI_0_2_FN_PSCI_VERSION		PSCI_0_2_FN(0)
+>  #define PSCI_0_2_FN_CPU_SUSPEND			PSCI_0_2_FN(1)
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
