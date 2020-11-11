@@ -2,126 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDA12AF2AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1C12AF2D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgKKNfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:35:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbgKKNeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:34:44 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3083EC0613D1;
-        Wed, 11 Nov 2020 05:34:44 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id r7so1616620qkf.3;
-        Wed, 11 Nov 2020 05:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KyUFBIsp7WG/ZlJY7JJxE8NR9eUIpLAxO9Zr6R0PBAI=;
-        b=F8D/Y+HZfrpZoxY1WSpU1XD08FGxbbmSRvBeCuS4pVYlmDmDfHK+86TEUz2GSieEB6
-         /G826gCZaufPpqw9yqU3gNUSRCTgM9O12K4UhmNyeNdIkVTjqwPtJI9Lf+tvkb9Fg8+c
-         qRpmL5clJ5CA1S+ea2Ab7oCBQhLxWEhivtggHkttRUxU6H+6bwKCbKQw40vyQeowP2ps
-         XMXoUoPJxCmgod7Htt5aWIQRnBxAeBFeM00worN++PmF2dIyJGX4tB4Z/JpSdxEQSkmp
-         0SlWBQ6C7R2fx7uyThUkfX85xTr/0pRg1d8IYFbC/KQ5PAYWXyryWS92ixdQ2PxoggBD
-         zMoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KyUFBIsp7WG/ZlJY7JJxE8NR9eUIpLAxO9Zr6R0PBAI=;
-        b=sGJIOL0371+AIlMFiGJSlRBsJaxMZzXamk7ozzuv8jsxtkqNGrBlwyCGG3F9s/94Eh
-         lv8f7iaXWAKZH+Tw9bV+wiMjJCDJX3yrcDjBKqh4fW/4RDB3+80lMWUG9me9uYC3RSl0
-         j1bj9YxeP0rmR9G0mfLGhracstUmX1MQ9oyj/ueObmjBql4jyADAGxvznXQGRWpvh9jr
-         j1b3AR+n03x+7/PZs5uVj71uxu1JqlunVuK5B45Zf8qVCDiMMDm5ii7TKSnB0MpvgS+h
-         bXAmZSILDd7Q+yohWab/XzqML4xuaHf2dCyogr0827deTScKKNwJyjEFtgMRnmzx4RqQ
-         55eg==
-X-Gm-Message-State: AOAM5323EsZRTUMiOXNF5yncWGpgOOdkDjHQ8/yeXOHz9Iz+pf84hF1f
-        qjUOXAEoEn0K5/JwiHe51DY=
-X-Google-Smtp-Source: ABdhPJz84XkbzmcCHTc2+SdZFUqORQfeEggNtVRT4ylMevKQ8zIMjt4i44s0v7vCLpX1u6c6tS/Tlw==
-X-Received: by 2002:a37:4145:: with SMTP id o66mr19607495qka.426.1605101683404;
-        Wed, 11 Nov 2020 05:34:43 -0800 (PST)
-Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id r190sm1997814qkf.101.2020.11.11.05.34.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 05:34:42 -0800 (PST)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     containers@lists.linux-foundation.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [PATCH seccomp v2 7/8] xtensa: Enable seccomp architecture tracking
-Date:   Wed, 11 Nov 2020 07:33:53 -0600
-Message-Id: <79669648ba167d668ea6ffb4884250abcd5ed254.1605101222.git.yifeifz2@illinois.edu>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1605101222.git.yifeifz2@illinois.edu>
-References: <cover.1605101222.git.yifeifz2@illinois.edu>
+        id S1726943AbgKKN7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:59:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726829AbgKKNfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:35:13 -0500
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A6C920829;
+        Wed, 11 Nov 2020 13:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605101712;
+        bh=GaQU9rM+P1s6S9ioMaD8ODMJuqhbgzej2Pwn224DULs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l9eP4xo3Dt8JIOzkI5XJDqS3pK0+YVQyYhIozCNMEA3Gxkl5kej27O0hDjPW6Wqes
+         CXOSZ2UMDqAyXLSs7b0baDYs3ZyECh0yu0WFFWzqzJGzEtdcs4LcVPrUnXxTIxGvmG
+         ME90S0lMZhMrHhDKmc33RrqkFn+8w+rI8twiPWDY=
+Received: by mail-oi1-f172.google.com with SMTP id m143so2173282oig.7;
+        Wed, 11 Nov 2020 05:35:12 -0800 (PST)
+X-Gm-Message-State: AOAM532qQNAeOhXNyj2XUiW1bQNMH9oO4qcsHY6JP3rQBJGJC+e7hdFH
+        jSOSCtieY+9zDqHaSqG/gJ655MXmDSHkB0Klyg==
+X-Google-Smtp-Source: ABdhPJwVxej4pSf3XECc4BzNRNQ7R9EtApnK/+4WVvKLOte9oPRPUUpShUa/ZyNa7yt2H/HctrZNL9nqRvPr3bSejyo=
+X-Received: by 2002:aca:fdd4:: with SMTP id b203mr2177696oii.152.1605101711667;
+ Wed, 11 Nov 2020 05:35:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201102203656.220187-1-robh@kernel.org> <20201102203656.220187-2-robh@kernel.org>
+ <4185c162-8a71-7402-f46e-4a2495f152f2@nvidia.com>
+In-Reply-To: <4185c162-8a71-7402-f46e-4a2495f152f2@nvidia.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 11 Nov 2020 07:35:00 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+3_R9G=Lk4F3DMNgh4EhG_qsv1+HM2HgQOm+ePE4=hFA@mail.gmail.com>
+Message-ID: <CAL_Jsq+3_R9G=Lk4F3DMNgh4EhG_qsv1+HM2HgQOm+ePE4=hFA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     devicetree@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YiFei Zhu <yifeifz2@illinois.edu>
+On Wed, Nov 11, 2020 at 3:52 AM Sameer Pujar <spujar@nvidia.com> wrote:
+>
+> Hi Rob,
+>
+> > From: Sameer Pujar <spujar@nvidia.com>
+> >
+> > Convert device tree bindings of graph to YAML format. Currently graph.txt
+> > doc is referenced in multiple files and all of these need to use schema
+> > references. For now graph.txt is updated to refer to graph.yaml.
+> >
+> > For users of the graph binding, they should reference to the graph
+> > schema from either 'ports' or 'port' property:
+> >
+> > properties:
+> >    ports:
+> >      type: object
+> >      $ref: graph.yaml#/properties/ports
+> >
+> >      properties:
+> >        port@0:
+> >          description: What data this port has
+> >
+> >        ...
+> >
+> > Or:
+> >
+> > properties:
+> >    port:
+> >      description: What data this port has
+> >      type: object
+> >      $ref: graph.yaml#/properties/port
+> >
+> > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > v3:
+> >   - Move port 'reg' to port@* and make required
+> >   - Make remote-endpoint required
+> >   - Add 'additionalProperties: true' now required
+> >   - Fix yamllint warnings
+> >
+> >   Documentation/devicetree/bindings/graph.txt  | 129 +-----------
+> >   Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
+> >   2 files changed, 200 insertions(+), 128 deletions(-)
+> >   create mode 100644 Documentation/devicetree/bindings/graph.yaml
+> >
+> ...
+> > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
+> > new file mode 100644
+> > index 000000000000..b56720c5a13e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/graph.yaml
+> > @@ -0,0 +1,199 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/graph.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Common bindings for device graphs
+> > +
+> > +description: |
+> > +  The hierarchical organisation of the device tree is well suited to describe
+> > +  control flow to devices, but there can be more complex connections between
+> > +  devices that work together to form a logical compound device, following an
+> > +  arbitrarily complex graph.
+> > +  There already is a simple directed graph between devices tree nodes using
+> > +  phandle properties pointing to other nodes to describe connections that
+> > +  can not be inferred from device tree parent-child relationships. The device
+> > +  tree graph bindings described herein abstract more complex devices that can
+> > +  have multiple specifiable ports, each of which can be linked to one or more
+> > +  ports of other devices.
+> > +
+> > +  These common bindings do not contain any information about the direction or
+> > +  type of the connections, they just map their existence. Specific properties
+> > +  may be described by specialized bindings depending on the type of connection.
+> > +
+> > +  To see how this binding applies to video pipelines, for example, see
+> > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > +  Here the ports describe data interfaces, and the links between them are
+> > +  the connecting data buses. A single port with multiple connections can
+> > +  correspond to multiple devices being connected to the same physical bus.
+> > +
+> > +maintainers:
+> > +  - Philipp Zabel <p.zabel@pengutronix.de>
+> > +
+> > +select: false
+> > +
+> > +properties:
+> > +  port:
+> > +    type: object
+> > +    description:
+> > +      If there is more than one endpoint node or 'reg' property present in
+> > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
+> > +      required.
+> > +
+> > +    properties:
+> > +      "#address-cells":
+> > +        const: 1
+> > +
+> > +      "#size-cells":
+> > +        const: 0
+> > +
+> > +    patternProperties:
+> > +      "^endpoint(@[0-9a-f]+)?$":
+> > +        type: object
+> > +        properties:
+> > +          reg:
+> > +            maxItems: 1
+> > +
+> > +          remote-endpoint:
+> > +            description: |
+> > +              phandle to an 'endpoint' subnode of a remote device node.
+> > +            $ref: /schemas/types.yaml#/definitions/phandle
+> > +
+> > +        required:
+> > +          - remote-endpoint
+>
+> Does 'remote-endpoint' have to be a required property?
+> In case of pluggable modules, the remote-endpoint may not be available
+> unless the module is plugged in. In other words, device-2 in below
+> example may not always be available, but still device-1 endpoint
+> configuration and usage may be required?
 
-To enable seccomp constant action bitmaps, we need to have a static
-mapping to the audit architecture and system call table size. Add these
-for xtensa.
+No, I've dropped it. I noticed the same thing converting some of the
+schema over to use this.
 
-Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
----
- arch/xtensa/include/asm/Kbuild    |  1 -
- arch/xtensa/include/asm/seccomp.h | 11 +++++++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
- create mode 100644 arch/xtensa/include/asm/seccomp.h
-
-diff --git a/arch/xtensa/include/asm/Kbuild b/arch/xtensa/include/asm/Kbuild
-index c59c42a1221a..9718e9593564 100644
---- a/arch/xtensa/include/asm/Kbuild
-+++ b/arch/xtensa/include/asm/Kbuild
-@@ -7,5 +7,4 @@ generic-y += mcs_spinlock.h
- generic-y += param.h
- generic-y += qrwlock.h
- generic-y += qspinlock.h
--generic-y += seccomp.h
- generic-y += user.h
-diff --git a/arch/xtensa/include/asm/seccomp.h b/arch/xtensa/include/asm/seccomp.h
-new file mode 100644
-index 000000000000..f1cb6b0a9e1f
---- /dev/null
-+++ b/arch/xtensa/include/asm/seccomp.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef _ASM_SECCOMP_H
-+#define _ASM_SECCOMP_H
-+
-+#include <asm-generic/seccomp.h>
-+
-+#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_XTENSA
-+#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+#define SECCOMP_ARCH_NATIVE_NAME	"xtensa"
-+
-+#endif /* _ASM_SECCOMP_H */
--- 
-2.29.2
-
+Rob
