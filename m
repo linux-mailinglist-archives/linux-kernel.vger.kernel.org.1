@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18182AF141
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27F72AF148
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKKMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:52:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50864 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgKKMwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:52:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B415FABDE;
-        Wed, 11 Nov 2020 12:52:05 +0000 (UTC)
-Subject: Re: [PATCH v21 07/19] mm: page_idle_get_page() does not need lru_lock
-To:     huang ying <huang.ying.caritas@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, Johannes Weiner <hannes@cmpxchg.org>,
-        lkp@intel.com, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com,
-        kernel test robot <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
-        Minchan Kim <minchan@kernel.org>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-8-git-send-email-alex.shi@linux.alibaba.com>
- <CAC=cRTPYgD4qi=-dj=PY4804Y96k7fU065vLA8mNBmucZTnFSw@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d4ace896-a0d7-0d68-6c17-c86fc2abfb0f@suse.cz>
-Date:   Wed, 11 Nov 2020 13:52:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726557AbgKKMyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:54:03 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46514 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgKKMyC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 07:54:02 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 901E41C0B7C; Wed, 11 Nov 2020 13:54:00 +0100 (CET)
+Date:   Wed, 11 Nov 2020 13:53:59 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 48/71] of: Fix reserved-memory overlap detection
+Message-ID: <20201111125359.GB26508@amd>
+References: <20201109125019.906191744@linuxfoundation.org>
+ <20201109125022.156835188@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <CAC=cRTPYgD4qi=-dj=PY4804Y96k7fU065vLA8mNBmucZTnFSw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
+Content-Disposition: inline
+In-Reply-To: <20201109125022.156835188@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 9:17 AM, huang ying wrote:
-> On Thu, Nov 5, 2020 at 4:56 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>
->> From: Hugh Dickins <hughd@google.com>
->>
->> It is necessary for page_idle_get_page() to recheck PageLRU() after
->> get_page_unless_zero(), but holding lru_lock around that serves no
->> useful purpose, and adds to lru_lock contention: delete it.
->>
->> See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
->> discussion that led to lru_lock there; but __page_set_anon_rmap() now
->> uses WRITE_ONCE(), and I see no other risk in page_idle_clear_pte_refs()
->> using rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly
->> but not entirely prevented by page_count() check in ksm.c's
->> write_protect_page(): that risk being shared with page_referenced() and
->> not helped by lru_lock).
->>
->> Signed-off-by: Hugh Dickins <hughd@google.com>
->> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
->> Cc: Vlastimil Babka <vbabka@suse.cz>
->> Cc: Minchan Kim <minchan@kernel.org>
->> Cc: Alex Shi <alex.shi@linux.alibaba.com>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> ---
->>  mm/page_idle.c | 4 ----
->>  1 file changed, 4 deletions(-)
->>
->> diff --git a/mm/page_idle.c b/mm/page_idle.c
->> index 057c61df12db..64e5344a992c 100644
->> --- a/mm/page_idle.c
->> +++ b/mm/page_idle.c
->> @@ -32,19 +32,15 @@
->>  static struct page *page_idle_get_page(unsigned long pfn)
->>  {
->>         struct page *page = pfn_to_online_page(pfn);
->> -       pg_data_t *pgdat;
->>
->>         if (!page || !PageLRU(page) ||
->>             !get_page_unless_zero(page))
->>                 return NULL;
->>
->> -       pgdat = page_pgdat(page);
->> -       spin_lock_irq(&pgdat->lru_lock);
-> 
-> get_page_unless_zero() is a full memory barrier.  But do we need a
-> compiler barrier here to prevent the compiler to cache PageLRU()
-> results here?  Otherwise looks OK to me,
 
-I think the compiler barrier is also implied by the full memory barrier and 
-prevents the caching.
+--+g7M9IMkV8truYOl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Hi!
 
-> Acked-by: "Huang, Ying" <ying.huang@intel.com>
-> 
-> Best Regards,
-> Huang, Ying
-> 
->>         if (unlikely(!PageLRU(page))) {
->>                 put_page(page);
->>                 page = NULL;
->>         }
->> -       spin_unlock_irq(&pgdat->lru_lock);
->>         return page;
->>  }
->>
->> --
->> 1.8.3.1
->>
->>
-> 
+> For example, there are two overlaps in this case but they are not
+> currently reported:
 
+=2E..
+
+> but they are after this patch:
+>=20
+>  OF: reserved mem: OVERLAP DETECTED!
+>  bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x000020=
+00)
+>  OF: reserved mem: OVERLAP DETECTED!
+>  foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x000=
+02000)
+
+Is it good idea to push this into 4.19 so early? It does not fix
+anything, it just causes warnings.
+
+Such overlap currently exists in 4.19:
+
+arch/arm/boot/dts/s5pv210.dtsi and can not be fixed easily, see:
+
+> > > > >               clocks: clock-controller@e0100000 {
+> > > > > +                     compatible =3D "samsung,s5pv210-clock";
+> > > > >                       reg =3D <0xe0100000 0x10000>;
+> > > > ...
+> > > > > +             pmu_syscon: syscon@e0108000 {
+> > > > > +                     reg =3D <0xe0108000 0x8000>;
+> > > > >               };
+
+Date: Fri, 6 Nov 2020 22:10:38 +0100
+=46rom: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 4.19 107/191] ARM: dts: s5pv210: move PMU node out of c=
+lock controller
+			=09
+Best regards,
+									Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--+g7M9IMkV8truYOl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+r3ucACgkQMOfwapXb+vJ0vwCfeaa/88Rjgb0zfZ2yCcnzKtfQ
+iGUAoLQdkTEn3s1bUri8kT40lvlvzVpY
+=cvp3
+-----END PGP SIGNATURE-----
+
+--+g7M9IMkV8truYOl--
