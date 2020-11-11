@@ -2,174 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957F22AFA39
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38802AFA3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgKKVOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        id S1726875AbgKKVOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgKKVOd (ORCPT
+        with ESMTP id S1726492AbgKKVOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:14:33 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB9AC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:14:31 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id i18so2297429ioa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:14:31 -0800 (PST)
+        Wed, 11 Nov 2020 16:14:37 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E24C0613D1;
+        Wed, 11 Nov 2020 13:14:37 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id p22so3508877wmg.3;
+        Wed, 11 Nov 2020 13:14:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eIq/ejUqSv6Gp/cp6sgKbyYOsHU1PhVukkc0XRFRpO0=;
-        b=qhbqHn4vo5c/FvJ5rWXTuDYVhy/Z2VfLGOJqh28mhbWVHM6sKvbBy91ZWeEyCiMIIM
-         W3RSUJR4glstgvwvRSs6B8ZCM4/rSWAk/NZEidJDB03WFDRGnXvj8Tid69NHoIWcPqkH
-         7VHkavOACv8hJGHZrqOaGj7ajnA4pE04tQBjM=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bY6vAZ0tSmVBFVA037gzrHtbWFO6SEFgmLPgtYjY22g=;
+        b=PCJJ9Z/MM17eDD5kZkQcWeB6SBIS1/Ucd1SMiZuYXSCwrZoxludcCx9XmzK9Jq0KSC
+         iGOCQfDcOoHL48VBqF204XCc3nyUdjmwxu36jTyGUzwaDbzM0YWViZk0oKqzZIhHNLFy
+         h7kLKoXIuE5Kx8oUF3iYT6VLFjGeC/uRY5P9Ndu4IXjJ2aez3I89Vb+pOgF30Sm52JgW
+         BcAaQpvMKLsfNS0I2kZYxx2chfOO41Nd44Clo7oXuy5A2cDfE+zYFalOE8zj8IOskMab
+         2NoJZpiqqhnT0A9f3OSL6YjKYD38HGGkE8IzaxIDnZjPji/9hom0IdFMsRBaXZE1ABNK
+         mvPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eIq/ejUqSv6Gp/cp6sgKbyYOsHU1PhVukkc0XRFRpO0=;
-        b=QMEeK2vV64x0eA3AUBqQLIlMSWhJ2ybAiYxz1diV/Bc3KizWGaAUW/N1JaUL0jToXn
-         pkF51XsISxiUQpBZEHsURoGAdv1QrhgDibQA4RUDtHmGaaC155VWKO6myzykXkarpcpU
-         aLiykIMjVcIH4/wEg1ePMhn54hC2fbzz/OF7UP/cbNlM+L6lS+3xbFry+fJHguuJsVAr
-         ZV+aRXxjkdfdimVH+Ouoa9Nip63zod85iuuVwWoaV0WgFgPVLqd2bXisWtIju5xSeD6K
-         GVgrLEAgS53C3mmJH1b1xCmCf7q2U/Z2VergQzzROibjCxDjgq+pLM1vDLwOQprbmYcm
-         +eMw==
-X-Gm-Message-State: AOAM531FoO43Cdh9Mx2F7KrgcVdbHxWWjxcyNOpvnUnmRE5DR5LjPCMT
-        rWDkxHi4jO77xEYQ290Fx9GaFaih7Z+EfkekCc2kRVwoD+M=
-X-Google-Smtp-Source: ABdhPJyQEBeNmAd3reliZ5kekEqDVkpYU7UAR0Sn53FksfzAlZC1idgbCCORXe2ataU217zHDTLviFW93EliT7aXfOw=
-X-Received: by 2002:a6b:5805:: with SMTP id m5mr19817595iob.1.1605129270773;
- Wed, 11 Nov 2020 13:14:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bY6vAZ0tSmVBFVA037gzrHtbWFO6SEFgmLPgtYjY22g=;
+        b=J9sv5rxN8jpi9M/Z9Iif28ibwrHouBEI7eucUreYir/bYE/LTFmJemPCie1rDhFret
+         jPRIWRqr882tLBcoXDLznG/ez8QInfrrr006HXHVW1L0NU3VTUwB/IoWjdoyqJlUwV8S
+         cHzCPCLcQTtqtL6bFxEyPlxxavOLcgknHd89FDUcwW/YrN5Imnpktg5JGELx5KdEN16A
+         fIRN4A4jpgaNacRw08T+T5pzfL96QlXB+W2cUrinXmZIDAIjR6MszOfW+OyHLzU67Y84
+         Qj99sMyhQUJoJ8JWHwocYT7pZZa77VD2JKOVlVjO39gs3khjbgJBhmQzLpKaWeatrvl6
+         BTDg==
+X-Gm-Message-State: AOAM530cANF8TasKCl9EtOtaoPj1WA1GMTD9YtQY7U838w3Ozpgl8iKD
+        Ss8Qeh7/L12EMHYdbLbB4rs=
+X-Google-Smtp-Source: ABdhPJwIQVD9sMCTm7j2oLshwB0nlaXclMyL3UfR34Z7VTGFy9XFFHdUAWCJmMVJq2MgFNhkn8yM8g==
+X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr6083297wmc.172.1605129276237;
+        Wed, 11 Nov 2020 13:14:36 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id t5sm3991082wmg.19.2020.11.11.13.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 13:14:34 -0800 (PST)
+Date:   Wed, 11 Nov 2020 22:14:32 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org, p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+Subject: Re: [PATCH v15 0/2] pwm: intel: Add PWM driver for a new SoC
+Message-ID: <20201111211432.GA571441@ulmo>
+References: <cover.1604555266.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-References: <20201111211011.1381848-1-joel@joelfernandes.org> <20201111211011.1381848-2-joel@joelfernandes.org>
-In-Reply-To: <20201111211011.1381848-2-joel@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 11 Nov 2020 16:14:20 -0500
-Message-ID: <CAEXW_YTKTdBC_uD8E90FUNwoUWeyVG5XpFWvu-LO7X_fncnZnw@mail.gmail.com>
-Subject: Re: [RFC 1/2] x86/bugs: Disable coresched on hardware that does not
- need it
-To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Anand K. Mistry" <amistry@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Mike Rapoport <rppt@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+In-Reply-To: <cover.1604555266.git.rahul.tanwar@linux.intel.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, forgot to CC +Tom Lendacky . Please take a look Tom, thanks.
 
-On Wed, Nov 11, 2020 at 4:10 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> Some hardware such as certain AMD variants don't have cross-HT MDS/L1TF
-> issues. Detect this and don't enable core scheduling as it can
-> needlessly slow the device done.
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  arch/x86/kernel/cpu/bugs.c | 8 ++++++++
->  kernel/sched/core.c        | 7 +++++++
->  kernel/sched/sched.h       | 5 +++++
->  3 files changed, 20 insertions(+)
->
-> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-> index dece79e4d1e9..0e6e61e49b23 100644
-> --- a/arch/x86/kernel/cpu/bugs.c
-> +++ b/arch/x86/kernel/cpu/bugs.c
-> @@ -152,6 +152,14 @@ void __init check_bugs(void)
->  #endif
->  }
->
-> +/*
-> + * Do not need core scheduling if CPU does not have MDS/L1TF vulnerability.
-> + */
-> +int arch_allow_core_sched(void)
-> +{
-> +       return boot_cpu_has_bug(X86_BUG_MDS) || boot_cpu_has_bug(X86_BUG_L1TF);
-> +}
-> +
->  void
->  x86_virt_spec_ctrl(u64 guest_spec_ctrl, u64 guest_virt_spec_ctrl, bool setguest)
->  {
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 64c559192634..c6158b4959fe 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -319,6 +319,13 @@ static void __sched_core_enable(void)
->         for_each_online_cpu(cpu)
->                 BUG_ON(!sched_core_empty(cpu_rq(cpu)));
->
-> +       /*
-> +        * Some architectures may not want coresched. (ex, AMD does not have
-> +        * MDS/L1TF issues so it wants SMT completely on).
-> +        */
-> +       if (!arch_allow_core_sched())
-> +               return;
-> +
->         static_branch_enable(&__sched_core_enabled);
->         stop_machine(__sched_core_stopper, (void *)true, NULL);
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 3cf08c77b678..a1b39764a6ed 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1203,6 +1203,11 @@ int cpu_core_tag_color_write_u64(struct cgroup_subsys_state *css,
->
->  bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
->
-> +int __weak arch_allow_core_sched(void)
-> +{
-> +       return true;
-> +}
-> +
->  #else /* !CONFIG_SCHED_CORE */
->
->  static inline bool sched_core_enqueued(struct task_struct *task) { return false; }
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 05, 2020 at 01:49:38PM +0800, Rahul Tanwar wrote:
+> Patch 1 adds dt binding document in YAML format.
+> Patch 2 add PWM fan controller driver for LGM SoC.
+>=20
+> v15:
+> - Rebase to latest linux 5.10-rc2
+>=20
+> v14:
+> - Address below review concerns from Uwe Kleine-K?nig.
+>  * Add limitations info about fixed 2-wire mode support.
+>  * Rename clk/reset _disable function names to _release.
+>  * Remove clk & rst from driver data structure. Instead
+>    use them as arguments.
+>  * Add pwm_chip.base =3D -1.
+> - Resolve missing MODULE_LICENSE warning.
+>=20
+> v13:
+> - Address below review concerns (Philipp Zabel)
+>  * Make unnecessary 2 line comment as 1 line comment.
+>  * Move reset_deassert at the last after clk_enable.
+>  * Remove unnecessary return ret statement from .remove()
+> - Move platform_set_drvdata() at the top of probe.=20
+>=20
+> v12:
+> - Rebase to linux 5.9-rc4
+> - Add Reviewed-by tags from Andy Shevchenko & Rob Herring.
+>=20
+> v11:
+> - Address below review concerns (Andy Shevchenko)
+>   * Fix a issue with dev_err_probe() usage & improve the usage.
+>   * Fix & improve a ordering issue with clk_enable/disable &
+>     reset_control assert/deassert.
+>=20
+> v10:
+> - Removed unused of_device.h and added platform_device.h
+>   & mod_devicetable.h
+>=20
+> v9:
+> - Address code quality related review concerns (Andy Shevchenko)
+> - Use devm_add_action_or_reset() instead of explicit unwind calls.
+>=20
+> v8:
+> - Remove fan related optional properties usage, keep
+>   them as default. If needed, change pwm-fan driver
+>   separately in future to add them as generic properties.
+>=20
+> v7:
+> - Address code quality related review concerns.
+> - Rename fan related property to pwm-*.
+> - Fix one make dt_binding_check reported error.
+>=20
+> v6:
+> - Readjust .apply op as per review feedback.
+> - Add back pwm-cells property to resolve make dt_binding_check error.
+>   pwm-cells is a required property for PWM driver.
+> - Add back fan related optional properties.
+>=20
+> v5:
+> - Address below review concerns from Uwe Kleine-K?nig.
+>   * Improve comments about Limitations.
+>   * Use return value of regmap_update_bits if container function returns
+>     error code.
+>   * Modify .apply op to have strict checking for fixed period supported
+>     by PWM HW.
+>   * Use u64 as type when use min_t for duty_cycle.
+>   * Add reset_control_assert() in failure case in probe where it was miss=
+ing
+>     earlier.
+> - Remove fan specific optional properties from pwm dt binding document (R=
+ob Herring)
+>=20
+> v4:
+> - Address below review concerns from Uwe Kleine-K?nig.
+>   * Improve notes and limitations comments.
+>   * Add common prefixes for all #defines.
+>   * Modify/Improve logic in .apply & .get_state ops as advised.
+>   * Skip error messages in probe when error is -EPROBE_DEFER.
+>   * Add dependencies in Kconfig (OF & HAS_IOMEM) and add select REGMAP_MM=
+IO.
+>   * Address other code quality related review concerns.
+> - Fix make dt_binding_check reported error in YAML file.
+>=20
+> v3:
+> - Address below review concerns from Uwe Kleine-K?nig.
+>   * Remove fan rpm calibration task from the driver.
+>   * Modify apply op as per the review feedback.
+>   * Add roundup & round down where necessary.
+>   * Address other misc code quality related review concerns.
+>   * Use devm_reset_control_get_exclusive(). (Philipp Zabel)
+>   * Improve dt binding document.
+>=20
+> v2:
+> - Address below review concerns from Uwe Kleine-K?nig.
+>   * Add notes and limitations about PWM HW.
+>   * Rename all functions and structure to lgm_pwm_*=20
+>   * Readjust space aligninment in structure fields to single space.
+>   * Switch to using apply instead of config/enable/disable.
+>   * Address other code quality related concerns.
+>   * Rebase to 5.8-rc1.
+> - Address review concerns in dt binding YAML from Rob Herring.
+>=20
+> v1:
+> - Initial version.
+>=20
+>=20
+> Rahul Tanwar (2):
+>   Add DT bindings YAML schema for PWM fan controller of LGM SoC
+>   Add PWM fan controller driver for LGM SoC
+>=20
+>  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     |  44 ++++
+>  drivers/pwm/Kconfig                                |  11 +
+>  drivers/pwm/Makefile                               |   1 +
+>  drivers/pwm/pwm-intel-lgm.c                        | 244 +++++++++++++++=
+++++++
+>  4 files changed, 300 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.y=
+aml
+>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+
+Both patches applied, thanks.
+
+Thierry
+
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sVDQACgkQ3SOs138+
+s6FAgA//bkEboSKJlHm6SeyDedY/54jZJJ743Gsg3m+KrPwS1JvLILrLuZDSCWxC
+zdAG6+2OSeKTbtZn0dcNkG6/v3ng1mKMqCYhJrXOFPWwaBT8TmrvBaAOY9UJIr3E
+aWXjN7AogW6U8zOAK08T5S18hlwxdPZIVUcs6fheSbeEzb9ux2rNiCtNbY0LCJah
+nqp+3TLfR6b6lyd7vgB2iM8Ut2won9M21ig2HiNAST/+ixV7AyW/ejSmy62QcY+K
+iDOOO6h7VfNt5DUSqNkdA0OBGZPcrKKgHD2UqKpSc0rywEaAGlOn2RhsjK9/x5Ru
+9VZhvpQGHLK9yNeS9746EKeE07gMocaHqGXGhh57ltxHFGbm9m79of+SHJB6JzEM
+NxJqQo7Bb2WZVkHaDsk1vkO7KhZ5nitcEUvI8T1lD/Id5eF8F03ghzCrc7OYp4fo
+KlWTNj5F/4sc/IcF55sayceqQu/jKigKgfVIr2ur/o7z81ykh99Ghvm5cGSRfpO/
+2xqBPvYvmhFgumuY+fUKWJzePJxXmAyt3DHWFhL8kfj3sdChTgua8BdgMYurbxLz
+f6i4KH3yHm3lZWXovGFv3LzeCKGGGcLYPI/jvKGyEXeT5b4/u5ksrOHMiOVE8xXW
+H4sY+Is81ABh8dVXsKdhWgPId1//jrUPgISYPDlBhh/P5n3UMlU=
+=MrmB
+-----END PGP SIGNATURE-----
+
+--gBBFr7Ir9EOA20Yy--
