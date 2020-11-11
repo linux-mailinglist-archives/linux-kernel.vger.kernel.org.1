@@ -2,393 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0782AEDCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171DF2AEDD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgKKJbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:31:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgKKJbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:31:06 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C471C0613D1;
-        Wed, 11 Nov 2020 01:31:06 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id r17so1297995ljg.5;
-        Wed, 11 Nov 2020 01:31:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8DUkNb+DftkRK1N2II0Jh8IwjfDCAOXjEdUfQYAFCME=;
-        b=XfcWcDzEerkIIZfs8RSD5U5vI9Wn5OHJtyO8fSmwSdZVhpeG97lTh7mWimStjiARSF
-         PtnhNH9P8MYslUzdgnixjrZSs0WI0zZqmili6EByrH6F5ve2cdNt1svWgmd8kRlR3tM/
-         K8Hdze+jyAZfxKqOR71gxJPKFcDs92wnHhmZCOLrlNOoFq4FF4gJBna2IwyD4h0cunte
-         CiP9JaUSXfuKQmik/ngkTDwlVJLhSI9R07LLk8dzI2G5VATlhZjk6MFK3RVM2E9463cc
-         0X8ycuouaQ3SJISjjBosvgFl1L2rLjc4Cs5z69udHIqbyhLVlyzhJxBzDD5T8Ols+fo/
-         La4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8DUkNb+DftkRK1N2II0Jh8IwjfDCAOXjEdUfQYAFCME=;
-        b=HxKU9ld8V38S1wN9umgghm4V1Vs0OxtaLQjonKJiyQXQng7Y76A8cgy+Td4+P2tQZP
-         zR9R4urLcek3ksaoKLtbNyOrLNbA3xjkc0zQfny616gDfjkZB41Pj4yDf91R0Zq4nhvt
-         vmOQEvmNu65PXe5eajtov3LFBojmfkeh1qfEfHpmk3a0qh7m5tpEtjsW3KM4/rHqaenB
-         WNfVkhv7g6AakBE7tGPZY9BrYUAFL5UquUjsgULBNjR31xIO+rIxpHeaJkuAPg3UgV3Q
-         WSfBPW5zDpfWcsW69yLhsEB1F8qfTGW90dXSD7XiWcUxs9B7EKqCO2cizRbzMzqWFXLG
-         vHrg==
-X-Gm-Message-State: AOAM530hRDWyFP/Dj4w/0lqg7juNVFAAp88aQ4KfAPEG3GoQ1F6pHHU1
-        5PeM2z/uUlNSIqI0JyUESuSL7rDuLm+k0qu9Tek=
-X-Google-Smtp-Source: ABdhPJz2YQQUPhMwNGg2SxCrpZ+2SfLETyH9+eNN2yzwgtfacxEoN0+dTEwG1jBYY+c03E/0+gD4De1HrvC4BOGdMxk=
-X-Received: by 2002:a2e:b0f8:: with SMTP id h24mr10462391ljl.2.1605087064794;
- Wed, 11 Nov 2020 01:31:04 -0800 (PST)
+        id S1727112AbgKKJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:31:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725986AbgKKJb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:31:27 -0500
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B4C92067D;
+        Wed, 11 Nov 2020 09:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605087085;
+        bh=TaAgY+lXg95mPvCVhrS0CpZt2rhWBIm0s618ow6cMt8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JmQ2zAh4OMqK960v3coR9S3dRP14lKOZhwrdHkMHUT6Da8fZ+Fqe/YEDCeys2Y/p+
+         uBgw+FZsp4hrBpEYDIhT64E3puB3p+Ag3uZJbeXeZzqP17N6IYHb3DJTxaCLGJ4gmY
+         m7zpeET+8tJSmqw3CPfYmvhcl8ILzjtsKTMAEIvE=
+Received: by mail-ot1-f45.google.com with SMTP id n11so1559970ota.2;
+        Wed, 11 Nov 2020 01:31:25 -0800 (PST)
+X-Gm-Message-State: AOAM533RRMdIxQKrlkb5/FHqfQNX/+zmtkU9zZfGexCyP+CgKYQfWeUu
+        fhUh9HHox7Kcgf9muSAH2+t5GxBYetjAGa9U5Qc=
+X-Google-Smtp-Source: ABdhPJwh56XFQ+qKi+jJ10DljYIOI6NRvK286cnadP46C/BhAdmNh8psbFrdyLEk9DtGZrhVyiA2Oj30hSwDLP47dqI=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr15863879oth.251.1605087084745;
+ Wed, 11 Nov 2020 01:31:24 -0800 (PST)
 MIME-Version: 1.0
-References: <1604402306-5348-1-git-send-email-abel.vesa@nxp.com> <1604402306-5348-11-git-send-email-abel.vesa@nxp.com>
-In-Reply-To: <1604402306-5348-11-git-send-email-abel.vesa@nxp.com>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Wed, 11 Nov 2020 17:13:25 +0800
-Message-ID: <CAA+hA=TfyW6Ya9adcQFd1=-sJyoCgMyaENmGumtV1ZYar1Ud2g@mail.gmail.com>
-Subject: Re: [PATCH v5 10/14] clk: imx: Add generic blk-ctl driver
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
+References: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
+ <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 11 Nov 2020 10:31:08 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2a6onxox-aYY-o4e=LyMC_zqrKDydMM6hWrAkzbf+SfA@mail.gmail.com>
+Message-ID: <CAK8P3a2a6onxox-aYY-o4e=LyMC_zqrKDydMM6hWrAkzbf+SfA@mail.gmail.com>
+Subject: Re: arm: kasan: WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47 __arm_gen_branch
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:22 PM Abel Vesa <abel.vesa@nxp.com> wrote:
-...
-> +static int imx_blk_ctl_reset_set(struct reset_controller_dev *rcdev,
-> +                                 unsigned long id, bool assert)
-> +{
-> +       struct imx_blk_ctl_drvdata *drvdata = container_of(rcdev,
-> +                       struct imx_blk_ctl_drvdata, rcdev);
-> +       unsigned int offset = drvdata->rst_hws[id].offset;
-> +       unsigned int shift = drvdata->rst_hws[id].shift;
-> +       unsigned int mask = drvdata->rst_hws[id].mask;
-> +       void __iomem *reg_addr = drvdata->base + offset;
-> +       unsigned long flags;
-> +       u32 reg;
-> +
-> +       if (!assert && !test_bit(1, &drvdata->rst_hws[id].asserted))
-> +               return -ENODEV;
-
-What if consumers call deassert first in probe which seems common in kernel?
-It seems will fail.
-e.g.
-probe() {
-    reset_control_get()
-    reset_control_deassert()
-}
-
-Regards
-Aisheng
-
-> +
-> +       if (assert && !test_and_set_bit(1, &drvdata->rst_hws[id].asserted))
-> +               pm_runtime_get_sync(rcdev->dev)
-> +
-> +       spin_lock_irqsave(&drvdata->lock, flags);
-> +
-> +       reg = readl(reg_addr);
-> +       if (assert)
-> +               writel(reg & ~(mask << shift), reg_addr);
-> +       else
-> +               writel(reg | (mask << shift), reg_addr);
-> +
-> +       spin_unlock_irqrestore(&drvdata->lock, flags);
-> +
-> +       if (!assert && test_and_clear_bit(1, &drvdata->rst_hws[id].asserted))
-> +               pm_runtime_put(rcdev->dev)
-> +
-> +       return 0;
-> +}
-> +
-> +static int imx_blk_ctl_reset_assert(struct reset_controller_dev *rcdev,
-> +                                          unsigned long id)
-> +{
-> +       return imx_blk_ctl_reset_set(rcdev, id, true);
-> +}
-> +
-> +static int imx_blk_ctl_reset_deassert(struct reset_controller_dev *rcdev,
-> +                                            unsigned long id)
-> +{
-> +       return imx_blk_ctl_reset_set(rcdev, id, false);
-> +}
-> +
-> +static const struct reset_control_ops imx_blk_ctl_reset_ops = {
-> +       .assert         = imx_blk_ctl_reset_assert,
-> +       .deassert       = imx_blk_ctl_reset_deassert,
-> +};
-> +
-> +static int imx_blk_ctl_register_reset_controller(struct device *dev)
-> +{
-> +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
-> +       struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
-> +       int max = dev_data->resets_max;
-> +       struct imx_reset_hw *hws;
-> +       int i;
-> +
-> +       spin_lock_init(&drvdata->lock);
-> +
-> +       drvdata->rcdev.owner     = THIS_MODULE;
-> +       drvdata->rcdev.nr_resets = max;
-> +       drvdata->rcdev.ops       = &imx_blk_ctl_reset_ops;
-> +       drvdata->rcdev.of_node   = dev->of_node;
-> +       drvdata->rcdev.dev       = dev;
-> +
-> +       drvdata->rst_hws = devm_kcalloc(dev, max, sizeof(struct imx_reset_hw),
-> +                                       GFP_KERNEL);
-> +       hws = drvdata->rst_hws;
-> +
-> +       for (i = 0; i < dev_data->hws_num; i++) {
-> +               struct imx_blk_ctl_hw *hw = &dev_data->hws[i];
-> +
-> +               if (hw->type != BLK_CTL_RESET)
-> +                       continue;
-> +
-> +               hws[hw->id].offset = hw->offset;
-> +               hws[hw->id].shift = hw->shift;
-> +               hws[hw->id].mask = hw->mask;
-> +       }
-> +
-> +       return devm_reset_controller_register(dev, &drvdata->rcdev);
-> +}
-> +static struct clk_hw *imx_blk_ctl_register_one_clock(struct device *dev,
-> +                                               struct imx_blk_ctl_hw *hw)
-> +{
-> +       struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
-> +       void __iomem *base = drvdata->base;
-> +       struct clk_hw *clk_hw = NULL;
-> +
-> +       switch (hw->type) {
-> +       case BLK_CTL_CLK_MUX:
-> +               clk_hw = imx_dev_clk_hw_mux_flags(dev, hw->name,
-> +                                                 base + hw->offset,
-> +                                                 hw->shift, hw->width,
-> +                                                 hw->parents,
-> +                                                 hw->parents_count,
-> +                                                 hw->flags);
-> +               break;
-> +       case BLK_CTL_CLK_GATE:
-> +               clk_hw = imx_dev_clk_hw_gate(dev, hw->name, hw->parents,
-> +                                            base + hw->offset, hw->shift);
-> +               break;
-> +       case BLK_CTL_CLK_SHARED_GATE:
-> +               clk_hw = imx_dev_clk_hw_gate_shared(dev, hw->name,
-> +                                                   hw->parents,
-> +                                                   base + hw->offset,
-> +                                                   hw->shift,
-> +                                                   hw->shared_count);
-> +               break;
-> +       case BLK_CTL_CLK_PLL14XX:
-> +               clk_hw = imx_dev_clk_hw_pll14xx(dev, hw->name, hw->parents,
-> +                                               base + hw->offset, hw->pll_tbl);
-> +               break;
-> +       };
-> +
-> +       return clk_hw;
-> +}
-> +
-> +static int imx_blk_ctl_register_clock_controller(struct device *dev)
-> +{
-> +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
-> +       struct clk_hw_onecell_data *clk_hw_data;
-> +       struct clk_hw **hws;
-> +       int i;
-> +
-> +       clk_hw_data = devm_kzalloc(dev, struct_size(clk_hw_data, hws,
-> +                               dev_data->hws_num), GFP_KERNEL);
-> +       if (WARN_ON(!clk_hw_data))
-> +               return -ENOMEM;
-> +
-> +       clk_hw_data->num = dev_data->clocks_max;
-> +       hws = clk_hw_data->hws;
-> +
-> +       for (i = 0; i < dev_data->hws_num; i++) {
-> +               struct imx_blk_ctl_hw *hw = &dev_data->hws[i];
-> +
-> +               if (hw->type == BLK_CTL_RESET)
-> +                       continue;
-> +
-> +               hws[hw->id] = imx_blk_ctl_register_one_clock(dev, hw);
-> +       }
-> +
-> +       imx_check_clk_hws(hws, dev_data->clocks_max);
-> +
-> +       return of_clk_add_hw_provider(dev->of_node, of_clk_hw_onecell_get,
-> +                                       clk_hw_data);
-> +}
-> +
-> +static int imx_blk_ctl_init_runtime_pm_safekeeping(struct device *dev)
-> +{
-> +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
-> +       struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
-> +       struct imx_pm_safekeep_info *pm_info = &drvdata->pm_info;
-> +       u32 regs_num = dev_data->pm_runtime_saved_regs_num;
-> +       const u32 *regs_offsets = dev_data->pm_runtime_saved_regs;
-> +
-> +       if (!dev_data->pm_runtime_saved_regs_num)
-> +               return 0;
-> +
-> +       pm_info->regs_values = devm_kzalloc(dev,
-> +                                           sizeof(u32) * regs_num,
-> +                                           GFP_KERNEL);
-> +       if (WARN_ON(IS_ERR(pm_info->regs_values)))
-> +               return PTR_ERR(pm_info->regs_values);
-> +
-> +       pm_info->regs_offsets = kmemdup(regs_offsets,
-> +                                       regs_num * sizeof(u32), GFP_KERNEL);
-> +       if (WARN_ON(IS_ERR(pm_info->regs_offsets)))
-> +               return PTR_ERR(pm_info->regs_offsets);
-> +
-> +       pm_info->regs_num = regs_num;
-> +
-> +       return 0;
-> +}
-> +
-> +int imx_blk_ctl_register(struct platform_device *pdev)
-> +{
-> +       struct imx_blk_ctl_drvdata *drvdata;
-> +       struct device *dev = &pdev->dev;
-> +       int ret;
-> +
-> +       drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> +       if (WARN_ON(!drvdata))
-> +               return -ENOMEM;
-> +
-> +       drvdata->base = devm_platform_ioremap_resource(pdev, 0);
-> +       if (WARN_ON(IS_ERR(drvdata->base)))
-> +               return PTR_ERR(drvdata->base);
-> +
-> +       dev_set_drvdata(dev, drvdata);
-> +
-> +       ret = imx_blk_ctl_init_runtime_pm_safekeeping(dev);
-> +       if (ret)
-> +               return ret;
-> +
-> +       pm_runtime_get_noresume(dev);
-> +       pm_runtime_set_active(dev);
-> +       pm_runtime_enable(dev);
-> +
-> +       ret = imx_blk_ctl_register_clock_controller(dev);
-> +       if (ret) {
-> +               pm_runtime_put(dev);
-> +               return ret;
-> +       }
-> +
-> +       ret = imx_blk_ctl_register_reset_controller(dev);
-> +
-> +       pm_runtime_put(dev);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(imx_blk_ctl_register);
-> diff --git a/drivers/clk/imx/clk-blk-ctl.h b/drivers/clk/imx/clk-blk-ctl.h
-> new file mode 100644
-> index 00000000..3f14a47
-> --- /dev/null
-> +++ b/drivers/clk/imx/clk-blk-ctl.h
-> @@ -0,0 +1,80 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __MACH_IMX_CLK_BLK_CTL_H
-> +#define __MACH_IMX_CLK_BLK_CTL_H
-> +
-> +enum imx_blk_ctl_hw_type {
-> +       BLK_CTL_CLK_MUX,
-> +       BLK_CTL_CLK_GATE,
-> +       BLK_CTL_CLK_SHARED_GATE,
-> +       BLK_CTL_CLK_PLL14XX,
-> +       BLK_CTL_RESET,
-> +};
-> +
-> +struct imx_blk_ctl_hw {
-> +       int type;
-> +       char *name;
-> +       u32 offset;
-> +       u32 shift;
-> +       u32 mask;
-> +       u32 width;
-> +       u32 flags;
-> +       u32 id;
-> +       const void *parents;
-> +       u32 parents_count;
-> +       int *shared_count;
-> +       const struct imx_pll14xx_clk *pll_tbl;
-> +};
-> +
-> +struct imx_blk_ctl_dev_data {
-> +       struct imx_blk_ctl_hw *hws;
-> +       u32 hws_num;
-> +
-> +       u32 clocks_max;
-> +       u32 resets_max;
-> +
-> +       u32 pm_runtime_saved_regs_num;
-> +       u32 pm_runtime_saved_regs[];
-> +};
-> +
-> +#define IMX_BLK_CTL(_type, _name, _id, _offset, _shift, _width, _mask, _parents, _parents_count, _flags, sh_count, _pll_tbl) \
-> +       {                                               \
-> +               .type = _type,                          \
-> +               .name = _name,                          \
-> +               .id = _id,                              \
-> +               .offset = _offset,                      \
-> +               .shift = _shift,                        \
-> +               .width = _width,                        \
-> +               .mask = _mask,                          \
-> +               .parents = _parents,                    \
-> +               .parents_count = _parents_count,        \
-> +               .flags = _flags,                        \
-> +               .shared_count = sh_count,               \
-> +               .pll_tbl = _pll_tbl,                    \
-> +       }
-> +
-> +#define IMX_BLK_CTL_CLK_MUX(_name, _id, _offset, _shift, _width, _parents) \
-> +       IMX_BLK_CTL(BLK_CTL_CLK_MUX, _name, _id, _offset, _shift, _width, 0, _parents, ARRAY_SIZE(_parents), 0, NULL, NULL)
-> +
-> +#define IMX_BLK_CTL_CLK_MUX_FLAGS(_name, _id, _offset, _shift, _width, _parents, _flags) \
-> +       IMX_BLK_CTL(BLK_CTL_CLK_MUX, _name, _id, _offset, _shift, _width, 0, _parents, ARRAY_SIZE(_parents), _flags, NULL, NULL)
-> +
-> +#define IMX_BLK_CTL_CLK_GATE(_name, _id, _offset, _shift, _parents) \
-> +       IMX_BLK_CTL(BLK_CTL_CLK_GATE, _name, _id, _offset, _shift, 1, 0, _parents, 1, 0, NULL, NULL)
-> +
-> +#define IMX_BLK_CTL_CLK_SHARED_GATE(_name, _id, _offset, _shift, _parents, sh_count) \
-> +       IMX_BLK_CTL(BLK_CTL_CLK_SHARED_GATE, _name, _id, _offset, _shift, 1, 0, _parents, 1, 0, sh_count, NULL)
-> +
-> +#define IMX_BLK_CTL_CLK_PLL14XX(_name, _id, _offset, _parents, _pll_tbl) \
-> +       IMX_BLK_CTL(BLK_CTL_CLK_PLL14XX, _name, _id, _offset, 0, 0, 0, _parents, 1, 0, NULL, _pll_tbl)
-> +
-> +#define IMX_BLK_CTL_RESET(_id, _offset, _shift) \
-> +       IMX_BLK_CTL(BLK_CTL_RESET, NULL, _id, _offset, _shift, 0, 1, NULL, 0, 0, NULL, NULL)
-> +
-> +#define IMX_BLK_CTL_RESET_MASK(_id, _offset, _shift, mask) \
-> +       IMX_BLK_CTL(BLK_CTL_RESET, NULL, _id, _offset, _shift, 0, mask, NULL, 0, 0, NULL, NULL)
-> +
-> +extern const struct dev_pm_ops imx_blk_ctl_pm_ops;
-> +
-> +int imx_blk_ctl_register(struct platform_device *pdev);
-> +
-> +#endif
-> --
-> 2.7.4
+On Wed, Nov 11, 2020 at 9:15 AM Ard Biesheuvel <ardb@kernel.org> wrote:
 >
+> On Wed, 11 Nov 2020 at 07:13, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > The following kernel warning noticed on arm KASAN enabled config while booting.
+> >
+> > [    0.000000] Linux version 5.10.0-rc3-next-20201110
+> > (tuxmake@e15fe3b4fdc6) (arm-linux-gnueabihf-gcc (Debian 9.3.0-13)
+> > 9.3.0, GNU ld (GNU Binutils for Debian) 2.35.1) #2 SMP Tue Nov 10
+> > 07:49:47 UTC 2020
+> > [    0.000000] CPU: ARMv7 Processor [410fd034] revision 4 (ARMv7), cr=10c5383d
+> > <trim>
+> > [    0.000000] kasan: Truncating shadow for memory block at
+> > 0x40000000-0xffffffff to lowmem region at 0x70000000
+> > [    0.000000] kasan: Mapping kernel virtual memory block:
+> > c0000000-f0000000 at shadow: b7000000-bd000000
+> > [    0.000000] kasan: Mapping kernel virtual memory block:
+> > bf000000-c0000000 at shadow: b6e00000-b7000000
+> > [    0.000000] kasan: Kernel address sanitizer initialized
+> > <trim>
+> > [    0.000000] ftrace: allocating 57178 entries in 112 pages
+> > [    0.000000] ------------[ cut here ]------------
+> > [    0.000000] WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47
+> > __arm_gen_branch+0x78/0x80
+> > [    0.000000] Modules linked in:
+> > [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
+> > 5.10.0-rc3-next-20201110 #2
+> > [    0.000000] Hardware name: Generic DT based system
+> > [    0.000000] Backtrace:
+> > [    0.000000] [<c199f710>] (dump_backtrace) from [<c199fb94>]
+> > (show_stack+0x20/0x24)
+> > [    0.000000]  r9:00000080 r8:c2e00000 r7:c3023060 r6:600000d3
+> > r5:00000000 r4:c3023060
+> > [    0.000000] [<c199fb74>] (show_stack) from [<c19a7ad0>]
+> > (dump_stack+0xe8/0x10c)
+> > [    0.000000] [<c19a79e8>] (dump_stack) from [<c0366518>] (__warn+0x140/0x164)
+> > [    0.000000]  r10:00000009 r9:00000000 r8:c2e0e000 r7:00000009
+> > r6:c031986c r5:0000002f
+> > [    0.000000]  r4:c1a0bbe0 r3:c2e06f50
+> > [    0.000000] [<c03663d8>] (__warn) from [<c19a13ac>]
+> > (warn_slowpath_fmt+0xc0/0x128)
+> > [    0.000000]  r9:c031986c r8:0000002f r7:c1a0bbe0 r6:00000000
+> > r5:c2e03ec0 r4:b75c07cc
+> > [    0.000000] [<c19a12f0>] (warn_slowpath_fmt) from [<c031986c>]
+> > (__arm_gen_branch+0x78/0x80)
+> > [    0.000000]  r10:0000d247 r9:c4019238 r8:c400c104 r7:c2e070a0
+> > r6:c400c108 r5:c0319250
+> > [    0.000000]  r4:00000000
+> > [    0.000000] [<c03197f4>] (__arm_gen_branch) from [<c0319720>]
+> > (ftrace_make_nop+0x30/0x48)
+> > [    0.000000]  r5:c0319250 r4:c2b00354
+> > [    0.000000] [<c03196f0>] (ftrace_make_nop) from [<c04ac104>]
+> > (ftrace_process_locs+0x470/0x5f0)
+> > [    0.000000]  r5:00001248 r4:c400c100
+> > [    0.000000] [<c04abc94>] (ftrace_process_locs) from [<c2b2d8f4>]
+> > (ftrace_init+0xa8/0x158)
+> > [    0.000000]  r10:10c5387d r9:c1a87768 r8:c2cb9f98 r7:c2c82230
+> > r6:00000001 r5:c2e070a0
+> > [    0.000000]  r4:c37f5c40
+> > [    0.000000] [<c2b2d84c>] (ftrace_init) from [<c2b010ec>]
+> > (start_kernel+0x174/0x3f8)
+> > [    0.000000]  r9:00000001 r8:c2e06f00 r7:00000000 r6:c2e06f00
+> > r5:c37c0000 r4:ffffffff
+> > [    0.000000] [<c2b00f78>] (start_kernel) from [<00000000>] (0x0)
+> > [    0.000000]  r9:410fd034 r8:48000000 r7:ffffffff r6:10c0387d
+> > r5:00000051 r4:c2b00334
+> > [    0.000000] random: get_random_bytes called from
+> > print_oops_end_marker+0x30/0xa0 with crng_init=0
+> > [    0.000000] ---[ end trace 0000000000000000 ]---
+> > [ #
+> >    0.000000] ------------[ ftrace bug ]------------
+> > [    0.000000] ftrace failed to modify
+> > [    0.000000] [<c2b00354>] set_reset_devices+0x10/0x28
+> > [    0.000000]  actual:   0a:3d:04:eb
+> > [    0.000000] Initializing ftrace call sites
+> > [    0.000000] ftrace record flags: 0
+> > [    0.000000]  (0)
+> > [    0.000000]  expected tramp: c031925c
+> > [    0.000000] ------------[ cut here ]------------
+> > [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/trace/ftrace.c:2065
+> > ftrace_bug+0x218/0x280
+> > [    0.000000] Modules linked in:
+> > [    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G        W
+> > 5.10.0-rc3-next-20201110 #2
+> > [    0.000000] Hardware name: Generic DT based system
+> > [    0.000000] Backtrace:
+> > [    0.000000] [<c199f710>] (dump_backtrace) from [<c199fb94>]
+> > (show_stack+0x20/0x24)
+> > [    0.000000]  r9:00000080 r8:c2e00000 r7:c3023060 r6:600000d3
+> > r5:00000000 r4:c3023060
+> > [    0.000000] [<c199fb74>] (show_stack) from [<c19a7ad0>]
+> > (dump_stack+0xe8/0x10c)
+> > [    0.000000] [<c19a79e8>] (dump_stack) from [<c0366518>] (__warn+0x140/0x164)
+> > [    0.000000]  r10:00000009 r9:00000000 r8:c2e0e000 r7:00000009
+> > r6:c19a3790 r5:00000811
+> > [    0.000000]  r4:c1a863c0 r3:c2e06f50
+> > [    0.000000] [<c03663d8>] (__warn) from [<c19a13ac>]
+> > (warn_slowpath_fmt+0xc0/0x128)
+> > [    0.000000]  r9:c19a3790 r8:00000811 r7:c1a863c0 r6:00000000
+> > r5:c2e03ee0 r4:b75c07d0
+> > [    0.000000] [<c19a12f0>] (warn_slowpath_fmt) from [<c19a3790>]
+> > (ftrace_bug+0x218/0x280)
+> > [    0.000000]  r10:0000d247 r9:c4019238 r8:c400c104 r7:c37f5c40
+> > r6:c1a86960 r5:c401923c
+> > [    0.000000]  r4:c4019238
+> > [    0.000000] [<c19a3578>] (ftrace_bug) from [<c04abfc0>]
+> > (ftrace_process_locs+0x32c/0x5f0)
+> > [    0.000000]  r7:c2e070a0 r6:c400c108 r5:00001248 r4:c400c100
+> > [    0.000000] [<c04abc94>] (ftrace_process_locs) from [<c2b2d8f4>]
+> > (ftrace_init+0xa8/0x158)
+> > [    0.000000]  r10:10c5387d r9:c1a87768 r8:c2cb9f98 r7:c2c82230
+> > r6:00000001 r5:c2e070a0
+> > [    0.000000]  r4:c37f5c40
+> > [    0.000000] [<c2b2d84c>] (ftrace_init) from [<c2b010ec>]
+> > (start_kernel+0x174/0x3f8)
+> > [    0.000000]  r9:00000001 r8:c2e06f00 r7:00000000 r6:c2e06f00
+> > r5:c37c0000 r4:ffffffff
+> > [    0.000000] [<c2b00f78>] (start_kernel) from [<00000000>] (0x0)
+> > [    0.000000]  r9:410fd034 r8:48000000 r7:ffffffff r6:10c0387d
+> > r5:00000051 r4:c2b00334
+> > [    0.000000] ---[ end trace f68728a0d3053b52 ]---
+> > [    0.000000] ftrace: allocated 112 pages with 3 groups
+> >
+> > metadata:
+> >   git branch: master
+> >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> >   git describe: next-20201110
+> >   make_kernelversion: 5.10.0-rc3
+> >   build : https://builds.tuxbuild.com/1k5bYasxkHF7omMh7mjtxjRtkMe/
+> >
+> > The qemu boot command,
+> > -----------------------------------
+> > /usr/bin/qemu-system-aarch64 -cpu host,aarch64=off -machine
+> > virt-2.10,accel=kvm -nographic -net
+> > nic,model=virtio,macaddr=BA:DD:AD:CC:09:03 -net tap -m 2048 -monitor
+> > none -kernel kernel/zImage --append "console=ttyAMA0 root=/dev/vda rw"
+> > -hda rpb-console-image-lkft-am57xx-evm-20201022181203-3085.rootfs.ext4
+> > -m 4096 -smp 2 -nographic
+> >
+> > Full log:
+> > https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201110/testrun/3420437/suite/linux-log-parser/test/check-kernel-warning-1927841/log
+> >
+>
+> The kernel you are building is too big.
+>
+> An ordinary multi_v7_defconfig+thumb2 has
+>
+> (10240K kernel code, 2232K rwdata, 5344K rodata, 2048K init, 441K bss,
+> 144040K reserved, 65536K cma-reserved, 3340512K highmem)
+>
+> whereas your kernel has
+>
+> (23552K kernel code, 9970K rwdata, 16736K rodata, 3072K init, 4849K
+> bss, 189072K reserved, 65536K cma-reserved, 2293756K highmem)
+>
+> and so the kernel text section is too large to resolve relative branches.
+>
+> Which config are you building?
+
+The config available from the 'build' link above:
+https://builds.tuxbuild.com/1k5bYasxkHF7omMh7mjtxjRtkMe/config
+
+This is a diff of that against multi_v7_defconfig: https://pastebin.com/v2uxkrCe
+I ran that on v5.10-rc1, so it's missing KASAN.
+
+I don't think any of the individual drivers is going to be a huge difference,
+but these are the ones that might add a percentage to the overall build:
+
+CONFIG_NAMESPACES
+CONFIG_KALLSYMS_ALL
+CONFIG_KPROBES
+CONFIG_KSM
+CONFIG_VIDEO_V4L2
+CONFIG_FUNCTION_TRACER
+CONFIG_DYNAMIC_FTRACE
+CONFIG_IRQSOFF_TRACER
+CONFIG_KPROBE_EVENTS
+CONFIG_FTRACE_MCOUNT_RECORD
+CONFIG_UNWINDER_FRAME_POINTER
+CONFIG_KASAN
+
+My guess is that the combination of a few of the above
+doubles the size.
+
+     Arnd
