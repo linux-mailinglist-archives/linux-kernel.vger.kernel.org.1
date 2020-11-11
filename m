@@ -2,244 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25C62AE6BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A652AE6BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgKKDCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:02:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53041 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725884AbgKKDCF (ORCPT
+        id S1725959AbgKKDCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:02:50 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:32868 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725867AbgKKDCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:02:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605063722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TpjnKRa6jgHvEHmWdDMIv5plPjYB0LUt1scN/Oy7UyM=;
-        b=Z+NGQLkSsfwrD5W128MpuUpZXF/UbyS7QJLvX8XPjjH+cRzWGeVlj3xrRjPFFWQcDbRZOE
-        4QrVTZAThppPB0l9az1u/lUaWisEatv3JoFClo+v1HiLtYpQX27xq2BvooTt7UcC1qUsCG
-        gurdkOrzl5nyzkQ4679R6nNpWTu+5mk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-NLclD9OwP_ybVC6RRTUqOw-1; Tue, 10 Nov 2020 22:01:45 -0500
-X-MC-Unique: NLclD9OwP_ybVC6RRTUqOw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 309E8803F60;
-        Wed, 11 Nov 2020 03:01:43 +0000 (UTC)
-Received: from localhost (ovpn-12-35.pek2.redhat.com [10.72.12.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ED71C5C1D0;
-        Wed, 11 Nov 2020 03:01:38 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 11:01:36 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Chen Zhou <chenzhou10@huawei.com>, bhsharma@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, dyoung@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, corbet@lwn.net,
-        John.P.donnelly@oracle.com, prabhakar.pkin@gmail.com,
-        horms@verge.net.au, robh+dt@kernel.org, arnd@arndb.de,
-        nsaenzjulienne@suse.de, james.morse@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        xiexiuqi@huawei.com, guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v13 0/8] support reserving crashkernel above 4G on arm64
- kdump
-Message-ID: <20201111030136.GD8486@MiWiFi-R3L-srv>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
+        Tue, 10 Nov 2020 22:02:50 -0500
+X-UUID: 607825743d054c0c9004058fcda282ae-20201111
+X-UUID: 607825743d054c0c9004058fcda282ae-20201111
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1397354604; Wed, 11 Nov 2020 11:02:47 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 11 Nov 2020 11:02:45 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 11 Nov 2020 11:02:44 +0800
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Subject: [PATCH v13] binder: add transaction latency tracer
+Date:   Wed, 11 Nov 2020 11:02:41 +0800
+Message-ID: <1605063764-12930-1-git-send-email-Frankie.Chang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <X6quBb28IVvyRhox@kroah.com>
+References: <X6quBb28IVvyRhox@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201031074437.168008-1-chenzhou10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 5FF7BD0736A20E5F14C7EA94924EBE248B4BDB21866E02A1836B673DD20C81532000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou, Bhupesh
 
-On 10/31/20 at 03:44pm, Chen Zhou wrote:
-> There are following issues in arm64 kdump:
-> 1. We use crashkernel=X to reserve crashkernel below 4G, which
-> will fail when there is no enough low memory.
-> 2. If reserving crashkernel above 4G, in this case, crash dump
-> kernel will boot failure because there is no low memory available
-> for allocation.
-> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
-> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
-> the devices in crash dump kernel need to use ZONE_DMA will alloc
-> fail.
+Frankie.Chang (3):
+  binder: move structs from core file to header file
+  binder: add trace at free transaction.
+  binder: add transaction latency tracer
 
-I went through this patchset, mainly the x86 related and generic
-changes, the changes look great and no risk. And I know Bhupesh is
-following up this and helping review, thanks, both.
-
-So you have also tested crashkernel reservation on x86_64, with the
-normal reservation, and high/low reservation, it is working well,
-right? Asking this because I didn't see the test result description, and
-just note it.
-
-Thanks
-Baoquan
-
-> 
-> To solve these issues, change the behavior of crashkernel=X.
-> crashkernel=X tries low allocation in DMA zone (or the DMA32 zone if
-> CONFIG_ZONE_DMA is disabled), and fall back to high allocation if it fails.
-> 
-> We can also use "crashkernel=X,high" to select a high region above
-> DMA zone, which also tries to allocate at least 256M low memory in
-> DMA zone automatically (or the DMA32 zone if CONFIG_ZONE_DMA is disabled).
-> "crashkernel=Y,low" can be used to allocate specified size low memory.
-> 
-> When reserving crashkernel in high memory, some low memory is reserved
-> for crash dump kernel devices. So there may be two regions reserved for
-> crash dump kernel.
-> In order to distinct from the high region and make no effect to the use
-> of existing kexec-tools, rename the low region as "Crash kernel (low)",
-> and pass the low region by reusing DT property
-> "linux,usable-memory-range". We made the low memory region as the last
-> range of "linux,usable-memory-range" to keep compatibility with existing
-> user-space and older kdump kernels.
-> 
-> Besides, we need to modify kexec-tools:
-> arm64: support more than one crash kernel regions(see [1])
-> 
-> Another update is document about DT property 'linux,usable-memory-range':
-> schemas: update 'linux,usable-memory-range' node schema(see [2])
-> 
-> This patchset contains the following eight patches:
-> 0001-x86-kdump-replace-the-hard-coded-alignment-with-macr.patch
-> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
-> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
-> 0004-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
-> 0005-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
-> 0006-arm64-kdump-reimplement-crashkernel-X.patch
-> 0007-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
-> 0008-kdump-update-Documentation-about-crashkernel.patch
-> 
-> 0001-0003 are some x86 cleanups which prepares for making
-> functionsreserve_crashkernel[_low]() generic.
-> 0004 makes functions reserve_crashkernel[_low]() generic.
-> 0005-0006 reimplements arm64 crashkernel=X.
-> 0007 adds memory for devices by DT property linux,usable-memory-range.
-> 0008 updates the doc.
-> 
-> Changes since [v12]
-> - Rebased on top of 5.10-rc1.
-> - Keep CRASH_ALIGN as 16M suggested by Dave.
-> - Drop patch "kdump: add threshold for the required memory".
-> - Add Tested-by from John.
-> 
-> Changes since [v11]
-> - Rebased on top of 5.9-rc4.
-> - Make the function reserve_crashkernel() of x86 generic.
-> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
-> and arm64 use the generic version to reimplement crashkernel=X.
-> 
-> Changes since [v10]
-> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
-> 
-> Changes since [v9]
-> - Patch 1 add Acked-by from Dave.
-> - Update patch 5 according to Dave's comments.
-> - Update chosen schema.
-> 
-> Changes since [v8]
-> - Reuse DT property "linux,usable-memory-range".
-> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
-> memory region.
-> - Fix kdump broken with ZONE_DMA reintroduced.
-> - Update chosen schema.
-> 
-> Changes since [v7]
-> - Move x86 CRASH_ALIGN to 2M
-> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
-> - Update Documentation/devicetree/bindings/chosen.txt.
-> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
-> suggested by Arnd.
-> - Add Tested-by from Jhon and pk.
-> 
-> Changes since [v6]
-> - Fix build errors reported by kbuild test robot.
-> 
-> Changes since [v5]
-> - Move reserve_crashkernel_low() into kernel/crash_core.c.
-> - Delete crashkernel=X,high.
-> - Modify crashkernel=X,low.
-> If crashkernel=X,low is specified simultaneously, reserve spcified size low
-> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
-> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
-> pass to crash dump kernel by DT property "linux,low-memory-range".
-> - Update Documentation/admin-guide/kdump/kdump.rst.
-> 
-> Changes since [v4]
-> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
-> 
-> Changes since [v3]
-> - Add memblock_cap_memory_ranges back for multiple ranges.
-> - Fix some compiling warnings.
-> 
-> Changes since [v2]
-> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
-> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
-> patch.
-> 
-> Changes since [v1]:
-> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
-> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
-> in fdt_enforce_memory_region().
-> There are at most two crash kernel regions, for two crash kernel regions
-> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
-> and then remove the memory range in the middle.
-> 
-> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
-> [2]: https://github.com/robherring/dt-schema/pull/19 
-> [v1]: https://lkml.org/lkml/2019/4/2/1174
-> [v2]: https://lkml.org/lkml/2019/4/9/86
-> [v3]: https://lkml.org/lkml/2019/4/9/306
-> [v4]: https://lkml.org/lkml/2019/4/15/273
-> [v5]: https://lkml.org/lkml/2019/5/6/1360
-> [v6]: https://lkml.org/lkml/2019/8/30/142
-> [v7]: https://lkml.org/lkml/2019/12/23/411
-> [v8]: https://lkml.org/lkml/2020/5/21/213
-> [v9]: https://lkml.org/lkml/2020/6/28/73
-> [v10]: https://lkml.org/lkml/2020/7/2/1443
-> [v11]: https://lkml.org/lkml/2020/8/1/150
-> [v12]: https://lkml.org/lkml/2020/9/7/1037
-> 
-> Chen Zhou (8):
->   x86: kdump: replace the hard-coded alignment with macro CRASH_ALIGN
->   x86: kdump: make the lower bound of crash kernel reservation
->     consistent
->   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
->     reserve_crashkernel()
->   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
->   arm64: kdump: introduce some macroes for crash kernel reservation
->   arm64: kdump: reimplement crashkernel=X
->   arm64: kdump: add memory for devices by DT property
->     linux,usable-memory-range
->   kdump: update Documentation about crashkernel
-> 
->  Documentation/admin-guide/kdump/kdump.rst     |  23 ++-
->  .../admin-guide/kernel-parameters.txt         |  12 +-
->  arch/arm64/include/asm/kexec.h                |  15 ++
->  arch/arm64/include/asm/processor.h            |   1 +
->  arch/arm64/kernel/setup.c                     |  13 +-
->  arch/arm64/mm/init.c                          | 105 ++++-------
->  arch/arm64/mm/mmu.c                           |   4 +
->  arch/x86/include/asm/kexec.h                  |  28 +++
->  arch/x86/kernel/setup.c                       | 153 +---------------
->  include/linux/crash_core.h                    |   4 +
->  include/linux/kexec.h                         |   2 -
->  kernel/crash_core.c                           | 168 ++++++++++++++++++
->  kernel/kexec_core.c                           |  17 --
->  13 files changed, 301 insertions(+), 244 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
-
+ drivers/android/Kconfig                 |   8 +
+ drivers/android/Makefile                |   1 +
+ drivers/android/binder.c                | 430 ++----------------------
+ drivers/android/binder_internal.h       | 419 +++++++++++++++++++++++
+ drivers/android/binder_latency_tracer.c | 107 ++++++
+ drivers/android/binder_trace.h          |  49 +++
+ 6 files changed, 608 insertions(+), 406 deletions(-)
+ create mode 100644 drivers/android/binder_latency_tracer.c
