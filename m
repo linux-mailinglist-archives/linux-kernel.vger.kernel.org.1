@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644972AF6A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F152AF6AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgKKQfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:35:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgKKQfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:35:36 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 339F9206F1;
-        Wed, 11 Nov 2020 16:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605112533;
-        bh=vF5/Tu4Qygs39cHM41EGa7wsINPDLQw8Vbqv8foqudM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1ISaLpxz5fjyy8Mjol+l4WNuSyZcAD1T9cf8EI7cIbFXSPjlF3WqAiSoTzuz3jq20
-         vO3Mv0IYXTQD7wIsoQD46GSJD0I8VGO3k8ueHWCbD3WGfAKr2qCDqQCA3fpLJ3voRh
-         C3XZxJmR0FyrNSbgjdYMR7ABeimRYrtkW/GyfZlQ=
-Date:   Wed, 11 Nov 2020 17:36:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] init/console: Use ttynull as a fallback when there
- is no console
-Message-ID: <X6wTEpJwC+ZoLSAy@kroah.com>
-References: <20201111135450.11214-1-pmladek@suse.com>
- <20201111135450.11214-2-pmladek@suse.com>
+        id S1727449AbgKKQig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbgKKQig (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:38:36 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FF4C0613D1;
+        Wed, 11 Nov 2020 08:38:34 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id h15so2194450qkl.13;
+        Wed, 11 Nov 2020 08:38:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ie/2g6h8fCMTgltIfv3Rfz0bo0YdcuquD7nLS1t6eg=;
+        b=S6ejkkcPJz8EcNc+0Mp1+79wtHpaIv3/yiOHomedgDAmUL0q48zC8AH5XHUQtv6lSi
+         N55COLQs1QlJnTjju6+m7I8aZ17xngDMxitQ2NGkZe1Mi2u6GrDqwod9mGajVSHmIrp4
+         MHqzwbPMKZxM6OlhSwZQgflmOz/Cqqp/GzM6qII7PqwivMcTl+KYpX0VcrRKoAgfyHb4
+         H23koW2AgNrmVyUyRBDdQ0vNWIPHX5hpeVZA3QSvblJ10P1Cd+GR7LawX+RfH9y070/V
+         O/QkwXRy/BeBu6Uvk3hHcCqovgJ6wp7C3FFXHY6FePX9RskbRGCngoGs2t6aYZKu3Z1b
+         U0dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ie/2g6h8fCMTgltIfv3Rfz0bo0YdcuquD7nLS1t6eg=;
+        b=h8PuNKVKZ4gBp/DaYRY5oYjywXCMSnK2gkw05fur+Dp5v2haKJVmNDk9cZqLpk7U0g
+         yLZgYs1kpAdB8DgRptltzm98cuUrkjkBIX9axUb0WJdMdGhLdonfsc9tzIudl2JCs6QG
+         KrSp9p6ZPkHZTXsyjXTtPTfaaxWUIH/0XKOB2oQBwrtkb7B7B9SJAslnefVGmi0ywAie
+         REvFIHxL/gRyR4iAYjbE2m18uGhQqQjSMatSma3I5ElTO6tmrPDUpRHhwuedjieNasbD
+         b36sMijwgcEtkye3WKd8tGaaRKtxfpYWbZxeph5IP60IEMVivFtqCK8mNqtYL7Wm68kz
+         0o6g==
+X-Gm-Message-State: AOAM530vMlgM0jFbX7dzrfzUAleCUoquAkn2epi1maIQOXoklmZuNgwb
+        xZrBsNtIfhq4x+Va4DW/nLk=
+X-Google-Smtp-Source: ABdhPJyIbrh+4qgDsQQCVk/MHG7XDX40xL7zIDdJhzoJah7E7HCKx5G8Vxr7QIfkf5GgrQLhig7LVQ==
+X-Received: by 2002:a37:4ac4:: with SMTP id x187mr25631324qka.197.1605112713595;
+        Wed, 11 Nov 2020 08:38:33 -0800 (PST)
+Received: from localhost.localdomain (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id l28sm2615051qkl.7.2020.11.11.08.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 08:38:32 -0800 (PST)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     robh+dt@kernel.org, alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Subject: [PATCH] counter: microchip-tcb-capture: Fix CMR value check
+Date:   Wed, 11 Nov 2020 11:38:07 -0500
+Message-Id: <20201111163807.10201-1-vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111135450.11214-2-pmladek@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 02:54:49PM +0100, Petr Mladek wrote:
-> stdin, stdout, and stderr standard I/O stream are created for the init
-> process. They are not available when there is no console registered
-> for /dev/console. It might lead to a crash when the init process
-> tries to use them, see the commit 48021f98130880dd742 ("printk: handle
-> blank console arguments passed in.").
-> 
-> Normally, ttySX and ttyX consoles are used as a fallback when no consoles
-> are defined via the command line, device tree, or SPCR. But there
-> will be no console registered when an invalid console name is configured
-> or when the configured consoles do not exist on the system.
-> 
-> Users even try to avoid the console intentionally, for example,
-> by using console="" or console=null. It is used on production
-> systems where the serial port or terminal are not visible to
-> users. Pushing messages to these consoles would just unnecessary
-> slowdown the system.
-> 
-> Make sure that stdin, stdout, stderr, and /dev/console are always
-> available by a fallback to the existing ttynull driver. It has
-> been implemented for exactly this purpose but it was used only
-> when explicitly configured.
-> 
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
+The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
+for CMR. This patch fixes the action_get() callback to properly check
+for these values rather than mask them.
 
-Tricky, and nice to use the existing driver for this, I like it:
+Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
+Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+---
+ drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+index 039c54a78aa5..142b389fc9db 100644
+--- a/drivers/counter/microchip-tcb-capture.c
++++ b/drivers/counter/microchip-tcb-capture.c
+@@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
+ 
+ 	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
+ 
+-	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+-
+-	if (cmr & ATMEL_TC_ETRGEDG_NONE)
++	switch (cmr & ATMEL_TC_ETRGEDG_BOTH) {
++	default:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+-	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
++		break;
++	case ATMEL_TC_ETRGEDG_RISING:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
+-	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
++		break;
++	case ATMEL_TC_ETRGEDG_FALLING:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
+-	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
++		break;
++	case ATMEL_TC_ETRGEDG_BOTH:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
++		break;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.29.2
+
