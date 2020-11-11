@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDF72AF215
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92A42AF217
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgKKN0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:26:19 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7172 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgKKN0S (ORCPT
+        id S1726844AbgKKN0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgKKN0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:26:18 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWQV22dcgz15VJj;
-        Wed, 11 Nov 2020 21:26:02 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 11 Nov 2020 21:26:04 +0800
-Subject: Re: [PATCH v13 1/8] x86: kdump: replace the hard-coded alignment with
- macro CRASH_ALIGN
-To:     Baoquan He <bhe@redhat.com>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
- <20201031074437.168008-2-chenzhou10@huawei.com>
- <20201111013815.GC24747@MiWiFi-R3L-srv>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <bhsharma@redhat.com>,
-        <prabhakar.pkin@gmail.com>, <wangkefeng.wang@huawei.com>,
-        <arnd@arndb.de>, <linux-doc@vger.kernel.org>,
-        <xiexiuqi@huawei.com>, <kexec@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <horms@verge.net.au>, <james.morse@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>, <huawei.libin@huawei.com>,
-        <guohanjun@huawei.com>, <nsaenzjulienne@suse.de>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <a72cb0ba-91b9-0bd7-7f61-020ae9269d1a@huawei.com>
-Date:   Wed, 11 Nov 2020 21:26:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 11 Nov 2020 08:26:52 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B40C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:26:52 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id q22so1576260qkq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=NHIkjhd5hEAN/PFoCYfMQ2iwZKBSPt0aiwevXUMhafo=;
+        b=hCnxeq4RuMjbnaxs58cXtHsdAKn9gPRITgfWcNPiN4pyNlZFRWOtv6ziGX0gSVTtPU
+         o6cv4KCceO5UnPBuHZYLIQMwvnswLTn9XvYMkK3l0v/50mFdi6YcZ9Y/ZFT6yA/7RKSK
+         A8OhUrcjrKV/jVzqXIK5C/0rdRkFrkcr1z1gVZ0N6T/WDEp7Zfbzq7JSr6q4TAav41KG
+         bZ5sLrt6GhB8rwXNbRO4+clb4BjTXIgoZCmVlR7MX4sF7fiUdpYyMrnDV3c6T9QZ/Ht1
+         e5aIX6X/gPgrvp0Y8iKblpQ2Ve8Kxtyx158S+UY67lWwEVP36SZIRDCDZoUkD+nmeUPH
+         SS5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=NHIkjhd5hEAN/PFoCYfMQ2iwZKBSPt0aiwevXUMhafo=;
+        b=WrENO0Gq6COBfVvMXzBE2LbnxVc/JkSX0qGJpPIXuPQ0hwEKcXbIi1Hna+HCqRV3/d
+         8Rmb+3ra6eqSlGlonR7TEpqTy5zMBlG7ezwVgDGXJAxehY/JodHjak1m6gGFvBh8rtPf
+         Bo7kCeAf9ADfZJbbco2z8n3vCchYECl2wggYLgINwboGTFp3nybgONm6suaddAaSbpw3
+         z2ySrqp3AhOA11ygxbJtAkli8zy7RvTLIkf8wjUbzek0J6rzUMJ/ssIBIRZ5ysA20yvO
+         xTF/BWuhuEO6w4UhkRojVj4Vloo0/wLiG6HlXBrw/1XB1M/0CUX2vI346ttbAJfqffqT
+         g4nA==
+X-Gm-Message-State: AOAM531Btl7wjhRJProVYsiDZvn8ty5gxrXgZh09yL7GRW+ZTWA+8aKd
+        PWNL9W+nVfsWm+o/yg2cdIWsdV6MeNYXoaPestQ0kg==
+X-Google-Smtp-Source: ABdhPJyoeut2NJQrJGqqBr/mOd8RvxNenUNqRJlhaByIFumXC5KznKgMyawu+bDLqyP9cqH+6IEg/SLRCycXpfJmqoU=
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr25818286qkm.231.1605101211622;
+ Wed, 11 Nov 2020 05:26:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201111013815.GC24747@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+References: <0000000000000cce30059f4e27e9@google.com> <0000000000005fc62d05ae9ab8c2@google.com>
+In-Reply-To: <0000000000005fc62d05ae9ab8c2@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 11 Nov 2020 14:26:40 +0100
+Message-ID: <CACT4Y+YF9==+4mgHfjkNYdD+J0u2VSZeipgZTXc4y07fur_6pA@mail.gmail.com>
+Subject: Re: WARNING: refcount bug in l2cap_chan_put
+To:     syzbot <syzbot+198362c76088d1515529@syzkaller.appspotmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
-
-
-On 2020/11/11 9:38, Baoquan He wrote:
-> On 10/31/20 at 03:44pm, Chen Zhou wrote:
->> Move CRASH_ALIGN to header asm/kexec.h and replace the hard-coded
->> alignment with macro CRASH_ALIGN in function reserve_crashkernel().
-> Seems you tell what you have done in this patch, but don't like adding
-> several more words to tell why it's done like that. Please see below
-> inline comments.
+On Sun, Sep 6, 2020 at 3:07 AM syzbot
+<syzbot+198362c76088d1515529@syzkaller.appspotmail.com> wrote:
 >
-> In other patches, I can also see this similar problem.
-Thanks for your review. I will update relevant commit messages.
+> syzbot suspects this issue was fixed by commit:
 >
->> Suggested-by: Dave Young <dyoung@redhat.com>
->> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
->> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
->> ---
->>  arch/x86/include/asm/kexec.h | 3 +++
->>  arch/x86/kernel/setup.c      | 5 +----
->>  2 files changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
->> index 6802c59e8252..8cf9d3fd31c7 100644
->> --- a/arch/x86/include/asm/kexec.h
->> +++ b/arch/x86/include/asm/kexec.h
->> @@ -18,6 +18,9 @@
->>  
->>  # define KEXEC_CONTROL_CODE_MAX_SIZE	2048
->>  
->> +/* 2M alignment for crash kernel regions */
->> +#define CRASH_ALIGN		SZ_16M
->> +
->>  #ifndef __ASSEMBLY__
->>  
->>  #include <linux/string.h>
->> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
->> index 84f581c91db4..bf373422dc8a 100644
->> --- a/arch/x86/kernel/setup.c
->> +++ b/arch/x86/kernel/setup.c
->> @@ -395,9 +395,6 @@ static void __init memblock_x86_reserve_range_setup_data(void)
->>  
->>  #ifdef CONFIG_KEXEC_CORE
->>  
->> -/* 16M alignment for crash kernel regions */
->> -#define CRASH_ALIGN		SZ_16M
->> -
->>  /*
->>   * Keep the crash kernel below this limit.
->>   *
->> @@ -515,7 +512,7 @@ static void __init reserve_crashkernel(void)
->>  	} else {
->>  		unsigned long long start;
->>  
->> -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
->> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
->>  						  crash_base + crash_size);
-> Here, SZ_1M is replaced with CRASH_ALIGN which is 16M. I remember I ever
-> commented that this had better be told in patch log.
-got it.
+> commit b83764f9220a4a14525657466f299850bbc98de9
+> Author: Miao-chen Chou <mcchou@chromium.org>
+> Date:   Tue Jun 30 03:15:00 2020 +0000
+>
+>     Bluetooth: Fix kernel oops triggered by hci_adv_monitors_clear()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11aaff5d900000
+> start commit:   fffe3ae0 Merge tag 'for-linus-hmm' of git://git.kernel.org..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=18bb86f2e4ebfda2
+> dashboard link: https://syzkaller.appspot.com/bug?extid=198362c76088d1515529
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152a482c900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109b781a900000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: Bluetooth: Fix kernel oops triggered by hci_adv_monitors_clear()
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Thanks,
-Chen Zhou
->
->>  		if (start != crash_base) {
->>  			pr_info("crashkernel reservation failed - memory is in use.\n");
->> -- 
->> 2.20.1
->>
->>
->> _______________________________________________
->> kexec mailing list
->> kexec@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/kexec
->>
-> .
->
-
+#syz fix: Bluetooth: Fix kernel oops triggered by hci_adv_monitors_clear()
