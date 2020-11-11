@@ -2,114 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2282AEE31
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C72F2AEE50
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727301AbgKKJz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:55:28 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:57902 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgKKJz1 (ORCPT
+        id S1727298AbgKKJ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:58:42 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:57846 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgKKJ6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:55:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605088526; x=1636624526;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=23idBd3O0JKpB50W0Okk4fGadp4AYDO8EO9WHPr9aNE=;
-  b=Cw7TBZ9qQfpyX+fMlOErjQeKRiHRZzUWTzOXBm6wwORK3a19gges5yR0
-   9Ew0lgfmmhCV+dSanGqWW+Ddb9N3Qgqp8L3/R0WGFv9YfADxHRUG5LHTV
-   Y3MKj70nT0wgNXlgf5rUi0yRXOPIc0d2m76xtj88ggr31XTWG4rNqPAdS
-   HYKRmhWHET8XmO6INj6GbXbjg8TdZMFjSPBE99AZRs9BsophH1r3dHzEY
-   71v/2S5M9lLGsczUjugoc7GlbYgID6F4zmOJ31vBzhAAsDlAJh7MTa0r6
-   h4qMibahJVZE8YxP8m5lUk1gC463JdbpYTq3SoooLCZrJbOONxmMBUMWi
-   w==;
-IronPort-SDR: bP8keLyxeGHJX6FMIO5a/y66iHo6CbPbtDf55MwnaFy8XdjhjHEwHAmLt3p2ywJNvtOhp1uana
- jSQvQEVzFPt8TXiBOVCnkqELaGw5oLWW/oPMDIQjAX01TEPQ8/iz5+M/ldbN3az1JtDgE/OSLE
- S50tkiTu86ECS6+g5vYJr1utN5GiJ8A36iUHHhtut0phad3a0VPhmBO6GBRYgpn+Nkx52EOCwd
- UBlC4w+jGM40sPrunPEMAXFK2dagAsluqIc/v9t9qjmvuFwZktZS6uqX49sP0JMenGPP+CwCJP
- Vg8=
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="93267840"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 02:55:25 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 11 Nov 2020 02:55:24 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 11 Nov 2020 02:55:22 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Quentin Schulz <quentin.schulz@bootlin.com>,
-        "Bryan Whitehead" <Bryan.Whitehead@microchip.com>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        John Haechten <John.Haechten@microchip.com>,
-        Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: [net] net: phy: mscc: adjust the phy support for PTP and MACsec
-Date:   Wed, 11 Nov 2020 10:55:11 +0100
-Message-ID: <20201111095511.671539-1-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 11 Nov 2020 04:58:39 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB9rM1a026154;
+        Wed, 11 Nov 2020 09:58:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=oA61zxEVlmMNqsCkjllOctTkDy6MHEZz/u0CS0f0GR4=;
+ b=EQ8585thJHiooh6+1JOWtvq0C3AVYE3QmSIqvUKrsXCKk1jWJbWXvTMWy7zl2LOx++72
+ 08NZQ9P7fWkAcWVE64rNpSs9iiZOrBDkLo6KFUbH6M2hpKf68PsNajR+F/LbYkA5NMy4
+ QPQ2kaVm45VRbpFLGQfWi+0JxbL9qLk1C/WBmuws9owZJ/0IriOGLGHd23/VTGOtHQtw
+ aPHm89YLeIvSVUXWmBZFiVX9kOP0neTChUC2qW9p4ejmMyDYZpyb2tnNncsl2afn+hwS
+ f3C3bP6tonLgknMS2su1C+EQYimJGBhOpmw2mQ5wqX9diAcREKhCHLlgajSc48U4YJfT cA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34p72epbfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Nov 2020 09:58:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB9uANX188256;
+        Wed, 11 Nov 2020 09:56:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 34p5gy5h87-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Nov 2020 09:56:30 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AB9uSol008867;
+        Wed, 11 Nov 2020 09:56:29 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 11 Nov 2020 01:56:28 -0800
+Date:   Wed, 11 Nov 2020 12:56:21 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     LABBE Corentin <clabbe@baylibre.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com,
+        Dan Carpenter <error27@gmail.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c:412
+ sun8i_ce_hash_run() warn: possible memory leak of 'result'
+Message-ID: <20201111095621.GJ29398@kadam>
+References: <20201110104737.GF29398@kadam>
+ <20201111080134.GA4359@Red>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111080134.GA4359@Red>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011110054
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011110054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MSCC PHYs selected for PTP and MACSec was not correct
+On Wed, Nov 11, 2020 at 09:01:34AM +0100, LABBE Corentin wrote:
+> On Tue, Nov 10, 2020 at 01:47:37PM +0300, Dan Carpenter wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   407ab579637ced6dc32cfb2295afb7259cca4b22
+> > commit: 56f6d5aee88d129b2424902cd630f10794550763 crypto: sun8i-ce - support hash algorithms
+> > config: x86_64-randconfig-m001-20201109 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> 
+> Hello
+> 
+> Thanks for the report, I will send a patch soon.
+> Note that you should send this report to the maintainer also (but this time it is me with another address, so its fine).
+> 
 
-- PTP
-    - Add VSC8572 and VSC8574
+These are automated emails from the kbuild bot.  I just look over the
+Smatch warnings and forward them.  It don't know how the CC list is
+chosen.  I guess just from who signed off on the patch...  My guess is
+that people would be annoyed if we CC'd more people.
 
-- MACsec
-    - Removed VSC8575
+Generally, we have a really good success rate with people fixing these
+warnings.  I recently had a case where the zero day bot email wasn't
+clear, but I caught that because I'm looking at new Smatch warnings on
+my own system.  There was another case, where the bug was fixed and then
+re-introduced via a bad merge and we almost missed that because it was
+marked as old.  Fortunately, I discoverd it while looking at a different
+bug.
 
-The relevant datasheets can be found here:
-  - VSC8572: https://www.microchip.com/wwwproducts/en/VSC8572
-  - VSC8574: https://www.microchip.com/wwwproducts/en/VSC8574
-  - VSC8575: https://www.microchip.com/wwwproducts/en/VSC8575
-
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- drivers/net/phy/mscc/mscc_macsec.c | 1 -
- drivers/net/phy/mscc/mscc_ptp.c    | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
-index 1d4c012194e9..72292bf6c51c 100644
---- a/drivers/net/phy/mscc/mscc_macsec.c
-+++ b/drivers/net/phy/mscc/mscc_macsec.c
-@@ -981,7 +981,6 @@ int vsc8584_macsec_init(struct phy_device *phydev)
-
- 	switch (phydev->phy_id & phydev->drv->phy_id_mask) {
- 	case PHY_ID_VSC856X:
--	case PHY_ID_VSC8575:
- 	case PHY_ID_VSC8582:
- 	case PHY_ID_VSC8584:
- 		INIT_LIST_HEAD(&vsc8531->macsec_flows);
-diff --git a/drivers/net/phy/mscc/mscc_ptp.c b/drivers/net/phy/mscc/mscc_ptp.c
-index b97ee79f3cdf..f0537299c441 100644
---- a/drivers/net/phy/mscc/mscc_ptp.c
-+++ b/drivers/net/phy/mscc/mscc_ptp.c
-@@ -1510,6 +1510,8 @@ void vsc8584_config_ts_intr(struct phy_device *phydev)
- int vsc8584_ptp_init(struct phy_device *phydev)
- {
- 	switch (phydev->phy_id & phydev->drv->phy_id_mask) {
-+	case PHY_ID_VSC8572:
-+	case PHY_ID_VSC8574:
- 	case PHY_ID_VSC8575:
- 	case PHY_ID_VSC8582:
- 	case PHY_ID_VSC8584:
---
-2.29.2
-
+regards,
+dan carpenter
