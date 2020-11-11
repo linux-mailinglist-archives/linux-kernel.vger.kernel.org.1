@@ -2,141 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E192AF445
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B742AF448
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgKKO7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:59:21 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35390 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727292AbgKKO7T (ORCPT
+        id S1727329AbgKKO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:59:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbgKKO7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:59:19 -0500
-Received: by mail-il1-f199.google.com with SMTP id l2so1537023ilj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:59:16 -0800 (PST)
+        Wed, 11 Nov 2020 09:59:48 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1EAC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:59:48 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id q5so1850758qkc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:59:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/fDcpIY0qGq2TOyxo24BIpfp3mzq21GpKr2EDtPYTac=;
+        b=Ty273gzZBP5AOxstBsw1RhEtCdmjvUJfpOoPRJq/s43OIbRVjaGFiKolBDbmN776NY
+         robjSmaetRwjV8fMVSijm05FCY5AU9myta6xfkHhebc9pN0+O+TKhGXyytCVNn0ccVqE
+         QsvoNat6t7+FCjoABUzlCWErE9262ZzaQhX/YNZA5eYJuKkAfuu0nO4U6t8k1+XpbNEC
+         tZPe3V61YUtGIDyHJWqh8yK2+D0z+jAQlHzI3bn/56FJTRNDSlOtp/CLBkem4LNxkoQU
+         FUna472XPWJJsmujQ2nwxS4eNp7VtxmRbo7Z5FP7lU9d+oVq8xNF3XjbxNTrXiyfhbaV
+         8dvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=W6HwsV977k5Y95mu3agDWsdgg0NHwiZ+N76/EE+Ulz4=;
-        b=QHhcNvyq5mP27AXzLDMaFIuxtr7VGj0zoiwqGl2IcSjQ80pSP02KS19bf3RbSoyVjb
-         Xa0uoXlVLJ9fbD7BoORXvO/uyd3PkY86G1FtFx63UpH/fOdseYdxlHvMNUSE4JV1WXEl
-         cZwpdd0e4jgSqZJKDgF1DD+r2ryfa1idrO+4CcQ9tByZ2m9+H+Ibk7mCmpqvYlSpIY6s
-         s1GuFcd5G8MziAC/U215IT2IpminsVSqs33ADtvQlq5vWHtqv1x81uaY3KYSNJfCSEwz
-         Hgan0LljCxTUeFrNoQmkI/rsA4XYM3VHlTU+E+foPBH15TQF+D4IRSraIqpWlsUW3ffU
-         +5/g==
-X-Gm-Message-State: AOAM533azY2Z8vh3M28Ux9Rm/a4N5ovi+gwd/YcNtqzk9lMEnjBW8O58
-        e5dOhNoE5qdPkhlf1WAuzDD5IYyCZrSZWDAcX+zSvuLzwbLK
-X-Google-Smtp-Source: ABdhPJwPaGTsRU/8i3pPyGnMI8Ns8iG/TZN6ny1+/swklMuMxPF9MWMmk+LV1RmWFYA2sfyjg6xPUAGGqK8jRy6rf7wctHU8gayL
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/fDcpIY0qGq2TOyxo24BIpfp3mzq21GpKr2EDtPYTac=;
+        b=uDFea+wsPwY4tq5W9S0lBaLWcgtu3yUVaXLc8soATb0Kw4EU55o/u+ffqyxiWVQP7K
+         SJr8f2plhNGYSmPXP0xR/0YgBeVQRWKx9Xiucg8axyePnyzaZOwbnNM8aGwSzbLgy2O2
+         2Hp+KF3sVOQLm5bZT0wLpJiURD+/7JivkfcSbVPoo5WcFHd89FC3dGYb0JoQvJt6KMVf
+         AiJG1a6N67InmYZnTZtZSbiM4mI4uzGWR/44etQ7l4sWYWCqea96pHYPDrGuPXpzpWRo
+         pY2TRSzGhXUgInaXUFyiJwMYuk6QwK40TV5qXqvi2H4Xc6QCy/B49m+bTUA2xkBH2PCg
+         FBDg==
+X-Gm-Message-State: AOAM532ZQWHfttYpV7D9jprykEMbiVdaH71LJPloAfV2o5kYxQTeq7v0
+        bWdR/17pPCHSHoIM+7a2w53BuHWvaL+dRYzp9Gw26g==
+X-Google-Smtp-Source: ABdhPJzbjy27RIkLLWvoPaUvOZWfgFRUJVg0/tpesY09y+nx6VSIwS50KV49LKHnYDskEH5yMx2VLlDTj12KJuOcwK8=
+X-Received: by 2002:a05:620a:f95:: with SMTP id b21mr16896205qkn.403.1605106786994;
+ Wed, 11 Nov 2020 06:59:46 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:5101:: with SMTP id s1mr20640779jaa.74.1605106756453;
- Wed, 11 Nov 2020 06:59:16 -0800 (PST)
-Date:   Wed, 11 Nov 2020 06:59:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b8bf805b3d60a08@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run4
-From:   syzbot <syzbot+a5bd8c75daa0e849b296@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <cover.1605046192.git.andreyknvl@google.com> <91b3defa17748a61d1432929a80890043ca8dcda.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <91b3defa17748a61d1432929a80890043ca8dcda.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 15:59:34 +0100
+Message-ID: <CAG_fn=VhzzFSXE19KJ+0-q1WitAu08scm8s-eXvQWYSqJTub=w@mail.gmail.com>
+Subject: Re: [PATCH v9 16/44] kasan, arm64: only use kasan_depth for software modes
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+>
+> Hardware tag-based KASAN won't use kasan_depth. Only define and use it
+> when one of the software KASAN modes are enabled.
+>
+> No functional changes for software modes.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-syzbot found the following issue on:
+> ---
+> Change-Id: I6109ea96c8df41ef6d75ad71bf22c1c8fa234a9a
+> ---
+>  arch/arm64/mm/kasan_init.c | 11 ++++++++---
+>  include/linux/kasan.h      | 18 +++++++++---------
+>  include/linux/sched.h      |  2 +-
+>  init/init_task.c           |  2 +-
+>  mm/kasan/common.c          |  2 ++
+>  mm/kasan/report.c          |  2 ++
+>  6 files changed, 23 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> index ffeb80d5aa8d..5172799f831f 100644
+> --- a/arch/arm64/mm/kasan_init.c
+> +++ b/arch/arm64/mm/kasan_init.c
+> @@ -273,17 +273,22 @@ static void __init kasan_init_shadow(void)
+>         cpu_replace_ttbr1(lm_alias(swapper_pg_dir));
+>  }
+>
+> +static void __init kasan_init_depth(void)
+> +{
+> +       init_task.kasan_depth =3D 0;
+> +}
+> +
+>  #else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) */
+>
+>  static inline void __init kasan_init_shadow(void) { }
+>
+> +static inline void __init kasan_init_depth(void) { }
+> +
+>  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+>
+>  void __init kasan_init(void)
+>  {
+>         kasan_init_shadow();
+> -
+> -       /* At this point kasan is fully initialized. Enable error message=
+s */
+> -       init_task.kasan_depth =3D 0;
+> +       kasan_init_depth();
+>         pr_info("KernelAddressSanitizer initialized\n");
+>  }
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index f6435b9f889c..979d598e1c30 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -51,6 +51,12 @@ static inline void *kasan_mem_to_shadow(const void *ad=
+dr)
+>  int kasan_add_zero_shadow(void *start, unsigned long size);
+>  void kasan_remove_zero_shadow(void *start, unsigned long size);
+>
+> +/* Enable reporting bugs after kasan_disable_current() */
+> +extern void kasan_enable_current(void);
+> +
+> +/* Disable reporting bugs for current task */
+> +extern void kasan_disable_current(void);
+> +
+>  #else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+>
+>  static inline int kasan_add_zero_shadow(void *start, unsigned long size)
+> @@ -61,16 +67,13 @@ static inline void kasan_remove_zero_shadow(void *sta=
+rt,
+>                                         unsigned long size)
+>  {}
+>
+> +static inline void kasan_enable_current(void) {}
+> +static inline void kasan_disable_current(void) {}
+> +
+>  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+>
+>  #ifdef CONFIG_KASAN
+>
+> -/* Enable reporting bugs after kasan_disable_current() */
+> -extern void kasan_enable_current(void);
+> -
+> -/* Disable reporting bugs for current task */
+> -extern void kasan_disable_current(void);
+> -
+>  void kasan_unpoison_memory(const void *address, size_t size);
+>
+>  void kasan_unpoison_task_stack(struct task_struct *task);
+> @@ -121,9 +124,6 @@ static inline void kasan_unpoison_memory(const void *=
+address, size_t size) {}
+>
+>  static inline void kasan_unpoison_task_stack(struct task_struct *task) {=
+}
+>
+> -static inline void kasan_enable_current(void) {}
+> -static inline void kasan_disable_current(void) {}
+> -
+>  static inline void kasan_alloc_pages(struct page *page, unsigned int ord=
+er) {}
+>  static inline void kasan_free_pages(struct page *page, unsigned int orde=
+r) {}
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 063cd120b459..81b09bd31186 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1197,7 +1197,7 @@ struct task_struct {
+>         u64                             timer_slack_ns;
+>         u64                             default_timer_slack_ns;
+>
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>         unsigned int                    kasan_depth;
+>  #endif
+>
+> diff --git a/init/init_task.c b/init/init_task.c
+> index a56f0abb63e9..39703b4ef1f1 100644
+> --- a/init/init_task.c
+> +++ b/init/init_task.c
+> @@ -176,7 +176,7 @@ struct task_struct init_task
+>         .numa_group     =3D NULL,
+>         .numa_faults    =3D NULL,
+>  #endif
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>         .kasan_depth    =3D 1,
+>  #endif
+>  #ifdef CONFIG_KCSAN
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 543e6bf2168f..d0b3ff410b0c 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -46,6 +46,7 @@ void kasan_set_track(struct kasan_track *track, gfp_t f=
+lags)
+>         track->stack =3D kasan_save_stack(flags);
+>  }
+>
+> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>  void kasan_enable_current(void)
+>  {
+>         current->kasan_depth++;
+> @@ -55,6 +56,7 @@ void kasan_disable_current(void)
+>  {
+>         current->kasan_depth--;
+>  }
+> +#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+>
+>  static void __kasan_unpoison_stack(struct task_struct *task, const void =
+*sp)
+>  {
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index b18d193f7f58..af9138ea54ad 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -292,8 +292,10 @@ static void print_shadow_for_address(const void *add=
+r)
+>
+>  static bool report_enabled(void)
+>  {
+> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>         if (current->kasan_depth)
+>                 return false;
+> +#endif
+>         if (test_bit(KASAN_BIT_MULTI_SHOT, &kasan_flags))
+>                 return true;
+>         return !test_and_set_bit(KASAN_BIT_REPORTED, &kasan_flags);
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
-HEAD commit:    c6bde958 bpf: Lift hashtab key_size limit
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=159f611a500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
-dashboard link: https://syzkaller.appspot.com/bug?extid=a5bd8c75daa0e849b296
-compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Unfortunately, I don't have any reproducer for this issue yet.
+--=20
+Alexander Potapenko
+Software Engineer
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a5bd8c75daa0e849b296@syzkaller.appspotmail.com
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
-BUG: unable to handle page fault for address: fffff52000194406
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 23fff2067 P4D 23fff2067 PUD 101a4067 PMD 101a6067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8505 Comm: syz-executor.1 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-RIP: 0010:bpf_trace_run4+0x135/0x3f0 kernel/trace/bpf_trace.c:2084
-Code: c7 c7 20 ed 50 89 e8 6a 5e d2 ff 0f 1f 44 00 00 e8 f0 27 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900016af5e0 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000ca2000 RCX: ffffffff8178e0f2
-RDX: 1ffff92000194406 RSI: ffffffff8178dec0 RDI: ffffc90000ca2030
-RBP: 1ffff920002d5ebd R08: 0000000000000000 R09: ffffffff8ebac667
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000001 R14: 00000000000026be R15: ffff8880563fdd38
-FS:  0000000001c6d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff52000194406 CR3: 000000003df71000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- __bpf_trace_ext4_free_blocks+0x10a/0x150 include/trace/events/ext4.h:887
- trace_ext4_free_blocks include/trace/events/ext4.h:887 [inline]
- ext4_free_blocks+0x150d/0x1de0 fs/ext4/mballoc.c:5303
- ext4_remove_blocks fs/ext4/extents.c:2497 [inline]
- ext4_ext_rm_leaf fs/ext4/extents.c:2663 [inline]
- ext4_ext_remove_space+0x1fad/0x4270 fs/ext4/extents.c:2911
- ext4_ext_truncate+0x1dc/0x240 fs/ext4/extents.c:4373
- ext4_truncate+0xe86/0x1420 fs/ext4/inode.c:4251
- ext4_evict_inode+0x9d2/0x1180 fs/ext4/inode.c:280
- evict+0x2ed/0x750 fs/inode.c:578
- iput_final fs/inode.c:1654 [inline]
- iput.part.0+0x3fe/0x820 fs/inode.c:1680
- iput+0x58/0x70 fs/inode.c:1670
- dentry_unlink_inode+0x2b1/0x3d0 fs/dcache.c:374
- d_delete fs/dcache.c:2470 [inline]
- d_delete+0x16b/0x1c0 fs/dcache.c:2459
- vfs_rmdir.part.0+0x37b/0x430 fs/namei.c:3726
- vfs_rmdir fs/namei.c:3698 [inline]
- do_rmdir+0x3ae/0x440 fs/namei.c:3773
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dc27
-Code: 00 66 90 b8 57 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 8d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 6d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd7c232298 EFLAGS: 00000207 ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 000000000045dc27
-RDX: 0000000000000000 RSI: 000000000074e678 RDI: 00007ffd7c2333d0
-RBP: 0000000000003f22 R08: 0000000000000000 R09: 0000000000000001
-R10: 000000000000000a R11: 0000000000000207 R12: 00007ffd7c2333d0
-R13: 0000000001c6ea60 R14: 0000000000000000 R15: 00007ffd7c2333d0
-Modules linked in:
-CR2: fffff52000194406
----[ end trace 86ec96f38a2db7f5 ]---
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-RIP: 0010:bpf_trace_run4+0x135/0x3f0 kernel/trace/bpf_trace.c:2084
-Code: c7 c7 20 ed 50 89 e8 6a 5e d2 ff 0f 1f 44 00 00 e8 f0 27 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900016af5e0 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000ca2000 RCX: ffffffff8178e0f2
-RDX: 1ffff92000194406 RSI: ffffffff8178dec0 RDI: ffffc90000ca2030
-RBP: 1ffff920002d5ebd R08: 0000000000000000 R09: ffffffff8ebac667
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000001 R14: 00000000000026be R15: ffff8880563fdd38
-FS:  0000000001c6d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff52000194406 CR3: 000000003df71000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
