@@ -2,40 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2466E2AF7A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9186D2AF7BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgKKSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:00:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39386 "EHLO mx2.suse.de"
+        id S1727342AbgKKSJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:09:02 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:15225 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgKKSAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:00:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46FD6ABD1;
-        Wed, 11 Nov 2020 18:00:11 +0000 (UTC)
-Subject: Re: [PATCH v21 16/19] mm/swap.c: serialize memcg changes in
- pagevec_lru_move_fn
-To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-17-git-send-email-alex.shi@linux.alibaba.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <0af28702-8f75-6974-5b66-c0633eb83d7c@suse.cz>
-Date:   Wed, 11 Nov 2020 19:00:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1725966AbgKKSJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:09:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605118140; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=L/7UfRWhvf87d6KJzTiNV4kTZAtKUk11tsijaAnZsFg=; b=O9Hs7b9SvZqcg/mP9dg52FzXTeA14d0aADQht+SUb8Xve3Wz8RGWW0N5NgBCOISe/bBUY3vl
+ jbL3FpBdufYjCnikH41hGzONN1cgcp5juW33JOXJKzZDvMciXjz1lzJVAnquaQcOjn/UHMYN
+ TyNVN7ekPFlFtHt0KaCIbuVG3SY=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fac207c0d87d63775a26c7e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 17:33:48
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 38205C43385; Wed, 11 Nov 2020 17:33:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4491EC433C6;
+        Wed, 11 Nov 2020 17:33:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4491EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
+ caused by ufshcd_hold()
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
+ <1604384682-15837-2-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <ddefc6a0-6a70-692b-b9bc-d3a290273f72@codeaurora.org>
+Date:   Wed, 11 Nov 2020 09:33:44 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-17-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1604384682-15837-2-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,147 +72,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 9:55 AM, Alex Shi wrote:
-> Hugh Dickins' found a memcg change bug on original version:
-> If we want to change the pgdat->lru_lock to memcg's lruvec lock, we have
-> to serialize mem_cgroup_move_account during pagevec_lru_move_fn. The
-> possible bad scenario would like:
+On 11/2/2020 10:24 PM, Can Guo wrote:
+> The scsi_block_reqs_cnt increased in ufshcd_hold() is supposed to be
+> decreased back in ufshcd_ungate_work() in a paired way. However, if
+> specific ufshcd_hold/release sequences are met, it is possible that
+> scsi_block_reqs_cnt is increased twice but only one ungate work is
+> queued. To make sure scsi_block_reqs_cnt is handled by ufshcd_hold() and
+> ufshcd_ungate_work() in a paired way, increase it only if queue_work()
+> returns true.
 > 
-> 	cpu 0					cpu 1
-> lruvec = mem_cgroup_page_lruvec()
-> 					if (!isolate_lru_page())
-> 						mem_cgroup_move_account
-> 
-> spin_lock_irqsave(&lruvec->lru_lock <== wrong lock.
-> 
-> So we need TestClearPageLRU to block isolate_lru_page(), that serializes
-> the memcg change. and then removing the PageLRU check in move_fn callee
-> as the consequence.
-> 
-> __pagevec_lru_add_fn() is different from the others, because the pages
-> it deals with are, by definition, not yet on the lru.  TestClearPageLRU
-> is not needed and would not work, so __pagevec_lru_add() goes its own
-> way.
-> 
-> Reported-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
 > ---
->   mm/swap.c | 44 +++++++++++++++++++++++++++++++++++---------
->   1 file changed, 35 insertions(+), 9 deletions(-)
+
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+
+>   drivers/scsi/ufs/ufshcd.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/mm/swap.c b/mm/swap.c
-> index 2681d9023998..1838a9535703 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -222,8 +222,14 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
->   			spin_lock_irqsave(&pgdat->lru_lock, flags);
->   		}
->   
-> +		/* block memcg migration during page moving between lru */
-> +		if (!TestClearPageLRU(page))
-> +			continue;
-> +
->   		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->   		(*move_fn)(page, lruvec);
-> +
-> +		SetPageLRU(page);
->   	}
->   	if (pgdat)
->   		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> @@ -233,7 +239,7 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
->   
->   static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
->   {
-> -	if (PageLRU(page) && !PageUnevictable(page)) {
-> +	if (!PageUnevictable(page)) {
->   		del_page_from_lru_list(page, lruvec, page_lru(page));
->   		ClearPageActive(page);
->   		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
-> @@ -306,7 +312,7 @@ void lru_note_cost_page(struct page *page)
->   
->   static void __activate_page(struct page *page, struct lruvec *lruvec)
->   {
-> -	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
-> +	if (!PageActive(page) && !PageUnevictable(page)) {
->   		int lru = page_lru_base_type(page);
->   		int nr_pages = thp_nr_pages(page);
->   
-> @@ -362,7 +368,8 @@ static void activate_page(struct page *page)
->   
->   	page = compound_head(page);
->   	spin_lock_irq(&pgdat->lru_lock);
-> -	__activate_page(page, mem_cgroup_page_lruvec(page, pgdat));
-> +	if (PageLRU(page))
-> +		__activate_page(page, mem_cgroup_page_lruvec(page, pgdat));
->   	spin_unlock_irq(&pgdat->lru_lock);
->   }
->   #endif
-> @@ -519,9 +526,6 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
->   	bool active;
->   	int nr_pages = thp_nr_pages(page);
->   
-> -	if (!PageLRU(page))
-> -		return;
-> -
->   	if (PageUnevictable(page))
->   		return;
->   
-> @@ -562,7 +566,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
->   
->   static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
->   {
-> -	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
-> +	if (PageActive(page) && !PageUnevictable(page)) {
->   		int lru = page_lru_base_type(page);
->   		int nr_pages = thp_nr_pages(page);
->   
-> @@ -579,7 +583,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
->   
->   static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec)
->   {
-> -	if (PageLRU(page) && PageAnon(page) && PageSwapBacked(page) &&
-> +	if (PageAnon(page) && PageSwapBacked(page) &&
->   	    !PageSwapCache(page) && !PageUnevictable(page)) {
->   		bool active = PageActive(page);
->   		int nr_pages = thp_nr_pages(page);
-> @@ -1021,7 +1025,29 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->    */
->   void __pagevec_lru_add(struct pagevec *pvec)
->   {
-> -	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn);
-> +	int i;
-> +	struct pglist_data *pgdat = NULL;
-> +	struct lruvec *lruvec;
-> +	unsigned long flags = 0;
-> +
-> +	for (i = 0; i < pagevec_count(pvec); i++) {
-> +		struct page *page = pvec->pages[i];
-> +		struct pglist_data *pagepgdat = page_pgdat(page);
-> +
-> +		if (pagepgdat != pgdat) {
-> +			if (pgdat)
-> +				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +			pgdat = pagepgdat;
-> +			spin_lock_irqsave(&pgdat->lru_lock, flags);
-> +		}
-> +
-> +		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		__pagevec_lru_add_fn(page, lruvec);
-> +	}
-> +	if (pgdat)
-> +		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +	release_pages(pvec->pages, pvec->nr);
-> +	pagevec_reinit(pvec);
->   }
->   
->   /**
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 847f355..efa7d86 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1634,12 +1634,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
+>   		 */
+>   		/* fallthrough */
+>   	case CLKS_OFF:
+> -		ufshcd_scsi_block_requests(hba);
+>   		hba->clk_gating.state = REQ_CLKS_ON;
+>   		trace_ufshcd_clk_gating(dev_name(hba->dev),
+>   					hba->clk_gating.state);
+> -		queue_work(hba->clk_gating.clk_gating_workq,
+> -			   &hba->clk_gating.ungate_work);
+> +		if (queue_work(hba->clk_gating.clk_gating_workq,
+> +			       &hba->clk_gating.ungate_work))
+> +			ufshcd_scsi_block_requests(hba);
+>   		/*
+>   		 * fall through to check if we should wait for this
+>   		 * work to be done or not.
 > 
 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
