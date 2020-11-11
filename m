@@ -2,184 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1C12AF2D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE46E2AF242
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgKKN7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:59:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbgKKNfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:35:13 -0500
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A6C920829;
-        Wed, 11 Nov 2020 13:35:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605101712;
-        bh=GaQU9rM+P1s6S9ioMaD8ODMJuqhbgzej2Pwn224DULs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=l9eP4xo3Dt8JIOzkI5XJDqS3pK0+YVQyYhIozCNMEA3Gxkl5kej27O0hDjPW6Wqes
-         CXOSZ2UMDqAyXLSs7b0baDYs3ZyECh0yu0WFFWzqzJGzEtdcs4LcVPrUnXxTIxGvmG
-         ME90S0lMZhMrHhDKmc33RrqkFn+8w+rI8twiPWDY=
-Received: by mail-oi1-f172.google.com with SMTP id m143so2173282oig.7;
-        Wed, 11 Nov 2020 05:35:12 -0800 (PST)
-X-Gm-Message-State: AOAM532qQNAeOhXNyj2XUiW1bQNMH9oO4qcsHY6JP3rQBJGJC+e7hdFH
-        jSOSCtieY+9zDqHaSqG/gJ655MXmDSHkB0Klyg==
-X-Google-Smtp-Source: ABdhPJwVxej4pSf3XECc4BzNRNQ7R9EtApnK/+4WVvKLOte9oPRPUUpShUa/ZyNa7yt2H/HctrZNL9nqRvPr3bSejyo=
-X-Received: by 2002:aca:fdd4:: with SMTP id b203mr2177696oii.152.1605101711667;
- Wed, 11 Nov 2020 05:35:11 -0800 (PST)
+        id S1727092AbgKKNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727027AbgKKNgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:36:20 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519A4C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:36:20 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id f11so3195436lfs.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:36:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=olXpuWKRZd2WOj54U9lEqVR1jNZf54WvQA2P0HktWA8=;
+        b=eRY3pQzc5vWFBm8wrOM4Wk6hZ+JxLZ3rHp0gEIWEeHkhSnhREBOU/e0aVNADZH0ruk
+         UVPfX6cy0/3JkT1vtC0PD8U89ubNGTY0mu+ANzfz4qT5e+u0JTLn+M3GvNjHTBfVgTe+
+         PdvI0NbRfNiOoz5liE3cjMHkdSjV9DHxIKSK6UMmeigTvdEcN/PlHHmfod0PaE1BbG1d
+         9ADjQRW1u2FS132A3xwYY2oUzxt4CDQPOF8SLsrDMqc+1od/wbL+a10ODbVzc8xnnEkC
+         8lMsfyrIhqdKFjBc2kxadw9S9WaSWg/wJsfXQTDU1qnlLcqNB8TzootgY44FC+UMFomO
+         w8Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=olXpuWKRZd2WOj54U9lEqVR1jNZf54WvQA2P0HktWA8=;
+        b=QTGuLsStVAWIm1LikEVmdTpvO7zQM8MFJbig9ugwLmplfXCL4xHqgJQsvPp2tJi3W9
+         zn+vK7YmhRwxHgc0kP03U7LzaHF3h5vga/WYnVD82bs3L/NQH8GVr67fV/Xu0gpNtskm
+         HFzmxQaC7q5kO1YvO7rXT1Q+RprjdPDaH3ccb3T8Yf7HKAP9OLopZdjhCR/NVjrZN5nq
+         Dav5wtfJwFC6hsGKCl+5LEOMB3gPzVGOvGj2xNXV657P3coMGxR6XUuQfhSMdRBkMnr4
+         4axxHuUh10r4q/YmMbpHWDA2K8f5IaLII4cEOL4hG2ULGkHmlXtjYzeWrFF7tsx7O2Oo
+         6NzQ==
+X-Gm-Message-State: AOAM530Oo0UazWtDKFv2FfkrpHad2e8VHEJ1Ps5agzFIFSCupudJityr
+        kNgHb86q5eJnJjNodZGSjLnNIBa+W4Cu9wEi+8x1lg==
+X-Google-Smtp-Source: ABdhPJzKrjwSKLLnsJwC2KZlvsGs1Zr74mP1FjA9nd1bGkwMn4wIkdimLhhhQSoCGGwqcznTPuB8RMSStDXllzU2OgA=
+X-Received: by 2002:ac2:4ac7:: with SMTP id m7mr7303223lfp.572.1605101778759;
+ Wed, 11 Nov 2020 05:36:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20201102203656.220187-1-robh@kernel.org> <20201102203656.220187-2-robh@kernel.org>
- <4185c162-8a71-7402-f46e-4a2495f152f2@nvidia.com>
-In-Reply-To: <4185c162-8a71-7402-f46e-4a2495f152f2@nvidia.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 11 Nov 2020 07:35:00 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+3_R9G=Lk4F3DMNgh4EhG_qsv1+HM2HgQOm+ePE4=hFA@mail.gmail.com>
-Message-ID: <CAL_Jsq+3_R9G=Lk4F3DMNgh4EhG_qsv1+HM2HgQOm+ePE4=hFA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     devicetree@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
+References: <20201106150706.29089-1-TheSven73@gmail.com> <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
+ <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
+ <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com> <20201111123327.GB4847@sirena.org.uk>
+In-Reply-To: <20201111123327.GB4847@sirena.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Nov 2020 14:36:07 +0100
+Message-ID: <CACRpkdZW3G48Yj3yGMTKZGwVEQOSs1VeVTTGLgyoJViM3=Yedg@mail.gmail.com>
+Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO descriptors
+To:     Mark Brown <broonie@kernel.org>,
+        Grant Likely <grant.likely@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 3:52 AM Sameer Pujar <spujar@nvidia.com> wrote:
->
-> Hi Rob,
->
-> > From: Sameer Pujar <spujar@nvidia.com>
-> >
-> > Convert device tree bindings of graph to YAML format. Currently graph.txt
-> > doc is referenced in multiple files and all of these need to use schema
-> > references. For now graph.txt is updated to refer to graph.yaml.
-> >
-> > For users of the graph binding, they should reference to the graph
-> > schema from either 'ports' or 'port' property:
-> >
-> > properties:
-> >    ports:
-> >      type: object
-> >      $ref: graph.yaml#/properties/ports
-> >
-> >      properties:
-> >        port@0:
-> >          description: What data this port has
-> >
-> >        ...
-> >
-> > Or:
-> >
-> > properties:
-> >    port:
-> >      description: What data this port has
-> >      type: object
-> >      $ref: graph.yaml#/properties/port
-> >
-> > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> > v3:
-> >   - Move port 'reg' to port@* and make required
-> >   - Make remote-endpoint required
-> >   - Add 'additionalProperties: true' now required
-> >   - Fix yamllint warnings
-> >
-> >   Documentation/devicetree/bindings/graph.txt  | 129 +-----------
-> >   Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
-> >   2 files changed, 200 insertions(+), 128 deletions(-)
-> >   create mode 100644 Documentation/devicetree/bindings/graph.yaml
-> >
-> ...
-> > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
-> > new file mode 100644
-> > index 000000000000..b56720c5a13e
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/graph.yaml
-> > @@ -0,0 +1,199 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/graph.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Common bindings for device graphs
-> > +
-> > +description: |
-> > +  The hierarchical organisation of the device tree is well suited to describe
-> > +  control flow to devices, but there can be more complex connections between
-> > +  devices that work together to form a logical compound device, following an
-> > +  arbitrarily complex graph.
-> > +  There already is a simple directed graph between devices tree nodes using
-> > +  phandle properties pointing to other nodes to describe connections that
-> > +  can not be inferred from device tree parent-child relationships. The device
-> > +  tree graph bindings described herein abstract more complex devices that can
-> > +  have multiple specifiable ports, each of which can be linked to one or more
-> > +  ports of other devices.
-> > +
-> > +  These common bindings do not contain any information about the direction or
-> > +  type of the connections, they just map their existence. Specific properties
-> > +  may be described by specialized bindings depending on the type of connection.
-> > +
-> > +  To see how this binding applies to video pipelines, for example, see
-> > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > +  Here the ports describe data interfaces, and the links between them are
-> > +  the connecting data buses. A single port with multiple connections can
-> > +  correspond to multiple devices being connected to the same physical bus.
-> > +
-> > +maintainers:
-> > +  - Philipp Zabel <p.zabel@pengutronix.de>
-> > +
-> > +select: false
-> > +
-> > +properties:
-> > +  port:
-> > +    type: object
-> > +    description:
-> > +      If there is more than one endpoint node or 'reg' property present in
-> > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
-> > +      required.
-> > +
-> > +    properties:
-> > +      "#address-cells":
-> > +        const: 1
-> > +
-> > +      "#size-cells":
-> > +        const: 0
-> > +
-> > +    patternProperties:
-> > +      "^endpoint(@[0-9a-f]+)?$":
-> > +        type: object
-> > +        properties:
-> > +          reg:
-> > +            maxItems: 1
-> > +
-> > +          remote-endpoint:
-> > +            description: |
-> > +              phandle to an 'endpoint' subnode of a remote device node.
-> > +            $ref: /schemas/types.yaml#/definitions/phandle
-> > +
-> > +        required:
-> > +          - remote-endpoint
->
-> Does 'remote-endpoint' have to be a required property?
-> In case of pluggable modules, the remote-endpoint may not be available
-> unless the module is plugged in. In other words, device-2 in below
-> example may not always be available, but still device-1 endpoint
-> configuration and usage may be required?
+On Wed, Nov 11, 2020 at 1:33 PM Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Nov 11, 2020 at 02:05:19AM +0100, Linus Walleij wrote:
 
-No, I've dropped it. I noticed the same thing converting some of the
-schema over to use this.
+> > I would say that anything that has:
+>
+> > spi->mode = ...
+>
+> > is essentially broken.
+>
+> This is not clear to me, most of these settings are things that are
+> constant for the device so it's not clear that they should be being set
+> by the device tree in the first place.
 
-Rob
+This was added initially with some two properties
+in drivers/of/of_spi.c in 2008:
+commit 284b01897340974000bcc84de87a4e1becc8a83d
+"spi: Add OF binding support for SPI busses"
+
+This was around the time ARM was first starting to migrate
+to device tree, so I suppose it made sense to them/us back
+then.
+
+Some properties were the accumulated over time.
+
+commit d57a4282d04810417c4ed2a49cbbeda8b3569b18
+"spi/devicetree: Move devicetree support code into spi directory"
+made this part of the SPI subsystem.
+
+This seems as simple as nobody was there to push back and
+say "wait the devices can specify that with code, don't put it
+as properties in device tree". To be honest we have kind of
+moved back and forward on that topic over time. :/
+
+> The idea that the chip select
+> might be being inverted like it is by this whole gpiolib/DT/new binding
+> thing is breaking expectations too.
+
+OK I think you're right, then this patch probably brings the behaviour
+back to expectations and it's how I should have done it in the first
+place. My bad code :/
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+> > The core sets up vital things in .mode from e.g. device tree in
+> > of_spi_parse_dt():
+>
+> >         /* Mode (clock phase/polarity/etc.) */
+> >         if (of_property_read_bool(nc, "spi-cpha"))
+> >                 spi->mode |= SPI_CPHA;
+> >         if (of_property_read_bool(nc, "spi-cpol"))
+> >                 spi->mode |= SPI_CPOL;
+> >         if (of_property_read_bool(nc, "spi-3wire"))
+> >                 spi->mode |= SPI_3WIRE;
+> >         if (of_property_read_bool(nc, "spi-lsb-first"))
+> >                 spi->mode |= SPI_LSB_FIRST;
+> >         if (of_property_read_bool(nc, "spi-cs-high"))
+> >                 spi->mode |= SPI_CS_HIGH;
+>
+> > All this gets overwritten and ignored when a client just assigns mode
+> > like that. Not just SPI_CS_HIGH. I doubt things are different
+> > with ACPI.
+>
+> OTOH most of these are things the device driver should just get right
+> without needing any input from DT, there's a few where there's plausible
+> options (eg, you can imagine pin strap configuration for 3 wire mode)
+
+Yes I actually ran into a case where the same Samsung display support
+both 4 and 3-wire mode so that needs to be configured in the device
+tree depending on the layout of the electronics. Arguably we should have
+just standardized the device tree bindings and let the individual SPI
+drivers parse that themselves in such cases.
+
+> so generally it's not clear how many of these make sense for anything
+> other than spidev.  This binding all predates my involvement so I don't
+> know the thought process here.
+
+I dug out some details, let's see if Grant has some historical anecdotes
+to add. The usage document from back then doesn't really say what
+device properties should be encoded in the device tree and what
+should just be assigned by code and e.g. determined from the
+compatible-string. It was later that especially Rob pointed out that
+random properties on device nodes was overused and that simply
+knowing the compatible is often enough.
+
+I don't know if we ever formalized it, there is nowadays a rule akin to
+
+"if a property can be determined from the compatible-string, and if the
+ compatible-string is identifying the variant of the electronic component,
+ then do not add this property to the device tree description. Just
+ deduce it from the compatible-string, assign it with code to the device
+ model of the operating system and handle it inside the operating system."
+
+I think this, while clear and intuitive, wasn't at all clear and intuitive in
+the recent past.
+
+Yours,
+Linus Walleij
