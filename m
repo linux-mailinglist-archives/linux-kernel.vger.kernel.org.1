@@ -2,230 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C05E2AE927
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF8F2AE92F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgKKGih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 01:38:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgKKGif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 01:38:35 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9BBC0613D1;
-        Tue, 10 Nov 2020 22:38:35 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725971AbgKKGlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 01:41:16 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:15327 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgKKGlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 01:41:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605076874; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=G5QF7G064HtJTosA44a0rDZ6QvsJzebmYGAGLkBClkA=;
+ b=ifD0OASdGUdECxDAHCZyCSpDeRVOUp62dlrickBwn2XScgMahx5C9tGbFYYHxZ5XXIlsbsho
+ uRxGMUw4R5dTkpF+3XHGt8Z8Q7I4yEdes5n6FOfGY2QKWoVMNtAwGAcrC/mVcS6lMHr2r90L
+ Q5bRVXJXEYvg+hKEghQSdvsxLP4=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fab8774e9dd187f5376a83a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 06:40:52
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C43F8C433FF; Wed, 11 Nov 2020 06:40:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CWFRq5x6Bz9s0b;
-        Wed, 11 Nov 2020 17:38:31 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605076713;
-        bh=ndZNSyI24FVv3tVRHIT1JgrpdsSo0wDrO66D3hx5kx4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=REb708I56i0XlX8sANnk4i/0Cz7s5L9f9TO7sWV4lZvlqgdaPbvEse+RYfsQGMr1f
-         OJIBf9AROYmrGJUuluufDnxBNWtrUyDAJXes+SjJKSDKmpRazOAapMGntI7skbq2I5
-         g9P5WRt2ETkSx5cguVpF54RQzKGNq+jVDzijnsmczdw9I2jUnNwk8oznO+bJoguMy0
-         s53pWVEWeZDTqo9j/c1IoUx52uss30Rq6qSnf6KNCw8rzEfie36H8AQJfHohDKtilD
-         25c2vNrYXhiKJimfN1CUda72SLKSnNXjNlGZUsXCmFLK+uwJdWuYBy8tzGSN5NrxIx
-         kioDkKVR0B6ug==
-Date:   Wed, 11 Nov 2020 17:38:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Greg KH <greg@kroah.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: BUG: KASAN: global-out-of-bounds in soc_device_match on arm
-Message-ID: <20201111173830.2c90a6e5@canb.auug.org.au>
-In-Reply-To: <CA+G9fYvQ9R2i8FsQcvb7f8aYv1v1+vq_OsOtg9YEtHGRvx+zxQ@mail.gmail.com>
-References: <CA+G9fYvQ9R2i8FsQcvb7f8aYv1v1+vq_OsOtg9YEtHGRvx+zxQ@mail.gmail.com>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0E68C433C8;
+        Wed, 11 Nov 2020 06:40:50 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XdPWFf_6Eh6Ie=qkhuxhI8M";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Nov 2020 12:10:50 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCHv7 2/7] iommu/arm-smmu: Add domain attribute for system
+ cache
+In-Reply-To: <20201110121835.GC16239@willie-the-truck>
+References: <cover.1604048969.git.saiprakash.ranjan@codeaurora.org>
+ <a4e454630e57aedd9da6a4ba40c8e1c415bb6836.1604048969.git.saiprakash.ranjan@codeaurora.org>
+ <20201110121835.GC16239@willie-the-truck>
+Message-ID: <b12284cce40225274c3b2d9aff7eed3a@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XdPWFf_6Eh6Ie=qkhuxhI8M
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020-11-10 17:48, Will Deacon wrote:
+> On Fri, Oct 30, 2020 at 02:53:09PM +0530, Sai Prakash Ranjan wrote:
+>> Add iommu domain attribute for using system cache aka last level
+>> cache by client drivers like GPU to set right attributes for caching
+>> the hardware pagetables into the system cache.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 17 +++++++++++++++++
+>>  drivers/iommu/arm/arm-smmu/arm-smmu.h |  1 +
+>>  include/linux/iommu.h                 |  1 +
+>>  3 files changed, 19 insertions(+)
+>> 
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index b1cf8f0abc29..070d13f80c7e 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -789,6 +789,9 @@ static int arm_smmu_init_domain_context(struct 
+>> iommu_domain *domain,
+>>  	if (smmu_domain->non_strict)
+>>  		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
+>> 
+>> +	if (smmu_domain->sys_cache)
+>> +		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_SYS_CACHE;
+>> +
+>>  	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
+>>  	if (!pgtbl_ops) {
+>>  		ret = -ENOMEM;
+>> @@ -1520,6 +1523,9 @@ static int arm_smmu_domain_get_attr(struct 
+>> iommu_domain *domain,
+>>  		case DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE:
+>>  			*(int *)data = smmu_domain->non_strict;
+>>  			return 0;
+>> +		case DOMAIN_ATTR_SYS_CACHE:
+>> +			*((int *)data) = smmu_domain->sys_cache;
+>> +			return 0;
+>>  		default:
+>>  			return -ENODEV;
+>>  		}
+>> @@ -1551,6 +1557,17 @@ static int arm_smmu_domain_set_attr(struct 
+>> iommu_domain *domain,
+>>  			else
+>>  				smmu_domain->stage = ARM_SMMU_DOMAIN_S1;
+>>  			break;
+>> +		case DOMAIN_ATTR_SYS_CACHE:
+>> +			if (smmu_domain->smmu) {
+>> +				ret = -EPERM;
+>> +				goto out_unlock;
+>> +			}
+>> +
+>> +			if (*((int *)data))
+>> +				smmu_domain->sys_cache = true;
+>> +			else
+>> +				smmu_domain->sys_cache = false;
+>> +			break;
+>>  		default:
+>>  			ret = -ENODEV;
+>>  		}
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> index 885840f3bec8..dfc44d806671 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> @@ -373,6 +373,7 @@ struct arm_smmu_domain {
+>>  	struct mutex			init_mutex; /* Protects smmu pointer */
+>>  	spinlock_t			cb_lock; /* Serialises ATS1* ops and TLB syncs */
+>>  	struct iommu_domain		domain;
+>> +	bool				sys_cache;
+>>  };
+>> 
+>>  struct arm_smmu_master_cfg {
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index b95a6f8db6ff..4f4bb9c6f8f6 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -118,6 +118,7 @@ enum iommu_attr {
+>>  	DOMAIN_ATTR_FSL_PAMUV1,
+>>  	DOMAIN_ATTR_NESTING,	/* two stages of translation */
+>>  	DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+>> +	DOMAIN_ATTR_SYS_CACHE,
+> 
+> I think you're trying to make this look generic, but it's really not.
+> If we need to funnel io-pgtable quirks through domain attributes, then 
+> I
+> think we should be open about that and add something like
+> DOMAIN_ATTR_IO_PGTABLE_CFG which could take a struct of page-table
+> configuration data for the domain (this could just be quirks initially,
+> but maybe it's worth extending to take ias, oas and page size)
+> 
 
-Hi Naresh,
+Actually the initial versions used DOMAIN_ATTR_QCOM_SYS_CACHE
+to make it QCOM specific and not generic, I don't see anyone else
+using this attribute, would that work?
 
-On Wed, 11 Nov 2020 11:55:46 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
-g> wrote:
->
-> The following kernel warning noticed on arm KASAN enabled config while
-> booting on
-> TI beagleboard x15 device.
->=20
-> [   32.127451] BUG: KASAN: global-out-of-bounds in soc_device_match+0x64/=
-0xe4
-> [   32.127485] Read of size 4 at addr c21701f8 by task swapper/0/1
-> [   32.127508]
-> [   32.127549] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W
->   5.10.0-rc3-next-20201110 #2
-> [   32.127577] Hardware name: Generic DRA74X (Flattened Device Tree)
-> [   32.127604] Backtrace:
-> [   32.127670] [<c199f710>] (dump_backtrace) from [<c199fb94>]
-> (show_stack+0x20/0x24)
-> [   32.127717]  r9:00000080 r8:c4208000 r7:c3023060 r6:40000093
-> r5:00000000 r4:c3023060
-> [   32.127766] [<c199fb74>] (show_stack) from [<c19a7ad0>]
-> (dump_stack+0xe8/0x10c)
-> [   32.127824] [<c19a79e8>] (dump_stack) from [<c05e0290>]
-> (print_address_description.constprop.0+0x3c/0x4b0)
-> [   32.127871]  r10:00000030 r9:c5da4010 r8:c5da4000 r7:00000000
-> r6:c0fd5c20 r5:eebf33c0
-> [   32.127903]  r4:c21701f8 r3:eebf33c4
-> [   32.127958] [<c05e0254>] (print_address_description.constprop.0)
-> from [<c05e0920>] (kasan_report+0x160/0x17c)
-> [   32.128000]  r8:c5da4000 r7:00000000 r6:c0fd5c20 r5:00000001 r4:c21701=
-f8
-> [   32.128053] [<c05e07c0>] (kasan_report) from [<c05e0c68>]
-> (__asan_load4+0x6c/0x9c)
-> [   32.128093]  r7:c3c3ede0 r6:c354dea0 r5:c0fd5b88 r4:c21701f8
-> [   32.128144] [<c05e0bfc>] (__asan_load4) from [<c0fd5c20>]
-> (soc_device_match+0x64/0xe4)
-> [   32.128197] [<c0fd5bbc>] (soc_device_match) from [<c0e2b4a8>]
-> (omap8250_probe+0x628/0x75c)
-> [   32.128236]  r7:b7841730 r6:c6db2c4e r5:00000001 r4:c6db2c40
-> [   32.128290] [<c0e2ae80>] (omap8250_probe) from [<c0f9889c>]
-> (platform_drv_probe+0x70/0xc8)
-> [   32.128335]  r10:c5da4044 r9:c5da4048 r8:c34ff834 r7:c3c3e240
-> r6:c34ff834 r5:00000000
-> [   32.128363]  r4:c5da4010
-> [   32.128413] [<c0f9882c>] (platform_drv_probe) from [<c0f94924>]
-> (really_probe+0x184/0x72c)
-> [   32.128452]  r7:c3c3e240 r6:00000000 r5:c3c3e1c0 r4:c5da4010
-> [   32.128499] [<c0f947a0>] (really_probe) from [<c0f9515c>]
-> (driver_probe_device+0xa4/0x270)
-> [   32.128544]  r10:c34ff834 r9:c416fa58 r8:c379e840 r7:c5d75a00
-> r6:c5da4034 r5:c37c01c0
-> [   32.128572]  r4:c5da4010
-> [   32.128620] [<c0f950b8>] (driver_probe_device) from [<c0f956ac>]
-> (device_driver_attach+0x94/0x9c)
-> [   32.128665]  r10:00000000 r9:c416fa58 r8:c0f956b4 r7:c5d75a00
-> r6:c5da4034 r5:c34ff834
-> [   32.128693]  r4:c5da4010
-> [   32.128741] [<c0f95618>] (device_driver_attach) from [<c0f95798>]
-> (__driver_attach+0xe4/0x19c)
-> [   32.128780]  r7:c34ff834 r6:c5da4010 r5:c34ff834 r4:00000000
-> [   32.128826] [<c0f956b4>] (__driver_attach) from [<c0f917e4>]
-> (bus_for_each_dev+0x100/0x154)
-> [   32.128865]  r7:c34ff834 r6:b78417a4 r5:c420bd40 r4:c5d75a34
-> [   32.128910] [<c0f916e4>] (bus_for_each_dev) from [<c0f93f28>]
-> (driver_attach+0x38/0x3c)
-> [   32.128955]  r9:c34ff87c r8:c416fa00 r7:c3541a70 r6:c3541a20
-> r5:c6db4f00 r4:c34ff834
-> [   32.129001] [<c0f93ef0>] (driver_attach) from [<c0f93470>]
-> (bus_add_driver+0x21c/0x2dc)
-> [   32.129034]  r5:c6db4f00 r4:c34ff834
-> [   32.129080] [<c0f93254>] (bus_add_driver) from [<c0f96874>]
-> (driver_register+0xdc/0x1b0)
-> [   32.129125]  r10:00000000 r9:c2b00468 r8:c378a0c0 r7:c2170360
-> r6:c34ff838 r5:c3541a20
-> [   32.129153]  r4:c34ff834
-> [   32.129202] [<c0f96798>] (driver_register) from [<c0f987c8>]
-> (__platform_driver_register+0x7c/0x84)
-> [   32.129241]  r7:ffffc000 r6:c2bc509c r5:00000000 r4:c34ff820
-> [   32.129300] [<c0f9874c>] (__platform_driver_register) from
-> [<c2bc50c0>] (omap8250_platform_driver_init+0x24/0x28)
-> [   32.129333]  r5:c420bf20 r4:b78417d0
-> [   32.129387] [<c2bc509c>] (omap8250_platform_driver_init) from
-> [<c030370c>] (do_one_initcall+0xc4/0x400)
-> [   32.129437] [<c0303648>] (do_one_initcall) from [<c2b015e8>]
-> (kernel_init_freeable+0x214/0x268)
-> [   32.129482]  r10:c2d128a8 r9:c2b00468 r8:c2c50834 r7:c2c50854
-> r6:c2a55ac8 r5:00000007
-> [   32.129511]  r4:c425a700
-> [   32.129563] [<c2b013d4>] (kernel_init_freeable) from [<c19bfd1c>]
-> (kernel_init+0x18/0x140)
-> [   32.129607]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
-> r6:00000000 r5:c19bfd04
-> [   32.129635]  r4:00000000
-> [   32.129684] [<c19bfd04>] (kernel_init) from [<c030017c>]
-> (ret_from_fork+0x14/0x38)
-> [   32.129715] Exception stack(0xc420bfb0 to 0xc420bff8)
-> [   32.129753] bfa0:                                     00000000
-> 00000000 00000000 00000000
-> [   32.129798] bfc0: 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000 00000000
-> [   32.129839] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> [   32.129872]  r5:c19bfd04 r4:00000000
-> [   32.129894]
-> [   32.129917] The buggy address belongs to the variable:
-> [   32.129957]  k3_soc_devices+0x38/0x1e0
-> [   32.129981] The buggy address belongs to the page:
-> [   32.130018] page:(ptrval) refcount:1 mapcount:0 mapping:00000000
-> index:0x0 pfn:0x82170
-> [   32.130051] flags: 0x1000(reserved)
-> [   32.130104] raw: 00001000 eebf33c4 eebf33c4 00000000 00000000
-> 00000000 ffffffff 00000001
-> [   32.130133] raw: 00000000
-> [   32.130159] page dumped because: kasan: bad access detected
-> [   32.130182]
-> [   32.130205] Memory state around the buggy address:
-> [   32.130239]  c2170080: 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00 00 05 f9 f9
-> [   32.130272]  c2170100: f9 f9 f9 f9 00 00 00 00 00 01 f9 f9 f9 f9 f9 f9
-> [   32.130306] >c2170180: 00 02 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 f9
-> [   32.130331]                                                         ^
-> [   32.130364]  c2170200: f9 f9 f9 f9 00 00 00 06 f9 f9 f9 f9 00 00 00 02
-> [   32.130397]  c2170280: f9 f9 f9 f9 00 00 00 00 02 f9 f9 f9 f9 f9 f9 f9
-> [   32.130422] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   32.130446] Disabling lock debugging due to kernel taint
->=20
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git describe: next-20201110
->   make_kernelversion: 5.10.0-rc3
->   build : https://builds.tuxbuild.com/1k5bYasxkHF7omMh7mjtxjRtkMe/
->=20
-> Full log:
-> https://lkft.validation.linaro.org/scheduler/job/1927838#L2190
->=20
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+Thanks,
+Sai
 
-Presumably caused by commit
-
-  439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA en=
-able")
-
-from the tty tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/XdPWFf_6Eh6Ie=qkhuxhI8M
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rhuYACgkQAVBC80lX
-0Gyouwf/asHFusOEqrub9yw9cODSzLoU2G6pzicD92CuFguWkdcV7NjWGswHKscy
-VPqbRhPRKwp8Crwz7f8b6Byq6ncE+ekdVxuOhdm3DBKUdgEnh33Kwzpwf+XGqLEW
-KtVoE9UEgoAYkgMg2xfyxSj/4P7zJ4hYA8iG003zw9e1zETfjQXI12cvuoemQAKe
-bekGV6rmehSb2a6d4yYfL8et5VNJ5HoosxCABJgVVfE2mLUz+trs2fNCf47Y2M8b
-44DjIIZYT+1wqrcsuQW87DPwStCBYHR/XMpBKmVWJDc74W7XhWl7nvODTasRblxS
-MavCc6XHH+g0ELPvNkIV2D4gwlaVzQ==
-=e4Qm
------END PGP SIGNATURE-----
-
---Sig_/XdPWFf_6Eh6Ie=qkhuxhI8M--
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
