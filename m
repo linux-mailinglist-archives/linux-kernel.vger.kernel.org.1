@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C222AF88F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1849B2AF892
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgKKSwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        id S1727514AbgKKSwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:52:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgKKSv7 (ORCPT
+        with ESMTP id S1725949AbgKKSwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:51:59 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF22C0613D1;
-        Wed, 11 Nov 2020 10:51:59 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id r9so1149908pjl.5;
-        Wed, 11 Nov 2020 10:51:59 -0800 (PST)
+        Wed, 11 Nov 2020 13:52:20 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1406C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:52:20 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id r10so1956107pgb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l1Pegl0AGNVKaWQlJGzbmp8EJmfVq5zNsJCWYXHqOnQ=;
-        b=Sma0B//i35MjdI7HCYP+08L7s9F239NGmzphbelfWa2ENFCQpLLXlUAe/x+rjedsc6
-         TN+lVpjjqEDnl8+S0iZ9yMEzpBhMl5fsd5c58bomv+UyWH/687H7nkHD0TdeMVM3uTiZ
-         wi3zkTu6uazExkFK/R8FQeJUrhOrFd4rRoyQgA0m8XFEEuQFykA1uPP96y3dIEon9A/N
-         KC0zThADnhzemVUeqw1HtK/p7TqhPM5784XAMpECJJ4Hr1AM0LV+Pa+FfGLe9qnRIKbi
-         Z4d8oGK7j/bCc7FjqRt2I0NQC8CWxCC16nYIoi07nkO2QONKakdpxzTBFJhi9A8Nav90
-         YI3Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e9me8OLCg9caFbPV5Uj2BdRlxnobSrjFoBA3jMpvquw=;
+        b=iNz4Bk2UGOrF47EtwH9pt5EnTDKRQsVk6o+2eNqF0Gzn9RZmx1bK1W3xFKAi6lu5mh
+         NLodQxAAUrOH0IC6qvoyUVZ3EODMH1Z0+vc+u2a0PWf334XenrxvguUFdi/A/fE5gL68
+         pjTTB8LMjFW7Kqj4I6zw5y04j8C5ENS1yXmJuKHiIFmk3X9+E4QzFU3QhP6dLblIyd3X
+         NbKNYXPBJUTUVIFA/jPVc5Yb6cfI8XjI8qEXYDUvPfWI4gedug0Hs1e9lePIKfUf8a7o
+         IUlc1ecYlKirHhIg5vyNg2FrNu3FCvhfR6tHBEGI/zxrvK159EqM76lAxfdOIsCNvqxl
+         v6zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l1Pegl0AGNVKaWQlJGzbmp8EJmfVq5zNsJCWYXHqOnQ=;
-        b=YFcZZ9YOuc85yuwDNvCLtrEk0RtYOMOvoxOUIAjqKqElWgCKMo80ezV0ruSdS/HDT4
-         35dWB7gUFIkH0GNg0wJXU/3GHF3/urSfWdjnuTu4NOBP2c5NKfMpcT8pVoJmaNU6/I6O
-         Vqao/nvAxkbq6/5zh3WqJzPUPcWXpj/Tkc/MFs+91GdiwBlmkv5O/RKruHzrjZbVGahe
-         1PDJ2sNZXWQG1XEOaac82YK1zze+ZStjS5eHXOHRhVhnqqikkW1M4URv5g+yq7xrtTby
-         lsMQ0hjMyT34Ad2/AqHO02o6zXkFdDjlkhdzgav08bqP4PY5SRpEcBxUa7h3nQuFu9JC
-         ATxg==
-X-Gm-Message-State: AOAM5336sVi2bXgE7ZaIRTsnxGwP8I895qWgK93IyM4U8uTv/8A4RWTH
-        v2Gu2Tldiz0Oj42lhDrSNxE=
-X-Google-Smtp-Source: ABdhPJyVUxQq2cBj6TbT7F1VtW6AHWOcUSdgcCYuaWRLgf846LUydwLec7E5iGdGUkH1FvYA9TxFWg==
-X-Received: by 2002:a17:902:bd01:b029:d4:d73d:7644 with SMTP id p1-20020a170902bd01b02900d4d73d7644mr22293923pls.69.1605120718101;
-        Wed, 11 Nov 2020 10:51:58 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id v18sm3367522pfn.35.2020.11.11.10.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:51:57 -0800 (PST)
-Date:   Wed, 11 Nov 2020 10:51:55 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-spi@vger.kernel.org, David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 2/2] Input: ads7846: do not overwrite spi->mode flags
- set by spi framework
-Message-ID: <20201111185155.GX1003057@dtor-ws>
-References: <20201027095724.18654-1-o.rempel@pengutronix.de>
- <20201027095724.18654-3-o.rempel@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e9me8OLCg9caFbPV5Uj2BdRlxnobSrjFoBA3jMpvquw=;
+        b=K2tjM9CZ7FMR0VQacYiqEuAdRrJL5oMnpjWwU6leUhNYuTR1ScgXqXkrkIFfI9b9/4
+         8TXkrlHSIL2WYMymi3ztJPaKrV+lvREmDgQZbxB6MGKivt2Z78ZtlwtQJjTo9cAGkj3S
+         tKvvqEDYUgimsaaKtFzE0X9fDWsXsWOqrFpTDw66hyGIAuUZ0UIubxV3nq6ZNOYkXt3F
+         AfhpFHdeh5cwlPM3/IyPu/xSCZcPUQqrEMLyk7QiaRW1Sv13UPmxiq69/URgBncc3tZ1
+         ICZyDroJYqFmvgjrezbanRaTKdOncAzYM2V3U9TZxBV37CSG/67WNhldv8mv1NW1FPDB
+         fd6w==
+X-Gm-Message-State: AOAM531N4g9+vATTGz2rSHKaaqHSGtNVDcBWzxsYRfYKgo+cieTPsk9s
+        kjhuee7zixCtn8AxxwdmBQz8E/WyzfdcV88/7XxEcw==
+X-Google-Smtp-Source: ABdhPJykU80dffJSIdNduPLXhQGxEkHGO5yecTSm+N651CeXvmn1GahM1mQkhtZRZnMW2ZlVA9Yu+8f659ZlUSnD150=
+X-Received: by 2002:a62:cec6:0:b029:18a:d620:6b86 with SMTP id
+ y189-20020a62cec60000b029018ad6206b86mr23279253pfg.2.1605120740077; Wed, 11
+ Nov 2020 10:52:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027095724.18654-3-o.rempel@pengutronix.de>
+References: <cover.1605046192.git.andreyknvl@google.com> <49f7f2c12b0d5805f9a7b7092b986bbc2dd077a1.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=VXhK0d__FkNdhdquy9F4VmB64_6eJQOQBRecy2oL6huQ@mail.gmail.com>
+In-Reply-To: <CAG_fn=VXhK0d__FkNdhdquy9F4VmB64_6eJQOQBRecy2oL6huQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 11 Nov 2020 19:52:09 +0100
+Message-ID: <CAAeHK+wX+JPyZm2A5mDdGFCqnH6kdSBLyOZ2TnWfZnZuq_V0Bw@mail.gmail.com>
+Subject: Re: [PATCH v9 21/44] kasan: kasan_non_canonical_hook only for
+ software modes
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:57:24AM +0100, Oleksij Rempel wrote:
-> Do not overwrite spi->mode flags set by spi framework, otherwise the
-> chip select polarity will get lost.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On Wed, Nov 11, 2020 at 4:09 PM Alexander Potapenko <glider@google.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > This is a preparatory commit for the upcoming addition of a new hardware
+> > tag-based (MTE-based) KASAN mode.
+> >
+> > kasan_non_canonical_hook() is only applicable to KASAN modes that use
+> > shadow memory, and won't be needed for hardware tag-based KASAN.
+> >
+> > No functional changes for software modes.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > ---
+> > Change-Id: Icc9f5ef100a2e86f3a4214a0c3131a68266181b2
+> > ---
+> >  mm/kasan/report.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> > index 5d5733831ad7..594bad2a3a5e 100644
+> > --- a/mm/kasan/report.c
+> > +++ b/mm/kasan/report.c
+> > @@ -403,7 +403,8 @@ bool kasan_report(unsigned long addr, size_t size, bool is_write,
+> >         return ret;
+> >  }
+> >
+> > -#ifdef CONFIG_KASAN_INLINE
+> > +#if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && \
+> > +       defined(CONFIG_KASAN_INLINE)
+> >  /*
+> >   * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the high
+> >   * canonical half of the address space) cause out-of-bounds shadow memory reads
+>
+> Perhaps this comment also needs to be updated.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-Mark, could you please pick up this one through your tree as well? I do
-not believe that outstanding patches that I have in my queue for this
-driver will clash with it.  
-
-Thanks!
-
-> ---
->  drivers/input/touchscreen/ads7846.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-> index 8fd7fc39c4fd..f2dc2c8ab5ec 100644
-> --- a/drivers/input/touchscreen/ads7846.c
-> +++ b/drivers/input/touchscreen/ads7846.c
-> @@ -1288,7 +1288,8 @@ static int ads7846_probe(struct spi_device *spi)
->  	 * may not.  So we stick to very-portable 8 bit words, both RX and TX.
->  	 */
->  	spi->bits_per_word = 8;
-> -	spi->mode = SPI_MODE_0;
-> +	spi->mode &= ~SPI_MODE_X_MASK;
-> +	spi->mode |= SPI_MODE_0;
->  	err = spi_setup(spi);
->  	if (err < 0)
->  		return err;
-> -- 
-> 2.28.0
-> 
-
--- 
-Dmitry
+In what way?
