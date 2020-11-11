@@ -2,245 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E396B2AF22B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FAB2AF22D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgKKNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:30:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7173 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKNaJ (ORCPT
+        id S1726807AbgKKNaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgKKNaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:30:09 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWQZQ5HGwz15VJw;
-        Wed, 11 Nov 2020 21:29:50 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 11 Nov 2020 21:29:53 +0800
-Subject: Re: [PATCH v13 0/8] support reserving crashkernel above 4G on arm64
- kdump
-To:     Baoquan He <bhe@redhat.com>, <bhsharma@redhat.com>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
- <20201111030136.GD8486@MiWiFi-R3L-srv>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <james.morse@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <xiexiuqi@huawei.com>, <guohanjun@huawei.com>,
-        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <04a893e6-1412-5fa8-8dbd-8ec278879965@huawei.com>
-Date:   Wed, 11 Nov 2020 21:29:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 11 Nov 2020 08:30:10 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE2C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:30:08 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id y197so1576706qkb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:30:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Mrf0d0bxYH+6GH0lvsgm2uEX7jLFPjyo3DZnCKJ0/0Y=;
+        b=bgpBn97B9nq1SWvjUEtBeKWBDj005oKswykPrMMU/kypedSDkiNNXAUwzKW+R2ueCJ
+         Se8nOTvZEIgs0IyaYA6wJDuO7oyTSUtx1n3AAidUiqay8cu5vrgiHu6D+zjESngqESDK
+         DnGm7xl2OKb0xEHo51+YZB5WXVJxziWgDPihpNBOo9MyxAlL5wL3ElgXUToLSryNnPXg
+         BwIeRgD3ZhxXqRB9d+bhpDcWZ8vGIk9FJWs83s6ZqrwHKhwvh//sbotDR15n6hzMb2wP
+         jgiQc34TGMFbMQThldjFGWsxhQIatQiCP5fsYODZ7kPqNBfUPNoq19rrYG0zVB0bxDo0
+         VoyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Mrf0d0bxYH+6GH0lvsgm2uEX7jLFPjyo3DZnCKJ0/0Y=;
+        b=m+ccun8xa3lzj5XpxaHAh1wHuer6TaUxDerXZ53Fq/P6LRPM0Ze4R1WA3PATt9dOqU
+         Qs5VqSWXLb33mtxKfJH9lNH1zYilepqpUJaVs/2Y45jygw+G5zvQ+i+aseUcDOmuEF5z
+         6VeY//8l5kZ/jdmC2O1S1JAWqPI1ENW3fzEGcAI9IODAartTd8m7sFTSFhtv3QFvNgdN
+         Wk0XaFjuI5MqnEDey20pbTyMTF8YaAeHTZcykmfxQXpfGFZiJWBOKtcJpZhvycCi79l/
+         YQJFQf4lxXiDdgjUsGv2D4C1eIf4inEFhRs2kH+QIYS4ModTZZHJVBot+asfYQ2d7AOS
+         kSRA==
+X-Gm-Message-State: AOAM533tHSapl4PWSiSOn9R538jtLPxzR+cybiqNg6MDkCsDeu241vyY
+        MLPGeswycI9d+EF8hwQaeXdkVT33gv1RMBhA7rV8+Q==
+X-Google-Smtp-Source: ABdhPJyxyZ80WQyvQSfath8VmPjxYL1ABS4kGXtU6ceB3M/Ive9IT8dmInULusYU/wmx2oTw1k500RCiVwr3tc95sLk=
+X-Received: by 2002:a37:9747:: with SMTP id z68mr23987360qkd.424.1605101407964;
+ Wed, 11 Nov 2020 05:30:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201111030136.GD8486@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+References: <0000000000005eaea0059aa1dff6@google.com> <00000000000039c12305a141e817@google.com>
+In-Reply-To: <00000000000039c12305a141e817@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 11 Nov 2020 14:29:57 +0100
+Message-ID: <CACT4Y+YFEhTsTdjNTpkcrmDdWJriS-ezgxM_q9U2enepcoFTQQ@mail.gmail.com>
+Subject: Re: INFO: task hung in htable_put
+To:     syzbot <syzbot+84936245a918e2cddb32@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, coreteam@netfilter.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan, Bhupesh,
-
-
-On 2020/11/11 11:01, Baoquan He wrote:
-> Hi Zhou, Bhupesh
+On Fri, Mar 20, 2020 at 5:42 AM syzbot
+<syzbot+84936245a918e2cddb32@syzkaller.appspotmail.com> wrote:
 >
-> On 10/31/20 at 03:44pm, Chen Zhou wrote:
->> There are following issues in arm64 kdump:
->> 1. We use crashkernel=X to reserve crashkernel below 4G, which
->> will fail when there is no enough low memory.
->> 2. If reserving crashkernel above 4G, in this case, crash dump
->> kernel will boot failure because there is no low memory available
->> for allocation.
->> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
->> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
->> the devices in crash dump kernel need to use ZONE_DMA will alloc
->> fail.
-> I went through this patchset, mainly the x86 related and generic
-> changes, the changes look great and no risk. And I know Bhupesh is
-> following up this and helping review, thanks, both.
+> syzbot suspects this bug was fixed by commit:
 >
-> So you have also tested crashkernel reservation on x86_64, with the
-> normal reservation, and high/low reservation, it is working well,
-> right? Asking this because I didn't see the test result description, and
-> just note it.
-
-Yeah, i also tested on x86_64 and work well. I did these basic tests before sending every
-new version.
-But Bhupesh may have some review comments(Bhupesh referred one month ago).
-
-Thanks,
-Chen Zhou
-
+> commit 99b79c3900d4627672c85d9f344b5b0f06bc2a4d
+> Author: Cong Wang <xiyou.wangcong@gmail.com>
+> Date:   Thu Feb 13 06:53:52 2020 +0000
 >
-> Thanks
-> Baoquan
+>     netfilter: xt_hashlimit: unregister proc file before releasing mutex
 >
->> To solve these issues, change the behavior of crashkernel=X.
->> crashkernel=X tries low allocation in DMA zone (or the DMA32 zone if
->> CONFIG_ZONE_DMA is disabled), and fall back to high allocation if it fails.
->>
->> We can also use "crashkernel=X,high" to select a high region above
->> DMA zone, which also tries to allocate at least 256M low memory in
->> DMA zone automatically (or the DMA32 zone if CONFIG_ZONE_DMA is disabled).
->> "crashkernel=Y,low" can be used to allocate specified size low memory.
->>
->> When reserving crashkernel in high memory, some low memory is reserved
->> for crash dump kernel devices. So there may be two regions reserved for
->> crash dump kernel.
->> In order to distinct from the high region and make no effect to the use
->> of existing kexec-tools, rename the low region as "Crash kernel (low)",
->> and pass the low region by reusing DT property
->> "linux,usable-memory-range". We made the low memory region as the last
->> range of "linux,usable-memory-range" to keep compatibility with existing
->> user-space and older kdump kernels.
->>
->> Besides, we need to modify kexec-tools:
->> arm64: support more than one crash kernel regions(see [1])
->>
->> Another update is document about DT property 'linux,usable-memory-range':
->> schemas: update 'linux,usable-memory-range' node schema(see [2])
->>
->> This patchset contains the following eight patches:
->> 0001-x86-kdump-replace-the-hard-coded-alignment-with-macr.patch
->> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
->> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
->> 0004-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
->> 0005-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
->> 0006-arm64-kdump-reimplement-crashkernel-X.patch
->> 0007-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
->> 0008-kdump-update-Documentation-about-crashkernel.patch
->>
->> 0001-0003 are some x86 cleanups which prepares for making
->> functionsreserve_crashkernel[_low]() generic.
->> 0004 makes functions reserve_crashkernel[_low]() generic.
->> 0005-0006 reimplements arm64 crashkernel=X.
->> 0007 adds memory for devices by DT property linux,usable-memory-range.
->> 0008 updates the doc.
->>
->> Changes since [v12]
->> - Rebased on top of 5.10-rc1.
->> - Keep CRASH_ALIGN as 16M suggested by Dave.
->> - Drop patch "kdump: add threshold for the required memory".
->> - Add Tested-by from John.
->>
->> Changes since [v11]
->> - Rebased on top of 5.9-rc4.
->> - Make the function reserve_crashkernel() of x86 generic.
->> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
->> and arm64 use the generic version to reimplement crashkernel=X.
->>
->> Changes since [v10]
->> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
->>
->> Changes since [v9]
->> - Patch 1 add Acked-by from Dave.
->> - Update patch 5 according to Dave's comments.
->> - Update chosen schema.
->>
->> Changes since [v8]
->> - Reuse DT property "linux,usable-memory-range".
->> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
->> memory region.
->> - Fix kdump broken with ZONE_DMA reintroduced.
->> - Update chosen schema.
->>
->> Changes since [v7]
->> - Move x86 CRASH_ALIGN to 2M
->> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
->> - Update Documentation/devicetree/bindings/chosen.txt.
->> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
->> suggested by Arnd.
->> - Add Tested-by from Jhon and pk.
->>
->> Changes since [v6]
->> - Fix build errors reported by kbuild test robot.
->>
->> Changes since [v5]
->> - Move reserve_crashkernel_low() into kernel/crash_core.c.
->> - Delete crashkernel=X,high.
->> - Modify crashkernel=X,low.
->> If crashkernel=X,low is specified simultaneously, reserve spcified size low
->> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
->> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
->> pass to crash dump kernel by DT property "linux,low-memory-range".
->> - Update Documentation/admin-guide/kdump/kdump.rst.
->>
->> Changes since [v4]
->> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
->>
->> Changes since [v3]
->> - Add memblock_cap_memory_ranges back for multiple ranges.
->> - Fix some compiling warnings.
->>
->> Changes since [v2]
->> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
->> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
->> patch.
->>
->> Changes since [v1]:
->> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
->> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
->> in fdt_enforce_memory_region().
->> There are at most two crash kernel regions, for two crash kernel regions
->> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
->> and then remove the memory range in the middle.
->>
->> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
->> [2]: https://github.com/robherring/dt-schema/pull/19 
->> [v1]: https://lkml.org/lkml/2019/4/2/1174
->> [v2]: https://lkml.org/lkml/2019/4/9/86
->> [v3]: https://lkml.org/lkml/2019/4/9/306
->> [v4]: https://lkml.org/lkml/2019/4/15/273
->> [v5]: https://lkml.org/lkml/2019/5/6/1360
->> [v6]: https://lkml.org/lkml/2019/8/30/142
->> [v7]: https://lkml.org/lkml/2019/12/23/411
->> [v8]: https://lkml.org/lkml/2020/5/21/213
->> [v9]: https://lkml.org/lkml/2020/6/28/73
->> [v10]: https://lkml.org/lkml/2020/7/2/1443
->> [v11]: https://lkml.org/lkml/2020/8/1/150
->> [v12]: https://lkml.org/lkml/2020/9/7/1037
->>
->> Chen Zhou (8):
->>   x86: kdump: replace the hard-coded alignment with macro CRASH_ALIGN
->>   x86: kdump: make the lower bound of crash kernel reservation
->>     consistent
->>   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
->>     reserve_crashkernel()
->>   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
->>   arm64: kdump: introduce some macroes for crash kernel reservation
->>   arm64: kdump: reimplement crashkernel=X
->>   arm64: kdump: add memory for devices by DT property
->>     linux,usable-memory-range
->>   kdump: update Documentation about crashkernel
->>
->>  Documentation/admin-guide/kdump/kdump.rst     |  23 ++-
->>  .../admin-guide/kernel-parameters.txt         |  12 +-
->>  arch/arm64/include/asm/kexec.h                |  15 ++
->>  arch/arm64/include/asm/processor.h            |   1 +
->>  arch/arm64/kernel/setup.c                     |  13 +-
->>  arch/arm64/mm/init.c                          | 105 ++++-------
->>  arch/arm64/mm/mmu.c                           |   4 +
->>  arch/x86/include/asm/kexec.h                  |  28 +++
->>  arch/x86/kernel/setup.c                       | 153 +---------------
->>  include/linux/crash_core.h                    |   4 +
->>  include/linux/kexec.h                         |   2 -
->>  kernel/crash_core.c                           | 168 ++++++++++++++++++
->>  kernel/kexec_core.c                           |  17 --
->>  13 files changed, 301 insertions(+), 244 deletions(-)
->>
->> -- 
->> 2.20.1
->>
-> .
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17446eb1e00000
+> start commit:   f2850dd5 Merge tag 'kbuild-fixes-v5.6' of git://git.kernel..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=735296e4dd620b10
+> dashboard link: https://syzkaller.appspot.com/bug?extid=84936245a918e2cddb32
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a96c29e00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fcc65ee00000
 >
+> If the result looks correct, please mark the bug fixed by replying with:
+>
+> #syz fix: netfilter: xt_hashlimit: unregister proc file before releasing mutex
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+#syz fix: netfilter: xt_hashlimit: unregister proc file before releasing mutex
