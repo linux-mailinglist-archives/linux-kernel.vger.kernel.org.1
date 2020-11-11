@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98B12AF0A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B84642AF0AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgKKMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
+        id S1726519AbgKKMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKKMc0 (ORCPT
+        with ESMTP id S1726136AbgKKMca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:32:26 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F725C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 04:32:26 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a3so2149365wmb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 04:32:26 -0800 (PST)
+        Wed, 11 Nov 2020 07:32:30 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A1AC0613D1;
+        Wed, 11 Nov 2020 04:32:28 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id gv24so637983pjb.3;
+        Wed, 11 Nov 2020 04:32:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XtEuYJqpVWdYVZAacuVpb6hyxFgTbQMkbAIhltpNKL8=;
-        b=Ja7qkn/lq9oiqwC27+zkFQJeArO4GLvWWzlfFEwQ4TlruRJR5FzFVktlan4lAT8uhT
-         GTABF5yUj9gP5jOMJ9b5esYLbeH5VjnSC//QJghLJYlz73VNRELC20/ketIza7Dr2R8U
-         cCkGoBD7R6CNx1xup45TuhqV+reaJnR2Cd0zcdo6OcHKd6Sxt4z0Np1Bu6C2Z5LKmWKV
-         5UgF385H5RiSnyWytK9qT7kC4gPbObKUnFyLIn3MFhVEWNO4irXz27rtFMVJsspRyhBJ
-         1uT0ZDHMKlz9yGFhLJjHKc+kpshuA1VbkZOaClTXU0YlDhhMESkMLX080Wqtp0Qw9iIF
-         DR3Q==
+         :content-disposition:in-reply-to:user-agent;
+        bh=dTYvfnOluYKgTxdMcxZ/FPGnTnywlshfCqeGlC/4bIw=;
+        b=KZeqETg/goR4DpzrRxll6dpNFeDbh3T5LuitxgAFLrZvLFFeP31gTZD8NEXIWIXHQR
+         P3oRY0x9yxWloawl+5zQvfBF9b85fWqZW690DxP17o8EVj1IgcSPlfuashAT2CLAJVK5
+         jSwmQCTZkUfDE7NGE95Ew0eUzMF8J/oX6qp0xkaW7W0D9vsJaAbiqcwhKyibLpX4Tedt
+         Fe3yZbDy6WmDGOe9SDZkL0UZv3jc9zBGdqC4kIRpRIV7XVFxUvFX/cwCFW0w1EsDu5Lf
+         KzNpJV83sZ0QSd6/5n5L0aFNZbegxZX+41zaP9jtMKAu03qRQ/6fME1iaoSQ3GC6uonQ
+         Vzwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XtEuYJqpVWdYVZAacuVpb6hyxFgTbQMkbAIhltpNKL8=;
-        b=N9YlOwdMaEpzPiuEaw4V59QLW3rEfFA+nB4678gNl71QBsOBcCGvi1ccwQ7z5z7G0H
-         IX1dr+CeZNPsQHuV6QxtdgQwK6tPoaGcNBFmlFbQZSnbkoXz1SB9qaHJqA9eNRWglE2p
-         QPZmA41xRQy2QrstSUKaQgQGQsgam4HtENvtUO/s8hB/rWdx/WvuNtxysguc8CxcnnzU
-         40dSYJBJ+7XodMbQDZIw/FgdMBs1yXpGsS7WVUzIBi6i7frCsQcIFMjbR8owwKMdOnoV
-         FH4G6rIe9CU1ifu1Ao70BhQ1wvx8AF7XAQ02o+iHn9ANuvDSN2lu6LsTf8nt6KsNWmcI
-         +kCQ==
-X-Gm-Message-State: AOAM530581KBBF30bj/O0iBt0BNmnDJJ2ugvGflkEbuTE5bjLkpN47UY
-        o6vdfs+2pb0TyC6/so4sfZoRhA==
-X-Google-Smtp-Source: ABdhPJyMdXM5aicXN5Ib33YGeRQlcphSIsMKmTWL4A6/3D5qrbO5zhbeG85AQYouCaWcr+Nk5zMANQ==
-X-Received: by 2002:a7b:c384:: with SMTP id s4mr3911891wmj.77.1605097945020;
-        Wed, 11 Nov 2020 04:32:25 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:2595:ed05:1717:fe6e])
-        by smtp.gmail.com with ESMTPSA id q16sm2414688wrn.13.2020.11.11.04.32.23
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dTYvfnOluYKgTxdMcxZ/FPGnTnywlshfCqeGlC/4bIw=;
+        b=t8hFEWNQS8ZR2qfTyB6JdPap+XGnFAptywjmfGm+Z8EfPRG3EZWbwFC9nSH3h4dAIS
+         OQ1tqSq+CLxZijB8+xPXNEG64V7PzYhB0cmO8EGx5cYqj7qhxQlXrUEPDDuj/lc7BEYX
+         6CTgK2ZD+n+tdq3svl6q2f/NYUFDPZtPPXvnyaOpeiouTeHSo6b1MATw2DYzPERdU+cj
+         x+IpzHbuXZBxpdTMLoQ5jSQHhH5ZyvKxSneSMMuDOdDqKEdph1QJpC41U1iQW4A+sA4U
+         fTzFMpIO3Q14VJW+odYNq+bIIadtNGQoV9Ft4LyiIuxSKjCoNb3ZtrfBEjDktYy4vmFB
+         8Eyw==
+X-Gm-Message-State: AOAM533eOYEKb5GLNF1skDzTZtAKG6yqBaj5BFabcDogBcf/UkWNc1Fa
+        tdlgVZCHk0dTg8rNrPNNTTxOBDTMrX8=
+X-Google-Smtp-Source: ABdhPJwBYBPf3hIzlZLO3uZTEVXVkF867c9Le/HTPd2ZAcrQJLs8GBImBHZVSAqC2ag4KZ6ynrEEyg==
+X-Received: by 2002:a17:90b:90f:: with SMTP id bo15mr3453831pjb.80.1605097948596;
+        Wed, 11 Nov 2020 04:32:28 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id r5sm1680554pgi.77.2020.11.11.04.32.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 04:32:23 -0800 (PST)
-Date:   Wed, 11 Nov 2020 12:32:22 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v1 06/24] kvm: arm64: Support per_cpu_ptr in nVHE hyp code
-Message-ID: <20201111123222.ooevu6nryu3ncphv@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-7-dbrazdil@google.com>
- <f28c9a67759cb04157e888b3a71b2ce2@kernel.org>
+        Wed, 11 Nov 2020 04:32:27 -0800 (PST)
+Date:   Wed, 11 Nov 2020 04:32:25 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 net-bugfixs] net/ethernet: Update ret when ptp_clock
+ is ERROR
+Message-ID: <20201111123224.GB29159@hoboy.vegasvil.org>
+References: <1605086686-5140-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f28c9a67759cb04157e888b3a71b2ce2@kernel.org>
+In-Reply-To: <1605086686-5140-1-git-send-email-wangqing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +
-> > +	cpu_base_array = kern_hyp_va(&kvm_arm_hyp_percpu_base[0]);
-> 
-> There is no guarantee that this will not generate a PC relative
-> addressing, resulting in kern_hyp_va() being applied twice.
-> 
-> Consider using hyp_symbol_addr() instead, which always does the right
-> by forcing a PC relative addressing and not subsequently mangling
-> the address.
-> 
-> > +	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
-> > +	return this_cpu_base - (unsigned long)&__per_cpu_start;
-> 
-> And this is the opposite case: if the compiler generates an absolute
-> address, you're toast. Yes, this is just as unlikely, but hey...
-> Same remedy should apply.
+On Wed, Nov 11, 2020 at 05:24:41PM +0800, Wang Qing wrote:
+> We always have to update the value of ret, otherwise the error value
+>  may be the previous one. And ptp_clock_register() never return NULL
+>  when PTP_1588_CLOCK enable.
 
-Good point, and I'll probably keep forgetting about this in the future. Now
-that all .hyp.text is only executed under hyp page tables, should we start
-thinking about fixing up the relocations?
+NAK.
+
+Your code must handle the possibility that ptp_clock_register() can
+return NULL.  Why?
+
+1. Because that follows the documented API.
+
+2. Because people will copy/paste this driver.
+
+3. Because the Kconfig for your driver can change without warning.
+
+Thanks,
+Richard
