@@ -2,142 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF822AF5DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B79D2AF5DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgKKQKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        id S1727308AbgKKQKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgKKQKR (ORCPT
+        with ESMTP id S1727043AbgKKQK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:10:17 -0500
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF28C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:10:16 -0800 (PST)
-Received: by mail-vk1-xa41.google.com with SMTP id i3so591147vkk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:10:16 -0800 (PST)
+        Wed, 11 Nov 2020 11:10:29 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224DFC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:10:29 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id j7so3072533wrp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:10:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DRY6wscalWlfAwtOkmgsX3II8ZIYotcHkm4m7nc9FkI=;
-        b=O8J0xfVpMlvjjaXvgxM+BwL1TecH5uBPa/pX/dNJFLUV23dmQ8lmsU1himQoNB7de3
-         T0JODIENIA7SBkCHXmEjvR4jUUOgI7hjE7Nf8O6PB3EeOenxZWxeqOFHP0aBFjMI4iBR
-         Alki7AZiCSDRi0Rgcsk7j1v5x6+5J9f37lpT4=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=u6Xd/aWnBK+33C9vA03cmc0xfNfCQ2wQSEufKCfSLLc=;
+        b=S7eIjQJsoE5u9wPV9toq8jRiNhUQI3htGOSx8qUpkqR4BGLJRnQr+4x0Q4C0jbYqp2
+         j1AS4li5L6Zbgn/O6bkqXpl3IrUhfW4fM0+xLQq6hyiBSFdHCYDE2XHU91znp4goXKvS
+         EnB028EKIaLTEO5BOnGWZj5kpj7BUeQ5BEhlXzBaNTzdYAxK3uheaTyrpwTIE513EOz4
+         jlXFggVxGCRzgwfvoExZ/3pE+dQsiFQZwlMsrBfof7DqYUbXTBADuj3OYAywwXF1JJt1
+         CMQ6r5GBXsqa5eWpLEdcoegrHB9aUiIKtv0xnX971ZC4VGwHHqFrynLHOT6KDFJuSHXm
+         95mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DRY6wscalWlfAwtOkmgsX3II8ZIYotcHkm4m7nc9FkI=;
-        b=K2klOMpL8ISYQbHnNBIdE8R62aLS7e+C70Ov2UmOUfVa8dyo6OVom0+1CM29ri+Jhl
-         crhHcu/uCm2VcB2R5lxqSIQXO4nY2cfarJF2ArRd738J2DkoogKwOHrkiHn/bOGRJFou
-         FRETtIbWgm3J67yBBB1CzfD2Ng1mvlGCDrRHhe9CqwiglcYxuRGofjGs/KX8lkHgkWu5
-         UOZo6hyOJbZ9/Rf2pDjjlWymDjkIGYndtb4xCypWtoYtWgJ9uMCjcSBqKqmylHU5TMmA
-         xWt9lGmefYokMyhD4LUhl2hibKO1VU/CkjNVyDAZjZZDgMLCQnNbqn2nAd7h9wPj1+vF
-         ZFhw==
-X-Gm-Message-State: AOAM532ma/oEjjrw0+xHJZg6g5D/t/QJ2EprXDacFzllvLltQ4IrcScb
-        iFjF+MbFfgmdcaJnFa71nDBJDoYrUpurAw==
-X-Google-Smtp-Source: ABdhPJznCq7s0PtN9wssGd0J/q5iREvMeGy80XeZIoX/9/MMtLJ3HyE5ciPJ//yH9lpQOAfVRYm4GA==
-X-Received: by 2002:a1f:a0cf:: with SMTP id j198mr14207597vke.3.1605111014613;
-        Wed, 11 Nov 2020 08:10:14 -0800 (PST)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id v140sm288524vke.50.2020.11.11.08.10.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 08:10:14 -0800 (PST)
-Received: by mail-vs1-f42.google.com with SMTP id r14so1428225vsa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:10:13 -0800 (PST)
-X-Received: by 2002:a05:6102:309a:: with SMTP id l26mr15977310vsb.4.1605111010929;
- Wed, 11 Nov 2020 08:10:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u6Xd/aWnBK+33C9vA03cmc0xfNfCQ2wQSEufKCfSLLc=;
+        b=lYB/TTwPU4HP82Whcmq3BXEhBojwCmDNUToEkIEKO1j6fZBSGWJVc6948aBH2Q33mw
+         JiaRztXu5E+TiJqWeQh+s9DCrOlK6YnS0U6vqMVuyDWVHfFgwFV3ga+JPdbdpAMBoB6+
+         KNbSeq1P+lywncGpXgFpIRqBJZWzgwPV5jCKZZ9ciWutpf+9ffC5JB7+NRsmP7xQ1kq4
+         fqW9KqKIQ5q4uQ4elWt6MA3kCPzq93jQMcqw2HfL1xVG3vIg8j07aI8tdmSYpqSSzeDn
+         /qUdC6hp7N39x6/F0LipW+RIz84sz45AxZ9mJHk4gy7AGHJQAE07bqqw6yyoBNglgN4h
+         gY2g==
+X-Gm-Message-State: AOAM532eTyAwv0RQtARm1/wI47ujx0G9TFiov2Kr90vXmkkrw4FBgmPZ
+        h8FKzXwhjv5Vby6qvXfvvcihYw==
+X-Google-Smtp-Source: ABdhPJzALDfccylOWWCdBES+52srerfBn/V79OR8V0/sJjZ9s83yv6J95IO3y2SnNvZOpZH/OgK75g==
+X-Received: by 2002:adf:f90f:: with SMTP id b15mr31148545wrr.343.1605111027687;
+        Wed, 11 Nov 2020 08:10:27 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id h62sm2946698wrh.82.2020.11.11.08.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 08:10:26 -0800 (PST)
+Date:   Wed, 11 Nov 2020 17:10:20 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/20] kasan: introduce set_alloc_info
+Message-ID: <20201111161020.GE517454@elver.google.com>
+References: <cover.1605046662.git.andreyknvl@google.com>
+ <5302e6d48429465259bd0868a7dc357290a2e8a5.1605046662.git.andreyknvl@google.com>
 MIME-Version: 1.0
-References: <1604561884-10166-1-git-send-email-mkshah@codeaurora.org>
-In-Reply-To: <1604561884-10166-1-git-send-email-mkshah@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 11 Nov 2020 08:09:59 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WhNksmK0j=30ZohfgDND2JJDqP=EZGP5M-=bCjS=VFjA@mail.gmail.com>
-Message-ID: <CAD=FV=WhNksmK0j=30ZohfgDND2JJDqP=EZGP5M-=bCjS=VFjA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: qcom: Move clearing pending IRQ to
- .irq_request_resources callback
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     LinusW <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5302e6d48429465259bd0868a7dc357290a2e8a5.1605046662.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Nov 4, 2020 at 11:38 PM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> When GPIOs that are routed to PDC are used as output they can still latch
-> the IRQ pending at GIC. As a result the spurious IRQ was handled when the
-> client driver change the direction to input to starts using it as IRQ.
->
-> Currently such erroneous latched IRQ are cleared with .irq_enable callback
-> however if the driver continue to use GPIO as interrupt and invokes
-> disable_irq() followed by enable_irq() then everytime during enable_irq()
-> previously latched interrupt gets cleared.
->
-> This can make edge IRQs not seen after enable_irq() if they had arrived
-> after the driver has invoked disable_irq() and were pending at GIC.
->
-> Move clearing erroneous IRQ to .irq_request_resources callback as this is
-> the place where GPIO direction is changed as input and its locked as IRQ.
->
-> While at this add a missing check to invoke msm_gpio_irq_clear_unmask()
-> from .irq_enable callback only when GPIO is not routed to PDC.
->
-> Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> Add set_alloc_info() helper and move kasan_set_track() into it. This will
+> simplify the code for one of the upcoming changes.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Link: https://linux-review.googlesource.com/id/I0316193cbb4ecc9b87b7c2eee0dd79f8ec908c1a
 > ---
->  drivers/pinctrl/qcom/pinctrl-msm.c | 32 +++++++++++++++++++-------------
->  1 file changed, 19 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index c4bcda9..77a25bd 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -815,21 +815,14 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
->
->  static void msm_gpio_irq_enable(struct irq_data *d)
->  {
-> -       /*
-> -        * Clear the interrupt that may be pending before we enable
-> -        * the line.
-> -        * This is especially a problem with the GPIOs routed to the
-> -        * PDC. These GPIOs are direct-connect interrupts to the GIC.
-> -        * Disabling the interrupt line at the PDC does not prevent
-> -        * the interrupt from being latched at the GIC. The state at
-> -        * GIC needs to be cleared before enabling.
-> -        */
-> -       if (d->parent_data) {
-> -               irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+>  mm/kasan/common.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 8fd04415d8f4..a880e5a547ed 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -318,6 +318,11 @@ bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
+>  	return __kasan_slab_free(cache, object, ip, true);
+>  }
+>  
+> +static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+> +{
+> +	kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
+> +}
 > +
-> +       if (d->parent_data)
->                 irq_chip_enable_parent(d);
-> -       }
->
-> -       msm_gpio_irq_clear_unmask(d, true);
-> +       if (!test_bit(d->hwirq, pctrl->skip_wake_irqs))
-> +               msm_gpio_irq_clear_unmask(d, true);
-
-I'm happy that this patch landed and it seems a definite improvement.
-However, it seems like we're still clearing important edges in the
-case where the PDC isn't used.  Can't we just unconditionally move the
-clearing to msm_gpio_irq_reqres()?
-
--Doug
+>  static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>  				size_t size, gfp_t flags, bool keep_tag)
+>  {
+> @@ -345,7 +350,7 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>  		KASAN_KMALLOC_REDZONE);
+>  
+>  	if (cache->flags & SLAB_KASAN)
+> -		kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
+> +		set_alloc_info(cache, (void *)object, flags);
+>  
+>  	return set_tag(object, tag);
+>  }
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
+> 
