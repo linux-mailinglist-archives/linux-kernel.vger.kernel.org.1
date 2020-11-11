@@ -2,200 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260C42AFCD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923012AFC52
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgKLBea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:34:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727699AbgKKXDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:03:39 -0500
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6063B2068D;
-        Wed, 11 Nov 2020 23:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605135818;
-        bh=PWOn9j23HBOzfWJ+D7iBJ6pZYlRlV+JmuVCCNUonjPo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ckd1+//mOLH7RgvxkTLysy6MxP5eH7hJNdLV4I/o8+PE/weWfEIkux51/g4Pyn11q
-         106c1+FuoqTJF3kvAp8NnXPtR9gJaqw2g7ZdS/T+ltWbJ9j7tVdzrLpCPW1J/6b/+2
-         5ni2r5bMGphhfSWHfWUk7JS72J9lYlsVPpoN30Vc=
-Received: by mail-ot1-f53.google.com with SMTP id l36so3792242ota.4;
-        Wed, 11 Nov 2020 15:03:38 -0800 (PST)
-X-Gm-Message-State: AOAM531pryYSImpMz7jERBSK7ordaUctQv2CEd8vRD0dGkLkAw/nKz6E
-        /RpAt3Xp9W684cJnEyL9mz0HOIxoRhInPgM1HA==
-X-Google-Smtp-Source: ABdhPJzBs9eNBSs8wb1VTALrHXsAiuAdWpF5UQjrAxgZa3Z8XnfjIUO+OfFrmd99j2tX9RNZUaQ2Mlp6aeTtQTGHV1k=
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr19837860otd.192.1605135817564;
- Wed, 11 Nov 2020 15:03:37 -0800 (PST)
+        id S1728760AbgKLBeh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 20:34:37 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31904 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727706AbgKKXDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 18:03:55 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-89-Hjz3Y7RkMHS23JXaSvpHwQ-1; Wed, 11 Nov 2020 23:03:48 +0000
+X-MC-Unique: Hjz3Y7RkMHS23JXaSvpHwQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 11 Nov 2020 23:03:47 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 11 Nov 2020 23:03:47 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dave Martin' <Dave.Martin@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Andre Przywara <Andre.Przywara@arm.com>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        James Clark <James.Clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>, Al Grant <Al.Grant@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v8 06/22] perf arm-spe: Refactor printing string to buffer
+Thread-Topic: [PATCH v8 06/22] perf arm-spe: Refactor printing string to
+ buffer
+Thread-Index: AQHWuFRInoKVOHB17kCDuu646O3VGqnDiy6g
+Date:   Wed, 11 Nov 2020 23:03:47 +0000
+Message-ID: <3dc873b262bd4659a2c6ae935d69c8fc@AcuMS.aculab.com>
+References: <20201111071149.815-1-leo.yan@linaro.org>
+ <20201111071149.815-7-leo.yan@linaro.org>
+ <20201111153555.GG355344@kernel.org>
+ <a1ca3412-3815-e2a8-0334-f3059802df6a@arm.com>
+ <20201111173922.GA380127@kernel.org> <20201111175827.GR6882@arm.com>
+In-Reply-To: <20201111175827.GR6882@arm.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201102203656.220187-1-robh@kernel.org> <20201102203656.220187-2-robh@kernel.org>
- <20201111140009.GD4115@pendragon.ideasonboard.com> <CAL_Jsq+A6Ga+h4qK0nzyL87M1DvrRSnzxtjwUNpq--L7MDHxfA@mail.gmail.com>
- <20201111142735.GG4115@pendragon.ideasonboard.com>
-In-Reply-To: <20201111142735.GG4115@pendragon.ideasonboard.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 11 Nov 2020 17:03:26 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
-Message-ID: <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 8:27 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Rob,
->
-> On Wed, Nov 11, 2020 at 08:25:40AM -0600, Rob Herring wrote:
-> > On Wed, Nov 11, 2020 at 8:00 AM Laurent Pinchart wrote:
-> > > On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
-> > > > From: Sameer Pujar <spujar@nvidia.com>
-> > > >
-> > > > Convert device tree bindings of graph to YAML format. Currently graph.txt
-> > > > doc is referenced in multiple files and all of these need to use schema
-> > > > references. For now graph.txt is updated to refer to graph.yaml.
-> > > >
-> > > > For users of the graph binding, they should reference to the graph
-> > > > schema from either 'ports' or 'port' property:
-> > > >
-> > > > properties:
-> > > >   ports:
-> > > >     type: object
-> > > >     $ref: graph.yaml#/properties/ports
-> > > >
-> > > >     properties:
-> > > >       port@0:
-> > > >         description: What data this port has
-> > > >
-> > > >       ...
-> > > >
-> > > > Or:
-> > > >
-> > > > properties:
-> > > >   port:
-> > > >     description: What data this port has
-> > > >     type: object
-> > > >     $ref: graph.yaml#/properties/port
+From: Dave Martin
+> Sent: 11 November 2020 17:58
+> 
+> On Wed, Nov 11, 2020 at 05:39:22PM +0000, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Nov 11, 2020 at 03:45:23PM +0000, Andrï¿½ Przywara escreveu:
+> > > On 11/11/2020 15:35, Arnaldo Carvalho de Melo wrote:
 > > >
-> > > Sounds like a good approach.
+> > > Hi Arnaldo,
 > > >
-> > > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> > > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > > ---
-> > > > v3:
-> > > >  - Move port 'reg' to port@* and make required
-> > > >  - Make remote-endpoint required
-> > > >  - Add 'additionalProperties: true' now required
-> > > >  - Fix yamllint warnings
-> > > >
-> > > >  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
-> > > >  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
-> > > >  2 files changed, 200 insertions(+), 128 deletions(-)
-> > > >  create mode 100644 Documentation/devicetree/bindings/graph.yaml
-> >
-> > [...]
-> >
-> > > > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..b56720c5a13e
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/graph.yaml
-> > > > @@ -0,0 +1,199 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/graph.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Common bindings for device graphs
-> > > > +
-> > > > +description: |
-> > > > +  The hierarchical organisation of the device tree is well suited to describe
-> > > > +  control flow to devices, but there can be more complex connections between
-> > > > +  devices that work together to form a logical compound device, following an
-> > > > +  arbitrarily complex graph.
-> > > > +  There already is a simple directed graph between devices tree nodes using
-> > > > +  phandle properties pointing to other nodes to describe connections that
-> > > > +  can not be inferred from device tree parent-child relationships. The device
-> > > > +  tree graph bindings described herein abstract more complex devices that can
-> > > > +  have multiple specifiable ports, each of which can be linked to one or more
-> > > > +  ports of other devices.
-> > > > +
-> > > > +  These common bindings do not contain any information about the direction or
-> > > > +  type of the connections, they just map their existence. Specific properties
-> > > > +  may be described by specialized bindings depending on the type of connection.
-> > > > +
-> > > > +  To see how this binding applies to video pipelines, for example, see
-> > > > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > > > +  Here the ports describe data interfaces, and the links between them are
-> > > > +  the connecting data buses. A single port with multiple connections can
-> > > > +  correspond to multiple devices being connected to the same physical bus.
-> > > > +
-> > > > +maintainers:
-> > > > +  - Philipp Zabel <p.zabel@pengutronix.de>
-> > > > +
-> > > > +select: false
-> > > > +
-> > > > +properties:
-> > > > +  port:
-> > > > +    type: object
-> > > > +    description:
-> > > > +      If there is more than one endpoint node or 'reg' property present in
-> > > > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
-> > > > +      required.
-> > > > +
-> > > > +    properties:
-> > > > +      "#address-cells":
-> > > > +        const: 1
-> > > > +
-> > > > +      "#size-cells":
-> > > > +        const: 0
-> > > > +
-> > > > +    patternProperties:
-> > > > +      "^endpoint(@[0-9a-f]+)?$":
-> > > > +        type: object
-> > > > +        properties:
-> > > > +          reg:
-> > > > +            maxItems: 1
-> > > > +
-> > > > +          remote-endpoint:
-> > > > +            description: |
-> > > > +              phandle to an 'endpoint' subnode of a remote device node.
-> > > > +            $ref: /schemas/types.yaml#/definitions/phandle
-> > > > +
-> > > > +        required:
-> > > > +          - remote-endpoint
+> > > thanks for taking a look!
 > > >
-> > > As noted elsewhere, this shouldn't be required.
-> > >
-> > > Should we set additionalProperties: false here ?
-> >
-> > No, we've got a bunch of properties that get added to endpoint nodes.
-> > There's a few cases where 'port' nodes have properties too.
->
-> I meant the port node, which I wasn't aware needed additional
-> properties. Do you have any example ? (I wonder if you will point me to
-> bindings that I have written ;-))
+> > > > Em Wed, Nov 11, 2020 at 03:11:33PM +0800, Leo Yan escreveu:
+> > > >> When outputs strings to the decoding buffer with function snprintf(),
+> > > >> SPE decoder needs to detects if any error returns from snprintf() and if
+> > > >> so needs to directly bail out.  If snprintf() returns success, it needs
+> > > >> to update buffer pointer and reduce the buffer length so can continue to
+> > > >> output the next string into the consequent memory space.
+> > > >>
+> > > >> This complex logics are spreading in the function arm_spe_pkt_desc() so
+> > > >> there has many duplicate codes for handling error detecting, increment
+> > > >> buffer pointer and decrement buffer size.
+> > > >>
+> > > >> To avoid the duplicate code, this patch introduces a new helper function
+> > > >> arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
+> > > >> it's used by the caller arm_spe_pkt_desc().
+> > > >>
+> > > >> This patch also moves the variable 'blen' as the function's local
+> > > >> variable, this allows to remove the unnecessary braces and improve the
+> > > >> readability.
+> > > >>
+> > > >> Suggested-by: Dave Martin <Dave.Martin@arm.com>
+> > > >> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > > >> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+> > > >> ---
+> > > >>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 260 +++++++++---------
+> > > >>  1 file changed, 126 insertions(+), 134 deletions(-)
+> > > >>
+> > > >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-
+> decoder/arm-spe-pkt-decoder.c
+> > > >> index 04fd7fd7c15f..1970686f7020 100644
+> > > >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > >> @@ -9,6 +9,7 @@
+> > > >>  #include <endian.h>
+> > > >>  #include <byteswap.h>
+> > > >>  #include <linux/bitops.h>
+> > > >> +#include <stdarg.h>
+> > > >>
+> > > >>  #include "arm-spe-pkt-decoder.h"
+> > > >>
+> > > >> @@ -258,192 +259,183 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
+> > > >>  	return ret;
+> > > >>  }
+> > > >>
+> > > >> +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
+> > > >> +				const char *fmt, ...)
+> > > >> +{
+> > > >> +	va_list ap;
+> > > >> +	int ret;
+> > > >> +
+> > > >> +	/* Bail out if any error occurred */
+> > > >> +	if (err && *err)
+> > > >> +		return *err;
+> > > >> +
+> > > >> +	va_start(ap, fmt);
+> > > >> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
+> > > >> +	va_end(ap);
+> > > >> +
+> > > >> +	if (ret < 0) {
+> > > >> +		if (err && !*err)
+> > > >> +			*err = ret;
+> > > >> +
+> > > >> +	/*
+> > > >> +	 * A return value of (*blen - 1) or more means that the
+> > > >> +	 * output was truncated and the buffer is overrun.
+> > > >> +	 */
+> > > >> +	} else if (ret >= ((int)*blen - 1)) {
+> > > >> +		(*buf_p)[*blen - 1] = '\0';
+> > > >> +
+> > > >> +		/*
+> > > >> +		 * Set *err to 'ret' to avoid overflow if tries to
+> > > >> +		 * fill this buffer sequentially.
+> > > >> +		 */
+> > > >> +		if (err && !*err)
+> > > >> +			*err = ret;
+> > > >> +	} else {
+> > > >> +		*buf_p += ret;
+> > > >> +		*blen -= ret;
+> > > >> +	}
+> > > >> +
+> > > >> +	return ret;
+> > > >> +}
+> > > >> +
 
-Not you, but Renesas. dual-lvds-{odd,even}-pixels was the only one I
-think. But really, I think we could actually drop those if the port
-numbering defines even/odd instead. There's a patch I just reviewed
-for common dual lane panels. See
-1604993797-14240-1-git-send-email-victor.liu@nxp.com
+I'm not entirely sure that snprintf() can actually return a negative value.
 
-Rob
+Every implementation (except the microsoft one) also always writes a '\0'
+even when the buffer is too short.
+
+A simple wrapper that lets you append output and detect overflow is:
+	ret = vsnprintf(buf, len, ...);
+	if (ret < 0)
+		/* just in case */
+		return 0;
+	return ret > len ? len : ret;
+
+So on overflow the sum of the lengths is equal to the buffer size
+(ie includes the terminating '\0'.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
