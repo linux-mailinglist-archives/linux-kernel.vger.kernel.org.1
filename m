@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0E62AF072
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843182AF079
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726111AbgKKMXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:23:05 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37978 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgKKMXD (ORCPT
+        id S1726267AbgKKMZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:25:06 -0500
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:55267 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgKKMZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:23:03 -0500
-Date:   Wed, 11 Nov 2020 12:22:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605097380;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HIqPjYYJfAb0E1+y40ZmCG9ZGL7udxK14w1qon3YJ8U=;
-        b=c2qKni+eNIqXJgpzUny0BzLi3ChItBQelhUy2J1cIkfzEuK3nPNweh9YnfPhs8yS5Wxgha
-        pxh6UJGzDksUgDrUh5SVYu/pK9aX7EBnaJUdM2cNGv0otGSVdmPcpsjFGZyozKp9MgDF+g
-        iPUVUMgwgAtvHZrZoTKb7Tx+fQ8XbGomu/G7YgA5XFWFQYr+HTFoPUFrf8Ck2mppWYz4aU
-        Fj6+6KaXfpnjiOBNppKZiYL5ozs/If9epu6LyNEci6bnbzW2mIghu/ptyZRm5Zcc2Yi87O
-        e3IpmdI23UcRc9Jv4SaO+WltAzn/n+M75dv67UuJxA0Iw7MYNwyvFVvoT9hFkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605097380;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HIqPjYYJfAb0E1+y40ZmCG9ZGL7udxK14w1qon3YJ8U=;
-        b=SxVQf1Vy2eUisW+uM3AHtoveupmK31subp23h2KsswpT4UER63wCo0MfA/TlzoBarzIF0S
-        8/QIsYmuVXbm0QCA==
-From:   "tip-bot2 for Jiri Slaby" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/platform/uv: Drop last traces of uv_flush_tlb_others
-Cc:     Jiri Slaby <jslaby@suse.cz>, Thomas Gleixner <tglx@linutronix.de>,
-        Mike Travis <mike.travis@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201109093653.2042-1-jslaby@suse.cz>
-References: <20201109093653.2042-1-jslaby@suse.cz>
+        Wed, 11 Nov 2020 07:25:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605097504; x=1636633504;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IUX2xf6Hbx0dVgf+4RdvLcb80tKLCFc4rdnd1Xiw3z4=;
+  b=2L2zLY4wsMMVYLakT1JVI6LQlV2hAg+9EEullhHdWeevizJQGVR/ge1j
+   D9Dg1RI7VGxvoF3Y/uHwLaK6CXJQfzEA1hYFdQgoyngAbL5PxXcWOvnSw
+   Yv0WZY5AnmSPvi8wtf9vQL7CoN4oi56PqlidalBHftZtxVxvyIGfNywxg
+   hspOBIMN0VTsrOAaDS5vB6p+69IHVOuuCeJtw20NL6eBAbt8p7lnoE3Ts
+   ldnQsfGR/T+mszxdjhnKBPi0kE2F4EyWJK5DybD/fYWoTUduhPdd/k2LR
+   hyIwOmC226VNa5q+iDCu8lIXSnX6RgX6VirogVZ60tmNNfelEM2R19NNj
+   g==;
+IronPort-SDR: M4NB8Uz6dCol8UC94vx0BYgFMXImxqujFIdcz5oAX3TKTDLAswTJ01/uI0v7eRBZTZHmGE4DU5
+ SknGXAtH3J2vLX+BfJVOzLCNAzWOPktM1dsxZy9WXafjkN65annMflWvW2s5D9fPhQ9yyt2Ph0
+ V79yyYujuAb4s2Xjjsop+cwjR10hwexzbuzH4o5HcNkQRUNPPhQ7nU3G00CX54Fzsbjp8bQUDL
+ CfBtmDoTy7MxbnMIHKECpDlaNkQ1QZ2EFN+zFUXTS57SOT1wbXLLPYGmWtZXcElwypnKa2OPJZ
+ 5Ew=
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="98605526"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 05:25:02 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 11 Nov 2020 05:25:02 -0700
+Received: from soft-dev10.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 11 Nov 2020 05:25:00 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v9 0/3] Adding support for Microchip/Microsemi serial GPIO controller
+Date:   Wed, 11 Nov 2020 13:24:51 +0100
+Message-ID: <20201111122454.6240-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <160509737932.11244.2434801428950537873.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+The series add support for the serial GPIO controller used by
+Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
 
-Commit-ID:     b2896458b850ec7cb69b054b195b4b399f7e1f22
-Gitweb:        https://git.kernel.org/tip/b2896458b850ec7cb69b054b195b4b399f7e1f22
-Author:        Jiri Slaby <jslaby@suse.cz>
-AuthorDate:    Mon, 09 Nov 2020 10:36:53 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 11 Nov 2020 13:16:51 +01:00
+v9 changes (from Andy):
+ - Avoid bitfield duplication (use FIELD_PREP/FIELD_GET)
+ - Introduce SGPIO_SRC_BITS define constant
+ - Use ENOTSUPP instead of EOPNOTSUPP (checkpatch will complain)
+ - Drop dev_err() when using pin for wrong direction
+ - Replaced left-over OF code with device_property_* flavors
+ - Use devm_kasprintf() instead of strnprintf()+devm_strdup()
+ - Minor formatting changes, deleted comments
 
-x86/platform/uv: Drop last traces of uv_flush_tlb_others
+v8 changes (from Andy):
+ - Removed OF dependency/usage entirely.
+ - Trimmed+sorted include files.
+ - Made local variables reverse xmas sorted.
+ - Removed __func__ usage.
+ - Changed some occurences of "if (x) { ..." to early return.
+ - Use dev_err_probe() where possible.
+ - Replace of_device_get_match_data() with device_get_match_data()
+ - Some minor formatting corrections
+ - Do per-pin string allocation as opposed to bulk allocation+chop.
 
-Commit 39297dde7390 ("x86/platform/uv: Remove UV BAU TLB Shootdown
-Handler") removed uv_flush_tlb_others. Its declaration was removed also
-from asm/uv/uv.h. But only for the CONFIG_X86_UV=y case. The inline
-definition (!X86_UV case) is still in place.
+v7 changes:
+- Fixed wrong sizeof in pin string name template. (Andy)
+- Collapsed sgpio_input_get() to one liner. (Andy)
+- Eliminated unneeded variable in microchip_sgpio_get_value()
+- Removed noisy dev_info(). (Andy)
+- Replaced platform_get_resource()+devm_ioremap_resource() with
+ devm_platform_ioremap_resource(). (Andy)
+- Replaced device_property_read_u32() with
+  of_property_read_u32(). (Andy)
+- Replaced __builtin_ffsll() with __builtin_ffs() for MIPS32 targets.
 
-So remove this implementation with everything what was added to support
-uv_flush_tlb_others:
-* include of asm/tlbflush.h
-* forward declarations of struct cpumask, mm_struct, and flush_tlb_info
+v6 changes:
+- Use "bus-frequency" instead of "microchip,sgpio-frequency". Drop
+  '$ref'. (Robh)
+- Added "ngpios" description, bumped minimum to 32. (Linus)
+- Added "#size-cells" description. (Linus)
+- Changed "bus-frequency" validation in driver to reflect the YAML
+  description.
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Mike Travis <mike.travis@hpe.com>
-Acked-by: Steve Wahl <steve.wahl@hpe.com>
-Link: https://lore.kernel.org/r/20201109093653.2042-1-jslaby@suse.cz
+v5 changes (driver comments from Linus):
+- Collect bank data in sgpio_bank struct
+- Add is_input boolean to sgpio_bank struct
+- Use single-bit bitmasks in sgpio_output_set() and sgpio_output_get()
+- Eliminate superfluous struct pinctrl_dev *pctl_dev in bank data
+- Fix wrong ngpio consistency check
 
----
- arch/x86/include/asm/uv/uv.h | 10 ----------
- 1 file changed, 10 deletions(-)
+v4 changes (binding comments from Rob):
+- microchip,sgpio-port-ranges changed to uint32-matrix so tuples can
+  be represented properly.
+- gpio controller node name changed to "gpio@[0-1]"
+- whitespace fixes
+- DT files updated as per schema changes
 
-diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
-index 172d3e4..648eb23 100644
---- a/arch/x86/include/asm/uv/uv.h
-+++ b/arch/x86/include/asm/uv/uv.h
-@@ -2,14 +2,8 @@
- #ifndef _ASM_X86_UV_UV_H
- #define _ASM_X86_UV_UV_H
- 
--#include <asm/tlbflush.h>
--
- enum uv_system_type {UV_NONE, UV_LEGACY_APIC, UV_X2APIC};
- 
--struct cpumask;
--struct mm_struct;
--struct flush_tlb_info;
--
- #ifdef CONFIG_X86_UV
- #include <linux/efi.h>
- 
-@@ -44,10 +38,6 @@ static inline int is_uv_system(void)	{ return 0; }
- static inline int is_uv_hubbed(int uv)	{ return 0; }
- static inline void uv_cpu_init(void)	{ }
- static inline void uv_system_init(void)	{ }
--static inline const struct cpumask *
--uv_flush_tlb_others(const struct cpumask *cpumask,
--		    const struct flush_tlb_info *info)
--{ return cpumask; }
- 
- #endif	/* X86_UV */
- 
+v3 changes:
+- Renamed all usage of "mchp" abbrevation with "microchip".
+- Split the in/output directions into (two) separate banks.
+- Eliminated the bindings include file (from above)
+- Changed SPDX license to "GPL-2.0-or-later"
+- Change -ENOTSUPP to -EOPNOTSUPP
+- Minor type/symbol naming changes
+
+v2 changes:
+- Adds both in and output modes.
+- Use direct adressing of the individual banks (#gpio-cells = <4>),
+  also osoleting need for addressing macros in bindings include file.
+- Property 'microchip,sgpio-ports' (uint32, bitmask) replaced by
+  proper range set (array of [start,end]) 'microchip,sgpio-port-ranges'.
+- Fixes whitespace issues in Kconfig file
+
+Lars Povlsen (3):
+  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
+    Serial GPIO
+  arm64: dts: sparx5: Add SGPIO devices
+
+ .../pinctrl/microchip,sparx5-sgpio.yaml       | 145 ++++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  91 +++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
+ .../dts/microchip/sparx5_pcb134_board.dtsi    | 258 +++++++
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |  55 ++
+ drivers/pinctrl/Kconfig                       |  16 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-microchip-sgpio.c     | 707 ++++++++++++++++++
+ 9 files changed, 1279 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-microchip-sgpio.c
+
+--
+2.25.1
