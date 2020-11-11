@@ -2,127 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2DE2AE872
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949CE2AE874
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgKKFxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 00:53:09 -0500
-Received: from mail-bn8nam11on2048.outbound.protection.outlook.com ([40.107.236.48]:49953
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725468AbgKKFxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:53:08 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XUTNl+9wHGDHu3UGBKQU8ASOh6SmNie8jE/Ij/M6bYRRJ3TCxSebaKqje/5dlqT37bm7bPwCbUw3ElODSqHss4C3NjCbovfMz+MSPtH1RcrmvtgfpRX9VtL0ugA4bNzkjZIfmAgzZSPh7+irzCiE32fqNS7xpemcGTOJq0CaEycwod3WMoo0QUxuFNcwN3XMv5hRkm9a8zh4LzSOIhrIXkR6WnQWHqbTfGpWDaIwtRZwPklhyU8z4iXZVuvJjC0mpuG+/6rojWfMYNkGLu9gl4URbH0L25211OlFxdP8F4f7/1weV7YUVBwQNVJ6DmMdZo0nTEc0JjczPnt60tLsxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F7ieXBsuQUdEHARnDgMcHMnfx+sGTfJD0nw3NVf2V78=;
- b=RAUbx4f9Q1EFJ0iwzErg8BwmQk0YDZdTRY9iuXfwgFIPS52j6dcjDvLLVOtcRf/Vly12TuXT8/rP8qDZFNyFscz/JXbvMF+UpRqXDH6Ql+nX5IlyGsYwSctqUASrG3Cez4GeBo66gh5N7f/UgkevCHaeSTWg/7Xi2/tnO0Gp9wBYD704dBWqrLITTsGzcTaiuQIejsVcp1jacjB4DY9KeHU9T/h9dX536YgJmca+JvmlivXxR1wdWU8NMZvrAVJKonLG/b7o3utXvz9l45C0i0TnPGTluaDOwDNFULFCVN5viYn3ZWSXOtDurGhOk/GUUymxeJeAwqgBsR793O/YAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
- dkim=pass header.d=openfive.com; arc=none
+        id S1725961AbgKKFxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgKKFxS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 00:53:18 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69433C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:53:17 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id oc3so159025pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:53:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F7ieXBsuQUdEHARnDgMcHMnfx+sGTfJD0nw3NVf2V78=;
- b=opwNjgg0WpByBzxAu475EOaf0h1Yo0jxKAK3iKY3EXWdDv79QRsPGIwwSHfcwch0ytQx+DLG/6huHg6zh8vIoj03sxZPdWz+w0hAtdVb8QtMDcdw8Y941sT7NlXoK+jd/LryRidOVGMGma7N4OhACii0RrDuWj4J7TUcdUgCq7Q=
-Received: from MN2PR13MB2797.namprd13.prod.outlook.com (2603:10b6:208:f2::30)
- by MN2PR13MB3661.namprd13.prod.outlook.com (2603:10b6:208:1ed::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10; Wed, 11 Nov
- 2020 05:53:05 +0000
-Received: from MN2PR13MB2797.namprd13.prod.outlook.com
- ([fe80::dcec:40d7:3fd6:308d]) by MN2PR13MB2797.namprd13.prod.outlook.com
- ([fe80::dcec:40d7:3fd6:308d%7]) with mapi id 15.20.3564.021; Wed, 11 Nov 2020
- 05:53:05 +0000
-From:   Pragnesh Patel <pragnesh.patel@openfive.com>
-To:     Zong Li <zong.li@sifive.com>,
-        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "schwab@linux-m68k.org" <schwab@linux-m68k.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        Yash Shah <yash.shah@openfive.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-CC:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: RE: [PATCH v2 2/3] clk: sifive: Use common name for prci
- configuration
-Thread-Topic: [PATCH v2 2/3] clk: sifive: Use common name for prci
- configuration
-Thread-Index: AQHWtzMrBuTGvrCfD0SWjOrvc3K2U6nCbxxg
-Date:   Wed, 11 Nov 2020 05:53:05 +0000
-Message-ID: <MN2PR13MB27971ED8EF61A6207423FD4EEBE80@MN2PR13MB2797.namprd13.prod.outlook.com>
-References: <20201110072748.46705-1-zong.li@sifive.com>
- <20201110072748.46705-3-zong.li@sifive.com>
-In-Reply-To: <20201110072748.46705-3-zong.li@sifive.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: sifive.com; dkim=none (message not signed)
- header.d=none;sifive.com; dmarc=none action=none header.from=openfive.com;
-x-originating-ip: [2405:204:8004:b7c5:a5e5:20a7:4d2f:98e3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cf6e6ace-0cc8-4e0a-24bc-08d886060f52
-x-ms-traffictypediagnostic: MN2PR13MB3661:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR13MB3661C9E52A5512A59DF25258EBE80@MN2PR13MB3661.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2lVtjlyaByvnkgdocBwaXzMmNxOzwfMnkaFdFrjBHMsd/gNcD0fmFVMsKvCfN2qU4o9XoCFqmV/i6+seGkhzgrTD2Ncl28TxZ1smAknOv+LH/Bv8R+i8f7X6Ike2FvBWphJdiLKkJbHj/QI5PmB75axpbSbzq85APA5WXqAA2HQN5FVYWnzJatLBplJe5PYNRpFSQnMy7pntmXMmAimkqbRImQsQnSeSK8x3tNhkGYmcc5wDOnoGB6hoBO4fm6mLdd0lLFL9veRfVK0cAzW3d8+/Lh9j3E35ZKoFTBbhCjcqfiZjhDAngpHQkP606G28hGn9DKiOdaUd3leDgmcorAqU2hob/heKJZMWFduiHeN6HsaNdzco2fvUOh+OIOQd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB2797.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(396003)(346002)(376002)(136003)(66476007)(86362001)(66556008)(83380400001)(9686003)(6506007)(186003)(64756008)(54906003)(66446008)(44832011)(8936002)(33656002)(71200400001)(110136005)(55016002)(4744005)(2906002)(8676002)(107886003)(52536014)(66946007)(7696005)(76116006)(478600001)(4326008)(316002)(5660300002)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: xOaXFyBloDz6NIUn7X465gA5QN1OcEp9+FJJbDeH88P6yVNMBf6QhhTejLj/ctMi64AZQjSYCSoBuBRG/A0HKQxmSsM1d+Zd0Fu3r0tS1BpIUly4B5PvqJ+NKbxGznJDPGCbsFJy1sQhVRqzld2Yzu/de8w06sTCK2q5CGcC1ZF56OIpAU5HIdp4SoSSADK8DcUEwGZzeOneKk6uyOfTcYsNNuvemERN9sQqah1w1MHj7w85zpmzUyc8mVd1lkQXvZ8Pqwk9tvYAsGIYX7XElGV1fSNG3qw8ErBFaDvZNbC2OFYwr5aomqaZHrF803necbnwRSyQLlzDi12R54nhxF+kXsndv/62P+pqq5KDu5sNb0P8ai5pAqUYxeZkNn6o+XNoOFVQPCWKfaTNMersfwQd4hLezz6QeIn7eTuxCPyA7ZY26iFsxW9RSSwSj6zEF9809GIaQG8NKtyewJedYCloQ77ILo7Av+b0XpxtfsHEjnx9uVjs4H8qLEfnoaVwKy/MRUOedn8WbSLw7SZ7SIAxHCUELfwSa700P7LInO+LOVyz0sCjVcPygBoE6a7P1bPKPJrzRcTxJazgxN0727N8FWfwNr1Zt+ZmlVw57oVn3sHEwXUuwJk4xcWQdR+bbFDAsbW9K2m5FirshghOE06Xn2/ryaLaZUV6mP7LfCivsrLwxefXSk+RTpic0PCbAN/qyTfS72IyU7lSxpG5hw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=w2JojwkEcpz1e9R3DiGEQQXf6doZlQNTIMB3Trmj4A8=;
+        b=MbniOIo3XqyjpEy5SStX98myWeonEnjeW8Y5gptfGuXRnMmbQRJuGxmJ91VvuhRCIn
+         P/EQCsiW2/qM+NVURXwQJ027gp1LJpMBYB2UQSQWV8W3q+aBW/o84dCtJqo/SE5yX/x6
+         ztHDPpeegy6BwBlguNf25C7UOQNoC5YDyGczaFWw5rvxjgVsO9TfJUcm8YFf6AeRFqpi
+         8WDCTKIXWyMYKZUcmbBqzJeG1hpYuY9Y/7nyA87Jk0IcWwbh6wPZ2j3DIH40MfzferBP
+         QfHqJlKgbwcmi26fY1M4kIYMSD3Ih3sO+UYwHAHhmZDfrgbM6rVFS5bEf8c/Y4ELiiik
+         /7+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=w2JojwkEcpz1e9R3DiGEQQXf6doZlQNTIMB3Trmj4A8=;
+        b=Nq3wGUMUTMac3qNXmjiH1hRE4cvuFYjD3NgL0d+w0JhAGCt9FwaRwKm7ZaMSD/M0ze
+         ZyAgxIlmGo3ZTHROwZYK8XF6qwUoVyrHxVIFYcA5gbjWYvaKOcGGMIunLLrmry3/dyyu
+         hG0sgmbBdzKyHJpHzvXNSrEKOPnPsOJPns0S0stY+fcT8RMFLImfwgS+gtKEMK9+XGpy
+         /ncZL7knDRoyl56CRUREpl74s0YYkYetQ1mUNOZxpkFEb/8JIFZuKP1gL/OyY8M0fBK2
+         b6rMRwXrUJuA++e4p4mUVfMJFr8efB4QObFxLsD7CLG0gd3OQpgic6AWYST71bHmDKYP
+         SMsA==
+X-Gm-Message-State: AOAM531UtXIS4cnLo7NAs0GGmhhnyiQweME19U5rUDstY3p4M6dKFDHo
+        6m98Fw6i3fr53jOXYUiTl9vR4HETGn8KsQ==
+X-Google-Smtp-Source: ABdhPJz54Nl3VsqoaqAlEDpB7LxwMBDa3cF9p5RJdQReuwk7xa1C+v33EeGmHlrLtc1Fh6hLMf9Sfg==
+X-Received: by 2002:a17:90a:d486:: with SMTP id s6mr2182310pju.115.1605073997016;
+        Tue, 10 Nov 2020 21:53:17 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id z17sm1018135pfq.121.2020.11.10.21.53.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Nov 2020 21:53:15 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:23:13 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 09/26] memory: tegra30: Support interconnect framework
+Message-ID: <20201111055313.tefidnmc7f4yb3jk@vireshk-i7>
+References: <20201111011456.7875-1-digetx@gmail.com>
+ <20201111011456.7875-10-digetx@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: openfive.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB2797.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf6e6ace-0cc8-4e0a-24bc-08d886060f52
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2020 05:53:05.6383
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fOWED2ApdMQ1/UP5sxk/JWLvzVqLI7XN+trxVheRonhHJ8uYakBopn7USVLOY0W0e+t1UYi/27aTzWlO8gbf8t+k2RQhnvVon6yies6uizA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3661
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111011456.7875-10-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: linux-riscv <linux-riscv-bounces@lists.infradead.org> On Behalf Of Z=
-ong Li
->Sent: 10 November 2020 12:58
->To: Paul Walmsley ( Sifive) <paul.walmsley@sifive.com>; palmer@dabbelt.com=
-;
->sboyd@kernel.org; schwab@linux-m68k.org; aou@eecs.berkeley.edu;
->mturquette@baylibre.com; Yash Shah <yash.shah@openfive.com>; linux-
->kernel@vger.kernel.org; linux-clk@vger.kernel.org; linux-
->riscv@lists.infradead.org
->Cc: Palmer Dabbelt <palmerdabbelt@google.com>; Zong Li <zong.li@sifive.com=
->
->Subject: [PATCH v2 2/3] clk: sifive: Use common name for prci configuratio=
-n
->
->Use generic name CLK_SIFIVE_PRCI instead of CLK_SIFIVE_FU540_PRCI. This
->patch is prepared for fu740 support.
->
->Signed-off-by: Zong Li <zong.li@sifive.com>
->Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
->Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
->---
-> arch/riscv/Kconfig.socs     | 2 +-
-> drivers/clk/sifive/Kconfig  | 6 +++---
-> drivers/clk/sifive/Makefile | 2 +-
-> 3 files changed, 5 insertions(+), 5 deletions(-)
+On 11-11-20, 04:14, Dmitry Osipenko wrote:
+> +static int tegra_emc_opp_table_init(struct tegra_emc *emc)
+> +{
+> +	struct opp_table *reg_opp_table = NULL, *clk_opp_table, *hw_opp_table;
+> +	u32 hw_version = BIT(tegra_sku_info.soc_speedo_id);
+> +	const char *rname = "core";
+> +	int err;
+> +
+> +	/*
+> +	 * Legacy device-trees don't have OPP table and EMC driver isn't
+> +	 * useful in this case.
+> +	 */
+> +	if (!device_property_present(emc->dev, "operating-points-v2")) {
 
-Reviewed-by: Pragnesh Patel <Pragnesh.patel@sifive.com>
+I don't understand why you want to check this ? The below call to
+dev_pm_opp_of_add_table() will fail anyway and that should be good for
+you.
 
+> +		dev_err(emc->dev,
+> +			"OPP table not found, please update your device tree\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* voltage scaling is optional */
+> +	if (device_property_present(emc->dev, "core-supply")) {
+> +		reg_opp_table = dev_pm_opp_set_regulators(emc->dev, &rname, 1);
+> +		if (IS_ERR(reg_opp_table))
+> +			return dev_err_probe(emc->dev, PTR_ERR(reg_opp_table),
+> +					     "failed to set OPP regulator\n");
+> +	}
+> +
+> +	clk_opp_table = dev_pm_opp_set_clkname(emc->dev, NULL);
+
+I think there is still some misunderstanding here. This call with a
+NULL connection id is useful only if the DT OPP table is optional for
+your platform and you want the same driver to work with and without
+the DT OPP table. Clearly in your case you want the OPP table in the
+DT to be there and so this call is not required at all.
+
+> +	err = PTR_ERR_OR_ZERO(clk_opp_table);
+> +	if (err) {
+> +		dev_err(emc->dev, "failed to set OPP clk: %d\n", err);
+> +		goto put_reg_table;
+> +	}
+> +
+> +	hw_opp_table = dev_pm_opp_set_supported_hw(emc->dev, &hw_version, 1);
+> +	err = PTR_ERR_OR_ZERO(hw_opp_table);
+> +	if (err) {
+> +		dev_err(emc->dev, "failed to set OPP supported HW: %d\n", err);
+> +		goto put_clk_table;
+> +	}
+> +
+> +	err = dev_pm_opp_of_add_table(emc->dev);
+> +	if (err) {
+> +		dev_err(emc->dev, "failed to add OPP table: %d\n", err);
+> +		goto put_hw_table;
+> +	}
+> +
+> +	dev_info(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
+> +		 hw_version, clk_get_rate(emc->clk) / 1000000);
+> +
+> +	/* first dummy rate-set initializes voltage state */
+> +	err = dev_pm_opp_set_rate(emc->dev, clk_get_rate(emc->clk));
+> +	if (err) {
+> +		dev_err(emc->dev, "failed to initialize OPP clock: %d\n", err);
+> +		goto remove_table;
+> +	}
+> +
+> +	return 0;
+> +
+> +remove_table:
+> +	dev_pm_opp_of_remove_table(emc->dev);
+> +put_hw_table:
+> +	dev_pm_opp_put_supported_hw(hw_opp_table);
+> +put_clk_table:
+> +	dev_pm_opp_put_clkname(clk_opp_table);
+> +put_reg_table:
+> +	if (reg_opp_table)
+> +		dev_pm_opp_put_regulators(reg_opp_table);
+> +
+> +	return err;
+> +}
+
+-- 
+viresh
