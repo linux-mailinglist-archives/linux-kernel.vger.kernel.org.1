@@ -2,246 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA302AF1D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3612AF1D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgKKNQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgKKNQz (ORCPT
+        id S1726470AbgKKNSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:18:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbgKKNSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:16:55 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A82C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:16:54 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id g15so1165016qtq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:16:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L3xr+vb4NAdkO7IgO4hF3798stqYlZQgH+r9DFyhSKI=;
-        b=eUne43dOwThcY1eT22nN9xS1LV5kt7SKKeiSHoAaZ8gyxuGOurZlFEIUl5v5MiOVTS
-         4YaD2LM32MhkIGwX7ncmce6DCtu5DAn7iy8f8/Kz5l4KKxO0yUD1Fd8JjJzdZB1pEU+G
-         7ItmYdAgZV6bUGjJT9V+FNnWkl4rRNDm6H4JSH3PbZL9GMwtgiYcgGqPbTazBaGRi2Sd
-         zsl297wPBFP90XOKwMiYCgtlZZM5jMyMNXth+N2IW3qmJzTXsB2CPa+XCqSHlUQLDwq7
-         Wr6YSDpf7nd+MAiPnpDMWJNLvKYcLnND0obLXB7QqYtYq938abRV4Jk0idg5ObJGAF4/
-         dO7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L3xr+vb4NAdkO7IgO4hF3798stqYlZQgH+r9DFyhSKI=;
-        b=aVWTtfC1K7jtPwR85nfOz91MVo6eZhQFghZAg8mDO4DOFDl8r9g7f0isF5/lA4ogKJ
-         v6V6lFC6uOJ90ZX2p3j49//w1/Rwd2ZS8rb7yx35n1rbmzIgPLlK9K5vW87oUdoM+aI6
-         Ys28gfZpf+cQ9W5qW1RhWj3323Pvu69xHFsHO2VMBL3gTMWKsT6vuSFUM40ljBFyeNXt
-         0yu3XnRcA6IyGEruweK3UfvWoyjtycG6BdsNwu7yk8xqZetNEW5eG9BNqP4efGbarUba
-         xFeVWkC865fdk+hnDsWa3seu+NFBG6+LI6dmLMSRDP4jsUj73LwFafCd0MKFQQtmiufg
-         EUrw==
-X-Gm-Message-State: AOAM5302bF6kWtu73bl4Sfw0Xw1v725yfL+uj3TaY3GQ2E8K39VrOWQ8
-        RNQTRWi5EZ7aWX8GaHkYUvd5deyOvJDa3cprWq74Og==
-X-Google-Smtp-Source: ABdhPJy7smipgiXSdxWNA+y+6xcb2bLcNBPMVXYgv6wMGlLD/Jc78u/uwBD20oY5Lq/1BzdluUgqkaqKRksQsDBgFeg=
-X-Received: by 2002:ac8:364d:: with SMTP id n13mr2590612qtb.369.1605100613373;
- Wed, 11 Nov 2020 05:16:53 -0800 (PST)
+        Wed, 11 Nov 2020 08:18:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605100693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CPqyLxrjT7Zd3PVI4qxdWqJCxL2nuLkXikSg/vIQ4eQ=;
+        b=fim3+Z+aXXFRl31mkXY5lBueQgnJsgFGpT7t0iTwm15UIeywX87BXqT3e+vwvfXytXwMe2
+        riedOW84zI4Nzud3bFoL9Bgo0wFbKGdqsEfQjQ6e0ilvtptw5/z/usERWZL9XasL+XpZtG
+        vtyIqjcM81Mo6LFQkzSxv3+pvgqo/40=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-19-woxD8yTVOgKP2HhF13ZJQQ-1; Wed, 11 Nov 2020 08:18:10 -0500
+X-MC-Unique: woxD8yTVOgKP2HhF13ZJQQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EF4A1007466;
+        Wed, 11 Nov 2020 13:18:09 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 517051002C2B;
+        Wed, 11 Nov 2020 13:18:02 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 08:17:59 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] audit: remove unused macros
+Message-ID: <20201111131759.GD55072@madcap2.tricolour.ca>
+References: <1604651482-9780-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201110152310.GB55411@madcap2.tricolour.ca>
+ <CAHC9VhQiQoZh8in+zoYa5hbTN_yL-=mt7nTQFN9GAyQZ+tz-Ww@mail.gmail.com>
+ <20201111030359.GB55072@madcap2.tricolour.ca>
+ <bae6d2fa-64d9-623b-6729-3827d745ed7a@linux.alibaba.com>
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <8cf064ae41eb86697bd3aff5adf6b546d05351c1.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <8cf064ae41eb86697bd3aff5adf6b546d05351c1.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 14:16:42 +0100
-Message-ID: <CAG_fn=X-=eqBm6R5qrexxBhYvJAKFn3mFLvK6+89Gxz_sivACw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/44] kasan: drop unnecessary GPL text from comment headers
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bae6d2fa-64d9-623b-6729-3827d745ed7a@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> Don't mention "GNU General Public License version 2" text explicitly,
-> as it's already covered by the SPDX-License-Identifier.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On 2020-11-11 14:19, Alex Shi wrote:
+> Thanks for comments!
+> So here is the v2 according to your suggestion!
+> 
+> From 033425b6072ff4cee05d6bbffc97cd6a4c13166c Mon Sep 17 00:00:00 2001
+> From: Alex Shi <alex.shi@linux.alibaba.com>
+> Date: Fri, 6 Nov 2020 16:31:22 +0800
+> Subject: [PATCH v2] kernel/audit: fix macros warning
+> 
+> Some unused macros could cause gcc warning:
+> kernel/audit.c:68:0: warning: macro "AUDIT_UNINITIALIZED" is not used
+> [-Wunused-macros]
+> kernel/auditsc.c:104:0: warning: macro "AUDIT_AUX_IPCPERM" is not used
+> [-Wunused-macros]
+> kernel/auditsc.c:82:0: warning: macro "AUDITSC_INVALID" is not used
+> [-Wunused-macros]
+> 
+> AUDIT_UNINITIALIZED and AUDITSC_INVALID are still meaningful and could
+> be used in code.
 
+"and should be incorporated"
+
+> Just remove AUDIT_AUX_IPCPERM.
+> 
+> Thanks comments from Richard Guy Briggs and Paul Moore.
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Paul Moore <paul@paul-moore.com>
+> Cc: Eric Paris <eparis@redhat.com>
+> Cc: linux-audit@redhat.com
+> Cc: linux-kernel@vger.kernel.org
 > ---
-> Change-Id: If0a2690042a2aa0fca70cea601ae9aabe72fa233
-> ---
->  mm/kasan/common.c         |  5 -----
->  mm/kasan/generic.c        |  5 -----
->  mm/kasan/generic_report.c |  5 -----
->  mm/kasan/init.c           |  5 -----
->  mm/kasan/quarantine.c     | 10 ----------
->  mm/kasan/report.c         |  5 -----
->  mm/kasan/tags.c           |  5 -----
->  mm/kasan/tags_report.c    |  5 -----
->  8 files changed, 45 deletions(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 950fd372a07e..33d863f55db1 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -7,11 +7,6 @@
->   *
->   * Some code borrowed from https://github.com/xairy/kasan-prototype by
->   *        Andrey Konovalov <andreyknvl@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #include <linux/export.h>
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index 248264b9cb76..37ccfadd3263 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -7,11 +7,6 @@
->   *
->   * Some code borrowed from https://github.com/xairy/kasan-prototype by
->   *        Andrey Konovalov <andreyknvl@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> diff --git a/mm/kasan/generic_report.c b/mm/kasan/generic_report.c
-> index a38c7a9e192a..6bb3f66992df 100644
-> --- a/mm/kasan/generic_report.c
-> +++ b/mm/kasan/generic_report.c
-> @@ -7,11 +7,6 @@
->   *
->   * Some code borrowed from https://github.com/xairy/kasan-prototype by
->   *        Andrey Konovalov <andreyknvl@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #include <linux/bitops.h>
-> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-> index fe6be0be1f76..9ce8cc5b8621 100644
-> --- a/mm/kasan/init.c
-> +++ b/mm/kasan/init.c
-> @@ -4,11 +4,6 @@
->   *
->   * Copyright (c) 2015 Samsung Electronics Co., Ltd.
->   * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #include <linux/memblock.h>
-> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-> index 4c5375810449..580ff5610fc1 100644
-> --- a/mm/kasan/quarantine.c
-> +++ b/mm/kasan/quarantine.c
-> @@ -6,16 +6,6 @@
->   * Copyright (C) 2016 Google, Inc.
->   *
->   * Based on code by Dmitry Chernenkov.
-> - *
-> - * This program is free software; you can redistribute it and/or
-> - * modify it under the terms of the GNU General Public License
-> - * version 2 as published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it will be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> - * General Public License for more details.
-> - *
->   */
->
->  #include <linux/gfp.h>
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 00a53f1355ae..d500923abc8b 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -7,11 +7,6 @@
->   *
->   * Some code borrowed from https://github.com/xairy/kasan-prototype by
->   *        Andrey Konovalov <andreyknvl@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #include <linux/bitops.h>
-> diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-> index e02a36a51f42..5c8b08a25715 100644
-> --- a/mm/kasan/tags.c
-> +++ b/mm/kasan/tags.c
-> @@ -4,11 +4,6 @@
->   *
->   * Copyright (c) 2018 Google, Inc.
->   * Author: Andrey Konovalov <andreyknvl@google.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> diff --git a/mm/kasan/tags_report.c b/mm/kasan/tags_report.c
-> index bee43717d6f0..5f183501b871 100644
-> --- a/mm/kasan/tags_report.c
-> +++ b/mm/kasan/tags_report.c
-> @@ -7,11 +7,6 @@
->   *
->   * Some code borrowed from https://github.com/xairy/kasan-prototype by
->   *        Andrey Konovalov <andreyknvl@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
->   */
->
->  #include <linux/bitops.h>
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+>  kernel/audit.c   |  2 +-
+>  kernel/auditsc.c | 10 ++++------
+>  2 files changed, 5 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/audit.c b/kernel/audit.c
+> index ac0aeaa99937..e22f22bdc000 100644
+> --- a/kernel/audit.c
+> +++ b/kernel/audit.c
+> @@ -67,7 +67,7 @@
+>  #define AUDIT_DISABLED		-1
+>  #define AUDIT_UNINITIALIZED	0
+>  #define AUDIT_INITIALIZED	1
+> -static int	audit_initialized;
+> +static int	audit_initialized = AUDIT_UNINITIALIZED;
+>  
+>  u32		audit_enabled = AUDIT_OFF;
+>  bool		audit_ever_enabled = !!AUDIT_OFF;
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 183d79cc2e12..ea0ed81ddee0 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -102,8 +102,6 @@ struct audit_aux_data {
+>  	int			type;
+>  };
+>  
+> -#define AUDIT_AUX_IPCPERM	0
+> -
+>  /* Number of target pids per aux struct. */
+>  #define AUDIT_AUX_PIDS	16
+>  
+> @@ -552,11 +550,11 @@ static int audit_filter_rules(struct task_struct *tsk,
+>  			break;
+>  
+>  		case AUDIT_EXIT:
+> -			if (ctx && ctx->return_valid)
+> +			if (ctx && ctx->return_valid != AUDITSC_INVALID)
+>  				result = audit_comparator(ctx->return_code, f->op, f->val);
+>  			break;
+>  		case AUDIT_SUCCESS:
+> -			if (ctx && ctx->return_valid) {
+> +			if (ctx && ctx->return_valid != AUDITSC_INVALID) {
+>  				if (f->val)
+>  					result = audit_comparator(ctx->return_valid, f->op, AUDITSC_SUCCESS);
+>  				else
+> @@ -1488,7 +1486,7 @@ static void audit_log_exit(void)
+>  			 context->arch, context->major);
+>  	if (context->personality != PER_LINUX)
+>  		audit_log_format(ab, " per=%lx", context->personality);
+> -	if (context->return_valid)
+> +	if (context->return_valid != AUDITSC_INVALID)
+>  		audit_log_format(ab, " success=%s exit=%ld",
+>  				 (context->return_valid==AUDITSC_SUCCESS)?"yes":"no",
+>  				 context->return_code);
+> @@ -1625,7 +1623,7 @@ void __audit_free(struct task_struct *tsk)
+>  	 * need to log via audit_log_exit().
+>  	 */
+>  	if (tsk == current && !context->dummy && context->in_syscall) {
+> -		context->return_valid = 0;
+> +		context->return_valid = AUDITSC_INVALID;
+>  		context->return_code = 0;
+>  
+>  		audit_filter_syscall(tsk, context,
 
+This all looks good, but I don't see the initialization of
+context->return_valid in audit_alloc_context() that was mentioned for
+completeness.
 
---=20
-Alexander Potapenko
-Software Engineer
+> -- 
+> 1.8.3.1
+> 
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+- RGB
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
