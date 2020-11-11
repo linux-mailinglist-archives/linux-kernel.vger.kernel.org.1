@@ -2,106 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EC82AF739
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB73E2AF744
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgKKRMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:12:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35408 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbgKKRMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:12:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51074AC24;
-        Wed, 11 Nov 2020 17:12:32 +0000 (UTC)
-To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v21 15/19] mm/compaction: do page isolation first in
- compaction
-Message-ID: <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
-Date:   Wed, 11 Nov 2020 18:12:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726960AbgKKRRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:17:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbgKKRRu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:17:50 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204B5C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:17:50 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id e18so3112317edy.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eQoq2RQCuafra2/12uiljwu+rCNgXWp3T6t2+sz8FTY=;
+        b=1DH8VH1JKBZbEDlGbtroiVXOVC0/URrnHQ4E8/tzT86j+/9Tva1H6wuleBdwke7NC0
+         OtOJ5SRmQEMcfqXHix2vJ5Kn8HKTL1/oLfya12FbOsO3FsuLYwnjILQiqYj0mmVqQmXe
+         Cuzt9YWBUz/3UdIPnqCEFjRKthmWHf8atJVS3KK4AVkpnTPVBpBpbAZHnG8I43hcBvXW
+         Dk0rimoptgAKqXt+ANHhaSihWslTP3l33/U4JZ+UD25Y7G9behZfPGt1U9buudqH9QV0
+         03q5re0g52eZpMu1pz1uDdM8rCL00SnesUh0Gsb1iRIs7nPiQag7jBP9pfO1pyFr2IEo
+         Ll0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eQoq2RQCuafra2/12uiljwu+rCNgXWp3T6t2+sz8FTY=;
+        b=S5tka1K1wMo2g2ePBnUxidlaZKhclsFg1M3SYJhO2kX0omUzS98AUu6rz4BQjPCh7L
+         Z4COhqmSsBveCmCep8+UDGpahYEVwXkTROFyduBoT/Of+78Uxl3gKwtWDeb5CPZK6kxy
+         9LZtmlZA6QA9rg2331xUyxzVZB31dzqpnW6r5dvhlVgsVlKIeE/aEkNhvOzq5O0/1PGY
+         uKBq7XN+hSmsh6yZ9J26VCnZCi9CtlCtQi+SZSv9RPiSEf/sb6nSI3brNqA6g4sY7ANI
+         4bDzBII+QRQfNf4/dauLcowUGf8ni8PbkU4nnibue/NWhpQ3DoLNAJrgjbVLStDH4HYD
+         UNaA==
+X-Gm-Message-State: AOAM530OvlBg9jEnJJ0QRPWshxpdNhWPo/Dv9ecUusjwIQ9M1J+R4R05
+        lr4vTOfhJu7vF8Uur+c1EbFuz/PG/X08mg8bxEtrsQ==
+X-Google-Smtp-Source: ABdhPJwTwbtangRhABKsob3Xr0CrmoBXrd71z27l2ZDvApiVBFS1mPJU50IdPt5HUcdZ+QRQ7ssj77pEMJ8fTBox2mA=
+X-Received: by 2002:aa7:ca44:: with SMTP id j4mr511437edt.354.1605115068596;
+ Wed, 11 Nov 2020 09:17:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-4-ben.widawsky@intel.com> <20201111071231.GC7829@infradead.org>
+In-Reply-To: <20201111071231.GC7829@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 11 Nov 2020 09:17:37 -0800
+Message-ID: <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 9:55 AM, Alex Shi wrote:
-> Currently, compaction would get the lru_lock and then do page isolation
-> which works fine with pgdat->lru_lock, since any page isoltion would
-> compete for the lru_lock. If we want to change to memcg lru_lock, we
-> have to isolate the page before getting lru_lock, thus isoltion would
-> block page's memcg change which relay on page isoltion too. Then we
-> could safely use per memcg lru_lock later.
-> 
-> The new page isolation use previous introduced TestClearPageLRU() +
-> pgdat lru locking which will be changed to memcg lru lock later.
-> 
-> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
-> early version:
-> 
-> Fix lots of crashes under compaction load: isolate_migratepages_block()
-> must clean up appropriately when rejecting a page, setting PageLRU again
-> if it had been cleared; and a put_page() after get_page_unless_zero()
-> cannot safely be done while holding locked_lruvec - it may turn out to
-> be the final put_page(), which will take an lruvec lock when PageLRU.
-> And move __isolate_lru_page_prepare back after get_page_unless_zero to
-> make trylock_page() safe:
-> trylock_page() is not safe to use at this time: its setting PG_locked
-> can race with the page being freed or allocated ("Bad page"), and can
-> also erase flags being set by one of those "sole owners" of a freshly
-> allocated page who use non-atomic __SetPageFlag().
-> 
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
+On Tue, Nov 10, 2020 at 11:12 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Tue, Nov 10, 2020 at 09:43:50PM -0800, Ben Widawsky wrote:
+> > +config CXL_MEM
+> > +        tristate "CXL.mem Device Support"
+> > +        depends on PCI && CXL_BUS_PROVIDER != n
+>
+> depend on PCI && CXL_BUS_PROVIDER
+>
+> > +        default m if CXL_BUS_PROVIDER
+>
+> Please don't set weird defaults for new code.  Especially not default
+> to module crap like this.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+This goes back to what people like Dave C. asked for LIBNVDIMM / DAX,
+a way to blanket turn on a subsystem without needing to go hunt down
+individual configs. All of CXL is "default n", but if someone turns on
+a piece of it they get all of it by default. The user can then opt-out
+on pieces after that first opt-in. If there's a better way to turn on
+suggested configs I'm open to switch to that style. As for the
+"default m" I was worried that it would be "default y" without the
+specificity, but I did not test that... will check. There have been
+times when I wished that distros defaulted bleeding edge new enabling
+to 'm' and putting that default in the Kconfig maybe saves me from
+needing to file individual config changes to distros after the fact.
 
-A question below:
+>
+> > +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+>
+> Please don't use '//' for anything but the SPDX header.
 
-> @@ -979,10 +995,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->   					goto isolate_abort;
->   			}
->   
-> -			/* Recheck PageLRU and PageCompound under lock */
-> -			if (!PageLRU(page))
-> -				goto isolate_fail;
-> -
->   			/*
->   			 * Page become compound since the non-locked check,
->   			 * and it's on LRU. It can only be a THP so the order
-> @@ -990,16 +1002,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->   			 */
->   			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
->   				low_pfn += compound_nr(page) - 1;
-> -				goto isolate_fail;
-> +				SetPageLRU(page);
-> +				goto isolate_fail_put;
->   			}
+Ok, I find // following by /* */ a bit ugly, but I don't care enough to fight.
 
-IIUC the danger here is khugepaged will collapse a THP. For that, 
-__collapse_huge_page_isolate() has to succeed isolate_lru_page(). Under the new 
-scheme, it shouldn't be possible, right? If that's correct, we can remove this part?
+>
+> > +
+> > +             pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
+> > +             pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
+> > +             if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
+> > +                     return pos;
+> > +
+> > +             pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
+>
+> Overly long lines again.
+
+I thought 100 is the new 80 these days?
+
+> > +static void cxl_mem_remove(struct pci_dev *pdev)
+> > +{
+> > +}
+>
+> No need for the empty remove callback.
+
+True, will fix.
+
+>
+> > +MODULE_AUTHOR("Intel Corporation");
+>
+> A module author is not a company.
+
+At least I don't have a copyright assignment clause, I don't agree
+with the vanity of listing multiple people here especially when
+MAINTAINERS has the contact info, and I don't want to maintain a list
+as people do drive-by contributions and we need to figure out at what
+level of contribution mandates a new MODULE_AUTHOR line. Now, that
+said I would be ok to duplicate the MAINTAINERS as MODULE_AUTHOR
+lines, but I otherwise expect MAINTAINERS is the central source for
+module contact info.
