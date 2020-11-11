@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3CF2AEE25
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2372AEE0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbgKKJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:52:52 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:39338 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgKKJwv (ORCPT
+        id S1727149AbgKKJsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:48:00 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7514 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKKJsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:52:51 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
-        by mail.holtmann.org (Postfix) with ESMTPSA id E8D0ACECFA;
-        Wed, 11 Nov 2020 10:59:57 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2] Bluetooth: Enforce key size of 16 bytes on FIPS level
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201111142947.v2.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
-Date:   Wed, 11 Nov 2020 10:52:48 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <4150D57E-480B-4A41-9F18-3E76A23BEB78@holtmann.org>
-References: <20201111142947.v2.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Wed, 11 Nov 2020 04:48:00 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CWKfF034Rzhjgg;
+        Wed, 11 Nov 2020 17:47:49 +0800 (CST)
+Received: from huawei.com (10.175.113.25) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 11 Nov 2020
+ 17:47:47 +0800
+From:   Zheng Zengkai <zhengzengkai@huawei.com>
+To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
+        <khilman@baylibre.com>, <narmstrong@baylibre.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <zhengzengkai@huawei.com>
+Subject: [PATCH] usb: dwc3: meson-g12a: disable clk on error handling path in probe
+Date:   Wed, 11 Nov 2020 17:52:56 +0800
+Message-ID: <20201111095256.10477-1-zhengzengkai@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+dwc3_meson_g12a_probe() does not invoke clk_bulk_disable_unprepare()
+on one error handling path. This patch fixes that.
 
-> According to the spec Ver 5.2, Vol 3, Part C, Sec 5.2.2.8:
-> Device in security mode 4 level 4 shall enforce:
-> 128-bit equivalent strength for link and encryption keys required
-> using FIPS approved algorithms (E0 not allowed, SAFER+ not allowed,
-> and P-192 not allowed; encryption key not shortened)
-> 
-> This patch rejects connection with key size below 16 for FIPS
-> level services.
-> 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> 
-> ---
-> 
-> Sorry for the long delay. This patch fell out of my radar.
-> 
-> Changes in v2:
-> * Add comment on enforcing 16 bytes key size
-> 
-> net/bluetooth/l2cap_core.c | 8 +++++++-
-> 1 file changed, 7 insertions(+), 1 deletion(-)
+Fixes: 347052e3bf1b ("usb: dwc3: meson-g12a: fix USB2 PHY initialization on G12A and A1 SoCs")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
+---
+ drivers/usb/dwc3/dwc3-meson-g12a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-patch has been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
+diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
+index 417e05381b5d..bdf1f98dfad8 100644
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -754,7 +754,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
+ 
+ 	ret = priv->drvdata->setup_regmaps(priv, base);
+ 	if (ret)
+-		return ret;
++		goto err_disable_clks;
+ 
+ 	if (priv->vbus) {
+ 		ret = regulator_enable(priv->vbus);
+-- 
+2.20.1
 
