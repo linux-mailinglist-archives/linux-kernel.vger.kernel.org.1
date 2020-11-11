@@ -2,213 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B20B2AF037
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FA32AF038
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgKKMAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:00:43 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:38793 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726495AbgKKMAl (ORCPT
+        id S1726495AbgKKMBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:01:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32116 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726199AbgKKMBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:00:41 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id con7kmvMzRiwVconGkaFiV; Wed, 11 Nov 2020 13:00:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1605096024; bh=l0Ozo/+OjgN/6xyN63j58z4RiGeYnpiEElVQhjW0MUY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=KpRAGyD+h4yH320VEmBUI32TmLwos4dB9+DM6q65P1tyO0/kXRxiypnLPdlWbangC
-         bDPBahys1rnntfj7xTculER+zYiFENWPLo+IRpUoRexYDvcFmphk/2pymArIWr65Eg
-         JHWfQxnfllX5ZKHhWKRfUN/62uWWuEHyrNrM8ejYE9iohLmkcWm85I+VMtSCtYCCZ9
-         02i6DLZyv/YqXGNqrSkox74T8kzfc7D4YUCqg9n/dQlbPf29na876oMg3yZpLoJcbI
-         Dkugb+l8E3laxKKN4YMJlH01bBCEG7mzeB9NjJLZZzRJLe1lOoGkH4CiA+BKc9XAlf
-         uxZ9gtAk8VTFg==
-Subject: Re: [PATCH v2 1/2] media: v4l2-ctrl: Add frame-specific min/max qp
- controls for hevc
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, ezequiel@collabora.com,
-        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
-        majja@codeaurora.org
-References: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
- <1600693440-3015-2-git-send-email-dikshita@codeaurora.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <32716f9e-8fb9-5c8f-7f3b-742200ce00c2@xs4all.nl>
-Date:   Wed, 11 Nov 2020 12:59:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 11 Nov 2020 07:01:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605096068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uARkJAmrO7YSRCEzI4hBvs5EwwyjF+aanr+6KSk5zXk=;
+        b=jUfXEBoaVmbioZRNfc7CyLg2e9Jf7/tjQ6qa3TRZRUDupSxYBDD4uzhTQAi+TTNxrP8TEA
+        GQgJrro9Q2g+I5YQgXklWac0R/jwqeAqXh8gQCy3qigxAtPaR4m1V+S2z/fxsIx2N+frew
+        dDFCAm+yhDvCe2+vj+93ViRpPpfLi4I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-JrLPLI07Ml-RVIQA4GJVTg-1; Wed, 11 Nov 2020 07:01:04 -0500
+X-MC-Unique: JrLPLI07Ml-RVIQA4GJVTg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DBAB66D244;
+        Wed, 11 Nov 2020 12:01:01 +0000 (UTC)
+Received: from krava (unknown [10.40.194.237])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DF1916EF51;
+        Wed, 11 Nov 2020 12:00:57 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 13:00:56 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Subject: Re: [PATCH v4 4/9] libperf: Add libperf_evsel__mmap()
+Message-ID: <20201111120056.GJ387652@krava>
+References: <20201014110527.GA1349644@krava>
+ <CAL_Jsq+5_uzAdn+rq-rWVACeaMMd4q+ntxxOd5JisOiBzwvDbw@mail.gmail.com>
+ <20201019201541.GN1461394@krava>
+ <CAL_JsqKpbdvxn7w1PSWrE7fLP+NtwwxtTjr02yxSkjy00yN9Xw@mail.gmail.com>
+ <20201020153527.GD2113901@krava>
+ <CAL_JsqKUK3ajL63dAs4KSPJ2VOJa9HKeiZ0AWNPhe=uvFE8zZA@mail.gmail.com>
+ <20201021112430.GE2189784@krava>
+ <CAL_JsqJd1W_n1vGYmUP+Azcv__pCT+UU+VLPqLy2aJDwajZzCg@mail.gmail.com>
+ <20201105224121.GA4112111@krava>
+ <CAL_JsqJzeCebq4VP+xBtfh=fbomvaJoVMp35AQQDGTYD-fRWgw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1600693440-3015-2-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDwyuppk4vqyjet+IdgaWc5hDCrlM2OI91rLDhqpfPeCf6QMih/OwpgA2TcQMW2YUsIDwFKYRfpy5/0k4n0R4MNN26l5AZ72rqmb7gYrxYPCzElvfN8G
- OaBjTvdVMhhhNKlLTsCfF+JE1+hSVUfoxLmzH8+DbAD9ruehARw4z6O1yokfG3RntTdygDGYpzkJ33PmhCdRopdEnkpmzOV0o4NQ8FtQxWd8B1A/NEGfZFDk
- rsMgSPgfrDJlZQsDzkyDvOZ+qqBOxdvUaf/PJlfdlp1i3K8PMAUEcLQCNT8Jr3eVI2JYz3D0vegvbrMVZW1gy1YJXkdCjk63QX/PBd4sZ8bEsxKvuFb2s9or
- WntV766c1+71OmkmVoxvuLaOBDIdaXwiaHhsYeKWAp7N7bZoTcXQ/FXBkyGUPmIGYmgMhIrUqRDph/G+KyxyMPSCu+niEpziRUUanCX10dGJShOmLzFP9X4h
- hAvjZ07elBggWCdN8ww0kvrRG+MslBX3L6P7FA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJzeCebq4VP+xBtfh=fbomvaJoVMp35AQQDGTYD-fRWgw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 15:03, Dikshita Agarwal wrote:
-> - Adds min/max qp controls for B frame for h264.
-> - Adds min/max qp controls for I/P/B frames for hevc similar to h264.
-> - Update valid range of mim/max qp for hevc to accommodate 10 bit.
+On Fri, Nov 06, 2020 at 03:56:11PM -0600, Rob Herring wrote:
+> On Thu, Nov 5, 2020 at 4:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, Nov 05, 2020 at 10:19:24AM -0600, Rob Herring wrote:
+> >
+> > SNIP
+> >
+> > > > > >
+> > > > > > that maps page for each event, then perf_evsel__read
+> > > > > > could go through the fast code, no?
+> > > > >
+> > > > > No, because we're not self-monitoring (pid == 0 and cpu == -1). With
+> > > > > the following change:
+> > > > >
+> > > > > diff --git a/tools/lib/perf/tests/test-evsel.c
+> > > > > b/tools/lib/perf/tests/test-evsel.c
+> > > > > index eeca8203d73d..1fca9c121f7c 100644
+> > > > > --- a/tools/lib/perf/tests/test-evsel.c
+> > > > > +++ b/tools/lib/perf/tests/test-evsel.c
+> > > > > @@ -17,6 +17,7 @@ static int test_stat_cpu(void)
+> > > > >  {
+> > > > >         struct perf_cpu_map *cpus;
+> > > > >         struct perf_evsel *evsel;
+> > > > > +       struct perf_event_mmap_page *pc;
+> > > > >         struct perf_event_attr attr = {
+> > > > >                 .type   = PERF_TYPE_SOFTWARE,
+> > > > >                 .config = PERF_COUNT_SW_CPU_CLOCK,
+> > > > > @@ -32,6 +33,15 @@ static int test_stat_cpu(void)
+> > > > >         err = perf_evsel__open(evsel, cpus, NULL);
+> > > > >         __T("failed to open evsel", err == 0);
+> > > > >
+> > > > > +       pc = perf_evsel__mmap(evsel, 0);
+> > > > > +       __T("failed to mmap evsel", pc);
+> > > > > +
+> > > > > +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
+> > > > > +       __T("userspace counter access not supported", pc->cap_user_rdpmc);
+> > > > > +       __T("userspace counter access not enabled", pc->index);
+> > > > > +       __T("userspace counter width not set", pc->pmc_width >= 32);
+> > > > > +#endif
+> > > >
+> > > > I'll need to check, I'm surprised this would depend on the way
+> > > > you open the event
+> > >
+> > > Any more thoughts on this?
+> >
+> > sry I got stuck with other stuff.. I tried your change
+> > and pc->cap_user_rdpmc is 0 because the test creates
+> > software event, which does not support that
 > 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 54 +++++++++++++++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls.c               |  8 ++++
->  include/uapi/linux/v4l2-controls.h                 |  9 ++++
->  3 files changed, 69 insertions(+), 2 deletions(-)
+> Sigh, yes, of course.
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index ce728c75..26f8220 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1182,6 +1182,18 @@ enum v4l2_mpeg_video_h264_entropy_mode -
->      V4L2_CID_MPEG_VIDEO_H264_MAX_QP is also set, the quantization parameter
->      should be chosen to meet both requirements.
->  
-> +``V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP (integer)``
-> +    Minimum quantization parameter for the H264 B frame to limit B frame
-> +    quality to a range. Valid range: from 0 to 51. If
-> +    V4L2_CID_MPEG_VIDEO_H264_MIN_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
-> +``V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP (integer)``
-> +    Maximum quantization parameter for the H264 B frame to limit B frame
-> +    quality to a range. Valid range: from 0 to 51. If
-> +    V4L2_CID_MPEG_VIDEO_H264_MAX_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
->  ``V4L2_CID_MPEG_VIDEO_MPEG4_I_FRAME_QP (integer)``
->      Quantization parameter for an I frame for MPEG4. Valid range: from 1
->      to 31.
-> @@ -3441,11 +3453,13 @@ HEVC/H.265 Control IDs
->  
->  ``V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP (integer)``
->      Minimum quantization parameter for HEVC.
-> -    Valid range: from 0 to 51.
-> +    Valid range: from 0 - 51 for 8 bit and
-> +    0 - 63 for 10 bit.
+> > when I change that to:
+> >
+> >         .type   = PERF_TYPE_HARDWARE,
+> >         .config = PERF_COUNT_HW_CPU_CYCLES,
+> >
+> > I don't see any of those warning you added
+> 
+> So I've now implemented the per fd mmap. It seems to run and get some
+> data, but for the above case the counts don't look right.
+> 
+> cpu0: count = 0x10883, ena = 0xbf42, run = 0xbf42
+> cpu1: count = 0x1bc65, ena = 0xa278, run = 0xa278
+> cpu2: count = 0x1fab2, ena = 0x91ea, run = 0x91ea
+> cpu3: count = 0x23d61, ena = 0x81ac, run = 0x81ac
+> cpu4: count = 0x2936a, ena = 0x7149, run = 0x7149
+> cpu5: count = 0x2cd4e, ena = 0x634f, run = 0x634f
+> cpu6: count = 0x3139f, ena = 0x53e7, run = 0x53e7
+> cpu7: count = 0x35350, ena = 0x4690, run = 0x4690
+> 
+> For comparison, this is what I get using the slow path read():
+> cpu0: count = 0x1c40, ena = 0x188b5, run = 0x188b5
+> cpu1: count = 0x18e0, ena = 0x1b8f4, run = 0x1b8f4
+> cpu2: count = 0x745e, ena = 0x1ab9e, run = 0x1ab9e
+> cpu3: count = 0x2416, ena = 0x1a280, run = 0x1a280
+> cpu4: count = 0x19c7, ena = 0x19b00, run = 0x19b00
+> cpu5: count = 0x1737, ena = 0x19262, run = 0x19262
+> cpu6: count = 0x11d0e, ena = 0x18944, run = 0x18944
+> cpu7: count = 0x20dbe, ena = 0x181f4, run = 0x181f4
 
-This can be on one line.
+hum, could you please send/push changes with that test?
+I can try it and check
 
->  
->  ``V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP (integer)``
->      Maximum quantization parameter for HEVC.
-> -    Valid range: from 0 to 51.
-> +    Valid range: from 0 - 51 for 8 bit and
-> +    0 - 63 for 10 bit
+jirka
 
-Same here, but this is also missing a period at the end.
-
->  
->  ``V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP (integer)``
->      Quantization parameter for an I frame for HEVC.
-> @@ -3462,6 +3476,42 @@ HEVC/H.265 Control IDs
->      Valid range: [V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP,
->      V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP].
->  
-> +``V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MIN_QP (integer)``
-> +    Minimum quantization parameter for the HEVC I frame to limit I frame
-> +    quality to a range. Valid range: from 0 to 51 for 8 bit, 0 - 63 for 10 bit.
-> +    If V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
-> +``V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MAX_QP (integer)``
-> +    Maximum quantization parameter for the HEVC I frame to limit I frame
-> +    quality to a range. Valid range: from 0 to 51 for 8 bit, 0 - 63 for 10 bit.
-> +    If V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
-> +``V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MIN_QP (integer)``
-> +    Minimum quantization parameter for the HEVC P frame to limit P frame
-> +    quality to a range. Valid range: from 0 to 51 for 8 bit, 0 - 63 for 10 bit.
-> +    If V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
-> +``V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MAX_QP (integer)``
-> +    Maximum quantization parameter for the HEVC P frame to limit P frame
-> +    quality to a range. Valid range: from 0 to 51 for 8 bit, 0 - 63 for 10 bit.
-> +    If V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
-> +``V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MIN_QP (integer)``
-> +    Minimum quantization parameter for the HEVC B frame to limit B frame
-> +    quality to a range. Valid range: from 0 to 51 for 8 bit, 0 - 63 for 10 bit.
-> +    If V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
-> +``V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MAX_QP (integer)``
-> +    Maximum quantization parameter for the HEVC B frame to limit B frame
-> +    quality to a range. Valid range: from 0 to 51 for 8 bit, 0 - 63 for 10 bit.
-> +    If V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP is also set, the quantization parameter
-> +    should be chosen to meet both requirements.
-> +
->  ``V4L2_CID_MPEG_VIDEO_HEVC_HIER_QP (boolean)``
->      HIERARCHICAL_QP allows the host to specify the quantization parameter
->      values for each temporal layer through HIERARCHICAL_QP_LAYER. This is
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index bd7f330..abef73e 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -920,6 +920,8 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MAX_QP:		return "H264 I-Frame Maximum QP Value";
->  	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP:		return "H264 P-Frame Minimum QP Value";
->  	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP:		return "H264 P-Frame Maximum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP:		return "H264 B-Frame Minimum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP:		return "H264 B-Frame Maximum QP Value";
->  	case V4L2_CID_MPEG_VIDEO_H264_SPS:			return "H264 Sequence Parameter Set";
->  	case V4L2_CID_MPEG_VIDEO_H264_PPS:			return "H264 Picture Parameter Set";
->  	case V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX:		return "H264 Scaling Matrix";
-> @@ -978,6 +980,12 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_QP:		return "HEVC B-Frame QP Value";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP:			return "HEVC Minimum QP Value";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP:			return "HEVC Maximum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MIN_QP:		return "HEVC I-Frame Minimum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MAX_QP:		return "HEVC I-Frame Maximum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MIN_QP:		return "HEVC P-Frame Minimum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MAX_QP:		return "HEVC P-Frame Maximum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MIN_QP:		return "HEVC B-Frame Minimum QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MAX_QP:		return "HEVC B-Frame Maximum QP Value";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:			return "HEVC Profile";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:			return "HEVC Level";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_TIER:			return "HEVC Tier";
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index a184c49..7ba05fe 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -578,6 +578,8 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type {
->  #define V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+386)
->  #define V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+387)
->  #define V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+388)
-> +#define V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+389)
-> +#define V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+390)
->  #define V4L2_CID_MPEG_VIDEO_MPEG4_I_FRAME_QP	(V4L2_CID_MPEG_BASE+400)
->  #define V4L2_CID_MPEG_VIDEO_MPEG4_P_FRAME_QP	(V4L2_CID_MPEG_BASE+401)
->  #define V4L2_CID_MPEG_VIDEO_MPEG4_B_FRAME_QP	(V4L2_CID_MPEG_BASE+402)
-> @@ -762,6 +764,13 @@ enum v4l2_cid_mpeg_video_hevc_size_of_length_field {
->  #define V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR	(V4L2_CID_MPEG_BASE + 644)
->  #define V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY		(V4L2_CID_MPEG_BASE + 645)
->  #define V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE		(V4L2_CID_MPEG_BASE + 646)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+647)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+648)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+649)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+650)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+651)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+652)
-> +
->  enum v4l2_mpeg_video_frame_skip_mode {
->  	V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_DISABLED	= 0,
->  	V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_LEVEL_LIMIT	= 1,
+> 
+> The difference is we get a sequentially increasing count rather than 1
+> random CPU (the one running the test) with a much higher count. That
+> seems to me we're just reading the count for the calling process, not
+> each CPU.
+> 
+> For this to work correctly, cap_user_rdpmc would have to be set only
+> for the CPU's mmap that matches the calling process's CPU. I'm not
+> sure whether that can be done. Even if it can, is it really worth
+> doing so? You're accelerating reading an event on 1 out of N CPUs. And
+> what do we do on every kernel up til now this won't work on? Another
+> cap bit?
+> 
+> Rob
+> 
+> P.S. I did find one bug with all this. The shifts by pmc_width in the
+> read seq need to be a signed count. This test happens to have raw
+> counter values starting at 2^47.
 > 
 
-Regards,
-
-	Hans
