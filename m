@@ -2,177 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618C92AF191
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA572AF1B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgKKNGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgKKNGo (ORCPT
+        id S1726705AbgKKNIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:08:53 -0500
+Received: from ns3.fnarfbargle.com ([103.4.19.87]:58518 "EHLO
+        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgKKNIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:06:44 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A37FC0613D1;
-        Wed, 11 Nov 2020 05:06:44 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so2060841lfh.2;
-        Wed, 11 Nov 2020 05:06:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=82RRu0ROzYm5taPzq2lMWZPSnstixBkqQF5X1RxYego=;
-        b=pcrIMq3o0TmMtnIRNs9t+1HKUABav1CurgNuFaFYakVEf+z580IjUws9F2xhMiDwQX
-         sxsTSh3pZU0M7/AiQG1xqFCqR69wm+t4RX2VQEc55FRRbB/KMtDKfGZtifUZmNq7dDYF
-         SMhoBX05Doo+F0pTepPpTw4QN5RRuLB40oV1rXdeyVwuYbCavF+ICADPwQ7oO8Oh1puX
-         15Naxi4BuzqTFtLHwUTIn2g9Gc9XHrL04F4bGT+EVEGfcqCU5cokvPlZ1/yQvrMKn407
-         6D2p4OJYeEUJYIyGsHhhM8q2ADnz3tJaw1HEk8hJo7Fa617e4oItQrlEQ6Cp5PLCgaZL
-         KD3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=82RRu0ROzYm5taPzq2lMWZPSnstixBkqQF5X1RxYego=;
-        b=ZyXrIgul+e8lw+l1XZJToKt+AAin882gp+OaszU3HsVHy949hczOkoh3Kuv/D8Fqg7
-         pHKECAnx2sFHiQxs7sq4RUd5n2z/c7DapdxbsIL4/HxvsylLAGDPd4r/jPph2iBxRatx
-         65cWEcG/T27FmD5H5tS+e1aaqlE+pRpPon8z46IyPmug1+iCaLldMwdnpjXzM5BdgZ3+
-         uGceWN39qbUDMWSBzlEP8nKuh5vDsvDdV0V0CZ9cvWWhXVmfYgAOY5Tw8kKR/asfZg2W
-         aOxsspWg/vK8AQXoHbk6HI2gvuwn+OoKp9CRzrOt2KnJUjnWYSexnowhoaKjlkUxE3Su
-         PWww==
-X-Gm-Message-State: AOAM533P+mgU8o86Au7NxOxyWu7vb6lvB1xo6sDS2kERqZ66wvR/BwX2
-        tBDucZZ9P/5KqbjwFrtNQus=
-X-Google-Smtp-Source: ABdhPJxFMbJp8eNEkvkR9Sko+OH5lAZGUOWg8rrjbjnIfFbmWVvz6JsvCLZtOvrf3TnsNFdFOeqsTw==
-X-Received: by 2002:ac2:51d9:: with SMTP id u25mr2937980lfm.52.1605100003102;
-        Wed, 11 Nov 2020 05:06:43 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id b8sm230406ljo.68.2020.11.11.05.06.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 05:06:41 -0800 (PST)
-Subject: Re: [PATCH 04/10] ARM: dts: BCM5301X: Add a default compatible for
- switch node
-To:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Kurt Kanzenbach <kurt@kmk-computers.de>
-References: <20201110033113.31090-1-f.fainelli@gmail.com>
- <20201110033113.31090-5-f.fainelli@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <af2d0f49-38a9-d7df-8848-40050a2d5c85@gmail.com>
-Date:   Wed, 11 Nov 2020 14:06:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 11 Nov 2020 08:08:52 -0500
+Received: from srv.home ([10.8.0.1] ident=heh24440)
+        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <brad@fnarfbargle.com>)
+        id 1kcppn-0004ra-7Y; Wed, 11 Nov 2020 21:06:47 +0800
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=U0nTejXltvLToMYZuVrphZ1DaSKpDCcNBLc2Jm6N8SI=;
+        b=PSttVxmtnGQq+EFNORe3pcEw+aGmaj8VLupcjSp3XKU48kXIZGAXSRCmsB7EYW7kST/5W0caCjFCiERFdg0u+0ImnKaMItDR5B1yaYbMdgBPKgZhpx+i/TuIrLBc2c1rysmb58IhPCAMhaSG+NioqryeGLAyxFAnJTioIgOzTfA=;
+Subject: [PATCH v5 1/1] applesmc: Re-work SMC comms
+To:     linux-hwmon@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Guenter Roeck <linux@roeck-us.net>
+References: <20200930105442.3f642f6c@aktux>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+ <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+ <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
+ <4eca09dc-7b32-767c-eab0-b9ad8b41efcc@fnarfbargle.com>
+ <b6345525-c4d0-6949-1231-a47c3053e343@roeck-us.net>
+From:   Brad Campbell <brad@fnarfbargle.com>
+Message-ID: <8c525b3b-b4a6-8ee4-8128-a20e0ad408e4@fnarfbargle.com>
+Date:   Thu, 12 Nov 2020 00:06:47 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <20201110033113.31090-5-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <b6345525-c4d0-6949-1231-a47c3053e343@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.2020 04:31, Florian Fainelli wrote:
-> Provide a default compatible string which is based on the 53010 SRAB
-> compatible, this allows us to have sane defaults and silences the
-> following warnings:
-> 
-> arch/arm/boot/dts/bcm4708-asus-rt-ac56u.dt.yaml:
-> ethernet-switch@18007000: compatible: 'oneOf' conditional failed, one
-> must be fixed:
->          ['brcm,bcm5301x-srab'] is too short
->          'brcm,bcm5325' was expected
->          'brcm,bcm53115' was expected
->          'brcm,bcm53125' was expected
->          'brcm,bcm53128' was expected
->          'brcm,bcm5365' was expected
->          'brcm,bcm5395' was expected
->          'brcm,bcm5389' was expected
->          'brcm,bcm5397' was expected
->          'brcm,bcm5398' was expected
->          'brcm,bcm11360-srab' was expected
->          'brcm,bcm5301x-srab' is not one of ['brcm,bcm53010-srab',
-> 'brcm,bcm53011-srab', 'brcm,bcm53012-srab', 'brcm,bcm53018-srab',
-> 'brcm,bcm53019-srab']
->          'brcm,bcm5301x-srab' is not one of ['brcm,bcm11404-srab',
-> 'brcm,bcm11407-srab', 'brcm,bcm11409-srab', 'brcm,bcm58310-srab',
-> 'brcm,bcm58311-srab', 'brcm,bcm58313-srab']
->          'brcm,bcm5301x-srab' is not one of ['brcm,bcm58522-srab',
-> 'brcm,bcm58523-srab', 'brcm,bcm58525-srab', 'brcm,bcm58622-srab',
-> 'brcm,bcm58623-srab', 'brcm,bcm58625-srab', 'brcm,bcm88312-srab']
->          'brcm,bcm5301x-srab' is not one of ['brcm,bcm3384-switch',
-> 'brcm,bcm6328-switch', 'brcm,bcm6368-switch']
->          From schema:
-> Documentation/devicetree/bindings/net/dsa/b53.yaml
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->   arch/arm/boot/dts/bcm5301x.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
-> index ee23c0841699..807580dd89f5 100644
-> --- a/arch/arm/boot/dts/bcm5301x.dtsi
-> +++ b/arch/arm/boot/dts/bcm5301x.dtsi
-> @@ -483,7 +483,7 @@ thermal: thermal@1800c2c0 {
->   	};
->   
->   	srab: ethernet-switch@18007000 {
-> -		compatible = "brcm,bcm5301x-srab";
-> +		compatible = "brcm,bcm53010-srab", "brcm,bcm5301x-srab";
+Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+introduced an issue whereby communication with the SMC became
+unreliable with write errors like :
 
-I've never seen Northstar device with BCM53010, see below list.
+[  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.378621] applesmc: LKSB: write data fail
+[  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.512787] applesmc: LKSB: write data fail
 
+The original code appeared to be timing sensitive and was not reliable
+with the timing changes in the aforementioned commit.
 
-*** BCM47081 ***
+This patch re-factors the SMC communication to remove the timing
+dependencies and restore function with the changes previously
+committed. Logic changes based on inspection of the Apple SMC kext.
 
-Buffalo WZR-600DHP2
-[    1.816948] b53_common: found switch: BCM53011, rev 2
+Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
+MacBookAir3,1
 
-Luxul XWR-1200 V1
-[    2.602445] b53_common: found switch: BCM53011, rev 5
+Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+Reported-by: Andreas Kemnade <andreas@kemnade.info>
+Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
+Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
 
-TP-LINK Archer C5 V2
-[    0.606353] b53_common: found switch: BCM53011, rev 5
+---
+Changelog : 
+v1 : Initial attempt
+v2 : Address logic and coding style
+v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
+v4 : Re-factored logic based on Apple driver. Simplified wait_status loop
+v5 : Re-wrote status loop. Simplified busy check in send_byte(). Fixed formatting
 
+Index: linux-stable/drivers/hwmon/applesmc.c
+===================================================================
+--- linux-stable.orig/drivers/hwmon/applesmc.c
++++ linux-stable/drivers/hwmon/applesmc.c
+@@ -32,6 +32,7 @@
+ #include <linux/hwmon.h>
+ #include <linux/workqueue.h>
+ #include <linux/err.h>
++#include <linux/bits.h>
+ 
+ /* data port used by Apple SMC */
+ #define APPLESMC_DATA_PORT	0x300
+@@ -42,10 +43,13 @@
+ 
+ #define APPLESMC_MAX_DATA_LENGTH 32
+ 
+-/* wait up to 128 ms for a status change. */
+-#define APPLESMC_MIN_WAIT	0x0010
+-#define APPLESMC_RETRY_WAIT	0x0100
+-#define APPLESMC_MAX_WAIT	0x20000
++/* Apple SMC status bits */
++#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting to be read */
++#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
++#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
++
++/* Initial wait is 8us */
++#define APPLESMC_MIN_WAIT      0x0008
+ 
+ #define APPLESMC_READ_CMD	0x10
+ #define APPLESMC_WRITE_CMD	0x11
+@@ -151,65 +155,84 @@ static unsigned int key_at_index;
+ static struct workqueue_struct *applesmc_led_wq;
+ 
+ /*
+- * wait_read - Wait for a byte to appear on SMC port. Callers must
+- * hold applesmc_lock.
++ * Wait for specific status bits with a mask on the SMC.
++ * Used before all transactions.
++ * This does 10 fast loops of 8us then exponentially backs off for a
++ * minimum total wait of 262ms. Depending on usleep_range this could
++ * run out past 500ms.
+  */
+-static int wait_read(void)
++
++static int wait_status(u8 val, u8 mask)
+ {
+-	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+ 	u8 status;
+ 	int us;
++	int i;
+ 
+-	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
++	us = APPLESMC_MIN_WAIT;
++	for (i = 0; i < 24 ; i++) {
+ 		status = inb(APPLESMC_CMD_PORT);
+-		/* read: wait for smc to settle */
+-		if (status & 0x01)
++		if ((status & mask) == val)
+ 			return 0;
+-		/* timeout: give up */
+-		if (time_after(jiffies, end))
+-			break;
++		usleep_range(us, us * 2);
++		if (i > 9)
++			us <<= 1;
+ 	}
+-
+-	pr_warn("wait_read() fail: 0x%02x\n", status);
+ 	return -EIO;
+ }
+ 
+-/*
+- * send_byte - Write to SMC port, retrying when necessary. Callers
+- * must hold applesmc_lock.
+- */
++/* send_byte - Write to SMC data port. Callers must hold applesmc_lock. */
++
+ static int send_byte(u8 cmd, u16 port)
+ {
+-	u8 status;
+-	int us;
+-	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
++	int status;
+ 
+-	outb(cmd, port);
+-	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
+-		status = inb(APPLESMC_CMD_PORT);
+-		/* write: wait for smc to settle */
+-		if (status & 0x02)
+-			continue;
+-		/* ready: cmd accepted, return */
+-		if (status & 0x04)
+-			return 0;
+-		/* timeout: give up */
+-		if (time_after(jiffies, end))
+-			break;
+-		/* busy: long wait and resend */
+-		udelay(APPLESMC_RETRY_WAIT);
+-		outb(cmd, port);
+-	}
++	status = wait_status(0, SMC_STATUS_IB_CLOSED);
++	if (status)
++		return status;
++	/*
++	 * This needs to be a separate read looking for bit 0x04
++	 * after bit 0x02 falls. If consolidated with the wait above
++	 * this extra read may not happen if status returns both
++	 * simultaneously and this would appear to be required.
++	 */
++	status = inb(APPLESMC_CMD_PORT) & SMC_STATUS_BUSY;
++	if (!status)
++		return -EIO;
+ 
+-	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
+-	return -EIO;
++	outb(cmd, port);
++	return 0;
+ }
+ 
++/* send_command - Write a command to the SMC. Callers must hold applesmc_lock. */
++
+ static int send_command(u8 cmd)
+ {
+-	return send_byte(cmd, APPLESMC_CMD_PORT);
++	int ret;
++
++	ret = wait_status(0, SMC_STATUS_IB_CLOSED);
++	if (ret)
++		return ret;
++	outb(cmd, APPLESMC_CMD_PORT);
++	return 0;
++}
++
++/*
++ * Based on logic from the Apple driver. This is issued before any interaction
++ * If busy is stuck high, issue a read command to reset the SMC state machine.
++ * If busy is stuck high after the command then the SMC is jammed.
++ */
++
++static int smc_sane(void)
++{
++	int ret;
++
++	ret = wait_status(0, SMC_STATUS_BUSY);
++	if (!ret)
++		return ret;
++	ret = send_command(APPLESMC_READ_CMD);
++	if (ret)
++		return ret;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
+ 
+ static int send_argument(const char *key)
+@@ -226,6 +249,11 @@ static int read_smc(u8 cmd, const char *
+ {
+ 	u8 status, data = 0;
+ 	int i;
++	int ret;
++
++	ret = smc_sane();
++	if (ret)
++		return ret;
+ 
+ 	if (send_command(cmd) || send_argument(key)) {
+ 		pr_warn("%.4s: read arg fail\n", key);
+@@ -239,7 +267,8 @@ static int read_smc(u8 cmd, const char *
+ 	}
+ 
+ 	for (i = 0; i < len; i++) {
+-		if (wait_read()) {
++		if (wait_status(SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY,
++				SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY) < 0) {
+ 			pr_warn("%.4s: read data[%d] fail\n", key, i);
+ 			return -EIO;
+ 		}
+@@ -250,19 +279,24 @@ static int read_smc(u8 cmd, const char *
+ 	for (i = 0; i < 16; i++) {
+ 		udelay(APPLESMC_MIN_WAIT);
+ 		status = inb(APPLESMC_CMD_PORT);
+-		if (!(status & 0x01))
++		if (!(status & SMC_STATUS_AWAITING_DATA))
+ 			break;
+ 		data = inb(APPLESMC_DATA_PORT);
+ 	}
+ 	if (i)
+ 		pr_warn("flushed %d bytes, last value is: %d\n", i, data);
+ 
+-	return 0;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
+ 
+ static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
+ {
+ 	int i;
++	int ret;
++
++	ret = smc_sane();
++	if (ret)
++		return ret;
+ 
+ 	if (send_command(cmd) || send_argument(key)) {
+ 		pr_warn("%s: write arg fail\n", key);
+@@ -281,7 +315,7 @@ static int write_smc(u8 cmd, const char
+ 		}
+ 	}
+ 
+-	return 0;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
+ 
+ static int read_register_count(unsigned int *count)
 
-*** BCM4708 ***
-
-Buffalo WZR-1750DHP
-[    1.961584] b53_common: found switch: BCM53011, rev 2
-
-Netgear R6250 V1
-[    2.445594] b53_common: found switch: BCM53011, rev 2
-
-SmartRG SR400ac
-[    4.258116] b53_common: found switch: BCM53011, rev 5
-
-
-*** BCM4709 ***
-
-TP-LINK Archer C9 V1
-[    0.640041] b53_common: found switch: BCM53012, rev 5
-
-
-*** BCM47094 ***
-
-D-Link DIR-885L
-[    1.373423] b53_common: found switch: BCM53012, rev 0
-
-Luxul XWR-3150 V1
-[    5.893989] b53_common: found switch: BCM53012, rev 0
-
-Luxul XAP-1610 V1
-[    0.761285] b53_common: found switch: BCM53012, rev 0
