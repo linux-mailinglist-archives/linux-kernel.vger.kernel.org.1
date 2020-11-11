@@ -2,215 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299DA2AFA18
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6B72AFA1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgKKU5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:57:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:29706 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgKKU5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:57:06 -0500
-IronPort-SDR: j8jczW6fJQRIj70B3fUkWcHrsIcN3oFw3U96m2J2dIJPw8k5z7cYkXyAlOMWZJdWD3AK1NonW9
- iLRHcP4BaA6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="234380872"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="234380872"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 12:55:36 -0800
-IronPort-SDR: 8ACfUccHUCj0b711CCW6XBmuSsIrub3+XVHpgFgsJevE32rTP70E+32sm0gI5WrfocX/TvbD0O
- jBPleFT3hIuQ==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="541948451"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 12:55:35 -0800
-From:   ira.weiny@intel.com
-To:     Jan Kara <jack@suse.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-ext4@vger.kernel.org,
+        id S1726612AbgKKU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:59:54 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:34346 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKKU7y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 15:59:54 -0500
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5A1AD20C281F;
+        Wed, 11 Nov 2020 12:59:53 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5A1AD20C281F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605128393;
+        bh=ZwApRPA6yq3CTn0pJNUnmfzfcCUz7gA0vBBGNi8eScU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NKEoMctK9f3ZYPF7CJ31moNuev+uvzvmMpUQIM6KhmOfoarb9OEPwoRq/hTlZ0uod
+         EO8UaSjk0cnVF8w5MEi2XUvY4unAGgYIcjZoW8XIjyWvj7RQyexjCnlZvsa1NP3g23
+         csxTzViIj/0K3TdA9PBgT6ntNZ7I2PCtQZs3ip1Q=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com
+Cc:     tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ext2: Use ext2_put_page
-Date:   Wed, 11 Nov 2020 12:55:30 -0800
-Message-Id: <20201111205530.436692-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+Subject: [PATCH] ima: select ima-buf template for buffer measurement
+Date:   Wed, 11 Nov 2020 12:59:46 -0800
+Message-Id: <20201111205946.503-1-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+The default IMA template for measuring buffer should be 'ima-buf' - so
+that the measured buffer is correctly included in the IMA measurement
+log entry. But the default IMA template used for all policy rules is
+the value set for CONFIG_IMA_DEFAULT_TEMPLATE if the policy rule does
+not specify a template. IMA does not take into account the template
+requirements of different rules when choosing a default template for
+a given policy rule. This breaks the buffer measurement if the template
+is not provided as part of the rule because the default template could
+be different than 'ima-buf'.
 
-There are 3 places in namei.c where the equivalent of ext2_put_page() is
-open coded on a page which was returned from the ext2_get_page() call
-[through the use of ext2_find_entry() and ext2_dotdot()].
+For example, the following IMA policy rule enables measuring
+the command line arguments passed to the new kernel on kexec system call.
 
-Move ext2_get_page() and ext2_put_page() to ext2.h in order to help
-clarify the use of the get/put and then use ext2_put_page() in namei.c
+ measure func=KEXEC_CMDLINE
 
-Also add a comment regarding the proper way to release the page returned
-from ext2_find_entry() and ext2_dotdot().
+The IMA template selected should be 'ima-buf' to have the measured 
+command line arguments included in the IMA measurement log entry.
+Instead the default IMA template is selected, which could be different
+than 'ima-buf'.
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Initialize a global 'ima-buf' template and select that template,
+by default, for measuring buffer.
 
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 ---
+ security/integrity/ima/ima.h          |  1 +
+ security/integrity/ima/ima_main.c     | 17 +++++------------
+ security/integrity/ima/ima_policy.c   |  2 +-
+ security/integrity/ima/ima_template.c | 25 +++++++++++++++++++++++++
+ 4 files changed, 32 insertions(+), 13 deletions(-)
 
-This was originally part of the kmap_thread() series here:
-
-https://lore.kernel.org/lkml/20201009195033.3208459-37-ira.weiny@intel.com/
-
-But this is really a valid clean up regardless of the
-kmap_thread[local]() changes.
----
- fs/ext2/dir.c   | 33 ++++++++-------------------------
- fs/ext2/ext2.h  | 27 +++++++++++++++++++++++++++
- fs/ext2/namei.c | 15 +++++----------
- 3 files changed, 40 insertions(+), 35 deletions(-)
-
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 70355ab6740e..8acd77a66ff4 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -66,12 +66,6 @@ static inline unsigned ext2_chunk_size(struct inode *inode)
- 	return inode->i_sb->s_blocksize;
- }
- 
--static inline void ext2_put_page(struct page *page)
--{
--	kunmap(page);
--	put_page(page);
--}
--
- /*
-  * Return the offset into page `page_nr' of the last valid
-  * byte in that page, plus one.
-@@ -196,25 +190,6 @@ static bool ext2_check_page(struct page *page, int quiet)
- 	return false;
- }
- 
--static struct page * ext2_get_page(struct inode *dir, unsigned long n,
--				   int quiet)
--{
--	struct address_space *mapping = dir->i_mapping;
--	struct page *page = read_mapping_page(mapping, n, NULL);
--	if (!IS_ERR(page)) {
--		kmap(page);
--		if (unlikely(!PageChecked(page))) {
--			if (PageError(page) || !ext2_check_page(page, quiet))
--				goto fail;
--		}
--	}
--	return page;
--
--fail:
--	ext2_put_page(page);
--	return ERR_PTR(-EIO);
--}
--
- /*
-  * NOTE! unlike strncmp, ext2_match returns 1 for success, 0 for failure.
-  *
-@@ -336,6 +311,8 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
-  * returns the page in which the entry was found (as a parameter - res_page),
-  * and the entry itself. Page is returned mapped and unlocked.
-  * Entry is guaranteed to be valid.
-+ *
-+ * On Success ext2_put_page() should be called on *res_page.
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index 6ebefec616e4..8e8b1e3cb847 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -156,6 +156,7 @@ int template_desc_init_fields(const char *template_fmt,
+ 			      const struct ima_template_field ***fields,
+ 			      int *num_fields);
+ struct ima_template_desc *ima_template_desc_current(void);
++struct ima_template_desc *ima_template_desc_buf(void);
+ struct ima_template_desc *lookup_template_desc(const char *name);
+ bool ima_template_has_modsig(const struct ima_template_desc *ima_template);
+ int ima_restore_measurement_entry(struct ima_template_entry *entry);
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index a962b23e0429..3646ae763ba9 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -413,7 +413,7 @@ int ima_file_mmap(struct file *file, unsigned long prot)
   */
- struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 			const struct qstr *child, struct page **res_page)
-@@ -401,6 +378,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 	return de;
- }
- 
-+/**
-+ * Return the '..' directory entry and the page in which the entry was found
-+ * (as a parameter - p).
-+ *
-+ * On Success ext2_put_page() should be called on *p.
-+ */
- struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
+ int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
  {
- 	struct page *page = ext2_get_page(dir, 0, 0);
-diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-index 5136b7289e8d..b4403f96858b 100644
---- a/fs/ext2/ext2.h
-+++ b/fs/ext2/ext2.h
-@@ -16,6 +16,8 @@
- #include <linux/blockgroup_lock.h>
- #include <linux/percpu_counter.h>
- #include <linux/rbtree.h>
-+#include <linux/mm.h>
-+#include <linux/highmem.h>
+-	struct ima_template_desc *template;
++	struct ima_template_desc *template = NULL;
+ 	struct file *file = vma->vm_file;
+ 	char filename[NAME_MAX];
+ 	char *pathbuf = NULL;
+@@ -802,7 +802,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+ 					    .filename = eventname,
+ 					    .buf = buf,
+ 					    .buf_len = size};
+-	struct ima_template_desc *template = NULL;
++	struct ima_template_desc *template = ima_template_desc_buf();
+ 	struct {
+ 		struct ima_digest_data hdr;
+ 		char digest[IMA_MAX_DIGEST_SIZE];
+@@ -833,16 +833,9 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+ 		pcr = CONFIG_IMA_MEASURE_PCR_IDX;
  
- /* XXX Here for now... not interested in restructing headers JUST now */
- 
-@@ -745,6 +747,31 @@ extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
- extern int ext2_empty_dir (struct inode *);
- extern struct ext2_dir_entry_2 * ext2_dotdot (struct inode *, struct page **);
- extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, struct inode *, int);
-+static inline void ext2_put_page(struct page *page)
-+{
-+	kunmap(page);
-+	put_page(page);
-+}
-+
-+static inline struct page * ext2_get_page(struct inode *dir, unsigned long n,
-+				   int quiet)
-+{
-+	struct address_space *mapping = dir->i_mapping;
-+	struct page *page = read_mapping_page(mapping, n, NULL);
-+	if (!IS_ERR(page)) {
-+		kmap(page);
-+		if (unlikely(!PageChecked(page))) {
-+			if (PageError(page) || !ext2_check_page(page, quiet))
-+				goto fail;
-+		}
-+	}
-+	return page;
-+
-+fail:
-+	ext2_put_page(page);
-+	return ERR_PTR(-EIO);
-+}
-+
- 
- /* ialloc.c */
- extern struct inode * ext2_new_inode (struct inode *, umode_t, const struct qstr *);
-diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-index 5bf2c145643b..ea980f1e2e99 100644
---- a/fs/ext2/namei.c
-+++ b/fs/ext2/namei.c
-@@ -389,23 +389,18 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
- 	if (dir_de) {
- 		if (old_dir != new_dir)
- 			ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
--		else {
--			kunmap(dir_page);
--			put_page(dir_page);
+ 	if (!template) {
+-		template = lookup_template_desc("ima-buf");
+-		ret = template_desc_init_fields(template->fmt,
+-						&(template->fields),
+-						&(template->num_fields));
+-		if (ret < 0) {
+-			pr_err("template %s init failed, result: %d\n",
+-			       (strlen(template->name) ?
+-				template->name : template->fmt), ret);
+-			return;
 -		}
-+		else
-+			ext2_put_page(dir_page);
- 		inode_dec_link_count(old_dir);
++		ret = -EINVAL;
++		audit_cause = "ima_template_desc_buf";
++		goto out;
  	}
- 	return 0;
  
+ 	iint.ima_hash = &hash.hdr;
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 9b5adeaa47fc..823a0c1379cb 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -628,7 +628,7 @@ int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
+ 	struct ima_rule_entry *entry;
+ 	int action = 0, actmask = flags | (flags << 1);
  
- out_dir:
--	if (dir_de) {
--		kunmap(dir_page);
--		put_page(dir_page);
--	}
-+	if (dir_de)
-+		ext2_put_page(dir_page);
- out_old:
--	kunmap(old_page);
--	put_page(old_page);
-+	ext2_put_page(old_page);
- out:
- 	return err;
+-	if (template_desc)
++	if (template_desc && !*template_desc)
+ 		*template_desc = ima_template_desc_current();
+ 
+ 	rcu_read_lock();
+diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
+index 1e89e2d3851f..e53fce2c1610 100644
+--- a/security/integrity/ima/ima_template.c
++++ b/security/integrity/ima/ima_template.c
+@@ -55,6 +55,7 @@ static const struct ima_template_field supported_fields[] = {
+ #define MAX_TEMPLATE_NAME_LEN sizeof("d-ng|n-ng|sig|buf|d-modisg|modsig")
+ 
+ static struct ima_template_desc *ima_template;
++static struct ima_template_desc *ima_buf_template;
+ 
+ /**
+  * ima_template_has_modsig - Check whether template has modsig-related fields.
+@@ -252,6 +253,30 @@ struct ima_template_desc *ima_template_desc_current(void)
+ 	return ima_template;
  }
+ 
++struct ima_template_desc *ima_template_desc_buf(void)
++{
++	struct ima_template_desc *template = NULL;
++	int ret = 0;
++
++	if (ima_buf_template)
++		return ima_buf_template;
++
++	ima_init_template_list();
++	template = lookup_template_desc("ima-buf");
++	if (!template)
++		return NULL;
++
++	ret = template_desc_init_fields(template->fmt,
++					&(template->fields),
++					&(template->num_fields));
++	if (ret)
++		return NULL;
++
++	ima_buf_template = template;
++
++	return ima_buf_template;
++}
++
+ int __init ima_init_template(void)
+ {
+ 	struct ima_template_desc *template = ima_template_desc_current();
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.29.0
 
