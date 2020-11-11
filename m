@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE4E2AFB34
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6872AFB3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbgKKWQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:16:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgKKWQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:16:41 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82FDB2087D;
-        Wed, 11 Nov 2020 22:16:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605133000;
-        bh=FZoIL5kkoczQ08cE+5NFuJQjvnQXcPDad7/rPnvpuM8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=OyYUE+sWkg5lC/BrEnbRDr2hQEyTSlpTIWkU8rEkXleT/ddF5+m/OqWTY0QE6KkZU
-         cZNMhDmrmscHakgy9rXjIJ2IJP2iyPNXu8ebZlLfx+gdXvk6ZDLSFeRU5hIbM2nKMj
-         f0R/Fed5vT0l4+pI9H8+OGi9/4xGHbBgyMq88nyY=
-Date:   Wed, 11 Nov 2020 16:16:39 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Ley Foon Tan <ley.foon.tan@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        rfi@lists.rocketboards.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Toan Le <toan@os.amperecomputing.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] PCI: altera-msi: Remove irq handler and data in one go
-Message-ID: <20201111221639.GA973514@bjorn-Precision-5520>
+        id S1726587AbgKKWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:20:13 -0500
+Received: from mail-bn7nam10on2078.outbound.protection.outlook.com ([40.107.92.78]:6497
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725933AbgKKWUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:20:10 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j0qHlHLPe92BzchzyVm04h7BAmNt+uQ7z2OPxaks0vn5mMWEh8/qi3eaB+4mZF4Z0TYxnfK3BjT9HTuKHT8Ho3zfQhJbYu5TxhGaScIH5jlCldmZ/45qrdTFq5RyhxAAJXawdFq66V6bNh1jeQ9Q0koeeJ5UxZgC7rXSnAMWHTQcHhlpV+8YCedv8EPIJTJXCmGkqa1UL4iHeW33NPRQaZyZ+oE0JI0NXvRvJf1pmMrUlm5SgWlhLu+RjB2EiPagWCM/KvsQr4EvRm27dcbvYkZWiGa0rj65zIs9+s5Jph6lfPcGsr4BB9kiya8S0sSCqfjBalnAAai2RQlXlSkA+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KMvWEz/V0J97/xLlY7f6Kqx4EecJ09c7qjYmQYyDl38=;
+ b=B2hYauxMDwd4Tb4+lk5b8R5T6afM7vC62wiiGigKjodSCvOal9y+vqQ3nvyM7h9Lk0tndURg9OYwHoLS8Z7zxGKxPps8p23L4x7DLRgWpvKQ1sHZN17OU7G452afqq5WT3qHB+wvIwfMPJ7HyGDRT3oy/blEwq8MYyRp2nxOb8GTpNXPiv0rKUJGr+O145e5uur8TbowmdUngzZIvJ5dzQYDangsXn9IFDltXuwYpfqrJ5YdJ5bUUKvkgeHVGp+pGDojpzmfn7Y1eKpQ8iaPKOSaSZfaJspEJUB5o5kw0BAI8UDCuwYp0LHHlv37r48w0K/oYv8a3awHP2e02hVBYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KMvWEz/V0J97/xLlY7f6Kqx4EecJ09c7qjYmQYyDl38=;
+ b=ufjPW26j/a33O7Ax7Bot9UcmrLTpiMx+/78eNwi+zjPEKFG7ccxohhjCJPJU6wUX0b5OWc8MJwULSaaWgukU9/mDu8IAmJ4jMcqSw10k2MFPVLRTAZvcviQH6X0jTB8dwSs55fbqdgEIIkukGhIOatCVzYyNy5/cz4uwsKx5JWU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=vmware.com;
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (2603:10b6:a03:1a::28)
+ by BY5PR05MB6962.namprd05.prod.outlook.com (2603:10b6:a03:1bb::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21; Wed, 11 Nov
+ 2020 22:20:07 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::958b:64f6:b2f9:97e0]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::958b:64f6:b2f9:97e0%7]) with mapi id 15.20.3541.011; Wed, 11 Nov 2020
+ 22:20:07 +0000
+Subject: Re: [PATCH] RDMA/pvrdma: fix missing kfree in pvrdma_register_device
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201111032202.17925-1-miaoqinglang@huawei.com>
+From:   Adit Ranadive <aditr@vmware.com>
+Message-ID: <91aff9c5-ece0-6c75-0803-de92e491a2d6@vmware.com>
+Date:   Wed, 11 Nov 2020 14:20:05 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.2
+In-Reply-To: <20201111032202.17925-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [107.3.164.70]
+X-ClientProxiedBy: BY5PR16CA0028.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::41) To BYAPR05MB5511.namprd05.prod.outlook.com
+ (2603:10b6:a03:1a::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111214355.puinncgf3aksxh73@viti.kaiser.cx>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pony.intranet.hyperic.net (107.3.164.70) by BY5PR16CA0028.namprd16.prod.outlook.com (2603:10b6:a03:1a0::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Wed, 11 Nov 2020 22:20:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5f2a04fb-392f-4251-f67f-08d8868ff1bc
+X-MS-TrafficTypeDiagnostic: BY5PR05MB6962:
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR05MB69625EFD7F1A99BDE74C4079C5E80@BY5PR05MB6962.namprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: se4iDXDi7F1EgtPBiGTAhISEDKJWtCUaBi4IFf+iMX1pKnFTlDtZRGXUVK5JBspPrzh3WMZ9QHXAv8ZXlcDpfnqVEjGxKb+Q09cLsWRiTyZRPGdk0FNCbIGF5yqyfw/7C3DipgyHzNkes05/tFTHg2pW2V/V9drn8GNoT3ggj7AamfiQbcftPKIsRKmd+72ObVzvWh6t/fBCfWLfJHlO//lYQbxtJNfKctohzKAaM4DL/q4plY+R/BUb7+byk89/4+aKwYUR18BFE89cR2MVUpjM1cNLkLE0aH9cWA5rCwfqUiYPQloaOFIA8nvpu3yIHCrERcrcGpe5s9Uu4ZPdwGWZtn0Kt3fGEcXxuTcngqNDz4P5VgCh1sMBW3Ya/Ta0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB5511.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(136003)(39860400002)(396003)(26005)(31686004)(186003)(66556008)(16526019)(8936002)(4326008)(6486002)(8676002)(66476007)(66946007)(5660300002)(31696002)(6512007)(2616005)(316002)(956004)(110136005)(36756003)(53546011)(478600001)(6506007)(86362001)(2906002)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: C3xT30tJn5jCXdYC7onShO3mn2o1PK/PZlEGvVAOxKMl1sG/xHYO65UpaUnWvgR+4y5n/dQ9eyY1CG/VAKY8/Lgl4z+306RsqK/5Qn1GtiWAT02ywc9/cWcce/XD/r9X0lJCj6sygLK3Ad0a2vHrH2ZDdfHC/Upi5DWbGT9Itp0ajFKy6mur4EfDbAq6srJLSz9MQn4p2SrX8v7t0Pk0yu8VSO7zUhBnAzSfocfEBaVpH/H8XeWKDTOXi+7YoyXSxrPzZ002M/lDzZY4oiBtKBNgmmoXE7EBXS5gJrYs/qJlpEyCFIV4KzVuUeQWGST/mtoy7P+INtThADV9XyyzhCP7Gz3U6pwrkHP3sBB4C5e8NZLE95fT2JEV8IG/7xzVG1+aZQb03+XmnSFVyqNqVRhtqYZkcX8h5p4xqNIYSCt08VT803ioZPiGx8DWaSAwtoGJZg4J9hfVTqwTgoOL63AEUSQri0dVxzZ+f3ByFRevZ/f/8rVQq+QhIjLrxCr0smB3WioujZf+j+tW5XIldc2GiS06/Vxt53hBnnSxQaauApURXboRwS6CdbuA/ZKiqBRvPdyu/Y/wx7XG5nxztl6DxkOrYdIOdvhdda1LAKt7iIdiU12AuswKmT3TGffO9sZCAqmP69jzfYz9wy3XcQ==
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f2a04fb-392f-4251-f67f-08d8868ff1bc
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB5511.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2020 22:20:07.4229
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N2wU53Cb3MeqkD4eVx3DLwc3KTfWCIYyxtH6ZQm6RXNvPWzuL1SMeJVjeZ1VzptinF1zQl6fEGX9al11daI38Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR05MB6962
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Thomas for handler/data order question at end]
+On 11/10/20 7:22 PM, Qinglang Miao wrote:
+> Fix missing kfree in pvrdma_register_device() when fails
+> to do ib_device_set_netdev.
+> 
+> Fixes: 4b38da75e089 ("RDMA/drivers: Convert easy drivers to use ib_device_set_netdev()")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> index fa2a3fa0c3e4..f71d99946bed 100644
+> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> @@ -266,7 +266,7 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
+>  	}
+>  	ret = ib_device_set_netdev(&dev->ib_dev, dev->netdev, 1);
+>  	if (ret)
+> -		return ret;
+> +		goto err_qp_free;
 
-On Wed, Nov 11, 2020 at 10:43:55PM +0100, Martin Kaiser wrote:
-> Thus wrote Bjorn Helgaas (helgaas@kernel.org):
-> > On Tue, Nov 10, 2020 at 03:21:36PM -0600, Bjorn Helgaas wrote:
-> > > On Sun, Nov 08, 2020 at 08:11:40PM +0100, Martin Kaiser wrote:
-> > > > Replace the two separate calls for removing the irq handler and data with a
-> > > > single irq_set_chained_handler_and_data() call.
-> 
-> > > This is similar to these:
-> 
-> > >   36f024ed8fc9 ("PCI/MSI: pci-xgene-msi: Consolidate chained IRQ handler install/remove")
-> > >   5168a73ce32d ("PCI/keystone: Consolidate chained IRQ handler install/remove")
-> > >   2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ handler")
-> 
-> > > and it seems potentially important that this removes the IRQ handler
-> > > and data *atomically*, i.e., both are done while holding
-> > > irq_get_desc_buslock().  
-> 
-> Ok, understood.
-> 
-> > > So I would use this:
-> 
-> > >   PCI: altera-msi: Fix race in installing chained IRQ handler
-> 
-> > >   Fix a race where a pending interrupt could be received and the handler
-> > >   called before the handler's data has been setup by converting to
-> > >   irq_set_chained_handler_and_data().
-> 
-> > >   See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
-> > >   IRQ handler").
-> 
-> > > to make it clear that this is actually a bug fix, not just a cleanup.
-> 
-> Thomas' commit 2cf5a03cb29d fixed a case where the handler was installed.
-> We're removing the handler here so his commit message doesn't really fit.
-> Anyway, I'll rewrite the commit message to clarify that this fixes a
-> race condition.
+Thanks. This should be 'goto err_srq_free'.
 
-Oh, right, of course, I wasn't paying attention.  The altera case is
-removing and doing it in the correct order (removing handler, then
-data), so there shouldn't be a race even with the current code.
-
-> > > Looks like this should also be done in dw_pcie_free_msi() and
+>  	spin_lock_init(&dev->srq_tbl_lock);
+>  	rdma_set_device_sysfs_group(&dev->ib_dev, &pvrdma_attr_group);
+>  
 > 
-> I'll send a patch for this.
-> 
-> > > xgene_msi_hwirq_alloc() at the same time?
-> 
-> This function uses the error status from irq_set_handler_data().
-> irq_set_chained_handler_and_data() returns no such error status. Is it
-> ok to drop the error handling?
-
-I'm not an IRQ expert, but I'd say it's OK to drop it.  Of the 40 or
-so callers, the only other caller that looks at the error status is
-ingenic_intc_of_init().
-
-Thomas, it looks like irq_domain_set_info() and msi_domain_ops_init()
-set the handler itself before setting the handler data:
-
-  irq_domain_set_info
-    irq_set_chip_and_handler_name(virq, chip, handler, ...)
-    irq_set_handler_data(virq, handler_data)
-
-  msi_domain_ops_init
-    __irq_set_handler(virq, info->handler, ...)
-    if (info->handler_data)
-      irq_set_handler_data(virq, info->handler_data)
-
-That looks at least superficially similar to the race you fixed with
-2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ
-handler").
-
-Should irq_domain_set_info() and msi_domain_ops_init() swap the order,
-too?
