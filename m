@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDA32AEE7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4C72AEE95
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727431AbgKKKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727424AbgKKKHd (ORCPT
+        id S1727416AbgKKKNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:13:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19090 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726725AbgKKKN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:07:33 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F77C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:07:32 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id j7so1958657wrp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:07:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lhNVmiGRjKtWj6Yv/r78yPNvE9PCgYoouxIq1h1Gu1E=;
-        b=eGNQ2RRHPn8cIvHZO7W4KaoAKsbVJhZjhfzPqRGC2E+OfIx30kHsq0DJcAkvBU9OMs
-         AmOLn20fUak02DJ3SAY714hKnBLIoBHRFGbLOf3BmGV1eJV0a1QB2NmhkIb1WdOU6tet
-         d1ctqz5Ryqt+fcIqWorFXkXKLV6wHQHT3Q/ZvExgP/W4txFJv8YEJ2eIzl8F1MQykxfQ
-         a0QYbpgU/9iZcJEkasGFv4rkKUjiGQd0OS98RRWTJwzFRPWpkIJNzGp+MmKSrU6pZqlH
-         9SGuT984v4MKMEaxSA7YXRZY1GAGLKGr+3vVSLLcQzVuzoMGFlrNHfHUKyjqRatLws2K
-         vCyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lhNVmiGRjKtWj6Yv/r78yPNvE9PCgYoouxIq1h1Gu1E=;
-        b=PxQOpzVRe7FIoClBiq+t2tTNnq9rhBKSCIheuw26h0aTefPa8iWEktq3j2XcXNpv/s
-         PB85toa6f4jnfDaIy2uDXikHDbSDEaLgWiaaE/YAl0oOHVeJ4ZwLjkBoBT5NAACmMlnU
-         BA24/H1gbuNo43zWkbBmCk8DKqMUkRae6M5r0qJ/3mZFnAR8zkN7cLXsgmG45B9aCyRn
-         hPUpyUunuqWs+TSRvD1cZDM+txhQ9ODIomx1JcSeDhH7mUz2Uudr2Lf38owQ/dnE6YLa
-         +6lc8Hm+tS1yXjkWuWZ/xs+XZffB2nXHZ3fFbG6A+B03WEyCEfgcsCAWNndcsw+G0MIU
-         gXdQ==
-X-Gm-Message-State: AOAM531IAkUeDbu3HrOhTVL4Ijs+d+d8NSmYTUJYdImT7S06cIR15Urt
-        OQ/sWjH6XX64/vfSme62WkPuJA==
-X-Google-Smtp-Source: ABdhPJxnas6xPj4y1eZeu09nWk8hlj/K7wPTeewT4L7XHj0sLnBiCg8sq6iv413heH318CAuBmN7sg==
-X-Received: by 2002:a5d:62ca:: with SMTP id o10mr7083941wrv.422.1605089251104;
-        Wed, 11 Nov 2020 02:07:31 -0800 (PST)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id s188sm1941424wmf.45.2020.11.11.02.07.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Nov 2020 02:07:30 -0800 (PST)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        georgi.djakov@linaro.org
-Subject: [PATCH] interconnect: qcom: qcs404: Remove gpu and display nodes
-Date:   Wed, 11 Nov 2020 12:07:34 +0200
-Message-Id: <20201111100734.307-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        Wed, 11 Nov 2020 05:13:28 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ABA1Aap132528;
+        Wed, 11 Nov 2020 05:13:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ZGyhlyiYifkLV/TgqfNMbKgbufi/lc8BlaPt1/lyDFY=;
+ b=YSKR4mbAAku59VvKYFUzXTPYKavAih8mNaYDmlRotPIeKNCJ79SnIN5rZSz3RC+NhjCK
+ UkXQQhQwXEN+6hMfen3m7TEvXFvA2OQsUagMMzY3wpN09ECGqqJ3OBiQknLkoTrJBrXE
+ dp0jUya0/ZmQROR0Uct2RX9JZRPpWLa56yKAU4H6w5TSs0BIWhnjjubWg/2GPnDVNpUI
+ uff8/QWd4yrYmOBFHyP433xkwp7p9uVAmYOKsO+uCCbPOpuLHl5Wn9F8kfoS9h+mfXz3
+ KTv2We5rgyXgTjZgkw1nAb9iVtQDEZgzYYCePmJ6fm2j7z6nF+4XOKFifQOAKtzUtwD9 SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34r384rpjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 05:13:09 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ABA44j8150664;
+        Wed, 11 Nov 2020 05:13:08 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34r384rpj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 05:13:08 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ABAD765011863;
+        Wed, 11 Nov 2020 10:13:07 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 34nk78a4hk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 10:13:06 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ABAD44d4522620
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Nov 2020 10:13:04 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1D7411C04C;
+        Wed, 11 Nov 2020 10:13:04 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1FC5611C066;
+        Wed, 11 Nov 2020 10:13:04 +0000 (GMT)
+Received: from Alexandras-MBP.fritz.box (unknown [9.145.12.245])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Nov 2020 10:13:04 +0000 (GMT)
+Subject: Re: [RFC PATCH net-next 3/3] net: dsa: listen for
+ SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign bridge neighbors
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20201108131953.2462644-1-olteanv@gmail.com>
+ <20201108131953.2462644-4-olteanv@gmail.com>
+ <CALW65jb+Njb3WkY-TUhsHh1YWEzfMcXoRAXshnT8ke02wc10Uw@mail.gmail.com>
+ <20201108172355.5nwsw3ek5qg6z7yx@skbuf>
+From:   Alexandra Winter <wintera@linux.ibm.com>
+Message-ID: <c35d48cd-a1ea-7867-a125-0f900e1e8808@linux.ibm.com>
+Date:   Wed, 11 Nov 2020 11:13:03 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201108172355.5nwsw3ek5qg6z7yx@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_02:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011110052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following errors are noticed during boot on a QCS404 board:
-[    2.926647] qcom_icc_rpm_smd_send mas 6 error -6
-[    2.934573] qcom_icc_rpm_smd_send mas 8 error -6
 
-These errors show when we try to configure the GPU and display nodes,
-which are defined in the topology, but these hardware blocks actually
-do not exist on QCS404. According to the datasheet, GPU and display
-are only present on QCS405 and QCS407.
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/interconnect/qcom/qcs404.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/interconnect/qcom/qcs404.c b/drivers/interconnect/qcom/qcs404.c
-index 9f992422e92f..2ed544e23ff3 100644
---- a/drivers/interconnect/qcom/qcs404.c
-+++ b/drivers/interconnect/qcom/qcs404.c
-@@ -20,8 +20,6 @@
- 
- enum {
- 	QCS404_MASTER_AMPSS_M0 = 1,
--	QCS404_MASTER_GRAPHICS_3D,
--	QCS404_MASTER_MDP_PORT0,
- 	QCS404_SNOC_BIMC_1_MAS,
- 	QCS404_MASTER_TCU_0,
- 	QCS404_MASTER_SPDM,
-@@ -156,8 +154,6 @@ struct qcom_icc_desc {
- 	}
- 
- DEFINE_QNODE(mas_apps_proc, QCS404_MASTER_AMPSS_M0, 8, 0, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
--DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, 6, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
--DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, 8, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
- DEFINE_QNODE(mas_snoc_bimc_1, QCS404_SNOC_BIMC_1_MAS, 8, 76, -1, QCS404_SLAVE_EBI_CH0);
- DEFINE_QNODE(mas_tcu_0, QCS404_MASTER_TCU_0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
- DEFINE_QNODE(mas_spdm, QCS404_MASTER_SPDM, 4, -1, -1, QCS404_PNOC_INT_3);
-@@ -231,8 +227,6 @@ DEFINE_QNODE(slv_lpass, QCS404_SLAVE_LPASS, 4, -1, -1, 0);
- 
- static struct qcom_icc_node *qcs404_bimc_nodes[] = {
- 	[MASTER_AMPSS_M0] = &mas_apps_proc,
--	[MASTER_OXILI] = &mas_oxili,
--	[MASTER_MDP_PORT0] = &mas_mdp,
- 	[MASTER_SNOC_BIMC_1] = &mas_snoc_bimc_1,
- 	[MASTER_TCU_0] = &mas_tcu_0,
- 	[SLAVE_EBI_CH0] = &slv_ebi,
-@@ -460,6 +454,9 @@ static int qnoc_probe(struct platform_device *pdev)
- 	for (i = 0; i < num_nodes; i++) {
- 		size_t j;
- 
-+		if (!qnodes[i])
-+			continue;
-+
- 		node = icc_node_create(qnodes[i]->id);
- 		if (IS_ERR(node)) {
- 			ret = PTR_ERR(node);
+On 08.11.20 18:23, Vladimir Oltean wrote:
+> On Sun, Nov 08, 2020 at 10:09:25PM +0800, DENG Qingfang wrote:
+>> Can it be turned off for switches that support SA learning from CPU?
+> 
+> Is there a good reason I would add another property per switch and not
+> just do it unconditionally?
+> 
+I have a similar concern for a future patch, where I want to turn on or off, whether the
+device driver listens to SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE for a certain interface.
+(Options will be: static MACs only, learning in the device or learning in bridge and notifications to device)
+What about 'bridge link set dev $netdev learning_sync on self' respectively the corresponding netlink message?
