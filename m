@@ -2,118 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841452AF9EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621442AF9EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgKKUoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:44:18 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:36967 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKUoR (ORCPT
+        id S1726664AbgKKUpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:45:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKUpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:44:17 -0500
-Date:   Wed, 11 Nov 2020 20:44:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1605127454; bh=cjnSs7ggKuxNW/h5Wnq+CXkLVSWDuqP6wXc3zMUiSOA=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=bV+XkA5q3D9jxeC3YIesV5yGTAjx3vv/JBTesm6v1zru4MyGkKBFRMZwfoyR3Hsz0
-         bZPrBmw5+eop5UT8vCChwTW/ieUzI6bcuLYm9JmVsw+DKmEhhHTnZvKjK9fxEzLC0g
-         oUUQGUV6UwDiuEu8btxMUpK9AFoq/Lh704g7kql24ESVYGgYo6W0A5HaeeA7Kw0WD+
-         Tvv3Cxltp08zYm8QCum3dtkxvp/iILQSIURXfXiK4GEDbcbk0E8ox/D7C0qi9TUCF7
-         uj79/YbkeePMozxqVqHWaTP8ZyY5hwYja8m1QdGsEll/hi0XX/H/sC+Q4PBLe2hNCJ
-         L2yYTnBXmQ4+A==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v5 net 0/2] net: udp: fix Fast/frag0 UDP GRO
-Message-ID: <hjGOh0iCOYyo1FPiZh6TMXcx3YCgNs1T1eGKLrDz8@cp4-web-037.plabs.ch>
+        Wed, 11 Nov 2020 15:45:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FA5C0613D1;
+        Wed, 11 Nov 2020 12:45:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CsuP2ZbFV021yD83Asf/WJrsarPfzdmIq9MXLED49SE=; b=QF9Lp+Dv+5PrX67MKMP/B8Ri5v
+        WnPV6mS+OhKhV1U72wkx3T64VjCFcm7V2HI4G7FzyyHU9uInlAIqTjutPsdBYLM3OdRRlLOsXV5/s
+        hfnzgSqwDYUgqnnqY6OiG2pc6eugSLTBBj89ba1fqWiIpkPafPZ5pcwlN1JpwFCFCgsc1hgWNatpd
+        08yPCU5Lh9qGFj+2DZ1HzeEFzJhC+59QerfgRx2tzvZUvhjF78gAonDyzKShdXP0x7SXlNSnAMxOM
+        istBiplwdwTvAISnRyQr5JA3d8mrkWQfbxNDDxbAdPhzO3k/k8eap/2fPZwCeZSEuZ1O1RZ+aIlvu
+        kJw7TsWw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcwzF-000766-PU; Wed, 11 Nov 2020 20:45:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9EED9301E02;
+        Wed, 11 Nov 2020 21:45:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6A0352BCE962B; Wed, 11 Nov 2020 21:45:00 +0100 (CET)
+Date:   Wed, 11 Nov 2020 21:45:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paul Bolle <pebolle@tiscali.nl>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Scott Wood <swood@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        x86@kernel.org
+Subject: Re: [tip: sched/core] sched: Fix balance_callback()
+Message-ID: <20201111204500.GR2628@hirez.programming.kicks-ass.net>
+References: <20201023102346.203901269@infradead.org>
+ <160508300397.11244.13967684821070428528.tip-bot2@tip-bot2>
+ <6356963f376a0798e8c939f813c2efe05d32c6d7.camel@tiscali.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6356963f376a0798e8c939f813c2efe05d32c6d7.camel@tiscali.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While testing UDP GSO fraglists forwarding through driver that uses
-Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
-iperf packets:
+On Wed, Nov 11, 2020 at 09:30:42PM +0100, Paul Bolle wrote:
+> tip-bot2 for Peter Zijlstra schreef op wo 11-11-2020 om 08:23 [+0000]:
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > [...]
+> > +static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
+> > +{
+> > +	void (*func)(struct rq *rq);
+> > +	struct callback_head *next;
+> > +
+> > +	lockdep_assert_held(&rq->lock);
+> > +
+> > +	while (head) {
+> > +		func = (void (*)(struct rq *))head->func;
+> > +		next = head->next;
+> > +		head->next = NULL;
+> > +		head = next;
+> 
+> Naive question: is there some subtle C-issue that is evaded here by setting
+> head->next to NULL prior to copying over it?
+> 
+> (I know this piece of code only got copied around in this patch and this is
+> therefor not something that this patch actually introduced.)
 
-[ ID] Interval           Transfer     Bitrate         Jitter
-[SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
-
-Simple switch to napi_gro_receive() or any other method without frag0
-shortcut completely resolved them.
-
-I've found two incorrect header accesses in GRO receive callback(s):
- - udp_hdr() (instead of udp_gro_udphdr()) that always points to junk
-   in "fast" mode and could probably do this in "regular".
-   This was the actual bug that caused all out-of-order delivers;
- - udp{4,6}_lib_lookup_skb() -> ip{,v6}_hdr() (instead of
-   skb_gro_network_header()) that potentionally might return odd
-   pointers in both modes.
-
-Each patch addresses one of these two issues.
-
-This doesn't cover a support for nested tunnels as it's out of the
-subject and requires more invasive changes. It will be handled
-separately in net-next series.
-
-Credits:
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Willem de Bruijn <willemb@google.com>
-
-Since v4 [0]:
- - split the fix into two logical ones (Willem);
- - replace ternaries with plain ifs to beautify the code (Jakub);
- - drop p->data part to reintroduce it later in abovementioned set.
-
-Since v3 [1]:
- - restore the original {,__}udp{4,6}_lib_lookup_skb() and use
-   private versions of them inside GRO code (Willem).
-
-Since v2 [2]:
- - dropped redundant check introduced in v2 as it's performed right
-   before (thanks to Eric);
- - udp_hdr() switched to data + off for skbs from list (also Eric);
- - fixed possible malfunction of {,__}udp{4,6}_lib_lookup_skb() with
-   Fast/frag0 due to ip{,v6}_hdr() usage (Willem).
-
-Since v1 [3]:
- - added a NULL pointer check for "uh" as suggested by Willem.
-
-[0] https://lore.kernel.org/netdev/Ha2hou5eJPcblo4abjAqxZRzIl1RaLs2Hy0oOAgF=
-s@cp4-web-036.plabs.ch
-[1] https://lore.kernel.org/netdev/MgZce9htmEtCtHg7pmWxXXfdhmQ6AHrnltXC41zO=
-oo@cp7-web-042.plabs.ch
-[2] https://lore.kernel.org/netdev/0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqV=
-dY@cp4-web-030.plabs.ch
-[3] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYv=
-JI@cp4-web-034.plabs.ch
-
-Alexander Lobakin (2):
-  net: udp: fix UDP header access on Fast/frag0 UDP GRO
-  net: udp: fix IP header access and skb lookup on Fast/frag0 UDP GRO
-
- net/ipv4/udp_offload.c | 19 ++++++++++++++++---
- net/ipv6/udp_offload.c | 17 +++++++++++++++--
- 2 files changed, 31 insertions(+), 5 deletions(-)
-
---=20
-2.29.2
-
-
+It's like list_del_init(), it zeros the entry before unlinking it.
+queue_balance_callback() relies on this.
