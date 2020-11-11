@@ -2,175 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E932AE7A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7D42AE7AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgKKEu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 23:50:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKKEu5 (ORCPT
+        id S1725924AbgKKE4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 23:56:07 -0500
+Received: from ns3.fnarfbargle.com ([103.4.19.87]:54788 "EHLO
+        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKKE4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 23:50:57 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97330C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 20:50:57 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id t16so759279oie.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 20:50:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TgiY8fdn90Uls12wgNKgzxp/Onwmpb1Il5B5p1lyVJU=;
-        b=VYELtnjAV5Ls0k8ZJfZ7zELRqNDR4/IyfkC7nMGABdnGpdE/Zb9PwJSfoGKyU92gq4
-         7UiACwrRNIlrGnDXh7NNg/dHqywhUpUiTH97Emo5n0MQ/QsUQfNb1lkeRe/4BZeWAKW9
-         5HbP/pl2a7ByW7MhaXMYXIgqX4pKvlIufMf9WOq182jsV7cCbhTBC0ukB46Zc191LFey
-         BX8SF6f4cJdzGZ39ZM61Q2WktAgjlYYaJspMZjosGtj/3qA9+WDGkAj4MoH3qi7ysQ6J
-         9/krSDyGAmatCg5vZTv3xqVOKoGRIUTREQBkirg6ltpjdDKe8J5DE9uUYjU+SB1XyAX1
-         vh7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TgiY8fdn90Uls12wgNKgzxp/Onwmpb1Il5B5p1lyVJU=;
-        b=BznyV9UnbKoDn4/7Y76CHNHho9jONcezwzkNLr88A7zTxJxVEQECKuFWFXZQkMow0B
-         G23IDkBtGFdF5D8rboSWnDFsmTer5kK6uAZVSbKD++zHTe0YW0MysYXPppRyTxbGyO9l
-         N1hqiQV4hnb9/p5efEijkIZgf+3Fj9dBimL3pwgZAVnpZfLeTZQDouTvXHRzh/6fTZEp
-         mxfw8qStNO+dbtQOdhdpANMHwF5xYaYYHUGaTUL+fHXxZKFRpfOFthhcP3sUjeOG5Qgq
-         N6Fd+aGQ9NPf740AhdeJiFgkVTXLtPBgZtW/+PS4aHq3yU7D00Ev6KxNt5lp38Rb0bC9
-         CKYg==
-X-Gm-Message-State: AOAM531euELJxNi8y82kNXtpe16aajXF3PB990rltqnb/odimcwsB6+U
-        1aTnhagQdWafrCLMV0E1wEDzzA==
-X-Google-Smtp-Source: ABdhPJwzPtqe2oFKM2VjVJi3f9w9NPihcWFT8lNK7ABdSE3qphYjo0s4kjlFgvKpRXgW+uj2DIxPeQ==
-X-Received: by 2002:aca:afd3:: with SMTP id y202mr968450oie.135.1605070256818;
-        Tue, 10 Nov 2020 20:50:56 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l19sm277147otp.65.2020.11.10.20.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 20:50:56 -0800 (PST)
-Date:   Tue, 10 Nov 2020 22:50:54 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        robh@kernel.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jcrouse@codeaurora.org, mka@chromium.org, robdclark@gmail.com,
-        dianders@chromium.org
-Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7180: Add gpu cooling support
-Message-ID: <20201111045054.GE173948@builder.lan>
-References: <1604054832-3114-1-git-send-email-akhilpo@codeaurora.org>
- <1604054832-3114-2-git-send-email-akhilpo@codeaurora.org>
+        Tue, 10 Nov 2020 23:56:07 -0500
+Received: from srv.home ([10.8.0.1] ident=heh21299)
+        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <brad@fnarfbargle.com>)
+        id 1kciAL-00044G-RX; Wed, 11 Nov 2020 12:55:29 +0800
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject; bh=uj9dOXaGqSlTaU3pwgaPlMYQQG9P/JCDz5+gitB10gs=;
+        b=gsa+3+Xh4gn5QI7kpsST8wGYCx6SQz+PaQYItNr96oMhLw6DaifhukAmvH0voO6Yz1onwbJiG5t5MvudLYRdK5KB4uDzfqG09mUKngai6sI7XvAd9tHtqpRfnGDoxt90DEEQJo1sHjk8fNkPwWKqV+sihzWILYwkt1fsn0w2rIU=;
+Subject: [PATCH v1] applesmc: Cleanups on top of re-work comms
+From:   Brad Campbell <brad@fnarfbargle.com>
+To:     linux-hwmon@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>,
+        Henrik Rydberg <rydberg@bitmath.org>
+References: <20200930105442.3f642f6c@aktux>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+ <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+ <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
+ <e5c6242a-5207-0f9a-5803-2dc164425b5b@fnarfbargle.com>
+Message-ID: <4ed933bd-9bb9-f09f-0e0c-d82893d7ac76@fnarfbargle.com>
+Date:   Wed, 11 Nov 2020 15:55:31 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604054832-3114-2-git-send-email-akhilpo@codeaurora.org>
+In-Reply-To: <e5c6242a-5207-0f9a-5803-2dc164425b5b@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 30 Oct 05:47 CDT 2020, Akhil P Oommen wrote:
+A few small cleanups on top of the comms changes for applesmc.c :
 
-> Add cooling-cells property and the cooling maps for the gpu tzones
-> to support GPU cooling.
-> 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index d46b383..8e2000c 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -2,7 +2,7 @@
->  /*
->   * SC7180 SoC device tree source
->   *
-> - * Copyright (c) 2019, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2019-20, The Linux Foundation. All rights reserved.
+send_byte() is always called with APPLESMC_CMD_PORT, so simplify.
+Remove redundant check from smc_sane().
+Consolidate writing length with other setup parameters.
+Consolidate read and write error messages to a single statement each.
 
-I took the liberty of spelling out 2020 here, as I applied this patch.
+Length and error consolidation suggested by Henrik Rydberg <rydberg@bitmath.org>
 
-Regards,
-Bjorn
+Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
 
->   */
->  
->  #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
-> @@ -1886,6 +1886,8 @@
->  			operating-points-v2 = <&gpu_opp_table>;
->  			qcom,gmu = <&gmu>;
->  
-> +			#cooling-cells = <2>;
-> +
->  			interconnects = <&gem_noc MASTER_GFX3D &mc_virt SLAVE_EBI1>;
->  			interconnect-names = "gfx-mem";
->  
-> @@ -3825,16 +3827,16 @@
->  		};
->  
->  		gpuss0-thermal {
-> -			polling-delay-passive = <0>;
-> +			polling-delay-passive = <100>;
->  			polling-delay = <0>;
->  
->  			thermal-sensors = <&tsens0 13>;
->  
->  			trips {
->  				gpuss0_alert0: trip-point0 {
-> -					temperature = <90000>;
-> +					temperature = <95000>;
->  					hysteresis = <2000>;
-> -					type = "hot";
-> +					type = "passive";
->  				};
->  
->  				gpuss0_crit: gpuss0_crit {
-> @@ -3843,19 +3845,26 @@
->  					type = "critical";
->  				};
->  			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&gpuss0_alert0>;
-> +					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
->  		};
->  
->  		gpuss1-thermal {
-> -			polling-delay-passive = <0>;
-> +			polling-delay-passive = <100>;
->  			polling-delay = <0>;
->  
->  			thermal-sensors = <&tsens0 14>;
->  
->  			trips {
->  				gpuss1_alert0: trip-point0 {
-> -					temperature = <90000>;
-> +					temperature = <95000>;
->  					hysteresis = <2000>;
-> -					type = "hot";
-> +					type = "passive";
->  				};
->  
->  				gpuss1_crit: gpuss1_crit {
-> @@ -3864,6 +3873,13 @@
->  					type = "critical";
->  				};
->  			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&gpuss1_alert0>;
-> +					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
->  		};
->  
->  		aoss1-thermal {
-> -- 
-> 2.7.4
-> 
+Index: linux-stable/drivers/hwmon/applesmc.c
+===================================================================
+--- linux-stable.orig/drivers/hwmon/applesmc.c
++++ linux-stable/drivers/hwmon/applesmc.c
+@@ -176,7 +176,7 @@ static int wait_status(u8 val, u8 mask)
+ 
+ /* send_byte - Write to SMC data port. Callers must hold applesmc_lock. */
+ 
+-static int send_byte(u8 cmd, u16 port)
++static int send_byte(u8 cmd)
+ {
+ 	int status;
+ 
+@@ -186,7 +186,7 @@ static int send_byte(u8 cmd, u16 port)
+ 	status = wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY);
+ 	if (status)
+ 		return status;
+-	outb(cmd, port);
++	outb(cmd, APPLESMC_DATA_PORT);
+ 	return 0;
+ }
+ 
+@@ -219,10 +219,7 @@ static int smc_sane(void)
+ 	ret = send_command(APPLESMC_READ_CMD);
+ 	if (ret)
+ 		return ret;
+-	ret = wait_status(0, SMC_STATUS_BUSY);
+-	if (!ret)
+-		return ret;
+-	return -EIO;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
+ 
+ static int send_argument(const char *key)
+@@ -230,7 +227,7 @@ static int send_argument(const char *key
+ 	int i;
+ 
+ 	for (i = 0; i < 4; i++)
+-		if (send_byte(key[i], APPLESMC_DATA_PORT))
++		if (send_byte(key[i]))
+ 			return -EIO;
+ 	return 0;
+ }
+@@ -245,23 +242,14 @@ static int read_smc(u8 cmd, const char *
+ 	if (ret)
+ 		return ret;
+ 
+-	if (send_command(cmd) || send_argument(key)) {
+-		pr_warn("%.4s: read arg fail\n", key);
+-		return -EIO;
+-	}
+-
+-	/* This has no effect on newer (2012) SMCs */
+-	if (send_byte(len, APPLESMC_DATA_PORT)) {
+-		pr_warn("%.4s: read len fail\n", key);
+-		return -EIO;
+-	}
++	if (send_command(cmd) || send_argument(key) || send_byte(len))
++		goto err;
+ 
+ 	for (i = 0; i < len; i++) {
+ 		if (wait_status(SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY,
+-				SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY) < 0) {
+-			pr_warn("%.4s: read data[%d] fail\n", key, i);
+-			return -EIO;
+-		}
++				SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY))
++			goto err;
++
+ 		buffer[i] = inb(APPLESMC_DATA_PORT);
+ 	}
+ 
+@@ -277,6 +265,9 @@ static int read_smc(u8 cmd, const char *
+ 		pr_warn("flushed %d bytes, last value is: %d\n", i, data);
+ 
+ 	return wait_status(0, SMC_STATUS_BUSY);
++err:
++	pr_warn("read cmd fail: %x %.4s %d\n", cmd, key, len);
++	return -EIO;
+ }
+ 
+ static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
+@@ -288,24 +279,17 @@ static int write_smc(u8 cmd, const char
+ 	if (ret)
+ 		return ret;
+ 
+-	if (send_command(cmd) || send_argument(key)) {
+-		pr_warn("%s: write arg fail\n", key);
+-		return -EIO;
+-	}
++	if (send_command(cmd) || send_argument(key) || send_byte(len))
++		goto err;
+ 
+-	if (send_byte(len, APPLESMC_DATA_PORT)) {
+-		pr_warn("%.4s: write len fail\n", key);
+-		return -EIO;
+-	}
+-
+-	for (i = 0; i < len; i++) {
+-		if (send_byte(buffer[i], APPLESMC_DATA_PORT)) {
+-			pr_warn("%s: write data fail\n", key);
+-			return -EIO;
+-		}
+-	}
++	for (i = 0; i < len; i++)
++		if (send_byte(buffer[i]))
++			goto err;
+ 
+ 	return wait_status(0, SMC_STATUS_BUSY);
++err:
++	pr_warn("write cmd fail: %x %.4s %d\n", cmd, key, len);
++	return -EIO;
+ }
+ 
+ static int read_register_count(unsigned int *count)
