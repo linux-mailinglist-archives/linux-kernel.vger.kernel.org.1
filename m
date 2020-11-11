@@ -2,191 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EF72AE984
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D93C2AE9BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgKKHRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:17:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
+        id S1726614AbgKKHWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKKHPK (ORCPT
+        with ESMTP id S1726157AbgKKHMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:15:10 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BFAC061A4F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:13:42 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id ei22so262084pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:13:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tLdPHb7wur2peZls2EEptjsAU4VSJb+8v+Xv8vCbleY=;
-        b=rg9jVqxiNP9WLYstdMjM+YzDE3Z8f+mSBhEU312oBdbbJDE09/vaURNvJ+iUUqbQU9
-         j/8kxWX1wPLfF4ELyinENvlD6H7ZSW1Dd4JvYK/eJ1N5erGTkQkmjp1XcLC+6OtNwwLr
-         +8p0f0cIbXlRCDsVFgWBr+/tsVhrjc6So87NJK65UlEWCp6Wb0IqcJEtWAc/e8Q8szO+
-         uSG3BOxBoEQl6p0kBsHTHMJQFjNLEovy0Febymiq29siThD7ZD0djJuPNJ6iZK6/am+u
-         ZHQLYisMoC4Y5e7jQg1XWIy3Ofb8PdMEfE7QASHZ5Z7OdY2Xw9FJyM1W/tZKM8KWZ+7W
-         PKEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=tLdPHb7wur2peZls2EEptjsAU4VSJb+8v+Xv8vCbleY=;
-        b=oTyKXipjkXugsP58M9etRc9YngA/GrxxuL+NJHiIJURk0FRv2fzbdPx2gzJqzpxmuc
-         O5jJSIXB3YDeNvYmhiwETDCR2Pt1c05SiY+SLyTGAtBYOLx76TvEnojiYNcUkwtk1pXQ
-         ULRaZ2xy8d01AtmZDlFfjUmNPEXoQ9J19MHL5vNlxs7uAle8viIKiRjdaxfXm6fpRWQ4
-         Ku+eGLazDpSBG5Ikhc7KBGQNQdWum8I6XQNbar/JWgykcNmFBLST2x10yrRspVhJmC0I
-         vK7d6BpUHGKJj+Tr8/6UIRj1sFybT9ZOWxUejZEL9mNhsZww/YUuDRPHRdHSZHXyEsEF
-         thjg==
-X-Gm-Message-State: AOAM533cme21qnRDHw/fb4GZvmqqR4Z4Pp7g2h1fVMUlCLnvuhU2OlNH
-        AwalSCs427/PTNl86WNldtufLw==
-X-Google-Smtp-Source: ABdhPJw/AuHsJNSHQsndiqjBj0SJaEMqtY6z4ohpPphZTqb2jWeUJtUNm6ovr970KJJ4fu2whgDqBA==
-X-Received: by 2002:a17:902:6b08:b029:d6:c471:8b5b with SMTP id o8-20020a1709026b08b02900d6c4718b5bmr20683231plk.78.1605078821981;
-        Tue, 10 Nov 2020 23:13:41 -0800 (PST)
-Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id b142sm1306784pfb.186.2020.11.10.23.13.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 10 Nov 2020 23:13:41 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v8 22/22] perf arm-spe: Add support for ARMv8.3-SPE
-Date:   Wed, 11 Nov 2020 15:11:49 +0800
-Message-Id: <20201111071149.815-23-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201111071149.815-1-leo.yan@linaro.org>
-References: <20201111071149.815-1-leo.yan@linaro.org>
+        Wed, 11 Nov 2020 02:12:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21E5C0613D4;
+        Tue, 10 Nov 2020 23:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9NVZFoWOtk2drwb+CBbjE6+h56gdwxT/Zba1uNpXaGw=; b=Ly/FwRGB6s17s+VOTeDWLpa5bI
+        U/tAKGAsqHG29rGnzgsx9kRnnJB0ESyPoLkqB0N8gAjBawjuZ43jgi/VK/qA6iJLtj/uI6xpjQ9U5
+        DMvKqgOiJaUnq2uvDQZzipHzHChurgPWtFZr25G8ApM9zr697X/1b53eDLKCOi5pcF1rY9weOlqxT
+        SSnl3SxN2KNn40M027o30R6h6z19/TtKqgKxI8PIxp1NW/cvjjHlNuHnX712+AoZZupp8+WR0h+pk
+        xRnd1ydcUZ50imKbLNBX/wmuUQhPIvXAI31LLyGLzplFwxT0yCtWMLcxzCfVc0WJiWTKzL1L3Y0uK
+        fPOJ8+tA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kckIx-0002qG-Cf; Wed, 11 Nov 2020 07:12:31 +0000
+Date:   Wed, 11 Nov 2020 07:12:31 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
+Message-ID: <20201111071231.GC7829@infradead.org>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-4-ben.widawsky@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111054356.793390-4-ben.widawsky@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+On Tue, Nov 10, 2020 at 09:43:50PM -0800, Ben Widawsky wrote:
+> +config CXL_MEM
+> +        tristate "CXL.mem Device Support"
+> +        depends on PCI && CXL_BUS_PROVIDER != n
 
-This patch is to support Armv8.3 extension for SPE, it adds alignment
-field in the Events packet and it supports the Scalable Vector Extension
-(SVE) for Operation packet and Events packet with two additions:
+depend on PCI && CXL_BUS_PROVIDER
 
-  - The vector length for SVE operations in the Operation Type packet;
-  - The incomplete predicate and empty predicate fields in the Events
-    packet.
+> +        default m if CXL_BUS_PROVIDER
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 36 +++++++++++++++++--
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 +++++++++
- 2 files changed, 50 insertions(+), 2 deletions(-)
+Please don't set weird defaults for new code.  Especially not default
+to module crap like this.
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index cbbbbefdc52b..afb6d9fe9eae 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -317,6 +317,12 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
- 		arm_spe_pkt_snprintf(&err, &buf, &buf_len, " LLC-REFILL");
- 	if (payload & BIT(EV_REMOTE_ACCESS))
- 		arm_spe_pkt_snprintf(&err, &buf, &buf_len, " REMOTE-ACCESS");
-+	if (payload & BIT(EV_ALIGNMENT))
-+		arm_spe_pkt_snprintf(&err, &buf, &buf_len, " ALIGNMENT");
-+	if (payload & BIT(EV_PARTIAL_PREDICATE))
-+		arm_spe_pkt_snprintf(&err, &buf, &buf_len, " SVE-PARTIAL-PRED");
-+	if (payload & BIT(EV_EMPTY_PREDICATE))
-+		arm_spe_pkt_snprintf(&err, &buf, &buf_len, " SVE-EMPTY-PRED");
- 
- 	return err;
- }
-@@ -329,8 +335,23 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 
- 	switch (packet->index) {
- 	case SPE_OP_PKT_HDR_CLASS_OTHER:
--		arm_spe_pkt_snprintf(&err, &buf, &buf_len,
--			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
-+		if (SPE_OP_PKT_IS_OTHER_SVE_OP(payload)) {
-+			arm_spe_pkt_snprintf(&err, &buf, &buf_len, "SVE-OTHER");
-+
-+			/* SVE effective vector length */
-+			arm_spe_pkt_snprintf(&err, &buf, &buf_len, " EVLEN %d",
-+					     SPE_OP_PKG_SVE_EVL(payload));
-+
-+			if (payload & SPE_OP_PKT_SVE_FP)
-+				arm_spe_pkt_snprintf(&err, &buf, &buf_len, " FP");
-+			if (payload & SPE_OP_PKT_SVE_PRED)
-+				arm_spe_pkt_snprintf(&err, &buf, &buf_len, " PRED");
-+		} else {
-+			arm_spe_pkt_snprintf(&err, &buf, &buf_len, "OTHER");
-+			arm_spe_pkt_snprintf(&err, &buf, &buf_len, " %s",
-+					     payload & SPE_OP_PKT_COND ?
-+					     "COND-SELECT" : "INSN-OTHER");
-+		}
- 		break;
- 	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
- 		arm_spe_pkt_snprintf(&err, &buf, &buf_len,
-@@ -361,6 +382,17 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 		default:
- 			break;
- 		}
-+
-+		if (SPE_OP_PKT_IS_LDST_SVE(payload)) {
-+			/* SVE effective vector length */
-+			arm_spe_pkt_snprintf(&err, &buf, &buf_len, " EVLEN %d",
-+					     SPE_OP_PKG_SVE_EVL(payload));
-+
-+			if (payload & SPE_OP_PKT_SVE_PRED)
-+				arm_spe_pkt_snprintf(&err, &buf, &buf_len, " PRED");
-+			if (payload & SPE_OP_PKT_SVE_SG)
-+				arm_spe_pkt_snprintf(&err, &buf, &buf_len, " SG");
-+		}
- 		break;
- 	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
- 		arm_spe_pkt_snprintf(&err, &buf, &buf_len, "B");
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 1ad14885c2a1..9b970e7bf1e2 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -113,6 +113,8 @@ enum arm_spe_events {
- #define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
- #define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
- 
-+#define SPE_OP_PKT_IS_OTHER_SVE_OP(v)		(((v) & (BIT(7) | BIT(3) | BIT(0))) == 0x8)
-+
- #define SPE_OP_PKT_COND				BIT(0)
- 
- #define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
-@@ -128,6 +130,20 @@ enum arm_spe_events {
- #define SPE_OP_PKT_AT				BIT(2)
- #define SPE_OP_PKT_ST				BIT(0)
- 
-+#define SPE_OP_PKT_IS_LDST_SVE(v)		(((v) & (BIT(3) | BIT(1))) == 0x8)
-+
-+#define SPE_OP_PKT_SVE_SG			BIT(7)
-+/*
-+ * SVE effective vector length (EVL) is stored in byte 0 bits [6:4];
-+ * the length is rounded up to a power of two and use 32 as one step,
-+ * so EVL calculation is:
-+ *
-+ *   32 * (2 ^ bits [6:4]) = 32 << (bits [6:4])
-+ */
-+#define SPE_OP_PKG_SVE_EVL(v)			(32 << (((v) & GENMASK_ULL(6, 4)) >> 4))
-+#define SPE_OP_PKT_SVE_PRED			BIT(2)
-+#define SPE_OP_PKT_SVE_FP			BIT(1)
-+
- #define SPE_OP_PKT_IS_INDIRECT_BRANCH(v)	(((v) & GENMASK_ULL(7, 1)) == 0x2)
- 
- const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
--- 
-2.17.1
+> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
 
+Please don't use '//' for anything but the SPDX header.
+
+> +
+> +		pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
+> +		pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
+> +		if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
+> +			return pos;
+> +
+> +		pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
+
+Overly long lines again.
+
+> +static void cxl_mem_remove(struct pci_dev *pdev)
+> +{
+> +}
+
+No need for the empty remove callback.
+
+> +MODULE_AUTHOR("Intel Corporation");
+
+A module author is not a company.
