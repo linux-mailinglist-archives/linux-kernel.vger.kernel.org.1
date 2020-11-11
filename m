@@ -2,132 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB932AFB7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D1A2AFB6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgKKWiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:38:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgKKWgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:36:18 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82A83208FE;
-        Wed, 11 Nov 2020 22:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605133778;
-        bh=nhL3zDC2cu9ECuf/EjEmddbUzNGl6XB+KcxciHyfxIg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WYbPxyGHItIogP9N/qogHFF0VxqqBTuxMmPzwcLW4niXK91oexIp5ZziWynNJ6zTn
-         y8s7LBfGEkQAKW5bImzSB4HYA6vkyGcyQD8VVvZLI7c/B4raCIMB6mscDhKlXKDD9p
-         xIAoQK+8xyxfEmpnyeMks0sLclWImx2BYPtlGf5w=
-Date:   Wed, 11 Nov 2020 16:29:37 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "treding@nvidia.com" <treding@nvidia.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-Subject: Re: [PATCH V2] PCI: dwc: Add support to configure for ECRC
-Message-ID: <20201111222937.GA977451@bjorn-Precision-5520>
+        id S1727291AbgKKWfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:35:40 -0500
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:43170 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbgKKWdg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:33:36 -0500
+Received: by mail-oo1-f66.google.com with SMTP id z14so827519oom.10;
+        Wed, 11 Nov 2020 14:33:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GlGS0LXck2zvjSqZInI29+3nCtaLlmcbk23C9GXQGWg=;
+        b=q6w3BdXA++UWhlPBx3l17PANNjYBqe5JOPD5pRZTRYfvQowpH8bDp3w0YVKkrwtA8X
+         ninyD7bCf85uoMkk+tVaQntKFaAw2Ru9pgJfkPx2tGcVXn8YSUg1pDncmAKJkvOddH3L
+         wm+oVJ6XSpryH9B0ojuhprwjl+zFKFz2zWpfiF2W1TORFcFgBCNO0Bw0nNByAiRHaNM1
+         cmosKj8PJu+N66z+AkFh/dcIkpCLhps4zOoId7OMY8NBPoJWnDAKaf5OcPtvZPvpHW+A
+         XaejU5WUHSx07HYGG2ie87GmmqMfScww1xfMkOgmubFr401NOGEA3FoLZ/N+FAWBCZEx
+         UFXw==
+X-Gm-Message-State: AOAM531SbKu4obH1vElLTrcrSaphOS37byYnx+KuBGi5c5nytIBVUbip
+        4E5ThJRw1jEw/72Ipx9PTA==
+X-Google-Smtp-Source: ABdhPJw4y1JyEVbNvcvh7dUyrE9yri6Sag7u6fPFPiCxL0rb6dHQcl970C8SZwaxLAN3Gpp1taJ0GA==
+X-Received: by 2002:a4a:8519:: with SMTP id k25mr18865903ooh.32.1605134013373;
+        Wed, 11 Nov 2020 14:33:33 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j7sm720548oie.44.2020.11.11.14.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 14:33:32 -0800 (PST)
+Received: (nullmailer pid 2164300 invoked by uid 1000);
+        Wed, 11 Nov 2020 22:33:31 -0000
+Date:   Wed, 11 Nov 2020 16:33:31 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 02/10] dt-bindings: net: dsa: Document sfp and managed
+ properties
+Message-ID: <20201111223331.GA2164249@bogus>
+References: <20201110033113.31090-1-f.fainelli@gmail.com>
+ <20201110033113.31090-3-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5b4a728e-bfa3-42a2-423d-e270e8993901@nvidia.com>
+In-Reply-To: <20201110033113.31090-3-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 10:21:46PM +0530, Vidya Sagar wrote:
+On Mon, 09 Nov 2020 19:31:05 -0800, Florian Fainelli wrote:
+> The 'sfp' and 'managed' properties are commonly used to describe
+> Ethernet switch ports connecting to SFP/SFF cages, describe these two
+> properties as valid that we inherit from ethernet-controller.yaml.
 > 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/net/dsa/dsa.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> On 11/11/2020 9:57 PM, Jingoo Han wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > On 11/11/20, 7:12 AM, Vidya Sagar wrote:
-> > > 
-> > > DesignWare core has a TLP digest (TD) override bit in one of the control
-> > > registers of ATU. This bit also needs to be programmed for proper ECRC
-> > > functionality. This is currently identified as an issue with DesignWare
-> > > IP version 4.90a.
-> > > 
-> > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > ---
-> > > V2:
-> > > * Addressed Bjorn's comments
-> > > 
-> > >   drivers/pci/controller/dwc/pcie-designware.c | 52 ++++++++++++++++++--
-> > >   drivers/pci/controller/dwc/pcie-designware.h |  1 +
-> > >   2 files changed, 49 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> > > index c2dea8fc97c8..ec0d13ab6bad 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > > @@ -225,6 +225,46 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
-> > >        dw_pcie_writel_atu(pci, offset + reg, val);
-> > >   }
-> > > 
-> > > +static inline u32 dw_pcie_enable_ecrc(u32 val)
-> > 
-> > What is the reason to use inline here?
->
-> Actually, I wanted to move the programming part inside the respective APIs
-> but then I wanted to give some details as well in comments so to avoid
-> duplication, I came up with this function. But, I'm making it inline for
-> better code optimization by compiler.
 
-I don't really care either way, but I'd be surprised if the compiler
-didn't inline this all by itself even without the explicit "inline".
-
-> > > +{
-> > > +     /*
-> > > +      * DesignWare core version 4.90A has this strange design issue
-> > > +      * where the 'TD' bit in the Control register-1 of the ATU outbound
-> > > +      * region acts like an override for the ECRC setting i.e. the presence
-> > > +      * of TLP Digest(ECRC) in the outgoing TLPs is solely determined by
-> > > +      * this bit. This is contrary to the PCIe spec which says that the
-> > > +      * enablement of the ECRC is solely determined by the AER registers.
-> > > +      *
-> > > +      * Because of this, even when the ECRC is enabled through AER
-> > > +      * registers, the transactions going through ATU won't have TLP Digest
-> > > +      * as there is no way the AER sub-system could program the TD bit which
-> > > +      * is specific to DesignWare core.
-> > > +      *
-> > > +      * The best way to handle this scenario is to program the TD bit
-> > > +      * always. It affects only the traffic from root port to downstream
-> > > +      * devices.
-> > > +      *
-> > > +      * At this point,
-> > > +      * When ECRC is enabled in AER registers, everything works normally
-> > > +      * When ECRC is NOT enabled in AER registers, then,
-> > > +      * on Root Port:- TLP Digest (DWord size) gets appended to each packet
-> > > +      *                even through it is not required. Since downstream
-> > > +      *                TLPs are mostly for configuration accesses and BAR
-> > > +      *                accesses, they are not in critical path and won't
-> > > +      *                have much negative effect on the performance.
-> > > +      * on End Point:- TLP Digest is received for some/all the packets coming
-> > > +      *                from the root port. TLP Digest is ignored because,
-> > > +      *                as per the PCIe Spec r5.0 v1.0 section 2.2.3
-> > > +      *                "TLP Digest Rules", when an endpoint receives TLP
-> > > +      *                Digest when its ECRC check functionality is disabled
-> > > +      *                in AER registers, received TLP Digest is just ignored.
-> > > +      * Since there is no issue or error reported either side, best way to
-> > > +      * handle the scenario is to program TD bit by default.
-> > > +      */
-> > > +
-> > > +     return val | PCIE_ATU_TD;
-> > > +}
+Acked-by: Rob Herring <robh@kernel.org>
