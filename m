@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5651B2AF8E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1192AF8E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgKKTVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:21:25 -0500
-Received: from mga09.intel.com ([134.134.136.24]:50570 "EHLO mga09.intel.com"
+        id S1727796AbgKKTVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:21:35 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:33184 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727073AbgKKTVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:21:17 -0500
-IronPort-SDR: gH2Nskzehx1mU62mqB9/gA1CpKxYaLHBr/UOdulysLRHSKwbtKdSXf2peJi1xTP9PFkX2ldn1/
- PLJaJ0gt3Gfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170367984"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="170367984"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 11:21:17 -0800
-IronPort-SDR: iXtFreZNQGM5+LD/hopyLhAFay2HSFvITb8fMSsOQSaWV6UqDZDHTdGryZB9W8z4gVO4c2Z3kN
- FCjSbnI28xiA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="354942665"
-Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by orsmga008.jf.intel.com with ESMTP; 11 Nov 2020 11:21:16 -0800
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Xiaoyao Li " <xiaoyao.li@intel.com>,
-        "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v2 4/4] Documentation/admin-guide: Change doc for split_lock_detect parameter
-Date:   Wed, 11 Nov 2020 19:20:48 +0000
-Message-Id: <20201111192048.2602065-5-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201111192048.2602065-1-fenghua.yu@intel.com>
-References: <20201111192048.2602065-1-fenghua.yu@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727626AbgKKTVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 14:21:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605122483; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=57kvVF2ThDFDHaXRqrUE7yn622CwYm6PBAuR+h72F0Q=; b=cfON35yjfpzh3RqUydwTZvLY9YMpnLouOp7cyKsx8PPwxSi+KpTxsGbNVQ3NtzmWZShqwrr+
+ R7yygMs0SUx4fbup53bgUIVqbPLYz19gjBRuaWNu/0xWNkL7z3QofPDe0hgz0/+Rm0rqMNhb
+ HnH8Vl8KqK5YykTE4aHcggr0Og0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fac39b0b8c6a84a5c9130f5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 19:21:20
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C21DFC433FE; Wed, 11 Nov 2020 19:21:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4825C433C6;
+        Wed, 11 Nov 2020 19:21:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E4825C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2 0/6] Updates to MHI channel handling
+Date:   Wed, 11 Nov 2020 11:21:07 -0800
+Message-Id: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since #DB for bus lock detect changes the split_lock_detect parameter,
-update the documentation for the changes.
+MHI specification shows a state machine with support for STOP channel command
+and the validity of certain state transitions. MHI host currently does not
+provide any mechanism to stop a channel and restart it without resetting it.
+There are also times when the device moves on to a different execution
+environment while client drivers on the host are unaware of it and still
+attempt to reset the channels facing unnecessary timeouts.
 
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
-Change Log:
-v1:
-- Fix a few wording issues (Randy).
+This series addresses the above areas to provide support for stopping an MHI
+channel, resuming it back, improved documentation and improving upon channel
+state machine handling in general.
 
-RFC v2:
-- Simplify the documentation (Randy).
+This set of patches was tested on arm64 architecture.
 
- .../admin-guide/kernel-parameters.txt         | 30 +++++++++++++++----
- 1 file changed, 24 insertions(+), 6 deletions(-)
+v2:
+-Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+-Added improved documentation to avoid confusion with the new APIs
+-Removed the __ prefix from mhi_unprepare_channel() API for consistency.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 526d65d8573a..215e119f6ca7 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5044,27 +5044,45 @@
- 	spia_peddr=
- 
- 	split_lock_detect=
--			[X86] Enable split lock detection
-+			[X86] Enable split lock detection or bus lock detection
- 
- 			When enabled (and if hardware support is present), atomic
- 			instructions that access data across cache line
--			boundaries will result in an alignment check exception.
-+			boundaries will result in an alignment check exception
-+			for split lock detection or a debug exception for
-+			bus lock detection.
- 
- 			off	- not enabled
- 
--			warn	- the kernel will emit rate limited warnings
-+			warn	- the kernel will emit rate-limited warnings
- 				  about applications triggering the #AC
--				  exception. This mode is the default on CPUs
--				  that supports split lock detection.
-+				  exception or the #DB exception. This mode is
-+				  the default on CPUs that support split lock
-+				  detection or bus lock detection. Default
-+				  behavior is by #DB if both features are
-+				  enabled in hardware.
- 
- 			fatal	- the kernel will send SIGBUS to applications
--				  that trigger the #AC exception.
-+				  that trigger the #AC exception or the #DB
-+				  exception. Default behavior is by #AC
-+				  if both features are enabled in hardware.
-+
-+			ratelimit:N -
-+				  Set rate limit to N bus locks per second
-+				  for bus lock detection. 0 < N <= HZ/2 and
-+				  N is approximate. Only applied to non-root
-+				  users.
-+
-+				  N/A for split lock detection.
- 
- 			If an #AC exception is hit in the kernel or in
- 			firmware (i.e. not while executing in user mode)
- 			the kernel will oops in either "warn" or "fatal"
- 			mode.
- 
-+			#DB exception for bus lock is triggered only when
-+			CPL > 0.
-+
- 	srbds=		[X86,INTEL]
- 			Control the Special Register Buffer Data Sampling
- 			(SRBDS) mitigation.
+Bhaumik Bhatt (6):
+  bus: mhi: core: Allow receiving a STOP channel command response
+  bus: mhi: core: Improvements to the channel handling state machine
+  bus: mhi: core: Add support to stop or start channel data transfers
+  bus: mhi: core: Check execution environment for channel before issuing
+    reset
+  bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+  bus: mhi: Improve documentation on channel transfer setup APIs
+
+ drivers/bus/mhi/core/init.c     |  11 +-
+ drivers/bus/mhi/core/internal.h |  12 +++
+ drivers/bus/mhi/core/main.c     | 226 ++++++++++++++++++++++++++++------------
+ include/linux/mhi.h             |  37 ++++++-
+ 4 files changed, 215 insertions(+), 71 deletions(-)
+
 -- 
-2.29.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
