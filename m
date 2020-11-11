@@ -2,130 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7B92AE7E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E2A2AE7E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgKKFTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 00:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        id S1726055AbgKKFTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKKFTA (ORCPT
+        with ESMTP id S1725468AbgKKFTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:19:00 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0A4C0613D1;
-        Tue, 10 Nov 2020 21:19:00 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id gi3so117821pjb.3;
-        Tue, 10 Nov 2020 21:19:00 -0800 (PST)
+        Wed, 11 Nov 2020 00:19:48 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9256DC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:19:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id j205so1485382lfj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:19:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=byqajXR51Bxrm2nLNt/skWT4Wzt+z9y1BMUZtfwxw1M=;
-        b=TmomcJ3VO/TDdcQd7AqeVYVGrS3mo7rk8oLienr/ePQg5etHVT11FwlvRQoFvdNXOr
-         S9P6kq16Cou+eFFSG34H7D66aSKoUQ+cJ13H7bgzHoXPhZWI0933A3fnozo9nXJAuLJu
-         sy+g/h8kz5e444vH54MIRt8pCfgaDASD9+15xea7qcCoOZkU2EUtrMqlCV7Ph2jJtpqk
-         X1aMuZnZvsZ41CMIU0eaou3n3ytWHSx0bKhXqPPRDO1GXJioA/Zy5DkufFXYYe4iTl5X
-         VaWq1WNTxH/S1aNHXvKKppJ+JQzmvWMb8ow6mhHqkvqpknNxKmiG7A6LPSG0AEnnyKuy
-         nb6g==
+        d=wirenboard-ru.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3xHgO6xQjRtzCqJvgfsirBMsV6gq7sad2fSKmrTwmkk=;
+        b=bEQ+m0X2CTWHLyFuF4wxigLJkCQRl1Rxh2Sjtj32Z0NJjEBbcMuMg9xVkLWdomzwcC
+         pWqAGSn5CC4FjFjf9RGLMRaaT6lhL8dls7hngnhyhX/A/oW1+Et1Su2s/y1Cdbu7nZWy
+         sg0MyMiqFkG431SPFAtoLTPdlYVEPaGchnl2/yF//gokU9vXLAh9LwWSjxqpLC8D3Y7k
+         0vcFoEk4BIv8YQF0N5c8SI1pcPb3H/giOpe93nzJk0ee/KKhKmFR+iI+oXYdQGjwmomw
+         UMVBYeBk+tnB8LFf8u4bSFSEgtIzIhekXbRRdhV3gaXRAciyqIdRJvHmcMqG+NyCYl9w
+         nqbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=byqajXR51Bxrm2nLNt/skWT4Wzt+z9y1BMUZtfwxw1M=;
-        b=m4DA2+XQpOLLP37dxPpC9QndRjaukKF1yQT9I9KX3B5BlpzFdCd9eoKgXw8Q1t0nB4
-         U/pYqRvgUrViSxTxcURfIon79abj6rLBQ66TK0ikhUjXJOq4rzcGZWY5EfGb/M74M+eM
-         H5RZALCGwqkdofkYzz2iC4k7sHJEJN8mS5wXhqJBywvG+VZIemhN8/EEJf44MO32oysk
-         q4H77JS9n34F/2JaNRiJGs6tyrRCWV68B6kzCg20RJFWXM6CR2WMICXpspE8SMEAb7I5
-         nE17PQAV2X9mIGuqjYCfHA7LF4DTllGGMjJNSL7lHW/PdI+u+VvftMk31yMtfsfEDWIa
-         8IoA==
-X-Gm-Message-State: AOAM5321BYAs30UcADCFTB0rdJRgMRZFgO/Uwd7laYRYlvSrrJEVL1Ug
-        nDsTACu+FBD3/B6AXt/49g==
-X-Google-Smtp-Source: ABdhPJwzGr917BcjGZvnhF8M3M9oj/mD9MB7UdcXUskYUWvjxFIwl/G5As2je433FOGzXbhd2T6VIA==
-X-Received: by 2002:a17:902:6545:b029:d6:9a59:800d with SMTP id d5-20020a1709026545b02900d69a59800dmr19714495pln.31.1605071939945;
-        Tue, 10 Nov 2020 21:18:59 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id s17sm801768pjr.56.2020.11.10.21.18.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3xHgO6xQjRtzCqJvgfsirBMsV6gq7sad2fSKmrTwmkk=;
+        b=rQLrAaUrt1NS9yvp+EGqgxQDmFF6LRHIIfdahXwcuSPvHgzv/eOzJ4QFGOXQotW7OA
+         8A96X2RDnIGtNmSNzzDIROfq7GlNGh4mi5UYjzcUQhRYbn17GSI9vgaKpuRtuoKgk5XY
+         TRJijep4I66LUrWYexrFYrzTKggXNIaOOtDxkoSHd0r13JcSoyAXNxS1XiBi5ReGu3i4
+         jpqDb7TRIYkkN6l/ouApcJjuBBwyWmuNYBX7bvsjwADUef2KYc5I5/85SbdKIC9mNfxh
+         ywhW6MywvVBcqB6CKr/6+/R+sNWZEQ7gxgFZrXgBQf8HrsQ0U91P0as8qixs9PQtCvv0
+         6Fmw==
+X-Gm-Message-State: AOAM5335fNjCqfgXdVW7h6/wmz9/o6PG5vJzf0GtW8d3G3+MxgP+KzpV
+        w5auhixaP6PLlggWkdmFHzgXjQ==
+X-Google-Smtp-Source: ABdhPJzjeJH600Eg/zOViULX0bJFOViqmDpeDCPayjttfgfTfmTTpZMRGBKx9K5ltKxc5tgpG2sE+A==
+X-Received: by 2002:a19:8c7:: with SMTP id 190mr8297227lfi.74.1605071984759;
+        Tue, 10 Nov 2020 21:19:44 -0800 (PST)
+Received: from localhost.localdomain (95-30-131-0.broadband.corbina.ru. [95.30.131.0])
+        by smtp.googlemail.com with ESMTPSA id x9sm109572lfg.93.2020.11.10.21.19.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 21:18:59 -0800 (PST)
-Date:   Wed, 11 Nov 2020 00:18:52 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net v2] Bluetooth: Fix
- slab-out-of-bounds read in hci_le_direct_adv_report_evt()
-Message-ID: <20201111051852.GA2491141@PWN>
-References: <20200805180902.684024-1-yepeilin.cs@gmail.com>
- <20200909071700.1100748-1-yepeilin.cs@gmail.com>
- <AF20F58E-C800-45A8-A5B8-296DE4C0D906@holtmann.org>
+        Tue, 10 Nov 2020 21:19:43 -0800 (PST)
+From:   Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
+        Evgeny Boger <boger@wirenboard.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: mxs: Add serial number support for i.MX23, i.MX28 SoCs
+Date:   Wed, 11 Nov 2020 08:18:59 +0300
+Message-Id: <20201111051859.2776-1-ivan.zaentsev@wirenboard.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AF20F58E-C800-45A8-A5B8-296DE4C0D906@holtmann.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 01:16:53PM +0100, Marcel Holtmann wrote:
-> Hi Peilin,
-> 
-> > `num_reports` is not being properly checked. A malformed event packet with
-> > a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
-> > of bounds. Fix it.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
-> > Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-> > Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> > Change in v2:
-> >    - add "Cc: stable@" tag.
-> > 
-> > net/bluetooth/hci_event.c | 12 +++++-------
-> > 1 file changed, 5 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> > index 4b7fc430793c..aec43ae488d1 100644
-> > --- a/net/bluetooth/hci_event.c
-> > +++ b/net/bluetooth/hci_event.c
-> > @@ -5863,21 +5863,19 @@ static void hci_le_direct_adv_report_evt(struct hci_dev *hdev,
-> > 					 struct sk_buff *skb)
-> > {
-> > 	u8 num_reports = skb->data[0];
-> > -	void *ptr = &skb->data[1];
-> > +	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
-> > 
-> > -	hci_dev_lock(hdev);
-> > +	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
-> > +		return;
-> > 
-> > -	while (num_reports--) {
-> > -		struct hci_ev_le_direct_adv_info *ev = ptr;
-> > +	hci_dev_lock(hdev);
-> > 
-> > +	for (; num_reports; num_reports--, ev++)
-> > 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
-> > 				   ev->bdaddr_type, &ev->direct_addr,
-> > 				   ev->direct_addr_type, ev->rssi, NULL, 0,
-> > 				   false);
-> > 
-> > -		ptr += sizeof(*ev);
-> > -	}
-> > -
-> > 	hci_dev_unlock(hdev);
-> > }
-> 
-> patch has been applied to bluetooth-next tree.
+i.MX23 and i.MX28 SoCs unique identifiers are factory-programmed
+in On-Chip OTP memory. i.MX28's 64-bit unique id is in
+HW_OCOTP_OPS2:HW_OCOTP_OPS3 (see MCIMX28 Ref. Man., sec. 20.4.22-23).
 
-Thank you for reviewing it,
+i.MX23 provides 32-bit long unique id in HW_OCOTP_OPS3.
+Though not clearly documented, there is a clue in sec. 35.9.3.
 
-Peilin Ye
+The unique id is reported in /sys/devices/soc0/serial_number
+and in /proc/cpuinfo
+
+Signed-off-by: Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+Suggested-by: Evgeny Boger <boger@wirenboard.com>
+---
+ arch/arm/mach-mxs/mach-mxs.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm/mach-mxs/mach-mxs.c b/arch/arm/mach-mxs/mach-mxs.c
+index c109f47e9cbc..af96368cc16a 100644
+--- a/arch/arm/mach-mxs/mach-mxs.c
++++ b/arch/arm/mach-mxs/mach-mxs.c
+@@ -23,6 +23,7 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach/time.h>
+ #include <asm/system_misc.h>
++#include <asm/system_info.h>
+ 
+ #include "pm.h"
+ 
+@@ -51,6 +52,9 @@
+ #define MXS_CLR_ADDR		0x8
+ #define MXS_TOG_ADDR		0xc
+ 
++#define HW_OCOTP_OPS2       19	/* offset 0x150 */
++#define HW_OCOTP_OPS3       20	/* offset 0x160 */
++
+ static u32 chipid;
+ static u32 socid;
+ 
+@@ -379,6 +383,8 @@ static void __init mxs_machine_init(void)
+ 	struct device *parent;
+ 	struct soc_device *soc_dev;
+ 	struct soc_device_attribute *soc_dev_attr;
++	u64 soc_uid = 0;
++	const u32 *ocotp = mxs_get_ocotp();
+ 	int ret;
+ 
+ 	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
+@@ -394,8 +400,22 @@ static void __init mxs_machine_init(void)
+ 	soc_dev_attr->soc_id = mxs_get_soc_id();
+ 	soc_dev_attr->revision = mxs_get_revision();
+ 
++	if (socid == HW_DIGCTL_CHIPID_MX23) {
++		soc_uid = system_serial_low = ocotp[HW_OCOTP_OPS3];
++	} else if (socid == HW_DIGCTL_CHIPID_MX28) {
++		soc_uid = system_serial_high = ocotp[HW_OCOTP_OPS2];
++		soc_uid <<= 32;
++		system_serial_low = ocotp[HW_OCOTP_OPS3];
++		soc_uid |= system_serial_low;
++	}
++
++	if (soc_uid)
++		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
++
+ 	soc_dev = soc_device_register(soc_dev_attr);
++
+ 	if (IS_ERR(soc_dev)) {
++		kfree(soc_dev_attr->serial_number);
+ 		kfree(soc_dev_attr->revision);
+ 		kfree(soc_dev_attr);
+ 		return;
+-- 
+2.25.1
 
