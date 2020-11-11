@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA182AF475
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D452AF478
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgKKPLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:11:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35076 "EHLO mail.kernel.org"
+        id S1727046AbgKKPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:11:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgKKPLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:11:21 -0500
+        id S1726720AbgKKPLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:11:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B5432053B;
-        Wed, 11 Nov 2020 15:11:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A57602053B;
+        Wed, 11 Nov 2020 15:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605107480;
-        bh=Hjw2JxXtQrLwosSxWWTIKJGgD6aeydpSEOCxT6oeI8U=;
+        s=default; t=1605107507;
+        bh=JVudpR2kXGb3lmYOn0xtZG7ieU5rTHW3yfn2i0UMa98=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sNJDxFazo98lcFz/nYuUaZjRi/wSn5V41jOEIuO0qlFDmiVtYDfukDlYArWzRKIZZ
-         WvZF/Q4U4DMAkmpIMLUpz29xNXwDhaULvqsMwKkN81Q+WFoKLCv502voi+h3vD4bLK
-         YhISOtx85BZq/u8lMoh6fs1qF3s4ZkRiplsvdcUA=
-Date:   Wed, 11 Nov 2020 16:12:20 +0100
+        b=hZBkcuXSY/stQI4ZflxGY21oeFtiRAJhA2NN6Eb+Nm10XBAcCMwIrD4cChGmGQ4np
+         7i8N7XU9FrvNxC6kVV4wILK7Xhl8Mw1iVb83QzZttYfrdurdlCgwmWU1sr/nvnoE2F
+         T9RERl2Rb5eGpFGiKYm8WmDJop2McL88z/jRNKgc=
+Date:   Wed, 11 Nov 2020 16:12:47 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Frankie Chang <Frankie.Chang@mediatek.com>
 Cc:     Todd Kjos <tkjos@google.com>,
@@ -33,90 +33,37 @@ Cc:     Todd Kjos <tkjos@google.com>,
         Christian Brauner <christian@brauner.io>,
         linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com,
         Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Subject: Re: [PATCH v13 3/3] binder: add transaction latency tracer
-Message-ID: <X6v/VAffVOOy56bG@kroah.com>
-References: <X6quBb28IVvyRhox@kroah.com>
- <1605063764-12930-1-git-send-email-Frankie.Chang@mediatek.com>
- <1605063764-12930-4-git-send-email-Frankie.Chang@mediatek.com>
- <X6uT941IJ3uf/7aE@kroah.com>
- <1605106986.11768.14.camel@mtkswgap22>
+Subject: Re: [PATCH v14 1/3] binder: move structs from core file to header
+ file
+Message-ID: <X6v/b+uMi+GwyDAC@kroah.com>
+References: <X6uT941IJ3uf/7aE@kroah.com>
+ <1605106964-25838-1-git-send-email-Frankie.Chang@mediatek.com>
+ <1605106964-25838-2-git-send-email-Frankie.Chang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605106986.11768.14.camel@mtkswgap22>
+In-Reply-To: <1605106964-25838-2-git-send-email-Frankie.Chang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:03:06PM +0800, Frankie Chang wrote:
-> On Wed, 2020-11-11 at 08:34 +0100, Greg Kroah-Hartman wrote:
-> > > - The reason why printing the related information to
-> > >   kernel information log but not trace buffer is that
-> > >   some abnormal transactions may be pending for a long
-> > >   time ago, they could not be recorded due to buffer
-> > >   limited.
-> > 
-> > Don't abuse the kernel information log for stuff that is just normal
-> > operations.  What is wrong with using the trace buffers here?  That's
-> > what they are designed for from what I can tell.
-> > 
-> As mentioned before, time limitation of recording is the reason why we
-> don't just use trace here.
-
-What limitation?
-
-> In some long time stability test, such as MTBF,
-
-What is "MTBF"?
-
-> the exception is caused by a series of transactions interaction.
-> Some abnormal transactions may be pending for a long time ago, they 
-> could not be recorded due to buffer limited.
-
-How long of a time is this?  If they are pending, only when the timeout
-happens is the trace logged, right?
-
-Again, please do not abuse the kernel log for this, that is not what it
-is for.
-
-> > > +config BINDER_TRANSACTION_LATENCY_TRACKING
-> > > +	tristate "Android Binder transaction tracking"
-> > > +	help
-> > > +	  Used for track abnormal binder transaction which is over threshold,
-> > > +	  when the transaction is done or be free, this transaction would be
-> > > +	  checked whether it executed overtime.
-> > > +	  If yes, printing out the detailed info.
-> > 
-> > Why is this a separate module?  Who will ever want this split out?
-> > 
-> The reason we split out a separate module is that we adopted the
-> previously discussed recommendations in PATCH v1.
+On Wed, Nov 11, 2020 at 11:02:42PM +0800, Frankie Chang wrote:
+> From: "Frankie.Chang" <Frankie.Chang@mediatek.com>
 > 
-> This way all of this tracing code is in-kernel but outside of binder.c.
-
-Putting it in a single file is fine, but what does this benifit doing it
-in a separate file?  Doesn't it waste more codespace this way?
-
-> > > +/*
-> > > + * The reason setting the binder_txn_latency_threshold to 2 sec
-> > > + * is that most of timeout abort is greater or equal to 2 sec.
-> > > + * Making it configurable to let all users determine which
-> > > + * threshold is more suitable.
-> > > + */
-> > > +static uint32_t binder_txn_latency_threshold = 2;
-> > > +module_param_named(threshold, binder_txn_latency_threshold,
-> > > +			uint, 0644);
-> > 
-> > Again, this isn't the 1990's, please do not add module parameters if at
-> > all possible.
-> > 
+> Moving all structs to header file makes module more
+> extendable, and makes all these structs to be defined
+> in the same file.
 > 
-> Is any recommended method here?
-> Because we refer to the method in binder.c, we don't know if this method
-> is not suitable.
+> Signed-off-by: Frankie.Chang <Frankie.Chang@mediatek.com>
+> Acked-by: Todd Kjos <tkjos@google.com>
+> ---
+>  drivers/android/binder.c          |  406 -------------------------------------
+>  drivers/android/binder_internal.h |  406 +++++++++++++++++++++++++++++++++++++
+>  2 files changed, 406 insertions(+), 406 deletions(-)
 
-Look at the individual binder instances.  That is what trace should be
-on/off for, not for all binder instances in the system at the same time.
+This, and patch 2/3 was already accepted, right?
+
+I can't do anything with them again :)
 
 thanks,
 
