@@ -2,212 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE272AF36D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0400E2AF372
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgKKOXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:23:23 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:51963 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgKKOXU (ORCPT
+        id S1726903AbgKKOXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:23:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKOXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:23:20 -0500
-Received: by mail-io1-f72.google.com with SMTP id r7so1477283ioh.18
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:23:17 -0800 (PST)
+        Wed, 11 Nov 2020 09:23:47 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D76C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:23:45 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id b16so1122014qtb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:23:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UloFlAe4eE6dBOKuaOljn+MXY+P4+o9Y9O9NjdtVr4Y=;
+        b=Y3VD18rW6Mkcyy+sI26KIOCxIFEy130EdiK3BKfRiqpWvWkxQ+oyq/DcuRswHRSiCC
+         jnsNcRgemJcQiD/n4CbRSAa3fKkMAm33WDdGeJ1QozG1HDoOq7jVTf/Q8a3fe+exSvPO
+         rwFQ0256H+E+/F0z3H9AOTkuzG031CtXVUdW3BhaexPH4SAvULaSvzR6v6hAgaHNoOVF
+         T0UBcgSUuJ5np7vNU5V8FS8JD0uooL2elfMlubLa4H4cCCE4fR7h8ajCarV7VBbQA8o3
+         93NtWwulPvOpJDmCCGsvY6GIL+Xa1FVRFRBdfZ2QIZCRCPNO/tBJ+OTKlzfCvE1wEv2o
+         MrHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2yCMU4GvUtwAjY+k5nLvthk8vkB54VNGKYZoEyb3b6c=;
-        b=ZK6TubIOC2ZW8RYhxJeHGoGMh1801k/oZD3OvaQdpD5os1GF9Dz46ZMdqVAXuh7MyR
-         P20XMAlxggZa4w77OBJ1kAXlbSaI+eq1LcGdMEUQDEY/WXji9Dimwxf3wzgMu6Vdsg9Q
-         BKBzTWoHtp6F9420Dw4QuLbXzBkQoISGEN2jy87yeGoNxlLut2EoTnpo0fKzge+ZGAxO
-         K16qSG8/VB3U23uSPLvo0cxs4GfAGRo69eW0kvBAy5nICXnjUBA/uCr6N9C8DroAFupG
-         w2eAYP8Q/3Oh6rHgn6BU7afEgN7oFkBmS7txfQTqvYM9ZHuc5EaDQ51JKLsHot+/6wfw
-         V87g==
-X-Gm-Message-State: AOAM5315GgA44sDnbD/BXh3C7pcHn9RO9MizxEXwU+kc5Okdl9i/VB07
-        CD7scRNtuPcxHgWKezuZt1LUTvxjiq53Xux1SlsdUKPQ7IFW
-X-Google-Smtp-Source: ABdhPJzS+LviWWBvhoTPlk8A1iMPbhdx32pJQmLO6uLZSeOZUpKY7PJaY6w9Z8f78WyCumGqA06uEA2TpC4JQFm0XIB/3xIXoXEp
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UloFlAe4eE6dBOKuaOljn+MXY+P4+o9Y9O9NjdtVr4Y=;
+        b=FxhSG0ag44TnebYzRiFk6ADQCi9LKL9bpz4dfpzLB/3+I8ZpiZuQAl1BCXSnl3I5rb
+         ydigA5iduL2Tz6ZYzj2qa3Pbr5udaqEKPWocPykochnlKoyYPvEN6Bb/pKnzQ+H0lSit
+         8FheEQmVHUrd1IsiRHMSH6La8YeLN/kIH7oYLLYffC8yJ2Av3U6y6ElAB8Zkgx9kiCOl
+         0jeN+iGMyL5Hkaz6FR2AVRDLW4f4qIZ8C2Jqhq7+yxvlecZ6F2tgo2gZhNHIA26njU0O
+         qTXmQshdYv2eFkgHebuI6pRLJj0UOaX9lfkiCtoYBoIVitU9/qqDz4SwNd2wTo29Ivf7
+         Ye3Q==
+X-Gm-Message-State: AOAM530rtT+PUD+zkpvS98DjqUy4AEFNBncItNbG0YctmB4x5WGNpMLk
+        6wJRmkTI63ePGCuhIaBMBtu6trBPWRZu0rKfNTdA6A==
+X-Google-Smtp-Source: ABdhPJzHUAKQWPGbmybh6ShDMZd1OwaBAGmCgdaIFdpQpb4uWrpuYS+v5Cs2ngVicNeakb1vFxozgDI96Cs/DC5/IJM=
+X-Received: by 2002:ac8:5c85:: with SMTP id r5mr18898460qta.8.1605104624442;
+ Wed, 11 Nov 2020 06:23:44 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:9845:: with SMTP id l66mr17373243ili.65.1605104597489;
- Wed, 11 Nov 2020 06:23:17 -0800 (PST)
-Date:   Wed, 11 Nov 2020 06:23:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c61c005b3d589fb@google.com>
-Subject: KASAN: use-after-free Read in ath9k_hif_usb_reg_in_cb
-From:   syzbot <syzbot+98c96757d557f4afaf19@syzkaller.appspotmail.com>
-To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <cover.1605046192.git.andreyknvl@google.com> <427d46e86c81f3ec77147b0ade4bd551d878cf7a.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <427d46e86c81f3ec77147b0ade4bd551d878cf7a.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 15:23:33 +0100
+Message-ID: <CAG_fn=XBE+aRBizrJgNGsJ5FGPtSAHWqL26k2pCRxvutJ-LbTg@mail.gmail.com>
+Subject: Re: [PATCH v9 13/44] kasan: hide invalid free check implementation
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+>
+> For software KASAN modes the check is based on the value in the shadow
+> memory. Hardware tag-based KASAN won't be using shadow, so hide the
+> implementation of the check in check_invalid_free().
+>
+> Also simplify the code for software tag-based mode.
+>
+> No functional changes for software modes.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-syzbot found the following issue on:
-
-HEAD commit:    407ab579 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=143b7966500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f9aa2432c01bcb1f
-dashboard link: https://syzkaller.appspot.com/bug?extid=98c96757d557f4afaf19
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+98c96757d557f4afaf19@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
-BUG: KASAN: use-after-free in refcount_read include/linux/refcount.h:147 [inline]
-BUG: KASAN: use-after-free in skb_unref include/linux/skbuff.h:1046 [inline]
-BUG: KASAN: use-after-free in kfree_skb+0x2e/0x3f0 net/core/skbuff.c:692
-Read of size 4 at addr ffff888014b7ed54 by task syz-executor.0/28422
-
-CPU: 1 PID: 28422 Comm: syz-executor.0 Not tainted 5.10.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- refcount_read include/linux/refcount.h:147 [inline]
- skb_unref include/linux/skbuff.h:1046 [inline]
- kfree_skb+0x2e/0x3f0 net/core/skbuff.c:692
- ath9k_hif_usb_reg_in_cb+0x4c0/0x630 drivers/net/wireless/ath/ath9k/hif_usb.c:764
- __usb_hcd_giveback_urb+0x32d/0x560 drivers/usb/core/hcd.c:1650
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
- dummy_timer+0x11f4/0x3280 drivers/usb/gadget/udc/dummy_hcd.c:1967
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1410
- expire_timers kernel/time/timer.c:1455 [inline]
- __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1747
- __run_timers kernel/time/timer.c:1728 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1760
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x132/0x200 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:zap_pte_range mm/memory.c:1252 [inline]
-RIP: 0010:zap_pmd_range mm/memory.c:1357 [inline]
-RIP: 0010:zap_pud_range mm/memory.c:1386 [inline]
-RIP: 0010:zap_p4d_range mm/memory.c:1407 [inline]
-RIP: 0010:unmap_page_range+0xdf9/0x2640 mm/memory.c:1428
-Code: 83 e3 01 89 de c1 e3 1f e8 b4 c2 ce ff c1 fb 1f 83 e3 03 e8 99 ca ce ff 48 63 db 48 83 fb 03 0f 87 b0 14 00 00 48 8b 44 24 40 <48> 8d 3c 98 48 89 f8 48 c1 e8 03 42 0f b6 14 30 48 89 f8 83 e0 07
-RSP: 0018:ffffc9000320f9d8 EFLAGS: 00000293
-RAX: ffffc9000320fad0 RBX: 0000000000000000 RCX: ffffffff81a14e9c
-RDX: ffff88806c188000 RSI: ffffffff81a14ea7 RDI: 0000000000000001
-RBP: ffffea00008b5740 R08: 0000000000000000 R09: ffffea00008b5747
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88802efc74a0 R14: dffffc0000000000 R15: 00007fd879e95000
- unmap_single_vma+0x198/0x300 mm/memory.c:1473
- unmap_vmas+0x168/0x2e0 mm/memory.c:1505
- exit_mmap+0x2b1/0x530 mm/mmap.c:3222
- __mmput+0x122/0x470 kernel/fork.c:1079
- mmput+0x53/0x60 kernel/fork.c:1100
- exit_mm kernel/exit.c:483 [inline]
- do_exit+0xa31/0x2930 kernel/exit.c:793
- do_group_exit+0x125/0x310 kernel/exit.c:903
- __do_sys_exit_group kernel/exit.c:914 [inline]
- __se_sys_exit_group kernel/exit.c:912 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: Unable to access opcode bytes at RIP 0x45de8f.
-RSP: 002b:000000000169fd88 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 000000000000001e RCX: 000000000045deb9
-RDX: 0000000000417811 RSI: fffffffffffffff7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 000000006e9499ad R09: 000000000169fde0
-R10: ffffffff8127dcc0 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000169fde0 R14: 0000000000000000 R15: 000000000169fdf0
-
-Allocated by task 9817:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:526 [inline]
- slab_alloc_node mm/slub.c:2891 [inline]
- kmem_cache_alloc_node+0x132/0x480 mm/slub.c:2927
- __alloc_skb+0x71/0x550 net/core/skbuff.c:198
- alloc_skb include/linux/skbuff.h:1094 [inline]
- ath9k_hif_usb_alloc_reg_in_urbs drivers/net/wireless/ath/ath9k/hif_usb.c:957 [inline]
- ath9k_hif_usb_alloc_urbs+0x912/0x1010 drivers/net/wireless/ath/ath9k/hif_usb.c:1016
- ath9k_hif_usb_dev_init drivers/net/wireless/ath/ath9k/hif_usb.c:1102 [inline]
- ath9k_hif_usb_firmware_cb+0x148/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1235
- request_firmware_work_func+0x12c/0x230 drivers/base/firmware_loader/main.c:1079
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Freed by task 28422:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:622
- __kfree_skb net/core/skbuff.c:679 [inline]
- kfree_skb net/core/skbuff.c:696 [inline]
- kfree_skb+0x140/0x3f0 net/core/skbuff.c:690
- ath9k_htc_rx_msg+0x1eb/0xb70 drivers/net/wireless/ath/ath9k/htc_hst.c:451
- ath9k_hif_usb_reg_in_cb+0x1ac/0x630 drivers/net/wireless/ath/ath9k/hif_usb.c:733
- __usb_hcd_giveback_urb+0x32d/0x560 drivers/usb/core/hcd.c:1650
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
- dummy_timer+0x11f4/0x3280 drivers/usb/gadget/udc/dummy_hcd.c:1967
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1410
- expire_timers kernel/time/timer.c:1455 [inline]
- __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1747
- __run_timers kernel/time/timer.c:1728 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1760
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
-
-The buggy address belongs to the object at ffff888014b7ec80
- which belongs to the cache skbuff_head_cache of size 224
-The buggy address is located 212 bytes inside of
- 224-byte region [ffff888014b7ec80, ffff888014b7ed60)
-The buggy address belongs to the page:
-page:00000000f48c4391 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14b7e
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 ffffea00009b9a80 0000000400000004 ffff888010f33640
-raw: 0000000000000000 00000000000c000c 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888014b7ec00: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888014b7ec80: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888014b7ed00: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
-                                                 ^
- ffff888014b7ed80: fc fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00
- ffff888014b7ee00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+> ---
+> Change-Id: I5fae9531c9fc948eb4d4e0c589744032fc5a0789
+> ---
+>  mm/kasan/common.c  | 19 +------------------
+>  mm/kasan/generic.c |  7 +++++++
+>  mm/kasan/kasan.h   |  2 ++
+>  mm/kasan/sw_tags.c |  9 +++++++++
+>  4 files changed, 19 insertions(+), 18 deletions(-)
+>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 123abfb760d4..543e6bf2168f 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -272,25 +272,9 @@ void * __must_check kasan_init_slab_obj(struct kmem_=
+cache *cache,
+>         return (void *)object;
+>  }
+>
+> -static inline bool shadow_invalid(u8 tag, s8 shadow_byte)
+> -{
+> -       if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> -               return shadow_byte < 0 ||
+> -                       shadow_byte >=3D KASAN_GRANULE_SIZE;
+> -
+> -       /* else CONFIG_KASAN_SW_TAGS: */
+> -       if ((u8)shadow_byte =3D=3D KASAN_TAG_INVALID)
+> -               return true;
+> -       if ((tag !=3D KASAN_TAG_KERNEL) && (tag !=3D (u8)shadow_byte))
+> -               return true;
+> -
+> -       return false;
+> -}
+> -
+>  static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>                               unsigned long ip, bool quarantine)
+>  {
+> -       s8 shadow_byte;
+>         u8 tag;
+>         void *tagged_object;
+>         unsigned long rounded_up_size;
+> @@ -309,8 +293,7 @@ static bool __kasan_slab_free(struct kmem_cache *cach=
+e, void *object,
+>         if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
+>                 return false;
+>
+> -       shadow_byte =3D READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
+> -       if (shadow_invalid(tag, shadow_byte)) {
+> +       if (check_invalid_free(tagged_object)) {
+>                 kasan_report_invalid_free(tagged_object, ip);
+>                 return true;
+>         }
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index ec4417156943..e1af3b6c53b8 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -187,6 +187,13 @@ bool check_memory_region(unsigned long addr, size_t =
+size, bool write,
+>         return check_memory_region_inline(addr, size, write, ret_ip);
+>  }
+>
+> +bool check_invalid_free(void *addr)
+> +{
+> +       s8 shadow_byte =3D READ_ONCE(*(s8 *)kasan_mem_to_shadow(addr));
+> +
+> +       return shadow_byte < 0 || shadow_byte >=3D KASAN_GRANULE_SIZE;
+> +}
+> +
+>  void kasan_cache_shrink(struct kmem_cache *cache)
+>  {
+>         quarantine_remove_cache(cache);
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 1865bb92d47a..3eff57e71ff5 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -164,6 +164,8 @@ void kasan_poison_memory(const void *address, size_t =
+size, u8 value);
+>  bool check_memory_region(unsigned long addr, size_t size, bool write,
+>                                 unsigned long ret_ip);
+>
+> +bool check_invalid_free(void *addr);
+> +
+>  void *find_first_bad_addr(void *addr, size_t size);
+>  const char *get_bug_type(struct kasan_access_info *info);
+>
+> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+> index 4bdd7dbd6647..b2638c2cd58a 100644
+> --- a/mm/kasan/sw_tags.c
+> +++ b/mm/kasan/sw_tags.c
+> @@ -121,6 +121,15 @@ bool check_memory_region(unsigned long addr, size_t =
+size, bool write,
+>         return true;
+>  }
+>
+> +bool check_invalid_free(void *addr)
+> +{
+> +       u8 tag =3D get_tag(addr);
+> +       u8 shadow_byte =3D READ_ONCE(*(u8 *)kasan_mem_to_shadow(reset_tag=
+(addr)));
+> +
+> +       return (shadow_byte =3D=3D KASAN_TAG_INVALID) ||
+> +               (tag !=3D KASAN_TAG_KERNEL && tag !=3D shadow_byte);
+> +}
+> +
+>  #define DEFINE_HWASAN_LOAD_STORE(size)                                 \
+>         void __hwasan_load##size##_noabort(unsigned long addr)          \
+>         {                                                               \
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--=20
+Alexander Potapenko
+Software Engineer
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
