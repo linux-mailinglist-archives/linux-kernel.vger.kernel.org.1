@@ -2,102 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168D52AE490
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0652AE495
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731992AbgKKAEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 19:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
+        id S1732162AbgKKAFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 19:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbgKKAEj (ORCPT
+        with ESMTP id S1731984AbgKKAFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 19:04:39 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32123C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 16:04:37 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id s9so15140387ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 16:04:37 -0800 (PST)
+        Tue, 10 Nov 2020 19:05:04 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADDDC0613D1;
+        Tue, 10 Nov 2020 16:05:02 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so401909pfu.1;
+        Tue, 10 Nov 2020 16:05:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JzWWY6NuciTI33aQq96X3WiN1h2jDKoGrOwhs2Ifrxc=;
-        b=DSw+pVH6EQmIKgMM49DrSxbYR8Ia08GpFokAgc4lncdWrInFkSMUP0k/INRLZEBshA
-         H2s4OgDrG9h5nRuZF9VelAC2M2CMq1b94qV7D7IyW3sgxYCmDNn3qsfFlcskaARrnfZ4
-         ap7L10qrulUSlTgUG7ZnTO4n1N/I+WLuiUtjQ=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1VEs0o+nsMDorHoMLUHmM+Xmj5XOsdY/7qiX8QRbC/U=;
+        b=dQRCcZPk9TuqGWd0J4OEMBT3NP0Zj7UD3GBHsiK7RS+UrAFDha5DNmNzvmvPVVi+qq
+         dHO+aKjdF2On7kLJqgZcLUGAXjX4Ea70/0CDP/cA91LvH79JBBrWS4SHDyoUv03EIMl9
+         +HMTMHPTj9Ik9rQ7e81KfQAkxRLRfCsVdAgDC57kTIJY8uWJPLCYacZ/O4cN8fFU9qbe
+         xQ8OC5NtJejty36oPzOKgcDs6desxNWtmf267cXunT2R5VJJ6cuodnItwBk91BSG/f6d
+         LUr77JmJjE2T35fd9br3Z3sOlafpl1vfshX/Lpt7CgGlVsFIHKL0gbdXD9lTIaWJT3An
+         nY+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JzWWY6NuciTI33aQq96X3WiN1h2jDKoGrOwhs2Ifrxc=;
-        b=HzHmD0VmTsfZAGtwdb4Iy5skxlpM8HpiyLGgOTUZJqCTityEG/5RSHt7P3INPytaVu
-         wjMhlbgRnapT72LwJEIVzLeW/DSwTjQpNny/WUNO7XjgfVrLn1L0DwbU+BQDX/mIbyua
-         bBsSlCphgW4Vr9hz8yhuxw3Si/hjQ02luzaH+cAPYJb/wsTawE506CJbwi9lURMzuOKa
-         ByD8U0ggXMUHES0tTm5pZTlLeav2tplMN6GKjf61s/0X76Gnl9CtYJ/gj5olOalLmGL3
-         HWIXRbSAPIgR3I7MtgqxoTAKBYVlKDCgflHhqjGzqsOWtwBSgv6tAwzaJ0G+2zElhqlN
-         LiTQ==
-X-Gm-Message-State: AOAM531OCyucz1OhecgieGimXnFC4bce0gTDCT1D0BlUDa0IFhqW1pge
-        YrNlSpPmMUhF/0GkOftcS/zb2ELrnG0bSA==
-X-Google-Smtp-Source: ABdhPJzcDdTh1waKZNY3h01ePToxI08FGutXmvvv2lytZVmiYqsFqXhOnBsbJaa923mdvnYcpfb79A==
-X-Received: by 2002:a2e:969a:: with SMTP id q26mr9961037lji.32.1605053075607;
-        Tue, 10 Nov 2020 16:04:35 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id y6sm41296lfc.235.2020.11.10.16.04.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 16:04:34 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id l2so742145lfk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 16:04:34 -0800 (PST)
-X-Received: by 2002:a19:408b:: with SMTP id n133mr8002533lfa.564.1605053074001;
- Tue, 10 Nov 2020 16:04:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1VEs0o+nsMDorHoMLUHmM+Xmj5XOsdY/7qiX8QRbC/U=;
+        b=YUpeRWy9m5kTEMoQaEq9cwK0Pa2/IwHea0uA3/uxl/vfEE0kQHlGSq/HV4I03EwJBT
+         ngOgIFeBQCedzM/79d4eUmNJD2xVxuwTK5b2woHrHgti+vWsBBme4HGnV4aENm8mTDjN
+         XU7q4vVUonbtIwJRkDfoS5yJLOsPJgDl1GCX4/7caaXe51lOxd5HEuIh6aPQb4+eaTQ/
+         +zT4BU5ZPt15fs0GfmIQafrBsx7h9rOX3ILhjBOk84vOH3qUS4Wi1JOiYCKpKa1wdwUp
+         aHle11Gsq/8e7j8fJogZ7UjN5YEq36jBVE5sNv0lwmKRVmo04bKGzb0TtbsuWDlUiOyb
+         E/jQ==
+X-Gm-Message-State: AOAM533bXBoAhOa6b+mgYGA2XeQsaGr/LDLH/+kvJarq+NUR1cp1+XI1
+        VE5jKOeRmjDz16GAIeZ/OVg=
+X-Google-Smtp-Source: ABdhPJwnfIuENM6ztZT1PA62l4IOafE83CtvWjIDfYcM0qYA9YMv5JG/BbInpmt763yc7YTwnCHUSA==
+X-Received: by 2002:a63:e004:: with SMTP id e4mr7625859pgh.51.1605053101819;
+        Tue, 10 Nov 2020 16:05:01 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id y8sm262749pfe.33.2020.11.10.16.05.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 16:05:01 -0800 (PST)
+Date:   Tue, 10 Nov 2020 16:04:58 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Jiri Kosina <jikos@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
+ separate modules
+Message-ID: <20201111000458.GW1003057@dtor-ws>
+References: <20201109213636.1267536-1-dianders@chromium.org>
+ <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+ <d51318d1-5d26-f840-2651-42a1134d407b@redhat.com>
+ <CAD=FV=WL7C_OPOQqJY_9nDP4Riz6c4XMHXBBj7FkzMJPBVo9Nw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201110144932.1.I54a30ec0a7eb1f1b791dc9d08d5e8416a1e8e1ef@changeid>
- <CAHp75VcfmJ6-cqCsZ6BjbghGDt+w-AbxGxLoWG61VVF2Knor-Q@mail.gmail.com>
-In-Reply-To: <CAHp75VcfmJ6-cqCsZ6BjbghGDt+w-AbxGxLoWG61VVF2Knor-Q@mail.gmail.com>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Tue, 10 Nov 2020 16:03:57 -0800
-X-Gmail-Original-Message-ID: <CAE=gft4vdBytT2=tCbv2aE3RRoDut5CiHdBODjXJamGM5yB3Bw@mail.gmail.com>
-Message-ID: <CAE=gft4vdBytT2=tCbv2aE3RRoDut5CiHdBODjXJamGM5yB3Bw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: intel: Fix Jasperlake hostown offset
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WL7C_OPOQqJY_9nDP4Riz6c4XMHXBBj7FkzMJPBVo9Nw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 3:48 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Wednesday, November 11, 2020, Evan Green <evgreen@chromium.org> wrote:
->>
->> GPIOs that attempt to use interrupts get thwarted with a message like:
->> "pin 161 cannot be used as IRQ" (for instance with SD_CD). This is becau=
-se
->> the JSL_HOSTSW_OWN offset is incorrect, so every GPIO looks like it's
->> owned by ACPI.
->
->
-> Funny, I have created a similar patch few hours ago. Are you sure this is=
- enough? In mine I have also padcfglock updated. But I have to confirm that=
-, that=E2=80=99s why I didn=E2=80=99t send it out.
+On Tue, Nov 10, 2020 at 02:17:27PM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Nov 10, 2020 at 1:01 AM Hans de Goede <hdegoede@redhat.com> wrote:
+> >
+> > Hi,
+> >
+> > On 11/9/20 10:36 PM, Douglas Anderson wrote:
+> > > This patch rejiggers the i2c-hid code so that the OF (Open Firmware
+> > > aka Device Tree) and ACPI support is separated out a bit.  The OF and
+> > > ACPI drivers are now separate modules that wrap the core module.
+> > >
+> > > Essentially, what we're doing here:
+> > > * Make "power up" and "power down" a function that can be (optionally)
+> > >   implemented by a given user of the i2c-hid core.
+> > > * The OF and ACPI modules are drivers on their own, so they implement
+> > >   probe / remove / suspend / resume / shutdown.  The core code
+> > >   provides implementations that OF and ACPI can call into.
+> > >
+> > > We'll organize this so that we now have 3 modules: the old i2c-hid
+> > > module becomes the "core" module and two new modules will depend on
+> > > it, handling probing the specific device.
+> > >
+> > > As part of this work, we'll remove the i2c-hid "platform data"
+> > > concept since it's not needed.
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > >
+> > > Changes in v5:
+> > > - Add shutdown_tail op and use it in ACPI.
+> > > - i2chid_subclass_data => i2chid_ops.
+> > > - power_up_device => power_up (same with power_down).
+> > > - subclass => ops.
+> > >
+> >
+> > Thanks this looks good to now, 2 small remarks below (since you are
+> > going to do a v6 anyways). Feel free to ignore these remarks if
+> > you prefer to keep things as is.
+> >
+> > And feel free to add my reviewed-by to v6 of this patch:
+> >
+> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Thanks!
+> 
+> 
+> > > +static const struct i2c_device_id i2c_hid_acpi_id_table[] = {
+> > > +     { "hid", 0 },
+> > > +     { "hid-over-i2c", 0 },
+> > > +     { },
+> > > +};
+> > > +MODULE_DEVICE_TABLE(i2c, i2c_hid_acpi_id_table);
+> >
+> > Hmm, I do not think these old-style i2c-ids are necessarry at
+> > all in this driver. I expect all use-cases to use either
+> > of or acpi matches.
+> >
+> > This was already present in the code before though, so
+> > please ignore this remark. This is just something which
+> > I noticed and thought was worth while pointing out as
+> > a future cleanup.
+> 
+> Yeah, I wasn't sure if there was anyone using them.
+> 
+> Hrm.  Thinking about it, though, is it really OK for two drivers to
+> both have the same table listed?  I'm not sure how that would work.
+> Do you know?
+> 
+> I don't know a ton about ACPI, but for device tree I know i2c has a
+> fallback mode.  Specifically having this table means that we'll match
+> compatible strings such as:
+> 
+>   "zipzapzing,hid"
+>   "kapowzers,hid-over-i2c"
+> 
+> In other words it'll ignore the vendor part and just match on the
+> second half.  Just to make sure I wasn't remembering that from a dream
+> I tried it and it worked.  I don't see any mainline device trees that
+> look like that, though.  I could delete it, though it doesn't really
+> take up much space and it seems nice to keep it working in case anyone
+> was relying on it?
+> 
+> For ACPI is there a similar fallback?  If not then it seems like it'd
+> be easy to remove it from there...
 
-Oh weird! I didn't check padcfglock since it didn't happen to be
-involved in the bug I was tracking down. I was trying to clean out
-some skeletons in my kernel closet [1] and debugged it down to this.
+Just a random thought - will all this still be working with ACPI PRP0001
+and DT-style compatible string and properties in _DSD?
 
-If you want to smash the two patches together I'm fine with that. Let
-me know, and CC me if you do post something.
--Evan
+Thanks.
 
-[1] https://chromium.googlesource.com/chromiumos/overlays/board-overlays/+/=
-master/overlay-dedede/sys-kernel/chromeos-kernel-5_4/files/0001-CHROMIUM-pi=
-nctrl-intel-Allow-pin-as-IRQ-even-in-ACPI.patch
+-- 
+Dmitry
