@@ -2,115 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D7F2AF7AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0652AF7AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgKKSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgKKSFo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:05:44 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD42BC0613D1;
-        Wed, 11 Nov 2020 10:05:43 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id w24so3196912wmi.0;
-        Wed, 11 Nov 2020 10:05:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RuVJl4bZiFX7Nolk0H+UJ3kuuE8OxwQA0lCB70NPHZw=;
-        b=bHK11M8WNGQcw+bJQ8fqyLO9MGOhzSrYXmJqO5+k38gQRv2TakO2CfEsWQeUARhq4G
-         rEevPpFFx9IVe4ctDCuljJd6BYWoVWf2e2uZBJWXUlYg3fUHFduqay3RaCqWOmap3Nud
-         SpCJa+yloPH7D/ELREBw2i6/bgKXfLUtkvYWbwcG2X6DeoDNe4jhmjisAZdrifyakUDx
-         syR6fLlVkCOwRMRvHuK2PDQNuc1Y7b8CRsqhSMqaPdGcJdSXoXt9VMg9fTfp1F547Ijh
-         VtC2HgVhC6CYtqgx1Yd7sTl+GDgvrahT7bxi4BEYCFvhbH0XeAzR3rd9oAHuBOn802cy
-         Fr4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RuVJl4bZiFX7Nolk0H+UJ3kuuE8OxwQA0lCB70NPHZw=;
-        b=Ud9f3eF50baTOR1JTUPvy4jDmV5H0thwYOLguPbmu7RZ37miYPobLghcyRg1wTokoh
-         7P0Rl4cwPm+rdyVv2abqpBhBUAEraQx3yuLLqbYTzgUuyOOYG31f4a66rulZ7HZipduK
-         CgrjoZUdjwZRGiZayDG2XyhGmdc8A24T7CEaOSz49P/z9jYiwHKAlGbc87GO4tIqY+hP
-         PT+VaRtNLeeHsRXBV/HzXUfUhS2lBT3sO9x2Q/eMsyfEeproixexMeZOSo3IBHBK/PUh
-         lGMdBshUnuR3e6qCMWHQFrq7ZyncCupjT0mLSNeRP4rNrD9zSLks3phi081cVzWJgM1L
-         D8Yg==
-X-Gm-Message-State: AOAM532fl6vRxbToDCsmwbtNSmxX+1sGN40Yh0UnG33MQIeZ4wtTamON
-        lWOGlqGZTVih9eSi421diZnSUPUD0aA=
-X-Google-Smtp-Source: ABdhPJzdTZcitXpMl8CJmQD6Quq5kY7tPcTa9aRHAiRiCRMRr1Olb1vzxG8GDRmFWOkoCgOO6mBqLg==
-X-Received: by 2002:a7b:c0d7:: with SMTP id s23mr5823748wmh.54.1605117942572;
-        Wed, 11 Nov 2020 10:05:42 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n11sm3340274wru.38.2020.11.11.10.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:05:40 -0800 (PST)
-Date:   Wed, 11 Nov 2020 19:05:38 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linux-imx@nxp.com
-Subject: Re: [PATCH V2 1/3] pwm: imx-tpm: Use dev_err_probe() to simplify
- error handling
-Message-ID: <20201111180538.GA6125@ulmo>
-References: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
+        id S1727042AbgKKSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:05:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726134AbgKKSFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:05:48 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D42422076E;
+        Wed, 11 Nov 2020 18:05:45 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 13:05:43 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        paulmck@kernel.org, peterz@infradead.org
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201111130543.27d29462@gandalf.local.home>
+In-Reply-To: <20201111133813.GA81547@elver.google.com>
+References: <20201110135320.3309507-1-elver@google.com>
+        <CADYN=9+=-ApMi_eEdAeHU6TyuQ7ZJSTQ8F-FCSD33kZH8HR+xg@mail.gmail.com>
+        <CANpmjNM8MZphvkTSo=KgCBXQ6fNY4qo6NZD5SBHjNse_L9i5FQ@mail.gmail.com>
+        <20201111133813.GA81547@elver.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
-Content-Disposition: inline
-In-Reply-To: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 11 Nov 2020 14:38:13 +0100
+Marco Elver <elver@google.com> wrote:
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> [+Cc folks who can maybe help figure out what's going on, since I get
+>   warnings even without KFENCE on next-20201110.]
+> 
+> On Wed, Nov 11, 2020 at 09:29AM +0100, Marco Elver wrote:
+> > On Wed, 11 Nov 2020 at 00:23, Anders Roxell <anders.roxell@linaro.org> wrote:
+> > [...]
+> > > I gave them a spin on next-20201105 [1] and on next-20201110 [2].
+> > >
+> > > I eventually got to a prompt on next-20201105.
+> > > However, I got to this kernel panic on the next-20201110:
+> > >
+> > > [...]
+> > > [ 1514.089966][    T1] Testing event system initcall: OK
+> > > [ 1514.806232][    T1] Running tests on all trace events:
+> > > [ 1514.857835][    T1] Testing all events:
+> > > [ 1525.503262][    C0] hrtimer: interrupt took 10902600 ns
+> > > [ 1623.861452][    C0] BUG: workqueue lockup - pool cpus=0 node=0
+> > > flags=0x0 nice=0 stuck for 65s!
+> > > [...]
 
-On Tue, Aug 11, 2020 at 02:24:30PM +0800, Anson Huang wrote:
-> dev_err_probe() can reduce code size, uniform error handling and record t=
-he
-> defer probe reason etc., use it to simplify the code.
->=20
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> changes since V1:
-> 	- remove redundant return value print.
-> ---
->  drivers/pwm/pwm-imx-tpm.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
+OK, so this blows up when you enable all events?
 
-All three patches applied, thanks.
+Note, it could just be adding overhead (which is exasperated with other
+debug options enabled), which could open up a race window.
+ 
 
-Thierry
+> > > [ 7823.104349][   T28]       Tainted: G        W
+> > > 5.10.0-rc3-next-20201110-00008-g8dc06700529d #3
+> > > [ 7833.206491][   T28] "echo 0 >
+> > > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > [ 7840.750700][   T28] task:kworker/0:1     state:D stack:26640 pid:
+> > > 1872 ppid:     2 flags:0x00000428
+> > > [ 7875.642531][   T28] Workqueue: events toggle_allocation_gate
+> > > [ 7889.178334][   T28] Call trace:
+> > > [ 7897.066649][   T28]  __switch_to+0x1cc/0x1e0
+> > > [ 7905.326856][   T28]  0xffff00000f7077b0
+> > > [ 7928.354644][   T28] INFO: lockdep is turned off.
+> > > [ 7934.022572][   T28] Kernel panic - not syncing: hung_task: blocked tasks
+> > > [ 7934.032039][   T28] CPU: 0 PID: 28 Comm: khungtaskd Tainted: G
+> > >   W         5.10.0-rc3-next-20201110-00008-g8dc06700529d #3
+> > > [ 7934.045586][   T28] Hardware name: linux,dummy-virt (DT)
+> > > [ 7934.053677][   T28] Call trace:
+> > > [ 7934.060276][   T28]  dump_backtrace+0x0/0x420
+> > > [ 7934.067635][   T28]  show_stack+0x38/0xa0
+> > > [ 7934.091277][   T28]  dump_stack+0x1d4/0x278
+> > > [ 7934.098878][   T28]  panic+0x304/0x5d8
+> > > [ 7934.114923][   T28]  check_hung_uninterruptible_tasks+0x5e4/0x640
+> > > [ 7934.123823][   T28]  watchdog+0x138/0x160
+> > > [ 7934.131561][   T28]  kthread+0x23c/0x260
+> > > [ 7934.138590][   T28]  ret_from_fork+0x10/0x18
+> > > [ 7934.146631][   T28] Kernel Offset: disabled
+> > > [ 7934.153749][   T28] CPU features: 0x0240002,20002004
+> > > [ 7934.161476][   T28] Memory Limit: none
+> > > [ 7934.171272][   T28] ---[ end Kernel panic - not syncing: hung_task:
+> > > blocked tasks ]---
+> > >
+> > > Cheers,
+> > > Anders
+> > > [1] https://people.linaro.org/~anders.roxell/output-next-20201105-test.log
+> > > [2] https://people.linaro.org/~anders.roxell/output-next-20201110-test.log
+> > 
+> > Thanks for testing. The fact that it passes on next-20201105 but not
+> > on 20201110 is strange. If you boot with KFENCE disabled (boot param
+> > kfence.sample_interval=0), does it boot?
+> [...]
+> 
+> Right, so I think this is no longer KFENCE's fault. This looks like
+> something scheduler/RCU/ftrace related?! I notice that there have been
+> scheduler changes between next-20201105 and next-20201110.
 
---TB36FDmn/VVEgNH/
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm not sure any of that would cause this.
 
------BEGIN PGP SIGNATURE-----
+> 
+> I get this with KFENCE disabled:
+> 
+> | Running tests on all trace events:
+> | Testing all events: 
+> | BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 32s!
+> | Showing busy workqueues and worker pools:
+> | workqueue events: flags=0x0
+> |   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+> |     pending: vmstat_shepherd
+> | workqueue events_power_efficient: flags=0x82
+> |   pwq 2: cpus=0 flags=0x5 nice=0 active=2/256 refcnt=4
+> |     in-flight: 107:neigh_periodic_work
+> |     pending: do_cache_clean
+> | pool 2: cpus=0 flags=0x5 nice=0 hung=3s workers=2 manager: 7
+> | rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> | 	(detected by 0, t=6502 jiffies, g=2885, q=4)
+> | rcu: All QSes seen, last rcu_preempt kthread activity 5174 (4295523265-4295518091), jiffies_till_next_fqs=1, root ->qsmask 0x0
+> | rcu: rcu_preempt kthread starved for 5174 jiffies! g2885 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+> | rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+> | rcu: RCU grace-period kthread stack dump:
+> | task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
+> | Call trace:
+> |  __switch_to+0x100/0x1e0
+> |  __schedule+0x2d0/0x890
+> |  preempt_schedule_notrace+0x70/0x1c0
+> |  ftrace_ops_no_ops+0x174/0x250
+> |  ftrace_graph_call+0x0/0xc
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sJ/AACgkQ3SOs138+
-s6FpCRAAknY3bT5bDpcO4yXyOi7Th+7KGXTT9QyZeC5FbxExhIzmd7xPqEERmiXo
-9mEh0L4oQExH5W8b3zQ5ypDU7ezO+dLpvcf58QbIUNBWJXEv1GnSn0vMhhxxfi11
-XjJGjtMWeS9IocmALpHLYPaV3++Wv/UP4WBJfj7op/UFglorUz49ALPDrfH8PDFS
-1jcsR0tWRctJG/lmfJ/6dBoX9HEENnG6w3iLgyysYWWiZVIscriDdwuc5wgz5PYP
-st5FDXLf64e6kZvNOOw0bccXgLLGT8ZgkQi43DTl9NB72VsTKbwTmtokYTAnhxj6
-uouEqhfR93MTmnNWc7IRKg6soyLssdcHG+xEKtgOdcxu3L6AoND3DBl0b/rI7gvn
-KJoTOZj2BJvkFKFgxY/a+aoKSKxlX5SOgzsc/DPyQDCudZGwXbt/YLpeMShY5mS7
-6oseo+qQFP6eT5PNmee8C/jUWgDPowQ9wF+Fc3DCQFqjeZhHK8aOw/Wx73VYGFf2
-CcWmjqwp7YPkiGh3oVtwX4nV/0c/h7xA0oehZ95GY7W+UionVayKvoqbBNbS3oRV
-QtUgi3TdyHeh4uf0FIGXEYN7e92bfZdLy5fSpeDjbOW30euUbSrOvCvI+4cKjp3p
-P/rLq4IxpwLHe7uS0WkL+UO1RjhsHl3c5UaencBelNxnoyYUStk=
-=V7Fx
------END PGP SIGNATURE-----
+Note, just because ftrace is called here, the blocked task was preempted
+when the ftrace code called preempt_enable_notrace().
 
---TB36FDmn/VVEgNH/--
+
+> |  preempt_count_add+0x1c/0x180
+> |  schedule+0x44/0x108
+> |  schedule_timeout+0x394/0x530
+> |  rcu_gp_kthread+0x76c/0x19a8
+> |  kthread+0x174/0x188
+> |  ret_from_fork+0x10/0x18
+> | 
+> | ================================
+> | WARNING: inconsistent lock state
+> | 5.10.0-rc3-next-20201110-00001-gc07b306d7fa5-dirty #18 Not tainted
+> | --------------------------------
+> | inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+> | kcompactd0/26 [HC0[0]:SC0[0]:HE0:SE1] takes:
+> | ffffae32e6bd4358 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x4a0/0xd18
+> | {IN-HARDIRQ-W} state was registered at:
+
+I did some digging here and it looks like the rcu_node lock could be taken
+without interrupts enabled when it does a stall print. That probably should
+be fixed, but it's a symptom of the underlining bug and not the cause.
+
+-- Steve
+
+
+> |   __lock_acquire+0x7bc/0x15b8
+> |   lock_acquire+0x244/0x498
+> |   _raw_spin_lock_irqsave+0x78/0x144
+> |   rcu_sched_clock_irq+0x4a0/0xd18
+> |   update_process_times+0x68/0x98
+> |   tick_sched_handle.isra.16+0x54/0x80
+> |   tick_sched_timer+0x64/0xd8
+> |   __hrtimer_run_queues+0x2a4/0x750
+> | [...]
+> | irq event stamp: 270278
+> | hardirqs last  enabled at (270277): [<ffffae32e5a0bff8>] _raw_spin_unlock_irq+0x48/0x90
+> | hardirqs last disabled at (270278): [<ffffae32e46122bc>] el1_irq+0x7c/0x180
+> | softirqs last  enabled at (268786): [<ffffae32e4610b58>] __do_softirq+0x650/0x6a4
+> | softirqs last disabled at (268783): [<ffffae32e46c0b80>] irq_exit+0x1a8/0x1b0
+> | 
+> | other info that might help us debug this:
+> |  Possible unsafe locking scenario:
+> | 
+> |        CPU0
+> |        ----
+> |   lock(rcu_node_0);
+> |   <Interrupt>
+> |     lock(rcu_node_0);
+> | 
+> |  *** DEADLOCK ***
+> | 
+> | 1 lock held by kcompactd0/26:
+> |  #0: ffffae32e6bd4358 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x4a0/0xd18
+> | [...]
+> 
+> Full log and config attached. Also, I can provoke this quicker with the
+> attached diff.
+> 
+> Thanks,
+> -- Marco
+
