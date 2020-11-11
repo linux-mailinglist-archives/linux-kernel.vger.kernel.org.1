@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F152AF6AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FDC2AF6B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbgKKQig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        id S1727543AbgKKQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726470AbgKKQig (ORCPT
+        with ESMTP id S1726470AbgKKQjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:38:36 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FF4C0613D1;
-        Wed, 11 Nov 2020 08:38:34 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id h15so2194450qkl.13;
-        Wed, 11 Nov 2020 08:38:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ie/2g6h8fCMTgltIfv3Rfz0bo0YdcuquD7nLS1t6eg=;
-        b=S6ejkkcPJz8EcNc+0Mp1+79wtHpaIv3/yiOHomedgDAmUL0q48zC8AH5XHUQtv6lSi
-         N55COLQs1QlJnTjju6+m7I8aZ17xngDMxitQ2NGkZe1Mi2u6GrDqwod9mGajVSHmIrp4
-         MHqzwbPMKZxM6OlhSwZQgflmOz/Cqqp/GzM6qII7PqwivMcTl+KYpX0VcrRKoAgfyHb4
-         H23koW2AgNrmVyUyRBDdQ0vNWIPHX5hpeVZA3QSvblJ10P1Cd+GR7LawX+RfH9y070/V
-         O/QkwXRy/BeBu6Uvk3hHcCqovgJ6wp7C3FFXHY6FePX9RskbRGCngoGs2t6aYZKu3Z1b
-         U0dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ie/2g6h8fCMTgltIfv3Rfz0bo0YdcuquD7nLS1t6eg=;
-        b=h8PuNKVKZ4gBp/DaYRY5oYjywXCMSnK2gkw05fur+Dp5v2haKJVmNDk9cZqLpk7U0g
-         yLZgYs1kpAdB8DgRptltzm98cuUrkjkBIX9axUb0WJdMdGhLdonfsc9tzIudl2JCs6QG
-         KrSp9p6ZPkHZTXsyjXTtPTfaaxWUIH/0XKOB2oQBwrtkb7B7B9SJAslnefVGmi0ywAie
-         REvFIHxL/gRyR4iAYjbE2m18uGhQqQjSMatSma3I5ElTO6tmrPDUpRHhwuedjieNasbD
-         b36sMijwgcEtkye3WKd8tGaaRKtxfpYWbZxeph5IP60IEMVivFtqCK8mNqtYL7Wm68kz
-         0o6g==
-X-Gm-Message-State: AOAM530vMlgM0jFbX7dzrfzUAleCUoquAkn2epi1maIQOXoklmZuNgwb
-        xZrBsNtIfhq4x+Va4DW/nLk=
-X-Google-Smtp-Source: ABdhPJyIbrh+4qgDsQQCVk/MHG7XDX40xL7zIDdJhzoJah7E7HCKx5G8Vxr7QIfkf5GgrQLhig7LVQ==
-X-Received: by 2002:a37:4ac4:: with SMTP id x187mr25631324qka.197.1605112713595;
-        Wed, 11 Nov 2020 08:38:33 -0800 (PST)
-Received: from localhost.localdomain (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id l28sm2615051qkl.7.2020.11.11.08.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 08:38:32 -0800 (PST)
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org
-Cc:     robh+dt@kernel.org, alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: [PATCH] counter: microchip-tcb-capture: Fix CMR value check
-Date:   Wed, 11 Nov 2020 11:38:07 -0500
-Message-Id: <20201111163807.10201-1-vilhelm.gray@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 11 Nov 2020 11:39:03 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83433C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:39:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fQYZt5U9dNGVW/jFVMV2DnqgQdqA/K9jcjiiRpZxmR8=; b=VDHv5PgOMsYSGeXf8irdYrEmir
+        1yiAv1bL/Rt+0SyCOZRyzZMlucKLyzTePZoF2+w6KHzuuwkC1mg3ZiWf/++i6uBrM7rRXt2/miJOO
+        joavkvGIxqT0/5WePnKXjzYj/pJsvNgn6f2l7d+FcUXNqy/+bfCQOhAMb7VE42Ytl9gc2ejJ0cJkW
+        adcF3kIncWHqQgIAHmGMqtxcnsWJWcuWRZglV4ZTQFPvwk/grTEfKVSH5LkoOhFNMSxwdTFzktzYr
+        BJ9+MmfdxChOqul/3fzoWDNEMV8w9lEg5wiZiOAIR07EXtB06M0oeXOxBuXl+hA8YKmfDrCWvRqir
+        HbHnXhLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kct8z-0001pt-0n; Wed, 11 Nov 2020 16:38:49 +0000
+Date:   Wed, 11 Nov 2020 16:38:48 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, mingo@redhat.com,
+        acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        benh@kernel.crashing.org, paulus@samba.org,
+        David Miller <davem@davemloft.net>, vbabka@suse.cz
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+Message-ID: <20201111163848.GU17076@casper.infradead.org>
+References: <20201012084829.GA1151@willie-the-truck>
+ <de47984b-9a69-733c-3bd1-7b24ceb9b7f0@linux.intel.com>
+ <20201013154615.GE2594@hirez.programming.kicks-ass.net>
+ <20201013163449.GR2651@hirez.programming.kicks-ass.net>
+ <8e88ba79-7c40-ea32-a7ed-bdc4fc04b2af@linux.intel.com>
+ <20201111095750.GS2594@hirez.programming.kicks-ass.net>
+ <20201111112246.GR2651@hirez.programming.kicks-ass.net>
+ <20201111124357.GS2651@hirez.programming.kicks-ass.net>
+ <20201111153022.GT17076@casper.infradead.org>
+ <20201111155724.GE2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111155724.GE2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
-for CMR. This patch fixes the action_get() callback to properly check
-for these values rather than mask them.
+On Wed, Nov 11, 2020 at 04:57:24PM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 11, 2020 at 03:30:22PM +0000, Matthew Wilcox wrote:
+> > This confuses me.  Why only special-case hugetlbfs pages here?  Should
+> > they really be treated differently from THP?  If you want to consider
+> > that we might be mapping a page that's twice as big as a PUD entry and
+> > this is only half of it, then the simple way is:
+> > 
+> > 	if (pud_leaf(pud)) {
+> > #ifdef pud_page
+> > 		page = compound_head(pud_page(*pud));
+> > 		return page_size(page);
+> 
+> Also; this is 'wrong'. The purpose of this function is to return the
+> hardware TLB size of a given address. The above will return the compound
+> size, for any random compound page, which would be myrads of reasons.
 
-Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
-Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
- drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+Oh, then the whole thing is overly-complicated.  This should just be
 
-diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-index 039c54a78aa5..142b389fc9db 100644
---- a/drivers/counter/microchip-tcb-capture.c
-+++ b/drivers/counter/microchip-tcb-capture.c
-@@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
- 
- 	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
- 
--	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
--
--	if (cmr & ATMEL_TC_ETRGEDG_NONE)
-+	switch (cmr & ATMEL_TC_ETRGEDG_BOTH) {
-+	default:
- 		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
--	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
-+		break;
-+	case ATMEL_TC_ETRGEDG_RISING:
- 		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
--	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
-+		break;
-+	case ATMEL_TC_ETRGEDG_FALLING:
- 		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
--	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
-+		break;
-+	case ATMEL_TC_ETRGEDG_BOTH:
- 		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
-+		break;
-+	}
- 
- 	return 0;
- }
--- 
-2.29.2
+	if (pud_leaf(pud))
+		return PUD_SIZE;
 
