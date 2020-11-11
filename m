@@ -2,130 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41FA2AF5DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A341C2AF5DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgKKQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727377AbgKKQLC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:11:02 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879A3C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:11:02 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id b16so1399387qtb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:11:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=225dH83D48RrYMdcBweixtFsm7zoRRCV87kzdcWWgZw=;
-        b=EyFkI0AP0amRkumU51nrztnLa9GiB9YufpOXcE1f4qID1vC9kgrza35k5Nho8yRDRL
-         uqeaddWMgvidmrVAblzBJ0RmJICeeR6olwF5w3Hpqmj7sDSg/SKLg5PHkZaFMmkJmeHu
-         lidCeiLmJL7g3mQ3/Gn0WghBqmSD75mcPEHSwwZCpSOF8o4MTIFMHxcLOLiJvAfVWSoP
-         tY9POrER0u0kiEcuqFdKrQ185ZxS89sdeDVhr2xkQyze+chNRvW1zjNI2WXm63uv54ds
-         uwANYaznp9hMHVSqITVlH57hwZw9P3LQT5kagm9ctNvzpSZ9ziQ1mLJ1H70UK48TtQJc
-         uiyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=225dH83D48RrYMdcBweixtFsm7zoRRCV87kzdcWWgZw=;
-        b=f3mxk8SCQW+CT4slGZfuiW5P0ldkAVt/cP/qGx/8nN8lXHstpfH6XWI22zpyAdpQjQ
-         1RVEgZkUDcreUXQi3uKuAtJeWXInEpkBrX27hZ+GYVSOS/kkAHU9UKqZIiJrDYXnccK1
-         6lRxDDLa2Lg1vY+9witCKBonCBn62r438ztibti4AltB5Xv77XU+hifDewuzTMD+J1bX
-         qiyHIiWplN8feiZtIY+00pW6qZJnadJ0S+GgaZyBYvRg5xkDZYkcvDVR0MPQFrbxKHDV
-         z8m3+0MRCVxiUBXogFc/99bpQnRwyPstwwu+9s8GQV/YEyY1wyy1bND17glO5GVo9Ba2
-         nkug==
-X-Gm-Message-State: AOAM530lEQyCBicLB0G4vcmKHoxzFLzug/Gk3KrwOIGFNsZOyptlG6XC
-        McCeINjgxqGVB9NmGfl9TxPwHIYb+yVUNuDsU61I7Q==
-X-Google-Smtp-Source: ABdhPJwTzo1m2Sr8laF/CiEBGPM3ZdbGWEO7fIU3/m6+DyFx6UPYO65RiP1CyS7CC7n3IMLpMXRZK7arGblHtec79fg=
-X-Received: by 2002:ac8:5c85:: with SMTP id r5mr19357172qta.8.1605111060119;
- Wed, 11 Nov 2020 08:11:00 -0800 (PST)
+        id S1727152AbgKKQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:10:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgKKQKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:10:55 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 858E0206A1;
+        Wed, 11 Nov 2020 16:10:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605111054;
+        bh=B8emSrl5cDEqUKAszZCD2s041YBsX8RrpoCViT/4R0c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0KSzrLC19c+McysSPs1fu5TTNA+rf9kFWLw4PPbrMr1/Q+2988f+ygQ3IJs8HyHqL
+         YfF/AyQ0v+dFRdEAEJFyZwdyD4MDxd2N3O9R70MkJJmtK3yTEPUSDiRMznXHjjOYCf
+         ScMBh6i3ywCBdD4XVoRrDrsIlWBt1XM6IEYYgEvQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 42466411D1; Wed, 11 Nov 2020 13:10:51 -0300 (-03)
+Date:   Wed, 11 Nov 2020 13:10:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 00/22] perf arm-spe: Refactor decoding & dumping flow
+Message-ID: <20201111161051.GH355344@kernel.org>
+References: <20201111071149.815-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <76b91f88120fc8c3e5923d6432a1d537ee584fc8.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <76b91f88120fc8c3e5923d6432a1d537ee584fc8.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 17:10:48 +0100
-Message-ID: <CAG_fn=XnPQCyzJXp1YtM0swhzr2W89yMxe5FkFL6n0vAOeBoYw@mail.gmail.com>
-Subject: Re: [PATCH v9 34/44] arm64: kasan: Align allocations for HW_TAGS
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111071149.815-1-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> Hardware tag-based KASAN uses the memory tagging approach, which requires
-> all allocations to be aligned to the memory granule size. Align the
-> allocations to MTE_GRANULE_SIZE via ARCH_SLAB_MINALIGN when
-> CONFIG_KASAN_HW_TAGS is enabled.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+Em Wed, Nov 11, 2020 at 03:11:27PM +0800, Leo Yan escreveu:
+> This is patch set v8 for refactoring Arm SPE trace decoding and dumping.
+> 
+> This version addresses Andre's comment to pass parameter '&buf_len' at
+> the last call arm_spe_pkt_snprintf() in the function arm_spe_pkt_desc().
+> 
+> This patch set is cleanly applied on the top of perf/core branch
+> with commit 644bf4b0f7ac ("perf jevents: Add test for arch std events").
+> 
+> I retested this patch set on Hisilicon D06 platform with commands
+> "perf report -D" and "perf script", compared the decoding results
+> between with this patch set and without this patch set, "diff" tool
+> shows the result as expected.
 
-> ---
-> Change-Id: I51ebd3f9645e6330e5a92973bf7c86b62d632c2b
-> ---
->  arch/arm64/include/asm/cache.h | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cach=
-e.h
-> index 63d43b5f82f6..77cbbe3625f2 100644
-> --- a/arch/arm64/include/asm/cache.h
-> +++ b/arch/arm64/include/asm/cache.h
-> @@ -6,6 +6,7 @@
->  #define __ASM_CACHE_H
->
->  #include <asm/cputype.h>
-> +#include <asm/mte-kasan.h>
->
->  #define CTR_L1IP_SHIFT         14
->  #define CTR_L1IP_MASK          3
-> @@ -51,6 +52,8 @@
->
->  #ifdef CONFIG_KASAN_SW_TAGS
->  #define ARCH_SLAB_MINALIGN     (1ULL << KASAN_SHADOW_SCALE_SHIFT)
-> +#elif defined(CONFIG_KASAN_HW_TAGS)
-> +#define ARCH_SLAB_MINALIGN     MTE_GRANULE_SIZE
->  #endif
->
->  #ifndef __ASSEMBLY__
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+With the patches I applied I'm getting:
 
+util/arm-spe-decoder/arm-spe-pkt-decoder.c: In function 'arm_spe_pkt_desc':
+util/arm-spe-decoder/arm-spe-pkt-decoder.c:410:3: error: left shift count >= width of type [-Werror]
+   case 1: ns = !!(packet->payload & NS_FLAG);
+   ^
+util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
+    el = (packet->payload & EL_FLAG) >> 61;
+    ^
+util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
+util/arm-spe-decoder/arm-spe-pkt-decoder.c:416:3: error: left shift count >= width of type [-Werror]
+   case 3: ns = !!(packet->payload & NS_FLAG);
+   ^
+  CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-decoder.o
+ 
 
---=20
-Alexander Potapenko
-Software Engineer
+On:
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+  16    11.70 android-ndk:r12b-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
+  17    11.32 android-ndk:r15c-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+That were building ok before, builds still under way, perhaps its just
+on these old systems...
+
+- Arnaldo
+ 
+> Changes from v7:
+> - Changed to pass '&buf_len' for the last call arm_spe_pkt_snprintf() in
+>   the patch 07/22 (Andre).
+> 
+> Changes from v6:
+> - Removed the redundant comma from the string in the patch 21/22 "perf
+>   arm_spe: Decode memory tagging properties" (Dave);
+> - Refined the return value for arm_spe_pkt_desc(): returns 0 for
+>   success, otherwise returns non zero for failures; handle error code at
+>   the end of function arm_spe_pkt_desc(); this is accomplished in the
+>   new patch 07/22 "perf arm-spe: Consolidate arm_spe_pkt_desc()'s
+>   return value" (Dave).
+> 
+> Changes from v5:
+> - Directly bail out arm_spe_pkt_snprintf() if any error occurred
+>   (Andre).
+> 
+> Changes from v4:
+> - Implemented a cumulative error for arm_spe_pkt_snprintf() and changed
+>   to condense code for printing strings (Dave);
+> - Changed to check payload bits [55:52] for parse kernel address
+>   (Andre).
+> 
+> Changes from v3:
+> - Refined arm_spe_payload_len() and removed macro SPE_HEADER_SZ()
+>   (Andre);
+> - Refined packet header index macros (Andre);
+> - Added patch "perf arm_spe: Fixup top byte for data virtual address" to
+>   fixup the data virtual address for 64KB pages and refined comments for
+>   the fixup (Andre);
+> - Added Andre's review tag (using "b4 am" command);
+> - Changed the macros to SPE_PKT_IS_XXX() format to check operation types
+>   (Andre).
+> 
+> 
+> Andre Przywara (1):
+>   perf arm_spe: Decode memory tagging properties
+> 
+> Leo Yan (20):
+>   perf arm-spe: Include bitops.h for BIT() macro
+>   perf arm-spe: Fix a typo in comment
+>   perf arm-spe: Refactor payload size calculation
+>   perf arm-spe: Refactor arm_spe_get_events()
+>   perf arm-spe: Fix packet length handling
+>   perf arm-spe: Refactor printing string to buffer
+>   perf arm-spe: Consolidate arm_spe_pkt_desc()'s return value
+>   perf arm-spe: Refactor packet header parsing
+>   perf arm-spe: Add new function arm_spe_pkt_desc_addr()
+>   perf arm-spe: Refactor address packet handling
+>   perf arm_spe: Fixup top byte for data virtual address
+>   perf arm-spe: Refactor context packet handling
+>   perf arm-spe: Add new function arm_spe_pkt_desc_counter()
+>   perf arm-spe: Refactor counter packet handling
+>   perf arm-spe: Add new function arm_spe_pkt_desc_event()
+>   perf arm-spe: Refactor event type handling
+>   perf arm-spe: Remove size condition checking for events
+>   perf arm-spe: Add new function arm_spe_pkt_desc_op_type()
+>   perf arm-spe: Refactor operation packet handling
+>   perf arm-spe: Add more sub classes for operation packet
+> 
+> Wei Li (1):
+>   perf arm-spe: Add support for ARMv8.3-SPE
+> 
+>  .../util/arm-spe-decoder/arm-spe-decoder.c    |  59 +-
+>  .../util/arm-spe-decoder/arm-spe-decoder.h    |  17 -
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 601 ++++++++++--------
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 122 +++-
+>  tools/perf/util/arm-spe.c                     |   2 +-
+>  5 files changed, 479 insertions(+), 322 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+
+-- 
+
+- Arnaldo
