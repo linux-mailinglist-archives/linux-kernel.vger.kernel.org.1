@@ -2,87 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D93C2AE9BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929912AE9A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgKKHWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgKKHMd (ORCPT
+        id S1726300AbgKKHUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:20:38 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:27234 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726316AbgKKHO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:12:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21E5C0613D4;
-        Tue, 10 Nov 2020 23:12:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9NVZFoWOtk2drwb+CBbjE6+h56gdwxT/Zba1uNpXaGw=; b=Ly/FwRGB6s17s+VOTeDWLpa5bI
-        U/tAKGAsqHG29rGnzgsx9kRnnJB0ESyPoLkqB0N8gAjBawjuZ43jgi/VK/qA6iJLtj/uI6xpjQ9U5
-        DMvKqgOiJaUnq2uvDQZzipHzHChurgPWtFZr25G8ApM9zr697X/1b53eDLKCOi5pcF1rY9weOlqxT
-        SSnl3SxN2KNn40M027o30R6h6z19/TtKqgKxI8PIxp1NW/cvjjHlNuHnX712+AoZZupp8+WR0h+pk
-        xRnd1ydcUZ50imKbLNBX/wmuUQhPIvXAI31LLyGLzplFwxT0yCtWMLcxzCfVc0WJiWTKzL1L3Y0uK
-        fPOJ8+tA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kckIx-0002qG-Cf; Wed, 11 Nov 2020 07:12:31 +0000
-Date:   Wed, 11 Nov 2020 07:12:31 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
-Message-ID: <20201111071231.GC7829@infradead.org>
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-4-ben.widawsky@intel.com>
+        Wed, 11 Nov 2020 02:14:26 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AB758Rv017988;
+        Tue, 10 Nov 2020 23:14:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=+cZCPLuvVKIt87SGOI9GoxwODS45RkPLzl4h3mDNwug=;
+ b=isJ81LnmrqTKzMoM3/CX8qlCVdc6bn/HBhDkcSiIw3euYrxVLwT5z20iG352RjjKFpJK
+ pnbtO6AViMlsmLrgptuT68/lwKpR5pCsgPali+RzbEfNjvwoDzZdqqsi3jO/ITTEGJ2v
+ 6tShUXdrU+gVMZf4zMjZ/FQ5aYxh7k4aRhI6AzMuWDja/a43BXqkLi1U1Rx2ko19zYGf
+ rpTyyWKLl4RFcnqhmlFaKU7/MVf/+LsJw2HPqMq5gWDc7E8ZbaI94wF26WmKVLi0qTBP
+ W3EDfNqfhQBBMweI23i2yGIUohZJDlklUMekHUkct9ckiF8LZAceZVlGubHzsdxnCw/6 8w== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 34nstu681q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 10 Nov 2020 23:14:10 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 10 Nov
+ 2020 23:14:08 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 10 Nov 2020 23:14:09 -0800
+Received: from hyd1583.caveonetworks.com (unknown [10.29.37.44])
+        by maili.marvell.com (Postfix) with ESMTP id B9B973F703F;
+        Tue, 10 Nov 2020 23:14:05 -0800 (PST)
+From:   Naveen Mamindlapalli <naveenm@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <saeed@kernel.org>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>
+Subject: [PATCH v3 net-next 00/13] Add ethtool ntuple filters support
+Date:   Wed, 11 Nov 2020 12:43:51 +0530
+Message-ID: <20201111071404.29620-1-naveenm@marvell.com>
+X-Mailer: git-send-email 2.16.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111054356.793390-4-ben.widawsky@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_02:2020-11-10,2020-11-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 09:43:50PM -0800, Ben Widawsky wrote:
-> +config CXL_MEM
-> +        tristate "CXL.mem Device Support"
-> +        depends on PCI && CXL_BUS_PROVIDER != n
+This patch series adds support for ethtool ntuple filters, unicast
+address filtering, VLAN offload and SR-IOV ndo handlers. All of the
+above features are based on the Admin Function(AF) driver support to
+install and delete the low level MCAM entries. Each MCAM entry is
+programmed with the packet fields to match and what actions to take
+if the match succeeds. The PF driver requests AF driver to allocate
+set of MCAM entries to be used to install the flows by that PF. The
+entries will be freed when the PF driver is unloaded.
 
-depend on PCI && CXL_BUS_PROVIDER
+* The patches 1 to 4 adds AF driver infrastructure to install and
+  delete the low level MCAM flow entries.
+* Patch 5 adds ethtool ntuple filter support.
+* Patch 6 adds unicast MAC address filtering.
+* Patch 7 adds support for dumping the MCAM entries via debugfs.
+* Patches 8 to 10 adds support for VLAN offload.
+* Patch 10 to 11 adds support for SR-IOV ndo handlers.
+* Patch 12 adds support to read the MCAM entries.
 
-> +        default m if CXL_BUS_PROVIDER
+Misc:
+* Removed redundant mailbox NIX_RXVLAN_ALLOC.
 
-Please don't set weird defaults for new code.  Especially not default
-to module crap like this.
+Change-log:
+v3:
+- Fixed Saeed's review comments on v2.
+	- Fixed modifying the netdev->flags from driver.
+	- Fixed modifying the netdev features and hw_features after register_netdev.
+	- Removed unwanted ndo_features_check callback.
+v2:
+- Fixed the sparse issues reported by Jakub.
 
-> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+Hariprasad Kelam (3):
+  octeontx2-pf: Add support for unicast MAC address filtering
+  octeontx2-pf: Implement ingress/egress VLAN offload
+  octeontx2-af: Handle PF-VF mac address changes
 
-Please don't use '//' for anything but the SPDX header.
+Naveen Mamindlapalli (2):
+  octeontx2-pf: Add support for SR-IOV management functions
+  octeontx2-af: Add new mbox messages to retrieve MCAM entries
 
-> +
-> +		pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
-> +		pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
-> +		if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
-> +			return pos;
-> +
-> +		pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
+Stanislaw Kardach (1):
+  octeontx2-af: Modify default KEX profile to extract TX packet fields
 
-Overly long lines again.
+Subbaraya Sundeep (6):
+  octeontx2-af: Verify MCAM entry channel and PF_FUNC
+  octeontx2-af: Generate key field bit mask from KEX profile
+  octeontx2-af: Add mbox messages to install and delete MCAM rules
+  octeontx2-pf: Add support for ethtool ntuple filters
+  octeontx2-af: Add debugfs entry to dump the MCAM rules
+  octeontx2-af: Delete NIX_RXVLAN_ALLOC mailbox message
 
-> +static void cxl_mem_remove(struct pci_dev *pdev)
-> +{
-> +}
+Vamsi Attunuru (1):
+  octeontx2-af: Modify nix_vtag_cfg mailbox to support TX VTAG entries
 
-No need for the empty remove callback.
+ drivers/net/ethernet/marvell/octeontx2/af/Makefile |    2 +-
+ drivers/net/ethernet/marvell/octeontx2/af/common.h |    2 +
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  170 ++-
+ drivers/net/ethernet/marvell/octeontx2/af/npc.h    |  106 +-
+ .../ethernet/marvell/octeontx2/af/npc_profile.h    |   71 +-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |   16 +-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |   71 +-
+ .../ethernet/marvell/octeontx2/af/rvu_debugfs.c    |  197 +++
+ .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  305 ++++-
+ .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |  462 ++++++-
+ .../net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c | 1334 ++++++++++++++++++++
+ .../net/ethernet/marvell/octeontx2/af/rvu_struct.h |   11 +
+ .../net/ethernet/marvell/octeontx2/nic/Makefile    |    2 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_common.c   |    8 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_common.h   |   59 +
+ .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  |   58 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_flows.c    |  820 ++++++++++++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |  307 ++++-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c |   16 +
+ .../net/ethernet/marvell/octeontx2/nic/otx2_vf.c   |    5 +
+ 20 files changed, 3862 insertions(+), 160 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
 
-> +MODULE_AUTHOR("Intel Corporation");
+-- 
+2.16.5
 
-A module author is not a company.
