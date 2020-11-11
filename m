@@ -2,248 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EA62AE638
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E912AE634
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732197AbgKKCNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 21:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        id S1732091AbgKKCNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 21:13:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731810AbgKKCNo (ORCPT
+        with ESMTP id S1726861AbgKKCNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:13:44 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11185C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 18:13:44 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id o25so653465qkj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 18:13:44 -0800 (PST)
+        Tue, 10 Nov 2020 21:13:16 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20FCC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 18:13:15 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id o21so631224ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 18:13:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=W+tp6PqByVFyf+7BIq7ovR7ee/HSTPxo+nYyur7x4tk=;
-        b=XzskPPUhU0Hn8wLRTfAlu5mkhiWcLvj1r+x5iXEJjeMX6bQk7UG4sZf2gyYw2DXihp
-         3dEZhA45Lpgj/Dt/oZOsCoMMCQdgNGJSHAgRKRSZuyqpxoJNX0qJb4AWrWCsXwDpUWK6
-         GZgDYa8jNLoiPSSXDMWb1zxqHH3MxX7JmVy6VLph8rU5kH4S+R9RgGsH9GNzbgaugtYG
-         2Gw6M+HqModRMimvHPZVhn7I4/8HZPJ9QvuHmymZbTLqOhf/kWCd+5t0BKnAsSoiXOhe
-         PpsI71oTKXHMeOsMN3jZ5uBMMQukdvjTyql9zFtCyZTB+mTclThuMvmLQ8YzUSL28eHD
-         C7Yg==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=41103hI8FWw3JSOY3ZzOk1BVYmgr6In9mKvl3fRAkI8=;
+        b=KTKMv/zOS73xcCukPUb1GuVz+OE9Ty3qAtfJVTZcfPeA5J1bqv+9Va8PAjErGdNHgR
+         1G7xmF84AhTTwwrjua8RpMOwFtR9ro4zL8YLmhIukEv0R6Z+133UOEdMYnBAPrSKFHvi
+         PuW4eVIDPNHKAdBiXiFsRXFRmFZY8LN5BgQ1AHgdeZ3kKv1IfbXgjcNz0WqPDSLI/u0v
+         5PVi1F5qwnMIRgTcOR3w/dAzkSlenHtbdkD9zdvAry9c55ph3lFGK3ecQJ0xIphnaxF3
+         97HeYL7C1OPVMIB3Oc/oTRfFg13kdvzbKeXiMnObS6Z+O3DpYg9NaSQS4OIFzZtFnYx/
+         ZQ0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=W+tp6PqByVFyf+7BIq7ovR7ee/HSTPxo+nYyur7x4tk=;
-        b=AKfTzG4hItmpbaaPYWofNmi9IhQ/AbTuFpNIUvLYWjX7ToXaCO52jmDqBfCEGMPWwD
-         uSW+sSv46mr0u2VyOQ4CeNJSNpDWcBXMx/e58xRDU6wEMmgOctbuA1Apm88hefcaGydy
-         VcJRcQ6+q55elFKfiJyovWDXKb7xqY/pNSQdlfiaXOxScK8V28XVhF3epbtSBh68BC1c
-         BOHD4ZfU/igAKVUlfkm0giGPoHrN/OrXHo/NktAZcdt5XLaLn7YnN3D7MBfUk9bbKLJO
-         QTvuB8J3aIgROPUwVHT5V5FVmN75i1gdW2EDKj6G2v/PezllgdqNA3Iay+LVHWqhhrCJ
-         4b1A==
-X-Gm-Message-State: AOAM532UYv2uJG+iw9oZjn3+EKnIpQzS2Va9xUqSkyRIRbQmRn7VGVCg
-        moOdl67q7JfLLOWmRTxKqm5AqPQbdFZ8Q61IUHw=
-X-Google-Smtp-Source: ABdhPJwSC4FdAQLVj6SfNDoGwrqkKbLnTgmDa2ZIoHmS3uffZ7D/LkKe6rXbTfU3q6tJZswSpEWpGS93EBQCcuss4Cs=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:aedf:: with SMTP id
- n31mr16891447qvd.31.1605060823101; Tue, 10 Nov 2020 18:13:43 -0800 (PST)
-Date:   Tue, 10 Nov 2020 18:11:30 -0800
-Message-Id: <20201111021131.822867-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH] ACPICA: fix -Wfallthrough
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Cc:     clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        devel@acpica.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=41103hI8FWw3JSOY3ZzOk1BVYmgr6In9mKvl3fRAkI8=;
+        b=bd5HxHjPDvo8+dnGhda3U/XByDuCHFVRVydJ8orSmXZbcl8BjmatwapBvSKp+1pEn+
+         r7E2BMLVfNSxCXyMYzv4nxKvE8v93W6Xc7LarwU1BbQU8lCufObje0QQsIpiTyWh68go
+         qJwMKeX5+SX74kkHJSBWgxud5XijOXuHgtpJrUeyl+8JdYmdsnnbYZYhytKUiySWs2aT
+         dYIQjK+MesyDUW9kNfNJcwdMsy7WAZ+TLtEGD61enEYtOrWAb/7S3APszxxayRrjQ3MS
+         OnT07kY1Pyvh61upmT5Hk7vLo29twk/Zs824bBqWk2UKpOngaHj2+zSNFdAVaC4TnEYi
+         BemQ==
+X-Gm-Message-State: AOAM532sFCaR754L6KmL20Xkgv866+aboWKITPXAqTwGdr5fR3nGmIIf
+        +TDTCO6ptJheBg9qiiejBd516o1SBj5Ye9yjVvh5
+X-Google-Smtp-Source: ABdhPJwEZiYZ1o+fxF2LyOo2oZ6n+2uOJ6UBAh5FxYnx0Lq0Y2sWzNLVszxxJ8cdzRbRgUWnfc7V2ucCZgqbu304x1U=
+X-Received: by 2002:a17:906:180b:: with SMTP id v11mr22849770eje.466.1605060794521;
+ Tue, 10 Nov 2020 18:13:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20201106155626.3395468-1-lokeshgidra@google.com>
+ <20201106155626.3395468-4-lokeshgidra@google.com> <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
+ <CA+EESO7LuRM_MH9z=BhLbWJrxMvnepq-NSTu_UJsPXxc0QkEag@mail.gmail.com>
+In-Reply-To: <CA+EESO7LuRM_MH9z=BhLbWJrxMvnepq-NSTu_UJsPXxc0QkEag@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 10 Nov 2020 21:13:03 -0500
+Message-ID: <CAHC9VhQJvTp4Xx2jCDK1zMbOmXLAAm_+ZnexydgAeWz1eGKfUg@mail.gmail.com>
+Subject: Re: [PATCH v12 3/4] selinux: teach SELinux about anonymous inodes
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Nick Kralevich <nnk@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org,
+        Daniel Colascione <dancol@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "fallthrough" pseudo-keyword was added as a portable way to denote
-intentional fallthrough. This code seemed to be using a mix of
-fallthrough comments that GCC recognizes, and some kind of lint marker.
-I'm guessing that linter hasn't been run in a while from the mixed use
-of the marker vs comments.
+On Tue, Nov 10, 2020 at 1:24 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> On Mon, Nov 9, 2020 at 7:12 PM Paul Moore <paul@paul-moore.com> wrote:
+> > On Fri, Nov 6, 2020 at 10:56 AM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> > >
+> > > From: Daniel Colascione <dancol@google.com>
+> > >
+> > > This change uses the anon_inodes and LSM infrastructure introduced in
+> > > the previous patches to give SELinux the ability to control
+> > > anonymous-inode files that are created using the new
+> > > anon_inode_getfd_secure() function.
+> > >
+> > > A SELinux policy author detects and controls these anonymous inodes by
+> > > adding a name-based type_transition rule that assigns a new security
+> > > type to anonymous-inode files created in some domain. The name used
+> > > for the name-based transition is the name associated with the
+> > > anonymous inode for file listings --- e.g., "[userfaultfd]" or
+> > > "[perf_event]".
+> > >
+> > > Example:
+> > >
+> > > type uffd_t;
+> > > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
+> > > allow sysadm_t uffd_t:anon_inode { create };
+> > >
+> > > (The next patch in this series is necessary for making userfaultfd
+> > > support this new interface.  The example above is just
+> > > for exposition.)
+> > >
+> > > Signed-off-by: Daniel Colascione <dancol@google.com>
+> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > > ---
+> > >  security/selinux/hooks.c            | 53 +++++++++++++++++++++++++++++
+> > >  security/selinux/include/classmap.h |  2 ++
+> > >  2 files changed, 55 insertions(+)
+> > >
+> > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> > > index 6b1826fc3658..1c0adcdce7a8 100644
+> > > --- a/security/selinux/hooks.c
+> > > +++ b/security/selinux/hooks.c
+> > > @@ -2927,6 +2927,58 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int selinux_inode_init_security_anon(struct inode *inode,
+> > > +                                           const struct qstr *name,
+> > > +                                           const struct inode *context_inode)
+> > > +{
+> > > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
+> > > +       struct common_audit_data ad;
+> > > +       struct inode_security_struct *isec;
+> > > +       int rc;
+> > > +
+> > > +       if (unlikely(!selinux_initialized(&selinux_state)))
+> > > +               return 0;
+> > > +
+> > > +       isec = selinux_inode(inode);
+> > > +
+> > > +       /*
+> > > +        * We only get here once per ephemeral inode.  The inode has
+> > > +        * been initialized via inode_alloc_security but is otherwise
+> > > +        * untouched.
+> > > +        */
+> > > +
+> > > +       if (context_inode) {
+> > > +               struct inode_security_struct *context_isec =
+> > > +                       selinux_inode(context_inode);
+> > > +               isec->sclass = context_isec->sclass;
+> > > +               isec->sid = context_isec->sid;
+> >
+> > I suppose this isn't a major concern given the limited usage at the
+> > moment, but I wonder if it would be a good idea to make sure the
+> > context_inode's SELinux label is valid before we assign it to the
+> > anonymous inode?  If it is invalid, what should we do?  Do we attempt
+> > to (re)validate it?  Do we simply fallback to the transition approach?
+>
+> Frankly, I'm not too familiar with SELinux. Originally this patch
+> series was developed by Daniel, in consultation with Stephen Smalley.
+> In my (probably naive) opinion we should fallback to transition
+> approach. But I'd request you to tell me if this needs to be addressed
+> now, and if so then what's the right approach.
+>
+> If the decision is to address this now, then what's the best way to
+> check the SELinux label validity?
 
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- drivers/acpi/acpica/dscontrol.c | 3 +--
- drivers/acpi/acpica/dswexec.c   | 4 +---
- drivers/acpi/acpica/dswload.c   | 3 +--
- drivers/acpi/acpica/dswload2.c  | 3 +--
- drivers/acpi/acpica/exfldio.c   | 3 +--
- drivers/acpi/acpica/exresop.c   | 5 ++---
- drivers/acpi/acpica/exstore.c   | 6 ++----
- drivers/acpi/acpica/hwgpe.c     | 3 +--
- drivers/acpi/acpica/utdelete.c  | 3 +--
- drivers/acpi/acpica/utprint.c   | 2 +-
- 10 files changed, 12 insertions(+), 23 deletions(-)
+You can check to see if an inode's label is valid by looking at the
+isec->initialized field; if it is LABEL_INITIALIZED then it is all
+set, if it is any other value then the label isn't entirely correct.
+It may have not have ever been fully initialized (and has a default
+value) or it may have live on a remote filesystem where the host has
+signaled that the label has changed (and the label is now outdated).
 
-diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscontrol.c
-index 4b5b6e859f62..1e75e5fbfd19 100644
---- a/drivers/acpi/acpica/dscontrol.c
-+++ b/drivers/acpi/acpica/dscontrol.c
-@@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
- 				break;
- 			}
- 		}
--
--		/*lint -fallthrough */
-+		fallthrough;
- 
- 	case AML_IF_OP:
- 		/*
-diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c
-index 1d4f8c81028c..e8c32d4fe55f 100644
---- a/drivers/acpi/acpica/dswexec.c
-+++ b/drivers/acpi/acpica/dswexec.c
-@@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
- 				if (ACPI_FAILURE(status)) {
- 					break;
- 				}
--
--				/* Fall through */
--				/*lint -fallthrough */
-+				fallthrough;
- 
- 			case AML_INT_EVAL_SUBTREE_OP:
- 
-diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c
-index 27069325b6de..afc663c3742d 100644
---- a/drivers/acpi/acpica/dswload.c
-+++ b/drivers/acpi/acpica/dswload.c
-@@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_state,
- 			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
- 				break;
- 			}
--
--			/*lint -fallthrough */
-+			fallthrough;
- 
- 		default:
- 
-diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload2.c
-index edadbe146506..1b794b6ba072 100644
---- a/drivers/acpi/acpica/dswload2.c
-+++ b/drivers/acpi/acpica/dswload2.c
-@@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
- 			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
- 				break;
- 			}
--
--			/*lint -fallthrough */
-+			fallthrough;
- 
- 		default:
- 
-diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c
-index ade35ff1c7ba..9d1cabe0fed9 100644
---- a/drivers/acpi/acpica/exfldio.c
-+++ b/drivers/acpi/acpica/exfldio.c
-@@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
- 		 * Now that the Bank has been selected, fall through to the
- 		 * region_field case and write the datum to the Operation Region
- 		 */
--
--		/*lint -fallthrough */
-+		fallthrough;
- 
- 	case ACPI_TYPE_LOCAL_REGION_FIELD:
- 		/*
-diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c
-index 4d1b22971d58..df48faa9a551 100644
---- a/drivers/acpi/acpica/exresop.c
-+++ b/drivers/acpi/acpica/exresop.c
-@@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
- 				case ACPI_REFCLASS_DEBUG:
- 
- 					target_op = AML_DEBUG_OP;
--
--					/*lint -fallthrough */
-+					fallthrough;
- 
- 				case ACPI_REFCLASS_ARG:
- 				case ACPI_REFCLASS_LOCAL:
-@@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
- 			 * Else not a string - fall through to the normal Reference
- 			 * case below
- 			 */
--			/*lint -fallthrough */
-+			fallthrough;
- 
- 		case ARGI_REFERENCE:	/* References: */
- 		case ARGI_INTEGER_REF:
-diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c
-index 3adc0a29d890..2067baa7c120 100644
---- a/drivers/acpi/acpica/exstore.c
-+++ b/drivers/acpi/acpica/exstore.c
-@@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
- 		if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
- 			return_ACPI_STATUS(AE_OK);
- 		}
--
--		/*lint -fallthrough */
-+		fallthrough;
- 
- 	default:
- 
-@@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_object *source_desc,
- 				}
- 				break;
- 			}
--
--			/* Fallthrough */
-+			fallthrough;
- 
- 		case ACPI_TYPE_DEVICE:
- 		case ACPI_TYPE_EVENT:
-diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
-index b13a4ed5bc63..fbfad80c8a53 100644
---- a/drivers/acpi/acpica/hwgpe.c
-+++ b/drivers/acpi/acpica/hwgpe.c
-@@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
- 		if (!(register_bit & gpe_register_info->enable_mask)) {
- 			return (AE_BAD_PARAMETER);
- 		}
--
--		/*lint -fallthrough */
-+		fallthrough;
- 
- 	case ACPI_GPE_ENABLE:
- 
-diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
-index 4c0d4e434196..8076e7947585 100644
---- a/drivers/acpi/acpica/utdelete.c
-+++ b/drivers/acpi/acpica/utdelete.c
-@@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
- 			(void)acpi_ev_delete_gpe_block(object->device.
- 						       gpe_block);
- 		}
--
--		/*lint -fallthrough */
-+		fallthrough;
- 
- 	case ACPI_TYPE_PROCESSOR:
- 	case ACPI_TYPE_THERMAL:
-diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
-index 681c11f4af4e..f7e43baf5ff2 100644
---- a/drivers/acpi/acpica/utprint.c
-+++ b/drivers/acpi/acpica/utprint.c
-@@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
- 		case 'X':
- 
- 			type |= ACPI_FORMAT_UPPER;
--			/* FALLTHROUGH */
-+			fallthrough;
- 
- 		case 'x':
- 
+This patchset includes support for userfaultfd, which means we don't
+really have to worry about the remote fs problem, but the
+never-fully-initialized problem could be real in this case.  Normally
+we would revalidate an inode in SELinux by calling
+__inode_security_revalidate() which requires either a valid dentry or
+one that can be found via the inode; does d_find_alias() work on
+userfaultfd inodes?
+
+If all else fails, it seems like the safest approach would be to
+simply fail the selinux_inode_init_security_anon() call if a
+context_inode was supplied and the label wasn't valid.  If we later
+decide to change it to falling back to the transition approach we can
+do that, we can't go the other way (from transition to error).
+
+> > > +       } else {
+> > > +               isec->sclass = SECCLASS_ANON_INODE;
+> > > +               rc = security_transition_sid(
+> > > +                       &selinux_state, tsec->sid, tsec->sid,
+> > > +                       isec->sclass, name, &isec->sid);
+> > > +               if (rc)
+> > > +                       return rc;
+> > > +       }
+> > > +
+> > > +       isec->initialized = LABEL_INITIALIZED;
+> > > +
+> > > +       /*
+> > > +        * Now that we've initialized security, check whether we're
+> > > +        * allowed to actually create this type of anonymous inode.
+> > > +        */
+> > > +
+> > > +       ad.type = LSM_AUDIT_DATA_INODE;
+> > > +       ad.u.inode = inode;
+> > > +
+> > > +       return avc_has_perm(&selinux_state,
+> > > +                           tsec->sid,
+> > > +                           isec->sid,
+> > > +                           isec->sclass,
+> > > +                           FILE__CREATE,
+> >
+> > I believe you want to use ANON_INODE__CREATE here instead of FILE__CREATE, yes?
+>
+> ANON_INODE__CREATE definitely seems more appropriate. I'll change it
+> in the next revision.
+>
+> > This brings up another question, and requirement - what testing are
+> > you doing for this patchset?  We require that new SELinux kernel
+> > functionality includes additions to the SELinux test suite to help
+> > verify the functionality.  I'm also *strongly* encouraging that new
+> > contributions come with updates to The SELinux Notebook.  If you are
+> > unsure about what to do for either, let us know and we can help get
+> > you started.
+> >
+> > * https://github.com/SELinuxProject/selinux-testsuite
+> > * https://github.com/SELinuxProject/selinux-notebook
+> >
+> I'd definitely need help with both of these. Kindly guide how to proceed.
+
+Well, perhaps the best way to start is to explain how you have been
+testing this so far and then using that information to draft a test
+for the testsuite.
+
 -- 
-2.29.2.222.g5d2a92d10f8-goog
-
+paul moore
+www.paul-moore.com
