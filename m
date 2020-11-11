@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA2D2AEF41
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE9B2AEF40
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKKLLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:11:55 -0500
-Received: from mail-eopbgr40070.outbound.protection.outlook.com ([40.107.4.70]:15499
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726036AbgKKLLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:11:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PgU8GA3TThS/0TKYyYjdsb0Xvfykvtc3zHzt82M6Hl+FJsgbfFe4tyXtEksLEBjUV64k2432GoXR71gCImb/DUgYuWoLL04hE6taBC2xUS6AgMydW/cT/erIeSSbi/XFZbdlcm5XBXGEp1Vovzs6rSJMimB4c/Ddkf1XslVWEu9t8CRDARhNzCPFlyu7cTGozqLlCB4NJs8Lf/PbKcqCqLAdREAH1J9UeBEkqaANWkaqb9fLFINiPLFdKhTVAq38l17BiRsynew4kaEjFqvp6ZHoCfVR5HyGlvh6TAR51/Jz+nO3OJavOusIiHzAkCvxUxBCwMgoWWDJqwgqWQy0Gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v3Pw1qtjKZJ4yuJsVHhs4tCY0f9/NQQ08BwrznZNqpY=;
- b=JSjvQ3hxxWGpUo4j5BellyIo5+aZA27zTCi5c7RTnagwrI5nwrZPZZwQsCTD+4b0hpS92/CnkCQYS/5cG3GtYWsbEjBRZMOsViJw/jRHl7CWvLuHwFbPG8FtzFyVhjxsNzp5r/d7hyWSo3I8JnSp/NUIUB/6kCppOVxGoYZ32koGueIt5SJ+XLO6UAHuvk5ePBAyRPtie/GJZmYy0qfUT1AhL/pHDFCA+U3WEL6g0qshlvnW0cP1TB83eVnZmQHEK7B83snDZsatOv/E3G2gWJ3JhrOo3BXS4vwxvsbRzZnzuZOrGK7nKC3PS0dm+DrG7gxyqTgqiKH9B1juEEMLMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v3Pw1qtjKZJ4yuJsVHhs4tCY0f9/NQQ08BwrznZNqpY=;
- b=jdjiYo6I/q7HiscN1mmOculXjA2Rgj5KVx1V4CmvoGbN/7ZkWPXej1re7GcgYAsGI1kcZdDEX/X/z4xDzQBt1mHe3W6VtQ/8C0ngTFUOXmZUZ1E6UH8Tu1+nBq7SfkFR0GwJ3Ukaql1bfR+k2TI+Nq4ZgJt8Yn+/CSpSfWIF6f4=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
- (2603:10a6:800:2e::19) by VI1PR04MB5774.eurprd04.prod.outlook.com
- (2603:10a6:803:eb::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 11 Nov
- 2020 11:11:45 +0000
-Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
- ([fe80::a893:e288:b01d:599c]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
- ([fe80::a893:e288:b01d:599c%6]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
- 11:11:45 +0000
-From:   Daniel Baluta <daniel.baluta@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, paul.olaru@nxp.com,
-        shengjiu.wang@nxp.com
-Subject: [PATCH RESEND 0/3] Allow on demand channel request / free
-Date:   Wed, 11 Nov 2020 13:11:15 +0200
-Message-Id: <20201111111118.21824-1-daniel.baluta@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [83.217.231.2]
-X-ClientProxiedBy: AM0PR10CA0005.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::15) To VI1PR0401MB2287.eurprd04.prod.outlook.com
- (2603:10a6:800:2e::19)
+        id S1726325AbgKKLLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:11:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKKLL1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:11:27 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739E4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:11:27 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id m65so954993qte.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:11:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VPSfk1DzzMwkClF1T0Gvn+w9FrgwTmCSdwXk7GPFAA4=;
+        b=FzxZWQjkYeerxwpVpt91L6A4qMW57eE7XsecG7FaMy8r6iFfuSI8MKchBU0DWkJiis
+         /2jWKk3JFcMctHKYNg5TTUwitfNSVPjpQJJtK/ygIWHhJ3QW8LvyrhCP1/afeRhtHgZA
+         gVMLT6QJ5J14kTOPUXrhPSUb3EkwINTVbOanAPE01ghqZ/In7QWWkzh40WyovBoca+8s
+         AaAqDM8l8umyEkhgFqyalpgCoEanSBOeU/Ub/nht3L4wZpwDj9EdE1pBkAtathL7V0pQ
+         1wcOQpHXcb4DEQhNoo1vPfqjDHk5ZiMH3GWRWWv/MI3tYJFeJa165gvuHnuRKTDoKYDV
+         Xgcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VPSfk1DzzMwkClF1T0Gvn+w9FrgwTmCSdwXk7GPFAA4=;
+        b=BW30Y4q462uZrjbH1wTcrUrEcvktC7isO/hFN2+6eAhR9kRfllZ31YKOT029UU3M2H
+         kfYOoOk29R6HYStF/QFLe6uzJb1mJIGOFidIy/3bPOo66mZzTqBGpTF/+BfwEhfXWZRo
+         fF5s+RrFp90ZgLIWLsMTqJ1P6Ey8BLCGDnKqrwUpEHFjPXQvQWaiqWYWTQ/oOPz5JbuM
+         9JSAtkVHQYFFnIVpR4TCkHK4Q53qQ0Dc+INLb0b9Np/+SJcrKfbdQCBi7DjvNJsJ1AIb
+         aRsxA0+ppwzEaVJzjfUs2zgyTq5NxAucIGYBYpdBpYUnMTbCd+7IfFMwnh8MUxgdteLn
+         hZmQ==
+X-Gm-Message-State: AOAM530No0VzlIRDthQ1lsU88Q/8ohAbxvgmJPB/9oZP6C5UoyYLAH9m
+        +GFYuCUeRdoCVK/ndDVeW+l9yGpV/OV3wX1Kl6MDUg==
+X-Google-Smtp-Source: ABdhPJypPYaomSrYo7uejc9+V65fbmzOQzUuJqhpp6C1UzwaUeWcLEXhPW4kbRijVBnzvygXaNG1TZuzbNARNjQr8+s=
+X-Received: by 2002:aed:2744:: with SMTP id n62mr23587399qtd.67.1605093086373;
+ Wed, 11 Nov 2020 03:11:26 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1864-103.ro-buh02.nxp.com (83.217.231.2) by AM0PR10CA0005.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Wed, 11 Nov 2020 11:11:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9a04323a-4349-4e8f-641d-08d886329302
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5774:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5774262B09F0EE0EAAB68549F9E80@VI1PR04MB5774.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HQCkHXwqBBjJvjU4BEU9cA/c7yihbxPy4Fx8sBPqP+W1sm0GBJ9n/F3Bf7uxXJ7oT+XRSsVeiS+mL1lEoYycm460VCjbqYNfS7t9dVDvn7bs7TJJcP2N9pl898lkxPza57WRerJsN8Z2NJOswRHXJJ/5quHrc1X+8OC/wpN9izjSlMTdL/OcbQqJvT3U/+qFlTDdhu5BM9y3c6Btdr+a3gLlcJB9SISjU6+QEOc0fW+HAsqeIV/DGPGMexgpdeppMLyx03S3Rbx/VAp/ou82xKLVKRkTzzGpSewgGq6QbQ/bc4o7BZRq/JuYA5iJblX2W1hvZlRpI0U1GeVlC+17Mg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(8676002)(66946007)(52116002)(8936002)(86362001)(2616005)(956004)(7696005)(478600001)(4326008)(44832011)(66556008)(6486002)(5660300002)(66476007)(186003)(26005)(6666004)(1076003)(16526019)(4744005)(6916009)(36756003)(83380400001)(2906002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: hCcB0y4lZ/dspYLaSGM9HJkwXONYe1eXGrSntnRmYZ89AiJpbR2YTNG2KQiYptGYWh7h3M3cbvZF0v7gQROCd0un50i4Lo9MYTpZbSBgNOQ+Kcns91/QjH1CIIu9Ws8RvaapYYP9gzxInpA7mGuBLgmhiZebzFSf3xd6DuZhUZgCjRTewcjcyNS29cp83hKcKFIUAlYe33slQ9Q9J4/9JOnb9Dhj5IqYB+8lcp/6NyyBiTYW4keJyaqZDkWX6jEmf367d0Xlxmi0sYCMD/Dxwvvx8cW755ZFNrCShtRpRJLMK1bIj8Eu3zMMuUgItllLehbRsFOLdUPAcC6QXaTxlp5TCpMEBo4STkQYFde5XOZ+0RgDkq8qBJM0BDjGVJzkYMOC6biLFPwjqFyT9tTnz3YlS5TO9oEtOTUw2TEj0lAoB+l1RDU+2h8k6NE+77p8A+bMBaMAIwlxuZgi0Y+Bd1oflxzhTFUNedVpG2AEhJ96aBwYVgKaOCnC8lnMBb3akmC7zZACQzWBGHNG2ActzVqz8226UD3Vc5cZQZtH0COEojJqDlQvds7j8+0qiCqggSz3ZTxT/YWFHId83EQ49JSwm0McOPQDhQb8kbOeQSKyBlh8es943OB1scsj9h9gIzoZSeV5xvYX3hP8uP6ka5LzKzbc9renUV/cVCc9Ud2IZ477SNEKBKywaBEsu+RXdT+cRurUs/E2IWUnCuqpuKqNbr4/elvxVg6yXHLowrQVMyvZZ1J8+SCWMb+gKU2h48jq2wDRt8Xnx1GhfO3HnIKMxWIYPDw/mnxX5X8xkn5sC5a4uBFXcVJTT5bu9G1mVEXrZHctiGSVhnIiy82hSGOuIVzZtTvQD+c4XESvVMrY4n3Iod62nYjtAwyTd04JCky90u6igCPTuGlnwbxiIQ==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a04323a-4349-4e8f-641d-08d886329302
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2020 11:11:45.1301
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jCGhtGD7O0bS2Omwmx7qo9ivyCZJqka03RsH42Hm5++7nILcs027GrU+Za5n1N4R0IaEJgIlI8l5zpdjaFCmwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5774
+References: <00000000000052792305af1c7614@google.com> <00000000000022d95405b308d905@google.com>
+In-Reply-To: <00000000000022d95405b308d905@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 11 Nov 2020 12:11:15 +0100
+Message-ID: <CACT4Y+Y6RajGXJOcXt5UNMoC9hiK9Cuno1sk6bAWgb8GO=i+EA@mail.gmail.com>
+Subject: Re: BUG: unable to handle kernel paging request in pvclock_gtod_notify
+To:     syzbot <syzbot+815c663e220da75b02b6@syzkaller.appspotmail.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Requesting an mailbox channel will call mailbox's startup
-function.
+On Sun, Nov 1, 2020 at 11:11 AM syzbot
+<syzbot+815c663e220da75b02b6@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit a49145acfb975d921464b84fe00279f99827d816
+> Author: George Kennedy <george.kennedy@oracle.com>
+> Date:   Tue Jul 7 19:26:03 2020 +0000
+>
+>     fbmem: add margin check to fb_check_caps()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17499724500000
+> start commit:   60e72093 Merge tag 'clk-fixes-for-linus' of git://git.kern..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+> dashboard link: https://syzkaller.appspot.com/bug?extid=815c663e220da75b02b6
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1162b04d900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135e7383900000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: fbmem: add margin check to fb_check_caps()
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-startup function calls pm_runtime_get_sync which increments device usage
-count and will keep the device active. Specifically, mailbox clock will
-be always ON when a mailbox channel is requested.
-
-For this, reason we introduce a way to request/free IMX DSP channels
-on demand to save power when the channels are not used.
-
-First two patches are doing code refactoring preparing the path
-for 3rd patch which exports functions for on demand channel request/free
-
-
-Daniel Baluta (3):
-  firmware: imx: Introduce imx_dsp_setup_channels
-  firmware: imx: Save channel name for further use
-  firmware: imx-dsp: Export functions to request/free channels
-
- drivers/firmware/imx/imx-dsp.c   | 72 ++++++++++++++++++++++++--------
- include/linux/firmware/imx/dsp.h | 10 +++++
- 2 files changed, 64 insertions(+), 18 deletions(-)
-
--- 
-2.17.1
-
+#syz fix: fbmem: add margin check to fb_check_caps()
