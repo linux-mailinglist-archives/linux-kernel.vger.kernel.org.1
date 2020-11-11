@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3AC2AEED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF602AEED8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgKKKhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:37:17 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3278 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKKhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:37:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fabbed70000>; Wed, 11 Nov 2020 02:37:11 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
- 2020 10:37:14 +0000
-Received: from moonraker.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 11 Nov 2020 10:37:12 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     JC Kuo <jckuo@nvidia.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        "Vinod Koul" <vkoul@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] phy: tegra: Don't warn on probe deferral
-Date:   Wed, 11 Nov 2020 10:37:08 +0000
-Message-ID: <20201111103708.152566-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726037AbgKKKhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:37:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:46722 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725860AbgKKKhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:37:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82A78101E;
+        Wed, 11 Nov 2020 02:37:19 -0800 (PST)
+Received: from bogus (unknown [10.57.15.107])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7324D3F6CF;
+        Wed, 11 Nov 2020 02:37:17 -0800 (PST)
+Date:   Wed, 11 Nov 2020 10:37:11 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] dt-bindings: arm: Add optional interrupt to
+ smc/hvc SCMI transport
+Message-ID: <20201111103711.h6hez4d6t3uxat3b@bogus>
+References: <20201110183827.19731-1-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605091031; bh=BvyW3flY3VfWoU/iKHgsKZMEtMA4ZQy5sZEOEeAGGSM=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=pnAWsDCyXUEKTKvxQxOT4wEhLvQMdi3lT8pOCO53Tvn8wGiSjkgat7FvUUnmhTA49
-         e9T9QZXmi13eQwWyjwIaT4RbXh3WUFw39A4lZzCrogWWMZrWSacGAIC8pEvf0C0AQP
-         Ezq/4Ldhy3g0qHmbuznXUQj1kWhHUVyLqAk4rt8q2K/W+BsE+FbOVhu765FHmb01Ee
-         eQo3zA2BJJtaYKLmPsjmEu6Asowz+kq5JpB2/TwZS3q0sCzviKV6KmCwtd57Cdv2yC
-         sCL1rswPEWTko2LSWkYzIns2Dnnfvvk/iRSILbVRl3Ff+rWDO+JS42E90WBX/vd90U
-         +uoV6XKqixaZg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110183827.19731-1-james.quinlan@broadcom.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deferred probe is an expected return value for devm_regulator_bulk_get().
-Given that the driver deals with it properly, there's no need to output a
-warning that may potentially confuse users.
+On Tue, Nov 10, 2020 at 01:38:18PM -0500, Jim Quinlan wrote:
+> This change allows the SCMI "platform" to use the smc/hvc transport and to
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- drivers/phy/tegra/xusb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Incorrect statement above, it is OSPM using SMC/HVC as transport and not
+the "platform" which refers to entity/firmware implementing SCMI
+services to OSPM. Also this change is not adding SMC/HVC, just the
+interrupt support.
 
-diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
-index ad88d74c1884..2eafb813825b 100644
---- a/drivers/phy/tegra/xusb.c
-+++ b/drivers/phy/tegra/xusb.c
-@@ -1200,7 +1200,7 @@ static int tegra_xusb_padctl_probe(struct platform_de=
-vice *pdev)
- 	err =3D devm_regulator_bulk_get(&pdev->dev, padctl->soc->num_supplies,
- 				      padctl->supplies);
- 	if (err < 0) {
--		dev_err(&pdev->dev, "failed to get regulators: %d\n", err);
-+		dev_err_probe(&pdev->dev, err, "failed to get regulators\n");
- 		goto remove;
- 	}
-=20
---=20
-2.25.1
+> optionally indicate the completion of an SCMI message with an interrupt.
+> This is in contrast to the nominal case where the return of the SMC call
+> indicates message completion.
+>
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> ---
+>  Documentation/devicetree/bindings/arm/arm,scmi.txt | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> index 55deb68230eb..d3b0c9f387fe 100644
+> --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> @@ -31,6 +31,14 @@ Optional properties:
+>
+>  - mbox-names: shall be "tx" or "rx" depending on mboxes entries.
+>
+> +- interrupts : when using smc or hvc transports, this optional
+> +	 property indicates that msg completion by the platform is indicated
 
+s/msg/message/
+
+> +	 by an interrupt rather than by the return of the smc call. This
+> +	 should not be used except when the platform requires such behavior.
+> +
+> +- interrupt-names : the name must be "msg-serviced".
+
+Is this mandatory if "interrupts" is present ?
+
+> +
+> +
+
+Extra blank line ?
+
+--
+Regards,
+Sudeep
