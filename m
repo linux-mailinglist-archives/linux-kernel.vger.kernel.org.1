@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637D22AFC5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3542AFC59
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgKLBfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728843AbgKLBfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 11 Nov 2020 20:35:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727865AbgKKXQ7 (ORCPT
+        with ESMTP id S1727861AbgKKXQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:16:59 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA03FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 15:16:58 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id a9so4590421lfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 15:16:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9CWWrQNlrqNu3PmdGxq8JyJTFPup9rQoNWJqUzri1lE=;
-        b=LpRBAHuzcK4BzoEFa+JKRIKn4Nl1L6dIrf3fXK2LuUBNgbmsc7ju8+9L0dVHtXRj9a
-         UMEJN1of4BPh/ZrUgufIDU/M5DWzS2a1ZZF8jbepSugzsMJbtlvs9kind5fCiwDZdQy9
-         KColWYr9qQV6HNQE9KaKOntW7SRqLOlyEQQgE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9CWWrQNlrqNu3PmdGxq8JyJTFPup9rQoNWJqUzri1lE=;
-        b=GlroYl+Pcs72D1XgtpiYvQ0r+4uwI2YPzb5+TTsolhJ0TGatMqm4LjvbfKJWIoLXf+
-         DXA4VuYvvp7V+B5vcxKJYKagQCAywbP5Fiu/fxwwmmBdwiZlFl9dhyY9YOxCTVbuCowG
-         P13V1OQIJPqbRlYmaCIzTYieWHJDeC2ZNmV8d9SO32jOwvWXawx9FZM7WCx2k2YUecbP
-         SvzKGpmTT/nAyc992KHPZ23jgBEiJ2Ui0BIj2uCepQAej5pTzJIlTYLZDo4eo68FkFok
-         TUBusXOknBcjNMlfCNuQHKIIYHcNVBxQ68Sqf0jepjPEtngJ8kyScMtmigOcQmf8T0V8
-         oFlg==
-X-Gm-Message-State: AOAM531fLdM+KeNwTR2TWValy2h0dX3/L76yiSbh13RqnOUYgdbNiFVP
-        P1NnE3gFPa0OWAZi0QBHrGDYgkrIxV2vHg==
-X-Google-Smtp-Source: ABdhPJyzfBMVD213rXK0NG5hdtcRf8PbpTg9SvVMgRFPTxSOF+/TXNDCukIVhPqXddBX50yKZk+qLw==
-X-Received: by 2002:a19:6753:: with SMTP id e19mr9799540lfj.425.1605136617061;
-        Wed, 11 Nov 2020 15:16:57 -0800 (PST)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id k23sm253206ljc.75.2020.11.11.15.16.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 15:16:56 -0800 (PST)
-Received: by mail-lf1-f54.google.com with SMTP id d17so5549644lfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 15:16:55 -0800 (PST)
-X-Received: by 2002:a19:c1c5:: with SMTP id r188mr7786174lff.354.1605136614924;
- Wed, 11 Nov 2020 15:16:54 -0800 (PST)
+        Wed, 11 Nov 2020 18:16:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B5DC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 15:16:53 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605136611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBC1a6+oJdZ9ZhegVBbSXHq4ymUdKp4wpPY9WVvD+4U=;
+        b=OOLLK61iYru4uJUTQBw5YiR2s/geKPg0svNv9uNW5zGWYP6EG1MT5u4GcNWrZs/SrOpt41
+        I2wxIJl+MYMpsUH54rDPtPeJkGkQ8UrZ1cT35ottJnXEi7vQn2uqq3c7V6n19S5lj5zeZy
+        xM1qEkjPFFHTr3stetkYGAemQNeMetqm2hZDPkqtMOTiCnDtxpIzB4hELqYWp0NN6Opptp
+        2JeCs+5wOGyZoNvCRDu5vj6G+IWxeASKi1T7HUjrAXhXzsKmm9ScnpX0LfWgWJVjFC+u/d
+        AgVsbzYUXnN/NsX1EdYRqChJ3AhKjmZ/kelNMJQjB1hLJiX+a8p6fq9sC5JyLA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605136611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBC1a6+oJdZ9ZhegVBbSXHq4ymUdKp4wpPY9WVvD+4U=;
+        b=Mq86teNZY0ss8LzRve+zEkGiFTpJ0SrNz+jQFtcnaD3JVmOB1kvIKM3eg4OBOJh8ZUXBBj
+        1uZdCUNe7azcWYDg==
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, alexander.levin@microsoft.com,
+        daniel.vetter@ffwll.ch, chris@chris-wilson.co.uk,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+        amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com
+Subject: Re: [RFC] Are you good with Lockdep?
+In-Reply-To: <20201111093609.1bd2b637@gandalf.local.home>
+References: <20201111050559.GA24438@X58A-UD3R> <20201111105441.GA78848@gmail.com> <20201111093609.1bd2b637@gandalf.local.home>
+Date:   Thu, 12 Nov 2020 00:16:50 +0100
+Message-ID: <87d00jo55p.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201110144932.1.I54a30ec0a7eb1f1b791dc9d08d5e8416a1e8e1ef@changeid>
- <20201111221400.GT4077@smile.fi.intel.com>
-In-Reply-To: <20201111221400.GT4077@smile.fi.intel.com>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Wed, 11 Nov 2020 15:16:18 -0800
-X-Gmail-Original-Message-ID: <CAE=gft6CpRsEt_MRyCZ0-NheBVgjTqp+omCJXeLUj1sExNHADg@mail.gmail.com>
-Message-ID: <CAE=gft6CpRsEt_MRyCZ0-NheBVgjTqp+omCJXeLUj1sExNHADg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: intel: Fix Jasperlake hostown offset
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Andy Shevchenko <andy@kernel.org>, stable@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:13 PM Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
->
-> On Tue, Nov 10, 2020 at 02:49:49PM -0800, Evan Green wrote:
-> > GPIOs that attempt to use interrupts get thwarted with a message like:
-> > "pin 161 cannot be used as IRQ" (for instance with SD_CD). This is because
-> > the JSL_HOSTSW_OWN offset is incorrect, so every GPIO looks like it's
->
-> Simply HOSTSW_OWN, and same spelling in the subject, please.
->
-> > owned by ACPI.
->
->
-> > Signed-off-by: Evan Green <evgreen@chromium.org>
->
-> > Fixes: e278dcb7048b1 ("pinctrl: intel: Add Intel Jasper Lake pin
-> > controller support")
->
-> It must be one line, and put it first in the tag block
->
->
-> > Cc: stable@vger.kernel.org
->
-> This is second one...
->
->  Fixes: ...
->  Cc: ...
->  SoB: ...
+On Wed, Nov 11 2020 at 09:36, Steven Rostedt wrote:
+> Ingo Molnar <mingo@kernel.org> wrote:
+>> Not sure I understand the "problem 2)" outlined here, but I'm looking 
+>> forward to your patchset!
+>> 
+> I think I understand it. For things like completions and other "wait for
+> events" we have lockdep annotation, but it is rather awkward to implement.
+> Having something that says "lockdep_wait_event()" and
+> "lockdep_exec_event()" wrappers would be useful.
 
-Thanks, will fix these things, spinning now.
--Evan
+Wrappers which make things simpler are always useful, but the lack of
+wrappers does not justify a wholesale replacement.
+
+We all know that lockdep has limitations but I yet have to see a proper
+argument why this can't be solved incrementaly on top of the existing
+infrastructure.
+
+That said, I'm not at all interested in a wholesale replacement of
+lockdep which will take exactly the same amount of time to stabilize and
+weed out the shortcomings again.
+
+Thanks,
+
+        tglx
+
