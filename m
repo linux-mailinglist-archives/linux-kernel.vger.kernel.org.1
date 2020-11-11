@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E6D2AFC6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCD12AFC6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgKLBgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:36:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727973AbgKKXqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:46:11 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295BDC0613D1;
-        Wed, 11 Nov 2020 15:46:11 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id oq3so5119036ejb.7;
-        Wed, 11 Nov 2020 15:46:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3KAP3Nl0z4nLvFD3AoJReAEabMF3qVl2uypc3vIJttw=;
-        b=c4NkUVrsn9E3aTeaXZbM0J7Mk69TCF+R/fSMurkCEc3X2Y9z1hbYlWFv0odwy3JX0R
-         2MnXZdFkx1H2KlCQOnkWa6hzaXPJYIvjpNTTI9PHYQFI5qnEnSzWJbS3kvRpsv6p5erf
-         fLbSvCYNVKZbAHkL0PGT4eFy/7l78YRJkErbAld1aDkfadxk//54ZW/AP1IOjllgeudR
-         SkcYijNE+5V+RMh+Q/zrl+DyCN3SJlTpmbFoSKcE//PYeMnDt9zMFC8R3ous+KoUU2vW
-         nb+R6f3jmJXtpfDEqQVunhEuXpdn9j9nTE4VB9XicXxA9f4qxZWQSQFxsQkSE6FfxHy4
-         +zFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3KAP3Nl0z4nLvFD3AoJReAEabMF3qVl2uypc3vIJttw=;
-        b=KC6XOi3mC0V6o3T3eh7MPqs7C4BgJuVHsKRC3ggkzV/uuo+IvTIdjaoGn/FAoTQMT1
-         lhU9K2ksN0XUCRsmyMQ9fZ00C278Cvdm0PWenPEosCn8Ofw2Y5y2MwMDHJWco8XdAfCl
-         SUH307dzYLn1tbnTFoalP01KGr56BcTe6CQbmyhVWUgAuZNAIMWCOZ1ba3uwXBBV19Jx
-         hH9VCrZVTeZGMcsGx1BmIAR7C4E5agw+eKcFai5Bh+CYumDie1bKZBeWwkDnpUZ6vWPk
-         wf7jo5YPwq0QXV5o5zhO9rW+Fpczyun2xNWR8VKiqqwoJUs00xakHa1opZGvxCz/6FRp
-         VZeA==
-X-Gm-Message-State: AOAM531UriWndvFk7mHoxsb4vgY+Tqg2/bySHubHkGsBTre3SpSYO5A9
-        sInzx7+V7HcNCfMfVTEH5Hw=
-X-Google-Smtp-Source: ABdhPJzfPG9wCJ4mv/E9+Pl7jafxDs6JwoDjkGTK9sYmwz0pPmrG8j9qirZt9TCI9v90zbv5bO5xLg==
-X-Received: by 2002:a17:906:519e:: with SMTP id y30mr26828559ejk.186.1605138369835;
-        Wed, 11 Nov 2020 15:46:09 -0800 (PST)
-Received: from vm1 (ip-86-49-65-192.net.upcbroadband.cz. [86.49.65.192])
-        by smtp.gmail.com with ESMTPSA id a1sm1557208edk.52.2020.11.11.15.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 15:46:09 -0800 (PST)
-Date:   Thu, 12 Nov 2020 00:46:06 +0100
-From:   Zdenek Kaspar <zkaspar82@gmail.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH] kvm: x86/mmu: Fix is_tdp_mmu_check when using PAE
-Message-ID: <20201112004606.48c339a6.zkaspar82@gmail.com>
-In-Reply-To: <20201111185337.1237383-1-bgardon@google.com>
-References: <20201111185337.1237383-1-bgardon@google.com>
+        id S1729042AbgKLBgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:36:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727980AbgKKXvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 18:51:38 -0500
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7344F2072E;
+        Wed, 11 Nov 2020 23:51:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605138698;
+        bh=Bnysz1SWZLS1NXyPCnT4+UuJ3xo5lYN3H57fCgkSVeA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=l30fHDl+Osgo3vJ0PjfanjoDNsl17YpUYU10RqYqG6MyIDK/ijTj4Z9F0r0V6OjI2
+         GOhPfzQMiXnbaRKzKv1AYQUl3+8RzqTUP1dXTeQKxY7SQQr+qbZ0MjzkWFXrmmuOvU
+         Ripk5PSpt2lNAxKk1uOoMyq3ligpl++SDMdvdPX4=
+Message-ID: <925dda9b15044c8a19ac2017d4b135209e1f6184.camel@kernel.org>
+Subject: Re: [RFC PATCH] ceph: fix cross quota realms renames with new
+ truncated files
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Patrick Donnelly <pdonnell@redhat.com>
+Date:   Wed, 11 Nov 2020 18:51:36 -0500
+In-Reply-To: <87361feojx.fsf@suse.de>
+References: <20201111153915.23426-1-lhenriques@suse.de>
+         <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org>
+         <87361feojx.fsf@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 10:53:37 -0800
-Ben Gardon <bgardon@google.com> wrote:
-
-> When PAE is in use, the root_hpa will not have a shadow page
-> assoicated with it. In this case the kernel will crash with a NULL
-> pointer dereference. Add checks to ensure is_tdp_mmu_root works as
-> intended even when using PAE.
+On Wed, 2020-11-11 at 18:28 +0000, Luis Henriques wrote:
+> Jeff Layton <jlayton@kernel.org> writes:
 > 
-> Tested: compiles
+> > On Wed, 2020-11-11 at 15:39 +0000, Luis Henriques wrote:
+> > > When doing a rename across quota realms, there's a corner case that isn't
+> > > handled correctly.  Here's a testcase:
+> > > 
+> > >   mkdir files limit
+> > >   truncate files/file -s 10G
+> > >   setfattr limit -n ceph.quota.max_bytes -v 1000000
+> > >   mv files limit/
+> > > 
+> > > The above will succeed because ftruncate(2) won't result in an immediate
+> > > notification of the MDSs with the new file size, and thus the quota realms
+> > > stats won't be updated.
+> > > 
+> > > This patch forces a sync with the MDS every time there's an ATTR_SIZE that
+> > > sets a new i_size, even if we have Fx caps.
+> > > 
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: dffdcd71458e ("ceph: allow rename operation under different quota realms")
+> > > URL: https://tracker.ceph.com/issues/36593
+> > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > > ---
+> > >  fs/ceph/inode.c | 11 ++---------
+> > >  1 file changed, 2 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> > > index 526faf4778ce..30e3f240ac96 100644
+> > > --- a/fs/ceph/inode.c
+> > > +++ b/fs/ceph/inode.c
+> > > @@ -2136,15 +2136,8 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr)
+> > >  	if (ia_valid & ATTR_SIZE) {
+> > >  		dout("setattr %p size %lld -> %lld\n", inode,
+> > >  		     inode->i_size, attr->ia_size);
+> > > -		if ((issued & CEPH_CAP_FILE_EXCL) &&
+> > > -		    attr->ia_size > inode->i_size) {
+> > > -			i_size_write(inode, attr->ia_size);
+> > > -			inode->i_blocks = calc_inode_blocks(attr->ia_size);
+> > > -			ci->i_reported_size = attr->ia_size;
+> > > -			dirtied |= CEPH_CAP_FILE_EXCL;
+> > > -			ia_valid |= ATTR_MTIME;
+> > > -		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
+> > > -			   attr->ia_size != inode->i_size) {
+> > > +		if ((issued & (CEPH_CAP_FILE_EXCL|CEPH_CAP_FILE_SHARED)) ||
+> > > +		    (attr->ia_size != inode->i_size)) {
+> > >  			req->r_args.setattr.size = cpu_to_le64(attr->ia_size);
+> > >  			req->r_args.setattr.old_size =
+> > >  				cpu_to_le64(inode->i_size);
+> > 
+> > Hmm...this makes truncates more expensive when we have caps. I'd rather
+> > not do that if we can help it.
 > 
-> Fixes: 02c00b3a2f7e ("kvm: x86/mmu: Allocate and free TDP MMU roots")
-> Reported-by: Zdenek Kaspar <zkaspar82@gmail.com>
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> Yeah, as I mentioned in the tracker, there's indeed a performance impact
+> with this fix.  That's what made me add the RFC in the subject ;-)
 > 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 27e381c9da6c..13013f4d98ad 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -49,8 +49,18 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
->  {
->  	struct kvm_mmu_page *sp;
->  
-> +	if (WARN_ON(!VALID_PAGE(hpa)))
-> +		return false;
-> +
->  	sp = to_shadow_page(hpa);
->  
-> +	/*
-> +	 * If this VM is being run with PAE, the TDP MMU will not be
-> enabled
-> +	 * and the root HPA will not have a shadow page associated
-> with it.
-> +	 */
-> +	if (!sp)
-> +		return false;
-> +
->  	return sp->tdp_mmu_page && sp->root_count;
->  }
->  
+> > What about instead having the client mimic a fsync when there is a
+> > rename across quota realms? If we can't tell that reliably then we could
+> > also just do an effective fsync ahead of any cross-directory rename?
+> 
+> Ok, thanks for the suggestion.  That may actually work, although it will
+> make the rename more expensive of course.  I'll test that tomorrow and
+> eventually follow-up with a patch.
+> 
 
-Fixes is_tdp_mmu_root NULL pointer dereference
-Tested on: Intel(R) Core(TM)2 CPU 6600 @ 2.40GHz
+Patrick pointed out to me on IRC that since you're moving the parent
+directory of the truncated file, flushing the caps on the directory
+won't really help. You'd need to walk the entire subtree and try to
+flush every dirty inode, or basically do a syncfs() prior to renaming
+the directory across quotarealms.
 
-Tested-by: Zdenek Kaspar <zkaspar82@gmail.com>
+I think we probably will need to revert the change to allow cross-
+quotarealm renames of directories and make those return EXDEV again.
+Anything else sounds like it's probably going to be too expensive.
+-- 
+Jeff Layton <jlayton@kernel.org>
+
