@@ -2,194 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D442AE87F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDE12AE87D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgKKFyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 00:54:38 -0500
-Received: from mga03.intel.com ([134.134.136.65]:4731 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgKKFyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:54:37 -0500
-IronPort-SDR: oAoyxaDKb5lLoA9vij80RSX4of3hCEf/crfwRzhlWgYslq96D7exelPgPBouoHtgHpJFvxHQps
- PNqjHFeRNSKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="170208106"
-X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="scan'208";a="170208106"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 21:54:35 -0800
-IronPort-SDR: gJm5aeSWw8sn7jKDK6b59XaJyXKxBjJGN1/EwogcIPe+l1heICjsxVwboEs2bLmpXRUIAzrDRB
- bB9oWiWIoezw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="scan'208";a="323159367"
-Received: from lkp-server02.sh.intel.com (HELO 898ef09051d7) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 10 Nov 2020 21:54:34 -0800
-Received: from kbuild by 898ef09051d7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcj5V-00000V-EN; Wed, 11 Nov 2020 05:54:33 +0000
-Date:   Wed, 11 Nov 2020 13:54:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- aec8da04e4d71afdd4ab3025ea34a6517435f363
-Message-ID: <5fab7c84.Z4sXCon33yRsgylu%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725996AbgKKFyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:54:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgKKFye (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 00:54:34 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EC5C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:54:34 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id 7so1159239ejm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0bh7PHvB+uW1WTzgT8N8pAmTH1u+aQK1HrAa01M9SPg=;
+        b=dTaRHX61ohf7cUW03/j55VZt8YPiY/2JGly90k+NbhLJoqQtP2Sqc56Hxpo6eJiD2E
+         MPfAU/wc8TC5hsrx9827YCONKEd9aSSKIPvb+AqTefsv2y5k6nubpdMO8qaadU5k60cG
+         AQdHuBskmnrSzSC/HWPpcsNxcZWvLZgRO3ZJ8fXScvf3ZwaTYulVJq6ELjg4qzuDWwnF
+         MI7dc2IVHHkfvbLtbhDVelSlJTrhjE+KE1isvtXurHDj3EewG/uWc/1oJ1oo+S9z33yr
+         S2U/Rp3XdWmdcICjMY8Z2Qciyapet4uRGBopFotOn2l9o0on9DAyYwl8wqXSk7nuBsJW
+         d/Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0bh7PHvB+uW1WTzgT8N8pAmTH1u+aQK1HrAa01M9SPg=;
+        b=Oivu00e3rmABUtEmJFcR8TfQmX7HixcpTNPfdVfIyLqAQ03vnxwhPsgUu3vOETq/Pl
+         b9u2ctU09ukut3lfOlZOFrFDd6jqYvhdRgjgl/DBp4AlPEU3Kw2K+gHq6m6+9IRPWmSv
+         W3BJ67Zxolr+oaO/LcaZWIh+jyXkkVBjQ82DNg+BSV3frhnIjszwOXUuAVntezhEikE6
+         oCQh1CKjLKlWoFL6614aS58piSQ8SsL3JVu8HjT/mq1paGu6dJTf+OlVbGRCKwXUQr5p
+         06a0Oq1t/HUPMOR+EcG2zj/+cLTwVYKtKYWdDLflwTYH/umsQU1OsolaLRZCe1hhQ4G/
+         3b3A==
+X-Gm-Message-State: AOAM5302wMS51PuC9SHRMWL2vT2IhTaCxcu96E1ga2pG1cQfBRpuhCgj
+        Rxi83CX6cwXeFPDmb4wR1pAH9260+On3s498JLg=
+X-Google-Smtp-Source: ABdhPJyXa+D3J1gsOWxkepyWWaPtRxQa0Wo0O/WqXbQs+Lp6Uq5qXAmNMGxDJaxp6/N6z3AaJKYGjPEq/dtmMEAj8Gc=
+X-Received: by 2002:a17:906:5a97:: with SMTP id l23mr23159209ejq.232.1605074072963;
+ Tue, 10 Nov 2020 21:54:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201109121214.19012-1-frank@allwinnertech.com> <fba49549-9a78-32ee-a55c-97499f24fe62@sholland.org>
+In-Reply-To: <fba49549-9a78-32ee-a55c-97499f24fe62@sholland.org>
+From:   Frank Lee <tiny.windzz@gmail.com>
+Date:   Wed, 11 Nov 2020 13:54:21 +0800
+Message-ID: <CAEExFWvJvVZzC=YzZLUApf34mP1+oXQL=XsQd-+zYcFV-iC5ZQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] phy: sun4i-usb: Use power efficient workqueue for
+ debounce and poll
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Frank Lee <frank@allwinnertech.com>, vkoul@kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin King <colin.king@canonical.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
-branch HEAD: aec8da04e4d71afdd4ab3025ea34a6517435f363  x86/ioapic: Correct the PCI/ISA trigger type selection
+HI,
+On Wed, Nov 11, 2020 at 11:44 AM Samuel Holland <samuel@sholland.org> wrote:
+>
+> On 11/9/20 6:12 AM, Frank Lee wrote:
+> > From: Yangtao Li <frank@allwinnertech.com>
+> >
+> > The debounce and poll time is generally quite long and the work not
+> > performance critical so allow the scheduler to run the work anywhere
+> > rather than in the normal per-CPU workqueue.
+> >
+> > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > ---
+> >  drivers/phy/allwinner/phy-sun4i-usb.c | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+> > index 651d5e2a25ce..4787ad13b255 100644
+> > --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+> > +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+> > @@ -326,7 +326,7 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+> >               /* Force ISCR and cable state updates */
+> >               data->id_det = -1;
+> >               data->vbus_det = -1;
+> > -             queue_delayed_work(system_wq, &data->detect, 0);
+> > +             queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
+> >       }
+> >
+> >       return 0;
+> > @@ -444,7 +444,7 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
+> >
+> >       /* We must report Vbus high within OTG_TIME_A_WAIT_VRISE msec. */
+>
+> This doesn't sound like "not performance critical" to me. My understanding is
+> the debouncing has a deadline from the USB spec. Maybe this is more flexible
+> than the comment makes it sound?
 
-elapsed time: 726m
-
-configs tested: 130
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                            pleb_defconfig
-h8300                    h8300h-sim_defconfig
-sh                             shx3_defconfig
-sh                        sh7757lcr_defconfig
-mips                        nlm_xlp_defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-powerpc                    amigaone_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                      ppc64e_defconfig
-arm                      pxa255-idp_defconfig
-arm                           efm32_defconfig
-arm                          iop32x_defconfig
-arm                        cerfcube_defconfig
-h8300                               defconfig
-sh                           se7750_defconfig
-powerpc                    socrates_defconfig
-c6x                                 defconfig
-xtensa                           alldefconfig
-sh                         apsh4a3a_defconfig
-arm                       netwinder_defconfig
-arm                         mv78xx0_defconfig
-sh                            migor_defconfig
-mips                        maltaup_defconfig
-arm                        magician_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc836x_mds_defconfig
-m68k                            q40_defconfig
-arc                      axs103_smp_defconfig
-parisc                              defconfig
-x86_64                           alldefconfig
-arm                   milbeaut_m10v_defconfig
-arm                         nhk8815_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201110
-x86_64               randconfig-a005-20201110
-x86_64               randconfig-a004-20201110
-x86_64               randconfig-a002-20201110
-x86_64               randconfig-a006-20201110
-x86_64               randconfig-a001-20201110
-i386                 randconfig-a006-20201110
-i386                 randconfig-a005-20201110
-i386                 randconfig-a002-20201110
-i386                 randconfig-a001-20201110
-i386                 randconfig-a003-20201110
-i386                 randconfig-a004-20201110
-i386                 randconfig-a006-20201111
-i386                 randconfig-a005-20201111
-i386                 randconfig-a002-20201111
-i386                 randconfig-a001-20201111
-i386                 randconfig-a003-20201111
-i386                 randconfig-a004-20201111
-x86_64               randconfig-a015-20201111
-x86_64               randconfig-a011-20201111
-x86_64               randconfig-a014-20201111
-x86_64               randconfig-a013-20201111
-x86_64               randconfig-a016-20201111
-x86_64               randconfig-a012-20201111
-i386                 randconfig-a012-20201110
-i386                 randconfig-a014-20201110
-i386                 randconfig-a016-20201110
-i386                 randconfig-a011-20201110
-i386                 randconfig-a015-20201110
-i386                 randconfig-a013-20201110
-i386                 randconfig-a012-20201111
-i386                 randconfig-a014-20201111
-i386                 randconfig-a016-20201111
-i386                 randconfig-a011-20201111
-i386                 randconfig-a015-20201111
-i386                 randconfig-a013-20201111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201110
-x86_64               randconfig-a011-20201110
-x86_64               randconfig-a014-20201110
-x86_64               randconfig-a013-20201110
-x86_64               randconfig-a016-20201110
-x86_64               randconfig-a012-20201110
-x86_64               randconfig-a003-20201111
-x86_64               randconfig-a005-20201111
-x86_64               randconfig-a004-20201111
-x86_64               randconfig-a002-20201111
-x86_64               randconfig-a006-20201111
-x86_64               randconfig-a001-20201111
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+According to my understanding, the more meaning of performance here
+comes from cache locality.
