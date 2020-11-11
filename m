@@ -2,113 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6E92AE8FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEEC2AE925
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgKKGcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 01:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKKGcf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 01:32:35 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D703AC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 22:32:33 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id k7so1347490ybm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 22:32:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=l22P/UvfY4A1BIn9cXpcSgB6BknzP+YPhXI72uNPenc=;
-        b=DHZGjZAaMsVUnO/mfnpAcDccAoAeDm1EZIlCJ0x9aqwZehcgdKEZglS8Vwzi9lpRey
-         gf8aUk/h+Hz02UhKOeBA/bUy/XWPVIeYUocK0uy5waMxolvP1nm9y6KbY2Z3lZ0Ex8DC
-         oC6yjC60x4avCB6z4FKvPdYJOwjtPyDftqqRQx6L5724ViNldz2aIgtN0rl7aJEyvfFN
-         GTPbq7PitQ/u0tR7D8t6qdQzA6hb5jAU98YfQy8Bzphc64qQmosS/zhLMRy8EXUTxGZD
-         JjE2q9YnjhlTMriRcxn8SmBlpW2/4bK8Do/zOfnnfmiTuTC8vOJbn3cgQzIf6kbhtOLi
-         HmcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=l22P/UvfY4A1BIn9cXpcSgB6BknzP+YPhXI72uNPenc=;
-        b=loq4fSxvwdryU/WTST8kYv4EEp2NKx73VeGBqRqJwWywrJmuhAi8iNBwuHbfmh0n1E
-         8yFToprxR03ozIriIzWegWg66volQiD/YVecqlOIiMvsMsHIsjAXpCngnQvx7WuK42ez
-         k6hRUs7nwQdo3P/5ag29ThzVKWZnFL2OxcBVczA01ZB71VoUU2x2knGil2JDkl4r7J87
-         fwGuOnlyZnlYn4cDg1EA6iAE8PHMmeKIGPMC615xp4uL1FnNdse93plMk0HOojDuh1Sx
-         hn1jORghZqR93yz9HPG59qPCmv2etJOaV4dwj/4tM/RzEZEFxkQ8mFmL3bFxrw2cVwrE
-         tWeg==
-X-Gm-Message-State: AOAM533fdehoyiviOaeW08BKHEfVZC1lM+ioLXUN5MVYpJaZMPH8gjqs
-        L5ESgOvLSPcTIS11+XDRezAPIrpZpmDg
-X-Google-Smtp-Source: ABdhPJwPhJArrjhEfiRnP1zUgcGVe3QSt/bkTpwLuTs0BM+ic72W5kM4JBUTqqNl2uek/nifOlskl8CoUX9s
-Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:2347])
- (user=apusaka job=sendgmr) by 2002:a25:6744:: with SMTP id
- b65mr29744843ybc.321.1605076353047; Tue, 10 Nov 2020 22:32:33 -0800 (PST)
-Date:   Wed, 11 Nov 2020 14:32:20 +0800
-Message-Id: <20201111142947.v2.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v2] Bluetooth: Enforce key size of 16 bytes on FIPS level
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1725959AbgKKGiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 01:38:13 -0500
+Received: from mga02.intel.com ([134.134.136.20]:29963 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725882AbgKKGiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 01:38:12 -0500
+IronPort-SDR: +rmJjgFFmex/JYtdyQ4+C77dxvMg3GPZwHs+1FYTG0ffZZVfFksK20sy5Uddqn2dgedKFICFOj
+ uOONsjPIuLLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="157111499"
+X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
+   d="scan'208";a="157111499"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 22:38:11 -0800
+IronPort-SDR: aGUBJXPQTTedajjqdlRakP4Sq1QNv9YfJuR0WliIznMReZcd9XgQBvFZBTYIxqscUFF6yzgQG7
+ J4qadlxCKJeA==
+X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
+   d="scan'208";a="541655517"
+Received: from yhuang-mobile.sh.intel.com ([10.238.5.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 22:38:05 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: [RFC -V4] autonuma: Migrate on fault among multiple bound nodes
+Date:   Wed, 11 Nov 2020 14:37:17 +0800
+Message-Id: <20201111063717.186589-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+Now, AutoNUMA can only optimize the page placement among the NUMA
+nodes if the default memory policy is used.  Because the memory policy
+specified explicitly should take precedence.  But this seems too
+strict in some situations.  For example, on a system with 4 NUMA
+nodes, if the memory of an application is bound to the node 0 and 1,
+AutoNUMA can potentially migrate the pages between the node 0 and 1 to
+reduce cross-node accessing without breaking the explicit memory
+binding policy.
 
-According to the spec Ver 5.2, Vol 3, Part C, Sec 5.2.2.8:
-Device in security mode 4 level 4 shall enforce:
-128-bit equivalent strength for link and encryption keys required
-using FIPS approved algorithms (E0 not allowed, SAFER+ not allowed,
-and P-192 not allowed; encryption key not shortened)
+So in this patch, we added MPOL_MF_AUTONUMA to mbind() and
+MPOL_F_AUTONUMA to set_mempolicy().  With these flags specified,
+AutoNUMA will be enabled within the memory area or thread to optimize
+the page placement within the constrains of the specified memory
+binding policy.  With these newly added flags, the NUMA balancing
+control mechanism becomes,
 
-This patch rejects connection with key size below 16 for FIPS
-level services.
+- sysctl knob numa_balancing can enable/disable the NUMA balancing
+  globally.
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
+- even if sysctl numa_balancing is enabled, the NUMA balancing will be
+  disabled for the memory areas or applications with the explicit memory
+  policy by default.
 
+- MPOL_MF_AUTONUMA and MPOL_F_AUTONUMA can be used to enable the NUMA
+  balancing for the memory areas or applications when specifying the
+  explicit memory policy.
+
+Various page placement optimization based on the NUMA balancing can be
+done with these flags.  As the first step, in this patch, if the
+memory of the application is bound to multiple nodes (MPOL_BIND), and
+in the hint page fault handler both the faulting page node and the
+accessing node are in the policy nodemask, the page will be tried to
+be migrated to the accessing node to reduce the cross-node accessing.
+
+In the previous version of the patch, we tried to reuse MPOL_MF_LAZY
+for mbind().  But that flag is tied to MPOL_MF_MOVE.*, so it seems not
+a good API/ABI for the purpose of the patch.
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: David Rientjes <rientjes@google.com>
 ---
+ include/uapi/linux/mempolicy.h | 10 +++++++---
+ mm/mempolicy.c                 | 13 +++++++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
-Sorry for the long delay. This patch fell out of my radar.
-
-Changes in v2:
-* Add comment on enforcing 16 bytes key size
-
- net/bluetooth/l2cap_core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 1ab27b90ddcb..5817f5c2ec18 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -1515,8 +1515,14 @@ static bool l2cap_check_enc_key_size(struct hci_conn *hcon)
- 	 * that have no key size requirements. Ensure that the link is
- 	 * actually encrypted before enforcing a key size.
- 	 */
-+	int min_key_size = hcon->hdev->min_enc_key_size;
-+
-+	/* On FIPS security level, key size must be 16 bytes */
-+	if (hcon->sec_level == BT_SECURITY_FIPS)
-+		min_key_size = 16;
-+
- 	return (!test_bit(HCI_CONN_ENCRYPT, &hcon->flags) ||
--		hcon->enc_key_size >= hcon->hdev->min_enc_key_size);
-+		hcon->enc_key_size >= min_key_size);
- }
+diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+index 3354774af61e..99afe7f4b61e 100644
+--- a/include/uapi/linux/mempolicy.h
++++ b/include/uapi/linux/mempolicy.h
+@@ -28,12 +28,14 @@ enum {
+ /* Flags for set_mempolicy */
+ #define MPOL_F_STATIC_NODES	(1 << 15)
+ #define MPOL_F_RELATIVE_NODES	(1 << 14)
++#define MPOL_F_AUTONUMA		(1 << 13) /* Optimize with AutoNUMA if possible */
  
- static void l2cap_do_start(struct l2cap_chan *chan)
+ /*
+  * MPOL_MODE_FLAGS is the union of all possible optional mode flags passed to
+  * either set_mempolicy() or mbind().
+  */
+-#define MPOL_MODE_FLAGS	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES)
++#define MPOL_MODE_FLAGS							\
++	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES | MPOL_F_AUTONUMA)
+ 
+ /* Flags for get_mempolicy */
+ #define MPOL_F_NODE	(1<<0)	/* return next IL mode instead of node mask */
+@@ -46,11 +48,13 @@ enum {
+ 				   to policy */
+ #define MPOL_MF_MOVE_ALL (1<<2)	/* Move every page to conform to policy */
+ #define MPOL_MF_LAZY	 (1<<3)	/* Modifies '_MOVE:  lazy migrate on fault */
+-#define MPOL_MF_INTERNAL (1<<4)	/* Internal flags start here */
++#define MPOL_MF_AUTONUMA (1<<4)	/* Optimize with AutoNUMA if possible */
++#define MPOL_MF_INTERNAL (1<<5)	/* Internal flags start here */
+ 
+ #define MPOL_MF_VALID	(MPOL_MF_STRICT   | 	\
+ 			 MPOL_MF_MOVE     | 	\
+-			 MPOL_MF_MOVE_ALL)
++			 MPOL_MF_MOVE_ALL |	\
++			 MPOL_MF_AUTONUMA)
+ 
+ /*
+  * Internal flags that share the struct mempolicy flags word with
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 3ca4898f3f24..37e4e76ded62 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -875,6 +875,9 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+ 		goto out;
+ 	}
+ 
++	if (new && new->mode == MPOL_BIND && (flags & MPOL_F_AUTONUMA))
++		new->flags |= (MPOL_F_MOF | MPOL_F_MORON);
++
+ 	ret = mpol_set_nodemask(new, nodes, scratch);
+ 	if (ret) {
+ 		mpol_put(new);
+@@ -1278,6 +1281,8 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 
+ 	if (flags & ~(unsigned long)MPOL_MF_VALID)
+ 		return -EINVAL;
++	if ((flags & MPOL_MF_LAZY) && (flags & MPOL_MF_AUTONUMA))
++		return -EINVAL;
+ 	if ((flags & MPOL_MF_MOVE_ALL) && !capable(CAP_SYS_NICE))
+ 		return -EPERM;
+ 
+@@ -1301,6 +1306,8 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 
+ 	if (flags & MPOL_MF_LAZY)
+ 		new->flags |= MPOL_F_MOF;
++	if (new && new->mode == MPOL_BIND && (flags & MPOL_MF_AUTONUMA))
++		new->flags |= (MPOL_F_MOF | MPOL_F_MORON);
+ 
+ 	/*
+ 	 * If we are using the default policy then operation
+@@ -2490,6 +2497,12 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+ 		break;
+ 
+ 	case MPOL_BIND:
++		/* Optimize placement among multiple nodes via NUMA balancing */
++		if (pol->flags & MPOL_F_MORON) {
++			if (node_isset(thisnid, pol->v.nodes))
++				break;
++			goto out;
++		}
+ 
+ 		/*
+ 		 * allows binding to multiple nodes.
 -- 
-2.29.2.299.gdc1121823c-goog
+2.28.0
 
