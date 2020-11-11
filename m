@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BAE2AED1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832DE2AED2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgKKJQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:16:26 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39754 "EHLO
+        id S1726205AbgKKJQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:16:55 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39644 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgKKJQJ (ORCPT
+        with ESMTP id S1726055AbgKKJQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:16:09 -0500
+        Wed, 11 Nov 2020 04:16:12 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A2A00803017E;
-        Wed, 11 Nov 2020 09:16:07 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 370D08001384;
+        Wed, 11 Nov 2020 09:16:09 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id mT7edAqaHyY8; Wed, 11 Nov 2020 12:16:07 +0300 (MSK)
+        with ESMTP id o8QMBt7QUHOX; Wed, 11 Nov 2020 12:16:08 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Patrice Chotard <patrice.chotard@st.com>
+        Khuong Dinh <khuong@os.amperecomputing.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 14/18] arm: dts: stih407-family: Harmonize DWC USB3 DT nodes name
-Date:   Wed, 11 Nov 2020 12:15:48 +0300
-Message-ID: <20201111091552.15593-15-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2 15/18] arm64: dts: apm: Harmonize DWC USB3 DT nodes name
+Date:   Wed, 11 Nov 2020 12:15:49 +0300
+Message-ID: <20201111091552.15593-16-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -47,27 +46,55 @@ In accordance with the DWC USB3 bindings the corresponding node
 name is suppose to comply with the Generic USB HCD DT schema, which
 requires the USB nodes to have the name acceptable by the regexp:
 "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-named.
+named despite of the warning comment about possible backward
+compatibility issues.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/stih407-family.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/apm/apm-shadowcat.dtsi | 4 ++--
+ arch/arm64/boot/dts/apm/apm-storm.dtsi     | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stih407-family.dtsi b/arch/arm/boot/dts/stih407-family.dtsi
-index 23a1746f3baa..2352f76b5a69 100644
---- a/arch/arm/boot/dts/stih407-family.dtsi
-+++ b/arch/arm/boot/dts/stih407-family.dtsi
-@@ -681,7 +681,7 @@ st_dwc3: dwc3@8f94000 {
+diff --git a/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi b/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
+index 3feb1881bbc2..a0a194b8db7a 100644
+--- a/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
++++ b/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
+@@ -597,8 +597,8 @@ serial0: serial@10600000 {
+ 			interrupts = <0x0 0x4c 0x4>;
+ 		};
  
+-		/* Do not change dwusb name, coded for backward compatibility */
+-		usb0: dwusb@19000000 {
++		/* Node-name might need to be coded as dwusb for backward compatibility */
++		usb0: usb@19000000 {
  			status = "disabled";
+ 			compatible = "snps,dwc3";
+ 			reg =  <0x0 0x19000000 0x0 0x100000>;
+diff --git a/arch/arm64/boot/dts/apm/apm-storm.dtsi b/arch/arm64/boot/dts/apm/apm-storm.dtsi
+index 8c802d87e751..f5083b3b9579 100644
+--- a/arch/arm64/boot/dts/apm/apm-storm.dtsi
++++ b/arch/arm64/boot/dts/apm/apm-storm.dtsi
+@@ -923,8 +923,8 @@ sata3: sata@1a800000 {
+ 			phy-names = "sata-phy";
+ 		};
  
--			dwc3: dwc3@9900000 {
-+			dwc3: usb@9900000 {
- 				compatible	= "snps,dwc3";
- 				reg		= <0x09900000 0x100000>;
- 				interrupts	= <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
+-		/* Do not change dwusb name, coded for backward compatibility */
+-		usb0: dwusb@19000000 {
++		/* Node-name might need to be coded as dwusb for backward compatibility */
++		usb0: usb@19000000 {
+ 			status = "disabled";
+ 			compatible = "snps,dwc3";
+ 			reg =  <0x0 0x19000000 0x0 0x100000>;
+@@ -933,7 +933,7 @@ usb0: dwusb@19000000 {
+ 			dr_mode = "host";
+ 		};
+ 
+-		usb1: dwusb@19800000 {
++		usb1: usb@19800000 {
+ 			status = "disabled";
+ 			compatible = "snps,dwc3";
+ 			reg =  <0x0 0x19800000 0x0 0x100000>;
 -- 
 2.28.0
 
