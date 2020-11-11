@@ -2,174 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F6B2AE5F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68492AE5F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732639AbgKKBiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:38:50 -0500
-Received: from mga01.intel.com ([192.55.52.88]:38076 "EHLO mga01.intel.com"
+        id S1732319AbgKKBo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:44:27 -0500
+Received: from mga03.intel.com ([134.134.136.65]:52277 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732564AbgKKBiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 20:38:46 -0500
-IronPort-SDR: wSD/yDbN6a5TIXVovTfVJsJ8/jV39BOZqelmcxH+5I4pzAD9/I3PjMYVmhzKGDd6FfX44Fpoxu
- UBA1v1T/cYhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="188054434"
+        id S1731610AbgKKBoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 20:44:25 -0500
+IronPort-SDR: uDZlgfNU6xVsWX7t/1mOVEfez54Q1hvdAPyfBrhC8FvfuBa66iPzp1DP3Il5WhdS2/TtQrzm9R
+ bvNgTsOPX1Qg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="170188132"
 X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="scan'208";a="188054434"
+   d="scan'208";a="170188132"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 17:38:46 -0800
-IronPort-SDR: hGryR4Ni1m9yUzAm4dB8MG5hZM0pgD5ORjFZStwPm00NuM3hUemp8rge4SgdcbBstDIWJPxbSy
- WdhBKnsFoWNw==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 17:44:24 -0800
+IronPort-SDR: J+NGmDx0DDFP2y4z+dMjJ+pjKpUTPk1apVSAnObFU4HqKD31LHi00+bVliW7tbI3hi+xby6/dp
+ w2HDKPVQZIEA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="scan'208";a="428607109"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Nov 2020 17:38:46 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+   d="scan'208";a="308277509"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Nov 2020 17:44:24 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 10 Nov 2020 17:38:46 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ 15.1.1713.5; Tue, 10 Nov 2020 17:44:24 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 10 Nov 2020 17:38:46 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ via Frontend Transport; Tue, 10 Nov 2020 17:44:24 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 10 Nov 2020 17:38:45 -0800
+ 15.1.1713.5; Tue, 10 Nov 2020 17:44:23 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KeP5mkynihtwaFyu6RhiCg1OT9Y/O8uZZlxLp/ceZ6tWj+arOKZV7SDILMgYVnHYp8N1cLtFviTj8fj8Lw9EXg/wKzTnd7c9E5tzPJOBSnq2rznwAbpbS9HpdXul15uebGdkRvSXJbEYQAYB7JwmXS15qIEncs9iyoNxCEwJzgqynr8Pk6gWzT2lC4oPSad28Cxy5VsdArWg6UpMLRTeGJnyaFKmbsstOYJc+Z0Zh+ZUDRnv7SxoD7Q21yTfaQ5K1ZwvA8jC8f93hEtjBmZoNGUgHitSnzE0gUWUEubdfNf+1LqqcsZQ7sz71PfmEZC/SnRBzLgNCzuRrDvsCRbxUg==
+ b=eOXRKU2CrLwBdH59zchbCQ5guz75JuU+GSGc5JCP70RGeKdmjLloaY3zfwQf40UDFUeKAgb0wpB4vVf9UyJMJkBowJPR6FQJuXaetLitZD2u+5ujldQz/LlvtrifHLulHc1a1mpcaRvEhvYM+grI1lzRPp2wwHkEOfS+puzsHi5vW3IfhahBLmovFaC4iQNRetSkeWyd2ZMRzUfKcpdzw+Ot9mLJDcfAu+KH9UO9EtJUwpJ/noPrc6A66Arct20GU4aANMI2sxvS5aQKoTPZ0MPei1EAAZJXAJ6UzGuN+/0rZTc5742OO3K3QTXyBk+dzr2KSwFqS601CwzReiB2IA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Os2n82maRV/9RE+WJpeDmBw4hUfnNzlhkIU7p0MSDvg=;
- b=kA4x1QeSiPU2NArAxYXcflUVJ/89yu2bPQeKBQqxXY+UIUbT/olWlikIj85IrTfKHXWHn6nqUYgltM0piz5iafCpLynO/S394C6WC3QlNsStvn+PnbW8gwMF3cS4/7LX9WLminSgRwZKAeJipUWvg6EPl3Y6qcbogZ6fjlZCM6dxw/7P/wWaU1EyFNd5KNnzjBSeHjsaximc8HXt7kkv6cRDIqXU/bbFplonJPtPVlhqz5TPpCpFnp7thr/fQAYmRyGUjTeRF0/rQiB0Ykea38unE2SCmg4dB9WYn6NZRV4b2/+jgK5LfHJKBEGXy3WzaFRGXqG+lD9xjvDtl4t69Q==
+ bh=e5NmVasQPUmAG9eOp/QI0RXnU49mcH98VMSDX5aeXwQ=;
+ b=UADSKaKmXpGgRTYrCVfZWW/O9hMWcobwT43bJe3bIpV9cHIeohnouDEeK/CG1sYrZ1EFj+KKhm4jylGbo+hlcYGn9CvpRpbYhuXmbbHpKeWRwZc8NO2u7NoAko2LBJY5tOrAv7xrr9BRBvmB87SReE/B4caiAgX8sdbkUUsx+7Qi4+pl7zTEwsRn+Fnn3elMRMjeN5CXMxtMu2im8RfolvBXHXF4H+ZZRFr/Ov3VMga7kgSkrbDZKGFz+plp928/6T7xnPlf8WCMmN48cauPG6jksBmwyJLkzYIs6JuyzEy3li6ls/p4NSnn9hxTjbhowivLiFIZ8g44d39yd77CHA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Os2n82maRV/9RE+WJpeDmBw4hUfnNzlhkIU7p0MSDvg=;
- b=I4hyVPn5L6PdeZvkKkGFdZFCJeMO0wRvkwljd/xxQgH9QL/cY6j3fuQ/33C3mQHQryAY7KokR0R5z2KkG0NfO74zDYemsR5Jz8ttDs97rgg3en28CJ+yvRk5t5A67HrVhufXpogNdLX3XfcSltrDnxSn70ISYvRWmcqhG2aFPV8=
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com (2603:10b6:301:6a::31)
- by MW3PR11MB4538.namprd11.prod.outlook.com (2603:10b6:303:57::12) with
+ bh=e5NmVasQPUmAG9eOp/QI0RXnU49mcH98VMSDX5aeXwQ=;
+ b=MNVE6iUA2jJAow51NWsl/BsfhGTGDqEHBpNp4PoNMJYfIHmurHNT1PHtJgqmqzkBtOvWA25R2NDbw8FGdVZnMJi7IuniS1BrBtqOuAaueIr6rjhKk6zRKjlIrgl8RdQMjzMkiomk8MmmDaxPWTjVQX4RDyi46DjytXuoBLgX8V0=
+Received: from CO1PR11MB5026.namprd11.prod.outlook.com (2603:10b6:303:9c::13)
+ by CO1PR11MB4994.namprd11.prod.outlook.com (2603:10b6:303:91::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 11 Nov
- 2020 01:38:44 +0000
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::ed62:6d3c:c9aa:4c4d]) by MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::ed62:6d3c:c9aa:4c4d%5]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
- 01:38:44 +0000
-From:   "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "pmalani@chromium.org" <pmalani@chromium.org>,
-        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        "Shaikh, Azhar" <azhar.shaikh@intel.com>
-Subject: RE: [PATCH 4/8] usb: typec: Remove one bit support for the
- Thunderbolt rounded/non-rounded cable
-Thread-Topic: [PATCH 4/8] usb: typec: Remove one bit support for the
- Thunderbolt rounded/non-rounded cable
-Thread-Index: AQHWtvngzcAgg0YK1EqHP909A/hMtanBSZ+AgACAzCA=
-Date:   Wed, 11 Nov 2020 01:38:44 +0000
-Message-ID: <MWHPR11MB00485EFD8830E5D77B7B8193A9E80@MWHPR11MB0048.namprd11.prod.outlook.com>
-References: <20201110003716.5164-1-utkarsh.h.patel@intel.com>
- <20201110003716.5164-5-utkarsh.h.patel@intel.com>
- <20201110121951.GM1224435@kuha.fi.intel.com>
-In-Reply-To: <20201110121951.GM1224435@kuha.fi.intel.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Wed, 11 Nov
+ 2020 01:44:23 +0000
+Received: from CO1PR11MB5026.namprd11.prod.outlook.com
+ ([fe80::40d9:aa4b:73e7:3d60]) by CO1PR11MB5026.namprd11.prod.outlook.com
+ ([fe80::40d9:aa4b:73e7:3d60%3]) with mapi id 15.20.3499.032; Wed, 11 Nov 2020
+ 01:44:23 +0000
+From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     "Eugeniy.Paltsev@synopsys.com" <Eugeniy.Paltsev@synopsys.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 09/15] dmaengine: dw-axi-dmac: Support burst residue
+ granularity
+Thread-Topic: [PATCH v2 09/15] dmaengine: dw-axi-dmac: Support burst residue
+ granularity
+Thread-Index: AQHWtn3mLZfDhbVLE06A4ls6x2Eq8KnCKx3g
+Date:   Wed, 11 Nov 2020 01:44:23 +0000
+Message-ID: <CO1PR11MB5026C04E7F8DA29F87268D3CDAE80@CO1PR11MB5026.namprd11.prod.outlook.com>
+References: <20201027063858.4877-1-jee.heng.sia@intel.com>
+ <20201027063858.4877-10-jee.heng.sia@intel.com>
+ <20201109095115.GD3171@vkoul-mobl>
+In-Reply-To: <20201109095115.GD3171@vkoul-mobl>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
 dlp-reaction: no-action
 dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [50.39.100.134]
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [175.142.41.19]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 22550adc-bc47-4dc2-a982-08d885e286fd
-x-ms-traffictypediagnostic: MW3PR11MB4538:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB45385CF4C0B2910D6B220D9FA9E80@MW3PR11MB4538.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
+x-ms-office365-filtering-correlation-id: 149aa479-fd11-4f15-9cb5-08d885e350d9
+x-ms-traffictypediagnostic: CO1PR11MB4994:
+x-microsoft-antispam-prvs: <CO1PR11MB49945A2A86F14F0DF6A14670DAE80@CO1PR11MB4994.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nnFw6pO5zop47vsMayVFyf651wsyDjcT5GrrOND2RNlmwO7igxtTX4265n8NjE/3Pb+tstcuRcsAWET2p2Af0rUR9Q/bN+C4YaXILFHFx2JG0JDZkEeTjRzpJ4urcwoi8eqa4vS5iAV/Jj4cs8AAJIhj01DsVNntBi1kB4dvCKTU1PTFY+dkHKLFrZOeMbdTwcgnggoQZZNENQkiw+wuCfDkW51R+/qPJO1SjgrqX+VBsOr8r8DLCb0lXQyrXjWQMG/u08D8nfeoMaFLMsnxrxV0aLxU4l9toupekOK4530hUsBwSfmwTxkUawa6KCMbaaDi8uPHuPgCqjElxOp+6w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0048.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(366004)(136003)(6916009)(52536014)(66946007)(8676002)(71200400001)(9686003)(64756008)(2906002)(5660300002)(33656002)(66476007)(8936002)(76116006)(4326008)(54906003)(316002)(53546011)(6506007)(478600001)(55016002)(86362001)(186003)(7696005)(83380400001)(26005)(66556008)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: +152BSbv5ox0bojXZTK48SnK/XQA11hTgTh3VaGaSB47jP3ZvXcj3IOHnCi7CSORNxPSFD/x6tnQiySmZZ/HDoZcKZpaUOIGYmZ1jkVxFoFUUjiEOEYrtjyBFOPjyf1CLfgfDnt0lIgQfSQXeK/6MyrT5iZ2bMRHlq8b39rH3JqGaJWONugkarI32EEevulOV2q9a4TYTvBK5q1loz6koYrTSIzvhT8uNMjCsPM0Bej3L5D4znTk8Z4y6WoEkPN+db9XmG2VeYezPT3nhCGgST+T4dGyk4Nr2RtKnajVQ+8caGOmlfZ+CVfTcqT2YUQ0Cl9PIAkoTpiaV8fghEzoiJFff8Z1WMEr1ktiahrOdR/qZFUFjQF8oNOjgOrkXdO1WafJrSZgJFibBgNif7GmWc08qWAeMSPLwqPWCL6O0GJ+5jfj8XgkMFw95D+nGrNAKb+vvBhCaNgfPoa+RQZ/eOIM78E3XspZzhDpZTxMgNbrUZzYyAjbKyv1hUTvFGXwoNg+bYmPsUb2xOGvs7OUGeTPSgZ8CQBUo1rWFXGj7SBN1h5CYgEr0dTi2EEurPEKj4BHwJwGIa+G4hwATsaUhC3OdG5cGhePLYscVix0VrFi5PhRTMHrx/pkOfKm9wuXIsF7tYFGeNIxN6SP/RrFQC1b7LwZPmNZk1sPQ+036lRnZbeJRedaP0d5WxS7ZlU46EKA41PgE6sqQPtYSkjyLI2ogLqCvexdj7IWTyCGgC6JAoh5jie2sKR7jscsLYkEU/2inZqVzH3OrcBPIUqvf7nm2uq73gw+PrrwLJb1njwDHqifZNe3gjsEqfBMaM95+j9ObecN/pTDcJ/t2um2HNJAc+2TbsmR9nNMAfIp4kG3c3+No7gdvH6QfWzOd5+DAywhYeNApJGwQsB1SqY2Eg==
+x-microsoft-antispam-message-info: s3kSyyX3P5NS5HwSpLZYW9FBXFZfXyCkcS5bxm0ENJBgixvtaIXmCA5RZrSsvAu4NcYIT23n/f446EScFPHY0b7r5eGwLlbJ1DgMgaIUjeX+PZMYHEuT5+eK6bpfku3Ste9IN+yvd5mmv9euSXKMRJV//Qi/fGaLkkldQFDchZUaNZgudDKnzuLUKIqk+P/wG+pZn7EvF6/bVLGddyCkOOOG9Q8sAGBYS15EueEK0ZdCzI4OPqcVSuFzT+cD57Lzbsq5CwU6t23lLCP5hrcgBIzSAhQCv+VkC2WoesASu1P6DuKYVh9cLJYdmD8SFEaBVSfd8rre54k26iTespD3vg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5026.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(136003)(396003)(346002)(33656002)(478600001)(52536014)(83380400001)(7696005)(71200400001)(2906002)(186003)(8676002)(26005)(6506007)(53546011)(8936002)(64756008)(66556008)(66476007)(66446008)(4326008)(5660300002)(9686003)(66946007)(86362001)(316002)(55016002)(54906003)(76116006)(6916009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +dFRSxVzE6AL2QqCaO6tbCRZs49UdFfh5s27yiQfMP4pGGGdUDu27cWbxDToRNXXEx9VfROEA9ebCbEmrs1F6YY7f+lCmxFQDQj+FkpZpqw+Xci3L5S45uZKgEKM1SBw5IHVlfiEKLRJnYVhtbgexErR9OTNP4FRD8t7h7y9SXdZUCg+/SJABz3a5qGaA+mhYDp9je8elnVrL3qP4/xB9VJnREbdNDGhCKHgptmNS9i4HxqR5zdREFht/eSNv7QIST0wTJr+ro7anO23M1vn60TOUiwD40IqoSpw1ckbRi8OMrfWY1kOAFfgelZXtTMUZ2J8P1UneNTLo0xMBr+9+M5hvOUmEtNhltlqfIRPE/lf+FT4048u1YRde490+GqCFmO9ED6IJTALSd+7hMWOWc+nIii8JnZUiHv2Y2X0sTMrgt+MQo4U2rAfA0KjRAeeiKR0JWT6Q/FQ0iHOuRRzm83TdH7+1ZNellGQ6g7dnWM4g9KwdXmRe6xiSm5RVDT6udy0zqbUp+RF4hHUQBmHnU9uyHxns0o9OlL9upKdEzjvl9os/zXc4SZZCgrxBMMUbbDnYESAZmZheANCoqnVQ+ZWfEiPykSv3nbHmCjh7x/Mww3ZbNT8LGYh0GU3mGEm7klETJw69pmhWP348kPfvg==
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0048.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22550adc-bc47-4dc2-a982-08d885e286fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2020 01:38:44.5949
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5026.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 149aa479-fd11-4f15-9cb5-08d885e350d9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2020 01:44:23.2139
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FW63qkjIXw6FqdudJqF+3ak/GwdOC/NgsPLl+GN4wLHWVlb4Am/wzDWii/AXryCPh9SRjugZeyrNR2IavuykwvzvqUoE0hhElmroL0XU3ck=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4538
+X-MS-Exchange-CrossTenant-userprincipalname: 0jBkcMaf9PS1A8hz3y9UbPS2vGN6536f1LHpWcRfn4z3loPRk0LNq5EIB8SItn9qiVtqGXzk0wmGSK2Tay3P/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4994
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+
 
 > -----Original Message-----
-> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Sent: Tuesday, November 10, 2020 4:20 AM
-> To: Patel, Utkarsh H <utkarsh.h.patel@intel.com>
-> Cc: linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org;
-> pmalani@chromium.org; enric.balletbo@collabora.com; Mani, Rajmohan
-> <rajmohan.mani@intel.com>; Shaikh, Azhar <azhar.shaikh@intel.com>
-> Subject: Re: [PATCH 4/8] usb: typec: Remove one bit support for the
-> Thunderbolt rounded/non-rounded cable
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: 09 November 2020 5:51 PM
+> To: Sia, Jee Heng <jee.heng.sia@intel.com>
+> Cc: Eugeniy.Paltsev@synopsys.com; andriy.shevchenko@linux.intel.com;
+> dmaengine@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v2 09/15] dmaengine: dw-axi-dmac: Support burst resid=
+ue
+> granularity
 >=20
-> On Mon, Nov 09, 2020 at 04:37:12PM -0800, Utkarsh Patel wrote:
-> > Two bits support for the Thunderbolt rounded/non-rounded cable has
-> > been added to the header file.
-> > Hence, removing unused TBT_CABLE_ROUNDED definition from the header
-> file.
+> On 27-10-20, 14:38, Sia Jee Heng wrote:
+> > Add support for DMA_RESIDUE_GRANULARITY_BURST so that AxiDMA can
+> > report DMA residue.
 > >
-> > Fixes: ca469c292edc ("usb: typec: Add definitions for Thunderbolt 3
-> > Alternate Mode")
->=20
-> And again?
-
-Ack. I will remove the fix tag in v2.
-
->=20
-> > Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> > Existing AxiDMA driver only support data transfer between memory to
+> > memory operation, therefore reporting DMA residue to the DMA clients
+> > is not supported.
+> >
+> > Reporting DMA residue to the DMA clients is important as DMA clients
+> > shall invoke dmaengine_tx_status() to understand the number of bytes
+> > been transferred so that the buffer pointer can be updated accordingly.
+> >
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
 > > ---
-> >  include/linux/usb/typec_tbt.h | 1 -
-> >  1 file changed, 1 deletion(-)
+> >  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 44 ++++++++++++++++---
+> >  drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  2 +
+> >  2 files changed, 39 insertions(+), 7 deletions(-)
 > >
-> > diff --git a/include/linux/usb/typec_tbt.h
-> > b/include/linux/usb/typec_tbt.h index aad648d14bb3..63dd44b72e0c
-> > 100644
-> > --- a/include/linux/usb/typec_tbt.h
-> > +++ b/include/linux/usb/typec_tbt.h
-> > @@ -39,7 +39,6 @@ struct typec_thunderbolt_data {
-> >  #define   TBT_CABLE_USB3_GEN1		1
-> >  #define   TBT_CABLE_USB3_PASSIVE	2
-> >  #define   TBT_CABLE_10_AND_20GBPS	3
-> > -#define TBT_CABLE_ROUNDED		BIT(19)
-> >  #define TBT_CABLE_ROUNDED_SUPPORT(_vdo_) \
-> >  					(((_vdo_) & GENMASK(20, 19)) >> 19)
-> >  #define   TBT_GEN3_NON_ROUNDED                 0
+> > diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > index 011cf7134f25..cd99557a716c 100644
+> > --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > @@ -265,14 +265,36 @@ dma_chan_tx_status(struct dma_chan *dchan,
+> dma_cookie_t cookie,
+> >  		  struct dma_tx_state *txstate)
+> >  {
+> >  	struct axi_dma_chan *chan =3D dchan_to_axi_dma_chan(dchan);
+> > -	enum dma_status ret;
+> > +	struct virt_dma_desc *vdesc;
+> > +	enum dma_status status;
+> > +	u32 completed_length;
+> > +	unsigned long flags;
+> > +	u32 completed_blocks;
+> > +	size_t bytes =3D 0;
+> > +	u32 length;
+> > +	u32 len;
+> >
+> > -	ret =3D dma_cookie_status(dchan, cookie, txstate);
+> > +	status =3D dma_cookie_status(dchan, cookie, txstate);
 >=20
-> thanks,
+> txstate can be null, so please check that as well in the below condition =
+and
+> return if that is the case
+[>>] noted. Will factor in the null condition check in v3
 >=20
 > --
-> Heikki
-
-Sincerely,
-Utkarsh Patel.
+> ~Vinod
