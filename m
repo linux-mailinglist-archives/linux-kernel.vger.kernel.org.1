@@ -2,94 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49AE2AF45E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA022AF460
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgKKPEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:04:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56245 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726702AbgKKPEx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:04:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605107092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pdnxDrJbnGriYJu6lUmTawYA8DwyKEDmav8yDLXk2oY=;
-        b=TnLjsUQirwEBKHyub7r78gxLWdPCyyvr7dYqA31yyPCQAzX9TIg8C+Z6CaAKPjJv0bs+Tp
-        PxdOJ3XD8pwzxNDTo/POk0buL4wUwQI/fEDjs7LiK8sVQPVv0LgYzERf9dA2F3qUJcdd7E
-        6UVKxBoGbGsTAWsN5dfL8YJYQez5xxU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-oUWQ_G-SPlSh4zZtW33d7Q-1; Wed, 11 Nov 2020 10:04:46 -0500
-X-MC-Unique: oUWQ_G-SPlSh4zZtW33d7Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C37971074661;
-        Wed, 11 Nov 2020 15:04:41 +0000 (UTC)
-Received: from T590 (ovpn-12-145.pek2.redhat.com [10.72.12.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E73046EF7F;
-        Wed, 11 Nov 2020 15:04:25 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 23:04:21 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Sumit Saxena <sumit.saxena@broadcom.com>,
-        John Garry <john.garry@huawei.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        don.brace@microsemi.com, Bart Van Assche <bvanassche@acm.org>,
-        dgilbert@interlog.com, paolo.valente@linaro.org,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        esc.storagedev@microsemi.com,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
-        Hannes Reinecke <hare@suse.com>
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-Message-ID: <20201111150421.GA611503@T590>
-References: <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
- <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
- <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
- <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
- <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
- <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
- <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
- <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
- <20201111092743.GC545929@T590>
- <b6bfe375866a061c1207ada5eeb6029176cf3521.camel@redhat.com>
+        id S1727266AbgKKPFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:05:04 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:47455 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726949AbgKKPFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:05:03 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 0ABF4rYp009431;
+        Wed, 11 Nov 2020 16:04:53 +0100
+Date:   Wed, 11 Nov 2020 16:04:53 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Christian Hesse <list@eworm.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz
+Subject: Re: Linux 5.9.8
+Message-ID: <20201111150453.GA9427@1wt.eu>
+References: <1605041246232108@kroah.com>
+ <20201111153604.6a4fb08c@leda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b6bfe375866a061c1207ada5eeb6029176cf3521.camel@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20201111153604.6a4fb08c@leda>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:42:17AM -0500, Qian Cai wrote:
-> On Wed, 2020-11-11 at 17:27 +0800, Ming Lei wrote:
-> > Can this issue disappear by applying the following change?
+On Wed, Nov 11, 2020 at 03:36:04PM +0100, Christian Hesse wrote:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> on Tue, 2020/11/10 21:56:
+> > I'm announcing the release of the 5.9.8 kernel.
 > 
-> This makes the system boot again as well.
+> This is not yet linked on kernel.org - same goes for lts version 5.4.77.
+> I guess this is not by intention, no?
 
-OK, actually it isn't necessary to register one new lock key for each
-hctx(blk_flush_queue) instance, and the current way is really over-kill
-because there can be lots of hw queues in one system.
+Strange, both are indeed not listed on kernel.org but are available in
+the download directory and can be retrieved from there:
 
-The original lockdep warning can be avoided by setting one nvme_loop
-specific lock class simply. If nvme_loop is backed against another nvme_loop,
-we still can avoid the warning by killing the direct end io chain, or
-assign another lock class.
+    https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/
+    https://cdn.kernel.org/pub/linux/kernel/v5.x/
 
-Will prepare one formal patch tomorrow.
+Maybe it's just the bot that updates the front page that was stopped.
 
-Thanks,
-Ming
-
+Willy
