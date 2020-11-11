@@ -2,178 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8BD2AF3B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A130A2AF3E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgKKOgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:36:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726638AbgKKOgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:36:23 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45C062067D;
-        Wed, 11 Nov 2020 14:36:11 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 09:36:09 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Byungchul Park <byungchul.park@lge.com>,
-        torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201111093609.1bd2b637@gandalf.local.home>
-In-Reply-To: <20201111105441.GA78848@gmail.com>
-References: <20201111050559.GA24438@X58A-UD3R>
-        <20201111105441.GA78848@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727347AbgKKOkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:40:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726960AbgKKOiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:38:21 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8468CC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:38:20 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c16so2541570wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:38:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HCKQOzFPpo+2K5yUahYtUtI8k6qp0+z3GG+IuN0ZApo=;
+        b=Gke4ieISLM/XI8kVcqy+0mz4yf0ilnZLu5L14Ham+FjQ7rwpzqo52LbuyxGEB+6d5B
+         UDpnhBJ0KU/otCehHd8K7SCm6O/Ehnx9Hkk40ZKbouSOo4fle/NTsagkA8DlNP+01pd0
+         DnnJeE2a6YL9Jqu4qUhdAsMV06K3YYxn62/6V1uj6cQhRTBMy4s4Nrp9ms/W0j3wtPoK
+         r1rvv/ufdxrricb97N372OISa6T7tESS73k60FsZ/gfyGYLabadPIscSnwADP2leufuT
+         fDhlTwPBMSlUzbMYLrc84v1CgetJfn7FUqRzDfloDuPeEyxlirDHoY7dPoS8TfX8Zail
+         FEWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HCKQOzFPpo+2K5yUahYtUtI8k6qp0+z3GG+IuN0ZApo=;
+        b=pHNWZkBgb3fmd1aJ/HBPmqDTaxyooZSv7dckpv4R7Tkf31DV8TaP382NY2+c8ynSh7
+         vKfGcTD7XNBg1FeMUgiAXsWVg/e/R9kfHRLMk4/lrBKKLRuB9iKHXzDr7PYOKpoamVq8
+         e02F/L+tVQmGMhkbNLtg039ZlnsC5qCnu2fo0ZAIY104/tKMEaAGGlPn6Io8IruOnEYN
+         bn5lzuR36c6MEYr8g7pKPltbk1oSPMZtbNI75xT/ve6G8C1Om1zS9AnBt5pRpyC/+YH/
+         qpwgBtxdSm+4dLI/xRbpwftq80j81brpQY+JjOU8wsp+rldOX/Jsy3qLH/XE5VrOMXGf
+         0dYQ==
+X-Gm-Message-State: AOAM532oZFtG5w7mQ0nb4NfLJpG6SbszeglqMXTmcoi3Oft6QbDVtuFS
+        TF0TX6aVS2jfZr6+Qa1sYiWXRg==
+X-Google-Smtp-Source: ABdhPJzvkbMLLwR+nG6rjNxa+zEvikOX1rvi36jAIKrhuJYZt9qibdSW2YAQkwYi11nK78hOMR2Fvw==
+X-Received: by 2002:a1c:9a12:: with SMTP id c18mr4429807wme.22.1605105499188;
+        Wed, 11 Nov 2020 06:38:19 -0800 (PST)
+Received: from localhost.localdomain (hst-221-89.medicom.bg. [84.238.221.89])
+        by smtp.gmail.com with ESMTPSA id b8sm2991405wrv.57.2020.11.11.06.38.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 06:38:18 -0800 (PST)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 0/8] Venus stateful encoder compliance
+Date:   Wed, 11 Nov 2020 16:37:47 +0200
+Message-Id: <20201111143755.24541-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 11:54:41 +0100
-Ingo Molnar <mingo@kernel.org> wrote:
+Hello,
 
-> * Byungchul Park <byungchul.park@lge.com> wrote:
-> 
-> > PROBLEM 1) First of all, Lockdep gets disabled on the first detection.  
-> 
-> Lockdep disabling itself after the first warning was an intentional 
-> and deliberate design decision. (See more details below.)
-> 
+Here is v2 of the subject patchset. 
 
-[..]
+The patchset starts with few small preparation and fix patches, 1/8 to 5/8.
+6/8 is redesigned Dikshita's patch and 7/8 add Reset encoder state handling.
+The last 8/8 just delete not needed helper function.
 
-> Making the code simpler is always welcome, but I disagree with 
-> enabling multiple warnings, for the technical reasons outlined above.
+The major changes are:
+ * An attempt to reuse m2m helpers for drain and reset state in 6/8 and 7/8.
+ * Use null encoder buffer to signal end-of-stream in 6/8.
 
-I 100% agree with Ingo. I wish we could stop *all* warnings after the first
-one. The number of times people sent me bug reports with warnings without
-showing me previous warnings that caused me to go on wild goose chases is
-too many to count. The first warning is the *only* thing I look at.
-Anything after that is likely to be caused by the integrity of the system
-being compromised by the first bug.
+Comments are welcome!
 
-And this is especially true with lockdep, because lockdep only detects the
-deadlock, it doesn't tell you which lock was the incorrect locking.
+regards,
+Stan
 
-For example. If we have a locking chain of:
+Dikshita Agarwal (1):
+  venus: venc: add handling for VIDIOC_ENCODER_CMD
 
- A -> B -> D
+Stanimir Varbanov (7):
+  venus: hfi: Use correct state in unload resources
+  venus: helpers: Add a new helper for buffer processing
+  venus: hfi_cmds: Allow null buffer address on encoder input
+  venus: helpers: Calculate properly compressed buffer size
+  venus: pm_helpers: Check instance state when calculate instance
+    frequency
+  venus: venc: Handle reset encoder state
+  venus: helpers: Delete unused stop streaming helper
 
- A -> C -> D
+ drivers/media/platform/qcom/venus/helpers.c   |  65 ++---
+ drivers/media/platform/qcom/venus/helpers.h   |   2 +-
+ drivers/media/platform/qcom/venus/hfi.c       |   2 +-
+ drivers/media/platform/qcom/venus/hfi.h       |   1 -
+ drivers/media/platform/qcom/venus/hfi_cmds.c  |   2 +-
+ .../media/platform/qcom/venus/pm_helpers.c    |   3 +
+ drivers/media/platform/qcom/venus/venc.c      | 232 +++++++++++++++---
+ 7 files changed, 226 insertions(+), 81 deletions(-)
 
-Which on a correct system looks like this:
+-- 
+2.17.1
 
- lock(A)
- lock(B)
- unlock(B)
- unlock(A)
-
- lock(B)
- lock(D)
- unlock(D)
- unlock(B)
-
- lock(A)
- lock(C)
- unlock(C)
- unlock(A)
-
- lock(C)
- lock(D)
- unlock(D)
- unlock(C)
-
-which creates the above chains in that order.
-
-But, lets say we have a bug and the system boots up doing:
-
- lock(D)
- lock(A)
- unlock(A)
- unlock(D)
-
-which creates the incorrect chain.
-
- D -> A
-
-
-Now you do the correct locking:
-
- lock(A)
- lock(B)
-
-Creates A -> B
-
- lock(A)
- lock(C)
-
-Creates A -> C
-
- lock(B)
- lock(D)
-
-Creates B -> D and lockdep detects:
-
- D -> A -> B -> D
-
-and gives us the lockdep splat!!!
-
-But we don't disable lockdep. We let it continue...
-
- lock(C)
- lock(D)
-
-Which creates C -> D
-
-Now it explodes with D -> A -> C -> D
-
-Which it already reported. And it can be much more complex when dealing
-with interrupt contexts and longer chains. That is, perhaps a different
-chain had a missing irq disable, now you might get 5 or 6 more lockdep
-splats because of that one bug.
-
-The point I'm making is that the lockdep splats after the first one may
-just be another version of the same bug and not a new one. Worse, if you
-only look at the later lockdep splats, it may be much more difficult to
-find the original bug than if you just had the first one. Believe me, I've
-been down that road too many times!
-
-And it can be very difficult to know if new lockdep splats are not the same
-bug, and this will waste a lot of developers time!
-
-This is why the decision to disable lockdep after the first splat was made.
-There were times I wanted to check locking somewhere, but is was using
-linux-next which had a lockdep splat that I didn't care about. So I
-made it not disable lockdep. And then I hit this exact scenario, that the
-one incorrect chain was causing reports all over the place. To solve it, I
-had to patch the incorrect chain to do raw locking to have lockdep ignore
-it ;-) Then I was able to test the code I was interested in.
-
-> 
-> > PROBLEM 2) Lockdep forces us to emulate lock acquisition for non-lock.  
-> 
-> >    I have the patch set. Let me share it with you in a few days.  
-> 
-> Not sure I understand the "problem 2)" outlined here, but I'm looking 
-> forward to your patchset!
-> 
-
-I think I understand it. For things like completions and other "wait for
-events" we have lockdep annotation, but it is rather awkward to implement.
-Having something that says "lockdep_wait_event()" and
-"lockdep_exec_event()" wrappers would be useful.
-
--- Steve
