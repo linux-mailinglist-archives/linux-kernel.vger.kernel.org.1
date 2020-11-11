@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2182AFB73
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0F92AFB7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbgKKWgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:36:43 -0500
-Received: from mga09.intel.com ([134.134.136.24]:3528 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbgKKWej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:34:39 -0500
-IronPort-SDR: UQMY7DpzyrG/ucXXb3ZziAvTEMOXYANZWIEJlYiA7Ca2VvO40iP0WgVt3dQpyWLRcGnsZXqufX
- wV19+UeIU6GA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170394632"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="170394632"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 14:34:38 -0800
-IronPort-SDR: ZWVZ785rIL5gz3V66m3Rngatgnao4gMINkrgMEZ4Tl6+c4HIkEM29kgv4+JjtBBzFn6rWxvJZJ
- gSZ/4/NY+TXw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="474022598"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 11 Nov 2020 14:34:37 -0800
-Received: from [10.215.242.65] (mreddy3x-MOBL.gar.corp.intel.com [10.215.242.65])
-        by linux.intel.com (Postfix) with ESMTP id 80907580B99;
-        Wed, 11 Nov 2020 14:34:35 -0800 (PST)
-Subject: Re: [PATCH v1 1/2] dt-bindings: leds: Add bindings for intel LGM SOC
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, malliamireddy009@gmail.com,
-        yixin.zhu@intel.com
-References: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
- <20201105095257.GA7994@amd>
-From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Message-ID: <06f20e58-405a-438e-641b-a7e0bf7d48e9@linux.intel.com>
-Date:   Thu, 12 Nov 2020 06:34:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727188AbgKKWjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:39:35 -0500
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:36052 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727162AbgKKWhd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:37:33 -0500
+Received: by mail-oo1-f66.google.com with SMTP id l20so837879oot.3;
+        Wed, 11 Nov 2020 14:37:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i7Ry0yhfayXC/BqLVWYKkth2SuWU6ba0AdxpS9Zg0gs=;
+        b=WmjoQ5nPny4xvqrbMbNoblhBL+IzZdbFKJhid8Fp6VouqLx3qGnKNfvxnWL1nDu1e7
+         ar4bu1d9HAmrk+Dn+V93iZuCc0HR5Yxm2wjM1N5ctF0CLAFjy722dsXLNIlhxBqI5IHV
+         7q2bBuYqQV+bKN6M8Onh0/6baiWmpww9pGKGJbaFIy2PH+NlesTsjc89xUqYpPjGG9pD
+         CUnCMpWxO8+vVe4je+VJdr0f0EH5hfJKacbb8+wAR5dhTztETfoCQpTd7h56hVhPyJgQ
+         G5M3CgII2m3wyDGvRyKaDJ4rhKKsST9K2N9+BokPExzXaJyT+x45rykNWymHklhLhSSn
+         z7ig==
+X-Gm-Message-State: AOAM5301TrPo57l7cibYiy0vQkeyg/niYevmN0ajdtCID6wTeIL4paZ7
+        rR0Q+9rqQui462T6ysglUw==
+X-Google-Smtp-Source: ABdhPJxZdYi7/q5dK+NoVtMT82epFre5O3KgLm3TlKYLSNx0m1CV3kuNyQfGQ22OBbks2Ii+zS3/Zg==
+X-Received: by 2002:a4a:a445:: with SMTP id w5mr14003746ool.63.1605134252531;
+        Wed, 11 Nov 2020 14:37:32 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d202sm720330oig.3.2020.11.11.14.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 14:37:31 -0800 (PST)
+Received: (nullmailer pid 2170567 invoked by uid 1000);
+        Wed, 11 Nov 2020 22:37:30 -0000
+Date:   Wed, 11 Nov 2020 16:37:30 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        Scott Branden <sbranden@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ray Jui <rjui@broadcom.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Subject: Re: [PATCH 10/10] dt-bindings: net: dsa: b53: Add YAML bindings
+Message-ID: <20201111223730.GA2169778@bogus>
+References: <20201110033113.31090-1-f.fainelli@gmail.com>
+ <20201110033113.31090-11-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105095257.GA7994@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110033113.31090-11-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Mon, 09 Nov 2020 19:31:13 -0800, Florian Fainelli wrote:
+> From: Kurt Kanzenbach <kurt@kmk-computers.de>
+> 
+> Convert the b53 DSA device tree bindings to YAML in order to allow
+> for automatic checking and such.
+> 
+> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Kurt Kanzenbach <kurt@kmk-computers.de>
+> ---
+>  .../devicetree/bindings/net/dsa/b53.txt       | 149 -----------
+>  .../devicetree/bindings/net/dsa/b53.yaml      | 249 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 250 insertions(+), 150 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/dsa/b53.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/dsa/b53.yaml
+> 
 
-Thanks for your valuable comments, Please see my comments inline.
+With the rename (don't forget $id):
 
-On 11/5/2020 5:52 PM, Pavel Machek wrote:
-> On Thu 2020-11-05 17:43:50, Amireddy Mallikarjuna reddy wrote:
->> Add DT bindings YAML schema for SSO controller driver
->> of Lightning Mountain(LGM) SoC.
->>
-> intel -> Intel in the title.
-> "Lightning Mountain(LGM)" -> 'Lightning Mountain (LGM)"
-
-ok.
-
->
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Intel LGM Soc LED SSO driver
-> Please spell out LGM and SSO here. Soc -> SoC?
-ok.
-
->
->
->> +          intel,sso-brightness:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: brightness level of the LED.
->> +            minimum: 0
->> +            maximum: 255
-> ?
-In case of using "default-state" property, it is redundant.
->
->> +          intel,sso-hw-trigger:
->> +            type: boolean
->> +            description: This property indicates Hardware driven/control LED.
-> Why is this intel specific?
-This is not common property, so i used vendor name.
-do you suggest only property name without vendor name?
->
->> +          intel,sso-hw-blink:
->> +            type: boolean
->> +            description: This property indicates Enable LED blink by Hardware.
-> ?
-This is not common property, so i used vendor name.
-do you suggest only property name without vendor name?
->
->> +          intel,sso-blink-rate:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: LED HW blink frequency.
-> ?
-This is not common property, so i used vendor name.
-do you suggest only property name without vendor name?
->
-> Best regards,
-> 						Pavel
+Reviewed-by: Rob Herring <robh@kernel.org>
