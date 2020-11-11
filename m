@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5642AF942
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F582AF948
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgKKToV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        id S1727479AbgKKTrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgKKToU (ORCPT
+        with ESMTP id S1725984AbgKKTrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:44:20 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9791C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:44:20 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id j5so1503672plk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:44:20 -0800 (PST)
+        Wed, 11 Nov 2020 14:47:03 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B7C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:47:02 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id w142so4807026lff.8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:47:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=T6+8pW5jZmBDXZbPZRIztWDaBT2x4DmsxSLQ6azETAc=;
-        b=se9v8enfPUYbJTt74HhR/SX2RmXprJ24MmSz0B6V6vVydIBGmJrjoTIm2zNBupmNFO
-         GJflYMImUSVaWMip1XV6MIJvQk82VwB1y+EnGYIkN2n/kRU+haT6WrD9zXhdlSZ4p6Cp
-         ULCa12b5tboh7sjLVMaGR+hf4Z3Bd3PFQ3QmddVufhjy0HTI8Q6Ixh0F9m9t1K9qRI7n
-         osu4eF9sgLT3VBpn0FLT5rTt7wtOGFsgb0lzjQQLDH8Jv6bywYx1l9Ry35K0eRZZBDbp
-         s9+EBy8mW+KuK+gots4IIw0zgZX+zl9EbkwM9xZYdF5PQ3se2xIfqNRAy04N9t5Kpfot
-         +oVQ==
+        bh=zsnBQdrhUa/QAa8uquu/neDEB5Nejqa8rlSSCbSFDAQ=;
+        b=iNm0A2ZsPVgUGNhmnm4Bsq7zInrL2JjhQcdACsrOt9mYmndn330XWcOtDuEG39alzm
+         J3le2lMvlL2vfgGnxs5xrjbezCTd3D5AJGj7jRLxD4S/HIWq/nQLuBADwTKyKgRs/IUv
+         jD+EM4LjRL/Q9K3jsw/2rekEsb4EH47OKl2F+lQT3VfUH8eeH5eDDxFbPG7ThwG0JVdg
+         9a9mUo7wGX4cbPBOtCP7UYYdXchgNjo+zlaojJQOQmTVsz6QSCpi3YBtbuCM/M6qC0vA
+         UUegdcAwXhSrItUwjZVL5yXqMJYipcJVH6IL//pKZtKQA+ZaPTbireRNJfZgT9v1ybtj
+         UpFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T6+8pW5jZmBDXZbPZRIztWDaBT2x4DmsxSLQ6azETAc=;
-        b=IKP3frKG6E6Y0r08hXAIbUowQhAJSEitC4CpepVbbkGVm5yUku51FFG3jwQ0nR+Spv
-         dMzMVtfxcfqazNHxzQuHj/MVv+5QhMuLnD4EG4BmsPeU6MhTLDUW+YIgyZgwuuC6Z3MC
-         jVAQLX4haarwxdHZu2oKLxFn6K5rf+KmtUoVYABDFPeA9oY/fZOYvpwaCp//Jr5+XyeE
-         IgcBtWo2LhPgnlKKi0zGekxptFA3IDC3rMQsC9giBN8hAlZCMYXzubiqN0WmxJQ/ehdt
-         K5I0pNB0ojXO7SY/nOiGZH0AvcYtKzdAp10ctF9RzLEgjYk8QyrWFG3jk3L237Gn1MHW
-         390g==
-X-Gm-Message-State: AOAM530LxFdiwvKyHpenRjPZFft47otzxjGsk822A9tQEbMOgeH8C27l
-        8W4/Tf+Ltr2n+rVKqcdg2N1fUhkfsBqTW4ENmTTFbQ==
-X-Google-Smtp-Source: ABdhPJyritjwALZYYkqE++zh/C6zeAGTLmlgOvj2cpbxrtYI+S9Fb6PTPQ53iLb1vLxINgC437M7aggmL3FxpAymu/k=
-X-Received: by 2002:a17:902:8d95:b029:d8:c2ee:7dc with SMTP id
- v21-20020a1709028d95b02900d8c2ee07dcmr2295427plo.57.1605123860032; Wed, 11
- Nov 2020 11:44:20 -0800 (PST)
+        bh=zsnBQdrhUa/QAa8uquu/neDEB5Nejqa8rlSSCbSFDAQ=;
+        b=htn74PFD4BxuTsrPWnFOvnLGqWWa4TUpoS+y+OAXp6eJlz7y1xmDvslZmntKPQTLS9
+         Und+kkA0IVryk3w76GjYikR/MXj1sJl1YMCRK4jpEGH6Uw9et9xz+YedLEN5l0egwD2u
+         9RBILA3i4oeYfAWsEVRFw5fPhE7j4HwkaJOa/dnSSKSqc4X7F/N2rOA0c0/utWtet1Uk
+         Z1xSfA1EMX3r3VumlXcyrMb/Es2hJM6PTon7csHNutRvR8LpOOKLytBbKvS9wgBjroxC
+         7paTAxwM5mWULlWjFaeL8LaQbDocQ3FdBcTBzVqLVrq87kvEhCVsrVmuZMe161VmtDEg
+         BfHA==
+X-Gm-Message-State: AOAM533wfCyG3bc2LVmuB5dgTQTjJLwaUtO6E4vd9tbRrmATQP7dlLdn
+        2gfeTR8gTvatQyE7wxahfv4sOEjwR9j6jm0OkAM=
+X-Google-Smtp-Source: ABdhPJzJgaDHcmCLUzy/XY8a3z7s4FIApr/2YqWldQBCP3B8DVuog/657U9KwRXn4KetzXdnEl2hffslp2tqd6smOQo=
+X-Received: by 2002:ac2:418e:: with SMTP id z14mr9881908lfh.25.1605124020958;
+ Wed, 11 Nov 2020 11:47:00 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000fe575905b3cff92c@google.com> <bf31020f4e50b303fd0dd3dfda0e50de79ed25db.camel@redhat.com>
- <CAAeHK+yLgDYOS35sWT8=4_d-gZKU_B10D9ZEBPZDC1P6MO2D6Q@mail.gmail.com> <CAA5enKY8mBicpc7kZKKLG5LeVFhVJtRQ73MYVFM0Az2bbiGv8g@mail.gmail.com>
-In-Reply-To: <CAA5enKY8mBicpc7kZKKLG5LeVFhVJtRQ73MYVFM0Az2bbiGv8g@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 11 Nov 2020 20:44:09 +0100
-Message-ID: <CAAeHK+x4tWTY0ZuR6LHhm071bOnvZcfa=A-KLpSfUTkaxZHieA@mail.gmail.com>
-Subject: Re: linux-next boot error: BUG: unable to handle kernel NULL pointer
- dereference in mempool_init_node
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Qian Cai <cai@redhat.com>,
-        syzbot <syzbot+2d6f3dad1a42d86a5801@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
+References: <20201111051859.2776-1-ivan.zaentsev@wirenboard.ru>
+In-Reply-To: <20201111051859.2776-1-ivan.zaentsev@wirenboard.ru>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 11 Nov 2020 16:46:49 -0300
+Message-ID: <CAOMZO5DXcQaZhujAq_KOEQgUNDx5cDsGnObVtadE5=qvWhUs7Q@mail.gmail.com>
+Subject: Re: [PATCH] ARM: mxs: Add serial number support for i.MX23, i.MX28 SoCs
+To:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Evgeny Boger <boger@wirenboard.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 8:27 PM Lorenzo Stoakes <lstoakes@gmail.com> wrote:
->
-> On Wed, 11 Nov 2020 at 17:44, Andrey Konovalov <andreyknvl@google.com> wrote:
-> > I'll try to reproduce this and figure out the issue. Thanks for letting us know!
->
-> I hope you don't mind me diving in here, I was taking a look just now
-> and managed to reproduce this locally - I bisected the issue to
-> 105397399 ("kasan: simplify kasan_poison_kfree").
->
-> If I stick a simple check in as below it fixes the issue, so I'm
-> guessing something is violating the assumptions in 105397399?
->
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 7a94cebc0324..16163159a017 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -387,6 +387,11 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
->         struct page *page;
->
->         page = virt_to_head_page(ptr);
-> +
-> +       if (!PageSlab(page)) {
-> +               return;
-> +       }
-> +
->         ____kasan_slab_free(page->slab_cache, ptr, ip, false);
->  }
+Hi Ivan,
 
-Ah, by the looks of it, ceph's init_caches() functions asks for
-kmalloc-backed mempool, but at the same time provides a size that
-doesn't fit into any kmalloc cache, and kmalloc falls back onto
-page_alloc. Hard to say whether this is an issue in ceph, but I guess
-we'll have to make KASAN fool proof either way and keep the PageSlab()
-check in kasan_slab_free_mempool().
+On Wed, Nov 11, 2020 at 2:19 AM Ivan Zaentsev
+<ivan.zaentsev@wirenboard.ru> wrote:
+>
+> i.MX23 and i.MX28 SoCs unique identifiers are factory-programmed
+> in On-Chip OTP memory. i.MX28's 64-bit unique id is in
+> HW_OCOTP_OPS2:HW_OCOTP_OPS3 (see MCIMX28 Ref. Man., sec. 20.4.22-23).
+>
+> i.MX23 provides 32-bit long unique id in HW_OCOTP_OPS3.
+> Though not clearly documented, there is a clue in sec. 35.9.3.
+>
+> The unique id is reported in /sys/devices/soc0/serial_number
+> and in /proc/cpuinfo
+>
+> Signed-off-by: Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+> Suggested-by: Evgeny Boger <boger@wirenboard.com>
 
-Thank you for debugging this, Lorenzo. I'll fix this in v10.
+It looks good, thanks:
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
