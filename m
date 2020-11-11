@@ -2,97 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD5E2AEF46
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0ED2AEF4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgKKLMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        id S1726491AbgKKLMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:12:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgKKLMS (ORCPT
+        with ESMTP id S1726449AbgKKLMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:12:18 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF32C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:12:18 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id r7so1261508qkf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:12:18 -0800 (PST)
+        Wed, 11 Nov 2020 06:12:41 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A242C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:12:40 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id o11so1834202ioo.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:12:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WblSjW7Hy1Qg/G9ygaqee8dLuPciIb0PMDRXWK2yB3I=;
-        b=mnoXeYYU9FZvxitCgz+s3IfMrgwI92vcPOfjlpLHfCKQ0i916WWDlzOVGj5faz2D9+
-         JXDBkB6Sqv5zDJCTOyJP86i9c7z/OeJz1YDk1McIBYw9hrCsly2glRfgS4dDw9xmC1vj
-         NPO/Y3ydEZHxMbD++b7hkNodPdDlqOxg74S5UE2qyakpVvg/pNP5O2Hsi0wHiKa8ur1V
-         QqScNUC3sx+DtFLhy2H2G+PKibPl3zNqX2JQhIwKceYMlWbMggEJPSUOMIr5d3LM9+eT
-         AuXp2vy8WuYE8VhaYajRR/fikF2jfNaJWD51CG3aYsWb886PT2kBX8r/XrWSnvAIwEMs
-         4wrA==
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d0GfdO7JXkiEcLNK6+4nDT65yhOpVcfU3tMJUKAFX/Y=;
+        b=jafUJjOqF5iuCiNKamzhXZfEZ2b/KMJSV/69Aov1fbD58v8fUzXzme/k77v5/PTBtq
+         IZ8QYN2UjmF2OEApFLD9HSnQFavdr4UUDX7cpXt0w3tCrPn1m6Eoyfl6901jVQGwiYym
+         cFr29OMMYLb3oXnjmecSGsiRxF37VX406vLxs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WblSjW7Hy1Qg/G9ygaqee8dLuPciIb0PMDRXWK2yB3I=;
-        b=Pt8JEIv21b7EFUFfx4XQZyelInDTeCBmQH9N0hdyrrt2VbUWGrhfCkfD+siXAu3QTc
-         U+UY27BSsPx2a+Zmf0jHihsxjo6Vz9/y8MNJm7qNkS3BPp0fM3ruoh1+jqoVsl+LlJob
-         g+s9YKZw8T3W0s4Py1ZAc7GuK40KJgk/wl0NWlAF5Ip2Defd6c3uHQas1jT+WlVVxVpf
-         N0toblzByEBiQr5Lu0x8cqKoDpWtPxK27OCfbZTgazCp5Hm4/ZpttMdeSeAfiJh+/qm0
-         3P4kXn2olY9gZZwQlrzrbbC9pgt23mNMX1l9tbLpVG2bOwMkYqxMwweWZG48pXjlWI3i
-         /Y8g==
-X-Gm-Message-State: AOAM530guYveMgB10TlIoXUHG3/7vxeseENN1DPA4tmddeM7ti0blEtW
-        EKHqW2tXYP/yVNQ0iBc9Xf31COV/0yVCfb+YVIUwVg==
-X-Google-Smtp-Source: ABdhPJytmEudtqCvqu9Cia4M/vz8rvbh5JQqeb7dFN0b5G22lRbkjrL2sa5NNnZ0sXR/eE6YVQcWrXHOQaQh0zml8/Q=
-X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr25226279qkm.231.1605093137327;
- Wed, 11 Nov 2020 03:12:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d0GfdO7JXkiEcLNK6+4nDT65yhOpVcfU3tMJUKAFX/Y=;
+        b=G5EC9qf0k2wl00b6g2718SY06EfIA/k+0jgOazK6ePfaetM34D/BnzGJmuf+49gx+m
+         vj+aCm+6wSUqqfNitq4mXbQ4KvMd80sPkbb1jcMQvqCLwuz2q6GpSzE6kPuWQcspco8V
+         6XSZdjs1H5VJNKV/t8TmKlfQkj3QmXfOtSJWHB1LWV/cjewLBWUsgaMyBZPyDn5A0Vcr
+         lkdyeQbtih+F+qbUQYf7vg1ecNI3HLdXuXfRobMvCoPsqsYIWHgJrZtAk0R/FhGpk5sx
+         cpO8zJK2V9jOS7TwqYpgf5G1eFtNrUycXv+i9xFiM6USnn4SX2M75uZO7VQp4oVYtaX0
+         PXTg==
+X-Gm-Message-State: AOAM532dQkPmQi52ih1tW3DORPX2SgFmnRPzzk6opBuJqLwdEhEEkjEy
+        WKkwejs0RfT93tS5jkHJK2I1zA==
+X-Google-Smtp-Source: ABdhPJx24PI5gINDAmGN9cKsbgQ8QJ/4C3dXJyR8HTMiufSH56fhugdT1cUZE1UKaMsItJ8xsCSweA==
+X-Received: by 2002:a02:c884:: with SMTP id m4mr9701932jao.43.1605093159708;
+        Wed, 11 Nov 2020 03:12:39 -0800 (PST)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id z11sm1094793iop.22.2020.11.11.03.12.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 11 Nov 2020 03:12:38 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:12:36 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
+        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
+        "smayhew@redhat.com" <smayhew@redhat.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
+ namespaces
+Message-ID: <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20201102174737.2740-1-sargun@sargun.me>
+ <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
+ <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
 MIME-Version: 1.0
-References: <000000000000a48f9e05aef6cce1@google.com> <000000000000b4227e05b3aa8101@google.com>
-In-Reply-To: <000000000000b4227e05b3aa8101@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 11 Nov 2020 12:12:06 +0100
-Message-ID: <CACT4Y+Zy=m_K=rHpzi09tOd6YuQe6Dzk9vLvNoZk8Oo1hVG55g@mail.gmail.com>
-Subject: Re: INFO: rcu detected stall in exit_group
-To:     syzbot <syzbot+1a14a0f8ce1a06d4415f@syzkaller.appspotmail.com>
-Cc:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        David Miller <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, mareklindner@neomailbox.ch,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        netdev <netdev@vger.kernel.org>, sw@simonwunderlich.de,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 12:03 PM syzbot
-<syzbot+1a14a0f8ce1a06d4415f@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Fri Oct 16 12:21:14 2020 +0000
->
->     afs: Fix cell removal
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b65c3a500000
-> start commit:   34d4ddd3 Merge tag 'linux-kselftest-5.9-rc5' of git://git...
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1a14a0f8ce1a06d4415f
-> userspace arch: i386
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c6642d900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132d00fd900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: afs: Fix cell removal
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On Tue, Nov 10, 2020 at 08:12:01PM +0000, Trond Myklebust wrote:
+> On Tue, 2020-11-10 at 17:43 +0100, Alban Crequy wrote:
+> > Hi,
+> > 
+> > I tested the patches on top of 5.10.0-rc3+ and I could mount an NFS
+> > share with a different user namespace. fsopen() is done in the
+> > container namespaces (user, mnt and net namespaces) while fsconfig(),
+> > fsmount() and move_mount() are done on the host namespaces. The mount
+> > on the host is available in the container via mount propagation from
+> > the host mount.
+> > 
+> > With this, the files on the NFS server with uid 0 are available in
+> > the
+> > container with uid 0. On the host, they are available with uid
+> > 4294967294 (make_kuid(&init_user_ns, -2)).
+> > 
+> 
+> Can someone please tell me what is broken with the _current_ design
+> before we start trying to push "fixes" that clearly break it?
+Currently the mechanism of mounting nfs4 in a user namespace is as follows:
 
-#syz fix: afs: Fix cell removal
+Parent: fork()
+Child: setns(userns)
+C: fsopen("nfs4") = 3
+C->P: Send FD 3
+P: FSConfig...
+P: fsmount... (This is where the CAP_SYS_ADMIN check happens))
+
+
+Right now, when you mount an NFS filesystem in a non-init user
+namespace, and you have UIDs / GIDs on, the UIDs / GIDs which
+are sent to the server are not the UIDs from the mounting namespace,
+instead they are the UIDs from the init user ns.
+
+The reason for this is that you can call fsopen("nfs4") in the unprivileged 
+namespace, and that configures fs_context with all the right information for 
+that user namespace, but we currently require CAP_SYS_ADMIN in the init user 
+namespace to call fsmount. This means that the superblock's user namespace is 
+set "correctly" to the container, but there's absolutely no way nfs4uidmap
+to consume an unprivileged user namespace.
+
+This behaviour happens "the other way" as well, where the UID in the container
+may be 0, but the corresponding kuid is 1000. When a response from an NFS
+server comes in we decode it according to the idmap userns[1]. The userns
+used to get create idmap is generated at fsmount time, and not as fsopen
+time. So, even if the filesystem is in the user namespace, and the server
+responds with UID 0, it'll come up with an unmapped UID.
+
+This is because we do
+Server UID 0 -> idmap make_kuid(init_user_ns, 0) -> VFS from_kuid(container_ns, 0) -> invalid uid
+
+This is broken behaviour, in my humble opinion as is it makes it impossible to 
+use NFSv4 (and v3 for that matter) out of the box with unprivileged user 
+namespaces. At least in our environment, using usernames / GSS isn't an option,
+so we have to rely on UIDs being set correctly [at least from the container's
+perspective].
+
+
+> 
+> The current design assumes that the user namespace being used is the one where 
+> the mount itself is performed. That means that the uids and gids or usernames 
+> and groupnames that go on the wire match the uids and gids of the container in 
+> which the mount occurred.
+> 
+
+Right now, NFS does not have the ability for the fsmount() call to be
+called in an unprivileged user namespace. We can change that behaviour
+elsewhere if we want, but it's orthogonal to this.
+
+> The assumption is that the server has authenticated that client as
+> belonging to a domain that it recognises (either through strong
+> RPCSEC_GSS/krb5 authentication, or through weaker matching of IP
+> addresses to a list of acceptable clients).
+> 
+I added a rejection for upcalls because upcalls can happen in the init 
+namespaces. We can drop that restriction from the nfs4 patch if you'd like. I
+*believe* (and I'm not a little out of my depth) that the request-key
+handler gets called with the *network namespace* of the NFS mount,
+but the userns is a privileged one, allowing for potential hazards.
+
+The reason I added that block there is that I didn't imagine anyone was running 
+NFS in an unprivileged user namespace, and relying on upcalls (potentially into 
+privileged namespaces) in order to do authz.
+
+
+> If you go ahead and change the user namespace on the client without
+> going through the mount process again to mount a different super block
+> with a different user namespace, then you will now get the exact same
+> behaviour as if you do that with any other filesystem.
+
+Not exactly, because other filesystems *only* use the s_user_ns for conversion 
+of UIDs, whereas NFS uses the currend_cred() acquired at mount time, which 
+doesn't match s_user_ns, leading to this behaviour.
+
+1. Mistranslated UIDs in encoding RPCs
+2. The UID / GID exposed to VFS do not match the user ns.
+
+> 
+> -- 
+> Trond Myklebust
+> Linux NFS client maintainer, Hammerspace
+> trond.myklebust@hammerspace.com
+> 
+> 
+-Thanks,
+Sargun
+
+[1]: https://elixir.bootlin.com/linux/v5.9.8/source/fs/nfs/nfs4idmap.c#L782
+[2]: https://elixir.bootlin.com/linux/v5.9.8/source/fs/nfs/nfs4client.c#L1154
