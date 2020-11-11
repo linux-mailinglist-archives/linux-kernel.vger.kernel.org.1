@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537CE2AF562
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C762AF565
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgKKPsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:48:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43126 "EHLO mail.kernel.org"
+        id S1727562AbgKKPsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:48:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727485AbgKKPr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:47:59 -0500
+        id S1727505AbgKKPsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:48:16 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47A802072C;
-        Wed, 11 Nov 2020 15:47:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5563A20709;
+        Wed, 11 Nov 2020 15:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605109678;
-        bh=4v5NaBnOx2xXSDdYikOSQfSoefVBXORNdXiU0xorChw=;
+        s=default; t=1605109695;
+        bh=4FyYTPrcjfov8uVxWO+lV4RZNcUdpL+czV3Jpu9qS10=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=CvCx4KhSEjuNWWWzHMNaAgjhqRjXtj/kLDzvTKF3McAtP5mgZ09oCHMTlKp69Bj+J
-         iu+F9TU3Z/9ngovZ7WK76ZizJgJxLvKG5Wjws1S+Cg6MZnBQg3c/cwev3jV2pnonsw
-         0QFbhxSbYSMcXbI0c4jyJG6aAd2tEG7fhh4zRxbY=
-Date:   Wed, 11 Nov 2020 15:47:43 +0000
+        b=qiHrtdno+fnP8pYUypCfv+DIuk1Rg61uPTCTX92SF2sunsczkVW3Fz1OUgAUG1RME
+         ATeWDxPQ/mGskCFYM2YrgWcIJcnhVkHdFJ2IwhbuMoxh2zIzf4QwJ+OHJWrZL8NwSL
+         qgbX8yHRES4ko9hpfRW3sMXAaKmm0pThNKnvbEDk=
+Date:   Wed, 11 Nov 2020 15:48:00 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Sean Nyekjaer <sean@geanix.com>, linux-kernel@vger.kernel.org,
-        yibin.gong@nxp.com
-Cc:     stable@vger.kernel.org
-In-Reply-To: <20201105114926.734553-1-sean@geanix.com>
-References: <20201105114926.734553-1-sean@geanix.com>
-Subject: Re: [PATCH] regualtor: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
-Message-Id: <160510965770.12262.8850331963860803288.b4-ty@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi@vger.kernel.org, kernel@pengutronix.de,
+        David Jander <david@protonic.nl>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201027095724.18654-1-o.rempel@pengutronix.de>
+References: <20201027095724.18654-1-o.rempel@pengutronix.de>
+Subject: Re: [PATCH v2 0/2] SPI/ Input: ads7846: properly handle spi->mode flags
+Message-Id: <160510968063.12304.8588707844414426791.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,21 +42,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 12:49:26 +0100, Sean Nyekjaer wrote:
-> Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
-> variants.
-> When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
-> pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
-> instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
+On Tue, 27 Oct 2020 10:57:22 +0100, Oleksij Rempel wrote:
+> changes v2:
+> - add SPI_MODE_X_MASK macro
+> - ads7846: clear SPI_MODE_X_MASK bits to set driver specific mode.
+> 
+> Oleksij Rempel (2):
+>   spi: introduce SPI_MODE_X_MASK macro
+>   Input: ads7846: do not overwrite spi->mode flags set by spi framework
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
-      commit: 365ec8b61689bd64d6a61e129e0319bf71336407
+[1/1] spi: introduce SPI_MODE_X_MASK macro
+      commit: 029b42d8519cef70c4fb5fcaccd08f1053ed2bf0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
