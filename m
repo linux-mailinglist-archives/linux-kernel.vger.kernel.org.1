@@ -2,86 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8D32AEFF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B889D2AEFEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgKKLsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:48:23 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:47229 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725860AbgKKLsW (ORCPT
+        id S1726339AbgKKLsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgKKLsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:48:22 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id cob8kms8XRiwVcobIkaEFp; Wed, 11 Nov 2020 12:48:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1605095296; bh=WuBCWYKViMmUl8eqIdMbgwN9AJKK362w9I6qvWQiMdY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=BHVG6w62dwFXec8XCS+BKWjhxWw9bZrzhR6ThYFAaD648Fv7qpXkEzLad/ozMnRLz
-         pApJK+oRpcgZBzOu0soFqj+x+7bU6IEyTsK54xe3GEuSrQtbAbFdNhILTQ+ZACDb3g
-         z0WgWCJNLXnTtLjyD+v0CtRnACHpz/TScR6RV+ZVoLU5HaTKrTzvIRHue4IfXSE+NQ
-         h1Q4nPegk2qWADtpUCkt8JqL7QwKmgBtXgt6a6zvbcQoxv4XQNzWLMLFn7YNRdpaiX
-         nJI71OE3yGjtM21qSI3QwZO8Ul6TVGd0Pl+Oas1Cii72tSAX8tnj0sLakVGvWGSgIB
-         2tGNdWjWeTcGg==
-Subject: Re: [PATCH v2 0/2] Add new controls for QP and layer bitrate
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, ezequiel@collabora.com,
-        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
-        majja@codeaurora.org
-References: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
- <871d369fc987ac7cc24bdab9bc9df9fadf939c01.camel@ndufresne.ca>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <b871bb4d-34ae-6161-5901-8df7fd82c53b@xs4all.nl>
-Date:   Wed, 11 Nov 2020 12:47:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 11 Nov 2020 06:48:13 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA09EC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:48:13 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id 13so713028qvr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:48:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5/bsZJ2SXh7EWUOoj25+V0UBuv9sNRFfAJnPmwXVu1s=;
+        b=u5HABaE355NHv54+nsM4vzu7xItgx0bQHDH2oFWb6imxmfuScr2jqNWW9XgYnl2fXm
+         0dJj3090WHnTYYiAJI03sv1PFoeTpFS0EM4G9e7pYlUrph8o/iHjnw836qP7wIX2KQc6
+         hHVirZoSrFeQo5ctaC139iDJnI+/H+JlScB0leoVqTZQMIUBbcjLN+xv45LULAE3/MCp
+         Icje2YNe/vdtZGfFSHYBqnoAIzNN1hoXNuGARlURG9vZOq6A1O186BWmZNgRWcGtcplG
+         gHyc4nPOcsK0Kl7q7YXiZmWMHIJxXFH+A4TInnVI1HPQxlrtaS7bxLchejT9DeQwd8gi
+         X/Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5/bsZJ2SXh7EWUOoj25+V0UBuv9sNRFfAJnPmwXVu1s=;
+        b=IQR3pnwtIHTprcodNYP6xE/wNnfp5f+y8eWQen2mUd4NdFxb6KSN/lxd8QJeYyrUKS
+         +7vylKNC9MY1MkCBwrY+TDA5G9Sj2ABqCpzArDTVo/pwMraqsvYPYQiOxxMQhqBDYYwH
+         DVvC8fkyDGci0xO4A43AkzfT2luNBBmRge/HoNTqx1Jyq1Dmn2do6dsIC23TCIavDVsZ
+         tZ3xCNXiwLocWiguuILs7f4abOW4LVLh9TCOC4SDTcauGN45H+YOYDCpwMhxMFiDkDnA
+         aG0ORlem04AHbRXpptHzFcWQ7yX4cXDUB1syRJg5njYGbrrVm+mHhunxdSTOBFXdu65X
+         CGYw==
+X-Gm-Message-State: AOAM530Fnzf9xfLaHQHYi4j3r5K8S3Je10ART/hFU649v4RKwQeAiMVT
+        7PIiMLq38VgOl8VoH5PH+oEukyUAH6FOadmiOARvpQ==
+X-Google-Smtp-Source: ABdhPJweQklfC8h2MxgH/sGjP1zb3U75XU///xckXr9YQGBWjDC0IaHCs2qgjypRFDn52a26LrzfhAWQ8TwFdUjcW7E=
+X-Received: by 2002:a05:6214:209:: with SMTP id i9mr24657975qvt.38.1605095292686;
+ Wed, 11 Nov 2020 03:48:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <871d369fc987ac7cc24bdab9bc9df9fadf939c01.camel@ndufresne.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLaXZhwqqjpGuIkCkVJcuv4yzjWUcdz0fKkQzXK6KLuUa7HMqlJ4UO0kEEgaAOeznOmX9Gs3ZRrf4mc+7C8hOeHkn0Gt+mqtEP1gHD/G3vGgxr3cFdL5
- uClKOdNAo2agjxXq9O+rjwnxXB4coUYjAHmU1sM4Elb/wikOaCWrJOuLzX5SEqnZd8O2vTEI5dh89DxEv+j54Qp6LCQJ69mb+ykUOwtVHrrI8WPbDx3YDODs
- t9rspCPjQn+TJZ0zdFWufnyxyO1dG5UUR7BmN82mjuyIH8uSUfmCMFGhkZFrqhFtbw6wrMRuzCgY9NJ/q97v/hvGV2/52Qr6NGSPosq7qmjoWJnCbEt7Xj0P
- 9HSoLoSlkD3VcY04Ep1KAWMzJl0uUpJO4dqnyLZkQhl2cvcXqGwhUxv1U2itQa3XhoHtQTm68dxlQWPAux9BlFAd/NgiPjtjTVN4Yo8cNiQeW5ULQYIBVKnX
- NF+DfgY3pbLyEPot2OMvSbCIONpglv7AucpgOHyusM9j5EqlXDYJZh0IOUs=
+References: <20201111104409.1530957-1-a.nogikh@gmail.com> <20201111104409.1530957-2-a.nogikh@gmail.com>
+In-Reply-To: <20201111104409.1530957-2-a.nogikh@gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 12:48:01 +0100
+Message-ID: <CAG_fn=U63McR4-0uAfK44=GeYr78wP5PRzasG59CoSXLm0fCcQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] security: add fault injection capability
+To:     Aleksandr Nogikh <a.nogikh@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Kees Cook <keescook@google.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        mortonm@chromium.org, Aleksandr Nogikh <nogikh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2020 19:42, Nicolas Dufresne wrote:
-> Le lundi 21 septembre 2020 à 18:33 +0530, Dikshita Agarwal a écrit :
->> This series adds frame specific min/max qp controls for hevc and layer
->> wise bitrate control for h264.
-> 
-> Any chance you could append your driver changes with this set ? I don't
-> think new APIs ever make it without a driver using it.
+On Wed, Nov 11, 2020 at 11:45 AM Aleksandr Nogikh <a.nogikh@gmail.com> wrot=
+e:
+>
+> From: Aleksandr Nogikh <nogikh@google.com>
+>
+> Add a fault injection capability to call_int_hook macro. This will
+> facilitate testing of fault tolerance of the code that invokes
+> security hooks as well as the fault tolerance of the LSM
+> implementations themselves.
+>
+> Add a KConfig option (CONFIG_FAIL_LSM_HOOKS) that controls whether the
+> capability is enabled. In order to enable configuration from the user
+> space, add the standard debugfs entries for fault injection (if
+> CONFIG_FAULT_INJECTION_DEBUG_FS is enabled).
+>
+> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+> Reviewed-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-Indeed. I'll mark this as 'Changes Requested' in patchwork: I do need a
-version that actually uses these new controls in a driver.
+> ---
+> v4:
+> - Changed retval debugfs file type - now it keeps a signed integer.
+> - Made CONFIG_FAIL_LSM_HOOKS depend on CONFIG_SECURITY.
+> v2:
+> - Renamed should_fail_lsm_hook() to lsm_hooks_inject_fail().
+> ---
+>  lib/Kconfig.debug   |  6 ++++
+>  security/security.c | 69 +++++++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 72 insertions(+), 3 deletions(-)
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 6140413174be..5f4399816019 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1813,6 +1813,12 @@ config FAIL_MAKE_REQUEST
+>         help
+>           Provide fault-injection capability for disk IO.
+>
+> +config FAIL_LSM_HOOKS
+> +       bool "Fault-injection capability for LSM hooks"
+> +       depends on FAULT_INJECTION && SECURITY
+> +       help
+> +         Provide fault-injection capability for LSM hooks.
+> +
+>  config FAIL_IO_TIMEOUT
+>         bool "Fault-injection capability for faking disk interrupts"
+>         depends on FAULT_INJECTION && BLOCK
+> diff --git a/security/security.c b/security/security.c
+> index 69ff6e2e2cd4..be3a3c7c6d6a 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/backing-dev.h>
+>  #include <linux/string.h>
+>  #include <linux/msg.h>
+> +#include <linux/fault-inject.h>
+>  #include <net/flow.h>
+>
+>  #define MAX_LSM_EVM_XATTR      2
+> @@ -669,6 +670,67 @@ static void __init lsm_early_task(struct task_struct=
+ *task)
+>                 panic("%s: Early task alloc failed.\n", __func__);
+>  }
+>
+> +
+> +#ifdef CONFIG_FAIL_LSM_HOOKS
+> +
+> +static struct {
+> +       struct fault_attr attr;
+> +       int retval;
+> +} fail_lsm_hooks =3D {
+> +       .attr =3D FAULT_ATTR_INITIALIZER,
+> +       .retval =3D -EACCES
+> +};
+> +
+> +static int __init setup_fail_lsm_hooks(char *str)
+> +{
+> +       return setup_fault_attr(&fail_lsm_hooks.attr, str);
+> +}
+> +__setup("fail_lsm_hooks=3D", setup_fail_lsm_hooks);
+> +
+> +static int lsm_hooks_inject_fail(void)
+> +{
+> +       return should_fail(&fail_lsm_hooks.attr, 1) ? fail_lsm_hooks.retv=
+al : 0;
+> +}
+> +
+> +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
+> +
+> +static int fail_lsm_retval_set(void *data, u64 val)
+> +{
+> +       fail_lsm_hooks.retval =3D (int)val;
+> +       return 0;
+> +}
+> +
+> +static int fail_lsm_retval_get(void *data, u64 *val)
+> +{
+> +       *val =3D (u64)fail_lsm_hooks.retval;
+> +       return 0;
+> +}
+> +
+> +DEFINE_DEBUGFS_ATTRIBUTE(fail_lsm_retval_ops, fail_lsm_retval_get,
+> +                                                fail_lsm_retval_set, "%l=
+ld\n");
+> +
+> +static int __init fail_lsm_hooks_debugfs(void)
+> +{
+> +       umode_t mode =3D S_IFREG | 0600;
+> +       struct dentry *dir;
+> +
+> +       dir =3D fault_create_debugfs_attr("fail_lsm_hooks", NULL,
+> +                                       &fail_lsm_hooks.attr);
+> +       debugfs_create_file("retval", mode, dir, NULL,
+> +                                               &fail_lsm_retval_ops);
+> +       return 0;
+> +}
+> +
+> +late_initcall(fail_lsm_hooks_debugfs);
+> +
+> +#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
+> +
+> +#else
+> +
+> +static inline int lsm_hooks_inject_fail(void) { return 0; }
+> +
+> +#endif /* CONFIG_FAIL_LSM_HOOKS */
+> +
+>  /*
+>   * The default value of the LSM hook is defined in linux/lsm_hook_defs.h=
+ and
+>   * can be accessed with:
+> @@ -707,16 +769,17 @@ static void __init lsm_early_task(struct task_struc=
+t *task)
+>         } while (0)
+>
+>  #define call_int_hook(FUNC, IRC, ...) ({                       \
+> -       int RC =3D IRC;                                           \
+> -       do {                                                    \
+> +       int RC =3D lsm_hooks_inject_fail();                       \
+> +       if (RC =3D=3D 0) {                                               =
+           \
+>                 struct security_hook_list *P;                   \
+> +               RC =3D IRC;                                              =
+                 \
+>                                                                 \
+>                 hlist_for_each_entry(P, &security_hook_heads.FUNC, list) =
+{ \
+>                         RC =3D P->hook.FUNC(__VA_ARGS__);         \
+>                         if (RC !=3D 0)                            \
+>                                 break;                          \
+>                 }                                               \
+> -       } while (0);                                            \
+> +       }                                                       \
+>         RC;                                                     \
+>  })
+>
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
-Regards,
 
-	Hans
+--=20
+Alexander Potapenko
+Software Engineer
 
-> 
->>
->> Chnage since v1:
->>  corrected email.
->>
->> Dikshita Agarwal (2):
->>   media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
->>   media: v4l2-ctrl: Add layer wise bitrate controls for h264
->>
->>  .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 +++++++++++++++++++++-
->>  drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
->>  include/uapi/linux/v4l2-controls.h                 | 17 +++++
->>  3 files changed, 104 insertions(+), 2 deletions(-)
->>
-> 
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
