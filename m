@@ -2,91 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939412AE602
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B8D2AE601
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732519AbgKKBsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S1732471AbgKKBrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:47:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731805AbgKKBsA (ORCPT
+        with ESMTP id S1731805AbgKKBra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 20:48:00 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F439C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:48:00 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id e21so337862pgr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:48:00 -0800 (PST)
+        Tue, 10 Nov 2020 20:47:30 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56726C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:47:30 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a6so448748ybi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:47:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r4fd3/0dSgTj2lugodXzs5/n1QFxRdS/bwvccHsHQoc=;
-        b=nPE/AdD6ajgJFs/N7AzAkgYmtKO/jsdhXq+aBSQWNVJmQjZyRX92FO88ftRroK87jX
-         5Jvm8gnR2dOEpqQJKwsLYMkctjhbCPltjCCSV1zI5Zf2X4m64aDm1ZUANKF+0TYoaBww
-         fQraSzelm7y6vLyAnKbIVSx39IeyVExPCkx4wpfsYIqbeOS+QXaJKP1cA7OtrAeUEvz9
-         QKBOet/+5g8Qy8/5UJCwOj6QTxpHDHMAJPt1LN8s2R1zqcjIiho6n7BfSqDoEZXvKzuy
-         QKoxeNvupXnbxDxYYW/5M3Kb8/PBQCVh64Z/6IouXtq2V1eSvinX+1LyXFV0T8RFqpeN
-         Tytg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=FxgG6C8MNarNIrksAc2vZbdhW8ip0bCS/z9vVgyXDNc=;
+        b=XG1NLhaztaGy9uEIyJqVmQKwvkssXXvS2Zw2USFL0RJT2tfUR1g2p5CuJrbwHdzWHB
+         ejdaqHnxoveZbJSjTc8f5NxlXlOvbTXWKCxqp2VhTXu+nMfdtCo3uw1bKobNjHPpPqIZ
+         ewpqi/dESTPK86rhP2kLhYtjve+Sr/cwGhpRX/5yuZ7EVqKUXOmAyIug5bpICNnXY4cm
+         pgejCoywbt5Qx9j3KMLaP+VPN69gnia0q6Aj9Xxpykg3wY78IW5kuhPtmOufP/Y4enUw
+         HFI7h+m0rGp1cEq6B8EO9xp9Hdtnji6+q34+/3mnwSo1lNBawPPHhqaeetGXVVHEjtD4
+         TJxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r4fd3/0dSgTj2lugodXzs5/n1QFxRdS/bwvccHsHQoc=;
-        b=KKagI7TfXkpWwZ0QgYlX+85YnFe/mC3gwJu42DuVwqSztt0HV4F9So964ohQN3np9g
-         EfEJ3YIjyIJmTwdEg/teFOMTQJXyzIIS1MZ51mgPh67B27zOezJ7d0OQPa5QjsGAsGNv
-         fjev+IGUJiVz13202apIUyWdVIVGnxVolFaxM890AbS6t1jKD7uIiZgv9jkkVGxREoqM
-         M6OB4kcpifhABgi6JI2wKSjYiaOTw3M/tQDJQt9NoAXea8AENKkWjJpnxEahYEg6d9PO
-         j8p2HbVgxRW/ZGrd/92f1Upvr5Kdzh7ZsXAeD19ljyjwr+/9ZQAgp6Q1/SfkeedZU7m5
-         RMkw==
-X-Gm-Message-State: AOAM532i4zyCeqn9NF3XIZbp1/mOilM+jv+mqRPUuZgcHpwrOH0mh/yp
-        HV8fNL0LJa0kFoJ1Cl0mxv8=
-X-Google-Smtp-Source: ABdhPJya8KqKuFlvVUGAEwIVGIIkQbMQ59JIIeT3iDixXmxmhjRPBGndp3pcXSb4EGkEPk6rVvRiIA==
-X-Received: by 2002:a17:90b:180a:: with SMTP id lw10mr1247573pjb.106.1605059280006;
-        Tue, 10 Nov 2020 17:48:00 -0800 (PST)
-Received: from an990131127 (114-137-93-71.emome-ip.hinet.net. [114.137.93.71])
-        by smtp.gmail.com with ESMTPSA id v3sm365858pfn.215.2020.11.10.17.47.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 17:47:59 -0800 (PST)
-From:   Shuhao Mai <shuhao.mai.1990@gmail.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shuhao Mai <shuhao.mai.1990@gmail.com>
-Subject: [PATCH] mtd: spi-nor: winbond: Add support for w25q512jv
-Date:   Wed, 11 Nov 2020 09:45:58 +0800
-Message-Id: <20201111014556.6579-1-shuhao.mai.1990@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=FxgG6C8MNarNIrksAc2vZbdhW8ip0bCS/z9vVgyXDNc=;
+        b=lX0B0AAW/focwxaY56DLNw3mIWKurFXJO10+ijNi9HrpA/ItCR3iVZ1dlOlbn6YTQ2
+         Erwoei0Q/fbBh5zOobb5rW4o//zozKh2LF2dwQOrTQeaeHsO09/pv6xlE28LziqRZRHx
+         gdNMQ0GrmzxS7rO7rEQwliH0RwizCH/taZ00PmqlcYB/I7eg9+bedBbu84EXU6YofJ+J
+         NcssFAqkEKYqGw0Ql3tXvmaAMtASgJ7NDrxw6CNUG9c5Rh/ApDi1qLU/sFGXlvjkP457
+         DUSktqQfIKd5ymSlEbCCvK1Oek4wViaEJR77ZjpxzbOzW1Spd6P4zgYQNuPDyNqHK6x7
+         gfbg==
+X-Gm-Message-State: AOAM533uM6AEZSaVSQnJFk1xKcGv1GGQ8f8oUJAQNlhfmarJoN4yM+IW
+        fpWVlkdehLWjGMgj9xac9gw0MjV9pobP/B9eRT0=
+X-Google-Smtp-Source: ABdhPJxO9Fs0lN744pI3vERiDRD0xhvwSXC3poyrmXrPztNJ9LEnOYhMgqZheafU2uzfqtDyv71Wuvop9Lp6zl6YHlI=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a5b:886:: with SMTP id
+ e6mr12574836ybq.473.1605059249452; Tue, 10 Nov 2020 17:47:29 -0800 (PST)
+Date:   Tue, 10 Nov 2020 17:47:14 -0800
+Message-Id: <20201111014716.260633-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] usb: fix a few cases of -Wfallthrough
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for w25q512jv. This is of the same series chip with
-w25q256jv, which is already supported, but with size doubled and
-different JEDEC ID.
+The "fallthrough" pseudo-keyword was added as a portable way to denote
+intentional fallthrough. Clang will still warn on cases where there is a
+fallthrough to an immediate break. Add explicit breaks for those cases.
 
-Signed-off-by: Shuhao Mai <shuhao.mai.1990@gmail.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- drivers/mtd/spi-nor/winbond.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/core/config.c    | 1 +
+ drivers/usb/host/ehci-hcd.c  | 2 +-
+ drivers/usb/host/ohci-hcd.c  | 2 +-
+ drivers/usb/host/ohci-hub.c  | 1 +
+ drivers/usb/host/xhci-ring.c | 2 ++
+ 5 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index e5dfa786f190..beaa6389e2dc 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -97,6 +97,8 @@ static const struct flash_info winbond_parts[] = {
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
- 			    SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
-+	{ "w25q512jv", INFO(0xef4020, 0, 64 * 1024, 1024,
-+			    SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
- };
+diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
+index 562a730befda..b199eb65f378 100644
+--- a/drivers/usb/core/config.c
++++ b/drivers/usb/core/config.c
+@@ -1076,6 +1076,7 @@ int usb_get_bos_descriptor(struct usb_device *dev)
+ 		case USB_PTM_CAP_TYPE:
+ 			dev->bos->ptm_cap =
+ 				(struct usb_ptm_cap_descriptor *)buffer;
++			break;
+ 		default:
+ 			break;
+ 		}
+diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+index 3575b7201881..e358ae17d51e 100644
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -867,7 +867,7 @@ static int ehci_urb_enqueue (
+ 		 */
+ 		if (urb->transfer_buffer_length > (16 * 1024))
+ 			return -EMSGSIZE;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	/* case PIPE_BULK: */
+ 	default:
+ 		if (!qh_urb_transaction (ehci, urb, &qtd_list, mem_flags))
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index 73e13e7c2b46..1f5e69314a17 100644
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -171,7 +171,7 @@ static int ohci_urb_enqueue (
  
- /**
+ 			/* 1 TD for setup, 1 for ACK, plus ... */
+ 			size = 2;
+-			/* FALLTHROUGH */
++			fallthrough;
+ 		// case PIPE_INTERRUPT:
+ 		// case PIPE_BULK:
+ 		default:
+diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
+index 44504c1751e0..f474f2f9c1e4 100644
+--- a/drivers/usb/host/ohci-hub.c
++++ b/drivers/usb/host/ohci-hub.c
+@@ -692,6 +692,7 @@ int ohci_hub_control(
+ 		case C_HUB_OVER_CURRENT:
+ 			ohci_writel (ohci, RH_HS_OCIC,
+ 					&ohci->regs->roothub.status);
++			break;
+ 		case C_HUB_LOCAL_POWER:
+ 			break;
+ 		default:
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 167dae117f73..eac43a7b7f23 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -2418,6 +2418,7 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 			xhci_warn_ratelimited(xhci,
+ 					      "WARN Successful completion on short TX for slot %u ep %u: needs XHCI_TRUST_TX_LENGTH quirk?\n",
+ 					      slot_id, ep_index);
++		break;
+ 	case COMP_SHORT_PACKET:
+ 		break;
+ 	/* Completion codes for endpoint stopped state */
+@@ -2962,6 +2963,7 @@ static int prepare_ring(struct xhci_hcd *xhci, struct xhci_ring *ep_ring,
+ 		return -EINVAL;
+ 	case EP_STATE_HALTED:
+ 		xhci_dbg(xhci, "WARN halted endpoint, queueing URB anyway.\n");
++		break;
+ 	case EP_STATE_STOPPED:
+ 	case EP_STATE_RUNNING:
+ 		break;
 -- 
-2.20.1
+2.29.2.222.g5d2a92d10f8-goog
 
