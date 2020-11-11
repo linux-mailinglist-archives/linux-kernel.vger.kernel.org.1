@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9712AF761
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140F72AF769
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgKKR3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
+        id S1726134AbgKKReL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726812AbgKKR3C (ORCPT
+        with ESMTP id S1725895AbgKKReH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:29:02 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7C1C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:29:01 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id m16so1590790vsl.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:29:01 -0800 (PST)
+        Wed, 11 Nov 2020 12:34:07 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FECC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:34:07 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id r9so3101005ioo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:34:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qb778JtBBre4THwiC7AFi5cBHs6XpQkr216/S4N/Bdg=;
-        b=o3BGAQ7AB4acOXOGTtGt4biBH/BIOd6tdT301QMU1CbRTr7BaYBqODN+wRs/jUsK7Z
-         F5LikMeBMEInQp0rW5/RUU0WYGhUhf7va9nkS+5lCsjPI5MvWUfZcsuTAUdymXplJ2tY
-         sIrtZWt12LbCfqMYrSNfj2XwXyY/Zerv+9jpza1v3V4Pt+TPrhCNVuvJfR30xOzkEiIJ
-         NHjUIp9j3I1HoRICQZ9uYSIrhySu2Suanp9TspDU8FDVHmCjThak/CKPSdGG2OHKiMmY
-         JzSiBnvxXdwJf0LbMnaHWYfHs1kMub6RpMPErXaMF9FXKg8770Cww7eeUhUBIYFt6gSq
-         ignA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=x+ZPIkewGIyEZqSMZxkzFb7eDMb8iLSX2JxWgENS124=;
+        b=RPGnXMovCFux6DPWtNZll3p5WD/5MIG0O1M0Ddi5GmAaZhBPkCQX3w+xN1lF9COB5E
+         l23astO6NnwIHkEudqwKqfzveu2eHSQI1LYNabs2/VIapZ8M+htKlJWreJQ0U+xhS26X
+         s3K4a/EVxmMeqy3bb6jJu0gYlk9B8DKvqJAfg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qb778JtBBre4THwiC7AFi5cBHs6XpQkr216/S4N/Bdg=;
-        b=bqTbCnBzxwBlcNN/NIwx6odKO91abrhqdY0WLFqAqTqatxHQ+dY9cr+QXNEsyxZCfT
-         TG1vli+b4LEgUS/nd+cdvXhlI13TnpttKP2T2VBoajAh/6E5U2eK/tiBzQhTgw5K7YKv
-         OTIzztAqWXxzuoCAPcgpTWguWui7PegWPDND9AamTBP9BakiNiFsL9kT2FvuIaoP903c
-         6cm73Ydvl6M/WioS6jlyb345hcX0KjSOdtcTIJsicwGCHexG6Tr7lRYbADkbVgSJFCRE
-         tIIS+PDDFNHGq/UchaVOPDUtyKzf2YkcbFzHUAmCRu5THkGbqcFJ44MDqmXEL61pQ9da
-         ZmBw==
-X-Gm-Message-State: AOAM532JYleaxez7v3yi8BdNpERmeZAQceukuh9XlNpG4ZVJXsAZyNCT
-        ceym8uU2DpHlkzuyapM371+wv+8bpeQ=
-X-Google-Smtp-Source: ABdhPJzEsOmoCgjC9lVkYix+tpdMZEMxBuurZVsdllTMCjETnMubeN2vjjzoY8WLlWc1ut+zV/cI+g==
-X-Received: by 2002:a67:e088:: with SMTP id f8mr16188492vsl.27.1605115740422;
-        Wed, 11 Nov 2020 09:29:00 -0800 (PST)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id h1sm303926vsa.12.2020.11.11.09.28.59
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x+ZPIkewGIyEZqSMZxkzFb7eDMb8iLSX2JxWgENS124=;
+        b=ovXeLBtfeFcNy+Si40EAmGwBW9yJ4aglL00vLbOZhagMUylPXjHlxXhI74Abb6JHA2
+         cHROysWfFXhiEnXd/tDw8MFELZGrWBGdrrm4hiDH9dOXqs+w39Dtm+/lXvU8Nwlw4Vi/
+         VIs0RF+LnVRB6mTbil271UcCup7bln3L/3q1944RhZzv7IZdrNaWbOnz0/h3q3rJGX5J
+         c1eMw1JejXQ8L8ZVwXUdpAo/38D3gsTnwgqZKY4LdKDNNA11enB+XEVVDkPMo391pNOj
+         nPxNw/S7LpoBUhLO9IZRGsPNJ/61iALr+DrO+JZJkch3bo48PZXxs5eBy0+D+/0Wajll
+         KEbg==
+X-Gm-Message-State: AOAM533wkUFgDAXrHQJmJvH05+D0aR0IL78rzsQlQ0M6DKr1BcjSQzwE
+        XiO6E99RRK189WGlrgnQNrRdVA==
+X-Google-Smtp-Source: ABdhPJwNf8L4kqcjShlFmCr/CVIXtDb2BUdeXRUd5wep5sqvAJ4Zu8Fu8DJir5l/g0orc03wtylz3A==
+X-Received: by 2002:a05:6602:242e:: with SMTP id g14mr19440875iob.65.1605116046781;
+        Wed, 11 Nov 2020 09:34:06 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u1sm1609915ili.55.2020.11.11.09.34.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 09:28:59 -0800 (PST)
-Received: by mail-vs1-f50.google.com with SMTP id u24so1592880vsl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:28:59 -0800 (PST)
-X-Received: by 2002:a67:7704:: with SMTP id s4mr15557777vsc.51.1605115738887;
- Wed, 11 Nov 2020 09:28:58 -0800 (PST)
+        Wed, 11 Nov 2020 09:34:06 -0800 (PST)
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <20201111082320.GR2611@hirez.programming.kicks-ass.net>
+ <7207fad6-6ca4-529b-60a8-63db998d10d9@linuxfoundation.org>
+ <20201111160411.GF2628@hirez.programming.kicks-ass.net>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3fccb8d5-825a-a283-7b7e-6193e0c90237@linuxfoundation.org>
+Date:   Wed, 11 Nov 2020 10:34:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <bEm19mEHLokLGc5HrEiEKEUgpZfmDYPoFtoLAAEnIUE@cp3-web-033.plabs.ch>
- <CA+FuTScriNKLu=q+xmBGjtBB06SbErZK26M+FPiJBRN-c8gVLw@mail.gmail.com>
- <zlsylwLJr9o9nP9fcmUnMBxSNs5tLc6rw2181IgE@cp7-web-041.plabs.ch> <20201111082658.4cd3bb1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201111082658.4cd3bb1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 11 Nov 2020 12:28:21 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSfnRJF4_SoMtJz+B7Y5hePoA1OzA797zkmzJ0cYQ99iVw@mail.gmail.com>
-Message-ID: <CA+FuTSfnRJF4_SoMtJz+B7Y5hePoA1OzA797zkmzJ0cYQ99iVw@mail.gmail.com>
-Subject: Re: [PATCH v4 net] net: udp: fix Fast/frag0 UDP GRO
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201111160411.GF2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:27 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Wed, 11 Nov 2020 11:29:06 +0000 Alexander Lobakin wrote:
-> > >>> +     sk = static_branch_unlikely(&udp_encap_needed_key) ?
-> > >>> +          udp4_gro_lookup_skb(skb, uh->source, uh->dest) :
-> > >>> +          NULL;
-> > >
-> > > Does this indentation pass checkpatch?
-> >
-> > Sure, I always check my changes with checkpatch --strict.
-> >
-> > > Else, the line limit is no longer strict,a and this only shortens the
-> > > line, so a single line is fine.
-> >
-> > These single lines is about 120 chars, don't find them eye-pleasant.
-> > But, as with "u32" above, they're pure cosmetics and can be changed.
->
-> let me chime in on the perhaps least important aspect of the patch :)
->
-> Is there are reason to use a ternary operator here at all?
-> Isn't this cleaner when written with an if statement?
->
->         sk = NULL;
->         if (static_branch_unlikely(&udp_encap_needed_key))
->                 sk = udp4_gro_lookup_skb(skb, uh->source, uh->dest);
+On 11/11/20 9:04 AM, Peter Zijlstra wrote:
+> On Wed, Nov 11, 2020 at 08:56:49AM -0700, Shuah Khan wrote:
+> 
+>> Why would you say no to read and inc?
+> 
+> Because they don't guarantee uniqueness (bar wrapping), which is the
+> only reason to use an atomic to begin with.
+> 
 
-Ah indeed :)
+Thanks for the explanation. I see what you are saying.
 
-One other thing I missed before. The socket lookup is actually an
-independent issue, introduced on commit a6024562ffd7 ("udp: Add GRO
-functions to UDP socket"). Should be a separate Fixes tag, perhaps
-even a separate patch.
+Not sure what to make of the 6080 atomic_read()s and 3413
+atomic_inc()s, some of which might be assuming uniqueness
+guarantee.
+
+As far as the sequence number api is concerned, I am with you on
+not exposing read() and inc().
+
+inc()s can just map to inc_return().
+
+For read():
+In the context of up counters, there is a definitely a need for get
+current value type interface that guarantees uniqueness - similar to
+inc_return without actually incrementing.
+
+I will work on v2 based on the discussion.
+
+thanks,
+-- Shuah
+
