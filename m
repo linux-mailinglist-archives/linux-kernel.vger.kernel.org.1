@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84642AF0AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0748A2AF0AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgKKMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKKMca (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:32:30 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A1AC0613D1;
-        Wed, 11 Nov 2020 04:32:28 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id gv24so637983pjb.3;
-        Wed, 11 Nov 2020 04:32:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dTYvfnOluYKgTxdMcxZ/FPGnTnywlshfCqeGlC/4bIw=;
-        b=KZeqETg/goR4DpzrRxll6dpNFeDbh3T5LuitxgAFLrZvLFFeP31gTZD8NEXIWIXHQR
-         P3oRY0x9yxWloawl+5zQvfBF9b85fWqZW690DxP17o8EVj1IgcSPlfuashAT2CLAJVK5
-         jSwmQCTZkUfDE7NGE95Ew0eUzMF8J/oX6qp0xkaW7W0D9vsJaAbiqcwhKyibLpX4Tedt
-         Fe3yZbDy6WmDGOe9SDZkL0UZv3jc9zBGdqC4kIRpRIV7XVFxUvFX/cwCFW0w1EsDu5Lf
-         KzNpJV83sZ0QSd6/5n5L0aFNZbegxZX+41zaP9jtMKAu03qRQ/6fME1iaoSQ3GC6uonQ
-         Vzwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dTYvfnOluYKgTxdMcxZ/FPGnTnywlshfCqeGlC/4bIw=;
-        b=t8hFEWNQS8ZR2qfTyB6JdPap+XGnFAptywjmfGm+Z8EfPRG3EZWbwFC9nSH3h4dAIS
-         OQ1tqSq+CLxZijB8+xPXNEG64V7PzYhB0cmO8EGx5cYqj7qhxQlXrUEPDDuj/lc7BEYX
-         6CTgK2ZD+n+tdq3svl6q2f/NYUFDPZtPPXvnyaOpeiouTeHSo6b1MATw2DYzPERdU+cj
-         x+IpzHbuXZBxpdTMLoQ5jSQHhH5ZyvKxSneSMMuDOdDqKEdph1QJpC41U1iQW4A+sA4U
-         fTzFMpIO3Q14VJW+odYNq+bIIadtNGQoV9Ft4LyiIuxSKjCoNb3ZtrfBEjDktYy4vmFB
-         8Eyw==
-X-Gm-Message-State: AOAM533eOYEKb5GLNF1skDzTZtAKG6yqBaj5BFabcDogBcf/UkWNc1Fa
-        tdlgVZCHk0dTg8rNrPNNTTxOBDTMrX8=
-X-Google-Smtp-Source: ABdhPJwBYBPf3hIzlZLO3uZTEVXVkF867c9Le/HTPd2ZAcrQJLs8GBImBHZVSAqC2ag4KZ6ynrEEyg==
-X-Received: by 2002:a17:90b:90f:: with SMTP id bo15mr3453831pjb.80.1605097948596;
-        Wed, 11 Nov 2020 04:32:28 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id r5sm1680554pgi.77.2020.11.11.04.32.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 04:32:27 -0800 (PST)
-Date:   Wed, 11 Nov 2020 04:32:25 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 net-bugfixs] net/ethernet: Update ret when ptp_clock
- is ERROR
-Message-ID: <20201111123224.GB29159@hoboy.vegasvil.org>
-References: <1605086686-5140-1-git-send-email-wangqing@vivo.com>
+        id S1726376AbgKKMdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:33:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgKKMdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 07:33:44 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B128D20709;
+        Wed, 11 Nov 2020 12:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605098023;
+        bh=ZYiBC0YrninJE98s5Zgaav4ZW54I6qKZUYUtc6gbFsE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fsnCrTS2BqQQc9PWMPmbtfDDirkacuqed7ivpqsXBk7QJBOChsvBxIDxn4mpmzTc8
+         ItNH1tAFYDFydDP/RO1cYyq2P3wzbtF/QF4rPwqkSPxVSGNUSnj1qxtzqGKGRFDMrq
+         6qh+y9ofPbC1yRguibnDZPm0Wr1908/ygDhqxRYo=
+Date:   Wed, 11 Nov 2020 12:33:27 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO
+ descriptors
+Message-ID: <20201111123327.GB4847@sirena.org.uk>
+References: <20201106150706.29089-1-TheSven73@gmail.com>
+ <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
+ <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
+ <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="R3G7APHDIzY6R/pk"
 Content-Disposition: inline
-In-Reply-To: <1605086686-5140-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com>
+X-Cookie: I'm not available for comment..
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 05:24:41PM +0800, Wang Qing wrote:
-> We always have to update the value of ret, otherwise the error value
->  may be the previous one. And ptp_clock_register() never return NULL
->  when PTP_1588_CLOCK enable.
 
-NAK.
+--R3G7APHDIzY6R/pk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Your code must handle the possibility that ptp_clock_register() can
-return NULL.  Why?
+On Wed, Nov 11, 2020 at 02:05:19AM +0100, Linus Walleij wrote:
+> On Mon, Nov 9, 2020 at 3:41 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
 
-1. Because that follows the documented API.
+> > I don't disagree. Fact is that after the imx cspi bus driver was converted
+> > to gpio descriptors, most spi client drivers broke. It would be great if this
+> > could be fixed. Any method that the community can find a consensus on,
+> > would be great :)
 
-2. Because people will copy/paste this driver.
+> I think your patch is the quick fix.
 
-3. Because the Kconfig for your driver can change without warning.
+> I would say that anything that has:
 
-Thanks,
-Richard
+> spi->mode = ...
+
+> is essentially broken.
+
+This is not clear to me, most of these settings are things that are
+constant for the device so it's not clear that they should be being set
+by the device tree in the first place.  The idea that the chip select
+might be being inverted like it is by this whole gpiolib/DT/new binding
+thing is breaking expectations too.
+
+> The core sets up vital things in .mode from e.g. device tree in
+> of_spi_parse_dt():
+
+>         /* Mode (clock phase/polarity/etc.) */
+>         if (of_property_read_bool(nc, "spi-cpha"))
+>                 spi->mode |= SPI_CPHA;
+>         if (of_property_read_bool(nc, "spi-cpol"))
+>                 spi->mode |= SPI_CPOL;
+>         if (of_property_read_bool(nc, "spi-3wire"))
+>                 spi->mode |= SPI_3WIRE;
+>         if (of_property_read_bool(nc, "spi-lsb-first"))
+>                 spi->mode |= SPI_LSB_FIRST;
+>         if (of_property_read_bool(nc, "spi-cs-high"))
+>                 spi->mode |= SPI_CS_HIGH;
+
+> All this gets overwritten and ignored when a client just assigns mode
+> like that. Not just SPI_CS_HIGH. I doubt things are different
+> with ACPI.
+
+OTOH most of these are things the device driver should just get right
+without needing any input from DT, there's a few where there's plausible
+options (eg, you can imagine pin strap configuration for 3 wire mode)
+so generally it's not clear how many of these make sense for anything
+other than spidev.  This binding all predates my involvement so I don't
+know the thought process here.
+
+--R3G7APHDIzY6R/pk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+r2hYACgkQJNaLcl1U
+h9DTWgf+MQUdmL9lgsVd+Jaqdv+8dJmFHJArfbBVRKXrwDvdWXk4clNSEeuiL+7+
+0Tvp/X0/Z5Dsue2uKmfAqkrgluuXRd8vR3fkrKNRrwIPafh0ohWbQz/DheSw7h2A
+CfL5A5Hhn8lNH5RvcAKWQW52YWd9N4jWPqW9t8XAd/ENPtNBVNg2SLBD508KjCL3
+vT8XF8/gr77mwrQzWzPEE/SSYcYov+49jPVuyQlqzYAt3Mt8NIoX4QdRYVj2/VSt
+SCg70Cq0xZPcM9JUsz5ZVQpkrhG66vK7qjAWbvzPZk/vp/DuR2uuY0hKzEflw+W+
+aGPBzJTNTN31uQQ97MSlkeRpwJTeRg==
+=e49X
+-----END PGP SIGNATURE-----
+
+--R3G7APHDIzY6R/pk--
