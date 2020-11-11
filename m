@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B642AF259
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016D52AF25B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgKKNkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:40:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34640 "EHLO mail.kernel.org"
+        id S1727243AbgKKNkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:40:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727131AbgKKNjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:39:32 -0500
-Subject: Re: [GIT PULL] fscrypt fix for 5.10-rc4
+        id S1727143AbgKKNjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:39:33 -0500
+Subject: Re: [GIT PULL] turbostat: update to version 20.09.30
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605101972;
-        bh=St3T7u0v/pdG3Dve+wH090n95DpCzdR3wdreDU1jGWE=;
+        s=default; t=1605101973;
+        bh=S9RIwPBQn7hGdnQSVN9mkeaBkvHVpqqoI9NZDpxr65w=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=r5u9FEgKdmht4lj9F2DNSrru89JsF/FHyj7RlSh3dQ/KUQpsNtM4DQj+bklK47W0K
-         KJhD7q5tbeVjzO1YglJcqMKVfrQAOrplyMKQ3cQ7YFFNZ5crfHt5n64RSVea7XA68r
-         iAbvCM8YIAEC14P3QIfZKrZtraR3b7KAOIkOYS7Q=
+        b=m1sw3XIcNPjm7pWrIMzVmulE6NXySZVEjwEqwm3gJsTXYKDswsjpMBr8afTt1hAf8
+         9xzOAw0ezRYTroo0+708tFaFObrNoRiVbtLBL9Qsz6Z43Dt/HnJpntsa8CnLCYNaEo
+         BH5s0R0QXTfs0egWokj6we4KzET9LYb9F8W5Qiao=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201109231151.GB853@sol.localdomain>
-References: <20201109231151.GB853@sol.localdomain>
+In-Reply-To: <CAJvTdKkS9ywVCp3_MK9e_N7J=LvSHFRjTfSb8Q7O+WvVh2zACA@mail.gmail.com>
+References: <CAJvTdKkS9ywVCp3_MK9e_N7J=LvSHFRjTfSb8Q7O+WvVh2zACA@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201109231151.GB853@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 92cfcd030e4b1de11a6b1edb0840e55c26332d31
+X-PR-Tracked-Message-Id: <CAJvTdKkS9ywVCp3_MK9e_N7J=LvSHFRjTfSb8Q7O+WvVh2zACA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
+X-PR-Tracked-Commit-Id: 3e9fa9983b9297407c2448114d6d27782d5e2ef2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 52d1998d09af92d44ffce7454637dd3fd1afdc7d
-Message-Id: <160510197238.25708.1718923078782898073.pr-tracker-bot@kernel.org>
-Date:   Wed, 11 Nov 2020 13:39:32 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
+X-PR-Merge-Commit-Id: 8bff39bfdc30c9bd6e152eb88a0bd6dd35bdd760
+Message-Id: <160510197306.25708.8139404608635356078.pr-tracker-bot@kernel.org>
+Date:   Wed, 11 Nov 2020 13:39:33 +0000
+To:     Len Brown <lenb@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 9 Nov 2020 15:11:51 -0800:
+The pull request you sent on Tue, 10 Nov 2020 13:00:02 -0500:
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/52d1998d09af92d44ffce7454637dd3fd1afdc7d
+https://git.kernel.org/torvalds/c/8bff39bfdc30c9bd6e152eb88a0bd6dd35bdd760
 
 Thank you!
 
