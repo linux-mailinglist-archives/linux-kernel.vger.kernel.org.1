@@ -2,134 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73B92AF9B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8E62AF9B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgKKUZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:25:46 -0500
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:20466 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbgKKUZp (ORCPT
+        id S1726365AbgKKU0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:26:46 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41014 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgKKU0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:25:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1605126345;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=B8CU2tP8gxUFaVy1zF1lJfac2UVVXYDnMhU0pUnJuyo=;
-  b=R1FE5Giec6er/3CF8CnhtcJikSocheNWZaMBQh/hqWKw9gRNTpd6XqsM
-   fHV1HmYgQ37shiSKzHEf6JpHtUTx9x9sFQK5oR8olJwgOyoqb6iF+V9hw
-   OlERkCOvKHChXaLtilLz9UgVzytp+o4mDlyqqxDBVlBwG/f2Zo92Y8vyN
-   U=;
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: UcjWr9oFnsYXSeF/cgIZywvC3suXI20Pr7WA4jkpLaG+ZAdS5m7wGVi2eolgLjW92dUYTgEndi
- 3PsfYIMCrfOx9zRlGBg42ioNYXAG8IU5C4AiIqvMjrgRSuie2I56TyCC5pqJ25xAdj65YCgLC9
- NmGn70lv8RvK3x7N5XvFUnqJiH5TPcLAvjyUnw3c/5MgDdnV2nGljTj/4zBO0MlXV9rzpoftw5
- X2MMrnqQAxmQR6zoxvYO7XjBI3K8Udep0Rnb5FAS5MzrHEYSmP15ETUXmM7nNx2mj6kxjV+C/9
- ykM=
-X-SBRS: None
-X-MesageID: 30952152
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,470,1596513600"; 
-   d="scan'208";a="30952152"
-Subject: Re: WARNING: can't access registers at asm_common_interrupt
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, <jgross@suse.com>,
-        <x86@kernel.org>
-References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
- <20201111170536.arx2zbn4ngvjoov7@treble>
- <20201111174736.GH2628@hirez.programming.kicks-ass.net>
- <20201111181328.mbxcz2uap2vnqpxq@treble>
- <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
- <20201111194206.GK2628@hirez.programming.kicks-ass.net>
- <20201111195900.2x7kfce2ejkmrzi3@treble>
- <20201111200730.GM2628@hirez.programming.kicks-ass.net>
- <20201111201506.bftpmx4svxn376tn@treble>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <61b2538f-7be6-8f4a-9395-03071b5cc6f0@citrix.com>
-Date:   Wed, 11 Nov 2020 20:25:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 11 Nov 2020 15:26:45 -0500
+Received: by mail-ot1-f65.google.com with SMTP id n15so3380976otl.8;
+        Wed, 11 Nov 2020 12:26:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hj4+pw8ddDfVRLtVVhtMI2FMKPhHhrdKPEjjLMu5Maw=;
+        b=k/Vk3fCP3rp1YbVcOPiaM12BUyGkuafvgzY7v7ZyaVF6hramo6s9WBFF2RZgEol9oX
+         lcp56nCLFD8fSIE0q7V6nT68oOH3BkuMjf+bksF4qox65rFy0/3xGQBrHQqWgBlZRZyB
+         bE68QVv1of1Ku3D7gTR02TK69ndcDYS/jK02/zlgnn0IKRyCwVB560ii6cNWVCi19aIi
+         Vm7dhR0s/8eOKiJIpmJmxQetTRQvPvMbwWb/xUg9Jvw3Tz2OzHzJ/3I4DaO3JZM64r65
+         +GJxZk1otB9941ofeSXPI01mP8o8uW43zgSkV7qBc3PgMYsD5IoYzKQPyERU5wJxM8LE
+         4EIg==
+X-Gm-Message-State: AOAM533UTiQi3lH8Myv4z5LmZOUhumTsqLzQ7QS94RBqokDgz6ndjewN
+        5UL68ZSPnembbT796k8KiA==
+X-Google-Smtp-Source: ABdhPJxr4q2zIpY09NpELS89LQibqWQjpbSRdmMZh63473nOtuxnOzgW3Rb86xN0M0DADa2i2F92QQ==
+X-Received: by 2002:a9d:75d6:: with SMTP id c22mr6031778otl.350.1605126404918;
+        Wed, 11 Nov 2020 12:26:44 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x190sm638931oia.35.2020.11.11.12.26.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 12:26:44 -0800 (PST)
+Received: (nullmailer pid 1971079 invoked by uid 1000);
+        Wed, 11 Nov 2020 20:26:42 -0000
+Date:   Wed, 11 Nov 2020 14:26:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Amelie Delaunay <amelie.delaunay@st.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jun Li <lijun.kernel@gmail.com>, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v5 2/5] dt-bindings: usb: Add DT bindings for STUSB160x
+ Type-C controller
+Message-ID: <20201111202642.GA1971049@bogus>
+References: <20201106165805.31534-1-amelie.delaunay@st.com>
+ <20201106165805.31534-3-amelie.delaunay@st.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111201506.bftpmx4svxn376tn@treble>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
- FTLPEX02CL04.citrite.net (10.13.108.177)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106165805.31534-3-amelie.delaunay@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2020 20:15, Josh Poimboeuf wrote:
-> On Wed, Nov 11, 2020 at 09:07:30PM +0100, Peter Zijlstra wrote:
->> On Wed, Nov 11, 2020 at 01:59:00PM -0600, Josh Poimboeuf wrote:
->>> On Wed, Nov 11, 2020 at 08:42:06PM +0100, Peter Zijlstra wrote:
->>>>> Would objtool have an easier time coping if this were implemented in
->>>>> terms of a static call?
->>>> I doubt it, the big problem is that there is no visibility into the
->>>> actual alternative text. Runtime patching fragments into static call
->>>> would have the exact same problem.
->>>>
->>>> Something that _might_ maybe work is trying to morph the immediate
->>>> fragments into an alternative. That is, instead of this:
->>>>
->>>> static inline notrace unsigned long arch_local_save_flags(void)
->>>> {
->>>> 	return PVOP_CALLEE0(unsigned long, irq.save_fl);
->>>> }
->>>>
->>>> Write it something like:
->>>>
->>>> static inline notrace unsigned long arch_local_save_flags(void)
->>>> {
->>>> 	PVOP_CALL_ARGS;
->>>> 	PVOP_TEST_NULL(irq.save_fl);
->>>> 	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
->>>> 					"PUSHF; POP _ASM_AX",
->>>> 					X86_FEATURE_NATIVE)
->>>> 			    : CLBR_RET_REG, ASM_CALL_CONSTRAINT
->>>> 			    : paravirt_type(irq.save_fl.func),
->>>> 			      paravirt_clobber(PVOP_CALLEE_CLOBBERS)
->>>> 			    : "memory", "cc");
->>>> 	return __eax;
->>>> }
->>>>
->>>> And then we have to teach objtool how to deal with conflicting
->>>> alternatives...
->>>>
->>>> That would remove most (all, if we can figure out a form that deals with
->>>> the spinlock fragments) of paravirt_patch.c
->>>>
->>>> Hmm?
->>> I was going to suggest something similar.  Though I would try to take it
->>> further and replace paravirt_patch_default() with static calls.
->> Possible, we just need to be _really_ careful to not allow changing
->> those static_call()s. So maybe we need DEFINE_STATIC_CALL_RO() which
->> does a __ro_after_init on the whole thing.
-> But what if you want to live migrate to another hypervisor ;-)
+On Fri, 06 Nov 2020 17:58:02 +0100, Amelie Delaunay wrote:
+> Add binding documentation for the STMicroelectronics STUSB160x Type-C port
+> controller.
+> 
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> ---
+>  .../devicetree/bindings/usb/st,stusb160x.yaml | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+> 
 
-The same as what happens currently.  The user gets to keep all the
-resulting pieces ;)
-
->>> Either way it doesn't make objtool's job much easier.  But it would be
->>> nice to consolidate runtime patching mechanisms and get rid of
->>> .parainstructions.
->> I think the above (combining alternative and paravirt/static_call) does
->> make objtool's job easier, since then we at least have the actual
->> alternative instructions available to inspect, or am I mis-understanding
->> things?
-> Right, it makes objtool's job a _little_ easier, since it already knows
-> how to read alternatives.  But it still has to learn to deal with the
-> conflicting stack layouts.
-
-I suppose the needed abstraction is "these blocks will start and end
-with the same stack layout", while allowing the internals to diverge.
-
-~Andrew
+Reviewed-by: Rob Herring <robh@kernel.org>
