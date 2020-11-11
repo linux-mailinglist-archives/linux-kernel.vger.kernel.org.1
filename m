@@ -2,182 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6B72AFA1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E922AFA21
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgKKU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:59:54 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:34346 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKKU7y (ORCPT
+        id S1726630AbgKKVB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKKVB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:59:54 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5A1AD20C281F;
-        Wed, 11 Nov 2020 12:59:53 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5A1AD20C281F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605128393;
-        bh=ZwApRPA6yq3CTn0pJNUnmfzfcCUz7gA0vBBGNi8eScU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NKEoMctK9f3ZYPF7CJ31moNuev+uvzvmMpUQIM6KhmOfoarb9OEPwoRq/hTlZ0uod
-         EO8UaSjk0cnVF8w5MEi2XUvY4unAGgYIcjZoW8XIjyWvj7RQyexjCnlZvsa1NP3g23
-         csxTzViIj/0K3TdA9PBgT6ntNZ7I2PCtQZs3ip1Q=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com
-Cc:     tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ima: select ima-buf template for buffer measurement
-Date:   Wed, 11 Nov 2020 12:59:46 -0800
-Message-Id: <20201111205946.503-1-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 11 Nov 2020 16:01:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D73BC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:01:59 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kcxFY-00040p-2B; Wed, 11 Nov 2020 22:01:52 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kcxFX-00061V-2F; Wed, 11 Nov 2020 22:01:51 +0100
+Date:   Wed, 11 Nov 2020 22:01:49 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     linux-pwm@vger.kernel.org, lee.jones@linaro.org,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com
+Subject: Re: [PATCH v15 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20201111210149.3eq3nh4ki5ocyfru@pengutronix.de>
+References: <cover.1604555266.git.rahul.tanwar@linux.intel.com>
+ <b91a46bee54984d5ff518c9fe56744c291b1ffa4.1604555266.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="g3wv7flk7x7fwvyn"
+Content-Disposition: inline
+In-Reply-To: <b91a46bee54984d5ff518c9fe56744c291b1ffa4.1604555266.git.rahul.tanwar@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default IMA template for measuring buffer should be 'ima-buf' - so
-that the measured buffer is correctly included in the IMA measurement
-log entry. But the default IMA template used for all policy rules is
-the value set for CONFIG_IMA_DEFAULT_TEMPLATE if the policy rule does
-not specify a template. IMA does not take into account the template
-requirements of different rules when choosing a default template for
-a given policy rule. This breaks the buffer measurement if the template
-is not provided as part of the rule because the default template could
-be different than 'ima-buf'.
 
-For example, the following IMA policy rule enables measuring
-the command line arguments passed to the new kernel on kexec system call.
+--g3wv7flk7x7fwvyn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- measure func=KEXEC_CMDLINE
+Hello,
 
-The IMA template selected should be 'ima-buf' to have the measured 
-command line arguments included in the IMA measurement log entry.
-Instead the default IMA template is selected, which could be different
-than 'ima-buf'.
+On Thu, Nov 05, 2020 at 01:49:40PM +0800, Rahul Tanwar wrote:
+> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+> This PWM controller does not have any other consumer, it is a
+> dedicated PWM controller for fan attached to the system. Add
+> driver for this PWM fan controller.
+>=20
+> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
-Initialize a global 'ima-buf' template and select that template,
-by default, for measuring buffer.
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- security/integrity/ima/ima.h          |  1 +
- security/integrity/ima/ima_main.c     | 17 +++++------------
- security/integrity/ima/ima_policy.c   |  2 +-
- security/integrity/ima/ima_template.c | 25 +++++++++++++++++++++++++
- 4 files changed, 32 insertions(+), 13 deletions(-)
+Best regards
+Uwe
 
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 6ebefec616e4..8e8b1e3cb847 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -156,6 +156,7 @@ int template_desc_init_fields(const char *template_fmt,
- 			      const struct ima_template_field ***fields,
- 			      int *num_fields);
- struct ima_template_desc *ima_template_desc_current(void);
-+struct ima_template_desc *ima_template_desc_buf(void);
- struct ima_template_desc *lookup_template_desc(const char *name);
- bool ima_template_has_modsig(const struct ima_template_desc *ima_template);
- int ima_restore_measurement_entry(struct ima_template_entry *entry);
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index a962b23e0429..3646ae763ba9 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -413,7 +413,7 @@ int ima_file_mmap(struct file *file, unsigned long prot)
-  */
- int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
- {
--	struct ima_template_desc *template;
-+	struct ima_template_desc *template = NULL;
- 	struct file *file = vma->vm_file;
- 	char filename[NAME_MAX];
- 	char *pathbuf = NULL;
-@@ -802,7 +802,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
- 					    .filename = eventname,
- 					    .buf = buf,
- 					    .buf_len = size};
--	struct ima_template_desc *template = NULL;
-+	struct ima_template_desc *template = ima_template_desc_buf();
- 	struct {
- 		struct ima_digest_data hdr;
- 		char digest[IMA_MAX_DIGEST_SIZE];
-@@ -833,16 +833,9 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
- 		pcr = CONFIG_IMA_MEASURE_PCR_IDX;
- 
- 	if (!template) {
--		template = lookup_template_desc("ima-buf");
--		ret = template_desc_init_fields(template->fmt,
--						&(template->fields),
--						&(template->num_fields));
--		if (ret < 0) {
--			pr_err("template %s init failed, result: %d\n",
--			       (strlen(template->name) ?
--				template->name : template->fmt), ret);
--			return;
--		}
-+		ret = -EINVAL;
-+		audit_cause = "ima_template_desc_buf";
-+		goto out;
- 	}
- 
- 	iint.ima_hash = &hash.hdr;
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 9b5adeaa47fc..823a0c1379cb 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -628,7 +628,7 @@ int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
- 	struct ima_rule_entry *entry;
- 	int action = 0, actmask = flags | (flags << 1);
- 
--	if (template_desc)
-+	if (template_desc && !*template_desc)
- 		*template_desc = ima_template_desc_current();
- 
- 	rcu_read_lock();
-diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-index 1e89e2d3851f..e53fce2c1610 100644
---- a/security/integrity/ima/ima_template.c
-+++ b/security/integrity/ima/ima_template.c
-@@ -55,6 +55,7 @@ static const struct ima_template_field supported_fields[] = {
- #define MAX_TEMPLATE_NAME_LEN sizeof("d-ng|n-ng|sig|buf|d-modisg|modsig")
- 
- static struct ima_template_desc *ima_template;
-+static struct ima_template_desc *ima_buf_template;
- 
- /**
-  * ima_template_has_modsig - Check whether template has modsig-related fields.
-@@ -252,6 +253,30 @@ struct ima_template_desc *ima_template_desc_current(void)
- 	return ima_template;
- }
- 
-+struct ima_template_desc *ima_template_desc_buf(void)
-+{
-+	struct ima_template_desc *template = NULL;
-+	int ret = 0;
-+
-+	if (ima_buf_template)
-+		return ima_buf_template;
-+
-+	ima_init_template_list();
-+	template = lookup_template_desc("ima-buf");
-+	if (!template)
-+		return NULL;
-+
-+	ret = template_desc_init_fields(template->fmt,
-+					&(template->fields),
-+					&(template->num_fields));
-+	if (ret)
-+		return NULL;
-+
-+	ima_buf_template = template;
-+
-+	return ima_buf_template;
-+}
-+
- int __init ima_init_template(void)
- {
- 	struct ima_template_desc *template = ima_template_desc_current();
--- 
-2.29.0
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
+--g3wv7flk7x7fwvyn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+sUToACgkQwfwUeK3K
+7AlrwAf+OYaCa2FmFmj3Splkji3o0Nz+Zd2Vy4k7pEaUXexTB5KIT85YGtivm8v7
+ThOy33mBMkFhhci7+dr1YDW4cF/Qkwy5i5D4DSi8nOgvI/7zd8G86JSGyfXDYeOn
+jDZGJspvH/OsuK6xyg9w9S4iY2xwf9KHrpHnJiopHbXJdpEGNM7P9tsClMU3i8Su
+S0H1QPHhcEQf9MVsNjVly8o8qhfPZz/05r4dCqev1fUDL9DAJsnUYl2bJ80VfTK1
+XHd0PUvm7Wr6Ko14qF6KUtknCl7G7mqwFzrfEs57D4YZ3oDMu35GrvO3VEXGFFKa
+mnO1heHL4dWCskISHt4sC/WUFJalCw==
+=uG/J
+-----END PGP SIGNATURE-----
+
+--g3wv7flk7x7fwvyn--
