@@ -2,298 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0A02AE856
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF142AE859
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgKKFpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 00:45:14 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53162 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgKKFpN (ORCPT
+        id S1726140AbgKKFpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgKKFpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:45:13 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AB5iXSg013527;
-        Tue, 10 Nov 2020 23:44:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605073473;
-        bh=J16Pr44C8yDfBtifBxjlrA5S3HKGKiZWQWjzHZlCq8o=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=bTARTyNxpscSUSYPETYc1WqcktlW8afxs479YkFRqGV/2w5m4bpOEZbMT1+vcRf73
-         yZT9RJz2QbMccCwQtW5ktNBteg+drmhhZZVW9DDnVuWx9SpyYo47mfITgLjzGzPOUg
-         LvlVzMlCRBFoVtbzNM9tJdpVLQ6mK8masLjhlVm0=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AB5iX8n097991
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 23:44:33 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
- Nov 2020 23:44:32 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 10 Nov 2020 23:44:32 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AB5iSCr008845;
-        Tue, 10 Nov 2020 23:44:29 -0600
-Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller driver
-To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-CC:     =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>
-References: <20201105120331.9853-1-chin-ting_kuo@aspeedtech.com>
- <20201105120331.9853-5-chin-ting_kuo@aspeedtech.com>
- <fd8fa472-53bb-c992-3dc2-5a984a439c07@kaod.org>
- <20201105161132.37eb3265@collabora.com>
- <HK0PR06MB2786DAC99A56EA302EE969CAB2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
- <20201106100539.62fc5249@collabora.com>
- <HK0PR06MB27865F0C5B2A4F680ED0D400B2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
- <20201106123015.3248d478@collabora.com>
- <HK0PR06MB2786AE097106FC322D625BBFB2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <7e959d0d-1626-9816-c5cb-1b16c5ffba25@ti.com>
-Date:   Wed, 11 Nov 2020 11:14:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 11 Nov 2020 00:45:45 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406E3C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:45:45 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id oc3so149958pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:45:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tW5eWnXuvaPQysY5F4/p1CXf/0e354oeDmt853ri8UM=;
+        b=zmIQDeCZG18/faKuhY2+fauFnbQcPnSt0T+wqaMFQqvNh/3/uCWxU4BuI2cXcAvWSd
+         RT23iTKj17Iz2042g8c9dBnJT1zAI8zCbL0Aw9BlF80AxWBzM+nEeDdmnVyWg17erRVJ
+         +aqyrrYdjAyehM9Dr+Q6clgUThw5muES7qGOWXgh4r6jarPOiTwG+nr46pUhYnj+rLdb
+         5Gwyms0eYwNcCAo81zqW/dEzFDAW4YGYahifmWHtrbDQNdwL4PA3oKhGBYNLcwGL8LqS
+         HMIO7p3QrZqg+0QaeqeFdCYOa2gjKeVTfn/hxEypz3z5CQLPQt4JZqNAddHEg1p1b4qj
+         tj9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tW5eWnXuvaPQysY5F4/p1CXf/0e354oeDmt853ri8UM=;
+        b=WOpscfI3C7/GF1E57JX7mnEo2J7dHQh2p3ynY1nrCFV/wTSmvBxc5F2o8hyGEanklM
+         rby5VmDesNgmygGXiWmEOkzBvMUTUw3p+f6TGx6/2jdYqFyj8g9D3IvvN92Za6hC9eB2
+         pAnPgtwBPTYfz+b7WEkikny2epjBHLqJdQsr/q5M9U07UEts5csji0rh6CJA0JnLLOd0
+         TYBMyUgvljyHzcj5/m7USzysxq/MhV7ac/K99W4sQFcRdPaD7LlX0OxlTeMJA+RzpbNJ
+         /yE9MwAAi0qDnvFiks+e7MQ+tju1UhXRS2dZ2rs2ABu46F8wrKYKPyb+NehEDOBiktGb
+         uQVA==
+X-Gm-Message-State: AOAM5331Aj2ndrFEn0H5zN0jF0yT/qgDkl439I6eqAWb2/F8GGWVtILE
+        C2WEPBx6eGumdqinsG8iKu2EJQ==
+X-Google-Smtp-Source: ABdhPJxF017zDNxi4Sg5i6CUySBJ3dWebfaqChhQgw7Vs4mjLWzxeY8V8yJwaLr/0MiubQoEaQHmxw==
+X-Received: by 2002:a17:902:9f85:b029:d6:e802:75b0 with SMTP id g5-20020a1709029f85b02900d6e80275b0mr20483312plq.29.1605073544732;
+        Tue, 10 Nov 2020 21:45:44 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id q22sm869299pgi.33.2020.11.10.21.45.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Nov 2020 21:45:43 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:15:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 02/26] memory: tegra20-emc: Use
+ dev_pm_opp_set_clkname()
+Message-ID: <20201111054541.hstqrlvtpwxxbv4m@vireshk-i7>
+References: <20201111011456.7875-1-digetx@gmail.com>
+ <20201111011456.7875-3-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <HK0PR06MB2786AE097106FC322D625BBFB2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111011456.7875-3-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chin-Ting,
+On 11-11-20, 04:14, Dmitry Osipenko wrote:
+> The dev_pm_opp_get_opp_table() shouldn't be used by drivers, use
+> dev_pm_opp_set_clkname() instead.
+> 
+> Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/tegra20-emc.c | 30 +++++++++++++++++++-----------
+>  1 file changed, 19 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
+> index 5e10aa97809f..bb3f315c9587 100644
+> --- a/drivers/memory/tegra/tegra20-emc.c
+> +++ b/drivers/memory/tegra/tegra20-emc.c
+> @@ -902,7 +902,7 @@ static int tegra_emc_interconnect_init(struct tegra_emc *emc)
+>  
+>  static int tegra_emc_opp_table_init(struct tegra_emc *emc)
+>  {
+> -	struct opp_table *opp_table;
+> +	struct opp_table *reg_opp_table = NULL, *clk_opp_table;
+>  	const char *rname = "core";
+>  	int err;
+>  
+> @@ -917,19 +917,24 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
+>  	}
+>  
+>  	/* voltage scaling is optional */
+> -	if (device_property_present(emc->dev, "core-supply"))
+> -		opp_table = dev_pm_opp_set_regulators(emc->dev, &rname, 1);
+> -	else
+> -		opp_table = dev_pm_opp_get_opp_table(emc->dev);
+> +	if (device_property_present(emc->dev, "core-supply")) {
+> +		reg_opp_table = dev_pm_opp_set_regulators(emc->dev, &rname, 1);
+> +		if (IS_ERR(reg_opp_table))
+> +			return dev_err_probe(emc->dev, PTR_ERR(reg_opp_table),
+> +					     "failed to set OPP regulator\n");
+> +	}
+>  
+> -	if (IS_ERR(opp_table))
+> -		return dev_err_probe(emc->dev, PTR_ERR(opp_table),
+> -				     "failed to prepare OPP table\n");
+> +	clk_opp_table = dev_pm_opp_set_clkname(emc->dev, NULL);
+> +	err = PTR_ERR_OR_ZERO(clk_opp_table);
 
-On 11/6/20 11:57 PM, Chin-Ting Kuo wrote:
-> Hi Boris,
-> 
->> -----Original Message-----
->> From: Boris Brezillon <boris.brezillon@collabora.com>
->> Sent: Friday, November 6, 2020 7:30 PM
->> To: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
->> Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller
->> driver
->>
->> +Tudor and Vignesh
->>
->> On Fri, 6 Nov 2020 10:21:06 +0000
->> Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com> wrote:
->>
->>> Hi Boris,
->>>
->>> Thanks for your comments and suggestions.
->>>
->>>> -----Original Message-----
->>>> From: Boris Brezillon <boris.brezillon@collabora.com>
->>>> Sent: Friday, November 6, 2020 5:06 PM
->>>> To: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
->>>> Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory
->>>> controller driver
->>>>
->>>> On Fri, 6 Nov 2020 08:58:23 +0000
->>>> Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com> wrote:
->>>>
->>>>> Hi Boris,
->>>>>
->>>>> Thanks for your quick reply.
->>>>>
->>>>>> -----Original Message-----
->>>>>> From: Boris Brezillon <boris.brezillon@collabora.com>
->>>>>> Sent: Thursday, November 5, 2020 11:12 PM
->>>>>> To: Cédric Le Goater <clg@kaod.org>; robh+dt@kernel.org
->>>>>> Cc: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>;
->>>>>> broonie@kernel.org; joel@jms.id.au; andrew@aj.id.au;
->>>>>> bbrezillon@kernel.org; devicetree@vger.kernel.org;
->>>>>> linux-kernel@vger.kernel.org; linux-aspeed@lists.ozlabs.org;
->>>>>> linux-spi@vger.kernel.org; BMC-SW <BMC-SW@aspeedtech.com>
->>>>>> Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory
->>>>>> controller driver
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> On Thu, 5 Nov 2020 15:09:11 +0100 Cédric Le Goater
->>>>>> <clg@kaod.org> wrote:
->>>>>>
->>>>>>> Hello Chin-Ting,
->>>>>>>
->>>>>>> Thanks for this driver. It's much cleaner than the previous
->>>>>>> and we should try adding support for the AST2500 SoC also. I
->>>>>>> guess we can keep the old driver for the AST2400 which has a
->> different register layout.
->>>>>>>
->>>>>>> On the patchset, I think we should split this patch in three :
->>>>>>>
->>>>>>>  - basic support
->>>>>>>  - AHB window calculation depending on the flash size
->>>>>>>  - read training support
->>>>>>
->>>>>> I didn't look closely at the implementation, but if the read
->>>>>> training tries to read a section of the NOR, I'd recommend
->>>>>> exposing that feature through spi-mem and letting the SPI-NOR
->>>>>> framework trigger the training instead of doing that at dirmap
->>>>>> creation time (remember that spi-mem is also used for SPI NANDs
->>>>>> which use the dirmap
->>>> API too, and this training is unlikely to work there).
->>>>>>
->>>>>> The SPI-NOR framework could pass a read op template and a
->>>>>> reference pattern such that all the spi-mem driver has to do is
->>>>>> execute the template op and compare the output to the reference
->> buffer.
->>>>>>
->>>>>
->>>>> I agree it. Before, I were not able to find a suitable location to
->>>>> implement
->>>> read training feature.
->>>>> I think that I can add a SPI timing training function in
->>>>> "spi_controller_mem_ops" struct and call it by a wrapper function
->>>>> called at
->>>> the bottom of spi_nor_probe() in spi-nor.c.
->>>>> Maybe, SPI-NOR framework does not need to pass reference buffer
->>>>> since calibration method depends on each SoC itself and buffer
->>>>> size may be
->>>> variant.
->>>>> The detail calibration method may be implemented in each SoC SPI
->> driver.
->>>>
->>>> That's a real problem IMO. What makes this pattern SoC specific? I
->>>> can see why the location in flash could be *board* specific, but the
->>>> pattern should be pretty common, right? As for the spi-mem operation
->>>> to be executed, it's definitely memory specific (I can imagine some
->>>> flash vendors providing a specific command returning a fixed pattern
->>>> that's not actually stored on a visible portion of the flash).
->>>
->>> You are right, the pattern should be pretty common. The thing I was
->>> worried about is the size of that buffer since, maybe, some
->>> controllers need to read more data than others in order to get good training
->> result.
->>
->> It would be good to see how other controllers implement that. I know that the
->> Cadence controller had something similar. Vignesh might be able to share his
->> thoughts on this.
-> 
+Don't check for NULL here.
 
-Cadence controllers requires to read fixed length calibration pattern
-multiple times (while tuning PHY registers) from non zero address
-location. Pattern is Flash independent and SoC independent. Hence, can
-be hard coded in driver (no need to read at slower speed).
+> +	if (err) {
+> +		dev_err(emc->dev, "failed to set OPP clk: %d\n", err);
+> +		goto put_reg_table;
+> +	}
+>  
+>  	err = dev_pm_opp_of_add_table(emc->dev);
+>  	if (err) {
+>  		dev_err(emc->dev, "failed to add OPP table: %d\n", err);
+> -		goto put_table;
+> +		goto put_clk_table;
+>  	}
+>  
+>  	dev_info(emc->dev, "current clock rate %lu MHz\n",
+> @@ -946,8 +951,11 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
+>  
+>  remove_table:
+>  	dev_pm_opp_of_remove_table(emc->dev);
+> -put_table:
+> -	dev_pm_opp_put_regulators(opp_table);
+> +put_clk_table:
+> +	dev_pm_opp_put_clkname(clk_opp_table);
+> +put_reg_table:
+> +	if (reg_opp_table)
 
-> Oh, maybe, I misunderstood your meaning and I did not describe clearly early.
-> As you mentioned before, for some SPI-NOR flashes, there indeed exists a command used for
-> read timing training with high SPI clock frequency.
-> When this specific command is sent, an almost common pattern with fixed length will be outputted to controller.
-> (This pattern is not stored on a normal read/write area.)
-> 
-> But, unfortunately, many flash parts we used did not support this feature. Thus, our read timing training strategy is:
-> Step 1: Use the lowest SPI clock frequency to read normal flash content with specific length as reference data.
-> Step 2: With a fixed high SPI clock frequency, adjust different timing delay cycle, then, read the same flash region for each timing delay.
-> Step 3: Compare each data read from step 2 to the reference data gotten from step 1. Then, we will get a suitable timing delay window.
-> 
+This won't be required after my other patchset and yeah it is a
+classic chicken and egg problem we have here :)
 
-Using dirmap_create() to actually calibrate controller is abusing the
-interface IMO.  It is not guaranteed that flash is configured to use
-right number of dummy cycles values and mode for high speed operation
-before call to dirmap_create(). This is true today but may change in the
-future. So, there should at least be a separate callback dedicated for
-calibration along the lines Boris suggested.
+Maybe you can fix them separately in 5.11 after everything is applied.
 
-Max frequency that read cmd may support would not be supported by other
-cmds such as write or read SFDP. This would need to be taken into
-account before and post calibration probably by extending spi_mem_op to
-specify freq of operation per op.
+> +		dev_pm_opp_put_regulators(reg_opp_table);
+>  
+>  	return err;
+>  }
+> -- 
+> 2.29.2
 
-I see that calibration pattern is assumed to be at offset 0 in the
-flash. This may not be the ideal position as offset 0 is typically used
-to store bootloader. So, there should be a way to specify offset at
-which calibration pattern is present.
-
-Regards
-Vignesh
-
-
->>
->>>
->>>>>
->>>>> Besides, I am thinking about the possibility for adding a
->>>>> "spi_mem_post_init" function in spi-mem framework sine for some
->>>>> SoCs, SPI controller needs to adjust some settings after getting
->>>>> SPI flash
->>>> information.
->>>>
->>>> I don't think that's a good idea. The spi-mem interface should stay
->>>> memory-type agnostic and doing that means we somehow pass NOR
->>>> specific info. What is it that you need exactly, and why?
->>>
->>> Yes, as you mention, the spi-mem interface should stay memory-type
->> agnostic. Thus, currently, I just think about this, not implementation.
->>>
->>> Why did I need this exactly?
->>> Take ASPEED SPI controller for example, ASPEED SPI controller is designed
->> for SPI NOR flash especially.
->>> When ASPEED SoC powers on or reset, MCU ROM will fetch SPI NOR flash
->> through SPI controller.
->>> But, MCU ROM does not know the current address mode of SPI NOR flash
->> when SoC was reset (SPI flash is not reset).
->>> Therefore, SPI flash driver needs to set related flag to notify MCU ROM when
->> flash is set to 4B address mode and 4B read opcode is used.
->>
->> Oh, that's ugly! The SPI NOR framework tries hard to not change the
->> addressing mode exactly for this reason. On most NORs there should now be
->> READ/WRITE variants allowing you to address more than 2^24 bytes without
->> changing the addressing mode. This being said, those problem exists on other
->> platform which can't even let the boot ROM know that addressing mode
->> changed. I don't have a proper solution for your use case, but I definitely don't
->> like the idea of exposing such details to spi-mem controllers...
->>
-> 
-> Certainly, most of new SPI NOR flashes larger than 16MB support dedicated
-> 4B command without change flash address mode. Originally, I want to take
-> all flashes into consideration. But, now, the number of flashes, larger than 16MB and
-> without 4B dedicated command, decreases. Perhaps, I can ignore them currently.
-> 
->> We usually recommend to connect the NOR reset pin to the global reset to
->> addressing mode gets back to known state when you reboot the board and
->> need to go back to the boot ROM.
-> 
-> I agree with this.
-> 
->>
->>>
->>> Besides, for other SoCs connected to ASPEED SoC, they can read/write SPI
->> NOR flash connected to ASPEED SoC by a pure HW channel without any
->> interaction of SW driver.
->>> But, before trigger this feature, flash read/write/erase opcode, dummy
->>> cycle and other information should be filled in the related registers in
->> advance because that HW channel does not know accurate information about
->> connected SPI NOR flash.
->>
->> While I can see a valid reason to allow that for READs (if we decide to support
->> XIP), I really don't like the idea of allowing destructive operations
->> (WRITE/ERASE) on the flash that don't go through the MTD layer. This sounds
->> like risky business to me, so I'd just forget about that if I were you. Regarding
->> the XIP use case, why not, but we'll need to extend the dirmap API to support it:
->> mappings need to stay around and you need to return a pointer to the mapped
->> memory region, which we don't allow right now (because we want to let
->> controllers move their dirmap window if they have to).
-> 
-> Yes, for SPI(-flash) driver, I think I just needs to focus on the scenario where all flash operations go through MTD layer.
-> Other application may be implemented on the other driver, not here.
-> 
-> 
-> Best Wishes,
-> Chin-Ting
-> 
-> 
+-- 
+viresh
