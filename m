@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621442AF9EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD192AF9EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgKKUpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKUpI (ORCPT
+        id S1726781AbgKKUpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:45:33 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:56125 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKUpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:45:08 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FA5C0613D1;
-        Wed, 11 Nov 2020 12:45:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CsuP2ZbFV021yD83Asf/WJrsarPfzdmIq9MXLED49SE=; b=QF9Lp+Dv+5PrX67MKMP/B8Ri5v
-        WnPV6mS+OhKhV1U72wkx3T64VjCFcm7V2HI4G7FzyyHU9uInlAIqTjutPsdBYLM3OdRRlLOsXV5/s
-        hfnzgSqwDYUgqnnqY6OiG2pc6eugSLTBBj89ba1fqWiIpkPafPZ5pcwlN1JpwFCFCgsc1hgWNatpd
-        08yPCU5Lh9qGFj+2DZ1HzeEFzJhC+59QerfgRx2tzvZUvhjF78gAonDyzKShdXP0x7SXlNSnAMxOM
-        istBiplwdwTvAISnRyQr5JA3d8mrkWQfbxNDDxbAdPhzO3k/k8eap/2fPZwCeZSEuZ1O1RZ+aIlvu
-        kJw7TsWw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcwzF-000766-PU; Wed, 11 Nov 2020 20:45:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9EED9301E02;
-        Wed, 11 Nov 2020 21:45:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A0352BCE962B; Wed, 11 Nov 2020 21:45:00 +0100 (CET)
-Date:   Wed, 11 Nov 2020 21:45:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paul Bolle <pebolle@tiscali.nl>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Scott Wood <swood@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        x86@kernel.org
-Subject: Re: [tip: sched/core] sched: Fix balance_callback()
-Message-ID: <20201111204500.GR2628@hirez.programming.kicks-ass.net>
-References: <20201023102346.203901269@infradead.org>
- <160508300397.11244.13967684821070428528.tip-bot2@tip-bot2>
- <6356963f376a0798e8c939f813c2efe05d32c6d7.camel@tiscali.nl>
+        Wed, 11 Nov 2020 15:45:33 -0500
+X-Greylist: delayed 161883 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Nov 2020 15:45:31 EST
+Date:   Wed, 11 Nov 2020 20:45:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1605127530; bh=bsLJnkXi8MeTMrm7MqVIftcvsnbFJMQr1qH+ckDYG2k=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=LaabHsZW/4JyVGzDppF9Qsi1NifWmzt017nLH0mUXhbmTxR6qnRwAOmnupAFgxX05
+         bbE4t4Yt+Wivm9xgyLaYTnRZoKb7FPOBn+LoAMVV07vZlWgc6qwXD/TOn6uCjup+Xk
+         xvGkzzSiKeCgJLCSRujLkdEnJoHCQYo4GKeaEcLS7YwsjM9uMo0W+XnuHaBk4HRUsh
+         x9iMux9RfALDHdCeFL+9kR1+jTUPZnwEDTrNYCzp8WJbtE9DO/sGsAI1MOA6mcv7y0
+         EZnQfr0XRk/SAPfj1b6ihVHPtw5o1UjxX7cZUGxfofms5gSX96GOjn0Gy8V/G/CWrk
+         0/aIc/IkQmrIg==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v5 net 1/2] net: udp: fix UDP header access on Fast/frag0 UDP GRO
+Message-ID: <BWGqSgvElVUWVBHlyAGeResnioScs0ES23kwzp1JHo@cp4-web-028.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6356963f376a0798e8c939f813c2efe05d32c6d7.camel@tiscali.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:30:42PM +0100, Paul Bolle wrote:
-> tip-bot2 for Peter Zijlstra schreef op wo 11-11-2020 om 08:23 [+0000]:
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > [...]
-> > +static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
-> > +{
-> > +	void (*func)(struct rq *rq);
-> > +	struct callback_head *next;
-> > +
-> > +	lockdep_assert_held(&rq->lock);
-> > +
-> > +	while (head) {
-> > +		func = (void (*)(struct rq *))head->func;
-> > +		next = head->next;
-> > +		head->next = NULL;
-> > +		head = next;
-> 
-> Naive question: is there some subtle C-issue that is evaded here by setting
-> head->next to NULL prior to copying over it?
-> 
-> (I know this piece of code only got copied around in this patch and this is
-> therefor not something that this patch actually introduced.)
+UDP GRO uses udp_hdr(skb) in its .gro_receive() callback. While it's
+probably OK for non-frag0 paths (when all headers or even the entire
+frame are already in skb head), this inline points to junk when
+using Fast GRO (napi_gro_frags() or napi_gro_receive() with only
+Ethernet header in skb head and all the rest in the frags) and breaks
+GRO packet compilation and the packet flow itself.
+To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
+are typically used. UDP even has an inline helper that makes use of
+them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
+to get rid of the out-of-order delivers.
 
-It's like list_del_init(), it zeros the entry before unlinking it.
-queue_balance_callback() relies on this.
+Present since the introduction of plain UDP GRO in 5.0-rc1.
+
+Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/ipv4/udp_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index e67a66fbf27b..13740e9fe6ec 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -366,7 +366,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff=
+ *skb,
+ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+ =09=09=09=09=09       struct sk_buff *skb)
+ {
+-=09struct udphdr *uh =3D udp_hdr(skb);
++=09struct udphdr *uh =3D udp_gro_udphdr(skb);
+ =09struct sk_buff *pp =3D NULL;
+ =09struct udphdr *uh2;
+ =09struct sk_buff *p;
+--=20
+2.29.2
+
+
