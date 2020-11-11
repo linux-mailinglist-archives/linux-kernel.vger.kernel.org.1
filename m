@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B07E2AFAC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B462AFAE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgKKVwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:52:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        id S1726511AbgKKVyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKKVwc (ORCPT
+        with ESMTP id S1725981AbgKKVyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:52:32 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A362C0613D4;
-        Wed, 11 Nov 2020 13:52:32 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcy2O-003qBZ-LL; Wed, 11 Nov 2020 21:52:20 +0000
-Date:   Wed, 11 Nov 2020 21:52:20 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201111215220.GA3576660@ZenIV.linux.org.uk>
-References: <20201104082738.1054792-1-hch@lst.de>
- <20201104082738.1054792-2-hch@lst.de>
- <20201110213253.GV3576660@ZenIV.linux.org.uk>
- <20201110213511.GW3576660@ZenIV.linux.org.uk>
- <20201110232028.GX3576660@ZenIV.linux.org.uk>
- <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
+        Wed, 11 Nov 2020 16:54:45 -0500
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1595FC0613D1;
+        Wed, 11 Nov 2020 13:54:45 -0800 (PST)
+Received: from dslb-094-219-035-043.094.219.pools.vodafone-ip.de ([94.219.35.43] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1kcy4c-0003Vw-C2; Wed, 11 Nov 2020 22:54:38 +0100
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v2] PCI: brcmstb: Fix race in removing chained IRQ handler
+Date:   Wed, 11 Nov 2020 22:53:55 +0100
+Message-Id: <20201111215354.21961-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201108184208.19790-1-martin@kaiser.cx>
+References: <20201108184208.19790-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:54:12AM -0800, Linus Torvalds wrote:
-> On Tue, Nov 10, 2020 at 3:20 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > Any objections to the following?
-> 
-> Well, I don't _object_, but I find it ugly.
-> 
-> And I think both the old and the "fixed" code is wrong when an EFAULT
-> happens in the middle.
-> 
-> Yes, we can just return EFAULT. But for read() and write() we really
-> try to do the proper partial returns in other places, why not here?
-> 
-> IOW, why isn't the proper fix just something like this:
-> 
->     diff --git a/fs/seq_file.c b/fs/seq_file.c
->     index 3b20e21604e7..ecc6909b71f5 100644
->     --- a/fs/seq_file.c
->     +++ b/fs/seq_file.c
->     @@ -209,7 +209,8 @@ ssize_t seq_read_iter(struct kiocb *iocb,
-> struct iov_iter *iter)
->         /* if not empty - flush it first */
->         if (m->count) {
->                 n = min(m->count, size);
->     -           if (copy_to_iter(m->buf + m->from, n, iter) != n)
->     +           n = copy_to_iter(m->buf + m->from, n, iter);
->     +           if (!n)
->                         goto Efault;
->                 m->count -= n;
->                 m->from += n;
-> 
-> which should get the "efault in the middle" case roughly right (ie the
-> usual "exact byte alignment and page crosser" caveats apply).
+Call irq_set_chained_handler_and_data() to clear the chained handler
+and the handler's data under irq_desc->lock.
 
-Look at the loop after that one, specifically the "it doesn't fit,
-allocate a bigger one" part:
-                kvfree(m->buf);
-                m->count = 0;
-                m->buf = seq_buf_alloc(m->size <<= 1);
-It really depends upon having m->buf empty at the beginning of
-the loop.  Your variant will lose the data, unless we copy the
-"old" part of buffer (from before the ->show()) into the
-larger one.
+See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
+IRQ handler").
 
-That can be done, but I would rather go with
-		n = copy_to_iter(m->buf + m->from, m->count, iter);
-		m->count -= n;
-		m->from += n;
-                copied += n;
-                if (!size)
-                        goto Done;
-		if (m->count)
-			goto Efault;
-if we do it that way.  Let me see if I can cook something
-reasonable along those lines...
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+v2:
+ - rewrite the commit message to clarify that this is a bugfix
+
+ drivers/pci/controller/pcie-brcmstb.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index bea86899bd5d..7c666f4deb47 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -606,8 +606,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+ 
+ 	if (!msi)
+ 		return;
+-	irq_set_chained_handler(msi->irq, NULL);
+-	irq_set_handler_data(msi->irq, NULL);
++	irq_set_chained_handler_and_data(msi->irq, NULL, NULL);
+ 	brcm_free_domains(msi);
+ }
+ 
+-- 
+2.20.1
+
