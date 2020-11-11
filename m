@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F432AEAA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643D92AEAA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgKKH6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:58:00 -0500
-Received: from verein.lst.de ([213.95.11.211]:39089 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726091AbgKKH56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:57:58 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A53F767373; Wed, 11 Nov 2020 08:57:54 +0100 (CET)
-Date:   Wed, 11 Nov 2020 08:57:54 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: simplify gendisk lookup and remove struct block_device aliases
- v4
-Message-ID: <20201111075754.GA23010@lst.de>
-References: <20201029145841.144173-1-hch@lst.de>
+        id S1726096AbgKKH5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:57:34 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8062 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKKH5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 02:57:33 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CWHBj69K7zLxGD;
+        Wed, 11 Nov 2020 15:57:17 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 11 Nov 2020 15:57:25 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <robdclark@gmail.com>, <sean@poorly.run>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <khsieh@codeaurora.org>, <tanmay@codeaurora.org>,
+        <abhinavk@codeaurora.org>, <chandanu@codeaurora.org>,
+        <swboyd@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/msm/dp: remove duplicate include statement
+Date:   Wed, 11 Nov 2020 15:57:56 +0800
+Message-ID: <1605081476-27098-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029145841.144173-1-hch@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens, can you take a look and possibly pick this series up?
+linux/rational.h is included more than once, Remove the one that isn't
+necessary.
 
-On Thu, Oct 29, 2020 at 03:58:23PM +0100, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series removes the annoying struct block_device aliases, which can
-> happen for a bunch of old floppy drivers (and z2ram).  In that case
-> multiple struct block device instances for different dev_t's can point
-> to the same gendisk, without being partitions.  The cause for that
-> is the probe/get callback registered through blk_register_regions.
-> 
-> This series removes blk_register_region entirely, splitting it it into
-> a simple xarray lookup of registered gendisks, and a probe callback
-> stored in the major_names array that can be used for modprobe overrides
-> or creating devices on demands when no gendisk is found.  The old
-> remapping is gone entirely, and instead the 4 remaining drivers just
-> register a gendisk for each operating mode.  In case of the two drivers
-> that have lots of aliases that is done on-demand using the new probe
-> callback, while for the other two I simply register all at probe time
-> to keep things simple.
-> 
-> Note that the m68k drivers are compile tested only.
-> 
-> Changes since v3:
->  - keep kobj_map for char dev lookup for now, as the testbot found
->    some very strange and unexplained regressions, so I'll get back to
->    this later separately
->  - fix a commit message typo
-> 
-> Changes since v2:
->  - fix a wrong variable passed to ERR_PTR in the floppy driver
->  - slightly adjust the del_gendisk cleanups to prepare for the next
->    series touching this area
-> 
-> Changes since v1:
->  - add back a missing kobject_put in the cdev code
->  - improve the xarray delete loops
----end quoted text---
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/msm/dp/dp_catalog.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index b15b4ce..105fa65 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -5,7 +5,6 @@
+ 
+ #define pr_fmt(fmt)	"[drm-dp] %s: " fmt, __func__
+ 
+-#include <linux/rational.h>
+ #include <linux/delay.h>
+ #include <linux/iopoll.h>
+ #include <linux/phy/phy.h>
+-- 
+2.7.4
+
