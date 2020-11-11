@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2F12AEABB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7B62AEABA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgKKIBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:01:44 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:32115 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgKKIBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726207AbgKKIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 11 Nov 2020 03:01:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605081701; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=ESMIsSZamxEqIVFkr7gnFfQ/A8f1g3wW9ZxP7w4Evwo=; b=b5BJMq29/5KKsE88b2+SgteNSeKYNYp2c6Mto5JE7ZpLeQLaTBE38b7mVmSnqOd5wa9Riy0t
- cuAsHAcbb2TZiAdH33gS792rtbdiVnfzbrD9b2jSE9UA0Sl6QS5ywbRa2bFrvPsvqfyHT6JV
- /kaFtfxzOc8wYwUMdydRQ/drrz0=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5fab9a2e97cfcbc962a71ec9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 08:00:46
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 72912C433CB; Wed, 11 Nov 2020 08:00:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.20] (unknown [106.208.38.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60FBBC433C8;
-        Wed, 11 Nov 2020 08:00:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 60FBBC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH] mm: memblock: add more debug logs
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1605010798-17545-1-git-send-email-faiyazm@codeaurora.org>
- <20201110181605.GC4758@kernel.org>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <f1e3c3c8-ed4f-9283-e221-7faec10fdd8d@codeaurora.org>
-Date:   Wed, 11 Nov 2020 13:30:40 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgKKIBk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 03:01:40 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16731C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:01:39 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id s8so1568496wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:01:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wJM9ckzLFNwemt4FHn77EySHwaKoxLOgcixa/TqqCLU=;
+        b=OuYfz7klke51OvRxR00Uv8Am94sHIvBjVvaTG7IH6dsRglQPXKPlE/4S0IqnttXcar
+         BUSgzzrFVPFk4zProjA91/zz4JPULDZB0sUPOGlkmsF7DcpOdFC0d010H3wsYJLYmQwz
+         jrBOKm/Nyqg7R/IPsxmqKnLY1S/031oP76NDVhKB+FDuhNcs+ZAHMOHf7UMz/MuQvjuM
+         FHip/YE7i7HWeIy3AnOueCuEzeXHw5Nm1ai/vDZX3TPBnHhn2RzHdcWJyGWzqJZvcVzP
+         grNamG9JmvudwPBDbvs3ImN9nGa5ayelSltF+gD8WCiAjET2jPnLEH/Ffn+hMUiapu3c
+         Tcnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wJM9ckzLFNwemt4FHn77EySHwaKoxLOgcixa/TqqCLU=;
+        b=BcvF4cn2/rrxapKE5VwRhDPZfIMabhdPdhSysXJZ4ZrcXROjN/EI0fv3code5SP330
+         nNkadCSajLHqg4XXA5BLlhbd2yj/4/FPXDx+BspVSYdZ04XdFjLZY5QTKg+9la3DnQaD
+         y+8XZVikkWew5OY+i2i6/GMBSOS8sC0VmGfw2XWkvfrakFJDJntQmGUpGYSazgreluLf
+         Z11wW/pB044OY+iyC07NTtF2Orzoa7ry61EHFep3LyilsAEBq/yrCb5zPBa0I9smygkk
+         rFhDPqERvoJsCv+lseXz/sxUTHXQQV9oEvVsCqfmVaiH4mnQvhiNcPrsOkZ9NA8nhMFK
+         HO5g==
+X-Gm-Message-State: AOAM530buU0hq9QTJ8yCMHW5OhfGGfhdVj8IVKUHe0kvAL3FehqraA4y
+        32JqDcvjHgmARjMtBfxiWumJ1A==
+X-Google-Smtp-Source: ABdhPJy2tQy0AX6kb1GgjYoMI/5Jfs0xAhcTmCe15i+WiUJf0L8QaMezgjVlYJfzsacwQVnOUpi3dw==
+X-Received: by 2002:adf:de91:: with SMTP id w17mr27639611wrl.84.1605081697757;
+        Wed, 11 Nov 2020 00:01:37 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id y10sm1469618wru.94.2020.11.11.00.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 00:01:36 -0800 (PST)
+Date:   Wed, 11 Nov 2020 09:01:34 +0100
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com,
+        Dan Carpenter <error27@gmail.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c:412
+ sun8i_ce_hash_run() warn: possible memory leak of 'result'
+Message-ID: <20201111080134.GA4359@Red>
+References: <20201110104737.GF29398@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20201110181605.GC4758@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110104737.GF29398@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 01:47:37PM +0300, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   407ab579637ced6dc32cfb2295afb7259cca4b22
+> commit: 56f6d5aee88d129b2424902cd630f10794550763 crypto: sun8i-ce - support hash algorithms
+> config: x86_64-randconfig-m001-20201109 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
 
-On 11/10/2020 11:46 PM, Mike Rapoport wrote:
-> Hi,
->
-> On Tue, Nov 10, 2020 at 05:49:58PM +0530, Faiyaz Mohammed wrote:
->> Exact caller of memblock_phys_alloc_range is not available with
->> "memblock=debug". Below information is not enough for memory accounting.
->> for example:
->> [    0.000000] memblock_reserve: [0x000000023fc6b000-0x000000023fc6bfff] memblock_alloc_range_nid+0xc0/0x188
->>
->> To enhance the memblock_dbg information or to get the exact owner of the
->> memblock_reserve, add debug logs in memblock_phys_alloc_range function.
-> Why would you want to use memblock=debug for memory accounting or for
-> tracking of the owners of the reserved memory?
-We do memblock reserved accounting to track owners to know size of memory
+Hello
 
-allocated by different drivers/owners through memblock_reserve, which help
+Thanks for the report, I will send a patch soon.
+Note that you should send this report to the maintainer also (but this time it is me with another address, so its fine).
 
-in comparing different kernel version and in optimizations.
-
->
->> After adding logs:
->> [    0.000000] memblock_phys_alloc_range: 4096 bytes align=0x1000 from=0x0000000000000000 max_addr=0x0000000000000000 early_pgtable_alloc+0x24/0x178
->> [    0.000000] memblock_reserve: [0x000000023fc6b000-0x000000023fc6bfff] memblock_alloc_range_nid+0xc0/0x188
->>
->> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->> ---
->>   mm/memblock.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/mm/memblock.c b/mm/memblock.c
->> index 049df41..f65af9f 100644
->> --- a/mm/memblock.c
->> +++ b/mm/memblock.c
->> @@ -1419,6 +1419,9 @@ phys_addr_t __init memblock_phys_alloc_range(phys_addr_t size,
->>   					     phys_addr_t start,
->>   					     phys_addr_t end)
->>   {
->> +	memblock_dbg("%s: %llu bytes align=0x%llx from=%pa max_addr=%pa %pS\n",
->> +			__func__, (u64)size, (u64)align, &start, &end,
->> +			(void *)_RET_IP_);
->>   	return memblock_alloc_range_nid(size, align, start, end, NUMA_NO_NODE,
->>   					false);
->>   }
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
->> member of the Code Aurora Forum, hosted by The Linux Foundation
->>
+Regards
