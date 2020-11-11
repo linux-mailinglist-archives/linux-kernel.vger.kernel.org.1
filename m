@@ -2,975 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82CA2AEF2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935AA2AEF34
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgKKLHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgKKLHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:07:47 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C07C0613D1;
-        Wed, 11 Nov 2020 03:07:47 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id b23so567551pju.5;
-        Wed, 11 Nov 2020 03:07:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/UIW1gAUzBEzTUOsAcWn7qW7OyNqnASsw4lDTZl0FWE=;
-        b=hoPLSr65fhCBlKT1VNnZGlpp8320ybiNzghiUtSrUpv4/rDqBW0OKg+vyPC1uwlNSt
-         sWE0BQKb4meLQW4OLVtf3emKnHCI+B5XOgIz2Vn2yjZ0yTg1OUtwbrcI7if+dAVk0uwp
-         Mlsp/KMqIOjw8jQ8nskLyJlTWyk9itq0T98mbAWoft+44ItCTUVz/XrDoZsFSDqidgav
-         N37EIWcUXMLohDADRbySWIj0HW3QvAsxH4j6A761Q/Gh9K/B1tLC/2iyNileIB8bSlYZ
-         HcsCUJvoAM0z17ikkTSmN4fYl1CF3ijhlA2tRQKokAvkbwGo6EnpNUPRzLjfk78EwES8
-         UcOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/UIW1gAUzBEzTUOsAcWn7qW7OyNqnASsw4lDTZl0FWE=;
-        b=MpO+Cyck8sCwu1qNP5sF5g3OjbHj+KBP0NzIRZDKk9N1HjGocsgNaTpjSIHnQ+WOmq
-         W+ij6cEDhrQkYj5xQVpUSnKySSIMoEwAOiIN4vrECVphkfOccWt/dIcIWrJCCic8tp4S
-         +YEhYSFGGG4I2kVcP+zZV9QneDR5WKj6LS48FdOha2+/fpvxC4u+gOubOBnEsyMXy8zV
-         KlfKQcgwRcX+UKw7R5clbBRd0n1ZpnCx8aUHycNWXU8DS/rJl17XpQ4lutNrN9pzuxvx
-         iil/rFpWYp0nYkfkcsPGovfBaUc13995l6QdyhkjWu/Stirzy8tjudWwh6JLTUGSLNq/
-         lSrA==
-X-Gm-Message-State: AOAM530YyssJ7IoU7BCZUYgPln2VW4sBAdd9PkGEuXFfaQId7lh3X7sy
-        2ztCkRpIK693MHO3pE1Wzeo=
-X-Google-Smtp-Source: ABdhPJwr0jUOBgYEsvk/u4lRLIWKVDdyqiy0TRizYXEn5puj5GHS6DqNpyDGCk5ZX5dL8sGMDVajEg==
-X-Received: by 2002:a17:902:26a:b029:d6:caca:620a with SMTP id 97-20020a170902026ab02900d6caca620amr21811870plc.46.1605092866694;
-        Wed, 11 Nov 2020 03:07:46 -0800 (PST)
-Received: from bobo.ozlabs.ibm.com (27-32-36-31.tpgi.com.au. [27.32.36.31])
-        by smtp.gmail.com with ESMTPSA id 9sm2154943pfp.102.2020.11.11.03.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 03:07:46 -0800 (PST)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: [PATCH 3/3] powerpc: rewrite atomics to use ARCH_ATOMIC
-Date:   Wed, 11 Nov 2020 21:07:23 +1000
-Message-Id: <20201111110723.3148665-4-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20201111110723.3148665-1-npiggin@gmail.com>
-References: <20201111110723.3148665-1-npiggin@gmail.com>
+        id S1726281AbgKKLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:09:07 -0500
+Received: from mga03.intel.com ([134.134.136.65]:29753 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgKKLJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:09:06 -0500
+IronPort-SDR: lgoT2c0ds/F/8FbYRxsbtaMD0z1lwwDBjKlc/XTvyVFWMtj1SrQNFmX6veL4ToVkPqPaygFb5m
+ yH6k+NwdN/8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="170239331"
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="170239331"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 03:09:06 -0800
+IronPort-SDR: O7HXYZvTBEI7OI0Hi4IaQrizwrFhNFAbD06Fsje1qvLzyah3LVJrObr5/oPZUaMGsC+cJVgQBI
+ hIoa+pYSPBkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="365900525"
+Received: from lkp-server02.sh.intel.com (HELO 5b2c7e53fe46) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Nov 2020 03:09:05 -0800
+Received: from kbuild by 5b2c7e53fe46 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcnzs-00006P-Cj; Wed, 11 Nov 2020 11:09:04 +0000
+Date:   Wed, 11 Nov 2020 19:08:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Xiao Ni <xni@redhat.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>
+Subject: drivers/md/raid10.c:1698:39: warning: Uninitialized variable:
+ first_r10bio
+Message-ID: <202011111913.B2a3mcth-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the cool kids are doing it.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   eccc876724927ff3b9ff91f36f7b6b159e948f0c
+commit: d3ee2d8415a6256c1c41e1be36e80e640c3e6359 md/raid10: improve discard request for far layout
+date:   7 weeks ago
+compiler: sparc64-linux-gcc (GCC) 9.3.0
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+
+"cppcheck warnings: (new ones prefixed by >>)"
+   In file included from drivers/md/raid10.c:
+>> drivers/md/raid10.c:1698:39: warning: Uninitialized variable: first_r10bio [uninitvar]
+     r10_bio->master_bio = (struct bio *)first_r10bio;
+                                         ^
+
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+
+   In file included from drivers/md/raid10.c:
+   drivers/md/md.h:622:9: warning: Identical condition 'sd', second condition is always false [identicalConditionAfterEarlyExit]
+    return sd;
+           ^
+   drivers/md/md.h:620:6: note: first condition
+    if (sd)
+        ^
+   drivers/md/md.h:622:9: note: second condition
+    return sd;
+           ^
+   drivers/md/raid10.c:3504:5: warning: Either the condition 'bio' is redundant or there is possible null pointer dereference: bio. [nullPointerRedundantCheck]
+       bio->bi_next = biolist;
+       ^
+   drivers/md/raid10.c:3496:9: note: Assuming that condition 'bio' is not redundant
+       if (bio)
+           ^
+   drivers/md/raid10.c:3504:5: note: Null pointer dereference
+       bio->bi_next = biolist;
+       ^
+   drivers/md/raid10.c:3506:5: warning: Either the condition 'bio' is redundant or there is possible null pointer dereference: bio. [nullPointerRedundantCheck]
+       bio->bi_end_io = end_sync_write;
+       ^
+   drivers/md/raid10.c:3496:9: note: Assuming that condition 'bio' is not redundant
+       if (bio)
+           ^
+   drivers/md/raid10.c:3506:5: note: Null pointer dereference
+       bio->bi_end_io = end_sync_write;
+       ^
+
+vim +1698 drivers/md/raid10.c
+
+  1588	
+  1589	/* There are some limitations to handle discard bio
+  1590	 * 1st, the discard size is bigger than stripe_size*2.
+  1591	 * 2st, if the discard bio spans reshape progress, we use the old way to
+  1592	 * handle discard bio
+  1593	 */
+  1594	static int raid10_handle_discard(struct mddev *mddev, struct bio *bio)
+  1595	{
+  1596		struct r10conf *conf = mddev->private;
+  1597		struct geom *geo = &conf->geo;
+  1598		struct r10bio *r10_bio, *first_r10bio;
+  1599		int far_copies = geo->far_copies;
+  1600		bool first_copy = true;
+  1601	
+  1602		int disk;
+  1603		sector_t chunk;
+  1604		unsigned int stripe_size;
+  1605		sector_t split_size;
+  1606	
+  1607		sector_t bio_start, bio_end;
+  1608		sector_t first_stripe_index, last_stripe_index;
+  1609		sector_t start_disk_offset;
+  1610		unsigned int start_disk_index;
+  1611		sector_t end_disk_offset;
+  1612		unsigned int end_disk_index;
+  1613		unsigned int remainder;
+  1614	
+  1615		if (test_bit(MD_RECOVERY_RESHAPE, &mddev->recovery))
+  1616			return -EAGAIN;
+  1617	
+  1618		wait_barrier(conf);
+  1619	
+  1620		/* Check reshape again to avoid reshape happens after checking
+  1621		 * MD_RECOVERY_RESHAPE and before wait_barrier
+  1622		 */
+  1623		if (test_bit(MD_RECOVERY_RESHAPE, &mddev->recovery))
+  1624			goto out;
+  1625	
+  1626		stripe_size = geo->raid_disks << geo->chunk_shift;
+  1627		bio_start = bio->bi_iter.bi_sector;
+  1628		bio_end = bio_end_sector(bio);
+  1629	
+  1630		/* Maybe one discard bio is smaller than strip size or across one stripe
+  1631		 * and discard region is larger than one stripe size. For far offset layout,
+  1632		 * if the discard region is not aligned with stripe size, there is hole
+  1633		 * when we submit discard bio to member disk. For simplicity, we only
+  1634		 * handle discard bio which discard region is bigger than stripe_size*2
+  1635		 */
+  1636		if (bio_sectors(bio) < stripe_size*2)
+  1637			goto out;
+  1638	
+  1639		/* For far and far offset layout, if bio is not aligned with stripe size,
+  1640		 * it splits the part that is not aligned with strip size.
+  1641		 */
+  1642		div_u64_rem(bio_start, stripe_size, &remainder);
+  1643		if ((far_copies > 1) && remainder) {
+  1644			split_size = stripe_size - remainder;
+  1645			bio = raid10_split_bio(conf, bio, split_size, false);
+  1646		}
+  1647		div_u64_rem(bio_end, stripe_size, &remainder);
+  1648		if ((far_copies > 1) && remainder) {
+  1649			split_size = bio_sectors(bio) - remainder;
+  1650			bio = raid10_split_bio(conf, bio, split_size, true);
+  1651		}
+  1652	
+  1653		bio_start = bio->bi_iter.bi_sector;
+  1654		bio_end = bio_end_sector(bio);
+  1655	
+  1656		/* raid10 uses chunk as the unit to store data. It's similar like raid0.
+  1657		 * One stripe contains the chunks from all member disk (one chunk from
+  1658		 * one disk at the same HBA address). For layout detail, see 'man md 4'
+  1659		 */
+  1660		chunk = bio_start >> geo->chunk_shift;
+  1661		chunk *= geo->near_copies;
+  1662		first_stripe_index = chunk;
+  1663		start_disk_index = sector_div(first_stripe_index, geo->raid_disks);
+  1664		if (geo->far_offset)
+  1665			first_stripe_index *= geo->far_copies;
+  1666		start_disk_offset = (bio_start & geo->chunk_mask) +
+  1667					(first_stripe_index << geo->chunk_shift);
+  1668	
+  1669		chunk = bio_end >> geo->chunk_shift;
+  1670		chunk *= geo->near_copies;
+  1671		last_stripe_index = chunk;
+  1672		end_disk_index = sector_div(last_stripe_index, geo->raid_disks);
+  1673		if (geo->far_offset)
+  1674			last_stripe_index *= geo->far_copies;
+  1675		end_disk_offset = (bio_end & geo->chunk_mask) +
+  1676					(last_stripe_index << geo->chunk_shift);
+  1677	
+  1678	retry_discard:
+  1679		r10_bio = mempool_alloc(&conf->r10bio_pool, GFP_NOIO);
+  1680		r10_bio->mddev = mddev;
+  1681		r10_bio->state = 0;
+  1682		r10_bio->sectors = 0;
+  1683		memset(r10_bio->devs, 0, sizeof(r10_bio->devs[0]) * geo->raid_disks);
+  1684		wait_blocked_dev(mddev, r10_bio);
+  1685	
+  1686		/* For far layout it needs more than one r10bio to cover all regions.
+  1687		 * Inspired by raid10_sync_request, we can use the first r10bio->master_bio
+  1688		 * to record the discard bio. Other r10bio->master_bio record the first
+  1689		 * r10bio. The first r10bio only release after all other r10bios finish.
+  1690		 * The discard bio returns only first r10bio finishes
+  1691		 */
+  1692		if (first_copy) {
+  1693			r10_bio->master_bio = bio;
+  1694			set_bit(R10BIO_Discard, &r10_bio->state);
+  1695			first_copy = false;
+  1696			first_r10bio = r10_bio;
+  1697		} else
+> 1698			r10_bio->master_bio = (struct bio *)first_r10bio;
+  1699	
+  1700		rcu_read_lock();
+  1701		for (disk = 0; disk < geo->raid_disks; disk++) {
+  1702			struct md_rdev *rdev = rcu_dereference(conf->mirrors[disk].rdev);
+  1703			struct md_rdev *rrdev = rcu_dereference(
+  1704				conf->mirrors[disk].replacement);
+  1705	
+  1706			r10_bio->devs[disk].bio = NULL;
+  1707			r10_bio->devs[disk].repl_bio = NULL;
+  1708	
+  1709			if (rdev && (test_bit(Faulty, &rdev->flags)))
+  1710				rdev = NULL;
+  1711			if (rrdev && (test_bit(Faulty, &rrdev->flags)))
+  1712				rrdev = NULL;
+  1713			if (!rdev && !rrdev)
+  1714				continue;
+  1715	
+  1716			if (rdev) {
+  1717				r10_bio->devs[disk].bio = bio;
+  1718				atomic_inc(&rdev->nr_pending);
+  1719			}
+  1720			if (rrdev) {
+  1721				r10_bio->devs[disk].repl_bio = bio;
+  1722				atomic_inc(&rrdev->nr_pending);
+  1723			}
+  1724		}
+  1725		rcu_read_unlock();
+  1726	
+  1727		atomic_set(&r10_bio->remaining, 1);
+  1728		for (disk = 0; disk < geo->raid_disks; disk++) {
+  1729			sector_t dev_start, dev_end;
+  1730			struct bio *mbio, *rbio = NULL;
+  1731			struct md_rdev *rdev = rcu_dereference(conf->mirrors[disk].rdev);
+  1732			struct md_rdev *rrdev = rcu_dereference(
+  1733				conf->mirrors[disk].replacement);
+  1734	
+  1735			/*
+  1736			 * Now start to calculate the start and end address for each disk.
+  1737			 * The space between dev_start and dev_end is the discard region.
+  1738			 *
+  1739			 * For dev_start, it needs to consider three conditions:
+  1740			 * 1st, the disk is before start_disk, you can imagine the disk in
+  1741			 * the next stripe. So the dev_start is the start address of next
+  1742			 * stripe.
+  1743			 * 2st, the disk is after start_disk, it means the disk is at the
+  1744			 * same stripe of first disk
+  1745			 * 3st, the first disk itself, we can use start_disk_offset directly
+  1746			 */
+  1747			if (disk < start_disk_index)
+  1748				dev_start = (first_stripe_index + 1) * mddev->chunk_sectors;
+  1749			else if (disk > start_disk_index)
+  1750				dev_start = first_stripe_index * mddev->chunk_sectors;
+  1751			else
+  1752				dev_start = start_disk_offset;
+  1753	
+  1754			if (disk < end_disk_index)
+  1755				dev_end = (last_stripe_index + 1) * mddev->chunk_sectors;
+  1756			else if (disk > end_disk_index)
+  1757				dev_end = last_stripe_index * mddev->chunk_sectors;
+  1758			else
+  1759				dev_end = end_disk_offset;
+  1760	
+  1761			/* It only handles discard bio which size is >= stripe size, so
+  1762			 * dev_end > dev_start all the time
+  1763			 */
+  1764			if (r10_bio->devs[disk].bio) {
+  1765				mbio = bio_clone_fast(bio, GFP_NOIO, &mddev->bio_set);
+  1766				mbio->bi_end_io = raid10_end_discard_request;
+  1767				mbio->bi_private = r10_bio;
+  1768				r10_bio->devs[disk].bio = mbio;
+  1769				r10_bio->devs[disk].devnum = disk;
+  1770				atomic_inc(&r10_bio->remaining);
+  1771				md_submit_discard_bio(mddev, rdev, mbio,
+  1772						dev_start + choose_data_offset(r10_bio, rdev),
+  1773						dev_end - dev_start);
+  1774				bio_endio(mbio);
+  1775			}
+  1776			if (r10_bio->devs[disk].repl_bio) {
+  1777				rbio = bio_clone_fast(bio, GFP_NOIO, &mddev->bio_set);
+  1778				rbio->bi_end_io = raid10_end_discard_request;
+  1779				rbio->bi_private = r10_bio;
+  1780				r10_bio->devs[disk].repl_bio = rbio;
+  1781				r10_bio->devs[disk].devnum = disk;
+  1782				atomic_inc(&r10_bio->remaining);
+  1783				md_submit_discard_bio(mddev, rrdev, rbio,
+  1784						dev_start + choose_data_offset(r10_bio, rrdev),
+  1785						dev_end - dev_start);
+  1786				bio_endio(rbio);
+  1787			}
+  1788		}
+  1789	
+  1790		if (!geo->far_offset && --far_copies) {
+  1791			first_stripe_index += geo->stride >> geo->chunk_shift;
+  1792			start_disk_offset += geo->stride;
+  1793			last_stripe_index += geo->stride >> geo->chunk_shift;
+  1794			end_disk_offset += geo->stride;
+  1795			atomic_inc(&first_r10bio->remaining);
+  1796			raid_end_discard_bio(r10_bio);
+  1797			wait_barrier(conf);
+  1798			goto retry_discard;
+  1799		}
+  1800	
+  1801		raid_end_discard_bio(r10_bio);
+  1802	
+  1803		return 0;
+  1804	out:
+  1805		allow_barrier(conf);
+  1806		return -EAGAIN;
+  1807	}
+  1808	
+
 ---
- arch/powerpc/include/asm/atomic.h  | 681 ++++++++++-------------------
- arch/powerpc/include/asm/cmpxchg.h |  62 +--
- 2 files changed, 248 insertions(+), 495 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
-index 8a55eb8cc97b..899aa2403ba7 100644
---- a/arch/powerpc/include/asm/atomic.h
-+++ b/arch/powerpc/include/asm/atomic.h
-@@ -11,185 +11,285 @@
- #include <asm/cmpxchg.h>
- #include <asm/barrier.h>
- 
-+#define ARCH_ATOMIC
-+
-+#ifndef CONFIG_64BIT
-+#include <asm-generic/atomic64.h>
-+#endif
-+
- /*
-  * Since *_return_relaxed and {cmp}xchg_relaxed are implemented with
-  * a "bne-" instruction at the end, so an isync is enough as a acquire barrier
-  * on the platform without lwsync.
-  */
- #define __atomic_acquire_fence()					\
--	__asm__ __volatile__(PPC_ACQUIRE_BARRIER "" : : : "memory")
-+	asm volatile(PPC_ACQUIRE_BARRIER "" : : : "memory")
- 
- #define __atomic_release_fence()					\
--	__asm__ __volatile__(PPC_RELEASE_BARRIER "" : : : "memory")
-+	asm volatile(PPC_RELEASE_BARRIER "" : : : "memory")
- 
--static __inline__ int atomic_read(const atomic_t *v)
--{
--	int t;
-+#define __atomic_pre_full_fence		smp_mb
- 
--	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m"(v->counter));
-+#define __atomic_post_full_fence	smp_mb
- 
--	return t;
-+#define arch_atomic_read(v)			__READ_ONCE((v)->counter)
-+#define arch_atomic_set(v, i)			__WRITE_ONCE(((v)->counter), (i))
-+#ifdef CONFIG_64BIT
-+#define ATOMIC64_INIT(i)			{ (i) }
-+#define arch_atomic64_read(v)			__READ_ONCE((v)->counter)
-+#define arch_atomic64_set(v, i)			__WRITE_ONCE(((v)->counter), (i))
-+#endif
-+
-+#define ATOMIC_OP(name, type, dtype, width, asm_op)			\
-+static inline void arch_##name(dtype a, type *v)			\
-+{									\
-+	dtype t;							\
-+									\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%3		# " #name		"\n"	\
-+"\t"	#asm_op " %0,%2,%0					\n"	\
-+"	st" #width "cx.	%0,0,%3					\n"	\
-+"	bne-	1b						\n"	\
-+	: "=&r" (t), "+m" (v->counter)					\
-+	: "r" (a), "r" (&v->counter)					\
-+	: "cr0", "xer");						\
- }
- 
--static __inline__ void atomic_set(atomic_t *v, int i)
--{
--	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m"(v->counter) : "r"(i));
-+#define ATOMIC_OP_IMM(name, type, dtype, width, asm_op, imm)		\
-+static inline void arch_##name(type *v)					\
-+{									\
-+	dtype t;							\
-+									\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%3		# " #name		"\n"	\
-+"\t"	#asm_op " %0,%0,%2					\n"	\
-+"	st" #width "cx.	%0,0,%3					\n"	\
-+"	bne-	1b						\n"	\
-+	: "=&r" (t), "+m" (v->counter)					\
-+	: "i" (imm), "r" (&v->counter)					\
-+	: "cr0", "xer");						\
- }
- 
--#define ATOMIC_OP(op, asm_op)						\
--static __inline__ void atomic_##op(int a, atomic_t *v)			\
-+#define ATOMIC_OP_RETURN_RELAXED(name, type, dtype, width, asm_op)	\
-+static inline dtype arch_##name##_relaxed(dtype a, type *v)		\
- {									\
--	int t;								\
-+	dtype t;							\
- 									\
--	__asm__ __volatile__(						\
--"1:	lwarx	%0,0,%3		# atomic_" #op "\n"			\
--	#asm_op " %0,%2,%0\n"						\
--"	stwcx.	%0,0,%3 \n"						\
--"	bne-	1b\n"							\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%3		# " #name 		"\n"	\
-+"\t"	#asm_op " %0,%2,%0					\n"	\
-+"	st" #width "cx.	%0,0,%3					\n"	\
-+"	bne-	1b						\n"	\
- 	: "=&r" (t), "+m" (v->counter)					\
- 	: "r" (a), "r" (&v->counter)					\
--	: "cc");							\
--}									\
-+	: "cr0", "xer");						\
-+									\
-+	return t;							\
-+}
- 
--#define ATOMIC_OP_RETURN_RELAXED(op, asm_op)				\
--static inline int atomic_##op##_return_relaxed(int a, atomic_t *v)	\
-+#define ATOMIC_OP_IMM_RETURN_RELAXED(name, type, dtype, width, asm_op, imm) \
-+static inline dtype arch_##name##_relaxed(type *v)			\
- {									\
--	int t;								\
-+	dtype t;							\
- 									\
--	__asm__ __volatile__(						\
--"1:	lwarx	%0,0,%3		# atomic_" #op "_return_relaxed\n"	\
--	#asm_op " %0,%2,%0\n"						\
--"	stwcx.	%0,0,%3\n"						\
--"	bne-	1b\n"							\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%3		# " #name		"\n"	\
-+"\t"	#asm_op " %0,%0,%2					\n"	\
-+"	st" #width "cx.	%0,0,%3					\n"	\
-+"	bne-	1b						\n"	\
- 	: "=&r" (t), "+m" (v->counter)					\
--	: "r" (a), "r" (&v->counter)					\
--	: "cc");							\
-+	: "i" (imm), "r" (&v->counter)					\
-+	: "cr0", "xer");						\
- 									\
- 	return t;							\
- }
- 
--#define ATOMIC_FETCH_OP_RELAXED(op, asm_op)				\
--static inline int atomic_fetch_##op##_relaxed(int a, atomic_t *v)	\
-+#define ATOMIC_FETCH_OP_RELAXED(name, type, dtype, width, asm_op)	\
-+static inline dtype arch_##name##_relaxed(dtype a, type *v)		\
- {									\
--	int res, t;							\
-+	dtype res, t;							\
- 									\
--	__asm__ __volatile__(						\
--"1:	lwarx	%0,0,%4		# atomic_fetch_" #op "_relaxed\n"	\
--	#asm_op " %1,%3,%0\n"						\
--"	stwcx.	%1,0,%4\n"						\
--"	bne-	1b\n"							\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%4		# " #name		"\n"	\
-+"\t"	#asm_op " %1,%3,%0					\n"	\
-+"	st" #width "cx.	%1,0,%4					\n"	\
-+"	bne-	1b						\n"	\
- 	: "=&r" (res), "=&r" (t), "+m" (v->counter)			\
- 	: "r" (a), "r" (&v->counter)					\
--	: "cc");							\
-+	: "cr0", "xer");						\
- 									\
- 	return res;							\
- }
- 
-+#define ATOMIC_FETCH_OP_UNLESS_RELAXED(name, type, dtype, width, asm_op) \
-+static inline int arch_##name##_relaxed(type *v, dtype a, dtype u)	\
-+{									\
-+	dtype res, t;							\
-+									\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%5		# " #name		"\n"	\
-+"	cmp" #width "	0,%0,%3					\n"	\
-+"	beq-	2f						\n"	\
-+"\t"	#asm_op " %1,%2,%0					\n"	\
-+"	st" #width "cx.	%1,0,%5					\n"	\
-+"	bne-	1b						\n"	\
-+"2:								\n"	\
-+	: "=&r" (res), "=&r" (t), "+m" (v->counter)			\
-+	: "r" (a), "r" (u), "r" (&v->counter)				\
-+	: "cr0", "xer");						\
-+									\
-+	return res;							\
-+}
-+
-+#define ATOMIC_INC_NOT_ZERO_RELAXED(name, type, dtype, width)		\
-+static inline dtype arch_##name##_relaxed(type *v)			\
-+{									\
-+	dtype t1, t2;							\
-+									\
-+	asm volatile(							\
-+"1:	l" #width "arx	%0,0,%3		# " #name		"\n"	\
-+"	cmp" #width "i	0,%0,0					\n"	\
-+"	beq-	2f						\n"	\
-+"	addic	%1,%2,1						\n"	\
-+"	st" #width "cx.	%1,0,%3					\n"	\
-+"	bne-	1b						\n"	\
-+"2:								\n"	\
-+	: "=&r" (t1), "=&r" (t2), "+m" (v->counter)			\
-+	: "r" (&v->counter)						\
-+	: "cr0", "xer");						\
-+									\
-+	return t1;							\
-+}
-+
-+#undef ATOMIC_OPS
- #define ATOMIC_OPS(op, asm_op)						\
--	ATOMIC_OP(op, asm_op)						\
--	ATOMIC_OP_RETURN_RELAXED(op, asm_op)				\
--	ATOMIC_FETCH_OP_RELAXED(op, asm_op)
-+ATOMIC_OP(atomic_##op, atomic_t, int, w, asm_op)			\
-+ATOMIC_OP_RETURN_RELAXED(atomic_##op##_return, atomic_t, int, w, asm_op) \
-+ATOMIC_FETCH_OP_RELAXED(atomic_fetch_##op, atomic_t, int, w, asm_op)	\
-+ATOMIC_FETCH_OP_UNLESS_RELAXED(atomic_fetch_##op##_unless, atomic_t, int, w, asm_op)
-+
-+#undef ATOMIC64_OPS
-+#define ATOMIC64_OPS(op, asm_op)					\
-+ATOMIC_OP(atomic64_##op, atomic64_t, u64, d, asm_op)			\
-+ATOMIC_OP_RETURN_RELAXED(atomic64_##op##_return, atomic64_t, u64, d, asm_op) \
-+ATOMIC_FETCH_OP_RELAXED(atomic64_fetch_##op, atomic64_t, u64, d, asm_op) \
-+ATOMIC_FETCH_OP_UNLESS_RELAXED(atomic64_fetch_##op##_unless, atomic64_t, u64, d, asm_op)
- 
- ATOMIC_OPS(add, add)
-+#define arch_atomic_add arch_atomic_add
-+#define arch_atomic_add_return_relaxed arch_atomic_add_return_relaxed
-+#define arch_atomic_fetch_add_relaxed arch_atomic_fetch_add_relaxed
-+#define arch_atomic_fetch_add_unless_relaxed arch_atomic_fetch_add_unless_relaxed
-+
- ATOMIC_OPS(sub, subf)
-+#define arch_atomic_sub arch_atomic_sub
-+#define arch_atomic_sub_return_relaxed arch_atomic_sub_return_relaxed
-+#define arch_atomic_fetch_sub_relaxed arch_atomic_fetch_sub_relaxed
-+/* skip atomic_fetch_sub_unless_relaxed */
- 
--#define atomic_add_return_relaxed atomic_add_return_relaxed
--#define atomic_sub_return_relaxed atomic_sub_return_relaxed
-+#ifdef CONFIG_64BIT
-+ATOMIC64_OPS(add, add)
-+#define arch_atomic64_add arch_atomic64_add
-+#define arch_atomic64_add_return_relaxed arch_atomic64_add_return_relaxed
-+#define arch_atomic64_fetch_add_relaxed arch_atomic64_fetch_add_relaxed
-+#define arch_atomic64_fetch_add_unless_relaxed arch_atomic64_fetch_add_unless_relaxed
- 
--#define atomic_fetch_add_relaxed atomic_fetch_add_relaxed
--#define atomic_fetch_sub_relaxed atomic_fetch_sub_relaxed
-+ATOMIC64_OPS(sub, subf)
-+#define arch_atomic64_sub arch_atomic64_sub
-+#define arch_atomic64_sub_return_relaxed arch_atomic64_sub_return_relaxed
-+#define arch_atomic64_fetch_sub_relaxed arch_atomic64_fetch_sub_relaxed
-+/* skip atomic64_fetch_sub_unless_relaxed */
-+#endif
- 
- #undef ATOMIC_OPS
- #define ATOMIC_OPS(op, asm_op)						\
--	ATOMIC_OP(op, asm_op)						\
--	ATOMIC_FETCH_OP_RELAXED(op, asm_op)
-+ATOMIC_OP(atomic_##op, atomic_t, int, w, asm_op)			\
-+ATOMIC_FETCH_OP_RELAXED(atomic_fetch_##op, atomic_t, int, w, asm_op)
-+
-+#undef ATOMIC64_OPS
-+#define ATOMIC64_OPS(op, asm_op)					\
-+ATOMIC_OP(atomic64_##op, atomic64_t, u64, d, asm_op)			\
-+ATOMIC_FETCH_OP_RELAXED(atomic64_fetch_##op, atomic64_t, u64, d, asm_op)
- 
- ATOMIC_OPS(and, and)
-+#define arch_atomic_and arch_atomic_and
-+#define arch_atomic_fetch_and_relaxed arch_atomic_fetch_and_relaxed
-+
- ATOMIC_OPS(or, or)
-+#define arch_atomic_or arch_atomic_or
-+#define arch_atomic_fetch_or_relaxed  arch_atomic_fetch_or_relaxed
-+
- ATOMIC_OPS(xor, xor)
-+#define arch_atomic_xor arch_atomic_xor
-+#define arch_atomic_fetch_xor_relaxed arch_atomic_fetch_xor_relaxed
-+
-+#ifdef CONFIG_64BIT
-+ATOMIC64_OPS(and, and)
-+#define arch_atomic64_and arch_atomic64_and
-+#define arch_atomic64_fetch_and_relaxed arch_atomic64_fetch_and_relaxed
- 
--#define atomic_fetch_and_relaxed atomic_fetch_and_relaxed
--#define atomic_fetch_or_relaxed  atomic_fetch_or_relaxed
--#define atomic_fetch_xor_relaxed atomic_fetch_xor_relaxed
-+ATOMIC64_OPS(or, or)
-+#define arch_atomic64_or arch_atomic64_or
-+#define arch_atomic64_fetch_or_relaxed  arch_atomic64_fetch_or_relaxed
-+
-+ATOMIC64_OPS(xor, xor)
-+#define arch_atomic64_xor arch_atomic64_xor
-+#define arch_atomic64_fetch_xor_relaxed arch_atomic64_fetch_xor_relaxed
-+#endif
- 
- #undef ATOMIC_OPS
-+#define ATOMIC_OPS(op, asm_op, imm)					\
-+ATOMIC_OP_IMM(atomic_##op, atomic_t, int, w, asm_op, imm)		\
-+ATOMIC_OP_IMM_RETURN_RELAXED(atomic_##op##_return, atomic_t, int, w, asm_op, imm)
-+
-+#undef ATOMIC64_OPS
-+#define ATOMIC64_OPS(op, asm_op, imm)					\
-+ATOMIC_OP_IMM(atomic64_##op, atomic64_t, u64, d, asm_op, imm)		\
-+ATOMIC_OP_IMM_RETURN_RELAXED(atomic64_##op##_return, atomic64_t, u64, d, asm_op, imm)
-+
-+ATOMIC_OPS(inc, addic, 1)
-+#define arch_atomic_inc arch_atomic_inc
-+#define arch_atomic_inc_return_relaxed arch_atomic_inc_return_relaxed
-+
-+ATOMIC_OPS(dec, addic, -1)
-+#define arch_atomic_dec arch_atomic_dec
-+#define arch_atomic_dec_return_relaxed arch_atomic_dec_return_relaxed
-+
-+#ifdef CONFIG_64BIT
-+ATOMIC64_OPS(inc, addic, 1)
-+#define arch_atomic64_inc arch_atomic64_inc
-+#define arch_atomic64_inc_return_relaxed arch_atomic64_inc_return_relaxed
-+
-+ATOMIC64_OPS(dec, addic, -1)
-+#define arch_atomic64_dec arch_atomic64_dec
-+#define arch_atomic64_dec_return_relaxed arch_atomic64_dec_return_relaxed
-+#endif
-+
-+ATOMIC_INC_NOT_ZERO_RELAXED(atomic_inc_not_zero, atomic_t, int, w)
-+#define arch_atomic_inc_not_zero_relaxed(v) arch_atomic_inc_not_zero_relaxed(v)
-+
-+#ifdef CONFIG_64BIT
-+ATOMIC_INC_NOT_ZERO_RELAXED(atomic64_inc_not_zero, atomic64_t, u64, d)
-+#define arch_atomic64_inc_not_zero_relaxed(v) arch_atomic64_inc_not_zero_relaxed(v)
-+#endif
-+
-+#undef ATOMIC_INC_NOT_ZERO_RELAXED
-+#undef ATOMIC_FETCH_OP_UNLESS_RELAXED
- #undef ATOMIC_FETCH_OP_RELAXED
-+#undef ATOMIC_OP_IMM_RETURN_RELAXED
- #undef ATOMIC_OP_RETURN_RELAXED
-+#undef ATOMIC_OP_IMM
- #undef ATOMIC_OP
-+#undef ATOMIC_OPS
-+#undef ATOMIC64_OPS
- 
--static __inline__ void atomic_inc(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_inc\n\
--	addic	%0,%0,1\n"
--"	stwcx.	%0,0,%2 \n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define atomic_inc atomic_inc
--
--static __inline__ int atomic_inc_return_relaxed(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_inc_return_relaxed\n"
--"	addic	%0,%0,1\n"
--"	stwcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--static __inline__ void atomic_dec(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_dec\n\
--	addic	%0,%0,-1\n"
--"	stwcx.	%0,0,%2\n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define atomic_dec atomic_dec
--
--static __inline__ int atomic_dec_return_relaxed(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_dec_return_relaxed\n"
--"	addic	%0,%0,-1\n"
--"	stwcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--#define atomic_inc_return_relaxed atomic_inc_return_relaxed
--#define atomic_dec_return_relaxed atomic_dec_return_relaxed
--
--#define atomic_cmpxchg(v, o, n) (cmpxchg(&((v)->counter), (o), (n)))
--#define atomic_cmpxchg_relaxed(v, o, n) \
--	cmpxchg_relaxed(&((v)->counter), (o), (n))
--#define atomic_cmpxchg_acquire(v, o, n) \
--	cmpxchg_acquire(&((v)->counter), (o), (n))
-+#define arch_atomic_cmpxchg_relaxed(v, o, n) arch_cmpxchg_relaxed(&((v)->counter), (o), (n))
-+#define arch_atomic_xchg_relaxed(v, new) arch_xchg_relaxed(&((v)->counter), (new))
- 
--#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
--#define atomic_xchg_relaxed(v, new) xchg_relaxed(&((v)->counter), (new))
-+#ifdef CONFIG_64BIT
-+#define arch_atomic64_cmpxchg_relaxed(v, o, n) arch_cmpxchg_relaxed(&((v)->counter), (o), (n))
-+#define arch_atomic64_xchg_relaxed(v, new) arch_xchg_relaxed(&((v)->counter), (new))
-+#endif
- 
- /*
-  * Don't want to override the generic atomic_try_cmpxchg_acquire, because
-@@ -203,7 +303,7 @@ atomic_try_cmpxchg_lock(atomic_t *v, int *old, int new)
- 	int r, o = *old;
- 
- 	__asm__ __volatile__ (
--"1:\t"	PPC_LWARX(%0,0,%2,1) "	# atomic_try_cmpxchg_acquire	\n"
-+"1:\t"	PPC_LWARX(%0,0,%2,1) "	# atomic_try_cmpxchg_lock		\n"
- "	cmpw	0,%0,%3							\n"
- "	bne-	2f							\n"
- "	stwcx.	%4,0,%2							\n"
-@@ -219,270 +319,41 @@ atomic_try_cmpxchg_lock(atomic_t *v, int *old, int new)
- 	return likely(r == o);
- }
- 
--/**
-- * atomic_fetch_add_unless - add unless the number is a given value
-- * @v: pointer of type atomic_t
-- * @a: the amount to add to v...
-- * @u: ...unless v is equal to u.
-- *
-- * Atomically adds @a to @v, so long as it was not @u.
-- * Returns the old value of @v.
-- */
--static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
--{
--	int t;
--
--	__asm__ __volatile__ (
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	lwarx	%0,0,%1		# atomic_fetch_add_unless\n\
--	cmpw	0,%0,%3 \n\
--	beq	2f \n\
--	add	%0,%2,%0 \n"
--"	stwcx.	%0,0,%1 \n\
--	bne-	1b \n"
--	PPC_ATOMIC_EXIT_BARRIER
--"	subf	%0,%2,%0 \n\
--2:"
--	: "=&r" (t)
--	: "r" (&v->counter), "r" (a), "r" (u)
--	: "cc", "memory");
--
--	return t;
--}
--#define atomic_fetch_add_unless atomic_fetch_add_unless
--
--/**
-- * atomic_inc_not_zero - increment unless the number is zero
-- * @v: pointer of type atomic_t
-- *
-- * Atomically increments @v by 1, so long as @v is non-zero.
-- * Returns non-zero if @v was non-zero, and zero otherwise.
-- */
--static __inline__ int atomic_inc_not_zero(atomic_t *v)
--{
--	int t1, t2;
--
--	__asm__ __volatile__ (
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	lwarx	%0,0,%2		# atomic_inc_not_zero\n\
--	cmpwi	0,%0,0\n\
--	beq-	2f\n\
--	addic	%1,%0,1\n"
--"	stwcx.	%1,0,%2\n\
--	bne-	1b\n"
--	PPC_ATOMIC_EXIT_BARRIER
--	"\n\
--2:"
--	: "=&r" (t1), "=&r" (t2)
--	: "r" (&v->counter)
--	: "cc", "xer", "memory");
--
--	return t1;
--}
--#define atomic_inc_not_zero(v) atomic_inc_not_zero((v))
--
- /*
-  * Atomically test *v and decrement if it is greater than 0.
-  * The function returns the old value of *v minus 1, even if
-  * the atomic variable, v, was not decremented.
-  */
--static __inline__ int atomic_dec_if_positive(atomic_t *v)
-+static inline int atomic_dec_if_positive_relaxed(atomic_t *v)
- {
- 	int t;
- 
--	__asm__ __volatile__(
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	lwarx	%0,0,%1		# atomic_dec_if_positive\n\
--	cmpwi	%0,1\n\
--	addi	%0,%0,-1\n\
--	blt-	2f\n"
--"	stwcx.	%0,0,%1\n\
--	bne-	1b"
--	PPC_ATOMIC_EXIT_BARRIER
--	"\n\
--2:"	: "=&b" (t)
-+	asm volatile(
-+"1:	lwarx	%0,0,%1		# atomic_dec_if_positive		\n"
-+"	cmpwi	%0,1							\n"
-+"	addi	%0,%0,-1						\n"
-+"	blt-	2f							\n"
-+"	stwcx.	%0,0,%1							\n"
-+"	bne-	1b							\n"
-+"2:									\n"
-+	: "=&b" (t)
- 	: "r" (&v->counter)
- 	: "cc", "memory");
- 
- 	return t;
- }
--#define atomic_dec_if_positive atomic_dec_if_positive
--
--#ifdef __powerpc64__
--
--#define ATOMIC64_INIT(i)	{ (i) }
--
--static __inline__ s64 atomic64_read(const atomic64_t *v)
--{
--	s64 t;
--
--	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m"(v->counter));
--
--	return t;
--}
--
--static __inline__ void atomic64_set(atomic64_t *v, s64 i)
--{
--	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m"(v->counter) : "r"(i));
--}
--
--#define ATOMIC64_OP(op, asm_op)						\
--static __inline__ void atomic64_##op(s64 a, atomic64_t *v)		\
--{									\
--	s64 t;								\
--									\
--	__asm__ __volatile__(						\
--"1:	ldarx	%0,0,%3		# atomic64_" #op "\n"			\
--	#asm_op " %0,%2,%0\n"						\
--"	stdcx.	%0,0,%3 \n"						\
--"	bne-	1b\n"							\
--	: "=&r" (t), "+m" (v->counter)					\
--	: "r" (a), "r" (&v->counter)					\
--	: "cc");							\
--}
--
--#define ATOMIC64_OP_RETURN_RELAXED(op, asm_op)				\
--static inline s64							\
--atomic64_##op##_return_relaxed(s64 a, atomic64_t *v)			\
--{									\
--	s64 t;								\
--									\
--	__asm__ __volatile__(						\
--"1:	ldarx	%0,0,%3		# atomic64_" #op "_return_relaxed\n"	\
--	#asm_op " %0,%2,%0\n"						\
--"	stdcx.	%0,0,%3\n"						\
--"	bne-	1b\n"							\
--	: "=&r" (t), "+m" (v->counter)					\
--	: "r" (a), "r" (&v->counter)					\
--	: "cc");							\
--									\
--	return t;							\
--}
--
--#define ATOMIC64_FETCH_OP_RELAXED(op, asm_op)				\
--static inline s64							\
--atomic64_fetch_##op##_relaxed(s64 a, atomic64_t *v)			\
--{									\
--	s64 res, t;							\
--									\
--	__asm__ __volatile__(						\
--"1:	ldarx	%0,0,%4		# atomic64_fetch_" #op "_relaxed\n"	\
--	#asm_op " %1,%3,%0\n"						\
--"	stdcx.	%1,0,%4\n"						\
--"	bne-	1b\n"							\
--	: "=&r" (res), "=&r" (t), "+m" (v->counter)			\
--	: "r" (a), "r" (&v->counter)					\
--	: "cc");							\
--									\
--	return res;							\
--}
--
--#define ATOMIC64_OPS(op, asm_op)					\
--	ATOMIC64_OP(op, asm_op)						\
--	ATOMIC64_OP_RETURN_RELAXED(op, asm_op)				\
--	ATOMIC64_FETCH_OP_RELAXED(op, asm_op)
--
--ATOMIC64_OPS(add, add)
--ATOMIC64_OPS(sub, subf)
--
--#define atomic64_add_return_relaxed atomic64_add_return_relaxed
--#define atomic64_sub_return_relaxed atomic64_sub_return_relaxed
--
--#define atomic64_fetch_add_relaxed atomic64_fetch_add_relaxed
--#define atomic64_fetch_sub_relaxed atomic64_fetch_sub_relaxed
--
--#undef ATOMIC64_OPS
--#define ATOMIC64_OPS(op, asm_op)					\
--	ATOMIC64_OP(op, asm_op)						\
--	ATOMIC64_FETCH_OP_RELAXED(op, asm_op)
--
--ATOMIC64_OPS(and, and)
--ATOMIC64_OPS(or, or)
--ATOMIC64_OPS(xor, xor)
--
--#define atomic64_fetch_and_relaxed atomic64_fetch_and_relaxed
--#define atomic64_fetch_or_relaxed  atomic64_fetch_or_relaxed
--#define atomic64_fetch_xor_relaxed atomic64_fetch_xor_relaxed
--
--#undef ATOPIC64_OPS
--#undef ATOMIC64_FETCH_OP_RELAXED
--#undef ATOMIC64_OP_RETURN_RELAXED
--#undef ATOMIC64_OP
--
--static __inline__ void atomic64_inc(atomic64_t *v)
--{
--	s64 t;
--
--	__asm__ __volatile__(
--"1:	ldarx	%0,0,%2		# atomic64_inc\n\
--	addic	%0,%0,1\n\
--	stdcx.	%0,0,%2 \n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define atomic64_inc atomic64_inc
--
--static __inline__ s64 atomic64_inc_return_relaxed(atomic64_t *v)
--{
--	s64 t;
--
--	__asm__ __volatile__(
--"1:	ldarx	%0,0,%2		# atomic64_inc_return_relaxed\n"
--"	addic	%0,%0,1\n"
--"	stdcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--static __inline__ void atomic64_dec(atomic64_t *v)
--{
--	s64 t;
--
--	__asm__ __volatile__(
--"1:	ldarx	%0,0,%2		# atomic64_dec\n\
--	addic	%0,%0,-1\n\
--	stdcx.	%0,0,%2\n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define atomic64_dec atomic64_dec
--
--static __inline__ s64 atomic64_dec_return_relaxed(atomic64_t *v)
--{
--	s64 t;
--
--	__asm__ __volatile__(
--"1:	ldarx	%0,0,%2		# atomic64_dec_return_relaxed\n"
--"	addic	%0,%0,-1\n"
--"	stdcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--#define atomic64_inc_return_relaxed atomic64_inc_return_relaxed
--#define atomic64_dec_return_relaxed atomic64_dec_return_relaxed
-+#define atomic_dec_if_positive_relaxed atomic_dec_if_positive_relaxed
- 
-+#ifdef CONFIG_64BIT
- /*
-  * Atomically test *v and decrement if it is greater than 0.
-  * The function returns the old value of *v minus 1.
-  */
--static __inline__ s64 atomic64_dec_if_positive(atomic64_t *v)
-+static inline s64 atomic64_dec_if_positive_relaxed(atomic64_t *v)
- {
- 	s64 t;
- 
--	__asm__ __volatile__(
-+	asm volatile(
- 	PPC_ATOMIC_ENTRY_BARRIER
- "1:	ldarx	%0,0,%1		# atomic64_dec_if_positive\n\
- 	addic.	%0,%0,-1\n\
-@@ -497,80 +368,8 @@ static __inline__ s64 atomic64_dec_if_positive(atomic64_t *v)
- 
- 	return t;
- }
--#define atomic64_dec_if_positive atomic64_dec_if_positive
--
--#define atomic64_cmpxchg(v, o, n) (cmpxchg(&((v)->counter), (o), (n)))
--#define atomic64_cmpxchg_relaxed(v, o, n) \
--	cmpxchg_relaxed(&((v)->counter), (o), (n))
--#define atomic64_cmpxchg_acquire(v, o, n) \
--	cmpxchg_acquire(&((v)->counter), (o), (n))
--
--#define atomic64_xchg(v, new) (xchg(&((v)->counter), new))
--#define atomic64_xchg_relaxed(v, new) xchg_relaxed(&((v)->counter), (new))
--
--/**
-- * atomic64_fetch_add_unless - add unless the number is a given value
-- * @v: pointer of type atomic64_t
-- * @a: the amount to add to v...
-- * @u: ...unless v is equal to u.
-- *
-- * Atomically adds @a to @v, so long as it was not @u.
-- * Returns the old value of @v.
-- */
--static __inline__ s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
--{
--	s64 t;
--
--	__asm__ __volatile__ (
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	ldarx	%0,0,%1		# atomic64_fetch_add_unless\n\
--	cmpd	0,%0,%3 \n\
--	beq	2f \n\
--	add	%0,%2,%0 \n"
--"	stdcx.	%0,0,%1 \n\
--	bne-	1b \n"
--	PPC_ATOMIC_EXIT_BARRIER
--"	subf	%0,%2,%0 \n\
--2:"
--	: "=&r" (t)
--	: "r" (&v->counter), "r" (a), "r" (u)
--	: "cc", "memory");
--
--	return t;
--}
--#define atomic64_fetch_add_unless atomic64_fetch_add_unless
--
--/**
-- * atomic_inc64_not_zero - increment unless the number is zero
-- * @v: pointer of type atomic64_t
-- *
-- * Atomically increments @v by 1, so long as @v is non-zero.
-- * Returns non-zero if @v was non-zero, and zero otherwise.
-- */
--static __inline__ int atomic64_inc_not_zero(atomic64_t *v)
--{
--	s64 t1, t2;
--
--	__asm__ __volatile__ (
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	ldarx	%0,0,%2		# atomic64_inc_not_zero\n\
--	cmpdi	0,%0,0\n\
--	beq-	2f\n\
--	addic	%1,%0,1\n\
--	stdcx.	%1,0,%2\n\
--	bne-	1b\n"
--	PPC_ATOMIC_EXIT_BARRIER
--	"\n\
--2:"
--	: "=&r" (t1), "=&r" (t2)
--	: "r" (&v->counter)
--	: "cc", "xer", "memory");
--
--	return t1 != 0;
--}
--#define atomic64_inc_not_zero(v) atomic64_inc_not_zero((v))
--
--#endif /* __powerpc64__ */
-+#define atomic64_dec_if_positive_relaxed atomic64_dec_if_positive_relaxed
-+#endif
- 
- #endif /* __KERNEL__ */
- #endif /* _ASM_POWERPC_ATOMIC_H_ */
-diff --git a/arch/powerpc/include/asm/cmpxchg.h b/arch/powerpc/include/asm/cmpxchg.h
-index cf091c4c22e5..181f7e8b3281 100644
---- a/arch/powerpc/include/asm/cmpxchg.h
-+++ b/arch/powerpc/include/asm/cmpxchg.h
-@@ -192,7 +192,7 @@ __xchg_relaxed(void *ptr, unsigned long x, unsigned int size)
-      		(unsigned long)_x_, sizeof(*(ptr))); 			     \
-   })
- 
--#define xchg_relaxed(ptr, x)						\
-+#define arch_xchg_relaxed(ptr, x)					\
- ({									\
- 	__typeof__(*(ptr)) _x_ = (x);					\
- 	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
-@@ -448,35 +448,7 @@ __cmpxchg_relaxed(void *ptr, unsigned long old, unsigned long new,
- 	return old;
- }
- 
--static __always_inline unsigned long
--__cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
--		  unsigned int size)
--{
--	switch (size) {
--	case 1:
--		return __cmpxchg_u8_acquire(ptr, old, new);
--	case 2:
--		return __cmpxchg_u16_acquire(ptr, old, new);
--	case 4:
--		return __cmpxchg_u32_acquire(ptr, old, new);
--#ifdef CONFIG_PPC64
--	case 8:
--		return __cmpxchg_u64_acquire(ptr, old, new);
--#endif
--	}
--	BUILD_BUG_ON_MSG(1, "Unsupported size for __cmpxchg_acquire");
--	return old;
--}
--#define cmpxchg(ptr, o, n)						 \
--  ({									 \
--     __typeof__(*(ptr)) _o_ = (o);					 \
--     __typeof__(*(ptr)) _n_ = (n);					 \
--     (__typeof__(*(ptr))) __cmpxchg((ptr), (unsigned long)_o_,		 \
--				    (unsigned long)_n_, sizeof(*(ptr))); \
--  })
--
--
--#define cmpxchg_local(ptr, o, n)					 \
-+#define arch_cmpxchg_local(ptr, o, n)					 \
-   ({									 \
-      __typeof__(*(ptr)) _o_ = (o);					 \
-      __typeof__(*(ptr)) _n_ = (n);					 \
-@@ -484,7 +456,7 @@ __cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
- 				    (unsigned long)_n_, sizeof(*(ptr))); \
-   })
- 
--#define cmpxchg_relaxed(ptr, o, n)					\
-+#define arch_cmpxchg_relaxed(ptr, o, n)					\
- ({									\
- 	__typeof__(*(ptr)) _o_ = (o);					\
- 	__typeof__(*(ptr)) _n_ = (n);					\
-@@ -493,38 +465,20 @@ __cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
- 			sizeof(*(ptr)));				\
- })
- 
--#define cmpxchg_acquire(ptr, o, n)					\
--({									\
--	__typeof__(*(ptr)) _o_ = (o);					\
--	__typeof__(*(ptr)) _n_ = (n);					\
--	(__typeof__(*(ptr))) __cmpxchg_acquire((ptr),			\
--			(unsigned long)_o_, (unsigned long)_n_,		\
--			sizeof(*(ptr)));				\
--})
- #ifdef CONFIG_PPC64
--#define cmpxchg64(ptr, o, n)						\
--  ({									\
--	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg((ptr), (o), (n));					\
--  })
--#define cmpxchg64_local(ptr, o, n)					\
-+#define arch_cmpxchg64_local(ptr, o, n)					\
-   ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg_local((ptr), (o), (n));					\
-+	arch_cmpxchg_local((ptr), (o), (n));				\
-   })
--#define cmpxchg64_relaxed(ptr, o, n)					\
--({									\
--	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg_relaxed((ptr), (o), (n));				\
--})
--#define cmpxchg64_acquire(ptr, o, n)					\
-+#define arch_cmpxchg64_relaxed(ptr, o, n)				\
- ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg_acquire((ptr), (o), (n));				\
-+	arch_cmpxchg_relaxed((ptr), (o), (n));				\
- })
- #else
- #include <asm-generic/cmpxchg-local.h>
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define arch_cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
- #endif
- 
- #endif /* __KERNEL__ */
--- 
-2.23.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
