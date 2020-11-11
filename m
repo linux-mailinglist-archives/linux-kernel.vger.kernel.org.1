@@ -2,135 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB73E2AF744
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 273C52AF749
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgKKRRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:17:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726397AbgKKRRu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:17:50 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204B5C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:17:50 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id e18so3112317edy.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eQoq2RQCuafra2/12uiljwu+rCNgXWp3T6t2+sz8FTY=;
-        b=1DH8VH1JKBZbEDlGbtroiVXOVC0/URrnHQ4E8/tzT86j+/9Tva1H6wuleBdwke7NC0
-         OtOJ5SRmQEMcfqXHix2vJ5Kn8HKTL1/oLfya12FbOsO3FsuLYwnjILQiqYj0mmVqQmXe
-         Cuzt9YWBUz/3UdIPnqCEFjRKthmWHf8atJVS3KK4AVkpnTPVBpBpbAZHnG8I43hcBvXW
-         Dk0rimoptgAKqXt+ANHhaSihWslTP3l33/U4JZ+UD25Y7G9behZfPGt1U9buudqH9QV0
-         03q5re0g52eZpMu1pz1uDdM8rCL00SnesUh0Gsb1iRIs7nPiQag7jBP9pfO1pyFr2IEo
-         Ll0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eQoq2RQCuafra2/12uiljwu+rCNgXWp3T6t2+sz8FTY=;
-        b=S5tka1K1wMo2g2ePBnUxidlaZKhclsFg1M3SYJhO2kX0omUzS98AUu6rz4BQjPCh7L
-         Z4COhqmSsBveCmCep8+UDGpahYEVwXkTROFyduBoT/Of+78Uxl3gKwtWDeb5CPZK6kxy
-         9LZtmlZA6QA9rg2331xUyxzVZB31dzqpnW6r5dvhlVgsVlKIeE/aEkNhvOzq5O0/1PGY
-         uKBq7XN+hSmsh6yZ9J26VCnZCi9CtlCtQi+SZSv9RPiSEf/sb6nSI3brNqA6g4sY7ANI
-         4bDzBII+QRQfNf4/dauLcowUGf8ni8PbkU4nnibue/NWhpQ3DoLNAJrgjbVLStDH4HYD
-         UNaA==
-X-Gm-Message-State: AOAM530OvlBg9jEnJJ0QRPWshxpdNhWPo/Dv9ecUusjwIQ9M1J+R4R05
-        lr4vTOfhJu7vF8Uur+c1EbFuz/PG/X08mg8bxEtrsQ==
-X-Google-Smtp-Source: ABdhPJwTwbtangRhABKsob3Xr0CrmoBXrd71z27l2ZDvApiVBFS1mPJU50IdPt5HUcdZ+QRQ7ssj77pEMJ8fTBox2mA=
-X-Received: by 2002:aa7:ca44:: with SMTP id j4mr511437edt.354.1605115068596;
- Wed, 11 Nov 2020 09:17:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-4-ben.widawsky@intel.com> <20201111071231.GC7829@infradead.org>
-In-Reply-To: <20201111071231.GC7829@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 11 Nov 2020 09:17:37 -0800
-Message-ID: <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727196AbgKKRTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:19:05 -0500
+Received: from mga14.intel.com ([192.55.52.115]:13067 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgKKRTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:19:04 -0500
+IronPort-SDR: 3undOV416OoHutjogCUv7cPH0IWob+ixirj0vSSm3WjUd+dibECro3fEUR/QtkkfpVhE+rbnbv
+ YAYOC1/SseRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="169397447"
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="169397447"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 09:19:04 -0800
+IronPort-SDR: jyCcpDcnfcXI2GAq2/85JvFlyE381IbkT93q+qIPJmq1w2k60XqyX3syxbv3oEZIohtoFhcoRx
+ lDhGbQlvbFrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="541880853"
+Received: from glass.png.intel.com ([172.30.181.98])
+  by orsmga005.jf.intel.com with ESMTP; 11 Nov 2020 09:19:02 -0800
+From:   vee.khee.wong@intel.com
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH 1/1] watchdog: wdat_wdt: Fix missing kerneldoc reported by W=1
+Date:   Thu, 12 Nov 2020 01:22:05 +0800
+Message-Id: <20201111172205.17215-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:12 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Tue, Nov 10, 2020 at 09:43:50PM -0800, Ben Widawsky wrote:
-> > +config CXL_MEM
-> > +        tristate "CXL.mem Device Support"
-> > +        depends on PCI && CXL_BUS_PROVIDER != n
->
-> depend on PCI && CXL_BUS_PROVIDER
->
-> > +        default m if CXL_BUS_PROVIDER
->
-> Please don't set weird defaults for new code.  Especially not default
-> to module crap like this.
+From: Wong Vee Khee <vee.khee.wong@intel.com>
 
-This goes back to what people like Dave C. asked for LIBNVDIMM / DAX,
-a way to blanket turn on a subsystem without needing to go hunt down
-individual configs. All of CXL is "default n", but if someone turns on
-a piece of it they get all of it by default. The user can then opt-out
-on pieces after that first opt-in. If there's a better way to turn on
-suggested configs I'm open to switch to that style. As for the
-"default m" I was worried that it would be "default y" without the
-specificity, but I did not test that... will check. There have been
-times when I wished that distros defaulted bleeding edge new enabling
-to 'm' and putting that default in the Kconfig maybe saves me from
-needing to file individual config changes to distros after the fact.
+Fix the following warning while compiling with W=1.
 
->
-> > +// Copyright(c) 2020 Intel Corporation. All rights reserved.
->
-> Please don't use '//' for anything but the SPDX header.
+drivers/watchdog/wdat_wdt.c:48: warning: Function parameter or member 'instructions' not described in 'wdat_wdt'
 
-Ok, I find // following by /* */ a bit ugly, but I don't care enough to fight.
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+---
+ drivers/watchdog/wdat_wdt.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->
-> > +
-> > +             pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
-> > +             pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
-> > +             if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
-> > +                     return pos;
-> > +
-> > +             pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
->
-> Overly long lines again.
+diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
+index 3065dd670a18..cec7917790e5 100644
+--- a/drivers/watchdog/wdat_wdt.c
++++ b/drivers/watchdog/wdat_wdt.c
+@@ -34,9 +34,9 @@ struct wdat_instruction {
+  * @period: How long is one watchdog period in ms
+  * @stopped_in_sleep: Is this watchdog stopped by the firmware in S1-S5
+  * @stopped: Was the watchdog stopped by the driver in suspend
+- * @actions: An array of instruction lists indexed by an action number from
+- *           the WDAT table. There can be %NULL entries for not implemented
+- *           actions.
++ * @instructions: An array of instruction lists indexed by an action number from
++ *                the WDAT table. There can be %NULL entries for not implemented
++ *                actions.
+  */
+ struct wdat_wdt {
+ 	struct platform_device *pdev;
+-- 
+2.17.0
 
-I thought 100 is the new 80 these days?
-
-> > +static void cxl_mem_remove(struct pci_dev *pdev)
-> > +{
-> > +}
->
-> No need for the empty remove callback.
-
-True, will fix.
-
->
-> > +MODULE_AUTHOR("Intel Corporation");
->
-> A module author is not a company.
-
-At least I don't have a copyright assignment clause, I don't agree
-with the vanity of listing multiple people here especially when
-MAINTAINERS has the contact info, and I don't want to maintain a list
-as people do drive-by contributions and we need to figure out at what
-level of contribution mandates a new MODULE_AUTHOR line. Now, that
-said I would be ok to duplicate the MAINTAINERS as MODULE_AUTHOR
-lines, but I otherwise expect MAINTAINERS is the central source for
-module contact info.
