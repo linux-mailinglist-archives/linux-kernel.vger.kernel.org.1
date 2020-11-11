@@ -2,123 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58112AEE08
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF582AEE0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgKKJp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:45:29 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:25205 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgKKJp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:45:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605087926; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KmUJFdZ5vaTRSgEI19I+n3kwXGfObMB5GTEXWs9QZO0=; b=TC85br+wgXgWKBj5LRYOSWPTsZmixjhXL3fEJw7RWZrQvOXxsa3kStOKPYpPcGW6vWKG/J+E
- 8J4ZTtaT/gXXEfxIQ7OB2ZBDiXctFC1VThOWxN7iZPLxQVuHUtMJp2DX3tthEWCK5zA4c4UY
- zX/iqYLJSjIYOGh2SaRkNSoDtQs=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fabb2aed3e05bb6dbc7888d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 09:45:18
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 68B69C433FE; Wed, 11 Nov 2020 09:45:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.20] (unknown [106.208.38.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A0CDC433C8;
-        Wed, 11 Nov 2020 09:45:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3A0CDC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH] mm: memblock: always inline memblock_alloc
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1605010817-21065-1-git-send-email-faiyazm@codeaurora.org>
- <20201110184157.GD4758@kernel.org>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <97ca3445-c405-cdc1-b9e6-6ed2386c9c57@codeaurora.org>
-Date:   Wed, 11 Nov 2020 15:15:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1727156AbgKKJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:46:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKKJqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:46:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42568C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:46:25 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605087983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JBGgYpNE48xLdaSx9SJyuRgs17Z12VxMWi2bsgM8DpA=;
+        b=JrYegkaT2uptksIpDgutFBjIzBimCAGccgf49XznMd+eIHWWMHBsn6a9BV4AuM1CuzEV0X
+        sJpQE9UMam8/paR3LWytzkUuLasRXgusQNIlzAD/BThHLicM2AYUGMob2buUzHpHA98R0e
+        TqPxWCRqP0A8ce4DZdzE1piJqo9tvBQBm4j1kOqLG9fDX330Tmh9QvxhotlaNkibJWg8+j
+        hBpGZpN5AS4ykTcfpATYSpYdmz0UvL0vWOl2IiNwhI6ufh1FqO0lyF6AjWaOCKEU/VpxvT
+        XMqb6vffoMTXoKay0NauNpsbOCYugZvKQbE7d3l+k+Pw6Dlccp/NF8dCI7pu3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605087983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JBGgYpNE48xLdaSx9SJyuRgs17Z12VxMWi2bsgM8DpA=;
+        b=mI/NXhm0h/Xc76FRp2LRKgSfTCSZKE3YqHkx2p/gho1GEJaYeThhJa0uNBdVg0lYTD5+LU
+        ugksbj9jSSQ1YXBA==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity helpers
+In-Reply-To: <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
+References: <20201024213535.443185-20-dwmw2@infradead.org> <160397373817.397.3191135882528008704.tip-bot2@tip-bot2> <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com> <20201110061046.GA7290@nazgul.tnic> <87d00lgu13.fsf@nanos.tec.linutronix.de> <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com> <87a6vpgqbt.fsf@nanos.tec.linutronix.de> <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com> <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org> <877dqtgkzb.fsf@nanos.tec.linutronix.de> <874klxghwu.fsf@nanos.tec.linutronix.de> <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org> <87y2j9exk2.fsf@nanos.tec.linutronix.de> <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org> <d4115cc7-3876-e012-b6ec-c525d608834f@amd.com> <87tutwg76j.fsf@nanos.tec.linutronix.de> <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
+Date:   Wed, 11 Nov 2020 10:46:23 +0100
+Message-ID: <87o8k4fcpc.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201110184157.GD4758@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/11/2020 12:11 AM, Mike Rapoport wrote:
-> Hi,
+On Wed, Nov 11 2020 at 08:16, David Woodhouse wrote:
+> On Tue, 2020-11-10 at 23:48 +0100, Thomas Gleixner wrote:
+>> + * IRQCHIP_MSI_EXTID                 The MSI message created for this chip can
+>> + *                                   have an otherwise forbidden extended ID
 >
-> On Tue, Nov 10, 2020 at 05:50:17PM +0530, Faiyaz Mohammed wrote:
->> Since memblock_alloc is not getting inlined, memblock_reserve owner info
->> is lost. Below information is not enough for memory accounting.
->> for example:
->> [    0.000000] memblock_alloc_try_nid: 1490 bytes align=0x40 nid=-1 from=0x0000000000000000 max_addr=0x0000000000000000 memblock_alloc+0x20/0x2c
->> [    0.000000] memblock_reserve: [0x000000023f09a3c0-0x000000023f09a991] memblock_alloc_range_nid+0xc0/0x188
->>
->> Add "__always_inline" to make sure it get inlined and to get the exact
->> owner of the memblock_reserve.
->> After adding __always_inline:
->> [    0.000000] memblock_alloc_try_nid: 1490 bytes align=0x40 nid=-1 from=0x0000000000000000 max_addr=0x0000000000000000 start_kernel+0xa4/0x568
->> [    0.000000] memblock_reserve: [0x000000023f09a3c0-0x000000023f09a991] memblock_alloc_range_nid+0xc0/0x188
->   
-> I agree that making memblock_alloc() inline as well as other similar
-> wrappers would improve the debugability.
-> Still, it has nothing to do with memory accounting and owner tracking.
-> Please update the patch description to better explain what it actually
-> improves.
-
-As describe in other thread, do memblock reserved accounting to track 
-owners
-
-to know size of memory allocated by different drivers/owners through
-
-memblock_reserve, which help in comparing different kernel version and in
-
-optimizations.
+> If we're going to do that then we could ditch the separate
+> iommu_compose_msi_msg() function too, right?
 >
->> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->> ---
->>   include/linux/memblock.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
->> index ef13125..54f9544 100644
->> --- a/include/linux/memblock.h
->> +++ b/include/linux/memblock.h
->> @@ -404,7 +404,7 @@ void *memblock_alloc_try_nid(phys_addr_t size, phys_addr_t align,
->>   			     phys_addr_t min_addr, phys_addr_t max_addr,
->>   			     int nid);
->>   
->> -static inline void * __init memblock_alloc(phys_addr_t size,  phys_addr_t align)
->> +static __always_inline void * __init memblock_alloc(phys_addr_t size,  phys_addr_t align)
-> I think simply dropping __init here will make memblock_alloc() inline.
-> There are also several more convenience wrappers marked __init, do you
-> mind removing the __init annotation for them as well?
-Yes, if we drop __init, memblock_alloc will get inline but would it not 
-increase
+> But actually I'd be more inclined to fix this differently, in a way
+> that doesn't still leave AMD's iommu_init_intcapxt() having to set use
+> irq_set_affinity_notifier() to update its own registers. That's icky.
+>
+> Given that this is *its* irqdomain in the first place, it should just
+> sit at ->set_affinity() for itself, and call its parent as usual
+> without having to use a notifier.
+>
+> We should also leave it using the basic PCI MSI support in the case
+> where the IOMMU doesn't have XTSUP support. It doesn't need its own
+> irqdomain for that.
 
-kernel footprint as the function will no more be released after kernel 
-init?
+Looking at it now with brain awake, the XTSUP stuff is pretty much
+the same as DMAR, which I didn't realize yesterday. The affinity
+notifier muck is not needed when we have a write_msg() function which
+twiddles the bits into those other locations.
 
->>   {
->>   	return memblock_alloc_try_nid(size, align, MEMBLOCK_LOW_LIMIT,
->>   				      MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_NO_NODE);
+Thanks,
+
+        tglx
+
+
