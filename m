@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C75B2AE8A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBB32AE8A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgKKGK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 01:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKKGK1 (ORCPT
+        id S1725939AbgKKGL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 01:11:57 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18258 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725468AbgKKGL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 01:10:27 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C38FC0613D1;
-        Tue, 10 Nov 2020 22:10:27 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CWDqJ0lPHz9sRK;
-        Wed, 11 Nov 2020 17:10:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605075024;
-        bh=yKV3u/MqYNaME4dLCEtSbbFjVIZ++iGA2iYh5KcMQlA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NZeRFYOvmu/e4bx+uB83TqamgV2EJNMS7oBtocp2O74zLnyrEz5I3xVr/0FqMKnel
-         IaOs0uafbgMP9CJvYLmdPpZsIuys9lO/aAoewdDrMBMa6Nyp3DINhlE1uF1r8r+wla
-         A3omPPz4KKGd833Ihq1wrOst5tSUtsqLLxIjayrnniOZ7EcUu1Gc2HC9M1zyMuJjjg
-         b8nVSyZMABtrQXIwwg1HR7Xxsv7Jmlruxqzc1Q87Xa9M8FgnvknYWL8r5vP0Kcxy0k
-         M+ZZxS3j7LXWdwLpS33tC6dVk54qezTEPCWBqRNaQEqcRW+7bpAo1pi3JWhdcha5N1
-         H5kgryLSqe0wA==
-Date:   Wed, 11 Nov 2020 17:10:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201111171015.631ffd0e@canb.auug.org.au>
-In-Reply-To: <20201102051822-mutt-send-email-mst@kernel.org>
-References: <20201102124327.2f82b2a7@canb.auug.org.au>
-        <20201102051822-mutt-send-email-mst@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I+N15pMdX+kqDfWV159qK9v";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 11 Nov 2020 01:11:56 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AB62Uu5172817;
+        Wed, 11 Nov 2020 01:11:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=6ci14bMJqkzkgZzYTMvgyWJGvo3as75QRlIc4ZDxb30=;
+ b=KZF6d3+AR1pM9icpEd7dsHZm/AyKi/wyrqxHYv+KESVKIrUXHHXbC6tPeiUe0VXHrj3x
+ m2u4u79h88p1QqCWOOU6GEtzuwN9p4zLNxfSTdZoInmKLkIC26wKXllTa16gmNZbjd2/
+ RBY6sIF/kuRtvaZD/TdnqAYSK06vdl+8IqCFdX2BeUG4TEGT9NjJ71Y/QlRbEOrsdZ9v
+ LwYAUP5y0e7Y1gYhJdjtQVI3TlOMhCbJVXyr/QGC4oxfD7osIWemEsE8Q7+2E2lkaTo7
+ hzQMXDWp561YsdMTWTT1qOj8BNrY7LHCslNdUFPbRJ3WIWvKhFZgVofipaFilB4tkxYa tQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34qgydd1pf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 01:11:49 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AB67Y2d010558;
+        Wed, 11 Nov 2020 06:11:47 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 34p26pk7k7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 06:11:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AB6Bi0W1376782
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Nov 2020 06:11:44 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C833BA4066;
+        Wed, 11 Nov 2020 06:11:44 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21F9AA405C;
+        Wed, 11 Nov 2020 06:11:43 +0000 (GMT)
+Received: from [9.199.52.146] (unknown [9.199.52.146])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Nov 2020 06:11:42 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.17\))
+Subject: Re: [PATCH V2] selftests/cgroup: Fix build on older distros
+From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
+In-Reply-To: <50cb30c4-8e8d-7ba0-d429-3f1da4ad1f0b@linuxfoundation.org>
+Date:   Wed, 11 Nov 2020 11:41:41 +0530
+Cc:     Michael Ellerman <michael@ellerman.id.au>,
+        linux-kselftest@vger.kernel.org, christian@brauner.io,
+        linux-kernel@vger.kernel.org, keescook@chromium.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A30EBA15-D8DC-4F6B-9FF3-5E6A1BAB9500@linux.vnet.ibm.com>
+References: <160464840151.97255.15344214064240834294.sendpatchset@MacBook-Pro.local>
+ <50cb30c4-8e8d-7ba0-d429-3f1da4ad1f0b@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3445.104.17)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_01:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
+ phishscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011110028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I+N15pMdX+kqDfWV159qK9v
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Michael,
 
-On Mon, 2 Nov 2020 05:19:06 -0500 "Michael S. Tsirkin" <mst@redhat.com> wro=
-te:
->
-> On Mon, Nov 02, 2020 at 12:43:27PM +1100, Stephen Rothwell wrote:
-> >=20
-> > After merging the drm-misc tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >=20
-> > In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
-> > include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
-> > include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use i=
-n this function)
-> >    99 |  return SIZE_MAX;
-> >       |         ^~~~~~~~
-> > include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<st=
-dint.h>'; did you forget to '#include <stdint.h>'?
-> >     6 | #include <linux/init.h>
-> >   +++ |+#include <stdint.h>
-> >     7 | #include <linux/types.h>
-> > include/linux/swiotlb.h:99:9: note: each undeclared identifier is repor=
-ted only once for each function it appears in
-> >    99 |  return SIZE_MAX;
-> >       |         ^~~~~~~~
-> >=20
-> > Caused by commit
-> >=20
-> >   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> >=20
-> > but only exposed by commit
-> >=20
-> >   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
-> >=20
-> > I applied the following fix for today:
-> >=20
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Mon, 2 Nov 2020 12:34:57 +1100
-> > Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
-> >=20
-> > Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au> =20
+> On 11-Nov-2020, at 3:45 AM, Shuah Khan <skhan@linuxfoundation.org> =
+wrote:
 >=20
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> On 11/6/20 12:40 AM, Sachin Sant wrote:
+>> ---
+>> V2: Replace all instances of clone_args by __clone_args
+>> ---
+>> diff --git a/a/tools/testing/selftests/cgroup/cgroup_util.c =
+b/b/tools/testing/selftests/cgroup/cgroup_util.c
+>> index 05853b0..0270146 100644
+>> --- a/a/tools/testing/selftests/cgroup/cgroup_util.c
+>> +++ b/b/tools/testing/selftests/cgroup/cgroup_util.c
 >=20
-> I guess it makes sense to pick this up for this release directly.
-> I'll merge this unless there are any objections.
+> Not sure how you generated the patch. I had to use git am -p2
+>=20
+Sorry about that. Not sure what happened. Thanks.
 
-Christoph is right that the include should not be conditional.  But I
-have not tested that that does not introduce some other problems.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/I+N15pMdX+kqDfWV159qK9v
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rgEcACgkQAVBC80lX
-0GwJ+wf/Upt8VmibWkOP6DcrxQ6kKq81c4GyROE6dRtbHPfgTWkGq9whjE3uc6rZ
-yyDStMrlbOIMvru7hbqkkhulZy0BUTznzvtaB3+WmlnLlIpbpVhcktqXzB+Tn1Bx
-POgIPnGKa1wvWAjo9qXiXrcVwZbyUaDkLgYSBz4WUJkStZLI3mjiq5qp+nk3tEYP
-SJE0IuV/+TR4nSYr6TQRkZwEwBPEJCibChEOQQb7Ra1NGPCvvcefet11I1oJKX4S
-JHZCHGcaEiiVfm6BQbozc4sdSnO6hfhsJ85a2Z1zaJO/u1S1REORWdGW6+T/wzPz
-Qi661bDkIgKvyD7/DXeQu78KbfdTtQ==
-=IgWG
------END PGP SIGNATURE-----
-
---Sig_/I+N15pMdX+kqDfWV159qK9v--
+-Sachin
