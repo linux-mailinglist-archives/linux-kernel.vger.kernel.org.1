@@ -2,235 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578962AEF54
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 573552AEF5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgKKLNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:13:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59647 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726495AbgKKLN0 (ORCPT
+        id S1726260AbgKKLPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:15:17 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:33378 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKKLPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:13:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605093205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z8S+siqoexZXXM7q29fDjpzHS86Gh3tR8QOyHiVyeH8=;
-        b=e6mH6jbcFomB98NH9MzbAqx2OPrc8A2AqAbNQAa1VWK/p85TNiFDwZMdbcrKZC2Ew52Vg1
-        SvBIyjKqNo4WXfAkeDXtf7Ys2QDz55PLcvLant9BjvTLhuyNZNHtz0F6KtnbAT5u6UVNKN
-        tkfRsWMZU60UVrpjmK45rbCSI2h6li0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-6e0oF8PIMsWbj4ozdafWHQ-1; Wed, 11 Nov 2020 06:13:22 -0500
-X-MC-Unique: 6e0oF8PIMsWbj4ozdafWHQ-1
-Received: by mail-ed1-f70.google.com with SMTP id c2so711008edw.21
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:13:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z8S+siqoexZXXM7q29fDjpzHS86Gh3tR8QOyHiVyeH8=;
-        b=bn32DZnbs/vj95ca6rnvt1WGwuj3CfmAhvuSx7yiunbkjgS+Rl8nWjzHwEUIjNCpEd
-         Y4elhXRIF3xRZ/H1+B7muwcHDYVOkHLs9MpQueR+j+pKLjWCQ/KF2TB5V1P6sQAeytNu
-         95ZbrB3WK+ctYspbUI8mmS48ba2SVV63eNHTi6FOV1xK4zb+dwmrB+ym6s2bieL7R+jL
-         izgsDg99cNdE0T6HeZ+0+Xk6MZ1z75TeDriKFHr4SflVB9kQLAto9r3enjvwB5nL9Jdx
-         Bu+5FIaSm/Gd9JcCDQNaPAKzKjbEHgrggmwImbBnX25SUk7+JOEtwnS85CmwJARa2NC6
-         2o8Q==
-X-Gm-Message-State: AOAM533lyVTrYjjpbKDZJeskTEu2sth7q4x4eyYvCYxCYXhTnib5jvA3
-        h93uB8ZdmCDwsLPIsD299vw4fq6ddwSvE19WW4wmIZejtSTFTnGiqYsLfDWC6ppjR9zMj3AJ3QY
-        8sOE2u8+2GakTmfFGyAte8kpziHiEhAzi8fN5utrOT72VvYJcW+USWroygs+2NG5VDW83DkWpzS
-        KA
-X-Received: by 2002:a17:906:892:: with SMTP id n18mr24125352eje.1.1605093200668;
-        Wed, 11 Nov 2020 03:13:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz99HJvX1FUbNByylAknLNJ/wBG4xsEFBX+F/mEyCsUbAfospfLtXxB8FtKEDJXIrvF2zhZ3w==
-X-Received: by 2002:a17:906:892:: with SMTP id n18mr24125309eje.1.1605093200346;
-        Wed, 11 Nov 2020 03:13:20 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id h2sm725863ejx.55.2020.11.11.03.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 03:13:19 -0800 (PST)
-Subject: Re: [PATCH v5 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
- separate modules
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Pavel Balan <admin@kryma.net>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201109213636.1267536-1-dianders@chromium.org>
- <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
- <d51318d1-5d26-f840-2651-42a1134d407b@redhat.com>
- <CAD=FV=WL7C_OPOQqJY_9nDP4Riz6c4XMHXBBj7FkzMJPBVo9Nw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <38773dae-32fa-b153-a774-27b474d1a778@redhat.com>
-Date:   Wed, 11 Nov 2020 12:13:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CAD=FV=WL7C_OPOQqJY_9nDP4Riz6c4XMHXBBj7FkzMJPBVo9Nw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Wed, 11 Nov 2020 06:15:16 -0500
+Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 2D2CDCECFE;
+        Wed, 11 Nov 2020 12:22:23 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v9 1/6] Bluetooth: Replace BT_DBG with bt_dev_dbg in HCI
+ request
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
+Date:   Wed, 11 Nov 2020 12:15:13 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Transfer-Encoding: 7bit
+Message-Id: <930CC61B-FFE0-44A4-93E4-D48C07793324@holtmann.org>
+References: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
+To:     Howard Chung <howardchung@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Howard,
 
-On 11/10/20 11:17 PM, Doug Anderson wrote:
-> Hi,
+> This replaces the BT_DBG function to bt_dev_dbg as it is cleaner to show
+> the controller index in the debug message.
 > 
-> On Tue, Nov 10, 2020 at 1:01 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi,
->>
->> On 11/9/20 10:36 PM, Douglas Anderson wrote:
->>> This patch rejiggers the i2c-hid code so that the OF (Open Firmware
->>> aka Device Tree) and ACPI support is separated out a bit.  The OF and
->>> ACPI drivers are now separate modules that wrap the core module.
->>>
->>> Essentially, what we're doing here:
->>> * Make "power up" and "power down" a function that can be (optionally)
->>>   implemented by a given user of the i2c-hid core.
->>> * The OF and ACPI modules are drivers on their own, so they implement
->>>   probe / remove / suspend / resume / shutdown.  The core code
->>>   provides implementations that OF and ACPI can call into.
->>>
->>> We'll organize this so that we now have 3 modules: the old i2c-hid
->>> module becomes the "core" module and two new modules will depend on
->>> it, handling probing the specific device.
->>>
->>> As part of this work, we'll remove the i2c-hid "platform data"
->>> concept since it's not needed.
->>>
->>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>> ---
->>>
->>> Changes in v5:
->>> - Add shutdown_tail op and use it in ACPI.
->>> - i2chid_subclass_data => i2chid_ops.
->>> - power_up_device => power_up (same with power_down).
->>> - subclass => ops.
->>>
->>
->> Thanks this looks good to now, 2 small remarks below (since you are
->> going to do a v6 anyways). Feel free to ignore these remarks if
->> you prefer to keep things as is.
->>
->> And feel free to add my reviewed-by to v6 of this patch:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Howard Chung <howardchung@google.com>
+> ---
 > 
-> Thanks!
+> Changes in v9:
+> - Fix compile warning on patch 6/6
 > 
+> Changes in v8:
+> - Simplified logic in __hci_update_interleaved_scan
+> - Remove hdev->name when calling bt_dev_dbg
+> - Remove 'default' in hci_req_add_le_interleaved_scan switch block
+> - Remove {} around :1915
+> - Update commit message and title in v7 4/5
+> - Add a cleanup patch for replacing BT_DBG with bt_dev_dbg
 > 
->>> +static const struct i2c_device_id i2c_hid_acpi_id_table[] = {
->>> +     { "hid", 0 },
->>> +     { "hid-over-i2c", 0 },
->>> +     { },
->>> +};
->>> +MODULE_DEVICE_TABLE(i2c, i2c_hid_acpi_id_table);
->>
->> Hmm, I do not think these old-style i2c-ids are necessarry at
->> all in this driver. I expect all use-cases to use either
->> of or acpi matches.
->>
->> This was already present in the code before though, so
->> please ignore this remark. This is just something which
->> I noticed and thought was worth while pointing out as
->> a future cleanup.
+> Changes in v7:
+> - Fix bt_dev_warn argument type warning
 > 
-> Yeah, I wasn't sure if there was anyone using them.
+> Changes in v6:
+> - Set parameter EnableAdvMonInterleaveScan to 1 byte long
 > 
-> Hrm.  Thinking about it, though, is it really OK for two drivers to
-> both have the same table listed?  I'm not sure how that would work.
-> Do you know?
+> Changes in v5:
+> - Rename 'adv_monitor' from many functions/variables
+> - Move __hci_update_interleaved_scan into hci_req_add_le_passive_scan
+> - Update the logic of update_adv_monitor_scan_state
+> 
+> Changes in v4:
+> - Rebase to bluetooth-next/master (previous 2 patches are applied)
+> - Fix over 80 chars limit in mgmt_config.c
+> - Set EnableAdvMonInterleaveScan default to Disable
+> 
+> Changes in v3:
+> - Remove 'Bluez' prefix
+> 
+> Changes in v2:
+> - remove 'case 0x001c' in mgmt_config.c
+> 
+> net/bluetooth/hci_request.c | 52 ++++++++++++++++++-------------------
+> 1 file changed, 26 insertions(+), 26 deletions(-)
 
-Ah I missed that you are adding the i2c_device_id table to
-both the new -acpi and -of drivers.
+patch has been applied to bluetooth-next tree.
 
-That indeed is not a good idea.
+Regards
 
-> I don't know a ton about ACPI, but for device tree I know i2c has a
-> fallback mode.  Specifically having this table means that we'll match
-> compatible strings such as:
-> 
->   "zipzapzing,hid"
->   "kapowzers,hid-over-i2c"
-> 
-> In other words it'll ignore the vendor part and just match on the
-> second half.
-
-Yeah I know about that clever hack the i2c subsys has. 
-
-> Just to make sure I wasn't remembering that from a dream
-> I tried it and it worked.  I don't see any mainline device trees that
-> look like that, though.  I could delete it, though it doesn't really
-> take up much space and it seems nice to keep it working in case anyone
-> was relying on it?
-
-Ack, so in the of case there is a reason to keep this. But ACPI binding
-does not use anything similar, so the old-style i2c_device_id table
-should probably be removed from the -acpi driver.
-
-> For ACPI is there a similar fallback?  If not then it seems like it'd
-> be easy to remove it from there...
-> 
-> 
->> <snip>
->>
->>> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
->>> index aeff1ffb0c8b..9551ba96dc49 100644
->>> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
->>> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
->>> @@ -35,12 +35,8 @@
->>>  #include <linux/kernel.h>
->>>  #include <linux/hid.h>
->>>  #include <linux/mutex.h>
->>> -#include <linux/acpi.h>
->>> -#include <linux/of.h>
->>>  #include <linux/regulator/consumer.h>
->>
->> I think you can drop this regulator include here now too ?
-> 
-> Good point.
-> 
-> 
->>> diff --git a/drivers/hid/i2c-hid/i2c-hid-of.c b/drivers/hid/i2c-hid/i2c-hid-of.c
->>> new file mode 100644
->>> index 000000000000..15d533be2b24
->>> --- /dev/null
->>> +++ b/drivers/hid/i2c-hid/i2c-hid-of.c
->> <snip>
->>
->>> +static const struct dev_pm_ops i2c_hid_of_pm = {
->>> +     SET_SYSTEM_SLEEP_PM_OPS(i2c_hid_core_suspend, i2c_hid_core_resume)
->>> +};
->>
->> This dev_pm_ops struct is identical to the one in i2c-hid-acpi.c
->> and the one which you introduce later in i2c-hid-of-goodix.c
->> is also identical, so that is 3 copies.
->>
->> Maybe just put a shared dev_pm_ops struct in the i2c-core
->> (and don't export the suspend/resume handlers) ?
-> 
-> Sounds good.
-
-Regards,
-
-Hans
+Marcel
 
