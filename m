@@ -2,185 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B082AF990
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EBA2AF994
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgKKUML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
+        id S1726215AbgKKUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgKKUML (ORCPT
+        with ESMTP id S1725860AbgKKUMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:12:11 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598A1C0613D1;
-        Wed, 11 Nov 2020 12:12:11 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id v92so3092546ybi.4;
-        Wed, 11 Nov 2020 12:12:11 -0800 (PST)
+        Wed, 11 Nov 2020 15:12:32 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F53C0613D1;
+        Wed, 11 Nov 2020 12:12:32 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id p8so3765279wrx.5;
+        Wed, 11 Nov 2020 12:12:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pB38drbiYuyH57f1j/OGS58rHVCVIBiVZxazCjdLplA=;
-        b=YTaod/s6xOSthLFOf5v9u0Agfru7+P51p/rp9bBE05FqDCVEEi1IKyAy/Ksck1hJgj
-         M7FKDYj9jAXS8yANQRlv8ehfwdaEx0pfj5IYInLYYzgakIcJYPsbEQGNVOedib+0DQZK
-         T/44IWZV4CD8Y2YlrVMjLeyReEPgBi76rdiY72xd3WBnHpOD0wRtZwyVWgEl9MNCD1MY
-         TNCMVgBmshhtaxiIRo3P7V1gtbsawLC7Zdo7wRWsjpcqDFWJKftVWjtGDmKI4wEueaK0
-         oE1jnTHUKV/kOnxxdTAo480tDlvuTCX7j/RwXNEFRkPmvx44to1XCma6Jlgb3Jmj+n20
-         9fow==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F7AKQnS/USiMmoeHPSK9/AG/hMH5sRwDB1LYC95VaV0=;
+        b=WBFn3M3gsXz+myqgSRvR+Xh0vzo3h+nm+pSDbvSyBTEm5KUh9soCZVmhtsy9LOhq3x
+         1yPTlBFTSGT4tTIDWL94SV2WarUIsU8k8OccKfKLvYAkjTH6b5Ucqd26nSMNG8RbCNh3
+         FDIqmKUVYa0MdIs0/s9wtPSuOSkZn0riu9dzr4hUI4lY5sgqajHazh8uO40Cd3g60QCQ
+         ZipweSOUKgaIge1PBdSPKM7Yfhbz6Fjg7NfyzFmUcrjcs0Pd5Xe/scVM4OyMdnT6+rnU
+         9cOK+4M8PORSgsbBjlvexbYur66shtARcESIANsjqMZdX/9dIC/ugUfwt2R2qPAVdrOQ
+         wAxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pB38drbiYuyH57f1j/OGS58rHVCVIBiVZxazCjdLplA=;
-        b=A8/Eh2z2ZKZFf8ocBm/wnqh8T+UaL7bDa8+dWMw9lmic7b5JIN0pJRhCL7tnOc1B2G
-         PeQyYaYW3MFjJZZ27pnrzGut/JnmDqbtZoGN2oAhN7qnhV9hm/qimTuXef8ofZ6u3ZPV
-         BxhfKZ3+7O3Bjzxwx2uafIJ7W97NtInfSwrQfA9HxMePsoaNo+PSIAGvrimwX49Z80Yq
-         fLEvzVKeBe+Ibkwuc9MadiLF/YO7SkRh3k9I18FrHjNeNN4UJRNH6I5lH7tcx03bdfSM
-         +17SQbNqA8fMi6U3aTLIoC500AzgH1pu9jGnR260mOfM43fSS3Rz73KWz/CUahwYdnDN
-         +E5g==
-X-Gm-Message-State: AOAM533f7vdGe4/bLuAEbknzuXQbWHCsIjNtnWrC5gDrBSMwqTWy+e7L
-        MYChxINfXovzPXNuj0057SDGMx/5fywo7+BR26c=
-X-Google-Smtp-Source: ABdhPJzYDY7ZkALEs1trStLJuAnj+VHR91+D3T1A0rOUFfDHX+SUOJaXYI/asPu5fxHeZTrSFyR9P8zb/E7BjHmo044=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr9444434ybg.230.1605125530599;
- Wed, 11 Nov 2020 12:12:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F7AKQnS/USiMmoeHPSK9/AG/hMH5sRwDB1LYC95VaV0=;
+        b=I0qK+mwr6yI/eOYIO42xeG250pJ1nIsvOSKKcQVgO4Ekeu3VhulLCbg1IyiBC+FnRz
+         /9QLO5h+JttsOHM7mdNXVYPjo3BixXldcabHUQ9D4LVu3Dnqq3atdbVRQp4ZigI+s7iB
+         DLqkgGzLis43CtD5k7mi8JVtt9Jr4s+eHflRJDNyISddQN3Em/dKbGYMlYKIPZhy8kEm
+         Sa+KevKFzxTjmoXSKwf4z5wycfdBLYeKTxEx2O9zpoaRv1nOCuuA2f3AxodOlYnu53Kb
+         syHnRLzSZ8QLC9RL6YohLuO/URDDrknqMB23gOuQyGuffFOyFk2t4QdBzj8diZ76xGf1
+         06gw==
+X-Gm-Message-State: AOAM531wymKFqHIxyW905e+dpwCQtp3U5WP86VPrYDxLjc2R9XXSgIVd
+        NIJKoxsEINAoodX9OT32ImgH219aZ3Q=
+X-Google-Smtp-Source: ABdhPJw6cMu90IqqINQAf+KGfdYbYf/pQsdQVqpwJdz+NlcNKrlwYeMEGTf+ULXm7bJDFg1OHoONKQ==
+X-Received: by 2002:a5d:4d0a:: with SMTP id z10mr31457501wrt.244.1605125550909;
+        Wed, 11 Nov 2020 12:12:30 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id y16sm3364397wrt.25.2020.11.11.12.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 12:12:29 -0800 (PST)
+Date:   Wed, 11 Nov 2020 21:12:27 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+Cc:     u.kleine-koenig@pengutronix.de, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH] pwm: lp3943: Dynamically allocate pwm chip base
+Message-ID: <20201111201227.GJ6125@ulmo>
+References: <20201030134135.28730-1-lokeshvutla@ti.com>
 MIME-Version: 1.0
-References: <20201110011932.3201430-1-andrii@kernel.org> <20201110011932.3201430-5-andrii@kernel.org>
- <20201111101316.GA5304@linux-8ccs>
-In-Reply-To: <20201111101316.GA5304@linux-8ccs>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Nov 2020 12:11:59 -0800
-Message-ID: <CAEf4BzZbKRgWhLD6KFOwJU8DDns9oufroBShczM9KqODCqbEPA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 4/5] bpf: load and verify kernel module BTFs
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5cSRzy0VGBWAML+b"
+Content-Disposition: inline
+In-Reply-To: <20201030134135.28730-1-lokeshvutla@ti.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:13 AM Jessica Yu <jeyu@kernel.org> wrote:
->
-> +++ Andrii Nakryiko [09/11/20 17:19 -0800]:
-> [snipped]
-> >diff --git a/kernel/module.c b/kernel/module.c
-> >index a4fa44a652a7..f2996b02ab2e 100644
-> >--- a/kernel/module.c
-> >+++ b/kernel/module.c
-> >@@ -380,6 +380,35 @@ static void *section_objs(const struct load_info *info,
-> >       return (void *)info->sechdrs[sec].sh_addr;
-> > }
-> >
-> >+/* Find a module section: 0 means not found. Ignores SHF_ALLOC flag. */
-> >+static unsigned int find_any_sec(const struct load_info *info, const char *name)
-> >+{
-> >+      unsigned int i;
-> >+
-> >+      for (i = 1; i < info->hdr->e_shnum; i++) {
-> >+              Elf_Shdr *shdr = &info->sechdrs[i];
-> >+              if (strcmp(info->secstrings + shdr->sh_name, name) == 0)
-> >+                      return i;
-> >+      }
-> >+      return 0;
-> >+}
-> >+
-> >+/*
-> >+ * Find a module section, or NULL. Fill in number of "objects" in section.
-> >+ * Ignores SHF_ALLOC flag.
-> >+ */
-> >+static __maybe_unused void *any_section_objs(const struct load_info *info,
-> >+                                           const char *name,
-> >+                                           size_t object_size,
-> >+                                           unsigned int *num)
-> >+{
-> >+      unsigned int sec = find_any_sec(info, name);
-> >+
-> >+      /* Section 0 has sh_addr 0 and sh_size 0. */
-> >+      *num = info->sechdrs[sec].sh_size / object_size;
-> >+      return (void *)info->sechdrs[sec].sh_addr;
-> >+}
-> >+
->
-> Hm, I see this patchset has already been applied to bpf-next, but I
-> guess that doesn't preclude any follow-up patches :-)
 
-Of course!
+--5cSRzy0VGBWAML+b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> I am not a huge fan of the code duplication here, and also the fact
-> that they're only called in one place. any_section_objs() and
-> find_any_sec() are pretty much identical to section_objs() and
-> find_sec(), other than the fact the former drops the SHF_ALLOC check.
+On Fri, Oct 30, 2020 at 07:11:35PM +0530, Lokesh Vutla wrote:
+> When there are other pwm controllers enabled along with pwm-lp3943,
+> pwm-lp3942 is failing to probe with -EEXIST error. This is because
+> other pwm controller is probed first and assigned pwmchip 0 and
+> pwm-lp3943 is requesting for 0 again. In order to avoid this, assign the
+> chip base with -1, so that id is dynamically allocated.
+>=20
+> Fixes: af66b3c0934e ("pwm: Add LP3943 PWM driver")
+> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
+> ---
+>  drivers/pwm/pwm-lp3943.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Right, but the alternative was to add a new flag to existing
-section_objs() and find_sec() functions, which would cause much more
-code churn for no good reason (besides saving some trivial code
-duplication). And those true/false flags are harder to read in code
-anyways.
+Applied, thanks.
 
->
-> Moreover, since it appears that the ".BTF" section is not marked
-> SHF_ALLOC, I think this will leave mod->btf_data as a dangling pointer
-> after the module is done loading and the module's load_info has been
-> deallocated, since SHF_ALLOC sections are not allocated nor copied to
-> the module's final location in memory.
+Thierry
 
-I can make sure that we also reset the btf_data pointer back to NULL,
-if that's a big concern.
+--5cSRzy0VGBWAML+b
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
-> Why not simply mark the ".BTF" section in the module SHF_ALLOC? We
-> already do some sh_flags rewriting in rewrite_section_headers(). Then
-> the module loader knows to keep the section in memory and you can use
-> section_objs(). And since the .BTF section stays in module memory,
-> that might save you the memcpy() to btf->data in btf_parse_module()
-> (unless that is still needed for some reason).
+-----BEGIN PGP SIGNATURE-----
 
-Wasn't aware about rewrite_section_headers() manipulations. Are you
-suggesting to just add SHF_ALLOC there for the .BTF section from the
-kernel side? I guess that would work, but won't avoid memory copy (so
-actually would waste kernel memory, if I understand correctly). The
-reason being that the module's BTF is registered as an independently
-ref-counted BTF object, which could be held past the kernel module
-being unloaded. So I can't directly reference module's .BTF data
-anyways.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sRasACgkQ3SOs138+
+s6EA0A//aBd9sU58jvIjRrNEWYcibPTj/Szyp+xrYw1XjmCm3vwWVTH1nwcAT3+6
+5ac228oAshC3zsALkDg0brhgZqQLTk22BSEd+Z6b8P14vKAzT+N+z+fsiu0xYbzU
+Wr2JKyoB74vt3utb2YGSwCmECKP9tB8dWcntUN/LDHKT/VPfFqngcoLNL8lr9BX4
+9Xq/uvcR/QL8+J/YcuWK6LQxAW+zhCJhpj/XS70oBlLPgEPm7ZPFkydr17qgWhMo
+P5xfNfnWyUSSmmW+Ephl1BHXMUHR+nIOFApET/w0SxtWXi7mHv+ECOHUNQb10iTi
+/Aoy2n0ajlZQ1dE5QaeAHX+47+RnIyS8OoGw2ZnEB1Sl2bH6Mr1tFJotU0JAUOK5
+3EQgHY1Id22EsffQNNFGTC0Mm7fVFmoHEe1vJ6AzXv7RI3e8W/7SY/IUYQ5RdwzU
+4ENutUmLkC0WNXOIhjv7NtBfNFbCRCUXEBBXAPNLZLyQIHpIvPVuR9B3Z8nAxR2n
+9edST3QHUC1sWhDVp+cJGRrNGZ6YrP8QAja2BEr6b9gXOzz168LRefrToUZEDd9k
+/bFzrWB/YxlUgD1ZXPgJ7z3jHNTH5ed1oAWioe1rAuMHC60gcthKeRHJMeIW/w3l
+pLF7tmAFXaH9U/b7mSh1FSDtKcq/e+qP5UMq6C6bYtnA51RJrTI=
+=yWn6
+-----END PGP SIGNATURE-----
 
-Also, marking .BTF with SHF_ALLOC with pahole or objcopy tool actually
-might generate warnings because SHF_ALLOC sections need to be
-allocated to data segments, which neither of those tools know how to
-do, it requires a linker support. We do that for vmlinux with extra
-linker script logic, but for kernel modules we don't have and probably
-don't want to do that.
-
-So in the end, the cleanest approach still seems like not doing
-SHF_ALLOC but allowing "capturing" .BTF data with an extra helper.
-
->
-> Thanks,
->
-> Jessica
->
-> > /* Provided by the linker */
-> > extern const struct kernel_symbol __start___ksymtab[];
-> > extern const struct kernel_symbol __stop___ksymtab[];
-> >@@ -3250,6 +3279,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
-> >                                          sizeof(*mod->bpf_raw_events),
-> >                                          &mod->num_bpf_raw_events);
-> > #endif
-> >+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> >+      mod->btf_data = any_section_objs(info, ".BTF", 1, &mod->btf_data_size);
-> >+#endif
-> > #ifdef CONFIG_JUMP_LABEL
-> >       mod->jump_entries = section_objs(info, "__jump_table",
-> >                                       sizeof(*mod->jump_entries),
-> >--
-> >2.24.1
-> >
+--5cSRzy0VGBWAML+b--
