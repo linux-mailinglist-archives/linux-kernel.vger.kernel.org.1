@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C712AFC50
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B332AFCD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgKLBee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47898 "EHLO mail.kernel.org"
+        id S1727145AbgKLBex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:34:53 -0500
+Received: from elvis.franken.de ([193.175.24.41]:54619 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727702AbgKKXDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:03:51 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3389A208B8;
-        Wed, 11 Nov 2020 23:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605135830;
-        bh=Gj/5UEDBt8CVEIKja1eDcZ0nlYSBbNDAl0pvJ3rUQaU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=uz/yGw5r6zcJSFWqdQ/nPbjnM+LdVbVX7fddaeUEOKOruCKsR3fihP5jd++PBF4CR
-         Z++JbK1FAvmwbgig45ygXjHe4EdZLSnNzJPL/RkAMqah5+XXFFWNejWZyjvhtrXzVb
-         WK4x4hLX9jkyk/0R+jOhczjsK8wY8vgBGj+PBxq8=
-Date:   Wed, 11 Nov 2020 17:03:48 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [RFC PATCH 1/9] cxl/acpi: Add an acpi_cxl module for the CXL
- interconnect
-Message-ID: <20201111230348.GA978803@bjorn-Precision-5520>
+        id S1727759AbgKKXGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 18:06:13 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kczBl-0005fC-02; Thu, 12 Nov 2020 00:06:05 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C55E3C4DDF; Thu, 12 Nov 2020 00:04:07 +0100 (CET)
+Date:   Thu, 12 Nov 2020 00:04:07 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v3 0/6] Modify some registers operations and move
+ decode_cpucfg() to loongson_regs.h
+Message-ID: <20201111230407.GC19275@alpha.franken.de>
+References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111054356.793390-2-ben.widawsky@intel.com>
+In-Reply-To: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 09:43:48PM -0800, Ben Widawsky wrote:
+On Tue, Nov 03, 2020 at 03:11:59PM +0800, Tiezhu Yang wrote:
+> v2: Add some callbacks in csr_ipi probe() for patch #4
+> v3: Update the commit message and comment for patch #5
+> 
+> Tiezhu Yang (6):
+>   MIPS: Loongson64: Do not write the read only field LPA of CP0_CONFIG3
+>   MIPS: Loongson64: Set the field ELPA of CP0_PAGEGRAIN only once
+>   MIPS: Loongson64: Set IPI_Enable register per core by itself
+>   MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU
+>   MIPS: Loongson64: SMP: Fix up play_dead jump indicator
+>   MIPS: Loongson64: Move decode_cpucfg() to loongson_regs.h
+> 
+>  .../asm/mach-loongson64/kernel-entry-init.h        |   8 --
+>  .../include/asm/mach-loongson64/loongson_regs.h    |  34 ++++++
+>  arch/mips/kernel/cpu-probe.c                       |  31 +-----
+>  arch/mips/loongson64/numa.c                        |  20 +---
+>  arch/mips/loongson64/smp.c                         | 123 +++++++++++++++++----
+>  5 files changed, 136 insertions(+), 80 deletions(-)
 
-> +static int acpi_cxl_add(struct acpi_device *adev)
-> +{
-> +	struct acpi_cxl_desc *acpi_desc;
-> +	struct device *dev = &adev->dev;
-> +	struct acpi_table_header *tbl;
-> +	acpi_status status = AE_OK;
+applied patches 1-5 of this series to mips-next.
 
-Pointless init.
+Thomas.
 
-> +	acpi_size sz;
-> +	int rc = 0;
-
-Pointless init.
-
-> +	status = acpi_get_table(ACPI_SIG_CEDT, 0, &tbl);
-> +	if (ACPI_FAILURE(status)) {
-> +		dev_err(dev, "failed to find CEDT at startup\n");
-> +		return 0;
-> +	}
-> +
-> +	rc = devm_add_action_or_reset(dev, acpi_cedt_put_table, tbl);
-> +	if (rc)
-> +		return rc;
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
