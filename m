@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4062AF9C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C7C2AF9C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgKKU2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKU2l (ORCPT
+        id S1726593AbgKKU2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:28:50 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:33183 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgKKU2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:28:41 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5A9C0613D1;
-        Wed, 11 Nov 2020 12:28:41 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c17so3753644wrc.11;
-        Wed, 11 Nov 2020 12:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dq1iKAU2y96x/XQs698772mOxdQZDghPuWoC8s03/bw=;
-        b=Vee6Azj3MPC+lNFGsKyyzJX6KXFIYdm6N09bdx7crsRVNDUfilZNN5wmgMv+Gkf5im
-         GA8cQnzHNBLG9FdPOg/FmfG756jZrnd6UQRudC6L2/krFmDxhGOXyIo9Ngm1qZmvfsBO
-         5pUjqgNa/9C4+ZuI/gBrqGhyOJwGWJvn5UxINyg+341mT00DRfPLpZ9lz+QB0gnKwwD1
-         MvhqjhWfcej7XHHfGPQZluNtXycTK0BpL5r6pg5CnJphHfRyMzlanaHEH8zSzOlqJszP
-         qczNOgYGlluk/YVMZB0KTm+QKuFSxkI1xHfkjGFoMBi0XIupJr5C4bltNS7tjSDUczuf
-         fgog==
+        Wed, 11 Nov 2020 15:28:50 -0500
+Received: by mail-ot1-f65.google.com with SMTP id i18so3425699ots.0;
+        Wed, 11 Nov 2020 12:28:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dq1iKAU2y96x/XQs698772mOxdQZDghPuWoC8s03/bw=;
-        b=Srn2OQpuJDIew6ABFUFSjdAfQxdPiWDFHoIUas9oluAQfyR5Hy43Sv9taj6HFGgay3
-         1/YBhMa6z5exgR/IfdTW2yW42THG/z3X4mLIaErpQZuPahQyEjfy8b7j0KKsiJ+ar5IZ
-         vsNY/wYMp+A8xul7tDqsYbwgEgSXXj2TyhIOtMiTJqLfS3TeWMtgrib2q6LrNhcS9ZOx
-         5ugmzop075R3tM0KeNkUqyYADDXhA2kDK2gHgfdVT247U8uLflwavnh7630hVFiGbAtp
-         LM99UTipYUSi2uNzS3MGT+3+S2zs6E2Cv73To9/b2R1IjWKcTtVoB2s/PDUn2+pKLoa4
-         0LaA==
-X-Gm-Message-State: AOAM530qbs7n5bQyJlfNG1OrSCDH+YesRJlgMKcSs8NgQeOMvXECNKmc
-        FNPgtL6DeJAGOCQ/MxJ5DDE=
-X-Google-Smtp-Source: ABdhPJzZrzzs5rxl4/NxB5wuaLZ+aEAbGVJRfd52NF6xI7d+W7/8g+JKGdkLEqeHfMN2QRHRdyZnlA==
-X-Received: by 2002:adf:e5c4:: with SMTP id a4mr33910986wrn.56.1605126520242;
-        Wed, 11 Nov 2020 12:28:40 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id h15sm3763351wrw.15.2020.11.11.12.28.38
+         :mime-version:content-disposition:in-reply-to;
+        bh=WJf51nyncLEmkY0/O8/AmM9y/TuW/LVt/kXamrqppsE=;
+        b=UZiE6L/o6VY31FLrBJWADGq6Tug55DTT61alcDpHYO1b4jgZZJSXmcrUZb3ttIWVrh
+         JmX71fULy6cEiYsnie/NsxVOPEX3ZgCMf6nP+3b5awbN078te8zqAihoqB5BEZngmIYJ
+         fKej7ukpjJwe6CTcgfp9Ajfen8CxnF9yzmr35iRhSzBby5G8YZuj/kYxNoNV3qvAA4Zy
+         Q8gDjvr382aLNqzOsYl+vTiuNJcMapdIGx0GYlIUlG159vNbwsQ4UYXHLHGHKKgV/YEr
+         QIQteHDwI/d2kFAgc2eVs1y+oAtNIu+3UsVpr/m1RRjQNtwegbycVE7qALeqT4s3VFdD
+         hglQ==
+X-Gm-Message-State: AOAM532iv1yAXXOUoebVxtzWVOR0i+XAnDkkIuUdkykOTxSIe6vpLUdd
+        THda+FQYZ9TH5JUNMCMxQQ==
+X-Google-Smtp-Source: ABdhPJzjBGK4y8JdGnGo7mz2lnpYgsMG9B4V8dQwLAkI9fFRQ6mTl1k0TJTK/sGulYG/kuqZD1Vd3Q==
+X-Received: by 2002:a05:6830:348:: with SMTP id h8mr556706ote.318.1605126529396;
+        Wed, 11 Nov 2020 12:28:49 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 186sm751073ooe.20.2020.11.11.12.28.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 12:28:39 -0800 (PST)
-Date:   Wed, 11 Nov 2020 21:28:37 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de
-Subject: Re: [PATCH] dt-bindings: pwm: mtk-disp: add MT8167 SoC binding
-Message-ID: <20201111202837.GM6125@ulmo>
-References: <20201016185015.3371433-1-fparent@baylibre.com>
+        Wed, 11 Nov 2020 12:28:48 -0800 (PST)
+Received: (nullmailer pid 1974454 invoked by uid 1000);
+        Wed, 11 Nov 2020 20:28:47 -0000
+Date:   Wed, 11 Nov 2020 14:28:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, soc@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        w@1wt.eu, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] dt-bindings: gpio: Add a binding header for the
+ MSC313 GPIO driver
+Message-ID: <20201111202847.GA1974400@bogus>
+References: <20201109121731.1537580-1-daniel@0x0f.com>
+ <20201109121731.1537580-2-daniel@0x0f.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EE8jvUPYYQjJtG7J"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016185015.3371433-1-fparent@baylibre.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201109121731.1537580-2-daniel@0x0f.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---EE8jvUPYYQjJtG7J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Oct 16, 2020 at 08:50:15PM +0200, Fabien Parent wrote:
-> Add binding for MT8167 SoC. The IP is compatible with MT8173.
->=20
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+On Mon, 09 Nov 2020 21:17:27 +0900, Daniel Palmer wrote:
+> Header adds defines for the gpio number of each pad from the driver view.
+> 
+> The gpio block seems to have enough registers for 128 lines but what line
+> is mapped to a physical pin depends on the chip. The gpio block also seems
+> to contain some registers that are not related to gpio but needed somewhere
+> to go.
+> 
+> Because of the above the driver itself uses the index of a pin's offset in
+> an array of the possible offsets for a chip as the gpio number.
+> 
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 > ---
->  Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt | 1 +
->  1 file changed, 1 insertion(+)
+>  MAINTAINERS                            |  1 +
+>  include/dt-bindings/gpio/msc313-gpio.h | 53 ++++++++++++++++++++++++++
+>  2 files changed, 54 insertions(+)
+>  create mode 100644 include/dt-bindings/gpio/msc313-gpio.h
+> 
 
-Applied, thanks.
-
-Thierry
-
---EE8jvUPYYQjJtG7J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sSXUACgkQ3SOs138+
-s6F1NBAAvrQ2J8Mkjdux185RLd+NOTmlzziiX62GKq88ZnjDlAN1G3GFuigUiz+6
-eQYOQQH/eP+vBT9T7g9euUgTkZg+Ve+a4RoAMJp0NrNsjCsAgj2wRqLiKQtxCllA
-8dDhgeVcehlHi0DXQvM5LEWNXN+VtBaMx5nrhSsY31xHoAeHVK43zk4ErWH2878w
-47S2iWwwyrcPqELQVm7NpfoBY01y0/uA8oL5gKdI7CNGpO3Q81KHDgP5HJW9/FZG
-Z+zXAWJae/ACqXSbmh9Yf6t+NrksvyQP09pSb65yl3BkCqks/+UncHzlXMXwHfZ5
-d7xQei+anY9Pm5qhxk8EpK+BmiwDqAJ9gV6mGOfIiHCGmqNGRTgQJ7O8354Y4sLC
-XFdQzpw+DjsR8iYO1q9tz12mrG+8bFxvdRBKo2B8A1Lb2XlK048NkdD+htGDRQP8
-TcOtitlHoNY31csGzrO1Kvm3gPkhx85Fs9kCaOP5KrHu36JCBTXYkcVU3KhXEDzC
-MBCasCoSQt3NhAWfXNQtU0PTCLiYJ2L5kDSrIJj45bbNWPn783ot17fscot3KMKL
-Unz9peWjuoV7nHj2B6reK4QZr8+Z/6sTQge+wKE0EsIYCChezQ3Df94fL5BNHs7d
-EFrd880F0IvUMag3eUJ3Yso8ZDbuQcGiKBdDH125EYGPu+Oj9dQ=
-=dTlx
------END PGP SIGNATURE-----
-
---EE8jvUPYYQjJtG7J--
+Reviewed-by: Rob Herring <robh@kernel.org>
