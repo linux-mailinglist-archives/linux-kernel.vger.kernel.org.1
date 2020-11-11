@@ -2,153 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35F62AF93A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5642AF942
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbgKKTmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
+        id S1727855AbgKKToV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgKKTmT (ORCPT
+        with ESMTP id S1727660AbgKKToU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:42:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEE9C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=aZgebiza2g9kndB893/KQodwkXDqhS3Yr8KEC5RKrRA=; b=b+Qtlfml7qVSGZy+ZM2pg4ZJvj
-        x1+iJjcWwL8lerU4NoA9VDwYJIqmbYDqrc6FcUtnGfYlWLLZHsUeUPViPEjP3P5fgVVUA/UGull9y
-        4SBVrmhX5X3WevUaSsb5Q2H0XCJ+jgRLIxtLGtTsWQrC2/oCRcQJLvSCCjv7sSk3qdQsVt69PA+4S
-        eAGwXfWbJWP8knV5TVdEeGywdzR/ICUWlNf4NTWrKGedV3yDIY9qjyNz1Zp4wjEwi1fEOGzBbcNEs
-        /Lv923oJih2V/kUsxe42tcwQuo/yMwRJTHJg3UO1PkJuz3v/qNww3kmlsUArd/gUB+RjEQV9Z05o0
-        6Re9b8YA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcw0O-0004fm-2p; Wed, 11 Nov 2020 19:42:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1A4C9301E02;
-        Wed, 11 Nov 2020 20:42:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0D1D82BCE933F; Wed, 11 Nov 2020 20:42:07 +0100 (CET)
-Date:   Wed, 11 Nov 2020 20:42:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, jgross@suse.com,
-        x86@kernel.org
-Subject: Re: WARNING: can't access registers at asm_common_interrupt
-Message-ID: <20201111194206.GK2628@hirez.programming.kicks-ass.net>
-References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
- <20201111170536.arx2zbn4ngvjoov7@treble>
- <20201111174736.GH2628@hirez.programming.kicks-ass.net>
- <20201111181328.mbxcz2uap2vnqpxq@treble>
- <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
+        Wed, 11 Nov 2020 14:44:20 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9791C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:44:20 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id j5so1503672plk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:44:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T6+8pW5jZmBDXZbPZRIztWDaBT2x4DmsxSLQ6azETAc=;
+        b=se9v8enfPUYbJTt74HhR/SX2RmXprJ24MmSz0B6V6vVydIBGmJrjoTIm2zNBupmNFO
+         GJflYMImUSVaWMip1XV6MIJvQk82VwB1y+EnGYIkN2n/kRU+haT6WrD9zXhdlSZ4p6Cp
+         ULCa12b5tboh7sjLVMaGR+hf4Z3Bd3PFQ3QmddVufhjy0HTI8Q6Ixh0F9m9t1K9qRI7n
+         osu4eF9sgLT3VBpn0FLT5rTt7wtOGFsgb0lzjQQLDH8Jv6bywYx1l9Ry35K0eRZZBDbp
+         s9+EBy8mW+KuK+gots4IIw0zgZX+zl9EbkwM9xZYdF5PQ3se2xIfqNRAy04N9t5Kpfot
+         +oVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T6+8pW5jZmBDXZbPZRIztWDaBT2x4DmsxSLQ6azETAc=;
+        b=IKP3frKG6E6Y0r08hXAIbUowQhAJSEitC4CpepVbbkGVm5yUku51FFG3jwQ0nR+Spv
+         dMzMVtfxcfqazNHxzQuHj/MVv+5QhMuLnD4EG4BmsPeU6MhTLDUW+YIgyZgwuuC6Z3MC
+         jVAQLX4haarwxdHZu2oKLxFn6K5rf+KmtUoVYABDFPeA9oY/fZOYvpwaCp//Jr5+XyeE
+         IgcBtWo2LhPgnlKKi0zGekxptFA3IDC3rMQsC9giBN8hAlZCMYXzubiqN0WmxJQ/ehdt
+         K5I0pNB0ojXO7SY/nOiGZH0AvcYtKzdAp10ctF9RzLEgjYk8QyrWFG3jk3L237Gn1MHW
+         390g==
+X-Gm-Message-State: AOAM530LxFdiwvKyHpenRjPZFft47otzxjGsk822A9tQEbMOgeH8C27l
+        8W4/Tf+Ltr2n+rVKqcdg2N1fUhkfsBqTW4ENmTTFbQ==
+X-Google-Smtp-Source: ABdhPJyritjwALZYYkqE++zh/C6zeAGTLmlgOvj2cpbxrtYI+S9Fb6PTPQ53iLb1vLxINgC437M7aggmL3FxpAymu/k=
+X-Received: by 2002:a17:902:8d95:b029:d8:c2ee:7dc with SMTP id
+ v21-20020a1709028d95b02900d8c2ee07dcmr2295427plo.57.1605123860032; Wed, 11
+ Nov 2020 11:44:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
+References: <000000000000fe575905b3cff92c@google.com> <bf31020f4e50b303fd0dd3dfda0e50de79ed25db.camel@redhat.com>
+ <CAAeHK+yLgDYOS35sWT8=4_d-gZKU_B10D9ZEBPZDC1P6MO2D6Q@mail.gmail.com> <CAA5enKY8mBicpc7kZKKLG5LeVFhVJtRQ73MYVFM0Az2bbiGv8g@mail.gmail.com>
+In-Reply-To: <CAA5enKY8mBicpc7kZKKLG5LeVFhVJtRQ73MYVFM0Az2bbiGv8g@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 11 Nov 2020 20:44:09 +0100
+Message-ID: <CAAeHK+x4tWTY0ZuR6LHhm071bOnvZcfa=A-KLpSfUTkaxZHieA@mail.gmail.com>
+Subject: Re: linux-next boot error: BUG: unable to handle kernel NULL pointer
+ dereference in mempool_init_node
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     Qian Cai <cai@redhat.com>,
+        syzbot <syzbot+2d6f3dad1a42d86a5801@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 06:46:37PM +0000, Andrew Cooper wrote:
+On Wed, Nov 11, 2020 at 8:27 PM Lorenzo Stoakes <lstoakes@gmail.com> wrote:
+>
+> On Wed, 11 Nov 2020 at 17:44, Andrey Konovalov <andreyknvl@google.com> wrote:
+> > I'll try to reproduce this and figure out the issue. Thanks for letting us know!
+>
+> I hope you don't mind me diving in here, I was taking a look just now
+> and managed to reproduce this locally - I bisected the issue to
+> 105397399 ("kasan: simplify kasan_poison_kfree").
+>
+> If I stick a simple check in as below it fixes the issue, so I'm
+> guessing something is violating the assumptions in 105397399?
+>
+>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 7a94cebc0324..16163159a017 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -387,6 +387,11 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
+>         struct page *page;
+>
+>         page = virt_to_head_page(ptr);
+> +
+> +       if (!PageSlab(page)) {
+> +               return;
+> +       }
+> +
+>         ____kasan_slab_free(page->slab_cache, ptr, ip, false);
+>  }
 
-> Well...
-> 
-> static_calls are a newer, and more generic, form of pvops.  Most of the
-> magic is to do with inlining small fragments, but static calls can do
-> that now too, IIRC?
+Ah, by the looks of it, ceph's init_caches() functions asks for
+kmalloc-backed mempool, but at the same time provides a size that
+doesn't fit into any kmalloc cache, and kmalloc falls back onto
+page_alloc. Hard to say whether this is an issue in ceph, but I guess
+we'll have to make KASAN fool proof either way and keep the PageSlab()
+check in kasan_slab_free_mempool().
 
-If you're referring to this glorious hack:
-
-  https://lkml.kernel.org/r/20201110101307.GO2651@hirez.programming.kicks-ass.net
-
-that only 'works' because it's a single instruction. That is,
-static_call can only poke single instructions. They cannot replace a
-call with "PUSHF; POP" / "PUSH; POPF" for example. They also cannot do
-NOP padding for 'short' sequences.
-
-Paravirt, like alternatives, are special in that they only happen once,
-before SMP bringup.
-
-> >> Something really disguisting we could do is recognise the indirect call
-> >> offset and emit an extra ORC entry for RIP+1. So the cases are:
-> >>
-> >> 	CALL *pv_ops.save_fl	-- 7 bytes IIRC
-> >> 	CALL $imm;		-- 5 bytes
-> >> 	PUSHF; POP %[RE]AX	-- 2 bytes
-> >>
-> >> so the RIP+1 (the POP insn) will only ever exist in this case. The
-> >> indirect and direct call cases would never land on that IP.
-> > I had a similar idea, and a bit of deja vu - we may have talked about
-> > this before.  At least I know we talked about doing something similar
-> > for alternatives which muck with the stack.
-
-Vague memories... luckily we managed to get alternatives to a state
-where they match, which is much saner.
-
-> The main complexity with pvops is that the
-> 
->     CALL *pv_ops.save_fl
-> 
-> form needs to be usable from extremely early in the day (pre general
-> patching), hence the use of function pointers and some non-standard ABIs.
-
-The performance rasins mentioned below are a large part of the
-non-standard ABI (eg CALLEE_SAVE)
-
-> For performance reasons, the end result of this pvop wants to be `pushf;
-> pop %[re]ax` in then native case, and `call xen_pv_save_fl` in the Xen
-> case, but this doesn't mean that the compiled instruction needs to be a
-> function pointer to begin with.
-
-Not sure emitting the native code would be feasible.. also
-cpu_usergs_sysret64 is 6 bytes.
-
-> Would objtool have an easier time coping if this were implemented in
-> terms of a static call?
-
-I doubt it, the big problem is that there is no visibility into the
-actual alternative text. Runtime patching fragments into static call
-would have the exact same problem.
-
-Something that _might_ maybe work is trying to morph the immediate
-fragments into an alternative. That is, instead of this:
-
-static inline notrace unsigned long arch_local_save_flags(void)
-{
-	return PVOP_CALLEE0(unsigned long, irq.save_fl);
-}
-
-Write it something like:
-
-static inline notrace unsigned long arch_local_save_flags(void)
-{
-	PVOP_CALL_ARGS;
-	PVOP_TEST_NULL(irq.save_fl);
-	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
-					"PUSHF; POP _ASM_AX",
-					X86_FEATURE_NATIVE)
-			    : CLBR_RET_REG, ASM_CALL_CONSTRAINT
-			    : paravirt_type(irq.save_fl.func),
-			      paravirt_clobber(PVOP_CALLEE_CLOBBERS)
-			    : "memory", "cc");
-	return __eax;
-}
-
-And then we have to teach objtool how to deal with conflicting
-alternatives...
-
-That would remove most (all, if we can figure out a form that deals with
-the spinlock fragments) of paravirt_patch.c
-
-Hmm?
+Thank you for debugging this, Lorenzo. I'll fix this in v10.
