@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE082AFA51
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A522AFA56
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgKKV3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:29:01 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:34192 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKKV3A (ORCPT
+        id S1726245AbgKKVaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:30:13 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:44969 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKKVaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:29:00 -0500
-Received: by mail-ot1-f67.google.com with SMTP id j14so3577125ots.1;
-        Wed, 11 Nov 2020 13:29:00 -0800 (PST)
+        Wed, 11 Nov 2020 16:30:12 -0500
+Received: by mail-ed1-f65.google.com with SMTP id l5so3831598edq.11;
+        Wed, 11 Nov 2020 13:30:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GTqvmPN8FeL5Camvlbygkl55K/SzqW8sO9N4V5KBE+A=;
-        b=Qb0QJbOAQOgk8AW7SsdwVYWVV3SQ6r53/gNTHKQ+5dnurBxn7R+Ffyx5zXwUwfWQ57
-         IgGjPMSd/1FEvNbv6QYnFSMrn7bCwEkthi73f83Xijr9UoaYQGXbNo4X9rjf/oonZRvg
-         6lL8/ASnggkSsQC2pOz8TZ60OPmxP1jZDfgsdAWyI8NoVDij7FBvi6C7zJXwZUzexjoK
-         ZyRqYVV6bWnUPDMzr6So9q7dm/iY/vBY1qmL5V2YIt1B0AHAEXUqJUGr6RzSbTrpn8kD
-         ZgQVmX1Xiu5KROPorUX8AzOzmO1cv2dhIhncFGr+OspWBfCjZYsNXtRSXnJH3pSoNWpl
-         iRJA==
-X-Gm-Message-State: AOAM530EvHCH2gSFax3zRSlNdGkLK0W+Bsx4nfw+CSpycQzS/9+p25z6
-        Qx8Ud52TMiugQfqWQoy57w==
-X-Google-Smtp-Source: ABdhPJzmEghly3TxVwLcQf55ECIcDH9bmjqKX2JH5w1pCq+Kyel1xEtqU9aIPOXaypf0bgXBiMsJ2Q==
-X-Received: by 2002:a05:6830:1dd8:: with SMTP id a24mr18387165otj.163.1605130139745;
-        Wed, 11 Nov 2020 13:28:59 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v144sm666366oia.21.2020.11.11.13.28.58
+        bh=HXTmIvGpS6O2JN7ZP+tV8NA98uj/d24NOFx2y9hbQXo=;
+        b=kFCcATSMMI30L/6AqQemPqdFapvA4rAqq/3vBsBsQyxNyvb7qwOlwb3meVpoAirHh6
+         IopkaqCQBa31QqQdI0epiRpVM5MMyhFviFaxZEnsVnxWHm7dCW8xLR8YkgdfY8sj5s1Z
+         /snhoh8MqNn47DeeqmzIe/oVk5hMc7192SVlKRxFDujsmiQ5Pgzer3kVV327sBP+hPqt
+         3ibuE7wyjMHszkLJ1aw+vEEH9IPp5z7hPAneMexxFVP7lzyrWa7Edvtf2niYVGtCGm1t
+         cpU4155bL4AQ8R+bD+vOfy0rCcNuZDbACR/6QcUkOp5VxEMLV+XYL0mpKXto3Mj40kRI
+         tc5A==
+X-Gm-Message-State: AOAM53322CQezCSnkkdHTxH0TjaH684MSxOzKCXSg15fMBpKh13Ig4/p
+        VyK0Js8KzrvOpyqU2oNDUQg=
+X-Google-Smtp-Source: ABdhPJzZenTK1Rz6VyR60TpP7GxdbeoRs2AcpvlAu6VCtNPuHEDus85c+Hal/IVl6aOsp2lRL06b2Q==
+X-Received: by 2002:a50:fe14:: with SMTP id f20mr1601079edt.61.1605130210735;
+        Wed, 11 Nov 2020 13:30:10 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z2sm1433060edr.47.2020.11.11.13.30.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 13:28:58 -0800 (PST)
-Received: (nullmailer pid 2067102 invoked by uid 1000);
-        Wed, 11 Nov 2020 21:28:57 -0000
-Date:   Wed, 11 Nov 2020 15:28:57 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] dt-bindings: mfd:
- ti,j721e-system-controller.yaml: Document "syscon"
-Message-ID: <20201111212857.GA2059063@bogus>
-References: <20201109170409.4498-1-kishon@ti.com>
- <20201109170409.4498-2-kishon@ti.com>
+        Wed, 11 Nov 2020 13:30:09 -0800 (PST)
+Date:   Wed, 11 Nov 2020 22:30:07 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 02/24] dt-bindings: memory: mediatek: Add a common
+ larb-port header file
+Message-ID: <20201111213007.GA287176@kozik-lap>
+References: <20201111123838.15682-1-yong.wu@mediatek.com>
+ <20201111123838.15682-3-yong.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201109170409.4498-2-kishon@ti.com>
+In-Reply-To: <20201111123838.15682-3-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 10:34:03PM +0530, Kishon Vijay Abraham I wrote:
-> Add binding documentation for "syscon" which should be a subnode of
-> the system controller (scm-conf).
+On Wed, Nov 11, 2020 at 08:38:16PM +0800, Yong Wu wrote:
+> Put all the macros about smi larb/port togethers, this is a preparing
+> patch for extending LARB_NR and adding new dom-id support.
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 > ---
->  .../mfd/ti,j721e-system-controller.yaml       | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
+>  include/dt-bindings/memory/mt2712-larb-port.h  |  2 +-
+>  include/dt-bindings/memory/mt6779-larb-port.h  |  2 +-
+>  include/dt-bindings/memory/mt8167-larb-port.h  |  2 +-
+>  include/dt-bindings/memory/mt8173-larb-port.h  |  2 +-
+>  include/dt-bindings/memory/mt8183-larb-port.h  |  2 +-
+>  include/dt-bindings/memory/mtk-smi-larb-port.h | 15 +++++++++++++++
+>  6 files changed, 20 insertions(+), 5 deletions(-)
+>  create mode 100644 include/dt-bindings/memory/mtk-smi-larb-port.h
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> index 19fcf59fd2fe..0b115b707ab2 100644
-> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> @@ -50,6 +50,38 @@ patternProperties:
->        specified in
->        Documentation/devicetree/bindings/mux/reg-mux.txt
->  
-> +  "^syscon@[0-9a-f]+$":
-> +    type: object
-> +    description: |
+> diff --git a/include/dt-bindings/memory/mt2712-larb-port.h b/include/dt-bindings/memory/mt2712-larb-port.h
 
-Don't need '|' if there's no formatting.
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> +      This is the system controller configuration required to configure PCIe
-> +      mode, lane width and speed.
-> +
-> +    properties:
-> +      compatible:
-> +        items:
-> +          - enum:
-> +              - ti,j721e-system-controller
-> +          - const: syscon
-> +          - const: simple-mfd
-
-Humm, then what are this node's sub-nodes? And the same compatible as 
-the parent?
-
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 1
-> +
-> +      ranges: true
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +      - ranges
-> +
->  required:
->    - compatible
->    - reg
-> @@ -72,5 +104,13 @@ examples:
->              compatible = "mmio-mux";
->              reg = <0x00004080 0x50>;
->          };
-> +
-> +        pcie1_ctrl: syscon@4074 {
-> +            compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
-> +            reg = <0x00004074 0x4>;
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +            ranges = <0x4074 0x4074 0x4>;
-
-Must be packing a bunch of functions into 4 byte region!
-
-> +        };
->      };
->  ...
-> -- 
-> 2.17.1
-> 
+Best regards,
+Krzysztof
