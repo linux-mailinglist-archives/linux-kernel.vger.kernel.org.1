@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0842AE753
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F6A2AE757
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgKKEOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 23:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgKKEOp (ORCPT
+        id S1726061AbgKKEPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 23:15:07 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58516 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725849AbgKKEPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 23:14:45 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CC1C0613D1;
-        Tue, 10 Nov 2020 20:14:43 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id k65so699348ybk.5;
-        Tue, 10 Nov 2020 20:14:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JGIhTX1iYBMgF744IBDkziq2Q7vA4MuCaT2yYSxn/kE=;
-        b=afZuz/fEsATObkVGZ+Bdyj20ctN1tN/V4gTs0dyEazHIIuQ6jPQzez7wr+WEz4atmY
-         +t0QsgNpbbUk0dWgGOuxHImRYr1Ru4MuhwuWSEwpsrYIILV023mM+AtPfiwJmwM+tFCi
-         7nw72CGuZt0KbRRLPXbfVVBDBHQfkawlN9iqzLo7evCak50NXx7qaLKvSBZtalFdr27G
-         eBFMj9kFdWKt8tyIMbjVJYtHvmWJMkIpFLnQjEA862KPJbaPOFnjpXUuq506qmAj1kEF
-         h/512GNHzzcdeqad+yRCkIfWXJRyPk42b1+XMrQ2rcO95xWJV6zOCiYsdnIQDkxeE5lB
-         QbgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JGIhTX1iYBMgF744IBDkziq2Q7vA4MuCaT2yYSxn/kE=;
-        b=I9cozBk7F5/sDL8Kj5K/sw2ZQOKTsBMX0kT/8izceLWaJOgs26YVPBaqUgE6XSeUad
-         J3EURnYqNY/U1FCmdduvrLZYmL1BsBj/nqbuOzMDZvOfhQKMD1Ry80Nfxu9LqhiMw4sK
-         GO7bABE4xa1IjCgoVfN1OrT8AVMTBML5AG82wNZ+wofST82wAHAK6dVB83z9Ji4VCK9e
-         IaHdVYqy7GM0h9g3uqq3GvHyu1bRuuuM0osnGuYEXsD6VUrcUxi7u6iYhqB7y9d7joFx
-         YbKYCJRmG+6CN0kmQoTQpbmj7+d/GBdP3dJ5dTL5grXFoJ7N2O0CTX1jIcnD2g/FHlna
-         F3SA==
-X-Gm-Message-State: AOAM530Ta9F8WHTyz2pKJPfsA5WzFgw1SY3yJ07dauOf0r72wvAyydHj
-        t/SExBfM3BVBjJuMgreMLHCZBHYHJcG3iF7Qv3I=
-X-Google-Smtp-Source: ABdhPJxet7rQw0y6nxIveHE7CF+nZHHpGRcztGpne0cnSSXMkm5i1vlorbi4e29hi04uoltOpCouFuJQaEP8UfOxQco=
-X-Received: by 2002:a25:e701:: with SMTP id e1mr6632254ybh.510.1605068083120;
- Tue, 10 Nov 2020 20:14:43 -0800 (PST)
+        Tue, 10 Nov 2020 23:15:07 -0500
+X-UUID: da4327da52524f578b33f17bd0f1bb1d-20201111
+X-UUID: da4327da52524f578b33f17bd0f1bb1d-20201111
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <shane.chien@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 649482759; Wed, 11 Nov 2020 12:15:00 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 11 Nov 2020 12:14:58 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 11 Nov 2020 12:14:58 +0800
+From:   Shane Chien <shane.chien@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <jiaxin.yu@mediatek.com>,
+        <chipeng.chang@mediatek.com>, <shane.chien@mediatek.com>
+Subject: [PATCH] ASoC: Remove mt6359_platform_driver_remove
+Date:   Wed, 11 Nov 2020 12:14:56 +0800
+Message-ID: <1605068096-12587-1-git-send-email-shane.chien@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-References: <1605063541-25424-1-git-send-email-kaixuxia@tencent.com>
-In-Reply-To: <1605063541-25424-1-git-send-email-kaixuxia@tencent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Nov 2020 20:14:32 -0800
-Message-ID: <CAEf4BzZY2-at9-wprCy58hAnQyBLRzK8mYSHyJht3iceFGKX9w@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
-To:     xiakaixu1987@gmail.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 6:59 PM <xiakaixu1987@gmail.com> wrote:
->
-> From: Kaixu Xia <kaixuxia@tencent.com>
->
-> The unsigned variable datasec_id is assigned a return value from the call
-> to check_pseudo_btf_id(), which may return negative error code.
->
-> Fixes coccicheck warning:
->
-> ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
->
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
-> v2:
->  -split out datasec_id definition into a separate line.
->
->  kernel/bpf/verifier.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 6200519582a6..3fea4fc04e94 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9572,7 +9572,8 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
->                                struct bpf_insn *insn,
->                                struct bpf_insn_aux_data *aux)
->  {
-> -       u32 datasec_id, type, id = insn->imm;
-> +       s32 datasec_id;
-> +       u32 type, id = insn->imm;
->         const struct btf_var_secinfo *vsi;
->         const struct btf_type *datasec;
->         const struct btf_type *t;
-> --
-> 2.20.0
->
+From: "Shane.Chien" <shane.chien@mediatek.com>
 
-It would look a bit cleaner if you did it this way:
+remove mt6359_platform_driver_remove due to it is
+useless.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 10da26e55130..f674b1403637 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9585,12 +9585,13 @@ static int check_pseudo_btf_id(struct
-bpf_verifier_env *env,
-                               struct bpf_insn *insn,
-                               struct bpf_insn_aux_data *aux)
- {
--       u32 datasec_id, type, id = insn->imm;
-        const struct btf_var_secinfo *vsi;
-        const struct btf_type *datasec;
-        const struct btf_type *t;
-        const char *sym_name;
-        bool percpu = false;
-+       u32 type, id = insn->imm;
-+       s32 datasec_id;
-        u64 addr;
-        int i;
+Signed-off-by: Shane.Chien <shane.chien@mediatek.com>
+---
+ sound/soc/codecs/mt6359.c |   12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/sound/soc/codecs/mt6359.c b/sound/soc/codecs/mt6359.c
+index ecdfd57..d37dbd2 100644
+--- a/sound/soc/codecs/mt6359.c
++++ b/sound/soc/codecs/mt6359.c
+@@ -2817,23 +2817,11 @@ static int mt6359_platform_driver_probe(struct platform_device *pdev)
+ 					       ARRAY_SIZE(mt6359_dai_driver));
+ }
+ 
+-static int mt6359_platform_driver_remove(struct platform_device *pdev)
+-{
+-	struct mt6359_priv *priv = dev_get_drvdata(&pdev->dev);
+-	int ret;
+-
+-	dev_dbg(&pdev->dev, "%s(), dev name %s\n",
+-		__func__, dev_name(&pdev->dev));
+-
+-	return 0;
+-}
+-
+ static struct platform_driver mt6359_platform_driver = {
+ 	.driver = {
+ 		.name = "mt6359-sound",
+ 	},
+ 	.probe = mt6359_platform_driver_probe,
+-	.remove = mt6359_platform_driver_remove,
+ };
+ 
+ module_platform_driver(mt6359_platform_driver)
+-- 
+1.7.9.5
+
