@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA822AFC32
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3114F2AFCEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgKLBdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:33:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        id S1728533AbgKLBdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727256AbgKKWvp (ORCPT
+        with ESMTP id S1727234AbgKKWqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:51:45 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D60EC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:23:40 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id r23so1232285uak.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:23:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DnpRf3DpQZWPCc8K1L4I004+4MFqzM2ZdFbLNwwHnYw=;
-        b=C9k51AwCxEhPRdeOTRakEQTuFFOQh4UZkwHCz1URxF01p2AOtXY84wjFUBZ43stsfn
-         LYvn0PUhMDdNs4dwckpA3Hg6lINDOc2zIzXRILApPx9B4pT1moEvZ7weshsWRZf1CUEq
-         W+7naCTDF4POLE2bhgaEEUARcAhnDvxf7N3Qo=
+        Wed, 11 Nov 2020 17:46:47 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B760C061A47;
+        Wed, 11 Nov 2020 14:28:42 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id f16so3665818otl.11;
+        Wed, 11 Nov 2020 14:28:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DnpRf3DpQZWPCc8K1L4I004+4MFqzM2ZdFbLNwwHnYw=;
-        b=UvFSjoiUV2pCWLazPVkJMstovN/k2c6MkU4lW6qO5voRLylTHMaILbo0wQECTc96cZ
-         z0FBJcmaJwrjBFIe86LaDRpbdrav5pSNF0I2Ad3wKYT9KAQWsXL4/Hjjgx69ZMn7aNWU
-         p0V5VelV120ItFZUCYwkeLhf/hG4XihT5HtG5EtMzimPM1TtZrnYbVsWEzRlSXLSfffF
-         ydwcVIFG0h7Yx0h5XC20bnevffk+vSuQuDV92CaT7wWkzUOHdu3Pkup/R8ZMUHxmC+ed
-         I6y0GHlMhG1Etg7hyKPNCBd6KMOX8DNKLr6Jq1esW1qOPSTZ7ILDkKHz2zknWCNqW7Lq
-         9clg==
-X-Gm-Message-State: AOAM530lz1wOktWzja6NMTOyFbPWYaNfHX4i8TKJZfG7x1nQFeAfBXl2
-        o/J6uRSi7IxtJEEtDIZrWSFotygKWv4D8A==
-X-Google-Smtp-Source: ABdhPJydLm7sTEzv1y13WiVbeAhbHs14gnrXu9RcesUZa1H7iS6xLX+LYI1rL8x+MKRqYdXwghCKbw==
-X-Received: by 2002:ab0:2259:: with SMTP id z25mr14072580uan.59.1605133419316;
-        Wed, 11 Nov 2020 14:23:39 -0800 (PST)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id v76sm422345vkd.4.2020.11.11.14.23.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 14:23:38 -0800 (PST)
-Received: by mail-ua1-f46.google.com with SMTP id w3so1237345uau.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:23:37 -0800 (PST)
-X-Received: by 2002:a9f:24eb:: with SMTP id 98mr14362417uar.90.1605133417432;
- Wed, 11 Nov 2020 14:23:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I7afwCU5Zz8A6AK7ziXO/mFlkl96qobpis0V/RHYr6g=;
+        b=HllTtBb+9w+4/jezG3C+36OqM7mrWaU3vlR1uvVuiuMQtsHtsyBx9BOxhcqNl4IjAd
+         fCkO9Sv+RZ/Q349f4wVGa6AGhqqGNxrUF5NASjD2czVuu/cWTMuUSLWNJn/cM2vI9O2u
+         8wudHIn9sVgTFODGbXK8QEnMscVSAV9BnPjD5qfIGGBejXambW2mBZGCmP8AO/zmF5w+
+         y8gg0YAt7t5aF7BmNlBzy4rHxxQFjp8nn++gB3kYsiqW6XAeO0zkF9UfyOesIJtijmp8
+         4QYQJXntYLMOgyo2Y0qKKRUg6/81P3Hbs7XwJhQBNiRYHEZBTC6tRjtK9HnzSEltVPYc
+         /K3Q==
+X-Gm-Message-State: AOAM533fhiRiOTUJIADgfaxhq5O0Ro0YGmL49k/yUmZRMudj8uxwLnOw
+        k6wOiwA4+d/NcGFmuqQ3IQ==
+X-Google-Smtp-Source: ABdhPJzZzxj/l38ISSbGAqIMW+OGIR82Les8jqXmZTG7FPHFTvrMsSSQiM9e38zItHJEQCMCl/gmwQ==
+X-Received: by 2002:a9d:3d3:: with SMTP id f77mr19065035otf.125.1605133421911;
+        Wed, 11 Nov 2020 14:23:41 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t6sm828879ooo.22.2020.11.11.14.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 14:23:41 -0800 (PST)
+Received: (nullmailer pid 2149138 invoked by uid 1000);
+        Wed, 11 Nov 2020 22:23:40 -0000
+Date:   Wed, 11 Nov 2020 16:23:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dongjiu Geng <gengdongjiu@huawei.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: hisilicon: Add clock driver for hi3559A SoC
+Message-ID: <20201111222340.GA2143735@bogus>
+References: <20201109202838.43105-1-gengdongjiu@huawei.com>
 MIME-Version: 1.0
-References: <20201111120334.1.Ifc04ea235c3c370e3b21ec3b4d5dead83cc403b4@changeid>
-In-Reply-To: <20201111120334.1.Ifc04ea235c3c370e3b21ec3b4d5dead83cc403b4@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 11 Nov 2020 14:23:25 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=V6fFoEdj8bSQmz4fAJwLvzY0o8Vd+E0fknZaLTq4ZQnA@mail.gmail.com>
-Message-ID: <CAD=FV=V6fFoEdj8bSQmz4fAJwLvzY0o8Vd+E0fknZaLTq4ZQnA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Set 'polling-delay-passive' for
- thermal zones back to 250 ms
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Rajeshwari <rkambl@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109202838.43105-1-gengdongjiu@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Nov 11, 2020 at 12:03 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Commit 22337b91022d ("arm64: dts: qcom: sc7180: Changed polling mode
-> in Thermal-zones node") sets both 'polling-delay' and
-> 'polling-delay-passive' to zero with the rationale that TSENS interrupts
-> are enabled. A TSENS interrupt fires when the temperature of a thermal
-> zone reaches a trip point, which makes regular polling below the passive
-> trip point temperature unnecessary. However the situation is different
-> when passive cooling is active, regular polling is still needed to
-> trigger a periodic evaluation of the thermal zone by the thermal governor.
->
-> Change 'polling-delay-passive' back to the original value of 250 ms.
-> Commit 2315ae70af95 ("arm64: dts: qcom: sc7180: Add gpu cooling
-> support") recently changed the value for the GPU thermal zones from
-> zero to 100 ms, also set it to 250 ms for uniformity. If some zones
-> really need different values these can be changed in dedicated patches.
->
-> Fixes: 22337b91022d ("arm64: dts: qcom: sc7180: Changed polling mode in Thermal-zones node")
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+On Mon, Nov 09, 2020 at 08:28:38PM +0000, Dongjiu Geng wrote:
+> Add clock drivers for hi3559A SoC, this driver controls the SoC
+> registers to supply different clocks to different IPs in the SoC.
+> 
+> Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
 > ---
->
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 50 ++++++++++++++--------------
->  1 file changed, 25 insertions(+), 25 deletions(-)
+>  drivers/clk/hisilicon/Kconfig                 |   7 +
+>  drivers/clk/hisilicon/Makefile                |   1 +
+>  drivers/clk/hisilicon/clk-hi3559a.c           | 873 ++++++++++++++++++
+>  include/dt-bindings/clock/hi3559av100-clock.h | 173 ++++
 
-For further context:
+Is there a binding for this? The header should be part of it.
 
-https://lore.kernel.org/r/a4be2cf9e51e4f40aae3f9a56989a42f@codeaurora.org
-https://lore.kernel.org/r/20201015221920.GA1657396@google.com
+>  4 files changed, 1054 insertions(+)
+>  create mode 100644 drivers/clk/hisilicon/clk-hi3559a.c
+>  create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
+> 
+> diff --git a/drivers/clk/hisilicon/Kconfig b/drivers/clk/hisilicon/Kconfig
+> index 6a9e93a0bb95..5ecc37aaa118 100644
+> --- a/drivers/clk/hisilicon/Kconfig
+> +++ b/drivers/clk/hisilicon/Kconfig
+> @@ -15,6 +15,13 @@ config COMMON_CLK_HI3519
+>  	help
+>  	  Build the clock driver for hi3519.
+>  
+> +config COMMON_CLK_HI3559A
+> +	bool "Hi3559A Clock Driver"
+> +	depends on ARCH_HISI || COMPILE_TEST
+> +	default ARCH_HISI
+> +	help
+> +	  Build the clock driver for hi3559a.
+> +
+>  config COMMON_CLK_HI3660
+>  	bool "Hi3660 Clock Driver"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> diff --git a/drivers/clk/hisilicon/Makefile b/drivers/clk/hisilicon/Makefile
+> index b2441b99f3d5..bc101833b35e 100644
+> --- a/drivers/clk/hisilicon/Makefile
+> +++ b/drivers/clk/hisilicon/Makefile
+> @@ -17,3 +17,4 @@ obj-$(CONFIG_COMMON_CLK_HI6220)	+= clk-hi6220.o
+>  obj-$(CONFIG_RESET_HISI)	+= reset.o
+>  obj-$(CONFIG_STUB_CLK_HI6220)	+= clk-hi6220-stub.o
+>  obj-$(CONFIG_STUB_CLK_HI3660)	+= clk-hi3660-stub.o
+> +obj-$(CONFIG_COMMON_CLK_HI3559A)	+= clk-hi3559a.o
+> diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
+> new file mode 100644
+> index 000000000000..bd3921fc8c8e
+> --- /dev/null
+> +++ b/drivers/clk/hisilicon/clk-hi3559a.c
+> @@ -0,0 +1,873 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Hisilicon Hi3559A clock driver
+> + *
+> + * Copyright (c) 2019-2020 HiSilicon Technologies Co., Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
 
-I didn't personally go dig through the code, but what's said in those
-emails seems reasonable to me.
+Don't need both this and SPDX tag. Kernel code should be GPL-2.0 (-only) 
+generally.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> + *
+> + * Author: Dongjiu Geng <gengdongjiu@huawei.com>
+
+git will tell us this.
+
+Same comments apply to the header. Though DT headers should be dual 
+licensed.
+
+Rob
