@@ -2,146 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533982AF83A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4210C2AF84C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgKKSgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgKKSgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:36:17 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7FDC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:17 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id l1so3492424wrb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1BMpKgrGRaaFsrowXlZeUlkXnTCJQ5S+7+zF8aRI5RM=;
-        b=gv9rARHr4D0R1XbUNjjQpIHG+8Ukz+VROemjmN9deTxOLLwa57CGwe7Yw2nPVD5LkI
-         x7sBA5S4Izl8Y+DLOybIvelf93pnTPj30GwSDjNqThbgY52WPq9pGugtalPjo4Me6wOi
-         v3Wf9SH9nuttFyN/EE8mWWiXT3JxVUq06ieJknk5W231WtKu0+8a6uSy7vdh1HVUK8ea
-         2AC/M3H/iD7QdDK/feCxSxKB0ScDF6vwy8oQrAZTdgXy/8X1ALdG+Vxo9y/csOsWa8Qz
-         txo6oqrG/NN9rdWgI6GsC3//RR1aBRg7CpXQRIiN8lqFXulSkUJ5ArqmT2m75r2FCIsu
-         /yXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1BMpKgrGRaaFsrowXlZeUlkXnTCJQ5S+7+zF8aRI5RM=;
-        b=o9t/8EhcT1M+7zNAW06TeTKNq0LA991drKwotEh52wohXJd4bw8bh4yXmJTQhvivpq
-         K8hiTKGpuBJT87Bo59ZOuAWZxWOCMV7zibeIaV0mW4K56HoRHe8L1xsbvOk8C7Ri8Xxr
-         aVoTQwpMLwqLafsXuDF6ThsiBLr9JDH6CHHR9FaTLxYmYkQWST+iXzyfhx7wwXAutZpX
-         1Bx5dOJwmfeOe95dQpmXbwha70QZcVfjcT2dIqrdRfbQete3DZHSku8NYmzre8p5FBB5
-         DUwtBVw7391G0Ow8Ne0N2XxN7Q0Xs15YtKmOFFqOu+CdqjPp4t6NLMso5T78vhGaGJ2f
-         pTdA==
-X-Gm-Message-State: AOAM530IoPl39mShX2z9z8CxE87rv+UhlH8T0Pw3HUifjj4yyPBaX10p
-        EY9WQAt8ivnpgmqq/Z1kczgjcUFF6sZdjN71
-X-Google-Smtp-Source: ABdhPJyUfP02CiM21bckjb6v/8zvCckUDUA51nDOma7tQN+Oa6OdUY9rQNKYPeBoyCSxr/LkFz5tnQ==
-X-Received: by 2002:a5d:474d:: with SMTP id o13mr33192388wrs.178.1605119775741;
-        Wed, 11 Nov 2020 10:36:15 -0800 (PST)
-Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:36:15 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 19/19] drm/radeon/evergreen_cs: Move 'r600_dma_cs_next_reloc()'s prototype to shared header
-Date:   Wed, 11 Nov 2020 18:35:45 +0000
-Message-Id: <20201111183545.1756994-20-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201111183545.1756994-1-lee.jones@linaro.org>
-References: <20201111183545.1756994-1-lee.jones@linaro.org>
+        id S1727407AbgKKSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:39:07 -0500
+Received: from mail.monom.org ([188.138.9.77]:42210 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgKKSjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:39:05 -0500
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id A727F500596;
+        Wed, 11 Nov 2020 19:39:02 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id 3EFDF500108;
+        Wed, 11 Nov 2020 19:39:02 +0100 (CET)
+Date:   Wed, 11 Nov 2020 19:39:01 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201111183901.GA23846@beryllium>
+References: <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
+ <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
+ <20201104124746.74jdsig3dffomv3k@beryllium.lan>
+ <20201104130930.llx56gtqt532h7c7@linutronix.de>
+ <20201104160650.b63zqof74wohgpa2@beryllium.lan>
+ <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
+ <20201106161413.7c65uxenamy474uh@beryllium.lan>
+ <20201109124718.ljf7inok4zakkjed@linutronix.de>
+ <20201109143703.ps7gxhqrirhntilr@beryllium.lan>
+ <20201109163143.tm5gjz77rr734lm5@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109163143.tm5gjz77rr734lm5@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Sorry for the late response, I had to reinstall my system after a FS
+corruption...
 
- drivers/gpu/drm/radeon/r600_cs.c:2343:5: warning: no previous prototype for ‘r600_dma_cs_next_reloc’ [-Wmissing-prototypes]
- 2343 | int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
- | ^~~~~~~~~~~~~~~~~~~~~~
+On Mon, Nov 09, 2020 at 05:31:43PM +0100, Sebastian Andrzej Siewior wrote:
+> > These test run only very short with hackbench as worlkload (5 minutes).
+> > Though I running these tests now for more than year with v4.4-rt and
+> > some times the newer -rt releases and I've never seen the latency
+> > numbers above 200us unless something was broken. Given that 5 minutes is
+> > not really long, I'll let those test run for longer to see if I get the
+> > same results when they run for one hour.
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/radeon/evergreen_cs.c | 3 +--
- drivers/gpu/drm/radeon/r600.h         | 4 ++++
- drivers/gpu/drm/radeon/r600_cs.c      | 1 +
- 3 files changed, 6 insertions(+), 2 deletions(-)
+- 5.9.0-rc8-rt12, ca 5h
+  T: 0 (11626) P:80 C:15092432 Min:     17 Act:   34 Avg:   43 Max:     226
 
-diff --git a/drivers/gpu/drm/radeon/evergreen_cs.c b/drivers/gpu/drm/radeon/evergreen_cs.c
-index 53b75cf201958..0de79f3a7e3ff 100644
---- a/drivers/gpu/drm/radeon/evergreen_cs.c
-+++ b/drivers/gpu/drm/radeon/evergreen_cs.c
-@@ -28,6 +28,7 @@
- 
- #include "radeon.h"
- #include "radeon_asic.h"
-+#include "r600.h"
- #include "evergreend.h"
- #include "evergreen_reg_safe.h"
- #include "cayman_reg_safe.h"
-@@ -37,8 +38,6 @@
- 
- #define REG_SAFE_BM_SIZE ARRAY_SIZE(evergreen_reg_safe_bm)
- 
--int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
--			   struct radeon_bo_list **cs_reloc);
- struct evergreen_cs_track {
- 	u32			group_size;
- 	u32			nbanks;
-diff --git a/drivers/gpu/drm/radeon/r600.h b/drivers/gpu/drm/radeon/r600.h
-index a259976a95913..21fe44198a966 100644
---- a/drivers/gpu/drm/radeon/r600.h
-+++ b/drivers/gpu/drm/radeon/r600.h
-@@ -29,7 +29,9 @@
- #define __R600_H__
- 
- struct r600_audio_pin;
-+struct radeon_bo_list;
- struct radeon_crtc;
-+struct radeon_cs_parser;
- struct radeon_device;
- struct radeon_hdmi_acr;
- 
-@@ -50,4 +52,6 @@ void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
- void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
- void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
- 
-+int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
-+			   struct radeon_bo_list **cs_reloc);
- #endif				/* __R600_H__ */
-diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
-index f20b619466816..dc68e538d5a97 100644
---- a/drivers/gpu/drm/radeon/r600_cs.c
-+++ b/drivers/gpu/drm/radeon/r600_cs.c
-@@ -29,6 +29,7 @@
- 
- #include "radeon.h"
- #include "radeon_asic.h"
-+#include "r600.h"
- #include "r600d.h"
- #include "r600_reg_safe.h"
- 
--- 
-2.25.1
+- 5.9.0-rc8-rt13, ca 1.5h
+  T: 0 (24661) P:80 C:5581936 Min:     21 Act:   35 Avg:   45 Max:     250
 
+- 5.9.0-rc8-rt14, ca 1h
+  T: 0 (  942) P:80 C:6522320 Min:     20 Act:   27 Avg:   44 Max:     352
+
+This matches with the 5 minutes runs. -rt13 was still okay and -rt14
+is clearly worse.
+
+> > 5.10.0-rc2-rt4 vs 5.10.0-rc2-rt4(lazy preemption disabled)
+> >
+> >   0_cyclicdeadline     t2-max-latency       pass/pass                274.00/     61.00     349.18%
+>
+> So the value went from 274us to 61us after disabling lazy-preempt?
+
+Yes, that was all I changed. I want to redo this measurement. It
+really looks a bit bogus. Though, one thing after the other :)
+
+Daniel
