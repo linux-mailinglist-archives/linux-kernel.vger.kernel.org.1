@@ -2,124 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0252AF6BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FB42AF6C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgKKQmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S1727407AbgKKQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgKKQmM (ORCPT
+        with ESMTP id S1726595AbgKKQnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:42:12 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7350EC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:42:11 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h62so2924367wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:42:11 -0800 (PST)
+        Wed, 11 Nov 2020 11:43:32 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5740EC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:43:32 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id y197so2244500qkb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:43:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NA9CfSTIvFjKTTcCo0GBZExn6gG0rmPxEPFJJSh1HC0=;
-        b=iZzMR3JKsn93UQVuTMqTVw5jkQ1FGXVEQsHhGkoysIut9rmfaPAa8DVtehRc7lGzfe
-         aNPv9TKKFxCOHIJ/CU2qJQ3JIqcbOSthY9sia/hj0eY+JW7EOcadtLWbr/32Z1WTuyNc
-         4UTo5D+p+doIy5vHjS1uS9SsI4cUsE0lfDpUgaLPMFvbB8ZxFy0p2s0DQUBxSWG3ShxC
-         cotGgQaeyl0G9VaccrjlJvtBXneLiqdOWB8EQfLWlh02FHwknCDZpNYdPJfBJFq0uQGO
-         9AHI7KIRSFoz4MxXnpYSKgolrCtrhdflo+46YRBtHH8uFiAS/ZZz9ibPQAb1J/L9glnw
-         x6hA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QCmNt8Y7TG2qC30JLVGE0QaE5aTQ8urrjUT5uMsrL4A=;
+        b=N3Tu/9McrVluPFT0SSQ371uoqPA1FT6EYTax2BvhQv3QYHxGRfqhEY77v00wecumar
+         qKjJEBFuKz+93htKIZCaQ4XcWikvj4cVquRrf6gIboEdpuxaM42emzxkE1CvLokWTxs5
+         OwqBc++LTDtxaZaNnRR0ZxO7Cbr19XXvqPnihkLMJTOPvEjqvuam12U/11ma2fXMwNph
+         gVuHnS9KaLDx6WMKclLIQrYjrHuTH91GfWFXGYDfIM1p1nksYjUNPYievHMhN1aFb1iV
+         MLfbFu+IWCTvbeqYBWjdXxBPSTJEBoOymLmcESIVqdMYGlU4WWRJMawHvBDdKnvkShB2
+         gqRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NA9CfSTIvFjKTTcCo0GBZExn6gG0rmPxEPFJJSh1HC0=;
-        b=qxBJS8LTyHJr9YS+c7zBTX/qOVFIXDTGKlG3oBxqLsxLTZXhxoVp+bGnxY9mckh8c8
-         Tz1WXzyX+Hv+o2/XbLqCtQURfqwAR8RRQrXfTXuoyWkgrON8PAS6EpMO5xNntDR/n6tD
-         3KYTsywBjUMed4WLh6OWtopy4GPLe2jH70CtmB2DD+BayoKqXXZ77Mxb8dOZRtwWwX3R
-         bQ/9T+kReicdRpaAVKFSZBT+5FJzlk8oV0+D046sTIRAoHBUd8vM9c4fJs+jPDqXhfde
-         UsYsdf2O0UvFTUv3RRtGsijiWVBmXz/l3PUEd5/7/3vBrRU5zGH9gegOQnQc6ZInJ48V
-         cdOw==
-X-Gm-Message-State: AOAM532RdNrBQzouDaA0sKdbFAucMOU+mxCFFYC61jSUKC3XOeoaWUTM
-        FbngCAcQxfK6eENgK2e++JwgdQ==
-X-Google-Smtp-Source: ABdhPJzfOwchmgvUgHIEbEtU/j17AwAW695XbMtbpMUR0Zd+jCJBV5jjIXbQ8MplaBj3uPb3toGRyQ==
-X-Received: by 2002:a1c:6a11:: with SMTP id f17mr4945240wmc.24.1605112929933;
-        Wed, 11 Nov 2020 08:42:09 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id z19sm3076154wmk.12.2020.11.11.08.42.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 08:42:09 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:42:03 +0100
-From:   Marco Elver <elver@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QCmNt8Y7TG2qC30JLVGE0QaE5aTQ8urrjUT5uMsrL4A=;
+        b=HnORKlwFlXJ2b0Xe0GPCXoL6BN5CUlAF65wNJ1t3VwoNL7aTB2w2kJbh9ha8DnYTmI
+         7/SGyauM+/VDjbRD6Uvf00a84SFhVjRfNN1BTII6qw1JZlNh5xGRyC8YoNCx/dglB5RR
+         aT4OPYq/yLrvoP4bp8POdG/ZK9rqwnEnOu8GsjD6nM1DfmC5Zq9hpfKKSJb7K/LXDb/M
+         WArwl05N02h7KrRZwSciuOMncwAkUNMAE4/9iBE7Ua5yReYSu26NO75hlJMfZO35pgS3
+         JcQmz5k+NtzWvC3+cAItqKRvKqEQboywDDVzntj8yI47bTH+vufgAbdHTNyU75X7pNPK
+         6/RQ==
+X-Gm-Message-State: AOAM533IwcI/99BC/R3F/QEq/Od8qNamvcBH6S0Z/csgOB9DYqenhE9/
+        E8eFR93VkFwmzZt2AW/jxisgqQsz3fWsMPftAFDUJw==
+X-Google-Smtp-Source: ABdhPJx3u/lMLjOAM4Buf/5TnhtqfBq7l2lU0YA9YW8h6QT2mfA08cn83KzPwLiXhavZC/QVF8tHkPytRVppQLIct5o=
+X-Received: by 2002:a05:620a:f95:: with SMTP id b21mr17412423qkn.403.1605113011275;
+ Wed, 11 Nov 2020 08:43:31 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605046192.git.andreyknvl@google.com> <fe78d723ba64456d68754a944fa93fe4a25c730f.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <fe78d723ba64456d68754a944fa93fe4a25c730f.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 17:43:19 +0100
+Message-ID: <CAG_fn=VkuY7+oDOLWZEvvbxFw6Gduq-XK5r_dn7sEkmYqJA-tA@mail.gmail.com>
+Subject: Re: [PATCH v9 40/44] kasan, arm64: print report from tag fault handler
 To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
         Kevin Brodsky <kevin.brodsky@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/20] kasan: remove __kasan_unpoison_stack
-Message-ID: <20201111164203.GH517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <462c375f39ba8c4c105b3a9bf3b5db17f3720159.1605046662.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <462c375f39ba8c4c105b3a9bf3b5db17f3720159.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> There's no need for __kasan_unpoison_stack() helper, as it's only
-> currently used in a single place. Removing it also removes unneeded
-> arithmetic.
-> 
-> No functional changes.
-> 
+On Tue, Nov 10, 2020 at 11:12 PM 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> Add error reporting for hardware tag-based KASAN. When CONFIG_KASAN_HW_TA=
+GS
+> is enabled, print KASAN report from the arm64 tag fault handler.
+>
+> SAS bits aren't set in ESR for all faults reported in EL1, so it's
+> impossible to find out the size of the access the caused the fault.
+> Adapt KASAN reporting code to handle this case.
+>
 > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://linux-review.googlesource.com/id/Ie5ba549d445292fe629b4a96735e4034957bcc50
+> Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+
 > ---
->  mm/kasan/common.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
-
-Reviewed-by: Marco Elver <elver@google.com>
-
-Thanks for spotting this simplification.
-
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index a3e67d49b893..9008fc6b0810 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -59,18 +59,12 @@ void kasan_disable_current(void)
->  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
->  
->  #if CONFIG_KASAN_STACK
-> -static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
-> -{
-> -	void *base = task_stack_page(task);
-> -	size_t size = sp - base;
-> -
-> -	kasan_unpoison_memory(base, size);
-> -}
-> -
->  /* Unpoison the entire stack for a task. */
->  void kasan_unpoison_task_stack(struct task_struct *task)
->  {
-> -	__kasan_unpoison_stack(task, task_stack_page(task) + THREAD_SIZE);
-> +	void *base = task_stack_page(task);
-> +
-> +	kasan_unpoison_memory(base, THREAD_SIZE);
+> Change-Id: I3780fe7db6e075dff2937d3d8508f55c9322b095
+> ---
+>  arch/arm64/mm/fault.c | 14 ++++++++++++++
+>  mm/kasan/report.c     | 11 ++++++++---
+>  2 files changed, 22 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index fbceb14d93b1..7370e822e588 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/mm.h>
+>  #include <linux/hardirq.h>
+>  #include <linux/init.h>
+> +#include <linux/kasan.h>
+>  #include <linux/kprobes.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/page-flags.h>
+> @@ -297,10 +298,23 @@ static void die_kernel_fault(const char *msg, unsig=
+ned long addr,
+>         do_exit(SIGKILL);
 >  }
->  
->  /* Unpoison the stack for the current task beyond a watermark sp value. */
-> -- 
+>
+> +#ifdef CONFIG_KASAN_HW_TAGS
+>  static void report_tag_fault(unsigned long addr, unsigned int esr,
+>                              struct pt_regs *regs)
+>  {
+> +       bool is_write  =3D ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) !=
+=3D 0;
+> +
+> +       /*
+> +        * SAS bits aren't set for all faults reported in EL1, so we can'=
+t
+> +        * find out access size.
+> +        */
+> +       kasan_report(addr, 0, is_write, regs->pc);
+>  }
+> +#else
+> +/* Tag faults aren't enabled without CONFIG_KASAN_HW_TAGS. */
+> +static inline void report_tag_fault(unsigned long addr, unsigned int esr=
+,
+> +                                   struct pt_regs *regs) { }
+> +#endif
+>
+>  static void do_tag_recovery(unsigned long addr, unsigned int esr,
+>                            struct pt_regs *regs)
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 8afc1a6ab202..ce06005d4052 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -62,9 +62,14 @@ static void print_error_description(struct kasan_acces=
+s_info *info)
+>  {
+>         pr_err("BUG: KASAN: %s in %pS\n",
+>                 get_bug_type(info), (void *)info->ip);
+> -       pr_err("%s of size %zu at addr %px by task %s/%d\n",
+> -               info->is_write ? "Write" : "Read", info->access_size,
+> -               info->access_addr, current->comm, task_pid_nr(current));
+> +       if (info->access_size)
+> +               pr_err("%s of size %zu at addr %px by task %s/%d\n",
+> +                       info->is_write ? "Write" : "Read", info->access_s=
+ize,
+> +                       info->access_addr, current->comm, task_pid_nr(cur=
+rent));
+> +       else
+> +               pr_err("%s at addr %px by task %s/%d\n",
+> +                       info->is_write ? "Write" : "Read",
+> +                       info->access_addr, current->comm, task_pid_nr(cur=
+rent));
+>  }
+>
+>  static DEFINE_SPINLOCK(report_lock);
+> --
 > 2.29.2.222.g5d2a92d10f8-goog
-> 
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/kasan-dev/fe78d723ba64456d68754a944fa93fe4a25c730f.1605046192.git.andreyk=
+nvl%40google.com.
+
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
