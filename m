@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD402AF60A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0AB2AF610
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgKKQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:17:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
+        id S1726216AbgKKQTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:19:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgKKQR6 (ORCPT
+        with ESMTP id S1725922AbgKKQTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:17:58 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8669C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:17:57 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id o11so2809838ioo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:17:57 -0800 (PST)
+        Wed, 11 Nov 2020 11:19:42 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61289C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:19:41 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id h15so2129777qkl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:19:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hIBjUOhCL4FamySv2BSK1WhnluetPINBm9sx/SODghk=;
-        b=E+UT7uDKzv8M0Zf2lZ8UIYK1hcqMDMAvoGTdUr0tHYghvlxNxqiQgOW/5iqLyKbRZS
-         zVvYZGeU4MSOIwiwwYIlWhf/37CVkuzMdXfkbJgAuUAynl3foV2aD2CgntKM01Eag1w6
-         pQ8HBth/OBv12+fhMJKQGc1NkC3aSg3Ood/4QEvHAIURwz7xRQ3LiqHo+gH4kHkz/Tzz
-         kGrYC8QFOWBAL14ps4gGvDC3EJQ6RukmqNG7qjjJB2x3L16pNJsAI7fQJAXbZiNkIOyF
-         gOqtjfkreX6lm/ivN+Yhkt5U9rTka4eIy5SeWvarGIF0s96mi2fbJkGPVSL4J27D/Boc
-         p0OA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NdgljsAg/2kl6g/hQQs/nkDVrJD6gaQwZKzBgT4Tycw=;
+        b=EDK8+6vZvqG4lgainA6noaRoMS9BYL+HJyKxtdibIsYOyZM4+qBxmZYkjgcHILiuDB
+         r40ch7x5Hjr5lgJR2vl9f1hOU89IOY66J65dPWlRrlzn7cZt76xAhN/UEf5UsU5g9UHg
+         M4S10l5GvCixHcZky2v9mm9O8up6atKysDwV79yZFLogABjYKXRT1+qE9FaSUL6s57Vq
+         fWyEZ9MTjhv0SIq5Uz0tw5H8w5A5HR8r6cTl9av+YTUeZySii+2RtklJpxppjIb+SZ8C
+         MKXiYkK8qN8K6nRNYiktCQ9p7zMAnXWsfWiDJY2NSp+gKMG6kfpSe5blI4Xca2i+JCR0
+         TfbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hIBjUOhCL4FamySv2BSK1WhnluetPINBm9sx/SODghk=;
-        b=et8UP+y7FSb0cC/d/+m9FqjdtFIWJKrLZm2U50F9XUv036P4ESYxYxZkGU6C8LJaHr
-         uh8neoM97fZQ8r589iEmsVeDL/bCVqnBJl7YiA5JcCBIsY2hepqqfOrXh1m5leZewhfj
-         6iADq7LXVD9vTbO7Px0+ik6MkiJdprMm3+JnN/znmsw+NWu50zDxPODyA6QQmLfBwLSx
-         q0++o+pGsfuAWD1j6TTgNHVqYILBKNwSgavqcpWTlJQ3vt5akghs8zs1o/cqG7ab8gGC
-         G8c7+Gwjf1QUjq26R+x0BWuvvqgb16ISRgSFT31QDDwPA++2vn7NfdC8W42Zl0lewsTt
-         +iJg==
-X-Gm-Message-State: AOAM5335lvg7GoyX0bsr1oczdnnvxB4WE4miDcAZR/TwgCnntABaVumP
-        mFJhXj+yOx4WBHu9OuN2PjGbeQ==
-X-Google-Smtp-Source: ABdhPJyWFXPFFosbpi7Mw4IBURM5g2Va17wNDYQIiOuR5s1zvzKiVX4DBgORaOVic1unFcvUrR9Xmg==
-X-Received: by 2002:a6b:7114:: with SMTP id q20mr18531488iog.16.1605111477264;
-        Wed, 11 Nov 2020 08:17:57 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v63sm1404927ioe.52.2020.11.11.08.17.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 08:17:56 -0800 (PST)
-Subject: Re: simplify gendisk lookup and remove struct block_device aliases v4
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20201029145841.144173-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <92e869be-9717-8d97-a962-a630a2517f00@kernel.dk>
-Date:   Wed, 11 Nov 2020 09:17:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NdgljsAg/2kl6g/hQQs/nkDVrJD6gaQwZKzBgT4Tycw=;
+        b=hC1+WajdJSfENlPp2R1oib0wqYJU5igYqYuCy2lqrtzLMmUqQaIrujHrWcDtEbqHn5
+         lJ+H3MSCcyU9DGCdkPmry02/AG1DOBygLviaeIEJOxctaqtL4+arDs/P3V+lGMbdLFUG
+         fHO8Sgv1BpfuBJO+hVIEBgWOZgTtSSlDTQwQuzQSKkvJp3L9g6DPZza+9HoA3z/WhefD
+         57P7/fEVOkD447gcBVIpBOWXw9rEZembuGdSRl5Hya4T/kuVd7Na+53o3nWtz4ZKq93i
+         vgZH4TIhP3/FWu7mlwOVNcmiZ1O8iKbeHD8rJ167VoJUTBoREddxBAZsQwB60FyD/53u
+         q8og==
+X-Gm-Message-State: AOAM533205NfcFYUh6/+4Rnt93f3pFvEP1qCf12+/vFQFEbJY4zyfTBu
+        cJiB71CBQlurpt/geQ3NE8YoQnKmufEC79GLj7OhIg==
+X-Google-Smtp-Source: ABdhPJwEWFsczvA9eGNn3bEDLsp5Wc6vUSPX+LtgEiTHwNZx9oxkijXqdSW/eG5CPEGhKgzP1CrHtnGP6gHxFCccMO4=
+X-Received: by 2002:a37:4552:: with SMTP id s79mr19714490qka.6.1605111580407;
+ Wed, 11 Nov 2020 08:19:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201029145841.144173-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1605046192.git.andreyknvl@google.com> <560e04850b62da4fd69caa92b4ce3bebf275ea59.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=W-H8nHc_DmBOsnJOUygDJ+wg78K-QSY_wHTSHg-b8vFQ@mail.gmail.com>
+In-Reply-To: <CAG_fn=W-H8nHc_DmBOsnJOUygDJ+wg78K-QSY_wHTSHg-b8vFQ@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 17:19:28 +0100
+Message-ID: <CAG_fn=WOeX3u7KQaMq1acSszWg=Kq5FLVhK_rWSrXsvzbbvq2g@mail.gmail.com>
+Subject: Re: [PATCH v9 23/44] kasan: separate metadata_fetch_row for each mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 8:58 AM, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series removes the annoying struct block_device aliases, which can
-> happen for a bunch of old floppy drivers (and z2ram).  In that case
-> multiple struct block device instances for different dev_t's can point
-> to the same gendisk, without being partitions.  The cause for that
-> is the probe/get callback registered through blk_register_regions.
-> 
-> This series removes blk_register_region entirely, splitting it it into
-> a simple xarray lookup of registered gendisks, and a probe callback
-> stored in the major_names array that can be used for modprobe overrides
-> or creating devices on demands when no gendisk is found.  The old
-> remapping is gone entirely, and instead the 4 remaining drivers just
-> register a gendisk for each operating mode.  In case of the two drivers
-> that have lots of aliases that is done on-demand using the new probe
-> callback, while for the other two I simply register all at probe time
-> to keep things simple.
-> 
-> Note that the m68k drivers are compile tested only.
+On Wed, Nov 11, 2020 at 4:22 PM Alexander Potapenko <glider@google.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > This is a preparatory commit for the upcoming addition of a new hardware
+> > tag-based (MTE-based) KASAN mode.
+> >
+> > Rework print_memory_metadata() to make it agnostic with regard to the
+> > way metadata is stored. Allow providing a separate metadata_fetch_row()
+> > implementation for each KASAN mode. Hardware tag-based KASAN will provide
+> > its own implementation that doesn't use shadow memory.
+> >
+> > No functional changes for software modes.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-Applied, thanks.
+> > +void metadata_fetch_row(char *buffer, void *row)
+> > +{
+> > +       memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
+>
+> I think it is important to use __memcpy() instead of memcpy() in KASAN
+> runtime to avoid calling instrumented code.
 
--- 
-Jens Axboe
-
+Please disregard this. Turns out we define memcpy to __memcpy for
+non-instrumented files.
