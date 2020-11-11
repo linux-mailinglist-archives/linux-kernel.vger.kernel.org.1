@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A54D2AEC23
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690D92AEC37
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgKKIjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKKIjX (ORCPT
+        id S1726285AbgKKIoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:44:02 -0500
+Received: from outbound-smtp09.blacknight.com ([46.22.139.14]:53453 "EHLO
+        outbound-smtp09.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726101AbgKKIno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:39:23 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C14AC0613D1;
-        Wed, 11 Nov 2020 00:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W3lJaiDZSwNSAcZaX98qdexwXd6h8lkb9yfjmwrRXNk=; b=ZsE/OpcOFZGT4E28OStxABf08B
-        +HZ7yJo2mwOHaQqNSY+FgV2WtLq7ldZ3hlKzhxJbI71XJ0wuf+L+A2muDsx6LCBzcsBHzr47Kk86o
-        6tLTYe7r2C3OggUGSUDEA7eQKDTDgTqp57LDTfBGGt0W1gP8ENEJ2NwPptTbS2ALiU28N+Vddac5b
-        BuzVi4xwvwPrrNBhbBcdWgV4yenlZcJuanWhg5EbnIC9gsfN1jWnY0iKko43SStsj7wf4RtkVxNUF
-        jkHLrtG432Vvmu68BfftOKuTuRVuw3y8NRcp+yIeH6Intuf8iLp4tAZqiV3s/hbAD8QEc8p8Gg5Eq
-        TvMo+vzA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kclec-0000Er-Ia; Wed, 11 Nov 2020 08:38:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A984E301324;
-        Wed, 11 Nov 2020 09:38:57 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 95C6929B3D8D2; Wed, 11 Nov 2020 09:38:57 +0100 (CET)
-Date:   Wed, 11 Nov 2020 09:38:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Wang, Wei W" <wei.w.wang@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf/intel: Remove Perfmon-v4 counter_freezing support
-Message-ID: <20201111083857.GS2611@hirez.programming.kicks-ass.net>
-References: <20201109021254.79755-1-like.xu@linux.intel.com>
- <20201110151257.GP2611@hirez.programming.kicks-ass.net>
- <20201110153721.GQ2651@hirez.programming.kicks-ass.net>
- <CABPqkBS+-g0qbsruAMfOJf-Zfac8nz9v2LCWfrrvVd+ptoLxZg@mail.gmail.com>
+        Wed, 11 Nov 2020 03:43:44 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp09.blacknight.com (Postfix) with ESMTPS id 2C20E1C4FDA
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:43:41 +0000 (GMT)
+Received: (qmail 3821 invoked from network); 11 Nov 2020 08:43:41 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Nov 2020 08:43:40 -0000
+Date:   Wed, 11 Nov 2020 08:43:31 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Rik van Riel <riel@surriel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH] sched/topology: Warn when NUMA diameter > 2
+Message-ID: <20201111084331.GJ3371@techsingularity.net>
+References: <20201110184300.15673-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CABPqkBS+-g0qbsruAMfOJf-Zfac8nz9v2LCWfrrvVd+ptoLxZg@mail.gmail.com>
+In-Reply-To: <20201110184300.15673-1-valentin.schneider@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:52:04PM -0800, Stephane Eranian wrote:
-
-> What is implemented is Freeze-on-Overflow, yet it is described as Freeze-on-PMI.
-> That, in itself, is a problem. I agree with you on that point.
-
-Exactly.
-
-> However, there are use cases for both modes.
+On Tue, Nov 10, 2020 at 06:43:00PM +0000, Valentin Schneider wrote:
+> NUMA topologies where the shortest path between some two nodes requires
+> three or more hops (i.e. diameter > 2) end up being misrepresented in the
+> scheduler topology structures.
 > 
-> I can sample on event A and count on B, C and when A overflows, I want
-> to snapshot B, C.
-> For that I want B, C at the moment of the overflow, not at the moment
-> the PMI is delivered. Thus, youd
-> would want the Freeze-on-overflow behavior. You can collect in this
-> mode with the perf tool,
-> IIRC: perf record -e '{cycles,instructions,branches:S}' ....
+> This is currently detected when booting a kernel with CONFIG_SCHED_DEBUG=y
+> + sched_debug on the cmdline, although this will only yield a warning about
+> sched_group spans not matching sched_domain spans:
+> 
+>   ERROR: groups don't span domain->span
+> 
+> Add an explicit warning for that case, triggered regardless of
+> CONFIG_SCHED_DEBUG, and decorate it with an appropriate comment.
+> 
+> The topology described in the comment can be booted up on QEMU by appending
+> the following to your usual QEMU incantation:
+> 
+>     -smp cores=4 \
+>     -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
+>     -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
+>     -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
+>     -numa dist,src=0,dst=3,val=40, -numa dist,src=1,dst=2,val=20, \
+>     -numa dist,src=1,dst=3,val=30, -numa dist,src=2,dst=3,val=20
+> 
+> A somewhat more realistic topology (6-node mesh) with the same affliction
+> can be conjured with:
+> 
+>     -smp cores=6 \
+>     -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
+>     -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
+>     -numa node,cpus=4,nodeid=4, -numa node,cpus=5,nodeid=5, \
+>     -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
+>     -numa dist,src=0,dst=3,val=40, -numa dist,src=0,dst=4,val=30, \
+>     -numa dist,src=0,dst=5,val=20, \
+>     -numa dist,src=1,dst=2,val=20, -numa dist,src=1,dst=3,val=30, \
+>     -numa dist,src=1,dst=4,val=20, -numa dist,src=1,dst=5,val=30, \
+>     -numa dist,src=2,dst=3,val=20, -numa dist,src=2,dst=4,val=30, \
+>     -numa dist,src=2,dst=5,val=40, \
+>     -numa dist,src=3,dst=4,val=20, -numa dist,src=3,dst=5,val=30, \
+>     -numa dist,src=4,dst=5,val=20
+> 
+> Link: https://lore.kernel.org/lkml/jhjtux5edo2.mognet@arm.com
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 
-Right, but we never supported that. Also, in that case the group must
-then be fully exlusive so as not to mess with other groups. A better
-solution might be an extention to Adaptive PEBS.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-> The other usage model is that of the replay-debugger (rr) which you are alluding
-> to, which needs precise count of an event including during the skid
-> window. For that, you need
-> Freeze-on-PMI (delivered). Note that this tool likely only cares about
-> user level occurrences of events.
-
-Correct, RR only cares about user-only counting.
-
-> As for counter independence, I am not sure it holds in all cases. If
-> the events are setup for user+kernel
-
-This is true; however if it were an actual Freeze-on-PMI we could
-actually do u+k independence correctly too.
-
-
-Anyway, as it stands I think the whole counter_freezing thing is a
-trainwreck and it needs to go.
+-- 
+Mel Gorman
+SUSE Labs
