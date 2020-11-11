@@ -2,263 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B112AF883
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7992AF885
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgKKSsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726664AbgKKSsY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:48:24 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA26C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:24 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id m13so1961642pgl.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mb7PYJLkfxY3lJZblFIcMSXi8MnosMBDn1R6Xa9I8rc=;
-        b=NwTnpqOOBMBajgf4OJZhDWFSsJceG1NMb+xiofE37FueQmE6/tvR0tPgS+vcDtvYaL
-         ZRXQr0dERgfSrg/eoUtFQZBnMgQSWSi4ZCrLlHUweIpWxLq2vc1sqwPYtqjX1uxMepK0
-         BgqQ2dFLtdU4cRb3LpBG3VL7NwlkyLuaBBGOLY8hHxjmrduLg9BLdYfRoeu90UpVi84T
-         cexxShAjHY56S1/pFZvqLTFt2lUeZ19ULUbhpPSeQvXZwwNCAk2scQ9vxgX3E7egxh3M
-         kg/2wke8Wo+Ly1nQ2Csu+7XurhIVPiDiMy+pQZPmL5tAoBwOxACyQPRFLwa96+qYfqSY
-         t9Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mb7PYJLkfxY3lJZblFIcMSXi8MnosMBDn1R6Xa9I8rc=;
-        b=dVyoYQw4aWAguHZDQePwn22qOVaJsph4/gQfCIz0aZurxEJwIys8N5QWbivAXvNtnv
-         d6YjCVp6FaT+tRbQriEHtQZYgeX7jv1Q1+Jd3UOA0HBMDkIUBQc9UajM98ZQ3ShKbij3
-         MeAjHiYl0BiSXTiuuh726cpg5HhJDhE1ZTH+qQ96U8D1INZqFZRICCwLQYIIukjVBMtG
-         NTvKfuiRYKn479J1GTqgvacybneoh4CMTVWUXQV9OTml7V+vnDwL7Hhb2Tqwv88NxH+1
-         2jaFV7YDhEhUQGJ8El5a9qjhLV9YyN0bCcQSvRvfPnk1G9dovwE+NFBqAhaSKHtz8sKD
-         E5JQ==
-X-Gm-Message-State: AOAM531UZkvmqgHBXkQ6c+/sHIPh6MOPdi6eGO9B8kfjWi1bTJOZecFi
-        OMbTZl4aqOxrmQDHY14xGJlArt/+etF5dyckTI61iw==
-X-Google-Smtp-Source: ABdhPJwcfDwuG4g2UEuurEKOOly1dPYE/YsLGQVFZaAzZQzTo87JJR8jHOfYzFrqSu7HvFx6mL+g9bHWrUMr775JCo8=
-X-Received: by 2002:a62:ed0d:0:b029:18b:78d:626 with SMTP id
- u13-20020a62ed0d0000b029018b078d0626mr24673040pfh.15.1605120503879; Wed, 11
- Nov 2020 10:48:23 -0800 (PST)
+        id S1727442AbgKKStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:49:23 -0500
+Received: from mga09.intel.com ([134.134.136.24]:47344 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgKKStW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:49:22 -0500
+IronPort-SDR: T1wLCwdut8NaWugLt3A4CO4/g53RGujLZM+rQiL6RuxJ8kszsdFZREtja8kMdnzK9J8E9sRo6J
+ glRrM7pdN9Ew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170362578"
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="170362578"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 10:49:21 -0800
+IronPort-SDR: TiF3SoCyDQmKQoegLE8eXd23N1ySpKy12U9bQ8jsLajrLqclQiB179AIUgHB41XAwFOTTWEkHw
+ ujpi/m2viFCQ==
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="339148549"
+Received: from dnminiba-mobl1.amr.corp.intel.com ([10.251.19.220])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 10:49:20 -0800
+Date:   Wed, 11 Nov 2020 10:49:20 -0800 (PST)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Geliang Tang <geliangtang@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mptcp: fix a dereference of pointer before msk is
+ null checked.
+In-Reply-To: <20201109125215.2080172-1-colin.king@canonical.com>
+Message-ID: <cb9fba1-b399-325f-c956-ede9da1b1b7@linux.intel.com>
+References: <20201109125215.2080172-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com> <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 11 Nov 2020 10:48:12 -0800
-Message-ID: <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 7:15 AM Moore, Robert <robert.moore@intel.com> wrote:
->
-> Yes, but: isn't the "fallthrough" keyword compiler-specific? That is the problem for us.
+On Mon, 9 Nov 2020, Colin King wrote:
 
-It's not a keyword.
-
-It's a preprocessor macro that expands to
-__attribute__((__fallthrough__)) for compilers that support it.  For
-compilers that do not, it expands to nothing.  Both GCC 7+ and Clang
-support this attribute.  Which other compilers that support
--Wimplicit-fallthrough do you care to support?
-
-> Bob
+> From: Colin Ian King <colin.king@canonical.com>
 >
+> Currently the assignment of pointer net from the sock_net(sk) call
+> is potentially dereferencing a null pointer sk. sk points to the
+> same location as pointer msk and msk is being null checked after
+> the sock_net call.  Fix this by calling sock_net after the null
+> check on pointer msk.
 >
-> -----Original Message-----
-> From: ndesaulniers via sendgmr <ndesaulniers@ndesaulniers1.mtv.corp.google.com> On Behalf Of Nick Desaulniers
-> Sent: Tuesday, November 10, 2020 6:12 PM
-> To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; Gustavo A . R . Silva <gustavoars@kernel.org>
-> Cc: clang-built-linux@googlegroups.com; Nick Desaulniers <ndesaulniers@google.com>; Len Brown <lenb@kernel.org>; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH] ACPICA: fix -Wfallthrough
->
-> The "fallthrough" pseudo-keyword was added as a portable way to denote intentional fallthrough. This code seemed to be using a mix of fallthrough comments that GCC recognizes, and some kind of lint marker.
-> I'm guessing that linter hasn't been run in a while from the mixed use of the marker vs comments.
->
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Addresses-Coverity: ("Dereference before null check")
+> Fixes: 00cfd77b9063 ("mptcp: retransmit ADD_ADDR when timeout")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/acpi/acpica/dscontrol.c | 3 +--
->  drivers/acpi/acpica/dswexec.c   | 4 +---
->  drivers/acpi/acpica/dswload.c   | 3 +--
->  drivers/acpi/acpica/dswload2.c  | 3 +--
->  drivers/acpi/acpica/exfldio.c   | 3 +--
->  drivers/acpi/acpica/exresop.c   | 5 ++---
->  drivers/acpi/acpica/exstore.c   | 6 ++----
->  drivers/acpi/acpica/hwgpe.c     | 3 +--
->  drivers/acpi/acpica/utdelete.c  | 3 +--
->  drivers/acpi/acpica/utprint.c   | 2 +-
->  10 files changed, 12 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19 100644
-> --- a/drivers/acpi/acpica/dscontrol.c
-> +++ b/drivers/acpi/acpica/dscontrol.c
-> @@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
->                                 break;
->                         }
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case AML_IF_OP:
->                 /*
-> diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f 100644
-> --- a/drivers/acpi/acpica/dswexec.c
-> +++ b/drivers/acpi/acpica/dswexec.c
-> @@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
->                                 if (ACPI_FAILURE(status)) {
->                                         break;
->                                 }
-> -
-> -                               /* Fall through */
-> -                               /*lint -fallthrough */
-> +                               fallthrough;
->
->                         case AML_INT_EVAL_SUBTREE_OP:
->
-> diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d 100644
-> --- a/drivers/acpi/acpica/dswload.c
-> +++ b/drivers/acpi/acpica/dswload.c
-> @@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_state,
->                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
->                                 break;
->                         }
-> -
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 default:
->
-> diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072 100644
-> --- a/drivers/acpi/acpica/dswload2.c
-> +++ b/drivers/acpi/acpica/dswload2.c
-> @@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
->                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
->                                 break;
->                         }
-> -
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 default:
->
-> diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9 100644
-> --- a/drivers/acpi/acpica/exfldio.c
-> +++ b/drivers/acpi/acpica/exfldio.c
-> @@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
->                  * Now that the Bank has been selected, fall through to the
->                  * region_field case and write the datum to the Operation Region
->                  */
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_TYPE_LOCAL_REGION_FIELD:
->                 /*
-> diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551 100644
-> --- a/drivers/acpi/acpica/exresop.c
-> +++ b/drivers/acpi/acpica/exresop.c
-> @@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
->                                 case ACPI_REFCLASS_DEBUG:
->
->                                         target_op = AML_DEBUG_OP;
-> -
-> -                                       /*lint -fallthrough */
-> +                                       fallthrough;
->
->                                 case ACPI_REFCLASS_ARG:
->                                 case ACPI_REFCLASS_LOCAL:
-> @@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
->                          * Else not a string - fall through to the normal Reference
->                          * case below
->                          */
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 case ARGI_REFERENCE:    /* References: */
->                 case ARGI_INTEGER_REF:
-> diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120 100644
-> --- a/drivers/acpi/acpica/exstore.c
-> +++ b/drivers/acpi/acpica/exstore.c
-> @@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
->                 if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
->                         return_ACPI_STATUS(AE_OK);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         default:
->
-> @@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_object *source_desc,
->                                 }
->                                 break;
->                         }
-> -
-> -                       /* Fallthrough */
-> +                       fallthrough;
->
->                 case ACPI_TYPE_DEVICE:
->                 case ACPI_TYPE_EVENT:
-> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c index b13a4ed5bc63..fbfad80c8a53 100644
-> --- a/drivers/acpi/acpica/hwgpe.c
-> +++ b/drivers/acpi/acpica/hwgpe.c
-> @@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
->                 if (!(register_bit & gpe_register_info->enable_mask)) {
->                         return (AE_BAD_PARAMETER);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_GPE_ENABLE:
->
-> diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585 100644
-> --- a/drivers/acpi/acpica/utdelete.c
-> +++ b/drivers/acpi/acpica/utdelete.c
-> @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
->                         (void)acpi_ev_delete_gpe_block(object->device.
->                                                        gpe_block);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_TYPE_PROCESSOR:
->         case ACPI_TYPE_THERMAL:
-> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2 100644
-> --- a/drivers/acpi/acpica/utprint.c
-> +++ b/drivers/acpi/acpica/utprint.c
-> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
->                 case 'X':
->
->                         type |= ACPI_FORMAT_UPPER;
-> -                       /* FALLTHROUGH */
-> +                       fallthrough;
->
->                 case 'x':
->
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
+> net/mptcp/pm_netlink.c | 4 +++-
+> 1 file changed, 3 insertions(+), 1 deletion(-)
 >
 
+Hi Colin and Jakub -
 
--- 
-Thanks,
-~Nick Desaulniers
+I noticed that the follow-up discussion on this patch didn't go to the 
+netdev list, so patchwork did not get updated.
+
+This patch is superseded by the following, which already has a Reviewed-by 
+tag from Matthieu:
+
+http://patchwork.ozlabs.org/project/netdev/patch/078a2ef5bdc4e3b2c25ef852461692001f426495.1604976945.git.geliangtang@gmail.com/
+
+
+Thanks!
+
+--
+Mat Martineau
+Intel
