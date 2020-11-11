@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6F12AEFB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A622AEFBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgKKLeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        id S1725962AbgKKLgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKLee (ORCPT
+        with ESMTP id S1725903AbgKKLga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:34:34 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7FBC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:34:33 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id j7so2211369wrp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:34:33 -0800 (PST)
+        Wed, 11 Nov 2020 06:36:30 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB2FC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:36:29 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id l36so1831841ota.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:36:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=niEGeS46KL7j58Ce9WSBmdiEs6qSuttHC6cIJBZy55s=;
-        b=MM3rfh9rI9dpMI3bJTJ+z7wvvfQe6L4NaalgD/EHAldD/J8wp53ud6uDEHd6e/UYjS
-         0Tsvb7d1SeHczGLY3bl3JnATZFP4JUPgn4zweOmmzFYyBNCC3wf5bTB5x0L6OfPzE6GZ
-         ZdkoezDmOeV9U/g4/Wn/ZU2uRDuMhd+7TBpLUC/6DfDSoqCQaEtEdjgJMKxgaP0wLdUx
-         8SsH+Sv46Aq8CO/g7qGA3RO6YxfQRG484odfYhIvEu3MGXOAF76tqLQ2d6lvK0Q8NX/K
-         abPZWQAdOBjLl2kCJXc4P3AZLtA1ho95WILzwfMOceHVSyaVfXTKUxqWPabqleUfTBk1
-         xV9Q==
+        bh=EMOqAIj0ddsVXtMyEGECeFICuXMsW/guXX4BA4CqByM=;
+        b=bhW8td9Q9ob0277HymHvg8ls4NcFHQrCNN+xqTQem62XYOm+csfmqGE3o/lvOrvYdf
+         W6ydkWaRGOPvbF/Y89SmSIitX2W5tabVkT1DsXLiSU7JpKqhVBH6tfuknBFbGsMQomCu
+         vEMOsIDjOv+gBEOTSbW9hc+32cvn/ivYUWgs0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=niEGeS46KL7j58Ce9WSBmdiEs6qSuttHC6cIJBZy55s=;
-        b=mHZm1os0rDZzeTpcUGvxG3MZzcZYNgn/zo1kU5+y2YdDkjDnFRkMpEskodMsOI4FHi
-         Q1HkITM9CnSVTXKm6xM96+19MdPtobahvC7YDUB+cjT1gMHRAG4Y5tKd5Hqn3hbizXIN
-         elsaDqLmft7pIT4V1ya130KzCHB5cY0pNIbHeYZrQuHetm6BVE9JptFjGQD2ih9FIxsm
-         r0FBrT/Z+YaqN8xb6MLb7jaD2Tkx/P5TjFiFpVqq8teW/mOiehHKK+eStlZsTQXUfpTC
-         FJenxzigeYLdJu2SHMpOiq7hN6oQgFpLHgmoZumbdxJ4gR3DodybOqSpRj/McPr3D4h/
-         ADkA==
-X-Gm-Message-State: AOAM533Mo9udgLa1NdIKr7mXZj2XYpqkFcHEhJGu0wOkfRg8mE90kjpW
-        nJXGJC2xGGKRpNPBVee3ZxbB21jOb08jI+XyiyidH8fe4WM=
-X-Google-Smtp-Source: ABdhPJzqMGxYjq54v5r6rhAjiwFGezolawt597/YGfmIx5uV5AcA9v5GJehwnHOw6hvo9y2RaUr2ARyheW6hX8/YN1s=
-X-Received: by 2002:a5d:670f:: with SMTP id o15mr12832593wru.204.1605094472719;
- Wed, 11 Nov 2020 03:34:32 -0800 (PST)
+        bh=EMOqAIj0ddsVXtMyEGECeFICuXMsW/guXX4BA4CqByM=;
+        b=TAPZ9UYhxF5NJRTisXpBDtgCLM7UAjf3TxOImVBet15CldUqeeqUDbqchYHkXsdYYR
+         Uzj8PuLo9RB9nT6BpkZWmUAZ5pHhlMGewZMySp9ccWPC6b5JcIperFL4AIpbFTGYntx8
+         8m6UVTlLWVunifvo8eIfYafTeINJOptZl7G3HSOaSN4kAP1PqdlrgVcANSAUR8ALgvaH
+         slnz0jNOZjmjRcku8XO8hzdz5IpYvdLXbjU9OYPDAde8yD5tj1wJDE/Z4GWeMjLa3Y4t
+         JLnsZmDMZpJWw9HHEitQBPd4vYhErI3I439905nnar+GJWUDP9wMnO9SK/KfVQDFJcRk
+         lGpQ==
+X-Gm-Message-State: AOAM5305aYPjZsjIppL02XYaNf0NnupxZQRw2Ca+hWFvIAyWQajDSTNS
+        Hn/7kHTmylTm1Oy0bggZea70IL39dkcQ2EjnY0LW2A==
+X-Google-Smtp-Source: ABdhPJyUhmXhQ+6QEB12K9KtN2u8Kz4JD7ZA9ST4TVkaOw91UuD3ZJt0F5kWbbnGXT70o9TfkwBIBbmUMw1B+VoSP0U=
+X-Received: by 2002:a9d:4c92:: with SMTP id m18mr7729528otf.248.1605094588395;
+ Wed, 11 Nov 2020 03:36:28 -0800 (PST)
 MIME-Version: 1.0
-References: <1605017534-87305-1-git-send-email-franck.lenormand@oss.nxp.com> <1605017534-87305-2-git-send-email-franck.lenormand@oss.nxp.com>
-In-Reply-To: <1605017534-87305-2-git-send-email-franck.lenormand@oss.nxp.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Wed, 11 Nov 2020 13:34:20 +0200
-Message-ID: <CAEnQRZATCNaed_Jn=RQ3KL8iE1hYYgVP3wwskTiK1g_+F81Ucg@mail.gmail.com>
-Subject: Re: [PATCH V3 1/5] firmware: imx: scu-seco: Add Secure Controller APIS
-To:     franck.lenormand@oss.nxp.com
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>, linux@rempel-privat.de,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>, qiangqing.zhang@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
+References: <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
+ <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com> <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
+ <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
+ <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
+ <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com> <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
+ <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com> <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
+ <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com> <20201111092743.GC545929@T590>
+In-Reply-To: <20201111092743.GC545929@T590>
+From:   Sumit Saxena <sumit.saxena@broadcom.com>
+Date:   Wed, 11 Nov 2020 17:06:02 +0530
+Message-ID: <CAL2rwxoxJGx24d7B6a0iRXSyX-ryXr38Owj2xd9tiZN1vPEY5w@mail.gmail.com>
+Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     John Garry <john.garry@huawei.com>, Qian Cai <cai@redhat.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        don.brace@microsemi.com, Bart Van Assche <bvanassche@acm.org>,
+        dgilbert@interlog.com, paolo.valente@linaro.org,
+        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        esc.storagedev@microsemi.com,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
+        Hannes Reinecke <hare@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 4:15 PM <franck.lenormand@oss.nxp.com> wrote:
 >
-> From: Franck LENORMAND <franck.lenormand@oss.nxp.com>
+> Can this issue disappear by applying the following change?
+This change fixes the issue for me.
 
-Looks good to me. Thanks Franck!
+Qian,
+Please try after applying changes suggested by Ming.
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Thanks,
+Sumit
+>
+> diff --git a/block/blk-flush.c b/block/blk-flush.c
+> index e32958f0b687..b1fe6176d77f 100644
+> --- a/block/blk-flush.c
+> +++ b/block/blk-flush.c
+> @@ -469,9 +469,6 @@ struct blk_flush_queue *blk_alloc_flush_queue(int node, int cmd_size,
+>         INIT_LIST_HEAD(&fq->flush_queue[1]);
+>         INIT_LIST_HEAD(&fq->flush_data_in_flight);
+>
+> -       lockdep_register_key(&fq->key);
+> -       lockdep_set_class(&fq->mq_flush_lock, &fq->key);
+> -
+>         return fq;
+>
+>   fail_rq:
+> @@ -486,7 +483,6 @@ void blk_free_flush_queue(struct blk_flush_queue *fq)
+>         if (!fq)
+>                 return;
+>
+> -       lockdep_unregister_key(&fq->key);
+>         kfree(fq->flush_rq);
+>         kfree(fq);
+>  }
+>
+>
+> Thanks,
+> Ming
+>
