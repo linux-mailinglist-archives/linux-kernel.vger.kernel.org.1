@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9C92AF554
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851002AF558
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgKKPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:46:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20840 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726625AbgKKPqD (ORCPT
+        id S1727344AbgKKPrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgKKPrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:46:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605109562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fFd0xnL5a+IZvN8ji1/QqsjNX1XRBq54vvQbTwdL5a4=;
-        b=fNeK85q3M3QraFYE3ITZySrbxEwx3BdoQXJokI9QKA88syChQHqJB/lZZjqWWYZi2musIk
-        7o5NJrviUqQrDkeyugqJAFoLGrmqJYjNySHzcR2yi8DhkZOZq6v3xUtx9xrSwGj6F3qqAZ
-        FktHaSv5Ow7EVDZEkv2W7HsAIFqVhKY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-SBjbbip8Pl2g2vpd0yvKcQ-1; Wed, 11 Nov 2020 10:45:58 -0500
-X-MC-Unique: SBjbbip8Pl2g2vpd0yvKcQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 992158049F5;
-        Wed, 11 Nov 2020 15:45:56 +0000 (UTC)
-Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C2E0A1002F13;
-        Wed, 11 Nov 2020 15:45:54 +0000 (UTC)
-Subject: Re: [PATCH v2 5/5] mm, page_poison: remove CONFIG_PAGE_POISONING_ZERO
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Laura Abbott <labbott@kernel.org>
-References: <20201103152237.9853-1-vbabka@suse.cz>
- <20201103152237.9853-6-vbabka@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <74868d3b-1435-08be-a01e-00bf69099064@redhat.com>
-Date:   Wed, 11 Nov 2020 16:45:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 11 Nov 2020 10:47:11 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E12C0613D1;
+        Wed, 11 Nov 2020 07:47:11 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id g4so534187oom.9;
+        Wed, 11 Nov 2020 07:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ai2w0Vvb3+GWtypmuXQ+UOVqSkheh81Q8SRV/4YN/gc=;
+        b=G45syko75rJBOdVLt5QXR0I702QZ+XuyD0TX5nRgoNH0daBlvqu+xD8JZ06zYWgm4a
+         6vzDpw8Ui4Fuzkl1K1YQzYLvStHsumgldWp3BGRLakeqVxhhUgDgk2BGH9sPqLqEEa7K
+         t4NGnew21VFzZ/5QkuAnswZ0TB5LRRX0kp19cKz+u+ihodhFEvE8i05JxkvhLnPhVaLf
+         dfNtPqCtC5wMaflHVZpxI/sgpxW7UopPunuhKI+xqJqy7vRjMO0hbmCxdvjPCb9sbfY6
+         IcECOv/Nq/7iXkyEqt8ZP0mY6SmSVhZBGyaVZ25L5qoH2ZsoEpDtfXqwxBEwijHIS5MW
+         jVlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ai2w0Vvb3+GWtypmuXQ+UOVqSkheh81Q8SRV/4YN/gc=;
+        b=PoosjCWyDVyYey23blPmUYe+sb9dYbwBetBzJNEcHCP04dta6cPWbFTfkVDhKcS80Y
+         Eu4HnFBl1hub5AvWRKKh8I/GU2or7x8elVlJ54XV09ri+ReXuWqoVlmYyQ2voDmAZ3xS
+         8lkG1yZx54mtyv2UqPNkTl9vWcQybXnoAUKvtEbVFbI1/0lhyjWPm1cRbgf1ZaXhsKif
+         EHBwWoXbn6AvGt6mmpY6rUZ18lgc29YdgfTZMCjWzhoxl4fvxef2AIMkx6iL71zZUoIz
+         CuvhadASj5nd39sxwh1LE/ULYZeszu1i0VniSSoLwi3gu2Ti884A8wgKWRe8PpQF0QR3
+         2Mrw==
+X-Gm-Message-State: AOAM532+HgRql5vD032Oo+fuN5TN+uDwxWtpoO0x/FT0o3L3meGCbh7c
+        Pc3h+uxZW0jJRKcKz8MJz8I=
+X-Google-Smtp-Source: ABdhPJwOwyqIu/9ZXtkU1qi7bZOeosRXEuSTE3WErLDOMm24tma3+cTem5o8AQR/mMDgSZxukXkb0Q==
+X-Received: by 2002:a4a:1e43:: with SMTP id 64mr17474234ooq.57.1605109630796;
+        Wed, 11 Nov 2020 07:47:10 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z7sm471501oib.57.2020.11.11.07.47.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 11 Nov 2020 07:47:10 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 11 Nov 2020 07:47:09 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+Subject: Re: [PATCH v5 3/4] wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
+Message-ID: <20201111154709.GB151426@roeck-us.net>
+References: <cover.1604574431.git.matti.vaittinen@fi.rohmeurope.com>
+ <1a454defaf65ecc22deb0fe42a1384a5f9d5a771.1604574431.git.matti.vaittinen@fi.rohmeurope.com>
+ <7d912f9a9c1aa2be3d73287401fd2088a63b899c.camel@fi.rohmeurope.com>
+ <2f455295-9c48-c9a7-8d70-90339833eb94@roeck-us.net>
+ <38cca1630a12f8b6c6a9f1e7a8669714957b0d01.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103152237.9853-6-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38cca1630a12f8b6c6a9f1e7a8669714957b0d01.camel@fi.rohmeurope.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.11.20 16:22, Vlastimil Babka wrote:
-> CONFIG_PAGE_POISONING_ZERO uses the zero pattern instead of 0xAA. It was
-> introduced by commit 1414c7f4f7d7 ("mm/page_poisoning.c: allow for zero
-> poisoning"), noting that using zeroes retains the benefit of sanitizing content
-> of freed pages, with the benefit of not having to zero them again on alloc, and
-> the downside of making some forms of corruption (stray writes of NULLs) harder
-> to detect than with the 0xAA pattern. Together with
-> CONFIG_PAGE_POISONING_NO_SANITY it made possible to sanitize the contents on
-> free without checking it back on alloc.
+On Wed, Nov 11, 2020 at 03:15:17PM +0000, Vaittinen, Matti wrote:
+[ ... ]
+> > > > +
+> > > > +	priv->wdd.info			= &bd957x_wdt_ident;
+> > > > +	priv->wdd.ops			= &bd957x_wdt_ops;
+> > > > +	priv->wdd.min_hw_heartbeat_ms	= hw_margin_min;
+> > > > +	priv->wdd.max_hw_heartbeat_ms	= hw_margin_max;
+> > > > +	priv->wdd.parent		= dev;
+> > > > +	priv->wdd.timeout		= (hw_margin_max / 2) * 1000;
+> > > 
+> > > Hmm. Just noticed this value does not make sense, right?
+> > > Maximum hw_margin is 4416 ms. If I read this correctly timeout
+> > > should
+> > > be in seconds -  so result is around 2 000 000 seconds here. I
+> > > think it
+> > > is useless value...
+> > > 
+> > > Perhaps
+> > > 	priv->wdd.timeout		= (hw_margin_max / 2) / 1000;
+> > > 	if (!priv->wdd.timeout)
+> > > 		priv->wdd.timeout = 1;
+> > > would be more appropriate.
+> > > 
+> > 
+> > Yes. Good catch. Actually, since max_hw_heartbeat_ms is specified,
+> > it can and should be a reasonable constant (like the usual 30
+> > seconds).
+> > It does not and should not be bound by max_hw_heartbeat_ms.
 > 
-> These days we have the init_on_free() option to achieve sanitization with
-> zeroes and to save clearing on alloc (and without checking on alloc). Arguably
-> if someone does choose to check the poison for corruption on alloc, the savings
-> of not clearing the page are secondary, and it makes sense to always use the
-> 0xAA poison pattern. Thus, remove the CONFIG_PAGE_POISONING_ZERO option for
-> being redundant.
+> Thanks for confirming this Guenter. I'd better admit I didn't
+> understand how the max_hw_heartbeat_ms works.
+> 
+> If I now read the code correctly, the "watchdog worker" takes care of
+> feeding for shorter periods than the "timeout" - and only stops
+> feeding max_hw_heartbeat_ms before timeout expires if userland has not
+> been feedin wdg. This is really cool approach for short(ish)
+> max_hw_heartbeat_ms configurations as user-space does not need to meet
+> "RT requirements". WDG framework is much more advanced that I knew :)
 
-I agree, this simplifies things ... and I don't see a need to complicate 
-things to speed up corner-case debug mechanisms. Thanks!
+Yes, exactly, that is the idea. Various drivers used to implement this
+within the driver, so it just made sense to pull the functionality into
+the watchdog core.
 
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
 Thanks,
-
-David / dhildenb
-
+Guenter
