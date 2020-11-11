@@ -2,172 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82252AF131
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6372AF137
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgKKMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:47:53 -0500
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:45183 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726207AbgKKMrx (ORCPT
+        id S1726720AbgKKMsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:48:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21615 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725859AbgKKMsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:47:53 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id cpWykn8MgRiwVcpX6kaLlF; Wed, 11 Nov 2020 13:47:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1605098870; bh=764s9qizFJslTNse1o+RIcZfci3G2jnzqqGavb8U8fU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=UcTDTQC9KinU1GIue9igoUmlL7rTofJMNgbu9pP0jUvpUhloyNCp9bQ48kCstGiDr
-         1T5YvA8tx5l5BwZMZBddmqfXvMUHNDCJ0ca6y/mqjnlC2jcfhxUL277+sTNUGjI96q
-         /MCyvlX4CSKBkrvCTjfLqwtOV/lb+5sCniFbKPFDoqV3j8jA1M6Oeiq8j9MLsptQ9L
-         wyBTALqyRV66Z9QsYKEqlgGhkMkC2/NpWKE/yJ2lOlbjhk7baxJP1DR+GN4hyGD7vn
-         qgP0G7xBDM5eblas7l6Z5JNWpaePF7GCDHgrP+cUQklr1LmXNrMLk9KgdffN1YSD+3
-         SfVQ1bMMqpc3A==
-Subject: Re: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
-To:     Alexandre Courbot <gnurou@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201022122421.133976-1-gnurou@gmail.com>
- <c6454292-935b-f14a-e743-838ccabc6590@xs4all.nl>
- <CAAVeFuKCEQYBs84ssCvwAkGUxGikeDFc+XNX2LzkENGc5B1n8g@mail.gmail.com>
- <db7a95b0-3d63-ed38-fb8a-62f32c83c13e@xs4all.nl>
- <CAAVeFuL8TaArTd_fOLSSE-854n9vwpob5LxdqgHNa-bTTn5Gxg@mail.gmail.com>
- <695e6163-7bdc-d120-cd02-0cff6efb53ef@xs4all.nl>
- <CAAVeFuL9PDgirADEVXUNbNKY4YVw9uFpjbr5Zmt_Vb-3K4-2Yg@mail.gmail.com>
- <92db8b0e-c348-70ef-a607-eb5c42f86fac@xs4all.nl>
- <CAAVeFuJ_rSN=JBi-2L2-v7eVonarGRzL5agTL-UW_WOD91D_tw@mail.gmail.com>
- <CAAVeFu+ASgmkWhddJrhkrsoYbW1u1uCjckU44GTDxoKykc9aVQ@mail.gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <817895e0-6207-9fbb-5581-0bf784c63915@xs4all.nl>
-Date:   Wed, 11 Nov 2020 13:47:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 11 Nov 2020 07:48:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605098924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zGXJ8V4La1S/QeUFBtdnXjusm+8Mn5insAGmUISpfHs=;
+        b=F1PZsI4a6hTKkBvvX/ZppGYJoY5vAo+DeBNUieutbG+qSQl07V3bNko6OnLkEZPg2w7XmQ
+        mpwv3wzSJqHa0iDkcmhY0RhqY3+1N06gCV7qw7WOgAgMPYz8cuQ8s5kgE2amRbBHl/hL8E
+        8j6nrQEh5oXFpEYzf41h7FI4KITPKss=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-314-lcVvIXfUPISu5xto5fD0XA-1; Wed, 11 Nov 2020 07:48:42 -0500
+X-MC-Unique: lcVvIXfUPISu5xto5fD0XA-1
+Received: by mail-wm1-f71.google.com with SMTP id z7so851670wme.8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 04:48:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zGXJ8V4La1S/QeUFBtdnXjusm+8Mn5insAGmUISpfHs=;
+        b=SSYykomFuy/VZmKgIQtsZ43Pub1t8sc+j+TLQUC2Y4tVLz4JxDlSZT+Y30Wgz5uBTy
+         B7v81WPdug47sqGPicse4Ss71YGvbErw3eVchl8NAPBnVBgj60gtT7PWuoPHPOnBKsqf
+         ObwKEWsEUREa7PBC+NrQFNOgfr1ll0rf9izBEuN3bjKx0pio5VS2MnyY/p0GkE1e8vQW
+         CG4ql3OtFPIMqePm1+SLD8Q5nlZU310rBvYCuae0kZA1YLCIXJFP9FRzyzXQvM7tJOee
+         7bZDMWG8vA9aLhU8/I9LeQvP3X82aZT/JHpksCZCBaPd3SI4U/VjBcywoTRx+hUK2ABC
+         ymiw==
+X-Gm-Message-State: AOAM533NrdBHWX/NEMOm6fnbJ/BNJodTsFXzw/hvCe/K+hoHSPBnI08p
+        dHRp1+RcGIgo+NMxMmhEVwF2cVhztvfD5m6elXW+FjZLk70eIeXs8+ZfwBVk1bBwiUK1UeR7khZ
+        FRORW+ay9/iFfeQND5WHhXAqx
+X-Received: by 2002:a5d:5446:: with SMTP id w6mr20336612wrv.122.1605098921358;
+        Wed, 11 Nov 2020 04:48:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzBamKw/bg5c7+XjuuJx3l1SVoJhclL/t8sfniS6v7UD+Th0hPny5TfD72A5b6eS01hmH1NbQ==
+X-Received: by 2002:a5d:5446:: with SMTP id w6mr20336594wrv.122.1605098921214;
+        Wed, 11 Nov 2020 04:48:41 -0800 (PST)
+Received: from redhat.com (bzq-79-181-34-244.red.bezeqint.net. [79.181.34.244])
+        by smtp.gmail.com with ESMTPSA id y11sm2305471wmj.36.2020.11.11.04.48.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 04:48:40 -0800 (PST)
+Date:   Wed, 11 Nov 2020 07:48:36 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20201111074811-mutt-send-email-mst@kernel.org>
+References: <20201102124327.2f82b2a7@canb.auug.org.au>
+ <20201102051822-mutt-send-email-mst@kernel.org>
+ <20201111171015.631ffd0e@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAAVeFu+ASgmkWhddJrhkrsoYbW1u1uCjckU44GTDxoKykc9aVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfHnp4hHBd9MTp8LNzGjgTCMUOOl35R6VtC4U+s6qbwRKa7BfYvBFoum4DXwDQNSP25wQxA6lbzd/JXJT9uWMKi7TK1RGTPBCST2Eq8Q9mJBOrYhhEprT
- aoiKij7QKULw6Cy08moFtWPuKYpb8RAeOn/LHAIIlSc4vhzsfQLAeiBISqU4gvaqOiTmhv8CUKaM7FKQ6ij+Jlq7IOmwQdgpXa6BA6b4j/JvvVJPZ/BiRTXA
- 50Fw7LVgMlgW1bnej0LP5xVKVlIflIPgs1KFfbnplEbpC/4AipQaIiMqjd05F2oHZNyw96a+sY0UiNPeQfCZ8A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111171015.631ffd0e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2020 13:41, Alexandre Courbot wrote:
-> On Thu, Nov 5, 2020 at 11:05 PM Alexandre Courbot <gnurou@gmail.com> wrote:
->>
->> On Thu, Nov 5, 2020 at 10:12 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->>>
->>> On 05/11/2020 13:52, Alexandre Courbot wrote:
->>>> On Thu, Nov 5, 2020 at 9:36 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->>>>>
->>>>> On 05/11/2020 13:21, Alexandre Courbot wrote:
->>>>>> On Tue, Nov 3, 2020 at 6:48 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->>>>>>>
->>>>>>> On 03/11/2020 09:51, Alexandre Courbot wrote:
->>>>>>>> Hi Hans,
->>>>>>>>
->>>>>>>> On Sat, Oct 31, 2020 at 12:09 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->>>>>>>>>
->>>>>>>>> On 22/10/2020 14:24, Alexandre Courbot wrote:
->>>>>>>>>> do_poll()/do_select() seem to set the _qproc member of poll_table to
->>>>>>>>>> NULL the first time they are called on a given table, making subsequent
->>>>>>>>>> calls of poll_wait() on that table no-ops. This is a problem for mem2mem
->>>>>>>>>> which calls poll_wait() on the V4L2 queues' waitqueues only when a
->>>>>>>>>> queue-related event is requested, which may not necessarily be the case
->>>>>>>>>> during the first poll.
->>>>>>>>>>
->>>>>>>>>> For instance, a stateful decoder is typically only interested in
->>>>>>>>>> EPOLLPRI events when it starts, and will switch to listening to both
->>>>>>>>>> EPOLLPRI and EPOLLIN after receiving the initial resolution change event
->>>>>>>>>> and configuring the CAPTURE queue. However by the time that switch
->>>>>>>>>> happens and v4l2_m2m_poll_for_data() is called for the first time,
->>>>>>>>>> poll_wait() has become a no-op and the V4L2 queues waitqueues thus
->>>>>>>>>> cannot be registered.
->>>>>>>>>>
->>>>>>>>>> Fix this by moving the registration to v4l2_m2m_poll() and do it whether
->>>>>>>>>> or not one of the queue-related events are requested.
->>>>>>>>>
->>>>>>>>> This looks good, but would it be possible to add a test for this to
->>>>>>>>> v4l2-compliance? (Look for POLL_MODE_EPOLL in v4l2-test-buffers.cpp)
->>>>>>>>>
->>>>>>>>> If I understand this right, calling EPOLL_CTL_ADD for EPOLLPRI, then
->>>>>>>>> calling EPOLL_CTL_ADD for EPOLLIN/OUT would trigger this? Or does there
->>>>>>>>> have to be an epoll_wait call in between?
->>>>>>>>
->>>>>>>> Even without an epoll_wait() in between the behavior is visible.
->>>>>>>> v4l2_m2m_poll() will be called once during the initial EPOLL_CTL_ADD
->>>>>>>> and this will trigger the bug.
->>>>>>>>
->>>>>>>>> Another reason for adding this test is that I wonder if regular capture
->>>>>>>>> or output V4L2 devices don't have the same issue.
->>>>>>>>>
->>>>>>>>> It's a very subtle bug and so adding a test for this to v4l2-compliance
->>>>>>>>> would be very useful.
->>>>>>>>
->>>>>>>> I fully agree, this is very counter-intuitive since what basically
->>>>>>>> happens is that the kernel's poll_wait() function becomes a no-op
->>>>>>>> after the poll() hook of a driver is called for the first time. There
->>>>>>>> is no way one can expect this behavior just from browsing the code so
->>>>>>>> this is likely to affect other drivers.
->>>>>>>>
->>>>>>>> As for the test itself, we can easily reproduce the conditions for
->>>>>>>> failure in v4l2-test-buffers.cpp's captureBufs() function, but doing
->>>>>>>> so will make the streaming tests fail without being specific about the
->>>>>>>> cause. Or maybe we should add another pollmode to specifically test
->>>>>>>> epoll in this setup? Can I get your thoughts?
->>>>>>>
->>>>>>> No, just keep it as part of the poll test. Just add comments at the place
->>>>>>> where it fails describing this error.
->>>>>>>
->>>>>>> After all, it *is* a poll() bug, so it is only fair that it is tested as
->>>>>>> part of the epoll test.
->>>>>>>
->>>>>>> Can you call EPOLL_CTL_ADD with ev.events set to 0? And then call it again
->>>>>>> with the actual value that you need? If that triggers this issue as well,
->>>>>>> then that is a nice test (but perhaps EPOLL_CTL_ADD won't call poll() if
->>>>>>> ev.events is 0, but perhaps EPOLLERR would work instead of 0).
->>>>>>
->>>>>> Yup, actually the following is enough to make v4l2-compliance -s fail
->>>>>> with vicodec:
->>>>>
->>>>> Does it also fail with vivid? I am curious to know whether this issue is
->>>>> m2m specific or a more general problem.
->>>>
->>>> It does fail actually! And that made me notice that vb2_poll() uses
->>>> the same pattern as v4l2_m2m_poll() (probably because the latter is
->>>> inspired by the former?) and needs to be fixed similarly. I will send
->>>> another patch to fix vb2_poll() as well, thanks for pointing it out!
->>>
->>> I was afraid of that.
->>>
->>> Testing epoll for control events would be interesting as well. The
->>> vivid radio device is an example of a device that has controls, but
->>> does not do streaming (so is not using vb2).
->>>
->>> But from what I can see v4l2_ctrl_poll() does the right thing, so this
->>> should be fine.
->>
->> Indeed, it unconditionally calls poll_wait() with all the wait queues
->> that may wake us up (that is, only one), so there is no problem there.
+On Wed, Nov 11, 2020 at 05:10:15PM +1100, Stephen Rothwell wrote:
+> Hi Michael,
 > 
-> Sorry, I noticed that this patch was marked with "Changes Requested"
-> in patchwork, but isn't it valid as-is? We need a similar change to
-> VB2, but that should go as a separate patch IMHO. I'm fine with doing
-> both in one go if you prefer that though.
+> On Mon, 2 Nov 2020 05:19:06 -0500 "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> >
+> > On Mon, Nov 02, 2020 at 12:43:27PM +1100, Stephen Rothwell wrote:
+> > > 
+> > > After merging the drm-misc tree, today's linux-next build (arm
+> > > multi_v7_defconfig) failed like this:
+> > > 
+> > > In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
+> > > include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
+> > > include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
+> > >    99 |  return SIZE_MAX;
+> > >       |         ^~~~~~~~
+> > > include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
+> > >     6 | #include <linux/init.h>
+> > >   +++ |+#include <stdint.h>
+> > >     7 | #include <linux/types.h>
+> > > include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
+> > >    99 |  return SIZE_MAX;
+> > >       |         ^~~~~~~~
+> > > 
+> > > Caused by commit
+> > > 
+> > >   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
+> > > 
+> > > but only exposed by commit
+> > > 
+> > >   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
+> > > 
+> > > I applied the following fix for today:
+> > > 
+> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > Date: Mon, 2 Nov 2020 12:34:57 +1100
+> > > Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
+> > > 
+> > > Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
+> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>  
+> > 
+> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> > 
+> > I guess it makes sense to pick this up for this release directly.
+> > I'll merge this unless there are any objections.
 > 
+> Christoph is right that the include should not be conditional.  But I
+> have not tested that that does not introduce some other problems.
 
-In at least one reply you mentioned that you wanted to add a comment (reply
-from 23 Oct). That's why I changed it to 'Changes Requested'.
+If there's a problem it will be a build failure - I'll put
+it in next for a while, this way we'll find out.
 
-Also, I prefer to fix both m2m and vb2 at the same time (separate patches,
-but part of the same patch series). And together with a separate patch improving
-v4l2-compliance.
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-Regards,
 
-	Hans
