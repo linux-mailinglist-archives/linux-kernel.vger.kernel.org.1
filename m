@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19DC2AE548
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A19912AE54E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732369AbgKKBFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:05:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        id S1732174AbgKKBIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKKBFl (ORCPT
+        with ESMTP id S1727275AbgKKBIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 20:05:41 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19F0C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:05:37 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id f11so886908lfs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:05:37 -0800 (PST)
+        Tue, 10 Nov 2020 20:08:37 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B44C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:08:34 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id i6so906980lfd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:08:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zQ2YZ7wvYdXCryYm5A3rqiOGevl/hLPKyvgu8SbKo14=;
-        b=OIAHF4sUEZIlYdTykmcU7LXhEJz+9V6MsuW9lWVY8EIBo6fIuf+nzL9mybVcKjYtg9
-         BxcKPbSxQn4CuFNnIpVqe/OFYrEjmBKLT5W1DAQQc2krQau/NxBr8UxJd9YEzNcf2M14
-         i0/OQdBnyys2Pv84Lo87gx2wBgYyQjyeWW3yteKgseOyEjGhfN28F7HMfKLkxlUUs8Ui
-         wrlpd8B6dO5UnYqXDksXG4naiVmVM+Nz2cDmCFZgF7fPoW2bhFTzWzMiEW0VRgbuHaJ1
-         yPY1uoSYtiRuTOnjHY62FOz3ld69uI7KvWaP4rZqBz8exBloe1k74C2urxnvA+DksIBU
-         Qg+A==
+        bh=OKnTpb6WDK79h6wzA/BGMIqbAHNaR/GEp/A0ryb8Y1s=;
+        b=ST83Kv6mMeTo+80B4tYYL95DnnqVTImdY5ZZb3uEwhr9CRDv2QHlUfRCNcmxIoMHuc
+         +kHBzQG7KQA5gBSNNuGb9jqENXxRGimjrlkEkZ0K+lpssMvOVnK4JbS8L4O8wBgq2UNB
+         ykrpf8YV4mHTIUtsErKhFjpGIpRNLKk3iIHMa0aXTLWvUqQTOBB8Q/2nbecCIAvjFFTg
+         iE2FFBrv3xPe9vSOjZvcNcrzz6G4hA3JcoMq1V3P9wmmp5wy/1JmAhAQQ7FNvkoSk3KG
+         TAOKk3y3pJJDeuO8ZU7NgyXI6ByFBJVT5cDcoMLhw1/hDGsL++oo6AgN8wxNZQrUspEh
+         18YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zQ2YZ7wvYdXCryYm5A3rqiOGevl/hLPKyvgu8SbKo14=;
-        b=BL9cxtPsKHS8VLMxyEfXJwZdPH0Bs+1J2dr7ND4ZpwM3roxlUUzBWBqRyKV/xrUgUB
-         LETlCXa4lUuRWeueDHeOSZw2JeD8xh+EFjzODRBFPOjnn+9644hMrXzuU5DyE69cb3N6
-         fu/KRgwbUMn6/QYxd3lL0aSR5Zmbh/4StFllrJ/In9uBf8060Gj7LB4SsIo0M/dGy5da
-         5nrfYNpxh9Ey47RedukEwP6MovMY2CITDjqbQREhz9Ws8tVP1saHrmtwgAkCesYxWX/N
-         3tjSHkktr+cQZ/do4bB4sEauh3uUeN5jvnl1qSxK5Ts3M3FNMz2uAXRJEE0R7ehhFx4z
-         AqLQ==
-X-Gm-Message-State: AOAM533aADuKches1JFx204LMVRRliy4uJ9iBce3DMbs33vEfkBPg2/J
-        P/S1pL5myMoLL1K/3dRgikPpZPL0x3FrWghhI0WDKQ==
-X-Google-Smtp-Source: ABdhPJxleCZln6csvKBM5WS9AaFou3IqhZl3LxfI+NQUXV6wm+54Mhg/YCD9sXS5A+XIb+CHs69sHx6ywxt1PZYsJrc=
-X-Received: by 2002:a05:6512:3225:: with SMTP id f5mr8058036lfe.441.1605056730290;
- Tue, 10 Nov 2020 17:05:30 -0800 (PST)
+        bh=OKnTpb6WDK79h6wzA/BGMIqbAHNaR/GEp/A0ryb8Y1s=;
+        b=CiOYp6cZTRkVcLKkV3SLdrQdRcyIMGbWkARi7DNmYhQPhIlo2344q0GQIWv8+kZt6L
+         yfXFYMnAjcBYV+YQKKApj15kQ8e3R9p/vjQRGBKtb/GY5I+u4VQClMtZMefBvkqphVg4
+         8d0+Kn47TBNciHmjE4IXodVyI0DrrDJItMF9LnUJd9Sw8EpfSZH/qAdpAgmOJxO49quZ
+         3T+t8Dq7w7Re2clFrhWFp6BWn9agJnB7zgzSWyF78QjS9KEG7zXWTPSCa8fMTppStqby
+         NilWmEll6ivbC1NZ4qMMjs8JspanVuKmluDw3k+zo+C/dnmFSwsZ0kjTzyJj5pvQ17tb
+         +RVA==
+X-Gm-Message-State: AOAM532upZk5bp6g4U8Hle+tnv3/33aPLCTasxZOXgFDB0qi2w6Nuq9J
+        6GB+0eTEDzINq7FnjCFHSlCbU1m0sNdLuky1JJrcSw==
+X-Google-Smtp-Source: ABdhPJyTz8edr2BkyMyzpSGiwVzBOi5L8wucnKcO8juRdvYXVu85AtYasLPNSH9oTli6dkFHHgq6lfKAkHprd/QE7Bw=
+X-Received: by 2002:a19:5e0b:: with SMTP id s11mr7865088lfb.502.1605056907439;
+ Tue, 10 Nov 2020 17:08:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106150706.29089-1-TheSven73@gmail.com> <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
- <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
-In-Reply-To: <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
+References: <20201106150706.29089-1-TheSven73@gmail.com>
+In-Reply-To: <20201106150706.29089-1-TheSven73@gmail.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Nov 2020 02:05:19 +0100
-Message-ID: <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com>
+Date:   Wed, 11 Nov 2020 02:08:16 +0100
+Message-ID: <CACRpkdbti4j+oL8=7i=G8YOGjpNre9X5dMs+HH0vLA4QpYPD0A@mail.gmail.com>
 Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO descriptors
 To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+Cc:     Mark Brown <broonie@kernel.org>,
         Jonathan Cameron <jonathan.cameron@huawei.com>,
         Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
         linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 3:41 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
-> On Mon, Nov 9, 2020 at 9:24 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > Sounds like "many SPI drivers have to be fixed".
+On Fri, Nov 6, 2020 at 4:07 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+
+> From: Sven Van Asbroeck <thesven73@gmail.com>
 >
-> I don't disagree. Fact is that after the imx cspi bus driver was converted
-> to gpio descriptors, most spi client drivers broke. It would be great if this
-> could be fixed. Any method that the community can find a consensus on,
-> would be great :)
-
-I think your patch is the quick fix.
-
-I would say that anything that has:
-
-spi->mode = ...
-
-is essentially broken.
-
-The core sets up vital things in .mode from e.g. device tree in
-of_spi_parse_dt():
-
-        /* Mode (clock phase/polarity/etc.) */
-        if (of_property_read_bool(nc, "spi-cpha"))
-                spi->mode |= SPI_CPHA;
-        if (of_property_read_bool(nc, "spi-cpol"))
-                spi->mode |= SPI_CPOL;
-        if (of_property_read_bool(nc, "spi-3wire"))
-                spi->mode |= SPI_3WIRE;
-        if (of_property_read_bool(nc, "spi-lsb-first"))
-                spi->mode |= SPI_LSB_FIRST;
-        if (of_property_read_bool(nc, "spi-cs-high"))
-                spi->mode |= SPI_CS_HIGH;
-
-All this gets overwritten and ignored when a client just assigns mode
-like that. Not just SPI_CS_HIGH. I doubt things are different
-with ACPI.
-
-> One the one hand: the fact that many spi client drivers just overwrite
-> flags and values in their parent bus structure, doesn't sound idiomatic.
-> I guess those spi->... values should really be opaque, and we should
-> be using accessor functions, eg.:
+> Commit f3186dd87669 ("spi: Optionally use GPIO descriptors for CS GPIOs")
+> introduced the optional use of GPIO descriptors for chip selects.
 >
->     static int acme_probe(struct spi_device *spi)
->     {
+> A side-effect of this change: when a SPI bus uses GPIO descriptors,
+> all its client devices have SPI_CS_HIGH set in spi->mode. This flag is
+> required for the SPI bus to operate correctly.
+>
+> This unfortunately breaks many client drivers, which use the following
+> pattern to configure their underlying SPI bus:
+>
+> static int client_device_probe(struct spi_device *spi)
+> {
 >         ...
->         // won't touch SPI_CS_HIGH flag
->         spi_set_mode_clock(spi, SPI_MODE_0);
->         ...
->     }
+>         spi->mode = SPI_MODE_0;
+>         spi->bits_per_word = 8;
+>         err = spi_setup(spi);
 
-I would just make sure to affect the flags that matters to my driver,
-it's just bits.
+I feel torn about it, there are so many weird corners of semantics
+in this code. The patch makes the code easier to understand
+too.
 
-spi->mode &= ~FOO;
-spi->mode |= BAR;
-
-> On the other hand, it sounds very confusing to set SPI_CS_HIGH on
-> all spi buses that use gpio descriptors: especially because gpiolib
-> already handles absolutely everything related to polarity.
-
-As long as gpiolib gets a 1 for asserted and a 0 for deasserted
-it will be happy.
-
-I'm not against your patch, it makes the codepath cleaner
-so in a way it is good.
+If it provedly fixes more than it breaks:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
