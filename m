@@ -2,166 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC4E2AF413
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D322AF416
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgKKOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
+        id S1727150AbgKKOxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgKKOwq (ORCPT
+        with ESMTP id S1726988AbgKKOxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:52:46 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F567C0613D1;
-        Wed, 11 Nov 2020 06:52:45 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id x9so2388462ljc.7;
-        Wed, 11 Nov 2020 06:52:45 -0800 (PST)
+        Wed, 11 Nov 2020 09:53:17 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890D0C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:53:17 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id z21so3462555lfe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:53:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iqXzG4nSzYlFe8ERET+8xQRhF1wCxB96YJaw1rg7Nak=;
-        b=GFqiS60DyrCfM1v2COjz1L8aPOKbkFCZMxXXwNmGs56gUSPDHLYHHVxCG1WOcOA0r/
-         zJ67aEtqoGmaNU8183/2qa2hft+O6C9tJRgq4idjTDzKPAsKerSkA8Lfc+xiRpZKV4IM
-         5FoPU9NIceR+zbrHauVmDhemtQyDJRbXh/26ffgNANVvLFgCbF1bMm5xIsyzNYXGvuz1
-         Az0bZzh0IfppnuDQo27Sui6kXfskC179909Vlpf36CqfI6spQ1F9megy1EihZwEd89Ze
-         c/BO2w/VQcWj44skVBFQ16U8Z+CB0+S8vsjBlPIbZBaIXPJC4IjzKP5yUBTQV7fISN+V
-         +pPA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZVLlXwDe5fMTOgU+8fzchgHyqxUszJ9a/tL8hlboio=;
+        b=xc8wsRKk6zyyqqhu0VJTkcJlwAnC4Q79uq/8+TbZoSG/ykQgRiT+HKe87VLF9uZstn
+         MgDS1NM8zimQQMC8/jfVnY3MqxXXdM5x3Go4u5KHIXLd1aqt2yY1r2ZgEbjQHbAI8EEe
+         mXDqQFmCTy5ppXABOYt0Ldwz2KroXRF/g9/1g2Ehd4CNOy3d5yi+KW7k/3JETlKs7m/I
+         THLvuNGyXT7xze+fjDBzpwof0BmsU2XUkLYRlml7ln4KFzfjnw+1JsXVQ0maDaGSCn7k
+         YCp2QSskXDmS8xZlClwEhlofC9h+pJWAjuwStDWEHTNWh6MPQ7+0rsn3TSErW8mSIEyb
+         Ikvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iqXzG4nSzYlFe8ERET+8xQRhF1wCxB96YJaw1rg7Nak=;
-        b=qMTVGsUb+0G10vL7Rm5CsWpJpmEkJp2TYdkIuBUQx0MRHXEHvo/em7eGyICvtKpoP/
-         g2J4449aAPy68ZvgGCzvWmDnRbnYvmL8aU4ZF8VfQ4LSixJ+PeXZHREVpcbElSi97w2e
-         o1VRjRukfQNNUmhFOC5P0wpeQwTobjCqGwPUVZ4iJNof1dkK4B6AJfVEKhGdx0p0r3yt
-         qancldqZV68tlOyuL0gGOTH9YeNMj6Is971TsxeryouuyE5v/v7QvKmdUZqXly4F7+Jz
-         KqbXeW3AXMSRHSi16VfM1bK+PSyuXlKS+CPjNqQXBWolarxATDrrnPYxpmps5NU1YeyS
-         oRSw==
-X-Gm-Message-State: AOAM532DC2iqrPmUsHstFcGFVX9keTt1oRHNNsu/qIoAWml1xLHt0TE7
-        FX4xVqvzppM4X40Wx5HmNKM=
-X-Google-Smtp-Source: ABdhPJz7uS4/+RqawyJ4T9Xx5mM/wUT99cm10QHAEiN6poWT/wUAcN5U8iRqye6ZakFOdBzTtYei1Q==
-X-Received: by 2002:a05:651c:95:: with SMTP id 21mr9979022ljq.307.1605106363632;
-        Wed, 11 Nov 2020 06:52:43 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id k3sm238958lfd.245.2020.11.11.06.52.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 06:52:43 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:52:40 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
-Message-ID: <20201111145240.lok3q5g3pgcvknqr@mobilestation>
-References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
- <20201107094028.GA4918@alpha.franken.de>
- <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
- <20201110095503.GA10357@alpha.franken.de>
- <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZVLlXwDe5fMTOgU+8fzchgHyqxUszJ9a/tL8hlboio=;
+        b=tBpVgPGqI9UVqV3vMxCvJBFG4AAaF/roecgDbw3pvgd0B3MT9xqUzOUZMjVMabYlkx
+         wQUDYxcgMjEyypjyO02wY1hiu9FCRWf8Qe4XFWulQ0s85SkJyHXIVun9QOA4KIiTWsk7
+         9s8cp+4l1v3dv0WltHJd4PzxenlhUxCK29caUe0HnI5QQkZNa/etELJwgXyoJ1V9q6nE
+         T8d+JvwZBau8fP4hGdXb31UdIK1uHLdA9YdBywJyIPYlpooFHcvi5mRhSyYOLhIZKy5J
+         nStzCGsKexlOzjdS66mjkjDCGd+FtikDXOeqKPpNZJdwt6Uyxiczm0Q4LAn6IZieMXwn
+         CXuw==
+X-Gm-Message-State: AOAM533CJVdvkC/fXiZU96gwbP9KxFDO5+SMZj58wa3a/B4sYErVkQYB
+        dRaRYmkfolddOAm5tvh7yRTulE/GJS2lCyBVnkUHjA==
+X-Google-Smtp-Source: ABdhPJzSEoIuAvWpeEhGWcyet/dlWnEpWoX24604qd6BmgRHaExWp2au6Wt3tP7E8zvOBiKSncIlPnSi6HXI9tld7Ws=
+X-Received: by 2002:a19:ca05:: with SMTP id a5mr6514401lfg.571.1605106395648;
+ Wed, 11 Nov 2020 06:53:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
+References: <20201108180144.28594-1-martin@kaiser.cx> <CAHp75VeVPUJ_a4L+Lj-zR6Wm3Woq6F0uHzmtx3NCRO=TVopvrw@mail.gmail.com>
+ <fc6a99af-7cee-b0ae-c4b1-cc7249e22b6c@microchip.com>
+In-Reply-To: <fc6a99af-7cee-b0ae-c4b1-cc7249e22b6c@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Nov 2020 15:53:04 +0100
+Message-ID: <CACRpkdYyAvDzZ5fqtcYWxhdLU+JS00iKbo3pogG0AnvWv4-ucQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: pinctrl-at91-pio4: Set irq handler and data in
+ one go
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander
+On Tue, Nov 10, 2020 at 10:08 AM Nicolas Ferre
+<nicolas.ferre@microchip.com> wrote:
+> On 09/11/2020 at 12:26, Andy Shevchenko wrote:
+> > On Sun, Nov 8, 2020 at 8:05 PM Martin Kaiser <martin@kaiser.cx> wrote:
+> >>
+> >> Replace the two separate calls for setting the irq handler and data with a
+> >> single irq_set_chained_handler_and_data() call.
+> >
+> > Can it be rewritten to use the GPIO core facility of instantiating IRQ chip?
+>
+> I have the feeling it's out of scope for this (tiny) patch.
 
-On Tue, Nov 10, 2020 at 11:29:50AM +0100, Alexander Sverdlin wrote:
-> Hello Thomas,
-> 
-> On 10/11/2020 10:55, Thomas Bogendoerfer wrote:
-> >>>> Linux doesn't own the memory immediately after the kernel image. On Octeon
-> >>>> bootloader places a shared structure right close after the kernel _end,
-> >>>> refer to "struct cvmx_bootinfo *octeon_bootinfo" in cavium-octeon/setup.c.
-> >>>>
-> >>>> If check_kernel_sections_mem() rounds the PFNs up, first memblock_alloc()
-> >>>> inside early_init_dt_alloc_memory_arch() <= device_tree_init() returns
-> >>>> memory block overlapping with the above octeon_bootinfo structure, which
-> >>>> is being overwritten afterwards.
-> >>> as this special for Octeon how about added the memblock_reserve
-> >>> in octen specific code ?
-> >> while the shared structure which is being corrupted is indeed Octeon-specific,
-> >> the wrong assumption that the memory right after the kernel can be allocated by memblock
-> >> allocator and re-used somewhere in Linux is in MIPS-generic check_kernel_sections_mem().
-> > ok, I see your point. IMHO this whole check_kernel_sections_mem() should
-> > be removed. IMHO memory adding should only be done my memory detection code.
-> > 
-> > Could you send a patch, which removes check_kernel_section_mem completly ?
-> 
+True, but a good suggestion anyways.
 
-> this will expose one issue:
-> platforms usually do it in a sane way, like it was done last 15 years, namely
-> add kernel image without non-complete pages on the boundaries.
-> This will lead to the situation, that request_resource() will fail at least
-> for .bss section of the kernel and it will not be properly displayed under
-> /proc/iomem (and probably same problem will appear, which initially motivated
-> the creation of check_kernel_section_mem()).
+If you have a TODO for the AT91 pin controllers I think both using
+the GPIOLIB_IRQCHIP can cut down
+the code in these files quite a bit, and probably fix some unknown bugs.
 
-Are you saying that some old platforms rely on the
-check_kernel_section_mem() method adding the memory occupied by the
-kernel to the system? If so, do you have an example of such?
-
-Personally I also had my hand itching to remove that method years ago,
-but I didn't dare to do so for the same reason in mind... On the other
-hand if we detected all the platforms that needed that method, we could
-have moved it to their prom_init() or something and got rid of that
-atavism for good.
-
-> 
-> As I understood, the issue is that memblock API operates internally on the
-> page granularity (at least there are many ROUND_DOWN() inside for the size
-> or upper boundary),
-
-Hm, I don't think so. Memblock doesn't work with the pages granularity,
-but with memory ranges. round_down()/round_up() are used to find a memory
-range with proper alignment. (See __memblock_find_range_top_{up,down}()
-method implementation.)
-
-Memblock allocates a memory region with exact size and alignment as
-requested. That's the beauty of that allocator and one of the reasons
-why the kernel platforms have been painfully converted to using it instead
-of the old bootmem allocator. BTW the later one has indeed operated
-with page granularity.
-
-Getting back to the memblock allocator. It works with pages only when
-the kernel comes to starting the buddy allocator. So the kernel
-invokes memblock_free_all(), which eventually gets to calling
-free_low_memory_core_early()->__free_memory_core(). The later method indeed
-sets the memory pages free, but as you can see it's done with correct
-aligning PFN_UP(phys_start)/PFN_DOWN(end).
-
-> so for request_resource() to success one has to claim
-> the rest of the .bss last page. And with current memblock API
-> memblock_reserve() must appear somewhere, being this ARCH or platform code.
-
-After a short glance at the request_resource() code I didn't manage to
-find a reason why the method would fail to request a page-unaligned
-region. AFAICS it will fail only if the memory occupied by the kernel
-hasn't been registered as system memory. The later case may happen
-only for the systems which rely on the check_kernel_section_mem()
-method being called in the generic arch_mem_init(). Of course we
-shouldn't blindly have it removed, but instead move it to the
-platforms, which have been unfortunate enough not to add the kernel
-memory to the system memory pool.
-
-So IMHO what could be the best conclusion in the framework of this patch:
-1) As Thomas said any platform-specific reservation should be done in the
-platform-specific code. That means if octeon needs some memory behind
-the kernel being reserved, then it should be done for example in
-prom_init().
-2) The check_kernel_sections_mem() method can be removed. But it
-should be done carefully. We at least need to try to find all the
-platforms, which rely on its functionality.
-
--Sergey
-
-> 
-> -- 
-> Best regards,
-> Alexander Sverdlin.
+Yours,
+Linus Walleij
