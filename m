@@ -2,161 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4462AE6C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE80D2AE6CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgKKDES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:04:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50255 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725839AbgKKDES (ORCPT
+        id S1726039AbgKKDFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgKKDFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:04:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605063856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kAI66A1HaDxdXVgcIi30SJI9zav2icPTlQ74GymTqFM=;
-        b=JLtV4Tzs9zEZ9w+MvmtI9W/DDWaflESieGNa2TyS1mJwA1p625aKVyYmSmNd+dYuzDAVLU
-        U2iNAhKUUCcvdY1xn+AeCAL8yQF8q0zzASTIJqQKaK98Os3Otti+5xSEXZCKw3RsRwPS4h
-        lq3Ugro2nHs17/5SqDB3wJB2yV8xONQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-rkwv_88sM-iTNM9HMofwwg-1; Tue, 10 Nov 2020 22:04:14 -0500
-X-MC-Unique: rkwv_88sM-iTNM9HMofwwg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8B5F5F9DB;
-        Wed, 11 Nov 2020 03:04:13 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B82561002C09;
-        Wed, 11 Nov 2020 03:04:01 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 22:03:59 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: remove unused macros
-Message-ID: <20201111030359.GB55072@madcap2.tricolour.ca>
-References: <1604651482-9780-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201110152310.GB55411@madcap2.tricolour.ca>
- <CAHC9VhQiQoZh8in+zoYa5hbTN_yL-=mt7nTQFN9GAyQZ+tz-Ww@mail.gmail.com>
+        Tue, 10 Nov 2020 22:05:03 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24748C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:05:02 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id v12so697029pfm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:05:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=I1w3h3DBfObfCB40Yy2KUFv6ARXtSGRtHeyDZbNE6k4=;
+        b=V1NMi/4iIiNQHgVDraHGnT40akH5Er0Gj5d9uhS3IC9jkitlHw0MwCa+yugFpLcho9
+         UECTZvvRdZXhGDFvtCkOunO+Psyw0fWUXDpL5bqXWMHpo579xwiNA29BtgxQiRdt+T5A
+         Bznsxeavl/a0GYi8eQkR940PepwgqIqg7M90WqJgX0thdsa25WikcNjaKPDpyaMX8Poe
+         gGuEXrgHCjn18O+Dszu4nkORzw0mdPkOVpBiUB55uFSNU9JIqlFX1zH7XfzOoRkwUn6D
+         o3zqy36OSMA27ya0udvMh6heC+gyL+kC/gRFtBcQ3oE6aKPeWCnNJAY0xc00WgM/lkyt
+         K0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=I1w3h3DBfObfCB40Yy2KUFv6ARXtSGRtHeyDZbNE6k4=;
+        b=FSfiu89lVtpu+nqv59ScULQGuD4TJp8zTzhp6/wtyUqwmNu5pswxqGVlrMXMpfA/gp
+         5z6Bxy1yjoG57JAymZHF08gEjPjZO76z4Gl5w/nCJ09q6AZ8xpHrVZHZQxaP+tRFq6eW
+         +iMrg58kzk3vnOJNinazItMCnYafMyuyNwlyPlQuCboXpOdk3Mqe1OWQLxjxmUTpNhzw
+         2RlN1ywHGF8GMk+M58RnPUHmOSksvNUmY9ESQtAUMo9o+M0H6eXqERnoezSePIY+3fo8
+         a0AuNbK4gXoOa7KFYNksVnRCUrwx0cupkNZKWeLv/yL/UhHj3DzYsa4DYxy7F4KxViet
+         h9Hg==
+X-Gm-Message-State: AOAM533tFF9WGm/wwOk8ynzcj158TQAPbF13JGpYm20hOsPAhn4swHks
+        itvR4dFZU0BJ3ovjzmF4jHTfew==
+X-Google-Smtp-Source: ABdhPJw6ancNyUx/MdbKSuZyA7R3MW3GoteeWvrZ1dDd6rpukLsiO635ahjTmcstRm3jVNjYQsJRvA==
+X-Received: by 2002:a63:d74b:: with SMTP id w11mr19643079pgi.147.1605063901710;
+        Tue, 10 Nov 2020 19:05:01 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([103.127.239.100])
+        by smtp.gmail.com with ESMTPSA id t5sm406574pjq.7.2020.11.10.19.04.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 10 Nov 2020 19:05:00 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:04:56 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Coresight ML <coresight@lists.linaro.org>
+Subject: Re: [PATCH RESEND 2/2] perf test: Update branch sample parttern for
+ cs-etm
+Message-ID: <20201111030456.GC10969@leoy-ThinkPad-X240s>
+References: <20201110063417.14467-1-leo.yan@linaro.org>
+ <20201110063417.14467-2-leo.yan@linaro.org>
+ <20201110180829.GF3429138@xps15>
+ <20201110181929.GA355344@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHC9VhQiQoZh8in+zoYa5hbTN_yL-=mt7nTQFN9GAyQZ+tz-Ww@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201110181929.GA355344@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-10 21:47, Paul Moore wrote:
-> On Tue, Nov 10, 2020 at 10:23 AM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > On 2020-11-06 16:31, Alex Shi wrote:
-> > > Some unused macros could cause gcc warning:
-> > > kernel/audit.c:68:0: warning: macro "AUDIT_UNINITIALIZED" is not used
-> > > [-Wunused-macros]
-> > > kernel/auditsc.c:104:0: warning: macro "AUDIT_AUX_IPCPERM" is not used
-> > > [-Wunused-macros]
-> > > kernel/auditsc.c:82:0: warning: macro "AUDITSC_INVALID" is not used
-> > > [-Wunused-macros]
-> > >
-> > > remove them to tame gcc.
-> > >
-> > > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> > > Cc: Paul Moore <paul@paul-moore.com>
-> > > Cc: Eric Paris <eparis@redhat.com>
-> > > Cc: linux-audit@redhat.com
-> > > Cc: linux-kernel@vger.kernel.org
+On Tue, Nov 10, 2020 at 03:19:29PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Nov 10, 2020 at 11:08:29AM -0700, Mathieu Poirier escreveu:
+> > On Tue, Nov 10, 2020 at 02:34:17PM +0800, Leo Yan wrote:
+> > > Since the commit 943b69ac1884 ("perf parse-events: Set exclude_guest=1
+> > > for user-space counting"), 'exclude_guest=1' is set for user-space
+> > > counting; and the branch sample's modifier has been altered, the sample
+> > > event name has been changed from "branches:u:" to "branches:uH:", which
+> > > gives out info for "user-space and host counting".
+> > > 
+> > > But the cs-etm testing's regular expression cannot match the updated
+> > > branch sample event and leads to test failure.
+> > > 
+> > > This patch updates the branch sample parttern by using a more flexible
+> > 
+> > s/parttern/pattern
+> 
+> I'll fix it and add stable@ to the CC list, thanks
+
+Thanks, Arnaldo and Mathieu.
+
+Will take care for sending stable list in next time.
+
+> > > expression '.*' to match branch sample's modifiers, so that allows the
+> > > testing to work as expected.
+> > > 
+> > > Fixes: 943b69ac1884 ("perf parse-events: Set exclude_guest=1 for user-space counting")
+> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > > > ---
-> > >  kernel/audit.c   | 1 -
-> > >  kernel/auditsc.c | 3 ---
-> > >  2 files changed, 4 deletions(-)
-> > >
-> > > diff --git a/kernel/audit.c b/kernel/audit.c
-> > > index ac0aeaa99937..dfac1e0ca887 100644
-> > > --- a/kernel/audit.c
-> > > +++ b/kernel/audit.c
-> > > @@ -65,7 +65,6 @@
-> > >  /* No auditing will take place until audit_initialized == AUDIT_INITIALIZED.
-> > >   * (Initialization happens after skb_init is called.) */
-> > >  #define AUDIT_DISABLED               -1
-> > > -#define AUDIT_UNINITIALIZED  0
-> > >  #define AUDIT_INITIALIZED    1
-> > >  static int   audit_initialized;
-> >
-> > This one is part of a set, so it feels like it should stay, but the code
-> > is structured in such a way that it is not necessary.
+> > >  tools/perf/tests/shell/test_arm_coresight.sh | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > Here too I would CC stable.  With the above:
+> > 
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > 
+> > > 
+> > > diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
+> > > index 59d847d4981d..18fde2f179cd 100755
+> > > --- a/tools/perf/tests/shell/test_arm_coresight.sh
+> > > +++ b/tools/perf/tests/shell/test_arm_coresight.sh
+> > > @@ -44,7 +44,7 @@ perf_script_branch_samples() {
+> > >  	#   touch  6512          1         branches:u:      ffffb22082e0 strcmp+0xa0 (/lib/aarch64-linux-gnu/ld-2.27.so)
+> > >  	#   touch  6512          1         branches:u:      ffffb2208320 strcmp+0xe0 (/lib/aarch64-linux-gnu/ld-2.27.so)
+> > >  	perf script -F,-time -i ${perfdata} | \
+> > > -		egrep " +$1 +[0-9]+ .* +branches:([u|k]:)? +"
+> > > +		egrep " +$1 +[0-9]+ .* +branches:(.*:)? +"
+> > >  }
+> > >  
+> > >  perf_report_branch_samples() {
+> > > -- 
+> > > 2.17.1
+> > > 
 > 
-> Yes, I'd like for us to find a way to keep this if possible.  Let's
-> simply initialize "audit_initialized" to AUDIT_UNINITIALIZED in this
-> file.  At some point someone will surely complain about not needing to
-> initialize to zero, but we can deal with that later.
-
-We could change them to an enum of 1,2,3.  ;-)
-
-> > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> > > index 183d79cc2e12..eeb4930d499f 100644
-> > > --- a/kernel/auditsc.c
-> > > +++ b/kernel/auditsc.c
-> > > @@ -80,7 +80,6 @@
-> > >  #include "audit.h"
-> > >
-> > >  /* flags stating the success for a syscall */
-> > > -#define AUDITSC_INVALID 0
-> > >  #define AUDITSC_SUCCESS 1
-> > >  #define AUDITSC_FAILURE 2
-> >
-> > Same here, but this one should really be fixed by using
-> > AUDITSC_INVALID as the value assigned to context->return_valid in
-> > __audit_free() to avoid using magic numbers.
+> -- 
 > 
-> Agreed.
-> 
-> We could probably explicitly set it in audit_alloc_context() as well
-> if we wanted to be complete.
-
-Agreed.
-
-> > Similarly, the compared
-> > values in audit_filter_rules() under the AUDIT_EXIT and AUDIT_SUCCESS
-> > cases should be "ctx->return_valid != AUDITSC_INVALID" rather than just
-> > "ctx->return_valid".  Same in audit_log_exit().
-> 
-> Agreed.
-> 
-> > > @@ -102,8 +101,6 @@ struct audit_aux_data {
-> > >       int                     type;
-> > >  };
-> > >
-> > > -#define AUDIT_AUX_IPCPERM    0
-> > > -
-> >
-> > Hmmm, this one looks like it was orphaned 15 years ago a couple of
-> > months after it was introduced due to this commit:
-> > c04049939f88 Steve Grubb <sgrubb@redhat.com> 2005-05-13
-> >     ("AUDIT: Add message types to audit records")
-> >
-> > Introduced here:
-> > 8e633c3fb2a2 David Woodhouse <dwmw2@shinybook.infradead.org> 2005-03-01
-> >     ("Audit IPC object owner/permission changes.")
-> >
-> > I agree, remove it.
-> 
-> No arguments from me.
-> 
-> --
-> paul moore
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+> - Arnaldo
