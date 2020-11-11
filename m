@@ -2,117 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3655C2AF6E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D38A22AF6EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgKKQtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgKKQtb (ORCPT
+        id S1727045AbgKKQwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:52:01 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14924 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbgKKQwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:49:31 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4F3C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:49:30 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id h12so1716692qtc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dHIwVHj/jWzL1sw9rtjN4XGVp52gznrPRFC4/UO5JAw=;
-        b=AJNMeYOadlwPEbynoTiRoaaQWQJ/rV90P8nJoz2vES0fiWAtYdQ4P+Rt8ICZaIia/o
-         QOKWxRfxaK2rjzkAgQnAaP6YMT/Epnq21X02HLJvpiYD3L29wfdF2OokoQrcBTjoIJi/
-         zUqFXdNjznrtGYxpf+E8wDMkr0nfI1FhMVeJ0dEGKy/HPQ3Dm0moxtytGE+i5Y2FD8N2
-         Jo66Qa+GshupEM/kKi31gd/wKBPlnhsFRZVvgSu1QIDNR1Tsa7B5rsKgQbvsiCS4kot0
-         09CIX7DTJW4gj/tQ5P1gjfJN17/WBMivswgac0Suw9jAU6Mze30RxcCysNPPEA+CBF1B
-         kKNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dHIwVHj/jWzL1sw9rtjN4XGVp52gznrPRFC4/UO5JAw=;
-        b=FD+RwADe7ECXmNLpED4AwAkP4cQCDsc6d2Erh65HopbOO4jMSL7JAFqVDn4ED3SQPM
-         bf5xwBWel03OXvPZvPk2YFMP5k99TFWOZ/sBWo0t2zGMIYfhlinT4qf/2Mgvu/D7LhhX
-         IzrDCdfsH3qAF2zJuWB6dBPiynhDKQgrKi2N44D/D1oeGrF0b3rNZoNL8AupA6+E7JSB
-         xg5x38d/vjtx3wM41U4zwDMXsXlkanidyDtDTOcHX08BSvsRFBcMJNUnusI5jvxDetvQ
-         aSFjmoFcFbXhvogCDwK2mUR2Hu3JHV/g4JKulFxE3bonZNANMEBVls1niQZLwkWSJTj0
-         aucA==
-X-Gm-Message-State: AOAM530Oi7IzNHfTuMAo95+P0Lcsz5GQYE94fkDiuDavFb2Tszlg8p+O
-        S/RR41wqpVc7KDY7iuRPHKke5eXMUSrscBosMpY81A==
-X-Google-Smtp-Source: ABdhPJwjig6fpjowOP840jmc+kQ2gIR1Dy5LX8/g2T53j3ea4lFOAg5xbJv3X2ZJnClMIqG6zhTVgzInEwS8twOLruQ=
-X-Received: by 2002:ac8:454d:: with SMTP id z13mr21816261qtn.175.1605113369540;
- Wed, 11 Nov 2020 08:49:29 -0800 (PST)
+        Wed, 11 Nov 2020 11:52:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fac16b40000>; Wed, 11 Nov 2020 08:52:04 -0800
+Received: from [10.25.77.20] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
+ 2020 16:51:51 +0000
+Subject: Re: [PATCH V2] PCI: dwc: Add support to configure for ECRC
+To:     Jingoo Han <jingoohan1@gmail.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+References: <20201109192611.16104-1-vidyas@nvidia.com>
+ <20201111121145.7015-1-vidyas@nvidia.com>
+ <SLXP216MB0477F0B10AEBEAD996EE66D3AAE80@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <5b4a728e-bfa3-42a2-423d-e270e8993901@nvidia.com>
+Date:   Wed, 11 Nov 2020 22:21:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <3d24722ca600b65a186a55ae47777a00a7c9407c.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <3d24722ca600b65a186a55ae47777a00a7c9407c.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 17:49:17 +0100
-Message-ID: <CAG_fn=XsoJeoYQvO4vi2W0RyxnwBQ5N=wcaRD84OEZy2+Gxtbw@mail.gmail.com>
-Subject: Re: [PATCH v9 42/44] kasan, arm64: enable CONFIG_KASAN_HW_TAGS
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <SLXP216MB0477F0B10AEBEAD996EE66D3AAE80@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605113524; bh=ueTzeWPD9q2/5Qyze11yOaDekYcqVNUIeVsSUTlSgRo=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=IEIZ1+DAEM/hKSnymkMUXcprH/8mJqvXXeQt//e9QYOGxZkl65SJcgsWEWNCaRRy7
+         FUEf/swHcZXlw3n40fLEZv+15SqcSk/ieZ3CUmhlcbLGkibXpx2EUkJIgB6LBtgFyQ
+         UxV1A85gfLUhMAC7bIlGfmVN8VJrB36+qdwspVV/JPxYheMbgVLjhokyQDP9IhmByh
+         EuFiEftbw/A6MiNdXiJCz3lXQfxmB/M9cHPBp8E/izdlsixzBLkNhq7b5rfdYv/Lfw
+         EHrEdEVwse3uFxQJ6sZCVuEMw5tsY/fXHv382kyTrUcDsUEeeclO7evRlgo1mqJAbE
+         c0gbzV3Vn8hBw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> Hardware tag-based KASAN is now ready, enable the configuration option.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-
-> ---
-> Change-Id: I6eb1eea770e6b61ad71c701231b8d815a7ccc853
-> ---
->  arch/arm64/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 456741645f01..c35e73efd407 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -135,6 +135,7 @@ config ARM64
->         select HAVE_ARCH_JUMP_LABEL_RELATIVE
->         select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
->         select HAVE_ARCH_KASAN_SW_TAGS if (HAVE_ARCH_KASAN && !ARM64_MTE)
-> +       select HAVE_ARCH_KASAN_HW_TAGS if (HAVE_ARCH_KASAN && ARM64_MTE)
->         select HAVE_ARCH_KGDB
->         select HAVE_ARCH_MMAP_RND_BITS
->         select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
 
 
---=20
-Alexander Potapenko
-Software Engineer
+On 11/11/2020 9:57 PM, Jingoo Han wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On 11/11/20, 7:12 AM, Vidya Sagar wrote:
+>>
+>> DesignWare core has a TLP digest (TD) override bit in one of the control
+>> registers of ATU. This bit also needs to be programmed for proper ECRC
+>> functionality. This is currently identified as an issue with DesignWare
+>> IP version 4.90a.
+>>
+>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>> ---
+>> V2:
+>> * Addressed Bjorn's comments
+>>
+>>   drivers/pci/controller/dwc/pcie-designware.c | 52 ++++++++++++++++++--
+>>   drivers/pci/controller/dwc/pcie-designware.h |  1 +
+>>   2 files changed, 49 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+>> index c2dea8fc97c8..ec0d13ab6bad 100644
+>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+>> @@ -225,6 +225,46 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+>>        dw_pcie_writel_atu(pci, offset + reg, val);
+>>   }
+>>
+>> +static inline u32 dw_pcie_enable_ecrc(u32 val)
+> 
+> What is the reason to use inline here?
+Actually, I wanted to move the programming part inside the respective 
+APIs but then I wanted to give some details as well in comments so to 
+avoid duplication, I came up with this function. But, I'm making it 
+inline for better code optimization by compiler.
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> 
+> 
+> Best regards,
+> Jingoo Han
+> 
+>> +{
+>> +     /*
+>> +      * DesignWare core version 4.90A has this strange design issue
+>> +      * where the 'TD' bit in the Control register-1 of the ATU outbound
+>> +      * region acts like an override for the ECRC setting i.e. the presence
+>> +      * of TLP Digest(ECRC) in the outgoing TLPs is solely determined by
+>> +      * this bit. This is contrary to the PCIe spec which says that the
+>> +      * enablement of the ECRC is solely determined by the AER registers.
+>> +      *
+>> +      * Because of this, even when the ECRC is enabled through AER
+>> +      * registers, the transactions going through ATU won't have TLP Digest
+>> +      * as there is no way the AER sub-system could program the TD bit which
+>> +      * is specific to DesignWare core.
+>> +      *
+>> +      * The best way to handle this scenario is to program the TD bit
+>> +      * always. It affects only the traffic from root port to downstream
+>> +      * devices.
+>> +      *
+>> +      * At this point,
+>> +      * When ECRC is enabled in AER registers, everything works normally
+>> +      * When ECRC is NOT enabled in AER registers, then,
+>> +      * on Root Port:- TLP Digest (DWord size) gets appended to each packet
+>> +      *                even through it is not required. Since downstream
+>> +      *                TLPs are mostly for configuration accesses and BAR
+>> +      *                accesses, they are not in critical path and won't
+>> +      *                have much negative effect on the performance.
+>> +      * on End Point:- TLP Digest is received for some/all the packets coming
+>> +      *                from the root port. TLP Digest is ignored because,
+>> +      *                as per the PCIe Spec r5.0 v1.0 section 2.2.3
+>> +      *                "TLP Digest Rules", when an endpoint receives TLP
+>> +      *                Digest when its ECRC check functionality is disabled
+>> +      *                in AER registers, received TLP Digest is just ignored.
+>> +      * Since there is no issue or error reported either side, best way to
+>> +      * handle the scenario is to program TD bit by default.
+>> +      */
+>> +
+>> +     return val | PCIE_ATU_TD;
+>> +}
+>> +
+>>   static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>                                             int index, int type,
+>>                                             u64 cpu_addr, u64 pci_addr,
+>> @@ -245,8 +285,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>                                 lower_32_bits(pci_addr));
+>>        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+>>                                 upper_32_bits(pci_addr));
+>> -     dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+>> -                              type | PCIE_ATU_FUNC_NUM(func_no));
+>> +     val = type | PCIE_ATU_FUNC_NUM(func_no);
+>> +     if (pci->version == 0x490A)
+>> +             val = dw_pcie_enable_ecrc(val);
+>> +     dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+>>        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+>>                                 PCIE_ATU_ENABLE);
+>>
+>> @@ -292,8 +334,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>>                           lower_32_bits(pci_addr));
+>>        dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+>>                           upper_32_bits(pci_addr));
+>> -     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+>> -                        PCIE_ATU_FUNC_NUM(func_no));
+>> +     val = type | PCIE_ATU_FUNC_NUM(func_no);
+>> +     if (pci->version == 0x490A)
+>> +             val = dw_pcie_enable_ecrc(val);
+>> +     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+>>        dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
+>>
+>>        /*
+>> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+>> index 9d2f511f13fa..285c0ae364ae 100644
+>> --- a/drivers/pci/controller/dwc/pcie-designware.h
+>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+>> @@ -88,6 +88,7 @@
+>>   #define PCIE_ATU_TYPE_IO             0x2
+>>   #define PCIE_ATU_TYPE_CFG0           0x4
+>>   #define PCIE_ATU_TYPE_CFG1           0x5
+>> +#define PCIE_ATU_TD                  BIT(8)
+>>   #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+>>   #define PCIE_ATU_CR2                 0x908
+>>   #define PCIE_ATU_ENABLE                      BIT(31)
+>> --
+>> 2.17.1
+> 
