@@ -2,185 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C162AEC64
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E532AEC68
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgKKIw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:52:58 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:41068 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbgKKIw5 (ORCPT
+        id S1726319AbgKKIxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbgKKIxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:52:57 -0500
-Received: by mail-ed1-f66.google.com with SMTP id t9so1434312edq.8;
-        Wed, 11 Nov 2020 00:52:54 -0800 (PST)
+        Wed, 11 Nov 2020 03:53:12 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A180AC0613D1;
+        Wed, 11 Nov 2020 00:53:12 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id f16so1421538otl.11;
+        Wed, 11 Nov 2020 00:53:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iTt8eNsbTj2hc7Fsdm5FJVkGnzmgKMJ/Dp/lxggjlCM=;
+        b=VxqvT1DYKk7ExwW0O1/Fn95ePohINSTuLkDRIOq/IBsLepZqdOb8Era4egV1DESrLH
+         9cbmCrntKBTtPiha5EQ6BkhsLW5RNAstB1kauuxMdWgMtYIpqSavkSuqQcBO3ZF/jxt6
+         vUtSYhW8gx6S1pXHhRYSOmRsEJ72M7fdPgWpzHGb1eQzo6xUdYuh/+tbexorkxCjmi5k
+         I5Tkkse3u+noQUMr2bF48DO+2J8Oi3BXmFACx95eqp5Ph7hmnPBQ7p4/ffPB0R4nk9rs
+         cW7OyGO2Mee7PWzpywRsSSInBTMRkJgbZ24KSdPORrMmvCJz6zWYq/PRJYw5KqDFU5Xr
+         V25A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FR2fk7Xv4lSmlOc9Dd3jcBxGV7rUmCYq9p4pf48MgkE=;
-        b=tox7I0j/B7PNhimf9a/kzxON4iMlFC7xWD/Lpw7EATJfO1VEDVXvUe87/rdgBcu0Vf
-         FhXEuczvHuXub5YMuen2Racx++0oncxhhvxyNV2+VTnJDfqGHfHlIEv6XWcdKN6rihnx
-         lIsGN1wZUycIcajeVsMjILEUgJxgZT//WNK2KnQC9sjCfclJ5nXRot2B5a5tL4FK7PU5
-         sZ0xAmNQySb9QnAlBvOHlqa/flu2cg2v70QllNuNfVO25A+HCB5ALuRYvk0yO857M2FH
-         4vb94Y20ejL0AVFN9WcaZCgkexUFtGTXME2JNlKdo7SSTeB5Nut616dE0D2T3bmj6hQm
-         7D/w==
-X-Gm-Message-State: AOAM530Q0zgLIQibVOLYD1cJ+s8L/Ul/PGS4bS+I67xMiL/EXRI7L9A1
-        1uMcSSPf4qoPMyK2OF3L6Cg=
-X-Google-Smtp-Source: ABdhPJwji6ikeI/Mly+Q6njYPrhT9ggbKIXuArTDm7S8d2rj8FwDw4fd/HOZiSUe1NQbAdVvsnmJTA==
-X-Received: by 2002:a05:6402:54c:: with SMTP id i12mr26442371edx.9.1605084774010;
-        Wed, 11 Nov 2020 00:52:54 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id f19sm596038edm.70.2020.11.11.00.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 00:52:52 -0800 (PST)
-Date:   Wed, 11 Nov 2020 09:52:50 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v8 10/26] memory: tegra30-emc: Factor out clk
- initialization
-Message-ID: <20201111085250.GA11589@kozik-lap>
-References: <20201111011456.7875-1-digetx@gmail.com>
- <20201111011456.7875-11-digetx@gmail.com>
- <20201111085115.GA4050@kozik-lap>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iTt8eNsbTj2hc7Fsdm5FJVkGnzmgKMJ/Dp/lxggjlCM=;
+        b=hiZ545X8egQlQZoucArAWOah7ExAl0LF/QB56MkB7Df5zLcM58iZkppu/kAvlBhhOs
+         kEi9dN7v0N662wKJWieN+g+wdSlkeO2ZkgmGOBO6iVQu96vAKgFmDebAW8mIR7L+q+3B
+         tjvxsUznr9nc/05lgfbencpUGxLLV76hGS6H0TnkNNPbSv/amUE7LFZjpXg+BpvtfHHS
+         KHOvWIFjGOA9eNNzJtNGTQzP0AxGVeBVZzEvFWKFTH+p2GGVd3kdLaZJThQUbCYxqo5o
+         EFY14usgYo10bCGXiobG+kLrb0Jha9oKmsyogXswlAIpA6piEluJip+ur0kOhN5Vovta
+         P0mQ==
+X-Gm-Message-State: AOAM532O40u92d6PGAOrpKCeOm000LC90+DMjXgXYQEk+k+giszZ4ipI
+        TKTStaR8xf4wKwtd27R8ovVB68OL+D4iw/UYYm29hyO3
+X-Google-Smtp-Source: ABdhPJy46xXTjsmLDFcW4tpOV6yPUcL32I2W0uehIXffxh5SO8nOCxmP1r1WSgfdLjSOH0hlKP/B9eO2+vz4kmPz2lc=
+X-Received: by 2002:a9d:7ac4:: with SMTP id m4mr3607149otn.116.1605084792081;
+ Wed, 11 Nov 2020 00:53:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201111085115.GA4050@kozik-lap>
+References: <cover.1602093760.git.yuleixzhang@tencent.com> <aa553faf9e97ee9306ecd5a67d3324a34f9ed4be.1602093760.git.yuleixzhang@tencent.com>
+ <20201110200411.GU3576660@ZenIV.linux.org.uk>
+In-Reply-To: <20201110200411.GU3576660@ZenIV.linux.org.uk>
+From:   yulei zhang <yulei.kernel@gmail.com>
+Date:   Wed, 11 Nov 2020 16:53:00 +0800
+Message-ID: <CACZOiM1L2W+neaF-rd=k9cJTnQfNBLx2k9GLZydYuQiJqr=iXg@mail.gmail.com>
+Subject: Re: [PATCH 01/35] fs: introduce dmemfs module
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Haiwei Li <lihaiwei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Xiao Guangrong <gloryxiao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:51:15AM +0100, Krzysztof Kozlowski wrote:
-> On Wed, Nov 11, 2020 at 04:14:40AM +0300, Dmitry Osipenko wrote:
-> > Factor out clk initialization and make it resource-managed. This makes
-> > easier to follow code and will help to make further changes cleaner.
-> > 
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  drivers/memory/tegra/tegra30-emc.c | 70 ++++++++++++++++++++----------
-> >  1 file changed, 47 insertions(+), 23 deletions(-)
-> > 
-> > diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
-> > index d27df842a667..1df42e212d73 100644
-> > --- a/drivers/memory/tegra/tegra30-emc.c
-> > +++ b/drivers/memory/tegra/tegra30-emc.c
-> > @@ -1550,6 +1550,49 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
-> >  	return err;
-> >  }
-> >  
-> > +static void devm_tegra_emc_unset_callback(void *data)
+On Wed, Nov 11, 2020 at 4:04 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Thu, Oct 08, 2020 at 03:53:51PM +0800, yulei.kernel@gmail.com wrote:
+>
+> > +static struct inode *
+> > +dmemfs_get_inode(struct super_block *sb, const struct inode *dir, umode_t mode,
+> > +              dev_t dev);
+>
+> WTF is 'dev' for?
+>
+> > +static int
+> > +dmemfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
 > > +{
-> > +	tegra20_clk_set_emc_round_callback(NULL, NULL);
+> > +     struct inode *inode = dmemfs_get_inode(dir->i_sb, dir, mode, dev);
+> > +     int error = -ENOSPC;
+> > +
+> > +     if (inode) {
+> > +             d_instantiate(dentry, inode);
+> > +             dget(dentry);   /* Extra count - pin the dentry in core */
+> > +             error = 0;
+> > +             dir->i_mtime = dir->i_ctime = current_time(inode);
+> > +     }
+> > +     return error;
+> > +}
+>
+> ... same here, seeing that you only call that thing from the next two functions
+> and you do *not* provide ->mknod() as a method (unsurprisingly - what would
+> device nodes do there?)
+>
+
+Thanks for pointing this out. we may need support the mknod method, otherwise
+the dev is redundant  and need to be removed.
+
+> > +static int dmemfs_create(struct inode *dir, struct dentry *dentry,
+> > +                      umode_t mode, bool excl)
+> > +{
+> > +     return dmemfs_mknod(dir, dentry, mode | S_IFREG, 0);
 > > +}
 > > +
-> > +static void devm_tegra_emc_unreg_clk_notifier(void *data)
+> > +static int dmemfs_mkdir(struct inode *dir, struct dentry *dentry,
+> > +                     umode_t mode)
 > > +{
-> > +	struct tegra_emc *emc = data;
+> > +     int retval = dmemfs_mknod(dir, dentry, mode | S_IFDIR, 0);
 > > +
-> > +	clk_notifier_unregister(emc->clk, &emc->clk_nb);
+> > +     if (!retval)
+> > +             inc_nlink(dir);
+> > +     return retval;
+> > +}
+>
+> > +int dmemfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+> > +{
+> > +     return 0;
 > > +}
 > > +
-> > +static int tegra_emc_init_clk(struct tegra_emc *emc)
+> > +static const struct file_operations dmemfs_file_operations = {
+> > +     .mmap = dmemfs_file_mmap,
+> > +};
+>
+> Er...  Is that a placeholder for later in the series?  Because as it is,
+> it makes no sense whatsoever - "it can be mmapped, but any access to the
+> mapped area will segfault".
+>
+
+Yes, we seperate the full implementation for dmemfs_file_mmap into
+patch 05/35, it
+will assign the interfaces to handle the page fault.
+
+> > +struct inode *dmemfs_get_inode(struct super_block *sb,
+> > +                            const struct inode *dir, umode_t mode, dev_t dev)
 > > +{
-> > +	int err;
+> > +     struct inode *inode = new_inode(sb);
 > > +
-> > +	tegra20_clk_set_emc_round_callback(emc_round_rate, emc);
+> > +     if (inode) {
+> > +             inode->i_ino = get_next_ino();
+> > +             inode_init_owner(inode, dir, mode);
+> > +             inode->i_mapping->a_ops = &empty_aops;
+> > +             mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+> > +             mapping_set_unevictable(inode->i_mapping);
+> > +             inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
+> > +             switch (mode & S_IFMT) {
+> > +             default:
+> > +                     init_special_inode(inode, mode, dev);
+> > +                     break;
+> > +             case S_IFREG:
+> > +                     inode->i_op = &dmemfs_file_inode_operations;
+> > +                     inode->i_fop = &dmemfs_file_operations;
+> > +                     break;
+> > +             case S_IFDIR:
+> > +                     inode->i_op = &dmemfs_dir_inode_operations;
+> > +                     inode->i_fop = &simple_dir_operations;
 > > +
-> > +	err = devm_add_action_or_reset(emc->dev, devm_tegra_emc_unset_callback,
-> > +				       NULL);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	emc->clk = devm_clk_get(emc->dev, NULL);
-> > +	if (IS_ERR(emc->clk)) {
-> > +		dev_err(emc->dev, "failed to get EMC clock: %pe\n", emc->clk);
-> > +		return PTR_ERR(emc->clk);
-> > +	}
-> > +
-> > +	err = clk_notifier_register(emc->clk, &emc->clk_nb);
-> > +	if (err) {
-> > +		dev_err(emc->dev, "failed to register clk notifier: %d\n", err);
-> > +		return err;
-> > +	}
-> > +
-> > +	err = devm_add_action_or_reset(emc->dev,
-> > +				       devm_tegra_emc_unreg_clk_notifier, emc);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int tegra_emc_probe(struct platform_device *pdev)
-> >  {
-> >  	struct device_node *np;
-> > @@ -1599,25 +1642,13 @@ static int tegra_emc_probe(struct platform_device *pdev)
-> >  		return err;
-> >  	}
-> >  
-> > -	tegra20_clk_set_emc_round_callback(emc_round_rate, emc);
-> > -
-> > -	emc->clk = devm_clk_get(&pdev->dev, "emc");
-> > -	if (IS_ERR(emc->clk)) {
-> > -		err = PTR_ERR(emc->clk);
-> > -		dev_err(&pdev->dev, "failed to get emc clock: %d\n", err);
-> > -		goto unset_cb;
-> > -	}
-> > -
-> > -	err = clk_notifier_register(emc->clk, &emc->clk_nb);
-> > -	if (err) {
-> > -		dev_err(&pdev->dev, "failed to register clk notifier: %d\n",
-> > -			err);
-> > -		goto unset_cb;
-> > -	}
-> > +	err = tegra_emc_init_clk(emc);
-> > +	if (err)
-> > +		return err;
-> >  
-> >  	err = tegra_emc_opp_table_init(emc);
-> >  	if (err)
-> > -		goto unreg_notifier;
-> > +		return err;
-> >  
-> >  	platform_set_drvdata(pdev, emc);
-> >  	tegra_emc_rate_requests_init(emc);
-> > @@ -1632,13 +1663,6 @@ static int tegra_emc_probe(struct platform_device *pdev)
-> >  	try_module_get(THIS_MODULE);
-> >  
-> >  	return 0;
-> > -
-> > -unreg_notifier:
-> > -	clk_notifier_unregister(emc->clk, &emc->clk_nb);
-> 
-> You added this code in patch #8, so adding-and-removing a piece of code
+> > +                     /*
+> > +                      * directory inodes start off with i_nlink == 2
+> > +                      * (for "." entry)
+> > +                      */
+> > +                     inc_nlink(inode);
+> > +                     break;
+> > +             case S_IFLNK:
+> > +                     inode->i_op = &page_symlink_inode_operations;
+> > +                     break;
+>
+> Where would symlinks come from?  Or anything other than regular files and
+> directories, for that matter...
 
-Correction: you added this in patch #9.
-
-Best regards,
-Krzysztof
-
-
-> is a nice hint that this patch should be before. Don't add new code
-> which later you simplify. Move all bugfixes and all simplifications to
-> beginning of patchset.
-> 
-> That's quite similar case to v6 where you put bugfixes in the middle
-> of patchset.
-> 
+You are right, so far it just supports regular files and directories.
