@@ -2,101 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06D22AEC59
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C162AEC64
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbgKKIwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:52:23 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:18627 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgKKIwW (ORCPT
+        id S1726290AbgKKIw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:52:58 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:41068 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgKKIw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:52:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605084742; x=1636620742;
-  h=references:from:to:cc:subject:message-id:in-reply-to:
-   date:mime-version;
-  bh=rrIqm04QSC3aas0qYK9KkO9YMBrUS6gc7OMH0lzTqng=;
-  b=Krr3HhclB4jrtGNstGotxv0dmm7gnd/CsrASVqO/FYXd2WhqLZBRHun9
-   KN4XkRGjEmuDux6kz/oUX5phwpD2Mk8+aBQHv3RGIKcsdriwExChAr5/e
-   p6SMSmq7Ej3h/3cP1GI2pZIIBlKemHEm2Qsi7Jkw8FJb05PwiTuL/0xyj
-   O1pn4xIu+iJUBklinq0v3OvrnTaaxYQMaLLoAchIaUphQDx5Ke/8AblNk
-   6P5quiF8QoMTHpPW71IPEAiDFpbmggvMZ+DE0GlimhAfk8GbfuIdKirwx
-   VZ/zUdB8LAgnhrnGG52GA+hAn10YblgHukwsRTlJZvom6P+Qe/DKz1A7J
-   g==;
-IronPort-SDR: b3W6ktx4LF13xndDR/oV0/XmLcyPlBxSwi8WuZ5JpgmDwYRiB/6hEqDN9H5RXebCwDIc/pxC2g
- tjRu4fE9rkbLAAEkECpt7/+Zg/F3+eTwn5cphTu2UsmJ4dCJpiAi7eqI8aK1LH6fOrlubmunwd
- u4Pxb8tH8LlnuXkhxC60sYwifva+8Q5uGf3RWkx5Or7MJH2sAOMBnvYjj+9s1f+qVY4AuL/KOZ
- omj8aSsI17iaaC4EG+FOlHipLdMn3/lGOXdp3/nfXiF4UBu9EYGDAvkjYRUrbchaRh/tld1xeA
- D2g=
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="93262603"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 01:52:21 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 11 Nov 2020 01:52:21 -0700
-Received: from soft-dev2.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Wed, 11 Nov 2020 01:52:19 -0700
-References: <20201110100642.2153-1-bjarni.jonasson@microchip.com> <20201110102552.GZ1551@shell.armlinux.org.uk> <87blg5qou5.fsf@microchip.com> <20201110151248.GA1551@shell.armlinux.org.uk>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH] phy: phylink: Fix CuSFP issue in phylink
-Message-ID: <87a6voqntq.fsf@microchip.com>
-In-Reply-To: <20201110151248.GA1551@shell.armlinux.org.uk>
-Date:   Wed, 11 Nov 2020 09:52:18 +0100
+        Wed, 11 Nov 2020 03:52:57 -0500
+Received: by mail-ed1-f66.google.com with SMTP id t9so1434312edq.8;
+        Wed, 11 Nov 2020 00:52:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FR2fk7Xv4lSmlOc9Dd3jcBxGV7rUmCYq9p4pf48MgkE=;
+        b=tox7I0j/B7PNhimf9a/kzxON4iMlFC7xWD/Lpw7EATJfO1VEDVXvUe87/rdgBcu0Vf
+         FhXEuczvHuXub5YMuen2Racx++0oncxhhvxyNV2+VTnJDfqGHfHlIEv6XWcdKN6rihnx
+         lIsGN1wZUycIcajeVsMjILEUgJxgZT//WNK2KnQC9sjCfclJ5nXRot2B5a5tL4FK7PU5
+         sZ0xAmNQySb9QnAlBvOHlqa/flu2cg2v70QllNuNfVO25A+HCB5ALuRYvk0yO857M2FH
+         4vb94Y20ejL0AVFN9WcaZCgkexUFtGTXME2JNlKdo7SSTeB5Nut616dE0D2T3bmj6hQm
+         7D/w==
+X-Gm-Message-State: AOAM530Q0zgLIQibVOLYD1cJ+s8L/Ul/PGS4bS+I67xMiL/EXRI7L9A1
+        1uMcSSPf4qoPMyK2OF3L6Cg=
+X-Google-Smtp-Source: ABdhPJwji6ikeI/Mly+Q6njYPrhT9ggbKIXuArTDm7S8d2rj8FwDw4fd/HOZiSUe1NQbAdVvsnmJTA==
+X-Received: by 2002:a05:6402:54c:: with SMTP id i12mr26442371edx.9.1605084774010;
+        Wed, 11 Nov 2020 00:52:54 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id f19sm596038edm.70.2020.11.11.00.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 00:52:52 -0800 (PST)
+Date:   Wed, 11 Nov 2020 09:52:50 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 10/26] memory: tegra30-emc: Factor out clk
+ initialization
+Message-ID: <20201111085250.GA11589@kozik-lap>
+References: <20201111011456.7875-1-digetx@gmail.com>
+ <20201111011456.7875-11-digetx@gmail.com>
+ <20201111085115.GA4050@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201111085115.GA4050@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 09:51:15AM +0100, Krzysztof Kozlowski wrote:
+> On Wed, Nov 11, 2020 at 04:14:40AM +0300, Dmitry Osipenko wrote:
+> > Factor out clk initialization and make it resource-managed. This makes
+> > easier to follow code and will help to make further changes cleaner.
+> > 
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+> >  drivers/memory/tegra/tegra30-emc.c | 70 ++++++++++++++++++++----------
+> >  1 file changed, 47 insertions(+), 23 deletions(-)
+> > 
+> > diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
+> > index d27df842a667..1df42e212d73 100644
+> > --- a/drivers/memory/tegra/tegra30-emc.c
+> > +++ b/drivers/memory/tegra/tegra30-emc.c
+> > @@ -1550,6 +1550,49 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
+> >  	return err;
+> >  }
+> >  
+> > +static void devm_tegra_emc_unset_callback(void *data)
+> > +{
+> > +	tegra20_clk_set_emc_round_callback(NULL, NULL);
+> > +}
+> > +
+> > +static void devm_tegra_emc_unreg_clk_notifier(void *data)
+> > +{
+> > +	struct tegra_emc *emc = data;
+> > +
+> > +	clk_notifier_unregister(emc->clk, &emc->clk_nb);
+> > +}
+> > +
+> > +static int tegra_emc_init_clk(struct tegra_emc *emc)
+> > +{
+> > +	int err;
+> > +
+> > +	tegra20_clk_set_emc_round_callback(emc_round_rate, emc);
+> > +
+> > +	err = devm_add_action_or_reset(emc->dev, devm_tegra_emc_unset_callback,
+> > +				       NULL);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	emc->clk = devm_clk_get(emc->dev, NULL);
+> > +	if (IS_ERR(emc->clk)) {
+> > +		dev_err(emc->dev, "failed to get EMC clock: %pe\n", emc->clk);
+> > +		return PTR_ERR(emc->clk);
+> > +	}
+> > +
+> > +	err = clk_notifier_register(emc->clk, &emc->clk_nb);
+> > +	if (err) {
+> > +		dev_err(emc->dev, "failed to register clk notifier: %d\n", err);
+> > +		return err;
+> > +	}
+> > +
+> > +	err = devm_add_action_or_reset(emc->dev,
+> > +				       devm_tegra_emc_unreg_clk_notifier, emc);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int tegra_emc_probe(struct platform_device *pdev)
+> >  {
+> >  	struct device_node *np;
+> > @@ -1599,25 +1642,13 @@ static int tegra_emc_probe(struct platform_device *pdev)
+> >  		return err;
+> >  	}
+> >  
+> > -	tegra20_clk_set_emc_round_callback(emc_round_rate, emc);
+> > -
+> > -	emc->clk = devm_clk_get(&pdev->dev, "emc");
+> > -	if (IS_ERR(emc->clk)) {
+> > -		err = PTR_ERR(emc->clk);
+> > -		dev_err(&pdev->dev, "failed to get emc clock: %d\n", err);
+> > -		goto unset_cb;
+> > -	}
+> > -
+> > -	err = clk_notifier_register(emc->clk, &emc->clk_nb);
+> > -	if (err) {
+> > -		dev_err(&pdev->dev, "failed to register clk notifier: %d\n",
+> > -			err);
+> > -		goto unset_cb;
+> > -	}
+> > +	err = tegra_emc_init_clk(emc);
+> > +	if (err)
+> > +		return err;
+> >  
+> >  	err = tegra_emc_opp_table_init(emc);
+> >  	if (err)
+> > -		goto unreg_notifier;
+> > +		return err;
+> >  
+> >  	platform_set_drvdata(pdev, emc);
+> >  	tegra_emc_rate_requests_init(emc);
+> > @@ -1632,13 +1663,6 @@ static int tegra_emc_probe(struct platform_device *pdev)
+> >  	try_module_get(THIS_MODULE);
+> >  
+> >  	return 0;
+> > -
+> > -unreg_notifier:
+> > -	clk_notifier_unregister(emc->clk, &emc->clk_nb);
+> 
+> You added this code in patch #8, so adding-and-removing a piece of code
 
-Russell King - ARM Linux admin writes:
+Correction: you added this in patch #9.
 
-> On Tue, Nov 10, 2020 at 03:16:34PM +0100, Bjarni Jonasson wrote:
->>
->> Russell King - ARM Linux admin writes:
->>
->> > On Tue, Nov 10, 2020 at 11:06:42AM +0100, Bjarni Jonasson wrote:
->> >> There is an issue with the current phylink driver and CuSFPs which
->> >> results in a callback to the phylink validate function without any
->> >> advertisement capabilities.  The workaround (in this changeset)
->> >> is to assign capabilities if a 1000baseT SFP is identified.
->> >
->> > How does this happen?  Which PHY is being used?
->>
->> This occurs just by plugging in the CuSFP.
->> None of the CuSFPs we have tested are working.
->> This is a dump from 3 different CuSFPs, phy regs 0-3:
->> FS SFP: 01:40:79:49
->> HP SFP: 01:40:01:49
->> Marvel SFP: 01:40:01:49
->> This was working before the delayed mac config was implemented (in dec
->> 2019).
->
-> You're dumping PHY registers 0 and 1 there, not 0 through 3, which
-> the values confirm. I don't recognise the format either. PHY registers
-> are always 16-bit.
-Sorry about that. Here is it again:
-Marvell SFP : 0x0140 0x0149 0x0141 0x0cc1
-FS SFP      : 0x1140 0x7949 0x0141 0x0cc2
-Cisco SFP   : 0x0140 0x0149 0x0141 0x0cc1
-I.e. its seems to be a Marvell phy (0x0141) in all cases.
-And this occurs when phylink_start() is called.
---
-Bjarni Jonasson, Microchip
+Best regards,
+Krzysztof
 
 
+> is a nice hint that this patch should be before. Don't add new code
+> which later you simplify. Move all bugfixes and all simplifications to
+> beginning of patchset.
+> 
+> That's quite similar case to v6 where you put bugfixes in the middle
+> of patchset.
+> 
