@@ -2,169 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809312AF997
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651462AF99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgKKUOF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 15:14:05 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36624 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKUOF (ORCPT
+        id S1726322AbgKKUO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:14:29 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42577 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgKKUO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:14:05 -0500
-Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <jay.vosburgh@canonical.com>)
-        id 1kcwVB-0002LF-Sq; Wed, 11 Nov 2020 20:13:58 +0000
-Received: by famine.localdomain (Postfix, from userid 1000)
-        id 57C5D5FEE8; Wed, 11 Nov 2020 12:13:56 -0800 (PST)
-Received: from famine (localhost [127.0.0.1])
-        by famine.localdomain (Postfix) with ESMTP id 4F9CEA0409;
-        Wed, 11 Nov 2020 12:13:56 -0800 (PST)
-From:   Jay Vosburgh <jay.vosburgh@canonical.com>
-To:     Jarod Wilson <jarod@redhat.com>
-cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v4 0/5] bonding: rename bond components
-In-reply-to: <20201106200436.943795-1-jarod@redhat.com>
-References: <20201106200436.943795-1-jarod@redhat.com>
-Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
-   message dated "Fri, 06 Nov 2020 15:04:31 -0500."
-X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+        Wed, 11 Nov 2020 15:14:29 -0500
+Received: by mail-ot1-f67.google.com with SMTP id 30so3334264otx.9;
+        Wed, 11 Nov 2020 12:14:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RW7iciLpTFVtUIjk/YYI/BRkMGKbkwUgND+NEWuybYQ=;
+        b=kERUKHmPvdGNVj1KfJ2JtyYAySUdP42Fk1CatxwbmyJPEJ3R7RH8G76+hOAAtO8e4s
+         mGLoyvbiD2vVJXZGKq6xIxkiTcTWe63ICBzMJ3XJcrGORVvs9HVII5of5cYcqaAHy2ZO
+         FMrgfRQuLktCJcz7UIFB7gPZr6AsKyUluHxQKvHYIXHc/5XV16fWx9LlShiK1gUA5fYg
+         U0lm7vV27COVZx5hPf/PQup4JSBO77hAGo8KMFQauKM8lXknSRC6i9nu9SanjjJzhgJ3
+         bDS/5eBTwJpb6SuNO7BEyu+kKObREPukBPdu7CFGMW2v9QAD/dgziGO3lA8QkjYnHsUi
+         lteg==
+X-Gm-Message-State: AOAM531WhqG7n25D7CJz3qh5vNIF2VzkPsurcxu0/gjRf7DouHVtnUxi
+        JdAuTbNdh9ErFXCycnbCwg==
+X-Google-Smtp-Source: ABdhPJzci4qX/Kp+zw12l4IqzSqkdA3v9PxKQpWr5j7ZQm/YhmO2gvRjdUkaFlALdWlraxApWhlEqg==
+X-Received: by 2002:a9d:2255:: with SMTP id o79mr17718495ota.174.1605125666944;
+        Wed, 11 Nov 2020 12:14:26 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j6sm721443ots.32.2020.11.11.12.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 12:14:25 -0800 (PST)
+Received: (nullmailer pid 1950724 invoked by uid 1000);
+        Wed, 11 Nov 2020 20:14:23 -0000
+Date:   Wed, 11 Nov 2020 14:14:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 10/18] dt-bindings: usb: Convert DWC USB3 bindings to
+ DT schema
+Message-ID: <20201111201423.GA1938179@bogus>
+References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
+ <20201111090853.14112-11-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <10064.1605125636.1@famine>
-Content-Transfer-Encoding: 8BIT
-Date:   Wed, 11 Nov 2020 12:13:56 -0800
-Message-ID: <10065.1605125636@famine>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111090853.14112-11-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jarod Wilson <jarod@redhat.com> wrote:
+On Wed, Nov 11, 2020 at 12:08:45PM +0300, Serge Semin wrote:
+> DWC USB3 DT node is supposed to be compliant with the Generic xHCI
+> Controller schema, but with additional vendor-specific properties, the
+> controller-specific reference clocks and PHYs. So let's convert the
+> currently available legacy text-based DWC USB3 bindings to the DT schema
+> and make sure the DWC USB3 nodes are also validated against the
+> usb-xhci.yaml schema.
+> 
+> Note we have to discard the nodename restriction of being prefixed with
+> "dwc3@" string, since in accordance with the usb-hcd.yaml schema USB nodes
+> are supposed to be named as "^usb(@.*)".
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> ---
+> 
+> Changelog v2:
+> - Discard '|' from the descriptions, since we don't need to preserve
+>   the text formatting in any of them.
+> - Drop quotes from around the string constants.
+> - Fix the "clock-names" prop description to be referring the enumerated
+>   clock-names instead of the ones from the Databook.
+> 
+> Changelog v3:
+> - Apply usb-xhci.yaml# schema only if the controller is supposed to work
+>   as either host or otg.
+> 
+> Changelog v4:
+> - Apply usb-drd.yaml schema first. If the controller is configured
+>   to work in a gadget mode only, then apply the usb.yaml schema too,
+>   otherwise apply the usb-xhci.yaml schema.
+> - Discard the Rob'es Reviewed-by tag. Please review the patch one more
+>   time.
+> ---
+>  .../devicetree/bindings/usb/dwc3.txt          | 125 --------
+>  .../devicetree/bindings/usb/snps,dwc3.yaml    | 303 ++++++++++++++++++
+>  2 files changed, 303 insertions(+), 125 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
+> deleted file mode 100644
+> index d03edf9d3935..000000000000
+> --- a/Documentation/devicetree/bindings/usb/dwc3.txt
+> +++ /dev/null
+> @@ -1,125 +0,0 @@
+> -synopsys DWC3 CORE
+> -
+> -DWC3- USB3 CONTROLLER. Complies to the generic USB binding properties
+> -      as described in 'usb/generic.txt'
+> -
+> -Required properties:
+> - - compatible: must be "snps,dwc3"
+> - - reg : Address and length of the register set for the device
+> - - interrupts: Interrupts used by the dwc3 controller.
+> - - clock-names: list of clock names. Ideally should be "ref",
+> -                "bus_early", "suspend" but may be less or more.
+> - - clocks: list of phandle and clock specifier pairs corresponding to
+> -           entries in the clock-names property.
+> -
+> -Exception for clocks:
+> -  clocks are optional if the parent node (i.e. glue-layer) is compatible to
+> -  one of the following:
+> -    "cavium,octeon-7130-usb-uctl"
+> -    "qcom,dwc3"
+> -    "samsung,exynos5250-dwusb3"
+> -    "samsung,exynos5433-dwusb3"
+> -    "samsung,exynos7-dwusb3"
+> -    "sprd,sc9860-dwc3"
+> -    "st,stih407-dwc3"
+> -    "ti,am437x-dwc3"
+> -    "ti,dwc3"
+> -    "ti,keystone-dwc3"
+> -    "rockchip,rk3399-dwc3"
+> -    "xlnx,zynqmp-dwc3"
+> -
+> -Optional properties:
+> - - usb-phy : array of phandle for the PHY device.  The first element
+> -   in the array is expected to be a handle to the USB2/HS PHY and
+> -   the second element is expected to be a handle to the USB3/SS PHY
+> - - phys: from the *Generic PHY* bindings
+> - - phy-names: from the *Generic PHY* bindings; supported names are "usb2-phy"
+> -	or "usb3-phy".
+> - - resets: set of phandle and reset specifier pairs
+> - - snps,usb2-lpm-disable: indicate if we don't want to enable USB2 HW LPM
+> - - snps,usb3_lpm_capable: determines if platform is USB3 LPM capable
+> - - snps,dis-start-transfer-quirk: when set, disable isoc START TRANSFER command
+> -			failure SW work-around for DWC_usb31 version 1.70a-ea06
+> -			and prior.
+> - - snps,disable_scramble_quirk: true when SW should disable data scrambling.
+> -	Only really useful for FPGA builds.
+> - - snps,has-lpm-erratum: true when DWC3 was configured with LPM Erratum enabled
+> - - snps,lpm-nyet-threshold: LPM NYET threshold
+> - - snps,u2exit_lfps_quirk: set if we want to enable u2exit lfps quirk
+> - - snps,u2ss_inp3_quirk: set if we enable P3 OK for U2/SS Inactive quirk
+> - - snps,req_p1p2p3_quirk: when set, the core will always request for
+> -			P1/P2/P3 transition sequence.
+> - - snps,del_p1p2p3_quirk: when set core will delay P1/P2/P3 until a certain
+> -			amount of 8B10B errors occur.
+> - - snps,del_phy_power_chg_quirk: when set core will delay PHY power change
+> -			from P0 to P1/P2/P3.
+> - - snps,lfps_filter_quirk: when set core will filter LFPS reception.
+> - - snps,rx_detect_poll_quirk: when set core will disable a 400us delay to start
+> -			Polling LFPS after RX.Detect.
+> - - snps,tx_de_emphasis_quirk: when set core will set Tx de-emphasis value.
+> - - snps,tx_de_emphasis: the value driven to the PHY is controlled by the
+> -			LTSSM during USB3 Compliance mode.
+> - - snps,dis_u3_susphy_quirk: when set core will disable USB3 suspend phy.
+> - - snps,dis_u2_susphy_quirk: when set core will disable USB2 suspend phy.
+> - - snps,dis_enblslpm_quirk: when set clears the enblslpm in GUSB2PHYCFG,
+> -			disabling the suspend signal to the PHY.
+> - - snps,dis-u1-entry-quirk: set if link entering into U1 needs to be disabled.
+> - - snps,dis-u2-entry-quirk: set if link entering into U2 needs to be disabled.
+> - - snps,dis_rxdet_inp3_quirk: when set core will disable receiver detection
+> -			in PHY P3 power state.
+> - - snps,dis-u2-freeclk-exists-quirk: when set, clear the u2_freeclk_exists
+> -			in GUSB2PHYCFG, specify that USB2 PHY doesn't provide
+> -			a free-running PHY clock.
+> - - snps,dis-del-phy-power-chg-quirk: when set core will change PHY power
+> -			from P0 to P1/P2/P3 without delay.
+> - - snps,dis-tx-ipgap-linecheck-quirk: when set, disable u2mac linestate check
+> -			during HS transmit.
+> - - snps,parkmode-disable-ss-quirk: when set, all SuperSpeed bus instances in
+> -			park mode are disabled.
+> - - snps,dis_metastability_quirk: when set, disable metastability workaround.
+> -			CAUTION: use only if you are absolutely sure of it.
+> - - snps,is-utmi-l1-suspend: true when DWC3 asserts output signal
+> -			utmi_l1_suspend_n, false when asserts utmi_sleep_n
+> - - snps,hird-threshold: HIRD threshold
+> - - snps,hsphy_interface: High-Speed PHY interface selection between "utmi" for
+> -   UTMI+ and "ulpi" for ULPI when the DWC_USB3_HSPHY_INTERFACE has value 3.
+> - - snps,quirk-frame-length-adjustment: Value for GFLADJ_30MHZ field of GFLADJ
+> -	register for post-silicon frame length adjustment when the
+> -	fladj_30mhz_sdbnd signal is invalid or incorrect.
+> - - snps,rx-thr-num-pkt-prd: periodic ESS RX packet threshold count - host mode
+> -			only. Set this and rx-max-burst-prd to a valid,
+> -			non-zero value 1-16 (DWC_usb31 programming guide
+> -			section 1.2.4) to enable periodic ESS RX threshold.
+> - - snps,rx-max-burst-prd: max periodic ESS RX burst size - host mode only. Set
+> -			this and rx-thr-num-pkt-prd to a valid, non-zero value
+> -			1-16 (DWC_usb31 programming guide section 1.2.4) to
+> -			enable periodic ESS RX threshold.
+> - - snps,tx-thr-num-pkt-prd: periodic ESS TX packet threshold count - host mode
+> -			only. Set this and tx-max-burst-prd to a valid,
+> -			non-zero value 1-16 (DWC_usb31 programming guide
+> -			section 1.2.3) to enable periodic ESS TX threshold.
+> - - snps,tx-max-burst-prd: max periodic ESS TX burst size - host mode only. Set
+> -			this and tx-thr-num-pkt-prd to a valid, non-zero value
+> -			1-16 (DWC_usb31 programming guide section 1.2.3) to
+> -			enable periodic ESS TX threshold.
+> -
+> - - <DEPRECATED> tx-fifo-resize: determines if the FIFO *has* to be reallocated.
+> - - snps,incr-burst-type-adjustment: Value for INCR burst type of GSBUSCFG0
+> -			register, undefined length INCR burst type enable and INCRx type.
+> -			When just one value, which means INCRX burst mode enabled. When
+> -			more than one value, which means undefined length INCR burst type
+> -			enabled. The values can be 1, 4, 8, 16, 32, 64, 128 and 256.
+> -
+> - - in addition all properties from usb-xhci.txt from the current directory are
+> -   supported as well
+> -
+> -
+> -This is usually a subnode to DWC3 glue to which it is connected.
+> -
+> -dwc3@4a030000 {
+> -	compatible = "snps,dwc3";
+> -	reg = <0x4a030000 0xcfff>;
+> -	interrupts = <0 92 4>
+> -	usb-phy = <&usb2_phy>, <&usb3,phy>;
+> -	snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> new file mode 100644
+> index 000000000000..079617891da6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> @@ -0,0 +1,303 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/snps,dwc3.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare USB3 Controller
+> +
+> +maintainers:
+> +  - Felipe Balbi <balbi@kernel.org>
+> +
+> +description:
+> +  This is usually a subnode to DWC3 glue to which it is connected, but can also
+> +  be presented as a standalone DT node with an optional vendor-specific
+> +  compatible string.
+> +
+> +allOf:
+> +  - $ref: usb-drd.yaml#
+> +  - if:
+> +      properties:
+> +        dr_mode:
+> +          const: peripheral
+> +    then:
+> +      $ref: usb.yaml#
 
->The bonding driver's use of master and slave, while largely understood
->in technical circles, poses a barrier for inclusion to some potential
->members of the development and user community, due to the historical
->context of masters and slaves, particularly in the United States. This
->is a first full pass at replacing those phrases with more socially
->inclusive ones, opting for bond to replace master and port to
->replace slave, which is congruent with the bridge and team drivers.
->
->There are a few problems with this change. First up, "port" is used in
->the bonding 802.3ad code, so the first step here is to rename port to
->ad_port, so we can reuse port. Second, we have the issue of not wanting
->to break any existing userspace, which I believe this patchset
->accomplishes, preserving all existing sysfs and procfs interfaces, and
->adding module parameter aliases where necessary.
->
->Third, we do still have the issue of ease of backporting fixes to
->-stable trees. I've not had a huge amount of time to spend on it, but
->brief forays into coccinelle didn't really pay off (since it's meant to
->operate on code, not patches), and the best solution I can come up with
->is providing a shell script someone could run over git-format-patch
->output before git-am'ing the result to a -stable tree, though scripting
->these changes in the first place turned out to be not the best thing to
->do anyway, due to subtle cases where use of master or slave can NOT yet
->be replaced, so a large amount of work was done by hand, inspection,
->trial and error, which is why this set is a lot longer in coming than
->I'd originally hoped. I don't expect -stable backports to be horrible to
->figure out one way or another though, and I don't believe that a bit of
->inconvenience on that front is enough to warrant not making these
->changes.
+This part could be done in usb-drd.yaml?
 
-	I think this undersells the impact a bit; this will most likely
-break the majority of cherry-picks for the bonding driver to stable
-going forward should this patch set be committed.  Yes, the volume of
-patches to bonding is relatively low, and the manual backports are not
-likely to be technically difficult.  Nevertheless, I expect that most
-bonding backports to stable that cross this patch set will require
-manual intervention.
+> +    else:
+> +      $ref: usb-xhci.yaml#
 
-	As such, I'd still like to see explicit direction from the
-kernel development community leadership that change sets of this nature
-(not technically driven, with long term maintenance implications) are
-changes that should be undertaken rather than are merely permitted.
+I'd really prefer if all the schema can just be applied unconditionally. 
+Shouldn't someone (like a bootloader) be able to change dr_mode without 
+changing anything else to set the mode? That would imply all the 
+schemas can be applied.
 
-	-J
-
->See here for further details on Red Hat's commitment to this work:
->https://www.redhat.com/en/blog/making-open-source-more-inclusive-eradicating-problematic-language
->
->As far as testing goes, I've manually operated on various bonds while
->working on this code, and have run it through multiple lnst test runs,
->which exercises the existing sysfs interfaces fairly extensively. As far
->as I can tell through testing and inspection, there is no breakage of
->any existing interfaces with this set.
->
->v2: legacy module parameters are retained this time, and we're trying
->out bond/port instead of aggregator/link in place of master/slave. The
->procfs interface legacy output is also duplicated or dropped, depending
->on Kconfig, rather than being replaced.
->
->v3: remove Kconfig knob, leave sysfs and procfs interfaces entirely
->untouched, but update documentation to reference their deprecated
->nature, explain the name changes, add references to NetworkManager,
->include more netlink/iproute2 examples and make note of netlink
->being the preferred interface for userspace interaction with bonds.
->
->v4: documentation table of contents fixes
->
->Cc: Jay Vosburgh <j.vosburgh@gmail.com>
->Cc: Veaceslav Falico <vfalico@gmail.com>
->Cc: Andy Gospodarek <andy@greyhouse.net>
->Cc: "David S. Miller" <davem@davemloft.net>
->Cc: Jakub Kicinski <kuba@kernel.org>
->Cc: Thomas Davis <tadavis@lbl.gov>
->Cc: netdev@vger.kernel.org
->
->Jarod Wilson (5):
->  bonding: rename 802.3ad's struct port to ad_port
->  bonding: replace use of the term master where possible
->  bonding: rename slave to port where possible
->  bonding: rename bonding_sysfs_slave.c to _port.c
->  bonding: update Documentation for port/bond terminology
->
-> .clang-format                                 |    4 +-
-> Documentation/networking/bonding.rst          |  581 ++--
-> drivers/infiniband/core/cma.c                 |    2 +-
-> drivers/infiniband/core/lag.c                 |    2 +-
-> drivers/infiniband/core/roce_gid_mgmt.c       |   10 +-
-> drivers/infiniband/hw/mlx4/main.c             |    2 +-
-> drivers/net/bonding/Makefile                  |    2 +-
-> drivers/net/bonding/bond_3ad.c                | 1701 ++++++------
-> drivers/net/bonding/bond_alb.c                |  689 ++---
-> drivers/net/bonding/bond_debugfs.c            |    2 +-
-> drivers/net/bonding/bond_main.c               | 2341 +++++++++--------
-> drivers/net/bonding/bond_netlink.c            |  114 +-
-> drivers/net/bonding/bond_options.c            |  258 +-
-> drivers/net/bonding/bond_procfs.c             |   86 +-
-> drivers/net/bonding/bond_sysfs.c              |   78 +-
-> drivers/net/bonding/bond_sysfs_port.c         |  185 ++
-> drivers/net/bonding/bond_sysfs_slave.c        |  176 --
-> .../ethernet/chelsio/cxgb3/cxgb3_offload.c    |    2 +-
-> .../net/ethernet/mellanox/mlx4/en_netdev.c    |   14 +-
-> .../ethernet/mellanox/mlx5/core/en/rep/bond.c |    4 +-
-> .../net/ethernet/mellanox/mlx5/core/en_tc.c   |    2 +-
-> .../ethernet/netronome/nfp/flower/lag_conf.c  |    2 +-
-> .../ethernet/qlogic/netxen/netxen_nic_main.c  |   12 +-
-> include/linux/netdevice.h                     |   22 +-
-> include/net/bond_3ad.h                        |   42 +-
-> include/net/bond_alb.h                        |   74 +-
-> include/net/bond_options.h                    |   18 +-
-> include/net/bonding.h                         |  362 +--
-> include/net/lag.h                             |    2 +-
-> 29 files changed, 3482 insertions(+), 3307 deletions(-)
-> create mode 100644 drivers/net/bonding/bond_sysfs_port.c
-> delete mode 100644 drivers/net/bonding/bond_sysfs_slave.c
->
->-- 
->2.28.0
->
-
----
-	-Jay Vosburgh, jay.vosburgh@canonical.com
+Rob
