@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00792AE671
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1A12AE675
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731919AbgKKCeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 21:34:05 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38047 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725928AbgKKCeF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:34:05 -0500
-X-UUID: f2e05021bd2a4d70a8e876962742d36e-20201111
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=cTeQ/hjldFmEyV5pQnqStA/bVh7oOAFXTZ9SDz6FiSc=;
-        b=sAgAUfrBKnBCM+5q+fYpXZajMMt4CbSBcX9ZagzeEijirjJs30VXaGJdny4EzRHbSAccRsnBEs/reKJcCW5tKBsUfH3hcSG+wuMF5gkfH9Lg5qLkTOUoubr6LIHjGqrGX2XnefIGqvxUlh4Qu1NGw41pZpPd3pDGCT73oBFiCrk=;
-X-UUID: f2e05021bd2a4d70a8e876962742d36e-20201111
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 827047059; Wed, 11 Nov 2020 10:33:59 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 11 Nov 2020 10:33:57 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 11 Nov 2020 10:33:57 +0800
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>,
-        Owen Chen <owen.chen@mediatek.com>
-Subject: [PATCH v2] clk: mediatek: fix mtk_clk_register_mux() as static function
-Date:   Wed, 11 Nov 2020 10:33:56 +0800
-Message-ID: <1605062036-12735-1-git-send-email-weiyi.lu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        id S1732465AbgKKCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 21:34:25 -0500
+Received: from ozlabs.org ([203.11.71.1]:43763 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732382AbgKKCeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 21:34:24 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CW8255XWcz9sRR;
+        Wed, 11 Nov 2020 13:34:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605062062;
+        bh=pXxvg5RAQPnzCEQXyQrQxOx8JduUtPGpAI7kHVsHkzE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rDedlndgUSGEPta4kWpmNLKvnpZNr/V4LMze5IUFRqxxLaD2itdXiUxRCVOwbq+Uk
+         Yb5Q3IT/48rjhRaadb3H7+oJcXwUQCx3cf7jrnFiMHWb0M92RHVLjwyYgmstah5qiH
+         KF0fJ3uejZjPjHzwXjuWKSQKeuUZ40Updmjzhlpm3mjAd8vUmiT3JsWLh+DUEnO1yZ
+         qEHOf5gPWBGp2/AHG5b0arr7LwDeGxaXikMaVAg6nt1VlivFVIWQDZZY1bFW5HUZO0
+         7NcCWBfiPgmTSPU5mLETCMMoiRKkoR4ivibTBxTgIsiRw9PJzDpNSn/8sqPktaYCsw
+         sR6+sefbu529w==
+Date:   Wed, 11 Nov 2020 13:34:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     "Shane.Chien" <shane.chien@mediatek.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the sound-asoc tree
+Message-ID: <20201111133420.2efb4143@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/AqU54fqd.5wgPYcOuV75wXA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bXRrX2Nsa19yZWdpc3Rlcl9tdXgoKSBzaG91bGQgYmUgYSBzdGF0aWMgZnVuY3Rpb24NCg0KRml4
-ZXM6IGEzYWU1NDk5MTdmMTYgKCJjbGs6IG1lZGlhdGVrOiBBZGQgbmV3IGNsa211eCByZWdpc3Rl
-ciBBUEkiKQ0KU2lnbmVkLW9mZi1ieTogV2VpeWkgTHUgPHdlaXlpLmx1QG1lZGlhdGVrLmNvbT4N
-Ci0tLQ0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdXguYyB8IDIgKy0NCiBkcml2ZXJzL2Ns
-ay9tZWRpYXRlay9jbGstbXV4LmggfCA0IC0tLS0NCiAyIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspLCA1IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvbWVkaWF0
-ZWsvY2xrLW11eC5jIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW11eC5jDQppbmRleCAxNGUx
-MjdlLi5kY2MxMzUyIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW11eC5j
-DQorKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXV4LmMNCkBAIC0xNTUsNyArMTU1LDcg
-QEAgc3RhdGljIGludCBtdGtfY2xrX211eF9zZXRfcGFyZW50X3NldGNscl9sb2NrKHN0cnVjdCBj
-bGtfaHcgKmh3LCB1OCBpbmRleCkNCiAJLnNldF9wYXJlbnQgPSBtdGtfY2xrX211eF9zZXRfcGFy
-ZW50X3NldGNscl9sb2NrLA0KIH07DQogDQotc3RydWN0IGNsayAqbXRrX2Nsa19yZWdpc3Rlcl9t
-dXgoY29uc3Qgc3RydWN0IG10a19tdXggKm11eCwNCitzdGF0aWMgc3RydWN0IGNsayAqbXRrX2Ns
-a19yZWdpc3Rlcl9tdXgoY29uc3Qgc3RydWN0IG10a19tdXggKm11eCwNCiAJCQkJIHN0cnVjdCBy
-ZWdtYXAgKnJlZ21hcCwNCiAJCQkJIHNwaW5sb2NrX3QgKmxvY2spDQogew0KZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdXguaCBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Ns
-ay1tdXguaA0KaW5kZXggZjU2MjVmNC4uOGUyZjkyNyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvY2xr
-L21lZGlhdGVrL2Nsay1tdXguaA0KKysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW11eC5o
-DQpAQCAtNzcsMTAgKzc3LDYgQEAgc3RydWN0IG10a19tdXggew0KIAkJCV93aWR0aCwgX2dhdGUs
-IF91cGRfb2ZzLCBfdXBkLAkJCVwNCiAJCQlDTEtfU0VUX1JBVEVfUEFSRU5UKQ0KIA0KLXN0cnVj
-dCBjbGsgKm10a19jbGtfcmVnaXN0ZXJfbXV4KGNvbnN0IHN0cnVjdCBtdGtfbXV4ICptdXgsDQot
-CQkJCSBzdHJ1Y3QgcmVnbWFwICpyZWdtYXAsDQotCQkJCSBzcGlubG9ja190ICpsb2NrKTsNCi0N
-CiBpbnQgbXRrX2Nsa19yZWdpc3Rlcl9tdXhlcyhjb25zdCBzdHJ1Y3QgbXRrX211eCAqbXV4ZXMs
-DQogCQkJICAgaW50IG51bSwgc3RydWN0IGRldmljZV9ub2RlICpub2RlLA0KIAkJCSAgIHNwaW5s
-b2NrX3QgKmxvY2ssDQotLSANCjEuOC4xLjEuZGlydHkNCg==
+--Sig_/AqU54fqd.5wgPYcOuV75wXA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+After merging the sound-asoc tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
+
+sound/soc/codecs/mt6359.c: In function 'mt6359_platform_driver_remove':
+sound/soc/codecs/mt6359.c:2823:6: warning: unused variable 'ret' [-Wunused-=
+variable]
+ 2823 |  int ret;
+      |      ^~~
+sound/soc/codecs/mt6359.c:2822:22: warning: unused variable 'priv' [-Wunuse=
+d-variable]
+ 2822 |  struct mt6359_priv *priv =3D dev_get_drvdata(&pdev->dev);
+      |                      ^~~~
+
+Introduced by commit
+
+  64a70744b778 ("ASoC: Fix vaud18 power leakage of mt6359")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/AqU54fqd.5wgPYcOuV75wXA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rTawACgkQAVBC80lX
+0GwmPAf/Yv1zbdKoY8P6dkTvA+AXdKYli4FOe1wD42e/AH9hQRfKLryoBCpC1nvm
+f11SnWwIPrffFcqfMwg/QHKNwD9NyK/NC3qaOSXYfE/L7ZS5C4t7vYqy1u75Zomw
+uBx8WUMCxbYNs0XihE1uQIKSO3CYeOuBaL+Zeezug5CmDl1/Uzl5cyD3rkIRp8EQ
+ncfOhoHdvUaWxA4RAj/Np1277qz7nh0XA4pJYOOq/44NJbjh/OQe9IVfR2HQYgN8
+70dJfM0cMyizh6jeOcFDNrbxbRIyZ2K6amIsAljSH6epQLTNkHb7fSsoOMLAnAMM
+zTDi/lZYjoz+lBUV/pe/APyRC1tF5Q==
+=vo5X
+-----END PGP SIGNATURE-----
+
+--Sig_/AqU54fqd.5wgPYcOuV75wXA--
