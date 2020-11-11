@@ -2,129 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0291E2AED4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E67A2AED5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgKKJRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726893AbgKKJRl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:17:41 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA56C0613D1;
-        Wed, 11 Nov 2020 01:17:40 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id o24so1258834ljj.6;
-        Wed, 11 Nov 2020 01:17:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OgKNdkVvaz+xa5pKH11vMf7kWHOOkyKTt0eLKCTWoyM=;
-        b=Xcem9iSPQQT+omFF8Jq4Zxg1UFj1oGZ3AkgbegKWJF9ZE7/DUw7FesobvK4yzHXPME
-         4ey+m/ni4ky0Npgfs3w2eq89einViRu52/6CUzh2vpvRbacsSeqlHfkk0qK/2VoR5cBG
-         Nn3yHbgiDzKilCptKB6KIojaSc5A2GhXGEv61N8/E+wiUYYImiYre9geZZLyMkdb0d6W
-         vtd61w2JFrestyRQW+NUPPoXgP0UMkQmiiSAwZeDItM86OOJ0n0Dxf2wOv7dG9X1/cN4
-         /O2DyuDpOACib5hLZH7nYa6LM+P1Kt1AYGFKJEnBhTkk0WNkV75QgPdu2r5VpxrD2YCO
-         le2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OgKNdkVvaz+xa5pKH11vMf7kWHOOkyKTt0eLKCTWoyM=;
-        b=DxNrhQhah9RioumcPATWoD0zhkaBDrkiolKm1BduqbEClwzc1crNhvYzxe+J437TjR
-         ZhViXtHlhjsNN6/th7VFumhWWA1OPWJ0BoHQXCknkV3JdqEZ03LQjfbF3/sdxGYtipwg
-         2PMSQ7PWyJYVzL0qeK2geIf+6HrKbxWG6LasTujkBQVCgKUxG9c4CVvRc1JAIQGeuY7h
-         xXpV4kMFHeVacW9znfTbVXLVkJ+NU76IjOcorn0cbrI672JCuXeWh3M2gojRIWswo1Zj
-         DkCqSk1nbDJprY/MtlQIj/sOP4J93r7YMpaxs1pb/uJVZJlWfaIKa84nGYFQ44HZihw8
-         kE3g==
-X-Gm-Message-State: AOAM533XOaf91io5m49s4ET5fwcGK5ydeSmBRzbk96jvuZ/+dOT1PS4/
-        ZdHVruLptWZRd64c0/KFtEA=
-X-Google-Smtp-Source: ABdhPJzwEqcGv+xxwnbEjIK56TC9t3H5Pa/S/5wGVfme5kATJ46qhW11pu/k0uP4E+ggKdmGXgkSkw==
-X-Received: by 2002:a2e:87d7:: with SMTP id v23mr931730ljj.467.1605086259116;
-        Wed, 11 Nov 2020 01:17:39 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id j11sm162356lfg.69.2020.11.11.01.17.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 01:17:38 -0800 (PST)
-Subject: Re: [PATCH v8 11/26] memory: tegra124-emc: Make driver modular
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201111011456.7875-1-digetx@gmail.com>
- <20201111011456.7875-12-digetx@gmail.com> <20201111090434.GB4050@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f44b64f5-6b08-5f1e-4f9b-a73a1705d493@gmail.com>
-Date:   Wed, 11 Nov 2020 12:17:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726661AbgKKJVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:21:32 -0500
+Received: from mga02.intel.com ([134.134.136.20]:44180 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726216AbgKKJVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:21:31 -0500
+IronPort-SDR: KYZKcO6pmpoYZGaUaDLjBVO71Gimqyk/0MWnR9pDXuh7i0d2mSbeFGbAoptl2ml2iYvRLjGH4x
+ ID42EaIlIR2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="157129497"
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="157129497"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 01:21:24 -0800
+IronPort-SDR: pV8MvkyFMwZdIn4NyFLcxNJwScFDgOhxUOJHLLolqmBxb8azAk54Ms1+UlYy0vrp9QQcLJOk+p
+ JtRYN7hpaX2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="428688764"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Nov 2020 01:21:21 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 11 Nov 2020 11:21:20 +0200
+Date:   Wed, 11 Nov 2020 11:21:20 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Benson Leung <bleung@chromium.org>
+Subject: Re: [PATCH v3 2/2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201111092120.GO1224435@kuha.fi.intel.com>
+References: <20201023214328.1262883-1-pmalani@chromium.org>
+ <20201023214328.1262883-2-pmalani@chromium.org>
+ <20201110115453.GI1224435@kuha.fi.intel.com>
+ <X6qF7hioVJyCm/Ps@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111090434.GB4050@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6qF7hioVJyCm/Ps@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.11.2020 12:04, Krzysztof Kozlowski пишет:
->> -obj-$(CONFIG_TEGRA124_EMC)		+= clk-tegra124-emc.o
->> +obj-$(CONFIG_ARCH_TEGRA_124_SOC)	+= clk-tegra124-emc.o
->> +obj-$(CONFIG_ARCH_TEGRA_132_SOC)	+= clk-tegra124-emc.o
-> How is it related to modularization? It looks like different issue is
-> fixed here.
+Hi Greg,
 
-The CONFIG_TEGRA124_EMC now could be 'm', while the clock code must be
-built-in. The TEGRA124 EMC driver is used by T124 and T132 SoCs.
+On Tue, Nov 10, 2020 at 01:22:06PM +0100, Greg KH wrote:
+> > I've now come to the conclusion that this is not the correct approach.
+> > Instead, the whole identity, all six VDOs, should be supplied
+> > separately with a "raw" sysfs attribute file after all.
+> > 
+> > The three attribute files that we already have - so id_header,
+> > cert_stat and product - can always supply the actual VDO as is,
+> > regardless of the product type, so they are fine. But these new
+> > attribute files, product_type_vdoX, would behave differently as they
+> > supply different information depending on the product type. That just
+> > does not feel right to me.
+> > 
+> > So lets just add the "raw" sysfs attribute file. We can think about
+> > extracting some other details from the product type VDOs once the
+> > specification has settled down a bit and we can be quite certain that
+> > those details will always be available.
+> > 
+> > Would this be OK to you? I think we should be able to dump the data to
+> > the "raw" sysfs attribute file with something like hex_dump_to_buffer().
+> 
+> Does this mean that the value of the attributes depends on something
+> external to the device?  If so, how is userspace going to know how to
+> parse this any differently than the kernel could today?
+> 
+> And I say this as the maintainer of 'lsusb' which probably should start
+> getting support for the typec attributes that are being exposed here :)
 
-...
->> diff --git a/drivers/clk/tegra/clk.h b/drivers/clk/tegra/clk.h
->> index 6b565f6b5f66..2da7c93c1a6c 100644
->> --- a/drivers/clk/tegra/clk.h
->> +++ b/drivers/clk/tegra/clk.h
->> @@ -881,18 +881,6 @@ void tegra_super_clk_gen5_init(void __iomem *clk_base,
->>  			void __iomem *pmc_base, struct tegra_clk *tegra_clks,
->>  			struct tegra_clk_pll_params *pll_params);
->>  
->> -#ifdef CONFIG_TEGRA124_EMC
->> -struct clk *tegra_clk_register_emc(void __iomem *base, struct device_node *np,
->> -				   spinlock_t *lock);
->> -#else
->> -static inline struct clk *tegra_clk_register_emc(void __iomem *base,
->> -						 struct device_node *np,
->> -						 spinlock_t *lock)
->> -{
->> -	return NULL;
->> -}
->> -#endif
-> Why clock changes are so tightly coupled with making an EMC driver
-> modular? Usually this should be a separate change - you adjust any
-> dependencies to accept late or deferred probing, exported symbols,
-> loosen the coupling between drivers, etc. and then you convert something
-> to module.
+OK, this is great! I really want you opinion on this. Let me try to
+explain the situation.
 
-Because the clock and EMC driver were not separated from each other
-previously. The clock part can't be modularized easily and probably
-shouldn't.
+So USB Power Delivery specification defines a set of these product
+types, as I'm sure you already know. You have your hub, alternate mode
+adapter, and so on. Then there are also a couple of cable types.
+Originally I though that a product type simply equals a device type
+(and that still feels correct to me). Each product type can have its
+own "ABI" in form of the attribute files, that really should not be a
+problem, right?
 
-I'm not sure whether it's actually possible to split this patch without
-taking a closer a look.
+The problem with that was that we do not always know the product type.
+For example UCSI does not supply the operating system the response to
+the Discover Identity request from the partner device that contains
+this information. It would mean that depending on your system, we will
+claim that, let's say a hub really is a hub, or just some kind of a
+default partner device. There was discussion about this back in the
+day on this mailing list, and it was considered to be at least a
+little bit confusing for the user.
 
-I'm also doubt that it would really worth the effort for a 100 lines of
-a changed code.
+In the end I did not propose the separate device types for each USB PD
+product type (yet). Instead we only expose the header part of the
+response to the Discover Identity (when we have it) because that part
+is the same for all product types. So basically we have just the
+"default" partner device type for everything for now.
+
+But since now we clearly need all the identity details, not just the
+header, it's good to talk about this again. Maybe even the "raw"
+attribute file is not that useful in the end, and we really should
+finally introduce the separate device types for each product types?
+
+Or maybe there is a third option that I have not even thought of?
+
+thanks,
+
+-- 
+heikki
