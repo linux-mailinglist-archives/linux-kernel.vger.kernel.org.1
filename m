@@ -2,56 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D1C2AFB10
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78532AFB14
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgKKWG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:06:29 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8979 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727010AbgKKWG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:06:27 -0500
-IronPort-SDR: llxxzmw2uFArtAUgDvjHIshI58402TE5588t1fpcB77JsKry8IZuJ4ltvTxCPoMRx8edIRGhE3
- eH3lX94fxP+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="149498458"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="149498458"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 14:06:26 -0800
-IronPort-SDR: ac8RWsvq4E5LnlUMwOfsStZxjDxiRyEm3835faeb4v0xM7LBnH068ix2ZlsM0qM9Prri5rlKQY
- kPINUensokMQ==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="366390856"
-Received: from fitchbe-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.129.43])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 14:06:26 -0800
-Date:   Wed, 11 Nov 2020 14:06:24 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [RFC PATCH 0/9] CXL 2.0 Support
-Message-ID: <20201111220624.gpzykl4k26vylfyy@intel.com>
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
+        id S1727175AbgKKWGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:06:41 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40808 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726671AbgKKWGk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:06:40 -0500
+Date:   Wed, 11 Nov 2020 22:06:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605132398;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTDO01Vr/s4R/zNC/gaqopIce2jceYVkAkhNTJzqJYE=;
+        b=jGKkguJ8psvP+HAMqoTx4Sf7K8a5v0z0rmunYQewKioNStM9cn8oBlFsLRid0jkRQyWtjm
+        +a2tXCEtAhXzUc+YBa523ZDRQXZqsFYEOWcFli8+ju9TvWNGyezY6EEsaGXqIs25Uey1Qw
+        9lMGPfRXiV+uHUMWlsv/heGeIWnpYlTBVd9P5djh86ehUslZS74wDlJkZDWG25cUpimaCj
+        8zu/f0e13lO15ovl1++pRMly3wR1yJm6p8q9+wkyS8cj/CieVk44ugUGYUcjBHrD4kbzFk
+        pR7h09cuIbkQJoUF60Pctws4RwsTsuKJVlrosCKNAK82HJ2tcWuAXWOp2LqFYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605132398;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTDO01Vr/s4R/zNC/gaqopIce2jceYVkAkhNTJzqJYE=;
+        b=15WPm8IhRlDD77+j1QWO0ogyB0jfGuGDu3Nzc2KHHb/Ljvfgr2lKcJjkOgHe6rI/iyfiax
+        sAU/xoRPQios8OBg==
+From:   "tip-bot2 for David Woodhouse" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] iommu/amd: Don't register interrupt remapping
+ irqdomain when IR is disabled
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201111144322.1659970-1-dwmw2@infradead.org>
+References: <20201111144322.1659970-1-dwmw2@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111054356.793390-1-ben.widawsky@intel.com>
+Message-ID: <160513239668.11244.7104408892860202809.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding a cross reference to the QEMU work since I sent those patches after this:
+The following commit has been merged into the x86/apic branch of tip:
 
-https://gitlab.com/bwidawsk/qemu/-/tree/cxl-2.0
-https://lists.nongnu.org/archive/html/qemu-devel/2020-11/msg02886.html
+Commit-ID:     2df985f5e44c43f5d29d8cc3aaa8e8ac697e9de6
+Gitweb:        https://git.kernel.org/tip/2df985f5e44c43f5d29d8cc3aaa8e8ac697e9de6
+Author:        David Woodhouse <dwmw@amazon.co.uk>
+AuthorDate:    Wed, 11 Nov 2020 14:43:20 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 11 Nov 2020 23:01:58 +01:00
 
-[snip]
+iommu/amd: Don't register interrupt remapping irqdomain when IR is disabled
 
+Registering the remapping irq domain unconditionally is potentially
+allowing I/O-APIC and MSI interrupts to be parented in the IOMMU IR domain
+even when IR is disabled. Don't do that.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201111144322.1659970-1-dwmw2@infradead.org
+
+---
+ drivers/iommu/amd/init.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index c2769f2..a94b96f 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -1601,9 +1601,11 @@ static int __init init_iommu_one(struct amd_iommu *iommu, struct ivhd_header *h)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = amd_iommu_create_irq_domain(iommu);
+-	if (ret)
+-		return ret;
++	if (amd_iommu_irq_remap) {
++		ret = amd_iommu_create_irq_domain(iommu);
++		if (ret)
++			return ret;
++	}
+ 
+ 	/*
+ 	 * Make sure IOMMU is not considered to translate itself. The IVRS
