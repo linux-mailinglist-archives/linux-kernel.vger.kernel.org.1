@@ -2,211 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6589A2AEAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF2C2AEAEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726001AbgKKIP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:15:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgKKIP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:15:56 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19001206C0;
-        Wed, 11 Nov 2020 08:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605082555;
-        bh=UzQMgNbDWdH+iflzwyqc7uHaBePKfGi70SFbqbJmW2w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jca7eigSHmIoTfxrDnx1Bgq0fjuzXqWQ8zKsotqqSOXD3E8rEHDggahnm39YmREp1
-         Nkr+5IHLlH39uk5MCJ63UcEVvdQ1J59or0IYMCY7/PNtpZPDdVY8kZoogUMy+FzHjW
-         rKx2N6mtGBGyT/88PoC1zcQ+GzwrVnq9flZp9rwY=
-Received: by mail-ot1-f43.google.com with SMTP id n89so1384000otn.3;
-        Wed, 11 Nov 2020 00:15:55 -0800 (PST)
-X-Gm-Message-State: AOAM532QxwEPu1gCQfyrrDr0I6erTY0HeRKAGCI9a1XoqfKsLSgOrEJA
-        ObXmGStWIquRG3KBhGvpLIjf8iF74JzjAfTDNng=
-X-Google-Smtp-Source: ABdhPJxCUXI38tS4jVIP37BlRlacnWwJ/biMaD54a+TAav4mmFtCuzpfNxMaGHC7yZ/DbG2PyUq8YhXSgg/H3xWF4YE=
-X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr7412876otd.90.1605082554315;
- Wed, 11 Nov 2020 00:15:54 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
-In-Reply-To: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 11 Nov 2020 09:15:41 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
-Message-ID: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
-Subject: Re: arm: kasan: WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47 __arm_gen_branch
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726112AbgKKIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgKKIQy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 03:16:54 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D2FC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8p2FB84AEePiE9LKFVNWgo1wJCu3HjRDioPbvwtWZvc=; b=QJ9e23R99yUMi7bDiezX/Jxum3
+        rRg3hprR7sJwOMUvlcIRyM+xEUwafRlvPLrPxTrgm9LIpp1L/q68E7yPu1oDZKVzPSzwxrdxvVPlP
+        md5d22d9l+moLdNb/l2CRi+Xy6Z9rZdLNiFS+StOZQsCuT+7CfVKCn9elFpg0Vjk6UX3qdiNRgO73
+        zoVzFt4UQe1mtwjObODzXsvjPgBBw9GEu/fgeZ7OCuqBIgm6jDAcRIPEYoUjhZIhPrp0z3D8vJIQT
+        OZa5Q/+2i7Rcdx1E4Ek1X8lQ2xxSlymbb5XG/idjWTAwgK45IFD7RuccVP+9F2osJ4WV9zENHgbzc
+        gbFCFFwg==;
+Received: from dyn-227.woodhou.se ([90.155.92.227] helo=u3832b3a9db3152.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kclJA-0002Z0-51; Wed, 11 Nov 2020 08:16:49 +0000
+Message-ID: <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup
+ trigger/polarity helpers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
+Date:   Wed, 11 Nov 2020 08:16:46 +0000
+In-Reply-To: <87tutwg76j.fsf@nanos.tec.linutronix.de>
+References: <20201024213535.443185-20-dwmw2@infradead.org>
+         <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+         <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+         <20201110061046.GA7290@nazgul.tnic>
+         <87d00lgu13.fsf@nanos.tec.linutronix.de>
+         <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com>
+         <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
+         <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
+         <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org>
+         <877dqtgkzb.fsf@nanos.tec.linutronix.de>
+         <874klxghwu.fsf@nanos.tec.linutronix.de>
+         <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org>
+         <87y2j9exk2.fsf@nanos.tec.linutronix.de>
+         <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org>
+         <d4115cc7-3876-e012-b6ec-c525d608834f@amd.com>
+         <87tutwg76j.fsf@nanos.tec.linutronix.de>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-jpSHHZN3Qe9HEERuZLOE"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 at 07:13, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> The following kernel warning noticed on arm KASAN enabled config while booting.
->
-> [    0.000000] Linux version 5.10.0-rc3-next-20201110
-> (tuxmake@e15fe3b4fdc6) (arm-linux-gnueabihf-gcc (Debian 9.3.0-13)
-> 9.3.0, GNU ld (GNU Binutils for Debian) 2.35.1) #2 SMP Tue Nov 10
-> 07:49:47 UTC 2020
-> [    0.000000] CPU: ARMv7 Processor [410fd034] revision 4 (ARMv7), cr=10c5383d
-> <trim>
-> [    0.000000] kasan: Truncating shadow for memory block at
-> 0x40000000-0xffffffff to lowmem region at 0x70000000
-> [    0.000000] kasan: Mapping kernel virtual memory block:
-> c0000000-f0000000 at shadow: b7000000-bd000000
-> [    0.000000] kasan: Mapping kernel virtual memory block:
-> bf000000-c0000000 at shadow: b6e00000-b7000000
-> [    0.000000] kasan: Kernel address sanitizer initialized
-> <trim>
-> [    0.000000] ftrace: allocating 57178 entries in 112 pages
-> [    0.000000] ------------[ cut here ]------------
-> [    0.000000] WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47
-> __arm_gen_branch+0x78/0x80
-> [    0.000000] Modules linked in:
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
-> 5.10.0-rc3-next-20201110 #2
-> [    0.000000] Hardware name: Generic DT based system
-> [    0.000000] Backtrace:
-> [    0.000000] [<c199f710>] (dump_backtrace) from [<c199fb94>]
-> (show_stack+0x20/0x24)
-> [    0.000000]  r9:00000080 r8:c2e00000 r7:c3023060 r6:600000d3
-> r5:00000000 r4:c3023060
-> [    0.000000] [<c199fb74>] (show_stack) from [<c19a7ad0>]
-> (dump_stack+0xe8/0x10c)
-> [    0.000000] [<c19a79e8>] (dump_stack) from [<c0366518>] (__warn+0x140/0x164)
-> [    0.000000]  r10:00000009 r9:00000000 r8:c2e0e000 r7:00000009
-> r6:c031986c r5:0000002f
-> [    0.000000]  r4:c1a0bbe0 r3:c2e06f50
-> [    0.000000] [<c03663d8>] (__warn) from [<c19a13ac>]
-> (warn_slowpath_fmt+0xc0/0x128)
-> [    0.000000]  r9:c031986c r8:0000002f r7:c1a0bbe0 r6:00000000
-> r5:c2e03ec0 r4:b75c07cc
-> [    0.000000] [<c19a12f0>] (warn_slowpath_fmt) from [<c031986c>]
-> (__arm_gen_branch+0x78/0x80)
-> [    0.000000]  r10:0000d247 r9:c4019238 r8:c400c104 r7:c2e070a0
-> r6:c400c108 r5:c0319250
-> [    0.000000]  r4:00000000
-> [    0.000000] [<c03197f4>] (__arm_gen_branch) from [<c0319720>]
-> (ftrace_make_nop+0x30/0x48)
-> [    0.000000]  r5:c0319250 r4:c2b00354
-> [    0.000000] [<c03196f0>] (ftrace_make_nop) from [<c04ac104>]
-> (ftrace_process_locs+0x470/0x5f0)
-> [    0.000000]  r5:00001248 r4:c400c100
-> [    0.000000] [<c04abc94>] (ftrace_process_locs) from [<c2b2d8f4>]
-> (ftrace_init+0xa8/0x158)
-> [    0.000000]  r10:10c5387d r9:c1a87768 r8:c2cb9f98 r7:c2c82230
-> r6:00000001 r5:c2e070a0
-> [    0.000000]  r4:c37f5c40
-> [    0.000000] [<c2b2d84c>] (ftrace_init) from [<c2b010ec>]
-> (start_kernel+0x174/0x3f8)
-> [    0.000000]  r9:00000001 r8:c2e06f00 r7:00000000 r6:c2e06f00
-> r5:c37c0000 r4:ffffffff
-> [    0.000000] [<c2b00f78>] (start_kernel) from [<00000000>] (0x0)
-> [    0.000000]  r9:410fd034 r8:48000000 r7:ffffffff r6:10c0387d
-> r5:00000051 r4:c2b00334
-> [    0.000000] random: get_random_bytes called from
-> print_oops_end_marker+0x30/0xa0 with crng_init=0
-> [    0.000000] ---[ end trace 0000000000000000 ]---
-> [ #
->    0.000000] ------------[ ftrace bug ]------------
-> [    0.000000] ftrace failed to modify
-> [    0.000000] [<c2b00354>] set_reset_devices+0x10/0x28
-> [    0.000000]  actual:   0a:3d:04:eb
-> [    0.000000] Initializing ftrace call sites
-> [    0.000000] ftrace record flags: 0
-> [    0.000000]  (0)
-> [    0.000000]  expected tramp: c031925c
-> [    0.000000] ------------[ cut here ]------------
-> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/trace/ftrace.c:2065
-> ftrace_bug+0x218/0x280
-> [    0.000000] Modules linked in:
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G        W
-> 5.10.0-rc3-next-20201110 #2
-> [    0.000000] Hardware name: Generic DT based system
-> [    0.000000] Backtrace:
-> [    0.000000] [<c199f710>] (dump_backtrace) from [<c199fb94>]
-> (show_stack+0x20/0x24)
-> [    0.000000]  r9:00000080 r8:c2e00000 r7:c3023060 r6:600000d3
-> r5:00000000 r4:c3023060
-> [    0.000000] [<c199fb74>] (show_stack) from [<c19a7ad0>]
-> (dump_stack+0xe8/0x10c)
-> [    0.000000] [<c19a79e8>] (dump_stack) from [<c0366518>] (__warn+0x140/0x164)
-> [    0.000000]  r10:00000009 r9:00000000 r8:c2e0e000 r7:00000009
-> r6:c19a3790 r5:00000811
-> [    0.000000]  r4:c1a863c0 r3:c2e06f50
-> [    0.000000] [<c03663d8>] (__warn) from [<c19a13ac>]
-> (warn_slowpath_fmt+0xc0/0x128)
-> [    0.000000]  r9:c19a3790 r8:00000811 r7:c1a863c0 r6:00000000
-> r5:c2e03ee0 r4:b75c07d0
-> [    0.000000] [<c19a12f0>] (warn_slowpath_fmt) from [<c19a3790>]
-> (ftrace_bug+0x218/0x280)
-> [    0.000000]  r10:0000d247 r9:c4019238 r8:c400c104 r7:c37f5c40
-> r6:c1a86960 r5:c401923c
-> [    0.000000]  r4:c4019238
-> [    0.000000] [<c19a3578>] (ftrace_bug) from [<c04abfc0>]
-> (ftrace_process_locs+0x32c/0x5f0)
-> [    0.000000]  r7:c2e070a0 r6:c400c108 r5:00001248 r4:c400c100
-> [    0.000000] [<c04abc94>] (ftrace_process_locs) from [<c2b2d8f4>]
-> (ftrace_init+0xa8/0x158)
-> [    0.000000]  r10:10c5387d r9:c1a87768 r8:c2cb9f98 r7:c2c82230
-> r6:00000001 r5:c2e070a0
-> [    0.000000]  r4:c37f5c40
-> [    0.000000] [<c2b2d84c>] (ftrace_init) from [<c2b010ec>]
-> (start_kernel+0x174/0x3f8)
-> [    0.000000]  r9:00000001 r8:c2e06f00 r7:00000000 r6:c2e06f00
-> r5:c37c0000 r4:ffffffff
-> [    0.000000] [<c2b00f78>] (start_kernel) from [<00000000>] (0x0)
-> [    0.000000]  r9:410fd034 r8:48000000 r7:ffffffff r6:10c0387d
-> r5:00000051 r4:c2b00334
-> [    0.000000] ---[ end trace f68728a0d3053b52 ]---
-> [    0.000000] ftrace: allocated 112 pages with 3 groups
->
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git describe: next-20201110
->   make_kernelversion: 5.10.0-rc3
->   build : https://builds.tuxbuild.com/1k5bYasxkHF7omMh7mjtxjRtkMe/
->
-> The qemu boot command,
-> -----------------------------------
-> /usr/bin/qemu-system-aarch64 -cpu host,aarch64=off -machine
-> virt-2.10,accel=kvm -nographic -net
-> nic,model=virtio,macaddr=BA:DD:AD:CC:09:03 -net tap -m 2048 -monitor
-> none -kernel kernel/zImage --append "console=ttyAMA0 root=/dev/vda rw"
-> -hda rpb-console-image-lkft-am57xx-evm-20201022181203-3085.rootfs.ext4
-> -m 4096 -smp 2 -nographic
->
-> Full log:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201110/testrun/3420437/suite/linux-log-parser/test/check-kernel-warning-1927841/log
->
 
-The kernel you are building is too big.
+--=-jpSHHZN3Qe9HEERuZLOE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-An ordinary multi_v7_defconfig+thumb2 has
+On Tue, 2020-11-10 at 23:48 +0100, Thomas Gleixner wrote:
+> + * IRQCHIP_MSI_EXTID                 The MSI message created for this ch=
+ip can
+> + *                                   have an otherwise forbidden extende=
+d ID
 
-(10240K kernel code, 2232K rwdata, 5344K rodata, 2048K init, 441K bss,
-144040K reserved, 65536K cma-reserved, 3340512K highmem)
+If we're going to do that then we could ditch the separate
+iommu_compose_msi_msg() function too, right?
 
-whereas your kernel has
+But actually I'd be more inclined to fix this differently, in a way
+that doesn't still leave AMD's iommu_init_intcapxt() having to set use
+irq_set_affinity_notifier() to update its own registers. That's icky.
 
-(23552K kernel code, 9970K rwdata, 16736K rodata, 3072K init, 4849K
-bss, 189072K reserved, 65536K cma-reserved, 2293756K highmem)
+Given that this is *its* irqdomain in the first place, it should just
+sit at ->set_affinity() for itself, and call its parent as usual
+without having to use a notifier.
 
-and so the kernel text section is too large to resolve relative branches.
+We should also leave it using the basic PCI MSI support in the case
+where the IOMMU doesn't have XTSUP support. It doesn't need its own
+irqdomain for that.
 
-Which config are you building?
+
+--=-jpSHHZN3Qe9HEERuZLOE
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MTExMDgxNjQ2WjAvBgkqhkiG9w0BCQQxIgQg0xcwZN6HY71mLM+OWU09iPwkzLVy9qkjhQ3VTzyd
+vRUwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBADLln1M3hdeUuS63224Rkn4W6yu8eYd/Q2eQmtw55c/bpUPAS+CCWrZWNuQf/ugd
+oaqPMtOOY70geBp4TopDXYK6qa+pHZi1mQQuVzeemkrSSJWfOEpV4j0vlwsIMS7YHqAVZZGFbp/N
+r4y4X2uGjuQ9akB/rdyL2HCLpp7RGHNwvNEP8Qm+l1ip2xxyqipgEAVK8SP9kRGl16seu8f5SoOX
+ykBYpQ59fuf2BOX2IaazOGUgoRqRuMutN/dHsuuiBGEvmn4yj2SmUHCEboAoEzsjxgTjXuI2+lGc
+QNtI4dpTAIHQXNL0wDtOm2KRNGeAL/oOnpVdXwCUODnPAwJ4P88AAAAAAAA=
+
+
+--=-jpSHHZN3Qe9HEERuZLOE--
+
