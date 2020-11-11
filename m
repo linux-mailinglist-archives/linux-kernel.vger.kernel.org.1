@@ -2,99 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5EC2AE552
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD072AE553
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732475AbgKKBJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:09:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732421AbgKKBJU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 20:09:20 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C8CC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:09:20 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcedK-003BHU-BW; Wed, 11 Nov 2020 01:09:10 +0000
-Date:   Wed, 11 Nov 2020 01:09:10 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: fix missing include in asm uaccess.h
-Message-ID: <20201111010910.GZ3576660@ZenIV.linux.org.uk>
-References: <20201111004440.8783-1-ansuelsmth@gmail.com>
- <20201111005826.GY3576660@ZenIV.linux.org.uk>
+        id S1732452AbgKKBKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:10:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731746AbgKKBKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 20:10:15 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A7F821D7F;
+        Wed, 11 Nov 2020 01:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605057015;
+        bh=SCJwc6M/YlwFgIGsMdjbALifbJv8RCAzxo4V57Ddvro=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VGicqCwn0jStrPs9IRET/S20mpCoEHGHmhEK2mZNRWRijlWFkEggPNJYKhaT7uBI2
+         /yNqCvRcy/+mF+6PmHQRhcTnHgIAM97hmXVChqc1tHFMBSS3ZhKhaZ47bxNlix/Tno
+         PDi8qzOZfhJ6pR9qWSUDle12kqtvhAzHI7GOoWRA=
+Date:   Tue, 10 Nov 2020 17:10:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 net] net/ethernet: Fix error return when ptp_clock is
+ ERROR
+Message-ID: <20201110171013.11e5373b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604888277-20400-1-git-send-email-wangqing@vivo.com>
+References: <1604888277-20400-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111005826.GY3576660@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 12:58:26AM +0000, Al Viro wrote:
-> On Wed, Nov 11, 2020 at 01:44:38AM +0100, Ansuel Smith wrote:
-> > Fix a compilation error as PF_KTHREAD is defined in linux/sched.h and
-> > this is missing.
-> > 
-> > Fixes: df325e05a682 ("arm64: Validate tagged addresses in access_ok()
-> > called from kernel threads")
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  arch/arm64/include/asm/uaccess.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> > index 991dd5f031e4..51a4f63f464a 100644
-> > --- a/arch/arm64/include/asm/uaccess.h
-> > +++ b/arch/arm64/include/asm/uaccess.h
-> > @@ -7,6 +7,8 @@
-> >  #ifndef __ASM_UACCESS_H
-> >  #define __ASM_UACCESS_H
-> >  
-> > +#include <linux/sched.h>
-> > +
-> >  #include <asm/alternative.h>
-> >  #include <asm/kernel-pgtable.h>
-> >  #include <asm/sysreg.h>
+On Mon,  9 Nov 2020 10:17:52 +0800 Wang Qing wrote:
+> We always have to update the value of ret, otherwise the error value
+>  may be the previous one. And ptp_clock_register() never return NULL
+>  when PTP_1588_CLOCK enable.
 > 
-> NAK.  The real bug is in arch/arm64/include/asm/asm-prototypes.h -
-> it has no business pulling asm/uaccess.h
-> 
-> Just include linux/uaccess.h instead.
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-BTW,
-$ grep -n uaccess.h `find -name asm-prototypes.h`
-./arch/alpha/include/asm/asm-prototypes.h:7:#include <linux/uaccess.h>
-./arch/arm64/include/asm/asm-prototypes.h:18:#include <asm/uaccess.h>
-./arch/ia64/include/asm/asm-prototypes.h:12:#include <linux/uaccess.h>
-./arch/mips/include/asm/asm-prototypes.h:6:#include <linux/uaccess.h>
-./arch/powerpc/include/asm/asm-prototypes.h:14:#include <linux/uaccess.h>
-./arch/sparc/include/asm/asm-prototypes.h:9:#include <linux/uaccess.h>
-./arch/x86/include/asm/asm-prototypes.h:3:#include <linux/uaccess.h>
+Please add a Fixes tag as I requested in a reply to v2.
 
-Spot the irregularity...
-
-While we are at it,
-$ git grep -n -w '#.*include.*asm/uaccess.h'
-arch/arm64/include/asm/asm-prototypes.h:18:#include <asm/uaccess.h>
-arch/nds32/math-emu/fpuemu.c:5:#include <asm/uaccess.h>
-arch/powerpc/kvm/book3s_xive_native.c:15:#include <asm/uaccess.h>
-arch/powerpc/mm/book3s64/radix_pgtable.c:30:#include <asm/uaccess.h>
-drivers/s390/net/ctcm_mpc.c:50:#include <linux/uaccess.h>       /* instead of <asm/uaccess.h> ok ? */
-include/linux/uaccess.h:11:#include <asm/uaccess.h>
-
-The last one is the only such include that should exist; drivers/s390 one
-is obviously a false positive.  And IMO the right thing to do is to
-replace the remaining arch/* instances with includes of linux/uaccess.h.
-
-All of those are asking for trouble; any change moving e.g. a common
-variant of some primitive into linux/uaccess.h might end up breaking
-those.
+Please CC Richard on the next version, since he gave you feedback, 
+and he's the PTP maintainer.
