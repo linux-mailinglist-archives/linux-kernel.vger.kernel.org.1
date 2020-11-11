@@ -2,105 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB5F2AEC57
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8AA2AEC5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbgKKIvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgKKIvj (ORCPT
+        id S1726251AbgKKIwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:52:31 -0500
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:55759 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726221AbgKKIwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:51:39 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4727FC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:51:39 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id p12so1162386ljc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:51:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+8bXg1amCva6L1BZNvv9NOL5If1TZuwvQTOK9it0P1I=;
-        b=vTkloo5z5bEqhILL0UKrT4QWDrQHuoFYM37ZYgNeoGfyGFZhlrbain5hhU3TLdINzF
-         QkJt3gYEzMFKKrIrNk4G8vEc9jcudLwfG6az8SBM7uZwMwrFwgg2P8V0bhtNOavoayxT
-         gKia/P1Y4PUXWBj0pzsUuPsf2uxjwTLFebawsDcLPaY5uEv9J228hc2w2b9vk/QPJZlD
-         hs7DXmznb2gRuA40coaK8mn1fuKnn6aLphbksrvmb+aUOghBxhlrfM9DtM+4/UIoUJih
-         0qCB8keg/KV8BBA6CRqsovPXNRAvxJVUU2T7LQeJKCfcrT8RSbc7uqd00TJl5VzkSOa9
-         LFPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+8bXg1amCva6L1BZNvv9NOL5If1TZuwvQTOK9it0P1I=;
-        b=k6klfYhI22w1qclyqR5JWmLi60ToUceIOePue/SuyKbOOoqwiFsD1ypJjszEAs5cRL
-         akkForChWcj0dmUSC0lLGmk6Ep+B3VTClV3UKJ5qF9jtGcykzgsev5qrDfrqEqVYlDdk
-         euycqKxh6qxFzXOhh+RekqVo42qYGmaDhA//qsH7zCI3kReut/4jlgn0VhNfVrCCACjM
-         dlPHnZtezq22JB8U18kZGua8zhDHXtuyBQI+dxAc89BDV33AzSIUY/ztOcHzFLXxhuuj
-         VrmS/q0AXPiblyWoi61pfmSh9NadiMD+VzJoCFvS7veQSnjl171n9HxCVs4Cf2Jrpdxe
-         /INw==
-X-Gm-Message-State: AOAM531aAoIjncAqQWc/V+UvIuxksiYlM1SSbfZB6bC0XTSp7DwtNDPO
-        jD91P7i8/kgbuAc6uOkEpCOPoJdfa9UWzyK+I6jXWQ==
-X-Google-Smtp-Source: ABdhPJwZJ2pi/kSmOtA8gbDLhBCbSbTC58csx1FMOlPjNZ4CYiUMZhvLU8xIm8Lue75PRSuTxiRNjSOe3BelyRBOF7I=
-X-Received: by 2002:a2e:80d2:: with SMTP id r18mr10837211ljg.286.1605084697617;
- Wed, 11 Nov 2020 00:51:37 -0800 (PST)
+        Wed, 11 Nov 2020 03:52:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605084749; x=1636620749;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=mPPy1TkcVOlW/Zjck2Emjg838QadGoDmShOXyWNzpns=;
+  b=fKtP3O0POp+1kmQ15AGUDU196cBf1tDpgc71CqLRqhphd1lTRY7UpETS
+   1UHkz2i3VN/uBeTagbIj7We0KIFO+MusJAqKbCziLaA8MwJwOLwN/SzA+
+   gHl0dVtw2VkEJw62fq01bv7S/0WKFeabXnxLbM/EL3e7tOu17TEO6BU/9
+   lmX+Eq/ep4OkAx/ZQbD459LiAGWEU4KCIsXGolFwKRNVY1a/BG72aMeuN
+   XVIJQ5ZXjcGlcIDXUOnHn0rprj94100vRxxZEeej+m4o+My7CbAf+bzD7
+   Q54BsOArzCq735haCaG4n7Dtrt5JXqnyAP1v0SeTwj2Exh+eRvMvq5LJg
+   Q==;
+IronPort-SDR: vriVf8UGjCnWN9V1LMJVSV66qS6uYu96PDzWV8heInFGVS3xNRLeUhigGq6SrUWEgFCLf+xD5Q
+ 5SNx2NqrpRHKkmjbP6xjwKJ0Aa/CB7RHEwHx/hU0d6eWiX4CkwulRDBfCuy8bmiPAzj859x0wM
+ Xh4drdJEfsWayKYHbwk1GzbbP5wXbJDfac8ZfcNvHj24Dc/tpjBbYg7GPj+Gwk7rmw8MkB/gZc
+ tIHKAW5GuLMnFWieBTq1+s1v3M8h3KBxlYL/DrdBiukeOx2vwPUpe602nOKPTsmRPFjt6LNo4D
+ Tec=
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="103025944"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 01:52:29 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 11 Nov 2020 01:52:28 -0700
+Received: from soft-dev10.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 11 Nov 2020 01:52:26 -0700
+References: <20201109132643.457932-1-lars.povlsen@microchip.com> <20201109132643.457932-3-lars.povlsen@microchip.com> <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com> <87361hfbwu.fsf@microchip.com> <CAHp75VfZ=hJvpYiAOz72yRpJTxLU6ZOo9hEz4BsBcgSwAcjCFA@mail.gmail.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-arm Mailing List" <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO
+In-Reply-To: <CAHp75VfZ=hJvpYiAOz72yRpJTxLU6ZOo9hEz4BsBcgSwAcjCFA@mail.gmail.com>
+Date:   Wed, 11 Nov 2020 09:51:52 +0100
+Message-ID: <87zh3oe0nr.fsf@microchip.com>
 MIME-Version: 1.0
-References: <202011111443.lt7V48Ig-lkp@intel.com>
-In-Reply-To: <202011111443.lt7V48Ig-lkp@intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Nov 2020 09:51:26 +0100
-Message-ID: <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
-Subject: Re: ./include/generated/autoconf.h:1601:33: fatal error:
- mach/debug-macro.S: No such file or directory
-To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Olof Johansson <olof@lixom.net>
-Cc:     kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 7:18 AM kernel test robot <lkp@intel.com> wrote:
 
->    In file included from include/linux/kconfig.h:7,
->                     from <command-line>:
-> >> ./include/generated/autoconf.h:1601:33: fatal error: mach/debug-macro.S: No such file or directory
->     1601 | #define CONFIG_DEBUG_LL_INCLUDE "mach/debug-macro.S"
->          |                                 ^~~~~~~~~~~~~~~~~~~~
->    compilation terminated.
+Andy Shevchenko writes:
 
-This is an interesting one!
+> On Tue, Nov 10, 2020 at 5:51 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>> > On Mon, Nov 9, 2020 at 3:27 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>
+>> >> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
+>> >> (SGPIO) device used in various SoC's.
+>> >
+>> > Please, elaborate what you said previously, because now it has no
+>> > justification to be a pin control driver.
+>>
+>> As previously stated, the individual pins have possible other functions
+>> than GPIO. When these functions are added, the driver will need pinctrl
+>> functinality. This was accepted by Linux Walleij.
+>
+> Yes, I understand that. What I meant is to update the commit message
+> to tell this to the reviewers / readers / anthropologists.
 
-It happens when CONFIG_DEBUG_LL_INCLUDE does not have a custom
-debug header for the platform under arch/arm/include/debug and the
-KConfig falls through to the default value, which is <mach/debug-macro.S>.
+Ok, will do.
 
-Only that the majority is not using <mach/*> anymore.
+>
+> ...
+>
+>> >> +               return -EOPNOTSUPP;
+>> >
+>> > Are you sure? IIRC internally we are using ENOTSUPP.
+>> >
+>> > Couple of drivers seem to be wrongly using the other one.
+>>
+>> Checkpatch complains about ENOTSUPP:
+>>
+>> # ENOTSUPP is not a standard error code and should be avoided in new patches.
+>> # Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
+>
+> checkpatch is wrong if this is internal code and to me sounds like
+> it's not going out of the kernel.
+>
+> ...
 
-I feel a bit like setting the default to debug/8250.S or something.
+As it appears there are different opinions on this I'll let the pinctrl
+maintainer decide.
 
-Suggestions?
+>
+>> >> +                       err = -EOPNOTSUPP;
+>> >
+>> > Ditto.
+>>
+>> Ditto.
+>
+> Ditto.
+>
+> ...
+>
+>> >> +               dev_err(pctldev->dev, "Pin %d direction as %s is not possible\n",
+>> >> +                       pin, input ? "input" : "output");
+>> >
+>> > Do we need this noise? Isn't user space getting a proper error code as
+>> > per doc and can handle this?
+>> >
+>>
+>> This need not go to user space, as one use-case is using the pin as a
+>> i2c mux. In this case no signs of the error condition is recorded, it
+>> just doesn't work. So I concur it is not noise, it is sign of an
+>> erroneous situation which should be fixed, IMHO.
+>>
+>> The message makes it easy to locate the issue, if any. The message will
+>> not occur on a properly configured system.
+>
+> It's noise. As we discussed with Alexandre (and I guess came to the
+> same page) that its consumer's business how to treat the error.
+>
+>> Lets have the maintainer make the call.
+>
+> ...
 
-Then the actual bug exposed:
+I digress. I'll remove it.
 
-The config tested by the robot is using
-CONFIG_ARCH_AT91=y
-CONFIG_SOC_SAMV7=y
+>
+>> >> +static int microchip_sgpio_get_ports(struct sgpio_priv *priv)
+>> >> +{
+>
+>> >> +}
+>> >
+>> > As per previous version comment, i.e. perhaps find an existing API for
+>> > this kind of parser or introduce a generic one.
+>>
+>> I fixed the use of OF api's - that was surely an oversight.
+>>
+>> I have searched for a suitable API without finding one. The closest
+>> thing was the parsing of "gpio-reserved-ranges" in gpiolib-of.c, but
+>> that was coded directly. So I think this might not be of general use.
+>>
+>> If it is, lets do that after the driver is merged.
+>
+> I guess it will be a lot of benefit to have such API earlier than later.
 
-When I look into Kconfig.debug it seems that this will define
-DEBUG_AT91_SAMV7_USART1 but only a physical address,
-no virtual address and and actually no debug header. It seems
-LL_DEBUG is broken on SAMV7 and never really worked
-so now that crops up.
+Thank you for your comments. I'll send the new version shortly.
 
-Nicolas, something that should be fixed, I think?
+---Lars
 
-Yours,
-Linus Walleij
+--
+Lars Povlsen,
+Microchip
