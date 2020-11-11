@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABEB2AF3C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DEC2AF3C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgKKOiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        id S1727257AbgKKOix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgKKOij (ORCPT
+        with ESMTP id S1727170AbgKKOil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:38:39 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A97C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:38:34 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h62so2538989wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:38:34 -0800 (PST)
+        Wed, 11 Nov 2020 09:38:41 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7523CC061A53
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:38:36 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c16so2542380wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:38:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=UgCPIURcil9hG01k4XJ9cyq/wEnYTI+F3ySUT22jgJk=;
-        b=QmA+UejWXh4jwqurZUgb6ou4f8RqKFKwIHPWa9zSxdMz7JyAo8H29Pa38ECLkKBAWR
-         xh9XKvbk0hVLiWDczMfNSjCP6D9Tg+Efbz/g2MMwIIXQncQJE3mHzYtV0NJNXaHNWb36
-         UUehausaXwSZtWsh4v0FGM88ixXTbnMKNwzmLfJU/SAvs0kmELjfVp93j4Felgg1nBSR
-         qSTfw7yFRpTjvwYj1a+veAz/JlrrIAFw0v/qUDZTqIzQZGNX6+h3RkGDtmgKcKTBUxCt
-         PmLACq4VtWWIMAw55T/e+PB2T/kX3YS/0NgcrxOJHpEERSYvcVTa0BpvTadf1I80tds0
-         gTXA==
+        bh=v6PMbdcIaoeKpv1BZw7/QGsGTQk22a+f7y9ODfXyJpE=;
+        b=RFJWXOGAFWIA2m0DXMEeGx7fabcVR1mMGdq6TnQs1KjP24WoouQwbboYBzRcmp8jpB
+         qi9Ny8SkABPKT9dqzlz26bVcCblnJUVm3OoDDfUZLpTjMg2LgEFlOiRSH4vMjpjZChEl
+         vMu2jvUoBdokjDTEeM9ZhroBqIfQpJWpk2WEumL9qDGbn53+qYvWOKy6TlDbkHDARkBl
+         UcnQGFPQTO+rI14M8It/CepOqeJFw/CpN2K2hf3jyZJGUEesPkpOAX84zNwOTE9wMJql
+         l8iQpQFls1hnJOY9ixraUMmToUy9fCC+2LpceNKAGBwy11muuFWfBlupdTv84X/Mpp01
+         fpEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=UgCPIURcil9hG01k4XJ9cyq/wEnYTI+F3ySUT22jgJk=;
-        b=kWc/Ne4FI2qXaw9ART2YqYr9uJpvZuosG2ZKSgtWf8svumv+UV7nIZevF+3y9RhO8C
-         krPSikAmT/ZJtwfQhYETglmfiE+404uNB1uXuOKq7zOna2Lq9wthIQlRSagI+n0d8dT2
-         CEv1/NJokRyTszno7OWDCe52rfn4TnNp94hTuJXLCWB+OJuXPzX23gc7ml5wWQnhJIjY
-         f39rWz2TcNOJYPyLRpRJmZAoE2Y/x62QN6w1N/De1VRbbbnGUaY5lhra5i0VnmarDEiH
-         VUnG5yEi6AXaKo6vWk5jM6wkYe2iJT6mxFLYd8r5OnPcOeIxEuEN8aKtnfDGE7iCdjMn
-         A72g==
-X-Gm-Message-State: AOAM532SPfgDrp3jXWkUoqNoxPQZjup1pmfeK1DnrW2N1nxE7JFiwfmq
-        yRVITDSHhxaOEiYl1FPVyFu71g==
-X-Google-Smtp-Source: ABdhPJwZ0P1JYmiuBrLn4FSKP2pDFcznHFEgrw+BxDshi/vutcOK5q4S7aw3K9m2bwFXfHuzAOnX+Q==
-X-Received: by 2002:a7b:cd11:: with SMTP id f17mr4537221wmj.127.1605105513442;
-        Wed, 11 Nov 2020 06:38:33 -0800 (PST)
+        bh=v6PMbdcIaoeKpv1BZw7/QGsGTQk22a+f7y9ODfXyJpE=;
+        b=tFV3ccXkiyZY7+Ew8gLzTGMRrbVK7AuHKAUw3ynNRLbqPUWoAMd7EPuvCsx861fhwM
+         52retp4xQHPM8hwU2e5a8cKwxOMv8DrcUVVB/mXtPd6XvOwCPmISQLpYVyDzXTSdvXHB
+         LwI/8v2tKPv48oPV7PjOouzGCsW9Z5rm2Ier/us0yTrS7BmVGz93gpMHHYm5/1/5XV58
+         ZeAgVcLR9lYWF6GS7U/+18rLpToeXb1X+AUEikKiqtdvJLqxl/Ew2TtmKDN6vT+l+ooY
+         CCcSa41e9BFxF6wgeSrWM45A8RfL/GL13k1zRrr+uN7oinb6AhtzldQOTp72SzUE3Fg0
+         lCBA==
+X-Gm-Message-State: AOAM530B1gY7bJmKjGkZzDbiphkeiM5yeG6rqFtylhXFQggV89B3Loih
+        F5IjQ+rmcYpQ8F4G/f6UTYsb1A==
+X-Google-Smtp-Source: ABdhPJyfhwZZGvSjEExcYWQXwgso+d1TfwdG22b4x1vmEe3V5gSHol4/2Oyx2YXdpspM14ZNTjwJ3w==
+X-Received: by 2002:a1c:c302:: with SMTP id t2mr4671828wmf.189.1605105515148;
+        Wed, 11 Nov 2020 06:38:35 -0800 (PST)
 Received: from localhost.localdomain (hst-221-89.medicom.bg. [84.238.221.89])
-        by smtp.gmail.com with ESMTPSA id b8sm2991405wrv.57.2020.11.11.06.38.32
+        by smtp.gmail.com with ESMTPSA id b8sm2991405wrv.57.2020.11.11.06.38.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 06:38:32 -0800 (PST)
+        Wed, 11 Nov 2020 06:38:34 -0800 (PST)
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
 To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
         Alexandre Courbot <acourbot@chromium.org>,
         Fritz Koenig <frkoenig@chromium.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
         Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 6/8] venus: venc: add handling for VIDIOC_ENCODER_CMD
-Date:   Wed, 11 Nov 2020 16:37:53 +0200
-Message-Id: <20201111143755.24541-7-stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 7/8] venus: venc: Handle reset encoder state
+Date:   Wed, 11 Nov 2020 16:37:54 +0200
+Message-Id: <20201111143755.24541-8-stanimir.varbanov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201111143755.24541-1-stanimir.varbanov@linaro.org>
 References: <20201111143755.24541-1-stanimir.varbanov@linaro.org>
@@ -65,136 +64,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dikshita Agarwal <dikshita@codeaurora.org>
+Redesign the encoder driver to be compliant with stateful encoder
+spec - specifically adds handling of Reset state.
 
-Add handling for below commands in encoder:
-1. V4L2_ENC_CMD_STOP
-2. V4L2_ENC_CMD_START
-
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 ---
- drivers/media/platform/qcom/venus/venc.c | 77 +++++++++++++++++++++++-
- 1 file changed, 76 insertions(+), 1 deletion(-)
+ drivers/media/platform/qcom/venus/venc.c | 155 ++++++++++++++++++-----
+ 1 file changed, 122 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 99bfabf90bd2..7512e4a16270 100644
+index 7512e4a16270..f1ae89d45a54 100644
 --- a/drivers/media/platform/qcom/venus/venc.c
 +++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -507,6 +507,59 @@ static int venc_enum_frameintervals(struct file *file, void *fh,
- 	return 0;
+@@ -907,6 +907,54 @@ static int venc_queue_setup(struct vb2_queue *q,
+ 	return ret;
  }
  
-+static int venc_encoder_cmd(struct file *file, void *fh,
-+			    struct v4l2_encoder_cmd *ec)
++static void venc_release_session(struct venus_inst *inst)
 +{
-+	struct venus_inst *inst = to_inst(file);
-+	struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
-+	struct hfi_frame_data fdata = {0};
-+	int ret = 0;
-+
-+	ret = v4l2_m2m_ioctl_try_encoder_cmd(file, fh, ec);
-+	if (ret < 0)
-+		return ret;
++	int ret, abort = 0;
 +
 +	mutex_lock(&inst->lock);
 +
-+	if (!vb2_is_streaming(&m2m_ctx->cap_q_ctx.q) ||
-+	    !vb2_is_streaming(&m2m_ctx->out_q_ctx.q))
-+		goto unlock;
++	ret = hfi_session_deinit(inst);
++	abort = (ret && ret != -EINVAL) ? 1 : 0;
 +
-+	if (m2m_ctx->is_draining) {
-+		ret = -EBUSY;
-+		goto unlock;
-+	}
++	if (inst->session_error)
++		abort = 1;
 +
-+	if (ec->cmd == V4L2_ENC_CMD_STOP) {
-+		if (v4l2_m2m_has_stopped(m2m_ctx)) {
-+			ret = 0;
-+			goto unlock;
-+		}
++	if (abort)
++		hfi_session_abort(inst);
 +
-+		m2m_ctx->is_draining = true;
++	venus_pm_load_scale(inst);
++	INIT_LIST_HEAD(&inst->registeredbufs);
++	mutex_unlock(&inst->lock);
 +
-+		fdata.buffer_type = HFI_BUFFER_INPUT;
-+		fdata.flags |= HFI_BUFFERFLAG_EOS;
-+		fdata.device_addr = 0;
-+		fdata.clnt_data = (u32)-1;
++	venus_pm_release_core(inst);
++}
 +
-+		ret = hfi_session_process_buf(inst, &fdata);
++static int venc_buf_init(struct vb2_buffer *vb)
++{
++	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
++
++	inst->buf_count++;
++
++	return venus_helper_vb2_buf_init(vb);
++}
++
++static void venc_buf_cleanup(struct vb2_buffer *vb)
++{
++	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
++	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
++	struct venus_buffer *buf = to_venus_buffer(vbuf);
++
++	mutex_lock(&inst->lock);
++	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
++		if (!list_empty(&inst->registeredbufs))
++			list_del_init(&buf->reg_list);
++	mutex_unlock(&inst->lock);
++
++	inst->buf_count--;
++	if (!inst->buf_count)
++		venc_release_session(inst);
++}
++
+ static int venc_verify_conf(struct venus_inst *inst)
+ {
+ 	enum hfi_version ver = inst->core->res->hfi_version;
+@@ -938,49 +986,57 @@ static int venc_verify_conf(struct venus_inst *inst)
+ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
+ {
+ 	struct venus_inst *inst = vb2_get_drv_priv(q);
++	struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
+ 	int ret;
+ 
+ 	mutex_lock(&inst->lock);
+ 
+-	if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
++	v4l2_m2m_update_start_streaming_state(m2m_ctx, q);
++
++	if (V4L2_TYPE_IS_OUTPUT(q->type))
+ 		inst->streamon_out = 1;
+ 	else
+ 		inst->streamon_cap = 1;
+ 
+-	if (!(inst->streamon_out & inst->streamon_cap)) {
+-		mutex_unlock(&inst->lock);
+-		return 0;
+-	}
++	if (inst->streamon_out && inst->streamon_cap &&
++	    inst->state == INST_UNINIT) {
++		venus_helper_init_instance(inst);
+ 
+-	venus_helper_init_instance(inst);
++		inst->sequence_cap = 0;
++		inst->sequence_out = 0;
+ 
+-	inst->sequence_cap = 0;
+-	inst->sequence_out = 0;
++		ret = venc_init_session(inst);
 +		if (ret)
-+			goto unlock;
-+	}
-+
-+	if (ec->cmd == V4L2_ENC_CMD_START && v4l2_m2m_has_stopped(m2m_ctx)) {
-+		vb2_clear_last_buffer_dequeued(&m2m_ctx->cap_q_ctx.q);
-+		inst->m2m_ctx->has_stopped = false;
++			goto bufs_done;
+ 
+-	ret = venc_init_session(inst);
+-	if (ret)
+-		goto bufs_done;
++		ret = venus_pm_acquire_core(inst);
++		if (ret)
++			goto deinit_sess;
+ 
+-	ret = venus_pm_acquire_core(inst);
+-	if (ret)
+-		goto deinit_sess;
++		ret = venc_verify_conf(inst);
++		if (ret)
++			goto deinit_sess;
+ 
+-	ret = venc_set_properties(inst);
+-	if (ret)
+-		goto deinit_sess;
++		ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
++						inst->num_output_bufs, 0);
++		if (ret)
++			goto deinit_sess;
+ 
+-	ret = venc_verify_conf(inst);
+-	if (ret)
+-		goto deinit_sess;
++		ret = venus_helper_vb2_start_streaming(inst);
++		if (ret)
++			goto deinit_sess;
+ 
+-	ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
+-					inst->num_output_bufs, 0);
+-	if (ret)
+-		goto deinit_sess;
++		venus_helper_process_initial_out_bufs(inst);
++		venus_helper_process_initial_cap_bufs(inst);
++	} else if (V4L2_TYPE_IS_CAPTURE(q->type) && inst->streamon_cap &&
++		   inst->streamon_out) {
++		ret = venus_helper_vb2_start_streaming(inst);
++		if (ret)
++			goto bufs_done;
+ 
+-	ret = venus_helper_vb2_start_streaming(inst);
+-	if (ret)
+-		goto deinit_sess;
 +		venus_helper_process_initial_out_bufs(inst);
 +		venus_helper_process_initial_cap_bufs(inst);
 +	}
-+
-+unlock:
-+	mutex_unlock(&inst->lock);
-+	return ret;
-+}
-+
- static const struct v4l2_ioctl_ops venc_ioctl_ops = {
- 	.vidioc_querycap = venc_querycap,
- 	.vidioc_enum_fmt_vid_cap = venc_enum_fmt,
-@@ -534,6 +587,8 @@ static const struct v4l2_ioctl_ops venc_ioctl_ops = {
- 	.vidioc_enum_frameintervals = venc_enum_frameintervals,
- 	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
- 	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
-+	.vidioc_try_encoder_cmd = v4l2_m2m_ioctl_try_encoder_cmd,
-+	.vidioc_encoder_cmd = venc_encoder_cmd,
- };
  
- static int venc_set_properties(struct venus_inst *inst)
-@@ -946,9 +1001,22 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
- static void venc_vb2_buf_queue(struct vb2_buffer *vb)
- {
- 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+	struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
- 
- 	mutex_lock(&inst->lock);
--	venus_helper_vb2_buf_queue(vb);
-+
-+	v4l2_m2m_buf_queue(m2m_ctx, vbuf);
-+
-+	if (!(inst->streamon_out && inst->streamon_cap))
-+		goto unlock;
-+
-+	if (v4l2_m2m_has_stopped(m2m_ctx))
-+		goto unlock;
-+
-+	venus_helper_process_buf(vb);
-+
-+unlock:
  	mutex_unlock(&inst->lock);
+ 
+@@ -990,15 +1046,43 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
+ 	hfi_session_deinit(inst);
+ bufs_done:
+ 	venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_QUEUED);
+-	if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
++	if (V4L2_TYPE_IS_OUTPUT(q->type))
+ 		inst->streamon_out = 0;
+ 	else
+ 		inst->streamon_cap = 0;
++
+ 	mutex_unlock(&inst->lock);
+ 	return ret;
  }
  
-@@ -968,6 +1036,7 @@ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
- 	struct vb2_v4l2_buffer *vbuf;
- 	struct vb2_buffer *vb;
- 	unsigned int type;
+-static void venc_vb2_buf_queue(struct vb2_buffer *vb)
++static void venc_stop_streaming(struct vb2_queue *q)
++{
++	struct venus_inst *inst = vb2_get_drv_priv(q);
 +	struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
- 
- 	if (buf_type == HFI_BUFFER_INPUT)
- 		type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
-@@ -986,6 +1055,12 @@ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
- 		vb->planes[0].data_offset = data_offset;
- 		vb->timestamp = timestamp_us * NSEC_PER_USEC;
- 		vbuf->sequence = inst->sequence_cap++;
++	int ret = -EINVAL;
 +
-+		if ((!bytesused && m2m_ctx->is_draining) ||
-+		    (vbuf->flags & V4L2_BUF_FLAG_LAST)) {
-+			vbuf->flags |= V4L2_BUF_FLAG_LAST;
-+			v4l2_m2m_mark_stopped(inst->m2m_ctx);
-+		}
- 	} else {
- 		vbuf->sequence = inst->sequence_out++;
- 	}
++	mutex_lock(&inst->lock);
++
++	v4l2_m2m_clear_state(m2m_ctx);
++
++	if (V4L2_TYPE_IS_CAPTURE(q->type)) {
++		ret = hfi_session_stop(inst);
++		ret |= hfi_session_unload_res(inst);
++		ret |= venus_helper_unregister_bufs(inst);
++		ret |= venus_helper_intbufs_free(inst);
++	}
++
++	venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_ERROR);
++
++	if (V4L2_TYPE_IS_OUTPUT(q->type))
++		inst->streamon_out = 0;
++	else
++		inst->streamon_cap = 0;
++
++	mutex_unlock(&inst->lock);
++}
++
++static void venc_buf_queue(struct vb2_buffer *vb)
+ {
+ 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+ 	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+@@ -1022,11 +1106,12 @@ static void venc_vb2_buf_queue(struct vb2_buffer *vb)
+ 
+ static const struct vb2_ops venc_vb2_ops = {
+ 	.queue_setup = venc_queue_setup,
+-	.buf_init = venus_helper_vb2_buf_init,
++	.buf_init = venc_buf_init,
++	.buf_cleanup = venc_buf_cleanup,
+ 	.buf_prepare = venus_helper_vb2_buf_prepare,
+ 	.start_streaming = venc_start_streaming,
+-	.stop_streaming = venus_helper_vb2_stop_streaming,
+-	.buf_queue = venc_vb2_buf_queue,
++	.stop_streaming = venc_stop_streaming,
++	.buf_queue = venc_buf_queue,
+ };
+ 
+ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
+@@ -1084,8 +1169,12 @@ static const struct hfi_inst_ops venc_hfi_ops = {
+ 	.event_notify = venc_event_notify,
+ };
+ 
++static void venc_m2m_device_run(void *priv)
++{
++}
++
+ static const struct v4l2_m2m_ops venc_m2m_ops = {
+-	.device_run = venus_helper_m2m_device_run,
++	.device_run = venc_m2m_device_run,
+ 	.job_abort = venus_helper_m2m_job_abort,
+ };
+ 
 -- 
 2.17.1
 
