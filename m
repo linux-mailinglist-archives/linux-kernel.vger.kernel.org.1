@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA5D2AFC49
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCB12AFC53
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbgKLBeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:34:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727672AbgKKXAR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:00:17 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05885C0613D1;
-        Wed, 11 Nov 2020 15:00:16 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcz5y-003sj0-JF; Wed, 11 Nov 2020 23:00:06 +0000
-Date:   Wed, 11 Nov 2020 23:00:06 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201111230006.GB3576660@ZenIV.linux.org.uk>
-References: <20201104082738.1054792-1-hch@lst.de>
- <20201104082738.1054792-2-hch@lst.de>
- <20201110213253.GV3576660@ZenIV.linux.org.uk>
- <20201110213511.GW3576660@ZenIV.linux.org.uk>
- <20201110232028.GX3576660@ZenIV.linux.org.uk>
- <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
- <20201111215220.GA3576660@ZenIV.linux.org.uk>
- <20201111222116.GA919131@ZenIV.linux.org.uk>
- <CAHk-=wiRM_wDsz1AZ4hyWbctikjSXsYMe-ofvtnQRQ1mFcTqnA@mail.gmail.com>
+        id S1728770AbgKLBej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:34:39 -0500
+Received: from elvis.franken.de ([193.175.24.41]:54612 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727743AbgKKXGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 18:06:08 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kczBl-0005fC-00; Thu, 12 Nov 2020 00:06:05 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4A106C4DDE; Thu, 12 Nov 2020 00:02:51 +0100 (CET)
+Date:   Thu, 12 Nov 2020 00:02:51 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: Remove #include <uapi/asm/types.h> from
+ <asm/types.h>
+Message-ID: <20201111230251.GA19275@alpha.franken.de>
+References: <20201110163631.3322364-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiRM_wDsz1AZ4hyWbctikjSXsYMe-ofvtnQRQ1mFcTqnA@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201110163631.3322364-1-geert@linux-m68k.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 02:27:02PM -0800, Linus Torvalds wrote:
-> On Wed, Nov 11, 2020 at 2:21 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > Something like below (build-tested only):
+On Tue, Nov 10, 2020 at 05:36:31PM +0100, Geert Uytterhoeven wrote:
+> Everything in arch/mips/include/uapi/asm/types.h is protected by
+> "#ifndef __KERNEL__", so it's unused for kernelspace.
 > 
-> Apart from my usual "oh, Gods, the iter model really does confuse me"
-> this looks more like what I expected, yes.
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> This is a resend of a very old patch from 2013, which is still valid.
 > 
-> Considering the original bug, I'm clearly not the only one confused by
-> the iov_iter helper functions and the rules..
+>  arch/mips/include/asm/types.h | 1 -
+>  1 file changed, 1 deletion(-)
 
-copy_to_iter() returns the amount it has actually copied, that's all;
-the cause of that bug is not the primitives used, it's the rules for
-->read_iter().  The rules are actually fairly simple - "->read_iter()
-should not report less data than it has actually left there".  For read(2)
-it's a matter of QoI - if we hit an unmapped page, POSIX pretty much says
-that all bets are off; read(fd, unmapped - 5, 8) might copy 5 bytes and
-return 4.  It is allowed (and read(2) on those files used to do just that),
-but it's nicer not to do so.  For generic_file_splice_read(), OTOH, it's
-a bug - we end up with stray data spewed into pipe.  So converting
-to ->read_iter() needs some care.  Probably something along those
-lines should go into D/f/porting...
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
