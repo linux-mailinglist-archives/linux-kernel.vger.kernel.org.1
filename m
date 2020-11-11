@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26F22AF177
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C169D2AF175
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgKKNET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:04:19 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60116 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgKKNEQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:04:16 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ABD3iW3040367;
-        Wed, 11 Nov 2020 07:03:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605099824;
-        bh=/PXRJzYw61Pq2KpKYYbLbZH+T1+XvaMgs9xPK++lcdE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WDZ7SzwO88vGOKRFs5JjZMqCQlxwsPhJEIiQ53fgnFxhRcVJnOMyvnQv3uMl/6R8w
-         PlvTyYLI64zKUya4mJBVb/uJlVf2p0pWk3e4BdHnzHV5ZxuZBG1k+yMboyCi9jWxBR
-         7oaThlr7xcnYbQOZr+TJqSKPeHTr/CsF26iBtrWc=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ABD3iRU007907
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Nov 2020 07:03:44 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
- Nov 2020 07:03:44 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 11 Nov 2020 07:03:44 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ABD3fk6026860;
-        Wed, 11 Nov 2020 07:03:42 -0600
-Subject: Re: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
-To:     Richard Cochran <richardcochran@gmail.com>,
-        Wang Qing <wangqing@vivo.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
- <20201107150803.GD9653@hoboy.vegasvil.org>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <fbe087bc-5453-00cc-65d4-8c660e6587ed@ti.com>
-Date:   Wed, 11 Nov 2020 15:03:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726274AbgKKNEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:04:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36440 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgKKND7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:03:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4860BABD6;
+        Wed, 11 Nov 2020 13:03:58 +0000 (UTC)
+Subject: Re: [PATCH v21 12/19] mm/mlock: remove lru_lock on
+ TestClearPageMlocked
+To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-13-git-send-email-alex.shi@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <0df624ca-a0d2-6a9f-f114-04f91bf35415@suse.cz>
+Date:   Wed, 11 Nov 2020 14:03:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201107150803.GD9653@hoboy.vegasvil.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1604566549-62481-13-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 07/11/2020 17:08, Richard Cochran wrote:
-> On Fri, Nov 06, 2020 at 03:56:45PM +0800, Wang Qing wrote:
->> We always have to update the value of ret, otherwise the
->>   error value may be the previous one.
->>
->> Signed-off-by: Wang Qing <wangqing@vivo.com>
+On 11/5/20 9:55 AM, Alex Shi wrote:
+> In the func munlock_vma_page, comments mentained lru_lock needed for
+> serialization with split_huge_pages. But the page must be PageLocked
+> as well as pages in split_huge_page series funcs. Thus the PageLocked
+> is enough to serialize both funcs.
 > 
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
+> Further more, Hugh Dickins pointed: before splitting in
+> split_huge_page_to_list, the page was unmap_page() to remove pmd/ptes
+> which protect the page from munlock. Thus, no needs to guard
+> __split_huge_page_tail for mlock clean, just keep the lru_lock there for
+> isolation purpose.
+> 
+> LKP found a preempt issue on __mod_zone_page_state which need change
+> to mod_zone_page_state. Thanks!
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+Nit below:
+
+> ---
+>   mm/mlock.c | 26 +++++---------------------
+>   1 file changed, 5 insertions(+), 21 deletions(-)
+> 
+> diff --git a/mm/mlock.c b/mm/mlock.c
+> index 884b1216da6a..796c726a0407 100644
+> --- a/mm/mlock.c
+> +++ b/mm/mlock.c
+> @@ -187,40 +187,24 @@ static void __munlock_isolation_failed(struct page *page)
+>   unsigned int munlock_vma_page(struct page *page)
+>   {
+>   	int nr_pages;
+> -	pg_data_t *pgdat = page_pgdat(page);
+>   
+>   	/* For try_to_munlock() and to serialize with page migration */
+
+Now the reasons for locking are expanded?
+
+>   	BUG_ON(!PageLocked(page));
+> -
+>   	VM_BUG_ON_PAGE(PageTail(page), page);
+>   
+> -	/*
+> -	 * Serialize with any parallel __split_huge_page_refcount() which
+> -	 * might otherwise copy PageMlocked to part of the tail pages before
+> -	 * we clear it in the head page. It also stabilizes thp_nr_pages().
+> -	 */
+> -	spin_lock_irq(&pgdat->lru_lock);
+> -
+>   	if (!TestClearPageMlocked(page)) {
+>   		/* Potentially, PTE-mapped THP: do not skip the rest PTEs */
+> -		nr_pages = 1;
+> -		goto unlock_out;
+> +		return 0;
+>   	}
+>   
+>   	nr_pages = thp_nr_pages(page);
+> -	__mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
+> +	mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
+>   
+> -	if (__munlock_isolate_lru_page(page, true)) {
+> -		spin_unlock_irq(&pgdat->lru_lock);
+> +	if (!isolate_lru_page(page))
+>   		__munlock_isolated_page(page);
+> -		goto out;
+> -	}
+> -	__munlock_isolation_failed(page);
+> -
+> -unlock_out:
+> -	spin_unlock_irq(&pgdat->lru_lock);
+> +	else
+> +		__munlock_isolation_failed(page);
+>   
+> -out:
+>   	return nr_pages - 1;
+>   }
+>   
 > 
 
-Following Richard's comments:
-
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-
-> 
->> ---
->>   drivers/net/ethernet/ti/am65-cpts.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
->> index 75056c1..b77ff61
->> --- a/drivers/net/ethernet/ti/am65-cpts.c
->> +++ b/drivers/net/ethernet/ti/am65-cpts.c
->> @@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
->>   	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
->>   		dev_err(dev, "Failed to register ptp clk %ld\n",
->>   			PTR_ERR(cpts->ptp_clock));
->> -		if (!cpts->ptp_clock)
->> -			ret = -ENODEV;
->> +		ret = cpts->ptp_clock ? cpts->ptp_clock : (-ENODEV);
->>   		goto refclk_disable;
->>   	}
->>   	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
->> -- 
->> 2.7.4
->>
-
--- 
-Best regards,
-grygorii
