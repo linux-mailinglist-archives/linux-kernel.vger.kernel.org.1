@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C29D2AFC5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD35F2AFC5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbgKLBf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:35:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
+        id S1728909AbgKLBfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:35:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgKKXWc (ORCPT
+        with ESMTP id S1727899AbgKKXX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:22:32 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D0FC0613D1;
-        Wed, 11 Nov 2020 15:22:32 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id c129so3506998yba.8;
-        Wed, 11 Nov 2020 15:22:32 -0800 (PST)
+        Wed, 11 Nov 2020 18:23:56 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFCBC0613D6;
+        Wed, 11 Nov 2020 15:23:46 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id r186so2553119pgr.0;
+        Wed, 11 Nov 2020 15:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zLAINA497HzN+bAWRfYH3EEhA2UAQMIiVvTDxBBnWcw=;
-        b=O4LUkFtRH65lwdUKgb7EIgdnmlBMdqIGl8bAIWrYe5aI8zx80wpnKIpdKFlNNytchF
-         3NoApHtOhlaVCBNmiV2czbYlGCnr15zBF+T/nChufjPUK7xM6AQDt2ObCND+LWPHDMFA
-         QSEceKpzcbbxQ5px2r/mr5qk2b6wKT4VjCKlUXJkP/eMpH3GbBKVLuopBHgKM730byA0
-         9MPVGTmGRkJuqDwV7lO/SyegzKVEnMAw7KLh+L8MqyNgYOyTmuEFOiJWryx8Yh3BlFgX
-         uc8vjsE0Zq3vduAWdSYW9y4bOkCgo8XSVWUdWRP1ZCtvXkeJWBVlmID4h+tMf6/kk7Qz
-         Q42w==
+        h=from:to:cc:subject:date:message-id;
+        bh=rmvEzNyFoJX1iHYxKsv0/EGBjX8DBa3yt0/jMPmZuc0=;
+        b=SIfjbVbXY9g2nGpr3BqroW0o9pCuBd41UimxHetMt19exNTV0jskvTTI4D/ubKIHsB
+         DUf4SCe+EqQ/6L2D52wX8PE5uJ9dSwBdlrq1GFulADQLx1Thh3z8/UgMxLuaLxr8I0d9
+         8haeVcVDKdVJvIdEYtH0oxYWVhiOV8ajBx2YGhgg40jK3lUEkPeIOC3+yJ8SQst6SfER
+         ALddFewf+XAW2+kSkKkVgWuLwSK1CETx+eXOTrJsH9h4RdGYW00TCaNlHaJkZ2ZVTFM0
+         s2beFieRVB7U64JwJDuxp2kiSK5JmU4L8UMmJ4UsmY/2/pPc9GiFxNyfnL08fUywSk4f
+         QlBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zLAINA497HzN+bAWRfYH3EEhA2UAQMIiVvTDxBBnWcw=;
-        b=HsaW6rzTRJkGyDOOPYvGEq+fwd2oNJpc5YcJTBD//lhqgZGtY/1uHZgISw32lrbWt9
-         2TH2l5tHIhDmyGLIgXN4BBLT+rglVN8n2/dWXoEQiUltkJcrt+b9WF77xQCG+zZjJLrK
-         Kg54oXPuBi6hTrW8Dcu9eY+LCeW/J8+39yd80qOdU7U5/eleq4awIA5zFPcQvG+nxzeG
-         W4D9UkFptsslnb0ptsBj0vwU7C+kEZfxqbYaujxZABIyLnUkj1xrTbpQLZzMbFv9u/Mn
-         gSCPFWsrdUlUIeEiu5iMsb8htGQxAt4XK9ZmXSj5yY+6lwWUYCqVGyH68AgfXJp1B/hA
-         QkhA==
-X-Gm-Message-State: AOAM5333lK8ZFXkG5as+WhADXqkErGCIAwHe9afAmiguFQFMHleuOhYK
-        PCEKXH4zRV5z2cSSVZfD9Bh+LRiCKPqeRylstUP0sqdRFOxTDg==
-X-Google-Smtp-Source: ABdhPJx5/7pvemFIXy4D77xCw09+6AsnWpxxD7ASXsoX25rFgkB9QVSo2d/BG0rGiU6YQiUqvCPFo7dA7ht7QcwGsr8=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr10307254ybg.230.1605136951985;
- Wed, 11 Nov 2020 15:22:31 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605134506.git.dxu@dxuuu.xyz>
-In-Reply-To: <cover.1605134506.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Nov 2020 15:22:21 -0800
-Message-ID: <CAEf4BzZx=7N6dbKk8Eb_k-FA-PmmPFBJ=V-PLhbDu38wuXkOkw@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 0/2] Fix bpf_probe_read_user_str() overcopying
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rmvEzNyFoJX1iHYxKsv0/EGBjX8DBa3yt0/jMPmZuc0=;
+        b=Ge/xDdwdGwUPrn7ShOjHCFmCW66MdRcFaVf1E/rJCHvTHRhfyFWpuzPu+TDyTiTFj4
+         OoLD1Ai0+QrU/oGFvXUB2tDPMPI/nBLSORR3sgG2E9yHoJQzTxFTaRS5CrZigeyB47eC
+         Ew+W8fMsUZzLxwPDSteRFCx5gAnEiF7qq8L9lKrH2kYc52/A/JL4mXlUsCkNFBvc/Ku8
+         3UshPo8POKRUEuJHj+OBQLZbtvaG8/aRkO5ThbQ5q1fTWNdSMN/3GInsN0AXXokpoOUn
+         PUtCFAqVO+Z7m/wEbAIoNoMuPE5LnQCoDikXnUEfD8SArxXwelpywzayTKdckvsStt/T
+         M8sg==
+X-Gm-Message-State: AOAM530+sAP/5v4jUIbhmx/jNYy8dhMUzLEvHC05LgxPVwuKMIeInhGc
+        d0hynPLYX5dS9ntpW1+fUjMbBvq/FrP3Eo7Z
+X-Google-Smtp-Source: ABdhPJwLIkmY1lx2BkFH6Ky9XCzcwXy2Tiedp8iEyPSz0H7c5glq67safBqMDc1pSrdZwJsRHwPlYg==
+X-Received: by 2002:a17:90a:4208:: with SMTP id o8mr6176658pjg.19.1605137026461;
+        Wed, 11 Nov 2020 15:23:46 -0800 (PST)
+Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id a128sm3901431pfb.195.2020.11.11.15.23.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 15:23:45 -0800 (PST)
+From:   rentao.bupt@gmail.com
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, taoren@fb.com
+Cc:     Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
+Date:   Wed, 11 Nov 2020 15:23:26 -0800
+Message-Id: <20201111232330.30843-1-rentao.bupt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:46 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
-> kernel}_str helpers") introduced a subtle bug where
-> bpf_probe_read_user_str() would potentially copy a few extra bytes after
-> the NUL terminator.
->
-> This issue is particularly nefarious when strings are used as map keys,
-> as seemingly identical strings can occupy multiple entries in a map.
->
-> This patchset fixes the issue and introduces a selftest to prevent
-> future regressions.
->
-> v4 -> v5:
-> * don't read potentially uninitialized memory
+From: Tao Ren <rentao.bupt@gmail.com>
 
-I think the bigger problem was that it could overwrite unintended
-memory. E.g., in BPF program, if you had something like:
+The patch series adds the initial version of device tree for Facebook
+Galaxy100 (AST2400) BMC.
 
-char my_buf[8 + 3];
-char my_precious_data[5] = {1, 2, 3, 4, 5};
+Patch #1 adds common dtsi to minimize duplicated device entries across
+Facebook Network AST2400 BMC device trees.
 
-With previous version you'd overwrite my_precious data. BTW, do you
-test such scenario in the selftests you added? If not, we should have
-something like this as well and validate 1, 2, 3, 4, 5 stay intact.
+Patch #2 simplfies Wedge40 device tree by using the common dtsi.
 
->
-> v3 -> v4:
-> * directly pass userspace pointer to prog
-> * test more strings of different length
->
-> v2 -> v3:
-> * set pid filter before attaching prog in selftest
-> * use long instead of int as bpf_probe_read_user_str() retval
-> * style changes
->
-> v1 -> v2:
-> * add Fixes: tag
-> * add selftest
->
-> Daniel Xu (2):
->   lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
->   selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
->     after NUL
->
->  lib/strncpy_from_user.c                       |  9 ++-
->  .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
->  .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
->  3 files changed, 100 insertions(+), 5 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
->
-> --
-> 2.29.2
->
+Patch #3 simplfies Wedge100 device tree by using the common dtsi.
+
+Patch #4 adds the initial version of device tree for Facebook Galaxy100
+BMC.
+
+Tao Ren (4):
+  ARM: dts: aspeed: Common dtsi for Facebook AST2400 Network BMCs
+  ARM: dts: aspeed: wedge40: Use common dtsi
+  ARM: dts: aspeed: wedge100: Use common dtsi
+  ARM: dts: aspeed: Add Facebook Galaxy100 (AST2400) BMC
+
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../dts/aspeed-bmc-facebook-galaxy100.dts     |  57 +++++++++
+ .../boot/dts/aspeed-bmc-facebook-wedge100.dts | 120 +++---------------
+ .../boot/dts/aspeed-bmc-facebook-wedge40.dts  | 112 +---------------
+ .../dts/ast2400-facebook-netbmc-common.dtsi   | 117 +++++++++++++++++
+ 5 files changed, 191 insertions(+), 216 deletions(-)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-galaxy100.dts
+ create mode 100644 arch/arm/boot/dts/ast2400-facebook-netbmc-common.dtsi
+
+-- 
+2.17.1
+
