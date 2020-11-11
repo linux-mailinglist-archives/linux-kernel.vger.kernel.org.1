@@ -2,104 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25482AEAE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6589A2AEAE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgKKIN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:13:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48932 "EHLO mx2.suse.de"
+        id S1726001AbgKKIP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:15:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgKKIN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:13:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73CA3ACC5;
-        Wed, 11 Nov 2020 08:13:26 +0000 (UTC)
-From:   Thomas Renninger <trenn@suse.de>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: stats: Switch to ktime and msec instead of jiffies and usertime
-Date:   Wed, 11 Nov 2020 09:13:24 +0100
-Message-ID: <2047155.4hzcE6bcFl@c100>
-In-Reply-To: <20201111051350.qxevqcca5775h2xa@vireshk-i7>
-References: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org> <1832747.5iOEhN7m9D@c100> <20201111051350.qxevqcca5775h2xa@vireshk-i7>
+        id S1725468AbgKKIP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 03:15:56 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19001206C0;
+        Wed, 11 Nov 2020 08:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605082555;
+        bh=UzQMgNbDWdH+iflzwyqc7uHaBePKfGi70SFbqbJmW2w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Jca7eigSHmIoTfxrDnx1Bgq0fjuzXqWQ8zKsotqqSOXD3E8rEHDggahnm39YmREp1
+         Nkr+5IHLlH39uk5MCJ63UcEVvdQ1J59or0IYMCY7/PNtpZPDdVY8kZoogUMy+FzHjW
+         rKx2N6mtGBGyT/88PoC1zcQ+GzwrVnq9flZp9rwY=
+Received: by mail-ot1-f43.google.com with SMTP id n89so1384000otn.3;
+        Wed, 11 Nov 2020 00:15:55 -0800 (PST)
+X-Gm-Message-State: AOAM532QxwEPu1gCQfyrrDr0I6erTY0HeRKAGCI9a1XoqfKsLSgOrEJA
+        ObXmGStWIquRG3KBhGvpLIjf8iF74JzjAfTDNng=
+X-Google-Smtp-Source: ABdhPJxCUXI38tS4jVIP37BlRlacnWwJ/biMaD54a+TAav4mmFtCuzpfNxMaGHC7yZ/DbG2PyUq8YhXSgg/H3xWF4YE=
+X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr7412876otd.90.1605082554315;
+ Wed, 11 Nov 2020 00:15:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
+In-Reply-To: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 11 Nov 2020 09:15:41 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
+Message-ID: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
+Subject: Re: arm: kasan: WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47 __arm_gen_branch
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 11. November 2020, 06:13:50 CET schrieb Viresh Kumar:
-> On 10-11-20, 13:53, Thomas Renninger wrote:
-> > Am Dienstag, 10. November 2020, 12:07:37 CET schrieb Viresh Kumar:
-> > > The cpufreq and thermal core, both provide sysfs statistics to help
-> > > userspace learn about the behavior of frequencies and cooling states.
-> > > 
-> > > This is how they look:
-> > > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 399
-> > > 
-> > > The results look like this after this commit:
-> > > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 3830
-> > 
-> > How would userspace know whether it's ms or 10ms?
+On Wed, 11 Nov 2020 at 07:13, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> The following kernel warning noticed on arm KASAN enabled config while booting.
+>
+> [    0.000000] Linux version 5.10.0-rc3-next-20201110
+> (tuxmake@e15fe3b4fdc6) (arm-linux-gnueabihf-gcc (Debian 9.3.0-13)
+> 9.3.0, GNU ld (GNU Binutils for Debian) 2.35.1) #2 SMP Tue Nov 10
+> 07:49:47 UTC 2020
+> [    0.000000] CPU: ARMv7 Processor [410fd034] revision 4 (ARMv7), cr=10c5383d
+> <trim>
+> [    0.000000] kasan: Truncating shadow for memory block at
+> 0x40000000-0xffffffff to lowmem region at 0x70000000
+> [    0.000000] kasan: Mapping kernel virtual memory block:
+> c0000000-f0000000 at shadow: b7000000-bd000000
+> [    0.000000] kasan: Mapping kernel virtual memory block:
+> bf000000-c0000000 at shadow: b6e00000-b7000000
+> [    0.000000] kasan: Kernel address sanitizer initialized
+> <trim>
+> [    0.000000] ftrace: allocating 57178 entries in 112 pages
+> [    0.000000] ------------[ cut here ]------------
+> [    0.000000] WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47
+> __arm_gen_branch+0x78/0x80
+> [    0.000000] Modules linked in:
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
+> 5.10.0-rc3-next-20201110 #2
+> [    0.000000] Hardware name: Generic DT based system
+> [    0.000000] Backtrace:
+> [    0.000000] [<c199f710>] (dump_backtrace) from [<c199fb94>]
+> (show_stack+0x20/0x24)
+> [    0.000000]  r9:00000080 r8:c2e00000 r7:c3023060 r6:600000d3
+> r5:00000000 r4:c3023060
+> [    0.000000] [<c199fb74>] (show_stack) from [<c19a7ad0>]
+> (dump_stack+0xe8/0x10c)
+> [    0.000000] [<c19a79e8>] (dump_stack) from [<c0366518>] (__warn+0x140/0x164)
+> [    0.000000]  r10:00000009 r9:00000000 r8:c2e0e000 r7:00000009
+> r6:c031986c r5:0000002f
+> [    0.000000]  r4:c1a0bbe0 r3:c2e06f50
+> [    0.000000] [<c03663d8>] (__warn) from [<c19a13ac>]
+> (warn_slowpath_fmt+0xc0/0x128)
+> [    0.000000]  r9:c031986c r8:0000002f r7:c1a0bbe0 r6:00000000
+> r5:c2e03ec0 r4:b75c07cc
+> [    0.000000] [<c19a12f0>] (warn_slowpath_fmt) from [<c031986c>]
+> (__arm_gen_branch+0x78/0x80)
+> [    0.000000]  r10:0000d247 r9:c4019238 r8:c400c104 r7:c2e070a0
+> r6:c400c108 r5:c0319250
+> [    0.000000]  r4:00000000
+> [    0.000000] [<c03197f4>] (__arm_gen_branch) from [<c0319720>]
+> (ftrace_make_nop+0x30/0x48)
+> [    0.000000]  r5:c0319250 r4:c2b00354
+> [    0.000000] [<c03196f0>] (ftrace_make_nop) from [<c04ac104>]
+> (ftrace_process_locs+0x470/0x5f0)
+> [    0.000000]  r5:00001248 r4:c400c100
+> [    0.000000] [<c04abc94>] (ftrace_process_locs) from [<c2b2d8f4>]
+> (ftrace_init+0xa8/0x158)
+> [    0.000000]  r10:10c5387d r9:c1a87768 r8:c2cb9f98 r7:c2c82230
+> r6:00000001 r5:c2e070a0
+> [    0.000000]  r4:c37f5c40
+> [    0.000000] [<c2b2d84c>] (ftrace_init) from [<c2b010ec>]
+> (start_kernel+0x174/0x3f8)
+> [    0.000000]  r9:00000001 r8:c2e06f00 r7:00000000 r6:c2e06f00
+> r5:c37c0000 r4:ffffffff
+> [    0.000000] [<c2b00f78>] (start_kernel) from [<00000000>] (0x0)
+> [    0.000000]  r9:410fd034 r8:48000000 r7:ffffffff r6:10c0387d
+> r5:00000051 r4:c2b00334
+> [    0.000000] random: get_random_bytes called from
+> print_oops_end_marker+0x30/0xa0 with crng_init=0
+> [    0.000000] ---[ end trace 0000000000000000 ]---
+> [ #
+>    0.000000] ------------[ ftrace bug ]------------
+> [    0.000000] ftrace failed to modify
+> [    0.000000] [<c2b00354>] set_reset_devices+0x10/0x28
+> [    0.000000]  actual:   0a:3d:04:eb
+> [    0.000000] Initializing ftrace call sites
+> [    0.000000] ftrace record flags: 0
+> [    0.000000]  (0)
+> [    0.000000]  expected tramp: c031925c
+> [    0.000000] ------------[ cut here ]------------
+> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/trace/ftrace.c:2065
+> ftrace_bug+0x218/0x280
+> [    0.000000] Modules linked in:
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G        W
+> 5.10.0-rc3-next-20201110 #2
+> [    0.000000] Hardware name: Generic DT based system
+> [    0.000000] Backtrace:
+> [    0.000000] [<c199f710>] (dump_backtrace) from [<c199fb94>]
+> (show_stack+0x20/0x24)
+> [    0.000000]  r9:00000080 r8:c2e00000 r7:c3023060 r6:600000d3
+> r5:00000000 r4:c3023060
+> [    0.000000] [<c199fb74>] (show_stack) from [<c19a7ad0>]
+> (dump_stack+0xe8/0x10c)
+> [    0.000000] [<c19a79e8>] (dump_stack) from [<c0366518>] (__warn+0x140/0x164)
+> [    0.000000]  r10:00000009 r9:00000000 r8:c2e0e000 r7:00000009
+> r6:c19a3790 r5:00000811
+> [    0.000000]  r4:c1a863c0 r3:c2e06f50
+> [    0.000000] [<c03663d8>] (__warn) from [<c19a13ac>]
+> (warn_slowpath_fmt+0xc0/0x128)
+> [    0.000000]  r9:c19a3790 r8:00000811 r7:c1a863c0 r6:00000000
+> r5:c2e03ee0 r4:b75c07d0
+> [    0.000000] [<c19a12f0>] (warn_slowpath_fmt) from [<c19a3790>]
+> (ftrace_bug+0x218/0x280)
+> [    0.000000]  r10:0000d247 r9:c4019238 r8:c400c104 r7:c37f5c40
+> r6:c1a86960 r5:c401923c
+> [    0.000000]  r4:c4019238
+> [    0.000000] [<c19a3578>] (ftrace_bug) from [<c04abfc0>]
+> (ftrace_process_locs+0x32c/0x5f0)
+> [    0.000000]  r7:c2e070a0 r6:c400c108 r5:00001248 r4:c400c100
+> [    0.000000] [<c04abc94>] (ftrace_process_locs) from [<c2b2d8f4>]
+> (ftrace_init+0xa8/0x158)
+> [    0.000000]  r10:10c5387d r9:c1a87768 r8:c2cb9f98 r7:c2c82230
+> r6:00000001 r5:c2e070a0
+> [    0.000000]  r4:c37f5c40
+> [    0.000000] [<c2b2d84c>] (ftrace_init) from [<c2b010ec>]
+> (start_kernel+0x174/0x3f8)
+> [    0.000000]  r9:00000001 r8:c2e06f00 r7:00000000 r6:c2e06f00
+> r5:c37c0000 r4:ffffffff
+> [    0.000000] [<c2b00f78>] (start_kernel) from [<00000000>] (0x0)
+> [    0.000000]  r9:410fd034 r8:48000000 r7:ffffffff r6:10c0387d
+> r5:00000051 r4:c2b00334
+> [    0.000000] ---[ end trace f68728a0d3053b52 ]---
+> [    0.000000] ftrace: allocated 112 pages with 3 groups
+>
+> metadata:
+>   git branch: master
+>   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>   git describe: next-20201110
+>   make_kernelversion: 5.10.0-rc3
+>   build : https://builds.tuxbuild.com/1k5bYasxkHF7omMh7mjtxjRtkMe/
+>
+> The qemu boot command,
+> -----------------------------------
+> /usr/bin/qemu-system-aarch64 -cpu host,aarch64=off -machine
+> virt-2.10,accel=kvm -nographic -net
+> nic,model=virtio,macaddr=BA:DD:AD:CC:09:03 -net tap -m 2048 -monitor
+> none -kernel kernel/zImage --append "console=ttyAMA0 root=/dev/vda rw"
+> -hda rpb-console-image-lkft-am57xx-evm-20201022181203-3085.rootfs.ext4
+> -m 4096 -smp 2 -nographic
+>
+> Full log:
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201110/testrun/3420437/suite/linux-log-parser/test/check-kernel-warning-1927841/log
+>
 
-Again:
-How would userspace know whether it's ms or 10ms?
+The kernel you are building is too big.
 
-> > whatabout a new file with the same convention as cooling devices (adding ms):
-> Keeping two files for same stuff is not great, and renaming the file
-> breaks userspace ABI.
+An ordinary multi_v7_defconfig+thumb2 has
 
-No exactly the other way around:
-- Renaming, breaks the userspace ABI.
-- Two files would be the super correct way to go:
-  - Deprecate the old file and keep the 10ms around for some years
-    ./Documentation/ABI/obsolete
-  - Add the new interface and document it in:
-   ./Documentation/ABI/testing
+(10240K kernel code, 2232K rwdata, 5344K rodata, 2048K init, 441K bss,
+144040K reserved, 65536K cma-reserved, 3340512K highmem)
 
-As this is about a minor cpufreq_stat debug file, it is enough if
-you rename to:
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state_ms
-Ideally document it in ./Documentation/ABI/testing
-But I guess for this one this is also not mandatory.
+whereas your kernel has
 
-Then userspace can do:
-MS_FILE="/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state_ms"
-10MS_FILE="/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state"
+(23552K kernel code, 9970K rwdata, 16736K rodata, 3072K init, 4849K
+bss, 189072K reserved, 65536K cma-reserved, 2293756K highmem)
 
-if [ -r "$MS_FILE" ]; then
-    POLICY0_MS=$(<"$MS_FILE")
-    echo "Found ms stats file"
-elif [ -r "$10MS_FILE" ]; then
-    echo "Found 10ms stats file, converting..."
-    POLICY0_MS=$(<"$10MS_FILE")
-    POLICY0_MS=$(echo "$POLICY0_MS 10 /" |dc)
-else
-    echo "cpufreq stat not compiled in?"
-fi
+and so the kernel text section is too large to resolve relative branches.
 
-> I am not sure what's the right thing to do here.
-
-Use a new *_ms name.
-If you are unsure how many people this still might use, keep the old file and mark
-it deprecated and remove it in some years.
-You could also add:
-pr_info("%s userspace process accessed deprecated sysfs file %s", task->comm, OLD_SYSFS_FILE_PATH);
-To find other userspace apps making use of it.
-
-...
- 
-> I already fixed this recently and stats don't appear empty for fast
-> switch anymore.
-
-Then cpufreq_stats could be a module again?
-
-      Thomas
-
-
+Which config are you building?
