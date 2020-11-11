@@ -2,93 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7594A2AF5B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C2D2AF5BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbgKKQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:03:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49148 "EHLO
+        id S1726739AbgKKQER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:04:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727449AbgKKQDt (ORCPT
+        with ESMTP id S1726011AbgKKQER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:03:49 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCECC0613D1;
-        Wed, 11 Nov 2020 08:03:49 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id t8so1444033vsr.2;
-        Wed, 11 Nov 2020 08:03:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D688jg4M+etuC7EpYy8xu4NpHHM16onVnkpm0PnCHSE=;
-        b=EUVSumJRdY0k1MZnLF87QI4teakp/ioGjlxubbDNbipGpb1jusqpdfbpGluzMARVYZ
-         Ntpic0dA7/DDhld7e9nhodJrSALDAac49lQlnSJTpybritrAxdf6o6KAS5a8mb1Q517F
-         MBlbovHIhXkkLgVD71UcKRK6jzCHPcH6eqeFjwupM2sNc2zXREHiIwpBcMY8di2Sh5HQ
-         iDgjDiSQV8QQWu7xhRcHg2/FcM/KAY7OT85E/EWW/PeDc1XRmZGOhfGoZ576n/05mT5p
-         msjhvQ3fCkZHHrtGsUdtj+iBcQCaeVcJ+gwXR+XWx32FN+kOWj+hBqaA4LNfNYkI3sAH
-         BzZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D688jg4M+etuC7EpYy8xu4NpHHM16onVnkpm0PnCHSE=;
-        b=baKaBQfrinK9msQ7RHG8uvFzAkIfNr6tTYl5mo23XcdfFmDwueakP5R7x8eXWL2fWl
-         boQKDXhYp9wSs+W67NGN4UqQAQyIQc/DnHPWllX7F8NNKqj22SaGJOwWTelWP2zjI4H8
-         ha3Acwilou+BCMGzc6k6ETHprtPxEkmSH/HhrCWztweBETBx59d+oFLfKiPvsNYxDmSx
-         SUY8fDsEZnFJpQbL8//QRotAo16pkse4kebv5crRQOAInvrqkuGnrEO3bCymofeoTuH4
-         g/8DvmllWrB+b7WdTMsze45veIrveaiiu/MkDRM26STRBHN8VHl4MD1jItkSdzW6RIF3
-         BjNA==
-X-Gm-Message-State: AOAM533yW56bZ9S8L0p4eYtEhHd7IO02CYh1Sm3YX7Ar4MT1hJESNg6U
-        Fr/wuEhdfeTjTKTYZ7aj44fawQEiXBKZ9o2FBOY=
-X-Google-Smtp-Source: ABdhPJx6dKfkko6dw4C422lE0JZk0ZIW2NnYWaOwinI5G9DsXjc9yecsD8la7prLfBL0eyvFO0AoZUgTtltyTG6JNyc=
-X-Received: by 2002:a67:2c53:: with SMTP id s80mr16661846vss.12.1605110628574;
- Wed, 11 Nov 2020 08:03:48 -0800 (PST)
+        Wed, 11 Nov 2020 11:04:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5D8C0613D1;
+        Wed, 11 Nov 2020 08:04:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iYncmeZ9hvqZ5/y+et8tVxToCOeVVwCuQgUXF3Dmkj4=; b=0CqMK5PUx1fsDBB/jOcqQIpgNM
+        M+GiTSC5T9DjE7PhhSZm4YjEavlB1/uKv1I7eZszR4YpuY1jw8YBuurUirKwb5syHvGYMxCrJe8cY
+        Q8eEWVLkmNRaX6T7AzYpyowIka4gtGzLam+WF6Gn230uO0fF+FBXrLgji1Z2Qu9EVsmHCu/m6UBbF
+        ag6vTEU787J+pfXBjvCy+/2dz/CRbC/LoGiWwaHtldRe5mUpDNHSMzmCfuoZnHzezuzWWl44nBNsx
+        lKtE2HPyfOw4deNAiHJmyxm86HofJdLI5pZ/WviNNn9MaM4rkm03gF+rwDktJJi6RZqEQuqID+bHY
+        SOEJJG3A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcsbU-000191-Md; Wed, 11 Nov 2020 16:04:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B61B301324;
+        Wed, 11 Nov 2020 17:04:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 47E98203E65AF; Wed, 11 Nov 2020 17:04:11 +0100 (CET)
+Date:   Wed, 11 Nov 2020 17:04:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+Message-ID: <20201111160411.GF2628@hirez.programming.kicks-ass.net>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <20201111082320.GR2611@hirez.programming.kicks-ass.net>
+ <7207fad6-6ca4-529b-60a8-63db998d10d9@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20201110142032.24071-1-TheSven73@gmail.com>
-In-Reply-To: <20201110142032.24071-1-TheSven73@gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 11 Nov 2020 11:03:37 -0500
-Message-ID: <CAGngYiVftXwcYbeSgXtiu9aMUG6GQTAcON=CK32o5=YLM40g4A@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: phy: spi_ks8995: Do not overwrite SPI mode flags
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Frederic LAMBERT <frdrc66@gmail.com>,
-        Gabor Juhos <juhosg@openwrt.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7207fad6-6ca4-529b-60a8-63db998d10d9@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A spi core fix has been accepted which makes this patch unnecessary.
+On Wed, Nov 11, 2020 at 08:56:49AM -0700, Shuah Khan wrote:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/commit/?id=766c6b63aa044e84b045803b40b14754d69a2a1d
+> Why would you say no to read and inc?
 
-On Tue, Nov 10, 2020 at 9:20 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
->
->
-> This driver makes sure the underlying SPI bus is set to "mode 0"
-> by assigning SPI_MODE_0 to spi->mode. Which overwrites all other
-> SPI mode flags.
->
-> In some circumstances, this can break the underlying SPI bus driver.
-> For example, if SPI_CS_HIGH is set on the SPI bus, the driver
-> will clear that flag, which results in a chip-select polarity issue.
->
-> Fix by changing only the SPI_MODE_N bits, i.e. SPI_CPHA and SPI_CPOL.
->
-> Fixes: a8e510f682fe ("phy: Micrel KS8995MA 5-ports 10/100 managed Ethernet switch support added")
-> Fixes: f3186dd87669 ("spi: Optionally use GPIO descriptors for CS GPIOs")
-> Link: https://patchwork.kernel.org/project/spi-devel-general/patch/20201106150706.29089-1-TheSven73@gmail.com/#23747737
-> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
-> ---
+Because they don't guarantee uniqueness (bar wrapping), which is the
+only reason to use an atomic to begin with.
