@@ -2,98 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0212AE6F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF932AE6FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725909AbgKKDVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        id S1725960AbgKKDVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgKKDVP (ORCPT
+        with ESMTP id S1725867AbgKKDVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:21:15 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25A8C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:21:13 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id 11so305735qtx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:21:13 -0800 (PST)
+        Tue, 10 Nov 2020 22:21:46 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C589C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:21:46 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t18so263881plo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:21:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=IdlC5wqSkRhZShxcvJ+y95nrehDlV8OQP0epQPlLIWE=;
-        b=EnKewTgXgaSmoXfD2a9BEb8tDZsMGoDM2tsiIT2kYkvgoP8RtYZO1rS8PjbwpoDQ8K
-         63CTVypmu2ZzuJxL9+skXcx1SoGutWmgCRAZ0IWyuEIPRlTfdtvCzi4scaItAz3ECsKQ
-         PYJG0Rsypx/Ae3CAfyEh9FohjtAIcxQIwlJTMbuXFJ6W2npYKCclkQUjEhl+GlxjZxJc
-         VpnJpPZqfWZuKHS8ED/93KgooKWWysMkNbtBdETUs5NQNf4YsgYXza0/0E33+GmOMqr/
-         b5XIupgOVfSiP8RUufaeXfd9qfSNtALrClk/mMMwMCBDcZoRbfuCBW1rvm72WuOE992p
-         N3mQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n4qDi+ouWuBdSJxvoPwdL43KPC7vewj+MLdxXOGRkg8=;
+        b=hG/AFLNTcR1IkDfRHH8n79FIEaWe/yacXuyFXxlG+yLoWvDg+Vk8zWXkyB4HVff80T
+         1xvNCi3XL7lsvSul5oJFy5uPD9FPwGqC5ivijazdaIQi0BiNABqzZ3CfThl2hLLoV7u2
+         sj6xzzY3dNia4iP+eb0LGSZpGctAEyDj2VCqvugs8qI9kW4piWvKAGKHR1VeVvvw/7XF
+         7h/60JstnuuQgTlephCxD2CkmI1oE0I0jakaFCbNV2wtBCwyOIc5IMTIpAnD8OBBDQ/a
+         AUMz14R9m4cA3uspJttVlLwumZCYUYAseRPJuZd530chjNTm/njEHQoY3fUJtQ+qLot2
+         FeDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=IdlC5wqSkRhZShxcvJ+y95nrehDlV8OQP0epQPlLIWE=;
-        b=CCAitIbFzYgOaLCjtDHUoXB1HMTucCnl4gkIuioFnQVXgCizsHyhgNRRk9iGuU+XWL
-         9XFeq4DZ+m3imRBBVtDTjFWAHkswwoolnF+iQdu8UD1nSlRf8v/eB+CBUH32pIsQjvzp
-         ryYXmM1MQb6IP3evvDO9uamtfO3Bte3SvknueopJZR/in230bFyACUjgP2oSBUx7A4pu
-         V3rD5Q2Fvgtvj+ntGk4XqkXrelgjxvF6Vl29r6VfRGFZSq7qQNa0ih63eUMCdCSPVy20
-         qbwbC4DsMiriBqWbvA2mJZDbMoa1vti0NQyxhYQ9fegl19egl86kCDSs1rs1K3qyV9b9
-         S4Fg==
-X-Gm-Message-State: AOAM532rT9VCMLl38Pa8GTQDe3JHsQESqzrAabNrSZZkjStDRek+Pd3o
-        +QW88Dujzwg/jNWNWYQ2dRVuUC9rMxnMTIihk7w=
-X-Google-Smtp-Source: ABdhPJwfi/IPPyVyY2ehAk2JNOjzoYo1jE6HGXvUT6R0y6gvsnnmjdrsGg/IPL8zpcxlHOOpixPJDocBuLvelyjj4/8=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:612:: with SMTP id
- z18mr5959926qvw.41.1605064873065; Tue, 10 Nov 2020 19:21:13 -0800 (PST)
-Date:   Tue, 10 Nov 2020 19:21:05 -0800
-Message-Id: <20201111032105.2346303-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH] MIPS: remove GCC < 4.9 support
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n4qDi+ouWuBdSJxvoPwdL43KPC7vewj+MLdxXOGRkg8=;
+        b=Jb+0y0gsBMxpsiWC5+Kx60VzNAwesleV+5FxmzQQdRw8/AR+PaQIlEjBrKGizwvqBu
+         hFvtSgLPDCPgZtRW2YMuJwp5aiXTi5YYQcrSA/ZdgYPVlgd1CyEqnMPYTa8xIg3Bu/uk
+         oU/86tB/OaBRbcUO9tqupQgduDNkgbxWyI5JGmJWH6ZhyO9tLUCnAheZG378Z7bUc4DL
+         LctgSvN0XrBib2lnhnaCCwqAYpwSnQyIfZvo6e9k4JwHvlXWh4BxDJrihK3E/ralUWhz
+         kESlLERzli47xjO5iRUPwZbh1iOimxQ0dDh/HWWS1GRG7Uzll33nzhyYmpogBMmg+ukw
+         XHpA==
+X-Gm-Message-State: AOAM5300AHm3NJLPVRe77s5M/poq2zJNqtC56guUtYlLFdVQEONjTAak
+        37nJtGsOlNmarrHR3FyhWDGh8rE/XNqlT1omy8jDNQ==
+X-Google-Smtp-Source: ABdhPJzTOu4f2ULZGXFqrl7VpP6gHdaquXk5U2Y7P8DgCKmytl8a29FQar+Tbc8IV2ekOw439u1VSNJEAWCu08afiG4=
+X-Received: by 2002:a17:902:c14b:b029:d6:ab18:108d with SMTP id
+ 11-20020a170902c14bb02900d6ab18108dmr20333440plj.20.1605064905842; Tue, 10
+ Nov 2020 19:21:45 -0800 (PST)
+MIME-Version: 1.0
+References: <20201108141113.65450-1-songmuchun@bytedance.com> <78b4cb8b-6511-d50e-7018-ea52c50e4b07@oracle.com>
+In-Reply-To: <78b4cb8b-6511-d50e-7018-ea52c50e4b07@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 11 Nov 2020 11:21:09 +0800
+Message-ID: <CAMZfGtVvBk6eHRRBcyKxQGx5HG7K0xD8LL7hC2f=bK1cizC2VA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove a tautology; since
-commit 0bddd227f3dc ("Documentation: update for gcc 4.9 requirement")
-which raised the minimally supported version of GCC to 4.9, this case is
-always true.
+On Wed, Nov 11, 2020 at 3:23 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+>
+> Thanks for continuing to work this Muchun!
+>
+> On 11/8/20 6:10 AM, Muchun Song wrote:
+> ...
+> > For tail pages, the value of compound_head is the same. So we can reuse
+> > first page of tail page structs. We map the virtual addresses of the
+> > remaining 6 pages of tail page structs to the first tail page struct,
+> > and then free these 6 pages. Therefore, we need to reserve at least 2
+> > pages as vmemmap areas.
+> >
+> > When a hugetlbpage is freed to the buddy system, we should allocate six
+> > pages for vmemmap pages and restore the previous mapping relationship.
+> >
+> > If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
+> > substantial gain.
+>
+> Is that 4095 number accurate?  Are we not using two pages of struct pages
+> as in the 2MB case?
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/427
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/mips/include/asm/compiler.h | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+Oh, yeah, here should be 4094 and subtract page tables. For a 1GB
+HugeTLB page, it should be 4086 pages. Thanks for pointing out
+this problem.
 
-diff --git a/arch/mips/include/asm/compiler.h b/arch/mips/include/asm/compiler.h
-index a2cb2d2b1c07..2b06090a78b2 100644
---- a/arch/mips/include/asm/compiler.h
-+++ b/arch/mips/include/asm/compiler.h
-@@ -43,14 +43,7 @@
- #undef barrier_before_unreachable
- #define barrier_before_unreachable() asm volatile(".insn")
- 
--#if !defined(CONFIG_CC_IS_GCC) || \
--    (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)
--# define GCC_OFF_SMALL_ASM() "ZC"
--#elif defined(CONFIG_CPU_MICROMIPS)
--# error "microMIPS compilation unsupported with GCC older than 4.9"
--#else
--# define GCC_OFF_SMALL_ASM() "R"
--#endif
-+#define GCC_OFF_SMALL_ASM() "ZC"
- 
- #ifdef CONFIG_CPU_MIPSR6
- #define MIPS_ISA_LEVEL "mips64r6"
+>
+> Also, because we are splitting the huge page mappings in the vmemmap
+> additional PTE pages will need to be allocated.  Therefore, some additional
+> page table pages may need to be allocated so that we can free the pages
+> of struct pages.  The net savings may be less than what is stated above.
+>
+> Perhaps this should mention that allocation of additional page table pages
+> may be required?
+
+Yeah, you are right. In the later patch, I will rework the analysis
+here. Make it
+more clear and accurate.
+
+>
+> ...
+> > Because there are vmemmap page tables reconstruction on the freeing/allocating
+> > path, it increases some overhead. Here are some overhead analysis.
+> >
+> > 1) Allocating 10240 2MB hugetlb pages.
+> >
+> >    a) With this patch series applied:
+> >    # time echo 10240 > /proc/sys/vm/nr_hugepages
+> >
+> >    real     0m0.166s
+> >    user     0m0.000s
+> >    sys      0m0.166s
+> >
+> >    # bpftrace -e 'kprobe:alloc_fresh_huge_page { @start[tid] = nsecs; } kretprobe:alloc_fresh_huge_page /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+> >    Attaching 2 probes...
+> >
+> >    @latency:
+> >    [8K, 16K)           8360 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> >    [16K, 32K)          1868 |@@@@@@@@@@@                                         |
+> >    [32K, 64K)            10 |                                                    |
+> >    [64K, 128K)            2 |                                                    |
+> >
+> >    b) Without this patch series:
+> >    # time echo 10240 > /proc/sys/vm/nr_hugepages
+> >
+> >    real     0m0.066s
+> >    user     0m0.000s
+> >    sys      0m0.066s
+> >
+> >    # bpftrace -e 'kprobe:alloc_fresh_huge_page { @start[tid] = nsecs; } kretprobe:alloc_fresh_huge_page /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+> >    Attaching 2 probes...
+> >
+> >    @latency:
+> >    [4K, 8K)           10176 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> >    [8K, 16K)             62 |                                                    |
+> >    [16K, 32K)             2 |                                                    |
+> >
+> >    Summarize: this feature is about ~2x slower than before.
+> >
+> > 2) Freeing 10240 @MB hugetlb pages.
+> >
+> >    a) With this patch series applied:
+> >    # time echo 0 > /proc/sys/vm/nr_hugepages
+> >
+> >    real     0m0.004s
+> >    user     0m0.000s
+> >    sys      0m0.002s
+> >
+> >    # bpftrace -e 'kprobe:__free_hugepage { @start[tid] = nsecs; } kretprobe:__free_hugepage /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+> >    Attaching 2 probes...
+> >
+> >    @latency:
+> >    [16K, 32K)         10240 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> >
+> >    b) Without this patch series:
+> >    # time echo 0 > /proc/sys/vm/nr_hugepages
+> >
+> >    real     0m0.077s
+> >    user     0m0.001s
+> >    sys      0m0.075s
+> >
+> >    # bpftrace -e 'kprobe:__free_hugepage { @start[tid] = nsecs; } kretprobe:__free_hugepage /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+> >    Attaching 2 probes...
+> >
+> >    @latency:
+> >    [4K, 8K)            9950 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> >    [8K, 16K)            287 |@                                                   |
+> >    [16K, 32K)             3 |                                                    |
+> >
+> >    Summarize: The overhead of __free_hugepage is about ~2-4x slower than before.
+> >               But according to the allocation test above, I think that here is
+> >             also ~2x slower than before.
+> >
+> >               But why the 'real' time of patched is smaller than before? Because
+> >             In this patch series, the freeing hugetlb is asynchronous(through
+> >             kwoker).
+> >
+> > Although the overhead has increased. But the overhead is not on the
+> > allocating/freeing of each hugetlb page, it is only once when we reserve
+> > some hugetlb pages through /proc/sys/vm/nr_hugepages. Once the reservation
+> > is successful, the subsequent allocating, freeing and using are the same
+> > as before (not patched). So I think that the overhead is acceptable.
+>
+> Thank you for benchmarking.  There are still some instances where huge pages
+> are allocated 'on the fly' instead of being pulled from the pool.  Michal
+> pointed out the case of page migration.  It is also possible for someone to
+> use hugetlbfs without pre-allocating huge pages to the pool.  I remember the
+> use case pointed out in commit 099730d67417.  It says, "I have a hugetlbfs
+> user which is never explicitly allocating huge pages with 'nr_hugepages'.
+> They only set 'nr_overcommit_hugepages' and then let the pages be allocated
+> from the buddy allocator at fault time."  In this case, I suspect they were
+> using 'page fault' allocation for initialization much like someone using
+> /proc/sys/vm/nr_hugepages.  So, the overhead may not be as noticeable.
+
+Thanks for pointing out this using case.
+
+>
+> --
+> Mike Kravetz
+
+
+
 -- 
-2.29.2.222.g5d2a92d10f8-goog
-
+Yours,
+Muchun
