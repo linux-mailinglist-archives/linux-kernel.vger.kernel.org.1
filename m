@@ -2,219 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5664D2AF334
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DAE2AF343
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgKKOMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:12:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:54770 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726557AbgKKOMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:12:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B853A31B;
-        Wed, 11 Nov 2020 06:12:21 -0800 (PST)
-Received: from e110176-lin.kfn.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B79573F718;
-        Wed, 11 Nov 2020 06:12:19 -0800 (PST)
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Ofir Drang <ofir.drang@arm.com>, Rob Herring <robh@kernel.org>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] crypto: ccree - add custom cache params from DT file
-Date:   Wed, 11 Nov 2020 16:11:37 +0200
-Message-Id: <20201111141138.836-3-gilad@benyossef.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201111141138.836-1-gilad@benyossef.com>
-References: <20201111141138.836-1-gilad@benyossef.com>
+        id S1727132AbgKKON1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKON0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:13:26 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B906C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:13:26 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id r12so901825qvq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:13:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aZg/3dO+K+3/7egp9giqF6NxjGJW8QC5duS9to8aMlY=;
+        b=Xw7CFjGzL8Kjfg/8OXuLrwhbg9ZP9ZHm/ZXt4h4x8mpl0H2vS4DZiwHFDn4SKHJ0mw
+         tyjfvfVlgZQcF1VyCUd8kEy/ehZXpKHASrIJGa9KsHxzkTWcmFgv+09aEPXfS3D2zix0
+         FjEtZ1so6G8zYcXxpsrnXKwYXqmUICjTddFkNf7NI22OsCfIqu1BN+i5N31nYwBl+kR+
+         OPwqoRtYgbsU6nwtsZ81Z5mLoLiIckYMPEkXV8cfal2djwPNI2A0CrtKjCw1dVp4KKEh
+         VzdXTpNLJ5UB4sJaANPV3Ri2Cvz4/Nt3L82gx/cZqJCsiMM2Lsllm8UgJFczjhV/uo57
+         mjVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aZg/3dO+K+3/7egp9giqF6NxjGJW8QC5duS9to8aMlY=;
+        b=eoLbZW0DcQF4++9dMJcuM6kHnmg6rd9VMSf+43juvJdduj7wTE7T3nHKScYa6YFVhH
+         yLklRvlrulrIWoffvQDpgjOmKryfhBD4S8xEimLaKXfOc5fGgvF5epav3pV0RCS0C/FH
+         tjUhAb1gUUccS9e5xf6q5vqpfHo0bpCeuJhYPTwSRAhjKc4upbVyjtGdpgwuSa3AI4RM
+         8P28sCKnsGD2iAYnTz2xHL5F6JdGUmM1WFAnwHuzQIg5qXFmF3Ax5pPc3pCa5Gw0ys8/
+         5HuX2Edo1Zw9/FXUpXVA9HmGKUZWWumYDbGGZKoaHy2rv4jYIhJolllc3+vIQ3x6AJPy
+         8B0A==
+X-Gm-Message-State: AOAM532+HCxycKZhBv5/8nZw9GXyg+GT7uOQCYEVlvvJ+2OLt/20ml/K
+        BpitdqrET5mHA0y50A7a4pNm9Gxwwi7f417IToOR3A==
+X-Google-Smtp-Source: ABdhPJy0oA37tH29jq6K/3f8eXTURhzdJBnfxbCpoDa4SIF888pNpma8ToBbSmYwnn/LMwKyWPnPeW4+dy1W+1T0FZk=
+X-Received: by 2002:a0c:9e53:: with SMTP id z19mr24630768qve.23.1605104005104;
+ Wed, 11 Nov 2020 06:13:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1605046192.git.andreyknvl@google.com> <85aba371903b749412fac34e44e54c89e5ddae30.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <85aba371903b749412fac34e44e54c89e5ddae30.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 15:13:13 +0100
+Message-ID: <CAG_fn=VuM=4axS6ex7_MgCeZ47o+Scon1WuFGStF78T36sHayw@mail.gmail.com>
+Subject: Re: [PATCH v9 10/44] kasan: define KASAN_GRANULE_PAGE
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add optinal ability to override cache parameters and
-set new defaults.
+On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> Define KASAN_GRANULE_PAGE as (KASAN_GRANULE_SIZE << PAGE_SHIFT), which is
+> the same as (KASAN_GRANULE_SIZE * PAGE_SIZE), and use it across KASAN cod=
+e
+> to simplify it.
 
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Cc: Rob Herring <robh@kernel.org>
----
- drivers/crypto/ccree/cc_driver.c | 100 ++++++++++++++++++++++++++-----
- drivers/crypto/ccree/cc_driver.h |   4 +-
- drivers/crypto/ccree/cc_pm.c     |   2 +-
- 3 files changed, 88 insertions(+), 18 deletions(-)
+What's the physical sense behind KASAN_GRANULE_PAGE? Is it something
+more than just a product of two constants?
+The name suggests it might be something page-sized, but in reality it is no=
+t.
 
-diff --git a/drivers/crypto/ccree/cc_driver.c b/drivers/crypto/ccree/cc_driver.c
-index 6f519d3e896c..3064bd196ebc 100644
---- a/drivers/crypto/ccree/cc_driver.c
-+++ b/drivers/crypto/ccree/cc_driver.c
-@@ -100,6 +100,82 @@ static const struct of_device_id arm_ccree_dev_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, arm_ccree_dev_of_match);
- 
-+static void init_cc_dt_params(struct cc_drvdata *drvdata)
-+{
-+	struct device *dev = drvdata_to_dev(drvdata);
-+	struct device_node *np = dev->of_node;
-+	u32 cache_params, ace_const, val, mask;
-+	const char *str;
-+	int rc;
-+
-+	/* register CC_AXIM_CACHE_PARAMS */
-+	cache_params = cc_ioread(drvdata, CC_REG(AXIM_CACHE_PARAMS));
-+	dev_dbg(dev, "Cache params previous: 0x%08X\n", cache_params);
-+
-+	if (drvdata->coherent) {
-+
-+		rc = of_property_read_string(np, "cache-attributes", &str);
-+
-+		if (rc && !strcmp(str, "write-through"))
-+			val = 0x6;
-+		else if (rc && !strcmp(str, "write-back"))
-+			val = 0xa;
-+		else
-+			val = 0xb; /* Write-Back Write-Allocate */
-+	} else {
-+		/* Non-cacheable */
-+		val = 0x2;
-+	}
-+
-+	mask = CC_GENMASK(CC_AXIM_CACHE_PARAMS_AWCACHE);
-+	cache_params &= ~mask;
-+	cache_params |= FIELD_PREP(mask, val);
-+
-+	mask = CC_GENMASK(CC_AXIM_CACHE_PARAMS_AWCACHE_LAST);
-+	cache_params &= ~mask;
-+	cache_params |= FIELD_PREP(mask, val);
-+
-+	mask = CC_GENMASK(CC_AXIM_CACHE_PARAMS_ARCACHE);
-+	cache_params &= ~mask;
-+	cache_params |= FIELD_PREP(mask, val);
-+
-+	drvdata->cache_params = cache_params;
-+
-+	dev_dbg(dev, "Cache params current: 0x%08X\n", cache_params);
-+
-+	if (drvdata->hw_rev <= CC_HW_REV_710)
-+		return;
-+
-+	/* register CC_AXIM_ACE_CONST */
-+	ace_const = cc_ioread(drvdata, CC_REG(AXIM_ACE_CONST));
-+	dev_dbg(dev, "ACE-const previous: 0x%08X\n", ace_const);
-+
-+	if (drvdata->coherent) {
-+
-+		rc = of_property_read_string(np, "sharability-domain", &str);
-+
-+		if (rc && !strcmp(str, "inner"))
-+			val = 0x1;
-+		else
-+			val = 0x2; /* Outer Sharable */
-+	} else {
-+		/* System */
-+		val = 0x3;
-+	}
-+
-+	mask = CC_GENMASK(CC_AXIM_ACE_CONST_ARDOMAIN);
-+	ace_const &= ~mask;
-+	ace_const |= FIELD_PREP(mask, val);
-+
-+	mask = CC_GENMASK(CC_AXIM_ACE_CONST_AWDOMAIN);
-+	ace_const &= ~mask;
-+	ace_const |= FIELD_PREP(mask, val);
-+
-+	dev_dbg(dev, "ACE-const current: 0x%08X\n", ace_const);
-+
-+	drvdata->ace_const = ace_const;
-+}
-+
- static u32 cc_read_idr(struct cc_drvdata *drvdata, const u32 *idr_offsets)
- {
- 	int i;
-@@ -218,9 +294,9 @@ bool cc_wait_for_reset_completion(struct cc_drvdata *drvdata)
- 	return false;
- }
- 
--int init_cc_regs(struct cc_drvdata *drvdata, bool is_probe)
-+int init_cc_regs(struct cc_drvdata *drvdata)
- {
--	unsigned int val, cache_params;
-+	unsigned int val;
- 	struct device *dev = drvdata_to_dev(drvdata);
- 
- 	/* Unmask all AXI interrupt sources AXI_CFG1 register   */
-@@ -245,19 +321,9 @@ int init_cc_regs(struct cc_drvdata *drvdata, bool is_probe)
- 
- 	cc_iowrite(drvdata, CC_REG(HOST_IMR), ~val);
- 
--	cache_params = (drvdata->coherent ? CC_COHERENT_CACHE_PARAMS : 0x0);
--
--	val = cc_ioread(drvdata, CC_REG(AXIM_CACHE_PARAMS));
--
--	if (is_probe)
--		dev_dbg(dev, "Cache params previous: 0x%08X\n", val);
--
--	cc_iowrite(drvdata, CC_REG(AXIM_CACHE_PARAMS), cache_params);
--	val = cc_ioread(drvdata, CC_REG(AXIM_CACHE_PARAMS));
--
--	if (is_probe)
--		dev_dbg(dev, "Cache params current: 0x%08X (expect: 0x%08X)\n",
--			val, cache_params);
-+	cc_iowrite(drvdata, CC_REG(AXIM_CACHE_PARAMS), drvdata->cache_params);
-+	if (drvdata->hw_rev >= CC_HW_REV_712)
-+		cc_iowrite(drvdata, CC_REG(AXIM_ACE_CONST), drvdata->ace_const);
- 
- 	return 0;
- }
-@@ -445,7 +511,9 @@ static int init_cc_resources(struct platform_device *plat_dev)
- 	}
- 	dev_dbg(dev, "Registered to IRQ: %d\n", irq);
- 
--	rc = init_cc_regs(new_drvdata, true);
-+	init_cc_dt_params(new_drvdata);
-+
-+	rc = init_cc_regs(new_drvdata);
- 	if (rc) {
- 		dev_err(dev, "init_cc_regs failed\n");
- 		goto post_pm_err;
-diff --git a/drivers/crypto/ccree/cc_driver.h b/drivers/crypto/ccree/cc_driver.h
-index af77b2020350..cd5a51e8a281 100644
---- a/drivers/crypto/ccree/cc_driver.h
-+++ b/drivers/crypto/ccree/cc_driver.h
-@@ -155,6 +155,8 @@ struct cc_drvdata {
- 	int std_bodies;
- 	bool sec_disabled;
- 	u32 comp_mask;
-+	u32 cache_params;
-+	u32 ace_const;
- };
- 
- struct cc_crypto_alg {
-@@ -205,7 +207,7 @@ static inline void dump_byte_array(const char *name, const u8 *the_array,
- }
- 
- bool cc_wait_for_reset_completion(struct cc_drvdata *drvdata);
--int init_cc_regs(struct cc_drvdata *drvdata, bool is_probe);
-+int init_cc_regs(struct cc_drvdata *drvdata);
- void fini_cc_regs(struct cc_drvdata *drvdata);
- unsigned int cc_get_default_hash_len(struct cc_drvdata *drvdata);
- 
-diff --git a/drivers/crypto/ccree/cc_pm.c b/drivers/crypto/ccree/cc_pm.c
-index 3c65bf070c90..d5421b0c6831 100644
---- a/drivers/crypto/ccree/cc_pm.c
-+++ b/drivers/crypto/ccree/cc_pm.c
-@@ -45,7 +45,7 @@ static int cc_pm_resume(struct device *dev)
- 	}
- 
- 	cc_iowrite(drvdata, CC_REG(HOST_POWER_DOWN_EN), POWER_DOWN_DISABLE);
--	rc = init_cc_regs(drvdata, false);
-+	rc = init_cc_regs(drvdata);
- 	if (rc) {
- 		dev_err(dev, "init_cc_regs (%x)\n", rc);
- 		return rc;
--- 
-2.29.2
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+> ---
+> Change-Id: I0b627b24187d06c8b9bb2f1d04d94b3d06945e73
+> ---
+>  mm/kasan/init.c   | 10 ++++------
+>  mm/kasan/kasan.h  |  1 +
+>  mm/kasan/shadow.c | 16 +++++++---------
+>  3 files changed, 12 insertions(+), 15 deletions(-)
+>
+> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+> index 1a71eaa8c5f9..26b2663b3a42 100644
+> --- a/mm/kasan/init.c
+> +++ b/mm/kasan/init.c
+> @@ -441,9 +441,8 @@ void kasan_remove_zero_shadow(void *start, unsigned l=
+ong size)
+>         addr =3D (unsigned long)kasan_mem_to_shadow(start);
+>         end =3D addr + (size >> KASAN_SHADOW_SCALE_SHIFT);
+>
+> -       if (WARN_ON((unsigned long)start %
+> -                       (KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
+> -           WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
+> +       if (WARN_ON((unsigned long)start % KASAN_GRANULE_PAGE) ||
+> +           WARN_ON(size % KASAN_GRANULE_PAGE))
+>                 return;
+>
+>         for (; addr < end; addr =3D next) {
+> @@ -476,9 +475,8 @@ int kasan_add_zero_shadow(void *start, unsigned long =
+size)
+>         shadow_start =3D kasan_mem_to_shadow(start);
+>         shadow_end =3D shadow_start + (size >> KASAN_SHADOW_SCALE_SHIFT);
+>
+> -       if (WARN_ON((unsigned long)start %
+> -                       (KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
+> -           WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
+> +       if (WARN_ON((unsigned long)start % KASAN_GRANULE_PAGE) ||
+> +           WARN_ON(size % KASAN_GRANULE_PAGE))
+>                 return -EINVAL;
+>
+>         ret =3D kasan_populate_early_shadow(shadow_start, shadow_end);
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index c31e2c739301..1865bb92d47a 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -7,6 +7,7 @@
+>
+>  #define KASAN_GRANULE_SIZE     (1UL << KASAN_SHADOW_SCALE_SHIFT)
+>  #define KASAN_GRANULE_MASK     (KASAN_GRANULE_SIZE - 1)
+> +#define KASAN_GRANULE_PAGE     (KASAN_GRANULE_SIZE << PAGE_SHIFT)
+>
+>  #define KASAN_TAG_KERNEL       0xFF /* native kernel pointers tag */
+>  #define KASAN_TAG_INVALID      0xFE /* inaccessible memory tag */
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index ca0cc4c31454..1fadd4930d54 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -161,7 +161,7 @@ static int __meminit kasan_mem_notifier(struct notifi=
+er_block *nb,
+>         shadow_end =3D shadow_start + shadow_size;
+>
+>         if (WARN_ON(mem_data->nr_pages % KASAN_GRANULE_SIZE) ||
+> -               WARN_ON(start_kaddr % (KASAN_GRANULE_SIZE << PAGE_SHIFT))=
+)
+> +               WARN_ON(start_kaddr % KASAN_GRANULE_PAGE))
+>                 return NOTIFY_BAD;
+>
+>         switch (action) {
+> @@ -432,22 +432,20 @@ void kasan_release_vmalloc(unsigned long start, uns=
+igned long end,
+>         unsigned long region_start, region_end;
+>         unsigned long size;
+>
+> -       region_start =3D ALIGN(start, PAGE_SIZE * KASAN_GRANULE_SIZE);
+> -       region_end =3D ALIGN_DOWN(end, PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +       region_start =3D ALIGN(start, KASAN_GRANULE_PAGE);
+> +       region_end =3D ALIGN_DOWN(end, KASAN_GRANULE_PAGE);
+>
+> -       free_region_start =3D ALIGN(free_region_start,
+> -                                 PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +       free_region_start =3D ALIGN(free_region_start, KASAN_GRANULE_PAGE=
+);
+>
+>         if (start !=3D region_start &&
+>             free_region_start < region_start)
+> -               region_start -=3D PAGE_SIZE * KASAN_GRANULE_SIZE;
+> +               region_start -=3D KASAN_GRANULE_PAGE;
+>
+> -       free_region_end =3D ALIGN_DOWN(free_region_end,
+> -                                    PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +       free_region_end =3D ALIGN_DOWN(free_region_end, KASAN_GRANULE_PAG=
+E);
+>
+>         if (end !=3D region_end &&
+>             free_region_end > region_end)
+> -               region_end +=3D PAGE_SIZE * KASAN_GRANULE_SIZE;
+> +               region_end +=3D KASAN_GRANULE_PAGE;
+>
+>         shadow_start =3D kasan_mem_to_shadow((void *)region_start);
+>         shadow_end =3D kasan_mem_to_shadow((void *)region_end);
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
