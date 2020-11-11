@@ -2,241 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA422AF485
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFA22AF487
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbgKKPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgKKPNo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:13:44 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D862C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:13:44 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so2875455wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p+INv8JEk5XPkG3ax0MxxlvUdmFmE55+jTOg5CXTsRM=;
-        b=gCOH6uGacfEGAlGZE5LqTC3tTkpdWZ1awdWHzQ8/nU3bavxaDN+dvvIqQQCDtIn4E+
-         3RccuUGS3SlpCsZL/zgllI5FQey6ukHD5asCGHApC5TICTWXprEaVlcXu2mVzAOmVa7V
-         yqOtn83ZQdRPRd+UiACgcmhKaDL7eaaGlxYTZR5MyymcXS1t4tK7TA7FJKeeq1UidxBT
-         ybeMeXhNb63l2HWe8omDpdT3bOXVwQR3Lv/8z5U7wSeqbCrsknV92vkmuZSayjkuTYyk
-         2N7rCakFWaEz6IlkpMF+r2qYsZUYOydIB4wG/GN4dNOblyjF/AUDbQEXxiCanhKBuXXi
-         Upjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p+INv8JEk5XPkG3ax0MxxlvUdmFmE55+jTOg5CXTsRM=;
-        b=kHvjC+3AEEaK4IteyF7WJqC+mB3dUrDx6S9eCQfqT0Dx6fRP6t12o1i2RARUDPva0+
-         Cs9zmOVA84kg75MnVfPrpJsWm5mJe/C3pHZMywKr868GpEhotkFiI8GsuF/uqU+AzYRu
-         WZ8poxrVsi57cd40wEHiBcDfY24M0VAXwqX+LmJ1ntNQIab6XUd5w+VXDckfebkx2Qmf
-         E7DJrezYU2oFpDxSIP5GUyLHZeg4lOJmTr6oQeofTSuLUCsSBPgzHCpSwNb+AEYTjJ7Q
-         sLxubYETqXXms7OLhGH4GZsvArg48EmMcBKs0VApPvgaUXwA8YzSA7o1GZgn5Oq/E07b
-         6QxQ==
-X-Gm-Message-State: AOAM532ycPdpxvyU37D2jl6/hxvHXvMvR82GqBLeboW4+QY7PKoC5ptg
-        w7BNGbMkHyqOfGpdSw5SSoBYiQ==
-X-Google-Smtp-Source: ABdhPJyT0sGWjPC6z/N8eDyDtVf0jkrEfp0riVXnnt/LmxwMaGfpcHd9dqUAYqGcWbLufSEkVWMBFg==
-X-Received: by 2002:adf:db4a:: with SMTP id f10mr15496651wrj.420.1605107622540;
-        Wed, 11 Nov 2020 07:13:42 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id p13sm2763952wrt.73.2020.11.11.07.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 07:13:41 -0800 (PST)
-Date:   Wed, 11 Nov 2020 16:13:36 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/20] kasan, mm: allow cache merging with no metadata
-Message-ID: <20201111151336.GA517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <936c0c198145b663e031527c49a6895bd21ac3a0.1605046662.git.andreyknvl@google.com>
+        id S1727347AbgKKPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:14:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726101AbgKKPOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:14:07 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F717206A1;
+        Wed, 11 Nov 2020 15:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605107646;
+        bh=d0sY6zcF8k38P2t09esju++5JTYGiRwTGV3GDkSzykY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eAWlPlImegdvQTY3m8tm6JNO7LKooiC3iopOwPK9+Su1UcfGl0kRPEZMh880JY69D
+         LqTSrOsPzDQMRVaGAbKahhd5agIlqtbGykcswKi0t6Jl015jqcrwRbosiQz8StmATV
+         d87Um7BWjGzcAKvam0BhmbBoNQb4MoMbfflkQAwQ=
+Received: by mail-ot1-f42.google.com with SMTP id g19so2396722otp.13;
+        Wed, 11 Nov 2020 07:14:06 -0800 (PST)
+X-Gm-Message-State: AOAM533gFQu4IvxOzSAKJwmygpHmo+zDdAAc+0kJmg1WQkFgd5TUFW11
+        pqHKbT3GDajc1AoIlD6gd4YkchibA8MGdPc/tg==
+X-Google-Smtp-Source: ABdhPJymqPf/e8ewrMpEYOfSRcOCehc460ABLXcC/qaRYD758j4cwr98EnsuW8kfp2TJFp88OcSVrA1y8Rsg+BnNdA8=
+X-Received: by 2002:a05:6830:2f8:: with SMTP id r24mr17995064ote.129.1605107645484;
+ Wed, 11 Nov 2020 07:14:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <936c0c198145b663e031527c49a6895bd21ac3a0.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+References: <20201111145757.74974-1-aford173@gmail.com>
+In-Reply-To: <20201111145757.74974-1-aford173@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 11 Nov 2020 09:13:53 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKfe=uMPS6CgSGh6OfUMMY8yuKsa-q=PsFN3=NhYVYdDw@mail.gmail.com>
+Message-ID: <CAL_JsqKfe=uMPS6CgSGh6OfUMMY8yuKsa-q=PsFN3=NhYVYdDw@mail.gmail.com>
+Subject: Re: [PATCH V3] dt-bindings: soc: imx: Add binding doc for spba bus
+To:     Adam Ford <aford173@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> The reason cache merging is disabled with KASAN is because KASAN puts its
-> metadata right after the allocated object. When the merged caches have
-> slightly different sizes, the metadata ends up in different places, which
-> KASAN doesn't support.
-> 
-> It might be possible to adjust the metadata allocation algorithm and make
-> it friendly to the cache merging code. Instead this change takes a simpler
-> approach and allows merging caches when no metadata is present. Which is
-> the case for hardware tag-based KASAN with kasan.mode=prod.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Ia114847dfb2244f297d2cb82d592bf6a07455dba
+On Wed, Nov 11, 2020 at 8:58 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> Add binding doc for fsl,spba-bus.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 > ---
->  include/linux/kasan.h | 26 ++++++++++++++++++++++++--
->  mm/kasan/common.c     | 11 +++++++++++
->  mm/slab_common.c      | 11 ++++++++---
->  3 files changed, 43 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 534ab3e2935a..c754eca356f7 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -81,17 +81,35 @@ struct kasan_cache {
->  };
->  
->  #ifdef CONFIG_KASAN_HW_TAGS
-> +
->  DECLARE_STATIC_KEY_FALSE(kasan_flag_enabled);
-> +
->  static inline kasan_enabled(void)
->  {
->  	return static_branch_likely(&kasan_flag_enabled);
->  }
-> -#else
-> +
-> +slab_flags_t __kasan_never_merge(slab_flags_t flags);
-> +static inline slab_flags_t kasan_never_merge(slab_flags_t flags)
-> +{
-> +	if (kasan_enabled())
-> +		return __kasan_never_merge(flags);
-> +	return flags;
-> +}
-> +
-> +#else /* CONFIG_KASAN_HW_TAGS */
-> +
->  static inline kasan_enabled(void)
->  {
->  	return true;
->  }
-> -#endif
-> +
-> +static inline slab_flags_t kasan_never_merge(slab_flags_t flags)
-> +{
-> +	return flags;
-> +}
-> +
-> +#endif /* CONFIG_KASAN_HW_TAGS */
->  
->  void __kasan_alloc_pages(struct page *page, unsigned int order);
->  static inline void kasan_alloc_pages(struct page *page, unsigned int order)
-> @@ -240,6 +258,10 @@ static inline kasan_enabled(void)
->  {
->  	return false;
->  }
-> +static inline slab_flags_t kasan_never_merge(slab_flags_t flags)
-> +{
-> +	return flags;
-> +}
->  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
->  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
->  static inline void kasan_cache_create(struct kmem_cache *cache,
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 940b42231069..25b18c145b06 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -81,6 +81,17 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
->  }
->  #endif /* CONFIG_KASAN_STACK */
->  
-> +/*
-> + * Only allow cache merging when stack collection is disabled and no metadata
-> + * is present.
-> + */
-> +slab_flags_t __kasan_never_merge(slab_flags_t flags)
-> +{
-> +	if (kasan_stack_collection_enabled())
-> +		return flags;
-> +	return flags & ~SLAB_KASAN;
-> +}
-> +
->  void __kasan_alloc_pages(struct page *page, unsigned int order)
->  {
->  	u8 tag;
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index f1b0c4a22f08..3042ee8ea9ce 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -18,6 +18,7 @@
->  #include <linux/seq_file.h>
->  #include <linux/proc_fs.h>
->  #include <linux/debugfs.h>
-> +#include <linux/kasan.h>
->  #include <asm/cacheflush.h>
->  #include <asm/tlbflush.h>
->  #include <asm/page.h>
-> @@ -49,12 +50,16 @@ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
->  		    slab_caches_to_rcu_destroy_workfn);
->  
->  /*
-> - * Set of flags that will prevent slab merging
-> + * Set of flags that will prevent slab merging.
-> + * Use slab_never_merge() instead.
->   */
->  #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
->  		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
->  		SLAB_FAILSLAB | SLAB_KASAN)
+> make dt_binding_check showed no errors if I did this right.
+>
+> V3:  Rebase sample from aips-bus example
+>      Split off from series adding i.MX8M Nano functions to reduce noise
+> V2:  Attempted to update yaml from feedback
+>
+> diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
+> index f50420099a55..ec8073cb2e71 100644
+> --- a/Documentation/devicetree/bindings/Makefile
+> +++ b/Documentation/devicetree/bindings/Makefile
+> @@ -3,8 +3,6 @@ DT_DOC_CHECKER ?= dt-doc-validate
+>  DT_EXTRACT_EX ?= dt-extract-example
+>  DT_MK_SCHEMA ?= dt-mk-schema
+>
+> -DT_SCHEMA_LINT = $(shell which yamllint)
+> -
 
-Rather than changing this to require using slab_never_merge() which
-removes SLAB_KASAN, could we not just have a function
-kasan_never_merge() that returns KASAN-specific flags that should never
-result in merging -- because as-is now, making kasan_never_merge()
-remove the SLAB_KASAN flag seems the wrong way around.
+???
 
-Could we not just do this:
+>  DT_SCHEMA_MIN_VERSION = 2020.8.1
+>
+>  PHONY += check_dtschema_version
+> @@ -26,10 +24,6 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
+>                 -name 'processed-schema*' ! \
+>                 -name '*.example.dt.yaml' \)
+>
+> -quiet_cmd_yamllint = LINT    $(src)
+> -      cmd_yamllint = $(find_cmd) | \
+> -                     xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint
+> -
+>  quiet_cmd_chk_bindings = CHKDT   $@
+>        cmd_chk_bindings = $(find_cmd) | \
+>                           xargs -n200 -P$$(nproc) $(DT_DOC_CHECKER) -u $(srctree)/$(src)
+> @@ -43,7 +37,6 @@ quiet_cmd_mk_schema = SCHEMA  $@
+>                       rm -f $$f
+>
+>  define rule_chkdt
+> -       $(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
+>         $(call cmd,chk_bindings)
+>         $(call cmd,mk_schema)
+>  endef
+> @@ -55,7 +48,7 @@ override DTC_FLAGS := \
+>         -Wno-graph_child_address \
+>         -Wno-interrupt_provider
+>
+> -$(obj)/processed-schema-examples.json: $(DT_DOCS) $(src)/.yamllint check_dtschema_version FORCE
+> +$(obj)/processed-schema-examples.json: $(DT_DOCS) check_dtschema_version FORCE
+>         $(call if_changed_rule,chkdt)
+>
+>  ifeq ($(DT_SCHEMA_FILES),)
+> diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+> new file mode 100644
+> index 000000000000..91dae405ed39
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+> @@ -0,0 +1,65 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Shared Peripherals Bus Interface
+> +
+> +maintainers:
+> +  - Shawn Guo <shawnguo@kernel.org>
+> +
+> +description: |
+> +  A simple bus enabling access to shared peripherals.
+> +
+> +  The "spba-bus" follows the "simple-bus" set of properties, as
+> +  specified in the Devicetree Specification.  It is an extension of
+> +  "simple-bus" because the SDMA controller uses this compatible flag to
+> +  determine which peripherals are available to it and the range over which
+> +  the SDMA can access.  There are no special clocks for the bus, because
+> +  the SDMA controller itself has its interrupt, and clock assignments.
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: fsl,spba-bus
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^bus(@[0-9a-f]+)?$"
+> +
+> +  compatible:
+> +    items:
+> +      - const: fsl,spba-bus
+> +      - const: simple-bus
+> +
+> +  '#address-cells':
+> +    enum: [ 1, 2 ]
+> +
+> +  '#size-cells':
+> +    enum: [ 1, 2 ]
+> +
+> +  ranges: true
+> +
+> +required:
+> +  - compatible
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +  - ranges
+> +
 
-  #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
-  		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
-  		SLAB_FAILSLAB | kasan_never_merge())
+> +additionalProperties: true
+> +
+> +type: object
 
-??
+Should be:
 
-Of course that might be problematic if this always needs to be a
-compile-time constant, but currently that's not a requirement.
+additionalProperties:
+  type: object
 
-> +/* KASAN allows merging in some configurations and will remove SLAB_KASAN. */
-> +#define slab_never_merge() (kasan_never_merge(SLAB_NEVER_MERGE))
-
-Braces unnecessary.
-
->  #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
->  			 SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
->  
-> @@ -164,7 +169,7 @@ static unsigned int calculate_alignment(slab_flags_t flags,
->   */
->  int slab_unmergeable(struct kmem_cache *s)
->  {
-> -	if (slab_nomerge || (s->flags & SLAB_NEVER_MERGE))
-> +	if (slab_nomerge || (s->flags & slab_never_merge()))
->  		return 1;
->  
->  	if (s->ctor)
-> @@ -198,7 +203,7 @@ struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
->  	size = ALIGN(size, align);
->  	flags = kmem_cache_flags(size, flags, name, NULL);
->  
-> -	if (flags & SLAB_NEVER_MERGE)
-> +	if (flags & slab_never_merge())
->  		return NULL;
->  
->  	list_for_each_entry_reverse(s, &slab_caches, list) {
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
-> 
+> +
+> +examples:
+> +  - |
+> +    bus@30000000 {
+> +        compatible = "fsl,spba-bus", "simple-bus";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        reg = <0x30000000 0x100000>;
+> +        ranges;
+> +    };
+> --
+> 2.25.1
+>
