@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316DB2AE66B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A16422AE63A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgKKC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 21:29:15 -0500
-Received: from mga11.intel.com ([192.55.52.93]:27634 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725882AbgKKC3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:29:12 -0500
-IronPort-SDR: +/bxyo4U6UntLs6kGqAGmPKDiW46Fbc1VVWG8VAMnKzBmLXazKxixqGSwRNmm48/FCz2nJTaVq
- IUdGQkjcqSzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="166574342"
-X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="asc'?scan'208";a="166574342"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 18:29:11 -0800
-IronPort-SDR: 5X9dokFnhpEvAFBUB2K5/8AZV96m5qV4k5OKyjc2wLc4dd3Z3lIL1Lg2SzwpqMV5ZFmVXPMvMZ
- /3tQpWRC4wKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="asc'?scan'208";a="356431843"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Nov 2020 18:29:09 -0800
-Date:   Wed, 11 Nov 2020 10:14:54 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Deepak R Varma <mh12gx2825@gmail.com>
-Cc:     Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i915/gvt: replace idr_init() by idr_init_base()
-Message-ID: <20201111021454.GP1239@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20201104121532.GA48202@localhost>
+        id S1732438AbgKKCNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 21:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731900AbgKKCNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 21:13:53 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D308C0613D1;
+        Tue, 10 Nov 2020 18:13:51 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id za3so619181ejb.5;
+        Tue, 10 Nov 2020 18:13:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rxYZ9ij9kz13Mmo6auDPO8kEtOhkdmx8dZzpJsXD4Jg=;
+        b=B6ZHVGSi7837kTT70rP4JTjmc3alSRGfUi7P/t7UiHuapGBrRX6tRU+m/xVRFaYVxt
+         jn5uosbAMkIy9DLCRFCsNvbeAmDlXbhC2PvUaMKHV6+Egize5H9nGHfMO+GIwn2BO51Z
+         0X4FeMB8xdpbR8B81KtspR8kyAlqHsvMQFy35pSLCBiZx4oc8GWllj36llVCwhh4iKmS
+         8noN9jNpEp5JvOITHfVm/Gwm0U9AFWK0uC5V1uiVtViU/hE0l6UH835/txFoup9z4eJl
+         s0o46cg5s334YWXedyoAzhlZ20oLBj9nd95yNmuXT86xP5oowSzF2s3/xRhYat9jbW1f
+         9eEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rxYZ9ij9kz13Mmo6auDPO8kEtOhkdmx8dZzpJsXD4Jg=;
+        b=uBV5WEmmV4peSCb3rQryeHiSzGZH/nyQVfETzTY5ZpHGqLvQKvnHOidjAdcnIY/PmZ
+         8Cni40zgPo1z/cND63jHRYU6Pj9zR/mFFv2IbkOvetiu4O3zTvWa4KK6ubfc67MJq/ml
+         VyGc8VvHlUD9fRXMBvGBN49rK2JfkoaicHQ9jXwIRyWpw6nIiJRlQSkAMSD0YejWIgTX
+         kunUEPpBWwT4txXOWRAWLwIwjz6MYH3tgVrj5wSf2QjAHnl7dsP8Fq7bAnG4zVxSAFDb
+         8EaZoluVZbHL6v4KUILDQocLv0V2wPNY1MNdhvpjzIw5NHnyBC0c3rUkbcQm7Mmln9G4
+         kEJA==
+X-Gm-Message-State: AOAM533CHhfAN17y8+hhcpdE7FwGr3zYHUWA+i52GVcMs3liYg+f/qnw
+        SA7mGSNHJfY9M2eiNb5IH/HYuv5t1XPQ6tBBA5M=
+X-Google-Smtp-Source: ABdhPJwd5sBe0bmjZnVNPsMg5EVeO1YOek595I4xP99wn5E/JmcGKgvDPBN7d90OEZDIxeAudn1ucnT7NPbKxzoUO9A=
+X-Received: by 2002:a17:906:680c:: with SMTP id k12mr24218421ejr.368.1605060830285;
+ Tue, 10 Nov 2020 18:13:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EdRE1UL8d3mMOE6m"
-Content-Disposition: inline
-In-Reply-To: <20201104121532.GA48202@localhost>
-User-Agent: Mutt/1.10.0 (2018-05-17)
+References: <160311419702.25406.2436004222669241097.stgit@gimli.home>
+In-Reply-To: <160311419702.25406.2436004222669241097.stgit@gimli.home>
+From:   gchen chen <gchen.guomin@gmail.com>
+Date:   Wed, 11 Nov 2020 10:15:04 +0800
+Message-ID: <CAEEwsfR_4pm9mZ81rAYPZ6dY_avfW=xuBx3mOKFD5uoUTOd_uQ@mail.gmail.com>
+Subject: Re: [PATCH] vfio/pci: Clear token on bypass registration failure
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        guomin_chen@sina.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks a lot.
 
---EdRE1UL8d3mMOE6m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 2020.11.04 17:45:32 +0530, Deepak R Varma wrote:
-> idr_init() uses base 0 which is an invalid identifier. The new function
-> idr_init_base allows IDR to set the ID lookup from base 1. This avoids
-> all lookups that otherwise starts from 0 since 0 is always unused.
->=20
-> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
->=20
-> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B410=E6=9C=
+=8819=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:30=E5=86=99=E9=81=93=
+=EF=BC=9A
+>
+> The eventfd context is used as our irqbypass token, therefore if an
+> eventfd is re-used, our token is the same.  The irqbypass code will
+> return an -EBUSY in this case, but we'll still attempt to unregister
+> the producer, where if that duplicate token still exists, results in
+> removing the wrong object.  Clear the token of failed producers so
+> that they harmlessly fall out when unregistered.
+>
+> Fixes: 6d7425f109d2 ("vfio: Register/unregister irq_bypass_producer")
+> Reported-by: guomin chen <guomin_chen@sina.com>
+> Tested-by: guomin chen <guomin_chen@sina.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 > ---
->  drivers/gpu/drm/i915/gvt/gvt.c  | 2 +-
->  drivers/gpu/drm/i915/gvt/vgpu.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/gvt/gvt.c b/drivers/gpu/drm/i915/gvt/gv=
-t.c
-> index c7c561237883..45b492edbb19 100644
-> --- a/drivers/gpu/drm/i915/gvt/gvt.c
-> +++ b/drivers/gpu/drm/i915/gvt/gvt.c
-> @@ -312,7 +312,7 @@ int intel_gvt_init_device(struct drm_i915_private *i9=
-15)
-> =20
->  	gvt_dbg_core("init gvt device\n");
-> =20
-> -	idr_init(&gvt->vgpu_idr);
-> +	idr_init_base(&gvt->vgpu_idr, 1);
->  	spin_lock_init(&gvt->scheduler.mmio_context_lock);
->  	mutex_init(&gvt->lock);
->  	mutex_init(&gvt->sched_lock);
-> diff --git a/drivers/gpu/drm/i915/gvt/vgpu.c b/drivers/gpu/drm/i915/gvt/v=
-gpu.c
-> index f6d7e33c7099..1c8e63f84134 100644
-> --- a/drivers/gpu/drm/i915/gvt/vgpu.c
-> +++ b/drivers/gpu/drm/i915/gvt/vgpu.c
-> @@ -393,7 +393,7 @@ static struct intel_vgpu *__intel_gvt_create_vgpu(str=
-uct intel_gvt *gvt,
->  	mutex_init(&vgpu->dmabuf_lock);
->  	INIT_LIST_HEAD(&vgpu->dmabuf_obj_list_head);
->  	INIT_RADIX_TREE(&vgpu->page_track_tree, GFP_KERNEL);
-> -	idr_init(&vgpu->object_idr);
-> +	idr_init_base(&vgpu->object_idr, 1);
->  	intel_vgpu_init_cfg_space(vgpu, param->primary);
->  	vgpu->d3_entered =3D false;
-> =20
-> --=20
-
-Looks good to me. Thanks!
-
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-
---=20
-
-$gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
-
---EdRE1UL8d3mMOE6m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCX6tJHgAKCRCxBBozTXgY
-Jyv8AJ0ZLKM2ez02e517XOPfJGtsLxANrwCeITSsq29wK0WjSZLfMr4lr6t1kwA=
-=0VA9
------END PGP SIGNATURE-----
-
---EdRE1UL8d3mMOE6m--
+>  drivers/vfio/pci/vfio_pci_intrs.c |    4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pc=
+i_intrs.c
+> index 1d9fb2592945..869dce5f134d 100644
+> --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> @@ -352,11 +352,13 @@ static int vfio_msi_set_vector_signal(struct vfio_p=
+ci_device *vdev,
+>         vdev->ctx[vector].producer.token =3D trigger;
+>         vdev->ctx[vector].producer.irq =3D irq;
+>         ret =3D irq_bypass_register_producer(&vdev->ctx[vector].producer)=
+;
+> -       if (unlikely(ret))
+> +       if (unlikely(ret)) {
+>                 dev_info(&pdev->dev,
+>                 "irq bypass producer (token %p) registration fails: %d\n"=
+,
+>                 vdev->ctx[vector].producer.token, ret);
+>
+> +               vdev->ctx[vector].producer.token =3D NULL;
+> +       }
+>         vdev->ctx[vector].trigger =3D trigger;
+>
+>         return 0;
+>
