@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC672AE7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BD52AE7CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726001AbgKKFN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 00:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKKFNy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:13:54 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADBBC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:13:54 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id z3so889656pfb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:13:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lqk9gT/atveM9k+VRBlwrhLK1Fp317eifcLejbxW1B4=;
-        b=d8doHJA55o0L8EcvDtUW7FdbIj7wmRAuJdFB9sYpHR3X60GC4fdmD5B+p8PWDbCnZc
-         uDij5LmLbttmsg/m2JU0G8+BhgbbBl5I3ZOqfStpMAc92fIQrlPOTJUy3OH/4wHIpXky
-         ZHquWIbRNQJyMbLwyPNTGRsVDHB42vgs7niAyqb0W7GSY3RMEVV5JbxQvQ4SiWp1TQW6
-         xm+jWul86uI7UFO0jNZB+KMkjynXGnxMcketYFCZc8NA8z3+T5YEcFf7qdCoL0YXnPBE
-         xppjZVbWJAsRXwHPPIaTWuoYlUSCCnJFriuvFdIHV+WdXCRgHqP0pMLqH4rp/Tm5zuJX
-         UkLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lqk9gT/atveM9k+VRBlwrhLK1Fp317eifcLejbxW1B4=;
-        b=dn7cGsheODFFAgd9OyQBAVcjZ5g6p+zQkcQWMLR8CFUNJVqJlxoq2rSJ0Lieng1Nz5
-         v1Gp/tt3zSPRYtl/Tiude6/3YZRCX/RJyD+GJNu2g9bWDHyuvmDTKhXhxMRtHHDYziOH
-         AMXUnOXs6FepL1mY2PoVKNv9EOA9nM4oKU8xuw+4twUhdOTUiD0bX2ugBqkP0z8blyQD
-         UJgObpdcX3dKgWMeZTLZoM/odyiKHpUaSmB1SX1AMD7TRCWaAE7E8v4DDCY9DfV4ax3c
-         8cPAw8JhF5XeICc72O55WV/bafFX0GublbE4sYS3HsBzUlgGoS+5y5svH0RhRmigK0C8
-         908A==
-X-Gm-Message-State: AOAM532uJ/hTYFIpbgUs9QJd+DgMpj2bu9ZNpHpbKOnt4d9kOGYxNXi6
-        i2/mY6o+XwV9x3zr4wjPBdkYWA==
-X-Google-Smtp-Source: ABdhPJxK6tZBFKNGUjzN/V+ChoFoO0yc4BAsskNUkr3V7R4feNiLFOHZ/JxxbY0zB/NYWhWVM9sIyA==
-X-Received: by 2002:a63:4747:: with SMTP id w7mr19848081pgk.56.1605071634450;
-        Tue, 10 Nov 2020 21:13:54 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id v126sm828115pfb.137.2020.11.10.21.13.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 21:13:52 -0800 (PST)
-Date:   Wed, 11 Nov 2020 10:43:50 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thomas Renninger <trenn@suse.de>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: stats: Switch to ktime and msec instead of
- jiffies and usertime
-Message-ID: <20201111051350.qxevqcca5775h2xa@vireshk-i7>
-References: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org>
- <1832747.5iOEhN7m9D@c100>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1832747.5iOEhN7m9D@c100>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S1726037AbgKKFPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:15:11 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:31426 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgKKFPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 00:15:10 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605071710; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=x9qlp6TtMCuW6yDR1fjucGV8KPry0uQ9zQlaRPc/GQc=; b=xALWau24ducthZl/op99mfRhpKZ/0HGl7OnKO50+Tpvd+Cq/E2ZAW1k1cP8dQbU/XzfMIGen
+ iyuzYWye+bM0KUfrJVDnex26JumZor+Am/iAcGWPnMhzB+E1gMj9xOZtVepEJt6tgVxs7HGu
+ SbIL48rNUbEjyzIxnwV4ZSWTiV0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fab73321bdb18ae752b08d3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 05:14:26
+ GMT
+Sender: bgodavar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7AEC4C433C9; Wed, 11 Nov 2020 05:14:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from bgodavar-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bgodavar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A146C433C8;
+        Wed, 11 Nov 2020 05:14:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0A146C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bgodavar@codeaurora.org
+From:   Balakrishna Godavarthi <bgodavar@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        abhishekpandit@chromium.org, seanpaul@chromium.org,
+        gubbaven@codeaurora.org, rjliao@codeaurora.org
+Subject: [Resend v1] Bluetooth: hci_qca: Enhance retry logic in qca_setup
+Date:   Wed, 11 Nov 2020 10:44:13 +0530
+Message-Id: <1605071653-5088-1-git-send-email-bgodavar@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-11-20, 13:53, Thomas Renninger wrote:
-> Am Dienstag, 10. November 2020, 12:07:37 CET schrieb Viresh Kumar:
-> > The cpufreq and thermal core, both provide sysfs statistics to help
-> > userspace learn about the behavior of frequencies and cooling states.
-> > 
-> > This is how they look:
-> > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 399
->  
-> > The results look like this after this commit:
-> > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 3830
-> 
-> How would userspace know whether it's ms or 10ms?
-> 
-> whatabout a new file with the same convention as cooling devices (adding ms):
+Currently driver only retries to download FW if FW downloading
+is failed. Sometimes observed command timeout for version request
+command, if this happen on some platforms during boot time, then
+a reboot is needed to turn ON BT. Instead to avoid a reboot, now
+extended retry logic for version request command too.
 
-Keeping two files for same stuff is not great, and renaming the file
-breaks userspace ABI. I am not sure what's the right thing to do here.
+Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+---
+ drivers/bluetooth/hci_qca.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-> > /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state0 3888
-> > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state_ms:1200000 3830
-> 
-> Somewhat off-topic, some ideas:
-> 
-> I wonder how useful these stats still are.
-> CPU_FREQ_STAT is off on my system:
-
-I still use it.
-
-> config CPU_FREQ_STAT
->         bool "CPU frequency transition statistics"
->         help
->           Export CPU frequency statistics information through sysfs.
-> 
->           If in doubt, say N.
-> 
-> Iirc this was a module at former times?
-> 
-> commit 1aefc75b2449eb68a6fc3ca932e2a4ee353b748d
-> Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Date:   Tue May 31 22:14:44 2016 +0200
-> 
->     cpufreq: stats: Make the stats code non-modular
-> 
-> outlined 2 problems with cpufreq_stats being non-modular, but
-> also seem to fix them up:
-> ... and drop the notifiers from it
-> Make the stats sysfs attributes appear empty if fast frequency
-> switching is enabled...
-
-I already fixed this recently and stats don't appear empty for fast
-switch anymore.
-
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 2d3f1f1..1c9a2d46 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1672,7 +1672,7 @@ static int qca_setup(struct hci_uart *hu)
+ retry:
+ 	ret = qca_power_on(hdev);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	clear_bit(QCA_SSR_TRIGGERED, &qca->flags);
+ 
+@@ -1681,7 +1681,7 @@ static int qca_setup(struct hci_uart *hu)
+ 
+ 		ret = qca_read_soc_version(hdev, &soc_ver, soc_type);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	} else {
+ 		qca_set_speed(hu, QCA_INIT_SPEED);
+ 	}
+@@ -1691,7 +1691,7 @@ static int qca_setup(struct hci_uart *hu)
+ 	if (speed) {
+ 		ret = qca_set_speed(hu, QCA_OPER_SPEED);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		qca_baudrate = qca_get_baudrate_value(speed);
+ 	}
+@@ -1700,7 +1700,7 @@ static int qca_setup(struct hci_uart *hu)
+ 		/* Get QCA version information */
+ 		ret = qca_read_soc_version(hdev, &soc_ver, soc_type);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	}
+ 
+ 	bt_dev_info(hdev, "QCA controller version 0x%08x", soc_ver);
+@@ -1721,20 +1721,22 @@ static int qca_setup(struct hci_uart *hu)
+ 		 * patch/nvm-config is found, so run with original fw/config.
+ 		 */
+ 		ret = 0;
+-	} else {
+-		if (retries < MAX_INIT_RETRIES) {
+-			qca_power_shutdown(hu);
+-			if (hu->serdev) {
+-				serdev_device_close(hu->serdev);
+-				ret = serdev_device_open(hu->serdev);
+-				if (ret) {
+-					bt_dev_err(hdev, "failed to open port");
+-					return ret;
+-				}
++	}
++
++out:
++	if (ret && retries < MAX_INIT_RETRIES) {
++		bt_dev_warn(hdev, "Retry BT power ON:%d", retries);
++		qca_power_shutdown(hu);
++		if (hu->serdev) {
++			serdev_device_close(hu->serdev);
++			ret = serdev_device_open(hu->serdev);
++			if (ret) {
++				bt_dev_err(hdev, "failed to open port");
++				return ret;
+ 			}
+-			retries++;
+-			goto retry;
+ 		}
++		retries++;
++		goto retry;
+ 	}
+ 
+ 	/* Setup bdaddr */
 -- 
-viresh
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
