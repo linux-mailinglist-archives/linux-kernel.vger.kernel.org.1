@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143552AEEF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7D02AEEFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgKKKru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgKKKru (ORCPT
+        id S1726042AbgKKKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:50:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbgKKKuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:47:50 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E08CC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:47:48 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id b129so909096vsb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:47:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UgkXzU9/4gZgqTvAIagsY0SyNaXdwtJ+4SDO4OHtkpw=;
-        b=jGYXz/W/9Xbn9CKQMNVGDOtpA4doGrtKtb4BOVOmGhgM0dzctntTNxl6iAmRqjND5F
-         xecYDYR2ycG2D84rpCTuwmtx4WhLvy2+gcxQmWzUPAJ2C2iRPPNkeIfFUgsLlUMnaimM
-         EM10wfaJrA7T16AuUEzYQqnrR4rg8g6ZWERekmh9F4oprY0BvAk9UtCX7FeplKXDr0Dp
-         6D2ETw/aw6Bb80TiaVQ02N1/1r0PP2pp6p98+1sy0ajS+DlXm6pMkXhtgJ+pnClgpP5h
-         le51d0O58VGkBT6FdPLSl3507Gzbfdbbra4sNQ30WKUDwuVgKSka+R5JLUByBXZpTIVy
-         PfdQ==
+        Wed, 11 Nov 2020 05:50:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605091838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mnA7XsiGSJFXhW6YNgCg1O0O0+tMAkowMzr0RmATALo=;
+        b=ZnvTuVK5FsVtsj2ls3L/0j1BBP2vJyBJjMhgaPFm6y6lcyHGhJ2JGCo0xgQ+RR4vcgHZdq
+        wB/sdqf4X/BbGI5m4qwy+vBkYecNF0kf9GjMQaiA9cHHtY4ne8deTWlDNNHHgzkIaCPiPg
+        gF1Z1MWx7XWKB0d/hyLmtOyppTGU6NE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-D15SCLTqO1OvKzlDygIzZg-1; Wed, 11 Nov 2020 05:50:36 -0500
+X-MC-Unique: D15SCLTqO1OvKzlDygIzZg-1
+Received: by mail-wr1-f71.google.com with SMTP id e11so462161wrw.14
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:50:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UgkXzU9/4gZgqTvAIagsY0SyNaXdwtJ+4SDO4OHtkpw=;
-        b=Wkf6c/5lUuyiiGQGtiUNE5Bfrbt3h0BJyJGoQ8YqTJT5VhnkMumch1q0uapsDcVh/d
-         GmIwljBMvNuCAzOUQELM/3Tp0+DqD6tpB5qu2sJqFrt8eIBtdBswhAPnb1IyLmRb3S4G
-         9W/mjR4c0VblUQ1+0x+uUXs4mGKAqXa2BTUx2/PrAoGY0DTyRq0BdwVhO35VKmt3wuaR
-         CdMnCPHTAlGkN8gdEYYA20HsBs0nd4oocnaLJgl3yHjYhphnXsUplGh4gUaXXCOhwTMN
-         MSChumswTlqXPEhm5YNAN2Wo0bl5YHMTIFLg0k98HgGVWQCwTI+RZ/1P36Z3kY0NYHSf
-         HxyA==
-X-Gm-Message-State: AOAM5315qfLBiKQJJie/sLmvTH3MSWk9B5hLZgV3pLl21hknl1SKCQkL
-        7wrsu4KpsIyjn6xCSkdWXYDwvRspjmGL2oRXa9DTTQ==
-X-Google-Smtp-Source: ABdhPJxUM+6o+Ztc41vzfoV1T1XEqMiTB2AsemlLbtndzb34v3lhdhghjD321/DmrcfjSikdz3NFTviA88YwazaoRhI=
-X-Received: by 2002:a67:3256:: with SMTP id y83mr15817866vsy.48.1605091667748;
- Wed, 11 Nov 2020 02:47:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mnA7XsiGSJFXhW6YNgCg1O0O0+tMAkowMzr0RmATALo=;
+        b=uOGgXBHbrMv9ZGlFU63n2CYF7ex/qT8bTI1T9NdmRdjR4cAW9SHf0f/dSShYeJ5wam
+         IzOXymgYBVEWX/jiLXQld2bWoSb+7dyVK4HVV4N01KgABPwh3TO9EgtPP3WbRG+odkjz
+         gJpHCSGzSoarkUPjbutJks7Payyg37a3Ry59yhPWJunr6djxQXkCa/WaYrUwz/ILi3EB
+         aRZiIqtb5S6eF0moc669CPMJBfMoFZYT1qINOAZ/emfFASay99wYIhFXqJOuhoKiwYtX
+         OnLQtItke8XYvTmyxRgXVCBxAVAs9Gls/iJAEfavk3VtQoxgN5tBdI411D24D7qthZyn
+         xlTw==
+X-Gm-Message-State: AOAM530D07m+mpr4Bki/YcSOe3/87p3T78FGVl8cKEDTY7xVp2SqSeot
+        fD+Cae7G62rtlbakqcBIljRqlJREiB6zsSCe/9SsRdzAYs025jf3HMpELIjchDbb1cKivyFvSlq
+        kfcRDSwxAETKXpoxqjtnnrV37
+X-Received: by 2002:adf:eeca:: with SMTP id a10mr24970191wrp.186.1605091835504;
+        Wed, 11 Nov 2020 02:50:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxz4TPJxgCHN7vv+R3d7jzN9KDvG9vgiS4za2+hlcdJRS27vg4GofYWp6iFMLk0C1lnkV/R+w==
+X-Received: by 2002:adf:eeca:: with SMTP id a10mr24970172wrp.186.1605091835295;
+        Wed, 11 Nov 2020 02:50:35 -0800 (PST)
+Received: from steredhat (host-79-47-126-226.retail.telecomitalia.it. [79.47.126.226])
+        by smtp.gmail.com with ESMTPSA id p4sm2017826wrm.51.2020.11.11.02.50.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 02:50:34 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:50:31 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vhost_vdpa: switch to vmemdup_user()
+Message-ID: <20201111105031.mtdbvt7grkxeuwn4@steredhat>
+References: <1605057288-60400-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-References: <e4e6cc45-bc18-40ec-035e-fdb45b9a8f46@gmail.com>
- <87o8lf74j5.fsf@nanos.tec.linutronix.de> <CAPDyKFosR2wd=jqADBF_dNd3kCMbM4oDAHyxiYC-5RF=SZ_E5A@mail.gmail.com>
- <1jzh3p9rs6.fsf@starbuckisacylon.baylibre.com>
-In-Reply-To: <1jzh3p9rs6.fsf@starbuckisacylon.baylibre.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 11 Nov 2020 11:47:11 +0100
-Message-ID: <CAPDyKFq8dM7Z48uUWHai83avwdhOOGU2NEefM7ifaOUcfW+BsA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Brad Harper <bjharper@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1605057288-60400-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 16:05, Jerome Brunet <jbrunet@baylibre.com> wrote:
+On Wed, Nov 11, 2020 at 09:14:48AM +0800, Tian Tao wrote:
+>Replace opencoded alloc and copy with vmemdup_user()
 >
->
-> On Thu 08 Oct 2020 at 11:08, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > Thomas, thanks a lot for helping out and looking at this!
-> >
-> > It looks like the testing of the patch below went well. Are you
-> > intending to queue up the patch via your tip tree?
-> >
-> > If you need any help, just tell us!
-> >
-> > Kind regards
-> > Uffe
-> >
->
-> Hi everyone,
->
-> Do we have a plan for this issue ?
-> I've had Thomas's change in my tree for a month, so far, so good.
+>Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>---
+> drivers/vhost/vdpa.c | 10 +++-------
+> 1 file changed, 3 insertions(+), 7 deletions(-)
 
-Instead of waiting for Thomas, perhaps you can pick up his patch and
-re-submit it?
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-From my side, I can of course apply your original fix to the mmc
-driver, as an intermediate step. Is there a hurry?
+>
+>diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>index 2754f30..4c39583 100644
+>--- a/drivers/vhost/vdpa.c
+>+++ b/drivers/vhost/vdpa.c
+>@@ -245,14 +245,10 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
+> 		return -EFAULT;
+> 	if (vhost_vdpa_config_validate(v, &config))
+> 		return -EINVAL;
+>-	buf = kvzalloc(config.len, GFP_KERNEL);
+>-	if (!buf)
+>-		return -ENOMEM;
+>
+>-	if (copy_from_user(buf, c->buf, config.len)) {
+>-		kvfree(buf);
+>-		return -EFAULT;
+>-	}
+>+	buf = vmemdup_user(c->buf, config.len);
+>+	if (IS_ERR(buf))
+>+		return PTR_ERR(buf);
+>
+> 	ops->set_config(vdpa, config.off, buf, config.len);
+>
+>-- 
+>2.7.4
+>
 
-Kind regards
-Uffe
