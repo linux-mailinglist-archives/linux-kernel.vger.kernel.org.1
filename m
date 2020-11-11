@@ -2,162 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1902AF3BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E351C2AF3D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgKKOhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726516AbgKKOhl (ORCPT
+        id S1726903AbgKKOkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:40:14 -0500
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:59098 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727307AbgKKOkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:37:41 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B75C0613D1;
-        Wed, 11 Nov 2020 06:37:41 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id h6so1571729pgk.4;
-        Wed, 11 Nov 2020 06:37:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DFHi4NGTKU9ELDbvh+pwmAFaCNYJWfBtMcvSeODhncw=;
-        b=UARSzOj6v4Nv6uO3EQCNIi4ZruO2xf4X48v7pbw0dK2LR6Iq/SJyx4r3LT5UF/+aVR
-         E/EupPyCf8tIHGavCap+a+jGw3NF963qXlft+5fq+pFoAYN803OOsP724su7MNCwpkLy
-         b/sp/DbL9zHD9N1bE5ZqXBgvX6w7jAVCk7/UPP65A7zgFYrHPI46AUsI9fX2Ea+mz3qU
-         i1vn190ICL1sYF2NEC54vzmulTorrKEGnjl12UOE1IRToq0M2aXF7td3v9IOVJx1R8ig
-         vt7pjBSDJ1ylvCNVGYVBDzqnmAvB72UbqIjcYC/lDT/2SXc1GydGFys+RdSOZAoCAr4L
-         0b/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DFHi4NGTKU9ELDbvh+pwmAFaCNYJWfBtMcvSeODhncw=;
-        b=rkd4WE1HmuhSzRrxuTIBlSaxJmivvQEwiRuIFdggQMrRk7U8nY2ilfjAgIQlMc1iGK
-         Zg1kvp7Nacj+AfaBof4S+lYJaOnYASNLUOKnloiHuWtI6XpFnD/QS0ZRTmc+tmMW0u6X
-         En23/GZcVLF2EG3M0d2OvDAInjYqpLJaCIi7H1HozIneob5fRdIgcWWx6huSaKEh4REu
-         Y+xMj2UNLcPyK8Us0u3RttdCKKJ6k6rldRXSiBkxGxxHltAM7mrWB90fy2wSh3yiJo6n
-         9/uL7P3RWWE+VOEGYSDZa1QgvvoLKwnYTlpMdGt6qLa/N7Tj0uhHMHJaRpYOpiYsn1Ia
-         DS8A==
-X-Gm-Message-State: AOAM532aR9nK1L/Djcso1jjUe5XXtssizUm9/s0nIrGnsuF2CQlGr9qY
-        QxUa/3mgAkLZzAKHR1jzgmB9TUuBwBpmyov+zis=
-X-Google-Smtp-Source: ABdhPJyg/b3LwQrE3CAfhzmyLfx1/SvF6ZZLpJGISGn++LetXJv8PFRpfeKONiQjzMxhGICWdIFaVIAdSIWTLFw0a8E=
-X-Received: by 2002:a63:3e05:: with SMTP id l5mr21541487pga.74.1605105460542;
- Wed, 11 Nov 2020 06:37:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20201111122454.6240-1-lars.povlsen@microchip.com> <20201111122454.6240-3-lars.povlsen@microchip.com>
-In-Reply-To: <20201111122454.6240-3-lars.povlsen@microchip.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 11 Nov 2020 16:38:29 +0200
-Message-ID: <CAHp75VfJ7T-ODiyKiMqK-oq5nO3776poSCJag9gvB-aqD3hoMg@mail.gmail.com>
-Subject: Re: [PATCH v9 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
- driver for Microsemi Serial GPIO
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
+        Wed, 11 Nov 2020 09:40:11 -0500
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126] helo=xylophone)
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1kcrHb-0003fe-DW; Wed, 11 Nov 2020 14:39:35 +0000
+Message-ID: <b51433b08042307ddbbdcb818bc5eab0d4cb8bec.camel@codethink.co.uk>
+Subject: Re: [PATCH 4.19 19/71] btrfs: extent_io: add proper error handling
+ to lock_extent_buffer_for_io()
+From:   Ben Hutchings <ben.hutchings@codethink.co.uk>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Date:   Wed, 11 Nov 2020 14:39:34 +0000
+In-Reply-To: <20201111124448.GA26508@amd>
+References: <20201109125019.906191744@linuxfoundation.org>
+         <20201109125020.811120362@linuxfoundation.org> <20201111124448.GA26508@amd>
+Organization: Codethink Ltd.
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
-> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
-> (SGPIO) device used in various SoC's.
->
-> The driver is added as a pinctrl driver, albeit only having just GPIO
-> support currently. The hardware supports other functions that will be
-> added following.
+On Wed, 2020-11-11 at 13:44 +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > Thankfully it's handled by the only caller, btree_write_cache_pages(),
+> > as later write_one_eb() call will trigger submit_one_bio().  So there
+> > shouldn't be any problem.
+> 
+> This explains there should not be any problem in _the
+> mainline_. AFAICT this talks about this code. Mainline version is:
+> 
+>  prev_eb = eb;
+>  ret = lock_extent_buffer_for_io(eb, &epd);
+>  if (!ret) {
+>  	free_extent_buffer(eb);
+>  	continue;
+>  } else if (ret < 0) {
+>  	done = 1;
+>  	free_extent_buffer(eb);
+>  	break;
+>  }
+> 
+> But 4.19 has:
+> 
+>  ret = lock_extent_buffer_for_io(eb, fs_info, &epd);
+>  if (!ret) {
+>   	free_extent_buffer(eb);
+>  	continue;
+>  }
 
-Thanks for an update!
-Seems closer to the final. My comments below.
+That was changed in mainline two releases after this commit, though.
 
-...
+> IOW missing the code mentioned in the changelog. Is 0607eb1d452d4
+> prerequisite for this patch?
 
-> + * Author: <lars.povlsen@microchip.com>
+I think it's a separate fix, but probably worth picking too.
 
-No First Name Last Name?
+Ben.
 
-...
-
-> +static int sgpio_output_get(struct sgpio_priv *priv,
-> +                           struct sgpio_port_addr *addr)
-> +{
-> +       u32 val, portval = sgpio_readl(priv, REG_PORT_CONFIG, addr->port);
-> +       unsigned int bit = SGPIO_SRC_BITS * addr->bit;
-> +
-> +       switch (priv->properties->arch) {
-> +       case SGPIO_ARCH_LUTON:
-> +               val = FIELD_GET(SGPIO_LUTON_BIT_SOURCE, portval);
-> +               break;
-> +       case SGPIO_ARCH_OCELOT:
-> +               val = FIELD_GET(SGPIO_OCELOT_BIT_SOURCE, portval);
-> +               break;
-> +       case SGPIO_ARCH_SPARX5:
-> +               val = FIELD_GET(SGPIO_SPARX5_BIT_SOURCE, portval);
-> +               break;
-> +       default:
-> +               val = 0;
-
-Missed break; statement.
-
-> +       }
-> +       return !!(val & BIT(bit));
-> +}
-
-...
-
-> +static const struct pinconf_ops sgpio_confops = {
-> +       .is_generic = true,
-> +       .pin_config_get = sgpio_pinconf_get,
-> +       .pin_config_set = sgpio_pinconf_set,
-
-> +       .pin_config_config_dbg_show = pinconf_generic_dump_config,
-
-Do you need this? I mean isn't it default by pin core?
-
-> +};
-
-...
-
-> +static int sgpio_gpio_request_enable(struct pinctrl_dev *pctldev,
-> +                                    struct pinctrl_gpio_range *range,
-> +                                    unsigned int offset)
-> +{
-> +       struct sgpio_bank *bank = pinctrl_dev_get_drvdata(pctldev);
-> +       struct sgpio_priv *priv = bank->priv;
-> +       struct sgpio_port_addr addr;
-> +
-> +       sgpio_pin_to_addr(priv, offset, &addr);
-> +
-> +       if ((priv->ports & BIT(addr.port)) == 0) {
-> +               dev_warn(priv->dev, "Request port %d.%d: Port is not enabled\n",
-> +                        addr.port, addr.bit);
-> +       }
-> +
-> +       return 0;
-
-I believe this function also does some sanity checks. Perhaps you need
-to call a generic one.
-Hence check what should be done in the tear down case.
-
-> +}
-
-...
-
-> +       if (priv->in.gpio.ngpio != priv->out.gpio.ngpio) {
-> +               dev_err(dev, "Banks must have same GPIO count\n");
-> +               return -EINVAL;
-
--ERANGE?
-
-> +       }
-
+> Best regards,
+> 								Pavel
+> 
+> > +/*
+> > + * Lock eb pages and flush the bio if we can't the locks
+> > + *
+> > + * Return  0 if nothing went wrong
+> > + * Return >0 is same as 0, except bio is not submitted
+> > + * Return <0 if something went wrong, no page is locked
+> > + */
 -- 
-With Best Regards,
-Andy Shevchenko
+Ben Hutchings, Software Developer                         Codethink Ltd
+https://www.codethink.co.uk/                 Dale House, 35 Dale Street
+                                     Manchester, M1 2HF, United Kingdom
+
