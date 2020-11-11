@@ -2,137 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1012AF987
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B082AF990
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgKKUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        id S1726177AbgKKUML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKUJ2 (ORCPT
+        with ESMTP id S1725949AbgKKUML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:09:28 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C880AC0613D1;
-        Wed, 11 Nov 2020 12:09:26 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id s8so3722822wrw.10;
-        Wed, 11 Nov 2020 12:09:26 -0800 (PST)
+        Wed, 11 Nov 2020 15:12:11 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598A1C0613D1;
+        Wed, 11 Nov 2020 12:12:11 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id v92so3092546ybi.4;
+        Wed, 11 Nov 2020 12:12:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Xiuab5loLiZQ4GVsxMBNthWxs97cvVYwFd3nDnMmqgk=;
-        b=D9VOymny/GjO8Dta8qvkdEajDwH/kAlYUet+sY+pJRvP44LyaiB1GaUWTzi6PLKk/F
-         FDgaAX+suXosQlbCO3mUYREqIYeE5uD4joYzCygSLtCmoiRX7mfSbxXnUsSq2DpHdPEz
-         GCQG1YhrqumW+DemUqN6pP7b7Rux1vFdyPk9FSVr7LhFYbWo3eNe0ZYZR1enxdRdW740
-         0dCPAYzeKOh3N6V7MsgPP0gqT311Sxx/R/XaZGodW3unmrq55ymQiMbflgbNLajHH2I3
-         IaNeHbyE5IY0iCThcA5s0XhstJfkt8KV23wA9bfXHriHju3mXzBm6A4HUSSz8wzj8QwU
-         uDpA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pB38drbiYuyH57f1j/OGS58rHVCVIBiVZxazCjdLplA=;
+        b=YTaod/s6xOSthLFOf5v9u0Agfru7+P51p/rp9bBE05FqDCVEEi1IKyAy/Ksck1hJgj
+         M7FKDYj9jAXS8yANQRlv8ehfwdaEx0pfj5IYInLYYzgakIcJYPsbEQGNVOedib+0DQZK
+         T/44IWZV4CD8Y2YlrVMjLeyReEPgBi76rdiY72xd3WBnHpOD0wRtZwyVWgEl9MNCD1MY
+         TNCMVgBmshhtaxiIRo3P7V1gtbsawLC7Zdo7wRWsjpcqDFWJKftVWjtGDmKI4wEueaK0
+         oE1jnTHUKV/kOnxxdTAo480tDlvuTCX7j/RwXNEFRkPmvx44to1XCma6Jlgb3Jmj+n20
+         9fow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Xiuab5loLiZQ4GVsxMBNthWxs97cvVYwFd3nDnMmqgk=;
-        b=bwavL6xW8ZOzq2biYN/AvEhfir20Nz2pbjQriKvlu73dvIAKOtkUQ/faWekxYz4kyv
-         WoYYxom0pm0TLVhSqC92W1lDPwrdtlH8IGcQBLYy/gSkKTwiwVtglimHBb/KfOG8uqCq
-         0z07SoxDujnLRGR3rGzxDEeCzZZARw9dsg45x96jOXzVQPJIqpfeL8ndH+qm4sdIkPNK
-         7yp7jk+SHVJjGNMRAeTew4klQaUGurJA81OPYoTX+0V2sb73oMH4DvzNaxhTDtTTiqp9
-         bi3mjbteE2JbP5+LeaQxB1hibMO92+DMjX/yutSiWP5R/2W6bgJjVho+dGXSPgtH2cgu
-         bijQ==
-X-Gm-Message-State: AOAM532wkITg5u4qb1v2Rn76Mwu4nW3t8zjmd9xnnNj7vqqWTF7x7IeS
-        ZiCSkIAHMNkc2njUdM1750Q=
-X-Google-Smtp-Source: ABdhPJwq7FKsezH6nXrx4aFnOFjKW00DQEGCftsmVgeTppuOgRzBDAUh7nSqZ2c7kErtOPbBgcBIMw==
-X-Received: by 2002:adf:eb08:: with SMTP id s8mr33448589wrn.12.1605125365553;
-        Wed, 11 Nov 2020 12:09:25 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id y16sm3356603wrt.25.2020.11.11.12.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 12:09:24 -0800 (PST)
-Date:   Wed, 11 Nov 2020 21:09:22 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] pwm: atmel-tcb: rework device tree binding
-Message-ID: <20201111200922.GI6125@ulmo>
-References: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pB38drbiYuyH57f1j/OGS58rHVCVIBiVZxazCjdLplA=;
+        b=A8/Eh2z2ZKZFf8ocBm/wnqh8T+UaL7bDa8+dWMw9lmic7b5JIN0pJRhCL7tnOc1B2G
+         PeQyYaYW3MFjJZZ27pnrzGut/JnmDqbtZoGN2oAhN7qnhV9hm/qimTuXef8ofZ6u3ZPV
+         BxhfKZ3+7O3Bjzxwx2uafIJ7W97NtInfSwrQfA9HxMePsoaNo+PSIAGvrimwX49Z80Yq
+         fLEvzVKeBe+Ibkwuc9MadiLF/YO7SkRh3k9I18FrHjNeNN4UJRNH6I5lH7tcx03bdfSM
+         +17SQbNqA8fMi6U3aTLIoC500AzgH1pu9jGnR260mOfM43fSS3Rz73KWz/CUahwYdnDN
+         +E5g==
+X-Gm-Message-State: AOAM533f7vdGe4/bLuAEbknzuXQbWHCsIjNtnWrC5gDrBSMwqTWy+e7L
+        MYChxINfXovzPXNuj0057SDGMx/5fywo7+BR26c=
+X-Google-Smtp-Source: ABdhPJzYDY7ZkALEs1trStLJuAnj+VHR91+D3T1A0rOUFfDHX+SUOJaXYI/asPu5fxHeZTrSFyR9P8zb/E7BjHmo044=
+X-Received: by 2002:a25:df8e:: with SMTP id w136mr9444434ybg.230.1605125530599;
+ Wed, 11 Nov 2020 12:12:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fmvA4kSBHQVZhkR6"
-Content-Disposition: inline
-In-Reply-To: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20201110011932.3201430-1-andrii@kernel.org> <20201110011932.3201430-5-andrii@kernel.org>
+ <20201111101316.GA5304@linux-8ccs>
+In-Reply-To: <20201111101316.GA5304@linux-8ccs>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Nov 2020 12:11:59 -0800
+Message-ID: <CAEf4BzZbKRgWhLD6KFOwJU8DDns9oufroBShczM9KqODCqbEPA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 4/5] bpf: load and verify kernel module BTFs
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 2:13 AM Jessica Yu <jeyu@kernel.org> wrote:
+>
+> +++ Andrii Nakryiko [09/11/20 17:19 -0800]:
+> [snipped]
+> >diff --git a/kernel/module.c b/kernel/module.c
+> >index a4fa44a652a7..f2996b02ab2e 100644
+> >--- a/kernel/module.c
+> >+++ b/kernel/module.c
+> >@@ -380,6 +380,35 @@ static void *section_objs(const struct load_info *info,
+> >       return (void *)info->sechdrs[sec].sh_addr;
+> > }
+> >
+> >+/* Find a module section: 0 means not found. Ignores SHF_ALLOC flag. */
+> >+static unsigned int find_any_sec(const struct load_info *info, const char *name)
+> >+{
+> >+      unsigned int i;
+> >+
+> >+      for (i = 1; i < info->hdr->e_shnum; i++) {
+> >+              Elf_Shdr *shdr = &info->sechdrs[i];
+> >+              if (strcmp(info->secstrings + shdr->sh_name, name) == 0)
+> >+                      return i;
+> >+      }
+> >+      return 0;
+> >+}
+> >+
+> >+/*
+> >+ * Find a module section, or NULL. Fill in number of "objects" in section.
+> >+ * Ignores SHF_ALLOC flag.
+> >+ */
+> >+static __maybe_unused void *any_section_objs(const struct load_info *info,
+> >+                                           const char *name,
+> >+                                           size_t object_size,
+> >+                                           unsigned int *num)
+> >+{
+> >+      unsigned int sec = find_any_sec(info, name);
+> >+
+> >+      /* Section 0 has sh_addr 0 and sh_size 0. */
+> >+      *num = info->sechdrs[sec].sh_size / object_size;
+> >+      return (void *)info->sechdrs[sec].sh_addr;
+> >+}
+> >+
+>
+> Hm, I see this patchset has already been applied to bpf-next, but I
+> guess that doesn't preclude any follow-up patches :-)
 
---fmvA4kSBHQVZhkR6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Of course!
 
-On Fri, Oct 30, 2020 at 07:36:54PM +0100, Alexandre Belloni wrote:
-> Hello,
->=20
-> This was sent as part of a 58 patches series back in 2017. The bindings
-> were agreed upon back then:
->=20
-> https://lore.kernel.org/linux-arm-kernel/20170607211752.avts3cofvac7ks3q@=
-rob-hp-laptop/
->=20
-> There is still only one user of atmel,tcb-pwm in the tree and I still
-> think it is worth doing that change now.
->=20
-> The various dependencies are now in v5.9-rc1 so it is ready to be
-> applied.
->=20
-> I have another series removing atmel_tclib once this is applied.
->=20
-> Changes in v2:
->  - rework binding commit message
->  - use enum for the pwm node reg values
->=20
-> Alexandre Belloni (4):
->   dt-bindings: microchip: atmel,at91rm9200-tcb: add atmel,tcb-pwm
->   pwm: atmel-tcb: switch to new binding
->   pwm: atmel-tcb: add sama5d2 support
->   ARM: dts: at91: kizbox: switch to new pwm-atmel-tcb binding
->=20
->  .../devicetree/bindings/pwm/atmel-tcb-pwm.txt |  16 --
->  .../soc/microchip/atmel,at91rm9200-tcb.yaml   |  34 ++-
->  arch/arm/boot/dts/at91-kizbox.dts             |  45 ++-
->  drivers/pwm/Kconfig                           |   3 +-
->  drivers/pwm/pwm-atmel-tcb.c                   | 264 ++++++++++--------
->  5 files changed, 220 insertions(+), 142 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.t=
-xt
+>
+> I am not a huge fan of the code duplication here, and also the fact
+> that they're only called in one place. any_section_objs() and
+> find_any_sec() are pretty much identical to section_objs() and
+> find_sec(), other than the fact the former drops the SHF_ALLOC check.
 
-Patches 1-3 applied, thanks.
+Right, but the alternative was to add a new flag to existing
+section_objs() and find_sec() functions, which would cause much more
+code churn for no good reason (besides saving some trivial code
+duplication). And those true/false flags are harder to read in code
+anyways.
 
-Thierry
+>
+> Moreover, since it appears that the ".BTF" section is not marked
+> SHF_ALLOC, I think this will leave mod->btf_data as a dangling pointer
+> after the module is done loading and the module's load_info has been
+> deallocated, since SHF_ALLOC sections are not allocated nor copied to
+> the module's final location in memory.
 
---fmvA4kSBHQVZhkR6
-Content-Type: application/pgp-signature; name="signature.asc"
+I can make sure that we also reset the btf_data pointer back to NULL,
+if that's a big concern.
 
------BEGIN PGP SIGNATURE-----
+>
+> Why not simply mark the ".BTF" section in the module SHF_ALLOC? We
+> already do some sh_flags rewriting in rewrite_section_headers(). Then
+> the module loader knows to keep the section in memory and you can use
+> section_objs(). And since the .BTF section stays in module memory,
+> that might save you the memcpy() to btf->data in btf_parse_module()
+> (unless that is still needed for some reason).
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sRPIACgkQ3SOs138+
-s6EjIRAAtR608Qmo8RQVZLEXLwAC8ZuqnunjrxJxrzNKdFQ4EzdOBXp7XHquYp6b
-w+NRvsDLrl7qTHJe39G/TzX187h0rGA944QKXuEpUoJUjN413xb6yQ24LKSdze+S
-YBTDxtiDi9MKEH0v+Q80l0QYQ71dg59IQmkbSEu922eLIDfwucYC5hEqLh8iylpT
-owt1X0xFE4g/cyX10SSvXveYZiQZQ9jDFRPpQY/HZFixHKSpHIiQP/c479qeh/Nq
-Bd7W16YgLZ59iyxFwvBfEBPu/jMRKAzo7r786hoBLdGwqajKMjSnoag/YaBKR/tR
-nqG604+SEoqtWz76UArW0cwNGgCZuCZ0HmEDgAXS5eRDjdWYRxaA068rDKLYmk6C
-K4chBp7kn51YL/xIGhzt8OBArsdWtJLxpzCG3NmbUg9wM9oMtSlqju12fXtvTgBi
-uYgHtWStTD5EUd0r1w7VsJ989FDXn6CYE5xaN9vrcP1nhbxcmWkUUtXeEpHAdMb8
-Ng2oz+PqSuT6aNZp4oY0fT1ErFvSA+pNkh1Ek1NSSyjSnJIUuV1y45O+Nm7pBYnK
-wHphDrErPVqNTi2y6UmItE/r6D3+7ranz7lNXOwAsPx7h+cnjgT3a7W8f6B9/WVV
-BTe0P79UPgvQ+2VwAyfd4EWjs2CitUQNoJVFTGhD5QcVWV4hQv0=
-=xnU/
------END PGP SIGNATURE-----
+Wasn't aware about rewrite_section_headers() manipulations. Are you
+suggesting to just add SHF_ALLOC there for the .BTF section from the
+kernel side? I guess that would work, but won't avoid memory copy (so
+actually would waste kernel memory, if I understand correctly). The
+reason being that the module's BTF is registered as an independently
+ref-counted BTF object, which could be held past the kernel module
+being unloaded. So I can't directly reference module's .BTF data
+anyways.
 
---fmvA4kSBHQVZhkR6--
+Also, marking .BTF with SHF_ALLOC with pahole or objcopy tool actually
+might generate warnings because SHF_ALLOC sections need to be
+allocated to data segments, which neither of those tools know how to
+do, it requires a linker support. We do that for vmlinux with extra
+linker script logic, but for kernel modules we don't have and probably
+don't want to do that.
+
+So in the end, the cleanest approach still seems like not doing
+SHF_ALLOC but allowing "capturing" .BTF data with an extra helper.
+
+>
+> Thanks,
+>
+> Jessica
+>
+> > /* Provided by the linker */
+> > extern const struct kernel_symbol __start___ksymtab[];
+> > extern const struct kernel_symbol __stop___ksymtab[];
+> >@@ -3250,6 +3279,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+> >                                          sizeof(*mod->bpf_raw_events),
+> >                                          &mod->num_bpf_raw_events);
+> > #endif
+> >+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> >+      mod->btf_data = any_section_objs(info, ".BTF", 1, &mod->btf_data_size);
+> >+#endif
+> > #ifdef CONFIG_JUMP_LABEL
+> >       mod->jump_entries = section_objs(info, "__jump_table",
+> >                                       sizeof(*mod->jump_entries),
+> >--
+> >2.24.1
+> >
