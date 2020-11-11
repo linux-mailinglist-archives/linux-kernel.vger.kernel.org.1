@@ -2,83 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412892AEDA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D51A2AED9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbgKKJ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:26:56 -0500
-Received: from mga06.intel.com ([134.134.136.31]:45568 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgKKJ0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:26:54 -0500
-IronPort-SDR: fBRpZYtmBLeCvIkal7IL/CQmSNZzg5B4akzMd76kAsF4B4zixl+yJD4Fh5qa+rS01BLPRj5xu7
- C6sWNXDA7Sjw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="231744843"
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="231744843"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 01:26:48 -0800
-IronPort-SDR: SGPG1oKhTolftkcIEFn7YBxibH1DLGjazW3opujbsd5bTZA9MkA+uRVnYagHnV3hm2CECfFZ0U
- uL8BMfVCSnSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="360497139"
-Received: from lkp-server02.sh.intel.com (HELO 5b2c7e53fe46) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Nov 2020 01:26:46 -0800
-Received: from kbuild by 5b2c7e53fe46 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcmOr-00003S-Kj; Wed, 11 Nov 2020 09:26:45 +0000
-Date:   Wed, 11 Nov 2020 17:25:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] auxdisplay: fix platform_no_drv_owner.cocci warnings
-Message-ID: <20201111092559.GA67395@c88ae2e89e59>
-References: <202011111755.9Uwp2gF6-lkp@intel.com>
+        id S1726525AbgKKJ01 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 04:26:27 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40184 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKKJ0Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:26:25 -0500
+Received: by mail-ed1-f67.google.com with SMTP id p93so1537038edd.7;
+        Wed, 11 Nov 2020 01:26:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OdzB/jIicwSRsIBqe3je5Z5qz8YP6pSQHD6SoGClZyc=;
+        b=eBihg8aBBU8+XvRLEeRyMWgJ/R7iRq30bWNxEX6jE8i4l0MWtLjqVs113coO8B627L
+         BaTkVAuYJuaOLgjQMsjC+uKorbCoDANtXEK5+Dz38D1QUWbpukQf+L3g9nTTdGp5mztR
+         iWEvkxPnYdE87SLdyQ4VEyo31EPmkON9PAyiyoy+o/5tl4Ei46nycn1KvMqrhWEtCMXc
+         2EmqPUnwgyII9mdxCc9/EIhI2OCHsyS0unncpGOplTcKbqSweGchbffQbi+HMVKIOt+x
+         AX8okiLHj4hLx69d1CbBpwqCwjWL3tguIjppm0VBAXIHLWMNkKaZmvIqMJ3hejKaMRLn
+         7Sbw==
+X-Gm-Message-State: AOAM531uFRuDDQXFDc+fr3sE7sla1x3S3KS/7ol97yl5sIcNrXDya8fh
+        XUou3T+CqS3OJFmernlEkTo=
+X-Google-Smtp-Source: ABdhPJwycZxm4vB3dtSk1cfv3vSWVxzMWnM8OiFZHVme5ZFG51Ffl5xHG5HC9WEEjJoIIV42kr7DPQ==
+X-Received: by 2002:a05:6402:b02:: with SMTP id bm2mr24912274edb.299.1605086782978;
+        Wed, 11 Nov 2020 01:26:22 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id k4sm639339edq.73.2020.11.11.01.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 01:26:21 -0800 (PST)
+Date:   Wed, 11 Nov 2020 10:26:19 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 11/26] memory: tegra124-emc: Make driver modular
+Message-ID: <20201111092619.GD4050@kozik-lap>
+References: <20201111011456.7875-1-digetx@gmail.com>
+ <20201111011456.7875-12-digetx@gmail.com>
+ <20201111090434.GB4050@kozik-lap>
+ <f44b64f5-6b08-5f1e-4f9b-a73a1705d493@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202011111755.9Uwp2gF6-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <f44b64f5-6b08-5f1e-4f9b-a73a1705d493@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Wed, Nov 11, 2020 at 12:17:37PM +0300, Dmitry Osipenko wrote:
+> 11.11.2020 12:04, Krzysztof Kozlowski пишет:
+> >> -obj-$(CONFIG_TEGRA124_EMC)		+= clk-tegra124-emc.o
+> >> +obj-$(CONFIG_ARCH_TEGRA_124_SOC)	+= clk-tegra124-emc.o
+> >> +obj-$(CONFIG_ARCH_TEGRA_132_SOC)	+= clk-tegra124-emc.o
+> > How is it related to modularization? It looks like different issue is
+> > fixed here.
+> 
+> The CONFIG_TEGRA124_EMC now could be 'm', while the clock code must be
+> built-in. The TEGRA124 EMC driver is used by T124 and T132 SoCs.\
 
-drivers/auxdisplay/lcd2s.c:373:3-8: No need to set .owner here. The core will do it.
+Mhmm,  the CONFIG_TEGRA124_EMC depends on ARCH_TEGRA_124_SOC so on the
+config !ARCH_TEGRA_124_SOC && ARCH_TEGRA_132_SOC this was not
+selected. Now it will be selected.
 
- Remove .owner field if calls are used which set it automatically
+> 
+> ...
+> >> diff --git a/drivers/clk/tegra/clk.h b/drivers/clk/tegra/clk.h
+> >> index 6b565f6b5f66..2da7c93c1a6c 100644
+> >> --- a/drivers/clk/tegra/clk.h
+> >> +++ b/drivers/clk/tegra/clk.h
+> >> @@ -881,18 +881,6 @@ void tegra_super_clk_gen5_init(void __iomem *clk_base,
+> >>  			void __iomem *pmc_base, struct tegra_clk *tegra_clks,
+> >>  			struct tegra_clk_pll_params *pll_params);
+> >>  
+> >> -#ifdef CONFIG_TEGRA124_EMC
+> >> -struct clk *tegra_clk_register_emc(void __iomem *base, struct device_node *np,
+> >> -				   spinlock_t *lock);
+> >> -#else
+> >> -static inline struct clk *tegra_clk_register_emc(void __iomem *base,
+> >> -						 struct device_node *np,
+> >> -						 spinlock_t *lock)
+> >> -{
+> >> -	return NULL;
+> >> -}
+> >> -#endif
+> > Why clock changes are so tightly coupled with making an EMC driver
+> > modular? Usually this should be a separate change - you adjust any
+> > dependencies to accept late or deferred probing, exported symbols,
+> > loosen the coupling between drivers, etc. and then you convert something
+> > to module.
+> 
+> Because the clock and EMC driver were not separated from each other
+> previously. The clock part can't be modularized easily and probably
+> shouldn't.
+> 
+> I'm not sure whether it's actually possible to split this patch without
+> taking a closer a look.
+> 
+> I'm also doubt that it would really worth the effort for a 100 lines of
+> a changed code.
 
-Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
+Indeed, the clk and emc drivers are so tightly coupled that anyway it
+would be big patch to change the interfaces followed up a small one
+making emc module. OK.
 
-Fixes: 8c9108d014c5 ("auxdisplay: add a driver for lcd2s character display")
-CC: Lars Poeschel <poeschel@lemonage.de>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+Best regards,
+Krzysztof
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   3e14f70c05cda4794901ed8f976de3a88deebcc0
-commit: 8c9108d014c5bd0f0da2e3544eb45dc56a6da92b [2648/5074] auxdisplay: add a driver for lcd2s character display
-
- lcd2s.c |    1 -
- 1 file changed, 1 deletion(-)
-
---- a/drivers/auxdisplay/lcd2s.c
-+++ b/drivers/auxdisplay/lcd2s.c
-@@ -370,7 +370,6 @@ MODULE_DEVICE_TABLE(of, lcd2s_of_table);
- static struct i2c_driver lcd2s_i2c_driver = {
- 	.driver = {
- 		.name = "lcd2s",
--		.owner = THIS_MODULE,
- #ifdef CONFIG_OF
- 		.of_match_table = of_match_ptr(lcd2s_of_table),
- #endif
