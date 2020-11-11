@@ -2,55 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53142AE9AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6FC2AE9C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgKKHV1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 02:21:27 -0500
-Received: from muru.com ([72.249.23.125]:48044 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726586AbgKKHVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:21:14 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 406FA8126;
-        Wed, 11 Nov 2020 07:21:21 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 09:21:11 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the omap-fixes tree
-Message-ID: <20201111072111.GP26857@atomide.com>
-References: <20201111081613.0f2ce62a@canb.auug.org.au>
+        id S1726621AbgKKHWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbgKKHWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 02:22:32 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44ABC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:22:31 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id h23so891828ljg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:22:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R/Ga2OwNrTf5p5RCE3MbR0nMHuSq14fY/OOvZmVd3GE=;
+        b=Nm1HpoURvc4UgCskN6SBUFdgt6q89XruJlcQGmlizpLP3hT9ge7yge6B9mwJHJHelq
+         yFuKQr0Fx/myF3RIZXIHy9HNgJixafvgWguL7Zgfr4bUCC5XNHKjnwPdm3uUDSMaKfgr
+         /lKGIH66e3iCzZy94pmlJo2IUJpC1ZMp24c89NwSb9rizjtraRTxAIA4tu2RFGTtut5E
+         hfWDjkdluHWik9gsy/f8PP98jlHBwhtuYAfPuwHsvF/COnu7ixnofkfZ+ViIPk8Om8lU
+         BaxJof5BwzVLzIa8LDcxTXNxaMyp6BNbAvBRAvT33x+zgUPFE2GTJ8NMDyfjRaOkqAPL
+         MfSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R/Ga2OwNrTf5p5RCE3MbR0nMHuSq14fY/OOvZmVd3GE=;
+        b=HZhVvmP68wjwge/kHLcEwsEsaE5y+BP/aUKXJETmCBWu8To2zZr3Xeg/FSG/nlbTS2
+         XNFgDanaKvsV1AkiMfF+qr4iAGfkCiXBS8sEN+BUjlCN36dppS2H8H+PyharnWhq3ziu
+         V89q8YXP+R7rZkMUc9l5Q/EDQazp1rXM22FyL0wDkp5av+qmnUhLTBRYrh/l2CnIf037
+         7ImGc/zKcdDsuoAAQ2dgrBLwBbJsQtz21xDlMGyMPus/jRufNCFn1MtFvJb+sW38fWWD
+         BMpjzsqKwDokNobDNrGlunDYjGb6I/K/9W4n1euBQHbZuacAJBDaAathEHR7o5DfoF3o
+         fhzA==
+X-Gm-Message-State: AOAM531YO7o3OczXiyyumN3b3DUTa75/0WB1Oz/PeBXhPyzMMbxmmQtm
+        tHpLeUzsoEtjoCHu/HoCvR8lz3wPKqrh/hzilr5yvQ==
+X-Google-Smtp-Source: ABdhPJzd8ghuezu9mWRZndk/TYqOhsXZJ7+wF7Sa+6pb2n8ZoHlUR5hCuoT76nIjhO5wrZdltPhUKTFoOJElywxVdio=
+X-Received: by 2002:a2e:975a:: with SMTP id f26mr5979744ljj.81.1605079350237;
+ Tue, 10 Nov 2020 23:22:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201111081613.0f2ce62a@canb.auug.org.au>
+References: <20201111051658.18904-1-pankaj.gupta.linux@gmail.com>
+ <20201111051658.18904-2-pankaj.gupta.linux@gmail.com> <ee573db1-33d0-b210-7205-4736de007488@molgen.mpg.de>
+In-Reply-To: <ee573db1-33d0-b210-7205-4736de007488@molgen.mpg.de>
+From:   Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+Date:   Wed, 11 Nov 2020 08:22:19 +0100
+Message-ID: <CALzYo30rZYw2r73QZR0q+HZLaHSEZ8BTxy-W-Ad8tKq4mQZozA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] md: improve variable names in md_flush_request()
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Stephen Rothwell <sfr@canb.auug.org.au> [201110 21:16]:
-> Hi all,
-> 
-> In commit
-> 
->   e4b5575da267 ("ARM: OMAP2+: Manage MPU state properly for omap_enter_idle_coupled()")
-> 
-> Fixes tag
-> 
->   Fixes: 8ca5ee624b4c ("ARM: OMAP2+: Restore MPU power domain if cpu_cluster_pm_enter() fails")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meeant
-> 
-> Fixes: 8f04aea048d5 ("ARM: OMAP2+: Restore MPU power domain if cpu_cluster_pm_enter() fails")
+Hi Paul,
 
-Thanks for catching it, will fix!
+> >   This patch improves readability by using better variable names
+> >   in flush request coalescing logic.
+>
+> Please do not indent the commit message.
 
-Tony
+o.k
 
+>
+> > Signed-off-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> > ---
+> >   drivers/md/md.c | 8 ++++----
+> >   drivers/md/md.h | 6 +++---
+> >   2 files changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/md/md.c b/drivers/md/md.c
+> > index 98bac4f304ae..167c80f98533 100644
+> > --- a/drivers/md/md.c
+> > +++ b/drivers/md/md.c
+> > @@ -639,7 +639,7 @@ static void md_submit_flush_data(struct work_struct *ws)
+> >        * could wait for this and below md_handle_request could wait for those
+> >        * bios because of suspend check
+> >        */
+> > -     mddev->last_flush = mddev->start_flush;
+> > +     mddev->prev_flush_start = mddev->start_flush;
+> >       mddev->flush_bio = NULL;
+> >       wake_up(&mddev->sb_wait);
+> >
+> > @@ -660,13 +660,13 @@ static void md_submit_flush_data(struct work_struct *ws)
+> >    */
+> >   bool md_flush_request(struct mddev *mddev, struct bio *bio)
+> >   {
+> > -     ktime_t start = ktime_get_boottime();
+> > +     ktime_t req_start = ktime_get_boottime();
+> >       spin_lock_irq(&mddev->lock);
+> >       wait_event_lock_irq(mddev->sb_wait,
+> >                           !mddev->flush_bio ||
+> > -                         ktime_after(mddev->last_flush, start),
+> > +                         ktime_after(mddev->prev_flush_start, req_start),
+> >                           mddev->lock);
+> > -     if (!ktime_after(mddev->last_flush, start)) {
+> > +     if (!ktime_after(mddev->prev_flush_start, req_start)) {
+> >               WARN_ON(mddev->flush_bio);
+> >               mddev->flush_bio = bio;
+> >               bio = NULL;
+> > diff --git a/drivers/md/md.h b/drivers/md/md.h
+> > index ccfb69868c2e..2292c847f9dd 100644
+> > --- a/drivers/md/md.h
+> > +++ b/drivers/md/md.h
+> > @@ -495,9 +495,9 @@ struct mddev {
+> >        */
+> >       struct bio *flush_bio;
+> >       atomic_t flush_pending;
+> > -     ktime_t start_flush, last_flush; /* last_flush is when the last completed
+> > -                                       * flush was started.
+> > -                                       */
+> > +     ktime_t start_flush, prev_flush_start; /* prev_flush_start is when the previous completed
+> > +                                             * flush was started.
+> > +                                             */
+>
+> With the new variable name, the comment could even be removed. ;-)
+>
+> >       struct work_struct flush_work;
+> >       struct work_struct event_work;  /* used by dm to report failure event */
+> >       mempool_t *serial_info_pool;
+>
+> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+Thanks,
+Pankaj
+>
+>
+> Kind regards,
+>
+> Paul
