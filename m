@@ -2,215 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A88A2AE728
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF652AE72A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgKKDmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:42:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgKKDmP (ORCPT
+        id S1725912AbgKKDos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:44:48 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:57591 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725849AbgKKDon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:42:15 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AB6C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:42:13 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x15so279222pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:42:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3RCk5Lg80tCKH2h84e6aWqwn6rIZrZeLyv6urQGsnrk=;
-        b=nDSsuklBIZ6PLGuj/KDWKEZDFoJ/cIPGYSaxv/eHUCvyCiR0swrdgUHEO+cof0xset
-         UA/IWOo2xczA8lSz/6XYBzeMnedQt+f3Vv0OiMQidxgiTBt2w7EpK0JO11EOuwwW9Hc0
-         XzCSgqCd2/l5p6CxxDuKsUq+lvPB20MOjtnmxtZ+8vc1jl+6G2Vu+c40pu0TzqDnY7Sz
-         sar5t7w7Nu0fL9yvErXSw5xYQGL2WNBcIMlowSSQT9SHMmTQdvaeCXLsR7X7nrv9GhJh
-         7Pi6VqHkdRryHB3Rw9928ks8EHXIC1Ah8QDpuG2WcGScmA0P6luXl/dQT5OVl4E2COwn
-         VyWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3RCk5Lg80tCKH2h84e6aWqwn6rIZrZeLyv6urQGsnrk=;
-        b=cKHuZgh/m6OqODFOfiM3QCot5UdnyZFOxGbdCuOsilbDYX1BIhYOy2sZ6nvXAgK9yH
-         dyAVLZNJyS08UfEItZfuEq75X+Fc1Pbek+Dg9s14xG9lcGabTW8vmf9koI6GgtXd9ZaL
-         J9xw8cBRGZ4Ku+q009gTBgb9tafUI31pYwFkubiSxEUr/8CamafkW75az6YP9vaQM3rM
-         TLj2pMZjNtUr2XGtu/ADyDDvgheHr1G4gCmCrxVzmX98kuapfyVxVFSV1o9O9i7E779+
-         VKaLwhkzubNTQzP9fZNsHDuMatgj8vuyt5KC8PfBO0SXCS2zrGtP4bQs8bd2wYdgAJO5
-         m3Zw==
-X-Gm-Message-State: AOAM533MGonPISFGVhXu10rYeR5rl86f3eeA+NOdj+ajUMd0BocNNDe4
-        9pP0nd0WG68ffgQRmdfrzkyoEE4cjhBJRlV/LZ4BaQ==
-X-Google-Smtp-Source: ABdhPJxF7ZRGO4wQDKRrKPCJgMcOEFMd947qOplSNFxKgHU19KphVlDhswATyIvHm7poYitt6oUJ8mgehNoWhFFmRFI=
-X-Received: by 2002:a17:90a:4749:: with SMTP id y9mr1747464pjg.229.1605066133283;
- Tue, 10 Nov 2020 19:42:13 -0800 (PST)
+        Tue, 10 Nov 2020 22:44:43 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id C45DB168A;
+        Tue, 10 Nov 2020 22:44:41 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 10 Nov 2020 22:44:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=M
+        bK62lfa8XqQ5uQpEMNmODTXXUW5ssZlsBtuCAcsjHw=; b=ZQeRRIlu5RRQSjaJV
+        DabQsIHjtrX9diTzh1dbhHfKBKg9gxux67QCjj7dvZTlBFLGclnObL3rJkFwIbno
+        Pyp+1Dy2Ze8Nq+0Y/t5g+HR5i9lq6S4IQORd1XDBNFrOEi7jtB89TFwZTfxMzOIb
+        O+z5SopD5RWMJkue3kXVw795qIySgLDDQRZa0oGh96prI63hm3vg/0up1sKS73i9
+        H22zMeK5VrQD9MFWiGLgewjmywnBVxkFEpmErFaC07jK3TloBqAc48LVWQrvJFWF
+        cJEtg0VhH16zIPrACcmCodChMVVFGLN23D3CwqLf+u+oU7Ych86WazUVwenz+/SK
+        gtnVg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=MbK62lfa8XqQ5uQpEMNmODTXXUW5ssZlsBtuCAcsj
+        Hw=; b=l9wDrZpxX9ozjQp14/v2qpNp4v3anPxU1/7XiQtzgrH2VMPqHbq6cGM1M
+        JtYgroDNJ64e75liN3mIcijWMJtg4G95JuyPr7B4fcGmkG08nnGavjc8hKCf+gHQ
+        h3rE0ittFD+q2XPP2bJRMjTNCqrpuVzlDYomelg0TiMRrUt+Av9w7fmJIvR1GIeD
+        nXWJFYW4Mb5fU1tx85UjmoG+rIrhuSt/aGhYFPRU5RZBQvTzz1fd/i/aiT16vHCz
+        3XP+lfMsJJ1TuUu5kfKnsn7UYiZski9wrc6rp6olO0QLaQxlaCV0ZDP9xXl9iO/P
+        2+2g+HjSerHlmjPuYmR5QmYqyHc0g==
+X-ME-Sender: <xms:J16rX_dEvsG7ssxpfnkvMFTZzutUoygcWi1IzBNxhTwFKz-QKOswHQ>
+    <xme:J16rX1Njo32HIZYVb1ZrxOa2huThT_0lcs3RdsYrH63UiDO8hKIJcDc4w2H9VN7U2
+    rV0wUwJYmpOif1xUA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduledggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:J16rX4g0sstrMhbmyH66IYv9DMZZhMELvGxp1XhgkFun5R2qVlqSIg>
+    <xmx:J16rXw_6VXg4V-KBwQ8_-wnD5U158vN4ixPZTCc_TeDSUK5_Zv1USQ>
+    <xmx:J16rX7u2XD8kYdEyqWkgmmFPpS8XXoVfHUK_PP4UYwTDPLd3xL9z9g>
+    <xmx:KV6rX_jVMjm0t2sgDHpgU8RdhPYwf_wMqT7kdjj8h3adFH-3FpnRNg>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C7E32328005E;
+        Tue, 10 Nov 2020 22:44:38 -0500 (EST)
+Subject: Re: [PATCH 3/3] phy: sun4i-usb: Use power efficient workqueue for
+ debounce and poll
+To:     Frank Lee <frank@allwinnertech.com>, vkoul@kernel.org,
+        mripard@kernel.org, wens@csie.org, krzk@kernel.org,
+        colin.king@canonical.com, tiny.windzz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20201109121214.19012-1-frank@allwinnertech.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <fba49549-9a78-32ee-a55c-97499f24fe62@sholland.org>
+Date:   Tue, 10 Nov 2020 21:44:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-6-songmuchun@bytedance.com> <9dc62874-379f-b126-94a7-5bd477529407@oracle.com>
-In-Reply-To: <9dc62874-379f-b126-94a7-5bd477529407@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 11 Nov 2020 11:41:37 +0800
-Message-ID: <CAMZfGtV+_vP66N1WagwNfxs4r3QGwnrYoR60yimwutTs=awXag@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 05/21] mm/hugetlb: Introduce pgtable
- allocation/freeing helpers
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201109121214.19012-1-frank@allwinnertech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 8:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 11/8/20 6:10 AM, Muchun Song wrote:
-> > On x86_64, vmemmap is always PMD mapped if the machine has hugepages
-> > support and if we have 2MB contiguos pages and PMD aligned. If we want
-> > to free the unused vmemmap pages, we have to split the huge pmd firstly.
-> > So we should pre-allocate pgtable to split PMD to PTE.
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index a0007902fafb..5c7be2ee7e15 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1303,6 +1303,108 @@ static inline void destroy_compound_gigantic_page(struct page *page,
-> ...
-> > +static inline void vmemmap_pgtable_init(struct page *page)
-> > +{
-> > +     page_huge_pte(page) = NULL;
-> > +}
-> > +
-> > +static void vmemmap_pgtable_deposit(struct page *page, pgtable_t pgtable)
-> > +{
-> > +     /* FIFO */
-> > +     if (!page_huge_pte(page))
-> > +             INIT_LIST_HEAD(&pgtable->lru);
-> > +     else
-> > +             list_add(&pgtable->lru, &page_huge_pte(page)->lru);
-> > +     page_huge_pte(page) = pgtable;
-> > +}
-> > +
-> > +static pgtable_t vmemmap_pgtable_withdraw(struct page *page)
-> > +{
-> > +     pgtable_t pgtable;
-> > +
-> > +     /* FIFO */
-> > +     pgtable = page_huge_pte(page);
-> > +     page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
-> > +                                                    struct page, lru);
-> > +     if (page_huge_pte(page))
-> > +             list_del(&pgtable->lru);
-> > +     return pgtable;
-> > +}
-> > +
-> > +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
-> > +{
-> > +     int i;
-> > +     pgtable_t pgtable;
-> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
-> > +
-> > +     if (!nr)
-> > +             return 0;
-> > +
-> > +     vmemmap_pgtable_init(page);
-> > +
-> > +     for (i = 0; i < nr; i++) {
-> > +             pte_t *pte_p;
-> > +
-> > +             pte_p = pte_alloc_one_kernel(&init_mm);
-> > +             if (!pte_p)
-> > +                     goto out;
-> > +             vmemmap_pgtable_deposit(page, virt_to_page(pte_p));
-> > +     }
-> > +
-> > +     return 0;
-> > +out:
-> > +     while (i-- && (pgtable = vmemmap_pgtable_withdraw(page)))
-> > +             pte_free_kernel(&init_mm, page_to_virt(pgtable));
-> > +     return -ENOMEM;
-> > +}
-> > +
-> > +static void vmemmap_pgtable_free(struct hstate *h, struct page *page)
-> > +{
-> > +     pgtable_t pgtable;
-> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
-> > +
-> > +     if (!nr)
-> > +             return;
-> > +
-> > +     pgtable = page_huge_pte(page);
-> > +     if (!pgtable)
-> > +             return;
-> > +
-> > +     while (nr-- && (pgtable = vmemmap_pgtable_withdraw(page)))
-> > +             pte_free_kernel(&init_mm, page_to_virt(pgtable));
-> > +}
->
-> I may be confused.
->
-> In patch 9 of this series, the first call to vmemmap_pgtable_free() is made:
->
-> > @@ -1645,6 +1799,10 @@ void free_huge_page(struct page *page)
-> >
-> >  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
-> >  {
-> > +     free_huge_page_vmemmap(h, page);
-> > +     /* Must be called before the initialization of @page->lru */
-> > +     vmemmap_pgtable_free(h, page);
-> > +
-> >       INIT_LIST_HEAD(&page->lru);
-> >       set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> >       set_hugetlb_cgroup(page, NULL);
->
-> When I saw that comment in previous patch series, I assumed page->lru was
-> being used to store preallocated pages and pages to free.  However, unless
+On 11/9/20 6:12 AM, Frank Lee wrote:
+> From: Yangtao Li <frank@allwinnertech.com>
+> 
+> The debounce and poll time is generally quite long and the work not
+> performance critical so allow the scheduler to run the work anywhere
+> rather than in the normal per-CPU workqueue.
+> 
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> ---
+>  drivers/phy/allwinner/phy-sun4i-usb.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+> index 651d5e2a25ce..4787ad13b255 100644
+> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+> @@ -326,7 +326,7 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+>  		/* Force ISCR and cable state updates */
+>  		data->id_det = -1;
+>  		data->vbus_det = -1;
+> -		queue_delayed_work(system_wq, &data->detect, 0);
+> +		queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
+>  	}
+>  
+>  	return 0;
+> @@ -444,7 +444,7 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
+>  
+>  	/* We must report Vbus high within OTG_TIME_A_WAIT_VRISE msec. */
 
-Yeah, you are right.
+This doesn't sound like "not performance critical" to me. My understanding is
+the debouncing has a deadline from the USB spec. Maybe this is more flexible
+than the comment makes it sound?
 
-> I am reading the code incorrectly it does not appear page->lru (of the huge
-> page) is being used for this purpose.  Is that correct?
->
-> If it is correct, would using page->lru of the huge page make this code
-> simpler?  I am just missing the reason why you are using
-> page_huge_pte(page)->lru
+>  	if (phy->index == 0 && sun4i_usb_phy0_poll(data))
+> -		mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
+> +		mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
+>  
+>  	return 0;
+>  }
+> @@ -465,7 +465,7 @@ static int sun4i_usb_phy_power_off(struct phy *_phy)
+>  	 * Vbus gpio to not trigger an edge irq on Vbus off, so force a rescan.
+>  	 */
+>  	if (phy->index == 0 && !sun4i_usb_phy0_poll(data))
+> -		mod_delayed_work(system_wq, &data->detect, POLL_TIME);
+> +		mod_delayed_work(system_power_efficient_wq, &data->detect, POLL_TIME);
+>  
+>  	return 0;
+>  }
+> @@ -504,7 +504,7 @@ static int sun4i_usb_phy_set_mode(struct phy *_phy,
+>  
+>  	data->id_det = -1; /* Force reprocessing of id */
+>  	data->force_session_end = true;
+> -	queue_delayed_work(system_wq, &data->detect, 0);
+> +	queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
+>  
+>  	return 0;
+>  }
+> @@ -616,7 +616,7 @@ static void sun4i_usb_phy0_id_vbus_det_scan(struct work_struct *work)
+>  		extcon_set_state_sync(data->extcon, EXTCON_USB, vbus_det);
+>  
+>  	if (sun4i_usb_phy0_poll(data))
+> -		queue_delayed_work(system_wq, &data->detect, POLL_TIME);
+> +		queue_delayed_work(system_power_efficient_wq, &data->detect, POLL_TIME);
+>  }
+>  
+>  static irqreturn_t sun4i_usb_phy0_id_vbus_det_irq(int irq, void *dev_id)
+> @@ -624,7 +624,7 @@ static irqreturn_t sun4i_usb_phy0_id_vbus_det_irq(int irq, void *dev_id)
+>  	struct sun4i_usb_phy_data *data = dev_id;
+>  
+>  	/* vbus or id changed, let the pins settle and then scan them */
+> -	mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
+> +	mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
+>  
+>  	return IRQ_HANDLED;
+>  }
+> @@ -638,7 +638,7 @@ static int sun4i_usb_phy0_vbus_notify(struct notifier_block *nb,
+>  
+>  	/* Properties on the vbus_power_supply changed, scan vbus_det */
+>  	if (val == PSY_EVENT_PROP_CHANGED && psy == data->vbus_power_supply)
+> -		mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
+> +		mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
+>  
+>  	return NOTIFY_OK;
+>  }
+> 
 
-For 1GB HugeTLB pages, we should pre-allocate more than one page
-table. So I use a linked list. The page_huge_pte(page) is the list head.
-Because the page->lru shares storage with page->pmd_huge_pte.
-
-+     /* Must be called before the initialization of @page->lru */
-+     vmemmap_pgtable_free(h, page);
-+
-       INIT_LIST_HEAD(&page->lru);
-
-Here we initialize the lru. So the vmemmap_pgtable_free should
-be called before this. It seems like that I should point out this "share"
-in the comment.
-
-Thanks.
-
->
-> --
-> Mike Kravetz
-
-
-
--- 
-Yours,
-Muchun
