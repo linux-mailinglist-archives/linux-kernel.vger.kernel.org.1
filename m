@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B7D2AE6A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86262AE6A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgKKC6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 21:58:55 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:56076 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgKKC6u (ORCPT
+        id S1725977AbgKKC6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 21:58:43 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49910 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgKKC6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:58:50 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB2sjT3089694;
-        Wed, 11 Nov 2020 02:58:35 GMT
+        Tue, 10 Nov 2020 21:58:42 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB2tGMi159404;
+        Wed, 11 Nov 2020 02:58:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=J3pE1RbLFiglHMn3Sff61j1KCciT9vzj2mPaKBQh+Go=;
- b=EJ/hIdQVMHwYxR472bsPRGgeihxLIDZe2UUrO0k6OOKubyvaR60jq+nsxClnTBK71eit
- Xij6Yu48pWsYtlU/d4oF0A9KBq8g2K8Ixe39KWyeGj0iSVYJg+IEa2CBtVmfkFPk+gnT
- ss7RMKzIB05MVzuUntrE1g/gXEARf0BrqWVUGtMv7AO6RLdkRDFKNz2cj8W5yRw1VM3h
- huNUSJ1j48Rjtaq0vo/+jT6zsXrZrBbZRMmxJ+B302i7Yh5Q8HBspY3u09CSbXUZOc4F
- B3VGqzomBp+081Nnqn3sC0ig5jinMc9e/SriMW7gqJ5zELBJMg05SfErf2y8mH71COgx vQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34nh3ay5a4-1
+ bh=7ZcDgeb3uXfHwzg9j9rfLyoPbsWgAZ/teiCVqIYL8i8=;
+ b=SJne98ahxWT6up4kEIiOkwB6TQeJ1dsW9cqni+VHeRN3DRwsN4asCypm6SXGp/BUV2Bi
+ FFo+HZpvvuqFNnim3Y9yQIZBy6ceHU3DgSeL2p7eWBj/B6E+PQeTAfjpzhgGev0nxpe4
+ mfhCFaT7gETyfopEycARw72V/LNezMaFI7TRrkVUu4QE0QMWvSr2VBDRQJPfUqicz7XT
+ OmWImXt9qcDjCxczSx+tVx56kKdWE9N752eySkt4MTySZEoRvRhXvYnrCEaVm096wZzh
+ f2KM9dKvTBDOPIiC69GTSIqoszvf8jor301zJ+J2aguAKELSS6Qm7wsObIxkUEo5l8KL oA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34nkhkxwpv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Nov 2020 02:58:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB2ssFv153808;
-        Wed, 11 Nov 2020 02:58:35 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34p5g15je3-1
+        Wed, 11 Nov 2020 02:58:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB2tDA0057916;
+        Wed, 11 Nov 2020 02:58:37 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34p55pdnkp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Nov 2020 02:58:35 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AB2wTvt024323;
-        Wed, 11 Nov 2020 02:58:29 GMT
+        Wed, 11 Nov 2020 02:58:37 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AB2wa9L008148;
+        Wed, 11 Nov 2020 02:58:36 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Nov 2020 18:58:29 -0800
+        with ESMTP ; Tue, 10 Nov 2020 18:58:36 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Arnd Bergmann <arnd@kernel.org>
+To:     "trix@redhat.com" <trix@redhat.com>, skashyap@marvell.com,
+        jejb@linux.ibm.com, jhasan@marvell.com
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 1/3] scsi: aacraid: improve compat_ioctl handlers
-Date:   Tue, 10 Nov 2020 21:58:21 -0500
-Message-Id: <160506295513.14063.11866299888883533879.b4-ty@oracle.com>
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH] scsi: bnx2fc: remove unneeded semicolon
+Date:   Tue, 10 Nov 2020 21:58:25 -0500
+Message-Id: <160506295513.14063.10787681998429655692.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030164450.1253641-1-arnd@kernel.org>
-References: <20201030164450.1253641-1-arnd@kernel.org>
+In-Reply-To: <20201101143812.2283642-1-trix@redhat.com>
+References: <20201101143812.2283642-1-trix@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=884 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=924 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2011110012
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=901 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=954 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2011110012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 17:44:19 +0100, Arnd Bergmann wrote:
+On Sun, 1 Nov 2020 06:38:12 -0800, trix@redhat.com wrote:
 
-> The use of compat_alloc_user_space() can be easily replaced by
-> handling compat arguments in the regular handler, and this will
-> make it work for big-endian kernels as well, which at the moment
-> get an invalid indirect pointer argument.
-> 
-> Calling aac_ioctl() instead of aac_compat_do_ioctl() means the
-> compat and native code paths behave the same way again, which
-> they stopped when the adapter health check was added only
-> in the native function.
+> A semicolon is not needed after a switch statement.
 
 Applied to 5.11/scsi-queue, thanks!
 
-[1/3] scsi: aacraid: Improve compat_ioctl handlers
-      https://git.kernel.org/mkp/scsi/c/077054215a7f
-[2/3] scsi: megaraid_sas: Check user-provided offsets
-      https://git.kernel.org/mkp/scsi/c/381d34e376e3
-[3/3] scsi: megaraid_sas: Simplify compat_ioctl handling
-      https://git.kernel.org/mkp/scsi/c/bba84aeccafb
+[1/1] scsi: bnx2fc: Remove unneeded semicolon
+      https://git.kernel.org/mkp/scsi/c/4a9435b7b04e
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
