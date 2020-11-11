@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08BD2AF7B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF1F2AF7C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKKSIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:08:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44006 "EHLO mail.kernel.org"
+        id S1726739AbgKKSLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:11:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:59472 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgKKSIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:08:42 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD64D206FB;
-        Wed, 11 Nov 2020 18:08:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605118121;
-        bh=CAj5BtBzNYKOt2TTvtYuecOJKOMH0cp76evLYDno5TU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XQ0oaqxqrD5eNgShVtXwIf3S02IQxitv/ruvs1gX+uG2b8Qrl5qrHdmYZz4caiiCk
-         3EKoffprkd7J1Ys7OYUKSTqXd6Iv5qqvSELKw1mt36ClIxxaB5BwXhwsZItSw8Zmfh
-         YvOuPyFLWYr4jnSh+stdbRgTh7me+owYwSBpYKlo=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D0C1E411D1; Wed, 11 Nov 2020 15:08:38 -0300 (-03)
-Date:   Wed, 11 Nov 2020 15:08:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Dave Martin <Dave.Martin@arm.com>
-Cc:     Andre Przywara <Andre.Przywara@arm.com>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        James Clark <James.Clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 06/22] perf arm-spe: Refactor printing string to buffer
-Message-ID: <20201111180838.GF380127@kernel.org>
-References: <20201111071149.815-1-leo.yan@linaro.org>
- <20201111071149.815-7-leo.yan@linaro.org>
- <20201111153555.GG355344@kernel.org>
- <a1ca3412-3815-e2a8-0334-f3059802df6a@arm.com>
- <20201111173922.GA380127@kernel.org>
- <20201111175827.GR6882@arm.com>
- <20201111180127.GD380127@kernel.org>
- <20201111180248.GE380127@kernel.org>
+        id S1726456AbgKKSLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:11:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E18E1474;
+        Wed, 11 Nov 2020 10:11:43 -0800 (PST)
+Received: from [172.16.1.113] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0BFF3F718;
+        Wed, 11 Nov 2020 10:11:41 -0800 (PST)
+Subject: Re: [PATCH] arm64: kexec: Use smp_send_stop in machine_shutdown
+To:     Henry Willard <henry.willard@oracle.com>
+References: <1604705148-1831-1-git-send-email-henry.willard@oracle.com>
+From:   James Morse <james.morse@arm.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        qais.yousef@arm.com
+Message-ID: <a68252a0-4248-4523-da8d-0ecfc3bc207b@arm.com>
+Date:   Wed, 11 Nov 2020 18:11:20 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111180248.GE380127@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <1604705148-1831-1-git-send-email-henry.willard@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 11, 2020 at 03:02:48PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > I'll keep the series up to that point and will run my build tests, then
-> > push it publicly to acme/perf/core and you can go from there, ok?
+Hi Henry,
 
-> > I've changed the BIT() to BIT_ULL() as Andre suggested and I'm testing
-> > it again.
- 
-> To make it clear, this is what I have locally:
- 
-> 0a04244cabc5560c (HEAD -> perf/core) perf arm-spe: Fix packet length handling
-> b65577baf4829092 perf arm-spe: Refactor arm_spe_get_events()
-> b2ded2e2e2764e50 perf arm-spe: Refactor payload size calculation
-> 903b659436b70692 perf arm-spe: Fix a typo in comment
-> c185f1cde46653cd perf arm-spe: Include bitops.h for BIT() macro
-> 40714c58630aaaf1 perf mem: Support ARM SPE events
-> c825f7885178f994 perf c2c: Support AUX trace
-> 13e5df1e3f1ba1a9 perf mem: Support AUX trace
-> 014a771c7867fda5 perf auxtrace: Add itrace option '-M' for memory events
-> 436cce00710a3f23 perf mem: Only initialize memory event for recording
-> 8b8173b45a7a9709 perf c2c: Support memory event PERF_MEM_EVENTS__LOAD_STORE
-> 4ba2452cd88f39da perf mem: Support new memory event PERF_MEM_EVENTS__LOAD_STORE
-> eaf6aaeec5fa301c perf mem: Introduce weak function perf_mem_events__ptr()
-> f9f16dfbe76e63ba perf mem: Search event name with more flexible path
-> 644bf4b0f7acde64 (tag: perf-tools-tests-v5.11-2020-11-04, acme/perf/core) perf jevents: Add test for arch std events
+On 06/11/2020 23:25, Henry Willard wrote:
+> machine_shutdown() is called by kernel_kexec() to shutdown
+> the non-boot CPUs prior to starting the new kernel. The
+> implementation of machine_shutdown() varies by architecture.
+> Many make an interprocessor call, such as smp_send_stop(),
+> to stop the non-boot CPUs. On some architectures the CPUs make
+> some sort of firmware call to stop the CPU. On some architectures
+> without the necessary firmware support to stop the CPU, the CPUs
+> go into a disabled loop, which is not suitable for supporting
+> kexec. On Arm64 systems that support PSCI, CPUs can be stopped
+> with a PSCI CPU_OFF call.
 
-So with the above it works with at least these:
+All this variation is because we want to to get the CPU back in a sane state, as if we'd
+just come from cold boot. Without the platform firmware doing its initialisation, the only
+way we have of doing this is to run the cpuhp callbacks to take the CPU offline cleanly.
 
-[perfbuilder@five ~]$ dm android-ndk:r15c-arm ubuntu:18.04-x-arm
-   1    22.37 android-ndk:r15c-arm          : Ok   arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
-   2    28.52 ubuntu:18.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
-[perfbuilder@five ~]$
 
-previously it was failing in all 32-bit build test containers:
+> Arm64 machine_shutdown() uses the CPU hotplug infrastructure via
+> smp_shutdown_nonboot_cpus() to stop each CPU. This is relatively
+> slow and takes a best case of .02 to .03 seconds per CPU which are
+> stopped sequentially.
 
-[perfbuilder@five linux-perf-tools-build]$ grep FAIL dm.log/summary 
- android-ndk:r12b-arm: FAIL
- android-ndk:r15c-arm: FAIL
- fedora:24-x-ARC-uClibc: FAIL
- fedora:30-x-ARC-uClibc: FAIL
- ubuntu:16.04-x-arm: FAIL
- ubuntu:16.04-x-powerpc: FAIL
- ubuntu:18.04-x-arm: FAIL
- ubuntu:18.04-x-m68k: FAIL
- ubuntu:18.04-x-powerpc: FAIL
- ubuntu:18.04-x-sh4: FAIL
- ubuntu:19.10-x-hppa: FAIL
-[perfbuilder@five linux-perf-tools-build]$
+Hmmm, looks like cpuhp doesn't have a way to run the callbacks in parallel...
 
-I'll redo the full set of tests and push perf/core publicly.
 
-- Arnaldo
+> This can take the better part of a second for
+> all the CPUs to be stopped depending on how many CPUs are present.
+> If for some reason the CPUs are busy at the time of the kexec reboot,
+> it can take several seconds to shut them all down.
+
+Busy doing what?
+
+I assume the problem is CPUs starting work on behalf of user-space, which is now
+pointless, which prevents them from scheduling into the cpuhp work quickly.
+
+Does hoisting kexec's conditional call to freeze_processes() above the #ifdef - so that
+user-space threads are no longer schedule-able improve things here?
+
+
+> Each CPU shuts itself down by calling PSCI CPU_OFF.
+
+> In some applications such as embedded systems, which need a very
+> fast reboot (less than a second), this may be too slow.
+
+Where does this requirement come from? Surely kexec is part of a software update, not
+regular operation.
+
+
+> This patch reverts to using smp_send_stop() to signal all
+> CPUs to stop immediately. Currently smp_send_stop() causes each cpu
+> to call local_cpu_stop(), which goes into a disabled loop. This patch
+> modifies local_cpu_stop() to call cpu_die() when kexec_in_progress
+> is true, so that the CPU calls PSCI CPU_OFF just as in the case of
+> smp_shutdown_nonboot_cpus().
+
+This is appropriate for panic(), as we accept it may fail.
+
+For Kexec(), the CPU must go offline, otherwise we can't overwrite the code it was
+running. The arch code can't just call CPU_OFF in any context. See 5.5 CPU_OFF' of
+https://developer.arm.com/documentation/den0022/d
+
+5.5.2 describes what the OS must do first, in particular interrupts must be migrated away
+from the CPU calling CPU_OFF. Currently the cpuhp notifiers do this, which after this
+patch, no longer run.
+
+You're going to need some duct-tape here, but I recall the proposed
+'ARCH_OFFLINE_CPUS_ON_REBOOT', which would help, but isn't a complete thing. From the
+discussion:
+https://lore.kernel.org/lkml/87h80vwta7.fsf@nanos.tec.linutronix.de/
+https://lore.kernel.org/lkml/alpine.DEB.2.21.1908201321200.2223@nanos.tec.linutronix.de/
+
+using cpuhp to offline these CPUs is the right thing to do.
+If the problem is its too slow, can we tackled that instead?
+
+
+> Using smp_send_stop() instead of
+> smp_shutdown_nonboot_cpus() reduces the shutdown time for 23 CPUs
+> from about .65 seconds on an idle system to less than 5 msecs. On a
+> busy system smp_shutdown_nonboot_cpus() may take several seconds,
+> while smp_send_stop() needs only the 5 msecs.
+
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 4784011cecac..2568452a2417 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -142,12 +143,22 @@ void arch_cpu_idle_dead(void)
+>   * This must completely disable all secondary CPUs; simply causing those CPUs
+>   * to execute e.g. a RAM-based pin loop is not sufficient. This allows the
+>   * kexec'd kernel to use any and all RAM as it sees fit, without having to
+> - * avoid any code or data used by any SW CPU pin loop. The CPU hotplug
+> - * functionality embodied in smpt_shutdown_nonboot_cpus() to achieve this.
+> + * avoid any code or data used by any SW CPU pin loop. The target stop function
+> + * will call cpu_die() if kexec_in_progress is set.
+>   */
+>  void machine_shutdown(void)
+>  {
+> -	smp_shutdown_nonboot_cpus(reboot_cpu);
+> +	unsigned long timeout;
+> +
+> +	/*
+> +	 * Don't wait forever, but no longer than a second
+> +	 */
+
+For kexec we must wait for the CPU to exit the current kernel. If it doesn't we can't
+overwrite the current memory image with the kexec payload.
+
+Features like CNP allow CPUs to share TLB entries. If a CPU is left behind in the older
+kernel, the code its is executing will be overwritten and its behaviour stops being
+predictable. It may start allocating junk TLB entries, that CNP allows CPUs in the new
+kernel to use, resulting in hard to debug crashes.
+
+For kdump we avoid this problem by ensuring the old and new kernels never overlap. The old
+kernel doesn't even have the kdump carveout mapped.
+
+
+> +	timeout = USEC_PER_SEC;
+> +
+> +	smp_send_stop();
+> +	while (num_online_cpus() > 1 && timeout--)
+> +		udelay(1);
+> +	return;
+>  }
+>  
+>  /*
+
+
+Thanks,
+
+James
