@@ -2,117 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2293F2AF859
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FE12AF87A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgKKSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgKKSmz (ORCPT
+        id S1726734AbgKKSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:46:45 -0500
+Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:7155 "EHLO
+        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgKKSqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:42:55 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00315C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:42:54 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id j7so3545659wrp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:42:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VohxCgmaGc6F7Ktsca4rjVlrZ86gTh1fROnDD+cvua8=;
-        b=q5lLWorcNvq+9Yc6F6OpKuLSxNfpexysmfo67YGIJQm9USpyAY1a0El1997oZE4wkP
-         8oqytOtFLxzPFKfILJzTJgYc46xAEBJFyWtuM1LTEETuUfNL/KuH8ikBmZDq/UqQ/Id/
-         E76iFLtXpDU/wuvo8+MAmKHQCxr/+4O4OJqc5u5N9uJbn25p6NqFNx+WALMGSWhTODnh
-         kD66Fx1jLku1gDyfDnSOvkDgGCyu+iraGYhFX9JP4kQehD2F7J+O34XvINm9mbxUzcAS
-         hQoG/Tiqe7+nF2rMK/813dHUyO2G+HXvIe2S5qscLlRg2Xzo7BlnfmqUHUy+lnNI4FXY
-         5KCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VohxCgmaGc6F7Ktsca4rjVlrZ86gTh1fROnDD+cvua8=;
-        b=tN4nSlHgsTYp2Iy63fQp++xcaCgN5eiSgKu8Q/dQwBUg+M8gX+JYZJR/9h/CAujOj+
-         yVh+pWgbKegZHYbF6xCeiCGo13Rh6mMTFQuI1124w5Q1CF+PKt8HpIbJq5VFggK+DD66
-         SLgq8RuMTkqlWhx1rGOovDPyyNN4QtfXmAF7f5TuCotbMURujD9uBlTMKjRPo307h7CP
-         Wb+hPXNNYXuiW/dRVA11jGlyc/Xm4rIY/xG8KlnOt7F7Dsz+PcWkvZYwKOGcHSJ4ejO1
-         D5wWLohN5gTAR6mcMbcT9FZxHAKC+P0C8cGnzLPSR4YPJOTE0nTptHOj07wa6Vr6GdUO
-         +dUg==
-X-Gm-Message-State: AOAM53006DlNv/2jyVFSPg9AjKNDVenlZU4FF4eYnflxCfF/QsDbMqNA
-        A7Dj7S2+S+7hljzf18bQ9dVyEQ==
-X-Google-Smtp-Source: ABdhPJwhO/pOEHygpEN38k/rCWZcOpBcvG2IP4pMbw5LM7pzlX+NSLqrby7G/rFyaxB3/C6to3EXwQ==
-X-Received: by 2002:a5d:66c3:: with SMTP id k3mr26447563wrw.123.1605120173432;
-        Wed, 11 Nov 2020 10:42:53 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id n10sm3431496wrv.77.2020.11.11.10.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:42:52 -0800 (PST)
-Date:   Wed, 11 Nov 2020 19:42:46 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 13/20] kasan: simplify kasan_poison_kfree
-Message-ID: <20201111184246.GO517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <a1c57043fb19effce240355e7c57b0d9a58d389e.1605046662.git.andreyknvl@google.com>
+        Wed, 11 Nov 2020 13:46:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1605120404;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=z3jhtaJZLiN9XVyLCAwhBQIKtAh04ByTPeZi01LbSUQ=;
+  b=LF6ZKEz37MPew3dAhlvFkvjTpfNJrKQDlaSycvC5Dvh3mgNvlpHBsK82
+   W6SpkGUopYcHmv5RvnLhNzfRqNq0FBKpYkACivOZLyVRUteiinG2T2YZs
+   XS2Y11czkY0c6TMrPFlhK2HeGm374L8c6QfyIFtDqsNLS59YKPX2nDdu/
+   c=;
+Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: HDLk/AZWty5ZNWjWZNb8koA65e8K14mJtddMeDa99tsiYspklG0uMbgO1sx5MqHSqZ2CKVqVnL
+ 0cgaiFw1h+jEju4ehE157KOYrPs8UQ9e5Tbrj3s8eBm1NbSCLkpKwkiHdq2UpmXLRXGoRYvwJb
+ 9hs7Nf2VyA83/rQzIGQ6dLewSxFdwOUn77kZCKEQy8zct+pBwWgflPEkBxWTunR6qYV0fj7H16
+ 3R1N+0EmYhhvoM47XES0t8GV+kVz5OVUqgqnWu9wRTDGmU5KyqkAwTdYVUxsDrgcCmuxrgAxan
+ OkQ=
+X-SBRS: None
+X-MesageID: 30975574
+X-Ironport-Server: esa2.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.77,470,1596513600"; 
+   d="scan'208";a="30975574"
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, <jgross@suse.com>
+References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+ <20201111170536.arx2zbn4ngvjoov7@treble>
+ <20201111174736.GH2628@hirez.programming.kicks-ass.net>
+ <20201111181328.mbxcz2uap2vnqpxq@treble>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
+Date:   Wed, 11 Nov 2020 18:46:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1c57043fb19effce240355e7c57b0d9a58d389e.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201111181328.mbxcz2uap2vnqpxq@treble>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ FTLPEX02CL04.citrite.net (10.13.108.177)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> kasan_poison_kfree() is currently only called for mempool allocations
-> that are backed by either kmem_cache_alloc() or kmalloc(). Therefore, the
-> page passed to kasan_poison_kfree() is always PageSlab() and there's no
-> need to do the check. Remove it.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://linux-review.googlesource.com/id/If31f88726745da8744c6bea96fb32584e6c2778c
-> ---
->  mm/kasan/common.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
+On 11/11/2020 18:13, Josh Poimboeuf wrote:
+> On Wed, Nov 11, 2020 at 06:47:36PM +0100, Peter Zijlstra wrote:
+>> This is PARAVIRT_XXL only, which is a Xen special. My preference, as
+>> always, is to kill it... Sadly the Xen people have a different opinion.
+> That would be soooo nice... then we could get rid of paravirt patching
+> altogether and replace it with static calls.
+>
+>>> Objtool doesn't know about the pushf/pop paravirt patch, so ORC gets
+>>> confused by the changed stack layout.
+>>>
+>>> I'm thinking we either need to teach objtool how to deal with
+>>> save_fl/restore_fl patches, or we need to just get rid of those nasty
+>>> patches somehow.  Peter, any thoughts?
+>> Don't use Xen? ;-)
+>>
+>> So with PARAVIRT_XXL the compiler will emit something like:
+>>
+>>   "CALL *pvops.save_fl"
+>>
+>> Which we then overwrite at runtime with "pushf; pop %[re]ax" and a few
+>> NOPs.
+>>
+>> Now, objtool understands alternatives, and ensures they have the same
+>> stack layout, it has no chance in hell of understanding this, simply
+>> because paravirt_patch.c is magic.
+>>
+>> I don't have any immediate clever ideas, but let me ponder it a wee bit.
 
-Reviewed-by: Marco Elver <elver@google.com>
+Well...
 
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 385863eaec2c..819403548f2e 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -432,16 +432,7 @@ void __kasan_poison_kfree(void *ptr, unsigned long ip)
->  	struct page *page;
->  
->  	page = virt_to_head_page(ptr);
-> -
-> -	if (unlikely(!PageSlab(page))) {
-> -		if (ptr != page_address(page)) {
-> -			kasan_report_invalid_free(ptr, ip);
-> -			return;
-> -		}
-> -		kasan_poison_memory(ptr, page_size(page), KASAN_FREE_PAGE);
-> -	} else {
-> -		____kasan_slab_free(page->slab_cache, ptr, ip, false);
-> -	}
-> +	____kasan_slab_free(page->slab_cache, ptr, ip, false);
->  }
->  
->  void __kasan_kfree_large(void *ptr, unsigned long ip)
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
-> 
+static_calls are a newer, and more generic, form of pvops.  Most of the
+magic is to do with inlining small fragments, but static calls can do
+that now too, IIRC?
+
+>> ....
+>>
+>> Something really disguisting we could do is recognise the indirect call
+>> offset and emit an extra ORC entry for RIP+1. So the cases are:
+>>
+>> 	CALL *pv_ops.save_fl	-- 7 bytes IIRC
+>> 	CALL $imm;		-- 5 bytes
+>> 	PUSHF; POP %[RE]AX	-- 2 bytes
+>>
+>> so the RIP+1 (the POP insn) will only ever exist in this case. The
+>> indirect and direct call cases would never land on that IP.
+> I had a similar idea, and a bit of deja vu - we may have talked about
+> this before.  At least I know we talked about doing something similar
+> for alternatives which muck with the stack.
+
+The main complexity with pvops is that the
+
+    CALL *pv_ops.save_fl
+
+form needs to be usable from extremely early in the day (pre general
+patching), hence the use of function pointers and some non-standard ABIs.
+
+For performance reasons, the end result of this pvop wants to be `pushf;
+pop %[re]ax` in then native case, and `call xen_pv_save_fl` in the Xen
+case, but this doesn't mean that the compiled instruction needs to be a
+function pointer to begin with.
+
+Would objtool have an easier time coping if this were implemented in
+terms of a static call?
+
+~Andrew
