@@ -2,68 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DF32AE530
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D652AE534
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732331AbgKKA6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 19:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbgKKA6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 19:58:38 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EA5C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 16:58:37 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kceSw-003Awl-Lq; Wed, 11 Nov 2020 00:58:26 +0000
-Date:   Wed, 11 Nov 2020 00:58:26 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: fix missing include in asm uaccess.h
-Message-ID: <20201111005826.GY3576660@ZenIV.linux.org.uk>
-References: <20201111004440.8783-1-ansuelsmth@gmail.com>
+        id S1732361AbgKKBAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:00:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730254AbgKKBAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 20:00:55 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B38621741;
+        Wed, 11 Nov 2020 01:00:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605056454;
+        bh=qZcSZhfA5h13Su5Lmd0qP28DKQxMEDIE6EFD9WX1W4Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dmvgQQO/Z55JTZt7PCpAPXJaFBulDoPZenqBLYhVWuA9aXb60LDSHqof8QSxB9CRD
+         Ocf8LtcweCDygClzG5CGYzvBd52jsoyrelxSqHLBDmMScilTW0sbvkwt8X+YK0KTST
+         Ddj7lnNTnzFAJY+jDe9w3rRDLzCwxO5T9zzdOeyk=
+Date:   Tue, 10 Nov 2020 17:00:52 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH] net: sched: fix misspellings using misspell-fixer tool
+Message-ID: <20201110170052.4f471497@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <5fa8e9d4.1c69fb81.5d889.5c64@mx.google.com>
+References: <5fa8e9d4.1c69fb81.5d889.5c64@mx.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111004440.8783-1-ansuelsmth@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 01:44:38AM +0100, Ansuel Smith wrote:
-> Fix a compilation error as PF_KTHREAD is defined in linux/sched.h and
-> this is missing.
+On Mon,  9 Nov 2020 02:02:17 -0500 menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> Fixes: df325e05a682 ("arm64: Validate tagged addresses in access_ok()
-> called from kernel threads")
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  arch/arm64/include/asm/uaccess.h | 2 ++
->  1 file changed, 2 insertions(+)
+> Some typos are found out by misspell-fixer tool:
 > 
-> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> index 991dd5f031e4..51a4f63f464a 100644
-> --- a/arch/arm64/include/asm/uaccess.h
-> +++ b/arch/arm64/include/asm/uaccess.h
-> @@ -7,6 +7,8 @@
->  #ifndef __ASM_UACCESS_H
->  #define __ASM_UACCESS_H
->  
-> +#include <linux/sched.h>
-> +
->  #include <asm/alternative.h>
->  #include <asm/kernel-pgtable.h>
->  #include <asm/sysreg.h>
+> $ misspell-fixer -rnv ./net/sched/
+> ./net/sched/act_api.c:686
+> ./net/sched/act_bpf.c:68
+> ./net/sched/cls_rsvp.h:241
+> ./net/sched/em_cmp.c:44
+> ./net/sched/sch_pie.c:408
+> 
+> Fix typos found by misspell-fixer.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-NAK.  The real bug is in arch/arm64/include/asm/asm-prototypes.h -
-it has no business pulling asm/uaccess.h
-
-Just include linux/uaccess.h instead.
+Applied, thanks.
