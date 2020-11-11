@@ -2,189 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9032AF43C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392872AF43F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgKKO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
+        id S1727342AbgKKO64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:58:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbgKKO6K (ORCPT
+        with ESMTP id S1726740AbgKKO6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:58:10 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90484C0613D1;
-        Wed, 11 Nov 2020 06:58:09 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id q1so2207064ilt.6;
-        Wed, 11 Nov 2020 06:58:09 -0800 (PST)
+        Wed, 11 Nov 2020 09:58:51 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A102BC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:58:51 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id u24so1299033vsl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:58:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wgAIziHuY+2kUNj8ODhklCWP95ddG2zrRxQsnyJcrZM=;
-        b=mSqJEHYAZiCcJPvoSGfPyRgK2Dx+KCj+cqHHgvpMkgt/Ti+dkQ2Fw3JG1gdsDJTQqB
-         SjxRSro86NYx34w8dZh4Doa7xqVoTyZHmpDWF0xZSZ+ktR0bzjQke0fvw28pilcvQCtZ
-         IRVHndHcVQOwujNkyM2uf/uCrotkbuWnoMgO1ItyS9cqKAcI66gGbtOpQORNSavRN5ih
-         VUT1xVj3CjxCyRKf94SXkdaiP6ARJfm472SW0dcXeSWdLz9Ef7G/0dmIEFgiNY7uiZzL
-         Wa8fT37D6cV9qg9Hu+ysgiOIJnhZiD7jR4SjVddtiWZOfkHms1sDm9ZzVrZXzsQJLdY7
-         WSVA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ymEvgJS7rVbY5xVZhevn94lQHneRjvkfCvwDRO8xie0=;
+        b=ZghKI3QiRUOD7epvEcjCkm2x5OmXbfdOwP07/1zFHYgFbUDsISeOqY6HnA61S4QxSj
+         qW64wt7QdXHCxCNqVBrKtlK4rO3Opip0/x/SVNA38DsiPdv6xzPytjwCaNi7vGs52ANU
+         a4jcMS/reMNkJKvttl1hXcWrHGek4sZG2KWwV+DL6OlZM2rdgaCqrrhGowDyOiEf3AcH
+         ifSNQhvqrmoXaTGeiWSyhA0TVNY1MBiVbMuDldlTDloEQVFcdlzQM+fIzSIwt7NDC9rQ
+         ht9CY+dKjPm2+WWdyLOynPYwu144U1u07WhT1gZ+jLACW8VPSbm6U65jbtSiLkXc0zVI
+         lrMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wgAIziHuY+2kUNj8ODhklCWP95ddG2zrRxQsnyJcrZM=;
-        b=WD+7t1+xmYxyg+m1MdZVNMGsdIBjlpzS+rLtkYdOTIR8YT6Pu9QaSqOzC46mCwWdD9
-         cmhVEi95tF2C8AzDPpquFNvzN5Qyt8C7lNnnY480IIzwgHglNS4KMVlB3ERlXhti7sSH
-         sfWMos4XMnpNaKCIbeWaCl9UaS3cEI4UPFcJsumKhI34RlBDG7nj7oAKnYlQaG+gTzmK
-         cEY1DR1rxQbflFudfqFPFc7LZTzDV1XjiRz/4+jL1RJrd+DN35C6ab8Oa98DHk+CuWyP
-         sG/6ZDCQzqVZMHTtKVWMNujKvBudbGG/d9p6qcct99EutxIIuL/sW94GPpbd3K/b3Hf7
-         Z1xw==
-X-Gm-Message-State: AOAM531nEQnGmS+qBe6lCR98h3U+vW/Pu+i5YjgsbRLlvnF5q7gSMG6o
-        Crrd26SksKcmxknR0HlbxmxnmhRW3wBqKQ==
-X-Google-Smtp-Source: ABdhPJy0UZZ+Ab+ZtKA5lDJQ/3GtSM8PPRWhf6DOXRNF42NeklnKDpN7QtAk8FptZdYMRGtPbVfPpw==
-X-Received: by 2002:a92:480e:: with SMTP id v14mr17297561ila.218.1605106688452;
-        Wed, 11 Nov 2020 06:58:08 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:59b1:ae74:30a3:447f])
-        by smtp.gmail.com with ESMTPSA id m2sm1374674ilj.24.2020.11.11.06.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 06:58:07 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     devicetree@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH V3] dt-bindings: soc: imx: Add binding doc for spba bus
-Date:   Wed, 11 Nov 2020 08:57:57 -0600
-Message-Id: <20201111145757.74974-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ymEvgJS7rVbY5xVZhevn94lQHneRjvkfCvwDRO8xie0=;
+        b=ZiYF76ymu5ZpIGdfGWhulLe7cnQqhD/hfBCJMnLPkAIVzJNFP+LzWLuzatgQIY6i3i
+         NzloOELEHW8RszD91NnZeL3RfQlD3kMs/626JwudbcLmGptBsRQANN75JuEb0mGHp/gc
+         8BlvKi+elHtQITFOemAuPWFBCgh/YcItOVWMX0jYt5L4s7BDDFIXgCjwygkIPgqgWm9A
+         2r1zV2rIEmP3LVkDPWddghfT8cQv0PuaD8zQB8i0zVVTxbm6wA/eNiDRW8df6wZlV+ay
+         3pG3DlocbwMNdKb6m+0ezSi5yZWL0heRuXDrhkkDGev91VZeSDK84/vwqphQOrQnqbDH
+         EQHQ==
+X-Gm-Message-State: AOAM532/yhIjoDXaxUtGGghnuB5+ZOSVKGHb0UvIXAaBZEMEM/M9aBOO
+        VsM0LOdZQIpzOwzyHCWW4/tQ6kbeEjA=
+X-Google-Smtp-Source: ABdhPJx/Ougw1qDnAVWZ1dC1fDFwInQM8M/Hu9VoFUVZFYDqWoaxit28PYUXVMglz4WnYhXfjNxdFQ==
+X-Received: by 2002:a67:e2c1:: with SMTP id i1mr16869400vsm.2.1605106730437;
+        Wed, 11 Nov 2020 06:58:50 -0800 (PST)
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
+        by smtp.gmail.com with ESMTPSA id t127sm266261vka.3.2020.11.11.06.58.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 06:58:49 -0800 (PST)
+Received: by mail-vk1-f180.google.com with SMTP id i3so534679vkk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:58:48 -0800 (PST)
+X-Received: by 2002:a1f:6dc4:: with SMTP id i187mr10642006vkc.12.1605106727755;
+ Wed, 11 Nov 2020 06:58:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <bEm19mEHLokLGc5HrEiEKEUgpZfmDYPoFtoLAAEnIUE@cp3-web-033.plabs.ch>
+ <CA+FuTScriNKLu=q+xmBGjtBB06SbErZK26M+FPiJBRN-c8gVLw@mail.gmail.com> <zlsylwLJr9o9nP9fcmUnMBxSNs5tLc6rw2181IgE@cp7-web-041.plabs.ch>
+In-Reply-To: <zlsylwLJr9o9nP9fcmUnMBxSNs5tLc6rw2181IgE@cp7-web-041.plabs.ch>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 11 Nov 2020 09:58:10 -0500
+X-Gmail-Original-Message-ID: <CA+FuTScQ0nZH-eaBr0Rn0PXVhjoW7xPBFeRiPXh6FeDAZ+DYwA@mail.gmail.com>
+Message-ID: <CA+FuTScQ0nZH-eaBr0Rn0PXVhjoW7xPBFeRiPXh6FeDAZ+DYwA@mail.gmail.com>
+Subject: Re: [PATCH v4 net] net: udp: fix Fast/frag0 UDP GRO
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding doc for fsl,spba-bus.
+On Wed, Nov 11, 2020 at 6:29 AM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Date: Tue, 10 Nov 2020 13:49:56 -0500
+>
+> > On Mon, Nov 9, 2020 at 7:29 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >>
+> >> From: Alexander Lobakin <alobakin@pm.me>
+> >> Date: Tue, 10 Nov 2020 00:17:18 +0000
+> >>
+> >>> While testing UDP GSO fraglists forwarding through driver that uses
+> >>> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
+> >>> iperf packets:
+> >>>
+> >>> [ ID] Interval           Transfer     Bitrate         Jitter
+> >>> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
+> >>>
+> >>> Simple switch to napi_gro_receive() or any other method without frag0
+> >>> shortcut completely resolved them.
+> >>>
+> >>> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
+> >>> callback. While it's probably OK for non-frag0 paths (when all
+> >>> headers or even the entire frame are already in skb->data), this
+> >>> inline points to junk when using Fast GRO (napi_gro_frags() or
+> >>> napi_gro_receive() with only Ethernet header in skb->data and all
+> >>> the rest in shinfo->frags) and breaks GRO packet compilation and
+> >>> the packet flow itself.
+> >>> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
+> >>> are typically used. UDP even has an inline helper that makes use of
+> >>> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
+> >>> to get rid of the out-of-order delivers.
+> >>>
+> >>> Present since the introduction of plain UDP GRO in 5.0-rc1.
+> >>>
+> >>> Since v3 [1]:
+> >>>  - restore the original {,__}udp{4,6}_lib_lookup_skb() and use
+> >>>    private versions of them inside GRO code (Willem).
+> >>
+> >> Note: this doesn't cover a support for nested tunnels as it's out of
+> >> the subject and requires more invasive changes. It will be handled
+> >> separately in net-next series.
+> >
+> > Thanks for looking into that.
+>
+> Thank you (and Eric) for all your comments and reviews :)
+>
+> > In that case, should the p->data + off change be deferred to that,
+> > too? It adds some risk unrelated to the bug fix.
+>
+> Change to p->data + off is absolutely safe and even can prevent from
+> any other potentional problems with Fast/frag0 GRO of UDP fraglists.
+> I find them pretty fragile currently.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-make dt_binding_check showed no errors if I did this right.
+Especially for fixes that go to net and eventually stable branches,
+I'm in favor of the smallest possible change, minimizing odds of
+unintended side effects.
 
-V3:  Rebase sample from aips-bus example
-     Split off from series adding i.MX8M Nano functions to reduce noise
-V2:  Attempted to update yaml from feedback
+Skipping this would also avoid the int to u32 change.
 
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index f50420099a55..ec8073cb2e71 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -3,8 +3,6 @@ DT_DOC_CHECKER ?= dt-doc-validate
- DT_EXTRACT_EX ?= dt-extract-example
- DT_MK_SCHEMA ?= dt-mk-schema
- 
--DT_SCHEMA_LINT = $(shell which yamllint)
--
- DT_SCHEMA_MIN_VERSION = 2020.8.1
- 
- PHONY += check_dtschema_version
-@@ -26,10 +24,6 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
- 		-name 'processed-schema*' ! \
- 		-name '*.example.dt.yaml' \)
- 
--quiet_cmd_yamllint = LINT    $(src)
--      cmd_yamllint = $(find_cmd) | \
--                     xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint
--
- quiet_cmd_chk_bindings = CHKDT   $@
-       cmd_chk_bindings = $(find_cmd) | \
-                          xargs -n200 -P$$(nproc) $(DT_DOC_CHECKER) -u $(srctree)/$(src)
-@@ -43,7 +37,6 @@ quiet_cmd_mk_schema = SCHEMA  $@
- 		      rm -f $$f
- 
- define rule_chkdt
--	$(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
- 	$(call cmd,chk_bindings)
- 	$(call cmd,mk_schema)
- endef
-@@ -55,7 +48,7 @@ override DTC_FLAGS := \
- 	-Wno-graph_child_address \
- 	-Wno-interrupt_provider
- 
--$(obj)/processed-schema-examples.json: $(DT_DOCS) $(src)/.yamllint check_dtschema_version FORCE
-+$(obj)/processed-schema-examples.json: $(DT_DOCS) check_dtschema_version FORCE
- 	$(call if_changed_rule,chkdt)
- 
- ifeq ($(DT_SCHEMA_FILES),)
-diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
-new file mode 100644
-index 000000000000..91dae405ed39
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Shared Peripherals Bus Interface
-+
-+maintainers:
-+  - Shawn Guo <shawnguo@kernel.org>
-+
-+description: |
-+  A simple bus enabling access to shared peripherals.
-+
-+  The "spba-bus" follows the "simple-bus" set of properties, as
-+  specified in the Devicetree Specification.  It is an extension of
-+  "simple-bus" because the SDMA controller uses this compatible flag to
-+  determine which peripherals are available to it and the range over which
-+  the SDMA can access.  There are no special clocks for the bus, because
-+  the SDMA controller itself has its interrupt, and clock assignments.
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        const: fsl,spba-bus
-+  required:
-+    - compatible
-+
-+properties:
-+  $nodename:
-+    pattern: "^bus(@[0-9a-f]+)?$"
-+
-+  compatible:
-+    items:
-+      - const: fsl,spba-bus
-+      - const: simple-bus
-+
-+  '#address-cells':
-+    enum: [ 1, 2 ]
-+
-+  '#size-cells':
-+    enum: [ 1, 2 ]
-+
-+  ranges: true
-+
-+required:
-+  - compatible
-+  - '#address-cells'
-+  - '#size-cells'
-+  - ranges
-+
-+additionalProperties: true
-+
-+type: object
-+
-+examples:
-+  - |
-+    bus@30000000 {
-+        compatible = "fsl,spba-bus", "simple-bus";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        reg = <0x30000000 0x100000>;
-+        ranges;
-+    };
--- 
-2.25.1
+But admittedly at some point it is a matter of preference. Overall
+makes sense to me. Thanks for the fix!
 
+Acked-by: Willem de Bruijn <willemb@google.com>
