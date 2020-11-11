@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC232AF8DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF1F2AF8DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbgKKTSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:18:41 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:46635 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgKKTSl (ORCPT
+        id S1727660AbgKKTSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgKKTSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:18:41 -0500
-Received: by mail-oi1-f193.google.com with SMTP id q206so3379810oif.13;
-        Wed, 11 Nov 2020 11:18:40 -0800 (PST)
+        Wed, 11 Nov 2020 14:18:51 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA90C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:18:49 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id o15so3629832wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:18:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OKGISrzawD1j8o64KuvlnCYWWA4Vpka6a0oknsEcZJw=;
+        b=QIq5tT271m/1hqoWebW5vn4gjE/Uwv/AdBTyMmJwHN2JQe6QEGa0ZyGDwW6pU2iNaT
+         5SWCsDGxemAKPn6UMPHGqapWwXqzT/tOgSvb7qjVq3EmSur3oge2ITFmLWRO1weKQ99e
+         IqxOfQIYjxxcx97KM1S+pB8TwWWjVAxxOd1lpoLpAQqdar/u4S1v5lopqNcn8oPupLJ4
+         JUItXv4lAOfU9oUFxlzWSjpn5+1KdyCLApwweGeHB7g+t8KKTWYHMLFDAXdnKEe7rK5g
+         DA0SDqguVeNm3rnLi/KgQK19t/068ksnmR/iirxFZo/9cE4HHAYkwQzXde0T+p3RAkgQ
+         p4yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=di89ZznidawI0fMPrCxwKTCrqn1VoBZdN86rMbY1IMU=;
-        b=ENz2AS9qObd278EHm1mjKHtmsZvokB9l/x7XeQcajnXck01tyYMd37SReWVE5tzM0m
-         rI2q3H/5I4qJuSCUKinHan7lFyjsphBAwBZQ62gHYNovBKzvWzTXpwWs7Nw9imKOViuG
-         Vj+513ddz3h3wZwn314poP7rCoYVWGpIcJfmQg5MqUyyh4qQtv2lBwnBvoQWzJg8J6qe
-         RIwJ2E9DpfeaMAzBbq2rlwOFInnvQEyfEb4YzCFzb43Av6wbC4+EwHozy6QB/W+plQIC
-         WiY0nsP4P0smGMBs/E1jHLzY59n4gmnd2CvAz8lRxZAjufwC/bHR63hQJS8U8N4XKJ1p
-         QL9g==
-X-Gm-Message-State: AOAM532Y0yaumzkuvtFQA3Vwl8thEmuSi7r1F2PtACwppg6t2JSYMoKB
-        bKrFziLEOeMNIpFb3Ee03A==
-X-Google-Smtp-Source: ABdhPJzE5izdS/sK8OLSXsE4E3wtRh49ZnaKPqcrf64roQtnapt1kpAeuSbgJ27Zyva0dTwPbTN8vg==
-X-Received: by 2002:aca:492:: with SMTP id 140mr3029530oie.108.1605122320334;
-        Wed, 11 Nov 2020 11:18:40 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n15sm693407otj.41.2020.11.11.11.18.39
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OKGISrzawD1j8o64KuvlnCYWWA4Vpka6a0oknsEcZJw=;
+        b=IMKAUWyDHunOx0CyVa1PaiyjLtWI7QSf2BvixzeD7Qb6hZiEZDzb2aPAIvjC0ohjhT
+         MvULaElIDZgnPBFy7rKMRjU2nKpq5u5I1JEUT46tQzSOO75ePSLz+DJx7FVK4V87V4T3
+         NjJ58dz0FryXU788AqLTtGeA6g47PhuMyLagK08XgMRNuAXFURrDHd1XkqbJWKmlfv4l
+         9BiCLso1AcDaoYbzsgDiTUfbnBrmwPBLHa71Mq8D1OPXSRoCRQvbGkZP8IZ4iOiu4Qx6
+         PV55GtfQZp/3cK4DyTyoh58DdxyrPS9EgmmwLNmrEh+pCGMDHEwdHieQCUMWB+YaXQzY
+         XCvA==
+X-Gm-Message-State: AOAM533EUdG+nJ+VAQ6Z3rHwGKoo9fhGVjVlPSxecdSCSWjZ0o0OBwct
+        txFpWTiNSAgCBeCfn+E59CuyWw==
+X-Google-Smtp-Source: ABdhPJy+Ds6tB3o1+P+c80bWAGxCKjWqrwUjd7Kqi8jPSulhfgKnbIsHBik9b8Ze1Rj5O2bj8ybVjQ==
+X-Received: by 2002:adf:f644:: with SMTP id x4mr32047323wrp.5.1605122327874;
+        Wed, 11 Nov 2020 11:18:47 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id c6sm3806761wrh.74.2020.11.11.11.18.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 11:18:39 -0800 (PST)
-Received: (nullmailer pid 1861378 invoked by uid 1000);
-        Wed, 11 Nov 2020 19:18:38 -0000
-Date:   Wed, 11 Nov 2020 13:18:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        yuji2.ishikawa@toshiba.co.jp
-Subject: Re: [PATCH 1/4] dt-bindings: gpio: Add bindings for Toshiba Visconti
- GPIO Controller
-Message-ID: <20201111191838.GA1860931@bogus>
-References: <20201111172553.1369282-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201111172553.1369282-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Wed, 11 Nov 2020 11:18:47 -0800 (PST)
+Date:   Wed, 11 Nov 2020 20:18:41 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 17/20] kasan: clarify comment in __kasan_kfree_large
+Message-ID: <20201111191841.GS517454@elver.google.com>
+References: <cover.1605046662.git.andreyknvl@google.com>
+ <dd492a97ed68200b1d7e2dce55ed9a7790525396.1605046662.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111172553.1369282-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <dd492a97ed68200b1d7e2dce55ed9a7790525396.1605046662.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 02:25:50 +0900, Nobuhiro Iwamatsu wrote:
-> Add bindings for the Toshiba Visconti GPIO Controller.
+On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> Currently it says that the memory gets poisoned by page_alloc code.
+> Clarify this by mentioning the specific callback that poisons the
+> memory.
 > 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Link: https://linux-review.googlesource.com/id/I1334dffb69b87d7986fab88a1a039cc3ea764725
 > ---
->  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+>  mm/kasan/common.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 40ff3ce07a76..4360292ad7f3 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -436,5 +436,5 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
+>  {
+>  	if (ptr != page_address(virt_to_head_page(ptr)))
+>  		kasan_report_invalid_free(ptr, ip);
+> -	/* The object will be poisoned by page_alloc. */
+> +	/* The object will be poisoned by kasan_free_pages(). */
+>  }
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
 > 
-
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml: properties:gpio-ranges: 'truei' is not of type 'object', 'boolean'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml: ignoring, error in schema: properties: gpio-ranges
-warning: no schema found in file: ./Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1398028
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
