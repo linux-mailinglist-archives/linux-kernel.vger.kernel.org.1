@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339B52AF906
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781362AF90B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgKKT1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgKKT1A (ORCPT
+        id S1727171AbgKKT2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:28:17 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53048 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbgKKT2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:27:00 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F068FC0613D1;
-        Wed, 11 Nov 2020 11:26:59 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id l5so3490387edq.11;
-        Wed, 11 Nov 2020 11:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bMLjI/601C9OPQNA+LqIrQMDDAlDxJCIUFBAsIL0uwg=;
-        b=h4IYp7gble1Q0vh1fdFK2sJupdlvWR5d0OIhAe6P5UgZJy1fZvGi94CO54o5vE13t/
-         r77GkOUsUtPP7qmQU+ZVPii+N188Lr97JOAz2L06eFxv5YO3bkrlZH0zZwhVKtbaDoly
-         GDpwZ72xniQ9c4hqmscXHQ3XMD1sA2rE0KqrGNEIMhMA8WS9pTHabamdU/43SqZ4gS0W
-         vcZzR8O6+5nR5DCuN6PMtYFjdI+IRul12llL3HYSlxq9j6n1/W25a5jrKDWQW2s4F/Yb
-         8Uj2ANCjF9fFpjwS0T2gF5O4bDXVxbXUSHTzQugsr1zhdqb+NGdU5UBXfWqkSLpxcQ89
-         nz2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bMLjI/601C9OPQNA+LqIrQMDDAlDxJCIUFBAsIL0uwg=;
-        b=qohmdC+AK71qKnbKyeXCs3v/8ALedXSwki6BGKPl9ny6W+MaWqOrXjccN517OtmB+v
-         YOVpOqQfW0fF/NyZFo/YKEc0JuA5DWrNXlO528t50npU0lKGUXK8qxU8jT0P1t/qRvnA
-         9fw0dE4HCXdCcXOZ0sEojL1j0ArSXt1aSHQhZEjtylkHOJnelF1DqIRsc7mpAjq3aQvq
-         JxoQhXjY7XP7u6kINdN3jaNOn7edEDFkP1qqBQTXqLagIZNkap5s0Tex9hDMHjINjjRM
-         mSVVaCbpIM0btKos8YgIRqmWsr9OWXbi+MQxFaUGbKmAQ8vcUjt71GB2nS2F8fsKMLsd
-         PqOA==
-X-Gm-Message-State: AOAM532gleKHk1cc4hEJ1Yici7aoOldXdEHtnTX2t3nXy7Rk8W1a2OLc
-        noaVnc6+/0B2h4brJGSSTt//yvEcr9eaa8GawLGt6tVJ2f8=
-X-Google-Smtp-Source: ABdhPJxwX1ejaYw2R2D2HuKudT6+qpe+Dp+KKAb0PZFN9O7AJvhP8s8QpEfz4dxZf82tDXK/9t8ojLT7bvfOi4z15kE=
-X-Received: by 2002:a50:eb0a:: with SMTP id y10mr1199265edp.342.1605122818353;
- Wed, 11 Nov 2020 11:26:58 -0800 (PST)
+        Wed, 11 Nov 2020 14:28:17 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ABJS8D4077839;
+        Wed, 11 Nov 2020 13:28:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605122888;
+        bh=fMZ9y2f+W3hTXP4idBHxHjT/7PRMSuQUkiYuPFk+Xg0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=p1sIqPrFsJGQ3L/nuF07Xd6FUGrr4ORU0fPGScteDuOyUuVJM3mQ+Pe3M/blZ4AYw
+         CMmKx2v21ytQPfT9W57aqmy7Casfpiw95FLE0ITqqXIumZClkSYUQUaEa3dWY4YpA5
+         KN9BelalQumcBIHL7KH/GnE2Lb8U6XweZQc+SJ/4=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ABJS8VM051366
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Nov 2020 13:28:08 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
+ Nov 2020 13:28:08 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 11 Nov 2020 13:28:08 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ABJS4W1084521;
+        Wed, 11 Nov 2020 13:28:04 -0600
+Subject: Re: [PATCHv2] bus: ti-sysc: Fix bogus resetdone warning on enable for
+ cpsw
+To:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>
+CC:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201110092127.46638-1-tony@atomide.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <f7be510f-c105-54a1-9446-56687df97668@ti.com>
+Date:   Wed, 11 Nov 2020 21:28:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <000000000000fe575905b3cff92c@google.com> <bf31020f4e50b303fd0dd3dfda0e50de79ed25db.camel@redhat.com>
- <CAAeHK+yLgDYOS35sWT8=4_d-gZKU_B10D9ZEBPZDC1P6MO2D6Q@mail.gmail.com>
-In-Reply-To: <CAAeHK+yLgDYOS35sWT8=4_d-gZKU_B10D9ZEBPZDC1P6MO2D6Q@mail.gmail.com>
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-Date:   Wed, 11 Nov 2020 19:26:47 +0000
-Message-ID: <CAA5enKY8mBicpc7kZKKLG5LeVFhVJtRQ73MYVFM0Az2bbiGv8g@mail.gmail.com>
-Subject: Re: linux-next boot error: BUG: unable to handle kernel NULL pointer
- dereference in mempool_init_node
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Qian Cai <cai@redhat.com>,
-        syzbot <syzbot+2d6f3dad1a42d86a5801@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110092127.46638-1-tony@atomide.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 at 17:44, Andrey Konovalov <andreyknvl@google.com> wrote:
-> I'll try to reproduce this and figure out the issue. Thanks for letting us know!
-
-I hope you don't mind me diving in here, I was taking a look just now
-and managed to reproduce this locally - I bisected the issue to
-105397399 ("kasan: simplify kasan_poison_kfree").
-
-If I stick a simple check in as below it fixes the issue, so I'm
-guessing something is violating the assumptions in 105397399?
 
 
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 7a94cebc0324..16163159a017 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -387,6 +387,11 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
-        struct page *page;
+On 10/11/2020 11:21, Tony Lindgren wrote:
+> Bail out early from sysc_wait_softreset() just like we do in sysc_reset()
+> if there's no sysstatus srst_shift to fix a bogus resetdone warning on
+> enable as suggested by Grygorii Strashko <grygorii.strashko@ti.com>.
+> 
+> We do not currently handle resets for modules that need writing to the
+> sysstatus register. If we at some point add that, we also need to add
+> SYSS_QUIRK_RESETDONE_INVERTED flag for cpsw as the sysstatus bit is low
+> when reset is done as described in the am335x TRM "Table 14-202
+> SOFT_RESET Register Field Descriptions"
+> 
+> Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
+> Suggested-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
 
-        page = virt_to_head_page(ptr);
-+
-+       if (!PageSlab(page)) {
-+               return;
-+       }
-+
-        ____kasan_slab_free(page->slab_cache, ptr, ip, false);
- }
+Acked-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
+> 
+> Changes since v1:
+> - Drop quirk handling and use fix suggested by Grygorii
+> 
+> ---
+>   drivers/bus/ti-sysc.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+> --- a/drivers/bus/ti-sysc.c
+> +++ b/drivers/bus/ti-sysc.c
+> @@ -227,6 +227,9 @@ static int sysc_wait_softreset(struct sysc *ddata)
+>   	u32 sysc_mask, syss_done, rstval;
+>   	int syss_offset, error = 0;
+>   
+> +	if (ddata->cap->regbits->srst_shift < 0)
+> +		return 0;
+> +
+>   	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
+>   	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
+>   
+> 
 
---
-Lorenzo Stoakes
-https://ljs.io
+-- 
+Best regards,
+grygorii
