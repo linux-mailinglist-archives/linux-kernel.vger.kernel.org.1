@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFE82AEC9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A132AECA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgKKJGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:06:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726036AbgKKJGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:06:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605085588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MweZ+zDjGfskRd7/rs12EFNBHUajWWPBiHREeUxcr1E=;
-        b=VatQ7YkQM5yuvwtWjxBBQmct0wbpy8moN436dfSvo95q7Fw021BwyYUZ1i+hEdnpnlI0Mm
-        2yIrc17H9rl0AaQwSWqLNJ7MjiMD3IT7kFhJRtliwKzypU98A5HNsGFSvIAr8qdTDAK9vT
-        LzTbdbocatOzuK3zPDcZFOpgbpDZSxk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-W0ZwdTqeNTS5jCcAKWO8Lg-1; Wed, 11 Nov 2020 04:06:26 -0500
-X-MC-Unique: W0ZwdTqeNTS5jCcAKWO8Lg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6F0F1017DC3;
-        Wed, 11 Nov 2020 09:06:23 +0000 (UTC)
-Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 773225B4B6;
-        Wed, 11 Nov 2020 09:06:21 +0000 (UTC)
-Subject: Re: [PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages()
- with init_on_alloc=1 or __GFP_ZERO
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20201110193240.25401-1-david@redhat.com>
- <20201111084738.GT12240@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <4ebc711e-7fbc-62aa-b88f-3d6ffa9379ff@redhat.com>
-Date:   Wed, 11 Nov 2020 10:06:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20201111084738.GT12240@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726487AbgKKJHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:07:18 -0500
+Received: from mga09.intel.com ([134.134.136.24]:42094 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726134AbgKKJHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:07:10 -0500
+IronPort-SDR: W8k9R+wjSGUb6ufrRf15fdldfHIVev2qlTyi/noT3/BhLyK1sk3DUf5mkjWY5xWUm/qTEDmGBz
+ Asuupj0FfOeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="170278446"
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="170278446"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 01:06:57 -0800
+IronPort-SDR: dJfuCRP1ekrW/i4z+42JmGaOEGTgMcocjw6zXbR2C0MGupIYLRByOp6cNobAslQ9i9rLWUlZ3q
+ sZxIs18ayriw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="366175591"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP; 11 Nov 2020 01:06:56 -0800
+Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 11 Nov 2020 01:06:55 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 11 Nov 2020 01:06:55 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 11 Nov 2020 01:06:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n5e+E2dmTMa5JeSp2tI5Or8uk4aZNu7QAoiDCGlkahslIkJoE49eHwvMZX1wYhMe9SFM5D4OIyHQoZAC9Zn4Y/fYA2FAavEFouW4770URvqIlZWD46/YaisXSEunwCH57jXi27HQrZnzncmX7NFSzcUOkNBRJ2TjdrvlK5VXEt10s6/NyxuIS8ylSvw6v9F47V5RrX2jdeATRBK2xkVg0pImYbuEwEO2xZ8LLyhga1/5Uho+h47I6ixcoVC2Wwvst/CooNaYWWYJgMKKHIwUQ4F9FkqHWrN7Bmf7oVZ/9eEe/fvnPJakPkzbLKXOzH1rccd36FvHp+Z4EUYsM/9loA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3Z1NIwosKV52QIbiX8gBad1C+3JSZ513L4cF02XRTt4=;
+ b=SXzNoNNSm9LfjPxvZhcWmNLB3RBRX8oO3jfrfzH/C7yi0cN/1eslQgFVlUOZl8m7+fEaiKNHf+hTux6WJkh8r31daXwxBd6Co5pc7hLz0L/uY1qwZIo6/c3SsnvsZ3uVStAle6eQfvlgy+zKEl+xMu6MgEso3vvNWNO0mhP0o9yOMbBZeQwuHi+8Nehjt/BaenEUwneN3jfy80uAcp9GdCYouiwsLDOHkZj42Ghnsi4UgdcZJPWlyouaIAC/w8qgZoy8x8Em2Q0AIjCBm7iFiQ5iriOZniGUOSntEq/GTmzd3PJ595o0/OQiP/gZ6qf7Ns1lgxvnv+uOSadsD4aE/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3Z1NIwosKV52QIbiX8gBad1C+3JSZ513L4cF02XRTt4=;
+ b=cIJ3fQbg2xwkCC3A0znnmA2F6/xx8MlW1t8+qK+nMbv2uHJbj8akj8ld1TUWL1VkyuuTLXa9cWfr9yDqcIfM7ERqbxiyKtri7tt8nxT2n21qbRjnkQa75vBiusX8zxJ1aAHG4HiHebYueKvl6Slmgtye6z8zt03XJO8lvf4K1bQ=
+Received: from BYAPR11MB3207.namprd11.prod.outlook.com (2603:10b6:a03:7c::14)
+ by SJ0PR11MB5120.namprd11.prod.outlook.com (2603:10b6:a03:2d1::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 11 Nov
+ 2020 09:06:54 +0000
+Received: from BYAPR11MB3207.namprd11.prod.outlook.com
+ ([fe80::f9c7:5d2b:4417:bb33]) by BYAPR11MB3207.namprd11.prod.outlook.com
+ ([fe80::f9c7:5d2b:4417:bb33%3]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
+ 09:06:54 +0000
+From:   "Coelho, Luciano" <luciano.coelho@intel.com>
+To:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Stern, Avraham" <avraham.stern@intel.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ wireless-drivers tree
+Thread-Topic: linux-next: Signed-off-by missing for commit in the
+ wireless-drivers tree
+Thread-Index: AQHWt6ZRZJkAPH80MUGNjJhx+kxqmKnCmJx5gAAMFYA=
+Date:   Wed, 11 Nov 2020 09:06:54 +0000
+Message-ID: <eec988364ca538451815a43dae655cd456e9e95f.camel@intel.com>
+References: <20201111081257.30418470@canb.auug.org.au>
+         <87eel0cnff.fsf@codeaurora.org>
+In-Reply-To: <87eel0cnff.fsf@codeaurora.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.151.167]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1277f453-5b2f-437a-4c44-08d8862122b9
+x-ms-traffictypediagnostic: SJ0PR11MB5120:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB5120D9517AE29C78FA717C3C90E80@SJ0PR11MB5120.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ABhCHRrAY9s4x8nzEAIoQYewtdRFw9L+fGkaY1qgv5ojFAL9Dx7e9hBnO+PO8QlGeZC7wzRsZdO8pbvADBES3T252hdhvVP9BEiFG2D3/WLLIYmkGA2DK1hXQuEK0ix1a47DGU1Fooku4ODGSObdVaft86pJEwwEsEVZHN8a46ZoWUJSpGJxjXwTXXvCSBeambeTkdlfyTxpteqN6zugZet4f5joifMcf2nTx3f2TwtQ8np0wxFxiZMxc6EiIuBzfr8BpFZVX8sQuA5CUNgurAv2yxIDsES3ngFwqe/FyBSCqvWBcaSRMFxAEQCza96TnXD4/JxMy1Ink3WWbW6WPA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3207.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(396003)(39860400002)(5660300002)(8936002)(8676002)(66946007)(66446008)(66556008)(54906003)(6486002)(4001150100001)(2616005)(76116006)(2906002)(86362001)(26005)(316002)(110136005)(66476007)(36756003)(64756008)(478600001)(91956017)(186003)(6512007)(4326008)(107886003)(71200400001)(6506007)(4744005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 3v8faXHwcKE1dOr3Il7E6c2BxUQB/wr9f6VZdUdLxZlKqfx90zsirurhWp32b7z4tek8rEs0a1FfVnJLKVo6peE/wiHDKLnhqtkOz/Lsy8Upv56nj+a0M5aQsizS8KRHxVeWjyZhIRzL4GbpDtFa5SX1M62/Yt25lF0MHWhIl+x5FPfk6dGSxfy4p8x1x4Mdx2catI3fv7FCrtJD4El9g0wPV+f0H0XX1QIOWg5W1dVy2FkqXXLGuwMJ3C8v1i/nqRRJh+N0Bh8Bq7Z/CwNhsZM4Fk1PlNHC0P6nH26GkHzzk6/WXaytnqYSVcRppVUO5+9QT7xJkBf4xzSfBQND/CfZJakDNGlfMV8fCEkGK4DW3GbdcgTzLJY0uc8Eg40Hyu9ldZY9pU5Sy6AF24gruhf7f6nKxx9K+GblPFeFdiUqBQglREQGhLyD+YMtatuWSbv9cxxaMu94tXc+67xLHnbCArJ+rM1eXGZUBjdGVOr7/dnmJpdWpp13I1WZ3+po/2C6LKv6K61015wgZX6o/BwmEgUFny6iR3QC63CsPokpd5kZD92taeLJlD1Tvh/p/Rd39bDz9MP/A8vb6c/Uo6neouq4IX5w9gW19VaARAveXrNoXbQx2rHz8uGcFffgjVPHaIsJj8FGm+Lx3yvNKVxr0/AunHxoEKqkiv8KYVLQpJZJNqqBpUsz8/CsDeFuAJVe1G8alKzulVpXtFUSuLLZnPk4M3GzgqdLgPUWoIVLbXcqXObr95BQA3WSBo+OALCjwMqt34Q6prUxVSdwseYWbLwXIIhdxbMgE59hVcr9gyDQF6f7/1+pe+luIDkzQWBieVDmQiT6veP/a3fZTV7sSkOW9DSiODZD74BqZVZz3zOkR16DF1I0hF7nFF/eYxFTh2QSReBNWLIuTj2pRw==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <51133044AB79BA4A93880C4EC1AA012E@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3207.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1277f453-5b2f-437a-4c44-08d8862122b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2020 09:06:54.7047
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EmJO3WLbq9j8usR6YfvOHRTkDWKXBLffZ3FYiKhR2jI9a1zJNRtLJT7ihK6BKECzOe40YEsUWcRfZ9OnZC3VCVQwnN8dMqwoFT62QqOgbsY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5120
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.11.20 09:47, Michal Hocko wrote:
-> On Tue 10-11-20 20:32:40, David Hildenbrand wrote:
->> commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
->> init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
->> leaving the buddy via alloc_pages() and friends to be
->> initialized/cleared/zeroed on allocation.
->>
->> However, the same logic is currently not applied to
->> alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
->> with init_on_alloc=1 and init_on_free=0. Let's also properly clear
->> pages on that allocation path and add support for __GFP_ZERO.
-> 
-> AFAIR we do not have any user for __GFP_ZERO right? Not that this is
-
-Sorry, I had extended information under "---" but accidentally 
-regenerated the patch before sending it out.
-
-__GFP_ZERO is not used yet. It's intended to be used in 
-https://lkml.kernel.org/r/20201029162718.29910-1-david@redhat.com
-and I can move that change into a separate patch if desired.
-
-> harmful but it is better to call that explicitly because a missing
-> implementation would be a real problem and as such a bug fix.
-> 
-> I am also not sure handling init_on_free at the higher level is good.
-> As we have discussed recently the primary point of this feature is to
-> add clearing at very few well defined entry points rather than spill it over
-> many places. In this case the entry point for the allocator is
-> __isolate_free_page which removes pages from the page allocator. I
-> haven't checked how much this is used elsewhere but I would expect
-> init_on_alloc to be handled there.
-
-Well, this is the entry point to our range allocator, which lives in 
-page_alloc.c - used by actual high-level allocators (CMA, gigantic 
-pages, etc). It's just a matter of taste where we want to have that 
-handling exactly inside our allocator.
-
-isolate_freepages_range()->split_map_pages() does the post_alloc_hook 
-call. As we certainly don't want to zero pages during compaction, we 
-could either pass the gfp_mask/"bool clear" down to that functions and 
-handle it in there, or handle it in isolate_freepages_range(), after the 
-->split_map_pages() call. Whatever you prefer.
-
-Thanks!
-
--- 
-Thanks,
-
-David / dhildenb
-
+T24gV2VkLCAyMDIwLTExLTExIGF0IDEwOjIzICswMjAwLCBLYWxsZSBWYWxvIHdyb3RlOg0KPiBT
+dGVwaGVuIFJvdGh3ZWxsIDxzZnJAY2FuYi5hdXVnLm9yZy5hdT4gd3JpdGVzOg0KPiANCj4gPiBD
+b21taXQNCj4gPiANCj4gPiAgIDk3Y2MxNjk0M2YyMyAoIml3bHdpZmk6IG12bTogd3JpdGUgcXVl
+dWVfc3luY19zdGF0ZSBvbmx5IGZvciBzeW5jIikNCj4gPiANCj4gPiBpcyBtaXNzaW5nIGEgU2ln
+bmVkLW9mZi1ieSBmcm9tIGl0cyBhdXRob3IuDQo+IA0KPiBEb2gsIG1pc3NlZCB0aGF0LiBCdXQg
+YXMgaXQgaGFzIHMtby1iIGZyb20gSm9oYW5uZXMgYW5kIEx1Y2EsIGJvdGggYWxzbw0KPiBmcm9t
+IEludGVsLCBJIHRoaW5rIEknbGwgbGVhdmUgaXQgYXMgaXMgc28gdGhhdCBJIGRvbid0IG5lZWQg
+dG8gcmViYXNlDQo+IHdpcmVsZXNzLWRyaXZlcnMuDQoNCkhtbW0sIHNvcnJ5LiAgU29tZXRoaW5n
+IHdlbnQgd3Jvbmcgd2l0aCBteSBzY3JpcHQuICBJJ2xsIGludmVzdGlnYXRlDQppdC4NCg0KVGhl
+IGFjdHVhbCBhdXRob3Igb2YgdGhpcyBwYXRjaCBpcyBKb2hhbm5lcywgYnV0IGZvciBzb21lIHJl
+YXNvbiBteQ0Kc2NyaXB0IGhhcyBhcnRpZmljaWFsbHkgc2V0IGl0IHRvIEF2aS4NCg0KLS0NCkNo
+ZWVycywNCkx1Y2EuDQo=
