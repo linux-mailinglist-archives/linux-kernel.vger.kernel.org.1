@@ -2,137 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A093A2AF396
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F992AF3A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgKKObv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:31:51 -0500
-Received: from mga01.intel.com ([192.55.52.88]:33114 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgKKObv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:31:51 -0500
-IronPort-SDR: aHq9fg0BIOu273VAnueNRIog0IS3c+N0hHAJ75gh73nMNCGzoPVmOtXTO7EUs/Dpr6ZPi6kQwc
- Q+38XHxVcNHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="188133466"
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="188133466"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 06:31:48 -0800
-IronPort-SDR: /GAd6FrjIoMAvecKIXIlQS01mub9ZzqUpUEZ60UAqJFlgUltR/WnRbSmIucFMm3JZaBYrMnNoR
- 5IvMC625ywHQ==
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="541821140"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 06:31:45 -0800
-Received: by lahna (sSMTP sendmail emulation); Wed, 11 Nov 2020 16:31:43 +0200
-Date:   Wed, 11 Nov 2020 16:31:43 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: How to enable auto-suspend by default
-Message-ID: <20201111143143.GV2495@lahna.fi.intel.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
- <X6p6ubTOoMPUPPXi@kroah.com>
- <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <20201110172517.GC2495@lahna.fi.intel.com>
- <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
+        id S1727010AbgKKOc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgKKOc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:32:27 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A831C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:32:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TtCOeNfbgyHwaJMtNOuyf1yYRBxmDFdk4H1h/0tq1mc=; b=fT24rdha+MjBwGsRfXVOMJ9For
+        ubSu7UxjKQp9j3ik1tVzsOrOXL5GgPSRIXz9y5S702YU4Al7SLZKnaEgMTq4GPWqjT29OHGe0jMik
+        bsAslQdCz6xWgKanm02h+0T37cWAG9b8mrLqA9ZNESn37uerGttkGw+q0vqu+Y5ngSmQuASnNyOnT
+        YXrIFse1pktx5U66VUfIqdTZR2+45S8ec6QzObs280vFZUfxvDBAD27dxQ7QPkLAUnm8ZeYJmU0A4
+        oyxfF80Hnivf58s9JraxihJsXNUis7pXolXsqSEsOe+31mAKinez+atjqxQpSC1F5I5YuPvc8pyHn
+        TqFdiyzA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcrAb-0007Ei-7T; Wed, 11 Nov 2020 14:32:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6408304D58;
+        Wed, 11 Nov 2020 15:32:18 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 891152BDF96A2; Wed, 11 Nov 2020 15:32:18 +0100 (CET)
+Date:   Wed, 11 Nov 2020 15:32:18 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Phil Auld <pauld@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH 2/5] context_tracking:  Don't implement
+ exception_enter/exit() on CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK
+Message-ID: <20201111143218.GU2611@hirez.programming.kicks-ass.net>
+References: <20201027150827.148821-1-frederic@kernel.org>
+ <20201027150827.148821-3-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201027150827.148821-3-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 12:27:32PM +0100, Hans de Goede wrote:
-> Hi,
+On Tue, Oct 27, 2020 at 04:08:24PM +0100, Frederic Weisbecker wrote:
+> An architecture that provides this Kconfig feature doesn't need to
+> store the context tracking state on the task stack because its entry
+> code has been sanitized such that fragile path aren't preemptible
+> and special use of tracing and RCU read side critical sections in these
+> areas have been explicitly annotated.
 > 
-> On 11/10/20 6:25 PM, Mika Westerberg wrote:
-> > On Tue, Nov 10, 2020 at 04:02:33PM +0000, Limonciello, Mario wrote:
-> >>>
-> >>> On Tue, Nov 10, 2020 at 11:57:07AM +0100, Bastien Nocera wrote:
-> >>>> Hey,
-> >>>>
-> >>>> systemd has been shipping this script to enable auto-suspend on a
-> >>>> number of USB and PCI devices:
-> >>>>
-> >>> https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspen
-> >>> d_rules.py
-> >>>>
-> >>>> The problem here is twofold. First, the list of devices is updated from
-> >>>> ChromeOS, and the original list obviously won't be updated by ChromeOS
-> >>>> developers unless a device listed exists in a ChromeBook computer,
-> >>>> which means a number of devices that do support autosuspend aren't
-> >>>> listed.
-> >>>>
-> >>>> The other problem is that this list needs to exist at all, and that it
-> >>>> doesn't seem possible for device driver developers (at various levels
-> >>>> of the stack) to opt-in to auto-suspend when all the variants of the
-> >>>> device (or at least detectable ones) support auto-suspend.
-> >>>
-> >>> A driver can say they support autosuspend today, but I think you are
-> >>> concerned about the devices that are controlled by class-compliant
-> >>> drivers, right?  And for those, no, we can't do this in the kernel as
-> >>> there are just too many broken devices out there.
-> >>>
-> >>
-> >> I guess what Bastien is getting at is for newer devices supported by class
-> >> drivers rather than having to store an allowlist in udev rules, can we set
-> >> the allowlist in the kernel instead.  Then distributions that either don't
-> >> use systemd or don't regularly update udev rules from systemd can take
-> >> advantage of better defaults on modern hardware.
-> >>
-> >> The one item that stood out to me in that rules file was 8086:a0ed.
-> >> It's listed as "Volteer XHCI", but that same device ID is actually present
-> >> in an XPS 9310 in front of me as well and used by the xhci-pci kernel module.
-> >>
-> >> Given we're effectively ending up with the combination of runtime PM turned
-> >> on by udev rules, do we need something like this for that ID:
-> >>
-> >> https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400d8a
-> >>
-> >> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
-> > 
-> > I think this one is the TGL PCH xHCI. The quirk currently for xHCI
-> > controllers that are part of the TCSS (Type-C SubSystem) where it is
-> > important to put all devices into low power mode whenever possible,
-> > otherwise it keeps the whole block on.
-> 
-> Note that there are currently some IDs missing from the xHCIs which
-> are part of the TCSS too. At least the id for the xHCI in the thunderbolt
-> controller on the Lenovo T14 gen 1 is missing. I started a discussion
-> about extending the kernel quirk list for this vs switching to hwdb
-> a while a go:
-> 
-> https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-cf8960651086@redhat.com/
-> 
-> The conclusion back then was to switch to hwdb, but I never got around to this.
+> Hence the exception_enter()/exception_exit() couple doesn't need to be
+> implemented in this case.
 
-The reason I've added these to the xHCI driver is that it works even if
-you are running some really small userspace (like busybox). Also for the
-xHCI in TCSS we know for sure that it fully supports D3cold.
+Could you please explain what exception_{enter,exit}() actually do, then
+explain what is required to make it superfluous? Because as is, I don't
+have enough information to verify the claims made.
 
-(The one you refer above is actually mistake from my side as I never
- tested Alpine Ridge LP controller which I think this is).
-
-> > Typically we haven't done that for PCH side xHCI controllers though, but
-> > I don't see why not if it works that is. Adding Mathias to comment more
-> > on that since he is the xHCI maintainer.
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Phil Auld <pauld@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  include/linux/context_tracking.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> If we are also going to enable this for the non TCSS Intel XHCI controllers,
-> maybe just uncondtionally enable it for all Intel XHCI controllers, or
-> if necessary do a deny-list for some older models and enable it for anything
-> not on the deny-list (so all newer models). That should avoid the game of
-> whack-a-mole which we will have with this otherwise.
-
-This is really up to Mathias to decide. I'm fine either way :)
+> diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+> index d53cd331c4dd..bceb06498521 100644
+> --- a/include/linux/context_tracking.h
+> +++ b/include/linux/context_tracking.h
+> @@ -51,7 +51,8 @@ static inline enum ctx_state exception_enter(void)
+>  {
+>  	enum ctx_state prev_ctx;
+>  
+> -	if (!context_tracking_enabled())
+> +	if (IS_ENABLED(CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK) ||
+> +	    !context_tracking_enabled())
+>  		return 0;
+>  
+>  	prev_ctx = this_cpu_read(context_tracking.state);
+> @@ -63,7 +64,8 @@ static inline enum ctx_state exception_enter(void)
+>  
+>  static inline void exception_exit(enum ctx_state prev_ctx)
+>  {
+> -	if (context_tracking_enabled()) {
+> +	if (!IS_ENABLED(CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK) &&
+> +	    context_tracking_enabled()) {
+>  		if (prev_ctx != CONTEXT_KERNEL)
+>  			context_tracking_enter(prev_ctx);
+>  	}
+> -- 
+> 2.25.1
+> 
