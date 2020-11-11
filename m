@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21CC2AF7E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7368E2AF7E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKKS16 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 13:27:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53368 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgKKS1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:27:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 573E2ABCC;
-        Wed, 11 Nov 2020 18:27:51 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id f0408218;
-        Wed, 11 Nov 2020 18:28:02 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] ceph: fix cross quota realms renames with new
- truncated files
-References: <20201111153915.23426-1-lhenriques@suse.de>
-        <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org>
-Date:   Wed, 11 Nov 2020 18:28:02 +0000
-In-Reply-To: <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org> (Jeff
-        Layton's message of "Wed, 11 Nov 2020 12:40:35 -0500")
-Message-ID: <87361feojx.fsf@suse.de>
+        id S1727468AbgKKS2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:28:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727442AbgKKS2P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:28:15 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CF0C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:28:15 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id k1so2845386ilc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qP0MFJQneS6o093B0Yu5YM9hNevkDE0K7N59r8X3Qgk=;
+        b=NdWu3R/qDj3xIk1uD8EGdw74GeMEZbhHrtP7L0W1UogKdu5CnXplA+z6KCyeoSeFfD
+         LwqFxBIz/32jJUHw7DI2JbEUfwzaOvj9inf7YQymSN9dM2zpwtKRBIgj3ASRcIhHKVQQ
+         gYOrYR0mDDpOFIbqL+Y9DUJ2+8XTWQJkASUAg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qP0MFJQneS6o093B0Yu5YM9hNevkDE0K7N59r8X3Qgk=;
+        b=F9VxMNRM5ezXZd2CgmDzLUwPc/Q8+E+XB/ZwfO32p0mfACegiHqK6HfqJJOdRkTtkN
+         TmToyBa3clobyuF+Dpw8LJscODeko0bSFXswsY/rNF0ITIWAm4YNLmsLQLhou6jsxBe3
+         cOF8Jm56ZlIh1Xy8xtayK5wDHdxcUUyNHXcXcueNq86e/dQ29NTiglir5igM1aym/iYr
+         Q1QymH54hoK/TJBWbxJpxwnWlxTB0LbVWbmtdfiWnMSvBbHVtRedswse0P5s6wBhexcL
+         cXY6RX3WQTKmZEf0x5yJKw8OHdB6eL2iLZZQJWJ0vCj0cnhuRK2kHR3QhX2j18VbNkZP
+         IV4A==
+X-Gm-Message-State: AOAM532HVIaPHLQ5uufNR1UsSCQcz/vdY+jttA3hyLhHuFFL4gP9G+Er
+        gDI2hrXexeA0sf43bXsTlh5GzQ==
+X-Google-Smtp-Source: ABdhPJzozMlBWriwx1fqAHsI5fF36/jcoQtAa9L8fGDGnYBPwHzc/1bxV/EvkmSNQ43tbU0f9kbGlA==
+X-Received: by 2002:a92:c88c:: with SMTP id w12mr20906915ilo.204.1605119295155;
+        Wed, 11 Nov 2020 10:28:15 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o124sm1655462ila.62.2020.11.11.10.28.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 10:28:14 -0800 (PST)
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <20201111082320.GR2611@hirez.programming.kicks-ass.net>
+ <7207fad6-6ca4-529b-60a8-63db998d10d9@linuxfoundation.org>
+ <20201111160411.GF2628@hirez.programming.kicks-ass.net>
+ <3fccb8d5-825a-a283-7b7e-6193e0c90237@linuxfoundation.org>
+ <20201111175031.GI2628@hirez.programming.kicks-ass.net>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <0aed620f-911d-4715-bd41-a6b9a37862b4@linuxfoundation.org>
+Date:   Wed, 11 Nov 2020 11:28:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201111175031.GI2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> writes:
+On 11/11/20 10:50 AM, Peter Zijlstra wrote:
+> On Wed, Nov 11, 2020 at 10:34:05AM -0700, Shuah Khan wrote:
+> 
+>> Not sure what to make of the 6080 atomic_read()s and 3413
+>> atomic_inc()s, some of which might be assuming uniqueness
+>> guarantee.
+> 
+> Well, clearly you just did: git grep atimic_{read,inc}() | wc -l and
+> didn't look at the usage. Equally clearly there can be bugs. Also
+> evidently much of those are not in fact sequence numbers.
+> 
 
-> On Wed, 2020-11-11 at 15:39 +0000, Luis Henriques wrote:
->> When doing a rename across quota realms, there's a corner case that isn't
->> handled correctly.  Here's a testcase:
->> 
->>   mkdir files limit
->>   truncate files/file -s 10G
->>   setfattr limit -n ceph.quota.max_bytes -v 1000000
->>   mv files limit/
->> 
->> The above will succeed because ftruncate(2) won't result in an immediate
->> notification of the MDSs with the new file size, and thus the quota realms
->> stats won't be updated.
->> 
->> This patch forces a sync with the MDS every time there's an ATTR_SIZE that
->> sets a new i_size, even if we have Fx caps.
->> 
->> Cc: stable@vger.kernel.org
->> Fixes: dffdcd71458e ("ceph: allow rename operation under different quota realms")
->> URL: https://tracker.ceph.com/issues/36593
->> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> ---
->>  fs/ceph/inode.c | 11 ++---------
->>  1 file changed, 2 insertions(+), 9 deletions(-)
->> 
->> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
->> index 526faf4778ce..30e3f240ac96 100644
->> --- a/fs/ceph/inode.c
->> +++ b/fs/ceph/inode.c
->> @@ -2136,15 +2136,8 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr)
->>  	if (ia_valid & ATTR_SIZE) {
->>  		dout("setattr %p size %lld -> %lld\n", inode,
->>  		     inode->i_size, attr->ia_size);
->> -		if ((issued & CEPH_CAP_FILE_EXCL) &&
->> -		    attr->ia_size > inode->i_size) {
->> -			i_size_write(inode, attr->ia_size);
->> -			inode->i_blocks = calc_inode_blocks(attr->ia_size);
->> -			ci->i_reported_size = attr->ia_size;
->> -			dirtied |= CEPH_CAP_FILE_EXCL;
->> -			ia_valid |= ATTR_MTIME;
->> -		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
->> -			   attr->ia_size != inode->i_size) {
->> +		if ((issued & (CEPH_CAP_FILE_EXCL|CEPH_CAP_FILE_SHARED)) ||
->> +		    (attr->ia_size != inode->i_size)) {
->>  			req->r_args.setattr.size = cpu_to_le64(attr->ia_size);
->>  			req->r_args.setattr.old_size =
->>  				cpu_to_le64(inode->i_size);
->
-> Hmm...this makes truncates more expensive when we have caps. I'd rather
-> not do that if we can help it.
+Looking at the usage and classifying which usages are sequence
+numbers is part of may audit and we are covered. Your explanation
+and this discussion helps with do a better audit of these usages.
 
-Yeah, as I mentioned in the tracker, there's indeed a performance impact
-with this fix.  That's what made me add the RFC in the subject ;-)
+> All I'm saying is that if you want a sequence number, inc_return (or
+> fetch_inc) is the only sane option.
+> 
 
-> What about instead having the client mimic a fsync when there is a
-> rename across quota realms? If we can't tell that reliably then we could
-> also just do an effective fsync ahead of any cross-directory rename?
+Cool.
 
-Ok, thanks for the suggestion.  That may actually work, although it will
-make the rename more expensive of course.  I'll test that tomorrow and
-eventually follow-up with a patch.
-
-Cheers,
--- 
-Luis
+thanks,
+-- Shuah
