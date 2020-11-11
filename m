@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF602AEED8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBD22AEEDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgKKKhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:37:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:46722 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725860AbgKKKhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:37:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82A78101E;
-        Wed, 11 Nov 2020 02:37:19 -0800 (PST)
-Received: from bogus (unknown [10.57.15.107])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7324D3F6CF;
-        Wed, 11 Nov 2020 02:37:17 -0800 (PST)
-Date:   Wed, 11 Nov 2020 10:37:11 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: Add optional interrupt to
- smc/hvc SCMI transport
-Message-ID: <20201111103711.h6hez4d6t3uxat3b@bogus>
-References: <20201110183827.19731-1-james.quinlan@broadcom.com>
+        id S1726050AbgKKKix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:38:53 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12233 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKKKiw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:38:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fabbf430000>; Wed, 11 Nov 2020 02:38:59 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
+ 2020 10:38:51 +0000
+Received: from moonraker.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 11 Nov 2020 10:38:49 +0000
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
+Date:   Wed, 11 Nov 2020 10:38:47 +0000
+Message-ID: <20201111103847.152721-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110183827.19731-1-james.quinlan@broadcom.com>
-User-Agent: NeoMutt/20171215
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605091139; bh=z98xvmLL/0hiP6aApSyb9EKbw160gG3KyFVYQgIh3PQ=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=ox6mpa4JwsmcFN1VqihZVDrHf2QVQkUwe56Sb5o2XhIZsAFzP3HkHU3za8H4NyuDc
+         Y5qM4Pij5RVlSKm6fBkGKWwf4iYdNsw995u8guA78+h2ps9mptnWeHPwBNYIRNfNRC
+         0UPMKkx1a1YDqfTEXvupgy5tjoi9CTfcQCBTZM7jhEAhKv+/Fueyn7ZflhgNtVfUa8
+         khaexbAhQuehOepLmhd1IWdR9h6G6V6R5i8/oGTUnw3yLQmu3EeFfiVldu1mFz+m8T
+         P6TxbQlwSlbw9lJWTpd3RO3kzYTen/ViKWOY3rUgTYAxbD2al8CWXa6c494VvOLJyR
+         u1iXT94DOwVvg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 01:38:18PM -0500, Jim Quinlan wrote:
-> This change allows the SCMI "platform" to use the smc/hvc transport and to
+Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
+(Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
+generic CPUFREQ device-tree driver. Since this change CPUFREQ support
+on the Tegra20 Ventana platform has been broken because the necessary
+device-tree nodes with the operating point information are not populated
+for this platform. Fix this by updating device-tree for Venata to
+include the operating point informration for Tegra20.
 
-Incorrect statement above, it is OSPM using SMC/HVC as transport and not
-the "platform" which refers to entity/firmware implementing SCMI
-services to OSPM. Also this change is not adding SMC/HVC, just the
-interrupt support.
+Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegr=
+a30 supported now)")
+Cc: stable@vger.kernel.org
 
-> optionally indicate the completion of an SCMI message with an interrupt.
-> This is in contrast to the nominal case where the return of the SMC call
-> indicates message completion.
->
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
->  Documentation/devicetree/bindings/arm/arm,scmi.txt | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> index 55deb68230eb..d3b0c9f387fe 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> @@ -31,6 +31,14 @@ Optional properties:
->
->  - mbox-names: shall be "tx" or "rx" depending on mboxes entries.
->
-> +- interrupts : when using smc or hvc transports, this optional
-> +	 property indicates that msg completion by the platform is indicated
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-s/msg/message/
+diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegr=
+a20-ventana.dts
+index b158771ac0b7..055334ae3d28 100644
+--- a/arch/arm/boot/dts/tegra20-ventana.dts
++++ b/arch/arm/boot/dts/tegra20-ventana.dts
+@@ -3,6 +3,7 @@
+=20
+ #include <dt-bindings/input/input.h>
+ #include "tegra20.dtsi"
++#include "tegra20-cpu-opp.dtsi"
+=20
+ / {
+ 	model =3D "NVIDIA Tegra20 Ventana evaluation board";
+@@ -592,6 +593,16 @@ clk32k_in: clock@0 {
+ 		#clock-cells =3D <0>;
+ 	};
+=20
++	cpus {
++		cpu0: cpu@0 {
++			operating-points-v2 =3D <&cpu0_opp_table>;
++		};
++
++		cpu@1 {
++			operating-points-v2 =3D <&cpu0_opp_table>;
++		};
++	};
++
+ 	gpio-keys {
+ 		compatible =3D "gpio-keys";
+=20
+--=20
+2.25.1
 
-> +	 by an interrupt rather than by the return of the smc call. This
-> +	 should not be used except when the platform requires such behavior.
-> +
-> +- interrupt-names : the name must be "msg-serviced".
-
-Is this mandatory if "interrupts" is present ?
-
-> +
-> +
-
-Extra blank line ?
-
---
-Regards,
-Sudeep
