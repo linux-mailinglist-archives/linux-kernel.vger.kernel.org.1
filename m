@@ -2,184 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BABB2AF006
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3189E2AF00E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgKKLvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:51:55 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2093 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbgKKLvn (ORCPT
+        id S1726306AbgKKLxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:53:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgKKLxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:51:43 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CWNMC6QRVz67HXV;
-        Wed, 11 Nov 2020 19:49:59 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 11 Nov 2020 12:51:35 +0100
-Received: from [10.47.86.246] (10.47.86.246) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 11 Nov
- 2020 11:51:33 +0000
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-To:     Sumit Saxena <sumit.saxena@broadcom.com>
-CC:     Qian Cai <cai@redhat.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "don.brace@microsemi.com" <don.brace@microsemi.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "dgilbert@interlog.com" <dgilbert@interlog.com>,
-        "paolo.valente@linaro.org" <paolo.valente@linaro.org>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Linux SCSI List" <linux-scsi@vger.kernel.org>,
-        "esc.storagedev@microsemi.com" <esc.storagedev@microsemi.com>,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        luojiaxing <luojiaxing@huawei.com>,
-        "Hannes Reinecke" <hare@suse.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <1597850436-116171-18-git-send-email-john.garry@huawei.com>
- <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
- <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
- <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
- <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
- <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
- <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
- <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com>
- <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
- <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
- <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
- <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
- <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
- <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
- <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
- <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e4d2031e-63f7-4c9a-daf5-4cb2b1ff3052@huawei.com>
-Date:   Wed, 11 Nov 2020 11:51:25 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 11 Nov 2020 06:53:08 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827B0C0613D1;
+        Wed, 11 Nov 2020 03:53:08 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id e27so2772155lfn.7;
+        Wed, 11 Nov 2020 03:53:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7ZZROP0sgrWHXocXnplwQP153jh2UvOQmbtx2+3HJts=;
+        b=VDHfOsx5tdF1+TEbA9a+WK+1K/9Tb7pL4h4a0lCdKYC9AvhOD1vNem3XsG1qco/wvO
+         0xKNAMrZQtWJ16M27HgiN1ZxuC3w58O6aJ6bNOlWyExcY+HC90ZFuJGsKVtSGBk1pF7+
+         3BdhUwuyIUIGw5RSwlLwTdwrG98bLKoJkO/Zwa+tGJkGb+oHhlVZni64NU0YI+jpucTx
+         fqqE9Yk3E/N8zSaBoghyH3PPfKznx7gx8jYb3kRPBQ/GGGIUCge6ZLRdNYptenj83Abg
+         whPrhOqDaNe8xG3lgtJsgN0b/p8IBPuSnRj4jZ+Zj0zI9TKLSnoD880LA7NJqmCN5Eok
+         Cmnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7ZZROP0sgrWHXocXnplwQP153jh2UvOQmbtx2+3HJts=;
+        b=DG3XYIP1n/QQdlBuLdNueQ4vvDEqA/+/MUQgFWT28gyh2ckluHrAkIEsBIyOlxqJvZ
+         HGPIoOm11OJe3/z7M3QVnAd2PrWPaSCAiePJi0rcd4i7kbFG6ItDL8FXsiWVr+ExrrcV
+         +Df4XIe1q3tMlpBibY4TAjieBqSM3kRF/FdIwI1+sRs3jn53yxI2rEaqfbovu6AvceFW
+         8EbNlaDkd0HfxJeNb0YrnrfDake5ziSRMYN+AubeuXx3jJyZNVW2xAVDBzlSadStJhlj
+         UPYWiI4ONeKJ1JF0Kj/HC1Hk5j9Efo31LQ7H7AuwjcWAaFh77qn75c6hNmeFBJEK6zhv
+         3BSw==
+X-Gm-Message-State: AOAM532NgJyXJUGfj7gXbLlDtJcbQIoQIkmgSibpgv2UxyeIASGADcpP
+        bjsH3GNQ90xdh1T7k5Wx2iw=
+X-Google-Smtp-Source: ABdhPJys5kC2mfxaGiOj4U9JzSI2ZsqED+u2tQRuzy4x85ctO/59VCN+LkZEfQ5NBKjvOOJscwMFxw==
+X-Received: by 2002:a19:f510:: with SMTP id j16mr8923883lfb.389.1605095586937;
+        Wed, 11 Nov 2020 03:53:06 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id 3sm208760ljq.96.2020.11.11.03.53.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 03:53:06 -0800 (PST)
+Subject: Re: [PATCH v8 11/26] memory: tegra124-emc: Make driver modular
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20201111011456.7875-1-digetx@gmail.com>
+ <20201111011456.7875-12-digetx@gmail.com> <20201111090434.GB4050@kozik-lap>
+ <f44b64f5-6b08-5f1e-4f9b-a73a1705d493@gmail.com>
+ <20201111092619.GD4050@kozik-lap>
+ <a75e72b9-273a-4492-09e6-d02a5ea58482@gmail.com>
+Message-ID: <79a2f436-93f6-e461-fb12-6d7c8a8cfac5@gmail.com>
+Date:   Wed, 11 Nov 2020 14:53:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <a75e72b9-273a-4492-09e6-d02a5ea58482@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.86.246]
-X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+11.11.2020 13:25, Dmitry Osipenko пишет:
+> 11.11.2020 12:26, Krzysztof Kozlowski пишет:
+>>> 11.11.2020 12:04, Krzysztof Kozlowski пишет:
+>>>>> -obj-$(CONFIG_TEGRA124_EMC)		+= clk-tegra124-emc.o
+>>>>> +obj-$(CONFIG_ARCH_TEGRA_124_SOC)	+= clk-tegra124-emc.o
+>>>>> +obj-$(CONFIG_ARCH_TEGRA_132_SOC)	+= clk-tegra124-emc.o
+>>>> How is it related to modularization? It looks like different issue is
+>>>> fixed here.
+>>> The CONFIG_TEGRA124_EMC now could be 'm', while the clock code must be
+>>> built-in. The TEGRA124 EMC driver is used by T124 and T132 SoCs.\
+>> Mhmm,  the CONFIG_TEGRA124_EMC depends on ARCH_TEGRA_124_SOC so on the
+>> config !ARCH_TEGRA_124_SOC && ARCH_TEGRA_132_SOC this was not
+>> selected. Now it will be selected.
+>>
 > 
-> In Qian's kernel .config, async scsi scan is disabled so in failure
-> case SCSI scan type is synchronous.
-> Below is the stack trace when scsi_scan_host() hangs:
-> 
-> [<0>] __wait_rcu_gp+0x134/0x170
-> [<0>] synchronize_rcu.part.80+0x53/0x60
-> [<0>] blk_free_flush_queue+0x12/0x30
-> [<0>] blk_mq_hw_sysfs_release+0x21/0x70
-
-this is per blk_mq_hw_ctx
-
-> [<0>] kobject_release+0x46/0x150
-> [<0>] blk_mq_release+0xb4/0xf0
-> [<0>] blk_release_queue+0xc4/0x130
-> [<0>] kobject_release+0x46/0x150
-> [<0>] scsi_device_dev_release_usercontext+0x194/0x3f0
-> [<0>] execute_in_process_context+0x22/0xa0
-> [<0>] device_release+0x2e/0x80
-> [<0>] kobject_release+0x46/0x150
-> [<0>] scsi_alloc_sdev+0x2e7/0x310
-> [<0>] scsi_probe_and_add_lun+0x410/0xbd0
-> [<0>] __scsi_scan_target+0xf2/0x530
-> [<0>] scsi_scan_channel.part.7+0x51/0x70
-> [<0>] scsi_scan_host_selected+0xd4/0x140
-> [<0>] scsi_scan_host+0x198/0x1c0
-> 
-> This issue hits when lock related debugging is enabled in kernel config.
-> kernel .config parameters(may be subset of this list) are required to
-> hit the issue:
-> 
-> CONFIG_PREEMPT_COUNT=y *
-> CONFIG_UNINLINE_SPIN_UNLOCK=y *
-> CONFIG_LOCK_STAT=y
-> CONFIG_DEBUG_RT_MUTEXES=y *
-> CONFIG_DEBUG_SPINLOCK=y *
-> CONFIG_DEBUG_MUTEXES=y *
-> CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y *
-> CONFIG_DEBUG_RWSEMS=y *
-> CONFIG_DEBUG_LOCK_ALLOC=y *
-> CONFIG_LOCKDEP=y *
-> CONFIG_DEBUG_LOCKDEP=y
-> CONFIG_TRACE_IRQFLAGS=y *
-> CONFIG_TRACE_IRQFLAGS_NMI=y
-> CONFIG_DEBUG_KOBJECT=y 
-> CONFIG_PROVE_RCU=y *
-> CONFIG_PREEMPTIRQ_TRACEPOINTS=y *
-
-(* means that I enabled)
-
-> 
-> When scsi_scan_host() hangs, there are no outstanding IOs with
-> megaraid_sas driver-firmware stack as SCSI "host_busy" counter and
-> megaraid_sas driver's internal counter are "0".
-> Key takeaways:
-> 1. Issue is observed when lock related debugging is enabled so issue
-> is seen in debug environment.
-> 2. Issue seems to be related to generic shared "host_tagset" code
-> whenever some kind of kernel debugging is enabled. We do not see an
-> immediate reason to hide this issue through disabling the
-> "host_tagset" feature.
-> 
-> John,
-> Issue may hit on ARM platform too using Qian's .config file with other
-> adapters (e.g. hisi_sas) as well. So I feel disabling “host_tagset” in
-> megaraid_sas driver will not help.  It requires debugging from the
-> “Entire Shared host tag feature” perspective as scsi_scan_host()
-> waittime aggravates when "host_tagset" is enabled. Also, I am doing
-> parallel debugging and if I find anything useful, I will share.
-
-So isn't this then really related to how many HW queues we expose there 
-is just scaling up the time? For megaraid sas, it's 1->128 for my arm64 
-platform when host_tagset_enable=1.
-
-As a hack, I tried this (while keeping host_tagset_enable=1):
-
-@@ -6162,11 +6168,15 @@ static int megasas_init_fw(struct 
-megasas_instance *instance)
-                else
-                        instance->low_latency_index_start = 1;
-
--               num_msix_req = num_online_cpus() + 
-instance->low_latency_index_start;
-+               num_msix_req = 6 + instance->low_latency_index_start;
-
-(6 is an arbitrary small number)
-
-And boot time is nearly same as with host_tagset_enable=0.
-
-For hisi_sas, max HW queue number ever is 16. In addition, we don't scan 
-each channel/id/lun for hisi_sas, as it has a scan handler.
-
-> 
-> Qian,
-> I need full dmesg logs from your setup with
-> megaraid_sas.host_tagset_enable=1 and
-> megaraid_sas.host_tagset_enable=0. Please wait for a long time. I just
-> want to make sure that whatever you observe is the same as mine.
+> The driver isn't exposed on ARM64 probably because nobody bothered to do
+> it so far. But it's not also the memory driver which depends on
+> clk-tegra124-emc.o, it's also the main clk/tegra/clk-tegra124.c driver
+> itself, which is also used by both T124/132.
 > 
 
-Thanks,
-John
-
+Actually, it shouldn't be difficult to keep the old condition for
+clk-tegra124-emc.o by slightly improving the Kconfig. I'll do it in the
+next revision.
