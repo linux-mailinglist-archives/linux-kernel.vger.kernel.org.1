@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6372AF137
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A18182AF141
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgKKMsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:48:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21615 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725859AbgKKMsp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:48:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605098924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zGXJ8V4La1S/QeUFBtdnXjusm+8Mn5insAGmUISpfHs=;
-        b=F1PZsI4a6hTKkBvvX/ZppGYJoY5vAo+DeBNUieutbG+qSQl07V3bNko6OnLkEZPg2w7XmQ
-        mpwv3wzSJqHa0iDkcmhY0RhqY3+1N06gCV7qw7WOgAgMPYz8cuQ8s5kgE2amRbBHl/hL8E
-        8j6nrQEh5oXFpEYzf41h7FI4KITPKss=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-lcVvIXfUPISu5xto5fD0XA-1; Wed, 11 Nov 2020 07:48:42 -0500
-X-MC-Unique: lcVvIXfUPISu5xto5fD0XA-1
-Received: by mail-wm1-f71.google.com with SMTP id z7so851670wme.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 04:48:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zGXJ8V4La1S/QeUFBtdnXjusm+8Mn5insAGmUISpfHs=;
-        b=SSYykomFuy/VZmKgIQtsZ43Pub1t8sc+j+TLQUC2Y4tVLz4JxDlSZT+Y30Wgz5uBTy
-         B7v81WPdug47sqGPicse4Ss71YGvbErw3eVchl8NAPBnVBgj60gtT7PWuoPHPOnBKsqf
-         ObwKEWsEUREa7PBC+NrQFNOgfr1ll0rf9izBEuN3bjKx0pio5VS2MnyY/p0GkE1e8vQW
-         CG4ql3OtFPIMqePm1+SLD8Q5nlZU310rBvYCuae0kZA1YLCIXJFP9FRzyzXQvM7tJOee
-         7bZDMWG8vA9aLhU8/I9LeQvP3X82aZT/JHpksCZCBaPd3SI4U/VjBcywoTRx+hUK2ABC
-         ymiw==
-X-Gm-Message-State: AOAM533NrdBHWX/NEMOm6fnbJ/BNJodTsFXzw/hvCe/K+hoHSPBnI08p
-        dHRp1+RcGIgo+NMxMmhEVwF2cVhztvfD5m6elXW+FjZLk70eIeXs8+ZfwBVk1bBwiUK1UeR7khZ
-        FRORW+ay9/iFfeQND5WHhXAqx
-X-Received: by 2002:a5d:5446:: with SMTP id w6mr20336612wrv.122.1605098921358;
-        Wed, 11 Nov 2020 04:48:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzBamKw/bg5c7+XjuuJx3l1SVoJhclL/t8sfniS6v7UD+Th0hPny5TfD72A5b6eS01hmH1NbQ==
-X-Received: by 2002:a5d:5446:: with SMTP id w6mr20336594wrv.122.1605098921214;
-        Wed, 11 Nov 2020 04:48:41 -0800 (PST)
-Received: from redhat.com (bzq-79-181-34-244.red.bezeqint.net. [79.181.34.244])
-        by smtp.gmail.com with ESMTPSA id y11sm2305471wmj.36.2020.11.11.04.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 04:48:40 -0800 (PST)
-Date:   Wed, 11 Nov 2020 07:48:36 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201111074811-mutt-send-email-mst@kernel.org>
-References: <20201102124327.2f82b2a7@canb.auug.org.au>
- <20201102051822-mutt-send-email-mst@kernel.org>
- <20201111171015.631ffd0e@canb.auug.org.au>
+        id S1726300AbgKKMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:52:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50864 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgKKMwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 07:52:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B415FABDE;
+        Wed, 11 Nov 2020 12:52:05 +0000 (UTC)
+Subject: Re: [PATCH v21 07/19] mm: page_idle_get_page() does not need lru_lock
+To:     huang ying <huang.ying.caritas@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, Johannes Weiner <hannes@cmpxchg.org>,
+        lkp@intel.com, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com,
+        kernel test robot <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
+        Minchan Kim <minchan@kernel.org>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-8-git-send-email-alex.shi@linux.alibaba.com>
+ <CAC=cRTPYgD4qi=-dj=PY4804Y96k7fU065vLA8mNBmucZTnFSw@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <d4ace896-a0d7-0d68-6c17-c86fc2abfb0f@suse.cz>
+Date:   Wed, 11 Nov 2020 13:52:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111171015.631ffd0e@canb.auug.org.au>
+In-Reply-To: <CAC=cRTPYgD4qi=-dj=PY4804Y96k7fU065vLA8mNBmucZTnFSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 05:10:15PM +1100, Stephen Rothwell wrote:
-> Hi Michael,
+On 11/11/20 9:17 AM, huang ying wrote:
+> On Thu, Nov 5, 2020 at 4:56 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>>
+>> From: Hugh Dickins <hughd@google.com>
+>>
+>> It is necessary for page_idle_get_page() to recheck PageLRU() after
+>> get_page_unless_zero(), but holding lru_lock around that serves no
+>> useful purpose, and adds to lru_lock contention: delete it.
+>>
+>> See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
+>> discussion that led to lru_lock there; but __page_set_anon_rmap() now
+>> uses WRITE_ONCE(), and I see no other risk in page_idle_clear_pte_refs()
+>> using rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly
+>> but not entirely prevented by page_count() check in ksm.c's
+>> write_protect_page(): that risk being shared with page_referenced() and
+>> not helped by lru_lock).
+>>
+>> Signed-off-by: Hugh Dickins <hughd@google.com>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: Minchan Kim <minchan@kernel.org>
+>> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>  mm/page_idle.c | 4 ----
+>>  1 file changed, 4 deletions(-)
+>>
+>> diff --git a/mm/page_idle.c b/mm/page_idle.c
+>> index 057c61df12db..64e5344a992c 100644
+>> --- a/mm/page_idle.c
+>> +++ b/mm/page_idle.c
+>> @@ -32,19 +32,15 @@
+>>  static struct page *page_idle_get_page(unsigned long pfn)
+>>  {
+>>         struct page *page = pfn_to_online_page(pfn);
+>> -       pg_data_t *pgdat;
+>>
+>>         if (!page || !PageLRU(page) ||
+>>             !get_page_unless_zero(page))
+>>                 return NULL;
+>>
+>> -       pgdat = page_pgdat(page);
+>> -       spin_lock_irq(&pgdat->lru_lock);
 > 
-> On Mon, 2 Nov 2020 05:19:06 -0500 "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> >
-> > On Mon, Nov 02, 2020 at 12:43:27PM +1100, Stephen Rothwell wrote:
-> > > 
-> > > After merging the drm-misc tree, today's linux-next build (arm
-> > > multi_v7_defconfig) failed like this:
-> > > 
-> > > In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
-> > > include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
-> > > include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
-> > >    99 |  return SIZE_MAX;
-> > >       |         ^~~~~~~~
-> > > include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
-> > >     6 | #include <linux/init.h>
-> > >   +++ |+#include <stdint.h>
-> > >     7 | #include <linux/types.h>
-> > > include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
-> > >    99 |  return SIZE_MAX;
-> > >       |         ^~~~~~~~
-> > > 
-> > > Caused by commit
-> > > 
-> > >   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> > > 
-> > > but only exposed by commit
-> > > 
-> > >   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
-> > > 
-> > > I applied the following fix for today:
-> > > 
-> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Date: Mon, 2 Nov 2020 12:34:57 +1100
-> > > Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
-> > > 
-> > > Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>  
-> > 
-> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> > 
-> > I guess it makes sense to pick this up for this release directly.
-> > I'll merge this unless there are any objections.
+> get_page_unless_zero() is a full memory barrier.  But do we need a
+> compiler barrier here to prevent the compiler to cache PageLRU()
+> results here?  Otherwise looks OK to me,
+
+I think the compiler barrier is also implied by the full memory barrier and 
+prevents the caching.
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> Acked-by: "Huang, Ying" <ying.huang@intel.com>
 > 
-> Christoph is right that the include should not be conditional.  But I
-> have not tested that that does not introduce some other problems.
-
-If there's a problem it will be a build failure - I'll put
-it in next for a while, this way we'll find out.
-
-> -- 
-> Cheers,
-> Stephen Rothwell
-
+> Best Regards,
+> Huang, Ying
+> 
+>>         if (unlikely(!PageLRU(page))) {
+>>                 put_page(page);
+>>                 page = NULL;
+>>         }
+>> -       spin_unlock_irq(&pgdat->lru_lock);
+>>         return page;
+>>  }
+>>
+>> --
+>> 1.8.3.1
+>>
+>>
+> 
 
