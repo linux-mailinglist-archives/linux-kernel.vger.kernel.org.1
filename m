@@ -2,89 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4E32AF87F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B112AF883
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgKKSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        id S1727166AbgKKSsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgKKSsB (ORCPT
+        with ESMTP id S1726664AbgKKSsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:48:01 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5C3C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:00 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id g21so1144117pjv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:00 -0800 (PST)
+        Wed, 11 Nov 2020 13:48:24 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA26C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:24 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id m13so1961642pgl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y30nQOc9Erw1djQyyLfK/qeAvjp84VdQVely6oznPn8=;
-        b=F4hURf+RTl0225vrWEfSZbmk7Bq//Kjebnui8EwY/qNqYqonykgLg+oX5/8q2RUpEa
-         IBKu+B6Kjr8csyGFXKQLcXMl1wFQdLHM3PjHQLOdnm6UhmEv3LEkoQC1hc6wUq/Sthvd
-         TKw6SUMvaRqBMi1QFlABZaiIxDsHx05tvJXz8c1HFxNl9P/2CzA8p1rvts3Uvo+LoG68
-         uCGnYptuf0HoaOHyOLerQOQxr5IGVfv57rGUGC4eQT2+dPNT2l4atE0UI4tpZjl9bxTT
-         eKkIy362bjYc5GOqF7YWK3NoSOxBfeVbQHVn4uO1DrVZkDh2AmOoAE92dRVl8mTd0Hog
-         1v7w==
+        bh=mb7PYJLkfxY3lJZblFIcMSXi8MnosMBDn1R6Xa9I8rc=;
+        b=NwTnpqOOBMBajgf4OJZhDWFSsJceG1NMb+xiofE37FueQmE6/tvR0tPgS+vcDtvYaL
+         ZRXQr0dERgfSrg/eoUtFQZBnMgQSWSi4ZCrLlHUweIpWxLq2vc1sqwPYtqjX1uxMepK0
+         BgqQ2dFLtdU4cRb3LpBG3VL7NwlkyLuaBBGOLY8hHxjmrduLg9BLdYfRoeu90UpVi84T
+         cexxShAjHY56S1/pFZvqLTFt2lUeZ19ULUbhpPSeQvXZwwNCAk2scQ9vxgX3E7egxh3M
+         kg/2wke8Wo+Ly1nQ2Csu+7XurhIVPiDiMy+pQZPmL5tAoBwOxACyQPRFLwa96+qYfqSY
+         t9Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y30nQOc9Erw1djQyyLfK/qeAvjp84VdQVely6oznPn8=;
-        b=unHaxXn0p5+obubVgBaDX6fw2xXqKgS/jiElHYolqPnNHep5EJTTVEQVX/XsIf5mU3
-         B8W41maru6ruuJaelsfq5/erTUXGmXu2/gYQTAqFZnSgisPxHjXVvFtbh9xb8IUFJJh0
-         iHMrJd0RToTOdssNGvK1VmRHwcRJYaSca/1Bn6wj1xKE3bQQuoTvcIIY7NOrd9zguqVk
-         6TwEjGQl62tvKA+30v408+HmLgdYmTjevaPbSKF4nUCOOx01zp6zQrcTQIinkB5Jj5H1
-         LtjF0+jgnnHVKr0GsQcnyFNlvyivLG4WV8jd5UrZeblIoPxvXk9lwFobItVEVcYAoVUP
-         q6RQ==
-X-Gm-Message-State: AOAM532k41wMCfDvJvoLS76Fu0FpQE5zWMh6KjKoLBJIaeDRSKj1N00Y
-        053XwinGCb1AxlprOc0QwdFI2TJWC3yRDJrmZlL2Xg==
-X-Google-Smtp-Source: ABdhPJxyRtx5vT7XfBzyH9lLS1IUWO0PgVwLLoumJN665dnbbcXnWUCn1uGDeLllBgnPNhNPXKk7tkr6Z4OjTzz8vL8=
-X-Received: by 2002:a17:90b:3111:: with SMTP id gc17mr5116219pjb.41.1605120479739;
- Wed, 11 Nov 2020 10:47:59 -0800 (PST)
+        bh=mb7PYJLkfxY3lJZblFIcMSXi8MnosMBDn1R6Xa9I8rc=;
+        b=dVyoYQw4aWAguHZDQePwn22qOVaJsph4/gQfCIz0aZurxEJwIys8N5QWbivAXvNtnv
+         d6YjCVp6FaT+tRbQriEHtQZYgeX7jv1Q1+Jd3UOA0HBMDkIUBQc9UajM98ZQ3ShKbij3
+         MeAjHiYl0BiSXTiuuh726cpg5HhJDhE1ZTH+qQ96U8D1INZqFZRICCwLQYIIukjVBMtG
+         NTvKfuiRYKn479J1GTqgvacybneoh4CMTVWUXQV9OTml7V+vnDwL7Hhb2Tqwv88NxH+1
+         2jaFV7YDhEhUQGJ8El5a9qjhLV9YyN0bCcQSvRvfPnk1G9dovwE+NFBqAhaSKHtz8sKD
+         E5JQ==
+X-Gm-Message-State: AOAM531UZkvmqgHBXkQ6c+/sHIPh6MOPdi6eGO9B8kfjWi1bTJOZecFi
+        OMbTZl4aqOxrmQDHY14xGJlArt/+etF5dyckTI61iw==
+X-Google-Smtp-Source: ABdhPJwcfDwuG4g2UEuurEKOOly1dPYE/YsLGQVFZaAzZQzTo87JJR8jHOfYzFrqSu7HvFx6mL+g9bHWrUMr775JCo8=
+X-Received: by 2002:a62:ed0d:0:b029:18b:78d:626 with SMTP id
+ u13-20020a62ed0d0000b029018b078d0626mr24673040pfh.15.1605120503879; Wed, 11
+ Nov 2020 10:48:23 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <85aba371903b749412fac34e44e54c89e5ddae30.1605046192.git.andreyknvl@google.com>
- <CAG_fn=VuM=4axS6ex7_MgCeZ47o+Scon1WuFGStF78T36sHayw@mail.gmail.com>
-In-Reply-To: <CAG_fn=VuM=4axS6ex7_MgCeZ47o+Scon1WuFGStF78T36sHayw@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 11 Nov 2020 19:47:48 +0100
-Message-ID: <CAAeHK+xq2tuVYGOPx=_uj08Xwa_1o9Wv-ODrgN3yWXxAgEGV3w@mail.gmail.com>
-Subject: Re: [PATCH v9 10/44] kasan: define KASAN_GRANULE_PAGE
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201111021131.822867-1-ndesaulniers@google.com> <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 11 Nov 2020 10:48:12 -0800
+Message-ID: <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
+To:     "Moore, Robert" <robert.moore@intel.com>
+Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 3:13 PM Alexander Potapenko <glider@google.com> wrote:
+On Wed, Nov 11, 2020 at 7:15 AM Moore, Robert <robert.moore@intel.com> wrote:
 >
-> On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > Define KASAN_GRANULE_PAGE as (KASAN_GRANULE_SIZE << PAGE_SHIFT), which is
-> > the same as (KASAN_GRANULE_SIZE * PAGE_SIZE), and use it across KASAN code
-> > to simplify it.
+> Yes, but: isn't the "fallthrough" keyword compiler-specific? That is the problem for us.
+
+It's not a keyword.
+
+It's a preprocessor macro that expands to
+__attribute__((__fallthrough__)) for compilers that support it.  For
+compilers that do not, it expands to nothing.  Both GCC 7+ and Clang
+support this attribute.  Which other compilers that support
+-Wimplicit-fallthrough do you care to support?
+
+> Bob
 >
-> What's the physical sense behind KASAN_GRANULE_PAGE? Is it something
-> more than just a product of two constants?
+>
+> -----Original Message-----
+> From: ndesaulniers via sendgmr <ndesaulniers@ndesaulniers1.mtv.corp.google.com> On Behalf Of Nick Desaulniers
+> Sent: Tuesday, November 10, 2020 6:12 PM
+> To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; Gustavo A . R . Silva <gustavoars@kernel.org>
+> Cc: clang-built-linux@googlegroups.com; Nick Desaulniers <ndesaulniers@google.com>; Len Brown <lenb@kernel.org>; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH] ACPICA: fix -Wfallthrough
+>
+> The "fallthrough" pseudo-keyword was added as a portable way to denote intentional fallthrough. This code seemed to be using a mix of fallthrough comments that GCC recognizes, and some kind of lint marker.
+> I'm guessing that linter hasn't been run in a while from the mixed use of the marker vs comments.
+>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  drivers/acpi/acpica/dscontrol.c | 3 +--
+>  drivers/acpi/acpica/dswexec.c   | 4 +---
+>  drivers/acpi/acpica/dswload.c   | 3 +--
+>  drivers/acpi/acpica/dswload2.c  | 3 +--
+>  drivers/acpi/acpica/exfldio.c   | 3 +--
+>  drivers/acpi/acpica/exresop.c   | 5 ++---
+>  drivers/acpi/acpica/exstore.c   | 6 ++----
+>  drivers/acpi/acpica/hwgpe.c     | 3 +--
+>  drivers/acpi/acpica/utdelete.c  | 3 +--
+>  drivers/acpi/acpica/utprint.c   | 2 +-
+>  10 files changed, 12 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19 100644
+> --- a/drivers/acpi/acpica/dscontrol.c
+> +++ b/drivers/acpi/acpica/dscontrol.c
+> @@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
+>                                 break;
+>                         }
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case AML_IF_OP:
+>                 /*
+> diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f 100644
+> --- a/drivers/acpi/acpica/dswexec.c
+> +++ b/drivers/acpi/acpica/dswexec.c
+> @@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
+>                                 if (ACPI_FAILURE(status)) {
+>                                         break;
+>                                 }
+> -
+> -                               /* Fall through */
+> -                               /*lint -fallthrough */
+> +                               fallthrough;
+>
+>                         case AML_INT_EVAL_SUBTREE_OP:
+>
+> diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d 100644
+> --- a/drivers/acpi/acpica/dswload.c
+> +++ b/drivers/acpi/acpica/dswload.c
+> @@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_state,
+>                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+>                                 break;
+>                         }
+> -
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 default:
+>
+> diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072 100644
+> --- a/drivers/acpi/acpica/dswload2.c
+> +++ b/drivers/acpi/acpica/dswload2.c
+> @@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
+>                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+>                                 break;
+>                         }
+> -
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 default:
+>
+> diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9 100644
+> --- a/drivers/acpi/acpica/exfldio.c
+> +++ b/drivers/acpi/acpica/exfldio.c
+> @@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
+>                  * Now that the Bank has been selected, fall through to the
+>                  * region_field case and write the datum to the Operation Region
+>                  */
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_TYPE_LOCAL_REGION_FIELD:
+>                 /*
+> diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551 100644
+> --- a/drivers/acpi/acpica/exresop.c
+> +++ b/drivers/acpi/acpica/exresop.c
+> @@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
+>                                 case ACPI_REFCLASS_DEBUG:
+>
+>                                         target_op = AML_DEBUG_OP;
+> -
+> -                                       /*lint -fallthrough */
+> +                                       fallthrough;
+>
+>                                 case ACPI_REFCLASS_ARG:
+>                                 case ACPI_REFCLASS_LOCAL:
+> @@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
+>                          * Else not a string - fall through to the normal Reference
+>                          * case below
+>                          */
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 case ARGI_REFERENCE:    /* References: */
+>                 case ARGI_INTEGER_REF:
+> diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120 100644
+> --- a/drivers/acpi/acpica/exstore.c
+> +++ b/drivers/acpi/acpica/exstore.c
+> @@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
+>                 if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
+>                         return_ACPI_STATUS(AE_OK);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         default:
+>
+> @@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_object *source_desc,
+>                                 }
+>                                 break;
+>                         }
+> -
+> -                       /* Fallthrough */
+> +                       fallthrough;
+>
+>                 case ACPI_TYPE_DEVICE:
+>                 case ACPI_TYPE_EVENT:
+> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c index b13a4ed5bc63..fbfad80c8a53 100644
+> --- a/drivers/acpi/acpica/hwgpe.c
+> +++ b/drivers/acpi/acpica/hwgpe.c
+> @@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
+>                 if (!(register_bit & gpe_register_info->enable_mask)) {
+>                         return (AE_BAD_PARAMETER);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_GPE_ENABLE:
+>
+> diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585 100644
+> --- a/drivers/acpi/acpica/utdelete.c
+> +++ b/drivers/acpi/acpica/utdelete.c
+> @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
+>                         (void)acpi_ev_delete_gpe_block(object->device.
+>                                                        gpe_block);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_TYPE_PROCESSOR:
+>         case ACPI_TYPE_THERMAL:
+> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2 100644
+> --- a/drivers/acpi/acpica/utprint.c
+> +++ b/drivers/acpi/acpica/utprint.c
+> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
+>                 case 'X':
+>
+>                         type |= ACPI_FORMAT_UPPER;
+> -                       /* FALLTHROUGH */
+> +                       fallthrough;
+>
+>                 case 'x':
+>
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
-No, just a product.
 
-> The name suggests it might be something page-sized, but in reality it is not.
-
-What name would you prefer?
+-- 
+Thanks,
+~Nick Desaulniers
