@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5E92AF29A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA7E2AF29E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgKKNzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:55:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33996 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgKKNzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:55:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605102921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Mv7/+C8DQsc2+Lj38MV+vZrIDUrqcNOBS0Xmhkl+V4=;
-        b=aVsPn3EkvgmWClNoA4vZ4uSRx9kALDnn2CMTX6CSXYn7zuY84VENHN9EbGYvGP+pKGZgeG
-        K6mEXRBPkBIocTn5qFHc6d3CR74DjfMvJCpzsEzjDYYEZo/RejbrgV02EHaSmF04KajTKP
-        qlPWAhdMyYSElGngkxK+8TXSbV6xocs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B0905AC83;
-        Wed, 11 Nov 2020 13:55:21 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: [PATCH 2/2] printk/console: Allow to disable console output by using console="" or console=null
-Date:   Wed, 11 Nov 2020 14:54:50 +0100
-Message-Id: <20201111135450.11214-3-pmladek@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201111135450.11214-1-pmladek@suse.com>
-References: <20201111135450.11214-1-pmladek@suse.com>
+        id S1727224AbgKKNzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:55:36 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:35186 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727190AbgKKNz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:55:29 -0500
+Received: by mail-il1-f199.google.com with SMTP id l2so1383543ilj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:55:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=AfwyT0oEwq2fMzy5Nzeby/PEIIbu4MsdDfgXVxHMlRA=;
+        b=PXuTaIXgYqtxHKBwK6lMQBpUDLPOIR/Ok+WK6WddHRhZoSEg5MRCHSRca1J2s2QB8N
+         v/eMhKW2jN8OOM5u4luLpD9O+PkSJ5/v0ptaIp6Xid8PEHvJq1fhizKdmJ80BwEqMq8m
+         e8xx9aEpYb3TbER3352lHem/0ounnkcg6ZDLZj0l5GSGHXxZs4nhPw5TBupa8iTYkNAR
+         bTKUoS7B83aTvo3U/vU50yqDtRqZC5SUtW+VruKOrwDmsDXrbL4xuiZ0NHKaVYkhXtGa
+         lukM1wtPrOFWtCuEYgHEougGb22IEMtBUcxhJfY+j/9HD2YMj6rnx1xi15YPz0YOtLy8
+         6mnA==
+X-Gm-Message-State: AOAM531fL4e0I+ynaqMH9allpV799PI45UmEZGgVIr3eLFC8mqM05+ge
+        KOQBrtOy74BUg6JtIVro4uXIJIfvMII0Z8L5ItHQOrlOFVj5
+X-Google-Smtp-Source: ABdhPJxr+mEdcRwJ0Z5xy/D380R7Fd8HMB0EF8vGO5g5aD3jadKyQh3n+QYO3nMMdKIoXL2uxUpyD65VXpMurLVwtWAyuGxeDC/A
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:111:: with SMTP id t17mr19651219ilm.79.1605102926684;
+ Wed, 11 Nov 2020 05:55:26 -0800 (PST)
+Date:   Wed, 11 Nov 2020 05:55:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c5eece05b3d5256c@google.com>
+Subject: memory leak in dvb_create_media_graph
+From:   syzbot <syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com>
+To:     brad@nextdimension.cc, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, sean@mess.org, syzkaller-bugs@googlegroups.com,
+        wsa+renesas@sang-engineering.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 48021f98130880dd74 ("printk: handle blank console arguments
-passed in.") prevented crash caused by empty console= parameter value.
+Hello,
 
-Unfortunately, this value is widely used on Chromebooks to disable
-the console output. The above commit caused performance regression
-because the messages were pushed on slow console even though nobody
-was watching it.
+syzbot found the following issue on:
 
-Use ttynull driver explicitly for console="" and console=null
-parameters. It has been created for exactly this purpose.
+HEAD commit:    407ab579 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1472cf3a500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f09440acc069a0d38ac
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1496773a500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f5d04e500000
 
-It causes that preferred_console is set. As a result, ttySX and ttyX
-are not used as a fallback. And only ttynull console gets registered by
-default.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com
 
-It still allows to register other consoles either by additional console=
-parameters or SPCR. It prevents regression because it worked this way even
-before. Also it is a sane semantic. Preventing output on all consoles
-should be done another way, for example, by introducing mute_console
-parameter.
+BUG: memory leak
+unreferenced object 0xffff888109ceb880 (size 128):
+  comm "kworker/0:4", pid 4908, jiffies 4294942256 (age 13.710s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 06 05 00 00 00 00 00 00  ................
+    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
+  backtrace:
+    [<0000000063129123>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000063129123>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000063129123>] dvb_create_media_graph+0x301/0x7d0 drivers/media/dvb-core/dvbdev.c:662
+    [<00000000446ffd59>] dvb_usb_adapter_frontend_init+0x180/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:327
+    [<000000004de3ceb1>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
+    [<000000004de3ceb1>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+    [<000000004de3ceb1>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+    [<0000000044208faf>] gp8psk_usb_probe+0x2a/0x50 drivers/media/usb/dvb-usb/gp8psk.c:304
+    [<000000001403cbb0>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<000000009ed11d03>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<000000000cd27108>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<000000005568f559>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000f9838db7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<000000006449b02e>] __device_attach+0x122/0x250 drivers/base/dd.c:912
+    [<000000007f8d4f6c>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<0000000023ea078a>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
+    [<0000000024710aa6>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
+    [<000000009af942e5>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000a5638b3c>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<000000009ed11d03>] really_probe+0x159/0x480 drivers/base/dd.c:554
 
-Link: https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
-Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+BUG: memory leak
+unreferenced object 0xffff888110cbec80 (size 128):
+  comm "kworker/1:2", pid 4591, jiffies 4294942850 (age 7.770s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 06 05 00 00 00 00 00 00  ................
+    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
+  backtrace:
+    [<0000000063129123>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000063129123>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000063129123>] dvb_create_media_graph+0x301/0x7d0 drivers/media/dvb-core/dvbdev.c:662
+    [<00000000446ffd59>] dvb_usb_adapter_frontend_init+0x180/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:327
+    [<000000004de3ceb1>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
+    [<000000004de3ceb1>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+    [<000000004de3ceb1>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+    [<0000000044208faf>] gp8psk_usb_probe+0x2a/0x50 drivers/media/usb/dvb-usb/gp8psk.c:304
+    [<000000001403cbb0>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<000000009ed11d03>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<000000000cd27108>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<000000005568f559>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000f9838db7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<000000006449b02e>] __device_attach+0x122/0x250 drivers/base/dd.c:912
+    [<000000007f8d4f6c>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<0000000023ea078a>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
+    [<0000000024710aa6>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
+    [<000000009af942e5>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000a5638b3c>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<000000009ed11d03>] really_probe+0x159/0x480 drivers/base/dd.c:554
+
+
+
 ---
- kernel/printk/printk.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fe64a49344bf..ac440b879a2c 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2189,8 +2189,15 @@ static int __init console_setup(char *str)
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
- 
--	if (str[0] == 0)
-+	/*
-+	 * console="" or console=null have been suggested as a way to
-+	 * disable console output. Use ttynull that has been created
-+	 * for exacly this purpose.
-+	 */
-+	if (str[0] == 0 || strcmp(str, "null") == 0) {
-+		__add_preferred_console("ttynull", 0, NULL, NULL, true);
- 		return 1;
-+	}
- 
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
--- 
-2.26.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
