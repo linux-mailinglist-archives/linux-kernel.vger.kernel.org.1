@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217772AFC65
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7C72AFCDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgKLBgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:36:12 -0500
-Received: from mo-csw1115.securemx.jp ([210.130.202.157]:44514 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727926AbgKKXb3 (ORCPT
+        id S1728980AbgKLBgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:36:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgKKXeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:31:29 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 0ABNVF1W012197; Thu, 12 Nov 2020 08:31:15 +0900
-X-Iguazu-Qid: 2wHHjV7mwWTUzZyVaS
-X-Iguazu-QSIG: v=2; s=0; t=1605137475; q=2wHHjV7mwWTUzZyVaS; m=qdzL3FmPwUzOTh+X5YYacVrNgBQ6c7qXFMJeFaTqLYw=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1113) id 0ABNVE05007658;
-        Thu, 12 Nov 2020 08:31:14 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 0ABNVEn7028254;
-        Thu, 12 Nov 2020 08:31:14 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 0ABNVD0K032349;
-        Thu, 12 Nov 2020 08:31:13 +0900
-Date:   Thu, 12 Nov 2020 08:31:12 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        yuji2.ishikawa@toshiba.co.jp
-Subject: Re: [PATCH 1/4] dt-bindings: gpio: Add bindings for Toshiba Visconti
- GPIO Controller
-X-TSB-HOP: ON
-Message-ID: <20201111233112.GA803632@toshiba.co.jp>
-References: <20201111172553.1369282-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201111172553.1369282-2-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201111191838.GA1860931@bogus>
+        Wed, 11 Nov 2020 18:34:23 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FD9C0613D1;
+        Wed, 11 Nov 2020 15:34:23 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id v11so2697450qtq.12;
+        Wed, 11 Nov 2020 15:34:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KnLt8VXQwwM0iYUheRJOiNo0F+wh49CPTe2gDfhO7W8=;
+        b=bSYQInO/99sJwYtrycfWh2p+Q1AZAdK+UIgIk/sTa62d96oToAujYSzo1mXEwXkD0x
+         Or98pU873ZtbSXzDUetksAxIxA8zGSGCwDFCX0xOZXe4XlLkar/ov+O+MJUH0X/TYCwh
+         TB+35Ly2xbXJ2r9425YbecqXgoDl2Saf2L13Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KnLt8VXQwwM0iYUheRJOiNo0F+wh49CPTe2gDfhO7W8=;
+        b=bubYkAQQ2cuOXidjk6GFArtXkONdraieirPbWXJaI0MifTIrbxhWckTpLnIVaHdEQ9
+         srlj1bqKqfhJDU5KjcXSgZ4/Lo2gXva2Jrt3YAvddaTGD3LPLD8RBDqjN6v5y7NPwx4z
+         gjAaY9UhmzazTZyiwZaFsqvyJRdVWXxtQSczdCKPIaeXG8Po2aX9VSBD/T9r5A1SqAeG
+         ddY+5l4bp+hYv57patiudwlSgfWpUKaj4ztk41A2FspdNWznh9w/ENFGGHvBQ6e0amGH
+         OuVhmsPrietcPp/CYIRVDYhcufICxpwR1bIvichY+Y5RGQ4doSElCnz6QCdVGax/TE3L
+         Zy7g==
+X-Gm-Message-State: AOAM530aSmsRNSr5RLy2B5c0anX4xrftg+eY4Rjx6f2YosZAIYD4eE3H
+        SXp/lnF0GXJSnJoWwZI7FWLTEHc3nDjj7eoXJcw=
+X-Google-Smtp-Source: ABdhPJwcjoyijjlf9fwP/sU1FX6AbUsAS3hkkdBB32/dHqXA3RyjccEybxC7rChDrlK0oiWb72YIjY8nc0FZJRARCAg=
+X-Received: by 2002:ac8:5854:: with SMTP id h20mr25684587qth.176.1605137662938;
+ Wed, 11 Nov 2020 15:34:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111191838.GA1860931@bogus>
+References: <20201111232330.30843-1-rentao.bupt@gmail.com>
+In-Reply-To: <20201111232330.30843-1-rentao.bupt@gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 11 Nov 2020 23:34:10 +0000
+Message-ID: <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
+Subject: Re: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
+To:     Tao Ren <rentao.bupt@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 11 Nov 2020 at 23:23, <rentao.bupt@gmail.com> wrote:
+>
+> From: Tao Ren <rentao.bupt@gmail.com>
+>
+> The patch series adds the initial version of device tree for Facebook
+> Galaxy100 (AST2400) BMC.
+>
+> Patch #1 adds common dtsi to minimize duplicated device entries across
+> Facebook Network AST2400 BMC device trees.
+>
+> Patch #2 simplfies Wedge40 device tree by using the common dtsi.
+>
+> Patch #3 simplfies Wedge100 device tree by using the common dtsi.
+>
+> Patch #4 adds the initial version of device tree for Facebook Galaxy100
+> BMC.
 
-On Wed, Nov 11, 2020 at 01:18:38PM -0600, Rob Herring wrote:
-> On Thu, 12 Nov 2020 02:25:50 +0900, Nobuhiro Iwamatsu wrote:
-> > Add bindings for the Toshiba Visconti GPIO Controller.
-> > 
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > ---
-> >  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
-> >  1 file changed, 85 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> > 
-> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml: properties:gpio-ranges: 'truei' is not of type 'object', 'boolean'
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml: ignoring, error in schema: properties: gpio-ranges
-> warning: no schema found in file: ./Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> 
+Nice. They look good to me.
 
-Oh, this was typo...
-I will fix this, thanks.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-> 
-> See https://patchwork.ozlabs.org/patch/1398028
-> 
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+Is there another person familiar with the design you would like to
+review before I merge?
 
-Best regards,
-  Nobuhiro
+
+>
+> Tao Ren (4):
+>   ARM: dts: aspeed: Common dtsi for Facebook AST2400 Network BMCs
+>   ARM: dts: aspeed: wedge40: Use common dtsi
+>   ARM: dts: aspeed: wedge100: Use common dtsi
+>   ARM: dts: aspeed: Add Facebook Galaxy100 (AST2400) BMC
+>
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../dts/aspeed-bmc-facebook-galaxy100.dts     |  57 +++++++++
+>  .../boot/dts/aspeed-bmc-facebook-wedge100.dts | 120 +++---------------
+>  .../boot/dts/aspeed-bmc-facebook-wedge40.dts  | 112 +---------------
+>  .../dts/ast2400-facebook-netbmc-common.dtsi   | 117 +++++++++++++++++
+>  5 files changed, 191 insertions(+), 216 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-galaxy100.dts
+>  create mode 100644 arch/arm/boot/dts/ast2400-facebook-netbmc-common.dtsi
+>
+> --
+> 2.17.1
+>
