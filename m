@@ -2,117 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8682AF011
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6CA2AF016
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgKKLxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:53:41 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:57142 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKLxj (ORCPT
+        id S1726470AbgKKLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:55:37 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:41197 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725995AbgKKLzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:53:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605095619; x=1636631619;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=WSmJGeYv08kihbIdCx4Xr9p9GNTGzzp58lE9eX/ZuP8=;
-  b=CDzEV9hgT1bGQphOtD+uPYNQ7lLEpJh73kfCHkqztEIYZyqBigI3rflG
-   aoRbgcT96qdjdEePZRXh7hivAazfslKPF/C/GrActtPDx6AuGdlssYKhr
-   aEewmv1RbynNwdDDEXVihuxiV/S/sDa8WetwBPjmzzNyPJZWsfyaoKthB
-   VaQN15T1d04ZbRwVDohJMK7gbV+a33sgvaUvBWNAZ6FZFju3SlYXWdzsj
-   0bVwo8KDMvdFc87k609FV4Y3vRayGT9h2MXDiDfOTq4qCmfipu1aZsol+
-   9jRVfAf6HD15X1NroqBt8NYevxCpSlge5CWpSydex9FMicgYRbxbV2fkR
-   A==;
-IronPort-SDR: Vpk5sZaNn8l5nZ7DduYthRfjCryb7NYr1FPqIw/WSI6ptrNOjWWJgOF7ce395ziptShbSR5f8z
- +E66enIU5MTdecR05McBuk3xyxkFUEJZb7QMFTYCUSiVD4nTNpigMtNFyxBcmKhKbj2jgnPivz
- o2juzUj4beaVtF7TsIly+xuPn9/Nd9baj78aC1SC23+jdxWzyQj0Gj0KoooApXjKUGUJCChuyI
- x9ziOUkEqhOHYTQulL1xpBeNPsaUUCdV0J2+4Ju2j5Ukab4HBUGvqEiQCZNZUOQnAQtOWSGudS
- 2Wc=
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="98026575"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 04:53:38 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 11 Nov 2020 04:53:38 -0700
-Received: from soft-dev10.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Wed, 11 Nov 2020 04:53:36 -0700
-References: <20201109132643.457932-1-lars.povlsen@microchip.com> <20201109132643.457932-3-lars.povlsen@microchip.com> <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com> <87361hfbwu.fsf@microchip.com> <CAHp75VfZ=hJvpYiAOz72yRpJTxLU6ZOo9hEz4BsBcgSwAcjCFA@mail.gmail.com> <87zh3oe0nr.fsf@microchip.com> <CAHp75VfZRJuzvaYs-CKvxitfOxcNc-7j8MZA7FQvN0SQrPK6cw@mail.gmail.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-arm Mailing List" <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO
-In-Reply-To: <CAHp75VfZRJuzvaYs-CKvxitfOxcNc-7j8MZA7FQvN0SQrPK6cw@mail.gmail.com>
-Date:   Wed, 11 Nov 2020 12:53:35 +0100
-Message-ID: <87wnys3y9s.fsf@microchip.com>
+        Wed, 11 Nov 2020 06:55:33 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id coiQkmu7HRiwVcoiYkaFAK; Wed, 11 Nov 2020 12:55:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1605095730; bh=HDa7FQ+sDo6ODRLOp2q9uk1S/MYb4VsfJup3IA08iR4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=JgGE6hffu5BzoWZs43uzImp9z946WleJZ6OwbT2VQdwBfVGdBNWHv6HQKAJb/b+bi
+         du9nDvvdZbgJaHLBzdLyUFu8AbcQUFMsgYSJ4rAj/xpwsq6W7zAt7VgTkpVeUDr15l
+         EEM7Eg2zeDE9wgxBOnef92vLDmijUl3cIbvSjvNJ+osPJ1juVncNX9LVViasDi/02I
+         C8MxmDPd+LslOgfJHYNZ+6xnXayTSXHP6Ph3g/fIeOgC2fX261ErtIjc4ncUnAwl2+
+         Ctxix7sQ/OG3XuzL6oGjjGSOb2wnpbjIwyxoSFJYDgBxdxdu5GSpyWOmfjb/GaFwKp
+         fY2Z9yAdZ3Inw==
+Subject: Re: [PATCH v2 2/2] media: v4l2-ctrl: Add layer wise bitrate controls
+ for h264
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     mchehab@kernel.org, ezequiel@collabora.com,
+        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
+        majja@codeaurora.org
+References: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
+ <1600693440-3015-3-git-send-email-dikshita@codeaurora.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <f6c94a1a-9f5b-ecec-9077-95548ea9838f@xs4all.nl>
+Date:   Wed, 11 Nov 2020 12:55:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1600693440-3015-3-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPvegNORkRbCZqZp8V9rwKA2dm4lWEyRZhuxTHHxYpiQFjcEY4Ntqpdv2cq5F/F0gHtiiHQxgMnjO3nbwr64Y855jbO/e9s/vjkjgfD2eeOvaQRNcQwi
+ oJUVmu1y64HkdN5ThASiGA4Cvt0cClszD53X5rQLkVwii34ANKStFujLr/+LXXEXWF6kwuzRNZ5hi0aHSvwLAp2jEQ2S1b/ECol99HQuefaJr4kWDX2j1l2Z
+ 0591yzpet6z0g9oEjTmIjLEci+EXEREh3mr0PvmaVuNTuiSo9qB5u7ht0qpPKZhvSORiNISJ8/DCktCOzfKbICWL5t5bv8m43S0S3gsoYu/3nr5OfHGgPJPJ
+ ZDD6Fj1Llcci03UpdPp+OFufUuxF3Db59/jIzxPxorjM3nVdDg/IXog5rN95gKEJ+khBbcUCeRn2LH94Oqa1uQeblLLhMfHZ5Fdl7j4sB/hfzVH9VT+IcrUQ
+ QyRK4mAypFrCow0XbOIKUCXNeEwymv3BsSLdIQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/09/2020 15:04, Dikshita Agarwal wrote:
+> Adds bitrate control for all coding layers for h264
+> same as hevc.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  .../userspace-api/media/v4l/ext-ctrls-codec.rst      | 20 ++++++++++++++++++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c                 |  7 +++++++
+>  include/uapi/linux/v4l2-controls.h                   |  8 ++++++++
+>  3 files changed, 35 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 26f8220..690b066 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -1513,6 +1513,26 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>      * - Bit 16:32
+>        - Layer number
+>  
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L0_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 0 for H264 encoder.
+> +
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L1_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 1 for H264 encoder.
+> +
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L2_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 2 for H264 encoder.
+> +
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L3_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 3 for H264 encoder.
+> +
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L4_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 4 for H264 encoder.
+> +
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L5_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 5 for H264 encoder.
+> +
+> +``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR (integer)``
+> +    Indicates bit rate for hierarchical coding layer 6 for H264 encoder.
 
-Andy Shevchenko writes:
+The unit isn't specified here. I assume it is bits per second, but that should
+be stated explicitly.
 
-> On Wed, Nov 11, 2020 at 10:52 AM Lars Povlsen
-> <lars.povlsen@microchip.com> wrote:
->> Andy Shevchenko writes:
->> > On Tue, Nov 10, 2020 at 5:51 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->> >> > On Mon, Nov 9, 2020 at 3:27 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
-> ...
->
->> >> >> +               return -EOPNOTSUPP;
->> >> >
->> >> > Are you sure? IIRC internally we are using ENOTSUPP.
->> >> >
->> >> > Couple of drivers seem to be wrongly using the other one.
->> >>
->> >> Checkpatch complains about ENOTSUPP:
->> >>
->> >> # ENOTSUPP is not a standard error code and should be avoided in new patches.
->> >> # Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
->> >
->> > checkpatch is wrong if this is internal code and to me sounds like
->> > it's not going out of the kernel.
->> >
->> > ...
->>
->> As it appears there are different opinions on this I'll let the pinctrl
->> maintainer decide.
->
-> There are no other opinions.
-> Read description of struct pinconf_ops and fix the code.
-> checkpatch is simply wrong here.
+>  
+>  .. _v4l2-mpeg-h264:
+>  
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index abef73e..9296294 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -922,6 +922,13 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP:		return "H264 P-Frame Maximum QP Value";
+>  	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP:		return "H264 B-Frame Minimum QP Value";
+>  	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP:		return "H264 B-Frame Maximum QP Value";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L0_BR:	return "H264 Hierarchical Lay 0 BitRate";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L1_BR:	return "H264 Hierarchical Lay 1 BitRate";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L2_BR:	return "H264 Hierarchical Lay 2 BitRate";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L3_BR:	return "H264 Hierarchical Lay 3 BitRate";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L4_BR:	return "H264 Hierarchical Lay 4 BitRate";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L5_BR:	return "H264 Hierarchical Lay 5 BitRate";
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR:	return "H264 Hierarchical Lay 6 BitRate";
 
-Lets no start a war :-) - I'll change it...
+BitRate -> Bitrate
 
->
->> >> >> +                       err = -EOPNOTSUPP;
->> >> >
->> >> > Ditto.
->> >>
->> >> Ditto.
->> >
->> > Ditto.
+>  	case V4L2_CID_MPEG_VIDEO_H264_SPS:			return "H264 Sequence Parameter Set";
+>  	case V4L2_CID_MPEG_VIDEO_H264_PPS:			return "H264 Picture Parameter Set";
+>  	case V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX:		return "H264 Scaling Matrix";
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 7ba05fe..b869b54 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -580,12 +580,20 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type {
+>  #define V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+388)
+>  #define V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+389)
+>  #define V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+390)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L0_BR	(V4L2_CID_MPEG_BASE + 391)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L1_BR	(V4L2_CID_MPEG_BASE + 392)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L2_BR	(V4L2_CID_MPEG_BASE + 393)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L3_BR	(V4L2_CID_MPEG_BASE + 394)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L4_BR	(V4L2_CID_MPEG_BASE + 395)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L5_BR	(V4L2_CID_MPEG_BASE + 396)
+> +#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR	(V4L2_CID_MPEG_BASE + 397)
+>  #define V4L2_CID_MPEG_VIDEO_MPEG4_I_FRAME_QP	(V4L2_CID_MPEG_BASE+400)
+>  #define V4L2_CID_MPEG_VIDEO_MPEG4_P_FRAME_QP	(V4L2_CID_MPEG_BASE+401)
+>  #define V4L2_CID_MPEG_VIDEO_MPEG4_B_FRAME_QP	(V4L2_CID_MPEG_BASE+402)
+>  #define V4L2_CID_MPEG_VIDEO_MPEG4_MIN_QP	(V4L2_CID_MPEG_BASE+403)
+>  #define V4L2_CID_MPEG_VIDEO_MPEG4_MAX_QP	(V4L2_CID_MPEG_BASE+404)
+>  #define V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL		(V4L2_CID_MPEG_BASE+405)
+> +
+>  enum v4l2_mpeg_video_mpeg4_level {
+>  	V4L2_MPEG_VIDEO_MPEG4_LEVEL_0	= 0,
+>  	V4L2_MPEG_VIDEO_MPEG4_LEVEL_0B	= 1,
+> 
 
-Cheers,
+Regards,
 
----Lars
-
--- 
-Lars Povlsen,
-Microchip
+	Hans
