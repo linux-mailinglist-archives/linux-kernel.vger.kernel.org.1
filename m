@@ -2,112 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFBC2AEF90
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C5C2AEF94
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgKKLZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:25:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726054AbgKKLZa (ORCPT
+        id S1726274AbgKKL1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:27:02 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36290 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgKKL1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:25:30 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F94C0613D1;
-        Wed, 11 Nov 2020 03:25:30 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w4so1232243pgg.13;
-        Wed, 11 Nov 2020 03:25:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AmC6zqJnTuERZcKgju96W662jvY6IqjAAXRYJAiZy84=;
-        b=DKS0zBZf5A6WZnjlzFnTohk26R3Ke3x/c/7S+5fLlwl1e+Lcy1jebSWUhffsK1ioGu
-         5Ngd/Ocz9ElBdWqzFPPXq6m2M1RpHO6sz7mLyMtIbiFp2nD21LLPiJ3rhEUCYxNc4aR8
-         PPfjLTGQEFG17k0wPMQXHAMKNQWECorHRT+bu8gkHUC/6SQ/3w5Ej/qevV3UKBH+GTRK
-         Y7452bmI6uXM98D7p/hIHdkFSG4A/H+1ytegiezjkyvjzT0yauXVe5/La6ezPokouAty
-         fd/lMD6yUkMPpjok8TCxINssqhnqCEIHuoJMyU2LG1Fn3CP57706DJOuFmuQ90eI9QBj
-         tSzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AmC6zqJnTuERZcKgju96W662jvY6IqjAAXRYJAiZy84=;
-        b=V9JT2L2P5PLPGnqx8da+7/XMZvwAvwDv+uUf0jN2p9F8OgZGdv/42oMPQtU0yvCgl4
-         7jsG7aLTPKaRnBVftyH4rFpJtofxE2zsEoDQaQtT/5td7l+baXcjMLWWqLqx9/FQd1eH
-         khnZnWQQY0tJv553IAaRGN0U/ALb4v6mv9oUfAMYyIZAdQKDwQclp3KX8fv/Oy0fo8KD
-         VjxZiwqR5bLVUQTdrLbgmWj3P4t0HPoogqVxj3RGPg3gYa8oqxi8S/gys+Vd5Ndos/jR
-         QxnFIvx7qFeWCibECbskJ5fUqrd09nvBQ2SV466TtPw6/bmyf6Rele1R/hozAfoBRlys
-         hkCw==
-X-Gm-Message-State: AOAM531rbRuuvRB/n0oNgdIp0/Kn3HVQJPnChcRFR1DPlJ4n3/T46jd6
-        W8cFNAqIe4t+b3pG4NxoHLyNjDK74D+uquQHElMW+fR9Q5iaeg==
-X-Google-Smtp-Source: ABdhPJwLyg6aYFhRMr87O4OBI/F2U+vdfMliFKfXyNEdgYZDynu3xR1JpJY7Q9xdNNpS7gtKFX9Vk7Be5xEqXx84ygs=
-X-Received: by 2002:a63:3e05:: with SMTP id l5mr20863250pga.74.1605093929944;
- Wed, 11 Nov 2020 03:25:29 -0800 (PST)
+        Wed, 11 Nov 2020 06:27:00 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ABBQvqs038461;
+        Wed, 11 Nov 2020 05:26:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605094017;
+        bh=fWo/pDkDPv2VDqDbwex0pM/XKhddBQVetHiGj4PDgPE=;
+        h=From:To:CC:Subject:Date;
+        b=DBGCCTtB9c4Y0Np694tQRWcr5LWMn8MVybCjUDINbwYFrOq+Hnte8h5Yv1ArUEoIM
+         mPJ7tMx1AU9VW/OLj4DgaB0nuk8cD/AqExHgt1Rc7IvXzUUAGbL0KU+GTMR3oyw07k
+         WaYNdJwp9GA/9DQwHNdCwbZRYpMDTf63r0zPUkTE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ABBQvfw030692
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Nov 2020 05:26:57 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
+ Nov 2020 05:26:56 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 11 Nov 2020 05:26:56 -0600
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ABBQsLB076461;
+        Wed, 11 Nov 2020 05:26:54 -0600
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] serial: 8250: 8250_omap: Fix possible array out of bounds access
+Date:   Wed, 11 Nov 2020 16:56:52 +0530
+Message-ID: <20201111112653.2710-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201109132643.457932-1-lars.povlsen@microchip.com>
- <20201109132643.457932-3-lars.povlsen@microchip.com> <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com>
- <87361hfbwu.fsf@microchip.com> <CAHp75VfZ=hJvpYiAOz72yRpJTxLU6ZOo9hEz4BsBcgSwAcjCFA@mail.gmail.com>
- <87zh3oe0nr.fsf@microchip.com>
-In-Reply-To: <87zh3oe0nr.fsf@microchip.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 11 Nov 2020 13:26:18 +0200
-Message-ID: <CAHp75VfZRJuzvaYs-CKvxitfOxcNc-7j8MZA7FQvN0SQrPK6cw@mail.gmail.com>
-Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
- driver for Microsemi Serial GPIO
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 10:52 AM Lars Povlsen
-<lars.povlsen@microchip.com> wrote:
-> Andy Shevchenko writes:
-> > On Tue, Nov 10, 2020 at 5:51 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> >> > On Mon, Nov 9, 2020 at 3:27 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+k3_soc_devices array is missing a sentinel entry which may result in out
+of bounds access as reported by kernel KASAN.
 
-...
+Fix this by adding a sentinel entry.
 
-> >> >> +               return -EOPNOTSUPP;
-> >> >
-> >> > Are you sure? IIRC internally we are using ENOTSUPP.
-> >> >
-> >> > Couple of drivers seem to be wrongly using the other one.
-> >>
-> >> Checkpatch complains about ENOTSUPP:
-> >>
-> >> # ENOTSUPP is not a standard error code and should be avoided in new patches.
-> >> # Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
-> >
-> > checkpatch is wrong if this is internal code and to me sounds like
-> > it's not going out of the kernel.
-> >
-> > ...
->
-> As it appears there are different opinions on this I'll let the pinctrl
-> maintainer decide.
+Fixes: 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ drivers/tty/serial/8250/8250_omap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-There are no other opinions.
-Read description of struct pinconf_ops and fix the code.
-checkpatch is simply wrong here.
-
-> >> >> +                       err = -EOPNOTSUPP;
-> >> >
-> >> > Ditto.
-> >>
-> >> Ditto.
-> >
-> > Ditto.
-
-
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 084e7bc51f0e..ab18ef035659 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1199,6 +1199,7 @@ static int omap8250_no_handle_irq(struct uart_port *port)
+ static const struct soc_device_attribute k3_soc_devices[] = {
+ 	{ .family = "AM65X",  },
+ 	{ .family = "J721E", .revision = "SR1.0" },
++	{ /* sentinel */ }
+ };
+ 
+ static struct omap8250_dma_params am654_dma = {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.29.2
+
