@@ -2,304 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FE42AF643
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3802AF646
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgKKQZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgKKQZU (ORCPT
+        id S1726849AbgKKQ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:26:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36908 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725966AbgKKQ0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:25:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAECC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mynt2a8IAPIU9Yz15o8FZmNkZ1SCjD9s8O21JrofvzM=; b=DWHY0RrYALVM4n1BNCNFMRLVUZ
-        EVwXUH+MoLvHDzuiC1Ifw3LXXUpIMz0IM9MBWdvNg6eq+vl7fgU4fGZwvwaIII+4+blDS+/3blAmN
-        fRfpJHHhNyO3iF2mCV4V28Ms3+/e8EQuRuobA2+ilP9avpSEku02sTgK3ZncyR/fAhJxQrxP4z4rx
-        +5JvstNW9N8SZgPNOwNIAtOwaf2EB5ZLFy7G1rgtBfsN5z9bBOUZPpWcnCnUtBM0yCi1/GWkS9cep
-        ZERwqNj7ep5iMv51kdeo5/BtQaNak7QiBHXEqwj/ADn3YTJ9BeFVksQJd0IfIIMS3ZQCNpVulSoOY
-        aQzWtpGA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcsvm-00012M-Q9; Wed, 11 Nov 2020 16:25:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AA5AD301E02;
-        Wed, 11 Nov 2020 17:25:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 94F53203E65DA; Wed, 11 Nov 2020 17:25:09 +0100 (CET)
-Date:   Wed, 11 Nov 2020 17:25:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, irogers@google.com,
-        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com
-Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
- events
-Message-ID: <20201111162509.GW2611@hirez.programming.kicks-ass.net>
-References: <20201106212935.28943-1-kan.liang@linux.intel.com>
- <20201109095235.GC2594@hirez.programming.kicks-ass.net>
- <20201109110405.GN2651@hirez.programming.kicks-ass.net>
- <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
+        Wed, 11 Nov 2020 11:26:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605111979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M7eWW2J4R8TsefoHyN5vuJS4u5lIWG/lXZWc3MtZNQ0=;
+        b=I4gHIx3CNP5TdSpghKsfJzToQdeHztDlhH3FvVsOFmGzchUApbEsVYMFVbLfk/7t3vrmHH
+        fi+OtIe5iO5rK9E+IK9LJYj5TtnH/R4P5ppQRkC8VA8TVNk8ZKd8vHhFZSMgqRNdAav4T6
+        q/Mi+Ny/3ZpKvBg5UGHV6BM+TsmkwfY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-89-ad52oLT6MP6qOiYi1EeH3w-1; Wed, 11 Nov 2020 11:26:15 -0500
+X-MC-Unique: ad52oLT6MP6qOiYi1EeH3w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C45FA1016D16;
+        Wed, 11 Nov 2020 16:25:57 +0000 (UTC)
+Received: from ovpn-66-204.rdu2.redhat.com (ovpn-66-204.rdu2.redhat.com [10.10.66.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 530E260CD0;
+        Wed, 11 Nov 2020 16:25:56 +0000 (UTC)
+Message-ID: <bf31020f4e50b303fd0dd3dfda0e50de79ed25db.camel@redhat.com>
+Subject: Re: linux-next boot error: BUG: unable to handle kernel NULL
+ pointer dereference in mempool_init_node
+From:   Qian Cai <cai@redhat.com>
+To:     syzbot <syzbot+2d6f3dad1a42d86a5801@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Date:   Wed, 11 Nov 2020 11:25:55 -0500
+In-Reply-To: <000000000000fe575905b3cff92c@google.com>
+References: <000000000000fe575905b3cff92c@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
+It looks to me the code paths below had recently been modified heavily by this
+patchset. If this is reproducible, it can be confirmed by reverting it.
 
-> - When the large PEBS was introduced (9c964efa4330), the sched_task() should
-> be invoked to flush the PEBS buffer in each context switch. However, The
-> perf_sched_events in account_event() is not updated accordingly. The
-> perf_event_task_sched_* never be invoked for a pure per-CPU context. Only
-> per-task event works.
->    At that time, the perf_pmu_sched_task() is outside of
-> perf_event_context_sched_in/out. It means that perf has to double
-> perf_pmu_disable() for per-task event.
+https://lore.kernel.org/linux-arm-kernel/cover.1605046662.git.andreyknvl@google.com/
 
-> - The patch 1 tries to fix broken per-CPU events. The CPU context cannot be
-> retrieved from the task->perf_event_ctxp. So it has to be tracked in the
-> sched_cb_list. Yes, the code is very similar to the original codes, but it
-> is actually the new code for per-CPU events. The optimization for per-task
-> events is still kept.
->   For the case, which has both a CPU context and a task context, yes, the
-> __perf_pmu_sched_task() in this patch is not invoked. Because the
-> sched_task() only need to be invoked once in a context switch. The
-> sched_task() will be eventually invoked in the task context.
+On Tue, 2020-11-10 at 23:45 -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    3e14f70c Add linux-next specific files for 20201111
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12e6af62500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d6f4c7e100b61b76
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2d6f3dad1a42d86a5801
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+2d6f3dad1a42d86a5801@syzkaller.appspotmail.com
+> 
+> RPC: Registered named UNIX socket transport module.
+> RPC: Registered udp transport module.
+> RPC: Registered tcp transport module.
+> RPC: Registered tcp NFSv4.1 backchannel transport module.
+> NET: Registered protocol family 44
+> pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
+> pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
+> pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
+> pci_bus 0000:00: resource 7 [mem 0xc0000000-0xfebfefff window]
+> pci 0000:00:00.0: Limiting direct PCI/PCI transfers
+> PCI: CLS 0 bytes, default 64
+> PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+> software IO TLB: mapped [mem 0x00000000b5e00000-0x00000000b9e00000] (64MB)
+> RAPL PMU: API unit is 2^-32 Joules, 0 fixed counters, 10737418240 ms ovfl
+> timer
+> kvm: already loaded the other module
+> clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x212735223b2,
+> max_idle_ns: 440795277976 ns
+> clocksource: Switched to clocksource tsc
+> Initialise system trusted keyrings
+> workingset: timestamp_bits=40 max_order=21 bucket_order=0
+> zbud: loaded
+> DLM installed
+> squashfs: version 4.0 (2009/01/31) Phillip Lougher
+> FS-Cache: Netfs 'nfs' registered for caching
+> NFS: Registering the id_resolver key type
+> Key type id_resolver registered
+> Key type id_legacy registered
+> nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+> Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+> FS-Cache: Netfs 'cifs' registered for caching
+> Key type cifs.spnego registered
+> Key type cifs.idmap registered
+> ntfs: driver 2.1.32 [Flags: R/W].
+> efs: 1.0a - http://aeschi.ch.eu.org/efs/
+> jffs2: version 2.2. (NAND) (SUMMARY)  © 2001-2006 Red Hat, Inc.
+> romfs: ROMFS MTD (C) 2007 Red Hat, Inc.
+> QNX4 filesystem 0.2.3 registered.
+> qnx6: QNX6 filesystem 1.0.0 registered.
+> fuse: init (API version 7.32)
+> orangefs_debugfs_init: called with debug mask: :none: :0:
+> orangefs_init: module version upstream loaded
+> JFS: nTxBlock = 8192, nTxLock = 65536
+> SGI XFS with ACLs, security attributes, realtime, quota, no debug enabled
+> 9p: Installing v9fs 9p2000 file system support
+> FS-Cache: Netfs '9p' registered for caching
+> NILFS version 2 loaded
+> befs: version: 0.9.3
+> ocfs2: Registered cluster interface o2cb
+> ocfs2: Registered cluster interface user
+> OCFS2 User DLM kernel interface loaded
+> gfs2: GFS2 installed
+> BUG: kernel NULL pointer dereference, address: 0000000000000018
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0 
+> Oops: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc3-next-20201111-syzkaller
+> #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google
+> 01/01/2011
+> RIP: 0010:nearest_obj include/linux/slub_def.h:169 [inline]
+> RIP: 0010:____kasan_slab_free+0x19/0x110 mm/kasan/common.c:350
+> Code: 00 48 c7 c0 fb ff ff ff c3 cc cc cc cc cc cc cc cc 41 55 49 89 d5 41 54
+> 49 89 fc 48 89 f7 55 48 89 f5 53 89 cb e8 f7 27 7e ff <41> 8b 7c 24 18 48 be
+> 00 00 00 00 00 16 00 00 48 c1 e8 0c 48 89 c1
+> RSP: 0000:ffffc90000c67d30 EFLAGS: 00010293
+> RAX: 00000001436d0000 RBX: 0000000000000000 RCX: ffffffff8130a760
+> RDX: ffff888140748000 RSI: ffffffff8130a76a RDI: 0000000000000007
+> RBP: ffff8881436d0000 R08: 00000000000000fe R09: ffffed10286da800
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: ffffffff81945766 R14: ffff888143557944 R15: ffffffff81943b80
+> FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000018 CR3: 000000000b08e000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  kasan_slab_free_mempool include/linux/kasan.h:202 [inline]
+>  kasan_poison_element mm/mempool.c:107 [inline]
+>  add_element mm/mempool.c:124 [inline]
+>  mempool_init_node+0x37e/0x580 mm/mempool.c:205
+>  mempool_create_node mm/mempool.c:269 [inline]
+>  mempool_create+0x76/0xc0 mm/mempool.c:254
+>  mempool_create_kmalloc_pool include/linux/mempool.h:88 [inline]
+>  init_caches fs/ceph/super.c:785 [inline]
+>  init_ceph+0x193/0x2d7 fs/ceph/super.c:1261
+>  do_one_initcall+0x103/0x650 init/main.c:1212
+>  do_initcall_level init/main.c:1285 [inline]
+>  do_initcalls init/main.c:1301 [inline]
+>  do_basic_setup init/main.c:1321 [inline]
+>  kernel_init_freeable+0x600/0x684 init/main.c:1521
+>  kernel_init+0xd/0x1b8 init/main.c:1410
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> Modules linked in:
+> CR2: 0000000000000018
+> ---[ end trace d7568b3491dd0938 ]---
+> RIP: 0010:nearest_obj include/linux/slub_def.h:169 [inline]
+> RIP: 0010:____kasan_slab_free+0x19/0x110 mm/kasan/common.c:350
+> Code: 00 48 c7 c0 fb ff ff ff c3 cc cc cc cc cc cc cc cc 41 55 49 89 d5 41 54
+> 49 89 fc 48 89 f7 55 48 89 f5 53 89 cb e8 f7 27 7e ff <41> 8b 7c 24 18 48 be
+> 00 00 00 00 00 16 00 00 48 c1 e8 0c 48 89 c1
+> RSP: 0000:ffffc90000c67d30 EFLAGS: 00010293
+> RAX: 00000001436d0000 RBX: 0000000000000000 RCX: ffffffff8130a760
+> RDX: ffff888140748000 RSI: ffffffff8130a76a RDI: 0000000000000007
+> RBP: ffff8881436d0000 R08: 00000000000000fe R09: ffffed10286da800
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: ffffffff81945766 R14: ffff888143557944 R15: ffffffff81943b80
+> FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000018 CR3: 000000000b08e000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB and
-only set that for large pebs. Are you sure the other users (Intel LBR
-and PowerPC BHRB) don't need it?
-
-If they indeed do not require the pmu::sched_task() callback for CPU
-events, then I still think the whole perf_sched_cb_{inc,dec}() interface
-is confusing at best.
-
-Can't we do something like this instead?
-
----
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 546cc89217bb..672d6f039fce 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3565,8 +3565,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
- 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
- 			if (!(event->attr.sample_type &
--			      ~intel_pmu_large_pebs_flags(event)))
-+			      ~intel_pmu_large_pebs_flags(event))) {
- 				event->hw.flags |= PERF_X86_EVENT_LARGE_PEBS;
-+				event->attach_state |= PERF_ATTACH_SCHED_CB;
-+			}
- 		}
- 		if (x86_pmu.pebs_aliases)
- 			x86_pmu.pebs_aliases(event);
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 9a38f579bc76..af9ee539c179 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -606,6 +606,7 @@ struct swevent_hlist {
- #define PERF_ATTACH_TASK	0x04
- #define PERF_ATTACH_TASK_DATA	0x08
- #define PERF_ATTACH_ITRACE	0x10
-+#define PERF_ATTACH_SCHED_CB	0x20
- 
- struct perf_cgroup;
- struct perf_buffer;
-@@ -817,6 +818,7 @@ struct perf_event_context {
- 	int				is_active;
- 	int				nr_stat;
- 	int				nr_freq;
-+	int				nr_sched_task;
- 	int				rotate_disable;
- 	/*
- 	 * Set when nr_events != nr_active, except tolerant to events not
-@@ -872,7 +874,7 @@ struct perf_cpu_context {
- 	struct list_head		cgrp_cpuctx_entry;
- #endif
- 
--	int				sched_cb_usage;
-+	struct list_head		sched_cb_entry;
- 
- 	int				online;
- 	/*
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index d2f3ca792936..0a5dfed6bb46 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -384,6 +384,7 @@ static DEFINE_MUTEX(perf_sched_mutex);
- static atomic_t perf_sched_count;
- 
- static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
-+static DEFINE_PER_CPU(int, perf_sched_cb_usage);
- static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
- 
- static atomic_t nr_mmap_events __read_mostly;
-@@ -2292,6 +2293,12 @@ event_sched_out(struct perf_event *event,
- 		perf_event_ctx_deactivate(ctx);
- 	if (event->attr.freq && event->attr.sample_freq)
- 		ctx->nr_freq--;
-+	if (event->attach_state & PERF_ATTACH_SCHED_CB) {
-+		if (!--ctx->nr_sched_task && &cpuctx->ctx == ctx) {
-+			list_del(&cpuctx->sched_cb_entry);
-+			this_cpu_dec(perf_sched_cb_usage);
-+		}
-+	}
- 	if (event->attr.exclusive || !cpuctx->active_oncpu)
- 		cpuctx->exclusive = 0;
- 
-@@ -2564,6 +2571,12 @@ event_sched_in(struct perf_event *event,
- 		perf_event_ctx_activate(ctx);
- 	if (event->attr.freq && event->attr.sample_freq)
- 		ctx->nr_freq++;
-+	if (event->attach_state & PERF_ATTACH_SCHED_CB) {
-+		if (!ctx->nr_sched_task++ && &cpuctx->ctx == ctx) {
-+			list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
-+			this_cpu_inc(perf_sched_cb_usage);
-+		}
-+	}
- 
- 	if (event->attr.exclusive)
- 		cpuctx->exclusive = 1;
-@@ -3424,7 +3437,7 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
- 
- 			perf_pmu_disable(pmu);
- 
--			if (cpuctx->sched_cb_usage && pmu->sched_task)
-+			if (ctx->nr_sched_task)
- 				pmu->sched_task(ctx, false);
- 
- 			/*
-@@ -3464,7 +3477,7 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
- 		raw_spin_lock(&ctx->lock);
- 		perf_pmu_disable(pmu);
- 
--		if (cpuctx->sched_cb_usage && pmu->sched_task)
-+		if (ctx->nr_sched_task)
- 			pmu->sched_task(ctx, false);
- 		task_ctx_sched_out(cpuctx, ctx, EVENT_ALL);
- 
-@@ -3473,20 +3486,7 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
- 	}
- }
- 
--void perf_sched_cb_dec(struct pmu *pmu)
--{
--	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
--
--	--cpuctx->sched_cb_usage;
--}
--
--
--void perf_sched_cb_inc(struct pmu *pmu)
--{
--	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
--
--	cpuctx->sched_cb_usage++;
--}
-+static DEFINE_PER_CPU(struct list_head, sched_cb_list);
- 
- /*
-  * This function provides the context switch callback to the lower code
-@@ -3514,6 +3514,24 @@ static void __perf_pmu_sched_task(struct perf_cpu_context *cpuctx, bool sched_in
- 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
- }
- 
-+static void perf_pmu_sched_task(struct task_struct *prev,
-+				struct task_struct *next,
-+				bool sched_in)
-+{
-+	struct perf_cpu_context *cpuctx;
-+
-+	if (prev == next)
-+		return;
-+
-+	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
-+		/* will be handled in perf_event_context_sched_in/out */
-+		if (cpuctx->task_ctx)
-+			continue;
-+
-+		__perf_pmu_sched_task(cpuctx, sched_in);
-+	}
-+}
-+
- static void perf_event_switch(struct task_struct *task,
- 			      struct task_struct *next_prev, bool sched_in);
- 
-@@ -3536,6 +3554,9 @@ void __perf_event_task_sched_out(struct task_struct *task,
- {
- 	int ctxn;
- 
-+	if (__this_cpu_read(perf_sched_cb_usage))
-+		perf_pmu_sched_task(task, next, false);
-+
- 	if (atomic_read(&nr_switch_events))
- 		perf_event_switch(task, next, false);
- 
-@@ -3772,7 +3793,7 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
- 
- 	cpuctx = __get_cpu_context(ctx);
- 	if (cpuctx->task_ctx == ctx) {
--		if (cpuctx->sched_cb_usage)
-+		if (ctx->nr_sched_task)
- 			__perf_pmu_sched_task(cpuctx, true);
- 		return;
- 	}
-@@ -3798,8 +3819,8 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
- 		cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
- 	perf_event_sched_in(cpuctx, ctx, task);
- 
--	if (cpuctx->sched_cb_usage && pmu->sched_task)
--		pmu->sched_task(cpuctx->task_ctx, true);
-+	if (ctx->nr_sched_task)
-+		pmu->sched_task(ctx, true);
- 
- 	perf_pmu_enable(pmu);
- 
-@@ -3844,6 +3865,9 @@ void __perf_event_task_sched_in(struct task_struct *prev,
- 
- 	if (atomic_read(&nr_switch_events))
- 		perf_event_switch(task, prev, true);
-+
-+	if (__this_cpu_read(perf_sched_cb_usage))
-+		perf_pmu_sched_task(prev, task, true);
- }
- 
- static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
-@@ -4668,7 +4692,7 @@ static void unaccount_event(struct perf_event *event)
- 	if (event->parent)
- 		return;
- 
--	if (event->attach_state & PERF_ATTACH_TASK)
-+	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
- 		dec = true;
- 	if (event->attr.mmap || event->attr.mmap_data)
- 		atomic_dec(&nr_mmap_events);
-@@ -11195,7 +11219,7 @@ static void account_event(struct perf_event *event)
- 	if (event->parent)
- 		return;
- 
--	if (event->attach_state & PERF_ATTACH_TASK)
-+	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
- 		inc = true;
- 	if (event->attr.mmap || event->attr.mmap_data)
- 		atomic_inc(&nr_mmap_events);
-@@ -12987,6 +13011,7 @@ static void __init perf_event_init_all_cpus(void)
- #ifdef CONFIG_CGROUP_PERF
- 		INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
- #endif
-+		INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
- 	}
- }
- 
