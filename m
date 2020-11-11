@@ -2,119 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078032AEFF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BABB2AF006
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKKLuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:50:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726465AbgKKLuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:50:05 -0500
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B063216C4;
-        Wed, 11 Nov 2020 11:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605095405;
-        bh=0EhvhswHcU3rrJtRVTsbEpzJvoEUKSBwyL0JvCJfGGU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zLemUS8t/UPYHsIae/eoltR1ZjZlgvZLJ+sASYWo+fPpzd2sxi97XPHgOhtMB3jFt
-         DVLR39W/8kcsHmdve/Ze2lfmTueHXaFzi9eqpyfWPUxtPbXWMZUx5BNOF6wPCXs5w5
-         5cEYc0TVUAQio+KTBru53ni1a1wBElipU+s2JPtM=
-Received: by mail-oi1-f176.google.com with SMTP id m13so1841915oih.8;
-        Wed, 11 Nov 2020 03:50:05 -0800 (PST)
-X-Gm-Message-State: AOAM532/dc1QbE11CRBOkXWGODqKAgpYeMz1fvNtEAmzm8cChqPri52c
-        xPRpy8KQHWelS1Dcud30N0Cp0UolpwLxa165jxM=
-X-Google-Smtp-Source: ABdhPJx1pa0j1Bdeb7dFvCaT72nI4bMOnXTC7YJU5YZQ69emDiEFaLR7JcW0cW71t/mNGhnQpjSP6wC3oHmcSS0V5VM=
-X-Received: by 2002:aca:d583:: with SMTP id m125mr1709838oig.47.1605095404430;
- Wed, 11 Nov 2020 03:50:04 -0800 (PST)
+        id S1726534AbgKKLvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:51:55 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2093 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726306AbgKKLvn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:51:43 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CWNMC6QRVz67HXV;
+        Wed, 11 Nov 2020 19:49:59 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 11 Nov 2020 12:51:35 +0100
+Received: from [10.47.86.246] (10.47.86.246) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 11 Nov
+ 2020 11:51:33 +0000
+Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+To:     Sumit Saxena <sumit.saxena@broadcom.com>
+CC:     Qian Cai <cai@redhat.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "don.brace@microsemi.com" <don.brace@microsemi.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "dgilbert@interlog.com" <dgilbert@interlog.com>,
+        "paolo.valente@linaro.org" <paolo.valente@linaro.org>,
+        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Linux SCSI List" <linux-scsi@vger.kernel.org>,
+        "esc.storagedev@microsemi.com" <esc.storagedev@microsemi.com>,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        luojiaxing <luojiaxing@huawei.com>,
+        "Hannes Reinecke" <hare@suse.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+ <1597850436-116171-18-git-send-email-john.garry@huawei.com>
+ <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
+ <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
+ <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
+ <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
+ <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
+ <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
+ <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com>
+ <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
+ <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
+ <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
+ <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
+ <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
+ <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
+ <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
+ <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e4d2031e-63f7-4c9a-daf5-4cb2b1ff3052@huawei.com>
+Date:   Wed, 11 Nov 2020 11:51:25 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <CA+G9fYv7qiVPQZ5RUF4e0o+ZWnotrHBZ6hyTs2FPkQb=PRHwWw@mail.gmail.com>
-In-Reply-To: <CA+G9fYv7qiVPQZ5RUF4e0o+ZWnotrHBZ6hyTs2FPkQb=PRHwWw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 11 Nov 2020 12:49:52 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG4BZCSvX-tW3qCM+ZMbarxc3Dyjr4u+NhOLZZwdB+OCw@mail.gmail.com>
-Message-ID: <CAMj1kXG4BZCSvX-tW3qCM+ZMbarxc3Dyjr4u+NhOLZZwdB+OCw@mail.gmail.com>
-Subject: Re: arm64: tinyconfig: compiler_types.h:326:38: error: call to
- '__compiletime_assert_382' declared with attribute error: BUILD_BUG_ON
- failed: !is_power_of_2(sizeof(struct page))
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        ": Linus Walleij" <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Roman Gushchin <guro@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.86.246]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 at 12:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> FYI,
-> Linux next tag 20201111 arm64 tinyconfig build failed due to below error(s).
-> tinyconfig arm64 build test failed with gcc-8, gcc-9 and gcc-10.
-> config file attached to this email.
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
+> 
+> In Qian's kernel .config, async scsi scan is disabled so in failure
+> case SCSI scan type is synchronous.
+> Below is the stack trace when scsi_scan_host() hangs:
+> 
+> [<0>] __wait_rcu_gp+0x134/0x170
+> [<0>] synchronize_rcu.part.80+0x53/0x60
+> [<0>] blk_free_flush_queue+0x12/0x30
+> [<0>] blk_mq_hw_sysfs_release+0x21/0x70
 
-Thanks Naresh. This will be fixed shortly.
+this is per blk_mq_hw_ctx
 
-> make  -j16  ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
->
-> arch/arm64/mm/init.c: In function 'mem_init':
-> include/linux/compiler_types.h:326:38: error: call to
-> '__compiletime_assert_382' declared with attribute error: BUILD_BUG_ON
-> failed: !is_power_of_2(sizeof(struct page))
->   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->                                       ^
-> include/linux/compiler_types.h:307:4: note: in definition of macro
-> '__compiletime_assert'
->     prefix ## suffix();    \
->     ^~~~~~
-> include/linux/compiler_types.h:326:2: note: in expansion of macro
-> '_compiletime_assert'
->   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->   ^~~~~~~~~~~~~~~~~~~
-> include/linux/build_bug.h:39:37: note: in expansion of macro
-> 'compiletime_assert'
->  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                      ^~~~~~~~~~~~~~~~~~
-> include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->   BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->   ^~~~~~~~~~~~~~~~
-> arch/arm64/mm/init.c:443:2: note: in expansion of macro 'BUILD_BUG_ON'
->   BUILD_BUG_ON(!is_power_of_2(sizeof(struct page)));
->   ^~~~~~~~~~~~
-> make[3]: *** [scripts/Makefile.build:284: arch/arm64/mm/init.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
->
->
-> Build details:
->     kconfig: tinyconfig
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     target_arch: arm64
->     toolchain: gcc-9
->     git_short_log: 3e14f70c05cd (\Add linux-next specific files for 20201111\)
->     git_describe: next-20201111
->     build link: https://builds.tuxbuild.com/1k8NvVvTvJrxp6CsgUXoZJZXzFy/
->
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+> [<0>] kobject_release+0x46/0x150
+> [<0>] blk_mq_release+0xb4/0xf0
+> [<0>] blk_release_queue+0xc4/0x130
+> [<0>] kobject_release+0x46/0x150
+> [<0>] scsi_device_dev_release_usercontext+0x194/0x3f0
+> [<0>] execute_in_process_context+0x22/0xa0
+> [<0>] device_release+0x2e/0x80
+> [<0>] kobject_release+0x46/0x150
+> [<0>] scsi_alloc_sdev+0x2e7/0x310
+> [<0>] scsi_probe_and_add_lun+0x410/0xbd0
+> [<0>] __scsi_scan_target+0xf2/0x530
+> [<0>] scsi_scan_channel.part.7+0x51/0x70
+> [<0>] scsi_scan_host_selected+0xd4/0x140
+> [<0>] scsi_scan_host+0x198/0x1c0
+> 
+> This issue hits when lock related debugging is enabled in kernel config.
+> kernel .config parameters(may be subset of this list) are required to
+> hit the issue:
+> 
+> CONFIG_PREEMPT_COUNT=y *
+> CONFIG_UNINLINE_SPIN_UNLOCK=y *
+> CONFIG_LOCK_STAT=y
+> CONFIG_DEBUG_RT_MUTEXES=y *
+> CONFIG_DEBUG_SPINLOCK=y *
+> CONFIG_DEBUG_MUTEXES=y *
+> CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y *
+> CONFIG_DEBUG_RWSEMS=y *
+> CONFIG_DEBUG_LOCK_ALLOC=y *
+> CONFIG_LOCKDEP=y *
+> CONFIG_DEBUG_LOCKDEP=y
+> CONFIG_TRACE_IRQFLAGS=y *
+> CONFIG_TRACE_IRQFLAGS_NMI=y
+> CONFIG_DEBUG_KOBJECT=y 
+> CONFIG_PROVE_RCU=y *
+> CONFIG_PREEMPTIRQ_TRACEPOINTS=y *
+
+(* means that I enabled)
+
+> 
+> When scsi_scan_host() hangs, there are no outstanding IOs with
+> megaraid_sas driver-firmware stack as SCSI "host_busy" counter and
+> megaraid_sas driver's internal counter are "0".
+> Key takeaways:
+> 1. Issue is observed when lock related debugging is enabled so issue
+> is seen in debug environment.
+> 2. Issue seems to be related to generic shared "host_tagset" code
+> whenever some kind of kernel debugging is enabled. We do not see an
+> immediate reason to hide this issue through disabling the
+> "host_tagset" feature.
+> 
+> John,
+> Issue may hit on ARM platform too using Qian's .config file with other
+> adapters (e.g. hisi_sas) as well. So I feel disabling “host_tagset” in
+> megaraid_sas driver will not help.  It requires debugging from the
+> “Entire Shared host tag feature” perspective as scsi_scan_host()
+> waittime aggravates when "host_tagset" is enabled. Also, I am doing
+> parallel debugging and if I find anything useful, I will share.
+
+So isn't this then really related to how many HW queues we expose there 
+is just scaling up the time? For megaraid sas, it's 1->128 for my arm64 
+platform when host_tagset_enable=1.
+
+As a hack, I tried this (while keeping host_tagset_enable=1):
+
+@@ -6162,11 +6168,15 @@ static int megasas_init_fw(struct 
+megasas_instance *instance)
+                else
+                        instance->low_latency_index_start = 1;
+
+-               num_msix_req = num_online_cpus() + 
+instance->low_latency_index_start;
++               num_msix_req = 6 + instance->low_latency_index_start;
+
+(6 is an arbitrary small number)
+
+And boot time is nearly same as with host_tagset_enable=0.
+
+For hisi_sas, max HW queue number ever is 16. In addition, we don't scan 
+each channel/id/lun for hisi_sas, as it has a scan handler.
+
+> 
+> Qian,
+> I need full dmesg logs from your setup with
+> megaraid_sas.host_tagset_enable=1 and
+> megaraid_sas.host_tagset_enable=0. Please wait for a long time. I just
+> want to make sure that whatever you observe is the same as mine.
+> 
+
+Thanks,
+John
+
