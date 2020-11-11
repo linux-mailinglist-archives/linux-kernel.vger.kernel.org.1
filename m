@@ -2,394 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6C92AF424
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7112AF426
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727414AbgKKOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:54:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40220 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727307AbgKKOyD (ORCPT
+        id S1727426AbgKKOyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727398AbgKKOyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:54:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605106441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MWnBRq9PHvur9WoMxYhfb4ZElv4UhjwblZCapc3dW1k=;
-        b=Q4FXSCxif2/+y+hPBMkDr5Wie3nfJaN/DcIK8OTvAfYMRpdkSK2Y+AGoim87buis1VEt1R
-        0sBU2zvLO5yo052/kVg0hgocmDcmZ3ETizvyjGk8qHizLwHh1y8G3ndsZykOm7YfWAsEVI
-        5ltV3Q4e+n6Vb+nADNgyJqsE5ilX9rI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-pkCbRx5rMSKc3AjbWQCS4A-1; Wed, 11 Nov 2020 09:53:59 -0500
-X-MC-Unique: pkCbRx5rMSKc3AjbWQCS4A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A5F51099F76;
-        Wed, 11 Nov 2020 14:53:57 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-151.ams2.redhat.com [10.36.114.151])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 711F927BB5;
-        Wed, 11 Nov 2020 14:53:54 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rashmica Gupta <rashmica.g@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v2 8/8] powernv/memtrace: don't abuse memory hot(un)plug infrastructure for memory allocations
-Date:   Wed, 11 Nov 2020 15:53:22 +0100
-Message-Id: <20201111145322.15793-9-david@redhat.com>
-In-Reply-To: <20201111145322.15793-1-david@redhat.com>
-References: <20201111145322.15793-1-david@redhat.com>
+        Wed, 11 Nov 2020 09:54:07 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9580C0613D1;
+        Wed, 11 Nov 2020 06:54:06 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id r11so489671oos.12;
+        Wed, 11 Nov 2020 06:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iPERwSfkiAfW2rNgM+azYwXtllH9KvpuMQt9Lr5C0OU=;
+        b=R88LHs6ArvHBp0HWcyjA41gfq8z5QDKUQeBgF0AVib/Ft0koiNzcgdcYKxacDFofY+
+         gYAnOJv9NRCWZOwKYXQx8eODNWfg1iRgnT3fpXFG6UdNU39z1j3MDjIcekTc3dTklHRJ
+         Lguldj2MA7pB3uFo0EfJptawTrq2lizbyZMjru7FAnOWm6PVqVcxKBY/POLGw94erfIo
+         ThUR/PAuLn+0n8ylUylQ9Rqo7kvRAIxqLs7v16ztDuzsZt6N9uoVszEeWQ3hH27CbJTr
+         Xoi0zcvnI9a/CSC2mafewOMo28Dm9iNlA5l531CsTXoY/l+27Nwszji85eNsVpOzoISN
+         zvew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=iPERwSfkiAfW2rNgM+azYwXtllH9KvpuMQt9Lr5C0OU=;
+        b=JPFGTCoR4/9KIb+ZwUNgSd3IWukYyGFxRFvLLByAHrgF+PfYJmHo9R4YPONEcr16et
+         B4BDaKYwCEKTHm/Rbk+DuwmjNNHrMSa8U7scNWVm70vgLjXmjOjhjkaTPeF3sYtc12Zf
+         eGt9RHRNDCMm0SFhpkAQRZG29sqc+Jh5N1z0dxMTqQAKCfg8C3ex13/sBcdso0jLzQVA
+         OXQxko7fBIEni+KgDiggM+dEFOIYWvfJp9c22UmnKtcdyzntfcB1c3AJqmcrbQ/2MS0D
+         XZrF1u+WB/Ot1mELZpNauHurj3XZCadSV6Htx3unY65juN+MIMurhyYRDCG+TH9bB8FF
+         Oqow==
+X-Gm-Message-State: AOAM530+31h41gz6nuyxaawdPQA8cRzhyIsdqII9oKabiGLx1HxHPfpj
+        xOw19SzpG87c5vInF8aPqWqyh/9M8P0=
+X-Google-Smtp-Source: ABdhPJyo0AOePW5EvSrzVFnWRRMENbxhWiZm20PjGIAHogLw2j5LotGnIf/xqT2LiTWCJ55CAdnl5w==
+X-Received: by 2002:a4a:8f98:: with SMTP id c24mr7926307ooj.27.1605106445992;
+        Wed, 11 Nov 2020 06:54:05 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x6sm532013ota.49.2020.11.11.06.54.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 06:54:05 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 2/4] docs: hwmon: (ltc2945): change type of val to ULL
+ in ltc2945_val_to_reg()
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     robh+dt@kernel.org, jdelvare@suse.com, mark.thoren@analog.com,
+        ardeleanalex@gmail.com
+References: <20201111091259.46773-1-alexandru.ardelean@analog.com>
+ <20201111091259.46773-3-alexandru.ardelean@analog.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <41f86559-9165-40f9-e7f3-3e7f5eca7315@roeck-us.net>
+Date:   Wed, 11 Nov 2020 06:54:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201111091259.46773-3-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use alloc_contig_pages() for allocating memory and remove the
-linear mapping manually via arch_remove_linear_mapping(). Mark all pages
-PG_offline, such that they will definitely not get touched - e.g.,
-when hibernating. When freeing memory, try to revert what we did.
+On 11/11/20 1:12 AM, Alexandru Ardelean wrote:
+> In order to account for any potential overflows that could occur.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-The original idea was discussed in:
- https://lkml.kernel.org/r/48340e96-7e6b-736f-9e23-d3111b915b6e@redhat.com
+Thinking about it, this can only really happen if the user provides
+excessive values for limit attributes. Those are currently clamped
+later, after the conversion. I think it would be better to modify
+the code to apply a clamp _before_ the conversion as well instead
+of trying to solve the overflow problem with unsigned long long.
 
-This is similar to CONFIG_DEBUG_PAGEALLOC handling on other
-architectures, whereby only single pages are unmapped from the linear
-mapping. Let's mimic what memory hot(un)plug would do with the linear
-mapping.
+Either case, can you send me a register dump for this chip ?
+I'd like to write a module test script to actually check if there
+are any over/underflows or other problems.
 
-We now need MEMORY_HOTPLUG and CONTIG_ALLOC as dependencies. Add a TODO
-that we want to use __GFP_ZERO for clearing once alloc_contig_pages()
-understands that.
+Thanks,
+Guenter
 
-Tested with in QEMU/TCG with 10 GiB of main memory:
-  [root@localhost ~]# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
-  [  105.903043][ T1080] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
-  [root@localhost ~]# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
-  [  145.042493][ T1080] radix-mmu: Mapped 0x0000000080000000-0x00000000c0000000 with 64.0 KiB pages
-  [  145.049019][ T1080] memtrace: Freed trace memory back on node 0
-  [  145.333960][ T1080] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
-  [root@localhost ~]# echo 0x80000000 > /sys/kernel/debug/powerpc/memtrace/enable
-  [  213.606916][ T1080] radix-mmu: Mapped 0x0000000080000000-0x00000000c0000000 with 64.0 KiB pages
-  [  213.613855][ T1080] memtrace: Freed trace memory back on node 0
-  [  214.185094][ T1080] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
-  [root@localhost ~]# echo 0x100000000 > /sys/kernel/debug/powerpc/memtrace/enable
-  [  234.874872][ T1080] radix-mmu: Mapped 0x0000000080000000-0x0000000100000000 with 64.0 KiB pages
-  [  234.886974][ T1080] memtrace: Freed trace memory back on node 0
-  [  234.890153][ T1080] memtrace: Failed to allocate trace memory on node 0
-  [root@localhost ~]# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
-  [  259.490196][ T1080] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
-
-I also made sure allocated memory is properly zeroed.
-
-Note 1: We currently won't be allocating from ZONE_MOVABLE - because our
-	pages are not movable. However, as we don't run with any memory
-	hot(un)plug mechanism around, we could make an exception to
-	increase the chance of allocations succeeding.
-
-Note 2: PG_reserved isn't sufficient. E.g., kernel_page_present() used
-	along PG_reserved in hibernation code will always return "true"
-	on powerpc, resulting in the pages getting touched. It's too
-	generic - e.g., indicates boot allocations.
-
-Note 3: For now, we keep using memory_block_size_bytes() as minimum
-	granularity.
-
-Suggested-by: Michal Hocko <mhocko@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Rashmica Gupta <rashmica.g@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/powerpc/platforms/powernv/Kconfig    |   8 +-
- arch/powerpc/platforms/powernv/memtrace.c | 163 ++++++++--------------
- 2 files changed, 62 insertions(+), 109 deletions(-)
-
-diff --git a/arch/powerpc/platforms/powernv/Kconfig b/arch/powerpc/platforms/powernv/Kconfig
-index 938803eab0ad..619b093a0657 100644
---- a/arch/powerpc/platforms/powernv/Kconfig
-+++ b/arch/powerpc/platforms/powernv/Kconfig
-@@ -27,11 +27,11 @@ config OPAL_PRD
- 	  recovery diagnostics on OpenPower machines
- 
- config PPC_MEMTRACE
--	bool "Enable removal of RAM from kernel mappings for tracing"
--	depends on PPC_POWERNV && MEMORY_HOTREMOVE
-+	bool "Enable runtime allocation of RAM for tracing"
-+	depends on PPC_POWERNV && MEMORY_HOTPLUG && CONTIG_ALLOC
- 	help
--	  Enabling this option allows for the removal of memory (RAM)
--	  from the kernel mappings to be used for hardware tracing.
-+	  Enabling this option allows for runtime allocation of memory (RAM)
-+	  for hardware tracing.
- 
- config PPC_VAS
- 	bool "IBM Virtual Accelerator Switchboard (VAS)"
-diff --git a/arch/powerpc/platforms/powernv/memtrace.c b/arch/powerpc/platforms/powernv/memtrace.c
-index 0e42fe2d7b6a..5fc9408bb0b3 100644
---- a/arch/powerpc/platforms/powernv/memtrace.c
-+++ b/arch/powerpc/platforms/powernv/memtrace.c
-@@ -51,33 +51,12 @@ static const struct file_operations memtrace_fops = {
- 	.open	= simple_open,
- };
- 
--static int check_memblock_online(struct memory_block *mem, void *arg)
--{
--	if (mem->state != MEM_ONLINE)
--		return -1;
--
--	return 0;
--}
--
--static int change_memblock_state(struct memory_block *mem, void *arg)
--{
--	unsigned long state = (unsigned long)arg;
--
--	mem->state = state;
--
--	return 0;
--}
--
- static void memtrace_clear_range(unsigned long start_pfn,
- 				 unsigned long nr_pages)
- {
- 	unsigned long pfn;
- 
--	/*
--	 * As pages are offline, we cannot trust the memmap anymore. As HIGHMEM
--	 * does not apply, avoid passing around "struct page" and use
--	 * clear_page() instead directly.
--	 */
-+	/* As HIGHMEM does not apply, use clear_page() directly. */
- 	for (pfn = start_pfn; pfn < start_pfn + nr_pages; pfn++) {
- 		if (IS_ALIGNED(pfn, PAGES_PER_SECTION))
- 			cond_resched();
-@@ -85,72 +64,39 @@ static void memtrace_clear_range(unsigned long start_pfn,
- 	}
- }
- 
--/* called with device_hotplug_lock held */
--static bool memtrace_offline_pages(u32 nid, u64 start_pfn, u64 nr_pages)
--{
--	const unsigned long start = PFN_PHYS(start_pfn);
--	const unsigned long size = PFN_PHYS(nr_pages);
--
--	if (walk_memory_blocks(start, size, NULL, check_memblock_online))
--		return false;
--
--	walk_memory_blocks(start, size, (void *)MEM_GOING_OFFLINE,
--			   change_memblock_state);
--
--	if (offline_pages(start_pfn, nr_pages)) {
--		walk_memory_blocks(start, size, (void *)MEM_ONLINE,
--				   change_memblock_state);
--		return false;
--	}
--
--	walk_memory_blocks(start, size, (void *)MEM_OFFLINE,
--			   change_memblock_state);
--
--
--	return true;
--}
--
- static u64 memtrace_alloc_node(u32 nid, u64 size)
- {
--	u64 start_pfn, end_pfn, nr_pages, pfn;
--	u64 base_pfn;
--	u64 bytes = memory_block_size_bytes();
-+	const unsigned long nr_pages = PHYS_PFN(size);
-+	unsigned long pfn, start_pfn;
-+	struct page *page;
- 
--	if (!node_spanned_pages(nid))
-+	/*
-+	 * Trace memory needs to be aligned to the size, which is guaranteed
-+	 * by alloc_contig_pages().
-+	 */
-+	page = alloc_contig_pages(nr_pages, GFP_KERNEL | __GFP_THISNODE |
-+				  __GFP_NOWARN, nid, NULL);
-+	if (!page)
- 		return 0;
-+	start_pfn = page_to_pfn(page);
- 
--	start_pfn = node_start_pfn(nid);
--	end_pfn = node_end_pfn(nid);
--	nr_pages = size >> PAGE_SHIFT;
--
--	/* Trace memory needs to be aligned to the size */
--	end_pfn = round_down(end_pfn - nr_pages, nr_pages);
--
--	lock_device_hotplug();
--	for (base_pfn = end_pfn; base_pfn > start_pfn; base_pfn -= nr_pages) {
--		if (memtrace_offline_pages(nid, base_pfn, nr_pages) == true) {
--			/*
--			 * Clear the range while we still have a linear
--			 * mapping.
--			 */
--			memtrace_clear_range(base_pfn, nr_pages);
--			/*
--			 * Remove memory in memory block size chunks so that
--			 * iomem resources are always split to the same size and
--			 * we never try to remove memory that spans two iomem
--			 * resources.
--			 */
--			end_pfn = base_pfn + nr_pages;
--			for (pfn = base_pfn; pfn < end_pfn; pfn += bytes>> PAGE_SHIFT) {
--				__remove_memory(nid, pfn << PAGE_SHIFT, bytes);
--			}
--			unlock_device_hotplug();
--			return base_pfn << PAGE_SHIFT;
--		}
--	}
--	unlock_device_hotplug();
-+	/*
-+	 * Clear the range while we still have a linear mapping.
-+	 *
-+	 * TODO: use __GFP_ZERO with alloc_contig_pages() once supported.
-+	 */
-+	memtrace_clear_range(start_pfn, nr_pages);
- 
--	return 0;
-+	/*
-+	 * Set pages PageOffline(), to indicate that nobody (e.g., hibernation,
-+	 * dumping, ...) should be touching these pages.
-+	 */
-+	for (pfn = start_pfn; pfn < start_pfn + nr_pages; pfn++)
-+		__SetPageOffline(pfn_to_page(pfn));
-+
-+	arch_remove_linear_mapping(PFN_PHYS(start_pfn), size);
-+
-+	return PFN_PHYS(start_pfn);
- }
- 
- static int memtrace_init_regions_runtime(u64 size)
-@@ -220,16 +166,30 @@ static int memtrace_init_debugfs(void)
- 	return ret;
- }
- 
--static int online_mem_block(struct memory_block *mem, void *arg)
-+static int memtrace_free(int nid, u64 start, u64 size)
- {
--	return device_online(&mem->dev);
-+	struct mhp_params params = { .pgprot = PAGE_KERNEL };
-+	const unsigned long nr_pages = PHYS_PFN(size);
-+	const unsigned long start_pfn = PHYS_PFN(start);
-+	unsigned long pfn;
-+	int ret;
-+
-+	ret = arch_create_linear_mapping(nid, start, size, &params);
-+	if (ret)
-+		return ret;
-+
-+	for (pfn = start_pfn; pfn < start_pfn + nr_pages; pfn++)
-+		__ClearPageOffline(pfn_to_page(pfn));
-+
-+	free_contig_range(start_pfn, nr_pages);
-+	return 0;
- }
- 
- /*
-- * Iterate through the chunks of memory we have removed from the kernel
-- * and attempt to add them back to the kernel.
-+ * Iterate through the chunks of memory we allocated and attempt to expose
-+ * them back to the kernel.
-  */
--static int memtrace_online(void)
-+static int memtrace_free_regions(void)
- {
- 	int i, ret = 0;
- 	struct memtrace_entry *ent;
-@@ -237,7 +197,7 @@ static int memtrace_online(void)
- 	for (i = memtrace_array_nr - 1; i >= 0; i--) {
- 		ent = &memtrace_array[i];
- 
--		/* We have onlined this chunk previously */
-+		/* We have freed this chunk previously */
- 		if (ent->nid == NUMA_NO_NODE)
- 			continue;
- 
-@@ -247,30 +207,25 @@ static int memtrace_online(void)
- 			ent->mem = 0;
- 		}
- 
--		if (add_memory(ent->nid, ent->start, ent->size, MHP_NONE)) {
--			pr_err("Failed to add trace memory to node %d\n",
-+		if (memtrace_free(ent->nid, ent->start, ent->size)) {
-+			pr_err("Failed to free trace memory on node %d\n",
- 				ent->nid);
- 			ret += 1;
- 			continue;
- 		}
- 
--		lock_device_hotplug();
--		walk_memory_blocks(ent->start, ent->size, NULL,
--				   online_mem_block);
--		unlock_device_hotplug();
--
- 		/*
--		 * Memory was added successfully so clean up references to it
--		 * so on reentry we can tell that this chunk was added.
-+		 * Memory was freed successfully so clean up references to it
-+		 * so on reentry we can tell that this chunk was freed.
- 		 */
- 		debugfs_remove_recursive(ent->dir);
--		pr_info("Added trace memory back to node %d\n", ent->nid);
-+		pr_info("Freed trace memory back on node %d\n", ent->nid);
- 		ent->size = ent->start = ent->nid = NUMA_NO_NODE;
- 	}
- 	if (ret)
- 		return ret;
- 
--	/* If all chunks of memory were added successfully, reset globals */
-+	/* If all chunks of memory were freed successfully, reset globals */
- 	kfree(memtrace_array);
- 	memtrace_array = NULL;
- 	memtrace_size = 0;
-@@ -295,18 +250,16 @@ static int memtrace_enable_set(void *data, u64 val)
- 
- 	mutex_lock(&memtrace_mutex);
- 
--	/* Re-add/online previously removed/offlined memory */
--	if (memtrace_size) {
--		if (memtrace_online())
--			goto out_unlock;
--	}
-+	/* Free all previously allocated memory. */
-+	if (memtrace_size && memtrace_free_regions())
-+		goto out_unlock;
- 
- 	if (!val) {
- 		rc = 0;
- 		goto out_unlock;
- 	}
- 
--	/* Offline and remove memory */
-+	/* Allocate memory. */
- 	if (memtrace_init_regions_runtime(val))
- 		goto out_unlock;
- 
--- 
-2.26.2
+> ---
+>  drivers/hwmon/ltc2945.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/hwmon/ltc2945.c b/drivers/hwmon/ltc2945.c
+> index 1cea710df668..6d4569a25471 100644
+> --- a/drivers/hwmon/ltc2945.c
+> +++ b/drivers/hwmon/ltc2945.c
+> @@ -155,7 +155,7 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
+>  }
+>  
+>  static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> -			      unsigned long val)
+> +			      unsigned long long val)
+>  {
+>  	struct ltc2945_state *st = dev_get_drvdata(dev);
+>  	struct regmap *regmap = st->regmap;
+> @@ -181,14 +181,14 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+>  			return ret;
+>  		if (control & CONTROL_MULT_SELECT) {
+>  			/* 25 mV * 25 uV = 0.625 uV resolution. */
+> -			val = DIV_ROUND_CLOSEST(val, 625);
+> +			val = DIV_ROUND_CLOSEST_ULL(val, 625);
+>  		} else {
+>  			/*
+>  			 * 0.5 mV * 25 uV = 0.0125 uV resolution.
+>  			 * Divide first to avoid overflow;
+>  			 * accept loss of accuracy.
+>  			 */
+> -			val = DIV_ROUND_CLOSEST(val, 25) * 2;
+> +			val = DIV_ROUND_CLOSEST_ULL(val, 25) * 2;
+>  		}
+>  		break;
+>  	case LTC2945_VIN_H:
+> @@ -197,7 +197,7 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+>  	case LTC2945_MAX_VIN_THRES_H:
+>  	case LTC2945_MIN_VIN_THRES_H:
+>  		/* 25 mV resolution. */
+> -		val /= 25;
+> +		val = div_u64(val, 25);
+>  		break;
+>  	case LTC2945_ADIN_H:
+>  	case LTC2945_MAX_ADIN_H:
+> @@ -219,7 +219,7 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+>  		 * dividing the reported current by the sense resistor value
+>  		 * in mOhm.
+>  		 */
+> -		val = DIV_ROUND_CLOSEST(val, 25);
+> +		val = DIV_ROUND_CLOSEST_ULL(val, 25);
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -247,7 +247,7 @@ static ssize_t ltc2945_value_store(struct device *dev,
+>  	struct ltc2945_state *st = dev_get_drvdata(dev);
+>  	struct regmap *regmap = st->regmap;
+>  	u8 reg = attr->index;
+> -	unsigned long val;
+> +	unsigned long long val;
+>  	u8 regbuf[3];
+>  	int num_regs;
+>  	int regval;
+> 
 
