@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F252AF4B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51F62AF4BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgKKP3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:29:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42118 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgKKP3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:29:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605108574;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0sDXXEr4je5Qj8STdejDddgjD8UXPI7WrWvNpATUfJE=;
-        b=h+INSi/kBPnCA17voUdGQn1OAIzVkLYVyIBp78cfssukqs9oqHWB8liFUjp3MSMsIut53o
-        qMyrzMOPXC32Pxc6PPFVOdPWUbl32V33skLWWpMmyXaSGRF2dzCJhWktb/OqqxPVRAZNTq
-        z5PKDAmhFW5zw+12staEUeAkxnTSoP0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 516B7ABD1;
-        Wed, 11 Nov 2020 15:29:34 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 16:29:33 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: core-api/printk-formats.rst: Clarify formatting
- {cpu,node}mask
-Message-ID: <20201111152933.GA1702@alley>
-References: <20201110144121.3278667-1-geert+renesas@glider.be>
+        id S1727100AbgKKPas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKKPar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:30:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C465CC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:30:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vxADKWsfDNlkWbQuA/V8yobZQ2kcfLFZo+4tJJGDR2s=; b=qycWmBJWdG4hYAYqpFqRTViuwU
+        TUQ3ZQ/Owu6LcQauB0uqD2g/hE42gR/abd8NRjbICVnJvwhwCAJTyzIdyj+2cBhVaPAq4goXf6UkS
+        c4W12C7kEieH28W+3lI68PR72I9Q03pzqs4qoAlQHqzWp0hXDnTbjfZN7oKL2O4Feq3eQLetlFtvX
+        cabS1K0nR3ZvDxn6RU+UUs2pzo0dn5BR2u+GsfMi8+x4mlHsiCVnCGMNhXdD7Nz27SpJo/C8kPBul
+        8rqof+mDCJQkxCkXxhVQmYzGo/GHHwbeGgLjwVRFDEQJulI9g19Vy3cZhfGshvhNLOJcflK2iwsrZ
+        qUsXGqIQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcs4k-0005b7-RU; Wed, 11 Nov 2020 15:30:22 +0000
+Date:   Wed, 11 Nov 2020 15:30:22 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, mingo@redhat.com,
+        acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        benh@kernel.crashing.org, paulus@samba.org,
+        David Miller <davem@davemloft.net>, vbabka@suse.cz
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+Message-ID: <20201111153022.GT17076@casper.infradead.org>
+References: <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+ <877drz1qbc.fsf@mpe.ellerman.id.au>
+ <20201012084829.GA1151@willie-the-truck>
+ <de47984b-9a69-733c-3bd1-7b24ceb9b7f0@linux.intel.com>
+ <20201013154615.GE2594@hirez.programming.kicks-ass.net>
+ <20201013163449.GR2651@hirez.programming.kicks-ass.net>
+ <8e88ba79-7c40-ea32-a7ed-bdc4fc04b2af@linux.intel.com>
+ <20201111095750.GS2594@hirez.programming.kicks-ass.net>
+ <20201111112246.GR2651@hirez.programming.kicks-ass.net>
+ <20201111124357.GS2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201110144121.3278667-1-geert+renesas@glider.be>
+In-Reply-To: <20201111124357.GS2651@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-11-10 15:41:21, Geert Uytterhoeven wrote:
-> Clarify how to pass the field width for bitmaps, and mention the helper
-> macros that are available to ease printing cpumask and nodemask.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  Documentation/core-api/printk-formats.rst | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-> index 6d26c5c6ac485cec..160e710d992f3a36 100644
-> --- a/Documentation/core-api/printk-formats.rst
-> +++ b/Documentation/core-api/printk-formats.rst
-> @@ -531,7 +531,9 @@ For printing bitmap and its derivatives such as cpumask and nodemask,
->  %*pb outputs the bitmap with field width as the number of bits and %*pbl
->  output the bitmap as range list with field width as the number of bits.
->  
-> -Passed by reference.
-> +The field width is passed by value, the bitmap is passed by reference.
-> +Helper macros cpumask_pr_args() and nodemask_pr_args() are available to ease
-> +printing cpumask and nodemask.
+On Wed, Nov 11, 2020 at 01:43:57PM +0100, Peter Zijlstra wrote:
+> +	if (pud_leaf(pud)) {
+>  #ifdef pud_page
+> -		page = pud_page(*pud);
+> -		if (PageHuge(page))
+> -			return page_size(compound_head(page));
+> +		if (!pud_devmap(pud)) {
+> +			page = pud_page(pud);
+> +			if (PageHuge(page))
+> +				return page_size(compound_head(page));
+> +		}
+>  #endif
+>  		return 1ULL << PUD_SHIFT;
 
-I like it and I would go even further. I have never used these modifiers
-and was really confused by the entire description.
+This confuses me.  Why only special-case hugetlbfs pages here?  Should
+they really be treated differently from THP?  If you want to consider
+that we might be mapping a page that's twice as big as a PUD entry and
+this is only half of it, then the simple way is:
 
-IMHO, it is just an implementation detail that the number of bits is
-passed via width in struct printf_spec. It is the asterisk '*' that
-defines that one more argument is needed. And it is up to the
-documentation to define what the argument is for.
+	if (pud_leaf(pud)) {
+#ifdef pud_page
+		page = compound_head(pud_page(*pud));
+		return page_size(page);
+#else
+		return 1ULL << PUD_SHIFT;
+#endif
+	}
 
-The following text shows the idea. I am not a native speaker.
-I am sure that the working might get improved.
+Also, what's up with the special-casing of devmap pages here?  Did the
+devmap people fuck up their compound pages?  If so, they should fix their
+shit, not expect the rest of the kernel to work around this brokenness.
 
-<cut>
-	%*pb	0779
-	%*pbl	0,3-6,8-10
-
-For printing bitmap and its derivatives such as cpumask and nodemask.
-
-It takes two arguments, see '*'. The first argument defines the number
-of bits in the mask. The second argument points to the mask.
-
-%*pb outputs the bitmap as a hex number. If the size is bigger than 32-bit
-then 32-bit values are separated by a comma.
-
-%*pbl outputs the bitmap as a range list.
-
-The number of bits is passed by value. The mask is passed by reference.
-Helper macros cpumask_pr_args() and nodemask_pr_args() are available to
-ease printing cpumask and nodemask.
-</cut>
-
-Best Regards,
-Petr
