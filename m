@@ -2,171 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B872AE834
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590182AE841
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 06:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbgKKFkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 00:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKFkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:40:09 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1807CC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:40:08 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id m143so900024oig.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 21:40:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NDUtVAeVkvu9Gc32xI9255swYRKkk0TO9KMq0qQOaaU=;
-        b=dlr8D/YmUWgv/Jf/c0R8525jdTh8nfECXhST6AI+/uG1Syl/mqBvP2XmjV2tL0GUia
-         NE2lL6NPV2JThEGplv1Mv2AKXBJT89u9cjCWG1nhO+Fgek3Wc7xw1uEWwboSpTxpNVO7
-         2/WYgow2Wu668HDGUgzN/w7+FwzW1RVTnCZW2RUHCto4ZEBTi3kU4N+1BR6AigJUk3Eo
-         p+E9TU4l94ftxz4U/BV8Njr6rzrXZE+PcDgkIJQQOcKPYMP1+kwtg8dOmJdm6NUh4VEB
-         ywy5KRP8Zw1kgH/flRfUT7+14BrXSK6b5NlYG3T9pqxCyD0tFX8rMwxkbvwjyuQq1OWF
-         gTMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NDUtVAeVkvu9Gc32xI9255swYRKkk0TO9KMq0qQOaaU=;
-        b=kn19ER1Jl6kJ/E6IDymkgvYo/O41h9wHWDDl8q4i0hIZ21L7dhuacZ52goBD9cDSts
-         5MBRoAvEuiAvqNGQ8hIbVXghcQ+SZ/NhBuyFY5UPzDRdqaG6/U2JVKHPU/nhL/WFkI9I
-         Y2+YhgneHoiHjfN1OZTw6tH9IdtVt4EBD39zTf/qSTEr9ApAqI96OLHt/KNvBnkyq6uz
-         FDILde9yoqKzBwZM7B7ixcjyFXCxTZ/kV8LswsH8FZtAou3xPmjtKv0ybZVB4ABoekWw
-         nYiYyezXvL2027qkwaXR/mDRCWXJyIa+dSn3Lg4QxO1EqEKtjtiTm6SzimQqC+A7wrpx
-         jTaw==
-X-Gm-Message-State: AOAM5305NbKkKyh41lnEloSzaAGNjDLMrqidqlsEdljojVIEOKDBJ5Tt
-        3O8taQ0J221Xtupmm5CXreK2gA==
-X-Google-Smtp-Source: ABdhPJxK6F7c/RWwxw7TCkgpzaMCWt/aNHqdIKETIZxMQKdxSmrzM+jPTd2O483Ga0o1zzppb+OFdA==
-X-Received: by 2002:aca:90c:: with SMTP id 12mr1138942oij.15.1605073207304;
-        Tue, 10 Nov 2020 21:40:07 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m3sm233355oim.36.2020.11.10.21.40.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 21:40:06 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:40:04 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     rishabhb@codeaurora.org
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] remoteproc: sysmon: Ensure remote notification
- ordering
-Message-ID: <20201111054004.GG332990@builder.lan>
-References: <20201105045051.1365780-1-bjorn.andersson@linaro.org>
- <20201105045051.1365780-2-bjorn.andersson@linaro.org>
- <fb182a63172af055be473247bc783bd6@codeaurora.org>
+        id S1725962AbgKKFoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 00:44:08 -0500
+Received: from mga12.intel.com ([192.55.52.136]:54150 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgKKFoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 00:44:05 -0500
+IronPort-SDR: m4g6k+Hl9pizKrSHdTFng7sP87acTx2nAlOFwLgBpXfBEW/fa1gJU5H+K1XPgCoBx+sCirt4i5
+ NizR6qDWBRLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="149372946"
+X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
+   d="scan'208";a="149372946"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 21:44:02 -0800
+IronPort-SDR: gQzIQInEA5r3owPoX3X4seS8dnk1b29gobwVFwNWfq2rezXEKm4VwbkgJ8IL1AwMLJl9xwB0Mg
+ n7lnMsH7/OPw==
+X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
+   d="scan'208";a="360414721"
+Received: from hccoutan-mobl1.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.131.159])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 21:44:02 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     linux-cxl@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>
+Subject: [RFC PATCH 0/9] CXL 2.0 Support
+Date:   Tue, 10 Nov 2020 21:43:47 -0800
+Message-Id: <20201111054356.793390-1-ben.widawsky@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb182a63172af055be473247bc783bd6@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 10 Nov 18:57 CST 2020, rishabhb@codeaurora.org wrote:
+Introduce support for “type-3” memory devices defined in the recently released
+Compute Express Link (CXL) 2.0 specification. Specifically, these are the memory
+devices defined by section 8.2.8.5 of the CXL 2.0 spec. A reference
+implementation emulating these devices is being submitted to the QEMU mailing
+list. “Type-3” is a CXL device that acts as a memory expander for RAM or PMEM.
+It might be interleaved with other CXL devices in a given physical address
+range.
 
-> On 2020-11-04 20:50, Bjorn Andersson wrote:
-> > The reliance on the remoteproc's state for determining when to send
-> > sysmon notifications to a remote processor is racy with regard to
-> > concurrent remoteproc operations.
-> > 
-> > Further more the advertisement of the state of other remote processor to
-> > a newly started remote processor might not only send the wrong state,
-> > but might result in a stream of state changes that are out of order.
-> > 
-> > Address this by introducing state tracking within the sysmon instances
-> > themselves and extend the locking to ensure that the notifications are
-> > consistent with this state.
-> > 
-> > Fixes: 1f36ab3f6e3b ("remoteproc: sysmon: Inform current rproc about
-> > all active rprocs")
-> > Fixes: 1877f54f75ad ("remoteproc: sysmon: Add notifications for events")
-> > Fixes: 1fb82ee806d1 ("remoteproc: qcom: Introduce sysmon")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v1:
-> > - Reduced the locking to be per sysmon instance
-> > - Dropped unused local "rproc" variable in sysmon_notify()
-> > 
-> >  drivers/remoteproc/qcom_sysmon.c | 27 +++++++++++++++++++++------
-> >  1 file changed, 21 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/qcom_sysmon.c
-> > b/drivers/remoteproc/qcom_sysmon.c
-> > index 9eb2f6bccea6..38f63c968fa8 100644
-> > --- a/drivers/remoteproc/qcom_sysmon.c
-> > +++ b/drivers/remoteproc/qcom_sysmon.c
-> > @@ -22,6 +22,9 @@ struct qcom_sysmon {
-> >  	struct rproc_subdev subdev;
-> >  	struct rproc *rproc;
-> > 
-> > +	int state;
-> > +	struct mutex state_lock;
-> > +
-> >  	struct list_head node;
-> > 
-> >  	const char *name;
-> > @@ -448,7 +451,10 @@ static int sysmon_prepare(struct rproc_subdev
-> > *subdev)
-> >  		.ssr_event = SSCTL_SSR_EVENT_BEFORE_POWERUP
-> >  	};
-> > 
-> > +	mutex_lock(&sysmon->state_lock);
-> > +	sysmon->state = SSCTL_SSR_EVENT_BEFORE_POWERUP;
-> >  	blocking_notifier_call_chain(&sysmon_notifiers, 0, (void *)&event);
-> > +	mutex_unlock(&sysmon->state_lock);
-> > 
-> >  	return 0;
-> >  }
-> > @@ -472,22 +478,25 @@ static int sysmon_start(struct rproc_subdev
-> > *subdev)
-> >  		.ssr_event = SSCTL_SSR_EVENT_AFTER_POWERUP
-> >  	};
-> > 
-> > +	mutex_lock(&sysmon->state_lock);
-> > +	sysmon->state = SSCTL_SSR_EVENT_AFTER_POWERUP;
-> >  	blocking_notifier_call_chain(&sysmon_notifiers, 0, (void *)&event);
-> > +	mutex_unlock(&sysmon->state_lock);
-> > 
-> > -	mutex_lock(&sysmon_lock);
-> 
-> We should keep the sysmon_lock to make sure sysmon_list is not modified
-> at the time we are doing this operation?
+These changes allow for foundational enumeration of CXL 2.0 memory devices. The functionality present is:
+- Initial driver bring-up
+- Device enumeration and an initial sysfs representation
+- Submit a basic firmware command via ‘mailbox’ to an emulated memory device
+  with non-volatile capacity.
 
-Yes, that seems like a very good idea. I will review and update.
+Some of the functionality that is still missing includes:
+- Memory interleaving at the host bridge, root port, or switch level
+- CXL 1.1 Root Complex Integrated Endpoint Support
+- CXL 2.0 Hot plug support
 
-> >  	list_for_each_entry(target, &sysmon_list, node) {
-> > -		if (target == sysmon ||
-> > -		    target->rproc->state != RPROC_RUNNING)
-> > +		if (target == sysmon)
-> >  			continue;
-> > 
-> > +		mutex_lock(&target->state_lock);
-> >  		event.subsys_name = target->name;
-> > +		event.ssr_event = target->state;
-> 
-> Is it better to only send this event when target->state is
-> "SSCTL_SSR_EVENT_AFTER_POWERUP"?
+In addition to the core functionality of discovering the spec defined registers
+and resources, introduce a CXL device model that will be the foundation for
+translating CXL capabilities into existing Linux infrastructure for Persistent
+Memory and other memory devices. For now, this only includes support for the
+management command mailbox that type-3 devices surface. These control devices
+fill the role of “DIMMs” / nmemX memory-devices in LIBNVDIMM terms.
 
-It depends on what the remote's requirements, I tested this and didn't
-see any problems sending both SSCTL_SSR_EVENT_AFTER_POWERUP and
-SSCTL_SSR_EVENT_AFTER_SHUTDOWN at least...
-I don't know if I managed to hit a case where I sent any of the
-intermediate states.
+Now, while implementing the driver some feedback for the specification was
+generated to cover perceived gaps and address conflicts. The feedback is
+presented as a reference implementation in the driver and QEMU emulation.
+Specifically the following concepts are original to the Linux implementation and
+feedback / collaboration is requested to develop these into specification
+proposals:
+1. Top level ACPI object (ACPI0017)
+2. HW imposed address space and interleave constraints
+3. _OSC UUID A4D1629D-FF52-4888-BE96-E5CADE548DB1
 
-If you could provide some more input here I would appreciate it -
-although I would be happy to merge the patch after fixing above locking
-issue and then we can limit the events sent once we have a more detailed
-answer, if that helps.
+ACPI0017
+--------
+Introduce a new ACPI namespace device with an _HID of ACPI0017. The purpose of
+this object is twofold, support a legacy OS with a set of out-of-tree CXL
+modules, and establish an attach point for a driver that knows about
+interleaving. Both of these boil down to the same point, to centralize Operating
+System support for resources described by the CXL Early Discovery Table (CEDT).
 
-Regards,
-Bjorn
+The legacy OS problem stems from the spec's description of a host bridge,
+ACPI0016 is denoted as the _HID for host bridges, with a _CID of PNP0A08. In a
+CXL unaware version of Linux, the core ACPI subsystem will bind a driver to
+PNP0A08 and preclude a CXL-aware driver from binding to ACPI0016. An ACPI0017
+device allows a standalone CXL-aware driver to register for handling /
+coordinating CEDT and CXL-specific _OSC control.
+
+Similarly when managing interleaving there needs to be some management layer
+above the ACPI0016 device that is capable of assembling leaf nodes into
+interleave sets. As is the case with ACPI0012 that does this central
+coordination for NFIT defined resources, ACPI0017 does the same for CEDT
+described resources.
+
+Memory Windows
+-------
+For CXL.mem capable platforms, there is a need for a mechanism for platform
+firmware to make the Operating System aware of any restrictions that hardware
+might have in address space. For example, in a system with 4 host bridges all
+participating in an interleave set, the firmware needs to provide some
+description of this. That information is missing from the CXL 2.0 spec as of
+today and it also is not implemented in the driver. A variety of ACPI based
+mechanisms, for example _CRS fields on the ACPI0017 device, were considered.
+
+
+CXL Exclusive _OSC
+-----------------
+CXL 2.0 definition provides new fields to _OSC for host bridges to allow for new
+services provided by CXL - error handling, hot plug, capabilities, etc. This is
+built on top of PCIe _OSC via a new UUID. A CXL unaware OS will use the old UUID
+to configure the PCIe host bridge. The expectation is that a CXL aware OS uses
+the new UUID and to modify both CXL and PCIE capabilities in one shot. The issue
+arises when trying to define a standalone CXL driver. The core OS will configure
+the PCIe _OSC, but when the CXL driver attempts to set CXL _OSC the current
+definition makes that driver re-specify PCIE capabilities. An isolated CXL-only
+_OSC allows the PCIE core to be unchanged and let a CXL driver stack manage CXL
+_OSC without the possibility of clobbering / colliding with PCIE core OSC
+management.  The proposal moves the new _OSC dwords (SUPC and CTRC) to their own
+_OSC UUID.
+
+Next steps after this basic foundation is expanded command support and LIBNVDIMM
+integration. This is the initial “release early / release often” version of the
+Linux CXL enabling.
+
+
+Ben Widawsky (5):
+  cxl/mem: Map memory device registers
+  cxl/mem: Find device capabilities
+  cxl/mem: Initialize the mailbox interface
+  cxl/mem: Implement polled mode mailbox
+  MAINTAINERS: Add maintainers of the CXL driver
+
+Dan Williams (2):
+  cxl/mem: Add a driver for the type-3 mailbox
+  cxl/mem: Register CXL memX devices
+
+Vishal Verma (2):
+  cxl/acpi: Add an acpi_cxl module for the CXL interconnect
+  cxl/acpi: add OSC support
+
+ MAINTAINERS           |   9 +
+ drivers/Kconfig       |   1 +
+ drivers/Makefile      |   1 +
+ drivers/cxl/Kconfig   |  50 ++++
+ drivers/cxl/Makefile  |   9 +
+ drivers/cxl/acpi.c    | 325 ++++++++++++++++++++++
+ drivers/cxl/acpi.h    |  33 +++
+ drivers/cxl/bus.c     |  35 +++
+ drivers/cxl/bus.h     |   8 +
+ drivers/cxl/cxl.h     | 166 +++++++++++
+ drivers/cxl/mem.c     | 631 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/cxl/pci.h     |  21 ++
+ include/acpi/actbl1.h |  52 ++++
+ 13 files changed, 1341 insertions(+)
+ create mode 100644 drivers/cxl/Kconfig
+ create mode 100644 drivers/cxl/Makefile
+ create mode 100644 drivers/cxl/acpi.c
+ create mode 100644 drivers/cxl/acpi.h
+ create mode 100644 drivers/cxl/bus.c
+ create mode 100644 drivers/cxl/bus.h
+ create mode 100644 drivers/cxl/cxl.h
+ create mode 100644 drivers/cxl/mem.c
+ create mode 100644 drivers/cxl/pci.h
+
+-- 
+2.29.2
+
