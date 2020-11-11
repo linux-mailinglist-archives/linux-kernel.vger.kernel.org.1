@@ -2,164 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CA32AEEC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1527E2AEECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727372AbgKKKbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:31:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbgKKKbI (ORCPT
+        id S1727408AbgKKKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:32:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29113 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726229AbgKKKch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:31:08 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8345C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:31:07 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id k1so1496810ilc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:31:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xBSaTVNMPfPGHhUMYI+hLxMazSzPKmRe0TGeaaYm9k0=;
-        b=NBf76nxF8SYIXnF1uxIp6uEJk1vKHazjN5TMSYYJlKXeCPRNA3pnhuMtd0P1ZNSpME
-         3mja89cGywM7iTDWtb3OdMU2Avz9uX7px03SspZYe5GkejHSzqHKxGmfn4g8tOPegQtx
-         SbhG9IPeQNhP7TITrcAw7vLteIANRbifk1YnO3ewF9yVMk9Hx7HnLY9m1bPiSYVZReZ3
-         ZcULoQDJ5pn8p8nr8hQAAqiEwzy5eV2D8IgC3stZ384ebbCI3jPaohUfoycuUOStnNxl
-         scCt8LtnWmvreD9qMP5xUhBcXoQGW4l1SjYiT1BH6jDGIQovDaV7kqAjDVgD6cb8NKMb
-         vH7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xBSaTVNMPfPGHhUMYI+hLxMazSzPKmRe0TGeaaYm9k0=;
-        b=K3o0+SDXwZST3Je6YtR/CfACOCKGrypMtzwBvDOVXNqkE9P8hCC8TUrzKHZl9Q1qi/
-         l01Fp3FyjcTDYv3M5gou7KXjc4NBp5timgNP/ORD2pWXtT3eLydnyfLH2PQod0tiHro+
-         Mr7XJWTRz6IfaOFq89JCZcOSpPsZntftgqIusJ2wrqnRjUSDUILg7jwqvmRTyI4B2M2s
-         VCN78LO9FasCpz3+uQQIwJpbnF35EfBsTbsV3ixf9RjqCckotiLeI+R7MqYdwJw15ROt
-         gnzWeenq/dNlgCbzmolWkLhaVAr5TvmvFTAQZ5lI2F1QjNUhDjMSce8c46e136e78NDW
-         fmPA==
-X-Gm-Message-State: AOAM530vq4gemvT7ktz0FFgoq53yQCvdmbd37+GM28IRbuCfcAdIt9u9
-        REZ6PUd9nYog+pfyEEDkzZWy/27VaEpyqPYzirXDbwvF6VMQ/Q==
-X-Google-Smtp-Source: ABdhPJz4jKYLr4F43q8xNORwFZsZCagRvl3wgei5q+sYGOnSxVMPwutCYElFaUeTKeaIzpu07E2zccDIiIQQro5noPU=
-X-Received: by 2002:a92:cb51:: with SMTP id f17mr17208165ilq.64.1605090667090;
- Wed, 11 Nov 2020 02:31:07 -0800 (PST)
+        Wed, 11 Nov 2020 05:32:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605090756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nQanxT8X3ELig0XMX5/McNaRarJw9LhbTOfvsbkiJyA=;
+        b=ejkvmBsyGlqVnbMqCGlI/MAup1rOADJ+yNAHh/e+qaAfEFy6kf/2+ZSn8c4ADcXuaZdNmC
+        gtRD+W/FcmUkUrXIvMPOBH0p8/ofP+eHe6zT5VqPcPZBWuam97Ig9VmBfDWXGBAfBaTomj
+        NzFfUoDILCDqh3/2DnANcBp5bloUhrU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-84-sLOqzFc1OsW-ZY8MMNDcjw-1; Wed, 11 Nov 2020 05:32:32 -0500
+X-MC-Unique: sLOqzFc1OsW-ZY8MMNDcjw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E5B3186DD4D;
+        Wed, 11 Nov 2020 10:32:30 +0000 (UTC)
+Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EF30E7513C;
+        Wed, 11 Nov 2020 10:32:26 +0000 (UTC)
+Subject: Re: [PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages()
+ with init_on_alloc=1 or __GFP_ZERO
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20201110193240.25401-1-david@redhat.com>
+ <20201111084738.GT12240@dhcp22.suse.cz>
+ <4ebc711e-7fbc-62aa-b88f-3d6ffa9379ff@redhat.com>
+ <b2d29dc2-cfe9-415d-7037-402dcc0c0f17@suse.cz>
+ <5e104380-c0b1-4911-b484-b6e1e1c46f7d@redhat.com>
+ <20201111102207.GV12240@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c828742e-ce1c-08e1-5204-7bfb9e0f564a@redhat.com>
+Date:   Wed, 11 Nov 2020 11:32:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201111090143.9230-1-yashsri421@gmail.com>
-In-Reply-To: <20201111090143.9230-1-yashsri421@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 11 Nov 2020 11:30:58 +0100
-Message-ID: <CAKXUXMzg6Wg310s-N8hWOEiXFkg1ZAga+NkFQkFQ5_bS16TLnA@mail.gmail.com>
-Subject: Re: [PATCH v2] checkpatch: add fix option for MISSING_SIGN_OFF
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201111102207.GV12240@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 10:01 AM Aditya Srivastava <yashsri421@gmail.com> wrote:
->
-> Currently checkpatch warns us if there is no 'Signed-off-by' line
-> for the patch.
->
-> E.g., running checkpatch on commit 9ac060a708e0 ("leaking_addresses:
-> Completely remove --version flag") reports this error:
->
-> ERROR: Missing Signed-off-by: line(s)
->
-> Provide a fix by adding a Signed-off-by line corresponding to the author
-> of the patch before the patch separator line. Also avoid this error for
-> the commits where some typo is present in the sign off.
->
-> E.g. for commit 8cde5d5f7361 ("bus: ti-sysc: Detect omap4 type timers
-> for quirk") we get missing sign off as well as bad sign off for:
->
-> Siganed-off-by: Tony Lindgren <tony@atomide.com>
->
-> Here it is probably best to give BAD_SIGN_OFF warning for Non-standard
-> signature and avoid MISSING_SIGN_OFF
->
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> Changes in v2:
-> Add space after 'if'
-> Add check for $patch_separator_linenr to be greater than 0
->
->  scripts/checkpatch.pl | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index cb46288127ac..ac7e5ac80b58 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -2404,6 +2404,8 @@ sub process {
->
->         my $last_blank_line = 0;
->         my $last_coalesced_string_linenr = -1;
-> +       my $patch_separator_linenr = 0;
-> +       my $non_standard_signature = 0;
->
->         our @report = ();
->         our $cnt_lines = 0;
-> @@ -2755,6 +2757,10 @@ sub process {
->                 if ($line =~ /^---$/) {
->                         $has_patch_separator = 1;
->                         $in_commit_log = 0;
-> +                       # to add missing sign off line before diff(s)
-> +                       if ($patch_separator_linenr == 0) {
-> +                               $patch_separator_linenr = $linenr;
-> +                       }
->                 }
->
->  # Check if MAINTAINERS is being updated.  If so, there's probably no need to
-> @@ -2775,6 +2781,9 @@ sub process {
->                         if ($sign_off !~ /$signature_tags/) {
->                                 WARN("BAD_SIGN_OFF",
->                                      "Non-standard signature: $sign_off\n" . $herecurr);
-> +
-> +                               # to avoid missing_sign_off error as it most probably is just a typo
-> +                               $non_standard_signature = 1;
->                         }
->                         if (defined $space_before && $space_before ne "") {
->                                 if (WARN("BAD_SIGN_OFF",
-> @@ -7118,9 +7127,12 @@ sub process {
->                       "Does not appear to be a unified-diff format patch\n");
->         }
->         if ($is_patch && $has_commit_log && $chk_signoff) {
-> -               if ($signoff == 0) {
-> -                       ERROR("MISSING_SIGN_OFF",
-> -                             "Missing Signed-off-by: line(s)\n");
-> +               if ($signoff == 0 && !$non_standard_signature) {
-> +                       if (ERROR("MISSING_SIGN_OFF",
-> +                                 "Missing Signed-off-by: line(s)\n") &&
-> +                           $fix && $patch_separator_linenr > 0) {
-> +                               fix_insert_line($patch_separator_linenr - 1, "Signed-off-by: $author");
-> +                       }
+On 11.11.20 11:22, Michal Hocko wrote:
+> On Wed 11-11-20 11:05:21, David Hildenbrand wrote:
+>> On 11.11.20 10:58, Vlastimil Babka wrote:
+>>> On 11/11/20 10:06 AM, David Hildenbrand wrote:
+>>>> On 11.11.20 09:47, Michal Hocko wrote:
+>>>>> On Tue 10-11-20 20:32:40, David Hildenbrand wrote:
+>>>>>> commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
+>>>>>> init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
+>>>>>> leaving the buddy via alloc_pages() and friends to be
+>>>>>> initialized/cleared/zeroed on allocation.
+>>>>>>
+>>>>>> However, the same logic is currently not applied to
+>>>>>> alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
+>>>>>> with init_on_alloc=1 and init_on_free=0. Let's also properly clear
+>>>>>> pages on that allocation path and add support for __GFP_ZERO.
+>>>>>
+>>>>> AFAIR we do not have any user for __GFP_ZERO right? Not that this is
+>>>>
+>>>> Sorry, I had extended information under "---" but accidentally
+>>>> regenerated the patch before sending it out.
+>>>>
+>>>> __GFP_ZERO is not used yet. It's intended to be used in
+>>>> https://lkml.kernel.org/r/20201029162718.29910-1-david@redhat.com
+>>>> and I can move that change into a separate patch if desired.
+> 
+> OK, it would make sense to add it with its user.
+> 
+>>>>> harmful but it is better to call that explicitly because a missing
+>>>>> implementation would be a real problem and as such a bug fix.
+>>>>>
+>>>>> I am also not sure handling init_on_free at the higher level is good.
+>>>>> As we have discussed recently the primary point of this feature is to
+>>>>> add clearing at very few well defined entry points rather than spill it over
+>>>>> many places. In this case the entry point for the allocator is
+>>>>> __isolate_free_page which removes pages from the page allocator. I
+>>>>> haven't checked how much this is used elsewhere but I would expect
+>>>>> init_on_alloc to be handled there.
+>>>>
+>>>> Well, this is the entry point to our range allocator, which lives in
+>>>> page_alloc.c - used by actual high-level allocators (CMA, gigantic
+>>>> pages, etc). It's just a matter of taste where we want to have that
+>>>> handling exactly inside our allocator.
+> 
+> Yes I completely agree here. I just believe it should the lowest we can
+> achieve.
+> 
+>>> I agree alloc_contig_range() is fine as an entry point.
+>>
+>> Thanks, let's see if Michal insists of having this somewhere inside
+>> isolate_freepages_range() instead.
+>   
+> It's not that I would be insisting. I am just pointing out that changes
+> like this one go against the idea of init_on_alloc because it is adding
+> more special casing and long term more places to be really careful about
+> when one has to be really careful to not undermine the security aspect
+> of the feature. I haven't really checked why compaction is not the
+> problem but I suspect it is the fact that it unconditionally copy the
+> full page content to the isolated page so there is no way to sneak
+> any data leak there. That is fine. We should however make that clear by
 
-Maybe I am already digging too much in the details... however:
+Exactly.
 
-I think it should still warn about a Missing Signed-off-by: even when
-we know there is a $non_standard_signature. So, checkpatch simply
-emits two warnings; that is okay in that case.
+> using a special cased function which skips this particular
+> initialization and make sure everybody else will just do the right thing
+> without much thinking.
 
-It is just that our evaluation shows that the provided fix option
-should not be suggested when there is a $non_standard_signature
-because we actually would predict that there is typo in the intended
-Signed-off-by tag and the fix that checkpatch would suggest would not
-be adequate.
+I totally agree, but I think we don't have many places where free pages 
+actually leave the buddy besides alloc_pages() and friends (compaction 
+is something special). I agree having a single place to handle that 
+would be preferred. I'll have a look if that can be reworked without 
+doing too much harm / affecting other hot paths.
 
-Joe, what is your opinion?
+-- 
+Thanks,
 
-Aditya, it should not be too difficult to implement the rule that way, right?
+David / dhildenb
 
-
->                 } elsif ($authorsignoff != 1) {
->                         # authorsignoff values:
->                         # 0 -> missing sign off
-> --
-> 2.17.1
->
