@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12AB2AF419
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3F62AF41B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727203AbgKKOxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:53:24 -0500
-Received: from smtp.asem.it ([151.1.184.197]:60288 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727166AbgKKOxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:53:22 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000601011.MSG 
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 15:53:15 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
- Nov 2020 15:53:13 +0100
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.1979.003; Wed, 11 Nov 2020 15:53:13 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v1] Documentation: ACPI: explain how to use
- gpio-line-names
-Thread-Topic: [PATCH v1] Documentation: ACPI: explain how to use
- gpio-line-names
-Thread-Index: AQHWuCs2DratU6tfqk6ZIQJSnDA95anC5K8AgAAdYVA=
-Date:   Wed, 11 Nov 2020 14:53:13 +0000
-Message-ID: <93941f3b0142473399bfdd18608a4056@asem.it>
-References: <20201111130435.432982-1-f.suligoi@asem.it>
- <CAHp75VeccWtKRQkQE0XyyDZVvkD3QrBig2yU6=pz3KEG-bCKjA@mail.gmail.com>
-In-Reply-To: <CAHp75VeccWtKRQkQE0XyyDZVvkD3QrBig2yU6=pz3KEG-bCKjA@mail.gmail.com>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727217AbgKKOxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:53:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725939AbgKKOxg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:53:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605106415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5Dr0+pyBqVK3WLFkrmGnVmo0jFKi8+9WQgJ494/SxHE=;
+        b=Ir79xG2yLD/riet8TMtKd95HoDk06HGGenoaUxLx8DsMfH+XQF5eAZDDck/V9FBWXOicCC
+        LmqmYWazE1izlClcyGj530fbHGh6/V4MluvayQajm3oRPCoohEM7mEU/18C6wtxiGVCt9a
+        MfpCfAiOVNfXMfT+S7H/8r+RKJHVnBE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-bF7ocHOgOXK6oeBoGufIsg-1; Wed, 11 Nov 2020 09:53:33 -0500
+X-MC-Unique: bF7ocHOgOXK6oeBoGufIsg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5093318CB72A;
+        Wed, 11 Nov 2020 14:53:30 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-151.ams2.redhat.com [10.36.114.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A6BDD380;
+        Wed, 11 Nov 2020 14:53:23 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Rashmica Gupta <rashmica.g@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v2 0/8] powernv/memtrace: don't abuse memory hot(un)plug infrastructure for memory allocations
+Date:   Wed, 11 Nov 2020 15:53:14 +0100
+Message-Id: <20201111145322.15793-1-david@redhat.com>
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090213.5FABFADA.0015,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5keSwNCg0KPiA+IFRoaXMgY29tbWl0IGFsc28gZml4IGEgdHJpdmlhbCBzeW50YXggZXJy
-b3IuDQo+IA0KPiBmaXggLT4gZml4ZXMNCj4gc3ludGF4IGVycm9yIC0+IHNwZWxsaW5nIG1pc3Rh
-a2UNCg0Kb2sNCg0KPiA+IC1FeGFtcGxlOjoNCj4gPiArVGhlICJncGlvLWxpbmUtbmFtZXMiIGRl
-Y2xhcmF0aW9uIGlzIGEgbGlzdCBvZiBzdHJpbmdzICgibmFtZXMiKSwgd2hpY2gNCj4gPiArZGVz
-Y3JpYmVzIGVhY2ggbGluZS9waW4gb2YgYSBHUElPIGNvbnRyb2xsZXIvZXhwYW5kZXIuDQo+ID4g
-K1RoaXMgbGlzdCwgY29udGFpbmVkIGluIGEgcGFja2FnZSwgbXVzdCBiZSBpbnNlcnRlZCBpbnNp
-ZGUgdGhlIEdQSU8NCj4gY29udHJvbGxlcg0KPiA+ICtkZWNsYXJhdGlvbiBvZiBhbiBBQ1BJIHRh
-YmxlICh0eXBpY2FsbHkgaW5zaWRlIHRoZSBEU0RUKS4NCj4gPiArVGhlIGdwaW8tbGluZS1uYW1l
-cyBsaXN0IG11c3QgcmVzcGVjdCB0aGUgZm9sbG93aW5nIHJ1bGVzIChzZWUgYWxzbyB0aGUNCj4g
-PiArZXhhbXBsZXMpOg0KPiANCj4gU2luY2UgaXQncyByZXN0LCBJIHdvdWxkIGV4cGVjdCBncGlv
-LWxpbmUtbmFtZXMgaW4gYWJvdmUgcGFyYWdyYXBocyB0bw0KPiBiZSBhIHRlcm0sIHNvbWV0aGlu
-ZyBsaWtlDQo+IGBgZ3Bpby1saW5lLW5hbWVzYGAgKGRvdWJsZSBiYWNrIHF1b3RlcyBvbiBlYWNo
-IHNpZGUpLiBZZXMsIEkga25vdw0KPiB0aGF0IHRoZXJlIGFyZSBvdGhlciBwbGFjZXMgd2hpY2gg
-bmVlZCB0byBiZSBhbWVuZGVkLCBidXQgSSBiZWxpZXZlDQo+IGl0J3Mgb3V0IG9mIHNjb3BlIG9m
-IHRoaXMgcGF0Y2guDQoNCk9rLCBJJ2xsIHVzZSB0aGUgYmFja3F1b3RlcyBmb3IgY29kZSBzYW1w
-bGVzLCByaWdodCENCklmIHlvdSB3YW50LCB3aGVuIHRoaXMgcGF0Y2ggd2lsbCBiZSBjb25jbHVk
-ZWQsIEkgY2FuIGNoZWNrIGFsbCB0aGUgQUNQSQ0KZG9jdW1lbnRhdGlvbiB0byBwdXQgYWxsIGNv
-ZGUgc2FtcGxlcyBpbnRvIGJhY2txdW90ZXMuDQoNCj4gDQo+IEFsc28gbm8gbmVlZCB0byBoYXZl
-IGVhY2ggc2VudGVuY2UgdG8gYmUgc3RhcnRlZCBmcm9tIGEgbmV3IGxpbmUsIGl0DQo+IHdpbGwg
-YmUgcmVuZGVyZWQgYXMgaXQgaGFzIG9uZSB3aGl0ZSBzcGFjZSBpbiBiZXR3ZWVuLg0KDQpvaw0K
-DQo+ID4gKyAgICBvdGhlciB3b3JkcywgaXQgaXMgbm90IG1hbmRhdG9yeSB0byBmaWxsIGFsbCB0
-aGUgR1BJTyBsaW5lcw0KPiA+ICsgIC0gZW1wdHkgbmFtZXMgYXJlIGFsbG93ZWQgKHR3byBxdW90
-YXRpb24gbWFya3MgIiIgY29ycmVzcG9uZCB0byBhbg0KPiBlbXB0eSBuYW1lKQ0KPiANCj4gYGAi
-ImBgIGJ1dCBiZXR0ZXIgdG8gY2hlY2sgdGhlIHJlc3VsdGluZyAocmVuZGVyZWQpIGZpbGUuIFlv
-dSBtYXkgdXNlDQo+IHJzdDJwZGYgc2NyaXB0IGZvciB0aGF0Lg0KDQpPSyBmb3IgdGhlYGAiImBg
-Lg0KSSBjaGVjayB0aGUgcmVuZGVyZWQgSFRNTCB1c2luZyB0aGUgdXN1YWwgIm1ha2UgaHRtbGRv
-Y3MiLiBJcyBpdCBlbm91Z2g/DQoNCj4gLS0NCj4gV2l0aCBCZXN0IFJlZ2FyZHMsDQo+IEFuZHkg
-U2hldmNoZW5rbw0KDQpSZWdhcmRzLA0KRmxhdmlvDQo=
+Based on latest linux/master
+
+powernv/memtrace is the only in-kernel user that rips out random memory
+it never added (doesn't own) in order to allocate memory without a
+linear mapping. Let's stop abusing memory hot(un)plug infrastructure for
+that - use alloc_contig_pages() for allocating memory and remove the
+linear mapping manually.
+
+The original idea was discussed in:
+ https://lkml.kernel.org/r/48340e96-7e6b-736f-9e23-d3111b915b6e@redhat.com
+
+I only tested via QEMU TCG with a single NUMA node- see patch #8 for more
+details.
+
+Error handling and cleanup handling in memtrace code is a mess - that
+should definitely get cleaned up sooner or later. Once we have __GFP_ZERO
+support for alloc_contig_pages(), we can drop manual clearing. I added
+a TODO for now, so this series can go via the powerpc tree - the __GFP_ZERO
+change is then better suited via the mm tree, along with support for
+__GFP_ZERO.
+
+v1 -> v2:
+- Tweaks to patch descriptions
+- "powernv/memtrace: don't leak kernel memory to user space"
+-- Added. Reported by Michael.
+- "powernv/memtrace: fix crashing the kernel when enabling concurrently"
+-- Added, discovered while testing.
+- "powerpc/mm: protect linear mapping modifications by a mutex"
+-- Added. Although we currently won't have concurrency, this is cleaner and
+   future-proof.
+- "powerepc/book3s64/hash: drop WARN_ON in hash__remove_section_mapping"
+-- Added. Suggested by Oscar
+- "powernv/memtrace: don't abuse memory hot(un)plug infrastructure for
+   memory allocations"
+-- Reshuffle the code to make review easier.
+-- Add a TODO regarding __GFP_ZERO. Adapt to changed page clearing code.
+-- Use GFP_KERNEL | __GFP_THISNODE | __GFP_NOWARN for allocations.
+
+
+David Hildenbrand (8):
+  powernv/memtrace: don't leak kernel memory to user space
+  powernv/memtrace: fix crashing the kernel when enabling concurrently
+  powerpc/mm: factor out creating/removing linear mapping
+  powerpc/mm: protect linear mapping modifications by a mutex
+  powerpc/mm: print warning in arch_remove_linear_mapping()
+  powerepc/book3s64/hash: drop WARN_ON in hash__remove_section_mapping
+  powerpc/mm: remove linear mapping if __add_pages() fails in
+    arch_add_memory()
+  powernv/memtrace: don't abuse memory hot(un)plug infrastructure for
+    memory allocations
+
+ arch/powerpc/mm/book3s64/hash_utils.c     |   1 -
+ arch/powerpc/mm/mem.c                     |  53 +++++--
+ arch/powerpc/platforms/powernv/Kconfig    |   8 +-
+ arch/powerpc/platforms/powernv/memtrace.c | 175 ++++++++++------------
+ include/linux/memory_hotplug.h            |   3 +
+ 5 files changed, 125 insertions(+), 115 deletions(-)
+
+-- 
+2.26.2
+
