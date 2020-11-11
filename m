@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B352AF7AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D7F2AF7AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKKSFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:05:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S1726570AbgKKSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgKKSFH (ORCPT
+        with ESMTP id S1726134AbgKKSFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:05:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6315C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:05:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P16FHAb3A4K3ENj/hrLU4GXYLbiPalcs86Yi2WMI2eY=; b=KSrP7M7uBk+P2PqH5o5SAgPiBP
-        kLPtQxCkWxr0r/ShpK1GZzfDdbwgPsPG+wO1/R6flMpPUNieRLFZMt0Uz62ZNWTLyKoNYV6GmJtGZ
-        1bjTJ4Cn4JR/xwsCmpYH/Tbu99u50ryBHpGCogWfiKQS5PeG73eE+GW6rt8KyPp4O0NwKLFhThfqx
-        wEtSs1fy9YoWu7H/wCAwSBtqS4aiRuflJ2OOIbuqbTKniEWCkDS89OdwEKNGvmwtiZ8PCIFph32kK
-        9FJXQkQzTBgeHiLeROYsTUwp0dyJ02Pm9weS7Jt9c9vik3ecsL4vVa2cIfGBfOenqaD8HVZudhmOJ
-        UijpnExA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcuU6-0007By-6L; Wed, 11 Nov 2020 18:04:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9739D301E02;
-        Wed, 11 Nov 2020 19:04:41 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7D31F20A2A303; Wed, 11 Nov 2020 19:04:41 +0100 (CET)
-Date:   Wed, 11 Nov 2020 19:04:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Yun Hsiang <hsiang023167@gmail.com>, linux-kernel@vger.kernel.org,
-        qais.yousef@arm.com, patrick.bellasi@matbug.net,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201111180441.GJ2628@hirez.programming.kicks-ass.net>
-References: <20201103023756.1012088-1-hsiang023167@gmail.com>
- <20201110122108.GG2594@hirez.programming.kicks-ass.net>
- <f3b59aad-3d5d-039b-205d-024308b609a1@arm.com>
+        Wed, 11 Nov 2020 13:05:44 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD42BC0613D1;
+        Wed, 11 Nov 2020 10:05:43 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w24so3196912wmi.0;
+        Wed, 11 Nov 2020 10:05:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RuVJl4bZiFX7Nolk0H+UJ3kuuE8OxwQA0lCB70NPHZw=;
+        b=bHK11M8WNGQcw+bJQ8fqyLO9MGOhzSrYXmJqO5+k38gQRv2TakO2CfEsWQeUARhq4G
+         rEevPpFFx9IVe4ctDCuljJd6BYWoVWf2e2uZBJWXUlYg3fUHFduqay3RaCqWOmap3Nud
+         SpCJa+yloPH7D/ELREBw2i6/bgKXfLUtkvYWbwcG2X6DeoDNe4jhmjisAZdrifyakUDx
+         syR6fLlVkCOwRMRvHuK2PDQNuc1Y7b8CRsqhSMqaPdGcJdSXoXt9VMg9fTfp1F547Ijh
+         VtC2HgVhC6CYtqgx1Yd7sTl+GDgvrahT7bxi4BEYCFvhbH0XeAzR3rd9oAHuBOn802cy
+         Fr4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RuVJl4bZiFX7Nolk0H+UJ3kuuE8OxwQA0lCB70NPHZw=;
+        b=Ud9f3eF50baTOR1JTUPvy4jDmV5H0thwYOLguPbmu7RZ37miYPobLghcyRg1wTokoh
+         7P0Rl4cwPm+rdyVv2abqpBhBUAEraQx3yuLLqbYTzgUuyOOYG31f4a66rulZ7HZipduK
+         CgrjoZUdjwZRGiZayDG2XyhGmdc8A24T7CEaOSz49P/z9jYiwHKAlGbc87GO4tIqY+hP
+         PT+VaRtNLeeHsRXBV/HzXUfUhS2lBT3sO9x2Q/eMsyfEeproixexMeZOSo3IBHBK/PUh
+         lGMdBshUnuR3e6qCMWHQFrq7ZyncCupjT0mLSNeRP4rNrD9zSLks3phi081cVzWJgM1L
+         D8Yg==
+X-Gm-Message-State: AOAM532fl6vRxbToDCsmwbtNSmxX+1sGN40Yh0UnG33MQIeZ4wtTamON
+        lWOGlqGZTVih9eSi421diZnSUPUD0aA=
+X-Google-Smtp-Source: ABdhPJzdTZcitXpMl8CJmQD6Quq5kY7tPcTa9aRHAiRiCRMRr1Olb1vzxG8GDRmFWOkoCgOO6mBqLg==
+X-Received: by 2002:a7b:c0d7:: with SMTP id s23mr5823748wmh.54.1605117942572;
+        Wed, 11 Nov 2020 10:05:42 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id n11sm3340274wru.38.2020.11.11.10.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 10:05:40 -0800 (PST)
+Date:   Wed, 11 Nov 2020 19:05:38 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pwm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH V2 1/3] pwm: imx-tpm: Use dev_err_probe() to simplify
+ error handling
+Message-ID: <20201111180538.GA6125@ulmo>
+References: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
 Content-Disposition: inline
-In-Reply-To: <f3b59aad-3d5d-039b-205d-024308b609a1@arm.com>
+In-Reply-To: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 06:41:07PM +0100, Dietmar Eggemann wrote:
-> diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/types.h
-> index c852153ddb0d..b9165f17dddc 100644
-> --- a/include/uapi/linux/sched/types.h
-> +++ b/include/uapi/linux/sched/types.h
-> @@ -115,8 +115,8 @@ struct sched_attr {
->  	__u64 sched_period;
->  
->  	/* Utilization hints */
-> -	__u32 sched_util_min;
-> -	__u32 sched_util_max;
-> +	__s32 sched_util_min;
-> +	__s32 sched_util_max;
 
-So that's UAPI, not sure we can change the type here.
+--TB36FDmn/VVEgNH/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  };
->  
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 3dc415f58bd7..caaa2a8434b9 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1413,17 +1413,24 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
->  static int uclamp_validate(struct task_struct *p,
->  			   const struct sched_attr *attr)
->  {
-> -	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> -	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-> +	int util_min = p->uclamp_req[UCLAMP_MIN].value;
-> +	int util_max = p->uclamp_req[UCLAMP_MAX].value;
->  
-> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
-> -		lower_bound = attr->sched_util_min;
-> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
-> -		upper_bound = attr->sched_util_max;
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> +		util_min = attr->sched_util_min;
->  
-> -	if (lower_bound > upper_bound)
-> -		return -EINVAL;
-> -	if (upper_bound > SCHED_CAPACITY_SCALE)
-> +		if (util_min < -1 || util_min > SCHED_CAPACITY_SCALE)
-> +			return -EINVAL;
-> +	}
-> +
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> +		util_max = attr->sched_util_max;
-> +
-> +		if (util_max < -1 || util_max > SCHED_CAPACITY_SCALE)
-> +			return -EINVAL;
-> +	}
+On Tue, Aug 11, 2020 at 02:24:30PM +0800, Anson Huang wrote:
+> dev_err_probe() can reduce code size, uniform error handling and record t=
+he
+> defer probe reason etc., use it to simplify the code.
+>=20
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> changes since V1:
+> 	- remove redundant return value print.
+> ---
+>  drivers/pwm/pwm-imx-tpm.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
 
-Luckily we can write that range as a single branch like:
+All three patches applied, thanks.
 
-	if (util_{min,max} + 1 > SCHED_CAPACITY_SCALE+1)
+Thierry
 
-which assumes u32 :-)
+--TB36FDmn/VVEgNH/
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +	if (util_min != -1 && util_max != -1 && util_min > util_max)
->  		return -EINVAL;
+-----BEGIN PGP SIGNATURE-----
 
-I think that will compile as is, otherwise write it like ~0u, which is
-the same bit pattern.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sJ/AACgkQ3SOs138+
+s6FpCRAAknY3bT5bDpcO4yXyOi7Th+7KGXTT9QyZeC5FbxExhIzmd7xPqEERmiXo
+9mEh0L4oQExH5W8b3zQ5ypDU7ezO+dLpvcf58QbIUNBWJXEv1GnSn0vMhhxxfi11
+XjJGjtMWeS9IocmALpHLYPaV3++Wv/UP4WBJfj7op/UFglorUz49ALPDrfH8PDFS
+1jcsR0tWRctJG/lmfJ/6dBoX9HEENnG6w3iLgyysYWWiZVIscriDdwuc5wgz5PYP
+st5FDXLf64e6kZvNOOw0bccXgLLGT8ZgkQi43DTl9NB72VsTKbwTmtokYTAnhxj6
+uouEqhfR93MTmnNWc7IRKg6soyLssdcHG+xEKtgOdcxu3L6AoND3DBl0b/rI7gvn
+KJoTOZj2BJvkFKFgxY/a+aoKSKxlX5SOgzsc/DPyQDCudZGwXbt/YLpeMShY5mS7
+6oseo+qQFP6eT5PNmee8C/jUWgDPowQ9wF+Fc3DCQFqjeZhHK8aOw/Wx73VYGFf2
+CcWmjqwp7YPkiGh3oVtwX4nV/0c/h7xA0oehZ95GY7W+UionVayKvoqbBNbS3oRV
+QtUgi3TdyHeh4uf0FIGXEYN7e92bfZdLy5fSpeDjbOW30euUbSrOvCvI+4cKjp3p
+P/rLq4IxpwLHe7uS0WkL+UO1RjhsHl3c5UaencBelNxnoyYUStk=
+=V7Fx
+-----END PGP SIGNATURE-----
 
+--TB36FDmn/VVEgNH/--
