@@ -2,460 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4ED2AF7E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5D32AF7F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgKKS3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKKS3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:29:40 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE556C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:29:39 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 23so3472952wrc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:29:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gkKctNxP2ohF55zVwpehmRMz8y0vnC/mVPskztCYL/A=;
-        b=eUBuV6wsfVCXPWMfqP96WZQE379N/uRWoeiNoC35/6K9nSNR/fE1JobllCUuVK13gy
-         Yh/qSn2tsSi5Fph1pyJFwLsh1+9mys7dBXUUyeKPzG8KzoPk3KpQyasbfgpEOokTKfGN
-         0tHeADat7173U0HrmdTTT6k4QFbzOFKxBLAt0PliH9Fxsv21udSoXTLohQkAlmMv+DQw
-         01Plnut3Rs5ptmvio+XjfB1cjss6EHP7x81086fvViocfWT10a41JtTjNG6jFq2PvUBA
-         U58sOFTOBYcoVCs+Jw9mtVXV6DI4dD/X0eF4hEIOvS9UwgO9kIGUcV8FDgvO1yiQEuno
-         dJJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gkKctNxP2ohF55zVwpehmRMz8y0vnC/mVPskztCYL/A=;
-        b=NYo0rwlAHa42//UpiHeAVPvT1hCxADyHR2ds2bP1SylvLqQCAlOARFfCHs+0ThaM26
-         In22kggP0SSNXTXrM3UnmG1gPO84pK45WA2g7+Cfq3r1JzKkLx7YUgMD6O59IXahNl0K
-         n7BPkhIIkXryaJemnjHqaRJxzfgfy/jCzUbfMkqwNoBUiRLLyaXZ3KC+CQ680U/cwCgF
-         wfEirpOq8SWr91/5Y+fz720eXvr61GgCF8h2q6q7NBffYo8sdwOyzLNQVAhhyB07dvFr
-         dbVeKaujRhZd7vQXN2RYxhqs+ChDZguvznjTa01bxd+1oYQhCnMwI3US+EpLY/QpvSPQ
-         QMfQ==
-X-Gm-Message-State: AOAM533jGy4GBOruv36nfOshr3NMzPM1uVF5Y3sVR6JA8dOXhelumg+g
-        HM1aAzIq9i0j6kjB1bXZzgVGyg==
-X-Google-Smtp-Source: ABdhPJxePqv8gSeOmuGOWnBfUMw5qNq+rV7plAkkRNMIAaKPFSh/jL608gjTCnCrLyAC9Gt1Mn4TNA==
-X-Received: by 2002:a5d:518e:: with SMTP id k14mr34061180wrv.60.1605119378323;
-        Wed, 11 Nov 2020 10:29:38 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id v19sm3612388wrf.40.2020.11.11.10.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:29:37 -0800 (PST)
-Date:   Wed, 11 Nov 2020 19:29:31 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/20] kasan: add and integrate kasan boot parameters
-Message-ID: <20201111182931.GM517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <fdf9e3aec8f57ebb2795710195f8aaf79e3b45bd.1605046662.git.andreyknvl@google.com>
+        id S1727342AbgKKSdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:33:45 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:61157 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726235AbgKKSdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:33:41 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605119620; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FZoIibOKFJw2kMoMCDohAamStrjGwv81eB0/LyPnW2U=;
+ b=wi9JaOWPbNRa1p8HsyGnjKFq7M6k2eyi4ZqBb5q7xzSxHMspEnOlxtPSLLSsSr6AGtz0v/ry
+ hHWG98Nt3zpp/Z4ht3p9+owyejDNerR1cn114WIMJJRr4+S5Lo1oIYNXNzKQKtGquXq2LyBW
+ 4Y3eFnIQ47qYLir6KjuZkQviLd4=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fac295dcecc309dcb23d80c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 18:11:39
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 87868C433C8; Wed, 11 Nov 2020 18:11:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 79F98C433C6;
+        Wed, 11 Nov 2020 18:11:37 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fdf9e3aec8f57ebb2795710195f8aaf79e3b45bd.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Nov 2020 10:11:37 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 3/4] bus: mhi: core: Add support to pause or resume
+ channel data transfers
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <CAMZdPi_b7U1iW79mWq7ikxE4jTr+n+-8Y+EZz8i1xro-UcJhjA@mail.gmail.com>
+References: <1604961850-27671-1-git-send-email-bbhatt@codeaurora.org>
+ <1604961850-27671-4-git-send-email-bbhatt@codeaurora.org>
+ <CAMZdPi_dwT+hj26sxJdMS1v-X-MNd1ys34QD=Bf_O+dvmjOD2Q@mail.gmail.com>
+ <3710a3051c480bf9d125362303815831@codeaurora.org>
+ <CAMZdPi_b7U1iW79mWq7ikxE4jTr+n+-8Y+EZz8i1xro-UcJhjA@mail.gmail.com>
+Message-ID: <c56fa0e7dcbe43d65bbe93cf287372a3@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, 'Andrey Konovalov' via kasan-dev wrote:
-> Hardware tag-based KASAN mode is intended to eventually be used in
-> production as a security mitigation. Therefore there's a need for finer
-> control over KASAN features and for an existence of a kill switch.
+Hi Loic,
+
+On 2020-11-11 01:33, Loic Poulain wrote:
+> Hi Bhaumik,
 > 
-> This change adds a few boot parameters for hardware tag-based KASAN that
-> allow to disable or otherwise control particular KASAN features.
+> On Wed, 11 Nov 2020 at 01:40, Bhaumik Bhatt <bbhatt@codeaurora.org> 
+> wrote:
+>> 
+>> Hi Loic,
+>> 
+>> On 2020-11-10 03:14, Loic Poulain wrote:
+>> > Hi Bhaumik,
+>> >
+>> > On Mon, 9 Nov 2020 at 23:44, Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> > wrote:
+>> >>
+>> >> Some MHI clients may want to request for pausing or resuming of the
+>> >> data transfers for their channels. Enable them to do so using the new
+>> >> APIs provided for the same.
+>> >>
+>> >> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> >> ---
+>> >>  drivers/bus/mhi/core/main.c | 41
+>> >> +++++++++++++++++++++++++++++++++++++++++
+>> >>  include/linux/mhi.h         | 16 ++++++++++++++++
+>> >>  2 files changed, 57 insertions(+)
+>> >>
+>> >> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> >> index 1226933..01845c6 100644
+>> >> --- a/drivers/bus/mhi/core/main.c
+>> >> +++ b/drivers/bus/mhi/core/main.c
+>> >> @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct
+>> >> mhi_device *mhi_dev)
+>> >>  }
+>> >>  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+>> >>
+>> >> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
+>> >> +                                    enum mhi_ch_state_type to_state)
+>> >> +{
+>> >> +       struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>> >> +       struct mhi_chan *mhi_chan;
+>> >> +       int dir, ret;
+>> >> +
+>> >> +       for (dir = 0; dir < 2; dir++) {
+>> >> +               mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
+>> >> +
+>> >> +               if (!mhi_chan)
+>> >> +                       continue;
+>> >> +
+>> >> +               /*
+>> >> +                * Bail out if one of the channels fail as client will
+>> >> reset
+>> >> +                * both upon failure
+>> >> +                */
+>> >> +               mutex_lock(&mhi_chan->mutex);
+>> >> +               ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
+>> >> to_state);
+>> >> +               if (ret) {
+>> >> +                       mutex_unlock(&mhi_chan->mutex);
+>> >> +                       return ret;
+>> >> +               }
+>> >> +               mutex_unlock(&mhi_chan->mutex);
+>> >> +       }
+>> >> +
+>> >> +       return 0;
+>> >> +}
+>> >> +
+>> >> +int mhi_pause_transfer(struct mhi_device *mhi_dev)
+>> >> +{
+>> >> +       return mhi_update_transfer_state(mhi_dev,
+>> >> MHI_CH_STATE_TYPE_STOP);
+>> >> +}
+>> >> +EXPORT_SYMBOL_GPL(mhi_pause_transfer);
+>> >> +
+>> >> +int mhi_resume_transfer(struct mhi_device *mhi_dev)
+>> >> +{
+>> >> +       return mhi_update_transfer_state(mhi_dev,
+>> >> MHI_CH_STATE_TYPE_START);
+>> >> +}
+>> >> +EXPORT_SYMBOL_GPL(mhi_resume_transfer);
+>> >
+>> > Look like it is stop and start, not pause and resume?
+>> I wanted to keep it pause and resume because it could get confusing 
+>> for
+>> someone
+>> looking at this pair of APIs, that a client driver would also need to
+>> "start"
+>> channels after "preparing" them. Since that is not that case, and the
+>> mhi_prepare_for_transfer() API itself is supposed to also start the
+>> channels, it
 > 
-> The features that can be controlled are:
+> Yes, because prepare_for_transfer is actually init_and_start. I'm not
+> in favor of hiding what is really done at mhi_core level, start is
+> start and stop is stop, if it's correctly documented that should not
+> be confusing. just saying (stop moves channels in stop state, start in
+> enabled state), but other opinions are welcome.
 > 
-> 1. Whether KASAN is enabled at all.
-> 2. Whether KASAN collects and saves alloc/free stacks.
-> 3. Whether KASAN panics on a detected bug or not.
+I can rename it and have it documented in the mhi_prepare_for_transfer() 
+API
+that we actually already start the channel, so it is not required to be 
+used
+at first. I can improve this documentation in mhi.h as a separate patch.
+
+Later, if a client driver wants to issue stop and start commands, it can 
+do so.
+I'm not too picky with the name. Maybe Mani or someone else may have 
+more
+comments.
+
+Thanks for looking in to this.
+>> would be better to keep these as "pause" and "resume" instead IMO.
+>> 
+>> Any comments in favor or "stop" and "start"?
+>> >
+>> > TBH maybe we should rework/clarify MHI core and having well-defined
+>> > states, maybe something like that:
+>> >
+>> > 1. When MHI core detects device for a driver, MHI core resets and
+>> > initializes the channel(s), then call client driver probe function
+>> >     => channel UNKNOWN->DISABLED state
+>> >     => channel DISABLED->ENABLED state
+>> > 2. When driver is ready for sending data, drivers calls
+>> > mhi_start_transfer
+>> >     => Channel is ENABLED->RUNNING state
+>> > 3. Driver performs normal data transfers
+>> > 4. The driver can suspend/resume transfer, it stops (suspend) the
+>> > channel, can
+>> >     => Channel is RUNNING->STOP
+>> >     => Channel is STOP->RUNNING
+>> >    ...
+>> > 5. When device is removed, MHI core reset the channel
+>> >     => channel is (RUNNING|STOP) -> DISABLED
+>> >
+>> > Today mhi_prepare_for_transfer performs both ENABLE and RUNNING
+>> > transition, the idea would be to keep channel enabling/disabling in
+>> > the MHI core (before/after driver probe/remove) and channel start/stop
+>> > managed by the client driver.
+>> >
+>> > Regards,
+>> > Loic
+>> 
+>> Your idea is good but it would not have much additional benefits and
+>> would
+>> involve MHI core "enabling" channels and allocating memory for each
+>> channel
+>> context when they are only declared as supported by the controller but
+>> are not
+>> actually being put to use.
 > 
-> With this change a new boot parameter kasan.mode allows to choose one of
-> three main modes:
+> Ok, your point is valid.
 > 
-> - kasan.mode=off - KASAN is disabled, no tag checks are performed
-> - kasan.mode=prod - only essential production features are enabled
-> - kasan.mode=full - all KASAN features are enabled
-> 
-> The chosen mode provides default control values for the features mentioned
-> above. However it's also possible to override the default values by
-> providing:
-> 
-> - kasan.stacktrace=off/on - enable alloc/free stack collection
->                             (default: on for mode=full, otherwise off)
-> - kasan.fault=report/panic - only report tag fault or also panic
->                              (default: report)
-> 
-> If kasan.mode parameter is not provided, it defaults to full when
-> CONFIG_DEBUG_KERNEL is enabled, and to prod otherwise.
-> 
-> It is essential that switching between these modes doesn't require
-> rebuilding the kernel with different configs, as this is required by
-> the Android GKI (Generic Kernel Image) initiative [1].
-> 
-> [1] https://source.android.com/devices/architecture/kernel/generic-kernel-image
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/If7d37003875b2ed3e0935702c8015c223d6416a4
-> ---
->  mm/kasan/common.c  |  22 +++++--
->  mm/kasan/hw_tags.c | 152 +++++++++++++++++++++++++++++++++++++++++++++
->  mm/kasan/kasan.h   |  16 +++++
->  mm/kasan/report.c  |  14 ++++-
->  4 files changed, 197 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 4598c1364f19..efad5ed6a3bd 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -129,6 +129,11 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->  	unsigned int redzone_size;
->  	int redzone_adjust;
->  
-> +	if (!kasan_stack_collection_enabled()) {
-> +		*flags |= SLAB_KASAN;
-> +		return;
-> +	}
-> +
->  	/* Add alloc meta. */
->  	cache->kasan_info.alloc_meta_offset = *size;
->  	*size += sizeof(struct kasan_alloc_meta);
-> @@ -165,6 +170,8 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->  
->  size_t kasan_metadata_size(struct kmem_cache *cache)
->  {
-> +	if (!kasan_stack_collection_enabled())
-> +		return 0;
->  	return (cache->kasan_info.alloc_meta_offset ?
->  		sizeof(struct kasan_alloc_meta) : 0) +
->  		(cache->kasan_info.free_meta_offset ?
-> @@ -267,11 +274,13 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
->  {
->  	struct kasan_alloc_meta *alloc_meta;
->  
-> -	if (!(cache->flags & SLAB_KASAN))
-> -		return (void *)object;
-> +	if (kasan_stack_collection_enabled()) {
-> +		if (!(cache->flags & SLAB_KASAN))
-> +			return (void *)object;
->  
-> -	alloc_meta = kasan_get_alloc_meta(cache, object);
-> -	__memset(alloc_meta, 0, sizeof(*alloc_meta));
-> +		alloc_meta = kasan_get_alloc_meta(cache, object);
-> +		__memset(alloc_meta, 0, sizeof(*alloc_meta));
-> +	}
->  
->  	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
->  		object = set_tag(object, assign_tag(cache, object, true, false));
-> @@ -308,6 +317,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
->  	rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
->  	kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
->  
-> +	if (!kasan_stack_collection_enabled())
-> +		return false;
-> +
->  	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
->  			unlikely(!(cache->flags & SLAB_KASAN)))
->  		return false;
-> @@ -355,7 +367,7 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
->  	kasan_poison_memory((void *)redzone_start, redzone_end - redzone_start,
->  		KASAN_KMALLOC_REDZONE);
->  
-> -	if (cache->flags & SLAB_KASAN)
-> +	if (kasan_stack_collection_enabled() && (cache->flags & SLAB_KASAN))
->  		set_alloc_info(cache, (void *)object, flags);
->  
->  	return set_tag(object, tag);
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 838b29e44e32..2f6f0261af8c 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -8,6 +8,8 @@
->  
->  #define pr_fmt(fmt) "kasan: " fmt
->  
-> +#include <linux/init.h>
-> +#include <linux/jump_label.h>
+>> 
+>> mhi_prepare_for_transfer() does both channel context initialization 
+>> and
+>> starts
+>> the channels, which is good because it allocates memory when needed. 
+>> So,
+>> this
+>> benefits system memory if a controller with support for many channels
+>> exists but
+>> only a few channels are used.
+>> 
+>> Regarding the states to track from host:
+>> -> DISABLED (We know channels are not active: in reset state or not
+>> probed yet)
+>> -> ENABLED (Active and running when needed for data transfers)
+>> -> STOP (Paused: leaves the channel context as is since channels are 
+>> not
+>> reset)
+>> -> SUSPENDED (Unload in progress: Entered before resetting
+>> channels/remove())
+>> 
+>> BTW, we have the debugfs entry for "channels" that dumps the context 
+>> to
+>> show
+>> exactly what the channel states are from device perspective. We can 
+>> rely
+>> on it
+>> if needed.
+>> 
+>> If there are some comments I can add to make things clear, please let 
+>> me
+>> know.
+>> 
+>> Thanks,
+>> Bhaumik
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+>> Forum,
+>> a Linux Foundation Collaborative Project
 
-This should include <linux/static_key.h> -- although the rest of the
-kernel seems to also inconsistently use on or the other. Since the name,
-as referred to also by macros are "static keys", perhaps the
-static_key.h header is more appropriate...
-
->  #include <linux/kasan.h>
->  #include <linux/kernel.h>
->  #include <linux/memory.h>
-> @@ -17,9 +19,104 @@
->  
->  #include "kasan.h"
->  
-> +enum kasan_arg_mode {
-> +	KASAN_ARG_MODE_DEFAULT,
-> +	KASAN_ARG_MODE_OFF,
-> +	KASAN_ARG_MODE_PROD,
-> +	KASAN_ARG_MODE_FULL,
-> +};
-> +
-> +enum kasan_arg_stacktrace {
-> +	KASAN_ARG_STACKTRACE_DEFAULT,
-
-It seems KASAN_ARG_STACKTRACE_DEFAULT is never used explicitly. Could
-the switch statements just be changed to not have a 'default' but
-instead refer to *DEFAULT where appropriate?
-
-> +	KASAN_ARG_STACKTRACE_OFF,
-> +	KASAN_ARG_STACKTRACE_ON,
-> +};
-> +
-> +enum kasan_arg_fault {
-> +	KASAN_ARG_FAULT_DEFAULT,
-> +	KASAN_ARG_FAULT_REPORT,
-> +	KASAN_ARG_FAULT_PANIC,
-> +};
-> +
-> +static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
-> +static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
-> +static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
-> +
-> +/* Whether KASAN is enabled at all. */
-> +DEFINE_STATIC_KEY_FALSE_RO(kasan_flag_enabled);
-> +EXPORT_SYMBOL(kasan_flag_enabled);
-> +
-> +/* Whether to collect alloc/free stack traces. */
-> +DEFINE_STATIC_KEY_FALSE_RO(kasan_flag_stacktrace);
-> +
-> +/* Whether panic or disable tag checking on fault. */
-> +bool kasan_flag_panic __ro_after_init;
-> +
-> +/* kasan.mode=off/prod/full */
-> +static int __init early_kasan_mode(char *arg)
-> +{
-> +	if (!arg)
-> +		return -EINVAL;
-> +
-> +	if (!strcmp(arg, "off"))
-> +		kasan_arg_mode = KASAN_ARG_MODE_OFF;
-> +	else if (!strcmp(arg, "prod"))
-> +		kasan_arg_mode = KASAN_ARG_MODE_PROD;
-> +	else if (!strcmp(arg, "full"))
-> +		kasan_arg_mode = KASAN_ARG_MODE_FULL;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +early_param("kasan.mode", early_kasan_mode);
-> +
-> +/* kasan.stack=off/on */
-> +static int __init early_kasan_flag_stacktrace(char *arg)
-> +{
-> +	if (!arg)
-> +		return -EINVAL;
-> +
-> +	if (!strcmp(arg, "off"))
-> +		kasan_arg_stacktrace = KASAN_ARG_STACKTRACE_OFF;
-> +	else if (!strcmp(arg, "on"))
-> +		kasan_arg_stacktrace = KASAN_ARG_STACKTRACE_ON;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +early_param("kasan.stacktrace", early_kasan_flag_stacktrace);
-> +
-> +/* kasan.fault=report/panic */
-> +static int __init early_kasan_fault(char *arg)
-> +{
-> +	if (!arg)
-> +		return -EINVAL;
-> +
-> +	if (!strcmp(arg, "report"))
-> +		kasan_arg_fault = KASAN_ARG_FAULT_REPORT;
-> +	else if (!strcmp(arg, "panic"))
-> +		kasan_arg_fault = KASAN_ARG_FAULT_PANIC;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +early_param("kasan.fault", early_kasan_fault);
-> +
->  /* kasan_init_hw_tags_cpu() is called for each CPU. */
->  void kasan_init_hw_tags_cpu(void)
->  {
-> +	/*
-> +	 * There's no need to check that the hardware is MTE-capable here,
-> +	 * as this function is only called for MTE-capable hardware.
-> +	 */
-> +
-> +	/* If KASAN is disabled, do nothing. */
-> +	if (kasan_arg_mode == KASAN_ARG_MODE_OFF)
-> +		return;
-> +
->  	hw_init_tags(KASAN_TAG_MAX);
->  	hw_enable_tagging();
->  }
-> @@ -27,6 +124,61 @@ void kasan_init_hw_tags_cpu(void)
->  /* kasan_init_hw_tags() is called once on boot CPU. */
->  void kasan_init_hw_tags(void)
-
-Is this an __init function, since it sets __ro_after_init vars?
-
->  {
-> +	/* If hardware doesn't support MTE, do nothing. */
-> +	if (!system_supports_mte())
-> +		return;
-> +
-> +	/* If KASAN is disabled, do nothing. */
-> +	if (kasan_arg_mode == KASAN_ARG_MODE_OFF)
-> +		return;
-
-This is checked twice, once here and the in the switch. I think remove
-the one here ^^^.
-
-> +	/* Choose KASAN mode if kasan boot parameter is not provided. */
-> +	if (kasan_arg_mode == KASAN_ARG_MODE_DEFAULT) {
-> +		if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
-> +			kasan_arg_mode = KASAN_ARG_MODE_FULL;
-> +		else
-> +			kasan_arg_mode = KASAN_ARG_MODE_PROD;
-> +	}
-> +
-> +	/* Preset parameter values based on the mode. */
-> +	switch (kasan_arg_mode) {
-> +	case KASAN_ARG_MODE_OFF:
-> +		return;
-> +	case KASAN_ARG_MODE_PROD:
-> +		static_branch_enable(&kasan_flag_enabled);
-> +		break;
-> +	case KASAN_ARG_MODE_FULL:
-> +		static_branch_enable(&kasan_flag_enabled);
-> +		static_branch_enable(&kasan_flag_stacktrace);
-> +		break;
-> +	default:
-
-I'd suggest removing the 'default' cases in all the switches, so that we
-get warnings in case we add new options and they aren't handled.
-
-Here, having KASAN_ARG_MODE_DEFAULT is probably redundant, but so is
-'default' ;-)
-
-> +		break;
-> +	}
-> +
-> +	/* Now, optionally override the presets. */
-> +
-> +	switch (kasan_arg_stacktrace) {
-> +	case KASAN_ARG_STACKTRACE_OFF:
-> +		static_branch_disable(&kasan_flag_stacktrace);
-> +		break;
-> +	case KASAN_ARG_STACKTRACE_ON:
-> +		static_branch_enable(&kasan_flag_stacktrace);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	switch (kasan_arg_fault) {
-> +	case KASAN_ARG_FAULT_REPORT:
-> +		kasan_flag_panic = false;
-> +		break;
-> +	case KASAN_ARG_FAULT_PANIC:
-> +		kasan_flag_panic = true;
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-
-Would be good to get rid of the 'default' cases here.
-
->  	pr_info("KernelAddressSanitizer initialized\n");
->  }
->  
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 2d3c99125996..5eff3d9f624e 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -5,6 +5,22 @@
->  #include <linux/kasan.h>
->  #include <linux/stackdepot.h>
->  
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +#include <linux/jump_label.h>
-> +DECLARE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
-> +static inline bool kasan_stack_collection_enabled(void)
-> +{
-> +	return static_branch_unlikely(&kasan_flag_stacktrace);
-> +}
-> +#else
-> +static inline bool kasan_stack_collection_enabled(void)
-> +{
-> +	return true;
-> +}
-> +#endif
-> +
-> +extern bool kasan_flag_panic __ro_after_init;
-> +
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->  #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
->  #else
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 25ca66c99e48..7d86af340148 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -99,6 +99,10 @@ static void end_report(unsigned long *flags)
->  		panic_on_warn = 0;
->  		panic("panic_on_warn set ...\n");
->  	}
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +	if (kasan_flag_panic)
-> +		panic("kasan.fault=panic set ...\n");
-> +#endif
->  	kasan_enable_current();
->  }
->  
-> @@ -161,8 +165,8 @@ static void describe_object_addr(struct kmem_cache *cache, void *object,
->  		(void *)(object_addr + cache->object_size));
->  }
->  
-> -static void describe_object(struct kmem_cache *cache, void *object,
-> -				const void *addr, u8 tag)
-> +static void describe_object_stacks(struct kmem_cache *cache, void *object,
-> +					const void *addr, u8 tag)
->  {
->  	struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
->  
-> @@ -190,7 +194,13 @@ static void describe_object(struct kmem_cache *cache, void *object,
->  		}
->  #endif
->  	}
-> +}
->  
-> +static void describe_object(struct kmem_cache *cache, void *object,
-> +				const void *addr, u8 tag)
-> +{
-> +	if (kasan_stack_collection_enabled())
-> +		describe_object_stacks(cache, object, addr, tag);
->  	describe_object_addr(cache, object, addr);
->  }
+Thanks,
+Bhaumik
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
