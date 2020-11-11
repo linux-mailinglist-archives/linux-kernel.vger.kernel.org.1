@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA342AE895
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC4C2AE898
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgKKGBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 01:01:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S1725920AbgKKGCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 01:02:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKKGBa (ORCPT
+        with ESMTP id S1725828AbgKKGCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 01:01:30 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90C4C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 22:01:30 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id z24so783142pgk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 22:01:30 -0800 (PST)
+        Wed, 11 Nov 2020 01:02:31 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F78C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 22:02:29 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id x15so433843pll.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 22:02:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=sElQ0UasyAxx1p9v/6PmsrVmJXS5A5b4XWEfpPsYb2c=;
-        b=AgRH2ICBEuIJ5D7uzTetuBykN7UmRfVT7tsz859NB5W/UFCLY14yHowhi9eyAxulQA
-         BY+gI662sES/BaznMeaX9fcE61kUoCbdRGQSHQlF+egh+WYtqz4KsUXc9GRTQVe8TT1I
-         yAfCPmvD0/4gI2XwatntdmbN5XxaKNI8Ug3UPFmzzxpWStyLjA2v/JWxfO5tUXqD1dlZ
-         PBlI8bJXqCu8WDJdygKQnfP6KGEIf2qEAtVmOABgNt+stLNcNoGHssGWfWD5JZR14ntZ
-         W/UvSDHVei5XNjmmOzxkQwF2se4R8FzrYpoa41vij2rq31Q5v56ZVoo4eq7WVFXaSEpM
-         euwA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=v8ICRdbZhgZQq1yfBPmN1lNtv7KOdjfMg3ncaP3mzKw=;
+        b=uU1MV07i8zGoB2ppE2ls+j+FQD4KXUTJKhd7doflmornIuwXfe42bmKsqRIZxta3mp
+         RbeeSdQinfQKumSb6/mlT/hH1oBWCHfVUp8v7aXMdCNXjEj7uaKj4zNzRROYZHXnEAKo
+         nEtw1RLugsM1TJgmxw2THhOPgChfqeWnc21/0gjKmiLrMBkKCxLnwqDENI0XEDtiUYoT
+         I31OR0S5n2NVV9ivVZARdNnH598vOrN+KHOs3VYFcI8ZHw1CW3uoSRVDfYHO13qeDsNY
+         7pRzVPoMG0rOLBYhKAd2/lICKvtaizh9P9px3EPgXE45Amlr/Gd7t+Mu0Nn81RNkB6mX
+         aGZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=sElQ0UasyAxx1p9v/6PmsrVmJXS5A5b4XWEfpPsYb2c=;
-        b=pss/R3ii1kQRQUhjFr/HuftZf6VNOvYeVsy9O06beVm539G/vVSb6mr005HV3E4Gvh
-         gelVvP097Q1aCp4VA6yzaTjh4Pvla+KDD035ghpmYWwO/acpXhpYmjvGQWhJVZZ6A5N1
-         +uijY+u5KfqmTXSo2BeqkNF23rsW5g+u/yTSs2R5SnqSkHle8h7xwYSkAJ1losIO3Z1Y
-         jryfSKyppyGFuWaHHq9H7YCv2FAxaIRKii4RfDiCxKPo1GMK+e5yYPm2TTfDLXNRzkSS
-         o6HBBrYhfI0ng6kNNaw5azqUqnGDf/xQHvmb2YYhtlywGm2j5/VD6tNzfBt5zJLZW5d5
-         GWaQ==
-X-Gm-Message-State: AOAM532aH5sjSLkyRdPLxuVHjhYrw5sZgdFMJPVHeHPLDj83XahG5gY0
-        YwiJr5hzoH6ygCSl1odCQIe2Fw==
-X-Google-Smtp-Source: ABdhPJzRqVfTZchctw4+pUfLWVKTckJpU+KZvrJQ9LuRTyDx2mJRy0bpYJSt/F1B6CXc6Jkm2dDXiA==
-X-Received: by 2002:a63:5fc3:: with SMTP id t186mr20186444pgb.187.1605074490182;
-        Tue, 10 Nov 2020 22:01:30 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=v8ICRdbZhgZQq1yfBPmN1lNtv7KOdjfMg3ncaP3mzKw=;
+        b=JDjM06oj7uVnSVqzWZ0Utzm6QyEKGitF57CkXkEjuFR3MAEk39HiKxgkjyC3dm2Vc4
+         2ZCetO0+NhnK1PFy4VoU7mJXa7x+lLHIpn4swK63wWnHOPAnyxrAdziN3cre+t+w99jt
+         MoeSMDS2a9rysGj5zPyPk80n82tvKZhtkrplQnb6ah4HTbSVyR2Ln97b11VZ0B4US8L0
+         HM/yFdy8jUjl4gr51hUhxwxNL/mIsmybt+T/OulnVqMvOiKEum9u49RXPZs2u1ENaOxe
+         oL08rx8F9O/POomIMsJXaBNyHPPVgJK6EXP6sYoy4O9xBQIsJC+6qtbpaew2solV873F
+         5maQ==
+X-Gm-Message-State: AOAM531vs3gPGHDmGJmh/uDp4libDj0HnEku0T19+dNzzCTXMlJMwbS7
+        D9qMzaTJnlFy66wIHDt5gXJJHxL5QmJOYQ==
+X-Google-Smtp-Source: ABdhPJwsJh88njKtxsO6DX5+YRRXSTKvW58AxI+VV1Sm0c4v8I1p5eZvKyuzhtUEOBlV810TNsvYfw==
+X-Received: by 2002:a17:90a:fd88:: with SMTP id cx8mr2181542pjb.220.1605074549468;
+        Tue, 10 Nov 2020 22:02:29 -0800 (PST)
 Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id v191sm1020905pfc.19.2020.11.10.22.01.28
+        by smtp.gmail.com with ESMTPSA id w70sm1038060pfc.11.2020.11.10.22.02.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 22:01:29 -0800 (PST)
-Date:   Wed, 11 Nov 2020 11:31:27 +0530
+        Tue, 10 Nov 2020 22:02:28 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:32:26 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/9] cpufreq: Add missing modalias for tristate drivers
-Message-ID: <20201111060127.ulr63huycvqxxkha@vireshk-i7>
-References: <20201103151139.29690-1-pali@kernel.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Tushar Khandelwal <Tushar.Khandelwal@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>, Sudeep.Holla@arm.com,
+        robh+dt@kernel.org, morten_bp@live.dk,
+        linux-arm-kernel@lists.infradead.org,
+        Usama Arif <usama.arif@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mailbox: arm_mhuv2: Add driver
+Message-ID: <20201111060226.cbq4pmwtrt7s2weq@vireshk-i7>
+References: <eab9d7165fe30a74afc62d5b540b2dc3258196a4.1603799360.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201103151139.29690-1-pali@kernel.org>
+In-Reply-To: <eab9d7165fe30a74afc62d5b540b2dc3258196a4.1603799360.git.viresh.kumar@linaro.org>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-11-20, 16:11, Pali Rohár wrote:
-> Some of cpufreq drivers are tristate, can be compiled as modules, but do
-> not have defined modalias for automatic loading. This patch series add
-> for all those cpufreq drivers missing MODULE_DEVICE_TABLE macro, based
-> on OF definitions, or MODULE_ALIAS for platform drivers.
+On 27-10-20, 17:23, Viresh Kumar wrote:
+> This adds driver for the ARM MHUv2 (Message Handling Unit) mailbox
+> controller.
 > 
-> MODULE_DEVICE_TABLE is not explictily added only for speedstep-centrino,
-> speedstep-ich and speedstep-smi drivers as it was removed in commit
-> b11d77fa300d9 ("cpufreq: Convert to new X86 CPU match macros").
+> This is based on the accepted DT bindings of the controller and supports
+> combination of all transport protocols, i.e. single-word, multi-word and
+> doorbell.
 > 
-> Pali Rohár (9):
->   cpufreq: ap806: Add missing MODULE_DEVICE_TABLE
->   cpufreq: highbank: Add missing MODULE_DEVICE_TABLE
->   cpufreq: mediatek: Add missing MODULE_DEVICE_TABLE
->   cpufreq: qcom: Add missing MODULE_DEVICE_TABLE
->   cpufreq: st: Add missing MODULE_DEVICE_TABLE
->   cpufreq: sun50i: Add missing MODULE_DEVICE_TABLE
->   cpufreq: loongson1: Add missing MODULE_ALIAS
->   cpufreq: scpi: Add missing MODULE_ALIAS
->   cpufreq: vexpress-spc: Add missing MODULE_ALIAS
+> Transmitting and receiving data through the mailbox framework in
+> multi-word mode is done through struct arm_mhuv2_mbox_msg. Rest of the
+> implementation details can be seen in the bindings document or in the
+> driver itself.
 > 
->  drivers/cpufreq/armada-8k-cpufreq.c    | 6 ++++++
->  drivers/cpufreq/highbank-cpufreq.c     | 7 +++++++
->  drivers/cpufreq/loongson1-cpufreq.c    | 1 +
->  drivers/cpufreq/mediatek-cpufreq.c     | 1 +
->  drivers/cpufreq/qcom-cpufreq-nvmem.c   | 1 +
->  drivers/cpufreq/scpi-cpufreq.c         | 1 +
->  drivers/cpufreq/sti-cpufreq.c          | 7 +++++++
->  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 1 +
->  drivers/cpufreq/vexpress-spc-cpufreq.c | 1 +
->  9 files changed, 26 insertions(+)
+> Based on the initial work done by Morten Borup Petersen from ARM.
+> 
+> Co-developed-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
+> Signed-off-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
+> Tested-by: Usama Arif <usama.arif@arm.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> Bindings are already reviewed by Rob and are present here:
+> 
+> http://lore.kernel.org/lkml/61ca14fc441f92c1e7994e5bebae5c49811a3050.1602563406.git.viresh.kumar@linaro.org
 
-Applied. Thanks.
+Jassi, Any inputs on this ?
 
 -- 
 viresh
