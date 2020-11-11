@@ -2,111 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4116F2AFB15
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF2D2AFB1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbgKKWGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:06:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbgKKWGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:06:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9F7C0613D1;
-        Wed, 11 Nov 2020 14:06:40 -0800 (PST)
-Date:   Wed, 11 Nov 2020 22:06:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605132398;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fHIH9LpyT4Dbv8HR+sFU4CN6faf/ITto3tvN71lc5JM=;
-        b=Pt1fH94nExq3+XmOWZ1HDvSaguTYhkNyREHCWTDkWGi6XdrDFue0iy4z8rp03x1dDTvPig
-        aoLT8b2ISogWSNKbtuj1VE3oeWCrC2ps2Ivvm7SpzjEswQZJRpWusYP948j1O2nVN2aY0M
-        W9oLYW5zYkR8eBiMWvhN84QtZASX2Fwl/mDIcCYAehD4QDrzjblo7zMjyD8Lvap4r5FJnc
-        zK7nAvZ8SxUEo8ZyW46Wa62Glo6ZirDE8Fb2/CgyuXw+ipiJ2kJe9Ut6ThqJ08cgF6PLA2
-        zDVlmD1kxLDZpazC5XyqgoegE77gaHDmDfqHUpnUSnxwQuJfgWiMV/ILoJVUOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605132398;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fHIH9LpyT4Dbv8HR+sFU4CN6faf/ITto3tvN71lc5JM=;
-        b=j76T9QeNs3U/347nV/DFfndyk+r0Ad3jzvXUWRYvucjd4rIlLPRGSbw0FOyWtVPUjZRW7L
-        0pegXPZg/aJNb3AQ==
-From:   "tip-bot2 for David Woodhouse" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] iommu/amd: Fix union of bitfields in intcapxt support
-Cc:     David Woodhouse <dwmw@amazon.co.uk>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201111144322.1659970-2-dwmw2@infradead.org>
-References: <20201111144322.1659970-2-dwmw2@infradead.org>
+        id S1727130AbgKKWIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:08:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726108AbgKKWIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:08:35 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85ADA2087D;
+        Wed, 11 Nov 2020 22:08:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605132515;
+        bh=1qnSQ1GSe5S57VzPYzkVYhQ8+cEdxNtHkv3n8f7R87k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=seNdpfTXQlNz7qBG2QtmW+E8IE+t0a/mxRMAJ4scqw/Ojw+RJFhEzdIm6GOg15ths
+         e/klqrbj618rN4CRAo3TzdnIcR1NuIoWvrAzo3//Lw1tWU8ivAkbYSRh6ifiV1COjY
+         vkLB1DxZ0ST0JvMM5/oOw74BOGn1PYzyTkobNK/k=
+Date:   Wed, 11 Nov 2020 14:08:33 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/4] net: ipa: little fixes
+Message-ID: <20201111140833.6acdf83e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201109165635.5449-1-elder@linaro.org>
+References: <20201109165635.5449-1-elder@linaro.org>
 MIME-Version: 1.0
-Message-ID: <160513239741.11244.10669580713889904996.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+On Mon,  9 Nov 2020 10:56:31 -0600 Alex Elder wrote:
+> This series adds a few small fixes to the IPA code.
+> 
+> The first patch appeared in a different form in June, and got some
+> pushback from David because he felt a problem that can be caught at
+> build time *should* be caught at build time.
+>   https://lore.kernel.org/netdev/20200610195332.2612233-1-elder@linaro.org/
+> I agree with that, but in this case the "problem" was never actually
+> a problem.  There's a little more explanation on the patch, but
+> basically now we remove the BUILD_BUG_ON() call entirely.
+> 
+> The second deletes a line of code that isn't needed.
+> 
+> The third converts a warning message to be a debug, as requested by
+> Stephen Boyd.
+> 
+> And the last one just gets rid of an error message that would be
+> output after a different message had already reported a problem.
 
-Commit-ID:     2fb6acf3edfeb904505f9ba3fd01166866062591
-Gitweb:        https://git.kernel.org/tip/2fb6acf3edfeb904505f9ba3fd01166866062591
-Author:        David Woodhouse <dwmw@amazon.co.uk>
-AuthorDate:    Wed, 11 Nov 2020 14:43:21 
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 11 Nov 2020 23:01:57 +01:00
-
-iommu/amd: Fix union of bitfields in intcapxt support
-
-All the bitfields in here are overlaid on top of each other since
-they're a union. Change the second u64 to be in a struct so it does
-the intended thing.
-
-Fixes: b5c3786ee370 ("iommu/amd: Use msi_msg shadow structs")
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201111144322.1659970-2-dwmw2@infradead.org
-
----
- drivers/iommu/amd/init.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 263670d..c2769f2 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -1967,13 +1967,15 @@ static int iommu_setup_msi(struct amd_iommu *iommu)
- 
- union intcapxt {
- 	u64	capxt;
--	u64	reserved_0		:  2,
--		dest_mode_logical	:  1,
--		reserved_1		:  5,
--		destid_0_23		: 24,
--		vector			:  8,
--		reserved_2		: 16,
--		destid_24_31		:  8;
-+	struct {
-+		u64	reserved_0		:  2,
-+			dest_mode_logical	:  1,
-+			reserved_1		:  5,
-+			destid_0_23		: 24,
-+			vector			:  8,
-+			reserved_2		: 16,
-+			destid_24_31		:  8;
-+	};
- } __attribute__ ((packed));
- 
- /*
+Applied, thanks!
