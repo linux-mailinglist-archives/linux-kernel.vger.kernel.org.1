@@ -2,137 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6E72AF227
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E396B2AF22B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgKKN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgKKN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:29:32 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79F7E206CA;
-        Wed, 11 Nov 2020 13:29:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605101371;
-        bh=ylTTLDgMGhQsPJGM41QX1ib3jMY1oRlkQOFl8wohlls=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LQOyM7PkxvpiYnD3r6xnWlmHvX0F0NhA8zzxDBs0TxhOmTjWZbcTycsjIfAAsvLUx
-         U/Vqm/+0M/PlXBPlSSu31FqiCseSlSMtrm5W/kcxxpGntOMRNIvbXTDrQRiewNgHLb
-         2b68uft0I0UJKxxucNiks+kjPAjXb6+gvVNwD900=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kcqBl-009lwE-4n; Wed, 11 Nov 2020 13:29:29 +0000
+        id S1726759AbgKKNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:30:11 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7173 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKNaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:30:09 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWQZQ5HGwz15VJw;
+        Wed, 11 Nov 2020 21:29:50 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 11 Nov 2020 21:29:53 +0800
+Subject: Re: [PATCH v13 0/8] support reserving crashkernel above 4G on arm64
+ kdump
+To:     Baoquan He <bhe@redhat.com>, <bhsharma@redhat.com>
+References: <20201031074437.168008-1-chenzhou10@huawei.com>
+ <20201111030136.GD8486@MiWiFi-R3L-srv>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <james.morse@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
+        <xiexiuqi@huawei.com>, <guohanjun@huawei.com>,
+        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <04a893e6-1412-5fa8-8dbd-8ec278879965@huawei.com>
+Date:   Wed, 11 Nov 2020 21:29:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201111030136.GD8486@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Nov 2020 13:29:29 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v1 07/24] kvm: arm64: Create nVHE copy of cpu_logical_map
-In-Reply-To: <20201111130321.qalrzfabdonrwvsz@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-8-dbrazdil@google.com>
- <d473fd26e5314f2407b70242488f33de@kernel.org>
- <20201111130321.qalrzfabdonrwvsz@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <15a580e6ac06294ead8859fba8f51deb@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-11 13:03, David Brazdil wrote:
->> > +/*
->> > + * nVHE copy of data structures tracking available CPU cores.
->> > + * Only entries for CPUs that were online at KVM init are populated.
->> > + * Other CPUs should not be allowed to boot because their features were
->> > + * not checked against the finalized system capabilities.
->> > + */
->> > +u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1]
->> > = INVALID_HWID };
->> 
->> I'm not sure what __ro_after_init means once we get S2 isolation.
-> 
-> It is stretching the definition of 'init' a bit, I know, but I don't 
-> see what
-> your worry is about S2? The intention is to mark this read-only for 
-> .hyp.text
-> at runtime. With S2, the host won't be able to write to it after KVM 
-> init.
-> Obviously that's currently not the case.
+Hi Baoquan, Bhupesh,
 
-More importantly, EL2 can write to it at any time, which is the bit I'm 
-worried
-about, as it makes the annotation misleading.
 
-> One thing we might change in the future is marking it RW for some 
-> initial
-> setup in a HVC handler, then marking it RO for the rest of uptime.
+On 2020/11/11 11:01, Baoquan He wrote:
+> Hi Zhou, Bhupesh
+>
+> On 10/31/20 at 03:44pm, Chen Zhou wrote:
+>> There are following issues in arm64 kdump:
+>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+>> will fail when there is no enough low memory.
+>> 2. If reserving crashkernel above 4G, in this case, crash dump
+>> kernel will boot failure because there is no low memory available
+>> for allocation.
+>> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+>> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+>> the devices in crash dump kernel need to use ZONE_DMA will alloc
+>> fail.
+> I went through this patchset, mainly the x86 related and generic
+> changes, the changes look great and no risk. And I know Bhupesh is
+> following up this and helping review, thanks, both.
+>
+> So you have also tested crashkernel reservation on x86_64, with the
+> normal reservation, and high/low reservation, it is working well,
+> right? Asking this because I didn't see the test result description, and
+> just note it.
 
-That'd be a desirable outcome, and it would be consistent with the rest
-of the kernel.
+Yeah, i also tested on x86_64 and work well. I did these basic tests before sending every
+new version.
+But Bhupesh may have some review comments(Bhupesh referred one month ago).
 
-> 
->> 
->> > +
->> > +u64 cpu_logical_map(int cpu)
->> 
->> nit: is there any reason why "cpu" cannot be unsigned? The thought
->> of a negative CPU number makes me shiver...
-> 
-> Same here. That's how it's defined in kernel proper, so I went with 
-> that.
+Thanks,
+Chen Zhou
 
-I'm happy to deviate from the kernel (give the function a different name
-if this clashes with existing include files).
+>
+> Thanks
+> Baoquan
+>
+>> To solve these issues, change the behavior of crashkernel=X.
+>> crashkernel=X tries low allocation in DMA zone (or the DMA32 zone if
+>> CONFIG_ZONE_DMA is disabled), and fall back to high allocation if it fails.
+>>
+>> We can also use "crashkernel=X,high" to select a high region above
+>> DMA zone, which also tries to allocate at least 256M low memory in
+>> DMA zone automatically (or the DMA32 zone if CONFIG_ZONE_DMA is disabled).
+>> "crashkernel=Y,low" can be used to allocate specified size low memory.
+>>
+>> When reserving crashkernel in high memory, some low memory is reserved
+>> for crash dump kernel devices. So there may be two regions reserved for
+>> crash dump kernel.
+>> In order to distinct from the high region and make no effect to the use
+>> of existing kexec-tools, rename the low region as "Crash kernel (low)",
+>> and pass the low region by reusing DT property
+>> "linux,usable-memory-range". We made the low memory region as the last
+>> range of "linux,usable-memory-range" to keep compatibility with existing
+>> user-space and older kdump kernels.
+>>
+>> Besides, we need to modify kexec-tools:
+>> arm64: support more than one crash kernel regions(see [1])
+>>
+>> Another update is document about DT property 'linux,usable-memory-range':
+>> schemas: update 'linux,usable-memory-range' node schema(see [2])
+>>
+>> This patchset contains the following eight patches:
+>> 0001-x86-kdump-replace-the-hard-coded-alignment-with-macr.patch
+>> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
+>> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
+>> 0004-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
+>> 0005-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
+>> 0006-arm64-kdump-reimplement-crashkernel-X.patch
+>> 0007-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
+>> 0008-kdump-update-Documentation-about-crashkernel.patch
+>>
+>> 0001-0003 are some x86 cleanups which prepares for making
+>> functionsreserve_crashkernel[_low]() generic.
+>> 0004 makes functions reserve_crashkernel[_low]() generic.
+>> 0005-0006 reimplements arm64 crashkernel=X.
+>> 0007 adds memory for devices by DT property linux,usable-memory-range.
+>> 0008 updates the doc.
+>>
+>> Changes since [v12]
+>> - Rebased on top of 5.10-rc1.
+>> - Keep CRASH_ALIGN as 16M suggested by Dave.
+>> - Drop patch "kdump: add threshold for the required memory".
+>> - Add Tested-by from John.
+>>
+>> Changes since [v11]
+>> - Rebased on top of 5.9-rc4.
+>> - Make the function reserve_crashkernel() of x86 generic.
+>> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
+>> and arm64 use the generic version to reimplement crashkernel=X.
+>>
+>> Changes since [v10]
+>> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
+>>
+>> Changes since [v9]
+>> - Patch 1 add Acked-by from Dave.
+>> - Update patch 5 according to Dave's comments.
+>> - Update chosen schema.
+>>
+>> Changes since [v8]
+>> - Reuse DT property "linux,usable-memory-range".
+>> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
+>> memory region.
+>> - Fix kdump broken with ZONE_DMA reintroduced.
+>> - Update chosen schema.
+>>
+>> Changes since [v7]
+>> - Move x86 CRASH_ALIGN to 2M
+>> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+>> - Update Documentation/devicetree/bindings/chosen.txt.
+>> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
+>> suggested by Arnd.
+>> - Add Tested-by from Jhon and pk.
+>>
+>> Changes since [v6]
+>> - Fix build errors reported by kbuild test robot.
+>>
+>> Changes since [v5]
+>> - Move reserve_crashkernel_low() into kernel/crash_core.c.
+>> - Delete crashkernel=X,high.
+>> - Modify crashkernel=X,low.
+>> If crashkernel=X,low is specified simultaneously, reserve spcified size low
+>> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
+>> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
+>> pass to crash dump kernel by DT property "linux,low-memory-range".
+>> - Update Documentation/admin-guide/kdump/kdump.rst.
+>>
+>> Changes since [v4]
+>> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+>>
+>> Changes since [v3]
+>> - Add memblock_cap_memory_ranges back for multiple ranges.
+>> - Fix some compiling warnings.
+>>
+>> Changes since [v2]
+>> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
+>> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
+>> patch.
+>>
+>> Changes since [v1]:
+>> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+>> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
+>> in fdt_enforce_memory_region().
+>> There are at most two crash kernel regions, for two crash kernel regions
+>> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+>> and then remove the memory range in the middle.
+>>
+>> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
+>> [2]: https://github.com/robherring/dt-schema/pull/19 
+>> [v1]: https://lkml.org/lkml/2019/4/2/1174
+>> [v2]: https://lkml.org/lkml/2019/4/9/86
+>> [v3]: https://lkml.org/lkml/2019/4/9/306
+>> [v4]: https://lkml.org/lkml/2019/4/15/273
+>> [v5]: https://lkml.org/lkml/2019/5/6/1360
+>> [v6]: https://lkml.org/lkml/2019/8/30/142
+>> [v7]: https://lkml.org/lkml/2019/12/23/411
+>> [v8]: https://lkml.org/lkml/2020/5/21/213
+>> [v9]: https://lkml.org/lkml/2020/6/28/73
+>> [v10]: https://lkml.org/lkml/2020/7/2/1443
+>> [v11]: https://lkml.org/lkml/2020/8/1/150
+>> [v12]: https://lkml.org/lkml/2020/9/7/1037
+>>
+>> Chen Zhou (8):
+>>   x86: kdump: replace the hard-coded alignment with macro CRASH_ALIGN
+>>   x86: kdump: make the lower bound of crash kernel reservation
+>>     consistent
+>>   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
+>>     reserve_crashkernel()
+>>   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
+>>   arm64: kdump: introduce some macroes for crash kernel reservation
+>>   arm64: kdump: reimplement crashkernel=X
+>>   arm64: kdump: add memory for devices by DT property
+>>     linux,usable-memory-range
+>>   kdump: update Documentation about crashkernel
+>>
+>>  Documentation/admin-guide/kdump/kdump.rst     |  23 ++-
+>>  .../admin-guide/kernel-parameters.txt         |  12 +-
+>>  arch/arm64/include/asm/kexec.h                |  15 ++
+>>  arch/arm64/include/asm/processor.h            |   1 +
+>>  arch/arm64/kernel/setup.c                     |  13 +-
+>>  arch/arm64/mm/init.c                          | 105 ++++-------
+>>  arch/arm64/mm/mmu.c                           |   4 +
+>>  arch/x86/include/asm/kexec.h                  |  28 +++
+>>  arch/x86/kernel/setup.c                       | 153 +---------------
+>>  include/linux/crash_core.h                    |   4 +
+>>  include/linux/kexec.h                         |   2 -
+>>  kernel/crash_core.c                           | 168 ++++++++++++++++++
+>>  kernel/kexec_core.c                           |  17 --
+>>  13 files changed, 301 insertions(+), 244 deletions(-)
+>>
+>> -- 
+>> 2.20.1
+>>
+> .
+>
 
-We can also fix the rest of the kernel (I've just written the trivial 
-patch).
-
->> 
->> > +{
->> > +	if (cpu < 0 || cpu >= ARRAY_SIZE(__cpu_logical_map))
->> > +		hyp_panic();
->> > +
->> > +	return __cpu_logical_map[cpu];
->> > +}
->> > +
->> >  unsigned long __hyp_per_cpu_offset(unsigned int cpu)
->> >  {
->> >  	unsigned long *cpu_base_array;
->> 
->> Overall, this patch would make more sense closer it its use case
->> (in patch 19). I also don't understand why this lives in percpu.c...
-> 
-> I didn't think it called for adding another C file for this. How about 
-> we
-> rename this file to smp.c? Would that make sense for both?
-
-Make that hyp-smp.c, please!
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
