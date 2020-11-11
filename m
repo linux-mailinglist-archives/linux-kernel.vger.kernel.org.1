@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83952AF472
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA182AF475
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgKKPJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgKKPJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:09:08 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CB7C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:09:08 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id 11so1928334qkd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:09:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AP20IjKPEiFXMZmCcqvgPxuG9Q2kK77mjoFZj0OZZoQ=;
-        b=lW1TBKqiHfp1CIKpViQDUNAHCra8fhHaB43Vddd/gI2W6QjdTQ+C67NLugPEf5ywNV
-         Hdh6WNIxkyUUkRBOFLwF7FjlqCfMB26gdW/rPHiyJT700zYb1hIW0NsgrsjiRl4aiZpe
-         vTcUx4kFlZWPphLXajq2J0oCwnONR7VKEX10VlcSdL0ohHQnyQlLTyrU7sm8tM2wGOQb
-         THLhNxZFSVFETbZhXdG0nEX/QBsA9QWnbB3fi4zhhe8OCIxUBGBzHxeA9bt49chsWB6E
-         8siXfeXF9hcTeik8luSgil6mber5Bp7rWpCq/hCmBxaJNKEmYhLgm7Im1Rl3RQp9Xotz
-         Xd/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AP20IjKPEiFXMZmCcqvgPxuG9Q2kK77mjoFZj0OZZoQ=;
-        b=dGR/5Y4nqRk90SjZr4/sPEuAWwAnHZl0x0K5wIKNCZKIqYsZn7m7EFzR5jJGrJFKLN
-         goxYBDk3jsAWEacoDftQk5R3FvoWWYN+sUcV5uXLhJVls5HTZJUk73QW5O/BvvkVHQ0c
-         vT7j3bu3nbFvovdPu65x8DEouGJMC8cEz/aD1+RvcJhX8cyYr11T+RE+PRwAImJouTD7
-         FngbZ91OOZrW8ADy4El8d66PACk963xbpK0Froavuvf1xWlZgZi4OOVaC+dV1QLQNCy0
-         teSouvioAQmRmDDfdagm9Vj5rEUNIRx5c/4ymfQGbnKqecehdU+dy1KBRggoA1ocrh9d
-         eDdw==
-X-Gm-Message-State: AOAM5300eWb9lty5l/u/hrLsz29CcUb7wtSlxfsQs5383QrGFaBtmuVu
-        dmrPSnPw8b/cxng8PfJdDzg6Nuq01rzIzFKuZNb/ag==
-X-Google-Smtp-Source: ABdhPJwsaubt8h4fnMz+2Pvlw6c7i/aa/2FkCSOslDuvZkkXLEsLDI1RcIJEdJeC8ltaKWZIJiSOlSTnfnq4X1GSiHI=
-X-Received: by 2002:a37:4552:: with SMTP id s79mr19382613qka.6.1605107347099;
- Wed, 11 Nov 2020 07:09:07 -0800 (PST)
+        id S1726939AbgKKPLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:11:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgKKPLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:11:21 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B5432053B;
+        Wed, 11 Nov 2020 15:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605107480;
+        bh=Hjw2JxXtQrLwosSxWWTIKJGgD6aeydpSEOCxT6oeI8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sNJDxFazo98lcFz/nYuUaZjRi/wSn5V41jOEIuO0qlFDmiVtYDfukDlYArWzRKIZZ
+         WvZF/Q4U4DMAkmpIMLUpz29xNXwDhaULvqsMwKkN81Q+WFoKLCv502voi+h3vD4bLK
+         YhISOtx85BZq/u8lMoh6fs1qF3s4ZkRiplsvdcUA=
+Date:   Wed, 11 Nov 2020 16:12:20 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Frankie Chang <Frankie.Chang@mediatek.com>
+Cc:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Subject: Re: [PATCH v13 3/3] binder: add transaction latency tracer
+Message-ID: <X6v/VAffVOOy56bG@kroah.com>
+References: <X6quBb28IVvyRhox@kroah.com>
+ <1605063764-12930-1-git-send-email-Frankie.Chang@mediatek.com>
+ <1605063764-12930-4-git-send-email-Frankie.Chang@mediatek.com>
+ <X6uT941IJ3uf/7aE@kroah.com>
+ <1605106986.11768.14.camel@mtkswgap22>
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <49f7f2c12b0d5805f9a7b7092b986bbc2dd077a1.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <49f7f2c12b0d5805f9a7b7092b986bbc2dd077a1.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 16:08:55 +0100
-Message-ID: <CAG_fn=VXhK0d__FkNdhdquy9F4VmB64_6eJQOQBRecy2oL6huQ@mail.gmail.com>
-Subject: Re: [PATCH v9 21/44] kasan: kasan_non_canonical_hook only for
- software modes
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605106986.11768.14.camel@mtkswgap22>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> This is a preparatory commit for the upcoming addition of a new hardware
-> tag-based (MTE-based) KASAN mode.
->
-> kasan_non_canonical_hook() is only applicable to KASAN modes that use
-> shadow memory, and won't be needed for hardware tag-based KASAN.
->
-> No functional changes for software modes.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Reviewed-by: Marco Elver <elver@google.com>
-> ---
-> Change-Id: Icc9f5ef100a2e86f3a4214a0c3131a68266181b2
-> ---
->  mm/kasan/report.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 5d5733831ad7..594bad2a3a5e 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -403,7 +403,8 @@ bool kasan_report(unsigned long addr, size_t size, bo=
-ol is_write,
->         return ret;
->  }
->
-> -#ifdef CONFIG_KASAN_INLINE
-> +#if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && =
-\
-> +       defined(CONFIG_KASAN_INLINE)
->  /*
->   * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the hig=
-h
->   * canonical half of the address space) cause out-of-bounds shadow memor=
-y reads
+On Wed, Nov 11, 2020 at 11:03:06PM +0800, Frankie Chang wrote:
+> On Wed, 2020-11-11 at 08:34 +0100, Greg Kroah-Hartman wrote:
+> > > - The reason why printing the related information to
+> > >   kernel information log but not trace buffer is that
+> > >   some abnormal transactions may be pending for a long
+> > >   time ago, they could not be recorded due to buffer
+> > >   limited.
+> > 
+> > Don't abuse the kernel information log for stuff that is just normal
+> > operations.  What is wrong with using the trace buffers here?  That's
+> > what they are designed for from what I can tell.
+> > 
+> As mentioned before, time limitation of recording is the reason why we
+> don't just use trace here.
 
-Perhaps this comment also needs to be updated.
+What limitation?
 
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+> In some long time stability test, such as MTBF,
 
+What is "MTBF"?
 
---=20
-Alexander Potapenko
-Software Engineer
+> the exception is caused by a series of transactions interaction.
+> Some abnormal transactions may be pending for a long time ago, they 
+> could not be recorded due to buffer limited.
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+How long of a time is this?  If they are pending, only when the timeout
+happens is the trace logged, right?
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Again, please do not abuse the kernel log for this, that is not what it
+is for.
+
+> > > +config BINDER_TRANSACTION_LATENCY_TRACKING
+> > > +	tristate "Android Binder transaction tracking"
+> > > +	help
+> > > +	  Used for track abnormal binder transaction which is over threshold,
+> > > +	  when the transaction is done or be free, this transaction would be
+> > > +	  checked whether it executed overtime.
+> > > +	  If yes, printing out the detailed info.
+> > 
+> > Why is this a separate module?  Who will ever want this split out?
+> > 
+> The reason we split out a separate module is that we adopted the
+> previously discussed recommendations in PATCH v1.
+> 
+> This way all of this tracing code is in-kernel but outside of binder.c.
+
+Putting it in a single file is fine, but what does this benifit doing it
+in a separate file?  Doesn't it waste more codespace this way?
+
+> > > +/*
+> > > + * The reason setting the binder_txn_latency_threshold to 2 sec
+> > > + * is that most of timeout abort is greater or equal to 2 sec.
+> > > + * Making it configurable to let all users determine which
+> > > + * threshold is more suitable.
+> > > + */
+> > > +static uint32_t binder_txn_latency_threshold = 2;
+> > > +module_param_named(threshold, binder_txn_latency_threshold,
+> > > +			uint, 0644);
+> > 
+> > Again, this isn't the 1990's, please do not add module parameters if at
+> > all possible.
+> > 
+> 
+> Is any recommended method here?
+> Because we refer to the method in binder.c, we don't know if this method
+> is not suitable.
+
+Look at the individual binder instances.  That is what trace should be
+on/off for, not for all binder instances in the system at the same time.
+
+thanks,
+
+greg k-h
