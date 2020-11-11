@@ -2,126 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECA12AF7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBDE2AF7CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgKKSNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:13:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25947 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726157AbgKKSNj (ORCPT
+        id S1727266AbgKKSPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgKKSPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:13:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605118418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BzfSA1UIOUzYMmUrrNLsV0Zn7y194VWwPiSaU2NsQ7s=;
-        b=OtumNEAS9BZy/8xqMncVZbxo1RJt43VxGKeQieSx9+LNqDA3XOhqqtOf1Xh3SL9bdQ0dtK
-        W7mT2f7aS/xYP54TA57rbAj5xpHOcOjKWGBid3eHQ7vzNrgNlc8u8DB+sY2rqq+TEWbWUs
-        wOQ/NKLrPVaJ+seP9W1Qhw5XqV7Cyf8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-RxykxU2TOem2Yxp1g2uyQw-1; Wed, 11 Nov 2020 13:13:34 -0500
-X-MC-Unique: RxykxU2TOem2Yxp1g2uyQw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF9FD100831B;
-        Wed, 11 Nov 2020 18:13:32 +0000 (UTC)
-Received: from treble (ovpn-120-65.rdu2.redhat.com [10.10.120.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5AFD36EF52;
-        Wed, 11 Nov 2020 18:13:31 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 12:13:28 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        andrew.cooper3@citrix.com, jgross@suse.com
-Subject: Re: WARNING: can't access registers at asm_common_interrupt
-Message-ID: <20201111181328.mbxcz2uap2vnqpxq@treble>
-References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
- <20201111170536.arx2zbn4ngvjoov7@treble>
- <20201111174736.GH2628@hirez.programming.kicks-ass.net>
+        Wed, 11 Nov 2020 13:15:34 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F8C0613D1;
+        Wed, 11 Nov 2020 10:15:33 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id i186so2752010ybc.11;
+        Wed, 11 Nov 2020 10:15:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r5V5gOPUpECRjofMGc2gIkhBp+lIfzZwhOaSjiXXcyY=;
+        b=UuZfH3Go2Fub4dfxG+k4rc9t2CBRgsiZhQZjuaVBzz4YYVVpvkGl01o762wh3AYPkh
+         VmBge2n/foCtB90+s44rgFz2txea7hPYPfSUo+qXtU6FjgLULfw4SdvZUZY8FMRrTznf
+         6/m12Z19ladiAt942a4GmjIjd+Xqh6ohKjXLa0q4ERES2NRre1qmjAmje/RfeDIyJelX
+         u/d7n4ZDndRHGtl9NlCLguQPlv2cwOXzu1vi6qR2vX6l060+zToyLiZxE7PtV2omEK+G
+         +FDSBieFrk60cqWb5rjIS1kuGBBfktsHrZBZStVlYc0DcZgrlrvh/had/+SSymAcuMMV
+         23sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r5V5gOPUpECRjofMGc2gIkhBp+lIfzZwhOaSjiXXcyY=;
+        b=ryoy5D/LDjw89rfJdm2qK5YjFF3/7MmHvNWqQswufR8gIHqtYINzDURR9E+pW0antN
+         priC9S4tobVwT6HF0Q35EdIsmbSX6tb/DPg5qkBCKIz/Qoqk2LIvBaRzJgPAB6QV1HMM
+         wEpAsoqFSQPvIIxETAH5yKlQ9F7Hp3MJPWAiVh6QBGPrxclALqtcl5uhXn8Uml5LCP+x
+         JHGJO6C7i/DzwEQslfBq/041iWCYlzTZDrzHC/ONtTmigwzrBiohIBqu2rNh0FoChsgH
+         tsAM8i279/dH5bi9LGy7g2IfUUcZT8E2lpta4CJEaBL0shJPoFJmFFLrcJFYs0K96auu
+         p2pA==
+X-Gm-Message-State: AOAM533rzkJ7Byw3NKV8xT7Sm4G8jxXH2xLYASldgNFAGR4xvP91ThnE
+        hZKmwoUZkolr0VRYFGtfNaMx/DqspRMk+LQxs24=
+X-Google-Smtp-Source: ABdhPJw9OJD0GlL2oVuYFpbRTeF6cZU6okS1QTgfhmnQ8y9z1QQMcaQ26ycxOlIk/15eF9i0OX/EneDbP9WmpMRajMU=
+X-Received: by 2002:a25:585:: with SMTP id 127mr24244345ybf.425.1605118532756;
+ Wed, 11 Nov 2020 10:15:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201111174736.GH2628@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20201111120121.48dd970d@canb.auug.org.au> <288207f247a2e1c6c7940f87e337d3b881c7de17.camel@redhat.com>
+In-Reply-To: <288207f247a2e1c6c7940f87e337d3b881c7de17.camel@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Nov 2020 10:15:21 -0800
+Message-ID: <CAEf4BzZacfQWqS38AZfnP03Ai=OxYhZrX2CeHp-d1hwSw5FaNA@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the bpf-next tree
+To:     Qian Cai <cai@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 06:47:36PM +0100, Peter Zijlstra wrote:
-> This is PARAVIRT_XXL only, which is a Xen special. My preference, as
-> always, is to kill it... Sadly the Xen people have a different opinion.
+On Wed, Nov 11, 2020 at 6:03 AM Qian Cai <cai@redhat.com> wrote:
+>
+> On Wed, 2020-11-11 at 12:01 +1100, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > After merging the bpf-next tree, today's linux-next build (powerpc
+> > ppc64_defconfig) produced this warning:
+> >
+> > kernel/bpf/btf.c:4481:20: warning: 'btf_parse_module' defined but not used [-
+> > Wunused-function]
+> >  4481 | static struct btf *btf_parse_module(const char *module_name, const
+> > void *data, unsigned int data_size)
+> >       |                    ^~~~~~~~~~~~~~~~
+> >
+> > Introduced by commit
+> >
+> >   36e68442d1af ("bpf: Load and verify kernel module BTFs")
+> >
+>
+> It loos like btf_parse_module() is only used when
+> CONFIG_DEBUG_INFO_BTF_MODULES=y, so this should fix it.
 
-That would be soooo nice... then we could get rid of paravirt patching
-altogether and replace it with static calls.
+Fixed already in [0].
 
-> > Objtool doesn't know about the pushf/pop paravirt patch, so ORC gets
-> > confused by the changed stack layout.
-> > 
-> > I'm thinking we either need to teach objtool how to deal with
-> > save_fl/restore_fl patches, or we need to just get rid of those nasty
-> > patches somehow.  Peter, any thoughts?
-> 
-> Don't use Xen? ;-)
-> 
-> So with PARAVIRT_XXL the compiler will emit something like:
-> 
->   "CALL *pvops.save_fl"
-> 
-> Which we then overwrite at runtime with "pushf; pop %[re]ax" and a few
-> NOPs.
-> 
-> Now, objtool understands alternatives, and ensures they have the same
-> stack layout, it has no chance in hell of understanding this, simply
-> because paravirt_patch.c is magic.
-> 
-> I don't have any immediate clever ideas, but let me ponder it a wee bit.
-> 
-> ....
-> 
-> Something really disguisting we could do is recognise the indirect call
-> offset and emit an extra ORC entry for RIP+1. So the cases are:
-> 
-> 	CALL *pv_ops.save_fl	-- 7 bytes IIRC
-> 	CALL $imm;		-- 5 bytes
-> 	PUSHF; POP %[RE]AX	-- 2 bytes
-> 
-> so the RIP+1 (the POP insn) will only ever exist in this case. The
-> indirect and direct call cases would never land on that IP.
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201111040645.903494-1-andrii@kernel.org/
 
-I had a similar idea, and a bit of deja vu - we may have talked about
-this before.  At least I know we talked about doing something similar
-for alternatives which muck with the stack.
-
-> > It looks like 044d0d6de9f5 ("lockdep: Only trace IRQ edges") is making
-> > the problem more likely, by adding the irqs_disabled() check for every
-> > local_irq_disable().
-> > 
-> > Also - Peter, Nicholas - is that irqs_disabled() check really necessary
-> > in local_irq_disable()?  Presumably irqs would typically be be enabled
-> > before calling it?
-> 
-> Yeah, so it's all a giant can of worms that; also see:
-> 
->   https://lkml.kernel.org/r/20200821084738.508092956@infradead.org
-> 
-> The basic idea is to only trace edges, ie. when the hardware state
-> actually changes. Sadly this means doing a pushf/pop before the cli.
-> Ideally CLI would store the old IF in CF or something like that, but
-> alas.
-
-Right, that makes sense for save/restore, but is the disabled check
-really needed for local_irq_disable()?  Wouldn't that always be an edge?
-
-And anyway I don't see a similar check for local_irq_enable().
-
--- 
-Josh
-
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 0f1fd2669d69..e877eeebc616 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -4478,6 +4478,7 @@ struct btf *btf_parse_vmlinux(void)
+>         return ERR_PTR(err);
+>  }
+>
+> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>  static struct btf *btf_parse_module(const char *module_name, const void *data, unsigned int data_size)
+>  {
+>         struct btf_verifier_env *env = NULL;
+> @@ -4546,6 +4547,7 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
+>         }
+>         return ERR_PTR(err);
+>  }
+> +#endif /* CONFIG_DEBUG_INFO_BTF_MODULES */
+>
+>  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog)
+>  {
+>
