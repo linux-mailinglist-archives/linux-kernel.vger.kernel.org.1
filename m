@@ -2,79 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A4E2AF091
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65E52AF09A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgKKM1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:27:20 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14285 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726594AbgKKM1O (ORCPT
+        id S1726740AbgKKM2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgKKM16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:27:14 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fabd89d0001>; Wed, 11 Nov 2020 04:27:09 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
- 2020 12:27:14 +0000
-Received: from audio.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 11 Nov 2020 12:27:11 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <robh+dt@kernel.org>, <broonie@kernel.org>
-CC:     <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 2/2] ASoC: renesas,rsnd: Update audio graph references
-Date:   Wed, 11 Nov 2020 17:56:53 +0530
-Message-ID: <1605097613-25301-3-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605097613-25301-1-git-send-email-spujar@nvidia.com>
-References: <1605097613-25301-1-git-send-email-spujar@nvidia.com>
+        Wed, 11 Nov 2020 07:27:58 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5394CC0613D1;
+        Wed, 11 Nov 2020 04:27:57 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id q19so1847460ljc.10;
+        Wed, 11 Nov 2020 04:27:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W5WHawdyiRL/UDPwiBG0yjJUaw2ChXCIaDxzqyGijTM=;
+        b=rgp4iBF7QIwpfxVeWcUQxYv5Jkp6Xu9bjSj0N7rpmVxTxLaHXoguSDfNMidnDczwUM
+         VcKGr0eRkofLJ5ta55sg5miFXEdgXXCR85onduPj33m81gi2Pbk6OaJrFnuUxBn8Vo0+
+         Ph7+SIiGnaCk0tGPbsl9hQ+pJVG1POv+OJBemTeM0zUrDPvnzXpyXeDOYLvAmClP3DXv
+         Jf6oakkXu8+MAPBp+BZ98KPO8nLq/b9V5dQ+2qguSrPT/NC94DP5PhMYkHzTFOOwiZRh
+         XFEkbxNseJGfqjKeQ7EkgnTrSZybzeRtwtSF2FWQ6R9es6+p/YhENrnK2q28wvg9WY8p
+         Cpsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W5WHawdyiRL/UDPwiBG0yjJUaw2ChXCIaDxzqyGijTM=;
+        b=Z16gYPu7OYx4hIQX1aCDyWC7wRjCRp5W/lXmUJg9vy6LfbsLf1rhtrhWIU+YzHF4+R
+         p0CB8L5LvRWJqfZ153jWeiVetLewjvH1sPsi9RECZR5rE9DjQYHhqZWK2DBKUHbKNhdE
+         4sFRjQZw7lAXkiR0fgsOukHhqFxfPInduZIYMeA+oypWPb0nsrNPavXp4/FkA1tlpNcy
+         CMSzYhSVimIhR9cozxw++r0iH65GxuC6Oh70wxlX2QWevMgSuSZREFPNkfe2QPKzdnMa
+         m8g/JFPg5CDoiTjaC4lM70Jj3sshf9UFzrVC6Z9Exw1LAM9t1JMa62g1MD0ATo+/Xad8
+         wmpQ==
+X-Gm-Message-State: AOAM530uRXOqFqQ8LodPuEAWSZXXkQtBHcG1KldUy58vOCd15wqh/wcn
+        /sftaeK2d/HtqxdH0eGPYQE=
+X-Google-Smtp-Source: ABdhPJyOLm7Uoq0JuJlCCWiprf07q96YUVZNNXHwv5N+mB52A4/YKQP4CeUn7zVBWJjWmngXoqwnEg==
+X-Received: by 2002:a2e:9a43:: with SMTP id k3mr10978389ljj.69.1605097675775;
+        Wed, 11 Nov 2020 04:27:55 -0800 (PST)
+Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id x6sm206676lfn.185.2020.11.11.04.27.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 04:27:54 -0800 (PST)
+Subject: Re: [PATCH 05/10] ARM: dts: BCM5301X: Provide defaults ports
+ container node
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>
+References: <20201110033113.31090-1-f.fainelli@gmail.com>
+ <20201110033113.31090-6-f.fainelli@gmail.com>
+ <20201110221221.4sxx5h3346no7y3y@skbuf>
+ <3e87038f-9e2e-676c-a000-0e6c0e8b6ae4@gmail.com>
+ <cf7f91fc-8bff-68ee-cf68-072e2c795814@gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <581c3e62-9d2e-f684-b035-46aeb7a52816@gmail.com>
+Date:   Wed, 11 Nov 2020 13:27:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605097629; bh=eVDvBYPuDeWHrQDKtdmXcW5F5gglOSR4F/k9ksEl7j0=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=O4Qz5W7DhbuSZVZy+sTYm1ktW8XicISRp2huyTrfApNfq+i2f59tn6eKE7aEX9kvO
-         gdzH+FJKLIiHSD9QHJIXKkmH2fayOkyGtsBwfhUeTo/zIwOjJhsq7NSxZlEnB8sdzU
-         l1Gx+NranvrEn+hGlIewfnWjg8QTUrdwXwz+OQORS/cyHj0qr/JAtcY5753j9rKiVM
-         45NsRLcSb4DgfcvQrfSAfeIOmgFODz6HetQh1AdCKrwUwJAZwY13mRlxFDvlfDQgd4
-         5p7XUQbG6GZKCVFI7G7F29cOsN7mdDiJJDJcYqHUQe9nik9QLXqEDA0KOPupmR/8dm
-         jaayB/XkRlgnw==
+In-Reply-To: <cf7f91fc-8bff-68ee-cf68-072e2c795814@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since audio graph schema is refactored now update the related
-references here.
+On 11.11.2020 02:48, Florian Fainelli wrote:
+> On 11/10/2020 2:13 PM, Florian Fainelli wrote:
+>> On 11/10/20 2:12 PM, Vladimir Oltean wrote:
+>>> On Mon, Nov 09, 2020 at 07:31:08PM -0800, Florian Fainelli wrote:
+>>>> Provide an empty 'ports' container node with the correct #address-cells
+>>>> and #size-cells properties. This silences the following warning:
+>>>>
+>>>> arch/arm/boot/dts/bcm4708-asus-rt-ac56u.dt.yaml:
+>>>> ethernet-switch@18007000: 'oneOf' conditional failed, one must be fixed:
+>>>>          'ports' is a required property
+>>>>          'ethernet-ports' is a required property
+>>>>          From schema:
+>>>> Documentation/devicetree/bindings/net/dsa/b53.yaml
+>>>>
+>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>>>> ---
+>>>>   arch/arm/boot/dts/bcm5301x.dtsi | 4 ++++
+>>>>   1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
+>>>> index 807580dd89f5..89993a8a6765 100644
+>>>> --- a/arch/arm/boot/dts/bcm5301x.dtsi
+>>>> +++ b/arch/arm/boot/dts/bcm5301x.dtsi
+>>>> @@ -489,6 +489,10 @@ srab: ethernet-switch@18007000 {
+>>>>   		status = "disabled";
+>>>>   
+>>>>   		/* ports are defined in board DTS */
+>>>> +		ports {
+>>>> +			#address-cells = <1>;
+>>>> +			#size-cells = <0>;
+>>>> +		};
+>>>
+>>> This look a bit 'lone wolf' here. Not sure how much time you intend to
+>>> spend on this, but FWIW, others prefer to declare all ports in the SoC
+>>> DTSI with status = "disabled", and just enable the ones used per-board,
+>>> and add labels and PHY handles also per-board. Example: fsl-ls1028a.dtsi
+>>> and fsl-ls1028a-rdb.dts.
+>>
+>> That's a good suggestion, I could do that.
+> 
+> There is quite a bit of variation between designs and how the ports are
+> assigned and it would end up being quite verbose, so I will punt that
+> for now.
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-index 51f4dca..fc2ae22 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-@@ -112,12 +112,10 @@ properties:
-         - pattern: '^clk_(a|b|c|i)$'
- 
-   port:
--    description: OF-Graph subnode
--    $ref: "audio-graph-card.yaml#/properties/port"
-+    $ref: /schemas/sound/audio-graph.yaml#/properties/port
- 
-   ports:
--    description: multi OF-Graph subnode
--    $ref: "audio-graph-card.yaml#/properties/ports"
-+    $ref: /schemas/graph.yaml#/properties/ports
- 
- # use patternProperties to avoid naming "xxx,yyy" issue
- patternProperties:
--- 
-2.7.4
-
+I agree with Florian, boards (vendors) use ports really randomly so pretty
+much every device needs that defined from the scratch.
