@@ -2,114 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684F52AE64B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EA62AE638
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732357AbgKKCSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 21:18:51 -0500
-Received: from mail-bn7nam10on2082.outbound.protection.outlook.com ([40.107.92.82]:38698
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726861AbgKKCSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:18:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=io3v6OcVJOEU7zxfqUael3tO6GlkEzfqeRcM2Xyi53JbsEk3mk4fwBJzg10y0KFI3yPSesz9y+2t303gx4ORHGNHyEBLWxm7LbKk8c12YPBIOdHkORtK5a9EdRApIarG3cmIiDMQyfQh081nzfgn9SmzYUw+QGdsFwJ613gGhwxe7tjaaZSuCylkfEV0/J8oRbqONJqrlH+LOaCGpuxzs+Pr15OOXS9b0KluEb09YGKAzYSQ2CBFPmahmf0e9t2M8pbJ1eYWd0Ikg5bbb0r4cDr1Ih8AUvx4/JWExSFXnbk5ad7/OU5FxgC1BIvDlDXcJI+j3bZw3zpyA+F0eM/faw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jP5fqFHiSKAMRbd+YD23rXfF21rW7eoxnGkXOb8VqOY=;
- b=WIijz3NNo6ANlr+1pHHWB3Td/2ZhoYYMsJ1LHFELeUpuenfRWkGuM58oqs9VK8Om3C8qTad84g/R3LZ5T4a8yr1tkjTHwOe8v7EmzHOUdwmb4UjJ3ThEqLb1ISnr7kpY+VXp7NlDNXhMO9E2W1/2hEGHi6bzh94R8/2zU1FM2urwt7cFq2Xptvh+9bNNPXXq+vClhiuhzBzKz91UI0WbooigzC2begCwFvEpPWiRyYaZ4ssLK22DP41pWjnjvKDrRu4v4NykcHOVbqAhp9fQW19ftEpNGJcrkjMS7tiG57IMENQ0xcph7ONei9TgjNsdoJmWA6f34ooeFFW0nPOdrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S1732197AbgKKCNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 21:13:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731810AbgKKCNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 21:13:44 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11185C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 18:13:44 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id o25so653465qkj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 18:13:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jP5fqFHiSKAMRbd+YD23rXfF21rW7eoxnGkXOb8VqOY=;
- b=QoPMhjUU37I4MkFMiuRpjV+tXx6lHTNKbamk4NdFl7zWFIeqHO2ApjuAY+paoFE6evT8yqhgTyB6+kKy6ZhOJEUYHUu0MBXXkaIbiVF1Q6eD/R+Y1NJkrE5zfw090qG4OE6LtRp5uQWWJaGJ3N0pia4J54zPEgmHxvqyJMkah9I=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
-Received: from SN2PR03MB2383.namprd03.prod.outlook.com (2603:10b6:804:d::23)
- by SN6PR03MB3728.namprd03.prod.outlook.com (2603:10b6:805:50::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Wed, 11 Nov
- 2020 02:18:45 +0000
-Received: from SN2PR03MB2383.namprd03.prod.outlook.com
- ([fe80::49be:5ea3:8961:a22]) by SN2PR03MB2383.namprd03.prod.outlook.com
- ([fe80::49be:5ea3:8961:a22%6]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
- 02:18:45 +0000
-Date:   Wed, 11 Nov 2020 10:10:33 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: stmmac: platform: use optional clk/reset
- get APIs
-Message-ID: <20201111101033.753555cc@xhacker.debian>
-In-Reply-To: <20201109115713.026aeb68@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20201109160855.24e911b6@xhacker.debian>
-        <20201109115713.026aeb68@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: SJ0PR13CA0202.namprd13.prod.outlook.com
- (2603:10b6:a03:2c3::27) To SN2PR03MB2383.namprd03.prod.outlook.com
- (2603:10b6:804:d::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by SJ0PR13CA0202.namprd13.prod.outlook.com (2603:10b6:a03:2c3::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Wed, 11 Nov 2020 02:18:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b41cbbf0-acb3-437d-767f-08d885e81e04
-X-MS-TrafficTypeDiagnostic: SN6PR03MB3728:
-X-Microsoft-Antispam-PRVS: <SN6PR03MB372815ABF045FCDE206FA9C7EDE80@SN6PR03MB3728.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JE/l+N3dRaLRZLqsdbUoKKFbqGLDrkxh/lO+vz0HvegyZ5kFuoLln6v45BKLdrxahDv12/kL9Uwoh4kM/eV59H7rWJGacfrIY+dz6TQenie4RKdSDo3ECihy9akn3g3PfM4TYk4lMBlgAyiEXUwIk79fqGXq9LLNn/VYnxh0QaA3ip4LjQhdoG0tJBU2fX4kWjAhgJHZi2rjS7R6s+6CIsvONyojZruvzMxOOWTu+bYehgWqaXXTIXqkeEeGpra/jVsRfWSp1nsfvYFNRbTyhANojXOvy18uesLsZxr2ZLR4ilIFd6awAGokA+a2GEMWXx5vc+SFcbUtMsJUO2R9EQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR03MB2383.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(366004)(346002)(376002)(136003)(26005)(6666004)(7696005)(9686003)(55016002)(478600001)(66556008)(66946007)(66476007)(8936002)(8676002)(16526019)(316002)(7416002)(1076003)(86362001)(956004)(2906002)(4326008)(83380400001)(6506007)(4744005)(5660300002)(54906003)(52116002)(6916009)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: vtd/6jgDfCG9DnAaIPV/F83TuqegdUPBEhQNnHGtD6/i+Yg/dGTYhAgQ/dBkDqjN3YfY82nulE+ES5MPFgCVD5mGVdUM3S3FOI+gRiPfqXxseNVxQFrfEuXbP+PUAxmVhdUXWqgbEXN0o8Wa2jTvetbuMOqBg/mtTkTiAa22iH5c7reL650zPSLsMCgGkIF8mjhafrryKP2pL1AK4iiEMYOUloIGfIh7iEut5bbgdyVAElcYHV8PcFfBKsqpkh2mc23yliAA+uygifd+6kxU9WVtsohxsRNdI+ngDmd6+ZwnY6U8joTYXlhxwhK3zSk/RLVH3RLJnY7ryZZZErHK05lRIqUpNPaR47UkPW1mNmpnbuXm3rxzjmZfz9uXB7G9CsBTh24gEI1/4RvRssVdPghL9De2yi+bRoajwQBZTAU60kRLUWtyfLcdltLeQ2BVnzpZD+s3xyXI/yfWclZQGv/OYryK4n5nPrAp7Y4yJUabg3PU7Y3La6egUXItZrdClPUBiNLugpKfuURjOx55wlRDDZL/x0lNEf7qZjJRyUOBdiC4EXyFYnsTTjkitWKBnM1UvTIH3S15WYJmrsdNPdEgxpTa1m5cOgp7c30PUXsI1/E5kGKkKHKsv7w2yS4tx4OlrrSyclSgods9C6AuIA==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b41cbbf0-acb3-437d-767f-08d885e81e04
-X-MS-Exchange-CrossTenant-AuthSource: SN2PR03MB2383.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2020 02:18:45.7600
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KhNCVKVJAMlsQbchNZrDhEUzWNFhbaYdjg5CJ998NxGE1vNqt5laBCC5DkcWfx9d6uoVQQkEPOcZm8GF37AdYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR03MB3728
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=W+tp6PqByVFyf+7BIq7ovR7ee/HSTPxo+nYyur7x4tk=;
+        b=XzskPPUhU0Hn8wLRTfAlu5mkhiWcLvj1r+x5iXEJjeMX6bQk7UG4sZf2gyYw2DXihp
+         3dEZhA45Lpgj/Dt/oZOsCoMMCQdgNGJSHAgRKRSZuyqpxoJNX0qJb4AWrWCsXwDpUWK6
+         GZgDYa8jNLoiPSSXDMWb1zxqHH3MxX7JmVy6VLph8rU5kH4S+R9RgGsH9GNzbgaugtYG
+         2Gw6M+HqModRMimvHPZVhn7I4/8HZPJ9QvuHmymZbTLqOhf/kWCd+5t0BKnAsSoiXOhe
+         PpsI71oTKXHMeOsMN3jZ5uBMMQukdvjTyql9zFtCyZTB+mTclThuMvmLQ8YzUSL28eHD
+         C7Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=W+tp6PqByVFyf+7BIq7ovR7ee/HSTPxo+nYyur7x4tk=;
+        b=AKfTzG4hItmpbaaPYWofNmi9IhQ/AbTuFpNIUvLYWjX7ToXaCO52jmDqBfCEGMPWwD
+         uSW+sSv46mr0u2VyOQ4CeNJSNpDWcBXMx/e58xRDU6wEMmgOctbuA1Apm88hefcaGydy
+         VcJRcQ6+q55elFKfiJyovWDXKb7xqY/pNSQdlfiaXOxScK8V28XVhF3epbtSBh68BC1c
+         BOHD4ZfU/igAKVUlfkm0giGPoHrN/OrXHo/NktAZcdt5XLaLn7YnN3D7MBfUk9bbKLJO
+         QTvuB8J3aIgROPUwVHT5V5FVmN75i1gdW2EDKj6G2v/PezllgdqNA3Iay+LVHWqhhrCJ
+         4b1A==
+X-Gm-Message-State: AOAM532UYv2uJG+iw9oZjn3+EKnIpQzS2Va9xUqSkyRIRbQmRn7VGVCg
+        moOdl67q7JfLLOWmRTxKqm5AqPQbdFZ8Q61IUHw=
+X-Google-Smtp-Source: ABdhPJwSC4FdAQLVj6SfNDoGwrqkKbLnTgmDa2ZIoHmS3uffZ7D/LkKe6rXbTfU3q6tJZswSpEWpGS93EBQCcuss4Cs=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:aedf:: with SMTP id
+ n31mr16891447qvd.31.1605060823101; Tue, 10 Nov 2020 18:13:43 -0800 (PST)
+Date:   Tue, 10 Nov 2020 18:11:30 -0800
+Message-Id: <20201111021131.822867-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] ACPICA: fix -Wfallthrough
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc:     clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        devel@acpica.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 11:57:13 -0800 Jakub Kicinski wrote:
+The "fallthrough" pseudo-keyword was added as a portable way to denote
+intentional fallthrough. This code seemed to be using a mix of
+fallthrough comments that GCC recognizes, and some kind of lint marker.
+I'm guessing that linter hasn't been run in a while from the mixed use
+of the marker vs comments.
 
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ drivers/acpi/acpica/dscontrol.c | 3 +--
+ drivers/acpi/acpica/dswexec.c   | 4 +---
+ drivers/acpi/acpica/dswload.c   | 3 +--
+ drivers/acpi/acpica/dswload2.c  | 3 +--
+ drivers/acpi/acpica/exfldio.c   | 3 +--
+ drivers/acpi/acpica/exresop.c   | 5 ++---
+ drivers/acpi/acpica/exstore.c   | 6 ++----
+ drivers/acpi/acpica/hwgpe.c     | 3 +--
+ drivers/acpi/acpica/utdelete.c  | 3 +--
+ drivers/acpi/acpica/utprint.c   | 2 +-
+ 10 files changed, 12 insertions(+), 23 deletions(-)
 
-> 
-> 
-> On Mon, 9 Nov 2020 16:09:10 +0800 Jisheng Zhang wrote:
-> > @@ -596,14 +595,10 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
-> >               dev_dbg(&pdev->dev, "PTP rate %d\n", plat->clk_ptp_rate);
-> >       }
-> >
-> > -     plat->stmmac_rst = devm_reset_control_get(&pdev->dev,
-> > -                                               STMMAC_RESOURCE_NAME);
-> > +     plat->stmmac_rst = devm_reset_control_get_optional(&pdev->dev, STMMAC_RESOURCE_NAME);  
-> 
-> This code was wrapped at 80 chars, please keep it wrapped.
-> 
-
-I tried to keep wrapped, since s/devm_reset_control_get/devm_reset_control_get_optional,
-to match alignment at open parenthesis on the second line, the
-"STMMAC_RESOURCE_NAME" will exceed 80 chars. How to handle this situation?
-
-Thanks in advance
+diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscontrol.c
+index 4b5b6e859f62..1e75e5fbfd19 100644
+--- a/drivers/acpi/acpica/dscontrol.c
++++ b/drivers/acpi/acpica/dscontrol.c
+@@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
+ 				break;
+ 			}
+ 		}
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case AML_IF_OP:
+ 		/*
+diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c
+index 1d4f8c81028c..e8c32d4fe55f 100644
+--- a/drivers/acpi/acpica/dswexec.c
++++ b/drivers/acpi/acpica/dswexec.c
+@@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
+ 				if (ACPI_FAILURE(status)) {
+ 					break;
+ 				}
+-
+-				/* Fall through */
+-				/*lint -fallthrough */
++				fallthrough;
+ 
+ 			case AML_INT_EVAL_SUBTREE_OP:
+ 
+diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c
+index 27069325b6de..afc663c3742d 100644
+--- a/drivers/acpi/acpica/dswload.c
++++ b/drivers/acpi/acpica/dswload.c
+@@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_state,
+ 			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+ 				break;
+ 			}
+-
+-			/*lint -fallthrough */
++			fallthrough;
+ 
+ 		default:
+ 
+diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload2.c
+index edadbe146506..1b794b6ba072 100644
+--- a/drivers/acpi/acpica/dswload2.c
++++ b/drivers/acpi/acpica/dswload2.c
+@@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
+ 			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+ 				break;
+ 			}
+-
+-			/*lint -fallthrough */
++			fallthrough;
+ 
+ 		default:
+ 
+diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c
+index ade35ff1c7ba..9d1cabe0fed9 100644
+--- a/drivers/acpi/acpica/exfldio.c
++++ b/drivers/acpi/acpica/exfldio.c
+@@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
+ 		 * Now that the Bank has been selected, fall through to the
+ 		 * region_field case and write the datum to the Operation Region
+ 		 */
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case ACPI_TYPE_LOCAL_REGION_FIELD:
+ 		/*
+diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c
+index 4d1b22971d58..df48faa9a551 100644
+--- a/drivers/acpi/acpica/exresop.c
++++ b/drivers/acpi/acpica/exresop.c
+@@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
+ 				case ACPI_REFCLASS_DEBUG:
+ 
+ 					target_op = AML_DEBUG_OP;
+-
+-					/*lint -fallthrough */
++					fallthrough;
+ 
+ 				case ACPI_REFCLASS_ARG:
+ 				case ACPI_REFCLASS_LOCAL:
+@@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
+ 			 * Else not a string - fall through to the normal Reference
+ 			 * case below
+ 			 */
+-			/*lint -fallthrough */
++			fallthrough;
+ 
+ 		case ARGI_REFERENCE:	/* References: */
+ 		case ARGI_INTEGER_REF:
+diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c
+index 3adc0a29d890..2067baa7c120 100644
+--- a/drivers/acpi/acpica/exstore.c
++++ b/drivers/acpi/acpica/exstore.c
+@@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
+ 		if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
+ 			return_ACPI_STATUS(AE_OK);
+ 		}
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	default:
+ 
+@@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_object *source_desc,
+ 				}
+ 				break;
+ 			}
+-
+-			/* Fallthrough */
++			fallthrough;
+ 
+ 		case ACPI_TYPE_DEVICE:
+ 		case ACPI_TYPE_EVENT:
+diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
+index b13a4ed5bc63..fbfad80c8a53 100644
+--- a/drivers/acpi/acpica/hwgpe.c
++++ b/drivers/acpi/acpica/hwgpe.c
+@@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
+ 		if (!(register_bit & gpe_register_info->enable_mask)) {
+ 			return (AE_BAD_PARAMETER);
+ 		}
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case ACPI_GPE_ENABLE:
+ 
+diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
+index 4c0d4e434196..8076e7947585 100644
+--- a/drivers/acpi/acpica/utdelete.c
++++ b/drivers/acpi/acpica/utdelete.c
+@@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
+ 			(void)acpi_ev_delete_gpe_block(object->device.
+ 						       gpe_block);
+ 		}
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case ACPI_TYPE_PROCESSOR:
+ 	case ACPI_TYPE_THERMAL:
+diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
+index 681c11f4af4e..f7e43baf5ff2 100644
+--- a/drivers/acpi/acpica/utprint.c
++++ b/drivers/acpi/acpica/utprint.c
+@@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
+ 		case 'X':
+ 
+ 			type |= ACPI_FORMAT_UPPER;
+-			/* FALLTHROUGH */
++			fallthrough;
+ 
+ 		case 'x':
+ 
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
