@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14B82AF82A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8835E2AF82D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgKKSgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:36:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        id S1727837AbgKKSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:36:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgKKSgE (ORCPT
+        with ESMTP id S1727762AbgKKSgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Nov 2020 13:36:04 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B195C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:02 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so3511267wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:02 -0800 (PST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEF7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:03 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c9so3148969wml.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=c/TaDkB9aPGP5jIvVTMt5uJ/KkWKg3o08L440ECaIrc=;
-        b=r6woMpmmXo0Dj5775fZ4Cgbnwo1FcLxbbKcVGettNgkwJ6Cx4wfgTiVzUOZ6yjHa91
-         PDuEfCvVpOvcRcswiUXZE4gg4YiSkaO4G+MOIhIJDFTP4KBjBvqLiq0DNNqICzoiFW7K
-         vnX1v4/opW7uZuRGmvaWYOCdLTTwraEi8lxRBR8Po9duljYvHQJF46gFiGEtDBUWJwGv
-         DrHkoqTr2dLCZEXQhmRMLTOTSwId9FnX25/MW4mzBrabNNErqk3pzrqo+Xd6pXZyl6sE
-         2ULcoFWvBt9kwgAkdUKPix1fyjnL3O+cZaEVUSV5Zl0EWldvROjwGOxITtQgijDW3MkZ
-         s3bQ==
+        bh=Qh+SB3F0wBSwPJdxJvDqep6O/eLLWzPpPvay6C9QqmM=;
+        b=Z3euSqifNwhu6ebXW5Gn4HJE9Yrd49M2yyiJejyPG3OBZSHtj/wbH/SAXvd9F/iwBQ
+         8FDI9vSOlm7tmv2uIeobzdDRXa9KBXZnAGQQ8LCyZsMtyagmQRTmyRw6G1pyBIJfj4sT
+         LZ5qoVGnqhXDxbs0M9QvOx6n4nolTJmxEXKS9nFIJ3MbERYVarJ1SrfEnjbYy08ct8v+
+         hNdwbpEouUdQK5qYj5eOLFjoupuVUuETdzgN8bKKbT0Pxw1LCqh7g3+BTFeoov1iiTWO
+         IsdNw7GqJvo3N1osqhhyB3/R6T1BA8EdglHEtkCt1UNLq15nd6wAASH4X8ieuXoVFVZ8
+         rwUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=c/TaDkB9aPGP5jIvVTMt5uJ/KkWKg3o08L440ECaIrc=;
-        b=PTxMTuCkpCPvw6S+nIf+Ci2DuRV76XQvf1qavt2VPcCFD7EMlhGRVc/p/FWPgOgj75
-         vVM7DzgTEVSXVFkD/LZwfiW2OoaA4vF1fH9/JyMecIfAlgo0IyMC3oA6cfjjU/YbwYUw
-         eNMxiuIQVrk3Z4OF/fGXGvmqiyjeR0cwz3DSkn/6g1OhDzlQwG5Bq1YvqpFrXugU+/Jh
-         kc/87//+Y5oVx0AHuDwohfRYM9clbsavqBTygmJuaVc2dnAv1lxugfGGVQOKyJ73fMUY
-         D6/t+YlY9lPHuuQ8JJ4xgMlsbc0bVzc9i+awjH0GETXqXHzTiTb75YlNgBH8p9zHz6c7
-         opLQ==
-X-Gm-Message-State: AOAM530hJ2Z/d60wAerLjkRJyfdZyPSpLbWm/2FXhy/nt1ZPUPQW8KZB
-        d3DAnZ3rukBlrQw6/md2ZzkPyA==
-X-Google-Smtp-Source: ABdhPJyY8o8gKVGXYOjDyRor39+RIHFMv2JbLl6uaiGyTOZu1dzApGW0b1xKClawnwujHmvLLUWJAw==
-X-Received: by 2002:adf:e44f:: with SMTP id t15mr28375034wrm.380.1605119761005;
-        Wed, 11 Nov 2020 10:36:01 -0800 (PST)
+        bh=Qh+SB3F0wBSwPJdxJvDqep6O/eLLWzPpPvay6C9QqmM=;
+        b=lNplzVC3oZZT+6ZCJ/kCSuvtWP/fePOOU4KAYz/NUOqeu1wOVZi9II91cphs6t9jKW
+         TX/Ihv6JAQGD3CxxiRv/ZfUPSdfFuD8LtPWUjMHpwUYjPJkPXuy5LB1NtVuWyA7BDDfh
+         TA9AA7OJGLqiMJqivGegEWL1vpyTaHlZE/ULtjCUblcsMDEKweHnKMQDgrnotdTbjZIs
+         4KR6i7Ee9N3s1MDDWs5SODK43q+TKOaFCyBpQoBbpbWsO0bHgLUsVrX2CuzVuU6VIccd
+         3afIws8rSqj3qWcL5xAyUK+v1CEFlXhKiOQVnLC2SxjsPa52+gIcItKW4Ct/wx4jxerd
+         B/Ig==
+X-Gm-Message-State: AOAM532Rp39BfCuqfTbG+EL+GzNLt8uhwviAc6Dj7mP/8GrRYbDVWqiQ
+        9U9Nv6AYkmL1hfmFl7hSgCzpNg==
+X-Google-Smtp-Source: ABdhPJyfo7uTY2z4gmHdm1uuxT1G2gAONrvqZZUGMNaI7L96tmelOOFAX8Hqqy4Wnne45p+mgl5f0A==
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr5463021wmi.2.1605119762301;
+        Wed, 11 Nov 2020 10:36:02 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.35.59
+        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.36.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:36:00 -0800 (PST)
+        Wed, 11 Nov 2020 10:36:01 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 08/19] drm/radeon/si_dma: Move 'si_gpu_check_soft_reset()'s prototype to shared header
-Date:   Wed, 11 Nov 2020 18:35:34 +0000
-Message-Id: <20201111183545.1756994-9-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 09/19] drm/radeon/cik: Move 'si_*()'s prototypes to shared header
+Date:   Wed, 11 Nov 2020 18:35:35 +0000
+Message-Id: <20201111183545.1756994-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201111183545.1756994-1-lee.jones@linaro.org>
 References: <20201111183545.1756994-1-lee.jones@linaro.org>
@@ -71,49 +73,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/si.c:3768:5: warning: no previous prototype for ‘si_gpu_check_soft_reset’ [-Wmissing-prototypes]
- 3768 | u32 si_gpu_check_soft_reset(struct radeon_device *rdev)
+ drivers/gpu/drm/radeon/si.c:4186:6: warning: no previous prototype for ‘si_vram_gtt_location’ [-Wmissing-prototypes]
+ 4186 | void si_vram_gtt_location(struct radeon_device *rdev,
+ | ^~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/si.c:5186:6: warning: no previous prototype for ‘si_init_uvd_internal_cg’ [-Wmissing-prototypes]
+ 5186 | void si_init_uvd_internal_cg(struct radeon_device *rdev)
  | ^~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/si.c:5801:6: warning: no previous prototype for ‘si_rlc_reset’ [-Wmissing-prototypes]
+ 5801 | void si_rlc_reset(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/si.h     | 1 +
- drivers/gpu/drm/radeon/si_dma.c | 3 +--
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/radeon/cik.c | 4 +---
+ drivers/gpu/drm/radeon/si.h  | 4 ++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+index af08d6f1be53e..0330ee86a372b 100644
+--- a/drivers/gpu/drm/radeon/cik.c
++++ b/drivers/gpu/drm/radeon/cik.c
+@@ -40,6 +40,7 @@
+ #include "radeon_asic.h"
+ #include "radeon_audio.h"
+ #include "radeon_ucode.h"
++#include "si.h"
+ 
+ #define SH_MEM_CONFIG_GFX_DEFAULT \
+ 	ALIGNMENT_MODE(SH_MEM_ALIGNMENT_MODE_UNALIGNED)
+@@ -127,9 +128,6 @@ MODULE_FIRMWARE("radeon/mullins_mec.bin");
+ MODULE_FIRMWARE("radeon/mullins_rlc.bin");
+ MODULE_FIRMWARE("radeon/mullins_sdma.bin");
+ 
+-extern void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
+-extern void si_rlc_reset(struct radeon_device *rdev);
+-extern void si_init_uvd_internal_cg(struct radeon_device *rdev);
+ static u32 cik_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, u32 sh);
+ extern int cik_sdma_resume(struct radeon_device *rdev);
+ extern void cik_sdma_enable(struct radeon_device *rdev, bool enable);
 diff --git a/drivers/gpu/drm/radeon/si.h b/drivers/gpu/drm/radeon/si.h
-index 0a5018ef166e2..a1751ae560f02 100644
+index a1751ae560f02..f483a64d17050 100644
 --- a/drivers/gpu/drm/radeon/si.h
 +++ b/drivers/gpu/drm/radeon/si.h
-@@ -27,5 +27,6 @@
+@@ -25,8 +25,12 @@
+ #define __SI_H__
+ 
  struct radeon_device;
++struct radeon_mc;
  
  int si_mc_load_microcode(struct radeon_device *rdev);
-+u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
+ u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
++void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
++void si_rlc_reset(struct radeon_device *rdev);
++void si_init_uvd_internal_cg(struct radeon_device *rdev);
  
  #endif                         /* __SI_H__ */
-diff --git a/drivers/gpu/drm/radeon/si_dma.c b/drivers/gpu/drm/radeon/si_dma.c
-index d2fa302a5be9f..645897d1bfc31 100644
---- a/drivers/gpu/drm/radeon/si_dma.c
-+++ b/drivers/gpu/drm/radeon/si_dma.c
-@@ -25,10 +25,9 @@
- #include "radeon.h"
- #include "radeon_asic.h"
- #include "radeon_trace.h"
-+#include "si.h"
- #include "sid.h"
- 
--u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
--
- /**
-  * si_dma_is_lockup - Check if the DMA engine is locked up
-  *
 -- 
 2.25.1
 
