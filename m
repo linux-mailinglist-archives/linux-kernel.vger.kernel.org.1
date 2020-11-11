@@ -2,124 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9768D2AFAA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C391B2AFAA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgKKVmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:42:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKKVmG (ORCPT
+        id S1726532AbgKKVmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:42:11 -0500
+Received: from host.euro-space.net ([87.117.239.2]:41412 "EHLO
+        host.euro-space.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKKVmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:42:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E19C0613D1;
-        Wed, 11 Nov 2020 13:42:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=/nMet02cFoPAk6ijRuL303bh3og81B8GTxl/a9qyXPA=; b=u1HVDyS3ORQannbJxvV2fh1Uhk
-        SL7c8IYcqtKtxDE/bLoT8cFoZ29Z72r0BYcWECLbG3IcDZX0p48fNEyaIjOUlkqqBRVG7Is9WWa2a
-        rjJSbW0z+sghHAT0LyEii901kvQFvmVoC2TacMJLLl9lYNHyh1P5+Bm4IWYMsWZ5gVcQttbeybH+W
-        nVC/nNQtf5IJOhqpilDfCDddaiBSeZA6nso2hZWckD6FA0zV5Dm57UYnLI2qTqt+bwRLZsK9VPliz
-        FNIOCf+msPLGe4/r5xHHi4qIlAeVPmGq28xP5W+Dko6CtnQR6ezEjAXP3d7fnb3BgOwDg563/3C1P
-        e2pzWwhA==;
-Received: from [2601:1c0:6280:3f0::662d]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcxsG-00033E-P2; Wed, 11 Nov 2020 21:41:59 +0000
-Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-4-ben.widawsky@intel.com>
- <20201111071231.GC7829@infradead.org>
- <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4a8b5a64-7ba0-a275-744f-6642f98e2213@infradead.org>
-Date:   Wed, 11 Nov 2020 13:41:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 11 Nov 2020 16:42:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com;
+         s=default; h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=c0v6F6riTiMwK0+lQUA1qG9pskhNM22jO/yrK0zcXoA=; b=AAvQh4nhK5y9ZaSiRygevsE3tG
+        CIB8uFkZ9K/g9OZm3a9rqHKKUqAjVu5qZV8K/aAjF+x2boX9S28nTwy6LMwew5ENEIz1HdyGQ5Hti
+        yX9nznoPY6FiUXLILAcF/ZBBI/YCMUtu0S9kXtEBvLmatw3HffHAq1v2z2ICDrkviq1NsiSqC4xce
+        EOMf/cQBVTXCD+NZ3tS2TDBj8CvhLmNF+NMgzE63GKKUIvNLDVIV6tM2gzkNlsFpZ/CQxJEklFaHL
+        8FSe1PFV0rDw1Ro4rW0HaiijSIE6XH5myt9XcbVL3xPwlLKnsRp803zTKnmlI+zC4KrVrV4RJse+T
+        wYwA92Gg==;
+Received: from dynamic-078-055-099-142.78.55.pool.telefonica.de ([78.55.99.142]:59892 helo=gentoo0.localdomain)
+        by host.euro-space.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <kmarinushkin@birdec.com>)
+        id 1kcxsS-00074F-D7; Wed, 11 Nov 2020 21:42:04 +0000
+From:   Kirill Marinushkin <kmarinushkin@birdec.com>
+To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     Matthias Reichl <hias@horus.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Kirill Marinushkin <kmarinushkin@birdec.com>
+Subject: [PATCH v2] ASoC: pcm512x: Add support for more data formats
+Date:   Wed, 11 Nov 2020 22:43:15 +0100
+Message-Id: <20201111214315.26687-1-kmarinushkin@birdec.com>
+X-Mailer: git-send-email 2.13.6
+In-Reply-To: <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
+References: <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - host.euro-space.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - birdec.com
+X-Get-Message-Sender-Via: host.euro-space.net: authenticated_id: kmarinushkin@birdec.com
+X-Authenticated-Sender: host.euro-space.net: kmarinushkin@birdec.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 9:17 AM, Dan Williams wrote:
-> On Tue, Nov 10, 2020 at 11:12 PM Christoph Hellwig <hch@infradead.org> wrote:
->>
->> On Tue, Nov 10, 2020 at 09:43:50PM -0800, Ben Widawsky wrote:
->>> +config CXL_MEM
->>> +        tristate "CXL.mem Device Support"
->>> +        depends on PCI && CXL_BUS_PROVIDER != n
->>
->> depend on PCI && CXL_BUS_PROVIDER
->>
->>> +        default m if CXL_BUS_PROVIDER
->>
->> Please don't set weird defaults for new code.  Especially not default
->> to module crap like this.
-> 
-> This goes back to what people like Dave C. asked for LIBNVDIMM / DAX,
-> a way to blanket turn on a subsystem without needing to go hunt down
-> individual configs. All of CXL is "default n", but if someone turns on
-> a piece of it they get all of it by default. The user can then opt-out
-> on pieces after that first opt-in. If there's a better way to turn on
-> suggested configs I'm open to switch to that style. As for the
-> "default m" I was worried that it would be "default y" without the
-> specificity, but I did not test that... will check. There have been
-> times when I wished that distros defaulted bleeding edge new enabling
-> to 'm' and putting that default in the Kconfig maybe saves me from
-> needing to file individual config changes to distros after the fact.
+Currently, pcm512x driver supports only I2S data format.
+This commit adds RJ, LJ, DSP_A and DSP_B as well.
 
-What we as developers put into mainline kernel Kconfig files has nothing
-to do with what distros use in their distro config files.
-Or at least it shouldn't.  Maybe your experience has been different.
+I don't expect regression WRT existing sound cards, because:
 
->>
->>> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
->>
->> Please don't use '//' for anything but the SPDX header.
-> 
-> Ok, I find // following by /* */ a bit ugly, but I don't care enough to fight.
-> 
+* default value in corresponding register of pcm512x codec is 0 ==  I2S
+* existing in-tree sound cards with pcm512x codec are configured for I2S
+* i don't see how existing off-tree sound cards with pcm512x codec could be
+  configured differently - it would not work
+* tested explicitly, that there is no regression with Raspberry Pi +
+  sound card `sound/soc/bcm/hifiberry_dacplus.c`
 
-Hm, it's not in coding-style AFAICT but Linus has OK-ed C99 style comments:
-http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Matthias Reichl <hias@horus.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+---
+ sound/soc/codecs/pcm512x.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-
->>> +MODULE_AUTHOR("Intel Corporation");
->>
->> A module author is not a company.
-> 
-> At least I don't have a copyright assignment clause, I don't agree
-> with the vanity of listing multiple people here especially when
-> MAINTAINERS has the contact info, and I don't want to maintain a list
-> as people do drive-by contributions and we need to figure out at what
-> level of contribution mandates a new MODULE_AUTHOR line. Now, that
-> said I would be ok to duplicate the MAINTAINERS as MODULE_AUTHOR
-> lines, but I otherwise expect MAINTAINERS is the central source for
-> module contact info.
-
-Sure, MAINTAINERS is fine, but the MODULE_AUTHOR() above provides
-no useful information.
-Even saying (made up) linux-devel@linux.intel.com would be slightly better,
-but some kind of contact info would be great. Otherwise just delete that line.
-
-
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 8153d3d01654..e309227649e7 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -1167,6 +1167,8 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	int alen;
++	int afmt;
++	int offset = 0;
+ 	int gpio;
+ 	int clock_output;
+ 	int master_mode;
+@@ -1195,6 +1197,28 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	switch (pcm512x->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		afmt = PCM512x_AFMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		afmt = PCM512x_AFMT_RTJ;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		afmt = PCM512x_AFMT_LTJ;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		offset = 1;
++		fallthrough;
++	case SND_SOC_DAIFMT_DSP_B:
++		afmt = PCM512x_AFMT_DSP;
++		break;
++	default:
++		dev_err(component->dev, "unsupported DAI format: 0x%x\n",
++			pcm512x->fmt);
++		return -EINVAL;
++	}
++
+ 	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		ret = regmap_update_bits(pcm512x->regmap,
+@@ -1236,6 +1260,20 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
++	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
++				 PCM512x_AFMT, afmt);
++	if (ret != 0) {
++		dev_err(component->dev, "Failed to set data format: %d\n", ret);
++		return ret;
++	}
++
++	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_2,
++				 0xFF, offset);
++	if (ret != 0) {
++		dev_err(component->dev, "Failed to set data offset: %d\n", ret);
++		return ret;
++	}
++
+ 	if (pcm512x->pll_out) {
+ 		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
+ 		if (ret != 0) {
 -- 
-~Randy
+2.13.6
 
