@@ -2,90 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFC02AFA26
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341762AFA2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgKKVFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKKVFp (ORCPT
+        id S1726890AbgKKVGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:06:07 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:41382 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgKKVGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:05:45 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130AAC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:05:45 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id z24so2255695pgk.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:05:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z+2udwxiAxBk6/DCWd+2SzZP73LvSWIE1rQ3M1Od0yU=;
-        b=ht5CA0vVvyATd5B9VYHEhdxuPsMJlSFdlBRKP9s6tzdt2WQeIKCi91m4/04bXLC58C
-         o0akJkBRT1djzEQPOaUqPB2aH5NcGR5tpco2B8MgNCzXljH6fR3xnUTKYI+497XC5N8r
-         hUnxD4/0BwL6+1+yPzBEdjoOk+0yod2halcjN4dt1+3NEzOWGGsk9cV5c4rpJo83Gqmq
-         peM6G5otwPs/NeOxTxTVACJAK15JK09pR9VwXGXoN9LoVCWGwFb0D4yWN9WkojlFVObh
-         SIti7htUngyY3KKBn2JzGtviemQjpQbkWBZbLMY1BPQsh9jUa16F66lvICgLPPAFBpbC
-         xEGQ==
+        Wed, 11 Nov 2020 16:06:07 -0500
+Received: by mail-oi1-f193.google.com with SMTP id m13so3763509oih.8;
+        Wed, 11 Nov 2020 13:06:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z+2udwxiAxBk6/DCWd+2SzZP73LvSWIE1rQ3M1Od0yU=;
-        b=kfmUtP0/decR+bsNvMIyHvoSkWnkXWxMAiWgmlLrXL2jc0j3U56MD1evQ2NrVWC5Cm
-         N2uZQdJNhlULT3Iw7oPoaVSDoYpZYQ8kpvnHROX8BOC3gh7LaI6lpMyJNACLzjwxdmXB
-         qOykQtZvq2VbiRgVCpvBel2PhnEkwOZ7V/ysgBqCyDcuCtXtXNX7Cbt/vh5KcqQ3v6zO
-         2SXr/CVuGazfechH+Z4J3zV5AUvq1o3jAwXkOVgSRHLiBk+XhKrv5nT6jTkfdy2uy3Tz
-         FzBAJDFIPv20yw0FpzNxJnvkVjxMUcX40utQBZnFHKZN9fD1aGtuVgf4204X1Txcg06V
-         6ARg==
-X-Gm-Message-State: AOAM530ZSA67m+KOvhQBWAYr7XlT1VRn1YneTPewvicF4GtmXNhlnkKa
-        f8XuPHa/+jI3oXijEJLRdjmVffqk+DJClA==
-X-Google-Smtp-Source: ABdhPJyH8d1fZj7x9u9zuXrCoi1lrZu4NMdP38V6nc/GDnmYusTaCJ1PgJ56TUP51114Npr+I/5QQQ==
-X-Received: by 2002:a17:90b:a05:: with SMTP id gg5mr5726977pjb.227.1605128744127;
-        Wed, 11 Nov 2020 13:05:44 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id c28sm3952863pfj.108.2020.11.11.13.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 13:05:43 -0800 (PST)
-Subject: Re: [PATCH v2] xtensa: fix broken TIF_NOTIFY_SIGNAL assembly
-To:     Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org
-References: <20201111205349.24815-1-jcmvbkbc@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <faf78325-3aef-e4aa-ddc6-c21e84a8c7ef@kernel.dk>
-Date:   Wed, 11 Nov 2020 14:05:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WYNczxSjDE23Pwjm/JYzPYiAl8+Mw5j0D8+bwmWHfpk=;
+        b=pTlIwB6Cm0E9O3TL1mSRTkDy7nFyZMtjZnxAVcpfckl01E62gsQ2LpyBlaT48tz0Ul
+         GallqnVb2X6/YelpRCskCujYyh87M8niWbtUbOOPECcs7Uf0+7ylHwlA2P0H7NRjrUUy
+         DPG1Au7jAdnUHQK43+qvSoMSfQhbU+2BWQ2k4HbfuTWErrn3EehwasYU05XVzGEUJ7Vj
+         FW1yM4j4bvnh3CSKPXMkl9d6ti+sVIFk3tnLKlcPcZbkaOnKQB9yV6/LB9vwnOCcoDLb
+         2LSma+skSgHbEmrpCdaTxt7q0l2Q1XwYKolrNzhWPb3MeQng+SN6Y0YqSFfzoMIVbPR5
+         +slg==
+X-Gm-Message-State: AOAM5310pHZ2ma9sQrbVI95ygiyojO59IrhlRM+MymaFLr6vkh13+/R4
+        TjSA2sWkA1tS41S8Ahew+A==
+X-Google-Smtp-Source: ABdhPJzKxe8G0bEDi5iOyK9Zh2c59ErqGs3ZMcQtD3yw7+8doRWZsx/HDary7B0zdkaBRLQqFHt1Iw==
+X-Received: by 2002:aca:3a46:: with SMTP id h67mr3536472oia.21.1605128764582;
+        Wed, 11 Nov 2020 13:06:04 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n21sm661975oie.15.2020.11.11.13.06.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 13:06:03 -0800 (PST)
+Received: (nullmailer pid 2031561 invoked by uid 1000);
+        Wed, 11 Nov 2020 21:06:02 -0000
+Date:   Wed, 11 Nov 2020 15:06:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     soc@kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
+        maz@kernel.org, w@1wt.eu
+Subject: Re: [PATCH v3 2/5] dt-bindings: gpio: Binding for MStar MSC313 GPIO
+ controller
+Message-ID: <20201111210602.GA1974594@bogus>
+References: <20201109121731.1537580-1-daniel@0x0f.com>
+ <20201109121731.1537580-3-daniel@0x0f.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111205349.24815-1-jcmvbkbc@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109121731.1537580-3-daniel@0x0f.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 1:53 PM, Max Filippov wrote:
-> TIF_NOTIFY_SIGNAL handling in xtensa assembly is implemented
-> incorrectly: there should be a call to do_notify_resume when either
-> TIF_SIGPENDING, TIF_NOTIFY_RESUME or TIF_NOTIFY_SIGNAL bit is set in the
-> thread_info::flags. The straightforward way to do it would be
+On Mon, Nov 09, 2020 at 09:17:28PM +0900, Daniel Palmer wrote:
+> Add a binding description for the MStar/SigmaStar GPIO controller
+> found in the MSC313 and later ARMv7 SoCs.
 > 
->     _bbsi.l a4, TIF_NEED_RESCHED, 3f
->     _bbsi.l a4, TIF_NOTIFY_RESUME, 2f
->     _bbsi.l a4, TIF_NOTIFY_SIGNAL, 2f
->     _bbci.l a4, TIF_SIGPENDING, 5f
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> ---
+>  .../bindings/gpio/mstar,msc313-gpio.yaml      | 62 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
 > 
-> Optimize it a little bit and use bit mask and bnone opcode to skip
-> do_notify_resume invocation. Shuffle _TIF_* flags a bit so that used bit
-> mask fits into the immediate field of movi opcode.
+> diff --git a/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml b/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
+> new file mode 100644
+> index 000000000000..8c7cfe3a51b3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/mstar,msc313-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MStar/SigmaStar GPIO controller
+> +
+> +maintainers:
+> +  - Daniel Palmer <daniel@thingy.jp>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^gpio@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: mstar,msc313-gpio
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  gpio-ranges: true
+> +
+> +  gpio-ranges-group-names:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
 
-Thanks - do you mind if I fold this in with a reference to your
-changes? Seems like that'd be a better option than leaving it
-broken for a bit.
+Not a standard property. Probably should be dropped, but why do you need 
+this and what is it for?
 
--- 
-Jens Axboe
-
+> +
+> +  interrupt-controller: true
+> +
+> +  "#interrupt-cells":
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - gpio-controller
+> +  - "#gpio-cells"
+> +  - interrupt-controller
+> +  - "#interrupt-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/msc313-gpio.h>
+> +
+> +    gpio: gpio@207800 {
+> +      compatible = "mstar,msc313e-gpio";
+> +      #gpio-cells = <2>;
+> +      reg = <0x207800 0x200>;
+> +      gpio-controller;
+> +      gpio-ranges = <&pinctrl 0 36 22>,
+> +                    <&pinctrl 22 63 4>,
+> +                    <&pinctrl 26 68 6>;
+> +      #interrupt-cells = <2>;
+> +      interrupt-controller;
+> +      interrupt-parent = <&intc_fiq>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index db9c008a0395..87ca71f55de3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2131,6 +2131,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	http://linux-chenxing.org/
+>  F:	Documentation/devicetree/bindings/arm/mstar/*
+> +F:	Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
+>  F:	arch/arm/boot/dts/mstar-*
+>  F:	arch/arm/mach-mstar/
+>  F:	include/dt-bindings/gpio/msc313-gpio.h
+> -- 
+> 2.29.2
+> 
