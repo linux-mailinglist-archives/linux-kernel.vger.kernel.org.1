@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C602AFA31
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E49E52AFA32
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgKKVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:10:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        id S1726901AbgKKVKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKKVKm (ORCPT
+        with ESMTP id S1726731AbgKKVKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:10:42 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71185C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:10:42 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 11so3225687qkd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:10:42 -0800 (PST)
+        Wed, 11 Nov 2020 16:10:46 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841AEC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:10:44 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id ec16so1694897qvb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:10:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nShzfx2jlTbPvWjrgA0qLkMImP/KRoOb/9o5edtvwT8=;
-        b=nDLR80BGlpKLsXqsNfvL8BgzidSKLF7NNA2lb3/wrH1jDq233HtOJptNkV90Zn0800
-         eR0Fxyu7k/MrU7JAU0Pf2W9DNjC3BVEo3KvLI657/53xPFw1I/ry2rgmSQ6/vFcw7fFz
-         FEi1KL9USJ7m0r/qIAt6T92kbtSx87nZ+i5jk=
+        bh=9R/Pa8NNo4ywGaBUbUuK+3FrXWVJKG/glnSDMHfk+R4=;
+        b=SovQwhuwKEKB57uvFYyzOgNnioRQGluOrHKwP/8+Dp4aEJl2/Pk3m+CSyu3/vMC8Kc
+         OyDX4LF4sSvsfsOouuuz6U7jSO1B5Nh14eAlmem1RmukHdcsNbGq0DueN+AiYu7xy991
+         eEZGFAJLsmYStrxMrhnHwZJpdxN2GL2JHUZbE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nShzfx2jlTbPvWjrgA0qLkMImP/KRoOb/9o5edtvwT8=;
-        b=ISlSLmHOmQsaavxUS2clrQ/a3YNduuVV3gKKXww7sljLcmMnM5374GCmgM/H/Vsqf0
-         KTDjOmPxUu6dDUS1mrQzcvmNfl1MOs6SXs380FlzRAMezRbqaWmSf2XLTvZrwKGXrovB
-         RkaFw6mnkc/pbpkW/4tCpAoYU3vlWp05RsEjGBvK9cbo1T7vM+AlXe0H8HWA8IEF6otw
-         G+g4EajIAV2dG8lRKvB6TBM0c0VlCUZu9racYgNkElDAE5kOblr8+wpw2zD9hoPeL8wt
-         PxpU8S212zJi3fOuFpAdsuintP/5OLCDvLOwZ0YqyLxT270IbSXCMpMyOi4X/jl6j+N2
-         YSMw==
-X-Gm-Message-State: AOAM532Lj0Xk92cnQyuWbt+EHiINtkaljcoUAfJ+FL/2zpi2uA8ddTmN
-        rHqCK3nHZ8A75BLpBjLduzOLbQ==
-X-Google-Smtp-Source: ABdhPJz2OspMfh8UZUv7C1WmKn2rxqDZ25+pqHfshZMlU6B6YcsIeYzBy3irANcsZRlRB45jBmlZAw==
-X-Received: by 2002:a05:620a:7ea:: with SMTP id k10mr25335758qkk.292.1605129041688;
-        Wed, 11 Nov 2020 13:10:41 -0800 (PST)
+        bh=9R/Pa8NNo4ywGaBUbUuK+3FrXWVJKG/glnSDMHfk+R4=;
+        b=NaHMNfckUB6DdZ4Z3rZqBm0mcSpAQY4PUKzxCFT9IIMAmq+KcEWGw54PfvFTEafiz+
+         BIgfPN2MNsOlXca44z5o84FkYpacOL0U4SSs+ZWTK58Z+HCjmhhlcDlefcdXhg0s7ULH
+         VBAUgEMrtkhYNUEKY7mO42Ar0HU6My6QGK00bCRBd8XvKxJyi5CyW7iKO5Ef+Z9g5wOx
+         tEwaAm1chyV6VZwDWzqTrf6zo5BHvSnFSA1HnnsbhrQHAe43X/vmSdATFeZBt5sY97l3
+         No+l/174HHpfSz8KyuLQdKQVbR/9fBVT/aoicFhhA0+Gbs2wAW0cFjDY8O9gR8Yd/odG
+         opYA==
+X-Gm-Message-State: AOAM531BYewcS4jmtqwTJGZJ/lzreWVH6huYgm/O56Hgcs6MCBkajx0M
+        aPb3DevMLl4CgEgeifzF7+oB/w==
+X-Google-Smtp-Source: ABdhPJzweHC+xrQqB3fgT6ZvYBHb2b4YzCN/eQV8auGy+GrlIciHvlXrhOHXdRJaTP7EZwg3jlKtkw==
+X-Received: by 2002:a0c:a5a2:: with SMTP id z31mr27905708qvz.15.1605129043813;
+        Wed, 11 Nov 2020 13:10:43 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id d66sm2112389qke.132.2020.11.11.13.10.39
+        by smtp.gmail.com with ESMTPSA id d66sm2112389qke.132.2020.11.11.13.10.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 13:10:41 -0800 (PST)
+        Wed, 11 Nov 2020 13:10:43 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -83,9 +83,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         thomas.lendacky@amd.com, Tony Luck <tony.luck@intel.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
-Subject: [RFC 1/2] x86/bugs: Disable coresched on hardware that does not need it
-Date:   Wed, 11 Nov 2020 16:10:10 -0500
-Message-Id: <20201111211011.1381848-2-joel@joelfernandes.org>
+Subject: [RFC 2/2] sched/debug: Add debug information about whether coresched is enabled
+Date:   Wed, 11 Nov 2020 16:10:11 -0500
+Message-Id: <20201111211011.1381848-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 In-Reply-To: <20201111211011.1381848-1-joel@joelfernandes.org>
 References: <20201111211011.1381848-1-joel@joelfernandes.org>
@@ -95,70 +95,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some hardware such as certain AMD variants don't have cross-HT MDS/L1TF
-issues. Detect this and don't enable core scheduling as it can
-needlessly slow the device done.
+It is useful to see whether coresched is enabled or not, especially in
+devices that don't need it. Add information about the same to
+/proc/sched_debug.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- arch/x86/kernel/cpu/bugs.c | 8 ++++++++
- kernel/sched/core.c        | 7 +++++++
- kernel/sched/sched.h       | 5 +++++
- 3 files changed, 20 insertions(+)
+ kernel/sched/debug.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index dece79e4d1e9..0e6e61e49b23 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -152,6 +152,14 @@ void __init check_bugs(void)
- #endif
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 88bf45267672..935b68be18cd 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -782,6 +782,10 @@ static void sched_debug_header(struct seq_file *m)
+ 		"sysctl_sched_tunable_scaling",
+ 		sysctl_sched_tunable_scaling,
+ 		sched_tunable_scaling_names[sysctl_sched_tunable_scaling]);
++#ifdef CONFIG_SCHED_CORE
++	SEQ_printf(m, "  .%-40s: %d\n", "core_sched_enabled",
++		   !!static_branch_likely(&__sched_core_enabled));
++#endif
+ 	SEQ_printf(m, "\n");
  }
  
-+/*
-+ * Do not need core scheduling if CPU does not have MDS/L1TF vulnerability.
-+ */
-+int arch_allow_core_sched(void)
-+{
-+	return boot_cpu_has_bug(X86_BUG_MDS) || boot_cpu_has_bug(X86_BUG_L1TF);
-+}
-+
- void
- x86_virt_spec_ctrl(u64 guest_spec_ctrl, u64 guest_virt_spec_ctrl, bool setguest)
- {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 64c559192634..c6158b4959fe 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -319,6 +319,13 @@ static void __sched_core_enable(void)
- 	for_each_online_cpu(cpu)
- 		BUG_ON(!sched_core_empty(cpu_rq(cpu)));
- 
-+	/*
-+	 * Some architectures may not want coresched. (ex, AMD does not have
-+	 * MDS/L1TF issues so it wants SMT completely on).
-+	 */
-+	if (!arch_allow_core_sched())
-+		return;
-+
- 	static_branch_enable(&__sched_core_enabled);
- 	stop_machine(__sched_core_stopper, (void *)true, NULL);
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 3cf08c77b678..a1b39764a6ed 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1203,6 +1203,11 @@ int cpu_core_tag_color_write_u64(struct cgroup_subsys_state *css,
- 
- bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
- 
-+int __weak arch_allow_core_sched(void)
-+{
-+	return true;
-+}
-+
- #else /* !CONFIG_SCHED_CORE */
- 
- static inline bool sched_core_enqueued(struct task_struct *task) { return false; }
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
