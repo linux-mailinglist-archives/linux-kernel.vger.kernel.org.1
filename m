@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9124A2AE76E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532AE2AE775
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 05:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725909AbgKKEdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 23:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKKEde (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 23:33:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE02FC0613D1;
-        Tue, 10 Nov 2020 20:33:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gL0OocahXZn8ZQNF8szmGW51uY79EBzlZ34GhrWeBso=; b=oDeBdofTe937SyWQ5KS04zcvqC
-        lgvZ1G91Fpn0+Q6hWzn8iz4pOCTvXSHpD6P1QhX5Qd04Kt1Qw+XpMngVvHfktQNVQ1ulA67YiL7nL
-        tA8aihrql/H2AMkAyYWzWFIN9Ce0745Pa94PaKzEiQEtKHdWkthYtwOI+SQpKIJw6ptG47vbEq7Sm
-        XbhcamxT5yKVkB0cRiWCzjhuX2LfopicPBECLbWzvfoBpL8c7A/pYE1TRlavFekqmDsyuYQ9Lmaqv
-        TacYawpzSIaJXXew8hPtbksnGSLMeAoHskMPJw9V8IhREGECwGEFySLXGWxjJ//+BgXGebA+WR5kI
-        gAImvbZw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kchoe-0002CB-P0; Wed, 11 Nov 2020 04:33:04 +0000
-Date:   Wed, 11 Nov 2020 04:33:04 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        peterz@infradead.org, rafael@kernel.org, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
-        minyard@acm.org, arnd@arndb.de, mchehab@kernel.org,
-        rric@kernel.org, valentina.manea.m@gmail.com, shuah@kernel.org,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 00/13] Introduce seqnum_ops
-Message-ID: <20201111043304.GS17076@casper.infradead.org>
-References: <cover.1605027593.git.skhan@linuxfoundation.org>
+        id S1725922AbgKKEgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 23:36:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725828AbgKKEgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 23:36:22 -0500
+Received: from localhost.localdomain (unknown [122.179.121.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39576206F1;
+        Wed, 11 Nov 2020 04:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605069382;
+        bh=NlRCvFMJxj3vy4pv5YqhpHYWFTILGbvdawvP8q3lqPc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nVRr6p/MmEqo9M9qGaElfY/pzxxEUbHjvdckQO4LuhixhloHaOEVKsi9UknVhOPgC
+         dKjLoIb46pKXyqs0wo6/YN/jEqVnYllxCz4mHDsdilxKIvc5q50nASL+5IJOpVCdc1
+         tx2LsUOb12JMEcoCy/6i9rPr7oYKwStTz/9KGrXU=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: qcom: sdx55: update kconfig dependency
+Date:   Wed, 11 Nov 2020 10:06:10 +0530
+Message-Id: <20201111043610.177168-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1605027593.git.skhan@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:53:26PM -0700, Shuah Khan wrote:
-> There are a number of atomic_t usages in the kernel where atomic_t api
-> is used strictly for counting sequence numbers and other statistical
-> counters and not for managing object lifetime.
+Commit be117ca32261 ("pinctrl: qcom: Kconfig: Rework PINCTRL_MSM to be a
+dependency rather then a selected config") moved the qcom pinctrl drivers
+to have PINCTRL_MSM as dependency rather then a selected config, so do
+this change for SDX55 pinctrl driver as well.
 
-We already have something in Linux called a sequence counter, and it's
-different from this.  ID counter?  instance number?  monotonic_t?  stat_t?
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ drivers/pinctrl/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+index 8bdf878fe970..dcc046a921cc 100644
+--- a/drivers/pinctrl/qcom/Kconfig
++++ b/drivers/pinctrl/qcom/Kconfig
+@@ -232,7 +232,7 @@ config PINCTRL_SDM845
+ config PINCTRL_SDX55
+ 	tristate "Qualcomm Technologies Inc SDX55 pin controller driver"
+ 	depends on GPIOLIB && OF
+-	select PINCTRL_MSM
++	depends on PINCTRL_MSM
+ 	help
+ 	 This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+ 	 Qualcomm Technologies Inc TLMM block found on the Qualcomm
+-- 
+2.26.2
+
