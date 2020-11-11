@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C90F2AED19
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BEF2AED4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgKKJQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:16:08 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39558 "EHLO
+        id S1727053AbgKKJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:17:44 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39572 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKKJQF (ORCPT
+        with ESMTP id S1726316AbgKKJQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:16:05 -0500
+        Wed, 11 Nov 2020 04:16:06 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 63D68803202B;
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id DBFE2803202A;
         Wed, 11 Nov 2020 09:16:03 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UHBCmp_bu81K; Wed, 11 Nov 2020 12:16:02 +0300 (MSK)
+        with ESMTP id qSzcDo4coaxL; Wed, 11 Nov 2020 12:16:03 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wei Xu <xuwei5@hisilicon.com>
+        Vladimir Zapolskiy <vz@mleia.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
+        <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 04/18] arm: dts: hisi-x5hd2: Harmonize EHCI/OHCI DT nodes name
-Date:   Wed, 11 Nov 2020 12:15:38 +0300
-Message-ID: <20201111091552.15593-5-Sergey.Semin@baikalelectronics.ru>
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 05/18] arm: dts: lpc18xx: Harmonize EHCI/OHCI DT nodes name
+Date:   Wed, 11 Nov 2020 12:15:39 +0300
+Message-ID: <20201111091552.15593-6-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -50,32 +51,34 @@ requires the USB nodes to have the name acceptable by the regexp:
 nodes are correctly named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/hisi-x5hd2.dtsi | 4 ++--
+ arch/arm/boot/dts/lpc18xx.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/hisi-x5hd2.dtsi b/arch/arm/boot/dts/hisi-x5hd2.dtsi
-index 3ee7967c202d..693b85b2cc7d 100644
---- a/arch/arm/boot/dts/hisi-x5hd2.dtsi
-+++ b/arch/arm/boot/dts/hisi-x5hd2.dtsi
-@@ -452,14 +452,14 @@ gmac1: ethernet@1841000 {
+diff --git a/arch/arm/boot/dts/lpc18xx.dtsi b/arch/arm/boot/dts/lpc18xx.dtsi
+index 10b8249b8ab6..82ffd7b0ad8a 100644
+--- a/arch/arm/boot/dts/lpc18xx.dtsi
++++ b/arch/arm/boot/dts/lpc18xx.dtsi
+@@ -121,7 +121,7 @@ mmcsd: mmcsd@40004000 {
  			status = "disabled";
  		};
  
--		usb0: ehci@1890000 {
-+		usb0: usb@1890000 {
- 			compatible = "generic-ehci";
- 			reg = <0x1890000 0x1000>;
- 			interrupts = <0 66 4>;
- 			clocks = <&clock HIX5HD2_USB_CLK>;
+-		usb0: ehci@40006100 {
++		usb0: usb@40006100 {
+ 			compatible = "nxp,lpc1850-ehci", "generic-ehci";
+ 			reg = <0x40006100 0x100>;
+ 			interrupts = <8>;
+@@ -133,7 +133,7 @@ usb0: ehci@40006100 {
+ 			status = "disabled";
  		};
  
--		usb1: ohci@1880000 {
-+		usb1: usb@1880000 {
- 			compatible = "generic-ohci";
- 			reg = <0x1880000 0x1000>;
- 			interrupts = <0 67 4>;
+-		usb1: ehci@40007100 {
++		usb1: usb@40007100 {
+ 			compatible = "nxp,lpc1850-ehci", "generic-ehci";
+ 			reg = <0x40007100 0x100>;
+ 			interrupts = <9>;
 -- 
 2.28.0
 
