@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437892AFAF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DF82AFAFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgKKWBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:01:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgKKWBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:01:43 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA8EC0613D1;
-        Wed, 11 Nov 2020 14:01:43 -0800 (PST)
-Received: from dslb-094-219-035-043.094.219.pools.vodafone-ip.de ([94.219.35.43] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1kcyBK-0003ZH-H4; Wed, 11 Nov 2020 23:01:34 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Toan Le <toan@os.amperecomputing.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2 2/2] PCI: dwc: Fix race in removing chained IRQ handler
-Date:   Wed, 11 Nov 2020 23:01:16 +0100
-Message-Id: <20201111220116.22034-2-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201111220116.22034-1-martin@kaiser.cx>
-References: <20201108191140.23227-1-martin@kaiser.cx>
- <20201111220116.22034-1-martin@kaiser.cx>
+        id S1726612AbgKKWEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:04:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgKKWEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:04:33 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B9E72087D;
+        Wed, 11 Nov 2020 22:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605132271;
+        bh=6sleayhcVSfEphEOzhpuo8Eufu2Br31APK/mDMajiVw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XexDvTYqp3OouX1/Z/04MLFD5u672r2C60j23FibwvCTyNsSn9tU5Cl+SJHXhhJi0
+         XppzT6YkmVgAup5pdxAVSK6XKqDHryQNMlB/fpH+0oynZ/cT8H5XND1sO+jWFm+zFQ
+         AGzn08AOYYd6hz4GQpzUqFAyD5J18XaF0ITC8NxM=
+Date:   Wed, 11 Nov 2020 14:04:29 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     Jarod Wilson <jarod@redhat.com>, linux-kernel@vger.kernel.org,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4 0/5] bonding: rename bond components
+Message-ID: <20201111140429.25ab20b1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <10065.1605125636@famine>
+References: <20201106200436.943795-1-jarod@redhat.com>
+        <10065.1605125636@famine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call irq_set_chained_handler_and_data() to clear the chained handler
-and the handler's data under irq_desc->lock.
+On Wed, 11 Nov 2020 12:13:56 -0800 Jay Vosburgh wrote:
+> Jarod Wilson <jarod@redhat.com> wrote:
+> 
+> >The bonding driver's use of master and slave, while largely understood
+> >in technical circles, poses a barrier for inclusion to some potential
+> >members of the development and user community, due to the historical
+> >context of masters and slaves, particularly in the United States. This
+> >is a first full pass at replacing those phrases with more socially
+> >inclusive ones, opting for bond to replace master and port to
+> >replace slave, which is congruent with the bridge and team drivers.
+> >
+> >There are a few problems with this change. First up, "port" is used in
+> >the bonding 802.3ad code, so the first step here is to rename port to
+> >ad_port, so we can reuse port. Second, we have the issue of not wanting
+> >to break any existing userspace, which I believe this patchset
+> >accomplishes, preserving all existing sysfs and procfs interfaces, and
+> >adding module parameter aliases where necessary.
+> >
+> >Third, we do still have the issue of ease of backporting fixes to
+> >-stable trees. I've not had a huge amount of time to spend on it, but
+> >brief forays into coccinelle didn't really pay off (since it's meant to
+> >operate on code, not patches), and the best solution I can come up with
+> >is providing a shell script someone could run over git-format-patch
+> >output before git-am'ing the result to a -stable tree, though scripting
+> >these changes in the first place turned out to be not the best thing to
+> >do anyway, due to subtle cases where use of master or slave can NOT yet
+> >be replaced, so a large amount of work was done by hand, inspection,
+> >trial and error, which is why this set is a lot longer in coming than
+> >I'd originally hoped. I don't expect -stable backports to be horrible to
+> >figure out one way or another though, and I don't believe that a bit of
+> >inconvenience on that front is enough to warrant not making these
+> >changes.  
+> 
+> 	I think this undersells the impact a bit; this will most likely
+> break the majority of cherry-picks for the bonding driver to stable
+> going forward should this patch set be committed.  Yes, the volume of
+> patches to bonding is relatively low, and the manual backports are not
+> likely to be technically difficult.  Nevertheless, I expect that most
+> bonding backports to stable that cross this patch set will require
+> manual intervention.
+> 
+> 	As such, I'd still like to see explicit direction from the
+> kernel development community leadership that change sets of this nature
+> (not technically driven, with long term maintenance implications) are
+> changes that should be undertaken rather than are merely permitted.
 
-See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
-IRQ handler").
+Yeah, IDK. I think it's up to you as the maintainer of this code to
+make a call based on the specific circumstances. All we have AFAIK
+is the coding style statement which discourages new uses:
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+  For symbol names and documentation, avoid introducing new usage of
+  'master / slave' (or 'slave' independent of 'master') and 'blacklist /
+  whitelist'.
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 44c2a6572199..fc2428165f13 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -258,10 +258,8 @@ int dw_pcie_allocate_domains(struct pcie_port *pp)
- 
- void dw_pcie_free_msi(struct pcie_port *pp)
- {
--	if (pp->msi_irq) {
--		irq_set_chained_handler(pp->msi_irq, NULL);
--		irq_set_handler_data(pp->msi_irq, NULL);
--	}
-+	if (pp->msi_irq)
-+		irq_set_chained_handler_and_data(pp->msi_irq, NULL, NULL);
- 
- 	irq_domain_remove(pp->msi_domain);
- 	irq_domain_remove(pp->irq_domain);
--- 
-2.20.1
+  Recommended replacements for 'master / slave' are:
+    '{primary,main} / {secondary,replica,subordinate}'
+    '{initiator,requester} / {target,responder}'
+    '{controller,host} / {device,worker,proxy}'
+    'leader / follower'
+    'director / performer'
 
+  Recommended replacements for 'blacklist/whitelist' are:
+    'denylist / allowlist'
+    'blocklist / passlist'
+
+  Exceptions for introducing new usage is to maintain a userspace ABI/API,
+  or when updating code for an existing (as of 2020) hardware or protocol
+  specification that mandates those terms. For new specifications
+  translate specification usage of the terminology to the kernel coding
+  standard where possible.
