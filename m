@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941B92AEA35
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBF92AEA37
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgKKHdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:33:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgKKHdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:33:33 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA40F2076E;
-        Wed, 11 Nov 2020 07:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605080013;
-        bh=JRFSkM0LzEGX/i7iJ8cU+ThPtvyf2vBq6oxvlPal01M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xuYCRovsDrVjOXqZgYYxNIcWrCG8nvnIqrq2Ml61do7I8sYNUy8xyVPmVksdMEOlj
-         pS1c9Bu93MpiBECeJ8N6W994ktbGsmfyTshagvJG2pkneGQTAxdyOEwYI7I3uOff/m
-         jkz8ePdbG9XPqv0EyPm4X/Z2RdHwthC1dr9rtahY=
-Date:   Wed, 11 Nov 2020 08:34:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Frankie Chang <Frankie.Chang@mediatek.com>
-Cc:     Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Subject: Re: [PATCH v13] binder: add transaction latency tracer
-Message-ID: <X6uUCvNVFuVFXF5X@kroah.com>
-References: <X6quBb28IVvyRhox@kroah.com>
- <1605063764-12930-1-git-send-email-Frankie.Chang@mediatek.com>
+        id S1726194AbgKKHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKHew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 02:34:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD3CC0613D1;
+        Tue, 10 Nov 2020 23:34:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jT7vvZqsEkGq2guvI9VvYSdcPvit9+mDFxsBpkGEz4U=; b=CIJGTaO2L0YMn7NpwWqA5VOrWg
+        KmJx6Lh8uusc1XByYObQ89k90vykPweXAxr0nzvY9iM2LRk8QgP/KORtv0xp3JngQGWvkhP75bv4B
+        0oqF3gesb8GVQvsC1D/7tL71daLEf861b7GmBj0jreFyiJ4Ny4aWikidMTBvPirADz/kJ1SxyVcTk
+        LA9G+yJDIXHY6R/APTTs3yEplu64MAa6vaaDNd79wJMVbb76Vk7matGxNm8+NMzFkgPpNKw16aXAe
+        BnTU8r74em8dQRtMtzvvhN1c7fNwp0lz5nyrBbTZqJmhD+BscUWZEaRJq5LVxy8rv8Wto9T4bAWE4
+        gjXjwplg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kckeX-0004HE-SY; Wed, 11 Nov 2020 07:34:49 +0000
+Date:   Wed, 11 Nov 2020 07:34:49 +0000
+From:   "hch@infradead.org" <hch@infradead.org>
+To:     "Verma, Vishal L" <vishal.l.verma@intel.com>
+Cc:     "Widawsky, Ben" <ben.widawsky@intel.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/9] cxl/acpi: Add an acpi_cxl module for the CXL
+ interconnect
+Message-ID: <20201111073449.GA16235@infradead.org>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-2-ben.widawsky@intel.com>
+ <20201111071006.GB7829@infradead.org>
+ <efe7500400db058e1460937fa2e90ded9c54ebe8.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605063764-12930-1-git-send-email-Frankie.Chang@mediatek.com>
+In-Reply-To: <efe7500400db058e1460937fa2e90ded9c54ebe8.camel@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:02:41AM +0800, Frankie Chang wrote:
+On Wed, Nov 11, 2020 at 07:30:34AM +0000, Verma, Vishal L wrote:
+> Hi Christpph,
 > 
-> Frankie.Chang (3):
->   binder: move structs from core file to header file
->   binder: add trace at free transaction.
->   binder: add transaction latency tracer
-> 
->  drivers/android/Kconfig                 |   8 +
->  drivers/android/Makefile                |   1 +
->  drivers/android/binder.c                | 430 ++----------------------
->  drivers/android/binder_internal.h       | 419 +++++++++++++++++++++++
->  drivers/android/binder_latency_tracer.c | 107 ++++++
->  drivers/android/binder_trace.h          |  49 +++
->  6 files changed, 608 insertions(+), 406 deletions(-)
->  create mode 100644 drivers/android/binder_latency_tracer.c
+> I thought 100 col. lines were acceptable now.
 
-Your cover letter here lost all of the information that used to be in
-other versions of the series :(
+Quote from the coding style document:
+
+"The preferred limit on the length of a single line is 80 columns.
+
+Statements longer than 80 columns should be broken into sensible chunks,
+unless exceeding 80 columns significantly increases readability and does
+not hide information."
+
+So yes, they are acceptable as an expception.  Not for crap like this.
