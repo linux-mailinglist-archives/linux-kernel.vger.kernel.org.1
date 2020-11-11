@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E7D2AE6CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E302AE6D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgKKDGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbgKKDGK (ORCPT
+        id S1725908AbgKKDJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:09:07 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:49475 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgKKDJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:06:10 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F9DC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:06:09 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b25so960493ybj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:06:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=C8NYwKKk49NFdXJwjh7kRkQTeN13dEWuqSXpliOzs8c=;
-        b=Kdl36wFgKAtm4JzH8t5rC3JCmD/OhgiWGJOZTTFihNxoHeOxJxRZx0KVQv8AwH2SKH
-         skiwes1aiADrJmDbrawQvdunX71GS48OLN4/Lk3muc3b+v7TQbU2gH6qjab9SvxhqX5w
-         bW5iaiEP/y11sN/xtrIP8jLG+nJNqESyKghWBpechXF0FAszfC33PCq2aGJmRv2dWM57
-         bdY1EeqeQ+gHyOdiUy/rCDrM/PQ04NCUGWAPBrbBmMJoC1FPmk72ZwuU+09AauU0yBrL
-         modTNTIq+6ZeMGrKSNQ3VMk5ZBi+NWCadgiqsvMdu2Z3f992zDPlEEYqDH0RTW3Q9Bjm
-         +IbQ==
+        Tue, 10 Nov 2020 22:09:07 -0500
+Received: by mail-io1-f69.google.com with SMTP id v15so468633ioq.16
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:09:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=C8NYwKKk49NFdXJwjh7kRkQTeN13dEWuqSXpliOzs8c=;
-        b=T6sbc4irCfKn8ZZ5NVp0yMuGWuDJLG8lvcAxdNPD3UqpOf/pVIVFPK1oq53poZudsy
-         bmBWg+ikzNWW3ay97qT8NIV4SeS77PgFsebgx3e6plTxwkcj8XRHpfQkz+KtqasRLZWt
-         DzA/jk26Xe1TeZTPNaLCXQ7DR3douQeCyam1zCcclO7EZv0GZPTWBxFRtuY71N62hJDc
-         tLhhCFvOMpgZ9/5x9T47WdCgHQmX2pSa69A0eByWqg0CVQKD64ph3bKdwkZIh5CUgvj7
-         iUuRYC0wuZ69wKIpwy3+wWXSGV+8ixqPlXBhhe8YN5EoHlJPh9PcqDKxE8YnF8xE4CyD
-         wrrw==
-X-Gm-Message-State: AOAM533/1DQ3lvxv0Y+oo5hHIpVFjjkfaq95vVYr0Si0EgCgLzyeXXQK
-        eLbye7jWI14vdgUoGC55WBLYaTsx2jhtDXJvSMA=
-X-Google-Smtp-Source: ABdhPJy+qlSZpik2EfqZHCgoiDjlaglRr/S0JJfzYCKniiwVuAMdv21KYm7QiJqXimCZx842oXt/sGqSNII5bVLvLl0=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:3342:: with SMTP id
- z63mr25038540ybz.393.1605063969086; Tue, 10 Nov 2020 19:06:09 -0800 (PST)
-Date:   Tue, 10 Nov 2020 19:05:56 -0800
-Message-Id: <20201111030557.2015680-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH] gcov: remove support for GCC < 4.9
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc:     clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=wf9hL6Te9sp/yqa+Doc2BxzTapoLp41NMYlihKhsE5U=;
+        b=HrdFIVRasyt8qp9YZgfmEx6TA1IkYTZ6xD9Va5+PRGLk1EuIrpXHmFokXXwwdNO+yv
+         IRiikUz1i57AlpTpGjm7pP+8Ls7w8lEwAeSLS1Kn6Eo421yZOaHVl4xJHHctNYTUChRn
+         vAobqVBdLDStbp5S2hZWQfOIf2Psd4uIkVkBtZVj89GKLvN7ECRPP4AfqN/XPjT+GbAa
+         j/oVV5+iwPdjXpYFgfdyVmMNqGX4X0RxiKZMRf+A9iA9WBuJSLqKco4v+/+twTLUyXOS
+         kR/k2jx+zvxYWgU51jnBWrS9oDlePwnYArxl21/+iBukFG9S0r6MbcOUojm5zGDy/Es1
+         t9zw==
+X-Gm-Message-State: AOAM531kgO8YGVQfqkwX5rBo9zq+kYWQ7m8RX05pu2NpeqAr07S3+JHh
+        OMoiRZTeo5P38htltpxdBKg6zsGCIO+WtYEYeiGzexA39dsS
+X-Google-Smtp-Source: ABdhPJw322s2MJlVk9+t74N1ScoBaJO4J3N8LABAJKKIIvfejPk/tSGh8Y8hRv9pCYKg3l9qjzobyF5QLxxkTWZVc72IPUvFMa5q
+MIME-Version: 1.0
+X-Received: by 2002:a92:ba14:: with SMTP id o20mr17040042ili.76.1605064145162;
+ Tue, 10 Nov 2020 19:09:05 -0800 (PST)
+Date:   Tue, 10 Nov 2020 19:09:05 -0800
+In-Reply-To: <000000000000b09d8c059a3240be@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000036d7e005b3cc1e79@google.com>
+Subject: Re: WARNING in percpu_ref_exit (2)
+From:   syzbot <syzbot+8c4a14856e657b43487c@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, ebiggers@kernel.org, hdanton@sina.com,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paulmck@kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since
-commit 0bddd227f3dc ("Documentation: update for gcc 4.9 requirement")
-the minimum supported version of GCC is gcc-4.9. It's now safe to remove
-this code.
+syzbot suspects this issue was fixed by commit:
 
-Similar to
-commit 10415533a906 ("gcov: Remove old GCC 3.4 support")
-but that was for GCC 4.8 and this is for GCC 4.9.
+commit c1e2148f8ecb26863b899d402a823dab8e26efd1
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Wed Mar 4 14:25:50 2020 +0000
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/427
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- kernel/gcov/gcc_4_7.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+    io_uring: free fixed_file_data after RCU grace period
 
-diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
-index 53c67c87f141..0da0aacc1f26 100644
---- a/kernel/gcov/gcc_4_7.c
-+++ b/kernel/gcov/gcc_4_7.c
-@@ -25,10 +25,8 @@
- #define GCOV_COUNTERS			9
- #elif (__GNUC__ > 5) || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
- #define GCOV_COUNTERS			10
--#elif __GNUC__ == 4 && __GNUC_MINOR__ >= 9
--#define GCOV_COUNTERS			9
- #else
--#define GCOV_COUNTERS			8
-+#define GCOV_COUNTERS			9
- #endif
- 
- #define GCOV_TAG_FUNCTION_LENGTH	3
--- 
-2.29.2.222.g5d2a92d10f8-goog
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=161ea46e500000
+start commit:   63849c8f Merge tag 'linux-kselftest-5.6-rc5' of git://git...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4527d1e2fb19fd5c
+dashboard link: https://syzkaller.appspot.com/bug?extid=8c4a14856e657b43487c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c30061e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1251b731e00000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: io_uring: free fixed_file_data after RCU grace period
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
