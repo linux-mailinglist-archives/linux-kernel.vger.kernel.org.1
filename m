@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821DD2AE693
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 411DB2AE6A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 03:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbgKKCvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 21:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgKKCvn (ORCPT
+        id S1726070AbgKKC6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 21:58:50 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49958 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgKKC6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:51:43 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299D6C0613D1;
-        Tue, 10 Nov 2020 18:51:43 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id z123so364772vsb.0;
-        Tue, 10 Nov 2020 18:51:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f5k/9uFbnfs/f8a6g1xB26ridc46MN4oNEtBkfOzYcg=;
-        b=SGNatAJg4ZWElg+LCUolt9lm503miKO80z7GpLg0QZqOE9BxHGUpyU/isicut7E2N2
-         GlBfmchfukVqs+6+gTxBZ646Kc5XjLvragUVEExL3xgD7zwwzQBFsTKfhZv7wk+ciyzI
-         TMeGzNui+F37cutCpbqM3mEU7o1ZM26SThlswJNGytI2cxsLmi2+IZv04mZivYyfmCoH
-         SiXXonpt1n2gtP+FBmw0m9f/ECyncwMovnGXLUufvXgsR3itPKngNlc188mTNuoFNwhF
-         rtjLVnp6JC4dkKMJsOQP8LuCrATGVJ032HPgwJTRyfZcMu6qoodZdULK2hGS8tGszPZ0
-         0GNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f5k/9uFbnfs/f8a6g1xB26ridc46MN4oNEtBkfOzYcg=;
-        b=CCQoOpNMn4aCOohBsRjpykHyvP4A5BedqRRYnPtiv6HzlO3g7RCl+b/jF3kTesRc1b
-         t2W7Jw9xwtoEExW7LqeX3SXgi/KbwONQ3zk5HHIe0RsYh0fT+LhZIRqZKnaz3QR+ztoi
-         PNtN3hEJ5xisHHeaBx0mQNDHOJML/iBNjP37HJcyMGDqRaY8Og488bdG6A/yhZtWte9+
-         hGaK8O0fq7sbRm4fUbNMGkcOkLnxufz4bMW/hDqXnWTu1wgj1iCUJQSUqAEY6tANC7yL
-         gUQnS0PINSAHLkR0jPfnCupqcBL5h40JEKcEH3zpnk/4tJoJuxluAha+WObSNHh28Xui
-         KFXg==
-X-Gm-Message-State: AOAM531Vkc7lidsTstIHo/HMzpnlCgYfn6jx375ZSrRHm4JOv+BZE9n/
-        cOk8EMLSjbRAxbN76soGmJRhOBbenEEIPUfZXKLJsj+e
-X-Google-Smtp-Source: ABdhPJx60b/vzEX6+7qse5r7AlWXBHIgX0VwThCE/ZytKcDujWYDyIaGceptSVS3V02G/hjJWEIsMN0y3nVoxrbSWnE=
-X-Received: by 2002:a67:cc2:: with SMTP id 185mr14575163vsm.42.1605063102199;
- Tue, 10 Nov 2020 18:51:42 -0800 (PST)
+        Tue, 10 Nov 2020 21:58:44 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB2s588158282;
+        Wed, 11 Nov 2020 02:58:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Jw7xtPKUYJKz5gznRW4LKnrRM5tQoIChPU0skHrcydc=;
+ b=HFrqk9MwrLYORw73QGyTMuTKRRzgM1QqINWnoHnxaT2K13HnDsg1YMrQpy8prxV9ou7F
+ 8bd9gBihUDMQpEUsa9Rwiil8pit0k8nkIvuNS1aw1GBvQVdWyS7HOEirJDU9D46kFsTk
+ 1BzX6nJTLNdx8NKomO83/8ieqfuSRagLQ0nbVP3ns0uwZXLZTkRIl1UJToX0IiMMeJRU
+ T5aA7pYS7J/L8rt8A8HjFDuOfQEBJDz4kpf44q/Q3SP58U+BvnGYvap3+Z74QPaTstvF
+ ZB4/kJbpuKPhkt7sDVelD5gg6lElsPjPqYzoNQjOhiQcCrSiilOVndWgNSDcXzorZLy/ EA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34nkhkxwpn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Nov 2020 02:58:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB2sr1t153464;
+        Wed, 11 Nov 2020 02:58:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 34p5g15jdn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Nov 2020 02:58:32 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AB2wSCM024321;
+        Wed, 11 Nov 2020 02:58:28 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 18:58:28 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Can Guo <cang@codeaurora.org>, linux-kernel@vger.kernel.org,
+        Bean Huo <huobean@gmail.com>, linux-scsi@vger.kernel.org,
+        Avri Altman <avri.altman@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: Re: [PATCH V4 0/2] scsi: ufs: Add DeepSleep feature
+Date:   Tue, 10 Nov 2020 21:58:20 -0500
+Message-Id: <160506295514.14063.1577564592645254971.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103141403.2142-1-adrian.hunter@intel.com>
+References: <20201103141403.2142-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
-References: <20201109203828.5115-1-TheSven73@gmail.com> <20201110175509.11a6d549@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201110175509.11a6d549@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 10 Nov 2020 21:51:31 -0500
-Message-ID: <CAGngYiUTAWj2pfCqKyvnEDacdz=oR5FfunpJZgxbn=1F3yaMwg@mail.gmail.com>
-Subject: Re: [PATCH net v1] lan743x: fix "BUG: invalid wait context" when
- setting rx mode
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011110012
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011110012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 8:55 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Please remember about fixes tags
+On Tue, 3 Nov 2020 16:14:01 +0200, Adrian Hunter wrote:
 
-Will do in the future- I posted this patch before we had this
-conversation about the need for Fixes tags in net.
+> Here is V4 of the DeepSleep feature patches.
+> 
+> 
+> Changes in V4:
+> 	Rebased
+> 	Added new patch "scsi: ufs: Allow an error return value from ->device_reset()"
+> 
+> [...]
 
->
-> Applied, thanks!
+Applied to 5.11/scsi-queue, thanks!
 
-Thank you !
+[1/2] scsi: ufs: Add DeepSleep feature
+      https://git.kernel.org/mkp/scsi/c/fe1d4c2ebcae
+[2/2] scsi: ufs: Allow an error return value from ->device_reset()
+      https://git.kernel.org/mkp/scsi/c/151f1b664ffb
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
