@@ -2,118 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FBB2AF8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4F12AF8FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727655AbgKKTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgKKTXF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:23:05 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EBFC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:23:05 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id i18so1969676ioa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:23:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Lmjn0u+3CoqX+/52WJ4IwcLKpxoCspiDsW6aAU64h0U=;
-        b=eszmSPgQ8a/d41JjhcQITNhjxzSCVdQulFedcIg+p5J3equDhEXa+WfaCrVqrdNfTD
-         V2FgYbWDoKRvOyQ23Md4IrKukcmBbIwwjm/IM5d/yzx470rM4HnfcRXKODMMb+bMhkUE
-         toE/hWQR6HejYLWGFlLIiFP544NJ/BsGyC95I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Lmjn0u+3CoqX+/52WJ4IwcLKpxoCspiDsW6aAU64h0U=;
-        b=goOhXEo1CnQsSyzChohAlfKaQIwbpX5YVLaGW8ggBmlJ+37biPQ6h6ltK9qQfbwDL7
-         GwqzYoWlYABdggFPPw7qeCkGg+ybUzFj7pCeykpIS19wbPriew+b0nW4BIX6usTq66Pg
-         qVkr3uG7T3kiw2BYOTx8hjnpWSZcAX9jkZajFjMDMdqfP80qePb2ap21FgrG4qUVC5o3
-         I+mVZnJUgdB1Bn7sMe4Z46ckFTcTKih3dMxVLOLP3YlFVpbSzL4Ips/WmF5acD6pgh0y
-         BIzOq/lQcCItcP879q8ZC8FgxUhp9nq0RoU7J9O3qJ6ILHt/3AiWpNJHk6pQA/NvYYm+
-         znXw==
-X-Gm-Message-State: AOAM531tbL32H0TLEasisHGTHfBbifKEBgxJJwCukcfQ1Lgs4U4h++pe
-        RYZbaTWZIjZk39RtZ0zbBesuYg==
-X-Google-Smtp-Source: ABdhPJxefe9JwPeKX4HmnPQKwjrAZ2CYikYSpLNrlNnDYChDOBXecqtIh2PHr1IIox8XYGby1PcLaA==
-X-Received: by 2002:a5e:d515:: with SMTP id e21mr19879703iom.9.1605122584623;
-        Wed, 11 Nov 2020 11:23:04 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c89sm1755885ilf.26.2020.11.11.11.23.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 11:23:03 -0800 (PST)
-Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
-To:     Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     corbet@lwn.net, peterz@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1605027593.git.skhan@linuxfoundation.org>
- <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
- <X6r7BIG8JTUOLcY0@kroah.com> <X6r7Vl45bgGQiAD2@kroah.com>
- <202011101614.E7D880689@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3075a4fd-8615-1459-2b20-b7d9d2be34ff@linuxfoundation.org>
-Date:   Wed, 11 Nov 2020 12:23:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1727790AbgKKTYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:24:18 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:61615 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727720AbgKKTYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 14:24:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605122655; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=M4SsU8FP+jl6ohrQU3bV14ExeyBJ5Y9zbmdarZ+H4wI=; b=kOz80MahZANLaBYMVBNBf0qeKrUb/0+8WEoTLhuroOC4d/HkQriAw59n3AFg3/3qWTnXldBX
+ osRq7ZCtEkiuuTuFimEsvoVe1E1UH8YM8U5QmOSdHmkvF+7OGsp3xcQyWhOyTLtZiVnzproT
+ hf1hZZ9WhBWEp4DgJaqDboZ9auQ=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fac3a408e090a8886b22721 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 19:23:44
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA8A0C433F0; Wed, 11 Nov 2020 19:23:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71CEEC433C9;
+        Wed, 11 Nov 2020 19:23:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 71CEEC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-wireless@vger.kernel.org,
+        Pavel Procopiuc <pavel.procopiuc@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, ath11k@lists.infradead.org
+Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to tail in __free_pages_core()"
+References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
+        <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
+Date:   Wed, 11 Nov 2020 21:23:39 +0200
+In-Reply-To: <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com> (David
+        Hildenbrand's message of "Thu, 5 Nov 2020 12:13:43 +0100")
+Message-ID: <87eekz4s04.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <202011101614.E7D880689@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/20 5:18 PM, Kees Cook wrote:
-> On Tue, Nov 10, 2020 at 09:43:02PM +0100, Greg KH wrote:
->> On Tue, Nov 10, 2020 at 09:41:40PM +0100, Greg KH wrote:
->>> On Tue, Nov 10, 2020 at 12:53:27PM -0700, Shuah Khan wrote:
->>>> +Decrement interface
->>>> +-------------------
->>>> +
->>>> +Decrements sequence number and doesn't return the new value. ::
->>>> +
->>>> +        seqnum32_dec() --> atomic_dec()
->>>> +        seqnum64_dec() --> atomic64_dec()
->>>
->>> Why would you need to decrement a sequence number?  Shouldn't they just
->>> always go up?
->>>
->>> I see you use them in your patch 12/13, but I don't think that really is
->>> a sequence number there, but rather just some other odd value :)
-> 
-> To that end, they should likely be internally cast to u32 and u64 (and
-> why is seqnum64 ifdef on CONFIG_64BIT?).
-> 
+David Hildenbrand <david@redhat.com> writes:
 
-I had a reason for doing this, can't recall. I will revisit and remove
-it which is ideal. I have to look at CONFIG_GENERIC_ATOMIC64 as well.
+>> Am 05.11.2020 um 11:42 schrieb Vlastimil Babka <vbabka@suse.cz>:
+>>=20
+>> =EF=BB=BFOn 11/5/20 10:04 AM, Kalle Valo wrote:
+>>> (changing the subject, adding more lists and people)
+>>> Pavel Procopiuc <pavel.procopiuc@gmail.com> writes:
+>>>> Op 04.11.2020 om 10:12 schreef Kalle Valo:
+>>>>> Yeah, it is unfortunately time consuming but it is the best way to get
+>>>>> bottom of this.
+>>>>=20
+>>>> I have found the commit that breaks things for me, it's
+>>>> 7fef431be9c9ac255838a9578331567b9dba4477 mm/page_alloc: place pages to
+>>>> tail in __free_pages_core()
+>>>>=20
+>>>> I've reverted it on top of the 5.10-rc2 and ath11k driver loads fine
+>>>> and I have wifi working.
+>>> Oh, very interesting. Thanks a lot for the bisection, otherwise we would
+>>> have never found out whats causing this.
+>>> David & mm folks: Pavel noticed that his QCA6390 Wi-Fi 6 device (driver
+>>> ath11k) failed on v5.10-rc1. After bisecting he found that the commit
+>>> below causes the regression. I have not been able to reproduce this and
+>>> for me QCA6390 works fine. I don't know if this needs a specific kernel
+>>> configuration or what's the difference between our setups.
+>>> Any ideas what might cause this and how to fix it?
+>>> Full discussion:
+>>> http://lists.infradead.org/pipermail/ath11k/2020-November/000501.html
+>>> commit 7fef431be9c9ac255838a9578331567b9dba4477
+>>> Author:     David Hildenbrand <david@redhat.com>
+>>> AuthorDate: Thu Oct 15 20:09:35 2020 -0700
+>>> Commit:     Linus Torvalds <torvalds@linux-foundation.org>
+>>> CommitDate: Fri Oct 16 11:11:18 2020 -0700
+>>>     mm/page_alloc: place pages to tail in __free_pages_core()
+>>=20
+>> Let me paste from the ath11k discussion:
+>>=20
+>>> * Relevant errors from the log:
+>>> # journalctl -b | grep -iP '05:00|ath11k'
+>>> Nov 02 10:41:26 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 cla=
+ss 0x028000
+>>> Nov 02 10:41:26 razor kernel: pci 0000:05:00.0: reg 0x10: [mem
+>>> 0xd2100000-0xd21fffff 64bit]
+>>> Nov 02 10:41:26 razor kernel: pci 0000:05:00.0: PME# supported from D0 =
+D3hot D3cold
+>>> Nov 02 10:41:26 razor kernel: pci 0000:05:00.0: 4.000 Gb/s
+>>> available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
+>>> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
+>>> Nov 02 10:41:26 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
+>>> Nov 02 10:41:27 razor kernel: ath11k_pci 0000:05:00.0: WARNING:
+>>> ath11k PCI support is experimental!
+>>> Nov 02 10:41:27 razor kernel: ath11k_pci 0000:05:00.0: BAR 0:
+>>> assigned [mem 0xd2100000-0xd21fffff 64bit]
+>>> Nov 02 10:41:27 razor kernel: ath11k_pci 0000:05:00.0: enabling
+>>> device (0000 -> 0002)
+>>> Nov 02 10:41:27 razor kernel: mhi 0000:05:00.0: Requested to power ON
+>>> Nov 02 10:41:27 razor kernel: mhi 0000:05:00.0: Power on setup success
+>>> Nov 02 10:41:27 razor kernel: ath11k_pci 0000:05:00.0: Respond mem
+>>> req failed, result: 1, err: 0
+>>=20
+>> This seems to be ath11k_qmi_respond_fw_mem_request(). Why is it
+>> failure with error 0? No idea.
+>>=20
+>> What would happen if all the GFP_KERNEL in the file were changed to GFP_=
+DMA32?
+>>=20
+>> I'm thinking the hardware perhaps doesn't like too high physical
+>> addresses or something. But if I think correctly, freeing to tail
+>> should actually move them towards head. So it's weird.
+>
+> It depends in which order memory is exposed to MM, which might depend
+> on other factors in some configurations.
+>
+> This smells like it exposes an existing bug. Can you reproduce also
+> with zone shuffling enabled?
 
-Not seeing any errors with my config which has CONFIG_64BIT=y
+I think I can reproduce this bug now on my NUC box by disabling vt-d in
+the BIOS, but I'm not sure yet if it really is the same problem or not.
+I included some debug messages to this ath11k patch:
 
+https://patchwork.kernel.org/project/linux-wireless/patch/1605121102-14352-=
+1-git-send-email-kvalo@codeaurora.org/
 
->> Note, other than this, I like the idea.  It makes it obvious what these
->> atomic variables are being used for, and they can't be abused for other
->> things.  Nice work.
-> 
+Pavel, can you test with that patch on v5.10-rc2 and provide the ath11k
+log messages? Preferably both before and after reverting commit
+7fef431be9c9. Do note that I'm not expecting the debug patch to fix
+anything, in your case it's just for providing more debug info.
 
-Thanks.
+With vt-d disabled on v5.10-rc2 before the revert I see:
 
-> Agreed: this is a clear wrapping sequence counter. It's only abuse would
-> be using it in a place where wrapping actually is _not_ safe. (bikeshed:
-> can we call it wrap_u32 and wrap_u64?)
-> 
+ath11k_pci 0000:06:00.0: WARNING: ath11k PCI support is experimental!
+ath11k_pci 0000:06:00.0: BAR 0: assigned [mem 0xdb000000-0xdbffffff 64bit]
+ath11k_pci 0000:06:00.0: enabling device (0000 -> 0002)
+ath11k_pci 0000:06:00.0: MSI vectors: 1
+NET: Registered protocol family 42
+mhi 0000:06:00.0: Requested to power ON
+mhi 0000:06:00.0: Power on setup success
+ath11k_pci 0000:06:00.0: Respond mem req failed, result: 1, err: 0
+ath11k_pci 0000:06:00.0: qmi failed to respond fw mem req:-22
+ath11k_pci 0000:06:00.0: req mem_seg[0] 0x1580000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[1] 0x1600000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[2] 0x1680000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[3] 0x1700000 294912 1
+ath11k_pci 0000:06:00.0: req mem_seg[4] 0x1780000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[5] 0x1800000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[6] 0x1880000 458752 1
+ath11k_pci 0000:06:00.0: req mem_seg[7] 0x1520000 131072 1
+ath11k_pci 0000:06:00.0: req mem_seg[8] 0x1900000 524288 4
+ath11k_pci 0000:06:00.0: req mem_seg[9] 0x1980000 360448 4
+ath11k_pci 0000:06:00.0: req mem_seg[10] 0x1540000 16384 1
+ath11k_pci 0000:06:00.0: qmi failed memory request, err =3D -110
+ath11k_pci 0000:06:00.0: qmi failed to respond fw mem req:-110
 
-Still like seqnum_ops.
+With vt-d disabled on v5.10-rc2 and reverting commit 7fef431be9c9 I see:
 
-There is seqcount_t in seqlock.h which is a totally different feature.
+ath11k_pci 0000:06:00.0: WARNING: ath11k PCI support is experimental!
+ath11k_pci 0000:06:00.0: BAR 0: assigned [mem 0xdb000000-0xdbffffff 64bit]
+ath11k_pci 0000:06:00.0: MSI vectors: 1
+mhi 0000:06:00.0: Requested to power ON
+mhi 0000:06:00.0: Power on setup success
+ath11k_pci 0000:06:00.0: Respond mem req failed, result: 1, err: 0
+ath11k_pci 0000:06:00.0: qmi failed to respond fw mem req:-22
+ath11k_pci 0000:06:00.0: req mem_seg[0] 0x76300000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[1] 0x76380000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[2] 0x76a00000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[3] 0x76a80000 294912 1
+ath11k_pci 0000:06:00.0: req mem_seg[4] 0x76b00000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[5] 0x76b80000 524288 1
+ath11k_pci 0000:06:00.0: req mem_seg[6] 0x76400000 458752 1
+ath11k_pci 0000:06:00.0: req mem_seg[7] 0x761a0000 131072 1
+ath11k_pci 0000:06:00.0: req mem_seg[8] 0x76480000 524288 4
+ath11k_pci 0000:06:00.0: req mem_seg[9] 0x76500000 360448 4
+ath11k_pci 0000:06:00.0: req mem_seg[10] 0x76580000 16384 1
+ath11k_pci 0000:06:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0=
+xffffffff
+ath11k_pci 0000:06:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-2=
+4 19:50 fw_build_id=20
 
-thanks,
--- Shuah
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
