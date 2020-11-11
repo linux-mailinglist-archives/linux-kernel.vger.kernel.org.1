@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6D22AE506
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481F22AE512
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732386AbgKKAnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 19:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        id S1732461AbgKKAo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 19:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732345AbgKKAnk (ORCPT
+        with ESMTP id S1732432AbgKKAo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 19:43:40 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BE0C0613D1;
-        Tue, 10 Nov 2020 16:43:38 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id b11so123804qvr.9;
-        Tue, 10 Nov 2020 16:43:38 -0800 (PST)
+        Tue, 10 Nov 2020 19:44:58 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6406C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 16:44:57 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 33so611279wrl.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 16:44:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=te32oWHsYf0/wGLDWEI6cIibT/+xmHk3vK5gsEaTJAE=;
-        b=Wh/1MusAFQr1P+adqfyA+GYD7VTCLGKwroma4jrLWO4bKZDVPWwPPaTcCmv57qRTDL
-         T53+mUwexHTysyi5ganvZXdKGQHF3lU0zJTMDda6725pSeSMzzoiLzFaw6J7zr41DYWj
-         7noNgjLBb5huieK1rcPGJvyjDutXL7O+h+gVI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/13qwQgQ3Y+lxdm33Ix8mWDwT4msBrtLlbjK58L715E=;
+        b=Iv1YLt8AGRr7vcn+UBzP9lP/XbFvroEB/vY4GqAg8hnFDIn5vdmnoGabvEKq0BBpZ1
+         K5/cXoeQwgyLtJ5iAVNisuMAB+ESTMLPmU5/PZlqIMmsDVIlPFisYdwUYF2e49c1p9Vo
+         HcHxM/I6aNAsUcrXbDCGP90EjShM5Skl15xZ6IMA/pU5FF6Re5f+ZmlsEoM014ZJGZyQ
+         pnc5JO2D+5+0MvQBHuvtNB3l3KkBPnMDjp7bAg6kju+wed3H+WWfF+Do51k6986kpJH1
+         nUPcGMYJETojhqdMIlnS8+Xd/U74NqyrtbkV/6b+PpPX0dRRd+yP2nobJNkiJcLEXQlI
+         xnOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=te32oWHsYf0/wGLDWEI6cIibT/+xmHk3vK5gsEaTJAE=;
-        b=MQ+ji9pRDuJvYVKh5IeP51KgdWRZpyl3zwPTM5cT7FJSlZYFvA5IYlVkPDqb2qY3kX
-         AbImDHAOObTZwzN1RKe6iZVsQoySqJTDXUWQOdhcnI1OxSEwcjicTHpJLSAvqpO2JEtJ
-         vX/tLtEWXd8P7v9rx2q0n44Yus0iUgHKG6GdeU3NPVafXjAwJkPh9PK0LSZqY3J29qy6
-         oZLMj4QIw6Mj8NYGkO+tHZW7QZv/4lNUDSuSTM/3HZJoLXssMDHSMh4xi/R+H1glzD5v
-         eVDdzhnw57cCrfdYsMIaQydRKFdLyQB+peBlvOllM2V5Hd+WSSgNL0IrjYS5jJcFXSg/
-         +7AA==
-X-Gm-Message-State: AOAM5310kVKksoR5RP+2GX6xzH8Cpc21GRTklz8XxAJUsILsUwwa9lsZ
-        xrXyKKa3tFovGMuDJx11bToj0X9sEu/u40WW+So=
-X-Google-Smtp-Source: ABdhPJxwSR8jaL2QblXNkRiGuqX6BzhLqsEEFBqEJ4jzOyA/LlxG2dPKvFfXqc04nuaPz1WCZpERZqP6TCIzq43Jytg=
-X-Received: by 2002:ad4:5387:: with SMTP id i7mr21854679qvv.43.1605055417808;
- Tue, 10 Nov 2020 16:43:37 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/13qwQgQ3Y+lxdm33Ix8mWDwT4msBrtLlbjK58L715E=;
+        b=ooUfXoRb8U7xxF3Cb9nHVnJlP7O3AdAt7MWbgdE6dbwOQyU0Cfm9o1iHttWksJbFSV
+         tjvsovtzhRUKC2Lh/8IooWofY2lYwEfILB7RR9Q/kfjBPHW7qLQ75l061hBcTvzIuM8t
+         HTdI53b+kNzlC8uepk5SzDL+2PlNK0oDQiE8Kv5OtReK5H0/ZWgQ/UMyxvCMwuv1va9N
+         /68Su2zWv7HBmq70sQNNPpyJPryKKvwvl9SlNOkqIuMV/gAe+3a1mUusxzQK5D8GGixX
+         aXQN8OVC0/f40UqxUKRY9tI4mXkknvN4OEmJ5869laDduU8gGdm0CjGR26t8LDuh2H+j
+         sfNA==
+X-Gm-Message-State: AOAM531BA0OCmeFt9QFmy9iL3pUTpb+xHAnbmrtJhnvqvXdt8kY3Mrru
+        bPX5VLj8TaBZ3gR0TwjKAMg=
+X-Google-Smtp-Source: ABdhPJxjCyyhtS6gfnMjb6r1RGKXCCMvZYQDvhogrJTemBZvYL5lOJ4YguBqefLyX1zVAWKAbNSm6A==
+X-Received: by 2002:a5d:6447:: with SMTP id d7mr25952011wrw.96.1605055496387;
+        Tue, 10 Nov 2020 16:44:56 -0800 (PST)
+Received: from ansuel-xps20.localdomain (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.googlemail.com with ESMTPSA id 18sm514556wmo.3.2020.11.10.16.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 16:44:55 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: fix missing include in asm uaccess.h
+Date:   Wed, 11 Nov 2020 01:44:38 +0100
+Message-Id: <20201111004440.8783-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201110214736.25718-1-eajames@linux.ibm.com>
-In-Reply-To: <20201110214736.25718-1-eajames@linux.ibm.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 11 Nov 2020 00:43:25 +0000
-Message-ID: <CACPK8XdUs9o-F5Ap0Y-w287yocXnS64LKe=MHxGZjOZuA=7-uA@mail.gmail.com>
-Subject: Re: [PATCH] spi: fsi: Fix transfer returning without finalizing message
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-spi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 21:47, Eddie James <eajames@linux.ibm.com> wrote:
->
-> In the case that the SPI mux isn't set, the transfer_one_message
-> function returns without finalizing the message. This means that
-> the transfer never completes, resulting in hung tasks and an
-> eventual kernel panic. Fix it by finalizing the transfer in this
-> case.
->
-> Fixes: 9211a441e606 ("spi: fsi: Check mux status before transfers")
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Fix a compilation error as PF_KTHREAD is defined in linux/sched.h and
+this is missing.
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Fixes: df325e05a682 ("arm64: Validate tagged addresses in access_ok()
+called from kernel threads")
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ arch/arm64/include/asm/uaccess.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> ---
->  drivers/spi/spi-fsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/spi/spi-fsi.c b/drivers/spi/spi-fsi.c
-> index 8a440c7078ef..3920cd3286d8 100644
-> --- a/drivers/spi/spi-fsi.c
-> +++ b/drivers/spi/spi-fsi.c
-> @@ -477,7 +477,7 @@ static int fsi_spi_transfer_one_message(struct spi_controller *ctlr,
->
->         rc = fsi_spi_check_mux(ctx->fsi, ctx->dev);
->         if (rc)
-> -               return rc;
-> +               goto error;
->
->         list_for_each_entry(transfer, &mesg->transfers, transfer_list) {
->                 struct fsi_spi_sequence seq;
-> --
-> 2.26.2
->
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 991dd5f031e4..51a4f63f464a 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -7,6 +7,8 @@
+ #ifndef __ASM_UACCESS_H
+ #define __ASM_UACCESS_H
+ 
++#include <linux/sched.h>
++
+ #include <asm/alternative.h>
+ #include <asm/kernel-pgtable.h>
+ #include <asm/sysreg.h>
+-- 
+2.28.0
+
