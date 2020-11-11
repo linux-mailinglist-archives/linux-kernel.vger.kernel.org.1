@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906F32AF72D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BE32AF72E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgKKRFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:05:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51831 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726915AbgKKRFr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:05:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605114345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7BI6A34cDpZfmCEiKXdR3IWZbFMp1035i+ZLisC1Iv4=;
-        b=jMCtQa7riit2u2W/sEA3AIBaB9SyApPEMiYBkXL77GGUz9CNQBQW0sdQwgoe1lqFiOX5pb
-        ekC5uLUkZpvowg02imoquB333/dTYq/UCCkHKtUrAV0qP2i1LKBU5/7OuVjMZvzZ9wQC9C
-        Z0RGX7KJUGekOjAGeKzu8u/eCppTQLc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-JB56MwvqMbi2JTSrZkfi6w-1; Wed, 11 Nov 2020 12:05:43 -0500
-X-MC-Unique: JB56MwvqMbi2JTSrZkfi6w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C377F1087D67;
-        Wed, 11 Nov 2020 17:05:41 +0000 (UTC)
-Received: from treble (ovpn-120-65.rdu2.redhat.com [10.10.120.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 478FB27BB7;
-        Wed, 11 Nov 2020 17:05:39 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 11:05:36 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: WARNING: can't access registers at asm_common_interrupt
-Message-ID: <20201111170536.arx2zbn4ngvjoov7@treble>
-References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+        id S1727166AbgKKRGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:06:24 -0500
+Received: from muru.com ([72.249.23.125]:48078 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725995AbgKKRGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:06:23 -0500
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 7DAF88126;
+        Wed, 11 Nov 2020 17:06:27 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Laxminath Kasam <lkasam@codeaurora.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH] mfd: cpcap: Fix interrupt regression with regmap clear_ack
+Date:   Wed, 11 Nov 2020 19:06:13 +0200
+Message-Id: <20201111170613.46057-1-tony@atomide.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 06:04:15AM +0000, Shinichiro Kawasaki wrote:
-> Greetings,
-> 
-> I observe "WARNING: can't access registers at asm_common_interrupt+0x1e/0x40"
-> in my kernel test system repeatedly, which is printed by unwind_next_frame() in
-> "arch/x86/kernel/unwind_orc.c". Syzbot already reported that [1]. Similar
-> warning was reported and discussed [2], but I suppose the cause is not yet
-> clarified.
-> 
-> The warning was observed with v5.10-rc2 and older tags. I bisected and found
-> that the commit 044d0d6de9f5 ("lockdep: Only trace IRQ edges") in v5.9-rc3
-> triggered the warning. Reverting that from 5.10-rc2, the warning disappeared.
-> May I ask comment by expertise on CC how this commit can relate to the warning?
-> 
-> The test condition to reproduce the warning is rather unique (blktests,
-> dm-linear and ZNS device emulation by QEMU). If any action is suggested for
-> further analysis, I'm willing to take it with my test system.
-> 
-> Wish this report helps.
-> 
-> [1] https://lkml.org/lkml/2020/9/6/231
-> [2] https://lkml.org/lkml/2020/9/8/1538
+With commit 3a6f0fb7b8eb ("regmap: irq: Add support to clear ack
+registers"), the cpcap interrupts are no longer getting acked properly
+leading to a very unresponsive device with CPUs fully loaded spinning
+in the threaded IRQ handlers.
 
-Shin'ichiro,
+To me it looks like the clear_ack commit above actually fixed a long
+standing bug in regmap_irq_thread() where we unconditionally acked the
+interrupts earlier without considering ack_invert. And the issue with
+cpcap started happening as we now also consider ack_invert.
 
-Thanks for all the data.  It looks like the ORC unwinder is getting
-confused by paravirt patching (with runtime-patched pushf/pop changing
-the stack layout).
+Tim Harvey <tharvey@gateworks.com> tried to fix this issue earlier with
+"[PATCH v2] regmap: irq: fix ack-invert", but the reading of the ack
+register was considered unnecessary for just ack_invert, and we did not
+have clear_ack available yet. As the cpcap irqs worked both with and
+without ack_invert earlier because of the unconditional ack, the
+problem remained hidden until now.
 
-<user interrupt>
-	exit_to_user_mode_prepare()
-		exit_to_user_mode_loop()
-			local_irq_disable_exit_to_user()
-				local_irq_disable()
-					raw_irqs_disabled()
-						arch_irqs_disabled()
-							arch_local_save_flags()
-								pushfq
-								<another interrupt>
+Also, looks like the earlier v3.0.8 based Motorola Android Linux kernel
+does clear_ack style read-clear-write with "ireg_val & ~mreg_val" instead
+of just ack_invert style write. So let's switch cpcap to use clear_ack
+to fix the issue.
 
-Objtool doesn't know about the pushf/pop paravirt patch, so ORC gets
-confused by the changed stack layout.
+Fixes: 3a6f0fb7b8eb ("regmap: irq: Add support to clear ack registers")
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Laxminath Kasam <lkasam@codeaurora.org>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/mfd/motorola-cpcap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I'm thinking we either need to teach objtool how to deal with
-save_fl/restore_fl patches, or we need to just get rid of those nasty
-patches somehow.  Peter, any thoughts?
-
-It looks like 044d0d6de9f5 ("lockdep: Only trace IRQ edges") is making
-the problem more likely, by adding the irqs_disabled() check for every
-local_irq_disable().
-
-Also - Peter, Nicholas - is that irqs_disabled() check really necessary
-in local_irq_disable()?  Presumably irqs would typically be be enabled
-before calling it?
-
+diff --git a/drivers/mfd/motorola-cpcap.c b/drivers/mfd/motorola-cpcap.c
+--- a/drivers/mfd/motorola-cpcap.c
++++ b/drivers/mfd/motorola-cpcap.c
+@@ -97,7 +97,7 @@ static struct regmap_irq_chip cpcap_irq_chip[CPCAP_NR_IRQ_CHIPS] = {
+ 		.ack_base = CPCAP_REG_MI1,
+ 		.mask_base = CPCAP_REG_MIM1,
+ 		.use_ack = true,
+-		.ack_invert = true,
++		.clear_ack = true,
+ 	},
+ 	{
+ 		.name = "cpcap-m2",
+@@ -106,7 +106,7 @@ static struct regmap_irq_chip cpcap_irq_chip[CPCAP_NR_IRQ_CHIPS] = {
+ 		.ack_base = CPCAP_REG_MI2,
+ 		.mask_base = CPCAP_REG_MIM2,
+ 		.use_ack = true,
+-		.ack_invert = true,
++		.clear_ack = true,
+ 	},
+ 	{
+ 		.name = "cpcap1-4",
+@@ -115,7 +115,7 @@ static struct regmap_irq_chip cpcap_irq_chip[CPCAP_NR_IRQ_CHIPS] = {
+ 		.ack_base = CPCAP_REG_INT1,
+ 		.mask_base = CPCAP_REG_INTM1,
+ 		.use_ack = true,
+-		.ack_invert = true,
++		.clear_ack = true,
+ 	},
+ };
+ 
 -- 
-Josh
-
+2.29.2
