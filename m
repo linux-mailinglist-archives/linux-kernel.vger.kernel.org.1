@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AF82AF963
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC562AF967
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgKKUAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:00:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
+        id S1727828AbgKKUAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgKKUAQ (ORCPT
+        with ESMTP id S1727813AbgKKUAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:00:16 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E96C0613D1;
-        Wed, 11 Nov 2020 12:00:15 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id r17so3756206wrw.1;
-        Wed, 11 Nov 2020 12:00:15 -0800 (PST)
+        Wed, 11 Nov 2020 15:00:49 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61030C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:00:49 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id z3so2276974pfb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:00:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tJE+qKAXrMttXhdl27BZUutECGtRZIEzEE5j9CDRQ7Y=;
-        b=Qk/DKr7m29Bg2Gv+sFToYs5yx7tZoImTYHpJr4UU0a8ULkXna2TGFXkO4eQ6gOHT6w
-         rKzGFPtqZi3PIij6Btu8MSzkfYpi1St+1OuY+rTbhnLv/fCVRkUg224ZlGv1X/P+qGEL
-         sXEuPuBAocYmAA+9n311FZq3xoDPpaonp9HOYmDj0B5uebpTzrvr5nQDOTBVOxHuAta4
-         Bua9alw7Ap5emTBoDktkss9wJ4VBsqJx/CZKEusLphtu1xW3WFr50YL7bW8zOOae5GPP
-         AcaCLgf6eaMnJ9mA9HyP/LDpyu3NnnbsDiIw3qggY2gz+N3X1RJtYsqoftNtFxxKACm7
-         tMLA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FUj5Ux6T0pAvZX6aMMGDC3TkMnjTVY1hpdEEFVZyifc=;
+        b=u6lI2X8lX1/O15vgA1f7CK1H9a9YEcN+4UrDGICzNhQevAW7YiUdk9ZtClLxZ/fqzD
+         4ygBaK6iPZ69ujXTrxDYGXozxaVMAWBjiX+PDclhR1b6k2cEl5HeQTeT5fuI/aQPws3S
+         K0lGtFYGItBfxecSZk1TKRH49FHut34zzwrjb7myLQ64Z+/vSXx96dPi65y+X/y7W/vl
+         tcxxISeKHvlPkZpoPIQAKgsmIU3Y8Rga8jS9x6jwj2hHdLGxQx2CCcGzpofIKH7NEVeq
+         pamBM3liI3N47uoT9EmPfwh5BPHYfd6C2iYE1w1U2p9aAyCeqmdYn/yr++3zYUHqc3He
+         kFlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tJE+qKAXrMttXhdl27BZUutECGtRZIEzEE5j9CDRQ7Y=;
-        b=P/u+xVYDIfE1pQLQqkem/zXri3p5G0KbwPFgAZJWTeeAKY6Q2Np0H7wmc1+C7Zx5jU
-         fe0pWMaGhlmI5/Qbvb+q6gJKx2lecoK20xNEcxCG/6SS4VX49zcsrB1TvyvdAYJWlrcn
-         38CfWw1l1RqHBqVTTWjdJ/ZLiNo+sqRQZ5Dz5I5tf5XIm4qRbK5F8lmVl1T+X6mW1Ftk
-         U/6Jy1TFGMa/9FHPzdgfwbnprboYpolL2pMBezVp7083Fr/o8SyvoFdoruu8tYV0+kGM
-         p1Hkinp34x8hhngsnU1HiUhnjeDTUIFY25sL062U77IRLbL3ycrXQg7E+1uJWdldMuFi
-         ynrw==
-X-Gm-Message-State: AOAM530cFjkm9MZpWWucSY81Mlqy8fVSmqsJuH4bYOk1Ix4ol41XuQ8K
-        9SKGSthCRNT9PBqw0PY7K/o=
-X-Google-Smtp-Source: ABdhPJyhyZ65LpejTI2ODC9N+g6AecxU/6GGwQTPtERROMfdJm5/9Ns+0NJ3Y8AOaR+jQR7GoFOcrw==
-X-Received: by 2002:a5d:4046:: with SMTP id w6mr26262375wrp.51.1605124814454;
-        Wed, 11 Nov 2020 12:00:14 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id q2sm3807260wru.76.2020.11.11.12.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 12:00:13 -0800 (PST)
-Date:   Wed, 11 Nov 2020 21:00:12 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: tiehrpwm: handle deferred probe with dev_err_probe()
-Message-ID: <20201111200012.GH6125@ulmo>
-References: <20201030201254.24557-1-grygorii.strashko@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FUj5Ux6T0pAvZX6aMMGDC3TkMnjTVY1hpdEEFVZyifc=;
+        b=njCfFcZwDgrJGLT0EL6lAyT2IY6gyn989Th+Wc8H1cHy2wSb9PxKm8bFarVGw97k9Y
+         +sOYUO8fJ4D4S0AuBqTKs622PEKh9vfu8z/sFxIUMEMHm9GdBfKu/NK4AqySIP74KCda
+         xVIkM5nDXrs95J6ryoLlOFwBlJef5FvoViDEbfhtdaKyqP3zXW2n3SmnIxA73D2iVvFG
+         5Ld8ugadB4iXaRvPPMQ96XesZxw0XNWp5qXC3+Zgf3vWCBuFF7oVBam9KO0L/hquRvxp
+         yF15ZS/a9MvALwWyYC2HgQ0cJLYuqveqE3TRXJppPDVGvFiMu+mEj6hvhRcVnjbifWAU
+         D1jg==
+X-Gm-Message-State: AOAM532j9s1kChPuoHi00UU2aAXAD6uJrIPeDtvPHCTYN31ddDEbQxjt
+        r2qRdyIm+JcmmrUXyBv+3BNsMgws5vsWsbmrMskw5g==
+X-Google-Smtp-Source: ABdhPJwkUcYBtbuvz0wA+LPzuXGAy0FVPrRT5hucnF0lm1Je0RMJAtXomFgUQEXCakldEHfeFwvTAEmtCuGpTw9Jwwk=
+X-Received: by 2002:a65:4b81:: with SMTP id t1mr24128814pgq.263.1605124848749;
+ Wed, 11 Nov 2020 12:00:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0OWHXb1mYLuhj1Ox"
-Content-Disposition: inline
-In-Reply-To: <20201030201254.24557-1-grygorii.strashko@ti.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20201026215236.3894200-1-arnd@kernel.org>
+In-Reply-To: <20201026215236.3894200-1-arnd@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 11 Nov 2020 12:00:37 -0800
+Message-ID: <CAKwvOdnHWYXieOPbOWzXxC_5vLdQdW4FsLZyiMmtzfj6JH4UWA@mail.gmail.com>
+Subject: Re: [PATCH] tomoyo: fix clang pointer arithmetic warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Toshiharu Harada <haradats@nttdata.co.jp>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-security-module@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 2:52 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang warns about additions on NULL pointers being undefined in C:
+>
+> security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
+>         securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
+>
+> Change the code to instead use a cast through uintptr_t to avoid
+> the warning.
+>
+> Fixes: 9590837b89aa ("Common functions for TOMOYO Linux.")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
---0OWHXb1mYLuhj1Ox
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the patch.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-On Fri, Oct 30, 2020 at 10:12:54PM +0200, Grygorii Strashko wrote:
-> The devm_clk_get() may return -EPROBE_DEFER which is not handled properly
-> by TI EHRPWM driver and causes unnecessary boot log messages.
->=20
-> Hence, add proper deferred probe handling with new dev_err_probe() API.
->=20
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 > ---
->  drivers/pwm/pwm-tiehrpwm.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+>  security/tomoyo/securityfs_if.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
+> index 546281c5b233..0a5f00073ef1 100644
+> --- a/security/tomoyo/securityfs_if.c
+> +++ b/security/tomoyo/securityfs_if.c
+> @@ -223,7 +223,7 @@ static const struct file_operations tomoyo_operations = {
+>  static void __init tomoyo_create_entry(const char *name, const umode_t mode,
+>                                        struct dentry *parent, const u8 key)
+>  {
+> -       securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
+> +       securityfs_create_file(name, mode, parent, (u8 *)(uintptr_t)key,
+>                                &tomoyo_operations);
+>  }
+>
+> --
+> 2.27.0
+>
 
-Applied, thanks.
 
-Thierry
-
---0OWHXb1mYLuhj1Ox
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sQssACgkQ3SOs138+
-s6Es6hAAkcm4s47CNuSVr+gkrq3JUtXW9SOOMmSVlAyLrAEp2SG2fBeBFwT1JNSN
-cmXw0aAA5dma9CW1DM+50Ay1BksqQqH5mqfSU5zrjF9+nBVBNtvE2KLFq1HbYZHC
-ElZDwW3u5SDComUnGiMhtHaKIGDv+EE9pHAqbYYa5YqECzKGlASXeqMDu7IIcn0f
-jUy1530GQHYbHlFtMn0P28Oj9oJfZMXJlhSwylTXHd9XORH6CugSINF4miJy+IU5
-dDb11/mIlwBHI7HqULJMHKMnVi2hIWuDTd6muz5pVqjzzTHneKEBJ8bmp8R8qmU1
-U/G1ZS+027S2EL/axLIQYkP5cIod/UatR4MN5xGznAUqIuEmWJAiSOAfOc+bTDwQ
-lAdv0gPisgbDtHlNmKM/UxFueLw027taaN4ADkH7e4h6XxYjRsI+z+U0Tav8Nxnw
-LTmL1LNSGf199fhMvl3WeIrp25qOI3JxBab47SNM+2XKJs/tWQRVonzFtB0BNfuV
-kwGIxz6PJVgfymiIFXcmCiPs7DeGG1g2QW991EGdVTwHC+Yg6Q5juhFX9y36NaOk
-YyxdA/Qyg1l3MHNjpctbUS6slTPQZUEdIQ5ldwNeNtZhpNApOg0IizsEi1dUs9QP
-knPdOHGg9HGrjzl6KBjav40pWEFqehv7bHp/bBSaESbw2P4mR6Y=
-=f2rv
------END PGP SIGNATURE-----
-
---0OWHXb1mYLuhj1Ox--
+-- 
+Thanks,
+~Nick Desaulniers
