@@ -2,118 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B90E2AEEE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1AD2AEEEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725925AbgKKKmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:42:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:46782 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725860AbgKKKmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:42:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34F7C101E;
-        Wed, 11 Nov 2020 02:42:01 -0800 (PST)
-Received: from bogus (unknown [10.57.15.107])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4AEB33F6CF;
-        Wed, 11 Nov 2020 02:42:00 -0800 (PST)
-Date:   Wed, 11 Nov 2020 10:41:57 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] firmware: arm_scmi: Augment SMC/HVC to allow
- optional interrupt
-Message-ID: <20201111104157.wpll6en4qvlhb2ws@bogus>
-References: <20201110183827.19731-1-james.quinlan@broadcom.com>
- <20201110183827.19731-2-james.quinlan@broadcom.com>
+        id S1725995AbgKKKoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgKKKoo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:44:44 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97466C0613D1;
+        Wed, 11 Nov 2020 02:44:44 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c9so1786116wml.5;
+        Wed, 11 Nov 2020 02:44:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f3P67JjlLnFevaFsrc9hwaRhUH2HHQjCFT4cPJRYrZg=;
+        b=JyquzZeRkjrEWkFRV5BUID/Ivs0H2/UHmS1YZqOLIVVj42Km2YhEH80guMMxyPPeqY
+         dZeumzqWgTGGOf3Gg2xrPkb5Ew40eStmjWaznHVBoco2c8kHphV9JM4Ynvp0Mhg/1FZM
+         lfF69ehej9pB7Mz6hVJ1D4ib2xT0JVwdJFHjNBH8s70bKeY+5LSErEM+uilFvA7+pabp
+         Z2tp/Rgm3bTifAQpOvlKAjFXfWRcvZnfB6j4PNcwDnMf4PbfnwKznCQVeSK4mbTieoKx
+         yhs4Qrf3pXCYXAnouuQeBd8rs/dzNMIE7dcBIzrJ4dALc2q53dBdclHULu9AysAE7NRw
+         Fofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f3P67JjlLnFevaFsrc9hwaRhUH2HHQjCFT4cPJRYrZg=;
+        b=oD2Ci9ORjrSdFch/mnuGwyyHTc+Gh1ltwjf5FeSVPGjWhqdFCh4cKOvSdz8Zrn2W3M
+         lbRqE7TsEjpqAU81VrD0Q3pcupkuu5xZGJ046xPB/OquiOX1n1uBwhQh01Da/jTKWlPB
+         UG45Fn5FKg/UECWkgIEF1i0oNCjMajF4+QqJ+Uwmw1t61e7k9FGa6FOvO+5gdyxno1cL
+         3HvdjGHpkkLRAUT22wDc0EKTZrGgYC4+WqtWK9/RcbNnyrWx93PprJB3fix9m5wGMm3U
+         /gbLkFwm810VAjoIBi181JFrLKBsJ40zu3DVW2eMm7QbYy1EUaND1c7fuZUY4ux/UDQQ
+         A2nQ==
+X-Gm-Message-State: AOAM530jZ5ZhBWIIqGiB4adS2IG6AGY9Vx4hzxlxNG9lfZSVnZyK2pnt
+        o6AstDHoe575gMBiqunBWMUDWd5eBcU=
+X-Google-Smtp-Source: ABdhPJxWSPRJv9ciEV/NVUNRQHcY5T//lr+Bq78/sIzzI7rVbje/wWGNSIiEPpqqbZSNTIdaW71f6w==
+X-Received: by 2002:a1c:46c5:: with SMTP id t188mr3437075wma.68.1605091483382;
+        Wed, 11 Nov 2020 02:44:43 -0800 (PST)
+Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id u195sm2111549wmu.18.2020.11.11.02.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 02:44:42 -0800 (PST)
+From:   Aleksandr Nogikh <a.nogikh@gmail.com>
+To:     jmorris@namei.org, serge@hallyn.com, akinobu.mita@gmail.com
+Cc:     andreyknvl@google.com, dvyukov@google.com, elver@google.com,
+        glider@google.com, keescook@google.com, casey@schaufler-ca.com,
+        penguin-kernel@i-love.sakura.ne.jp, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mortonm@chromium.org,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: [PATCH v4 0/2] security: add fault injection to LSM hooks
+Date:   Wed, 11 Nov 2020 10:44:07 +0000
+Message-Id: <20201111104409.1530957-1-a.nogikh@gmail.com>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110183827.19731-2-james.quinlan@broadcom.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 01:38:19PM -0500, Jim Quinlan wrote:
-> The SMC/HVC SCMI transport is modified to allow the completion of an SCMI
-> message to be indicated by an interrupt rather than the return of the smc
-> call.  This accommodates the existing behavior of the BrcmSTB SCMI
-> "platform" whose SW is already out in the field and cannot be changed.
->
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
->  drivers/firmware/arm_scmi/smc.c | 31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->
-> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> index 82a82a5dc86a..3bf935dbd00e 100644
-> --- a/drivers/firmware/arm_scmi/smc.c
-> +++ b/drivers/firmware/arm_scmi/smc.c
-> @@ -9,9 +9,11 @@
->  #include <linux/arm-smccc.h>
->  #include <linux/device.h>
->  #include <linux/err.h>
-> +#include <linux/interrupt.h>
->  #include <linux/mutex.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_irq.h>
->  #include <linux/slab.h>
->
->  #include "common.h"
-> @@ -23,6 +25,8 @@
->   * @shmem: Transmit/Receive shared memory area
->   * @shmem_lock: Lock to protect access to Tx/Rx shared memory area
->   * @func_id: smc/hvc call function id
-> + * @irq: Optional; employed when platforms indicates msg completion by intr.
-> + * @tx_complete: Optional, employed only when irq is valid.
->   */
->
->  struct scmi_smc {
-> @@ -30,8 +34,19 @@ struct scmi_smc {
->  	struct scmi_shared_mem __iomem *shmem;
->  	struct mutex shmem_lock;
->  	u32 func_id;
-> +	int irq;
-> +	struct completion tx_complete;
->  };
->
-> +static irqreturn_t smc_msg_done_isr(int irq, void *data)
-> +{
-> +	struct scmi_smc *scmi_info = data;
-> +
-> +	complete(&scmi_info->tx_complete);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static bool smc_chan_available(struct device *dev, int idx)
->  {
->  	struct device_node *np = of_parse_phandle(dev->of_node, "shmem", 0);
-> @@ -79,6 +94,20 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  	if (ret < 0)
->  		return ret;
->
-> +	/* Optional feature -- signal message completion using an interrupt */
-> +	ret = of_irq_get_byname(cdev->of_node, "msg-serviced");
+From: Aleksandr Nogikh <nogikh@google.com>
 
-So, looks like it is mandatory if "interrupts" is used. Please update the
-binding or if that is not the practice followed elsewhere, drop search by
-name. Also I prefer full name "message-serviced" if possible, not strong
-opinion.
+Fault injection capabilities[Documentation/fault-injection/fault-injection.rst]
+facilitate testing of the stability of the Linux kernel by providing
+means to force a number of kernel interfaces to return error
+codes. This patch series proposes adding such fault injection
+capability into LSM hooks.
 
-> +	if (ret > 0) {
-> +		scmi_info->irq = ret;
+The intent is to make it possible to test whether the existing kernel
+code properly handles negative return values of LSM hooks. Syzbot
+[https://github.com/google/syzkaller/blob/master/docs/syzbot.md] will
+automatically do that with the aid of instrumentation tools once these
+changes are merged.
 
-May be set this only if we succeed setting up handler ? I mean move this
-down.
+Local fuzzing of a Linux kernel with this patch has almost instantly
+led to two crashes. I'm not sure whether they correspond to actual
+issues as this LSM fault injection implementation (and the concept
+itself) can be wrong. Here they are:
 
-Other than these, the changes look fine.
+1. "general protection fault in selinux_inode_free_security". This is
+caused by executing security_inode_free() when a fault was injected to
+inode_alloc_security() and therefore selinux_inode_alloc_security()
+was not executed. In this case, the subsequent inode_free_security()
+call executes list_del_init() on an uninitialized list. Theoretically,
+this may happen if some other LSM precedes selinux in the hooks list
+and its inode_alloc_security hook fails.
 
---
-Regards,
-Sudeep
+A fault was injected to this call_int_hook():
+https://elixir.bootlin.com/linux/v5.9/source/security/security.c#L975
+
+Below you can find a call trace for the subsequent crash.
+__list_del_entry include/linux/list.h:132 [inline]
+list_del_init include/linux/list.h:204 [inline]
+inode_free_security security/selinux/hooks.c:337 [inline]
+selinux_inode_free_security+0xf0/0x290 security/selinux/hooks.c:2839
+security_inode_free+0x46/0xc0 security/security.c:1042
+security_inode_alloc+0x161/0x1a0 security/security.c:1027
+inode_init_always+0x5a7/0xd10 fs/inode.c:171
+alloc_inode+0x82/0x230 fs/inode.c:239
+new_inode_pseudo+0x14/0xe0 fs/inode.c:928
+sock_alloc+0x3c/0x260 net/socket.c:573
+__sock_create+0xb9/0x780 net/socket.c:1391
+sock_create net/socket.c:1478 [inline]
+__sys_socket+0xef/0x200 net/socket.c:1520
+__do_sys_socket net/socket.c:1529 [inline]
+__se_sys_socket net/socket.c:1527 [inline]
+__x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+2. BUG_ON inside security_skb_classify_flow(). Why is it needed there?
+https://elixir.bootlin.com/linux/v5.9/source/security/security.c#L2426
+
+---
+v4:
+* Changed retval debugfs file type - now it stores a signed integer.
+* Made CONFIG_FAIL_LSM_HOOKS depend on CONFIG_SECURITY.
+
+v3:
+https://lkml.kernel.org/r/20201029183526.2131776-1-aleksandrnogikh@gmail.com
+* Submitting this series without an "RFC" tag.
+* Updated the cover letter.
+
+v2:
+https://lkml.kernel.org/r/20201026125227.54520-1-a.nogikh@gmail.com
+* Renamed should_fail_lsm_hook() to lsm_hooks_inject_fail().
+* Extended the documentation.
+
+v1:
+https://lkml.kernel.org/r/20201015104649.2104432-1-a.nogikh@gmail.com
+
+
+Aleksandr Nogikh (2):
+  security: add fault injection capability
+  docs: add fail_lsm_hooks info to fault-injection.rst
+
+ .../fault-injection/fault-injection.rst       |  6 ++
+ lib/Kconfig.debug                             |  6 ++
+ security/security.c                           | 69 ++++++++++++++++++-
+ 3 files changed, 78 insertions(+), 3 deletions(-)
+
+
+base-commit: 3e14f70c05cda4794901ed8f976de3a88deebcc0
+-- 
+2.29.2.222.g5d2a92d10f8-goog
+
