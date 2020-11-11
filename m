@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8882AF61A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5382AF61E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgKKQUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:20:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:57468 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbgKKQUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:20:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84580101E;
-        Wed, 11 Nov 2020 08:20:41 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12FBA3F6CF;
-        Wed, 11 Nov 2020 08:20:38 -0800 (PST)
-Subject: Re: [PATCH v8 00/22] perf arm-spe: Refactor decoding & dumping flow
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20201111071149.815-1-leo.yan@linaro.org>
- <20201111161051.GH355344@kernel.org> <20201111161535.GI355344@kernel.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <c22d9fa3-51bb-d86f-2a03-390c6844256a@arm.com>
-Date:   Wed, 11 Nov 2020 16:20:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726915AbgKKQVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:21:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgKKQU7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:20:59 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7ECC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:20:59 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id s8so3059738wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:20:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=h04pzBWTT3/7lLb3bXzNbuLnpXPPVyksc65veB41bHc=;
+        b=OU4m2N6jkD06QsJEXoNnGq0wTIDtVx0xAr8Tn48tUcHrNQ6oZMQaIXgV0aTQyhQ/s/
+         hcx4mzotI1Ij0H53R2Kl0kdmmhSObzVIgQXnbSrByJEBQoWiRtFNrvhX8Zw/FvEcyGLh
+         0O6nYFqBiJtIeVc+jpxx/qWGlAjdDIgvXUDMoEQiu0SItxmPIkmVO/eFAbEEiZLwbQ4b
+         JNnDO3Zm80rL9yOcl6JmyZ1iGaex18g0qBLsIbXw3fk8HVFjyNJ/lihVXuf4j8+1Eq8I
+         jiVMONhB80oBkc6GeNwWahRtHmooRA420R2IvNWUfErKxiCtR0q+qefshibDanhm6G38
+         yH+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=h04pzBWTT3/7lLb3bXzNbuLnpXPPVyksc65veB41bHc=;
+        b=ftUACVgCwbQ85rWSTCWq6sWZbEKjrJOSHweRj26mtrtlxBodYRhqzw0ISDCq3hf0uk
+         nZR4+870j/qg0e3Co/UdBxDVq0pxKYmCxj5u6F7pkvCN/Kt88detaXFrzWZJo/CUMJXp
+         mSYVJtqkqPRDYRThnkI7UJuNNvpohHChyWI2khduQo9HLv/LcOqkVVhP2WM3nIvfD0b/
+         Dwa9NYKkt66jqSm9h6OFHyUisT5NxrO/VenYWy6lkJeTPqM22+exiKya9G+I8XceDIWp
+         mR8EYZFgp0rSedLmRnZVBQc1L/7vn6LAoAe4RgiB79YcpY6fazCV+ra/qhIAOybsIS+4
+         arnA==
+X-Gm-Message-State: AOAM5320qSr0dG96k+vlpSbNsfTlNWNN7zEt2KeIU9U5O8tM3f0JIqYa
+        tU+AYGgW0AT4v+SfWjHeOnl6nA==
+X-Google-Smtp-Source: ABdhPJxxlFWci8j3QfAeiJZTWzJ9B8pX9QXgXgNEi+Jmxe1zXm9nOMW05oMxWDt7zaDOuJjiX9bynA==
+X-Received: by 2002:a05:6000:364:: with SMTP id f4mr3136596wrf.290.1605111658027;
+        Wed, 11 Nov 2020 08:20:58 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id e5sm1926733wrs.84.2020.11.11.08.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 08:20:57 -0800 (PST)
+Date:   Wed, 11 Nov 2020 17:20:51 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/20] kasan: allow VMAP_STACK for HW_TAGS mode
+Message-ID: <20201111162051.GG517454@elver.google.com>
+References: <cover.1605046662.git.andreyknvl@google.com>
+ <3443e106c40799e5dc3981dec2011379f3cbbb0c.1605046662.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111161535.GI355344@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3443e106c40799e5dc3981dec2011379f3cbbb0c.1605046662.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2020 16:15, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Nov 11, 2020 at 01:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
->> Em Wed, Nov 11, 2020 at 03:11:27PM +0800, Leo Yan escreveu:
->>> This is patch set v8 for refactoring Arm SPE trace decoding and dumping.
->>>
->>> This version addresses Andre's comment to pass parameter '&buf_len' at
->>> the last call arm_spe_pkt_snprintf() in the function arm_spe_pkt_desc().
->>>
->>> This patch set is cleanly applied on the top of perf/core branch
->>> with commit 644bf4b0f7ac ("perf jevents: Add test for arch std events").
->>>
->>> I retested this patch set on Hisilicon D06 platform with commands
->>> "perf report -D" and "perf script", compared the decoding results
->>> between with this patch set and without this patch set, "diff" tool
->>> shows the result as expected.
->>
->> With the patches I applied I'm getting:
->>
->> util/arm-spe-decoder/arm-spe-pkt-decoder.c: In function 'arm_spe_pkt_desc':
->> util/arm-spe-decoder/arm-spe-pkt-decoder.c:410:3: error: left shift count >= width of type [-Werror]
->>    case 1: ns = !!(packet->payload & NS_FLAG);
->>    ^
->> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
->>     el = (packet->payload & EL_FLAG) >> 61;
->>     ^
->> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
->> util/arm-spe-decoder/arm-spe-pkt-decoder.c:416:3: error: left shift count >= width of type [-Werror]
->>    case 3: ns = !!(packet->payload & NS_FLAG);
->>    ^
->>   CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-decoder.o
->>  
->>
->> On:
->>
->>   16    11.70 android-ndk:r12b-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
->>   17    11.32 android-ndk:r15c-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
->>
->> That were building ok before, builds still under way, perhaps its just
->> on these old systems...
+On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> Even though hardware tag-based mode currently doesn't support checking
+> vmalloc allocations, it doesn't use shadow memory and works with
+> VMAP_STACK as is. Change VMAP_STACK definition accordingly.
 > 
-> [acme@five perf]$ git bisect good
-> cc6fa07fb1458cca3741919774eb050976471000 is the first bad commit
-> commit cc6fa07fb1458cca3741919774eb050976471000
-> Author: Leo Yan <leo.yan@linaro.org>
-> Date:   Wed Nov 11 15:11:28 2020 +0800
-> 
->     perf arm-spe: Include bitops.h for BIT() macro
-> 
->     Include header linux/bitops.h, directly use its BIT() macro and remove
->     the self defined macros.
-> 
->     Signed-off-by: Leo Yan <leo.yan@linaro.org>
->     Reviewed-by: Andre Przywara <andre.przywara@arm.com>
->     Link: https://lore.kernel.org/r/20201111071149.815-2-leo.yan@linaro.org
->     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
->  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c     | 5 +----
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 3 +--
->  2 files changed, 2 insertions(+), 6 deletions(-)
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/I3552cbc12321dec82cd7372676e9372a2eb452ac
+> ---
 
+Shouldn't this be in the other series?
 
-Ah, thanks! I think I mentioned the missing usage of BIT_ULL() in an
-earlier review, and thought this was fixed. Possibly this gets fixed in
-a later patch in this series, and is a temporary regression?
+FWIW,
 
-How do you want to handle this? Shall Leo resend, amending this patch
-(and merging 06 and 07 on the way ;-)?
+Reviewed-by: Marco Elver <elver@google.com>
 
-Cheers,
-Andre
+>  arch/Kconfig | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 56b6ccc0e32d..7e7d14fae568 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -914,16 +914,16 @@ config VMAP_STACK
+>  	default y
+>  	bool "Use a virtually-mapped stack"
+>  	depends on HAVE_ARCH_VMAP_STACK
+> -	depends on !KASAN || KASAN_VMALLOC
+> +	depends on !KASAN || KASAN_HW_TAGS || KASAN_VMALLOC
+>  	help
+>  	  Enable this if you want the use virtually-mapped kernel stacks
+>  	  with guard pages.  This causes kernel stack overflows to be
+>  	  caught immediately rather than causing difficult-to-diagnose
+>  	  corruption.
+>  
+> -	  To use this with KASAN, the architecture must support backing
+> -	  virtual mappings with real shadow memory, and KASAN_VMALLOC must
+> -	  be enabled.
+> +	  To use this with software KASAN modes, the architecture must support
+> +	  backing virtual mappings with real shadow memory, and KASAN_VMALLOC
+> +	  must be enabled.
+>  
+>  config ARCH_OPTIONAL_KERNEL_RWX
+>  	def_bool n
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
+> 
