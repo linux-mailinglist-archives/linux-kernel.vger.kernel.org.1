@@ -2,506 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2D32AF810
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FED2AF825
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgKKSff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:35:35 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5438 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727622AbgKKSfY (ORCPT
+        id S1727695AbgKKSfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727292AbgKKSfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:35:24 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fac2ee70000>; Wed, 11 Nov 2020 10:35:19 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
- 2020 18:35:24 +0000
-Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 11 Nov 2020 18:35:21 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v5 6/6] arm64: tegra: Audio graph sound card for Jetson Nano and TX1
-Date:   Thu, 12 Nov 2020 00:04:36 +0530
-Message-ID: <1605119676-32273-7-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
-References: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
+        Wed, 11 Nov 2020 13:35:50 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBD2C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:35:49 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c16so3255169wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M8WfWuBVHXpKLzkSsKEOW6BSD/IfhCkoHkgxrNpz2cI=;
+        b=KgAnGRoSC1GGHgGKylBif9BORNSvke76zr6Ku+V2dpq5zX/ppUCMXa6BZ50PLao2Su
+         wgMZIci54WmiIRlv8BP3RviUmpLeGnDrlWpT6nIPxFotxzTAPnKotPe48UujpPlgD+j1
+         y1GFe4cT54dk/av5cvpir2oc4RKEJtEREIwDqO8uIAsrZA6vLqrSIwrugO7Kdxktf/1n
+         APlL9KK3h7FFRXMHlz+ivY3DTvNGku3VsEE63RyF5f30IzuZl+NKcYSA4FkgXUhQm8Pl
+         CSyACifcZE6IrPwhFTqwNJUSD2NAOtiS+lrdG37fTlJOeWaAa6tQWymx0POpAzKY9VAR
+         fXpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M8WfWuBVHXpKLzkSsKEOW6BSD/IfhCkoHkgxrNpz2cI=;
+        b=sIa3UR1UuN74HhQR6RSZQ3sX5+N8/eDCv3dqVxmNihfbRZXgd+twiOn22fOdqNhUsd
+         CSEDPEzhlkXSbkJqUY65JLoBksCL2x3CIY3p9jYPSZ8YH+pnoPecE0fqpke1T2syNv47
+         Zbw50Yc4hAv1vU6bflFCNld2fMTVhq7G2dS6QL1vfz4Th/Tv5Gy/J39d/i4sF3EcNYHe
+         lTqKicNDmPFkMzqw6SAq8pfOZLkMnvHV+dQ68IU6tQZY2z8GBAXI2Et2LpBSUXBa9CEk
+         TciUp0pyTmlqQER4YQaHwNlUjF9GMzTyHUMU9lq1xR0KKTrxJr2yVf2WQSqd8n13RpYa
+         DlSA==
+X-Gm-Message-State: AOAM530xOgnJxGf7q+BKS6yl7XH28uLpzxLAHiJtwsuDcyp6Oss4ToIL
+        1fiOCI/Uijh19kqrhET35kUGvg==
+X-Google-Smtp-Source: ABdhPJwzCQY8CRZfDnAapb8rqhTNiyryIG+qh+R7rglcXlJeolDgqhoxLc5LLh/U2O6/sDSnl1BcJQ==
+X-Received: by 2002:a7b:cd92:: with SMTP id y18mr5624982wmj.178.1605119748648;
+        Wed, 11 Nov 2020 10:35:48 -0800 (PST)
+Received: from dell.default ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.35.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 10:35:47 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org,
+        Slava Grigorev <slava.grigorev@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: [PATCH 00/19] [Set 5] Rid W=1 warnings from GPU
+Date:   Wed, 11 Nov 2020 18:35:26 +0000
+Message-Id: <20201111183545.1756994-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605119719; bh=zgnKJF1VjTOw8+8MA5BXzpvmueNYvLnvIUw8iNhEnkY=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=YESGiiWmhkwGbgPKqJ68byGgZSu460J/PGmmg5TF0MqSbln3y6MV7lYZvQBtvbGrv
-         t1E0IQFr6x9F0vellPjssIxtXNveIE8/QsbyiLPv4AwX/8dMTZT1qeKiPyrRjKcO+e
-         D4OxMQ2VWH8URyQYE4tdq2e7YD2bwFhFOnNJEaE5mr4Ui4+45HbZS/FVxPEnt/8Z4d
-         Gyci0mHZKCo1f4/AaGTDHmNtAE299+q6q/yB2MAsNIrF44OlLI0Jt3ZSAj2FUHm+nW
-         CLrN8vHWApgrVc7Bbrs+L7dPhwtZBoNMN/7CquSz3cBBkmSJEU5k+kcUjojNrXQbB/
-         okOcNB4lf5ovg==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for audio-graph based sound card on Jetson-Nano and
-Jetson-TX1. Depending on the platform, required I/O interfaces are
-enabled.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
- * Jetson-Nano: Enable I2S3, I2S4, DMIC1 and DMIC2.
- * Jetson-TX1: Enable all I2S and DMIC interfaces.
+This finishes cleaning up Radeon.  AMD next!
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 262 +++++++++++++++++++++
- arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 146 ++++++++++++
- 2 files changed, 408 insertions(+)
+Lee Jones (19):
+  drm/radeon/evergreen_dma: Move 'evergreen_gpu_check_soft_reset()'s
+    prototype to shared header
+  drm/radeon/r600: Move 'evergreen_rlc_resume()'s prototype to shared
+    header
+  drm/radeon/ni_dma: Move 'cayman_gpu_check_soft_reset()'s prototype to
+    shared header
+  drm/radeon/radeon_atombios: Move 'radeon_add_atom_encoder()'s
+    prototype to shared header
+  drm/radeon/radeon_encoders: Move 'radeon_atom_backlight_init's
+    prototype to shared header
+  drm/radeon/ci_dpm: Move 'ci_*()'s prototypes to shared header
+  drm/radeon/si_dpm: Move 'si_mc_load_microcode()'s prototype to shared
+    header
+  drm/radeon/si_dma: Move 'si_gpu_check_soft_reset()'s prototype to
+    shared header
+  drm/radeon/cik: Move 'si_*()'s prototypes to shared header
+  drm/radeon/btc_dpm: Move 'evergreen_get_pi's prototype to shared
+    header
+  drm/radeon/radeon_audio: Move 'dce6_*()'s prototypes to shared header
+  drm/radeon/evergreen: Move 'si_get_csb_*()'s prototypes to shared
+    header
+  drm/radeon/cik_sdma: Move 'amdgpu_cik_gpu_check_soft_reset()'s
+    prototype to shared header
+  drm/radeon/evergreen: Move 'cik_*()'s prototypes to shared header
+  drm/radeon/ci_dpm: Move 'si_*()'s prototypes to shared header
+  drm/radeon/cik: Move 'Move 'cik_sdma_*()'s prototypes to shared header
+  drm/radeon/si_dpm: Move 'vce_v1_0_enable_mgcg()'s prototype to shared
+    header
+  drm/radeon/cik: Move 'vce_v2_0_enable_mgcg()'s prototype to shared
+    header
+  drm/radeon/evergreen_cs: Move 'r600_dma_cs_next_reloc()'s prototype to
+    shared header
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-index 69102dc..747ab93 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-@@ -3,6 +3,7 @@
- 
- #include "tegra210-p2180.dtsi"
- #include "tegra210-p2597.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson TX1 Developer Kit";
-@@ -127,4 +128,265 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s1_port>, <&xbar_i2s2_port>, <&xbar_i2s3_port>,
-+		       <&xbar_i2s4_port>, <&xbar_i2s5_port>, <&xbar_dmic1_port>,
-+		       <&xbar_dmic2_port>, <&xbar_dmic3_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s1_port>, <&i2s2_port>, <&i2s3_port>, <&i2s4_port>,
-+		       <&i2s5_port>, <&dmic1_port>, <&dmic2_port>, <&dmic3_port>;
-+
-+		label = "jetson-tx1-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s1_port: port@a {
-+			reg = <0xa>;
-+			xbar_i2s1_ep: endpoint {
-+				remote-endpoint = <&i2s1_cif_ep>;
-+			};
-+		};
-+		xbar_i2s2_port: port@b {
-+			reg = <0xb>;
-+			xbar_i2s2_ep: endpoint {
-+				remote-endpoint = <&i2s2_cif_ep>;
-+			};
-+		};
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_i2s5_port: port@e {
-+			reg = <0xe>;
-+			xbar_i2s5_ep: endpoint {
-+				remote-endpoint = <&i2s5_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+		xbar_dmic3_port: port@11 {
-+			reg = <0x11>;
-+			xbar_dmic3_ep: endpoint {
-+				remote-endpoint = <&dmic3_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s1_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s1_ep>;
-+			};
-+		};
-+		i2s1_port: port@1 {
-+			reg = <1>;
-+			i2s1_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s2_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s2_ep>;
-+			};
-+		};
-+		i2s2_port: port@1 {
-+			reg = <1>;
-+			i2s2_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s3_ep>;
-+			};
-+		};
-+		i2s3_port: port@1 {
-+			reg = <1>;
-+			i2s3_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s4_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s4_ep>;
-+			};
-+		};
-+		i2s4_port: port@1 {
-+			reg = <1>;
-+			i2s4_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s5 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s5_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s5_ep>;
-+			};
-+		};
-+		i2s5_port: port@1 {
-+			reg = <1>;
-+			i2s5_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic1_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic1_ep>;
-+			};
-+		};
-+		dmic1_port: port@1 {
-+			reg = <1>;
-+			dmic1_dap_ep: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic2_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic2_ep>;
-+			};
-+		};
-+		dmic2_port: port@1 {
-+			reg = <1>;
-+			dmic2_dap_ep: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic3_ep>;
-+			};
-+		};
-+		dmic3_port: port@1 {
-+			reg = <1>;
-+			dmic3_dap_ep: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-index 6a877de..0c917a1 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-@@ -6,6 +6,7 @@
- #include <dt-bindings/mfd/max77620.h>
- 
- #include "tegra210.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson Nano Developer Kit";
-@@ -870,4 +871,149 @@
- 
- 		vin-supply = <&vdd_5v0_sys>;
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s3_port>, <&xbar_i2s4_port>,
-+		       <&xbar_dmic1_port>, <&xbar_dmic2_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s3_port>, <&i2s4_port>,
-+		       <&dmic1_port>, <&dmic2_port>;
-+
-+		label = "jetson-nano-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s3_ep>;
-+			};
-+		};
-+		i2s3_port: port@1 {
-+			reg = <1>;
-+			i2s3_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s4_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s4_ep>;
-+			};
-+		};
-+		i2s4_port: port@1 {
-+			reg = <1>;
-+			i2s4_dap_ep: endpoint@0 {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic1_cif_ep: endpoint@0 {
-+				remote-endpoint = <&xbar_dmic1_ep>;
-+			};
-+		};
-+		dmic1_port: port@1 {
-+			reg = <1>;
-+			dmic1_dap_ep: endpoint@0 {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic2_cif_ep: endpoint@0 {
-+				remote-endpoint = <&xbar_dmic2_ep>;
-+			};
-+		};
-+		dmic2_port: port@1 {
-+			reg = <1>;
-+			dmic2_dap_ep: endpoint@0 {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
- };
+ drivers/gpu/drm/radeon/btc_dpm.c         |  3 +-
+ drivers/gpu/drm/radeon/ci_dpm.c          | 13 +-----
+ drivers/gpu/drm/radeon/cik.c             | 10 ++---
+ drivers/gpu/drm/radeon/cik.h             | 40 ++++++++++++++++++
+ drivers/gpu/drm/radeon/cik_sdma.c        |  3 +-
+ drivers/gpu/drm/radeon/cypress_dpm.c     |  3 +-
+ drivers/gpu/drm/radeon/dce6_afmt.c       |  1 +
+ drivers/gpu/drm/radeon/dce6_afmt.h       | 52 ++++++++++++++++++++++++
+ drivers/gpu/drm/radeon/evergreen.c       |  8 +---
+ drivers/gpu/drm/radeon/evergreen.h       |  4 ++
+ drivers/gpu/drm/radeon/evergreen_cs.c    |  3 +-
+ drivers/gpu/drm/radeon/evergreen_dma.c   |  3 +-
+ drivers/gpu/drm/radeon/ni.h              |  1 +
+ drivers/gpu/drm/radeon/ni_dma.c          |  3 +-
+ drivers/gpu/drm/radeon/ni_dpm.c          |  3 +-
+ drivers/gpu/drm/radeon/r600.c            |  2 +-
+ drivers/gpu/drm/radeon/r600.h            |  4 ++
+ drivers/gpu/drm/radeon/r600_cs.c         |  1 +
+ drivers/gpu/drm/radeon/radeon_atombios.c |  4 --
+ drivers/gpu/drm/radeon/radeon_atombios.h |  8 ++++
+ drivers/gpu/drm/radeon/radeon_audio.c    | 17 +-------
+ drivers/gpu/drm/radeon/radeon_encoders.c |  6 +--
+ drivers/gpu/drm/radeon/rv770_dpm.c       |  1 +
+ drivers/gpu/drm/radeon/si.c              |  1 +
+ drivers/gpu/drm/radeon/si.h              | 38 +++++++++++++++++
+ drivers/gpu/drm/radeon/si_dma.c          |  3 +-
+ drivers/gpu/drm/radeon/si_dpm.c          |  8 ++--
+ drivers/gpu/drm/radeon/si_dpm.h          |  5 +++
+ drivers/gpu/drm/radeon/trinity_dpm.c     |  2 +-
+ drivers/gpu/drm/radeon/vce.h             | 35 ++++++++++++++++
+ drivers/gpu/drm/radeon/vce_v1_0.c        |  1 +
+ drivers/gpu/drm/radeon/vce_v2_0.c        |  1 +
+ 32 files changed, 215 insertions(+), 72 deletions(-)
+ create mode 100644 drivers/gpu/drm/radeon/cik.h
+ create mode 100644 drivers/gpu/drm/radeon/dce6_afmt.h
+ create mode 100644 drivers/gpu/drm/radeon/si.h
+ create mode 100644 drivers/gpu/drm/radeon/vce.h
+
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-media@vger.kernel.org
+Cc: Slava Grigorev <slava.grigorev@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 -- 
-2.7.4
+2.25.1
 
