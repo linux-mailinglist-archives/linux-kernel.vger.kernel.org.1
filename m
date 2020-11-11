@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF652AE72A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450282AE72D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgKKDos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:44:48 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:57591 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725849AbgKKDon (ORCPT
+        id S1725995AbgKKDpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgKKDpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:44:43 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id C45DB168A;
-        Tue, 10 Nov 2020 22:44:41 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 10 Nov 2020 22:44:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=M
-        bK62lfa8XqQ5uQpEMNmODTXXUW5ssZlsBtuCAcsjHw=; b=ZQeRRIlu5RRQSjaJV
-        DabQsIHjtrX9diTzh1dbhHfKBKg9gxux67QCjj7dvZTlBFLGclnObL3rJkFwIbno
-        Pyp+1Dy2Ze8Nq+0Y/t5g+HR5i9lq6S4IQORd1XDBNFrOEi7jtB89TFwZTfxMzOIb
-        O+z5SopD5RWMJkue3kXVw795qIySgLDDQRZa0oGh96prI63hm3vg/0up1sKS73i9
-        H22zMeK5VrQD9MFWiGLgewjmywnBVxkFEpmErFaC07jK3TloBqAc48LVWQrvJFWF
-        cJEtg0VhH16zIPrACcmCodChMVVFGLN23D3CwqLf+u+oU7Ych86WazUVwenz+/SK
-        gtnVg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=MbK62lfa8XqQ5uQpEMNmODTXXUW5ssZlsBtuCAcsj
-        Hw=; b=l9wDrZpxX9ozjQp14/v2qpNp4v3anPxU1/7XiQtzgrH2VMPqHbq6cGM1M
-        JtYgroDNJ64e75liN3mIcijWMJtg4G95JuyPr7B4fcGmkG08nnGavjc8hKCf+gHQ
-        h3rE0ittFD+q2XPP2bJRMjTNCqrpuVzlDYomelg0TiMRrUt+Av9w7fmJIvR1GIeD
-        nXWJFYW4Mb5fU1tx85UjmoG+rIrhuSt/aGhYFPRU5RZBQvTzz1fd/i/aiT16vHCz
-        3XP+lfMsJJ1TuUu5kfKnsn7UYiZski9wrc6rp6olO0QLaQxlaCV0ZDP9xXl9iO/P
-        2+2g+HjSerHlmjPuYmR5QmYqyHc0g==
-X-ME-Sender: <xms:J16rX_dEvsG7ssxpfnkvMFTZzutUoygcWi1IzBNxhTwFKz-QKOswHQ>
-    <xme:J16rX1Njo32HIZYVb1ZrxOa2huThT_0lcs3RdsYrH63UiDO8hKIJcDc4w2H9VN7U2
-    rV0wUwJYmpOif1xUA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduledggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:J16rX4g0sstrMhbmyH66IYv9DMZZhMELvGxp1XhgkFun5R2qVlqSIg>
-    <xmx:J16rXw_6VXg4V-KBwQ8_-wnD5U158vN4ixPZTCc_TeDSUK5_Zv1USQ>
-    <xmx:J16rX7u2XD8kYdEyqWkgmmFPpS8XXoVfHUK_PP4UYwTDPLd3xL9z9g>
-    <xmx:KV6rX_jVMjm0t2sgDHpgU8RdhPYwf_wMqT7kdjj8h3adFH-3FpnRNg>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C7E32328005E;
-        Tue, 10 Nov 2020 22:44:38 -0500 (EST)
-Subject: Re: [PATCH 3/3] phy: sun4i-usb: Use power efficient workqueue for
- debounce and poll
-To:     Frank Lee <frank@allwinnertech.com>, vkoul@kernel.org,
-        mripard@kernel.org, wens@csie.org, krzk@kernel.org,
-        colin.king@canonical.com, tiny.windzz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20201109121214.19012-1-frank@allwinnertech.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <fba49549-9a78-32ee-a55c-97499f24fe62@sholland.org>
-Date:   Tue, 10 Nov 2020 21:44:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 10 Nov 2020 22:45:02 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2B0C0613D1;
+        Tue, 10 Nov 2020 19:45:02 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id v12so767320pfm.13;
+        Tue, 10 Nov 2020 19:45:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rnbLMNtHljBapvM78K/ufrArsOT1Tj93sPuGgYeOtEE=;
+        b=Y5oCbCrfM+Pt96bcFo5KZ/gZRkyWbLRb2GfC6zVEPxyr2HExZgkg7DLoRmG0zvdgcP
+         tC9F/BD2B4Qe8gTOUn7bhcxV69qCmsdOgup+WWtnQ5qJCLVv9RkhbsXkTW1MJstDCIZS
+         Lfc1FBZO+f+7xBHVgsXDEUxGao1HD7BdQMuODda+axxweZfpY7iISBXTxy7FhBJoLFNq
+         Sd/Mdfnetx217r4oRy1V2tLWaMNhDnwM9VB68NtIZ9LFG1+dwbWmiXEFR7iufQpdABrc
+         4/EFH/3DFHDGmPCuVZVwXnFIE2Sa2Vkx4oANi2P2IKNMeAYN9ihxcyXJbeG4+eiCfdI1
+         QYYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rnbLMNtHljBapvM78K/ufrArsOT1Tj93sPuGgYeOtEE=;
+        b=RN2kTQOgapuemCbuGvSVhcXyqwS0lUy8PuBrMvt6pDAkiNQRyPdE0yOG8utueMfw+M
+         pxGJt38CU7DqGd3CwtdKXZ9eOVnQfYzSgnbpX3KPluVn3juF02nkhj2LRKti4qGFqzfe
+         M3W2aCKTYqLTRYfbnDYz0qCQq+Wc/5v8UlN/aywJ88nPPiLDReEdwBz/9478TX/iclJ6
+         6BCDGzm/hwZX35ZSk7Ng8EdZsdiRMp+w4HMEq1gHbgqVXgy+vt32LAuKyp3WwQ6dTJ2p
+         +I6zAASPBLU3KtKJR1+wmZQ0iZZO/9uh2RiD4MRWzvPFsNI5kvQ3JHhv2kGrcWQaU1yt
+         LZ7g==
+X-Gm-Message-State: AOAM533pLKJQXJjuFynVuKI8us/1Csp/P1kFFjDawPzJcprWAjlRv5ks
+        U2n0MpQUCdilpQFcgYe5olI=
+X-Google-Smtp-Source: ABdhPJyQXfdALt9USvkJWka5bDoiURyvSCB8OLjcS0Y62X0s524S2msg1o4hUB9C2SiD4pxWqSlyrw==
+X-Received: by 2002:aa7:9888:0:b029:18b:a9e2:dc7a with SMTP id r8-20020aa798880000b029018ba9e2dc7amr20808115pfl.67.1605066301975;
+        Tue, 10 Nov 2020 19:45:01 -0800 (PST)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id c28sm619137pfj.108.2020.11.10.19.45.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 19:45:01 -0800 (PST)
+Subject: Re: [RFC PATCH net-next 2/3] net: dsa: move switchdev event
+ implementation under the same switch/case statement
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20201108131953.2462644-1-olteanv@gmail.com>
+ <20201108131953.2462644-3-olteanv@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <650cc6e2-8bf7-57b9-595d-08624f545a07@gmail.com>
+Date:   Tue, 10 Nov 2020 19:44:59 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20201109121214.19012-1-frank@allwinnertech.com>
+In-Reply-To: <20201108131953.2462644-3-olteanv@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,89 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 6:12 AM, Frank Lee wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
-> 
-> The debounce and poll time is generally quite long and the work not
-> performance critical so allow the scheduler to run the work anywhere
-> rather than in the normal per-CPU workqueue.
-> 
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> ---
->  drivers/phy/allwinner/phy-sun4i-usb.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-> index 651d5e2a25ce..4787ad13b255 100644
-> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
-> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-> @@ -326,7 +326,7 @@ static int sun4i_usb_phy_init(struct phy *_phy)
->  		/* Force ISCR and cable state updates */
->  		data->id_det = -1;
->  		data->vbus_det = -1;
-> -		queue_delayed_work(system_wq, &data->detect, 0);
-> +		queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
->  	}
->  
->  	return 0;
-> @@ -444,7 +444,7 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
->  
->  	/* We must report Vbus high within OTG_TIME_A_WAIT_VRISE msec. */
 
-This doesn't sound like "not performance critical" to me. My understanding is
-the debouncing has a deadline from the USB spec. Maybe this is more flexible
-than the comment makes it sound?
 
->  	if (phy->index == 0 && sun4i_usb_phy0_poll(data))
-> -		mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
-> +		mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
->  
->  	return 0;
->  }
-> @@ -465,7 +465,7 @@ static int sun4i_usb_phy_power_off(struct phy *_phy)
->  	 * Vbus gpio to not trigger an edge irq on Vbus off, so force a rescan.
->  	 */
->  	if (phy->index == 0 && !sun4i_usb_phy0_poll(data))
-> -		mod_delayed_work(system_wq, &data->detect, POLL_TIME);
-> +		mod_delayed_work(system_power_efficient_wq, &data->detect, POLL_TIME);
->  
->  	return 0;
->  }
-> @@ -504,7 +504,7 @@ static int sun4i_usb_phy_set_mode(struct phy *_phy,
->  
->  	data->id_det = -1; /* Force reprocessing of id */
->  	data->force_session_end = true;
-> -	queue_delayed_work(system_wq, &data->detect, 0);
-> +	queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
->  
->  	return 0;
->  }
-> @@ -616,7 +616,7 @@ static void sun4i_usb_phy0_id_vbus_det_scan(struct work_struct *work)
->  		extcon_set_state_sync(data->extcon, EXTCON_USB, vbus_det);
->  
->  	if (sun4i_usb_phy0_poll(data))
-> -		queue_delayed_work(system_wq, &data->detect, POLL_TIME);
-> +		queue_delayed_work(system_power_efficient_wq, &data->detect, POLL_TIME);
->  }
->  
->  static irqreturn_t sun4i_usb_phy0_id_vbus_det_irq(int irq, void *dev_id)
-> @@ -624,7 +624,7 @@ static irqreturn_t sun4i_usb_phy0_id_vbus_det_irq(int irq, void *dev_id)
->  	struct sun4i_usb_phy_data *data = dev_id;
->  
->  	/* vbus or id changed, let the pins settle and then scan them */
-> -	mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
-> +	mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
->  
->  	return IRQ_HANDLED;
->  }
-> @@ -638,7 +638,7 @@ static int sun4i_usb_phy0_vbus_notify(struct notifier_block *nb,
->  
->  	/* Properties on the vbus_power_supply changed, scan vbus_det */
->  	if (val == PSY_EVENT_PROP_CHANGED && psy == data->vbus_power_supply)
-> -		mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
-> +		mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
->  
->  	return NOTIFY_OK;
->  }
+On 11/8/2020 5:19 AM, Vladimir Oltean wrote:
+> We'll need to start listening to SWITCHDEV_FDB_{ADD,DEL}_TO_DEVICE
+> events even for interfaces where dsa_slave_dev_check returns false, so
+> we need that check inside the switch-case statement for SWITCHDEV_FDB_*.
 > 
+> This movement also avoids two useless allocation / free paths for
+> switchdev_work, which were difficult to avoid before, due to the code's
+> structure:
+> - on the untreated "default event" case.
+> - on the case where fdb_info->added_by_user is false.
+> 
+> Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
 
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
