@@ -2,277 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C8D2AE96E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3157A2AE96C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgKKHM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:12:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S1726156AbgKKHMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgKKHMX (ORCPT
+        with ESMTP id S1725900AbgKKHMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:12:23 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35941C0613D1;
-        Tue, 10 Nov 2020 23:12:22 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id y22so510268plr.6;
-        Tue, 10 Nov 2020 23:12:22 -0800 (PST)
+        Wed, 11 Nov 2020 02:12:20 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F3AC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:12:20 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id g19so224392pji.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:12:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=+Qs+39AqjTgR5dEL7l2uIU3GHA3EdEZKPKe2tKz8Alk=;
-        b=mwfhYLoa1ovI0I1Wgo5sH33H+NsCQsycXpjTtb2gxvF5fOQBSpsTzL9XPvvAUmi24M
-         g7PaIlNk1mBVIb2fxcjxBDPX3Sw4GcIiiCDtG6F1/5rI7MUEZx7YyrGASI9NA+H5jPOw
-         N34yrkn9ATjXwnOQPyPl3IESvIeX7GUbVRLG59VR1EfTDbb4AWEgxjRpOMbuxhUVMori
-         xxf9wKsj3Y9xFwyo4MmIIjUXRXvHJGbrV0+pQWjQ1GMBF+xG5OIPtc3J5CXAMM4KsRKP
-         Od3vtcnY27FwFNCCBgJPI5L/BtlxjSuZIdBeN36nFqUhqznLhNd6z56g9ac/D67SBwDX
-         FGKA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=8u0DVNvzSka5b+NLmeV/T0ByUaduRjsHxLBf5XbcyO8=;
+        b=rxP9MPXd8CnDqecDyAgcGz3FIOYHvpx2QP/ETpuyu5xE+OJ6mzTRc822uK6f3PikAO
+         Z0M5YSWMccuIiL7CpKuKVmhRr4981q1bm9iB06OcKQnydIyMnuh8frrPXsw0/V3koKDa
+         i6zJqwoNbE8Y/I5z72IeGK2Q8sszAhXn/0tTFdGqbAfpK54hcCU6putFluEUet7eycyv
+         H2o0Lta78Buhur0Md7ZrQORK5HlD/6gnGlYsAiCWWFDVuB5uQ5MTN04OT5SvD4BQwt5S
+         4qgeJJ6dTwx2rHulU8xnfDZ4wIMjRJtHRd8jhI2RTrvzZAum/IyzOg/OCyDGPYxcZjaw
+         JUEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=+Qs+39AqjTgR5dEL7l2uIU3GHA3EdEZKPKe2tKz8Alk=;
-        b=SstMaCrsQX+NffBxJ9iT6NA75rWseKD36C+fOtYUJEod3m/svQyMjRUHYAgT0A8rzv
-         jS9RDmMm/f/zTueZ9urbhJjTlstQQDVJ2VqulUPJp9gYf97D+8rxSuAcLOLQ+nuKMvKo
-         wfd51r/luCBey5ZGEzh8ERvfQV64VVEk1yzQzUWiXZ7B1gfk5bpHUcmh0B/5yZ0jDhvV
-         o/EBeVwW+Fu1x+OAR6q8ju0bsReo5vZlsHASV3HLD9S6uT+QwR9ZfZYmznYW6L7LcTks
-         FwPwp4Gfi2zE5E6hqNpwE6DWl2vf7FKFMc8heWXrmL0qk7EZUvkgbsF3x+sHrofLdA2d
-         JW9w==
-X-Gm-Message-State: AOAM531H8aMd9AUUbDYAJtS3U6Ia2EO/Fqh3pdyD7fb3CaudiaNjJ8ac
-        ermXhRSuvsbINMVZXcM6hRE=
-X-Google-Smtp-Source: ABdhPJwt4uyKf0aN1f3UMPnoQ2rFPCf+q1iMLX+IcsYMGj4+8a0I8JeVWX0RmM3hVVHfpvHU0bCwxg==
-X-Received: by 2002:a17:90a:db48:: with SMTP id u8mr2485213pjx.93.1605078741725;
-        Tue, 10 Nov 2020 23:12:21 -0800 (PST)
-Received: from [10.10.15.233] (220-135-135-179.HINET-IP.hinet.net. [220.135.135.179])
-        by smtp.gmail.com with ESMTPSA id mt2sm1313561pjb.7.2020.11.10.23.12.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 23:12:21 -0800 (PST)
-From:   Charles <hsu.yungteng@gmail.com>
-Subject: [PATCH v4] hwmon: Add driver for STMicroelectronics PM6764 Voltage
- Regulator
-To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
-Cc:     linux-hwmon@vger.kernel.org, alan@redhat.com
-Message-ID: <35937351-f5ba-f019-c173-17f42c36da54@gmail.com>
-Date:   Wed, 11 Nov 2020 15:10:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8u0DVNvzSka5b+NLmeV/T0ByUaduRjsHxLBf5XbcyO8=;
+        b=j7aKUKeU24TREBxw/29BKSFgevFZdhkAMMTp8uxcU+Qn/xeawEMYXyN+xLKUCFioV6
+         HrMf0kzBfotMJzgCFtC/fmojRWbNLEUntoBec2ZnDv3tg6PiON5V3iJeMm6a7JgodvGa
+         RfFf4odESZzjUJgWTsG6PjVshUGuRTUharjS6iiANiv3FmGzymGH/SJ2S6Iz/5Er2vFU
+         D2BghgPd+gV/yXNSoRNovHgj6wZH6Itoo/AlJkAOOCkzOYapb2RqJ/uhatAY/njmVqOO
+         z0fH0yx1ytNUgPZgUTtLh+1YUeOPOxHrzI2d/ivVdfoX33Qu1gZOeTvlF7tNDsDPLuay
+         CzTw==
+X-Gm-Message-State: AOAM5311ERV8LW85x8Y43uUiF9xIQZYz0lD2Y1n/znqJti/CU4vuTUJ4
+        bLlodZ0w9qB2mHQGo9BTdzKbjA==
+X-Google-Smtp-Source: ABdhPJwe98gWMMo5Sui78lf9Mk/3MrRde5aMrvsJCcfXv7DnfFdbXLftXGn2u0e3wok07E8ce4jcig==
+X-Received: by 2002:a17:90a:5508:: with SMTP id b8mr2541832pji.85.1605078739654;
+        Tue, 10 Nov 2020 23:12:19 -0800 (PST)
+Received: from localhost ([45.137.216.7])
+        by smtp.gmail.com with ESMTPSA id y129sm1184752pgy.84.2020.11.10.23.12.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 10 Nov 2020 23:12:18 -0800 (PST)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v8 00/22] perf arm-spe: Refactor decoding & dumping flow
+Date:   Wed, 11 Nov 2020 15:11:27 +0800
+Message-Id: <20201111071149.815-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the pmbus driver for the STMicroelectronics pm6764 voltage regulator.
+This is patch set v8 for refactoring Arm SPE trace decoding and dumping.
 
-the output voltage use the MFR_READ_VOUT 0xD4
-vout value returned is linear11
+This version addresses Andre's comment to pass parameter '&buf_len' at
+the last call arm_spe_pkt_snprintf() in the function arm_spe_pkt_desc().
 
-Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
----
+This patch set is cleanly applied on the top of perf/core branch
+with commit 644bf4b0f7ac ("perf jevents: Add test for arch std events").
 
-v4:
-  - Add pm6764tr to Documentation/hwmon/index.rst.
-v3:
-  - Add Documentation(Documentation/hwmon/pm6764tr.rst).
-  - Fix include order.
-v2:
-  - Fix formatting.
-  - Remove pmbus_do_remove.
-  - Change from .probe to .probe_new.
-v1:
-  - Initial patchset.
----
+I retested this patch set on Hisilicon D06 platform with commands
+"perf report -D" and "perf script", compared the decoding results
+between with this patch set and without this patch set, "diff" tool
+shows the result as expected.
 
-  Documentation/hwmon/index.rst    |  1 +
-  Documentation/hwmon/pm6764tr.rst | 33 ++++++++++++++
-  drivers/hwmon/pmbus/Kconfig      |  9 ++++
-  drivers/hwmon/pmbus/Makefile     |  1 +
-  drivers/hwmon/pmbus/pm6764tr.c   | 78 ++++++++++++++++++++++++++++++++
-  5 files changed, 122 insertions(+)
-  create mode 100644 Documentation/hwmon/pm6764tr.rst
-  create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
+Changes from v7:
+- Changed to pass '&buf_len' for the last call arm_spe_pkt_snprintf() in
+  the patch 07/22 (Andre).
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index b797db738225..1bbd05e41de4 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -144,6 +144,7 @@ Hardware Monitoring Kernel Drivers
-     pc87360
-     pc87427
-     pcf8591
-+   pm6764tr
-     pmbus
-     powr1220
-     pxe1610
-diff --git a/Documentation/hwmon/pm6764tr.rst 
-b/Documentation/hwmon/pm6764tr.rst
-new file mode 100644
-index 000000000000..5e8092e39297
---- /dev/null
-+++ b/Documentation/hwmon/pm6764tr.rst
-@@ -0,0 +1,33 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+Kernel driver pm6764tr
-+======================
-+
-+Supported chips:
-+
-+  * ST PM6764TR
-+
-+    Prefix: 'pm6764tr'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: http://www.st.com/resource/en/data_brief/pm6764.pdf
-+
-+Authors:
-+    <hsu.yungteng@gmail.com>
-+
-+Description:
-+------------
-+
-+This driver supports the STMicroelectronics PM6764TR chip. The PM6764TR 
-is a high
-+performance digital controller designed to power Intel’s VR12.5 
-processors and memories.
-+
-+The device utilizes digital technology to implement all control and 
-power management
-+functions to provide maximum flexibility and performance. The NVM is 
-embedded to store
-+custom configurations. The PM6764TR device features up to 4-phase 
-programmable operation.
-+
-+The PM6764TR supports power state transitions featuring VFDE, and 
-programmable DPM
-+maintaining the best efficiency over all loading conditions without 
-compromising transient
-+response. The device assures fast and independent protectionagainstload 
-overcurrent,
-+under/overvoltage and feedback disconnections.
-+
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index a25faf69fce3..9c846facce9f 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -220,6 +220,15 @@ config SENSORS_MP2975
-        This driver can also be built as a module. If so, the module will
-        be called mp2975.
+Changes from v6:
+- Removed the redundant comma from the string in the patch 21/22 "perf
+  arm_spe: Decode memory tagging properties" (Dave);
+- Refined the return value for arm_spe_pkt_desc(): returns 0 for
+  success, otherwise returns non zero for failures; handle error code at
+  the end of function arm_spe_pkt_desc(); this is accomplished in the
+  new patch 07/22 "perf arm-spe: Consolidate arm_spe_pkt_desc()'s
+  return value" (Dave).
 
-+config SENSORS_PM6764TR
-+    tristate "ST PM6764TR"
-+    help
-+      If you say yes here you get hardware monitoring support for ST
-+      PM6764TR.
-+
-+      This driver can also be built as a module. If so, the module will
-+      be called pm6764tr.
-+
-  config SENSORS_PXE1610
-      tristate "Infineon PXE1610"
-      help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 4c97ad0bd791..31ebdef5d4a6 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -25,6 +25,7 @@ obj-$(CONFIG_SENSORS_MAX31785)    += max31785.o
-  obj-$(CONFIG_SENSORS_MAX34440)    += max34440.o
-  obj-$(CONFIG_SENSORS_MAX8688)    += max8688.o
-  obj-$(CONFIG_SENSORS_MP2975)    += mp2975.o
-+obj-$(CONFIG_SENSORS_PM6764TR)    += pm6764tr.o
-  obj-$(CONFIG_SENSORS_PXE1610)    += pxe1610.o
-  obj-$(CONFIG_SENSORS_TPS40422)    += tps40422.o
-  obj-$(CONFIG_SENSORS_TPS53679)    += tps53679.o
-diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
-new file mode 100644
-index 000000000000..2ab68036bb0c
---- /dev/null
-+++ b/drivers/hwmon/pmbus/pm6764tr.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Hardware monitoring driver for STMicroelectronics digital controller 
-PM6764TR
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/pmbus.h>
-+#include <linux/slab.h>
-+#include "pmbus.h"
-+
-+#define PM6764TR_PMBUS_READ_VOUT    0xD4
-+
-+static int pm6764tr_read_word_data(struct i2c_client *client, int page, 
-int reg)
-+{
-+    int ret;
-+
-+    switch (reg) {
-+    case PMBUS_VIRT_READ_VMON:
-+        ret = pmbus_read_word_data(client, page, PM6764TR_PMBUS_READ_VOUT);
-+        break;
-+    default:
-+        ret = -ENODATA;
-+        break;
-+    }
-+    return ret;
-+}
-+
-+static struct pmbus_driver_info pm6764tr_info = {
-+    .pages = 1,
-+    .format[PSC_VOLTAGE_IN] = linear,
-+    .format[PSC_VOLTAGE_OUT] = vid,
-+    .format[PSC_TEMPERATURE] = linear,
-+    .format[PSC_CURRENT_OUT] = linear,
-+    .format[PSC_POWER] = linear,
-+    .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
-+        PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
-+        PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
-+        PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-+    .read_word_data = pm6764tr_read_word_data,
-+};
-+
-+static int pm6764tr_probe(struct i2c_client *client,
-+              const struct i2c_device_id *id)
-+{
-+    return pmbus_do_probe(client, id, &pm6764tr_info);
-+}
-+
-+static const struct i2c_device_id pm6764tr_id[] = {
-+    {"pm6764tr", 0},
-+    {}
-+};
-+MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
-+
-+static const struct of_device_id pm6764tr_of_match[] = {
-+    {.compatible = "pm6764tr"},
-+    {}
-+};
-+
-+/* This is the driver that will be inserted */
-+static struct i2c_driver pm6764tr_driver = {
-+    .driver = {
-+           .name = "pm6764tr",
-+           .of_match_table = of_match_ptr(pm6764tr_of_match),
-+           },
-+    .probe_new = pm6764tr_probe,
-+    .id_table = pm6764tr_id,
-+};
-+
-+module_i2c_driver(pm6764tr_driver);
-+
-+MODULE_AUTHOR("Charles Hsu");
-+MODULE_DESCRIPTION("PMBus driver for  ST PM6764TR");
-+MODULE_LICENSE("GPL");
+Changes from v5:
+- Directly bail out arm_spe_pkt_snprintf() if any error occurred
+  (Andre).
+
+Changes from v4:
+- Implemented a cumulative error for arm_spe_pkt_snprintf() and changed
+  to condense code for printing strings (Dave);
+- Changed to check payload bits [55:52] for parse kernel address
+  (Andre).
+
+Changes from v3:
+- Refined arm_spe_payload_len() and removed macro SPE_HEADER_SZ()
+  (Andre);
+- Refined packet header index macros (Andre);
+- Added patch "perf arm_spe: Fixup top byte for data virtual address" to
+  fixup the data virtual address for 64KB pages and refined comments for
+  the fixup (Andre);
+- Added Andre's review tag (using "b4 am" command);
+- Changed the macros to SPE_PKT_IS_XXX() format to check operation types
+  (Andre).
+
+
+Andre Przywara (1):
+  perf arm_spe: Decode memory tagging properties
+
+Leo Yan (20):
+  perf arm-spe: Include bitops.h for BIT() macro
+  perf arm-spe: Fix a typo in comment
+  perf arm-spe: Refactor payload size calculation
+  perf arm-spe: Refactor arm_spe_get_events()
+  perf arm-spe: Fix packet length handling
+  perf arm-spe: Refactor printing string to buffer
+  perf arm-spe: Consolidate arm_spe_pkt_desc()'s return value
+  perf arm-spe: Refactor packet header parsing
+  perf arm-spe: Add new function arm_spe_pkt_desc_addr()
+  perf arm-spe: Refactor address packet handling
+  perf arm_spe: Fixup top byte for data virtual address
+  perf arm-spe: Refactor context packet handling
+  perf arm-spe: Add new function arm_spe_pkt_desc_counter()
+  perf arm-spe: Refactor counter packet handling
+  perf arm-spe: Add new function arm_spe_pkt_desc_event()
+  perf arm-spe: Refactor event type handling
+  perf arm-spe: Remove size condition checking for events
+  perf arm-spe: Add new function arm_spe_pkt_desc_op_type()
+  perf arm-spe: Refactor operation packet handling
+  perf arm-spe: Add more sub classes for operation packet
+
+Wei Li (1):
+  perf arm-spe: Add support for ARMv8.3-SPE
+
+ .../util/arm-spe-decoder/arm-spe-decoder.c    |  59 +-
+ .../util/arm-spe-decoder/arm-spe-decoder.h    |  17 -
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 601 ++++++++++--------
+ .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 122 +++-
+ tools/perf/util/arm-spe.c                     |   2 +-
+ 5 files changed, 479 insertions(+), 322 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
