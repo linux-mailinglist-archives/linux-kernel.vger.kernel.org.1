@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A082AEDDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A5E2AEDE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbgKKJeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S1727187AbgKKJfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgKKJeU (ORCPT
+        with ESMTP id S1726619AbgKKJfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:34:20 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD758C0613D1;
-        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id k26so1527366oiw.0;
-        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
+        Wed, 11 Nov 2020 04:35:20 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001D6C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:35:19 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id gi3so450180pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:35:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=36NotezYoC/yyfzMqnUfq9zBlq7QxW9QNIrKCRtwRLY=;
-        b=pox7M5sP0Uml+SVYXZ08brVDykvoVVYnZgc8mI0lk93NjnXTmtpK1ZYotFvDa5qcux
-         dlxxF/miW84iYycj9tSsv9N2V18A+StM1WI7N+xcCi3WDkkFKPZSI+733Uv+bMyzexGn
-         c3uhgUZIJhDMtX3sIxNyjApC0U5zJzjEX1lh1jCeW0cWRGi51pdLmHRBGyoErj29fakz
-         SBOohq3UMWrlzkNllxkf4zixaqOAwu8svdoowwW6QzlPOxjtfFgkWjNQhyoIi3zbwHYD
-         oBBD4ZkLGHy509OP4bqbI4kD+MomUXeI1zsA83Rw58cFkK84vInW0gdmsjDDpWcFy78X
-         7S7A==
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QmA+jLoNrTCA2+Mt4Q5LbDfOt6s2dRJWxbjFrCs/Ci8=;
+        b=QLVIoBk/QSBtn4VAMXQrR7hbsG73rbW5vsg4oZUfQYgF8WYlkhZh4p99J65QEoVpRM
+         toarObrHKgOx39tSEQkO6AMetfVfGcKHGA3C1BG6A7+4xuXSMnz0NrjriacAHwSGbalu
+         hqk0GHgP1E7sN4E8vawpAzTodtSyYTzfShIEwQJIAQx8UuhTfB7pB32htUG+Who08anm
+         t02xIU3jKF0hzrx9+S8b4x1t2doNpslf8tHm4jpZOyUOEeuMxYT3Prkh6tIk/JQmFAPK
+         YhxjN9tY/8c1317TBKXlK17TE8BgGxFt4eG8Gcqh0N1ovjaTrjCOv4dqqCPQP+LDdvvQ
+         u5tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=36NotezYoC/yyfzMqnUfq9zBlq7QxW9QNIrKCRtwRLY=;
-        b=qOkngKCC2WMXthS+9m2gisXo4uaV8+DY5Ps8yxKD6pWWeGINxbevR7JtOTozARk+mt
-         PHVoGUIGBigNAXfvoX5iTIH3QsFfYRaCcuvkZsrss3njY42cNss1IIlCuExzpH5Wksuq
-         T1z3LgM8726gDKvLSwO25qbeRwJK4kbEvPKz7gdCFCadpXACRTjIylvTFT/+WWh7mzTM
-         RjyElHfVBAh2OCYF0fnKV5D19IdeiFLAiO6rBc4zh6nAxs9AxZ4IP30QuvwX4gtxZ+r8
-         aIoYgf4vC1P4cP94q77CNFhM4EvejUUqEPWIfoKFVKvghcjkLiG/1ypSQeL12Yd6crTg
-         rZGw==
-X-Gm-Message-State: AOAM531Zi2mf0tHmuMfETw0WHn9ekPosHmZ/NpXQJ5iWBlN6cX7FiWru
-        wTU/Drg3pW1bfgqadXiY0H8=
-X-Google-Smtp-Source: ABdhPJxhY6BIamR+E6BAfcKKF3uledUuIVKFBCbjublGaqm/oVke/eYtwlyVeUJgab9VzMzvQto6kA==
-X-Received: by 2002:aca:4a0d:: with SMTP id x13mr1603348oia.155.1605087259295;
-        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id q18sm392421otf.46.2020.11.11.01.34.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QmA+jLoNrTCA2+Mt4Q5LbDfOt6s2dRJWxbjFrCs/Ci8=;
+        b=n+FqRE4LB27vSF93WXLzj9XiPP65UCSyDKmC4HxzbGibNT96LlKcbrBjcHlqQkbS0K
+         WHlUnE9vL+cpbYlt8gXDvMXhpu8R34QAxfD4+BLM/D0QiGwLoacBDzujtbsxzgv3UoKn
+         tJznHghx9A2hjvbv+5zws9z1XLtOnRX+Gc5zlfBV+pYefKDeywhBAq4mO0nIKqUZ842v
+         hs2ruDN2nHiZVL6L0LBVuQRhJEQ6nbFDoCgRCOSW5pRvvSZckhDUBF3oWlF4La1vLbeg
+         ryCVxJ2Hst1/agfqS/ODCfbJcpc/59dcSu9L4bvWgR85/xQ6lyyZ0FyAjmWkt57/yEjj
+         Kp6A==
+X-Gm-Message-State: AOAM531aZbI7Ch39AbsMruyqMNklSAnoR/CWwDOennaJjPMsZkoFS4FE
+        keuurGzV+l1ZWH0FD/MQcJSsSa2b5mJOgw==
+X-Google-Smtp-Source: ABdhPJxC70iXZ53+Zu2FOrGuQQx34cC84+q4xcOoLMcPe0csIhqPxj/fM/F6TDzKykpV8fkPWsfbTQ==
+X-Received: by 2002:a17:90a:d182:: with SMTP id fu2mr3078446pjb.145.1605087319519;
+        Wed, 11 Nov 2020 01:35:19 -0800 (PST)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id m6sm1862424pfa.61.2020.11.11.01.35.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 01:34:18 -0800 (PST)
-Date:   Wed, 11 Nov 2020 01:34:11 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, xiakaixu1987@gmail.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Message-ID: <5fabb0135718_bb260208a8@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZzGZTFky0F=U1_XKSBu8AqhuNzQgY7yibWYokrMbWK0Q@mail.gmail.com>
-References: <1605071026-25906-1-git-send-email-kaixuxia@tencent.com>
- <CAEf4BzZzGZTFky0F=U1_XKSBu8AqhuNzQgY7yibWYokrMbWK0Q@mail.gmail.com>
-Subject: Re: [PATCH v3] bpf: Fix unsigned 'datasec_id' compared with zero in
- check_pseudo_btf_id
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Wed, 11 Nov 2020 01:35:19 -0800 (PST)
+From:   Zong Li <zong.li@sifive.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com, sboyd@kernel.org,
+        schwab@linux-m68k.org, pragnesh.patel@openfive.com,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com,
+        yash.shah@sifive.com, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH v3 0/3] clk: add driver for the SiFive FU740
+Date:   Wed, 11 Nov 2020 17:35:11 +0800
+Message-Id: <20201111093514.103155-1-zong.li@sifive.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Tue, Nov 10, 2020 at 9:03 PM <xiakaixu1987@gmail.com> wrote:
-> >
-> > From: Kaixu Xia <kaixuxia@tencent.com>
-> >
-> > The unsigned variable datasec_id is assigned a return value from the call
-> > to check_pseudo_btf_id(), which may return negative error code.
-> >
-> > Fixes coccicheck warning:
-> >
-> > ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
-> >
-> > Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> > Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> > ---
-> 
-> Looks good.
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> [...]
+Add a driver for the SiFive FU740 PRCI IP block, which handles more
+clocks than FU540. These patches also refactor the original
+implementation by spliting the dependent-code of fu540 and fu740
+respectively.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Changed in v3:
+ - Fix the worng bit field shift.
+
+Changed in v2:
+ - Remove the macro definition for __prci_clock_array.
+ - Indicate the functional changes in commit message.
+ - Using option -M and -C to create patches.
+ - Rebase code to kernel v5.10-rc3.
+
+Zong Li (3):
+  clk: sifive: Extract prci core to common base
+  clk: sifive: Use common name for prci configuration
+  clk: sifive: Add a driver for the SiFive FU740 PRCI IP block
+
+ arch/riscv/Kconfig.socs                       |   2 +-
+ drivers/clk/sifive/Kconfig                    |   8 +-
+ drivers/clk/sifive/Makefile                   |   5 +-
+ drivers/clk/sifive/fu540-prci.c               | 586 +-----------------
+ drivers/clk/sifive/fu540-prci.h               |  21 +
+ drivers/clk/sifive/fu740-prci.c               | 122 ++++
+ drivers/clk/sifive/fu740-prci.h               |  21 +
+ .../sifive/{fu540-prci.c => sifive-prci.c}    | 499 ++++++---------
+ drivers/clk/sifive/sifive-prci.h              | 289 +++++++++
+ include/dt-bindings/clock/sifive-fu740-prci.h |  23 +
+ 10 files changed, 703 insertions(+), 873 deletions(-)
+ create mode 100644 drivers/clk/sifive/fu540-prci.h
+ create mode 100644 drivers/clk/sifive/fu740-prci.c
+ create mode 100644 drivers/clk/sifive/fu740-prci.h
+ copy drivers/clk/sifive/{fu540-prci.c => sifive-prci.c} (45%)
+ create mode 100644 drivers/clk/sifive/sifive-prci.h
+ create mode 100644 include/dt-bindings/clock/sifive-fu740-prci.h
+
+-- 
+2.29.2
+
