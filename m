@@ -2,147 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB19C2AF77F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AD92AF782
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgKKRoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:44:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
+        id S1726570AbgKKRpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:45:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:58968 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgKKRoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:44:11 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43F00206B6;
-        Wed, 11 Nov 2020 17:44:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605116650;
-        bh=ygxnhucReMFEfoh/U8KtzjIy5ncvzxa4ha328ZLzixw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ewooJm5AZJUsPDJK5qUjJ+1jSn5Xb2GbJopCBxz+H9j5NzBF3ulyN4fpr6bTY/5cH
-         em1sDcxoae6vbh3f0/X2BJR+UPfPROM1//tr7dLWurQab4GYOV15ZiR9BnyvOU6vZq
-         HSLyRQJ8xpF0TohmMO9JyltKBjrqTykd+CpFNjE4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3C2DB411D1; Wed, 11 Nov 2020 14:44:08 -0300 (-03)
-Date:   Wed, 11 Nov 2020 14:44:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>, Dave Martin <Dave.Martin@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 00/22] perf arm-spe: Refactor decoding & dumping flow
-Message-ID: <20201111174408.GC380127@kernel.org>
-References: <20201111071149.815-1-leo.yan@linaro.org>
- <20201111161051.GH355344@kernel.org>
- <20201111161535.GI355344@kernel.org>
- <c22d9fa3-51bb-d86f-2a03-390c6844256a@arm.com>
+        id S1725895AbgKKRpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:45:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 290561396;
+        Wed, 11 Nov 2020 09:45:53 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CCB43F6CF;
+        Wed, 11 Nov 2020 09:45:52 -0800 (PST)
+Date:   Wed, 11 Nov 2020 17:45:46 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/2] firmware: arm_scmi: Augment SMC/HVC to allow
+ optional interrupt
+Message-ID: <20201111174546.GI42652@e120937-lin>
+References: <20201110183827.19731-1-james.quinlan@broadcom.com>
+ <20201110183827.19731-2-james.quinlan@broadcom.com>
+ <20201111104157.wpll6en4qvlhb2ws@bogus>
+ <CA+-6iNwqKKPzEWLJuRvS_Vubq1GAUE5zNzQobvR8Di4iF1ALwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c22d9fa3-51bb-d86f-2a03-390c6844256a@arm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CA+-6iNwqKKPzEWLJuRvS_Vubq1GAUE5zNzQobvR8Di4iF1ALwA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 11, 2020 at 04:20:26PM +0000, André Przywara escreveu:
-> On 11/11/2020 16:15, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Nov 11, 2020 at 01:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
-> >> Em Wed, Nov 11, 2020 at 03:11:27PM +0800, Leo Yan escreveu:
-> >>> This is patch set v8 for refactoring Arm SPE trace decoding and dumping.
-> >>>
-> >>> This version addresses Andre's comment to pass parameter '&buf_len' at
-> >>> the last call arm_spe_pkt_snprintf() in the function arm_spe_pkt_desc().
-> >>>
-> >>> This patch set is cleanly applied on the top of perf/core branch
-> >>> with commit 644bf4b0f7ac ("perf jevents: Add test for arch std events").
-> >>>
-> >>> I retested this patch set on Hisilicon D06 platform with commands
-> >>> "perf report -D" and "perf script", compared the decoding results
-> >>> between with this patch set and without this patch set, "diff" tool
-> >>> shows the result as expected.
-> >>
-> >> With the patches I applied I'm getting:
-> >>
-> >> util/arm-spe-decoder/arm-spe-pkt-decoder.c: In function 'arm_spe_pkt_desc':
-> >> util/arm-spe-decoder/arm-spe-pkt-decoder.c:410:3: error: left shift count >= width of type [-Werror]
-> >>    case 1: ns = !!(packet->payload & NS_FLAG);
-> >>    ^
-> >> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
-> >>     el = (packet->payload & EL_FLAG) >> 61;
-> >>     ^
-> >> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
-> >> util/arm-spe-decoder/arm-spe-pkt-decoder.c:416:3: error: left shift count >= width of type [-Werror]
-> >>    case 3: ns = !!(packet->payload & NS_FLAG);
-> >>    ^
-> >>   CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-decoder.o
-> >>  
-> >>
-> >> On:
-> >>
-> >>   16    11.70 android-ndk:r12b-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
-> >>   17    11.32 android-ndk:r15c-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
-> >>
-> >> That were building ok before, builds still under way, perhaps its just
-> >> on these old systems...
-> > 
-> > [acme@five perf]$ git bisect good
-> > cc6fa07fb1458cca3741919774eb050976471000 is the first bad commit
-> > commit cc6fa07fb1458cca3741919774eb050976471000
-> > Author: Leo Yan <leo.yan@linaro.org>
-> > Date:   Wed Nov 11 15:11:28 2020 +0800
-> > 
-> >     perf arm-spe: Include bitops.h for BIT() macro
-> > 
-> >     Include header linux/bitops.h, directly use its BIT() macro and remove
-> >     the self defined macros.
-> > 
-> >     Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> >     Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-> >     Link: https://lore.kernel.org/r/20201111071149.815-2-leo.yan@linaro.org
-> >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > 
-> >  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c     | 5 +----
-> >  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 3 +--
-> >  2 files changed, 2 insertions(+), 6 deletions(-)
+On Wed, Nov 11, 2020 at 11:45:24AM -0500, Jim Quinlan wrote:
+> On Wed, Nov 11, 2020 at 5:42 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Tue, Nov 10, 2020 at 01:38:19PM -0500, Jim Quinlan wrote:
+> > > The SMC/HVC SCMI transport is modified to allow the completion of an SCMI
+> > > message to be indicated by an interrupt rather than the return of the smc
+> > > call.  This accommodates the existing behavior of the BrcmSTB SCMI
+> > > "platform" whose SW is already out in the field and cannot be changed.
+> > >
+> > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> > > ---
+> > >  drivers/firmware/arm_scmi/smc.c | 31 +++++++++++++++++++++++++++++++
+> > >  1 file changed, 31 insertions(+)
+> > >
+> > > diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+> > > index 82a82a5dc86a..3bf935dbd00e 100644
+> > > --- a/drivers/firmware/arm_scmi/smc.c
+> > > +++ b/drivers/firmware/arm_scmi/smc.c
+> > > @@ -9,9 +9,11 @@
+> > >  #include <linux/arm-smccc.h>
+> > >  #include <linux/device.h>
+> > >  #include <linux/err.h>
+> > > +#include <linux/interrupt.h>
+> > >  #include <linux/mutex.h>
+> > >  #include <linux/of.h>
+> > >  #include <linux/of_address.h>
+> > > +#include <linux/of_irq.h>
+> > >  #include <linux/slab.h>
+> > >
+> > >  #include "common.h"
+> > > @@ -23,6 +25,8 @@
+> > >   * @shmem: Transmit/Receive shared memory area
+> > >   * @shmem_lock: Lock to protect access to Tx/Rx shared memory area
+> > >   * @func_id: smc/hvc call function id
+> > > + * @irq: Optional; employed when platforms indicates msg completion by intr.
+> > > + * @tx_complete: Optional, employed only when irq is valid.
+> > >   */
+> > >
+> > >  struct scmi_smc {
+> > > @@ -30,8 +34,19 @@ struct scmi_smc {
+> > >       struct scmi_shared_mem __iomem *shmem;
+> > >       struct mutex shmem_lock;
+> > >       u32 func_id;
+> > > +     int irq;
+> > > +     struct completion tx_complete;
+> > >  };
+> > >
+> > > +static irqreturn_t smc_msg_done_isr(int irq, void *data)
+> > > +{
+> > > +     struct scmi_smc *scmi_info = data;
+> > > +
+> > > +     complete(&scmi_info->tx_complete);
+> > > +
+> > > +     return IRQ_HANDLED;
+> > > +}
+> > > +
+> > >  static bool smc_chan_available(struct device *dev, int idx)
+> > >  {
+> > >       struct device_node *np = of_parse_phandle(dev->of_node, "shmem", 0);
+> > > @@ -79,6 +94,20 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+> > >       if (ret < 0)
+> > >               return ret;
+> > >
+> > > +     /* Optional feature -- signal message completion using an interrupt */
+> > > +     ret = of_irq_get_byname(cdev->of_node, "msg-serviced");
+> >
+> > So, looks like it is mandatory if "interrupts" is used. Please update the
+> > binding or if that is not the practice followed elsewhere, drop search by
+> > name.
+> 
+> Well, I can certainly change the comment. I do not want it to be
+> "mandatory" if just interrupts are used.
+>  The reason I prefer using "interrupt-names" is that this allows
+> unforeseen use of future additional interrupts w/o caring about order
+> in the interrupts DT node.  If you are absolutely positive that there
+> will never be other interrupts used  in the future for the SCMI node
+> then I will drop it.
+> 
+
+What about the future possibility of adding p2a notifications handling
+to SMC transport, won't that need some other IRQ (and shmem) ?
+
+Regards
+
+Cristian
+
+> >
+> > Also I prefer full name "message-serviced" if possible, not strong
+> > opinion.
+> 
+> Will do.
+> 
+> >
+> >
+> > > +     if (ret > 0) {
+> > > +             scmi_info->irq = ret;
+> >
+> > May be set this only if we succeed setting up handler ? I mean move this
+> > down.
+> 
+> Will do.
+> 
+> Regards,
+> Jim Quinlan
+> Broadcom STB
 > 
 > 
-> Ah, thanks! I think I mentioned the missing usage of BIT_ULL() in an
-> earlier review, and thought this was fixed. Possibly this gets fixed in
-> a later patch in this series, and is a temporary regression?
+> >
+> >
+> > Other than these, the changes look fine.
+> >
+> > --
+> > Regards,
+> > Sudeep
 
-you mean this on that patch that ditches the local BIT() macro, right?
 
-[acme@five perf]$ vim tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-[acme@five perf]$ git diff
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 46ddb53a645714bb..5f65a3a70c577207 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -12,8 +12,8 @@
-
- #include "arm-spe-pkt-decoder.h"
-
--#define NS_FLAG                BIT(63)
--#define EL_FLAG                (BIT(62) | BIT(61))
-+#define NS_FLAG                BIT_ULL(63)
-+#define EL_FLAG                (BIT_ULL(62) | BIT_ULL(61))
-
- #define SPE_HEADER0_PAD                        0x0
- #define SPE_HEADER0_END                        0x1
-[acme@five perf]$
- 
-> How do you want to handle this? Shall Leo resend, amending this patch
-> (and merging 06 and 07 on the way ;-)?
