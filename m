@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE002AF04E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04372AF06A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgKKMMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgKKMJc (ORCPT
+        id S1725979AbgKKMSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:18:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35384 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726424AbgKKMLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:09:32 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283BBC0613D1;
-        Wed, 11 Nov 2020 04:09:15 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id f12so609334pjp.4;
-        Wed, 11 Nov 2020 04:09:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tfXm0jbzd6kaJ3w8XhI/Kny3PMYSPBXOoteaYSPbpNk=;
-        b=pBSzBpVlpU6oXapfR7FR5dRmvCwgaFwrTogU1HOAswyHrDkDtI+h8xwYzC/xd6P3sK
-         fDyoKce/SXhWJDLPAqKzuLenlARtExlbeDQyhcVYIL/tQ1Vnr3vfaSrat3S9HplpqqXF
-         rrwErTh95CsKzw5s5zTcrXWSfF1dqyiRjSevH4z1S6ZyzOsxmuUf0PHMgd27Icwvhsdn
-         JKmxS9/4U5LZ5SwOxNYjSBbMdRjYdQRikkmTKuvMZB170WUSjpU9MrAJVZwh9JfYWmeL
-         TvHFeGbLEUC7ykbiGR1+W7NcNpIUaGrSvNDb3Wp6cW7yQjc/qMGOHKwqMfdERA2pIMt5
-         bjFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tfXm0jbzd6kaJ3w8XhI/Kny3PMYSPBXOoteaYSPbpNk=;
-        b=NwTlLnHk6By5yVGs+kZmIxqbl37eP8fKVw/Qkox5RRoNXFVvV68ri/vmSP+o4owTti
-         PFLPL8o2gKHOHKQXzadoJ6XdLaHf+Y7dJx8dKw1ro/VlBvXA+ypjIBmsIzWwpBD8ZbUJ
-         hHzXYeXeF6Qd0TkqAaGDCPsceYnrAy/s+b2jATKjPGAPM3e5yaX8kBm2HRp2X56A0D/E
-         /Os1rdz0SlgH9jjT9ZGQAy6SWIMj3z7uESb8/qlDfUBBWVpJxNn1JRfDdqeM+rSXnhiU
-         1tgmDzup7q/UOZes4gvyCLzyCCBiOXdb0BDWNjbZYpFsRYfICDJmzlrG2i9+XDQ0VX9i
-         WXAw==
-X-Gm-Message-State: AOAM530Qb0qMBxzVuGpHGPKZ44VhUctrImsaFN3FST8/nh2jWVwxQUdG
-        PyPLYWsfmXh6LwSE00cetZaB+0E5rkXre5VfXTM=
-X-Google-Smtp-Source: ABdhPJzznitHyf9aF+zWKbLeqBWLNlpjvSivU0ae9BAz34h+iLkhZH3wP7i3iSYtC56JjPlHZTzuRJFUjN05OB9Bugw=
-X-Received: by 2002:a17:90a:4884:: with SMTP id b4mr3499145pjh.198.1605096554750;
- Wed, 11 Nov 2020 04:09:14 -0800 (PST)
+        Wed, 11 Nov 2020 07:11:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605096624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y65as4hO2k5CaDRlNinPuyS+/mcMvfkWE/AmgknX/f0=;
+        b=ePDDo/IVplNCu6+gd4seMQu+2rPdX3cHBMzVu9QTYHqQUVrcaSwN0PV8h4gpmlB5DFEOMu
+        Jiftqd9w5r5Qg7H77fmS/aW0HwdlwSwsjXOGqvnZbpw5/eUUnaaN+GcPiQb+BrG/Zo7w99
+        oweXDrQhLj8Czf24r0OUuRqQyfetEjc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-KIVkhXwCPsa4RlcUPDHLEA-1; Wed, 11 Nov 2020 07:10:20 -0500
+X-MC-Unique: KIVkhXwCPsa4RlcUPDHLEA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEE2A879526;
+        Wed, 11 Nov 2020 12:10:18 +0000 (UTC)
+Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 721865C62B;
+        Wed, 11 Nov 2020 12:10:16 +0000 (UTC)
+Subject: Re: [PATCH v1 2/4] powerpc/mm: print warning in
+ arch_remove_linear_mapping()
+To:     osalvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rashmica Gupta <rashmica.g@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201029162718.29910-1-david@redhat.com>
+ <20201029162718.29910-3-david@redhat.com>
+ <20201104094255.GA4981@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <78f48ca7-d801-238d-f107-11b82d8a6384@redhat.com>
+Date:   Wed, 11 Nov 2020 13:10:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201111100424.3989-1-xie.he.0141@gmail.com> <89483cb5fbf9e06edf3108fa4def6eef@dev.tdt.de>
-In-Reply-To: <89483cb5fbf9e06edf3108fa4def6eef@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 11 Nov 2020 04:09:03 -0800
-Message-ID: <CAJht_ENQsGVdkzSgQ3C1wDXBJyo9i-xdtzS=hsmMM339RGNRqA@mail.gmail.com>
-Subject: Re: [PATCH net] net: x25: Fix kernel crashes due to x25_disconnect
- releasing x25_neigh
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201104094255.GA4981@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 3:41 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> > 1) When we receive a connection, the x25_rx_call_request function in
-> > af_x25.c does not increase the refcount when it assigns the pointer.
-> > When we disconnect, x25_disconnect is called and the struct's refcount
-> > is decreased without being increased in the first place.
->
-> Yes, this is a problem and should be fixed. As an alternative to your
-> approach, you could also go the way to prevent the call of
-> x25_neigh_put(nb) in x25_lapb_receive_frame() in case of a Call Request.
-> However, this would require more effort.
+On 04.11.20 10:42, osalvador wrote:
+> On Thu, Oct 29, 2020 at 05:27:16PM +0100, David Hildenbrand wrote:
+>> Let's print a warning similar to in arch_add_linear_mapping() instead of
+>> WARN_ON_ONCE() and eventually crashing the kernel.
+>>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: Rashmica Gupta <rashmica.g@gmail.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Mike Rapoport <rppt@kernel.org>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>   arch/powerpc/mm/mem.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+>> index 8a86d81f8df0..685028451dd2 100644
+>> --- a/arch/powerpc/mm/mem.c
+>> +++ b/arch/powerpc/mm/mem.c
+>> @@ -145,7 +145,9 @@ void __ref arch_remove_linear_mapping(u64 start, u64 size)
+>>   	flush_dcache_range_chunked(start, start + size, FLUSH_CHUNK_SIZE);
+>>   
+>>   	ret = remove_section_mapping(start, start + size);
+>> -	WARN_ON_ONCE(ret);
+>> +	if (ret)
+>> +		pr_warn("Unable to remove linear mapping for 0x%llx..0x%llx: %d\n",
+>> +			start, start + size, ret);
+> 
+> I guess the fear is to panic on systems that do have panic_on_warn (not
+> sure how many productions systems have this out there).
 
-Yes, right. I think my approach is easier.
+Exactly.
 
-> > This causes frequent kernel crashes when using AF_X25 sockets.
-> >
-> > 2) When we initiate a connection but the connection is refused by the
-> > remote side, x25_disconnect is called which decreases the refcount and
-> > resets the pointer to NULL. But the x25_connect function in af_x25.c,
-> > which is waiting for the connection to be established, notices the
-> > failure and then tries to decrease the refcount again, resulting in a
-> > NULL-pointer-dereference error.
-> >
-> > This crashes the kernel every time a connection is refused by the
-> > remote
-> > side.
->
-> For this bug I already sent a fix some time ago (last time I sent a
-> RESEND yesterday), but unfortunately it was not merged yet:
-> https://lore.kernel.org/patchwork/patch/1334917/
+> But anyway, being coherent with that, I think you should remove the WARN_ON
+> in hash__remove_section_mapping as well.
 
-I see. Thanks! Hope it will be merged soon!
+Thanks, I'll add a patch doing that.
 
-I'll re-submit my patch without your part after your patch is merged.
+> 
+> Besides that:
+> 
+> Reviewed-by: Oscar Salvador <osalvador@suse.
+> 
+> Not sure if the functions below that also have any sort of WARN_ON.
+> native_hpte_removebolted has a VM_WARN_ON, but that is on
+> CONFIG_DEBUG_VM so does not really matter.
+
+Right. Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
