@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9C32AE6FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A172AE702
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgKKDW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
+        id S1726172AbgKKDXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgKKDW6 (ORCPT
+        with ESMTP id S1726020AbgKKDXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:22:58 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A889C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:22:58 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id x13so748745pfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:22:58 -0800 (PST)
+        Tue, 10 Nov 2020 22:23:30 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F73C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:23:30 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id m13so824924ioq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:23:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B+INKkjIDZT3D1i6UtnttTDRAE8G2FcYmKLz7U0uR9c=;
-        b=JOosOqkxOcZllws4ecN2id5Fe6UwVCj2cPtfVf0pyLIXCSFSSvTSZeGKT3fq/ezVt5
-         KgcY8zcYBIplyi9d9oQ/9QTFuB2YDgE6RmMNJ8o7RYYUguheYDhNU3hp0JNlxNdJtqFz
-         Gexrvs9uU78mNQL9gd3oe+jELMbHQBqZNiY9PEkwkL1dzN7fqCNqK4G8WgiA5lOY6M/Q
-         7GJpfITLytNdp0b1BJUPFd+O23TuN9OryMFMmHWa5BwHsNoWQv9FLDU7JgIUMPZakIW8
-         VZ+6zTHk1hCMqR6GnLIDAlID9LUFMXPI6okp8bEw3p+mDz8KqluLN7dU6g3oQNY7CmrN
-         /mlg==
+        bh=MtCTLPr/nLLPjkd638N9S+CTPL+nfBQ/x6OWapsdMSc=;
+        b=TL0wdX7NjDApkOvujstE3i4F3uawHe37ZQIrUQ5qhGv0zg7FThLK65TVKp91AjchZv
+         XrKLn3g1Fj3ahN2tmbzTiZmUfL+19TYvGenISURXld2/StkpYsSrBz/Y2Wil19SWN4Jz
+         QMs5R/maEnYYDBUr9W3+r1cXuAGzT9XeMorGQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B+INKkjIDZT3D1i6UtnttTDRAE8G2FcYmKLz7U0uR9c=;
-        b=UKiIAZNF05dcDf8OZf+XvucRAmMd5RiMsh/4Jjq8YmGDX0ELBfVWPVx69GtIrgI7iw
-         e3694J3lRF8nu18m011JxR1hf/olTsg1UjrNfDnYF5cmBq+zHSSFPOswVrAuR0WB4eot
-         IY2lRojnKxCs5YgGi2CCauu+a7oxUBuVM80+N13b+MM9yhUyqtyFKttutsgF9t7dMlk+
-         wbv5zjtYodp0k+Daf8aKn+WGXmp4OS6fx0BN9ARq/T+DYPZYU6lOjBKus30o3nwLQguG
-         iKG78Buj79uLt9dMYVDgei1Zp8DSD3Ne/O4Lbn7ukJVpWfQaKhb30RrTe7ahqgLyxl9O
-         Dz5g==
-X-Gm-Message-State: AOAM533OrPz2egEWWRwu2M20UbnUmOm3LlkHazbfdAIv/UfeZbcmKRP0
-        f9FjkpzoD1IGE4BTYNsh1I+mRz975MX2WHOCHVzM8Q==
-X-Google-Smtp-Source: ABdhPJzGT8N4NW+RVlPTeogdZpkCaeOCNCxDbSreds3iADW9boMPn78RQuijNHX62TFpNpPq2MucJDiBiXFCUcLBotI=
-X-Received: by 2002:aa7:9095:0:b029:164:75c4:5d15 with SMTP id
- i21-20020aa790950000b029016475c45d15mr21053662pfa.49.1605064978215; Tue, 10
- Nov 2020 19:22:58 -0800 (PST)
+        bh=MtCTLPr/nLLPjkd638N9S+CTPL+nfBQ/x6OWapsdMSc=;
+        b=jJisN3vYQwcIa9/Q/34EfOMdlXPPms+MZz3NzdRbvfgWVVICheYEb+ScF4YShEzm8r
+         /g8Ke3zB2ZohNu/rggcPh7wxUKd2wpEW98rEWaKe2W1l0r1Z/McvVQyx2R5jtaqDbAzo
+         a84XQ7WqhMtWVpvfuhoDLdJvUuwhXNIdD7yUUYEnh3fCrGv3FnY8mXNYSdaHr2yi3Yyk
+         dFpML696TvUobXKZ2nNhbC6uJOBQ7X1IVUb7jqdhsQplIx7oMYBvpZrOfief7r0GxoAz
+         cdrQba+O2cad2nHy3AGx0fbGf15Icd7ACEGsAvqN6R1gF5jrPgN9iDK+l7APc62YhTQw
+         dT5Q==
+X-Gm-Message-State: AOAM532otMr15mQaikqv9Y6+qW97xAsH08cN9CsnmS/Cxh2VN0zRX+Xu
+        ZyFiHCwyxoviQGY5rV1tz31SwCNhjF2G1w==
+X-Google-Smtp-Source: ABdhPJzIB0pqxWt6FZZATvsWLOEOrI8jiu3mYi/FQJclNgkymZLoXty+HIOX3JuLYF0VAC/1LKE1uA==
+X-Received: by 2002:a6b:c047:: with SMTP id q68mr12621158iof.189.1605065009548;
+        Tue, 10 Nov 2020 19:23:29 -0800 (PST)
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
+        by smtp.gmail.com with ESMTPSA id d14sm330192ila.42.2020.11.10.19.23.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 19:23:28 -0800 (PST)
+Received: by mail-io1-f53.google.com with SMTP id m9so817299iox.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:23:28 -0800 (PST)
+X-Received: by 2002:a5d:89c6:: with SMTP id a6mr10292848iot.69.1605065008201;
+ Tue, 10 Nov 2020 19:23:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-5-songmuchun@bytedance.com> <20201109164825.GA17356@linux>
- <CAMZfGtWxNV874j9io_xcsVm+C6_shrZCw=W9ugJzxrnBpXb_Mw@mail.gmail.com> <877a4620-fa5c-c5b5-8a42-fdd67a869a38@oracle.com>
-In-Reply-To: <877a4620-fa5c-c5b5-8a42-fdd67a869a38@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 11 Nov 2020 11:22:22 +0800
-Message-ID: <CAMZfGtWtd2OKpjTw+PEREeP3xEaAJ0k8KNCAQ226=ifObSOmtw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 04/21] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201110084908.219088-1-tientzu@chromium.org> <3b851462d9bfd914aeb9f5b432e4c076f6c330f3.camel@sipsolutions.net>
+In-Reply-To: <3b851462d9bfd914aeb9f5b432e4c076f6c330f3.camel@sipsolutions.net>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Wed, 11 Nov 2020 11:23:17 +0800
+X-Gmail-Original-Message-ID: <CALiNf29ku1aBiaBEg9ZTe7USSZZiOwnZWW3NKZgSGZ6M+GAX7w@mail.gmail.com>
+Message-ID: <CALiNf29ku1aBiaBEg9ZTe7USSZZiOwnZWW3NKZgSGZ6M+GAX7w@mail.gmail.com>
+Subject: Re: [PATCH] rfkill: Fix use-after-free in rfkill_resume()
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, hdegoede@redhat.com,
+        marcel@holtmann.org,
+        "open list:NETWORKING DRIVERS (WIRELESS)" 
+        <linux-wireless@vger.kernel.org>, netdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 3:40 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Wed, Nov 11, 2020 at 1:35 AM Johannes Berg <johannes@sipsolutions.net> wrote:
 >
-> On 11/9/20 6:42 PM, Muchun Song wrote:
-> > On Tue, Nov 10, 2020 at 12:48 AM Oscar Salvador <osalvador@suse.de> wrote:
-> >>
-> >> On Sun, Nov 08, 2020 at 10:10:56PM +0800, Muchun Song wrote:
-> >>
-> >> Unrelated to this patch but related in general, I am not sure about Mike but
-> >> would it be cleaner to move all the vmemmap functions to hugetlb_vmemmap.c?
-> >> hugetlb code is quite tricky, so I am not sure about stuffing more code
-> >> in there.
-> >>
-> >
-> > I also think that you are right, moving all the vmemmap functions to
-> > hugetlb_vmemmap.c may make the code cleaner.
-> >
-> > Hi Mike, what's your opinion?
+> On Tue, 2020-11-10 at 16:49 +0800, Claire Chang wrote:
+> > If a device is getting removed or reprobed during resume, use-after-free
+> > might happen. For example, h5_btrtl_resume()[drivers/bluetooth/hci_h5.c]
+> > schedules a work queue for device reprobing. During the reprobing, if
+> > rfkill_set_block() in rfkill_resume() is called after the corresponding
+> > *_unregister() and kfree() are called, there will be an use-after-free
+> > in hci_rfkill_set_block()[net/bluetooth/hci_core.c].
 >
-> I would be happy to see this in a separate file.  As Oscar mentions, the
-> hugetlb.c file/code is already somethat difficult to read and understand.
+>
+> Not sure I understand. So you're saying
+>
+>  * something (h5_btrtl_resume) schedules a worker
+>  * said worker run, when it runs, calls rfkill_unregister()
+>  * somehow rfkill_resume() still gets called after this
+>
+> But that can't really be right, device_del() removes it from the PM
+> lists?
 
-Got it. I will do this. Thanks.
+If device_del() is called right before the device_lock() in device_resume()[1],
+it's possible the rfkill device is unregistered, but rfkill_resume is
+still called.
+We actually hit this during the suspend/resume stress test, although it's rare.
 
-> --
-> Mike Kravetz
+I also have a patch with multiple msleep that can 100% reproduce this
+use-after-free. Happy to share here if needed.
 
+[1] https://elixir.bootlin.com/linux/v5.10-rc3/source/drivers/base/power/main.c#L919
 
+Thanks,
+Claire
 
--- 
-Yours,
-Muchun
+>
+>
+> johannes
+>
+>
