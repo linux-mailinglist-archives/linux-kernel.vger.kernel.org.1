@@ -2,133 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3F32AF9C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E022AF9CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgKKUbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:31:01 -0500
-Received: from mail-bn7nam10on2076.outbound.protection.outlook.com ([40.107.92.76]:33552
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725860AbgKKUbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:31:01 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gR1jj9nJMEy3DRCkcvfvijAYU0mFMmps6FDdEeK1NRrqMbPiECNW1xNgno9VopTv6Sr8AR/i+CwsbQAjTWaGvFea3Ib68qYob+eC2tiBb7h7T6qcBN5tgXge+VO9YqUWnArtlI7K2H19CoLRcPyeUxTNClJbFu3qyGJ1ACkXktUeGXUUeE8Gf7qeXRkFZ5x3xv/KMG4dDtl1pk3fPJwV9TCZhGKG61FxDTx5x2xu8kSoPt95DQz09QyqRod5Z03ZxRVfNw8ab4at+ypwoNhZqYSIlouUCXACF7QTy/0JfAi8QLdD39bgxdgUUvlfLc3oHf8bBbS+gDYa98wu5otpyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hbqzNVvpFSCs/tq2OV3CyjkEFPCbU9b8S4+0Q3trQEA=;
- b=nksHpV0HV9TJ1RCfM9SZoGCILdZVTIqt4nuLvYu7xmJ54j1QdSkKmCykw62s6AG9XPnzmFy2qSxuG+UcEdnHHdpT2iT91AKfSAbWHMbcqXWAJLXAlQ1DJ53GVhzAq4e+b8fcAKKX/sHtfGh47Tg3MlbrCYe4dLZ3vVzOGdiyWfllAF8cJjDA2qK+M188f2UG8Ou71usfgts0hqCcVNYRuSg0VGD10IOjjedb0XdeVtln+F37YzRhVMxhk0GznXcsgskD8yqCYmZiaSPX197fsxyjgGonAohVcVTiMDlx0MqnKZ8fesCO+QPRkTrn4xm0pSfWQmV0eH7eB17a9BThyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hbqzNVvpFSCs/tq2OV3CyjkEFPCbU9b8S4+0Q3trQEA=;
- b=0QRM5jEhoe7gP/tiCiSpN821e/db8aYrw4Oy/U03lfaVnW/M7bQ8yVSH8IPjbrtCndyI5SRs46jDrd9VDK9zRMwZIejqstYMwWI/8GlfyE4DEGemI+57LJka8fLHBVTuH4OgcJgnnSouO8IyE3cZ7cEAxse8KIXPyf5Y3emBHZE=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR1201MB0217.namprd12.prod.outlook.com (2603:10b6:4:54::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3541.22; Wed, 11 Nov 2020 20:30:58 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
- 20:30:58 +0000
-Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity
- helpers
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
-        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-References: <20201024213535.443185-20-dwmw2@infradead.org>
- <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
- <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
- <20201110061046.GA7290@nazgul.tnic> <87d00lgu13.fsf@nanos.tec.linutronix.de>
- <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com>
- <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
- <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
- <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org>
- <877dqtgkzb.fsf@nanos.tec.linutronix.de>
- <874klxghwu.fsf@nanos.tec.linutronix.de>
- <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org>
- <87y2j9exk2.fsf@nanos.tec.linutronix.de>
- <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org>
- <d4115cc7-3876-e012-b6ec-c525d608834f@amd.com>
- <87tutwg76j.fsf@nanos.tec.linutronix.de>
- <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
- <87o8k4fcpc.fsf@nanos.tec.linutronix.de>
- <6b44a048de974fb6e2ecb5bf688c122b3107537d.camel@infradead.org>
- <20d99e1f359b448d042d27112e55f8070bf460bb.camel@infradead.org>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <13f8cb3c-713e-c26e-b2ef-4700f9f6ceac@amd.com>
-Date:   Wed, 11 Nov 2020 14:30:55 -0600
+        id S1726479AbgKKUcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:32:00 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12148 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgKKUb7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 15:31:59 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fac4a390000>; Wed, 11 Nov 2020 12:31:54 -0800
+Received: from [10.26.72.124] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
+ 2020 20:31:56 +0000
+Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20201111103847.152721-1-jonathanh@nvidia.com>
+ <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <5409bbb4-d3f9-ccc9-ac3e-6344975bd58e@nvidia.com>
+Date:   Wed, 11 Nov 2020 20:31:54 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-In-Reply-To: <20d99e1f359b448d042d27112e55f8070bf460bb.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA9PR10CA0023.namprd10.prod.outlook.com
- (2603:10b6:806:a7::28) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by SA9PR10CA0023.namprd10.prod.outlook.com (2603:10b6:806:a7::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Wed, 11 Nov 2020 20:30:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b0200e07-e997-49d6-2942-08d88680b247
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0217:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB02173256C8DFEA954923300DECE80@DM5PR1201MB0217.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qXN70k7il12XFzHUAMOvjKaryn+Q+YAul0SV36LWtBrj4D4NFbW4+7bhZUSZotVKEoMW0r/kmTRB4C7qNRQ+SiZdwcn4hWUn4Eaw4shD+ijW/AtWLiQyN7W9J28Um/JzfJPMWGV6qG80JNQ42QC164qN85ZASXeQEX60AAwiyuCfMorSSbkCLh4ZIrD44qW2zLjrRzeTwFWirKPkCBO5rf/CPMa1hHwIrNQvvr5pnqKeHiHdyFD1rkpr3wPYPxGFUwQ/ikAIiSWUMCSEJbUepJvllMSvWvSwUcxxBAOUI+r5+IkPP6xSkHUCmJ7RAAqCHXdwCVBYNnFnd8Kb7sd4csbJ0mRvwtm3yNZTKqmscWG51NrXE3rMDIyNrNS16Dp/NO9kuZADsdJBUS50du6dZqyGhep9kTK3xLH47ywNAJwjXOCOyWOeMyLZ1Ngu4I7CR6Txt1u8vk/PhF85SUcRBg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(2906002)(5660300002)(316002)(4001150100001)(52116002)(86362001)(966005)(478600001)(4326008)(54906003)(956004)(110136005)(2616005)(16576012)(8676002)(4744005)(16526019)(8936002)(6486002)(186003)(26005)(53546011)(66556008)(66476007)(66946007)(36756003)(83380400001)(31686004)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 4DLlsh5VYtufZxGZsM/IHuCgL5kBC8i/DXzGPcYZOJ9cL40wKY+N3VjpcFRI8jWfadR4ZqBfQs0clLHEO+XU/USY9fwkc6Ra6tD198etgRPe0XWnvZESFweW5WW0hzBBOz2V+X8DAjPY7xCpEZfN6PVtQo1xFmbypcm+uNiUn2KBcDmm+T0Xew1tpCzmmoebsmfiqYpop0N8UeiyfqgqXvfmZ3HeQXrPMiZ+o0/Gi83KIaOHmu1+89baDU5d2nl3n+cK+XPS9zEVvRJKGN4pIzzj4v3ABWbVRPDwnyQBl/iZgmtIZa466dA9sWiclkZHoKkmPETwB5q8nPk97h0scH+gQarFjtjzdQu7BQMDKnYXdjHcMxYIy72vIq8+ipkNufDKgNvZTE21yid4wM3G5Ih+s/AEdAkBVAmZw5fXlzseTSbRvV5/9DzmjvcA+I+psY/VkUOWDXYoWwovsmEUQJxtesd04BFN5s+AumYWooWSRFm+UymAt/NQ747XtFeYeybluBhixbt8FJWOfuhKYRJtPKTwf0DTaztEs0KSwzPUG8mVJBtxqKqcCptGkYHEAhtjdjytql8CaAg4l7ftjU6M2uqKn79D/OPJ7JlY7w0J2wmSe0dJvx3v/zMiK88FoclQFZAExSHK4mugo8xDOA==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0200e07-e997-49d6-2942-08d88680b247
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2020 20:30:58.0667
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +qRyHThbJXsQj1aKLgzmlePiyjEiWEa234d2Pq8i6l8B/i7ZCVaN29M6CbH+9KU7GIyshBZks/3Lns4ibVW8lA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0217
+In-Reply-To: <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605126714; bh=9ANYYF/RxveGkqEmqPgH2v4yk5gp3dxoJ5KwqVgeNXk=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=QRdEF8pyuNFSyj2A/dP5cEdifzrb47G+YbmVyV9ebe3BPshIkrNQ8q/QMbJk/Bjs/
+         7ye0VNn8nwekRC6yCNvm/Ts7VlJSfHQ/prp/CVZzgiAvDfnw/qonBCe652kVFw5xuD
+         xFMXCBmtAApNt+RDL45VBoEiOk/sW0gD9sSsRou1B3I3/c4jOJQo1uyvcIgiHzTYr6
+         5nOE6PjtSSKYECrL1a0GfVqwx8Rymfi/AsB2g0JaPcIVuu8fBs4F7aWvG5eAAZwFmk
+         xbGXV4+YkDh9o2XlzF7tOQIxPZ1U8ogcURs4NdwOarQjLi0UenVuRnCmmNmbZaZKQs
+         2ILS1OgganO5g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 6:32 AM, David Woodhouse wrote:
-> On Wed, 2020-11-11 at 10:36 +0000, David Woodhouse wrote:
->> On Wed, 2020-11-11 at 10:46 +0100, Thomas Gleixner wrote:
->>> Looking at it now with brain awake, the XTSUP stuff is pretty much
->>> the same as DMAR, which I didn't realize yesterday. The affinity
->>> notifier muck is not needed when we have a write_msg() function which
->>> twiddles the bits into those other locations.
+
+On 11/11/2020 13:47, Dmitry Osipenko wrote:
+> 11.11.2020 13:38, Jon Hunter =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
+>> (Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
+>> generic CPUFREQ device-tree driver. Since this change CPUFREQ support
+>> on the Tegra20 Ventana platform has been broken because the necessary
+>> device-tree nodes with the operating point information are not populated
+>> for this platform. Fix this by updating device-tree for Venata to
+>> include the operating point informration for Tegra20.
 >>
->> I kind of hate the fact that it's swizzling those bits through invalid
->> MSI messages, so I did it as its own irqdomain using
->> irq_domain_create_hierarchy() directly instead of
->> msi_create_irq_domain().
-> 
-> Please give this a spin:
-> 
-> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/amdvi
+>> Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (T=
+egra30 supported now)")
+>> Cc: stable@vger.kernel.org
+>>
+>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+>> ---
+>>  arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/t=
+egra20-ventana.dts
+>> index b158771ac0b7..055334ae3d28 100644
+>> --- a/arch/arm/boot/dts/tegra20-ventana.dts
+>> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
+>> @@ -3,6 +3,7 @@
+>> =20
+>>  #include <dt-bindings/input/input.h>
+>>  #include "tegra20.dtsi"
+>> +#include "tegra20-cpu-opp.dtsi"
+>> =20
+>>  / {
+>>  	model =3D "NVIDIA Tegra20 Ventana evaluation board";
+>> @@ -592,6 +593,16 @@ clk32k_in: clock@0 {
+>>  		#clock-cells =3D <0>;
+>>  	};
+>> =20
+>> +	cpus {
+>> +		cpu0: cpu@0 {
+>> +			operating-points-v2 =3D <&cpu0_opp_table>;
+>> +		};
+>> +
+>> +		cpu@1 {
+>> +			operating-points-v2 =3D <&cpu0_opp_table>;
+>> +		};
+>> +	};
+>> +
+>>  	gpio-keys {
+>>  		compatible =3D "gpio-keys";
+>> =20
+>>
+>=20
+> This could be wrong to do because CPU voltage is fixed to 1000mV in
+> Ventana's DT, are you sure that higher clock rates don't require higher
+> voltages? What is the CPU process ID and SoC speedo ID on Ventana?
 
-I had trouble cloning your tree for some reason, so just took the top
-three patches and applied them to the tip tree. This all appears to be
-working. I'll let the IOMMU experts take a closer look (adding Suravee).
+I see this in the bootlog ...
 
-Thanks,
-Tom
+[    2.797684] tegra20-cpufreq tegra20-cpufreq: hardware version 0x2 0x2
 
-> 
+> You could easily hook up CPU voltage scaling, please see acer-500 DT and
+> patch [1] for examples of how to set up regulators in DT. But then it
+> shouldn't be a stable patch.
+
+According to the Ventana design guide the CPU voltage range is 0.8-1.0V
+and so it appears to be set to the max. The CPUFREQ test is reporting
+the following ...
+
+cpu: cpufreq: - CPU#0:
+cpu: cpufreq:   - supported governors:
+cpu: cpufreq:     - ondemand *
+cpu: cpufreq:     - performance
+cpu: cpufreq:     - schedutil
+cpu: cpufreq:   - supported rates:
+cpu: cpufreq:     -  216000
+cpu: cpufreq:     -  312000
+cpu: cpufreq:     -  456000
+cpu: cpufreq:     -  608000
+cpu: cpufreq:     -  760000
+cpu: cpufreq:     -  816000
+cpu: cpufreq:     -  912000
+cpu: cpufreq:     - 1000000 *
+cpu: cpufreq: - CPU#1:
+cpu: cpufreq:   - supported governors:
+cpu: cpufreq:     - ondemand *
+cpu: cpufreq:     - performance
+cpu: cpufreq:     - schedutil
+cpu: cpufreq:   - supported rates:
+cpu: cpufreq:     -  216000
+cpu: cpufreq:     -  312000
+cpu: cpufreq:     -  456000
+cpu: cpufreq:     -  608000
+cpu: cpufreq:     -  760000
+cpu: cpufreq:     -  816000
+cpu: cpufreq:     -  912000
+cpu: cpufreq:     - 1000000 *
+
+Cheers
+Jon
+
+--=20
+nvpublic
