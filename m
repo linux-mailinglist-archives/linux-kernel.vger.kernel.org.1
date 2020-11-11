@@ -2,102 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EC02AF3B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8BD2AF3B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgKKOgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:36:35 -0500
-Received: from mx.mylinuxtime.de ([195.201.174.144]:45382 "EHLO
-        mx.mylinuxtime.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKKOgQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:36:16 -0500
-Received: from leda (p200300cf2f10ac00625718fffe7f1598.dip0.t-ipconnect.de [IPv6:2003:cf:2f10:ac00:6257:18ff:fe7f:1598])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S1727076AbgKKOgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:36:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726638AbgKKOgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:36:23 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx.mylinuxtime.de (Postfix) with ESMTPSA id B2CEC14D698;
-        Wed, 11 Nov 2020 15:36:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eworm.de; s=mail;
-        t=1605105368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BKxaBuc3J5CoFYWDsacAntre/4hucpszjqohrCjvMR0=;
-        b=NkfX7BSOw9O5p/ROHBAA4i06H+Tud3ncmZNqZo0TnzwC7wFjnhqUNxlFOuYgJlzhEIoSSW
-        vBA0TRYQb5YwN02I6hz3yPrCt8yHUMVKM7ECQ0QbZYyeLDpjQ/3xQcAznGuMqfxk5KlNCl
-        GeWpf4HHwgOycb6n6mQ+3j4BX0T1O4g=
-Date:   Wed, 11 Nov 2020 15:36:04 +0100
-From:   Christian Hesse <list@eworm.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-Subject: Re: Linux 5.9.8
-Message-ID: <20201111153604.6a4fb08c@leda>
-In-Reply-To: <1605041246232108@kroah.com>
-References: <1605041246232108@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Face: %O:rCSk<c"<MpJ:yn<>HSKf7^4uF|FD$9$I0}g$nbnS1{DYPvs#:,~e`).mzj\$P9]V!WCveE/XdbL,L!{)6v%x4<jA|JaB-SKm74~Wa1m;|\QFlOg>\Bt!b#{;dS&h"7l=ow'^({02!2%XOugod|u*mYBVm-OS:VpZ"ZrRA4[Q&zye,^j;ftj!Hxx\1@;LM)Pz)|B%1#sfF;s;,N?*K*^)
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAGFBMVEUZFRFENy6KVTKEd23CiGHeqofJvrX4+vdHgItOAAAACXBIWXMAAA3XAAAN1wFCKJt4AAACUklEQVQ4y2VUTZeqMAxNxXG2Io5uGd64L35unbF9ax0b3OLxgFs4PcLff0lBHeb1QIq5uelNCEJNq/TIFGyeC+iugH0WJr+B1MvzWASpuP4CYHOB0VfoDdddwA7OIFQIEHjXDiCtV5e9QX0WMu8AG0mB7g7WP4GqeqVdsi4vv/5kFBvaF/zD7zDquL4DxbrDGDyAsgNYOsJOYzth4Q9ZF6iLV+6TLAT1pi2kuvgAtZxSjoG8cL+8vIn251uoe1OOEWwbIPU04gHsmMsoxyyhYsD2FdIigF1yxaVbBuSOCAlCoX324I7wNMhrO1bhOLsRoA6DC6wQ5eQiSG5BiWQfM4gN+uItQTRDMaJUhVbGyKWCuaaUGSVFVKpl4PdoDn3yY8J+YxQxyhlHfoYOyPgyDcO+cSQK6Bvabjcy2nwRo3pxgA8jslnCuYw23ESOzHAPYwo4ITNQMaOO+RGPEGhSlPEZBh2jmBEjQ5cKbxmr0ruAe/WCriUxW76I8T3h7vqY5VR5wXLdERodg2rHEzdxxk5KpXTL4FwnarvndKM5/MWDY5CuBBdQ+3/0ivsUJHicuHd+Xh3jOdBL+FjSGq4SPCwco+orpWlERRTNo7BHCvbNXFVSIQMp+P5QsIL9upmr8kMTUOfxEHoanwzKRcNAe76WbjBwex/RkdHu48xT5YqP70DaMOhBcTHmAVDxLaBdle93oJy1QKFUh2GXT4am+YH/GGel1CeI98GdMXsytjCKIq/9cMrlgxFCROv+3/BU1fijNpcVD6DxE8VfLBaxUGr1D5usgDYdjwiPAAAAAElFTkSuQmCC
+        by mail.kernel.org (Postfix) with ESMTPSA id 45C062067D;
+        Wed, 11 Nov 2020 14:36:11 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 09:36:09 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: Re: [RFC] Are you good with Lockdep?
+Message-ID: <20201111093609.1bd2b637@gandalf.local.home>
+In-Reply-To: <20201111105441.GA78848@gmail.com>
+References: <20201111050559.GA24438@X58A-UD3R>
+        <20201111105441.GA78848@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+y0TKh8XEh5h5qBoGSonJA/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Authentication-Results: mx.mylinuxtime.de;
-        auth=pass smtp.auth=mail@eworm.de smtp.mailfrom=list@eworm.de
-X-Rspamd-Server: mx
-X-Spam-Status: No, score=-6.52
-X-Stat-Signature: ugmtes5xsa8aebysfngbkjchx6ki44ej
-X-Rspamd-Queue-Id: B2CEC14D698
-X-Spamd-Result: default: False [-6.52 / 15.00];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.08)[-1.026];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         DKIM_SIGNED(0.00)[];
-         NEURAL_HAM_SHORT(-0.75)[-0.745];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         ASN(0.00)[asn:3320, ipnet:2003::/19, country:DE];
-         BAYES_HAM(-3.00)[99.99%]
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+y0TKh8XEh5h5qBoGSonJA/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 11 Nov 2020 11:54:41 +0100
+Ingo Molnar <mingo@kernel.org> wrote:
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> on Tue, 2020/11/10 21:56:
-> I'm announcing the release of the 5.9.8 kernel.
+> * Byungchul Park <byungchul.park@lge.com> wrote:
+> 
+> > PROBLEM 1) First of all, Lockdep gets disabled on the first detection.  
+> 
+> Lockdep disabling itself after the first warning was an intentional 
+> and deliberate design decision. (See more details below.)
+> 
 
-This is not yet linked on kernel.org - same goes for lts version 5.4.77.
-I guess this is not by intention, no?
---=20
-main(a){char*c=3D/*    Schoene Gruesse                         */"B?IJj;MEH"
-"CX:;",b;for(a/*    Best regards             my address:    */=3D0;b=3Dc[a+=
-+];)
-putchar(b-1/(/*    Chris            cc -ox -xc - && ./x    */b/42*2-3)*42);}
+[..]
 
---Sig_/+y0TKh8XEh5h5qBoGSonJA/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> Making the code simpler is always welcome, but I disagree with 
+> enabling multiple warnings, for the technical reasons outlined above.
 
------BEGIN PGP SIGNATURE-----
+I 100% agree with Ingo. I wish we could stop *all* warnings after the first
+one. The number of times people sent me bug reports with warnings without
+showing me previous warnings that caused me to go on wild goose chases is
+too many to count. The first warning is the *only* thing I look at.
+Anything after that is likely to be caused by the integrity of the system
+being compromised by the first bug.
 
-iQEzBAEBCAAdFiEEXHmveYAHrRp+prOviUUh18yA9HYFAl+r9tQACgkQiUUh18yA
-9HYZIAf+N33UNVl56xErSj7Gi9w60FbswyhwUB7KP+tP8PWFzkzGu7JjFn4pIGjp
-7kfj59I5Ijhmtka8/x2R1XWu9S8mlppha3dzyQPG9ZtmISufvLMIBARC03Nwu5i/
-we6XpmqeYOtDzhcrR7DX3xEY1gbuxWRnl28sQ3vFIsWuy+hbUG3mxrG9O4A0RnNG
-4AnSk6pSq7SKOnWyvA5bOaNPQpChhrWOvowCncCOGShqD+WqAc3ZO5nCprTqRwNH
-2lt4o/HEFcIUflj169NZo551tzz5FAa2EfT6QM41sffTzcNv+ttL4FAd8XZ7QY1g
-81J+UUVf9i/w421Y72y0BIYHImgMGg==
-=VxMw
------END PGP SIGNATURE-----
+And this is especially true with lockdep, because lockdep only detects the
+deadlock, it doesn't tell you which lock was the incorrect locking.
 
---Sig_/+y0TKh8XEh5h5qBoGSonJA/--
+For example. If we have a locking chain of:
+
+ A -> B -> D
+
+ A -> C -> D
+
+Which on a correct system looks like this:
+
+ lock(A)
+ lock(B)
+ unlock(B)
+ unlock(A)
+
+ lock(B)
+ lock(D)
+ unlock(D)
+ unlock(B)
+
+ lock(A)
+ lock(C)
+ unlock(C)
+ unlock(A)
+
+ lock(C)
+ lock(D)
+ unlock(D)
+ unlock(C)
+
+which creates the above chains in that order.
+
+But, lets say we have a bug and the system boots up doing:
+
+ lock(D)
+ lock(A)
+ unlock(A)
+ unlock(D)
+
+which creates the incorrect chain.
+
+ D -> A
+
+
+Now you do the correct locking:
+
+ lock(A)
+ lock(B)
+
+Creates A -> B
+
+ lock(A)
+ lock(C)
+
+Creates A -> C
+
+ lock(B)
+ lock(D)
+
+Creates B -> D and lockdep detects:
+
+ D -> A -> B -> D
+
+and gives us the lockdep splat!!!
+
+But we don't disable lockdep. We let it continue...
+
+ lock(C)
+ lock(D)
+
+Which creates C -> D
+
+Now it explodes with D -> A -> C -> D
+
+Which it already reported. And it can be much more complex when dealing
+with interrupt contexts and longer chains. That is, perhaps a different
+chain had a missing irq disable, now you might get 5 or 6 more lockdep
+splats because of that one bug.
+
+The point I'm making is that the lockdep splats after the first one may
+just be another version of the same bug and not a new one. Worse, if you
+only look at the later lockdep splats, it may be much more difficult to
+find the original bug than if you just had the first one. Believe me, I've
+been down that road too many times!
+
+And it can be very difficult to know if new lockdep splats are not the same
+bug, and this will waste a lot of developers time!
+
+This is why the decision to disable lockdep after the first splat was made.
+There were times I wanted to check locking somewhere, but is was using
+linux-next which had a lockdep splat that I didn't care about. So I
+made it not disable lockdep. And then I hit this exact scenario, that the
+one incorrect chain was causing reports all over the place. To solve it, I
+had to patch the incorrect chain to do raw locking to have lockdep ignore
+it ;-) Then I was able to test the code I was interested in.
+
+> 
+> > PROBLEM 2) Lockdep forces us to emulate lock acquisition for non-lock.  
+> 
+> >    I have the patch set. Let me share it with you in a few days.  
+> 
+> Not sure I understand the "problem 2)" outlined here, but I'm looking 
+> forward to your patchset!
+> 
+
+I think I understand it. For things like completions and other "wait for
+events" we have lockdep annotation, but it is rather awkward to implement.
+Having something that says "lockdep_wait_event()" and
+"lockdep_exec_event()" wrappers would be useful.
+
+-- Steve
