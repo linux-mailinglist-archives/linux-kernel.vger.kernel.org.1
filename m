@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465D32AE93B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEFC2AE944
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 07:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgKKGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 01:52:06 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:44071 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725903AbgKKGwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 01:52:05 -0500
-Received: from [192.168.0.2] (ip5f5af465.dynamic.kabel-deutschland.de [95.90.244.101])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id BF24B20646221;
-        Wed, 11 Nov 2020 07:52:01 +0100 (CET)
-Subject: Re: [PATCH 1/3] md: improve variable names in md_flush_request()
-To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>, song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-References: <20201111051658.18904-1-pankaj.gupta.linux@gmail.com>
- <20201111051658.18904-2-pankaj.gupta.linux@gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <ee573db1-33d0-b210-7205-4736de007488@molgen.mpg.de>
-Date:   Wed, 11 Nov 2020 07:52:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1725955AbgKKG4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 01:56:43 -0500
+Received: from muru.com ([72.249.23.125]:48028 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725882AbgKKG4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 01:56:42 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 241D88126;
+        Wed, 11 Nov 2020 06:56:44 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 08:56:35 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        v.narang@samsung.com, a.sahrawat@samsung.com,
+        Marc Zyngier <maz@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
+Message-ID: <20201111065635.GO26857@atomide.com>
+References: <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
+ <20201021124542.GL1551@shell.armlinux.org.uk>
+ <20201021125740.GM1551@shell.armlinux.org.uk>
+ <CAK8P3a3s9JJpeBpH38utw9aA1VaEkcBqKEGtwcmoP1zS6xDj5Q@mail.gmail.com>
+ <20201109144549.GA26857@atomide.com>
+ <CAK8P3a2tM1Gzy7Y98tiYGoNcLye77je_UCtTUQYcP2UuRNRKwQ@mail.gmail.com>
+ <20201110091904.GC26857@atomide.com>
+ <CAK8P3a3dZMnEV-Sg_ep6_dQ3XEf73fEpCF0T03255KxMrJZH8g@mail.gmail.com>
+ <20201110120422.GE26857@atomide.com>
+ <CAK8P3a2Hh=-VtvCiztNDZvW=ssx5zbvbccYcLXSNUt=xF6mwwQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111051658.18904-2-pankaj.gupta.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2Hh=-VtvCiztNDZvW=ssx5zbvbccYcLXSNUt=xF6mwwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Pankaj,
-
-
-Thank you for the cleanups.
-
-Am 11.11.20 um 06:16 schrieb Pankaj Gupta:
-> From: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+* Arnd Bergmann <arnd@kernel.org> [201110 13:35]:
+> On Tue, Nov 10, 2020 at 1:06 PM Tony Lindgren <tony@atomide.com> wrote:
 > 
->   This patch improves readability by using better variable names
->   in flush request coalescing logic.
-
-Please do not indent the commit message.
-
-> Signed-off-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-> ---
->   drivers/md/md.c | 8 ++++----
->   drivers/md/md.h | 6 +++---
->   2 files changed, 7 insertions(+), 7 deletions(-)
+> > > Are these actually ARMv6? Most ARM11 cores you'd come across
+> > > in practice are ARMv6K (ARM1136r1, ARM1167, ARM11MPCore),
+> > > in particular every SoC that has any mainline support except for
+> > > the ARM1136r0 based OMAP2 and i.MX3.
+> >
+> > I've been only using smp_on_up for the ARMv6 ARM1136r0 variants
+> > for omap2, no SMP on those.
 > 
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 98bac4f304ae..167c80f98533 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -639,7 +639,7 @@ static void md_submit_flush_data(struct work_struct *ws)
->   	 * could wait for this and below md_handle_request could wait for those
->   	 * bios because of suspend check
->   	 */
-> -	mddev->last_flush = mddev->start_flush;
-> +	mddev->prev_flush_start = mddev->start_flush;
->   	mddev->flush_bio = NULL;
->   	wake_up(&mddev->sb_wait);
->   
-> @@ -660,13 +660,13 @@ static void md_submit_flush_data(struct work_struct *ws)
->    */
->   bool md_flush_request(struct mddev *mddev, struct bio *bio)
->   {
-> -	ktime_t start = ktime_get_boottime();
-> +	ktime_t req_start = ktime_get_boottime();
->   	spin_lock_irq(&mddev->lock);
->   	wait_event_lock_irq(mddev->sb_wait,
->   			    !mddev->flush_bio ||
-> -			    ktime_after(mddev->last_flush, start),
-> +			    ktime_after(mddev->prev_flush_start, req_start),
->   			    mddev->lock);
-> -	if (!ktime_after(mddev->last_flush, start)) {
-> +	if (!ktime_after(mddev->prev_flush_start, req_start)) {
->   		WARN_ON(mddev->flush_bio);
->   		mddev->flush_bio = bio;
->   		bio = NULL;
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index ccfb69868c2e..2292c847f9dd 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -495,9 +495,9 @@ struct mddev {
->   	 */
->   	struct bio *flush_bio;
->   	atomic_t flush_pending;
-> -	ktime_t start_flush, last_flush; /* last_flush is when the last completed
-> -					  * flush was started.
-> -					  */
-> +	ktime_t start_flush, prev_flush_start; /* prev_flush_start is when the previous completed
-> +						* flush was started.
-> +						*/
+> Obviously all SMP hardware is ARMv6K, the only question I raised
+> in point "c)" is what we would lose by making ARMv6 (ARM1136r0)
+> support and SMP mutually exclusive in a kernel configuration, and
+> I suppose the answer remains "testing".
 
-With the new variable name, the comment could even be removed. ;-)
+Agreed that is probably the biggest reason to keep it at this point.
 
->   	struct work_struct flush_work;
->   	struct work_struct event_work;	/* used by dm to report failure event */
->   	mempool_t *serial_info_pool;
+Regards,
 
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-
-
-Kind regards,
-
-Paul
+Tony
