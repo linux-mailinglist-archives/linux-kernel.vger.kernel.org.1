@@ -2,179 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60E12AF03B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753802AF03E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgKKMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:04:32 -0500
-Received: from mga05.intel.com ([192.55.52.43]:55451 "EHLO mga05.intel.com"
+        id S1726339AbgKKMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:06:38 -0500
+Received: from mga07.intel.com ([134.134.136.100]:45731 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgKKMEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:04:10 -0500
-IronPort-SDR: hdz8eBAMtkccSYU5OiO4XVtQSK8MoyQ5OE4Tvew+R6CR6FEcxTnkU8q9rOSMK3YerWcd8MsEH3
- PmdqX86Y07tg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="254844004"
+        id S1726039AbgKKMGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 07:06:33 -0500
+IronPort-SDR: GMXVsDfKUZe5HfKcyl7krMlILe4eGj74uynfVEHqt6cpRtobhKgxfAiPMaF6rkJo5HGFD6C3iq
+ IDNTWi7AbNrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="234301747"
 X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="254844004"
+   d="scan'208";a="234301747"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 04:03:57 -0800
-IronPort-SDR: fO+BUqfpmmbhOYeDVhhKxSDQAe+b9o1m/pzazh7Y8fAnCDACqS3w5ntFRFVAxVYh3vIxza91wZ
- 1a/JtVz3avyg==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 04:06:29 -0800
+IronPort-SDR: ScIim/sEC/nZNKBb5SJf+414caJvTxBsbhaGnh0xIJJFKTBvrcCJHA6n/scFNBUDotC7WptoSf
+ bgtxbUBVbTqQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="541764303"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 04:03:52 -0800
-Date:   Wed, 11 Nov 2020 20:03:48 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v5 07/17] virt: acrn: Introduce an ioctl to set vCPU
- registers state
-Message-ID: <20201111120348.GI17702@shuo-intel.sh.intel.com>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-8-shuo.a.liu@intel.com>
- <20201109170940.GA2013864@kroah.com>
- <20201110131419.GG17702@shuo-intel.sh.intel.com>
- <X6qpovz2TVpvZjDh@kroah.com>
- <20201111095431.GH17702@shuo-intel.sh.intel.com>
- <X6u82BylaUR8nZec@kroah.com>
+   d="scan'208";a="356601985"
+Received: from lkp-server02.sh.intel.com (HELO 5b2c7e53fe46) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Nov 2020 04:06:26 -0800
+Received: from kbuild by 5b2c7e53fe46 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcotO-0000AZ-74; Wed, 11 Nov 2020 12:06:26 +0000
+Date:   Wed, 11 Nov 2020 20:05:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ dc824eb898534cd8e34582874dae3bb7cf2fa008
+Message-ID: <5fabd3a4.avHR84HLdLqf7F1U%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X6u82BylaUR8nZec@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 11.Nov'20 at 11:28:40 +0100, Greg Kroah-Hartman wrote:
->On Wed, Nov 11, 2020 at 05:54:31PM +0800, Shuo A Liu wrote:
->> On Tue 10.Nov'20 at 15:54:26 +0100, Greg Kroah-Hartman wrote:
->> > On Tue, Nov 10, 2020 at 09:14:19PM +0800, Shuo A Liu wrote:
->> > > > And there really is no validation of
->> > > > any fields?
->> > >
->> > > Yes. Because HSM driver has little knowledge to do the validation.
->> >
->> > What is "HSM driver"?  And you all are ready for fuzzers to break this
->> > into small pieces, right?  No validation of any input parameters feels
->> > really really wrong.  Best of luck!
->>
->> This driver is HSM (Hypervisor Service Module) driver.
->> Take this hypercall for example. The register values are set by user, we
->> can do nothing to verify them. If the values are wrong, the VM will
->> crash and the hypervisor will handle that.
->
->Ah, nice, so you are creating a situation where any user can crash the
->VM, what can go wrong :(
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/core
+branch HEAD: dc824eb898534cd8e34582874dae3bb7cf2fa008  sched/fair: Dissociate wakeup decisions from SD flag value
 
-Not any user, only the one who create the VM. Others cannot access the
-same VM. Let me list a piece of pesudo code of the device usage:
+elapsed time: 1103m
 
-  fd = open the /dev/acrn_hsm, HSM driver binds a VM with the fd
-  ioctl (fd, CREATE_VM, SET_VCPU_REGS, START_VM ...)
-  close fd
+configs tested: 117
+configs skipped: 2
 
-The one who create the VM should have full control of the VM.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
->> > > >
->> > > > Is there a pointer to a public document for all of these structures
->> > > > somewhere?
->> > >
->> > > Unfortunately, no. I have added some documents for some strutures
->> > > in the code via kernel-doc format.
->> >
->> > Is this not the hypervisor that this code is for:
->> > 	https://projectacrn.org/
->> > ?
->> >
->> > If not, what is this thing?
->> >
->> > If so, how is there not documentation for it?
->>
->> Oh, yes. We have the structures documentation on the website. Pls refer
->> https://projectacrn.github.io/latest/api/hypercall_api.html#
->> I meant that some fields of structures might be lack of explanation.
->
->Please work on the documentation of the fields, otherwise it doesn't
->really make much sense what is happening here, right?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          polaris_defconfig
+powerpc                      pcm030_defconfig
+xtensa                    xip_kc705_defconfig
+arm                            hisi_defconfig
+arm                          badge4_defconfig
+sh                           se7780_defconfig
+powerpc                     tqm8541_defconfig
+arm                          pcm027_defconfig
+sh                        dreamcast_defconfig
+sh                     sh7710voipgw_defconfig
+sh                          landisk_defconfig
+mips                           rs90_defconfig
+powerpc                       eiger_defconfig
+arm                          tango4_defconfig
+mips                          ath25_defconfig
+powerpc                   bluestone_defconfig
+sh                         ap325rxa_defconfig
+powerpc                      bamboo_defconfig
+sh                            shmin_defconfig
+powerpc                     tqm8540_defconfig
+sh                          r7780mp_defconfig
+powerpc                       ebony_defconfig
+arm                          lpd270_defconfig
+powerpc                     ppa8548_defconfig
+m68k                            q40_defconfig
+arc                      axs103_smp_defconfig
+x86_64                           alldefconfig
+arm                   milbeaut_m10v_defconfig
+arm                         nhk8815_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201110
+x86_64               randconfig-a005-20201110
+x86_64               randconfig-a004-20201110
+x86_64               randconfig-a002-20201110
+x86_64               randconfig-a006-20201110
+x86_64               randconfig-a001-20201110
+i386                 randconfig-a006-20201110
+i386                 randconfig-a005-20201110
+i386                 randconfig-a002-20201110
+i386                 randconfig-a001-20201110
+i386                 randconfig-a003-20201110
+i386                 randconfig-a004-20201110
+i386                 randconfig-a006-20201111
+i386                 randconfig-a005-20201111
+i386                 randconfig-a002-20201111
+i386                 randconfig-a001-20201111
+i386                 randconfig-a003-20201111
+i386                 randconfig-a004-20201111
+x86_64               randconfig-a015-20201111
+x86_64               randconfig-a011-20201111
+x86_64               randconfig-a014-20201111
+x86_64               randconfig-a013-20201111
+x86_64               randconfig-a016-20201111
+x86_64               randconfig-a012-20201111
+i386                 randconfig-a012-20201110
+i386                 randconfig-a014-20201110
+i386                 randconfig-a012-20201111
+i386                 randconfig-a014-20201111
+i386                 randconfig-a016-20201111
+i386                 randconfig-a011-20201111
+i386                 randconfig-a015-20201111
+i386                 randconfig-a013-20201111
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Right. We will try to enrich them.
+clang tested configs:
+x86_64               randconfig-a015-20201110
+x86_64               randconfig-a011-20201110
+x86_64               randconfig-a014-20201110
+x86_64               randconfig-a013-20201110
+x86_64               randconfig-a016-20201110
+x86_64               randconfig-a012-20201110
 
->
->Along these lines, where is the userspace code that makes all of these
->ioctls?  Surely the fields must be documented there, right?
-
-A userspace tool uses the ioctls, you can find the source from:
-https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c
-There is a bit difference with the version i posted as i did some 
-polish for upstream.
-
->
->> > > > > +	struct acrn_regs	vcpu_regs;
->> > > > > +} __attribute__((aligned(8)));
->> > > >
->> > > > What does the alignment do here?
->> > >
->> > > The hypervisor wants to access aligned data block to improve the
->> > > efficiency. Currently, the hypervisor only runs on x86_64 platform.
->> >
->> > That's nice, but what do you think that adding this attribute to a
->> > structure provides you?  Have you tested this really is doing what you
->> > think it is doing?
->>
->> It could make the compiler put the data structure at aligned address.
->
->Are you sure this is the correct way to do that?
-
-I tried the attribute it works.
-
-test.c:
-
-struct foo_256_aligned {
-	int a;
-	unsigned char b;
-} __attribute__((aligned(256)));
-
-struct foo {
-	int a;
-	unsigned char b;
-};
-int main(int argc, char** argv) {
-	struct foo_256_aligned a;
-	struct foo b;
-	printf("%p %p\n", &a, &b);
-}
-
-# gcc -o test test.c && ./test
-0x7ffe2af04b00 0x7ffe2af04af8
-
->
->> In the kernel the structures are almost from kmalloc, so the attribute
->> might be not meaningful. But in the hypervisor, there are many such data
->> structures in stack or in static pool, this attribute can make sure the
->> data structures are located at the aligned address.
->
->This is kernel data, not hypervisor data, in kernel memory.  If you
->require the hypervisor to get the structures at a specific alignment in
->memory, you better check that in the kernel code, otherwise how can you
->ensure it?
-
-Oh, this is a public header file which will be used by the hypervisor as
-well. For kernel data from kmalloc, it should be also ok even if it
-isn't 8 bytes aligned. The hypervisor will copy them if need keep
-persistent.
-
-Thanks
-shuo
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
