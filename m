@@ -2,89 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0F92AFB7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053E92AFB88
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 23:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgKKWjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 17:39:35 -0500
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:36052 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727162AbgKKWhd (ORCPT
+        id S1727047AbgKKWns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 17:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbgKKWln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:37:33 -0500
-Received: by mail-oo1-f66.google.com with SMTP id l20so837879oot.3;
-        Wed, 11 Nov 2020 14:37:32 -0800 (PST)
+        Wed, 11 Nov 2020 17:41:43 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D40EC0401C6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:41:04 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f23so4997444ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ALVcAvrDAuBZ3IPCrkjPwHAX8+DNa5pqM0afUjn5X6s=;
+        b=rTT49AnkhNr487K9n5NKwYO9WMUE3MNY/UrxCB1TueO1d+BsQebe1bVAjto6CnRmk/
+         RDpD3FTxsnpbumIEQX0xW8WRxu+N8dbL7+UlwJuliNYW4tOrjIHEsijjBDMt5SiFkT7W
+         qIC8M6dcNADqftbsDDTwdltE4fVgS48XJPqta990E5jyRjX44U9fYqfo3bpsnhM2g0J7
+         eynDKGo1p6EV/6yF+gGpA1ZpwHDZOUAKO9aCvylNPSLobnovjeE+6vOb7pc4GrNqOJdL
+         VpWgI5+VW1m4VWGcBZwG83xjGz4jrrCYOWJBRZrRhJgpclGLGZV4RXEKWrc44rurwU4I
+         eK6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i7Ry0yhfayXC/BqLVWYKkth2SuWU6ba0AdxpS9Zg0gs=;
-        b=WmjoQ5nPny4xvqrbMbNoblhBL+IzZdbFKJhid8Fp6VouqLx3qGnKNfvxnWL1nDu1e7
-         ar4bu1d9HAmrk+Dn+V93iZuCc0HR5Yxm2wjM1N5ctF0CLAFjy722dsXLNIlhxBqI5IHV
-         7q2bBuYqQV+bKN6M8Onh0/6baiWmpww9pGKGJbaFIy2PH+NlesTsjc89xUqYpPjGG9pD
-         CUnCMpWxO8+vVe4je+VJdr0f0EH5hfJKacbb8+wAR5dhTztETfoCQpTd7h56hVhPyJgQ
-         G5M3CgII2m3wyDGvRyKaDJ4rhKKsST9K2N9+BokPExzXaJyT+x45rykNWymHklhLhSSn
-         z7ig==
-X-Gm-Message-State: AOAM5301TrPo57l7cibYiy0vQkeyg/niYevmN0ajdtCID6wTeIL4paZ7
-        rR0Q+9rqQui462T6ysglUw==
-X-Google-Smtp-Source: ABdhPJxZdYi7/q5dK+NoVtMT82epFre5O3KgLm3TlKYLSNx0m1CV3kuNyQfGQ22OBbks2Ii+zS3/Zg==
-X-Received: by 2002:a4a:a445:: with SMTP id w5mr14003746ool.63.1605134252531;
-        Wed, 11 Nov 2020 14:37:32 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d202sm720330oig.3.2020.11.11.14.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 14:37:31 -0800 (PST)
-Received: (nullmailer pid 2170567 invoked by uid 1000);
-        Wed, 11 Nov 2020 22:37:30 -0000
-Date:   Wed, 11 Nov 2020 16:37:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        Scott Branden <sbranden@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Kurt Kanzenbach <kurt@kmk-computers.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ray Jui <rjui@broadcom.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Subject: Re: [PATCH 10/10] dt-bindings: net: dsa: b53: Add YAML bindings
-Message-ID: <20201111223730.GA2169778@bogus>
-References: <20201110033113.31090-1-f.fainelli@gmail.com>
- <20201110033113.31090-11-f.fainelli@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ALVcAvrDAuBZ3IPCrkjPwHAX8+DNa5pqM0afUjn5X6s=;
+        b=KfSse7r3ScilV1P4F8mtx5NgjRry4+9xuelCVsmdtgi9JjsHAX+rPCK8SkiHtlyBFj
+         jIJ6Q1PTztYHZ52zmdjxqHaE4W+PagioUf0oJ4YkUVWiBNlKED0CcdoczAGM2X5QLuQo
+         Mb+ycIpVlNEYIDKHY1MVbsmj92JFhQwJGwnb/71IjtUnQJ0hwfe+PlQLEa93EohvqmlW
+         Gtt37NWAVoxZYiiXMsY0nJ8/je7HLCMrQjSolTgl9X/nwmOnas7JPeTtn2c0YsSiZve1
+         e5S5WA+1UgkKsd/lNf9ze51UX5re7VRTo8AUf5j2rRBBjAMeWBV/Dr3v4hy/xcqyRZyn
+         8U+A==
+X-Gm-Message-State: AOAM532XCJw4pGOBiw7NnY9r9QClgNN8Lp5leTjC7UC3on7kZWT9ROv6
+        PzTAyAqoFIxtNoCQV2IDDjjDkiZnUW9n24P3AkxomQ==
+X-Google-Smtp-Source: ABdhPJxZkk2CPz2+JgnqesQh/6Q2toSIuomPC2gF0BhYxxkrw/FgNoCUwNXohjnwegJoJqNJZnPv//TQH98s+vGiwVw=
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr25980011ejb.264.1605134462866;
+ Wed, 11 Nov 2020 14:41:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110033113.31090-11-f.fainelli@gmail.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-4-ben.widawsky@intel.com> <20201111071231.GC7829@infradead.org>
+ <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com> <4a8b5a64-7ba0-a275-744f-6642f98e2213@infradead.org>
+In-Reply-To: <4a8b5a64-7ba0-a275-744f-6642f98e2213@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 11 Nov 2020 14:40:52 -0800
+Message-ID: <CAPcyv4gPwNj+aaRs++hxSxJke8H476hhppcn84t3KUBr0Ff2og@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Nov 2020 19:31:13 -0800, Florian Fainelli wrote:
-> From: Kurt Kanzenbach <kurt@kmk-computers.de>
-> 
-> Convert the b53 DSA device tree bindings to YAML in order to allow
-> for automatic checking and such.
-> 
-> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Kurt Kanzenbach <kurt@kmk-computers.de>
-> ---
->  .../devicetree/bindings/net/dsa/b53.txt       | 149 -----------
->  .../devicetree/bindings/net/dsa/b53.yaml      | 249 ++++++++++++++++++
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 250 insertions(+), 150 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/dsa/b53.txt
->  create mode 100644 Documentation/devicetree/bindings/net/dsa/b53.yaml
-> 
+On Wed, Nov 11, 2020 at 1:42 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 11/11/20 9:17 AM, Dan Williams wrote:
+> > On Tue, Nov 10, 2020 at 11:12 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >>
+> >> On Tue, Nov 10, 2020 at 09:43:50PM -0800, Ben Widawsky wrote:
+> >>> +config CXL_MEM
+> >>> +        tristate "CXL.mem Device Support"
+> >>> +        depends on PCI && CXL_BUS_PROVIDER != n
+> >>
+> >> depend on PCI && CXL_BUS_PROVIDER
+> >>
+> >>> +        default m if CXL_BUS_PROVIDER
+> >>
+> >> Please don't set weird defaults for new code.  Especially not default
+> >> to module crap like this.
+> >
+> > This goes back to what people like Dave C. asked for LIBNVDIMM / DAX,
+> > a way to blanket turn on a subsystem without needing to go hunt down
+> > individual configs. All of CXL is "default n", but if someone turns on
+> > a piece of it they get all of it by default. The user can then opt-out
+> > on pieces after that first opt-in. If there's a better way to turn on
+> > suggested configs I'm open to switch to that style. As for the
+> > "default m" I was worried that it would be "default y" without the
+> > specificity, but I did not test that... will check. There have been
+> > times when I wished that distros defaulted bleeding edge new enabling
+> > to 'm' and putting that default in the Kconfig maybe saves me from
+> > needing to file individual config changes to distros after the fact.
+>
+> What we as developers put into mainline kernel Kconfig files has nothing
+> to do with what distros use in their distro config files.
+> Or at least it shouldn't.  Maybe your experience has been different.
 
-With the rename (don't forget $id):
+I agree with that sentiment, but walk it back through the requirement
+I mentioned above... *if* we want a top-level CXL option (default n)
+that goes and enables many CXL sub-options the default for those
+sub-options is something that needs to be listed in the Kconfig. 'm'
+is more flexible than 'y', so if a user wants CXL at all, and doesn't
+care about how, I'd prefer it's 'm' rather than 'y'.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I have had to go submit distro config fixes when Kconfig defaulted to
+'y' when 'm' was available, and the reasoning for why it was 'y' was
+"oh, that was the Kconfig default when I flipped this other option".
+
+
+> >>> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> >>
+> >> Please don't use '//' for anything but the SPDX header.
+> >
+> > Ok, I find // following by /* */ a bit ugly, but I don't care enough to fight.
+> >
+>
+> Hm, it's not in coding-style AFAICT but Linus has OK-ed C99 style comments:
+> http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
+>
+>
+> >>> +MODULE_AUTHOR("Intel Corporation");
+> >>
+> >> A module author is not a company.
+> >
+> > At least I don't have a copyright assignment clause, I don't agree
+> > with the vanity of listing multiple people here especially when
+> > MAINTAINERS has the contact info, and I don't want to maintain a list
+> > as people do drive-by contributions and we need to figure out at what
+> > level of contribution mandates a new MODULE_AUTHOR line. Now, that
+> > said I would be ok to duplicate the MAINTAINERS as MODULE_AUTHOR
+> > lines, but I otherwise expect MAINTAINERS is the central source for
+> > module contact info.
+>
+> Sure, MAINTAINERS is fine, but the MODULE_AUTHOR() above provides
+> no useful information.
+> Even saying (made up) linux-devel@linux.intel.com would be slightly better,
+> but some kind of contact info would be great. Otherwise just delete that line.
+
+True, if the goal is to allow random end users to email support
+questions about this module I'd rather not put my email there.
+Instead, if it's someone that has kernel development questions then
+they should be able to use MAINTAINERS for that contact.
