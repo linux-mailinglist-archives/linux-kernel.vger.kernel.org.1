@@ -2,274 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BC92B0BDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3D62B0BD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgKLR72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:59:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S1726249AbgKLR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:59:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgKLR7S (ORCPT
+        with ESMTP id S1725966AbgKLR7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:59:18 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395BCC0613D4;
-        Thu, 12 Nov 2020 09:59:18 -0800 (PST)
-Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kdGsN-00070q-Us; Thu, 12 Nov 2020 18:59:16 +0100
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Thu, 12 Nov 2020 12:59:06 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C601C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:06 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c20so5242936pfr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=7Iwq81/ZizVGm2kC+pKo9T7IH4Mak+r/1h3RzCF8CAk=;
+        b=fcoh7GhapQuHRUIWvUMunt4/brC/tIO5iVyPBjO1iF5dPgadvPqBsLAdE0flpgnMzX
+         LhfeGvECQIKaJu0z/Xt7rHJ6e+gVTj111ewLETM+TxCuOpUiccFYCEzii/F98+nWzPng
+         +QcKideToA3FUvOCdKk8ZYWy9r12vjDO3QdxQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=7Iwq81/ZizVGm2kC+pKo9T7IH4Mak+r/1h3RzCF8CAk=;
+        b=MTqrmNWvaBrec1/dFX/oLD36Sbw+cG5roYE0WxteCSZb7NfRs3evQsymtaoElX+u/q
+         pTnHK7qI7rCt3sz4TfIfJk6b7R1H7i5af3R+6ycP5lkvhXkW43hC1VLYjVlPmWNQkhLB
+         CdSAmIto1GseaezIhMob0w+dtHDeX/6lvewrSvntx5uVa4l3fMLY67VYo+4MLWx65oVq
+         VfBPAwhUU4R1U+CQgLfMwrx8Sspn0NCCzzTKEzPLn33XDPNlmgxmUgWEwXnhYlEnvz4L
+         GBPAgT/7i9oYzvl0NZI9eJBJYHzTEkEnSrXsFR9T+CE6AFO+l+wfXVoHO59IpgSYgeYH
+         riNg==
+X-Gm-Message-State: AOAM531VDdEoV7hGMiFrcHWSAXa8LJsEs20yFROsmW0Xmbqfw63RpmRS
+        BfaAf8zAgwb8kQcTGoVAIii5gg==
+X-Google-Smtp-Source: ABdhPJzMcfsWlwV+Yl+Ju6UrSqt7j5dSMFXgh+3u4AQBf/P0A0F+06wx72FnY/z55UZ2PBMWLBWJyA==
+X-Received: by 2002:a65:4483:: with SMTP id l3mr575455pgq.96.1605203945461;
+        Thu, 12 Nov 2020 09:59:05 -0800 (PST)
+Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id r6sm7237894pjd.39.2020.11.12.09.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 09:59:04 -0800 (PST)
+From:   Vikas Gupta <vikas.gupta@broadcom.com>
+To:     eric.auger@redhat.com, alex.williamson@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 09/26] docs: reporting-bugs: help users find the proper place for their report
-Date:   Thu, 12 Nov 2020 18:58:46 +0100
-Message-Id: <a5d67f2ac5ecdbcf855c3f6816ab1f254078a87d.1605203187.git.linux@leemhuis.info>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1605203187.git.linux@leemhuis.info>
-References: <cover.1605203187.git.linux@leemhuis.info>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605203958;24c9afe5;
-X-HE-SMSGID: 1kdGsN-00070q-Us
+Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
+        Vikas Gupta <vikas.gupta@broadcom.com>
+Subject: [RFC, v1 0/3] msi support for platform devices
+Date:   Thu, 12 Nov 2020 23:28:49 +0530
+Message-Id: <20201112175852.21572-1-vikas.gupta@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201105060257.35269-1-vikas.gupta@broadcom.com>
+References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000fe76cb05b3ecaa43"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make it obvious that bugzilla.kernel.org most of the time is the wrong
-place to file a report, as it's not working well. Instead, tell users
-how to read the MAINTAINERS file to find the proper place for their
-report. Also mention ./scripts/get_maintainer.pl. Sadly this is only
-available for users that have the sourced at hand; in an ideal world
-somebody would build a web-service around of this.
+--000000000000fe76cb05b3ecaa43
 
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
-v2:
-- partly rewritten after some comments from Randy
+This RFC adds support for MSI for platform devices.
+a) MSI(s) is/are added in addition to the normal interrupts.
+b) The vendor specific MSI configuration can be done using
+   callbacks which is implemented as msi module.
+c) Adds a msi handling module for the Broadcom platform devices.
 
-= RFC =
+Changes from:
+-------------
+ v0 to v1:
+   i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
+   ii) Add MSI(s) at the end of the irq list of platform IRQs.
+       MSI(s) with first entry of MSI block has count and flag
+       information.
+       IRQ list: Allocation for IRQs + MSIs are allocated as below
+       Example: if there are 'n' IRQs and 'k' MSIs
+       -------------------------------------------------------
+       |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
+       -------------------------------------------------------
+       MSI-0 will have count=k set and flags set accordingly.
 
-I think we should create mailing list like
-'linux-issues@vger.kernel.org' and tell users here to always CC it when
-reporting issues. Then they'd have one place they can search in case
-they want to check for existing reports (at least for issues reported by
-mail).
+Vikas Gupta (3):
+  vfio/platform: add support for msi
+  vfio/platform: change cleanup order
+  vfio/platform: add Broadcom msi module
 
-Note, this section tells users to always CC LKML. These days it's a kind
-of "catch-all" list anyway (which nearly nobody reads). So it IMHO makes
-sense to go "all in" and make people send their reports here, too, as
-everything (reports, fixes, ...) then can be found in one place (at
-least for all reports sent by mail and all subsystems that CC LKML).
----
- Documentation/admin-guide/reporting-bugs.rst | 187 ++++++++++++++-----
- 1 file changed, 142 insertions(+), 45 deletions(-)
+ drivers/vfio/platform/Kconfig                 |   1 +
+ drivers/vfio/platform/Makefile                |   1 +
+ drivers/vfio/platform/msi/Kconfig             |   9 +
+ drivers/vfio/platform/msi/Makefile            |   2 +
+ .../vfio/platform/msi/vfio_platform_bcmplt.c  |  74 ++++++
+ drivers/vfio/platform/vfio_platform_common.c  |  86 ++++++-
+ drivers/vfio/platform/vfio_platform_irq.c     | 238 +++++++++++++++++-
+ drivers/vfio/platform/vfio_platform_private.h |  23 ++
+ 8 files changed, 419 insertions(+), 15 deletions(-)
+ create mode 100644 drivers/vfio/platform/msi/Kconfig
+ create mode 100644 drivers/vfio/platform/msi/Makefile
+ create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
 
-diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
-index 8ac491419bde..9e0e9b2ba27b 100644
---- a/Documentation/admin-guide/reporting-bugs.rst
-+++ b/Documentation/admin-guide/reporting-bugs.rst
-@@ -388,6 +388,148 @@ things:
-     the name of the module in question).
- 
- 
-+Locate kernel area that causes the issue
-+----------------------------------------
-+
-+    *Locate the driver or kernel subsystem that seems to be causing the issue.
-+    Find out how and where its developers expect reports. Note: most of the
-+    time this won't be bugzilla.kernel.org, as issues typically need to be sent
-+    by mail to a maintainer and a public mailing list.*
-+
-+It's crucial to send your report to the right people, as the Linux kernel is a
-+big project and most of its developers are only familiar with a small subset of
-+it. Quite a few programmers for example only care for just one driver, for
-+example one for a WiFi chip; its developer likely will only have small or no
-+knowledge about the internals of remote or unrelated "subsystems", like the TCP
-+stack, the PCIe/PCI subsystem, memory management or file systems.
-+
-+Problem is: the Linux kernel lacks a central bug tracker where you can simply
-+file your issue and make it reach the developers that need to know about it.
-+That's why you have to find the right place and way to report issues yourself.
-+You can do that with the help of a script (see below), but it mainly targets
-+kernel developers and experts. For everybody else the MAINTAINERS file is the
-+better place.
-+
-+How to read the MAINTAINERS file
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+To illustrate how to use the :ref:`MAINTAINERS <maintainers>` file, lets assume
-+the WiFi in your Laptop suddenly misbehaves after updating the kernel. In that
-+case it's likely an issue in the WiFi driver. Obviously it could also be some
-+code it builds upon, but unless you suspect something like that stick to the
-+driver. If it's really something else, the driver's developers will get the
-+right people involved.
-+
-+Sadly, there is no way to check which code is driving a particular hardware
-+component that is both universal and easy.
-+
-+In case of a problem with the WiFi driver you for example might want to look at
-+the output of ``lspci -k``, as it lists devices on the PCI/PCIe bus and the
-+kernel module driving it::
-+
-+       [user@something ~]$ lspci -k
-+       [...]
-+       3a:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter (rev 32)
-+         Subsystem: Bigfoot Networks, Inc. Device 1535
-+         Kernel driver in use: ath10k_pci
-+         Kernel modules: ath10k_pci
-+       [...]
-+
-+But this approach won't work if your WiFi chip is connected over USB or some
-+other internal bus. In those cases you might want to check your WiFi manager or
-+the output of ``ip link``. Look for the name of the problematic network
-+interface, which might be something like 'wlp58s0'. This name can be used like
-+this to find the module driving it::
-+
-+       [user@something ~]$ realpath --relative-to=/sys/module/ /sys/class/net/wlp58s0/device/driver/module
-+       ath10k_pci
-+
-+In case tricks like these don't bring you any further, try to search the
-+internet on how to narrow down the driver or subsystem in question. And if you
-+are unsure which it is: just try your best guess, somebody will help you if you
-+guessed poorly.
-+
-+Once you know the driver or subsystem, you want to search for it in the
-+MAINTAINERS file. In the case of 'ath10k_pci' you won't find anything, as the
-+name is too specific. Sometimes you will need to search on the net for help;
-+but before doing so, try a somewhat shorted or modified name when searching the
-+MAINTAINERS file, as then you might find something like this::
-+
-+       QUALCOMM ATHEROS ATH10K WIRELESS DRIVER
-+       Mail:          A. Some Human <shuman@example.com>
-+       Mailing list:  ath10k@lists.infradead.org
-+       Status:        Supported
-+       Web-page:      https://wireless.wiki.kernel.org/en/users/Drivers/ath10k
-+       SCM:           git git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-+       Files:         drivers/net/wireless/ath/ath10k/
-+
-+Note: the line description will be abbreviations, if you read the plain
-+MAINTAINERS file found in the root of the Linux source tree. 'Mail:' for
-+example will be 'M:', 'Mailing list:' will be 'L', and 'Status:' will be 'S:'.
-+A section near the top of the file explains these and other abbreviations.
-+
-+First look at the line 'Status'. Ideally it should be 'Supported' or
-+'Maintained'. If it states 'Obsolete' then you are using some outdated approach
-+that was replaced by a newer solution you need to switch to. Sometimes the code
-+only has someone who provides 'Odd Fixes' when feeling motivated. And with
-+'Orphan' you are totally out of luck, as nobody takes care of the code anymore.
-+That only leaves these options: arrange yourself to live with the issue, fix it
-+yourself, or find a programmer somewhere willing to fix it.
-+
-+After checking the status, look for a line starting with 'bugs:': it will tell
-+you where to find a subsystem specific bug tracker to file your issue. The
-+example above does not have such a line. That is the case for most sections, as
-+Linux kernel development is completely driven by mail. Very few subsystems use
-+a bug tracker, and only some of those rely on bugzilla.kernel.org.
-+
-+In this and many other cases you thus have to look for lines starting with
-+'Mail:' instead. Those mention the name and the email addresses for the
-+maintainers of the particular code. Also look for a line starting with 'Mailing
-+list:', which tells you the public mailing list where the code is developed.
-+Your report later needs to go by mail to those addresses. Additionally, for all
-+issue reports sent by email, make sure to add the Linux Kernel Mailing List
-+(LKML) <linux-kernel@vger.kernel.org> to CC. Don't omit either of the mailing
-+lists when sending your issue report by mail later! Maintainers are busy people
-+and might leave some work for other developers on the subsystem specific list;
-+and LKML is important to have one place where all issue reports can be found.
-+
-+Finding the maintainers with the help of a script
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+For people that have the Linux sources at hand there is a second option to find
-+the proper place to report: the script 'scripts/get_maintainer.pl' which tries
-+to find all people to contact. It queries the MAINTAINERS file and needs to be
-+called with a path to the source code in question. For drivers compiled as
-+module if often can be found with a command like this::
-+
-+       $ modinfo ath10k_pci | grep filename | sed 's!/lib/modules/.*/kernel/!!; s!filename:!!; s!\.ko\(\|\.xz\)!!'
-+       drivers/net/wireless/ath/ath10k/ath10k_pci.ko
-+
-+Pass parts of this to the script::
-+
-+       $ ./scripts/get_maintainer.pl -f drivers/net/wireless/ath/ath10k*
-+       Some Human <shuman@example.com> (supporter:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
-+       Another S. Human <asomehuman@example.com> (maintainer:NETWORKING DRIVERS)
-+       ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
-+       linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
-+       netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-+       linux-kernel@vger.kernel.org (open list)
-+
-+Don't sent your report to all of them. Send it to the maintainers, which the
-+script calls "supporter:"; additionally CC the most specific mailing list for
-+the code as well as the Linux Kernel Mailing List (LKML). In this case you thus
-+would need to send the report to 'Some Human <shuman@example.com>' with
-+'ath10k@lists.infradead.org' and 'linux-kernel@vger.kernel.org' in CC.
-+
-+Note: in case you cloned the Linux sources with git you might want to call
-+``get_maintainer.pl`` a second time with ``--git``. The script then will look
-+at the commit history to find which people recently worked on the code in
-+question, as they might be able to help. But use these results with care, as it
-+can easily send you in a wrong direction. That for example happens quickly in
-+areas rarely changed (like old or unmaintained drivers): sometimes such code is
-+modified during tree-wide cleanups by developers that do not care about the
-+particular driver at all.
-+
-+
- .. ############################################################################
- .. Temporary marker added while this document is rewritten. Sections above
- .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
-@@ -410,51 +552,6 @@ How to report Linux kernel bugs
- ===============================
- 
- 
--Identify the problematic subsystem
------------------------------------
--
--Identifying which part of the Linux kernel might be causing your issue
--increases your chances of getting your bug fixed. Simply posting to the
--generic linux-kernel mailing list (LKML) may cause your bug report to be
--lost in the noise of a mailing list that gets 1000+ emails a day.
--
--Instead, try to figure out which kernel subsystem is causing the issue,
--and email that subsystem's maintainer and mailing list.  If the subsystem
--maintainer doesn't answer, then expand your scope to mailing lists like
--LKML.
--
--
--Identify who to notify
------------------------
--
--Once you know the subsystem that is causing the issue, you should send a
--bug report.  Some maintainers prefer bugs to be reported via bugzilla
--(https://bugzilla.kernel.org), while others prefer that bugs be reported
--via the subsystem mailing list.
--
--To find out where to send an emailed bug report, find your subsystem or
--device driver in the MAINTAINERS file.  Search in the file for relevant
--entries, and send your bug report to the person(s) listed in the "M:"
--lines, making sure to Cc the mailing list(s) in the "L:" lines.  When the
--maintainer replies to you, make sure to 'Reply-all' in order to keep the
--public mailing list(s) in the email thread.
--
--If you know which driver is causing issues, you can pass one of the driver
--files to the get_maintainer.pl script::
--
--     perl scripts/get_maintainer.pl -f <filename>
--
--If it is a security bug, please copy the Security Contact listed in the
--MAINTAINERS file.  They can help coordinate bugfix and disclosure.  See
--:ref:`Documentation/admin-guide/security-bugs.rst <securitybugs>` for more information.
--
--If you can't figure out which subsystem caused the issue, you should file
--a bug in kernel.org bugzilla and send email to
--linux-kernel@vger.kernel.org, referencing the bugzilla URL.  (For more
--information on the linux-kernel mailing list see
--http://vger.kernel.org/lkml/).
--
--
- Tips for reporting bugs
- -----------------------
- 
 -- 
-2.28.0
+2.17.1
 
+
+--000000000000fe76cb05b3ecaa43
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQPwYJKoZIhvcNAQcCoIIQMDCCECwCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg2UMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
+CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
+Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
+bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
+fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
+ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
+p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
+9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
+MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
+AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
+FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
+L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
+AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
+Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
+6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
+DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
+4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
+HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
+OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
+A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
+BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
+ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
+R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
+yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
+uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
+yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
+6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
+qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
+HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
+RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
+Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
+68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
+2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFQTCCBCmgAwIBAgIMNNmXI1mQYypKLnFvMA0GCSqGSIb3
+DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
+EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTIxMTQx
+NzIyWhcNMjIwOTIyMTQxNzIyWjCBjDELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
+MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRQwEgYDVQQDEwtWaWth
+cyBHdXB0YTEnMCUGCSqGSIb3DQEJARYYdmlrYXMuZ3VwdGFAYnJvYWRjb20uY29tMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArW9Ji37dLG2JbyJkPyYCg0PODECQWS5hT3MJNWBqXpFF
+ZtJyfIhbtRvtcM2uqbM/9F5YGpmCrCLQzEYr0awKrRBaj4IXUrYPwZAfAQxOs/dcrZ6QZW8deHEA
+iYIz931O7dVY1gVkZ3lTLIT4+b8G97IVoDSp0gx8Ga1DyfRO9GdIzFGXVnpT5iMAwXEAcmbyWyHL
+S10iGbdfjNXcpvxMThGdkFqwWqSFUMKZwAr/X/7sf4lV9IkUzXzfYLpzl88UksQH/cWZSsblflTt
+2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
+o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
+b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
+bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
+OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
+Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
+FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
+FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
+yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
+JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
+WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
+Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgefd5Rm/9D0XwkLVN
+3l3ra+rBXSkr601WKuK52CGbJbQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjAxMTEyMTc1OTA2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABzGTCkqK29Hf8g4J6BvDhoAxWwNwjXN/OiB
+xkNiPlNRo2a42i8HoHrFYg/81tKlOB9k4ls3UiJC+AKMj6fl49PFcS5Isvxe6aG7LPqiu3Vq1nhc
+q++aCnLmOvGM8gItgRQQSs+j5WimBxcI7kPre2cQJTdy9hrvPfiEjhEbsl5/FCMM4IPfQS5Xn/H1
+q6VsgdOf0cxxTZYb0F8s6qhWEiVaGz8UePD78gRJvyGtnBWeTl5X2ad1+Wb1z0qZSNCSTkbSZc4r
+cFedlcpQzSBqv9QpPvfIzmEJhW2+3s6Ht+rcSzTv/tOEWi9epxiQuXZeOsmEVZBu4NkcOjF6iaTm
+T/E=
+--000000000000fe76cb05b3ecaa43--
