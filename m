@@ -2,141 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BF92B06EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366F12B06EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgKLNsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S1728375AbgKLNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:48:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgKLNsD (ORCPT
+        with ESMTP id S1727264AbgKLNsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:48:03 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2D3C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:48:02 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c9so5311972wml.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:48:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1tbEiFf3A3FJTw3Dwkaz00LQ7f5DUN60HnF7WkHWr1k=;
-        b=qmBYxFH4Ly0Mk4J6ZundTvylOZyxcFSYt7pn6I5HS8UphxxI4tQYlzc1GTvTY+lnRF
-         9JAQZGFAJFDdOLxjf0tiB7MdS4lNMfu0nVsSLGsuWAWW9WQeTg89YqjcujVkv3vgUgjo
-         mQ+hzOXIU6W1xmRA1oqUv3/HamZpdPJ+t3WhZTd1RfVzkxgAF4/xU0hnQB1XluM+WLNN
-         +WlwQWLVmaDixyKZBsG/uev5Ad3SYf2B4Xd9E/MBz201x5bCaBrHL+JYNtuMn24PVNUP
-         6Oikr3FB5N5Hj4a2AnqD4+Fb2O+Rjqj3v7h8QdUTmMRLqmodndjNLlnK0EZ2aHBLdjOB
-         U17g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1tbEiFf3A3FJTw3Dwkaz00LQ7f5DUN60HnF7WkHWr1k=;
-        b=hDIQJuUQepy4JdpPJ5DbPfc+cwZmh4ZpC8g2nuImFCBtB92tEmhcM6afS/vcuRHjZ3
-         sr+s+Sa/ETjQOkRz1vVthuktOlZaKd1/6dS+CUiA8GzvuW5VimSaGW1HOddQCneLv13G
-         VNx0MCi0r4EqWGM/qPYRNMAf03I3xpL19//c4kCJtG/jy7mIrI1bqMVeBIIQ/FnZjlhL
-         2AsgtmoGf2fc90C4wwBzeJyWFjdnBVAlgIj8GpVVDTy5LsLsXJKJnvMXHpT8xrMpnWlJ
-         ugGn+ofrXD0dlFhYhPhyFnp3w2X3UPOr4Eors0WQDJsb8HaznNObiMqIOWZA3U8NaPEC
-         mQsw==
-X-Gm-Message-State: AOAM531LSCiiF2deoDYjsGunUlHN8J/867zTX76tgATLOjLWN/Bhi59l
-        Hz2eXvn8a3bzHTu6KOEasrP+pg==
-X-Google-Smtp-Source: ABdhPJzyzG5VzyN78q8AphzAInBKduxb4a7K6b/2OTvpBDlCNThbNozfWU2e2Qae4qd8FcYtQFlbdA==
-X-Received: by 2002:a1c:c286:: with SMTP id s128mr9765284wmf.88.1605188881687;
-        Thu, 12 Nov 2020 05:48:01 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id g66sm6577232wmg.37.2020.11.12.05.48.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 05:48:00 -0800 (PST)
-Date:   Thu, 12 Nov 2020 13:47:59 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 05/25] soc: rockchip: io-domain: Remove incorrect and
- incomplete comment header
-Message-ID: <20201112134759.GL1997862@dell>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <2215873.HjEmSL4Tfo@diego>
- <20201112132828.GK1997862@dell>
- <5334671.Lg3upMlxu3@diego>
+        Thu, 12 Nov 2020 08:48:20 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA94C0613D1;
+        Thu, 12 Nov 2020 05:48:20 -0800 (PST)
+Date:   Thu, 12 Nov 2020 13:48:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605188898;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FxcKLusCpufT+m8ruOGOq6YJs7J/asijBD9ZKdep9R8=;
+        b=ZIBE8m9EtcY69mOO8lxsgrxWkOnfXMOo7L//UfdTpLveKQgoPoRRfOiDE1oy/VoM1EP2Qj
+        CVHaMKl5APXWbmj6NZwUHSbbSUD1aBtfPbVywX+P3YhcEarvzeLwG8FbyXSCUkHh6bXGoZ
+        NyGoM73u0w4hNA0NVUbyymVNgK2YVHt0wiSfiiMkZdAUU6+t6L2prOY9jVuG8jVSGPKORa
+        oB4nWsSlVNCx1nMd0OCaMuAYz/zpv43Yasy+kPQ1wOkVPl0TNRJMJf1Ju8H4GNvE4HTtm0
+        Rvi67ZgpM2ISLJKuxdXtAeUyJMCtWMzOnVVQIdmpujxxfT9IbaBWh8crKizdow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605188898;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FxcKLusCpufT+m8ruOGOq6YJs7J/asijBD9ZKdep9R8=;
+        b=lVQqU4zJje9KxG1JvspBMrzQmbQ+DQH2/aj0ybrcoUd5wVsGYC38TeDY22Ip7TXdLx9e0J
+        89zpjqyelCxmfpCw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/mm] mm/highmem: Take kmap_high_get() properly into account
+Cc:     vtolkm@googlemail.com, Marek Szyprowski <m.szyprowski@samsung.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <87y2j6n8mj.fsf@nanos.tec.linutronix.de>
+References: <87y2j6n8mj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5334671.Lg3upMlxu3@diego>
+Message-ID: <160518889672.11244.12357999747948053258.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020, Heiko Stübner wrote:
+The following commit has been merged into the core/mm branch of tip:
 
-> Am Donnerstag, 12. November 2020, 14:28:28 CET schrieb Lee Jones:
-> > On Thu, 12 Nov 2020, Heiko Stübner wrote:
-> > 
-> > > Am Donnerstag, 12. November 2020, 14:22:24 CET schrieb Lee Jones:
-> > > > On Thu, 12 Nov 2020, Heiko Stübner wrote:
-> > > > 
-> > > > > Am Donnerstag, 12. November 2020, 11:33:44 CET schrieb Lee Jones:
-> > > > > > On Tue, 03 Nov 2020, Lee Jones wrote:
-> > > > > > 
-> > > > > > > Fixes the following W=1 kernel build warning(s):
-> > > > > > > 
-> > > > > > >  drivers/soc/rockchip/io-domain.c:57: warning: Cannot understand  * @supplies: voltage settings matching the register bits.
-> > > > > > > 
-> > > > > > > Cc: Heiko Stuebner <heiko@sntech.de>
-> > > > > > > Cc: Liam Girdwood <lgirdwood@gmail.com>
-> > > > > > > Cc: Mark Brown <broonie@kernel.org>
-> > > > > > > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > > > > > > Cc: Doug Anderson <dianders@chromium.org>
-> > > > > > > Cc: linux-rockchip@lists.infradead.org
-> > > > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > > > ---
-> > > > > > >  drivers/soc/rockchip/io-domain.c | 3 ---
-> > > > > > >  1 file changed, 3 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-> > > > > > > index eece97f97ef8f..d13d2d497720b 100644
-> > > > > > > --- a/drivers/soc/rockchip/io-domain.c
-> > > > > > > +++ b/drivers/soc/rockchip/io-domain.c
-> > > > > > > @@ -53,9 +53,6 @@
-> > > > > > >  
-> > > > > > >  struct rockchip_iodomain;
-> > > > > > >  
-> > > > > > > -/**
-> > > > > > > - * @supplies: voltage settings matching the register bits.
-> > > > > > > - */
-> > > > > > >  struct rockchip_iodomain_soc_data {
-> > > > > > >  	int grf_offset;
-> > > > > > >  	const char *supply_names[MAX_SUPPLIES];
-> > > > > > 
-> > > > > > Any idea who will pick this up?
-> > > > > 
-> > > > > me :-)
-> > > > 
-> > > > Well, that's certainly a start. :)
-> > > > 
-> > > > What are your plans?
-> > > 
-> > > the usual, my rockchip-tree -> armsoc driver branch -> torvalds -> 5.11 ;-)
-> > 
-> > Sorry, the ambiguity was my fault.
-> > 
-> > When do you plan on hoovering it up?
-> 
-> sorry should've written that directly ... I already did this "morning":
-> 
-> http://lore.kernel.org/r/160517975455.81506.16289432612279089945.b4-ty@sntech.de
+Commit-ID:     2a656cad337e0e1ca582f58847d7b0c7eeba4dc8
+Gitweb:        https://git.kernel.org/tip/2a656cad337e0e1ca582f58847d7b0c7eeba4dc8
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 12 Nov 2020 11:59:32 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 12 Nov 2020 14:44:38 +01:00
 
-Ah, perfect.  Thanks.
+mm/highmem: Take kmap_high_get() properly into account
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+kunmap_local() warns when the virtual address to unmap is below
+PAGE_OFFSET. This is correct except for the case that the mapping was
+obtained via kmap_high_get() because the PKMAP addresses are right below
+PAGE_OFFSET.
+
+Cure it by skipping the WARN_ON() when the unmap was handled by
+kunmap_high().
+
+Fixes: 298fa1ad5571 ("highmem: Provide generic variant of kmap_atomic*")
+Reported-by: vtolkm@googlemail.com
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Link: https://lore.kernel.org/r/87y2j6n8mj.fsf@nanos.tec.linutronix.de
+
+---
+ mm/highmem.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 54bd233..78c481a 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -426,12 +426,15 @@ static inline void *arch_kmap_local_high_get(struct page *page)
+ #endif
+ 
+ /* Unmap a local mapping which was obtained by kmap_high_get() */
+-static inline void kmap_high_unmap_local(unsigned long vaddr)
++static inline bool kmap_high_unmap_local(unsigned long vaddr)
+ {
+ #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+-	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP))
++	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
+ 		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
++		return true;
++	}
+ #endif
++	return false;
+ }
+ 
+ static inline int kmap_local_calc_idx(int idx)
+@@ -491,10 +494,14 @@ void kunmap_local_indexed(void *vaddr)
+ 
+ 	if (addr < __fix_to_virt(FIX_KMAP_END) ||
+ 	    addr > __fix_to_virt(FIX_KMAP_BEGIN)) {
+-		WARN_ON_ONCE(addr < PAGE_OFFSET);
+-
+-		/* Handle mappings which were obtained by kmap_high_get() */
+-		kmap_high_unmap_local(addr);
++		/*
++		 * Handle mappings which were obtained by kmap_high_get()
++		 * first as the virtual address of such mappings is below
++		 * PAGE_OFFSET. Warn for all other addresses which are in
++		 * the user space part of the virtual address space.
++		 */
++		if (!kmap_high_unmap_local(addr))
++			WARN_ON_ONCE(addr < PAGE_OFFSET);
+ 		return;
+ 	}
+ 
