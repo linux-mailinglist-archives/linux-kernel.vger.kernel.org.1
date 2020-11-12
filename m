@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700B32B07D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B897B2B07DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgKLOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:53:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLOxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:53:30 -0500
-Received: from dhcp-10-100-145-180.wdc.com (unknown [199.255.45.60])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC25020872;
-        Thu, 12 Nov 2020 14:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605192809;
-        bh=/KlAWNAD1+tCSwffPMeMfbxtqiL9CCu/YpbwvOwXbAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XHXS4JsK9KcSqUL53gxBe0I5Ye7FAJB+vXCaW9PnkTMOBtYLg6FyiBsaS/oJkSBFT
-         JpdUJCFvblA70JyHGQSRfQ5waI7nqiPwsn9+NTiB8KUZXJnMo0yJBXqBtILUWHpFfp
-         qhJ04+7XMoJReY++YMN80dPYrgnHiT2FSjHR+Mvs=
-Date:   Thu, 12 Nov 2020 06:53:25 -0800
-From:   Keith Busch <kbusch@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH 0/2] nvme-pic: improve max I/O queue handling
-Message-ID: <20201112145325.GC2573679@dhcp-10-100-145-180.wdc.com>
-References: <20201112082302.82441-1-schnelle@linux.ibm.com>
+        id S1728549AbgKLOyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:54:10 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7891 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728198AbgKLOyJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:54:09 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CX4P118Mgz7658;
+        Thu, 12 Nov 2020 22:53:57 +0800 (CST)
+Received: from localhost (10.174.176.180) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 12 Nov 2020
+ 22:53:58 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] nbd: Fix passing zero to 'PTR_ERR' warning
+Date:   Thu, 12 Nov 2020 22:53:48 +0800
+Message-ID: <20201112145348.51284-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112082302.82441-1-schnelle@linux.ibm.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.176.180]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:23:00AM +0100, Niklas Schnelle wrote:
-> while searching for a bug around zPCI + NVMe IRQ handling on a distro
-> kernel, I got confused around handling of the maximum number
-> of I/O queues in the NVMe driver.
-> I think I groked it in the end but would like to propose the following
-> improvements, that said I'm quite new to this code.
-> I tested both patches on s390x (with a debug config) and x86_64 so
-> with both data center and consumer NVMes.
-> For the second patch, since I don't own a device with the quirk, I tried
-> always returning 1 from nvme_max_io_queues() and confirmed that on my
-> Evo 970 Pro this resulted in about half the performance in a fio test
-> but did not otherwise break things. I couldn't find a reason why
-> allocating only the I/O queues we actually use would be problematic in
-> the code either but I might have missed something of course.
+Fix smatch warning:
 
-I don't think you missed anything, and the series looks like a
-reasonable cleanup. I suspect the code was left over from a time when we
-didn't allocate the possible queues up-front.
+drivers/block/nbd.c:698 nbd_read_stat() warn: passing zero to 'ERR_PTR'
 
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+sock_xmit() never return 0, remove check 0 to fix this warning.
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/block/nbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index aaae9220f3a0..1620d1217581 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -691,7 +691,7 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+ 	reply.magic = 0;
+ 	iov_iter_kvec(&to, READ, &iov, 1, sizeof(reply));
+ 	result = sock_xmit(nbd, index, 0, &to, MSG_WAITALL, NULL);
+-	if (result <= 0) {
++	if (result < 0) {
+ 		if (!nbd_disconnected(config))
+ 			dev_err(disk_to_dev(nbd->disk),
+ 				"Receive control failed (result %d)\n", result);
+-- 
+2.17.1
+
