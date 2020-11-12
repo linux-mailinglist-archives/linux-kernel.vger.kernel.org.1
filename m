@@ -2,85 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A031D2B023B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD212B023A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbgKLJrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:47:55 -0500
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:41582 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725979AbgKLJrz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:47:55 -0500
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.52 with ESMTP; 12 Nov 2020 18:47:53 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.125 with ESMTP; 12 Nov 2020 18:47:53 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Thu, 12 Nov 2020 18:46:32 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201112094631.GD14554@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201112061532.GA14554@X58A-UD3R>
- <20201112085114.GC14554@X58A-UD3R>
+        id S1727560AbgKLJq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:46:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbgKLJq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:46:59 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 946DE21D40;
+        Thu, 12 Nov 2020 09:46:56 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 09:46:54 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 44/44] kselftest/arm64: Check GCR_EL1 after context
+ switch
+Message-ID: <20201112094653.GH29613@gaia>
+References: <cover.1605046192.git.andreyknvl@google.com>
+ <bd6825832c0cb376fc68ad61ffec6d829401ed0e.1605046192.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112085114.GC14554@X58A-UD3R>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <bd6825832c0cb376fc68ad61ffec6d829401ed0e.1605046192.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:51:14PM +0900, Byungchul Park wrote:
-> On Thu, Nov 12, 2020 at 03:15:32PM +0900, Byungchul Park wrote:
-> > > If on the other hand there's some bug in lockdep itself that causes 
-> > > excessive false positives, it's better to limit the number of reports 
-> > > to one per bootup, so that it's not seen as a nuisance debugging 
-> > > facility.
-> > > 
-> > > Or if lockdep gets extended that causes multiple previously unreported 
-> > > (but very much real) bugs to be reported, it's *still* better to 
-> > > handle them one by one: because lockdep doesn't know whether it's real 
-> > 
-> > Why do you think we cannot handle them one by one with multi-reporting?
-> > We can handle them with the first one as we do with single-reporting.
-> > And also that's how we work, for example, when building the kernel or
-> > somethinig.
+On Tue, Nov 10, 2020 at 11:10:41PM +0100, Andrey Konovalov wrote:
+> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > 
-> Let me add a little bit more. I just said the fact that we are able to
-> handle the bugs one by one as if we do with single-reporting.
+> This test is specific to MTE and verifies that the GCR_EL1 register
+> is context switched correctly.
 > 
-> But the thing is multi-reporting could be more useful in some cases.
-> More precisely speaking, bugs not caused by IRQ state will be reported
-> without annoying nuisance. I bet you have experienced a ton of nuisances
-> when multi-reporting Lockdep detected a deadlock by IRQ state.
-
-Last, we should never use multi-reporting Lockdep if Lockdep works like
-the current code because redundant warnings caused by IRQ state would be
-reported almost infinite times. I'm afraid you were talking about it.
-
-Thanks,
-Byungchul
-
-> For some cases, multi-reporting is as useful as single-reporting, while
-> for the other cases, multi-reporting is more useful. Then I think we
-> have to go with mutil-reporting if there's no technical issue.
+> It spawn 1024 processes and each process spawns 5 threads. Each thread
+> writes a random setting of GCR_EL1 through the prctl() system call and
+> reads it back verifying that it is the same. If the values are not the
+> same it reports a failure.
 > 
-> Thanks,
-> Byungchul
+> Note: The test has been extended to verify that even SYNC and ASYNC mode
+> setting is preserved correctly over context switching.
+> 
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
