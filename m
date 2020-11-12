@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA9C2B06F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AE32B070E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgKLNti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:49:38 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7220 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgKLNtg (ORCPT
+        id S1728327AbgKLNyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728072AbgKLNyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:49:36 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX2yQ5rqHzkhhY;
-        Thu, 12 Nov 2020 21:49:18 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 21:49:23 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <balbi@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <weiyongjun1@huawei.com>,
-        <jun.li@freescale.com>, <rogerq@ti.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH v2] usb: gadget: mass_storage: fix error return code in msg_bind()
-Date:   Thu, 12 Nov 2020 21:54:23 +0800
-Message-ID: <20201112135423.89536-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 12 Nov 2020 08:54:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF365C0613D1;
+        Thu, 12 Nov 2020 05:54:49 -0800 (PST)
+Date:   Thu, 12 Nov 2020 14:54:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605189288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8J/g3+UlJiPv1r44/uRYuW0HBR3RLzuLwjDlVtLk+U=;
+        b=FnOxIEPDMOCmSPlj5bs8TfynVc/bbg3oPSLt8Wcu0/8q6yKMDB0Me58btrNhQ2UYtUMv6d
+        a/b44lUS98qsqWxrKzpKRFuyog1bMO3l8eHpdTemD8ZLGnukKnXKypvNasCkccodLyffBR
+        BW9ttWbWwKST18K5KignkZwoy0J7UsjDI8v4okq72qe5e08pgfdSfxHamcFn4PBNWiU6Eb
+        LcGKh5PrkOqRwYdF2smV5Sy61i7tX0gCZBaBWq6zIIUrWhyMoCG5KtpoIESaRIJqXN4JhU
+        P19OiIGnXzhaSYnv7KhQgB1JtQLyeSCzL8bg4/Y2j1Ii+JHX5nJPLkvNNrLqQQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605189288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8J/g3+UlJiPv1r44/uRYuW0HBR3RLzuLwjDlVtLk+U=;
+        b=1k8za+g3OUbKN+AqR0TIwRZ0iXUFK6/n+GrrZhMyr+IyPON27fI5Gofy9TkwR1hMquGo+Y
+        8lfDHWQ2tC0ORnAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Daniel Wagner <wagi@monom.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201112135446.ghwvgio6f66igcho@linutronix.de>
+References: <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
+ <20201104124746.74jdsig3dffomv3k@beryllium.lan>
+ <20201104130930.llx56gtqt532h7c7@linutronix.de>
+ <20201104160650.b63zqof74wohgpa2@beryllium.lan>
+ <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
+ <20201106161413.7c65uxenamy474uh@beryllium.lan>
+ <20201109124718.ljf7inok4zakkjed@linutronix.de>
+ <20201109143703.ps7gxhqrirhntilr@beryllium.lan>
+ <20201110180518.miuxa25j7lnn7f2q@linutronix.de>
+ <20201112123902.netkfwzccwrtscdv@beryllium.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201112123902.netkfwzccwrtscdv@beryllium.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function msg_bind(), as done elsewhere in this
-function.
+On 2020-11-12 13:39:02 [+0100], Daniel Wagner wrote:
+> With the current version signaltest + your test patch and 'taskset -c1'
+> the results looks good again, around 230us (running since 2 hours). I've
+> tested first without taskset and it took about an half hour to hit
+> 350us. So pinning the threads on one CPU fixes it.
 
-Fixes: d86788979761 ("usb: gadget: mass_storage: allocate and init otg descriptor by otg capabilities")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- drivers/usb/gadget/legacy/mass_storage.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+okay. So case closed.
 
-diff --git a/drivers/usb/gadget/legacy/mass_storage.c b/drivers/usb/gadget/legacy/mass_storage.c
-index 9ed22c5fb7fe..ac1741126619 100644
---- a/drivers/usb/gadget/legacy/mass_storage.c
-+++ b/drivers/usb/gadget/legacy/mass_storage.c
-@@ -175,8 +175,10 @@ static int msg_bind(struct usb_composite_dev *cdev)
- 		struct usb_descriptor_header *usb_desc;
- 
- 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail_string_ids;
-+		}
- 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
--- 
-2.20.1
+> I think we change signaltest to use the correct affinity on
+> default. Also, I see that sigwaittest has some code for it, but it, but
+> it would be a good idea to set the defaults so that out of the box the
+> test does the right thing.
 
+Sounds reasonable. Having tasks jumping from one CPU to another may lead
+to higher latencies.
+
+> I'm sorry about dragging you into this problem.
+I feared that something in lazy preempt or signal stack is broken. But
+it appears not to be the case :)
+
+Sebastian
