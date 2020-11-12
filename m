@@ -2,155 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BB22B0540
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71CD2B0541
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbgKLMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:55:55 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:13802 "EHLO nat-hk.nvidia.com"
+        id S1728088AbgKLM4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:56:52 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:57704 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLMzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:55:55 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fad30d30000>; Thu, 12 Nov 2020 20:55:47 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 12:55:36 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 12:55:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KyIW7IOM0+++D4M++knuxpj7alhdYeaG22sc6dnPQJvngD6iTQvoKuFK3btnmgz2x5yqp2KUXW8gpJDEBdEvtEjNVEU+Zg1UHlyDVRTAXy/CRaAAshslESeA8XtvD9CNUSi5fQw1W/emZlcqGsBZni9eCp7dwc2n18TqXLtRVzzftvL8iAHZnki7/0gMua+yf1LU6I2Vi9Ryc9MtQ3bYLON/ejRZETiohSE8rkOel8ShqC5HGlLy5WVj5K49GrvhTwQ9bnRTURwNdW9PHm+9+Lm3Ds27QwQru7/BDW33MSTzo8ZlWlhMymu3rYrEycSfJsaw8+nCgsb+WHf+Hx7KEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=odkGYsTueGG1Oj1E5+/FEqJBoN5zCA2wnbKnOv3SBSE=;
- b=joeixh4hu5ooTwctsGDAchHhtySQy59tD6tksNFsMczPvsiyyWuzacJauPFFKPZyCHv0IzmOqJaVJq3IwPU71DE7W5hi4kyQEyR6pJIxlSE2XuQcPvjQ4yLf3y6AVksI30sPG4CH/p0/c42VC6zzDIaNOS3iyIN7a4GQHtRk45P0ZWoJCF7P/gyZpqD1uxRRmTdun+D7uF0L7uTvzzcjoMqR8cOI8o/r2s2Lw7FgyBfaTwc4uBJ21Wt1CdBu5vAuD3ZVNz5IjO6f4b1uqtB6rxz5Wi0BUV7nwqfmviq43rTvsR0bX8YHYEt8oDBApe84NJk4YnGpc9atCfbvSXNNhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1881.namprd12.prod.outlook.com (2603:10b6:3:10f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
- 2020 12:55:33 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
- 12:55:33 +0000
-Date:   Thu, 12 Nov 2020 08:55:31 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>
-CC:     LKML <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        <iommu@lists.linux-foundation.org>, <linux-hyperv@vger.kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "Jon Derrick" <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>, <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        <xen-devel@lists.xenproject.org>, Juergen Gross <jgross@suse.com>,
-        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Megha Dey" <megha.dey@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: REGRESSION: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare
- for device MSI
-Message-ID: <20201112125531.GA873287@nvidia.com>
-References: <20200826111628.794979401@linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200826111628.794979401@linutronix.de>
-X-ClientProxiedBy: MN2PR15CA0022.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::35) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727035AbgKLM4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:56:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605185811; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=YGbiqQVX0zn5ulohah4Bb/Xz8yjVkbbJmLwpnFLalJE=; b=O7+njpy5fkPwU4k3Xa1US9K/nfV7pX8KWVZ6oyy01xtdodKJx/qzMorPXfPVxj7K0376bzsj
+ t+XudiqRQBdlg2C7uGXPxux4HANFe33X+E0psTKWShrTq7RuVtmix8p3rVm3wfXrbyrL9bzf
+ iA84nYtqcp6A0cWhfoyUMK748KM=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fad310c25da3a0fa9e83c72 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Nov 2020 12:56:44
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0918C433C8; Thu, 12 Nov 2020 12:56:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.104] (unknown [182.18.191.136])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81A28C433C8;
+        Thu, 12 Nov 2020 12:56:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 81A28C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+Subject: Re: [PATCH] lib: stackdepot: Add support to configure STACK_HASH_SIZE
+From:   Vijayanand Jitta <vjitta@codeaurora.org>
+To:     Minchan Kim <minchan@kernel.org>, linux-mm <linux-mm@kvack.org>
+Cc:     glider@google.com, Dan Williams <dan.j.williams@intel.com>,
+        broonie@kernel.org, mhiramat@kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yogesh Lal <ylal@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>
+References: <1603372546-27118-1-git-send-email-vjitta@codeaurora.org>
+ <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
+ <282d7028-498d-50b3-37d4-2381571f9f9e@codeaurora.org>
+Message-ID: <ed4a1e75-3e3a-4950-7bb5-3d83db7bf054@codeaurora.org>
+Date:   Thu, 12 Nov 2020 18:26:24 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0022.namprd15.prod.outlook.com (2603:10b6:208:1b4::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 12:55:32 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdC8R-003fG5-Cp; Thu, 12 Nov 2020 08:55:31 -0400
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605185747; bh=eQ25xNlY3rVx34V0CM4Bnq31qnmUxB4lNkLgF/NTCTU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=VsWoaT5gF6t9jiuouhEpEGN7Qg7rtC2IuOTe3e6QAc+/J5kvbsUGMZeN9Kt4v340c
-         KVbRoCH9TR2N9HqJF4VZ84B6k+51zu6l3inP6l0HJqan+cR7kEEn/+Cqpds/KwjSEr
-         BJf+0jPEtmRpSIm1ToZML8tn4g1PO1iVyJXs6pHwlKZwUso5Cn8iCe6LGFBRQ1tEUP
-         95Nt8mKzj2PmKuTTS2AowvWwB9kBFIAxLC7TFNHrpa0/KKU1hbM20l9NiG3hCradK7
-         hY1uGGNICjBrlcYzyYVoaC3ibvjfkHv7m8xxytVcHuVd6aNpu8YGZow8Vv5rsi+u+9
-         YDb6R/lLzsueQ==
+In-Reply-To: <282d7028-498d-50b3-37d4-2381571f9f9e@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 01:16:28PM +0200, Thomas Gleixner wrote:
-> This is the second version of providing a base to support device MSI (non
-> PCI based) and on top of that support for IMS (Interrupt Message Storm)
-> based devices in a halfways architecture independent way.
 
-Hi Thomas,
 
-Our test team has been struggling with a regression on bare metal
-SRIOV VFs since -rc1 that they were able to bisect to this series
+On 11/4/2020 3:59 PM, Vijayanand Jitta wrote:
+> 
+> 
+> On 11/4/2020 4:57 AM, Minchan Kim wrote:
+>> Sorry if this mail corrupts the mail thread or had heavy mangling
+>> since I lost this mail from my mailbox so I am sending this mail by
+>> web gmail.
+>>
+>> On Thu, Oct 22, 2020 at 10:18 AM <vjitta@codeaurora.org> wrote:
+>>>
+>>> From: Yogesh Lal <ylal@codeaurora.org>
+>>>
+>>> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
+>>>
+>>> Aim is to have configurable value for  STACK_HASH_SIZE,
+>>> so depend on use case one can configure it.
+>>>
+>>> One example is of Page Owner, default value of
+>>> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
+>>> Making it configurable and use lower value helps to enable features like
+>>> CONFIG_PAGE_OWNER without any significant overhead.
+>>>
+>>> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
+>>> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+>>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+>>> ---
+>>>  lib/Kconfig      | 9 +++++++++
+>>>  lib/stackdepot.c | 3 +--
+>>>  2 files changed, 10 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/lib/Kconfig b/lib/Kconfig
+>>> index 18d76b6..b3f8259 100644
+>>> --- a/lib/Kconfig
+>>> +++ b/lib/Kconfig
+>>> @@ -651,6 +651,15 @@ config STACKDEPOT
+>>>         bool
+>>>         select STACKTRACE
+>>>
+>>> +config STACK_HASH_ORDER_SHIFT
+>>> +       int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
+>>> +       range 12 20
+>>> +       default 20
+>>> +       depends on STACKDEPOT
+>>> +       help
+>>> +        Select the hash size as a power of 2 for the stackdepot hash table.
+>>> +        Choose a lower value to reduce the memory impact.
+>>> +
+>>>  config SBITMAP
+>>>         bool
+>>>
+>>> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+>>> index 2caffc6..413c20b 100644
+>>> --- a/lib/stackdepot.c
+>>> +++ b/lib/stackdepot.c
+>>> @@ -142,8 +142,7 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
+>>>         return stack;
+>>>  }
+>>>
+>>> -#define STACK_HASH_ORDER 20
+>>> -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
+>>> +#define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
+>>>  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+>>>  #define STACK_HASH_SEED 0x9747b28c
+>>>
+>>> --
+>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+>>> 2.7.4
+>>>
+>>
+>> 1. When we don't use page_owner, we don't want to waste any memory for
+>> stackdepot hash array.
+>> 2. When we use page_owner, we want to have reasonable stackdeport hash array
+>>
+>> With this configuration, it couldn't meet since we always need to
+>> reserve a reasonable size for the array.
+>> Can't we make the hash size as a kernel parameter?
+>> With it, we could use it like this.
+>>
+>> 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
+>> when we don't use page_owner
+>> 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
+>> when we use page_owner.
+>>
+>>
+> 
+> This idea looks fine to me. Andrew and others would like to hear your
+> comments as well on this before implementing.
+> 
+> Thanks,
+> Vijay
+> 
 
-This commit tests good:
-
-5712c3ed549e ("Merge tag 'armsoc-fixes' of git://git.kernel.org/pub/scm/lin=
-ux/kernel/git/soc/soc")
-
-This commit tests bad:
-
-981aa1d366bf ("PCI: MSI: Fix Kconfig dependencies for PCI_MSI_ARCH_FALLBACK=
-S")
-
-They were unable to bisect further into the series because some of the
-interior commits don't boot :(
-
-When we try to load the mlx5 driver on a bare metal VF it gets this:
-
-[Thu Oct 22 08:54:51 2020] DMAR: DRHD: handling fault status reg 2
-[Thu Oct 22 08:54:51 2020] DMAR: [INTR-REMAP] Request device [42:00.2] faul=
-t index 1600 [fault reason 37] Blocked a compatibility format interrupt req=
-uest
-[Thu Oct 22 08:55:04 2020] mlx5_core 0000:42:00.1 eth4: Link down
-[Thu Oct 22 08:55:11 2020] mlx5_core 0000:42:00.1 eth4: Link up
-[Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: mlx5_cmd_eq_recover:264:=
-(pid 3390): Recovered 1 EQEs on cmd_eq
-[Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: wait_func_handle_exec_ti=
-meout:1051:(pid 3390): cmd0: CREATE_EQ(0=C3=83=C2=97301) recovered after ti=
-meout
-[Thu Oct 22 08:55:54 2020] DMAR: DRHD: handling fault status reg 102
-[Thu Oct 22 08:55:54 2020] DMAR: [INTR-REMAP] Request device [42:00.2] faul=
-t index 1600 [fault reason 37] Blocked a compatibility format interrupt req=
-uest
-
-If you have any idea Ziyad and Itay can run any debugging you like.
-
-I suppose it is because this series is handing out compatability
-addr/data pairs while the IOMMU is setup to only accept remap ones
-from SRIOV VFs?
+Awaiting for comments from Andrew and others.
 
 Thanks,
-Jason
+Vijay
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of Code Aurora Forum, hosted by The Linux Foundation
