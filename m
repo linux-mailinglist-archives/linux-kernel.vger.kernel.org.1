@@ -2,221 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECAB2AFCA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F313C2AFCA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbgKLBlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:41:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728223AbgKLBSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:18:18 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11B37206E3;
-        Thu, 12 Nov 2020 01:18:17 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kd1Ff-0002N1-Rl; Wed, 11 Nov 2020 20:18:15 -0500
-Message-ID: <20201112011815.755256598@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 11 Nov 2020 20:15:19 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, live-patching@vger.kernel.org
-Subject: [PATCH 3/3 v5] livepatch: Use the default ftrace_ops instead of REGS when ARGS is
- available
-References: <20201112011516.589846126@goodmis.org>
+        id S1729693AbgKLBlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728227AbgKLBTm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 20:19:42 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694C5C0613D1;
+        Wed, 11 Nov 2020 17:19:42 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id g19so2017141qvy.2;
+        Wed, 11 Nov 2020 17:19:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t6O0sYxJBUgk9V8FqRpsvwNNwz5ipQ+AansIawZja9I=;
+        b=VfLxL9U/SBb06NU26ZQg3mLeQ4YU1vURENNOX5o9q82sPjjgQlOfM1ZNu2MEX8cf13
+         HiYQalcws2knOoe8K/KgYewmysQ8XDLjytyJ8Lj9gBheD0Bkl2D+PJIGAJlHwq3P0Jul
+         LZrPQncH0vQobnEM1JMY88RpxSVE3r7lG47hHG5WmhT2Yiw+NisM+btts8lhN4bJuRk9
+         pgEAtMLaELZYognagwPWUCKr52rDSoRc9Hk/TipywE70ue8nFy0R0/Z+wRYQwX5H1vI7
+         MU5hAswXktl9GHH4aJsXmWx0TRKsirtCqDa7tWPiyikBYgQZj4a0OIMOCvOQ3zHmNcGY
+         9Hfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t6O0sYxJBUgk9V8FqRpsvwNNwz5ipQ+AansIawZja9I=;
+        b=bSoNwVmoh94Qs4uSElACDIQ7p9xiuV5WxLyWS9EVZrlz27LH6L3GCwjccGx1a5I2Zt
+         tBTZyHzllM32C+Q6QaMFOHlsObQZoAieEBaACRHP6NZOXLlI4V6S1hs83cYDBSCAAe3O
+         vinpcuqambpLA8wTbWYDlPoiT7zT5QTrcdIDyYeAfyFxvqlvaMVvzAbpKEhR9u+Msn7h
+         75jdJ+9gQXeuPPPRqzHpd4IqRRMVELFFBFJj8mXBGfX3KWMGUnfsskvT6XGlzY652EIQ
+         xJD6js6EuwiXrzxPzoIsPVVWJM23f0pAYKfkOBViz5TcVHfnGkQMvUQJMTrkBZcWI58g
+         QDgQ==
+X-Gm-Message-State: AOAM532EgPHLh+15bydVIgOzZwSO4HAZV4zXRDV8lPEio+cyy8u1vPNM
+        wQll9JLWeRO+wFojYiZR3P0=
+X-Google-Smtp-Source: ABdhPJyjsvg9C4SUokM73BG6LLbH3Hup8iycj/2InNMean/F6Boq/HwoUQ1KVzkfw4ArHsGv4r+FTA==
+X-Received: by 2002:a0c:a5a2:: with SMTP id z31mr29221656qvz.15.1605143981548;
+        Wed, 11 Nov 2020 17:19:41 -0800 (PST)
+Received: from LeoBras.ibmuc.com (179-125-145-97.dynamic.desktop.com.br. [179.125.145.97])
+        by smtp.gmail.com with ESMTPSA id e10sm4153867qkn.126.2020.11.11.17.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 17:18:17 -0800 (PST)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Leonardo Bras <leobras.c@gmail.com>, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] powerpc/kvm: Fix mask size for emulated msgsndp
+Date:   Wed, 11 Nov 2020 22:16:55 -0300
+Message-Id: <20201112011655.382866-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+According to ISAv3.1 and ISAv3.0b, the msgsndp is described to split RB in:
+msgtype <- (RB) 32:36
+payload <- (RB) 37:63
+t       <- (RB) 57:63
 
-When CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is available, the ftrace call
-will be able to set the ip of the calling function. This will improve the
-performance of live kernel patching where it does not need all the regs to
-be stored just to change the instruction pointer.
+The current way of getting 'msgtype', and 't' is missing their LSB:
+msgtype: ((arg >> 27) & 0xf) : Gets (RB) 33:36, missing bit 32
+t:       (arg &= 0x3f)       : Gets (RB) 58:63, missing bit 57
 
-If all archs that support live kernel patching also support
-HAVE_DYNAMIC_FTRACE_WITH_ARGS, then the architecture specific function
-klp_arch_set_pc() could be made generic.
+Fixes this by applying the correct mask.
 
-It is possible that an arch can support HAVE_DYNAMIC_FTRACE_WITH_ARGS but
-not HAVE_DYNAMIC_FTRACE_WITH_REGS and then have access to live patching.
-
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: live-patching@vger.kernel.org
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 ---
- arch/powerpc/include/asm/livepatch.h | 4 +++-
- arch/s390/include/asm/livepatch.h    | 5 ++++-
- arch/x86/include/asm/ftrace.h        | 3 +++
- arch/x86/include/asm/livepatch.h     | 4 ++--
- arch/x86/kernel/ftrace_64.S          | 4 ++++
- include/linux/ftrace.h               | 7 +++++++
- kernel/livepatch/Kconfig             | 2 +-
- kernel/livepatch/patch.c             | 9 +++++----
- 8 files changed, 29 insertions(+), 9 deletions(-)
+ arch/powerpc/kvm/book3s_hv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
-index 4a3d5d25fed5..ae25e6e72997 100644
---- a/arch/powerpc/include/asm/livepatch.h
-+++ b/arch/powerpc/include/asm/livepatch.h
-@@ -12,8 +12,10 @@
- #include <linux/sched/task_stack.h>
- 
- #ifdef CONFIG_LIVEPATCH
--static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- {
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
- 	regs->nip = ip;
- }
- 
-diff --git a/arch/s390/include/asm/livepatch.h b/arch/s390/include/asm/livepatch.h
-index 818612b784cd..d578a8c76676 100644
---- a/arch/s390/include/asm/livepatch.h
-+++ b/arch/s390/include/asm/livepatch.h
-@@ -11,10 +11,13 @@
- #ifndef ASM_LIVEPATCH_H
- #define ASM_LIVEPATCH_H
- 
-+#include <linux/ftrace.h>
- #include <asm/ptrace.h>
- 
--static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- {
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
- 	regs->psw.addr = ip;
- }
- 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index e00fe88146e0..235385a38bd9 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -54,6 +54,9 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
- 		return NULL;
- 	return &fregs->regs;
- }
-+
-+#define ftrace_regs_set_ip(fregs, _ip)		\
-+	do { (fregs)->regs.ip = (_ip); } while (0)
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
-diff --git a/arch/x86/include/asm/livepatch.h b/arch/x86/include/asm/livepatch.h
-index 1fde1ab6559e..59a08d5c6f1d 100644
---- a/arch/x86/include/asm/livepatch.h
-+++ b/arch/x86/include/asm/livepatch.h
-@@ -12,9 +12,9 @@
- #include <asm/setup.h>
- #include <linux/ftrace.h>
- 
--static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- {
--	regs->ip = ip;
-+	ftrace_regs_set_ip(fregs, ip);
- }
- 
- #endif /* _ASM_X86_LIVEPATCH_H */
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 60e3b64f5ea6..0d54099c2a3a 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -157,6 +157,10 @@ SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
- SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
- 	call ftrace_stub
- 
-+	/* Handlers can change the RIP */
-+	movq RIP(%rsp), %rax
-+	movq %rax, MCOUNT_REG_SIZE(%rsp)
-+
- 	restore_mcount_regs
- 
- 	/*
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 588ea7023a7a..b4eb962e2be9 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -97,6 +97,13 @@ struct ftrace_regs {
- };
- #define arch_ftrace_get_regs(fregs) (&(fregs)->regs)
- 
-+/*
-+ * ftrace_regs_set_ip() is to be defined by the architecture if
-+ * to allow setting of the instruction pointer from the ftrace_regs
-+ * when HAVE_DYNAMIC_FTRACE_WITH_ARGS is set and it supports
-+ * live kernel patching.
-+ */
-+#define ftrace_regs_set_ip(fregs, ip) do { } while (0)
- #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
- 
- static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
-diff --git a/kernel/livepatch/Kconfig b/kernel/livepatch/Kconfig
-index 54102deb50ba..53d51ed619a3 100644
---- a/kernel/livepatch/Kconfig
-+++ b/kernel/livepatch/Kconfig
-@@ -6,7 +6,7 @@ config HAVE_LIVEPATCH
- 
- config LIVEPATCH
- 	bool "Kernel Live Patching"
--	depends on DYNAMIC_FTRACE_WITH_REGS
-+	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
- 	depends on MODULES
- 	depends on SYSFS
- 	depends on KALLSYMS_ALL
-diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
-index f89f9e7e9b07..e8029aea67f1 100644
---- a/kernel/livepatch/patch.c
-+++ b/kernel/livepatch/patch.c
-@@ -42,7 +42,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
- 				       struct ftrace_ops *fops,
- 				       struct ftrace_regs *fregs)
- {
--	struct pt_regs *regs = ftrace_get_regs(fregs);
- 	struct klp_ops *ops;
- 	struct klp_func *func;
- 	int patch_state;
-@@ -118,7 +117,7 @@ static void notrace klp_ftrace_handler(unsigned long ip,
- 	if (func->nop)
- 		goto unlock;
- 
--	klp_arch_set_pc(regs, (unsigned long)func->new_func);
-+	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
- 
- unlock:
- 	preempt_enable_notrace();
-@@ -200,8 +199,10 @@ static int klp_patch_func(struct klp_func *func)
- 			return -ENOMEM;
- 
- 		ops->fops.func = klp_ftrace_handler;
--		ops->fops.flags = FTRACE_OPS_FL_SAVE_REGS |
--				  FTRACE_OPS_FL_DYNAMIC |
-+		ops->fops.flags = FTRACE_OPS_FL_DYNAMIC |
-+#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+				  FTRACE_OPS_FL_SAVE_REGS |
-+#endif
- 				  FTRACE_OPS_FL_IPMODIFY |
- 				  FTRACE_OPS_FL_PERMANENT;
- 
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index e3b1839fc251..5af0a429cee8 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -1241,9 +1241,9 @@ static int kvmppc_emulate_doorbell_instr(struct kvm_vcpu *vcpu)
+ 	switch (get_xop(inst)) {
+ 	case OP_31_XOP_MSGSNDP:
+ 		arg = kvmppc_get_gpr(vcpu, rb);
+-		if (((arg >> 27) & 0xf) != PPC_DBELL_SERVER)
++		if (((arg >> 27) & 0x1f) != PPC_DBELL_SERVER)
+ 			break;
+-		arg &= 0x3f;
++		arg &= 0x7f;
+ 		if (arg >= kvm->arch.emul_smt_mode)
+ 			break;
+ 		tvcpu = kvmppc_find_vcpu(kvm, vcpu->vcpu_id - thr + arg);
+@@ -1256,7 +1256,7 @@ static int kvmppc_emulate_doorbell_instr(struct kvm_vcpu *vcpu)
+ 		break;
+ 	case OP_31_XOP_MSGCLRP:
+ 		arg = kvmppc_get_gpr(vcpu, rb);
+-		if (((arg >> 27) & 0xf) != PPC_DBELL_SERVER)
++		if (((arg >> 27) & 0x1f) != PPC_DBELL_SERVER)
+ 			break;
+ 		vcpu->arch.vcore->dpdes = 0;
+ 		vcpu->arch.doorbell_request = 0;
 -- 
-2.28.0
-
+2.25.4
 
