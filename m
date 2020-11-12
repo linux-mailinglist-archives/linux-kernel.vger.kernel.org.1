@@ -2,166 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC89C2B0BF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD672B0BF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgKLSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:00:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgKLSAJ (ORCPT
+        id S1726871AbgKLSA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:00:28 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15999 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726847AbgKLSAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:00:09 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB83C0613D1;
-        Thu, 12 Nov 2020 10:00:09 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id y197so6105240qkb.7;
-        Thu, 12 Nov 2020 10:00:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nWQxQxmFLSVrQK0chW1Meim1NDrbshpHTTnicdDWmbA=;
-        b=i/YhZTJPWlL4BQgh8dJHPFTZQ9sCwFF2v4JYEYB8CnHKo90Fykys0su4WrRtDcprjg
-         il20NHsql+ux6cH4Zb2dEX1ZjsiPZexHqHn8oPzDC/DhwJuuEn/zSbxPXoyHF0u4uq8v
-         bthtwNCmxPagN0Tvi4dHTXKOMY+O8DRFertCE3bBUhLXHGvU6rWI+yuztcxnpI5FbpXG
-         7mVrRqksOjKYjlYIo46HXOTnTN6T8xGQj8QZbpzN6CzotJLhVvfFTBbh5u+gWQOKbjwT
-         S59eKHkCKiXrSJ5mWxR2wLqt6TT8BveOmKI+dUiBcKeTq9czGHP4GQHotAOkNwkE7Kp8
-         GnuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nWQxQxmFLSVrQK0chW1Meim1NDrbshpHTTnicdDWmbA=;
-        b=DY5S9ZrWcXLqdSVnHvTC+en2iSDOzCbC/n8K4jm4KAtQ0rJD7aHAw7s34ZNhponbGD
-         +207/TlbkGR5FMEdHvFi3opWT8ONz6ty9BIglJqQ+zxWw4bl25T/JIA00SFcKA0eY85g
-         CkjXAGSVAVjNDHByWDDL+ePkuZg1eod+YRc3u+ce4X8ISqfaGLfVPn1V3ifDff2VlAcX
-         uAcMBeLB3Zp7V9+Xofb2kDQQaLflC8CTnj9w34lsdyiUc+41C3n9XoM9CyclX/Se0Bo4
-         AUt+TaVUYRx/HUgBrsm7uodvCh4YgWzPZ92wX5LRN5Z4DoYGcIoVOMAoJc4PzTHvCyd4
-         UxuQ==
-X-Gm-Message-State: AOAM531RhZ63oaLJE6ZBrtiQLob4SC6ZVrUEACQZB+skVGhbFC2YjQsW
-        2YQi5l+utK4g0pPsFLSV3Gg=
-X-Google-Smtp-Source: ABdhPJyuF0i2RSc/0wPNVEZueWQV00u5c0X1138yjJ1kLVDmdzhW9ZII0BPTlC1wsnVX2I31hzHCSQ==
-X-Received: by 2002:a37:b342:: with SMTP id c63mr1048937qkf.146.1605204008659;
-        Thu, 12 Nov 2020 10:00:08 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id q20sm5369269qtn.80.2020.11.12.10.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 10:00:07 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:00:06 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] usb: fix a few cases of -Wfallthrough
-Message-ID: <20201112180006.GA934688@ubuntu-m3-large-x86>
-References: <20201111014716.260633-1-ndesaulniers@google.com>
+        Thu, 12 Nov 2020 13:00:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad782f0001>; Thu, 12 Nov 2020 10:00:15 -0800
+Received: from [10.2.174.128] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 18:00:15 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <linux-mm@kvack.org>, Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        "Michal Hocko" <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 2/6] mm: memcg: make memcg huge page split support any
+ order split.
+Date:   Thu, 12 Nov 2020 13:00:14 -0500
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <80CEFCD9-E62A-4013-8F14-3A30D808E768@nvidia.com>
+In-Reply-To: <021b000f-dfc9-59fc-77e4-fdeaee1c108e@nvidia.com>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-3-zi.yan@sent.com>
+ <021b000f-dfc9-59fc-77e4-fdeaee1c108e@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111014716.260633-1-ndesaulniers@google.com>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_E5F9F4CE-9B7E-42EA-B152-28A177484E2C_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605204015; bh=g53dneiexd4GW1IkrhDuYWbJ6jvgYe3JIzOXNEszinE=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=bLGyCMLGK7OYvW5lKw7opbtx4226RbhQkRK9bAFrK1cbJg/LIwSpbfW9wB8Drhipe
+         3+GizQ54sUkTWBdku9JsnHeZhYlkeEHw1klwumVdl+9fDRUqPRIJv+hyW17QToa0GD
+         8UblEVrquhge03MJrXzRuCN8XjF8eUkyHt2jvAipbNGSfqUrWdsa1B8rb1CFMjFWu5
+         kgu43d38Dg9WcyJhbVLjoufDcNkF2G9gES3SY2vXbIC5JD8ZPwtEdYMxdAQIYdh7TD
+         B7Mlk8RhprfEN6gb4wpLaTzwzN/WKGx3sj+vhUClqnTkF03PJnQ3H8UwgArBPbfO+y
+         lDCAA2EFaqcig==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 05:47:14PM -0800, Nick Desaulniers wrote:
-> The "fallthrough" pseudo-keyword was added as a portable way to denote
-> intentional fallthrough. Clang will still warn on cases where there is a
-> fallthrough to an immediate break. Add explicit breaks for those cases.
-> 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+--=_MailMate_E5F9F4CE-9B7E-42EA-B152-28A177484E2C_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Aside from a minor nit/question below:
+On 12 Nov 2020, at 12:58, Ralph Campbell wrote:
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> On 11/11/20 12:40 PM, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> It reads thp_nr_pages and splits to provided new_nr. It prepares for
+>> upcoming changes to support split huge page to any lower order.
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>
+> Looks OK to me.
+> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 
-> ---
->  drivers/usb/core/config.c    | 1 +
->  drivers/usb/host/ehci-hcd.c  | 2 +-
->  drivers/usb/host/ohci-hcd.c  | 2 +-
->  drivers/usb/host/ohci-hub.c  | 1 +
->  drivers/usb/host/xhci-ring.c | 2 ++
->  5 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
-> index 562a730befda..b199eb65f378 100644
-> --- a/drivers/usb/core/config.c
-> +++ b/drivers/usb/core/config.c
-> @@ -1076,6 +1076,7 @@ int usb_get_bos_descriptor(struct usb_device *dev)
->  		case USB_PTM_CAP_TYPE:
->  			dev->bos->ptm_cap =
->  				(struct usb_ptm_cap_descriptor *)buffer;
-> +			break;
->  		default:
->  			break;
->  		}
-> diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-> index 3575b7201881..e358ae17d51e 100644
-> --- a/drivers/usb/host/ehci-hcd.c
-> +++ b/drivers/usb/host/ehci-hcd.c
-> @@ -867,7 +867,7 @@ static int ehci_urb_enqueue (
->  		 */
->  		if (urb->transfer_buffer_length > (16 * 1024))
->  			return -EMSGSIZE;
-> -		/* FALLTHROUGH */
-> +		fallthrough;
+Thanks.
 
-This is fixing the same kind of warnings but it is not called out in the
-commit message. Maybe this hunk and the next hunk should be in a
-separate patch? No strong preference either way.
+=E2=80=94
+Best Regards,
+Yan Zi
 
->  	/* case PIPE_BULK: */
->  	default:
->  		if (!qh_urb_transaction (ehci, urb, &qtd_list, mem_flags))
-> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-> index 73e13e7c2b46..1f5e69314a17 100644
-> --- a/drivers/usb/host/ohci-hcd.c
-> +++ b/drivers/usb/host/ohci-hcd.c
-> @@ -171,7 +171,7 @@ static int ohci_urb_enqueue (
->  
->  			/* 1 TD for setup, 1 for ACK, plus ... */
->  			size = 2;
-> -			/* FALLTHROUGH */
-> +			fallthrough;
->  		// case PIPE_INTERRUPT:
->  		// case PIPE_BULK:
->  		default:
-> diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
-> index 44504c1751e0..f474f2f9c1e4 100644
-> --- a/drivers/usb/host/ohci-hub.c
-> +++ b/drivers/usb/host/ohci-hub.c
-> @@ -692,6 +692,7 @@ int ohci_hub_control(
->  		case C_HUB_OVER_CURRENT:
->  			ohci_writel (ohci, RH_HS_OCIC,
->  					&ohci->regs->roothub.status);
-> +			break;
->  		case C_HUB_LOCAL_POWER:
->  			break;
->  		default:
-> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-> index 167dae117f73..eac43a7b7f23 100644
-> --- a/drivers/usb/host/xhci-ring.c
-> +++ b/drivers/usb/host/xhci-ring.c
-> @@ -2418,6 +2418,7 @@ static int handle_tx_event(struct xhci_hcd *xhci,
->  			xhci_warn_ratelimited(xhci,
->  					      "WARN Successful completion on short TX for slot %u ep %u: needs XHCI_TRUST_TX_LENGTH quirk?\n",
->  					      slot_id, ep_index);
-> +		break;
->  	case COMP_SHORT_PACKET:
->  		break;
->  	/* Completion codes for endpoint stopped state */
-> @@ -2962,6 +2963,7 @@ static int prepare_ring(struct xhci_hcd *xhci, struct xhci_ring *ep_ring,
->  		return -EINVAL;
->  	case EP_STATE_HALTED:
->  		xhci_dbg(xhci, "WARN halted endpoint, queueing URB anyway.\n");
-> +		break;
->  	case EP_STATE_STOPPED:
->  	case EP_STATE_RUNNING:
->  		break;
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
-> 
+--=_MailMate_E5F9F4CE-9B7E-42EA-B152-28A177484E2C_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+teC4PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqK5rIP/iMtjzyC5MTmgbC3+6g2Hk7D6eSSo5IEDdWI
+ASxtHTw/wztOlCreWfH8wNMKiwz2DCMcbjnuJqQhqrCJb4OU9Q05Bm1gcIaTs0hG
+nmYLSfa03KF3WVC9TwxCguudsYwUrZa+yYFEuFMFfQe9FmlozHDH/YMt/N/NgYMg
+6csfWeIMH8tFJ76d46nxBFLt7WAIVMH5XPd1mX/bF5pr7kL704Iv41RumXn/3iJR
+WW8aO4FnzH9e09Nn8l8QWnaHSkBcXg8NcfqtR39g+sqcsjOY8aodwnnX5aTLLto8
+gQFN9LUXUeSrPvw5B4+rp2vPSNtakOcTS8HVxEwvE9QVELv6PNx93UlPNPRjNETi
+ALk9mlZBSKlyXL51/93vCzYdJTBMi5hgCvBUMTHDy4GTfsJUAaFg4RyQ03K0xCi4
+fkMwLyU8ih2l9Sb03CVwkhU+omDA0a561BQ/AA4XObrTSIEPkXmHGrV26L+q6Vd8
+xaNNjTWd20nu4BCymYC0PbLBqPe3ulv7bqxJSW5RsYSugvU+tBWrftP/pgh/e/11
+MfLZYEfWGaEjZyTvuL/eiSKU+7chVRzciLhJrvbr1BzYxSp3Ic1RWOLN0/8tJ99l
+uZtRUCdQS2eOqo3hSzVt9H6UjFVdIGFMXRuS+MIGJQueM0JSKoZ9uZ7I3IwdQKio
+FZBrPW7X
+=wQ47
+-----END PGP SIGNATURE-----
+
+--=_MailMate_E5F9F4CE-9B7E-42EA-B152-28A177484E2C_=--
