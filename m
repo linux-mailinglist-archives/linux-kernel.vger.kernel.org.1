@@ -2,209 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2F22AFCA1
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACDC2AFCA2
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729561AbgKLBlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:41:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728204AbgKLBLA (ORCPT
+        id S1729581AbgKLBlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:41:16 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41558 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbgKLBNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:11:00 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71140C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:11:00 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id e8so944109vkk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:11:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jz5kAZbrArqI0Wtmw+vtyP3p8jdhel21wmv2CFUUROo=;
-        b=kDnlXe7tyEixWf+480/PTLTVkBUYGbtBisgVqL6qcQgy4sPKvzTV6/tSw83j47RD7q
-         Rf9VAXW9kIm4P+pX/HXhGKwX9LVFIVmcuHv/6Jag9gPlQcBFdbxZcRC33/54CUyQozsU
-         NIphtyIs1Otvd9bO8oM70co0kkF3ZZXDKONwA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jz5kAZbrArqI0Wtmw+vtyP3p8jdhel21wmv2CFUUROo=;
-        b=gzIYwPmCrffaPgiLJX6kPNrkeQTVnXDeYY8T2ORqL7RH5VVsYieTP6sBRAOP03H3Ru
-         E56qnTxpBaejtI9t0WO+Kh2D4bSfe1YHLoWxUUOtxTRqsBNEi8uexzOH0trl8quZOJSe
-         oUZXc1NHm1auopE/fDrszqyyVkhxa6etbX5V/178SmJ7tTnnc61bRTP86S29KYokXwWX
-         NKJeKM9ySlNqH7u9ODeIVdheMRKO35KXMP+8a2GotMHD23HCXSitdpl7bPt81M7r5clP
-         cxU0bV0UEo+e2rdmv7KQOftEVxnoU9i+I15VzXQ0g84kZ1yelDMg/y7yIygF7o8BSYIT
-         JTfA==
-X-Gm-Message-State: AOAM532nWR1sJs1Ml2pcnNdn6g6Qj+wd/YsR9St1vXmCmrkmjGpbtYJx
-        M6uZurHcH0bQ4dbtbx/9FukQXBMRAfCJWVvhyarDtQ==
-X-Google-Smtp-Source: ABdhPJw+9rZ4nbhsdwX6zx9uimjIrtTve1brVMfTJF95tCZp/3u+DvsL8qx0usBjUpgCHUXOc17+xjTd7E+Sg/oGTEc=
-X-Received: by 2002:a1f:cd07:: with SMTP id d7mr16387452vkg.10.1605143459607;
- Wed, 11 Nov 2020 17:10:59 -0800 (PST)
+        Wed, 11 Nov 2020 20:13:40 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605143617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NC+uvhL2XYSO0lp2yao70R5XrrcbGD310dMy9lHjfk0=;
+        b=oMtBw1dK6hwnAziR1Sa8n0nrEDU67WCC95A9JQj6dM7qem4HR9yausWmN9pKdbDKCOa8Mv
+        +nrKwuVUTvpRAO87CKbY+AmPfqP2eQAjgoYG/QCJxYG7Xc7xcMQukj0Uo6EP/7v4FIwgI5
+        O6hlKMxqfK5T/XkbyK3dIP0W6jTM5udWg8ZL/QuHEuYgTsPeEC4A39q74mAp6eDAk+CNFh
+        He38a8YVfbtGVOQ68jieQy7DRRBnpZUdo3zV2Q5GzBSeY2eaCl4SGXbzFaUwbJxvaSPgYw
+        ORSXBbLnH22RYGtcWC85d+QSiDkulHsCIdI5W7W0+8ZcjUPYeVsQhVqUM+NTaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605143617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NC+uvhL2XYSO0lp2yao70R5XrrcbGD310dMy9lHjfk0=;
+        b=3z7QskZLwhekH6gqUujryf4f99GewEXIaxAyVy1SSUshTt6+NGvqmhEamYRXIm1BM35TBc
+        TIOmhz8YKbDE5oDA==
+To:     "Raj\, Ashok" <ashok.raj@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Tian\, Kevin" <kevin.tian@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "jing.lin\@intel.com" <jing.lin@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <20201111230321.GC83266@otc-nc-03>
+References: <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03> <20201106175131.GW2620339@nvidia.com> <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com> <20201107001207.GA2620339@nvidia.com> <87pn4nk7nn.fsf@nanos.tec.linutronix.de> <d69953378bd1fdcdda54a2fbe285f6c0b1484e8a.camel@infradead.org> <20201111154159.GA24059@infradead.org> <20201111160922.GA83266@otc-nc-03> <87k0uro7fz.fsf@nanos.tec.linutronix.de> <20201111230321.GC83266@otc-nc-03>
+Date:   Thu, 12 Nov 2020 02:13:36 +0100
+Message-ID: <877dqrnzr3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201111123838.15682-1-yong.wu@mediatek.com> <20201111123838.15682-14-yong.wu@mediatek.com>
-In-Reply-To: <20201111123838.15682-14-yong.wu@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Thu, 12 Nov 2020 09:10:49 +0800
-Message-ID: <CANMq1KBrnhAbGdKbsSmFJWONe-mkG6TJsN_jp2xuJ=4MiPyapQ@mail.gmail.com>
-Subject: Re: [PATCH v4 13/24] iommu/mediatek: Add device link for smi-common
- and m4u
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, chao.hao@mediatek.com,
-        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 8:40 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> In the lastest SoC, M4U has its special power domain. thus, If the engine
-> begin to work, it should help enable the power for M4U firstly.
-> Currently if the engine work, it always enable the power/clocks for
-> smi-larbs/smi-common. This patch adds device_link for smi-common and M4U.
-> then, if smi-common power is enabled, the M4U power also is powered on
-> automatically.
->
-> Normally M4U connect with several smi-larbs and their smi-common always
-> are the same, In this patch it get smi-common dev from the first smi-larb
-> device(i==0), then add the device_link only while m4u has power-domain.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/iommu/mtk_iommu.c | 36 +++++++++++++++++++++++++++++++++---
->  drivers/iommu/mtk_iommu.h |  1 +
->  2 files changed, 34 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index cfdf5ce696fd..4ce7e0883e4d 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -20,6 +20,7 @@
->  #include <linux/of_irq.h>
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
-> @@ -705,7 +706,7 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->                 return larb_nr;
->
->         for (i = 0; i < larb_nr; i++) {
-> -               struct device_node *larbnode;
-> +               struct device_node *larbnode, *smicomm_node;
->                 struct platform_device *plarbdev;
->                 u32 id;
->
-> @@ -731,6 +732,26 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->
->                 component_match_add_release(dev, &match, release_of,
->                                             compare_of, larbnode);
-> +               if (!i) {
+Ashok,
 
-Maybe more of a style preference, but since you are actually comparing
-an integer, I prefer seeing i == 0.
+On Wed, Nov 11 2020 at 15:03, Ashok Raj wrote:
+> On Wed, Nov 11, 2020 at 11:27:28PM +0100, Thomas Gleixner wrote:
+>> which is the obvious sane and safe logic. But sure, why am I asking for
+>> sane and safe in the context of virtualization?
+>
+> We can pick how to solve this, and just waiting for you to tell, what
+> mechanism you prefer that's less painful and architecturally acceptible for
+> virtualization and linux. We are all ears!
 
-Also, might be nicer to do
+Obviously we can't turn the time back. The point I was trying to make is
+that the general approach of just bolting things on top of the exiting
+maze is bad in general.
 
-if (i != 0)
-   continue;
+Opt-out bits are error prone simply because anything which exists before
+that point does not know that it should set that bit. Obvious, right?
 
-And de-indent the rest.
+CPUID bits are 'Feature available' and not 'Feature not longer
+available' for a reason.
 
-> +                       smicomm_node = of_parse_phandle(larbnode, "mediatek,smi", 0);
-> +                       if (!smicomm_node)
-> +                               return -EINVAL;
-> +
-> +                       plarbdev = of_find_device_by_node(smicomm_node);
-> +                       of_node_put(smicomm_node);
-> +                       data->smicomm_dev = &plarbdev->dev;
-> +               }
-> +       }
-> +
-> +       if (dev->pm_domain) {
-> +               struct device_link *link;
-> +
-> +               link = device_link_add(data->smicomm_dev, dev,
-> +                                      DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME);
-> +               if (!link) {
-> +                       dev_err(dev, "Unable link %s.\n", dev_name(data->smicomm_dev));
-> +                       return -EINVAL;
-> +               }
->         }
->
->         platform_set_drvdata(pdev, data);
-> @@ -738,14 +759,14 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->         ret = iommu_device_sysfs_add(&data->iommu, dev, NULL,
->                                      "mtk-iommu.%pa", &ioaddr);
->         if (ret)
-> -               return ret;
-> +               goto out_link_remove;
->
->         iommu_device_set_ops(&data->iommu, &mtk_iommu_ops);
->         iommu_device_set_fwnode(&data->iommu, &pdev->dev.of_node->fwnode);
->
->         ret = iommu_device_register(&data->iommu);
->         if (ret)
-> -               return ret;
-> +               goto out_sysfs_remove;
+So with the introduction of VT this stringent road was left and the
+approach was: Don't tell the guest OS that it's not running on bare
+metal.
 
-Technically, this change is unrelated.
+That's a perfectly fine approach for running existing legacy OSes which
+do not care at all because they don't know about anything of this
+newfangled stuff.
 
->
->         spin_lock_init(&data->tlb_lock);
->         list_add_tail(&data->list, &m4ulist);
-> @@ -754,6 +775,13 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->                 bus_set_iommu(&platform_bus_type, &mtk_iommu_ops);
->
->         return component_master_add_with_match(dev, &mtk_iommu_com_ops, match);
-> +
-> +out_sysfs_remove:
-> +       iommu_device_sysfs_remove(&data->iommu);
-> +out_link_remove:
-> +       if (dev->pm_domain)
-> +               device_link_remove(data->smicomm_dev, dev);
-> +       return ret;
->  }
->
->  static int mtk_iommu_remove(struct platform_device *pdev)
-> @@ -767,6 +795,8 @@ static int mtk_iommu_remove(struct platform_device *pdev)
->                 bus_set_iommu(&platform_bus_type, NULL);
->
->         clk_disable_unprepare(data->bclk);
-> +       if (pdev->dev.pm_domain)
-> +               device_link_remove(data->smicomm_dev, &pdev->dev);
->         devm_free_irq(&pdev->dev, data->irq, data);
->         component_master_del(&pdev->dev, &mtk_iommu_com_ops);
->         return 0;
-> diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
-> index d0c93652bdbe..5e03a029c4dc 100644
-> --- a/drivers/iommu/mtk_iommu.h
-> +++ b/drivers/iommu/mtk_iommu.h
-> @@ -68,6 +68,7 @@ struct mtk_iommu_data {
->
->         struct iommu_device             iommu;
->         const struct mtk_iommu_plat_data *plat_data;
-> +       struct device                   *smicomm_dev;
->
->         struct dma_iommu_mapping        *mapping; /* For mtk_iommu_v1.c */
->
-> --
-> 2.18.0
->
+But it's a falls flat on it's nose for anything which comes past that
+point simply because there is no reliable way to tell in which context
+the OS runs.
+
+The VMM can decide not to set or is not having support for setting the
+software CPUID bit which tells the guest OS that it does NOT run on bare
+metal and still hand in new fangled PCI devices for which the guest OS
+happens to have a driver which then falls flat on it's nose because some
+magic functionality is not there.
+
+So we have the following matrix:
+
+VMM   		Guest OS
+Old             Old             -> Fine, does not support any of that
+New             Old             -> Fine, does not support any of that
+New             New             -> Fine, works as expected
+Old             New             -> FAIL
+
+To fix this we have to come up with heuristics again to figure out which
+context we are running in and whether some magic feature can be
+supported or not:
+
+probably_on_bare_metal()
+{
+        if (CPUID(FEATURE_HYPERVISOR))
+        	return false;
+       	if (dmi_match_hypervisor_vendor())
+        	return false;
+
+        return PROBABLY_RUNNING_ON_BARE_METAL;
+}
+
+Yes, it works probably in most cases, but it still works by chance and
+that's what I really hate about this; indeed 'hate' is not a strong
+enough word.
+
+Why on earth did VT not introduce a reliable way (instruction, CPUID
+leaf, MSR, whatever, which can't be manipulated by the VMM to let the OS
+figure out where it runs?)
+
+Just because the general approach to these problems is: We can fix that
+in software.
+
+No, you can't fix inconsistency in software at all.
+
+This is not the first time that we tell HW folks to stop this 'Fix this
+in software' attitude which has caused more problems than it solved.
+
+And you can argue in circles until you are blue, that inconsistency is
+not going away. 
+
+Everytime new (mis)features are added which need awareness of the OS
+whether it runs on bare-metal or in a VM we have this unsolvable dance
+of requiring that the underlying VMM has to tell the guest OS NOT to use
+it instead of having the guest OS making the simple decision:
+
+   if (!definitely_on_bare_metal())
+   	return -ENOTSUPP;
+
+or with a newer version of the guest OS:
+
+   if (!definitely_on_bare_metal() && !hypervisor->supportsthis())
+   	return -ENOTSUPP;
+
+I'm halfways content to go with the above probably_on_bare_metal()
+function as a replacement for definitely_on_bare_metal() to go forward,
+but only for the very simple reason that this is the only option we
+have.
+
+Thanks,
+
+        tglx
