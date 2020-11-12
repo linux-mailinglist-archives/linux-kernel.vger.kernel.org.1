@@ -2,118 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E242B037F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFCE2B0349
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgKLLHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:07:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727962AbgKLK7T (ORCPT
+        id S1728010AbgKLLCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:02:14 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2431 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727969AbgKLK7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:59:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605178755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PHjBjRZowY+IjVGBZ60XjvH5JSPQwQ4zt8y3iTk+Z+0=;
-        b=E7RcpYs2Z8Vz5ZoQ6PDc7HBgWu/Zn0ESg7tyiaFgUL/14jygNPEUZv/dSRkvIDBf4Fab2T
-        OCAbnwRfLrlKjnW6skZP/lBBgbcE7bhQSj7V4LWmo/tuEyGAfkeLR4UGJbdpAMkWKUC6s0
-        MMEr9CgwgOSLElXGrcthlmKKQ++7NTU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-dbrB9FTIOsCrsXaMt0GhXA-1; Thu, 12 Nov 2020 05:59:14 -0500
-X-MC-Unique: dbrB9FTIOsCrsXaMt0GhXA-1
-Received: by mail-wm1-f70.google.com with SMTP id b206so1614281wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:59:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=PHjBjRZowY+IjVGBZ60XjvH5JSPQwQ4zt8y3iTk+Z+0=;
-        b=OM0wxf3QeS4tFNW6JdI8kIYa+NJwMAYUDTrmpOGjv7Zm6JS++30iDMLuTlPFlzwZan
-         NlZ81tXIdpmkoKEKauQedu7ZTaImKrVGC99CylFUi0qRtN7Rc16M7QAXphSKdLCbXhd0
-         ddhEDUg7pHSy5MxGerHWm3dkeC1g3JgWiljYY9Ui4bujfT7PBRIGxJJAko8zmdLxUcgA
-         5CoW3nNUqbhy1o1nTrD2EdB91YNQeraR0Z7pXVE1lhwtOkPJh1W0JhWDd5NNkebUUbox
-         vrDsRLMLkVuCOcJQk64AJ+LTGYdr4GvZyjdLDR7qXKYKfruPLB2CYCfmT+XLDKgAqIhp
-         ICQw==
-X-Gm-Message-State: AOAM530GUckDiljFSzI0+mnShBk5P31B5pgsjhXXzrFKltYHzpPUoxbp
-        yeIikI20yMxqo8oPibbm3rHuElT17X0+rA2ev5bRv0BRxhXtXkyP46TxGM/PBWBJ99EBdcIblcP
-        Dgbo3rLJHieQ2yXDHpVXv/lV3LYRKY67HRx9U1+261JBsL3thniiLxFpwlgyNKN9e/qFy9fQbfX
-        JR
-X-Received: by 2002:adf:f6cd:: with SMTP id y13mr15452572wrp.363.1605178752562;
-        Thu, 12 Nov 2020 02:59:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy8NqN7MYALoXUCZY6YKU0aWObW5mAt3CIykX41Fc8DE8b074d3YM8QF538aTonDg2bjBTJMQ==
-X-Received: by 2002:adf:f6cd:: with SMTP id y13mr15452551wrp.363.1605178752379;
-        Thu, 12 Nov 2020 02:59:12 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id p12sm6204530wrw.28.2020.11.12.02.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 02:59:11 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/11] KVM: VMX: Skip additional Hyper-V TLB EPTP
- flushes if one fails
-In-Reply-To: <20201027212346.23409-11-sean.j.christopherson@intel.com>
-References: <20201027212346.23409-1-sean.j.christopherson@intel.com>
- <20201027212346.23409-11-sean.j.christopherson@intel.com>
-Date:   Thu, 12 Nov 2020 11:59:10 +0100
-Message-ID: <87zh3myh6p.fsf@vitty.brq.redhat.com>
+        Thu, 12 Nov 2020 05:59:45 -0500
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CWzBM6vyvz53wv;
+        Thu, 12 Nov 2020 18:59:23 +0800 (CST)
+Received: from [10.140.157.68] (10.140.157.68) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 12 Nov 2020 18:59:33 +0800
+Subject: Re: [PATCH V3] clk: hisilicon: refine hi3620_mmc_clk_init() and fix
+ memory leak issues
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <Markus.Elfring@web.de>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201112192214.48926-1-gengdongjiu@huawei.com>
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+Message-ID: <2f85025e-f072-e01c-cb57-6a0a65a3cb0d@huawei.com>
+Date:   Thu, 12 Nov 2020 18:59:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201112192214.48926-1-gengdongjiu@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.140.157.68]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
+add Markus
 
-> Skip additional EPTP flushes if one fails when processing EPTPs for
-> Hyper-V's paravirt TLB flushing.  If _any_ flush fails, KVM falls back
-> to a full global flush, i.e. additional flushes are unnecessary (and
-> will likely fail anyways).
->
-> Continue processing the loop unless a mismatch was already detected,
-> e.g. to handle the case where the first flush fails and there is a
-> yet-to-be-detected mismatch.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+On 2020/11/13 3:22, Dongjiu Geng wrote:
+> Refine hi3620_mmc_clk_init() to use of_clk_add_hw_provider()
+> instead of of_clk_add_provider(), the called function hisi_register_clk_mmc()
+> returns 'clk_hw *' to adapt to this change.  Also free memory mapping and
+> free hw_data if clock initialization is failed.
+> 
+> Fix the memory leak issues in hisi_clk_init().
+> 
+> Fixes: 75af25f581b1 ("clk: hisi: remove static variable")
+> Fixes: 62ac983b6141 ("clk: hisilicon: add hi3620_mmc_clks")
+> Cc: Markus Elfring <Markus.Elfring@web.de>
+> Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
 > ---
->  arch/x86/kvm/vmx/vmx.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 5b7c5b2fd2c7..40a67dd45c8c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -528,7 +528,15 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
->  			if (++nr_unique_valid_eptps == 1)
->  				kvm_vmx->hv_tlb_eptp = tmp_eptp;
+> v2->v3:
+> 1. Refind hi3620_mmc_clk_init() and hisi_register_clk_mmc() in order to use
+>    of_clk_add_hw_provider().
+> 2. Fix the issue that incorrectly free data even clock is initialized
+>    successfully.
+> ---
+>  drivers/clk/hisilicon/clk-hi3620.c | 44 ++++++++++++++++++------------
+>  drivers/clk/hisilicon/clk.c        | 11 ++++----
+>  2 files changed, 33 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/clk/hisilicon/clk-hi3620.c b/drivers/clk/hisilicon/clk-hi3620.c
+> index a3d04c7c3da8..3dec48174560 100644
+> --- a/drivers/clk/hisilicon/clk-hi3620.c
+> +++ b/drivers/clk/hisilicon/clk-hi3620.c
+> @@ -408,12 +408,13 @@ static const struct clk_ops clk_mmc_ops = {
+>  	.recalc_rate = mmc_clk_recalc_rate,
+>  };
 >  
-> -			ret |= hv_remote_flush_eptp(tmp_eptp, range);
-> +			if (!ret)
-> +				ret = hv_remote_flush_eptp(tmp_eptp, range);
+> -static struct clk *hisi_register_clk_mmc(struct hisi_mmc_clock *mmc_clk,
+> +static struct clk_hw *hisi_register_clk_mmc(struct hisi_mmc_clock *mmc_clk,
+>  			void __iomem *base, struct device_node *np)
+>  {
+>  	struct clk_mmc *mclk;
+> -	struct clk *clk;
+> +	struct clk_hw *hw;
+>  	struct clk_init_data init;
+> +	int err;
+>  
+>  	mclk = kzalloc(sizeof(*mclk), GFP_KERNEL);
+>  	if (!mclk)
+> @@ -439,17 +440,22 @@ static struct clk *hisi_register_clk_mmc(struct hisi_mmc_clock *mmc_clk,
+>  	mclk->sam_off = mmc_clk->sam_off;
+>  	mclk->sam_bits = mmc_clk->sam_bits;
+>  
+> -	clk = clk_register(NULL, &mclk->hw);
+> -	if (WARN_ON(IS_ERR(clk)))
+> +	hw = &mclk->hw;
+> +	err = clk_hw_register(NULL, hw);
 > +
-> +			/*
-> +			 * Stop processing EPTPs if a failure occurred and
-> +			 * there is already a detected EPTP mismatch.
-> +			 */
-> +			if (ret && nr_unique_valid_eptps > 1)
-> +				break;
->  		}
+> +	if (err) {
+>  		kfree(mclk);
+> -	return clk;
+> +		return ERR_PTR(err);
+> +	}
+> +
+> +	return hw;
+>  }
 >  
->  		/*
-
-This should never happen (famous last words) but why not optimize the
-impossibility :-)
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
-
+>  static void __init hi3620_mmc_clk_init(struct device_node *node)
+>  {
+>  	void __iomem *base;
+> -	int i, num = ARRAY_SIZE(hi3620_mmc_clks);
+> -	struct clk_onecell_data *clk_data;
+> +	int i, ret, num = ARRAY_SIZE(hi3620_mmc_clks);
+> +	struct clk_hw_onecell_data *hw_data;
+>  
+>  	if (!node) {
+>  		pr_err("failed to find pctrl node in DTS\n");
+> @@ -462,22 +468,26 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
+>  		return;
+>  	}
+>  
+> -	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
+> -	if (WARN_ON(!clk_data))
+> -		return;
+> -
+> -	clk_data->clks = kcalloc(num, sizeof(*clk_data->clks), GFP_KERNEL);
+> -	if (!clk_data->clks)
+> -		return;
+> +	hw_data = kzalloc(struct_size(hw_data, hws, num), GFP_KERNEL);
+> +	if (WARN_ON(!hw_data))
+> +		goto unmap_io;
+>  
+>  	for (i = 0; i < num; i++) {
+>  		struct hisi_mmc_clock *mmc_clk = &hi3620_mmc_clks[i];
+> -		clk_data->clks[mmc_clk->id] =
+> +		hw_data->hws[mmc_clk->id] =
+>  			hisi_register_clk_mmc(mmc_clk, base, node);
+>  	}
+>  
+> -	clk_data->clk_num = num;
+> -	of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
+> +	hw_data->num = num;
+> +	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, hw_data);
+> +	if (ret < 0)
+> +		goto free_hw_data;
+> +	return;
+> +
+> +free_hw_data:
+> +	kfree(hw_data);
+> +unmap_io:
+> +	iounmap(base);
+>  }
+>  
+>  CLK_OF_DECLARE(hi3620_mmc_clk, "hisilicon,hi3620-mmc-clock", hi3620_mmc_clk_init);
+> diff --git a/drivers/clk/hisilicon/clk.c b/drivers/clk/hisilicon/clk.c
+> index 54d9fdc93599..da655683710f 100644
+> --- a/drivers/clk/hisilicon/clk.c
+> +++ b/drivers/clk/hisilicon/clk.c
+> @@ -65,25 +65,26 @@ struct hisi_clock_data *hisi_clk_init(struct device_node *np,
+>  	base = of_iomap(np, 0);
+>  	if (!base) {
+>  		pr_err("%s: failed to map clock registers\n", __func__);
+> -		goto err;
+> +		return NULL;
+>  	}
+>  
+>  	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
+>  	if (!clk_data)
+> -		goto err;
+> +		goto unmap_io;
+>  
+>  	clk_data->base = base;
+>  	clk_table = kcalloc(nr_clks, sizeof(*clk_table), GFP_KERNEL);
+>  	if (!clk_table)
+> -		goto err_data;
+> +		goto free_clk_data;
+>  
+>  	clk_data->clk_data.clks = clk_table;
+>  	clk_data->clk_data.clk_num = nr_clks;
+>  	of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data->clk_data);
+>  	return clk_data;
+> -err_data:
+> +free_clk_data:
+>  	kfree(clk_data);
+> -err:
+> +unmap_io:
+> +	iounmap(base);
+>  	return NULL;
+>  }
+>  EXPORT_SYMBOL_GPL(hisi_clk_init);
+> 
