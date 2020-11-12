@@ -2,192 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244F72AFE3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433AF2AFE3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgKLFfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:35:48 -0500
-Received: from mga14.intel.com ([192.55.52.115]:64804 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728077AbgKLDKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:10:50 -0500
-IronPort-SDR: 1k3yZSAgx8wDSBG3ixYhprpK1pfholSv5DF5xYDiLs3dDScewLnd+kyArY480XE8+yOpM74Ll6
- b90FbaOoSTaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="169466893"
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="169466893"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 19:10:50 -0800
-IronPort-SDR: ySLy92gE3wt8hNwNv2LtetHe90kni71vOFbTQppUChWUA71XVVy6nTqY36gbAQ2uHC8v1qSOOQ
- 4KZyc9c1s6fA==
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="542068920"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 19:10:50 -0800
-Date:   Wed, 11 Nov 2020 19:10:49 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-Subject: Re: [RFC PATCH 00/12] Topdown parser
-Message-ID: <20201112031049.GC894261@tassilo.jf.intel.com>
-References: <20201110100346.2527031-1-irogers@google.com>
- <20201111214635.GA894261@tassilo.jf.intel.com>
- <CAP-5=fXedJEZcYhxmPAzRVx5kdW2YA71Ks3BycqurAHydtXh8A@mail.gmail.com>
+        id S1729052AbgKLFfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:35:55 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42167 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728258AbgKLDSg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 22:18:36 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 9C25AB3B;
+        Wed, 11 Nov 2020 22:18:31 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 11 Nov 2020 22:18:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=PI+Uj0fEHIXD5fotEiMxeL9UVre
+        tyEkuGpP+BkHzNZw=; b=MQt20/kP910bOei9BuSJUZcFMQtnEqXsJtzVlRblbR9
+        JKyW4afcF7Hwhc1C9FtGIc621tX+pxselVRjx34XYGbcVv53Bxu+W3FpoSQdB/l1
+        BzhtlfBrp7C+f2cgdCBlInir3WJx3gob1KXNj7kRKTekzQKz1FeXQnoML//H0BIg
+        PfdByOTXhdvaZdIBCrcuhQeYlJTsCjOqhFGvSyTushDMvncUc25HX4qE3sZ05qaI
+        UTvBoDMMT8WvAGrfBT1X1zduBSLvMUmMpJVhwzOO9aBO7Q9sBy8SMupYPHENZvB+
+        mHiZoztN1utRjXCBakLSOIIMmUeBA0vtKe1XMVQ6osA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PI+Uj0
+        fEHIXD5fotEiMxeL9UVretyEkuGpP+BkHzNZw=; b=VvQTr1BJYwEukjB+21MHfZ
+        eIdIe5Zt0c00pMgvu6rXcj8ZHfPjGm4PK83dGmVtpxQZgbSl2MUOIBBnTUFtnYl0
+        r20kHStPRjxkwpTT+nvNUVHIqnduQk3I0Fx4iOkbTeqeUIJUtLw2ul5F86aGASCx
+        VC03Il9CtP/PuK+Fk88OtOEcI27bB+8yuKxGOeb81vo2iunbb6pduKxFXK/Mm/Uk
+        iCqBtyEhuTEh6HYKqM/8vBQBvN2TX4XQDw83a1NFf37IntRnrK/b14C1zsFVGb0w
+        ITKkIpOOZ2BiZavmgF8wJkILBULIHIqL+8tbF86J+v0yWsSV0ab4INxKaXYpgJ0w
+        ==
+X-ME-Sender: <xms:hqmsX9reRdV5uNDrwCNtsvrnQAKCOwafAoOsH4lzHWauNEP-FhgXIg>
+    <xme:hqmsX_ra5VnDoiK0py1ougo432YQQmhSfZvB-EBV2uJB9wQZdCbsZ4aL-TEe-18lS
+    XIkRfXO0y5Rsy4DVHM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvuddgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlvdefmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddt
+    vdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhessh
+    htfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepgeehheefffegkeevhedthffgudfh
+    geefgfdthefhkedtleffveekgfeuffehtdeinecukfhppeejiedrvdehtddrkeegrddvfe
+    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgr
+    thhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:hqmsX6Mwc2tat3qGDWBwvSYLS_ka-LIAwCcuU40KQbo4a06kN_Xbog>
+    <xmx:hqmsX46T5bKbNtlO6ZFDGN1gt-FYRli6WFn-8jDlBotv6XVrXDl3yA>
+    <xmx:hqmsX84rfdX0tIaLxrPQKOaC1lfBF1BydhP-U4sFYfQiLm5fgmfl_Q>
+    <xmx:h6msX7YXxIo2VhJ8cx1Cv0otvVgUgOh6hJlXDyY7ysxO4jq2Z0Um6Q>
+Received: from localhost (76-250-84-236.lightspeed.austtx.sbcglobal.net [76.250.84.236])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4080C30644A1;
+        Wed, 11 Nov 2020 22:18:30 -0500 (EST)
+Date:   Wed, 11 Nov 2020 21:18:28 -0600
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Tao Ren <rentao.bupt@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Andrew Jeffery <andrew@aj.id.au>, Tao Ren <taoren@fb.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
+Message-ID: <20201112031828.GA4495@heinlein>
+References: <20201111232330.30843-1-rentao.bupt@gmail.com>
+ <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXedJEZcYhxmPAzRVx5kdW2YA71Ks3BycqurAHydtXh8A@mail.gmail.com>
+In-Reply-To: <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
 
-On Wed, Nov 11, 2020 at 03:49:10PM -0800, Ian Rogers wrote:
->      FWIW I did something similar in python (that's how the current metrics
->      json files were generated from the spreadsheet) and it was a lot
->      simpler and shorter in a higher level language.
-> 
->    The use of C++ here was intended to be a high-level language usage :-)
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-FWIW this is our script for the metrics.
+On Wed, Nov 11, 2020 at 11:34:10PM +0000, Joel Stanley wrote:
+> On Wed, 11 Nov 2020 at 23:23, <rentao.bupt@gmail.com> wrote:
+> >
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> >
+> > The patch series adds the initial version of device tree for Facebook
+> > Galaxy100 (AST2400) BMC.
+> >
+> > Patch #1 adds common dtsi to minimize duplicated device entries across
+> > Facebook Network AST2400 BMC device trees.
+> >
+> > Patch #2 simplfies Wedge40 device tree by using the common dtsi.
+> >
+> > Patch #3 simplfies Wedge100 device tree by using the common dtsi.
+> >
+> > Patch #4 adds the initial version of device tree for Facebook Galaxy100
+> > BMC.
+>=20
+> Nice. They look good to me.
+>=20
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+>=20
+> Is there another person familiar with the design you would like to
+> review before I merge?
 
-https://github.com/intel/event-converter-for-linux-perf/blob/master/extract-tmam-metrics.py
+Also,
 
-It has a few hacks, but overall isn't too bad.
+Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
 
->     
-> 
->      One problem I see with putting the full TopDown model into perf is
->      that to do a full job it requires a lot more infrastructure that is
->      currently not implemented in metrics: like an event scheduler,
->      hierarchical thresholding over different nodes, SMT mode support etc.
-> 
->      I implemented it all in toplev, but it was a lot of work to get it all
->      right.
->      I'm not saying it's not doable, but it will be a lot of additional work
->      to work out all the quirks using the metrics infrastructure.
-> 
->      I think adding one or two more levels is probably ok, but doing all
->      levels
->      without these mechanisms might be difficult to use in the end.
-> 
->    Thanks Andi, I'm working from the optimization manual and trying to
->    understand this. With this contribution we have both metrics and
->    groups that correspond to the levels in the tree. Following a similar flow
->    to the optimization manual the group Topdown_Group_TopDownL1 provides the
->    metrics Topdown_Metric_Frontend_Bound, Topdown_Metric_Backend_Bound, Topdown_Metric_Bad_Speculation
->    and Topdown_Metric_Retiring. The hope is the events here will all be
->    scheduled without multiplexing.
+--=20
+Patrick Williams
 
-That's not necessarily true. Some of the newer expressions are quite
-complex (e.g .due to workarounds or because the events are complex, like
-the FLOPS events) There's also some problems with the
-scheduling of the fixed metrics on Icelake+, that need special handling.
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Let's say Topdown_Metric_Backend_Bound is
->    an outlier and so then you re-run perf to drill into the group
->    Topdown_Group_Backend which will provide the
->    metrics Topdown_Metric_Memory_Bound and Topdown_Metric_Core_Bound. If the
->    metric Topdown_Metric_Memory_Bound is the outlier then you can use the
->    group Topdown_Group_Memory_Bound to drill into DRAM, L1, L2, L3, PMM and
+-----BEGIN PGP SIGNATURE-----
 
-I think at a minimum you would need a threshold concept for this, otherwise
-the users don't know what passed or what didn't, and where to drill
-down.
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAl+sqYIACgkQqwNHzC0A
+wRkjOA/+MVToyQOs6gmPPw8Mbeu5twaJfK1kiwCdZ85CUbMW4HPwsiibBYpy2boG
+AcxeQGuO7xoC8j5QJ4Rr7dvm5IDhk/nlnpXiP7g4b+Qq9HYZhTY7DjiuuLgUYOg8
+t2k47k3Mo+ttSfCH31afQ8whjiD26tVq0yj9mjAY9+VdrSwh6iuz02GG9bswHyw7
+MJsZUvWEHZP4aH/eKMd+X4MF/BN80hAF02KTQT3Foj2gPFBRiatvGFRcPb/e8xh/
+VN5R8N6MEDu09OKBGw7VBhWoWjjYt83XozqQwFM5R90gNOCyF9Ej/zCkmuGU6fxa
+hKoL/ESEHOCJa65B8hTcVLRInr8BrqJUK1GQzSnXj9n+jrMiwE12N2iffzrFUV0n
+LrO6fXhbg8yT7Z8t8lFxHTTVmIqTJJiZ8MPjPuu5DvqZQsXiFTebv+AhGk/tE9gp
+0xUge0NlPhN1IoQ6tBinGNmO42Q/X6tvEIfwm1bUkHn+orvDVc/By5d6dUyqjqiz
+HuTt3w5OgDI99qVoIVtmv27ZL8aleSRjNSc0SZ81lcnBEbqPwM1n7fQ6ymOX+wHQ
+uK90MNfNhdcSLIl68shGHbcsW/FVkqBilzV+XYIhOkwf9qYGyuLalRxFZyGjhm6S
+bxXZ/jaUt6kvKDqzf7FVQbDrXqhva9ZWadjuV0af1MZCsUiqVc0=
+=i9rh
+-----END PGP SIGNATURE-----
 
-Also in modern TMAM some events thresholds are not only based on their
-parents but based on triggers cross true (e.g. $issue). Doing this
-by hand is somewhat tricky.
-
-BTW toplev has an auto drilldown mode now to automate this (--drilldown)
-
-Also in other cases it's probably better to not drilldown, but collect
-everything upfront, e.g. when someone else is doing the collection
-for you. In this case the thresholding has to be figured out from
-existing data.
-
-The other biggie which is currently not in metrics is per core mode,
-which is needed for many metrics on CPUs older than Icelake. This really
-has to be supported in some way, otherwise the results on pre Icelake SMT 
-are not good (Icelake fixes this problem)
-
->    like SMT_on that may appear in the spreadsheet in expressions like:
->    ( CPU_CLK_UNHALTED.THREAD_ANY / 2 ) if #SMT_on else CLKS
->    These are passed through and then the perf expression parser will at
->    runtime compute the SMT_ON value using smt_on() that reads
->    from devices/system/cpu/cpu%d/topology/thread_siblings. Here is a
->    generated example for Skylakex:
-
-Yes I implemented that. But that's not enough for the full TMAM, you also need per core
-mode for these (but not for others).
-
-At the level 1 we get away by either being in per core mode or not, but 
-that doesn't work deeper in the hierarchy.
-
->    SMT_ON needs evaluating early. This is a latent perf metric issue that
->    would benefit everyone if fixed, so I'll try to address it in a separate
->    change.
->    Event scheduling is missing and as discussed there are some naive
->    heuristics currently in perf. It seems we can improve this, for example a
->    group with events {A,B,C} and another with {B,C,D} could be merged to
->    create {A,B,C,D} but we'd need to know the number of counters. We could
-
-It's more complicated with OCR and similar special events, which
-can fit only a limited number into a group.
-
-Also on Icelake you need to know about the 4 vs 8 counter constraints,
-so it requires some knowledge of the event list.
-
-With the fixed metrics there are also special rules, like slots needs
-to be first and be followed by the metrics.
-
-Also if you don't do some deduping you end up with a lot of redundant
-events being scheduled. Also when there are multiple levels of expressions
-usually there is a need for sub grouping by levels etc.
-
-It's not a simple algorithm.
-
->    provide this information to the tool here and it could create phony
->    metrics for the relevant architecture just to achieve the better grouping
->    - currently {A,B,C} and {B,C,D} will likely multiplex with each other,
->    which is functional but suboptimal.
->    Hierarchical thresholding I'm unclear upon, but maybe this is part of what
->    the user is expected to manually perform.
-
-The spreadsheet has a threshold for each node.  Often it includes & P which means
-parent crossed threshold. But in some cases it also includes a cross tree node
-(this actually requires some simple dependency based computation of the metric, 
-kind of a spreadsheet)
-
-In general if the parent didn't cross then you don't need to display the node
-because it's not contributing to the performance bottleneck.
-
-That's a very important property in TopDown (as the name implies) and one of the
-basic ways how the whole thing helps automatically determining the bottleneck.
-
-Again I think it's probably not that bad if you stay in the higher levels.
-For example in the upcoming Sapphire Rapids support which has Level 2 fixed
-metrics we just added more fixed metrics. A thresholding concept would
-probably be still a good idea though.
-
-But it's a bit scary to think what naive users will do when presented with
-level 4 or deeper without any hiding of irrelevant results.
-
--Andi
+--LZvS9be/3tNcYl/X--
