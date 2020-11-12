@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3902B11F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A552B11F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgKLWmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgKLWmq (ORCPT
+        id S1727037AbgKLWmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:42:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47642 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKLWmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:42:46 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99265C0613D1;
-        Thu, 12 Nov 2020 14:42:46 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id o21so10467037ejb.3;
-        Thu, 12 Nov 2020 14:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9uIFbwY/aDvICNOe+dyohdf9CD3ZKiy5rbtal4KyUec=;
-        b=hjPH1IEw1q+48yggnNsF0VvIje/fklJ3N7wK+2z/3QoXaIF0jkRaPsI7j4pYhQwYsZ
-         VQyG1v1ZssLr9Wk0a2Pk2O6RQv1oAb0FreplX9u6BqtWNIk02b8q/LN73YncotR/mp4H
-         L/AeE1jpV3bqEx9ZmaWkEdIAgQ7MQK2hdiawdYJn8Bs0Jg4flolUQtLuXtyDP/on9Sh+
-         FoKjoY6Jz3A9hy++UBKD6rtmqtnxQzNzZh/F49HwrZ9MjkdD6VKUTUcVF7aSE/v0BYqj
-         2fvBTfaATdra26erg0hmMbpTqTPdleYryX4i4YLZ0IDUOhg6iP8KpL0zGAWzNhKmrwtr
-         UTqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9uIFbwY/aDvICNOe+dyohdf9CD3ZKiy5rbtal4KyUec=;
-        b=sMZOC+fk6GmHt/mbQ8DoqGFUk9gTRt2noHaOsp+BOLfMLBfgzkuehPJ07WrAinQma+
-         EL88cW/zRSWTzD2oUqQmhvoXbf1RXkduKCWWzJelZG4BwAfFDmNFHB2zdS/Xv41gZbCM
-         29DOcDI4d/Xm9LFZ3g/kc5HJ5o/jTKRAOSs/jhlc1+3fVwLKXb77M2sza4WIBd/54HrE
-         dO+Di5pe4ZyEqlxqDZsBUQUfax47T6tASUe9g7EgMHBxW8ZRi8eFPJ/dT7/tu8AyFCQy
-         PYHCcX6qn9m1teZE/sN4ARBERFpiOMO+gxpNipi2KLJPo6cvjlDipQH+FHaA5HlOypZw
-         TWmA==
-X-Gm-Message-State: AOAM5334Qk3qmTftvvk5nQP/bMHqpX3NzY/2K2mSPbIY58vPC3yCWhXi
-        Ly9EZGgq3RpV6j37mcAU7Sg=
-X-Google-Smtp-Source: ABdhPJw5fghN6w0IhVQiMzse9ol5oPT0cUSXq/kHBww2IzCqi3fWdmBvVsqtoR/WQaBMN3AnXl60YQ==
-X-Received: by 2002:a17:907:2063:: with SMTP id qp3mr1642255ejb.314.1605220965351;
-        Thu, 12 Nov 2020 14:42:45 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id p1sm2944791edx.4.2020.11.12.14.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 14:42:44 -0800 (PST)
-Date:   Fri, 13 Nov 2020 00:42:43 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 02/11] net: dsa: microchip: support for
- "ethernet-ports" node
-Message-ID: <20201112224243.u6oxe4gnfrv7onkz@skbuf>
-References: <20201112153537.22383-1-ceggers@arri.de>
- <20201112153537.22383-3-ceggers@arri.de>
+        Thu, 12 Nov 2020 17:42:49 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605220967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtB9NAxfiQap1pp3nxZvuOoDIPTo5gMSqFn75f0MaeA=;
+        b=CaP8VQrefkrhEsMv82YyMOkLUQLnQrgjnx+zJ0mgvuj2W68b+aHj4w6Uaodv2sbISHhEas
+        EKY0yrf/JpGwK2hS1KWrZDW6Xp5dqVNjjTeyUNvss4YGrBdQiJqqE37DCm7/K8oAoQLzBr
+        Pd9ohCrwCnEXl/ESMTycYl5A6wVkmXKpVqs/Xh1LB0ogHanr+wrfYxihrXxqucTvPhRA/5
+        VInbRhmTNOqRVCsxUnSgp1/MGYf5JkOozUpZq/b9FGw6fTPVgVhvLK6DTEM8nvL7jH946M
+        Km8pSZ2DHX1318zKHZie9/q1ZW3ZZXLZar/hLTI1KgwRp8i5S1JhNeWVNbn/2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605220967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtB9NAxfiQap1pp3nxZvuOoDIPTo5gMSqFn75f0MaeA=;
+        b=Qf1JSP13w9S5KLD1yG48HF9wSR15pf//4+ooA3P81lwVidKykHYNwB9SX6zA8aqo5txh44
+        pJNl5CB8Ar/IsRBQ==
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "Tian\, Kevin" <kevin.tian@intel.com>
+Cc:     "Raj\, Ashok" <ashok.raj@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <20201112193253.GG19638@char.us.oracle.com>
+References: <20201107001207.GA2620339@nvidia.com> <87pn4nk7nn.fsf@nanos.tec.linutronix.de> <20201108235852.GC32074@araj-mobl1.jf.intel.com> <874klykc7h.fsf@nanos.tec.linutronix.de> <20201109173034.GG2620339@nvidia.com> <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03> <875z6dik1a.fsf@nanos.tec.linutronix.de> <20201110141323.GB22336@otc-nc-03> <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com> <20201112193253.GG19638@char.us.oracle.com>
+Date:   Thu, 12 Nov 2020 23:42:46 +0100
+Message-ID: <877dqqmc2h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112153537.22383-3-ceggers@arri.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:35:28PM +0100, Christian Eggers wrote:
-> The dsa.yaml device tree binding allows "ethernet-ports" (preferred) and
-> "ports".
+On Thu, Nov 12 2020 at 14:32, Konrad Rzeszutek Wilk wrote:
+>> 4. Using CPUID to detect running as guest. But as Thomas pointed out, this
+>> approach is less reliable as not all hypervisors do this way.
 >
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> ---
->  drivers/net/dsa/microchip/ksz_common.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Is that truly true? It is the first time I see the argument that extra
+> steps are needed and that checking for X86_FEATURE_HYPERVISOR is not enough.
 >
-> diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-> index 71cd1828e25d..a135fd5a9264 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.c
-> +++ b/drivers/net/dsa/microchip/ksz_common.c
-> @@ -427,7 +427,9 @@ int ksz_switch_register(struct ksz_device *dev,
->  		ret = of_get_phy_mode(dev->dev->of_node, &interface);
->  		if (ret == 0)
->  			dev->compat_interface = interface;
-> -		ports = of_get_child_by_name(dev->dev->of_node, "ports");
-> +		ports = of_get_child_by_name(dev->dev->of_node, "ethernet-ports");
-> +		if (!ports)
-> +			ports = of_get_child_by_name(dev->dev->of_node, "ports");
+> Or is it more "Some hypervisor probably forgot about it, so lets make sure we patch
+> over that possible hole?"
 
-Man, I didn't think there could be something as uninspired as naming the
-private structure of your driver "dev"...
+Nothing enforces that bit to be set. The bit is a pure software
+convention and was proposed by VMWare in 2008 with the following
+changelog:
 
->  		if (ports)
->  			for_each_available_child_of_node(ports, port) {
->  				if (of_property_read_u32(port, "reg",
-> --
+ "This patch proposes to use a cpuid interface to detect if we are
+  running on an hypervisor.
 
-Either way:
+  The discovery of a hypervisor is determined by bit 31 of CPUID#1_ECX,
+  which is defined to be "hypervisor present bit". For a VM, the bit is
+  1, otherwise it is set to 0. This bit is not officially documented by
+  either Intel/AMD yet, but they plan to do so some time soon, in the
+  meanwhile they have promised to keep it reserved for virtualization."
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+The reserved promise seems to hold. AMDs APM has it documented. The
+Intel SDM not so.
+
+Also the kernel side of KVM does not enforce that bit, it's up to the user
+space management to set it.
+
+And yes, I've tripped over this with some hypervisors and even qemu KVM
+failed to set it in the early days because it was masked with host CPUID
+trimming as there the bit is obviously 0.
+
+DMI vendor name is pretty good final check when the bit is 0. The
+strings I'm aware of are:
+
+QEMU, Bochs, KVM, Xen, VMware, VMW, VMware Inc., innotek GmbH, Oracle
+Corporation, Parallels, BHYVE, Microsoft Corporation
+
+which is not complete but better than nothing ;)
+
+Thanks,
+
+        tglx
