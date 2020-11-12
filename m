@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF042B0707
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B43F2B0704
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgKLNwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:52:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54521 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727796AbgKLNwI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:52:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605189126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ovz0QF/x/uupMiti2X+MXoiJmLsE2F47KX00gjbVesA=;
-        b=RuIqfC+sA9aVwJTQ7MSDAviMYOyJhTIb55A6Zsoc3ywpyAZWO5OpzEN7BFcbO7fB3Dh+eo
-        wQSAjed4BlkQyHH28hu6yXNoDcZe4tmSJo4lfnXVdNGhcAK0Ce51YG+q91q6z61WSjJfss
-        Z8iJ6GijGOBJV3QOu+130eXDom4QB9o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-N2MZqoGENgiShZy496AdTQ-1; Thu, 12 Nov 2020 08:52:05 -0500
-X-MC-Unique: N2MZqoGENgiShZy496AdTQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C84CD1868423;
-        Thu, 12 Nov 2020 13:52:03 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-113-46.phx2.redhat.com [10.3.113.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1DED96EF5F;
-        Thu, 12 Nov 2020 13:52:03 +0000 (UTC)
-Subject: Re: [PATCH v3 0/2] KVM: SVM: Create separate vmcbs for L1 and L2
-To:     Babu Moger <babu.moger@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
-Cc:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "Huang2, Wei" <Wei.Huang2@amd.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>
-References: <20201026174222.21811-1-cavery@redhat.com>
- <75b85cc7-96d9-eab9-9748-715ed951034d@amd.com>
-From:   Cathy Avery <cavery@redhat.com>
-Message-ID: <062059f4-1d7d-d334-0c95-9ba4fc57706b@redhat.com>
-Date:   Thu, 12 Nov 2020 08:52:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+        id S1728393AbgKLNvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:51:23 -0500
+Received: from mga12.intel.com ([192.55.52.136]:22864 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727796AbgKLNvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:51:23 -0500
+IronPort-SDR: VSPQV4mzvmifCkQ0BLEwLuixs49jnzgeZedxiVKj6wVCW/H41dmZVzRsL7/OkSYXxMF0NyKbBs
+ uWDsKdBBL4Cg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="149582172"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="149582172"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 05:51:22 -0800
+IronPort-SDR: IccrygatTsh8yvG3Y1Zq4ntpzQasz92HXdACcW43KFQ5DqTn1XIsgWUoE5yE8hewWm+zlfWD9H
+ aYX1VqCPFIqw==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="357094954"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 05:51:19 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kdD1R-006DVS-9V; Thu, 12 Nov 2020 15:52:21 +0200
+Date:   Thu, 12 Nov 2020 15:52:21 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     caizhaopeng@uniontech.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhangyueqian <zhangyueqian@uniontech.com>,
+        Zhangshuang <zhangshuang@uniontech.com>,
+        Hualet Wang <wangyaohua@uniontech.com>,
+        Zhanglei <zhanglei@uniontech.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 1/1] pinctrl: add IRQF_EARLY_RESUME flags with gpio irq
+ for elan touchpad.
+Message-ID: <20201112135221.GC4077@smile.fi.intel.com>
+References: <20200424091201.568-1-caizhaopeng@uniontech.com>
 MIME-Version: 1.0
-In-Reply-To: <75b85cc7-96d9-eab9-9748-715ed951034d@amd.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424091201.568-1-caizhaopeng@uniontech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That would be the master branch of 
-git://git.kernel.org/pub/scm/virt/kvm/kvm.git where the last commit was 
-969df928fee43b4219646a57c7beaccccf2c0635
 
-I was originally working off of the queue branch but there were issues 
-with the prior commits passing the various tests.
++Cc: Hans.
 
-Cathy
+I can't speak for AMD, but I think it may be useful for Intel pin control.
+However, I didn't check what may be the side effects of this change and neither
+contributor answered to my comments...
 
-On 11/11/20 4:35 PM, Babu Moger wrote:
-> Hi Cathy,
-> I was going to test these patches. But it did not apply on my tree.
-> Tried on kvm(https://git.kernel.org/pub/scm/virt/kvm/kvm.git) and
-> Mainline
-> (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git). What
-> is your base tree?
-> thanks
-> Babu
->
->> -----Original Message-----
->> From: Cathy Avery <cavery@redhat.com>
->> Sent: Monday, October 26, 2020 12:42 PM
->> To: linux-kernel@vger.kernel.org; kvm@vger.kernel.org; pbonzini@redhat.com
->> Cc: vkuznets@redhat.com; Huang2, Wei <Wei.Huang2@amd.com>;
->> mlevitsk@redhat.com; sean.j.christopherson@intel.com
->> Subject: [PATCH v3 0/2] KVM: SVM: Create separate vmcbs for L1 and L2
->>
->> svm->vmcb will now point to either a separate vmcb L1 ( not nested ) or L2 vmcb
->> ( nested ).
->>
->> Changes:
->> v2 -> v3
->>   - Added vmcb switching helper.
->>   - svm_set_nested_state always forces to L1 before determining state
->>     to set. This is more like vmx and covers any potential L2 to L2 nested state
->> switch.
->>   - Moved svm->asid tracking to pre_svm_run and added ASID set dirty bit
->>     checking.
->>
->> v1 -> v2
->>   - Removed unnecessary update check of L1 save.cr3 during nested_svm_vmexit.
->>   - Moved vmcb01_pa to svm.
->>   - Removed get_host_vmcb() function.
->>   - Updated vmsave/vmload corresponding vmcb state during L2
->>     enter and exit which fixed the L2 load issue.
->>   - Moved asid workaround to a new patch which adds asid to svm.
->>   - Init previously uninitialized L2 vmcb save.gpat and save.cr4
->>
->> Tested:
->> kvm-unit-tests
->> kvm self tests
->> Loaded fedora nested guest on fedora
->>
->> Cathy Avery (2):
->>    KVM: SVM: Track asid from vcpu_svm
->>    KVM: SVM: Use a separate vmcb for the nested L2 guest
->>
->>   arch/x86/kvm/svm/nested.c | 125 ++++++++++++++++++--------------------
->>   arch/x86/kvm/svm/svm.c    |  58 +++++++++++-------
->>   arch/x86/kvm/svm/svm.h    |  51 +++++-----------
->>   3 files changed, 110 insertions(+), 124 deletions(-)
->>
->> --
->> 2.20.1
+So, just heads up.
+
+On Fri, Apr 24, 2020 at 05:12:01PM +0800, caizhaopeng@uniontech.com wrote:
+> From: Caicai <caizhaopeng@uniontech.com>
+> 
+> I had tested two Notebook machines, the Intel i5(or amd ryzen)
+> with elan touchpad, and there's a probability that the touchpad
+> won't work after going to the S3/S4 to wake up, that it would
+> appear no more than 15 times. I found that there's no interrupt
+> to check for /proc/interrupt. It was found that the gpio
+> interrupt of i2c was also not on top. By adding the gpio
+> interrupt flags with IRQF_EARLY_RESUME, now the touchpad tested
+> 200 + times works well.
+> 
+> Signed-off-by: Caicai <caizhaopeng@uniontech.com>
+> ---
+>  drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
+>  drivers/pinctrl/pinctrl-amd.c         | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+> index 8fb6c9668c37..a350dade6aa0 100644
+> --- a/drivers/pinctrl/intel/pinctrl-intel.c
+> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
+> @@ -1189,7 +1189,7 @@ static int intel_gpio_probe(struct intel_pinctrl *pctrl, int irq)
+>  	 * controllers share the same interrupt line.
+>  	 */
+>  	ret = devm_request_irq(pctrl->dev, irq, intel_gpio_irq,
+> -			       IRQF_SHARED | IRQF_NO_THREAD,
+> +			       IRQF_SHARED | IRQF_NO_THREAD | IRQF_EARLY_RESUME,
+>  			       dev_name(pctrl->dev), pctrl);
+>  	if (ret) {
+>  		dev_err(pctrl->dev, "failed to request interrupt\n");
+> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+> index 977792654e01..70c37f4da2b1 100644
+> --- a/drivers/pinctrl/pinctrl-amd.c
+> +++ b/drivers/pinctrl/pinctrl-amd.c
+> @@ -937,7 +937,7 @@ static int amd_gpio_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	ret = devm_request_irq(&pdev->dev, irq_base, amd_gpio_irq_handler,
+> -			       IRQF_SHARED, KBUILD_MODNAME, gpio_dev);
+> +			       IRQF_SHARED | IRQF_EARLY_RESUME | IRQF_NO_THREAD, KBUILD_MODNAME, gpio_dev);
+>  	if (ret)
+>  		goto out2;
+>  
+> -- 
+> 2.20.1
+> 
+> 
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
