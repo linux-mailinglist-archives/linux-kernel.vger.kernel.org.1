@@ -2,138 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB712AFE20
+	by mail.lfdr.de (Postfix) with ESMTP id ACCCC2AFE21
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728673AbgKLFeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:16 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:54802 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKLCAX (ORCPT
+        id S1728685AbgKLFeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:17 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:34281 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgKLCBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:00:23 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="38118510"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 12 Nov 2020 09:58:20 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2862:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Thu, 12 Nov 2020 09:58:19 +0800 (CST)
-Received: from 49.216.112.142
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2475:0:AUTH_LOGIN)
-        (envelope-from <jingle.wu@emc.com.tw>); Thu, 12 Nov 2020 09:58:18 +0800 (CST)
-From:   "jingle.wu" <jingle.wu@emc.com.tw>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com
-Cc:     phoenix@emc.com.tw, dave.wang@emc.com.tw, josh.chen@emc.com.tw,
-        "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: [PATCH] Input: elan_i2c - Modify the correct input of the iap page type command.
-Date:   Thu, 12 Nov 2020 09:58:10 +0800
-Message-Id: <20201112015810.9559-1-jingle.wu@emc.com.tw>
-X-Mailer: git-send-email 2.17.1
+        Wed, 11 Nov 2020 21:01:07 -0500
+Received: by mail-il1-f198.google.com with SMTP id e14so2813974ilr.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:01:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=fPIpTU7XObV/aYDTsKckMsY4XN1O/uddxk60AMVHEAQ=;
+        b=AmvF/1Aaaugr6aI2B0deW028yonGsaG2cp7prtAXON8t6V/aJMxREqpQ48xp6E+06y
+         DyiL3dC+5SQYGxBGdpuAmwmUU6s2LMN8lBvMn8CKrUvokPxpE3WATSpA8M82zE3RbSm2
+         wxq/0nBibBwll5eI06scvCYePZVciI4j7bqxLelSanrfUUskMO8naGR1kzlYQLIJ9FHn
+         k+UvBxcNgzTQwtE86VO/7QHHBAGlxBRMTY5WX4/A27IxDqiYSS0tpM/vT+EdVRuM0moD
+         ua2aKNVhsR/ARVu1Vv328Mm0COeTF9SVgFna2i0Cd+eXTtsvfPr8hd696msnNPMXZxRS
+         /8fA==
+X-Gm-Message-State: AOAM533HNZ8deSdKNUgKjIoLvHtDx7ksks/CUkhzWDTStlk55fFFd7MD
+        ODO6oKBmgZmGqQgp/WOh9oM0SmvprPJ3cV22n24hmF2ixJZu
+X-Google-Smtp-Source: ABdhPJxRq6op6jH+XFV81MEo+Uqj06/yeOnZF4JHAkF7bFjxQuUOeRHmwI4tVPwVw0sB95Foed8WGs0//pHSCSRZbem9r7DODjE/
+MIME-Version: 1.0
+X-Received: by 2002:a6b:5f05:: with SMTP id t5mr20978286iob.67.1605146467728;
+ Wed, 11 Nov 2020 18:01:07 -0800 (PST)
+Date:   Wed, 11 Nov 2020 18:01:07 -0800
+In-Reply-To: <000000000000e3068105ac405407@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000005858405b3df4904@google.com>
+Subject: Re: WARNING in irqentry_exit
+From:   syzbot <syzbot+d4336c84ed0099fdbe47@syzkaller.appspotmail.com>
+To:     keescook@chromium.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iap page type command of the parameter is page_size.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
----
- drivers/input/mouse/elan_i2c.h       |  2 +-
- drivers/input/mouse/elan_i2c_core.c  |  3 ++-
- drivers/input/mouse/elan_i2c_i2c.c   | 10 +++++-----
- drivers/input/mouse/elan_i2c_smbus.c |  2 +-
- 4 files changed, 9 insertions(+), 8 deletions(-)
+commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Fri Oct 2 09:04:21 2020 +0000
 
-diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
-index c75b00c45d75..36e3cd908671 100644
---- a/drivers/input/mouse/elan_i2c.h
-+++ b/drivers/input/mouse/elan_i2c.h
-@@ -78,7 +78,7 @@ struct elan_transport_ops {
- 	int (*iap_reset)(struct i2c_client *client);
- 
- 	int (*prepare_fw_update)(struct i2c_client *client, u16 ic_type,
--				 u8 iap_version);
-+				 u8 iap_version, u16 fw_page_size);
- 	int (*write_fw_block)(struct i2c_client *client, u16 fw_page_size,
- 			      const u8 *page, u16 checksum, int idx);
- 	int (*finish_fw_update)(struct i2c_client *client,
-diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
-index c599e21a8478..61ed3f5ca219 100644
---- a/drivers/input/mouse/elan_i2c_core.c
-+++ b/drivers/input/mouse/elan_i2c_core.c
-@@ -497,7 +497,8 @@ static int __elan_update_firmware(struct elan_tp_data *data,
- 	u16 sw_checksum = 0, fw_checksum = 0;
- 
- 	error = data->ops->prepare_fw_update(client, data->ic_type,
--					     data->iap_version);
-+					     data->iap_version,
-+					     data->fw_page_size);
- 	if (error)
- 		return error;
- 
-diff --git a/drivers/input/mouse/elan_i2c_i2c.c b/drivers/input/mouse/elan_i2c_i2c.c
-index 5a496d4ffa49..13dc097eb6c6 100644
---- a/drivers/input/mouse/elan_i2c_i2c.c
-+++ b/drivers/input/mouse/elan_i2c_i2c.c
-@@ -517,7 +517,7 @@ static int elan_i2c_set_flash_key(struct i2c_client *client)
- 	return 0;
- }
- 
--static int elan_read_write_iap_type(struct i2c_client *client)
-+static int elan_read_write_iap_type(struct i2c_client *client, u16 fw_page_size)
- {
- 	int error;
- 	u16 constant;
-@@ -526,7 +526,7 @@ static int elan_read_write_iap_type(struct i2c_client *client)
- 
- 	do {
- 		error = elan_i2c_write_cmd(client, ETP_I2C_IAP_TYPE_CMD,
--					   ETP_I2C_IAP_TYPE_REG);
-+					   fw_page_size / 2);
- 		if (error) {
- 			dev_err(&client->dev,
- 				"cannot write iap type: %d\n", error);
-@@ -543,7 +543,7 @@ static int elan_read_write_iap_type(struct i2c_client *client)
- 		constant = le16_to_cpup((__le16 *)val);
- 		dev_dbg(&client->dev, "iap type reg: 0x%04x\n", constant);
- 
--		if (constant == ETP_I2C_IAP_TYPE_REG)
-+		if (constant == fw_page_size / 2)
- 			return 0;
- 
- 	} while (--retry > 0);
-@@ -553,7 +553,7 @@ static int elan_read_write_iap_type(struct i2c_client *client)
- }
- 
- static int elan_i2c_prepare_fw_update(struct i2c_client *client, u16 ic_type,
--				      u8 iap_version)
-+				      u8 iap_version, u16 fw_page_size)
- {
- 	struct device *dev = &client->dev;
- 	int error;
-@@ -594,7 +594,7 @@ static int elan_i2c_prepare_fw_update(struct i2c_client *client, u16 ic_type,
- 	}
- 
- 	if (ic_type >= 0x0D && iap_version >= 1) {
--		error = elan_read_write_iap_type(client);
-+		error = elan_read_write_iap_type(client, fw_page_size);
- 		if (error)
- 			return error;
- 	}
-diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
-index 8ff823751f3b..1820f1cfc1dc 100644
---- a/drivers/input/mouse/elan_i2c_smbus.c
-+++ b/drivers/input/mouse/elan_i2c_smbus.c
-@@ -340,7 +340,7 @@ static int elan_smbus_set_flash_key(struct i2c_client *client)
- }
- 
- static int elan_smbus_prepare_fw_update(struct i2c_client *client, u16 ic_type,
--					u8 iap_version)
-+					u8 iap_version, u16 fw_page_size)
- {
- 	struct device *dev = &client->dev;
- 	int len;
--- 
-2.17.1
+    lockdep: Fix lockdep recursion
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1202919a500000
+start commit:   f873db9a Merge tag 'io_uring-5.9-2020-08-21' of git://git...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4336c84ed0099fdbe47
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15312a66900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b01641900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: lockdep: Fix lockdep recursion
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
