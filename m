@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D312B0821
+	by mail.lfdr.de (Postfix) with ESMTP id 485F72B0820
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgKLPHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:07:31 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:47994 "EHLO
+        id S1728493AbgKLPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:07:26 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:52084 "EHLO
         mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728220AbgKLPHU (ORCPT
+        with ESMTP id S1728227AbgKLPHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Nov 2020 10:07:20 -0500
-Received: by mail-il1-f197.google.com with SMTP id u16so4158831ilq.14
+Received: by mail-il1-f197.google.com with SMTP id f8so4137914ilj.18
         for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:07:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yHecYpfF6cT432rI6k7GGa93GqlnRPwyZZLgxG/YBFI=;
-        b=VZ4AiYnIxGHldSIRAxCv/Hvc6FZL1oOUT2VSreevdrmlJERUGvmstWtOrLpAqHVteY
-         PuiXQYplenG1JLxBhz2hX+xJ0QM3yAJ2ZZjT9asmIYk2aLsBWsM3SUie6RIjgmaKzvSk
-         iP8zLUEbacTl8Uja2DpcKr36j9c1xYD4Z+o79tL++hIyQm8II6L1clgbRkZYKj28tws5
-         XhsNB3Tg+2P4gTO8SD46yv4yXhm1nPzZybW+Ks9wljzX5DN/iiJ3FtXihlPsptrnEqwQ
-         A/8GidYQk/kFJnP0PSEIK6mAsnQ7puJDMGSY0soCTGqZq7yMM1+ZPgzY4PDiqFEEF9oO
-         I8TA==
-X-Gm-Message-State: AOAM530MUfu2gMtSZl0rh+9fhe6xPBPiCSfr1d/Z3iPedOstFi5iVMD7
-        yLuVOQX34sNiYzma2ugollvnToYRDnAU90L4UZBMsNwPnj1N
-X-Google-Smtp-Source: ABdhPJwczwO+PYjo7Lr1qDXqIncKJ/Pi6xRgKhkFMGHr4BkZV2736ijDDt2yrq1UO8wGx3nwntSHxzVfYju1rQ+WioIvtO58qWEc
+        bh=ew8i7DHZkJq4r7+XIn3KNVeqj+PTLmKItdFJHhS81fo=;
+        b=PMRg6Lmabt9GcgpNHR/SL+jDDtMSVN8iOaHM/FJzEjwxw67MXkClmwPozthJVHisXj
+         0BiBaUSQs9BViQ2qpFSC0Ez41GaKmfsOkGB0x27JSHnDHFOJc+ziZF5sqy5wNHat3ReM
+         83IkVMsZyDzv1IktYYwn+KLOAf/qmDZTR4OGQmFSNLmyWcAitRCxOWME76m2p8GHZWDl
+         SM58IGfXS28s9pfUg3ddVhuPwh0KNCT83kR+809RBvwzPqOs2iDt9xzOuQCm7yl75/Hn
+         2CVpKhr5OUSptcxLypqS9eGZ/PhLmbp5cbMP8wexKC2FrVV1yLGw2zZ8JFQl6+mzFCLi
+         lNiQ==
+X-Gm-Message-State: AOAM533xC1Qb584GRv/IEHN/PqlxvlUwtIJ4mp7SoTkbjhmh8tTImUFj
+        HuAZOMB7Myg6ndS2trSMCV9ndiKlkhuAls7fJYPtvSFV1yGb
+X-Google-Smtp-Source: ABdhPJxZlubhyCppxONkZcKLgQi4LyWgIwWO9oEt90oyt+Pb7gzWC59p0v+UX8n21lrax7i/EWBYOr2Rs/mu6Y7M25rO1kK1hXzt
 MIME-Version: 1.0
-X-Received: by 2002:a02:ac09:: with SMTP id a9mr75060jao.60.1605193638204;
+X-Received: by 2002:a02:cbde:: with SMTP id u30mr35198jaq.69.1605193638417;
  Thu, 12 Nov 2020 07:07:18 -0800 (PST)
 Date:   Thu, 12 Nov 2020 07:07:18 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000099d90905b3ea44b4@google.com>
-Subject: memory leak in wacom_probe
-From:   syzbot <syzbot+5b49c9695968d7250a26@syzkaller.appspotmail.com>
-To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000009d17f405b3ea44ab@google.com>
+Subject: memory leak in cinergyt2_fe_attach
+From:   syzbot <syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,42 +47,45 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    eccc8767 Merge branch 'fixes' of git://git.kernel.org/pub/..
+HEAD commit:    3d5e28bf Merge branch 'stable/for-linus-5.10-rc2' of git:/..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=145055aa500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10bae3aa500000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
-dashboard link: https://syzkaller.appspot.com/bug?extid=5b49c9695968d7250a26
+dashboard link: https://syzkaller.appspot.com/bug?extid=e1de8986786b3722050e
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16339ad6500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1409f511500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1781dd4e500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1636b181500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5b49c9695968d7250a26@syzkaller.appspotmail.com
+Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
 
 BUG: memory leak
-unreferenced object 0xffff88810dc44a00 (size 512):
-  comm "kworker/1:2", pid 3674, jiffies 4294943617 (age 14.100s)
+unreferenced object 0xffff88810d626800 (size 2048):
+  comm "kworker/0:1", pid 7, jiffies 4294946031 (age 8.260s)
   hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 54 65 72 72 61 54 65 63  ........TerraTec
+    2f 71 61 6e 75 20 55 53 42 32 2e 30 20 48 69 67  /qanu USB2.0 Hig
   backtrace:
-    [<0000000023e1afac>] kmalloc_array include/linux/slab.h:592 [inline]
-    [<0000000023e1afac>] __kfifo_alloc+0xad/0x100 lib/kfifo.c:43
-    [<00000000c477f737>] wacom_probe+0x1a1/0x3b0 drivers/hid/wacom_sys.c:2727
-    [<00000000b3109aca>] hid_device_probe+0x16b/0x210 drivers/hid/hid-core.c:2281
-    [<00000000aff7c640>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000778d0bc3>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<000000005108dbb5>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<00000000efb7c59e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<0000000024ab1590>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<000000004c7ac048>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000b93050a3>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<00000000e5b46ea5>] hid_add_device+0x151/0x390 drivers/hid/hid-core.c:2437
-    [<00000000c6add147>] usbhid_probe+0x412/0x560 drivers/hid/usbhid/hid-core.c:1407
-    [<00000000c33acdb4>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000aff7c640>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000778d0bc3>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<000000005108dbb5>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<000000001868ec69>] kmalloc include/linux/slab.h:552 [inline]
+    [<000000001868ec69>] kzalloc include/linux/slab.h:664 [inline]
+    [<000000001868ec69>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
+    [<0000000069d80651>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
+    [<00000000c12d6c47>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
+    [<0000000012dc4d47>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
+    [<0000000012dc4d47>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+    [<0000000012dc4d47>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+    [<000000009a40ba79>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<0000000092664fce>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<00000000ac3ae41f>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<000000008558e2d5>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000562cb0b9>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<0000000056762cde>] __device_attach+0x122/0x250 drivers/base/dd.c:912
+    [<00000000412c6765>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<000000000a5960bb>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
+    [<000000009ab6c3b2>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
+    [<00000000f4ffc3df>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000b38e25bd>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<0000000092664fce>] really_probe+0x159/0x480 drivers/base/dd.c:554
 
 
 
