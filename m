@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9EF2B080C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30BF2B0802
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgKLPCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:02:36 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:59684 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728507AbgKLPCf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:02:35 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ACF1e9i000765;
-        Thu, 12 Nov 2020 09:02:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=I/NF3nub6uPHdzCyjfku7U3YJ0PL4tdvBuI5HnvOvIw=;
- b=ZTG9Fj60TtZqKLd57j69zEKLoB7XxisWQSyTX2mQqZ3nnnjwv5YaWAGgmcS4csVGfw3A
- uXPQ0EVH262j9+m72MKtQrH5Au9rpn8qNEhKzZuZXbBVBMDUVbSh5eaEFgwNH2Gx4fGu
- wChHXyDCH8YhgGCuYVVlCqCI6tnZ03Y06cB1kiEppZPC4F4IYDLNwJcOnXUzRgzGxUyl
- hKbmOU8rT3omG63GQ9ZDULZjyIN4z2c5xRuf1Up+y+SSDL8QzE7gUOyXhbhNr2vXsVMp
- iLOx4s1RJttkfOcZDx+QaTsclU32v/JpUxWA+0WbZ/rtbENrpkZRO2TJABW+geQFgfcf QQ== 
-Received: from ediex02.ad.cirrus.com ([5.172.152.52])
-        by mx0b-001ae601.pphosted.com with ESMTP id 34rn3chg3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 12 Nov 2020 09:02:29 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 12 Nov
- 2020 15:02:26 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 12 Nov 2020 15:02:26 +0000
-Received: from archtower.ad.cirrus.com (unknown [198.61.65.51])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 21B9C45;
-        Thu, 12 Nov 2020 15:02:26 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH] regmap: Fix order of regmap write log
-Date:   Thu, 12 Nov 2020 15:02:17 +0000
-Message-ID: <20201112150217.459844-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- suspectscore=0 clxscore=1011 mlxlogscore=959 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120091
+        id S1728564AbgKLPBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:01:11 -0500
+Received: from mga09.intel.com ([134.134.136.24]:19209 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728274AbgKLPBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:01:11 -0500
+IronPort-SDR: SA17ywlREMJjSv2z9w7fU9auOeCece+66fM6ClBe60gbbZ0sassSCl0027shyuvZ/6XCtaAgQW
+ xCHs61WRVwhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170484642"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="170484642"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 07:00:50 -0800
+IronPort-SDR: u3tDXpGUjDw9O51RhauCnc1oON5mujg12Q6rjz+3Z5fBHGLyHsUfNskMcIRi4/7LZzICP/PyYB
+ cL++A5tq6i4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="530693031"
+Received: from glass.png.intel.com ([172.30.181.98])
+  by fmsmga006.fm.intel.com with ESMTP; 12 Nov 2020 07:00:48 -0800
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net-next 1/1] net: phy: Add additional logics on probing C45 PHY devices
+Date:   Thu, 12 Nov 2020 23:03:51 +0800
+Message-Id: <20201112150351.12662-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_regmap_write can trigger a _regmap_select_page, which will call
-another _regmap_write that will be executed first, but the log shows
-the inverse order
+For clause 45 PHY, introduce additional logics in get_phy_c45_ids() to
+check if there is at least one valid device ID, return 0 on true, and
+-ENODEV otherwise.
 
-Also, keep consistency with _regmap_read which only logs in case of
-success
-
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
 ---
- drivers/base/regmap/regmap.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/phy/phy_device.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 5db536ccfcd6b..297e95be25b3b 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1924,12 +1924,15 @@ int _regmap_write(struct regmap *map, unsigned int reg,
- 		}
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index e13a46c25437..c9ddcd7a63d4 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -730,6 +730,7 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr,
+ 	const int num_ids = ARRAY_SIZE(c45_ids->device_ids);
+ 	u32 devs_in_pkg = 0;
+ 	int i, ret, phy_reg;
++	u32 valid_did = 0;
+ 
+ 	/* Find first non-zero Devices In package. Device zero is reserved
+ 	 * for 802.3 c45 complied PHYs, so don't probe it at first.
+@@ -796,12 +797,21 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr,
+ 		if (phy_reg < 0)
+ 			return -EIO;
+ 		c45_ids->device_ids[i] |= phy_reg;
++
++		/* Check if there is at least one valid device ID */
++		if (c45_ids->device_ids[i] &&
++		    (c45_ids->device_ids[i] & 0x1fffffff) != 0x1fffffff)
++			valid_did |= (1 << i);
  	}
  
--	if (regmap_should_log(map))
--		dev_info(map->dev, "%x <= %x\n", reg, val);
-+	ret = map->reg_write(context, reg, val);
-+	if (ret == 0) {
-+		if (regmap_should_log(map))
-+			dev_info(map->dev, "%x <= %x\n", reg, val);
+ 	c45_ids->devices_in_package = devs_in_pkg;
+ 	/* Bit 0 doesn't represent a device, it indicates c22 regs presence */
+ 	c45_ids->mmds_present = devs_in_pkg & ~BIT(0);
  
--	trace_regmap_reg_write(map, reg, val);
-+		trace_regmap_reg_write(map, reg, val);
-+	}
- 
--	return map->reg_write(context, reg, val);
-+	return ret;
++	/* There is no valid device ID */
++	if (!valid_did)
++		return -ENODEV;
++
+ 	return 0;
  }
  
- /**
 -- 
-2.29.2
+2.17.0
 
