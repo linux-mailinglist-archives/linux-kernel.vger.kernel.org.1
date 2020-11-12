@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBE02B0D4D
+	by mail.lfdr.de (Postfix) with ESMTP id BAB582B0D4E
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgKLTB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:01:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S1727082AbgKLTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727029AbgKLTBu (ORCPT
+        with ESMTP id S1727030AbgKLTBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Nov 2020 14:01:50 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE77C0613D4
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC963C0613D6
         for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:49 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id o15so7157221wru.6
+Received: by mail-wr1-x444.google.com with SMTP id c17so7121875wrc.11
         for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ov+hNhD3SKYkmXLxIt4K88IOrbz9wi3prlF4IGflKIA=;
-        b=HaKWon5e27vVoEszYC+8GRccl3aOte+jqCuD5RwYvw6ylRWQd+CrIRkR769NKQET+a
-         NL15ssjcWuHmB4bGvwWQE15yhgjPfNjQZJEkpEWKtwO15LmfdpWSGi2jxoGPtRF3onFR
-         OMCJcskY6WOsWAC3jLRiORkoCCBrebvUO0iccdgpgchRhmHQTRjFTdj4H/hd/tNKfWw8
-         v9VAvpV5PuEmRGo5WNivCmGd2TWHPU1F5F5qdr/ZVVTKGKkszlMWRp6uJ3j6LV5sF6Ce
-         Y2J8LeF0SlEfnnzIAYZPMXx8e/WQ7QclnjIFWV37iZJi2NtqT8r2WywT4Wf331WLmZOl
-         9r+w==
+        bh=E894eMua3BcyVtBQpbTegYEGiTjlkwuli5uk69Q3IOw=;
+        b=Kn2ivuqgAsK52Jio64tgCg5gEc3heO8c9beyz/bqFQbf5NkBPLY0+mhmwCJ6UNpA3P
+         J4x/Rd3GXHQO/a/7YTp80S3ElfDEZFctAwN1fZKTPz8totTDUrGBrl8p88E9wBEhi+Vj
+         2zmyC3n++XMwoLh/RL82lSqhrY7fWGLb6m98Nsc77uAzHP7z86dDHPaXrtRzpLI/SHXV
+         fVu3eXDW/AUtoktCjuFoknQPCENGgeS9pTL1Nr/1cP8B8IeH4pRObv232EktleSaFXGo
+         GYsnK3HMSXR5k+Gcc5sO0FRKxjZa7Lc2K5sSnN+o7DNgZBGnfLxH4JM1NTZ/nwQxlHgY
+         2eJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ov+hNhD3SKYkmXLxIt4K88IOrbz9wi3prlF4IGflKIA=;
-        b=YZSbvCz5zbC/ykJpouJnd5CRG/A6yW1XTDP6OzRXE/HPRXrcSxHAT4zC+Ey7vfV+0c
-         M5mUBoIJ6usc7vroDd5uw1945tE90dMAj6odvVx5R3nrZRR82N7oPf4PdoDd5l+iAwGw
-         Zz2uM6duHY0vCeYJbrctY0h2ojaiPncidF1vLjH8d8SQM4DuTBMDh0/HGK8gYl8wWbIb
-         bXmBAqGGv77E/4uDA9bi6fkS23h8Ok07ShDaDj1ErmuVPwT0FpJwmRLQbX+ESNd8/aUD
-         MA7iHIlCHz52YVTnJpP8pP2cAoOucEqKVNGuW0MLlwOR1vVjpQ8jcfu9aVU/26VrYIck
-         9KZg==
-X-Gm-Message-State: AOAM531ANfVRJwDea1dJkHm1jAxCUUJ1dalSJETahTxb/o9f3t5V7ufw
-        imYtPEVtl+QWoaktgOBnrsdLRA==
-X-Google-Smtp-Source: ABdhPJz6gcI8pqKX92aeK0A2wnxDfVcWz6jrilEoWlaSmQJS1ipaQgmvzbQ4hI9uHgviAXYzqMTaMg==
-X-Received: by 2002:adf:d4c6:: with SMTP id w6mr1152395wrk.71.1605207706981;
-        Thu, 12 Nov 2020 11:01:46 -0800 (PST)
+        bh=E894eMua3BcyVtBQpbTegYEGiTjlkwuli5uk69Q3IOw=;
+        b=XnpTzQOxNw20YkLkIOZ1B/LgF7MCh2KyvobGkUHKcqcLZUDWZ+QgWu6PYMQW6WlrYl
+         QgfN9daeiLY2Fsdz9fdhhMRnUEsw+mWaRdCdXbEAx571u6sSVxMDjFsxr8uVBaLf17sS
+         kUCeueR5sujQi3tZXiDrFyTGNIw8NvB6SlhNYBhqxZgPAnI3Ojwf169rso+/OZYT83QQ
+         Bke0kTn1Nm8vQHbeTiEYcYTQs90Jt3yiiyrfZKqRwIlZVo5W6rW7t+px05CYY8ga7WXJ
+         v54SCRP6EiHNj6BmL+B2togvUOH3IsTdVi4yZpTf9e3JNmqTXMKy52Noa2imQRsOigFk
+         ybLw==
+X-Gm-Message-State: AOAM532zKkZUM7nvZOl+OoJ2Y3a1O6fJ06E9axyNgM9rAt8LhnC//rgq
+        kS/tgl+S4bndZjSKSjl9K5lODA==
+X-Google-Smtp-Source: ABdhPJyC+zO0DY5MHCIJ0bV9ffOxtDjtwGdlvt4SiEuyNxuXTQ+znllAJ+A8SlC5c9Z7ZtrMrG8zIg==
+X-Received: by 2002:a5d:6286:: with SMTP id k6mr1118692wru.216.1605207708584;
+        Thu, 12 Nov 2020 11:01:48 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.45
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:01:46 -0800 (PST)
+        Thu, 12 Nov 2020 11:01:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 27/30] drm/sti/sti_hdmi: Move 'colorspace_mode_names' array to where its used
-Date:   Thu, 12 Nov 2020 19:00:36 +0000
-Message-Id: <20201112190039.2785914-28-lee.jones@linaro.org>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 28/30] drm/mediatek/mtk_disp_color: Fix formatting and provide missing member description
+Date:   Thu, 12 Nov 2020 19:00:37 +0000
+Message-Id: <20201112190039.2785914-29-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
 References: <20201112190039.2785914-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -72,56 +73,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/sti/sti_hdmi.h:36:40: warning: ‘colorspace_mode_names’ defined but not used [-Wunused-const-variable=]
- 36 | static const struct drm_prop_enum_list colorspace_mode_names[] = {
- | ^~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function parameter or member 'ddp_comp' not described in 'mtk_disp_color'
+ drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function parameter or member 'crtc' not described in 'mtk_disp_color'
+ drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function parameter or member 'data' not described in 'mtk_disp_color'
 
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Cc: Vincent Abriou <vincent.abriou@st.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/sti/sti_hdmi.c | 6 ++++++
- drivers/gpu/drm/sti/sti_hdmi.h | 6 ------
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_disp_color.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/sti/sti_hdmi.c b/drivers/gpu/drm/sti/sti_hdmi.c
-index 38a558768e531..f3ace11209dd7 100644
---- a/drivers/gpu/drm/sti/sti_hdmi.c
-+++ b/drivers/gpu/drm/sti/sti_hdmi.c
-@@ -167,6 +167,12 @@ struct sti_hdmi_connector {
- #define to_sti_hdmi_connector(x) \
- 	container_of(x, struct sti_hdmi_connector, drm_connector)
- 
-+static const struct drm_prop_enum_list colorspace_mode_names[] = {
-+	{ HDMI_COLORSPACE_RGB, "rgb" },
-+	{ HDMI_COLORSPACE_YUV422, "yuv422" },
-+	{ HDMI_COLORSPACE_YUV444, "yuv444" },
-+};
-+
- u32 hdmi_read(struct sti_hdmi *hdmi, int offset)
- {
- 	return readl(hdmi->regs + offset);
-diff --git a/drivers/gpu/drm/sti/sti_hdmi.h b/drivers/gpu/drm/sti/sti_hdmi.h
-index 1f6dc90b5d83a..05b2f3d0d48d3 100644
---- a/drivers/gpu/drm/sti/sti_hdmi.h
-+++ b/drivers/gpu/drm/sti/sti_hdmi.h
-@@ -33,12 +33,6 @@ struct hdmi_audio_params {
- 	struct hdmi_audio_infoframe cea;
- };
- 
--static const struct drm_prop_enum_list colorspace_mode_names[] = {
--	{ HDMI_COLORSPACE_RGB, "rgb" },
--	{ HDMI_COLORSPACE_YUV422, "yuv422" },
--	{ HDMI_COLORSPACE_YUV444, "yuv444" },
--};
--
- #define DEFAULT_COLORSPACE_MODE HDMI_COLORSPACE_RGB
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+index 3ae9c810845bb..a788ff95ed6e4 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+@@ -30,8 +30,9 @@ struct mtk_disp_color_data {
  
  /**
+  * struct mtk_disp_color - DISP_COLOR driver structure
+- * @ddp_comp - structure containing type enum and hardware resources
+- * @crtc - associated crtc to report irq events to
++ * @ddp_comp: structure containing type enum and hardware resources
++ * @crtc: associated crtc to report irq events to
++ * @data: platform colour driver data
+  */
+ struct mtk_disp_color {
+ 	struct mtk_ddp_comp			ddp_comp;
 -- 
 2.25.1
 
