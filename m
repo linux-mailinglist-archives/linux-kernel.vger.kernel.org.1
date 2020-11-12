@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385DB2B08EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E5F2B08F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKLPvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:51:33 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38203 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728519AbgKLPva (ORCPT
+        id S1728514AbgKLPwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:52:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728274AbgKLPwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:51:30 -0500
-Received: by mail-wr1-f66.google.com with SMTP id p8so6512486wrx.5;
-        Thu, 12 Nov 2020 07:51:26 -0800 (PST)
+        Thu, 12 Nov 2020 10:52:15 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E986EC0613D1;
+        Thu, 12 Nov 2020 07:52:14 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id m17so6882950oie.4;
+        Thu, 12 Nov 2020 07:52:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=MIVD3ec0pMDUnB/9PHlMhpg4aZF0Cw3HdcfpgHfnm9o=;
+        b=e3rEPnCUToZm5Auuc2kEjfMVYhGgtYli/SBoiMGAGsCoAroVu4wW5EZ3o+iG2by1nF
+         qr2/wTqIj+Ic/t5+zK2A2LDV/wRKNy+zC0N7zszbmxcrC6R5Dh+nuG0xmfCjU71WIZtg
+         AJ0Tanvonq6536yxNEOjKE97UKhAEAE5JsvH8zEo1hbBt9m7PhqQBQcPZZ7VMhPziw9g
+         e/GEPChTM9lFlegJVyZpgSTdajf/pwItZeZeqcxD/eZgsIV34g4Wuv9VMK9Dk5EvVeg2
+         3rBqSjEq8+uGG3jLyO5MXCUAk8HPhfUJTVQMbRt9aglzZnS97pdkUs2m8OzRWr5ID+nC
+         Uqfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZgjLmQmxgEDr2mbUWpkwRYMxwIwNvNfHIb6zZGhdyzM=;
-        b=Bi0j/SUFlEZ8wem/BmtSdWvlHMZafg4omoQNpgPfdO9mk1bjJYkAu40GPcDO0gN+gG
-         HI6yIkRaYm9670pbad4GtyZs5TMwD3vCGCgCUgkHpqUrRNpl6NcOTNfd0Ah/mr4c9oHK
-         VKSQkeIc+KwcmQIqGNC5O6KNCpWG8H8Jx11WHT1xC5NnFQZjhokTA0aNhaIJw9Ckq5Ar
-         6lLxRHKJUNww1zXRcVeJD4D+ot/IcyPfBQmZ6Y0fR2A7Mx4JrS7LeaBPXQ3w7nAbA0sa
-         L5H8dnYpvnraSVMGHXS72PQHfk8PuNfzsIKFenbEEQ+vs8TMU7ylMgi/4wHRMtL4DD1I
-         f2kg==
-X-Gm-Message-State: AOAM531tXkYrlpbp8peusAeFDSAfEd0p9cCKwfvK9qtIspFd96p9NdOJ
-        2u6qubBUYVd9+GTyaDMJvwObZYhB4Wg=
-X-Google-Smtp-Source: ABdhPJyJENa1caPZP06hbJhvCooPcNeFXa3qQBwOxqU6qrDSyKfCeFFJJRxn4Ajz3u+aViELuJAr/Q==
-X-Received: by 2002:a5d:5146:: with SMTP id u6mr254027wrt.66.1605196286237;
-        Thu, 12 Nov 2020 07:51:26 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id g186sm14984945wma.1.2020.11.12.07.51.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:51:25 -0800 (PST)
-Date:   Thu, 12 Nov 2020 15:51:24 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root
- partition
-Message-ID: <20201112155124.x35q2rg2k53mc7to@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-3-wei.liu@kernel.org>
- <87lff6y59t.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=MIVD3ec0pMDUnB/9PHlMhpg4aZF0Cw3HdcfpgHfnm9o=;
+        b=hdPAd7jQBrZOjHvx9sJLV+lGN8b+v4rqJSRpVyWNy3gj5ru5JOcfMKkUoDH8KElGtr
+         BLnfKWDnF2itZ9JaFWC6rG245QIs9acprdc1ZNEg82oDGcfbY9otVfn2HnLlDK9lN7ag
+         i7v3kq+cxOqZalqfXY3uDpozfgz90mZKWNtHLPFCQsiLf97XPdAbybvo9ZplE15pOmYz
+         lva9NZ0GBGdncMGGIyNsGphgjwzhCDxkvo8LmHAFvPJcrCxzwvA6FFOOrbUCfFmbgYQd
+         WxEcry2A9CIkL9ab6L6jr8e31KWfS1PEhO1nRNl2V93qRwDiTGJ3JYL4mSYz8H54IAtc
+         yxBg==
+X-Gm-Message-State: AOAM533eqo10FuksqbqHmmy7bxp7Yf0xvNrWSPLZ11iZ8Hy+Ehme+Rds
+        ybMP5DYXDIjU0uwSpwmB43TV6qrJ6xWeZuQrZbf23mR0X8Wyng==
+X-Google-Smtp-Source: ABdhPJwaGZvLg3cxotGZ2nYmKL0QSsibauQxy6Q/maqt4lPWs92SRosc9XQushbmxSDrR3grHmDG+8RMVAhIgW2b6rM=
+X-Received: by 2002:aca:ad07:: with SMTP id w7mr182696oie.122.1605196334088;
+ Thu, 12 Nov 2020 07:52:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lff6y59t.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+From:   John Boero <boeroboy@gmail.com>
+Date:   Thu, 12 Nov 2020 15:52:02 +0000
+Message-ID: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
+Subject: [PATCH] usb: core: Null deref in kernel with USB webcams.
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:16:30PM +0100, Vitaly Kuznetsov wrote:
-[...]
-> >  /*
-> >   * Virtual processor will never share a physical core with another virtual
-> >   * processor, except for virtual processors that are reported as sibling SMT
-> > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> > index ffc289992d1b..ac2b0d110f03 100644
-> > --- a/arch/x86/include/asm/mshyperv.h
-> > +++ b/arch/x86/include/asm/mshyperv.h
-> > @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
-> >  		struct hv_guest_mapping_flush_list *flush,
-> >  		u64 start_gfn, u64 end_gfn);
-> >  
-> > +extern bool hv_root_partition;
-> 
-> Eventually this is not going to be an x86 only thing I believe?
+From 54f9886454e9a28e8d943c1cef15df9c11555df7 Mon Sep 17 00:00:00 2001
+From: JohnnyB <jboero@users.noreply.github.com>
+Date: Thu, 12 Nov 2020 15:28:29 +0000
+Subject: [PATCH] usb: core: Null deref in kernel with USB webcams.
 
-I hope so. :-)
+Fixes: Ubuntu Launchpad bug 1827452
 
-> 
-> > +
-> >  #ifdef CONFIG_X86_64
-> >  void hv_apic_init(void);
-> >  void __init hv_init_spinlocks(void);
-> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > index 05ef1f4550cb..f7633e1e4c82 100644
-> > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > @@ -237,6 +237,22 @@ static void __init ms_hyperv_init_platform(void)
-> >  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
-> >  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
-> >  
-> > +	/*
-> > +	 * Check CPU management privilege.
-> > +	 *
-> > +	 * To mirror what Windows does we should extract CPU management
-> > +	 * features and use the ReservedIdentityBit to detect if Linux is the
-> > +	 * root partition. But that requires negotiating CPU management
-> > +	 * interface (a process to be finalized).
-> > +	 *
-> > +	 * For now, use the privilege flag as the indicator for running as
-> > +	 * root.
-> > +	 */
-> > +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
-> 
-> We may want to cache cpuid_ebx(HYPERV_CPUID_FEATURES) somewhere but we
-> already had a discussion regading naming for these caches and decided to
-> wait until TLFS for ARM is out so we don't need to rename again.
+This is my first attempt at a kernel contribution so sorry if sloppy.
 
-Exactly.
+There is some kind of race condition affecting Logitech
+webcams that crash USB with a null dereference.
+Affects raspberry pi devices as well as x86.
+No check on dev before dereference.
+Simple fix for issue experienced for months in
+both x86 and arm/rpi environments.
 
-Wei.
+Signed-off-by: John Boero <boeroboy@gmail.com>
+
+---
+drivers/usb/core/usb.c | 6 +-----
+1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+index d8756ffe513a..9b4ac4415f1a 100644
+--- a/drivers/usb/core/usb.c
++++ b/drivers/usb/core/usb.c
+@@ -272,13 +272,9 @@ EXPORT_SYMBOL_GPL(usb_find_alt_setting);
+struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev,
+                                     unsigned ifnum)
+{
+-       struct usb_host_config *config = NULL;
++       struct usb_host_config *config = dev->actconfig;
+       int i;
+
+-       if (!dev)
+-               return NULL;
+-
+-       config = dev->actconfig;
+       if (!config)
+               return NULL;
+       for (i = 0; i < config->desc.bNumInterfaces; i++)
+--
+2.26.2
