@@ -2,228 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85342B06E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5712B06E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgKLNoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:44:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728086AbgKLNon (ORCPT
+        id S1728372AbgKLNqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:46:18 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7461 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727790AbgKLNqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:44:43 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7B1C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:44:43 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 23so6035503wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:44:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=To+ZcG/r9vVpmGTgBDlDgjUCMbHCTExbI20k8BWQjAw=;
-        b=W+PD2VKQasIWpPzZDio9fbNElNIoCjulot3D66PEGLZAkugr3AWKAB3XypmeTTfnF8
-         c6woS+AwCDqSmXQRClfHXVpv7YM3NA3VoziRWWORy8nOETQebySVUvGVd/nTRK4rGWRB
-         Cnux95sw7lFkrZQaD8W1dhPKakcMa7M3+6QksDbq1wnjKX7FCpYOysy0vIt1WEVwNFCw
-         JUT0FPxJQgZdQ7BTUjydi2GJOswAD6jKJt/yM29jAJgTxN8HFlUUezJUcKn9q5/Ox72N
-         IQH+rRwsW+lwfAOijCg/UfyKPkL1gOnrEGySIftwvbtpXwXdLnWfN5Za0/fD6e1BOO1f
-         PDOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=To+ZcG/r9vVpmGTgBDlDgjUCMbHCTExbI20k8BWQjAw=;
-        b=kwOGGYQWJcOPCUAMh3QZHAEX4iZbvKUbWKYFpribllf2FsxoOBSleCI4BRggC1EbcY
-         zAdy9uye3zielhhE/C0nmhcINyQWfOzew5hh1MUZYFeQ+M8G6Kq9ZtJgbpOIhVIjX1D9
-         kdFwgmcmkR7VKZ1Geb7OXpJOzq2PYhmxWQEmLh5bvotSqW7H2gKff6o9A+Ple/hX3JUH
-         PwwHy/qnFtI+UgEq4WCzSV5gJ0wDf8bf7kcaXHKCSTN18/csCHmVFxfTgqQL2lSdnpGH
-         7aXsPM0mrwzktB8ju2RL035TD57ulDiIs9eF6ZxZWLiNck7aOHycSGKj4XS2xzBv1jZW
-         4tvA==
-X-Gm-Message-State: AOAM531v8xU8Jp0R+DmoRjuM/x+ObPBy0VFfGfcZrZjH7FjtlFFziPJz
-        5he0oo8ShwW1iPKrwRQyRtMdBA==
-X-Google-Smtp-Source: ABdhPJx5CbQywNCBG7tQePsWuRkCM0wYavBBbiZJXSc5QgZNhdOAjtuKa7umBsaCO2JeXLOhnsnTgw==
-X-Received: by 2002:adf:fc48:: with SMTP id e8mr27381460wrs.313.1605188682181;
-        Thu, 12 Nov 2020 05:44:42 -0800 (PST)
-Received: from ?IPv6:2001:861:3a84:7260:5d3c:83d5:8524:33ca? ([2001:861:3a84:7260:5d3c:83d5:8524:33ca])
-        by smtp.gmail.com with ESMTPSA id t9sm6744292wrr.49.2020.11.12.05.44.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 05:44:41 -0800 (PST)
-Subject: Re: [PATCH] reset: Add reset controller API
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-usb@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
-References: <20201001132758.12280-1-aouledameur@baylibre.com>
- <CAHNvnFO=kH25CqrAcndVO4xTQ2pGDFi5ZHEALpFaZaGL=e_c0Q@mail.gmail.com>
- <87ac087154f461b6cac632bb62b92b8b94d90a67.camel@pengutronix.de>
-From:   Amjad Ouled-Ameur <aouledameur@baylibre.com>
-Message-ID: <9eb59bf5-0b13-c830-dfe0-a20549769a5b@baylibre.com>
-Date:   Thu, 12 Nov 2020 14:44:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 12 Nov 2020 08:46:17 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad3cb00000>; Thu, 12 Nov 2020 05:46:24 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 13:46:12 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.174)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 13:46:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bZgXYA82z9Jh2bZ0cgpiVBQzB946ddM+7wxdabf3rDQj7ehjr5A7gu7JS/YYcMnlY7LBTw+XIobHMWFcEl5CO5PI2fv8ch4j1AfzjJlnJ/trMS8ffJGko9CoGaV1F3fnZ/lNxmkRQD4jnKM+onjIYYBl5weoBcVcKyaCk+syBOnm6Decr4l12jQ1XUx1dL8ucOjBXW/PbRRAFLAonuKseVSEIMwKr983OiFHgTR/mQW9nTlXKLpIDlPH7/ci7QQU56ObQHDD5iOQpS2NMNTl0AsSR0c8NdZ87MBNr4Q0Kq1wuALRR5hTlqGcwg49kAaOJ+ebP90btC11oQ0uPFgYIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A9mez98IR9cHSr04ts+tzikuQTMXzNdMDRHbaqBx8mk=;
+ b=miNIEKc/1lMINg6pDLGNenjdb+DphUAyVxtN3JxzMITNAkrJ0UeknnyyukoD4MpV1DKB6v0etBQWIp8Sl88mHsTD2Aa7+BHguEvgdfOtuPkh0hUZBzk+4rXRw1KcxoeTuuSOvei98sLzCv9tPUNc1HKzkAggcnx/InHpNAAd1U/ZORWcraRqhvz/XfArEcdOl5GpGZogHWBPsliFWDb2ac2Kw4A24e0bXeEZrtD3kAchjra2RmhfE6/8zx9s/2p31tB6Q5kVYwKGJ1VwPBMIc34PpI8IJC87cjr+Yc/P0wF9s60EOAXM3eNqZpGYsyQcSaAjPUXGd/G2nEFTU1WAlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4057.namprd12.prod.outlook.com (2603:10b6:5:213::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Thu, 12 Nov
+ 2020 13:46:11 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
+ 13:46:11 +0000
+Date:   Thu, 12 Nov 2020 09:46:09 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     "Raj, Ashok" <ashok.raj@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201112134609.GF2620339@nvidia.com>
+References: <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
+ <20201108235852.GC32074@araj-mobl1.jf.intel.com>
+ <874klykc7h.fsf@nanos.tec.linutronix.de>
+ <20201109173034.GG2620339@nvidia.com>
+ <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03>
+ <875z6dik1a.fsf@nanos.tec.linutronix.de> <20201110141323.GB22336@otc-nc-03>
+ <20201110142340.GP2620339@nvidia.com>
+ <MWHPR11MB16459716A1897F79E860AB4D8CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB16459716A1897F79E860AB4D8CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL0PR03CA0023.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::36) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <87ac087154f461b6cac632bb62b92b8b94d90a67.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR03CA0023.namprd03.prod.outlook.com (2603:10b6:208:2d::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 13:46:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdCvR-003gjy-Gd; Thu, 12 Nov 2020 09:46:09 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605188784; bh=A9mez98IR9cHSr04ts+tzikuQTMXzNdMDRHbaqBx8mk=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=lb0ObooiuuWSH1TibAAww5xzchaityqWIhZjgQbrf8m67g8WS+lMVxbn9WbXnMPgG
+         3eP++XYl9eg5Etej+NPRYqgrQVPIfjdc6x6V6tMhCxPh97KEJKVU0YtOHx71ne9pR+
+         KQhobRiragL20oxZiySUGUCYm9tnm6AnPpEgx4I0Z2B1kCdpwaTketNYA0Xu5+hn3i
+         MwiBkDGm6vhaBIj+qvvhq1tVEvb9g8fk9qiBJyitnr2nld6cUrIQEva19VqDtTUsmx
+         JjkfDzTltVvQEPJCfq17VXzGuUXscp4pib0HvVod67rJHfDO2haZz/Q1Q7sAZ1BEpq
+         yVqYSBgxbJaKA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Wed, Nov 11, 2020 at 02:17:48AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Tuesday, November 10, 2020 10:24 PM
+> > 
+> > On Tue, Nov 10, 2020 at 06:13:23AM -0800, Raj, Ashok wrote:
+> > 
+> > > This isn't just for idxd, as I mentioned earlier, there are vendors other
+> > > than Intel already working on this. In all cases the need for guest direct
+> > > manipulation of interrupt store hasn't come up. From the discussion, it
+> > > seems like there are devices today or in future that will require direct
+> > > manipulation of interrupt store in the guest. This needs additional work
+> > > in both the device hardware providing the right plumbing and OS work to
+> > > comprehend those.
+> > 
+> > We'd want to see SRIOV's assigned to guests to be able to use
+> > IMS. This allows a SRIOV instance in a guest to spawn SIOV's which is
+> > useful.
+> 
+> Does your VF support both MSI/IMS or IMS only? 
 
-Thank you very much for the review.
+Of course VF's support MSI..
 
-Please find my comments below:
+> If it is the former can't we adopt a phased approach or parallel
+> effort between forcing guest to use MSI and adding hypercall to
+> enable IMS on VF? Finding a way to disable IMS is anyway required
+> per earlier discussion when hypercall is not available, and it could
+> still provide a functional though suboptimal model for such VFs.
 
-On 02/10/2020 13:14, Philipp Zabel wrote:
+Sure, I view that as the bare minimum
 
-> Hi Amjad,
->
-> Thank you for the patch, comments below:
->
-> On Thu, 2020-10-01 at 15:55 +0200, Amjad Ouled-Ameur wrote:
->> An update on the patch title, since we don't add an API but extend it,
->> The title should rather be: Add a new call to the reset framework
-> I think it should even say what functionality is added, for example
->
-> "reset: make shared pulsed reset controls re-triggerable"
-
-Will do !
-
->> Le jeu. 1 oct. 2020 à 15:28, Amjad Ouled-Ameur
->> <aouledameur@baylibre.com> a écrit :
->>> The current reset framework API does not allow to release what is done by
->>> reset_control_reset(), IOW decrement triggered_count. Add the new
->>> reset_control_resettable() call to do so.
->>>
->>> When reset_control_reset() has been called once, the counter
->>> triggered_count, in the reset framework, is incremented i.e the resource
->>> under the reset is in-use and the reset should not be done again.
->>> reset_control_resettable() would be the way to state that the resource is
->>> no longer used and, that from the caller's perspective, the reset can be
->>> fired again if necessary.
->>>
->>> This patch will fix a usb suspend warning seen on the libretech-cc
->>> related to the shared reset line. This warning was addressed by the
->>> previously reverted commit 7a410953d1fb ("usb: dwc3: meson-g12a: fix shared
->>> reset control use")
->>>
->>> Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
->>> Reported-by: Jerome Brunet <jbrunet@baylibre.com>
->>> ---
->>>   drivers/reset/core.c  | 57 +++++++++++++++++++++++++++++++++++++++++++
->>>   include/linux/reset.h |  1 +
->>>   2 files changed, 58 insertions(+)
->>>
->>> diff --git a/drivers/reset/core.c b/drivers/reset/core.c
->>> index 01c0c7aa835c..53653d4b55c4 100644
->>> --- a/drivers/reset/core.c
->>> +++ b/drivers/reset/core.c
->>> @@ -207,6 +207,19 @@ static int reset_control_array_reset(struct reset_control_array *resets)
->>>          return 0;
->>>   }
->>>
->>> +static int reset_control_array_resettable(struct reset_control_array *resets)
->>> +{
->>> +       int ret, i;
->>> +
->>> +       for (i = 0; i < resets->num_rstcs; i++) {
->>> +               ret = reset_control_resettable(resets->rstc[i]);
->>> +               if (ret)
->>> +                       return ret;
->>> +       }
-> This is tricky, as we can't really roll back decrementing
-> triggered_count in case just one of those fails.
->
-> I think reset_control_array_resettable has to be open coded to first
-> check for errors and only then loop through all controls and decrement
-> their triggered_count.
-
-I agree with this, it is risky to start decrementing before checking for
-errors. The V2 will include an open coded version of this function.
-
->>> +
->>> +       return 0;
->>> +}
->>> +
->>>   static int reset_control_array_assert(struct reset_control_array *resets)
->>>   {
->>>          int ret, i;
->>> @@ -324,6 +337,50 @@ int reset_control_reset(struct reset_control *rstc)
->>>   }
->>>   EXPORT_SYMBOL_GPL(reset_control_reset);
->>>
->>> +/**
->>> + * reset_control_resettable - decrements triggered_count of the controlled device
->>> + * @rstc: reset controller
-> It is more important to document the purpose of the function than the
-> mechanism by which it is achieved. triggered_count is an implementation
-> detail.
->
-> Maybe "allow shared reset line to be triggered again" or similar.
-
-Roger that, will do in V2.
-
->
->>> + *
->>> + * On a shared reset line the actual reset pulse is only triggered once for the
->>> + * lifetime of the reset_control instance, except if this function is used.
->>> + * In fact, It decrements triggered_count that makes sure of not allowing
->>> + * a reset if triggered_count is not null.
->>> + *
->>> + * This is a no-op in case triggered_count is already null i.e shared reset line
->>> + * is ready to be triggered.
-> This is not a good idea IMHO. It would be better to document that calls
-> to this function must be balanced with calls to reset_control_reset, and
-> then throw a big warning below in case deassert_count ever dips below 0.
->
-> Otherwise nothing stops drivers from silently decrementing other
-> driver's trigger count by accidentally calling this multiple times.
-
-I do agree, accidental calls should be reported by warnings.
-
->>> + *
->>> + * Consumers must not use reset_control_(de)assert on shared reset lines when
->>> + * reset_control_reset has been used.
->>> + *
->>> + * If rstc is NULL it is an optional clear and the function will just
->>> + * return 0.
->>> + */
->>> +int reset_control_resettable(struct reset_control *rstc)
->>> +{
->>> +       if (!rstc)
->>> +               return 0;
->>> +
->>> +       if (WARN_ON(IS_ERR(rstc)))
->>> +               return -EINVAL;
->>> +
->>> +       if (reset_control_is_array(rstc))
->>> +               return reset_control_array_resettable(rstc_to_array(rstc));
->>> +
->>> +       if (rstc->shared) {
->>> +               if (WARN_ON(atomic_read(&rstc->deassert_count) != 0))
->>> +                       return -EINVAL;
->>> +
->>> +               if (atomic_read(&rstc->triggered_count) > 0)
->>> +                       atomic_dec(&rstc->triggered_count);
-> I think this should be
->
-> 		WARN_ON(atomic_dec_return(&rstc->triggered_count) < 0);
-
-That is even better, having this warning means that the call has not
-
-been properly used.
-
->
-> regards
-> Philipp
-
-Next version of the patch will be sent soon, include everything we
-
-have discussed.
-
-Sincerely,
-
-Amjad
-
+Jason
