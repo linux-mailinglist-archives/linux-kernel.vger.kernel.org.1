@@ -2,77 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C5C2B10EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97092B10FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgKLWD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        id S1727471AbgKLWFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:05:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727735AbgKLWDW (ORCPT
+        with ESMTP id S1727466AbgKLWFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:03:22 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BB4C0613D1;
-        Thu, 12 Nov 2020 14:03:21 -0800 (PST)
-Received: from dslb-094-219-035-190.094.219.pools.vodafone-ip.de ([94.219.35.190] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1kdKgT-0003Rs-Uc; Thu, 12 Nov 2020 23:03:14 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v3] PCI: brcmstb: remove chained IRQ handler and data in one go
-Date:   Thu, 12 Nov 2020 23:03:06 +0100
-Message-Id: <20201112220306.9371-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201108184208.19790-1-martin@kaiser.cx>
-References: <20201108184208.19790-1-martin@kaiser.cx>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 12 Nov 2020 17:05:34 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AF3C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:05:24 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id z24so5394346pgk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:05:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=slkfJzLThfnq7dp6T3hHJaR873aqxgp2bKc6BsX9aV0=;
+        b=pinvfDrDrB6ctJHlCeWOYTxu5y04SDYjFnGR3GwyyCDGTbeCvS4VYROYFBfSi2WhCz
+         KW8hlBAR3YFiOuLUNYTwBi+g9xr/VGgaTV2vWsnITUq9ZQfhas5xNg3/Wvr7gQtYykWF
+         C3B5YcxnleGCEfOn0Zfx+3JoXDzz31JRxEVdZGfFXjiWK2kPeZShiRBZNDNR2dkccIHZ
+         09dI+FJpIwdTrg4w417/w3FRyR1QxjvsUHtxlGdjbN5GPCV2rGhtJCEskGqnB02OcG1R
+         rmfQpkDGFfpQI0yg5p5VTLNbwQf16YFY5P5b+a5jjZmN8Lo4xmNb2kaSEa4ytkn2SBwv
+         Nuzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=slkfJzLThfnq7dp6T3hHJaR873aqxgp2bKc6BsX9aV0=;
+        b=Xj/aYnDdMiMfqOFTWfSjR3jV4B4sBFxiDH/WSnp+Rio5v3mgxHSbg3dKXfsTbIxDPf
+         nM9L6UDsBO3u2rUgboZHUJK1SG9ZEvqZX/T+Jn8e8Z9kmw+jhyImsSZymagXHWEYP+0u
+         NY5pVjJAHRh9+tJSMvgURG08LS1R1rge2eEfbCneQaYRgymzPCF3tYgHhNx6NiJTjmPo
+         dheThy+Wp6sOcue1wRJb7hLAV0zamR4WoDlkYt7Tzy/4T4POO/jcmdWX7xfhU0iPcVcz
+         N/CVc3Q47mzEggJHExrwTLmvoetdypG/9g65ukbx13YGL/4rJ5P/fYNcBeWNcAqumVwm
+         SpIg==
+X-Gm-Message-State: AOAM530tHQ7F5pa0AL2LIzErDNIAcOYdVWannyDNPCcTeFHBGTywte6o
+        2XQZw51EDocgBHKOtGj838enAEAxLZuYFw==
+X-Google-Smtp-Source: ABdhPJxfhZH/q5hThNOBnnLYhFe96bQakZ1Aix4ClMUJBa7gSEj5LlM3tIe7QGLlxguFwIACTomUHQ==
+X-Received: by 2002:aa7:9888:0:b029:18b:a9e2:dc7a with SMTP id r8-20020aa798880000b029018ba9e2dc7amr1335896pfl.67.1605218723741;
+        Thu, 12 Nov 2020 14:05:23 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id mv5sm7638976pjb.42.2020.11.12.14.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 14:05:22 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Subject: [RESEND][PATCH 1/2] arm-smmu-qcom: Ensure the qcom_scm driver has finished probing
+Date:   Thu, 12 Nov 2020 22:05:19 +0000
+Message-Id: <20201112220520.48159-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call irq_set_chained_handler_and_data() to clear the chained handler
-and the handler's data under irq_desc->lock.
+Robin Murphy pointed out that if the arm-smmu driver probes before
+the qcom_scm driver, we may call qcom_scm_qsmmu500_wait_safe_toggle()
+before the __scm is initialized.
 
-See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
-IRQ handler").
+Now, getting this to happen is a bit contrived, as in my efforts it
+required enabling asynchronous probing for both drivers, moving the
+firmware dts node to the end of the dtsi file, as well as forcing a
+long delay in the qcom_scm_probe function.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+With those tweaks we ran into the following crash:
+[    2.631040] arm-smmu 15000000.iommu:         Stage-1: 48-bit VA -> 48-bit IPA
+[    2.633372] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+...
+[    2.633402] [0000000000000000] user address but active_mm is swapper
+[    2.633409] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+[    2.633415] Modules linked in:
+[    2.633427] CPU: 5 PID: 117 Comm: kworker/u16:2 Tainted: G        W         5.10.0-rc1-mainline-00025-g272a618fc36-dirty #3971
+[    2.633430] Hardware name: Thundercomm Dragonboard 845c (DT)
+[    2.633448] Workqueue: events_unbound async_run_entry_fn
+[    2.633456] pstate: 80c00005 (Nzcv daif +PAN +UAO -TCO BTYPE=--)
+[    2.633465] pc : qcom_scm_qsmmu500_wait_safe_toggle+0x78/0xb0
+[    2.633473] lr : qcom_smmu500_reset+0x58/0x78
+[    2.633476] sp : ffffffc0105a3b60
+...
+[    2.633567] Call trace:
+[    2.633572]  qcom_scm_qsmmu500_wait_safe_toggle+0x78/0xb0
+[    2.633576]  qcom_smmu500_reset+0x58/0x78
+[    2.633581]  arm_smmu_device_reset+0x194/0x270
+[    2.633585]  arm_smmu_device_probe+0xc94/0xeb8
+[    2.633592]  platform_drv_probe+0x58/0xa8
+[    2.633597]  really_probe+0xec/0x398
+[    2.633601]  driver_probe_device+0x5c/0xb8
+[    2.633606]  __driver_attach_async_helper+0x64/0x88
+[    2.633610]  async_run_entry_fn+0x4c/0x118
+[    2.633617]  process_one_work+0x20c/0x4b0
+[    2.633621]  worker_thread+0x48/0x460
+[    2.633628]  kthread+0x14c/0x158
+[    2.633634]  ret_from_fork+0x10/0x18
+[    2.633642] Code: a9034fa0 d0007f73 29107fa0 91342273 (f9400020)
+
+To avoid this, this patch adds a check on qcom_scm_is_available() in
+the qcom_smmu_impl_init() function, returning -EPROBE_DEFER if its
+not ready.
+
+This allows the driver to try to probe again later after qcom_scm has
+finished probing.
+
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Maulik Shah <mkshah@codeaurora.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Saravana Kannan <saravanak@google.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Lina Iyer <ilina@codeaurora.org>
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Reported-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
-v3:
- - rewrite the commit message again. this is no race condition if we
-   remove the interrupt handler. sorry for the noise.
-v2:
- - rewrite the commit message to clarify that this is a bugfix
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- drivers/pci/controller/pcie-brcmstb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index bea86899bd5d..7c666f4deb47 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -606,8 +606,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 66ba4870659f4..ef37ccfa82562 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -159,6 +159,10 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+ {
+ 	struct qcom_smmu *qsmmu;
  
- 	if (!msi)
- 		return;
--	irq_set_chained_handler(msi->irq, NULL);
--	irq_set_handler_data(msi->irq, NULL);
-+	irq_set_chained_handler_and_data(msi->irq, NULL, NULL);
- 	brcm_free_domains(msi);
- }
- 
++	/* Check to make sure qcom_scm has finished probing */
++	if (!qcom_scm_is_available())
++		return ERR_PTR(-EPROBE_DEFER);
++
+ 	qsmmu = devm_kzalloc(smmu->dev, sizeof(*qsmmu), GFP_KERNEL);
+ 	if (!qsmmu)
+ 		return ERR_PTR(-ENOMEM);
 -- 
-2.20.1
+2.17.1
 
