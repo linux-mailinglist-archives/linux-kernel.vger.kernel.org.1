@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881B62B0862
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA642B086C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgKLP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:27:43 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48262 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgKLP1n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:27:43 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 417D3803017D;
-        Thu, 12 Nov 2020 15:27:41 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IeRGtuy7iSgB; Thu, 12 Nov 2020 18:27:40 +0300 (MSK)
-Date:   Thu, 12 Nov 2020 18:27:39 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
-        kernel test robot <lkp@intel.com>,
+        id S1728667AbgKLPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:30:06 -0500
+Received: from mailout10.rmx.de ([94.199.88.75]:39703 "EHLO mailout10.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728184AbgKLPaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:30:04 -0500
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout10.rmx.de (Postfix) with ESMTPS id 4CX5Bb6tBRz314x;
+        Thu, 12 Nov 2020 16:29:59 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4CX5BM1rkLz2xDy;
+        Thu, 12 Nov 2020 16:29:47 +0100 (CET)
+Received: from n95hx1g2.localnet (192.168.54.59) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 12 Nov
+ 2020 16:28:45 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Richard Cochran <richardcochran@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
- removes address space '__iomem' of expression
-Message-ID: <20201112152739.r4673zyeixkcwukx@mobilestation>
-References: <202011021254.XC70BaQT-lkp@intel.com>
- <20201110113827.hl5i27cpl6exo3md@mobilestation>
- <20201110163556.3e3423f6@xps13>
- <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
- <20201112092715.7e466405@xps13>
- <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
+Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
+Date:   Thu, 12 Nov 2020 16:28:44 +0100
+Message-ID: <2477133.fPTnnZM2lx@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201110193245.uwsmrqzio5hco7fb@skbuf>
+References: <20201019172435.4416-1-ceggers@arri.de> <20201110164045.jqdwvmz5lq4hg54l@skbuf> <20201110193245.uwsmrqzio5hco7fb@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.59]
+X-RMX-ID: 20201112-162947-4CX5BM1rkLz2xDy-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vignesh
+Hi Vladimir,
 
-On Thu, Nov 12, 2020 at 08:30:42PM +0530, Vignesh Raghavendra wrote:
-> 
-> 
-> On 11/12/20 1:57 PM, Miquel Raynal wrote:
-> > Hi Sergey,
-> > 
-> > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
-> > 2020 22:22:59 +0300:
-> > 
-> >> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:
-> >>> Hi Serge,
-> >>>
-> >>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
-> >>> 2020 14:38:27 +0300:
-> >>>   
-> >>>> Hello Miquel,
-> >>>>
-> >>>> A situation noted by the warning below won't cause any problem because
-> >>>> the casting is done to a non-dereferenced variable. It is utilized
-> >>>> as a pointer bias later in that function. Shall we just ignore the
-> >>>> warning or still fix it somehow?  
-> >>>   
-> >>
-> >>> Do you think the cast to a !__iomem value is mandatory here?  
-> >>
-> >> It's not mandatory to have the casting with no __iomem, but wouldn't
-> >> doing like this:
-> >> + 	shift = (ssize_t __iomem)src & 0x3;
-> >> be looking weird? Really, is there a good way to somehow extract the first
-> >> two bits of a __iomem pointer without getting the sparse warning?
-> > 
-> > I asked around me, what about trying uintptr_t?
-> > 
-> 
+On Tuesday, 10 November 2020, 20:32:45 CET, Vladimir Oltean wrote:
+> But something is still wrong if you need to special-case the negative
+> correctionField, it looks like the arithmetic is not done on the correct
+> number of bits, either by the driver or by the hardware.
+I got it! The problem was caused because I subtracted the "full" timestamp 
+(reconstructed 64 bit seconds) from the correction field. When the KSZ updates 
+the correction field of the PDelay_Resp message on tx, only the "partial" (2 
+bit seconds) egress time stamp will be added. So the invalid values in the 
+correction field were caused because much more seconds were subtracted on rx 
+than added on tx.
 
-> One more way is to use __force to tell sparse that this casting is
-> intentional:
-> 
->        shift = (__force ssize_t)src & 0x3;
+> And zeroing out the correctionField of the Pdelay_Resp on transmission,
+> to put that value into t_Tail_Tag? How can you squeeze a 48-bit value
+> into a 32-bit value without truncation?
+The answer is simple: Only the lower 32 bit (tail tag) must be subtracted as 
+only 32 bit will be added on egress.
 
-Oh, great! That solution is actually much better than using some
-currently unexplained sparse peculiarity! I was thinking about applying
-some other attribute, but __force just didn't come to my mind. Thank
-you very much for the suggestion. I'll post the fix with the solution
-suggested by you.
+v2 is on the way...
 
--Sergey
+regards
+Christian
 
-> 
-> 
-> > Thanks,
-> > Miquèl
-> > 
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > 
+
+
