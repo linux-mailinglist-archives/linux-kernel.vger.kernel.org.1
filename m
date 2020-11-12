@@ -2,90 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484892B07D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 700B32B07D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgKLOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLOx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:53:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21283C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 06:53:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bYXx/yhniIZz+4OfdLqK3N+IFZ7LdA6KsRXCgxZgdcs=; b=wJR5ritcMGFifgOEJQS79xYv0O
-        7xMJ3qQBkYzcUHIl66LdWLpdxiWqMt1UMGerhGK0l0ERJZ2OwsQijNwngo2g9IagZz6AWwj8Pa/Qd
-        F71QrjMj7thTSCGDnj2ebxZR2cSiLyO7wuq4/HCCee46b4NZ4ZUF7ZUGawLR+iFUqxbV0QpqxPGn+
-        vVWKaop0P+Aq6AcT1qv7YW5aIZTrbLHukLLuTKzEsPMxB/pn8tkxq+RU8Hb0rWIF2XzaP0lf+q2qZ
-        QnLMj0HC+jJE99Z6qAGHyANPN5c7hKWV5aXo1+UA16TyfaIeTKc0H3K7wzWgOxeFpfrgZaUtPfiLD
-        srFS3e1w==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdDxz-000824-HL; Thu, 12 Nov 2020 14:52:51 +0000
-Date:   Thu, 12 Nov 2020 14:52:51 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Byungchul Park <byungchul.park@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
-        gregkh@linuxfoundation.org, kernel-team@lge.com
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201112145251.GB17076@casper.infradead.org>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201111093609.1bd2b637@gandalf.local.home>
- <87d00jo55p.fsf@nanos.tec.linutronix.de>
- <20201112081030.GB14554@X58A-UD3R>
- <20201112092612.00a19239@gandalf.local.home>
+        id S1728539AbgKLOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:53:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727035AbgKLOxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:53:30 -0500
+Received: from dhcp-10-100-145-180.wdc.com (unknown [199.255.45.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC25020872;
+        Thu, 12 Nov 2020 14:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605192809;
+        bh=/KlAWNAD1+tCSwffPMeMfbxtqiL9CCu/YpbwvOwXbAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XHXS4JsK9KcSqUL53gxBe0I5Ye7FAJB+vXCaW9PnkTMOBtYLg6FyiBsaS/oJkSBFT
+         JpdUJCFvblA70JyHGQSRfQ5waI7nqiPwsn9+NTiB8KUZXJnMo0yJBXqBtILUWHpFfp
+         qhJ04+7XMoJReY++YMN80dPYrgnHiT2FSjHR+Mvs=
+Date:   Thu, 12 Nov 2020 06:53:25 -0800
+From:   Keith Busch <kbusch@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH 0/2] nvme-pic: improve max I/O queue handling
+Message-ID: <20201112145325.GC2573679@dhcp-10-100-145-180.wdc.com>
+References: <20201112082302.82441-1-schnelle@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112092612.00a19239@gandalf.local.home>
+In-Reply-To: <20201112082302.82441-1-schnelle@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:26:12AM -0500, Steven Rostedt wrote:
-> > FYI, roughly Lockdep is doing:
-> > 
-> >    1. Dependency check
-> >    2. Lock usage correctness check (including RCU)
-> >    3. IRQ related usage correctness check with IRQFLAGS
-> > 
-> > 2 and 3 should be there forever which is subtle and have gotten matured.
-> > But 1 is not. I've been talking about 1. But again, it's not about
-> > replacing it right away but having both for a while. I'm gonna try my
-> > best to make it better.
-> 
-> And I believe lockdep does handle 1. Perhaps show some tangible use case
-> that you want to cover that you do not believe that lockdep can handle. If
-> lockdep cannot handle it, it will show us where lockdep is lacking. If it
-> can handle it, it will educate you on other ways that lockdep can be
-> helpful in your development ;-)
+On Thu, Nov 12, 2020 at 09:23:00AM +0100, Niklas Schnelle wrote:
+> while searching for a bug around zPCI + NVMe IRQ handling on a distro
+> kernel, I got confused around handling of the maximum number
+> of I/O queues in the NVMe driver.
+> I think I groked it in the end but would like to propose the following
+> improvements, that said I'm quite new to this code.
+> I tested both patches on s390x (with a debug config) and x86_64 so
+> with both data center and consumer NVMes.
+> For the second patch, since I don't own a device with the quirk, I tried
+> always returning 1 from nvme_max_io_queues() and confirmed that on my
+> Evo 970 Pro this resulted in about half the performance in a fio test
+> but did not otherwise break things. I couldn't find a reason why
+> allocating only the I/O queues we actually use would be problematic in
+> the code either but I might have missed something of course.
 
-Something I believe lockdep is missing is a way to annotate "This lock
-will be released by a softirq".  If we had lockdep for lock_page(), this
-would be a great case to show off.  The filesystem locks the page, then
-submits it to a device driver.  On completion, the filesystem's bio
-completion handler will be called in softirq context and unlock the page.
+I don't think you missed anything, and the series looks like a
+reasonable cleanup. I suspect the code was left over from a time when we
+didn't allocate the possible queues up-front.
 
-So if the filesystem has another lock which is acquired by the completion
-handler. we could get an ABBA deadlock that lockdep would be unable to see.
-
-There are other similar things; if you look at the remaining semaphore
-users in the kernel, you'll see the general pattern is that they're
-acquired in process context and then released in interrupt context.
-If we had a way to transfer ownership of the semaphore to a generic
-"interrupt context", they could become mutexes and lockdep could check
-that nothing else will cause a deadlock.
+Reviewed-by: Keith Busch <kbusch@kernel.org>
