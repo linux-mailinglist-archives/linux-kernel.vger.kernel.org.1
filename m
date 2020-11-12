@@ -2,130 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893C52B0CDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3452B0CE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgKLSlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgKLSlL (ORCPT
+        id S1726514AbgKLSnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:43:17 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48820 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgKLSnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:41:11 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E8AC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 10:41:09 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so7058919wrr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 10:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/FQifl2y/j+iEx8t0YMS3kt6V2EmV6dxDAOzQF7gB4U=;
-        b=vEOZkbx2w3SP32uR8e7Lzk7IQgr/PYOT3VEpmgSXA6fjRucCT1UModuNyvGUR7TyNp
-         6Id+d9D9Wow+23Fhev03aSd1zuLQ7OubdKGUxxb+Qlooa4H+7KdEifb+K/nQiIPRgFWW
-         8dugz9HgIM0b5BWbG9VCZLObhygBFDcEeSQDqjsXYatkYn7sPzrz/8HbC+L/+iWpEW+p
-         lNH6/FB8yscIzl4M9WGItzRqXNv0+QQ7t14+bYS0mYiDFqWql80zc3Z9snZtlh37YSza
-         a/XrIUY24oDAzHF0jnBmWsFu3z2WbvFUS1QXQMU8fk01ww/XyWC6mrb5HuuAE5fCfuKa
-         0l5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/FQifl2y/j+iEx8t0YMS3kt6V2EmV6dxDAOzQF7gB4U=;
-        b=oU0KrWRDrBeBeCnjvCMppKYM6GV8xL6EuwOM2WsKg1ApDnDZN232xurWISyo/0WWvJ
-         JU1pvwxTSZrNsVnHt4mzwVX60h0eObrjRyBV/uAOf7xl/arY1foZlel9EBu8KjJt1uYd
-         +v+7MkDv644GCZQm64sk83bli13bUb0hEIn6IGHw7cdbDwjHKUGGBIeZOcUv2zo/K5mD
-         vIPrwCowv/KE7iPQ/KFZk1AI4dRztfH0FjdD3blrUsIU6g98m3Ep7FQVJIrSM+tHJNoQ
-         XZ2RzZapyCye+VOJ8dnu3n8wWmsHQjs1WnbgwX/4xIi12lZqW2o5voOrioEGicHBuW/g
-         YDTA==
-X-Gm-Message-State: AOAM531E/NxpqHrwSC4sbFQDbBdllbzrbYXh0VQpLPZ/l8W6TVxEnH6h
-        Sg79PZczeWlVOWQUBmQDByJwYgQROTrDxw==
-X-Google-Smtp-Source: ABdhPJxLHM0lzwc//56xGAcFucAqUl4YPJ5KF54JOwq+cS0oQFQF0p52S3RgUWHt79xj+PKP0ZRRmQ==
-X-Received: by 2002:adf:e60e:: with SMTP id p14mr1085379wrm.188.1605206468284;
-        Thu, 12 Nov 2020 10:41:08 -0800 (PST)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id j127sm8221850wma.31.2020.11.12.10.41.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Nov 2020 10:41:07 -0800 (PST)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, sudaraja@codeaurora.org,
-        pratikp@codeaurora.org, lmark@codeaurora.org,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Subject: [PATCH] mm/page_owner: Record timestamp and pid
-Date:   Thu, 12 Nov 2020 20:41:06 +0200
-Message-Id: <20201112184106.733-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        Thu, 12 Nov 2020 13:43:17 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 94E04803017D;
+        Thu, 12 Nov 2020 18:43:11 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id a0u_gBbCrOP8; Thu, 12 Nov 2020 21:43:09 +0300 (MSK)
+Date:   Thu, 12 Nov 2020 21:43:08 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 18/18] arm64: dts: qcom: Harmonize DWC USB3 DT nodes
+ name
+Message-ID: <20201112184308.7xrrpji257ufivx4@mobilestation>
+References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
+ <20201111091552.15593-19-Sergey.Semin@baikalelectronics.ru>
+ <20201111160844.GJ173948@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201111160844.GJ173948@builder.lan>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Mark <lmark@codeaurora.org>
+Hello Bjorn
 
-Collect the time for each allocation recorded in page owner so that
-allocation "surges" can be measured.
+On Wed, Nov 11, 2020 at 10:08:44AM -0600, Bjorn Andersson wrote:
+> On Wed 11 Nov 03:15 CST 2020, Serge Semin wrote:
+> 
+> > In accordance with the DWC USB3 bindings the corresponding node
+> > name is suppose to comply with the Generic USB HCD DT schema, which
+> > requires the USB nodes to have the name acceptable by the regexp:
+> > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> > named.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
 
-Record the pid for each allocation recorded in page owner so that
-the source of allocation "surges" can be better identified.
+> Given the risk of merge conflicts with this patch I would prefer to take
+> it through the qcom dts tree. Please let me know when patch 17 has been
+> merged (or if you prefer that I take it through the same path).
 
-Signed-off-by: Liam Mark <lmark@codeaurora.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- mm/page_owner.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+I don't really know through what path the patch was supposed to find
+its way into the kernel. Since I haven't got a public repo then for me a
+preferred solution would be to merge this patch and the other by means
+of the qcom tree.
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index b735a8eafcdb..e6dc52db5ba5 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -10,6 +10,7 @@
- #include <linux/migrate.h>
- #include <linux/stackdepot.h>
- #include <linux/seq_file.h>
-+#include <linux/sched/clock.h>
- 
- #include "internal.h"
- 
-@@ -25,6 +26,8 @@ struct page_owner {
- 	gfp_t gfp_mask;
- 	depot_stack_handle_t handle;
- 	depot_stack_handle_t free_handle;
-+	u64 ts_nsec;
-+	int pid;
- };
- 
- static bool page_owner_enabled = false;
-@@ -172,6 +175,8 @@ static inline void __set_page_owner_handle(struct page *page,
- 		page_owner->order = order;
- 		page_owner->gfp_mask = gfp_mask;
- 		page_owner->last_migrate_reason = -1;
-+		page_owner->pid = current->pid;
-+		page_owner->ts_nsec = local_clock();
- 		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
- 		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
- 
-@@ -236,6 +241,8 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
- 	new_page_owner->last_migrate_reason =
- 		old_page_owner->last_migrate_reason;
- 	new_page_owner->handle = old_page_owner->handle;
-+	new_page_owner->pid = old_page_owner->pid;
-+	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
- 
- 	/*
- 	 * We don't clear the bit on the oldpage as it's going to be freed
-@@ -349,9 +356,10 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
- 		return -ENOMEM;
- 
- 	ret = snprintf(kbuf, count,
--			"Page allocated via order %u, mask %#x(%pGg)\n",
-+			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns\n",
- 			page_owner->order, page_owner->gfp_mask,
--			&page_owner->gfp_mask);
-+			&page_owner->gfp_mask, page_owner->pid,
-+			page_owner->ts_nsec);
- 
- 	if (ret >= count)
- 		goto err;
+Thanks
+-Sergey
+
+> 
+> Regards,
+> Bjorn
+> 
+> > ---
+> >  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
+> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
+> >  arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
+> >  arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
+> >  arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
+> >  arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
+> >  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
+> >  arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
+> >  arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
+> >  9 files changed, 14 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+> > index defcbd15edf9..34e97da98270 100644
+> > --- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+> > @@ -1064,7 +1064,7 @@ &usb2 {
+> >  	status = "okay";
+> >  	extcon = <&usb2_id>;
+> >  
+> > -	dwc3@7600000 {
+> > +	usb@7600000 {
+> >  		extcon = <&usb2_id>;
+> >  		dr_mode = "otg";
+> >  		maximum-speed = "high-speed";
+> > @@ -1075,7 +1075,7 @@ &usb3 {
+> >  	status = "okay";
+> >  	extcon = <&usb3_id>;
+> >  
+> > -	dwc3@6a00000 {
+> > +	usb@6a00000 {
+> >  		extcon = <&usb3_id>;
+> >  		dr_mode = "otg";
+> >  	};
+> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > index 96a5ec89b5f0..1129062a4ca1 100644
+> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > @@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
+> >  			resets = <&gcc GCC_USB0_BCR>;
+> >  			status = "disabled";
+> >  
+> > -			dwc_0: dwc3@8a00000 {
+> > +			dwc_0: usb@8a00000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x8a00000 0xcd00>;
+> >  				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
+> > @@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
+> >  			resets = <&gcc GCC_USB1_BCR>;
+> >  			status = "disabled";
+> >  
+> > -			dwc_1: dwc3@8c00000 {
+> > +			dwc_1: usb@8c00000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x8c00000 0xcd00>;
+> >  				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+> > diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > index 9951286db775..66b6d2f0a093 100644
+> > --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > @@ -1767,7 +1767,7 @@ usb3: usb@6af8800 {
+> >  			power-domains = <&gcc USB30_GDSC>;
+> >  			status = "disabled";
+> >  
+> > -			dwc3@6a00000 {
+> > +			usb@6a00000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x06a00000 0xcc00>;
+> >  				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
+> > @@ -1978,7 +1978,7 @@ usb2: usb@76f8800 {
+> >  			power-domains = <&gcc USB30_GDSC>;
+> >  			status = "disabled";
+> >  
+> > -			dwc3@7600000 {
+> > +			usb@7600000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x07600000 0xcc00>;
+> >  				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
+> > diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
+> > index c45870600909..7cc7897e7b83 100644
+> > --- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
+> > @@ -1678,7 +1678,7 @@ usb3: usb@a8f8800 {
+> >  
+> >  			resets = <&gcc GCC_USB_30_BCR>;
+> >  
+> > -			usb3_dwc3: dwc3@a800000 {
+> > +			usb3_dwc3: usb@a800000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x0a800000 0xcd00>;
+> >  				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
+> > diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
+> > index 6422cf9d5855..88d7b7a53743 100644
+> > --- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
+> > @@ -337,7 +337,7 @@ &usb2_phy_sec {
+> >  &usb3 {
+> >  	status = "okay";
+> >  
+> > -	dwc3@7580000 {
+> > +	usb@7580000 {
+> >  		dr_mode = "host";
+> >  	};
+> >  };
+> > diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
+> > index b654b802e95c..f6ef17553064 100644
+> > --- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
+> > @@ -544,7 +544,7 @@ usb3: usb@7678800 {
+> >  			assigned-clock-rates = <19200000>, <200000000>;
+> >  			status = "disabled";
+> >  
+> > -			dwc3@7580000 {
+> > +			usb@7580000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x07580000 0xcd00>;
+> >  				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+> > @@ -573,7 +573,7 @@ usb2: usb@79b8800 {
+> >  			assigned-clock-rates = <19200000>, <133333333>;
+> >  			status = "disabled";
+> >  
+> > -			dwc3@78c0000 {
+> > +			usb@78c0000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0x078c0000 0xcc00>;
+> >  				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > index d46b3833e52f..bbc9a2b5c570 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > @@ -2673,7 +2673,7 @@ usb_1: usb@a6f8800 {
+> >  					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3>;
+> >  			interconnect-names = "usb-ddr", "apps-usb";
+> >  
+> > -			usb_1_dwc3: dwc3@a600000 {
+> > +			usb_1_dwc3: usb@a600000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0 0x0a600000 0 0xe000>;
+> >  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> > diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > index 2884577dcb77..ca20e4e91f61 100644
+> > --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > @@ -3573,7 +3573,7 @@ usb_1: usb@a6f8800 {
+> >  					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_0>;
+> >  			interconnect-names = "usb-ddr", "apps-usb";
+> >  
+> > -			usb_1_dwc3: dwc3@a600000 {
+> > +			usb_1_dwc3: usb@a600000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0 0x0a600000 0 0xcd00>;
+> >  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> > @@ -3621,7 +3621,7 @@ usb_2: usb@a8f8800 {
+> >  					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_1>;
+> >  			interconnect-names = "usb-ddr", "apps-usb";
+> >  
+> > -			usb_2_dwc3: dwc3@a800000 {
+> > +			usb_2_dwc3: usb@a800000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0 0x0a800000 0 0xcd00>;
+> >  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > index b86a7ead3006..167d14dda974 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > @@ -846,7 +846,7 @@ usb_1: usb@a6f8800 {
+> >  
+> >  			resets = <&gcc GCC_USB30_PRIM_BCR>;
+> >  
+> > -			usb_1_dwc3: dwc3@a600000 {
+> > +			usb_1_dwc3: usb@a600000 {
+> >  				compatible = "snps,dwc3";
+> >  				reg = <0 0x0a600000 0 0xcd00>;
+> >  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> > -- 
+> > 2.28.0
+> > 
