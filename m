@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DD52B0BA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17782B0B9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKLRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:51:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726322AbgKLRv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726360AbgKLRv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 12 Nov 2020 12:51:26 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E7842085B;
-        Thu, 12 Nov 2020 17:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605203485;
-        bh=OLDD4EslDRYUhNcaiXD8psJSW2hp6UYq3/flGuai7Ps=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YoyE5rtRWnPneuzvVz828ALIOpAxLtYSNp9eFg8mw/+ZbcBEDW6BnWkKOV9Rq3cHi
-         t3/QOY4u+yCCIRD3HoH6DC1MnWKpAGWUzuJqXvAq4+tYrkXNRvQJQ5mwwb9cyrCq2U
-         rAf31Rg3zdJXp/POFi/+MfkV5rSUbOLeoc1f84KU=
-Date:   Thu, 12 Nov 2020 09:51:24 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     <jiri@nvidia.com>, <davem@davemloft.net>, <idosch@mellanox.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] devlink: Add missing genlmsg_cancel() in
- devlink_nl_sb_port_pool_fill()
-Message-ID: <20201112095124.660733a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201111135853.63997-1-wanghai38@huawei.com>
-References: <20201111135853.63997-1-wanghai38@huawei.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgKLRvZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:51:25 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D06C0613D1;
+        Thu, 12 Nov 2020 09:51:25 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i7so4813208pgh.6;
+        Thu, 12 Nov 2020 09:51:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EywCTDkeiYnus//+DkG9p7x5uOXcjsUoW/CpBJQjGh4=;
+        b=V5FRj9dv8LZyKY//w8MnGopC83oSkh3/f67EKu2H49jcmyUNYveReXkMJBzGvyFd4q
+         mKcvNnhVICd/UhAL/HH1jUpFUyrBz0394onSteeXHeV50i9Ez+UPXVRJ/ggkQfCzqgGm
+         kZTUJSpVayCtwC4cSeh7i9ajykTWfmMo/ei8+RErGCyLv9pJdlXF4oU6ddtDfkVU1QZ3
+         C/k7/c7VYeacSw8c3j9jFOs+fpuV13Cto+tr+PxtXt9xpKbVtuE00030bzHITnLQ8DGM
+         vefvzjW/M2wcH5x0dDt9q//PluUhKPH7ylVjCzGUXYm7NdXATfhWLzirDL/eJBFpUpwn
+         k6TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EywCTDkeiYnus//+DkG9p7x5uOXcjsUoW/CpBJQjGh4=;
+        b=e28/RxZ+ARc7dvK3ScOb7cdlXt99THlRc2eehygJRH565Wb3mbY3N4MsyeplAosISQ
+         f33vgt+HuvDTiXul+CDzKFkcPtBRfWosQ9eSPJKDUqCXjSKPa9Iv955b8062n3HysKas
+         0aYPsX3avOIz6Zpz4iP/ft9xqv206uf/+qaC9TOnLo6yaQgTaKRkjt0P+ONOD9mobpYp
+         eJR8ndYvN/wCN5lY06RxFaElbhxdf/ZzjXwWlwtL4UwIifZpYNHfgZpLNfdeNvKtB0w9
+         e06a9Mmzn2spHxiPvO9v5wRqFe1GANtXlrJNbUANj4nnFHbGWrxiOg9BvYiGQVU8K33F
+         dqGQ==
+X-Gm-Message-State: AOAM533fe6X4eJ5dfHMAQ4HA+d9OGTwRatLeHY4rlLXPV9lTSk0sCVh/
+        BLWnIlefQZMwNtkuBXeWDG3PE151O1eInNO/ehk=
+X-Google-Smtp-Source: ABdhPJxXX/B6x0+15Jl1eMPJKowvsEayj1f13ku4DPhKXTBbwSAC5XSxvuq5WfIMJ/rZXp3ScqiK3LDy0pqYaPrr47I=
+X-Received: by 2002:a17:90b:fc6:: with SMTP id gd6mr287022pjb.181.1605203485218;
+ Thu, 12 Nov 2020 09:51:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201112163630.17177-1-nsaenzjulienne@suse.de> <20201112163630.17177-2-nsaenzjulienne@suse.de>
+In-Reply-To: <20201112163630.17177-2-nsaenzjulienne@suse.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 12 Nov 2020 19:52:14 +0200
+Message-ID: <CAHp75Vf9E7UWVDMs=eRjLjoSN6SVOWw9thNdnR8ruCL6GmY7JQ@mail.gmail.com>
+Subject: Re: [PATCH v4 01/11] firmware: raspberrypi: Keep count of all consumers
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-pwm@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        linux-input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 21:58:53 +0800 Wang Hai wrote:
-> If sb_occ_port_pool_get() failed in devlink_nl_sb_port_pool_fill(),
-> msg should be canceled by genlmsg_cancel().
-> 
-> Fixes: df38dafd2559 ("devlink: implement shared buffer occupancy monitoring interface")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->  net/core/devlink.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/devlink.c b/net/core/devlink.c
-> index a932d95be798..83b4e7f51b35 100644
-> --- a/net/core/devlink.c
-> +++ b/net/core/devlink.c
-> @@ -1447,8 +1447,10 @@ static int devlink_nl_sb_port_pool_fill(struct sk_buff *msg,
->  
->  		err = ops->sb_occ_port_pool_get(devlink_port, devlink_sb->index,
->  						pool_index, &cur, &max);
-> -		if (err && err != -EOPNOTSUPP)
-> +		if (err && err != -EOPNOTSUPP) {
-> +			genlmsg_cancel(msg, hdr);
->  			return err;
+On Thu, Nov 12, 2020 at 6:40 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> When unbinding the firmware device we need to make sure it has no
+> consumers left. Otherwise we'd leave them with a firmware handle
+> pointing at freed memory.
+>
+> Keep a reference count of all consumers and introduce rpi_firmware_put()
+> which will permit automatically decrease the reference count upon
+> unbinding consumer drivers.
 
-I guess the driver would have to return -EMSGSIZE for this to matter,
-which is quite unlikely but we should indeed fix.
+...
 
-Still, returning in the middle of the function with an epilogue is what
-got use here in the first place, so please use a goto. E.g. like this:
+>  /**
+> - * rpi_firmware_get - Get pointer to rpi_firmware structure.
+>   * @firmware_node:    Pointer to the firmware Device Tree node.
+>   *
+> + * The reference to rpi_firmware has to be released with rpi_firmware_put().
+> + *
+>   * Returns NULL is the firmware device is not ready.
+>   */
+>  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
+>  {
+>         struct platform_device *pdev = of_find_device_by_node(firmware_node);
+> +       struct rpi_firmware *fw;
+>
+>         if (!pdev)
+>                 return NULL;
+>
+> -       return platform_get_drvdata(pdev);
+> +       fw = platform_get_drvdata(pdev);
+> +       if (!fw)
+> +               return NULL;
+> +
+> +       if (!kref_get_unless_zero(&fw->consumers))
+> +               return NULL;
+
+Don't we have a more traditional way of doing this, i.e.
+try_module_get() coupled with get_device() ?
+
+> +       return fw;
+>  }
 
 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index a932d95be798..be8ee96ad188 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -1448,7 +1448,7 @@ static int devlink_nl_sb_port_pool_fill(struct sk_buff *msg,
-                err = ops->sb_occ_port_pool_get(devlink_port, devlink_sb->index,
-                                                pool_index, &cur, &max);
-                if (err && err != -EOPNOTSUPP)
--                       return err;
-+                       goto sb_occ_get_failure;
-                if (!err) {
-                        if (nla_put_u32(msg, DEVLINK_ATTR_SB_OCC_CUR, cur))
-                                goto nla_put_failure;
-@@ -1461,8 +1461,10 @@ static int devlink_nl_sb_port_pool_fill(struct sk_buff *msg,
-        return 0;
- 
- nla_put_failure:
-+       err = -EMSGSIZE;
-+sb_occ_get_failure:
-        genlmsg_cancel(msg, hdr);
--       return -EMSGSIZE;
-+       return err;
- }
- 
- static int devlink_nl_cmd_sb_port_pool_get_doit(struct sk_buff *skb,
-
+-- 
+With Best Regards,
+Andy Shevchenko
