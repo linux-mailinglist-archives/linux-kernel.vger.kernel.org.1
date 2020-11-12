@@ -2,181 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2315F2B0A42
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B742B0A4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbgKLQkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:40:00 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36686 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728899AbgKLQkA (ORCPT
+        id S1728956AbgKLQlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728263AbgKLQlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:40:00 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACGdsNH028587;
-        Thu, 12 Nov 2020 10:39:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605199194;
-        bh=uG3pGeJtn/GA4ZpaaCR+z7IOHmsFG0YkeuQj4RKf7sw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=xMUaaUcCoEGuR00W+glOX5N4SQwj7BN0NLgCfp6FI54uY9EpxJ/ucgNjFdkOCtO1c
-         sSjZDl7Q1A1a14uU1XFwmcBQM7ssUGmL5PewgOPv+vfaarQZSVthYVmYAV1/XOkhea
-         vfWtVaDh/z5ompsoP/06UAyI9Uql9d2iMjDLAt9w=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACGdsOU050133
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 10:39:54 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 10:39:53 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 10:39:53 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACGdr4v045918;
-        Thu, 12 Nov 2020 10:39:53 -0600
-Date:   Thu, 12 Nov 2020 10:39:53 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Faiz Abbas <faiz_abbas@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <t-kristo@ti.com>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-j7200-main: Add gpio nodes in
- main domain
-Message-ID: <20201112163953.soia5cje4ry42ujf@kahuna>
-References: <20201102191120.20380-1-faiz_abbas@ti.com>
- <20201102191120.20380-2-faiz_abbas@ti.com>
+        Thu, 12 Nov 2020 11:41:31 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CA5C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:41:31 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id g15so4382534qtq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:41:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=k1nxBPerHo0opWxBOg1iC4tCjytAR1tnAmyGb9xHH/M=;
+        b=lX8a8EkakHNfH0gZYTjzQzld8uzEoqJCxSfCQ4OqTjeKIJSYiAdaOX4ju6X6g9kUUO
+         RF4S2RPl7R0HtiAxZ45/vOfdVx0KvZK97bbr3uKu8O3DzHND55jt2Mc9gRnnRIRVa5Le
+         uIJJbtg+jQ4EZfVCa8Oj3H9d5vQbh6WGAPZ24d7QTlv4qzpXumbpSYcHeSZ+x2awE/ov
+         8LLx6nosw7m4FwZEiuLNyOPihO1HdacOxEqQql3lf+Bl1B4iAdd7EQRJHYJ3fE9EuCT0
+         0zGyuL5DKegpQHgoCn1LrGZulu/lAYNrU/V2HpT/WpBExYpuxDppY6JDMtD3waasy1DF
+         WSPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=k1nxBPerHo0opWxBOg1iC4tCjytAR1tnAmyGb9xHH/M=;
+        b=k2PGaqSBk60zQ9VfPlEy77gy9kliCXQDAX/PtG9ZucT1DoFjBk/DPDRCWHuFpSyBe6
+         HCX2FljxD/xbbisO7JbRyfXTuhfNuhscofXMf8cu4ldkMHs8MAyL1Ucs3yGiYkjlFSjG
+         sU6XHdZ2bAhcE+9/8QJnDzJTuv9tCjWAYqUWxMp5q6oIcBexqBqI6tjA9B2Hmux8uUGN
+         PanF2pILf1B/CuB7MxBvyjGeqBsXVQCw9KS7WC/gfIBZS90Uk14CKgDRywoJV+ndR1md
+         xQ0hzp2t7uLuOkMPFtn+DsdTTUpGzgDHWyZ6+qCa6CeS3u46WqxjjpM7mxa3GHXeECal
+         3bxQ==
+X-Gm-Message-State: AOAM5310OyKypNYKI0FGajxX0LWpUQ2qD7a+K43aqFXCpAK+h6IQ92Zf
+        HNNShlGXv7+hBa+5u5somMwQdnfh5VQl7iBo5iSIAw==
+X-Google-Smtp-Source: ABdhPJxWrhPUcsJ8kMANXx3Rn2e8zWM2nnBNFFCtQUozkbcQQO7DjFpYPzTz7xSEkXo98tCCcUT8mHsqAezcWQ43NMI=
+X-Received: by 2002:a05:622a:291:: with SMTP id z17mr18923qtw.180.1605199290292;
+ Thu, 12 Nov 2020 08:41:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201102191120.20380-2-faiz_abbas@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1605046192.git.andreyknvl@google.com> <bd6825832c0cb376fc68ad61ffec6d829401ed0e.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=XpB5ZQagAm6bqR1z+6hWdmk_shH0x8ShAx0qpmjMsp5Q@mail.gmail.com> <CANpmjNMaDkKBtWF8y22rhc6bFNN0CrXgfGNKXBLPvz3c2wd7rA@mail.gmail.com>
+In-Reply-To: <CANpmjNMaDkKBtWF8y22rhc6bFNN0CrXgfGNKXBLPvz3c2wd7rA@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 12 Nov 2020 17:41:18 +0100
+Message-ID: <CAG_fn=VS7afjd4mXHvc+FcK=cnQC=SjEOJL6phkFLSWxP8+uaw@mail.gmail.com>
+Subject: Re: [PATCH v9 44/44] kselftest/arm64: Check GCR_EL1 after context switch
+To:     Marco Elver <elver@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 00:41-20201103, Faiz Abbas wrote:
-> There are 4 instances of gpio modules in main domain:
-> 	gpio0, gpio2, gpio4 and gpio6
-> 
-> Groups are created to provide protection between different processor virtual
-> worlds. Each of these modules I/O pins are muxed within the group. Exactly
-> one module can be selected to control the corresponding pin by selecting it
-> in the pad mux configuration registers.
-Could you check with checkpatch --strict please?
+On Thu, Nov 12, 2020 at 5:09 PM Marco Elver <elver@google.com> wrote:
+>
+> On Thu, 12 Nov 2020 at 16:59, Alexander Potapenko <glider@google.com> wro=
+te:
+> >
+> > On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.co=
+m> wrote:
+> > >
+> > > From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > >
+> > > This test is specific to MTE and verifies that the GCR_EL1 register
+> > > is context switched correctly.
+> > >
+> > > It spawn 1024 processes and each process spawns 5 threads. Each threa=
+d
+> >
+> > Nit: "spawns"
+> >
+> >
+> > > +       srand(time(NULL) ^ (pid << 16) ^ (tid << 16));
+> > > +
+> > > +       prctl_tag_mask =3D rand() % 0xffff;
+> >
+> > Nit: if you want values between 0 and 0xffff you probably want to use
+> > bitwise AND.
+>
+> Another question would be, is the max here meant to be 0xffff or
+> 0xffff-1. Because, as-is now, it's 0xffff-1. Only one of them has a
+> trivial conversion to bitwise AND ( x % 2^n =3D=3D x & (2^n - 1) ).
 
-I see:
+Yes, that is basically what I meant, assuming that Vincenzo wanted the
+max to be 0xffff
 
-WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
+--=20
+Alexander Potapenko
+Software Engineer
 
-> 
-> This group pins out 69 lines (5 banks).
-> 
-> Add DT modes for each module instance in the main domain.
-> 
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 68 +++++++++++++++++++++++
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
-dtbs_check: we added:
-arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@600000: Missing #address-cells in interrupt provider
-arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@610000: Missing #address-cells in interrupt provider
-arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@620000: Missing #address-cells in interrupt provider
-arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@630000: Missing #address-cells in interrupt provider
-
->  1 file changed, 68 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> index 72d6496e88dd..c22ef2efa531 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> @@ -446,4 +446,72 @@
->  			dr_mode = "otg";
->  		};
->  	};
-> +
-> +	main_gpio0: gpio@600000 {
-> +		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-> +		reg = <0x00 0x00600000 0x00 0x100>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-parent = <&main_gpio_intr>;
-> +		interrupts = <145>, <146>, <147>, <148>,
-> +			     <149>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		ti,ngpio = <69>;
-> +		ti,davinci-gpio-unbanked = <0>;
-> +		power-domains = <&k3_pds 105 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 105 0>;
-> +		clock-names = "gpio";
-> +	};
-> +
-> +	main_gpio2: gpio@610000 {
-> +		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-> +		reg = <0x00 0x00610000 0x00 0x100>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-parent = <&main_gpio_intr>;
-> +		interrupts = <154>, <155>, <156>, <157>,
-> +			     <158>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		ti,ngpio = <69>;
-> +		ti,davinci-gpio-unbanked = <0>;
-> +		power-domains = <&k3_pds 107 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 107 0>;
-> +		clock-names = "gpio";
-> +	};
-> +
-> +	main_gpio4: gpio@620000 {
-> +		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-> +		reg = <0x00 0x00620000 0x00 0x100>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-parent = <&main_gpio_intr>;
-> +		interrupts = <163>, <164>, <165>, <166>,
-> +			     <167>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		ti,ngpio = <69>;
-> +		ti,davinci-gpio-unbanked = <0>;
-> +		power-domains = <&k3_pds 109 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 109 0>;
-> +		clock-names = "gpio";
-> +	};
-> +
-> +	main_gpio6: gpio@630000 {
-> +		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-> +		reg = <0x00 0x00630000 0x00 0x100>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-parent = <&main_gpio_intr>;
-> +		interrupts = <172>, <173>, <174>, <175>,
-> +			     <176>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		ti,ngpio = <69>;
-> +		ti,davinci-gpio-unbanked = <0>;
-> +		power-domains = <&k3_pds 111 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 111 0>;
-> +		clock-names = "gpio";
-> +	};
->  };
-> -- 
-> 2.17.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
