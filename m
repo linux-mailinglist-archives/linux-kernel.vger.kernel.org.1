@@ -2,379 +2,622 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF332B0ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2022A2B0ACF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgKLQ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:56:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43338 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728794AbgKLQ4x (ORCPT
+        id S1726005AbgKLQ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgKLQ63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:56:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605200210;
+        Thu, 12 Nov 2020 11:58:29 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD18CC0613D1;
+        Thu, 12 Nov 2020 08:58:28 -0800 (PST)
+Date:   Thu, 12 Nov 2020 17:58:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605200306;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wYP9Gq+ts7pzjErccComK+H3r9U6J/KV+gx7+NzTNxw=;
-        b=LHVv5fNsPFT48crBfIrlgDW2BYtA3E/8Rk7HdzpBgy98HtklXwZRugAy7YHzkc0GL7TBmw
-        MUt+hy9in+E3D/U/sNGp8nVQHnGKKcF6tdL2eFv0LHcTrXEZj/+vNdmKwgRNZ3FvZWTehq
-        rN1niKl6mleppgFx3zsk6r0AGYt+LbQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-rM8AiO2jN1ubWzd14-HmwA-1; Thu, 12 Nov 2020 11:56:46 -0500
-X-MC-Unique: rM8AiO2jN1ubWzd14-HmwA-1
-Received: by mail-wr1-f71.google.com with SMTP id u1so2216761wri.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:56:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=wYP9Gq+ts7pzjErccComK+H3r9U6J/KV+gx7+NzTNxw=;
-        b=s0B+VTIWrRK12pGndAJ7OLCT7fACmr8C2SI8Lk+Yf+f+V1dbi7Dolcdo66yA/X7zoj
-         d5EX30LbvCIIDOPoWpMM5NJC3vvcdfuW7VoySec6OaeSjUi56MQw8OgPB11fBjRoRhJG
-         QFIbZT9LfPQApsO3QEG+Qj/QliCBg87+sj7VJ/gaMCzIcWZPvEvVd+bfR3apuhD2a4tZ
-         fE0ZPezIS8nmo30oGxXMRioQY6qam9N21Zl4KVKhuQFmYxvaDjyYulzdcQxAzz/KCgyY
-         H26WcFOx+qH5KlxjXUftQwOY6Pmdv9JGp67DZQ1GfBzetdigOLglJc45bc7PfWVdnDmS
-         xQmQ==
-X-Gm-Message-State: AOAM5316U/59dLavYty80xevImKtfisGcDNvchJA9pSCtwKGFzRHfWuA
-        cjioTe12wwHUlHvqZpA02m9OubefuxSibO62gr0yFsrdvZ749izGozkMwfaGWDyxq+9wszm5oI3
-        ScIhIiHafujh1zcXRwHXMnkxP
-X-Received: by 2002:adf:c443:: with SMTP id a3mr510007wrg.249.1605200203894;
-        Thu, 12 Nov 2020 08:56:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6zhpK0qox59X6e8JQyr5bppOI0Wy0lYHwipyzYIWWWvgR2UM9kbCVk5xgd/kpNhNWxHp2QQ==
-X-Received: by 2002:adf:c443:: with SMTP id a3mr509971wrg.249.1605200203625;
-        Thu, 12 Nov 2020 08:56:43 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g131sm7418395wma.35.2020.11.12.08.56.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 08:56:42 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 17/17] x86/hyperv: handle IO-APIC when running as root
-In-Reply-To: <20201105165814.29233-18-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-18-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 17:56:41 +0100
-Message-ID: <87v9eawm2e.fsf@vitty.brq.redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=YZBfieHAInTJsx8tkl1n9WkrjhgE0X9LJu/TvBMCScw=;
+        b=BYGTW4n+65RDYJNJ0o2tAR+E9azKElCOX3WugBeQj4eIiPdzYMUUEqrlatPGfuBeAOdeCo
+        dTKtB0fwRHsBo6rMGUlZSdcEi3hxCbhyx1NDdTpbxyC/7yB9N6acVERYHYNJwfJ/Mp1P5G
+        96fpD8Lh2d45tF59tIS3S1ixJZl6yswNd2W+P7ExJHvEg3lTyeybfffcUP8RkQ3jC4axyq
+        Q+i6WJeGTimGNRUys3cJJGC1N0fYGQMK8BqdGjIUA9YLXlugGagnpMWkHW3WsRT0TALbnc
+        ybZwV2lH8ZEgXMSHT6N+UBufCiHKfYmXV+QcC+EtDug4YJR1h9sR4wlsTvo4tw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605200306;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=YZBfieHAInTJsx8tkl1n9WkrjhgE0X9LJu/TvBMCScw=;
+        b=+ZuiAfRwzNEVcCdkM5A/kNpeE0dnyJAxPyAeMG0uMUxnwzXz9SawNGFAAjU+nI/IXEr5Am
+        EMtHy4hZta6YSmCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.10-rc3-rt7
+Message-ID: <20201112165824.s56wsbzsovunzwwg@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+Dear RT folks!
 
-> Just like MSI/MSI-X, IO-APIC interrupts are remapped by Microsoft
-> Hypervisor when Linux runs as the root partition. Implement an IRQ chip
-> to handle mapping and unmapping of IO-APIC interrupts.
->
-> Use custom functions for mapping and unmapping ACPI GSIs. They will
-> issue Microsoft Hypervisor specific hypercalls on top of the native
-> routines.
->
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
->  arch/x86/hyperv/hv_init.c   |  13 +++
->  arch/x86/hyperv/irqdomain.c | 226 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 239 insertions(+)
->
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index a46b817b5b2a..2c2189832da7 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -267,10 +267,23 @@ static int hv_cpu_die(unsigned int cpu)
->  	return 0;
->  }
->  
-> +int hv_acpi_register_gsi(struct device *dev, u32 gsi, int trigger, int polarity);
-> +void hv_acpi_unregister_gsi(u32 gsi);
-> +
-> +extern int (*native_acpi_register_gsi)(struct device *dev, u32 gsi, int trigger, int polarity);
-> +extern void (*native_acpi_unregister_gsi)(u32 gsi);
-> +
->  static int __init hv_pci_init(void)
->  {
->  	int gen2vm = efi_enabled(EFI_BOOT);
->  
-> +	if (hv_root_partition) {
-> +		native_acpi_register_gsi = __acpi_register_gsi;
-> +		native_acpi_unregister_gsi = __acpi_unregister_gsi;
-> +		__acpi_register_gsi = hv_acpi_register_gsi;
-> +		__acpi_unregister_gsi = hv_acpi_unregister_gsi;
-> +	}
-> +
->  	/*
->  	 * For Generation-2 VM, we exit from pci_arch_init() by returning 0.
->  	 * The purpose is to suppress the harmless warning:
-> diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-> index 80109e3cbf8f..ae9a728589a4 100644
-> --- a/arch/x86/hyperv/irqdomain.c
-> +++ b/arch/x86/hyperv/irqdomain.c
-> @@ -9,6 +9,8 @@
->  #include <linux/pci.h>
->  #include <linux/irq.h>
->  #include <asm/mshyperv.h>
-> +#include <asm/apic.h>
-> +#include <asm/io_apic.h>
->  
->  struct rid_data {
->  	struct pci_dev *bridge;
-> @@ -328,3 +330,227 @@ struct irq_domain * __init hv_create_pci_msi_domain(void)
->  	return d;
->  }
->  
-> +/* Copied from io_apic.c */
-> +union entry_union {
-> +	struct { u32 w1, w2; };
-> +	struct IO_APIC_route_entry entry;
-> +};
-> +
-> +static int hv_unmap_ioapic_interrupt(int gsi)
-> +{
-> +	union hv_device_id device_id;
-> +	int ioapic, ioapic_id;
-> +	u8 ioapic_pin;
-> +	struct IO_APIC_route_entry ire;
-> +	union entry_union eu;
-> +	struct hv_interrupt_entry entry;
-> +
-> +	ioapic = mp_find_ioapic(gsi);
-> +	ioapic_pin = mp_find_ioapic_pin(ioapic, gsi);
-> +	ioapic_id = mpc_ioapic_id(ioapic);
-> +	ire = ioapic_read_entry(ioapic, ioapic_pin);
-> +
-> +	eu.entry = ire;
-> +
-> +	/*
-> +	 * Polarity may have been set by us, but Hyper-V expects the exact same
-> +	 * entry. See the mapping routine.
-> +	 */
-> +	eu.entry.polarity = 0;
-> +
-> +	memset(&entry, 0, sizeof(entry));
-> +	entry.source = HV_INTERRUPT_SOURCE_IOAPIC;
-> +	entry.ioapic_rte.low_uint32 = eu.w1;
-> +	entry.ioapic_rte.high_uint32 = eu.w2;
-> +
-> +	device_id.as_uint64 = 0;
-> +	device_id.device_type = HV_DEVICE_TYPE_IOAPIC;
-> +	device_id.ioapic.ioapic_id = (u8)ioapic_id;
-> +
-> +	return hv_unmap_interrupt(device_id.as_uint64, &entry) & HV_HYPERCALL_RESULT_MASK;
-> +}
-> +
-> +static int hv_map_ioapic_interrupt(int ioapic_id, int trigger, int vcpu, int vector,
-> +		struct hv_interrupt_entry *out_entry)
-> +{
-> +	unsigned long flags;
-> +	struct hv_input_map_device_interrupt *input;
-> +	struct hv_output_map_device_interrupt *output;
-> +	union hv_device_id device_id;
-> +	struct hv_device_interrupt_descriptor *intr_desc;
-> +	u16 status;
-> +
-> +	device_id.as_uint64 = 0;
-> +	device_id.device_type = HV_DEVICE_TYPE_IOAPIC;
-> +	device_id.ioapic.ioapic_id = (u8)ioapic_id;
-> +
-> +	local_irq_save(flags);
-> +	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> +	output = *this_cpu_ptr(hyperv_pcpu_output_arg);
-> +	memset(input, 0, sizeof(*input));
-> +	intr_desc = &input->interrupt_descriptor;
-> +	input->partition_id = hv_current_partition_id;
-> +	input->device_id = device_id.as_uint64;
-> +	intr_desc->interrupt_type = HV_X64_INTERRUPT_TYPE_FIXED;
-> +	intr_desc->target.vector = vector;
-> +	intr_desc->vector_count = 1;
-> +
-> +	if (trigger)
-> +		intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_LEVEL;
-> +	else
-> +		intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
-> +
-> +	__set_bit(vcpu, (unsigned long *)&intr_desc->target.vp_mask);
-> +
-> +	status = hv_do_rep_hypercall(HVCALL_MAP_DEVICE_INTERRUPT, 0, 0, input, output) &
-> +			 HV_HYPERCALL_RESULT_MASK;
-> +	local_irq_restore(flags);
-> +
-> +	*out_entry = output->interrupt_entry;
-> +
-> +	return status;
-> +}
-> +
-> +static unsigned int hv_ioapic_startup_irq(struct irq_data *data)
-> +{
-> +	u16 status;
-> +	struct IO_APIC_route_entry ire;
-> +	u32 vector;
-> +	struct irq_cfg *cfg;
-> +	int ioapic;
-> +	u8 ioapic_pin;
-> +	int ioapic_id;
-> +	int gsi;
-> +	union entry_union eu;
-> +	struct cpumask *affinity;
-> +	int cpu, vcpu;
-> +	struct hv_interrupt_entry entry;
-> +	struct mp_chip_data *mp_data = data->chip_data;
-> +
-> +	gsi = data->irq;
-> +	cfg = irqd_cfg(data);
-> +	affinity = irq_data_get_effective_affinity_mask(data);
-> +	cpu = cpumask_first_and(affinity, cpu_online_mask);
-> +	vcpu = hv_cpu_number_to_vp_number(cpu);
-> +
-> +	vector = cfg->vector;
-> +
-> +	ioapic = mp_find_ioapic(gsi);
-> +	ioapic_pin = mp_find_ioapic_pin(ioapic, gsi);
-> +	ioapic_id = mpc_ioapic_id(ioapic);
-> +	ire = ioapic_read_entry(ioapic, ioapic_pin);
-> +
-> +	/*
-> +	 * Always try unmapping. We do not have visibility into which whether
-> +	 * an IO-APIC has been mapped or not. We can't use chip_data because it
-> +	 * already points to mp_data.
-> +	 *
-> +	 * We don't use retarget interrupt hypercalls here because Hyper-V
-> +	 * doens't allow root to change the vector or specify VPs outside of
-> +	 * the set that is initially used during mapping.
-> +	 */
-> +	status = hv_unmap_ioapic_interrupt(gsi);
-> +
-> +	if (!(status == HV_STATUS_SUCCESS || status == HV_STATUS_INVALID_PARAMETER)) {
-> +		pr_debug("%s: unexpected unmap status %d\n", __func__, status);
-> +		return -1;
+I'm pleased to announce the v5.10-rc3-rt7 patch set. 
 
-Nit: the function returns 'unsigned int' but I see other 'irq_startup'
-routines return negative values too, however, they tend to returd
-'-ESOMETHING' so maybe -EFAULT here?
+Changes since v5.10-rc3-rt6:
 
-> +	}
-> +
-> +	status = hv_map_ioapic_interrupt(ioapic_id, ire.trigger, vcpu, vector, &entry);
-> +
-> +	if (status != HV_STATUS_SUCCESS) {
-> +		pr_err("%s: map hypercall failed, status %d\n", __func__, status);
-> +		return -1;
+  - Mike Galbraith reported a lockdep warning triggered by the nouveau
+    driver with threaded interrupts.
 
-and here.
+  - The recently reworked highmem code could trigger a warning on
+    certain ARM configurations. Reported upstream once parts of the code
+    hit linux-next. Patch by Thomas Gleixner.
 
-> +	}
-> +
-> +	/* Update the entry in mp_chip_data. It is used in other places. */
-> +	mp_data->entry = *(struct IO_APIC_route_entry *)&entry.ioapic_rte;
-> +
-> +	/* Sync polarity -- Hyper-V's returned polarity is always 0... */
-> +	mp_data->entry.polarity = ire.polarity;
-> +
-> +	eu.w1 = entry.ioapic_rte.low_uint32;
-> +	eu.w2 = entry.ioapic_rte.high_uint32;
-> +	ioapic_write_entry(ioapic, ioapic_pin, eu.entry);
-> +
-> +	return 0;
-> +}
-> +
-> +static void hv_ioapic_mask_irq(struct irq_data *data)
-> +{
-> +	mask_ioapic_irq(data);
-> +}
-> +
-> +static void hv_ioapic_unmask_irq(struct irq_data *data)
-> +{
-> +	unmask_ioapic_irq(data);
-> +}
-> +
-> +static int hv_ioapic_set_affinity(struct irq_data *data,
-> +			       const struct cpumask *mask, bool force)
-> +{
-> +	/*
-> +	 * We only update the affinity mask here. Programming the hardware is
-> +	 * done in irq_startup.
-> +	 */
-> +	return ioapic_set_affinity(data, mask, force);
-> +}
-> +
-> +void hv_ioapic_ack_level(struct irq_data *irq_data)
-> +{
-> +	/*
-> +	 * Per email exchange with Hyper-V team, all is needed is write to
-> +	 * LAPIC's EOI register. They don't support directed EOI to IO-APIC.
-> +	 * Hyper-V handles it for us.
-> +	 */
-> +	apic_ack_irq(irq_data);
-> +}
-> +
-> +struct irq_chip hv_ioapic_chip __read_mostly = {
-> +	.name			= "HV-IO-APIC",
-> +	.irq_startup		= hv_ioapic_startup_irq,
-> +	.irq_mask		= hv_ioapic_mask_irq,
-> +	.irq_unmask		= hv_ioapic_unmask_irq,
-> +	.irq_ack		= irq_chip_ack_parent,
-> +	.irq_eoi		= hv_ioapic_ack_level,
-> +	.irq_set_affinity	= hv_ioapic_set_affinity,
-> +	.irq_retrigger		= irq_chip_retrigger_hierarchy,
-> +	.irq_get_irqchip_state	= ioapic_irq_get_chip_state,
-> +	.flags			= IRQCHIP_SKIP_SET_WAKE,
-> +};
-> +
-> +
-> +int (*native_acpi_register_gsi)(struct device *dev, u32 gsi, int trigger, int polarity);
-> +void (*native_acpi_unregister_gsi)(u32 gsi);
-> +
-> +int hv_acpi_register_gsi(struct device *dev, u32 gsi, int trigger, int polarity)
-> +{
-> +	int irq = gsi;
-> +
-> +#ifdef CONFIG_X86_IO_APIC
-> +	irq = native_acpi_register_gsi(dev, gsi, trigger, polarity);
-> +	if (irq < 0) {
-> +		pr_err("native_acpi_register_gsi failed %d\n", irq);
-> +		return irq;
-> +	}
-> +
-> +	if (trigger) {
-> +		irq_set_status_flags(irq, IRQ_LEVEL);
-> +		irq_set_chip_and_handler_name(irq, &hv_ioapic_chip,
-> +			handle_fasteoi_irq, "ioapic-fasteoi");
-> +	} else {
-> +		irq_clear_status_flags(irq, IRQ_LEVEL);
-> +		irq_set_chip_and_handler_name(irq, &hv_ioapic_chip,
-> +			handle_edge_irq, "ioapic-edge");
-> +	}
-> +#endif
-> +	return irq;
-> +}
-> +
-> +void hv_acpi_unregister_gsi(u32 gsi)
-> +{
-> +#ifdef CONFIG_X86_IO_APIC
-> +	(void)hv_unmap_ioapic_interrupt(gsi);
-> +	native_acpi_unregister_gsi(gsi);
-> +#endif
-> +}
+  - Update the softirq patches by Thomas Gleixner to newer version.
 
--- 
-Vitaly
+Known issues
+     - It has been pointed out that due to changes to the printk code the
+       internal buffer representation changed. This is only an issue if tools
+       like `crash' are used to extract the printk buffer from a kernel memory
+       image.
 
+The delta patch against v5.10-rc3-rt6 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10-rc3-rt6-rt7.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10-rc3-rt7
+
+The RT patch against v5.10-rc3 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10-rc3-rt7.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10-rc3-rt7.tar.xz
+
+Sebastian
+
+diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
+index b95848ed2bc7f..706efafbf9722 100644
+--- a/arch/arm/include/asm/hardirq.h
++++ b/arch/arm/include/asm/hardirq.h
+@@ -2,16 +2,11 @@
+ #ifndef __ASM_HARDIRQ_H
+ #define __ASM_HARDIRQ_H
+ 
+-#include <linux/cache.h>
+-#include <linux/threads.h>
+ #include <asm/irq.h>
+ 
+-typedef struct {
+-	unsigned int __softirq_pending;
+-} ____cacheline_aligned irq_cpustat_t;
+-
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
+-
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
++#define ack_bad_irq ack_bad_irq
++
++#include <asm-generic/hardirq.h>
+ 
+ #endif /* __ASM_HARDIRQ_H */
+diff --git a/arch/arm/include/asm/irq.h b/arch/arm/include/asm/irq.h
+index 46d41140df27d..1cbcc462b07e8 100644
+--- a/arch/arm/include/asm/irq.h
++++ b/arch/arm/include/asm/irq.h
+@@ -31,6 +31,8 @@ void handle_IRQ(unsigned int, struct pt_regs *);
+ void init_IRQ(void);
+ 
+ #ifdef CONFIG_SMP
++#include <linux/cpumask.h>
++
+ extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
+ 					   bool exclude_self);
+ #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+diff --git a/arch/arm64/include/asm/hardirq.h b/arch/arm64/include/asm/hardirq.h
+index 5ffa4bacdad38..cbfa7b6f2e098 100644
+--- a/arch/arm64/include/asm/hardirq.h
++++ b/arch/arm64/include/asm/hardirq.h
+@@ -13,11 +13,8 @@
+ #include <asm/kvm_arm.h>
+ #include <asm/sysreg.h>
+ 
+-typedef struct {
+-	unsigned int __softirq_pending;
+-} ____cacheline_aligned irq_cpustat_t;
+-
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
++#define ack_bad_irq ack_bad_irq
++#include <asm-generic/hardirq.h>
+ 
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
+ 
+diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
+index 7f7039516e53f..fad29aa6f45fa 100644
+--- a/arch/parisc/include/asm/hardirq.h
++++ b/arch/parisc/include/asm/hardirq.h
+@@ -32,7 +32,6 @@ typedef struct {
+ DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+ 
+ #define __ARCH_IRQ_STAT
+-#define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
+ #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
+ #define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
+ #define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector %02x\n", irq)
+diff --git a/arch/sh/include/asm/hardirq.h b/arch/sh/include/asm/hardirq.h
+index edaea3559a232..9fe4495a8e90b 100644
+--- a/arch/sh/include/asm/hardirq.h
++++ b/arch/sh/include/asm/hardirq.h
+@@ -2,16 +2,10 @@
+ #ifndef __ASM_SH_HARDIRQ_H
+ #define __ASM_SH_HARDIRQ_H
+ 
+-#include <linux/threads.h>
+-#include <linux/irq.h>
+-
+-typedef struct {
+-	unsigned int __softirq_pending;
+-	unsigned int __nmi_count;		/* arch dependent */
+-} ____cacheline_aligned irq_cpustat_t;
+-
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
+-
+ extern void ack_bad_irq(unsigned int irq);
++#define ack_bad_irq ack_bad_irq
++#define ARCH_WANTS_NMI_IRQSTAT
++
++#include <asm-generic/hardirq.h>
+ 
+ #endif /* __ASM_SH_HARDIRQ_H */
+diff --git a/arch/sh/kernel/irq.c b/arch/sh/kernel/irq.c
+index c4e46252377ed..9d2e4026be961 100644
+--- a/arch/sh/kernel/irq.c
++++ b/arch/sh/kernel/irq.c
+@@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 
+ 	seq_printf(p, "%*s: ", prec, "NMI");
+ 	for_each_online_cpu(j)
+-		seq_printf(p, "%10u ", nmi_count(j));
++		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
+ 	seq_printf(p, "  Non-maskable interrupts\n");
+ 
+ 	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
+diff --git a/arch/sh/kernel/traps.c b/arch/sh/kernel/traps.c
+index 9c3d32b80038a..f5beecdac6938 100644
+--- a/arch/sh/kernel/traps.c
++++ b/arch/sh/kernel/traps.c
+@@ -186,7 +186,7 @@ BUILD_TRAP_HANDLER(nmi)
+ 	arch_ftrace_nmi_enter();
+ 
+ 	nmi_enter();
+-	nmi_count(cpu)++;
++	this_cpu_inc(irq_stat.__nmi_count);
+ 
+ 	switch (notify_die(DIE_NMI, "NMI", regs, 0, vec & 0xff, SIGINT)) {
+ 	case NOTIFY_OK:
+diff --git a/arch/um/include/asm/hardirq.h b/arch/um/include/asm/hardirq.h
+index b426796d26fd7..52e2c36267a93 100644
+--- a/arch/um/include/asm/hardirq.h
++++ b/arch/um/include/asm/hardirq.h
+@@ -2,22 +2,7 @@
+ #ifndef __ASM_UM_HARDIRQ_H
+ #define __ASM_UM_HARDIRQ_H
+ 
+-#include <linux/cache.h>
+-#include <linux/threads.h>
+-
+-typedef struct {
+-	unsigned int __softirq_pending;
+-} ____cacheline_aligned irq_cpustat_t;
+-
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
+-#include <linux/irq.h>
+-
+-#ifndef ack_bad_irq
+-static inline void ack_bad_irq(unsigned int irq)
+-{
+-	printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
+-}
+-#endif
++#include <asm-generic/hardirq.h>
+ 
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED 1
+ 
+diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
+index 22a39b72ce93f..b0ce938bbdb71 100644
+--- a/arch/x86/include/asm/fpu/api.h
++++ b/arch/x86/include/asm/fpu/api.h
+@@ -30,23 +30,32 @@ extern void kernel_fpu_resched(void);
+  * A context switch will (and softirq might) save CPU's FPU registers to
+  * fpu->state and set TIF_NEED_FPU_LOAD leaving CPU's FPU registers in
+  * a random state.
++ *
++ * local_bh_disable() protects against both preemption and soft interrupts
++ * on !RT kernels.
++ *
++ * On RT kernels local_bh_disable() is not sufficient because it only
++ * serializes soft interrupt related sections via a local lock, but stays
++ * preemptible. Disabling preemption is the right choice here as bottom
++ * half processing is always in thread context on RT kernels so it
++ * implicitly prevents bottom half processing as well.
++ *
++ * Disabling preemption also serializes against kernel_fpu_begin().
+  */
+ static inline void fpregs_lock(void)
+ {
+-	preempt_disable();
+-	/*
+-	 * On RT disabling preemption is good enough because bottom halfs
+-	 * are always running in thread context.
+-	 */
+ 	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+ 		local_bh_disable();
++	else
++		preempt_disable();
+ }
+ 
+ static inline void fpregs_unlock(void)
+ {
+ 	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+ 		local_bh_enable();
+-	preempt_enable();
++	else
++		preempt_enable();
+ }
+ 
+ #ifdef CONFIG_X86_DEBUG_FPU
+diff --git a/include/asm-generic/hardirq.h b/include/asm-generic/hardirq.h
+index d14214dfc10b3..7317e8258b486 100644
+--- a/include/asm-generic/hardirq.h
++++ b/include/asm-generic/hardirq.h
+@@ -7,9 +7,13 @@
+ 
+ typedef struct {
+ 	unsigned int __softirq_pending;
++#ifdef ARCH_WANTS_NMI_IRQSTAT
++	unsigned int __nmi_count;
++#endif
+ } ____cacheline_aligned irq_cpustat_t;
+ 
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
++DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);
++
+ #include <linux/irq.h>
+ 
+ #ifndef ack_bad_irq
+diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+index 41408d5e40149..b14fb2a2a9c56 100644
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -6,9 +6,9 @@
+ #include <linux/preempt.h>
+ #include <linux/lockdep.h>
+ #include <linux/ftrace_irq.h>
++#include <linux/sched.h>
+ #include <linux/vtime.h>
+ #include <asm/hardirq.h>
+-#include <linux/sched.h>
+ 
+ extern void synchronize_irq(unsigned int irq);
+ extern bool synchronize_hardirq(unsigned int irq);
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index fa0a1ec9cb691..e65df3c95bc55 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -665,6 +665,7 @@ static inline void tasklet_unlock(struct tasklet_struct *t)
+ 	smp_mb__before_atomic();
+ 	clear_bit(TASKLET_STATE_RUN, &(t)->state);
+ }
++
+ void tasklet_unlock_wait(struct tasklet_struct *t);
+ #else
+ static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
+diff --git a/include/linux/irq_cpustat.h b/include/linux/irq_cpustat.h
+deleted file mode 100644
+index 6e8895cd4d926..0000000000000
+--- a/include/linux/irq_cpustat.h
++++ /dev/null
+@@ -1,28 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __irq_cpustat_h
+-#define __irq_cpustat_h
+-
+-/*
+- * Contains default mappings for irq_cpustat_t, used by almost every
+- * architecture.  Some arch (like s390) have per cpu hardware pages and
+- * they define their own mappings for irq_stat.
+- *
+- * Keith Owens <kaos@ocs.com.au> July 2000.
+- */
+-
+-
+-/*
+- * Simple wrappers reducing source bloat.  Define all irq_stat fields
+- * here, even ones that are arch dependent.  That way we get common
+- * definitions instead of differing sets for each arch.
+- */
+-
+-#ifndef __ARCH_IRQ_STAT
+-DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);	/* defined in asm/hardirq.h */
+-#define __IRQ_STAT(cpu, member)	(per_cpu(irq_stat.member, cpu))
+-#endif
+-
+-/* arch dependent irq_stat fields */
+-#define nmi_count(cpu)		__IRQ_STAT((cpu), __nmi_count)	/* i386 */
+-
+-#endif	/* __irq_cpustat_h */
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 83b34cb809155..af39859f02ee1 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -77,34 +77,37 @@
+ /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
+ #include <asm/preempt.h>
+ 
+-#define pc_nmi_count()		(preempt_count() & NMI_MASK)
+-#define hardirq_count()		(preempt_count() & HARDIRQ_MASK)
++#define nmi_count()	(preempt_count() & NMI_MASK)
++#define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+ #ifdef CONFIG_PREEMPT_RT
+ # define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
+ #else
+ # define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
+ #endif
+-#define irq_count()		(pc_nmi_count() | hardirq_count() | softirq_count())
++#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ 
+ /*
+- * Are we doing bottom half or hardware interrupt processing?
++ * Macros to retrieve the current execution context:
+  *
+- * in_irq()       - We're in (hard) IRQ context
++ * in_nmi()		- We're in NMI context
++ * in_hardirq()		- We're in hard IRQ context
++ * in_serving_softirq()	- We're in softirq context
++ * in_task()		- We're in task context
++ */
++#define in_nmi()		(nmi_count())
++#define in_hardirq()		(hardirq_count())
++#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
++#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
++
++/*
++ * The following macros are deprecated and should not be used in new code:
++ * in_irq()       - Obsolete version of in_hardirq()
+  * in_softirq()   - We have BH disabled, or are processing softirqs
+  * in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+- * in_serving_softirq() - We're in softirq context
+- * in_nmi()       - We're in NMI context
+- * in_task()	  - We're in task context
+- *
+- * Note: due to the BH disabled confusion: in_softirq(),in_interrupt() really
+- *       should not be used in new code.
+  */
+-#define in_nmi()		(pc_nmi_count())
+ #define in_irq()		(hardirq_count())
+-#define in_interrupt()		(irq_count())
+ #define in_softirq()		(softirq_count())
+-#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+-#define in_task()		(!(irq_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
++#define in_interrupt()		(irq_count())
+ 
+ /*
+  * The preempt_count offset after preempt_disable();
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 67dc04573ae35..ef4c1343bd0ca 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1155,6 +1155,8 @@ static int irq_thread(void *data)
+ 	irqreturn_t (*handler_fn)(struct irq_desc *desc,
+ 			struct irqaction *action);
+ 
++	sched_set_fifo(current);
++
+ 	if (force_irqthreads && test_bit(IRQTF_FORCED_THREAD,
+ 					&action->thread_flags))
+ 		handler_fn = irq_forced_thread_fn;
+@@ -1326,8 +1328,6 @@ setup_irq_thread(struct irqaction *new, unsigned int irq, bool secondary)
+ 	if (IS_ERR(t))
+ 		return PTR_ERR(t);
+ 
+-	sched_set_fifo(t);
+-
+ 	/*
+ 	 * We keep the reference to the task struct even if
+ 	 * the thread dies to avoid that the interrupt code
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 933a625621b8d..4a31127c6efbf 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -243,6 +243,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
+ 
+ static int kthread(void *_create)
+ {
++	static const struct sched_param param = { .sched_priority = 0 };
+ 	/* Copy data: it's on kthread's stack */
+ 	struct kthread_create_info *create = _create;
+ 	int (*threadfn)(void *data) = create->threadfn;
+@@ -273,6 +274,13 @@ static int kthread(void *_create)
+ 	init_completion(&self->parked);
+ 	current->vfork_done = &self->exited;
+ 
++	/*
++	 * The new thread inherited kthreadd's priority and CPU mask. Reset
++	 * back to default in case they have been changed.
++	 */
++	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
++	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
++
+ 	/* OK, tell user we're spawned, wait for stop or wakeup */
+ 	__set_current_state(TASK_UNINTERRUPTIBLE);
+ 	create->result = current;
+@@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 	}
+ 	task = create->result;
+ 	if (!IS_ERR(task)) {
+-		static const struct sched_param param = { .sched_priority = 0 };
+ 		char name[TASK_COMM_LEN];
+ 
+ 		/*
+@@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 		 */
+ 		vsnprintf(name, sizeof(name), namefmt, args);
+ 		set_task_comm(task, name);
+-		/*
+-		 * root may have changed our (kthreadd's) priority or CPU mask.
+-		 * The kernel thread should not inherit these properties.
+-		 */
+-		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
+-		set_cpus_allowed_ptr(task,
+-				     housekeeping_cpumask(HK_FLAG_KTHREAD));
+ 	}
+ 	kfree(create);
+ 	return task;
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index a02735d4d1e9f..4406cdaa84670 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -158,7 +158,7 @@ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+ 	unsigned long flags;
+ 	int newcnt;
+ 
+-	WARN_ON_ONCE(in_irq());
++	WARN_ON_ONCE(in_hardirq());
+ 
+ 	/* First entry of a task into a BH disabled section? */
+ 	if (!current->softirq_disable_cnt) {
+@@ -314,11 +314,10 @@ static inline bool should_wake_ksoftirqd(void)
+ #else /* CONFIG_PREEMPT_RT */
+ 
+ /*
+- * This one is for softirq.c-internal use,
+- * where hardirqs are disabled legitimately:
++ * This one is for softirq.c-internal use, where hardirqs are disabled
++ * legitimately:
+  */
+ #ifdef CONFIG_TRACE_IRQFLAGS
+-
+ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+ {
+ 	unsigned long flags;
+@@ -440,6 +439,11 @@ static inline void ksoftirqd_run_end(void)
+ 	local_irq_enable();
+ }
+ 
++static inline bool should_wake_ksoftirqd(void)
++{
++	return true;
++}
++
+ static inline void invoke_softirq(void)
+ {
+ 	if (ksoftirqd_running(local_softirq_pending()))
+@@ -466,7 +470,23 @@ static inline void invoke_softirq(void)
+ 	}
+ }
+ 
+-static inline bool should_wake_ksoftirqd(void) { return true; }
++asmlinkage __visible void do_softirq(void)
++{
++	__u32 pending;
++	unsigned long flags;
++
++	if (in_interrupt())
++		return;
++
++	local_irq_save(flags);
++
++	pending = local_softirq_pending();
++
++	if (pending && !ksoftirqd_running(pending))
++		do_softirq_own_stack();
++
++	local_irq_restore(flags);
++}
+ 
+ #endif /* !CONFIG_PREEMPT_RT */
+ 
+@@ -595,26 +615,6 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ 	current_restore_flags(old_flags, PF_MEMALLOC);
+ }
+ 
+-#ifndef CONFIG_PREEMPT_RT
+-asmlinkage __visible void do_softirq(void)
+-{
+-	__u32 pending;
+-	unsigned long flags;
+-
+-	if (in_interrupt())
+-		return;
+-
+-	local_irq_save(flags);
+-
+-	pending = local_softirq_pending();
+-
+-	if (pending && !ksoftirqd_running(pending))
+-		do_softirq_own_stack();
+-
+-	local_irq_restore(flags);
+-}
+-#endif
+-
+ /**
+  * irq_enter_rcu - Enter an interrupt context with RCU watching
+  */
+diff --git a/localversion-rt b/localversion-rt
+index 8fc605d806670..045478966e9f1 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt6
++-rt7
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 8db577e5290cc..72b9a2d95c72a 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -422,12 +422,15 @@ static inline void *arch_kmap_local_high_get(struct page *page)
+ #endif
+ 
+ /* Unmap a local mapping which was obtained by kmap_high_get() */
+-static inline void kmap_high_unmap_local(unsigned long vaddr)
++static inline bool kmap_high_unmap_local(unsigned long vaddr)
+ {
+ #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+-	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP))
++	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
+ 		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
++		return true;
++	}
+ #endif
++	return false;
+ }
+ 
+ static inline int kmap_local_calc_idx(int idx)
+@@ -493,10 +496,14 @@ void kunmap_local_indexed(void *vaddr)
+ 
+ 	if (addr < __fix_to_virt(FIX_KMAP_END) ||
+ 	    addr > __fix_to_virt(FIX_KMAP_BEGIN)) {
+-		WARN_ON_ONCE(addr < PAGE_OFFSET);
+-
+-		/* Handle mappings which were obtained by kmap_high_get() */
+-		kmap_high_unmap_local(addr);
++		/*
++		 * Handle mappings which were obtained by kmap_high_get()
++		 * first as the virtual address of such mappings is below
++		 * PAGE_OFFSET. Warn for all other addresses which are in
++		 * the user space part of the virtual address space.
++		 */
++		if (!kmap_high_unmap_local(addr))
++			WARN_ON_ONCE(addr < PAGE_OFFSET);
+ 		return;
+ 	}
+ 
