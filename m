@@ -2,132 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5072B1068
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB462B1072
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgKLV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbgKLV2y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:28:54 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AF4C0613D1;
-        Thu, 12 Nov 2020 13:28:54 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id c9so6468664wml.5;
-        Thu, 12 Nov 2020 13:28:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=G2BYNuIxlaObS9p75wcHPXenJKV2OHZTqCiRZ3u3/NU=;
-        b=MjSmxuzUy3A5nn2fW066uU93yV94ooVSUHoz6odmOf1nsFJ03GGRyLVDJVCSyYOY85
-         8u7A1f43k99+/zp9KJUZ2aXt3pkZ1x1fbWRfRDFXLwnOd0EX6W7bfBuG6Ww0CSZQOD5K
-         xeM7/Xw2pc+2/ZRW7NKqr3he6CaUEQfzuswJ5vpMnSp0tz3natDcFiqp0DOwAisWXBdt
-         AShV7rRe5dbd74S0/maGQK0u88EIwPn/JgtF5Rc0Xy8N2FCLafPZGvKYSWRxzZVYUYdT
-         VaTklWmbH8dCI6aK/0sv1qpWkNgSP5u7yc9wmLkaf+yGTYudq1KpsVZFEnrfGDH6K0Ir
-         rPkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=G2BYNuIxlaObS9p75wcHPXenJKV2OHZTqCiRZ3u3/NU=;
-        b=i/iGoyfyIjf2dsb9ZFQ2thEEsBDWlYfIOyOlCq/SB+q+rk5HPM47/3rXwjGfxdR6pu
-         bD7q7yLg1PMkytykz9it7OdevLoGLmtyl5XJn9ssY5A+sYN4M3Bmx+YlTJdYbodNqgVA
-         R/HcmbavJ+ZrU23c/FPXEEltzuBVjs4hsVb7jTQQIznO5Pmezo/4ispwU0FlzPcZutQw
-         u9Lm7h4mTa9iQfTZs/pjqWsrhQZLxJ4kqzCWdznMZAR5tEHLYrLBLIOC++i8Xv5vgdNL
-         i+pQox5uWcLti1MGzPZ+ySDg1GcqacriiaXKmEe8XfscdS0MWbg3Pvl2Pd9JzaRW/xX2
-         2trw==
-X-Gm-Message-State: AOAM5306ZAJwUZmj+U6LgOtO0BJqubbJSzvEkLbmzJ/VbyJ8xeSHRV61
-        IASs7uKyycrohwaEvq42H9fmIJszOQKr37ETrGU=
-X-Google-Smtp-Source: ABdhPJwACnsJDr0htDUIcZ1390M+ztGM6mHPEVrjB75T5GqTdIpxllFizlL3nKTN1oMXRIMVR4CpDhPQIZX/zXW37Sk=
-X-Received: by 2002:a1c:8150:: with SMTP id c77mr1687617wmd.26.1605216522204;
- Thu, 12 Nov 2020 13:28:42 -0800 (PST)
+        id S1727427AbgKLV3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:29:35 -0500
+Received: from mleia.com ([178.79.152.223]:59014 "EHLO mail.mleia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727153AbgKLV33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 16:29:29 -0500
+Received: from mail.mleia.com (localhost [127.0.0.1])
+        by mail.mleia.com (Postfix) with ESMTP id D4714419B9E;
+        Thu, 12 Nov 2020 21:29:23 +0000 (UTC)
+Subject: Re: [PATCH 29/32] pwm: lpc18xx-sct: convert to
+ devm_platform_ioremap_resource
+To:     Yangtao Li <tiny.windzz@gmail.com>, claudiu.beznea@microchip.com,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        f.fainelli@gmail.com, nsaenzjulienne@suse.de, shc_work@mail.ru,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, slemieux.tyco@gmail.com,
+        khilman@baylibre.com, matthias.bgg@gmail.com, heiko@sntech.de,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, mripard@kernel.org,
+        wens@csie.org, jonathanh@nvidia.com, linux@prisktech.co.nz,
+        linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-tegra@vger.kernel.org
+References: <20191229080610.7597-1-tiny.windzz@gmail.com>
+ <20191229080610.7597-29-tiny.windzz@gmail.com>
+From:   Vladimir Zapolskiy <vz@mleia.com>
+Message-ID: <a9e353d2-3d08-adfe-de1c-3efdcd2e5f71@mleia.com>
+Date:   Thu, 12 Nov 2020 23:29:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-20-lee.jones@linaro.org>
-In-Reply-To: <20201112190039.2785914-20-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 12 Nov 2020 16:28:30 -0500
-Message-ID: <CADnq5_Pu0v=JHsRnB_M1OJNqKOZT0otcU1GCtif12GnKt4ArAg@mail.gmail.com>
-Subject: Re: [PATCH 19/30] drm/amd/amdgpu/amdgpu_cs: Add a couple of missing
- function param descriptions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191229080610.7597-29-tiny.windzz@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
+X-CRM114-CacheID: sfid-20201112_212923_912288_DA2B1D97 
+X-CRM114-Status: UNSURE (   4.84  )
+X-CRM114-Notice: Please train this message. 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 2:07 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:685: warning: Function parameter =
-or member 'backoff' not described in 'amdgpu_cs_parser_fini'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1655: warning: Function parameter=
- or member 'map' not described in 'amdgpu_cs_find_mapping'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Jerome Glisse <glisse@freedesktop.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On 12/29/19 10:06 AM, Yangtao Li wrote:
+> Use devm_platform_ioremap_resource() to simplify code.
+> 
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
 
-Applied.  Thanks!
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
 
-Alex
-
-
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd=
-/amdgpu/amdgpu_cs.c
-> index 8d2878e950dab..594a0108e90fa 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> @@ -676,6 +676,7 @@ static int amdgpu_cs_sync_rings(struct amdgpu_cs_pars=
-er *p)
->   * cs_parser_fini() - clean parser states
->   * @parser:    parser structure holding parsing context.
->   * @error:     error number
-> + * @backoff:   indicator to backoff the reservation
->   *
->   * If error is set than unvalidate buffer, otherwise just free memory
->   * used by parsing context.
-> @@ -1644,6 +1645,7 @@ int amdgpu_cs_wait_fences_ioctl(struct drm_device *=
-dev, void *data,
->   * @parser: command submission parser context
->   * @addr: VM address
->   * @bo: resulting BO of the mapping found
-> + * @map: Placeholder to return found BO mapping
->   *
->   * Search the buffer objects in the command submission context for a cer=
-tain
->   * virtual memory address. Returns allocation structure when found, NULL
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+--
+Best wishes,
+Vladimir
