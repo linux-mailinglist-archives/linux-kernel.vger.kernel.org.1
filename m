@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA142B0974
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D1B2B0979
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgKLQEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:04:39 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:58523 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728873AbgKLQEh (ORCPT
+        id S1728775AbgKLQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:05:41 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35820 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728389AbgKLQFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:04:37 -0500
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5EE6AE0023;
-        Thu, 12 Nov 2020 16:04:34 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        <Steen.Hegelund@microchip.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v2 5/5] irqchip: ocelot: Add support for Jaguar2 platforms
-Date:   Thu, 12 Nov 2020 17:04:24 +0100
-Message-Id: <20201112160424.1383051-6-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201112160424.1383051-1-gregory.clement@bootlin.com>
-References: <20201112160424.1383051-1-gregory.clement@bootlin.com>
+        Thu, 12 Nov 2020 11:05:40 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACG5ZSB118306;
+        Thu, 12 Nov 2020 10:05:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605197135;
+        bh=9yETxY8RPhX8mtyohaZIEqS18xzqCiuxeaRy0WwXgn4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=nyHcE2+TQuluMWit3IgaslrYTd5bGNBFq2BmM/XchOub+xku61WHETmyqWvaFsvFS
+         CHk2N3ManQHF9iobqbRO4y83Iwb3z71nGa6ZMYR5r//mJwXCYfsAQ7/9hrMGNEJBw7
+         S2jhxVfvPnXqhW0ii5B3u9nQmxckjGECY+uA7/OA=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACG5ZRt099598
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 10:05:35 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 10:05:35 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 10:05:35 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACG5VOt018182;
+        Thu, 12 Nov 2020 10:05:32 -0600
+Subject: Re: [PATCH v2 5/7] arm64: dts: ti: k3-j7200-main: Add PCIe device
+ tree node
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Roger Quadros <rogerq@ti.com>, Lee Jones <lee.jones@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201109170409.4498-1-kishon@ti.com>
+ <20201109170409.4498-6-kishon@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <fa7dbf5c-adc3-db43-47c2-94c0afa72a40@ti.com>
+Date:   Thu, 12 Nov 2020 21:35:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109170409.4498-6-kishon@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends irqchip driver for ocelot to be used with an other
-vcoreiii base platform: Jaguar2.
 
-Based on a larger patch from Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- drivers/irqchip/irq-mscc-ocelot.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
-index 584af3b0a9e2..0dfea8771172 100644
---- a/drivers/irqchip/irq-mscc-ocelot.c
-+++ b/drivers/irqchip/irq-mscc-ocelot.c
-@@ -70,6 +70,18 @@ static const struct chip_props luton_props = {
- 	.n_irq			= 28,
- };
- 
-+static const struct chip_props jaguar2_props = {
-+	.flags			= FLAGS_HAS_TRIGGER,
-+	.reg_off_sticky		= 0x10,
-+	.reg_off_ena		= 0x18,
-+	.reg_off_ena_clr	= 0x1c,
-+	.reg_off_ena_set	= 0x20,
-+	.reg_off_ident		= 0x38,
-+	.reg_off_trigger	= 0x5c,
-+	.reg_off_force		= 0xc,
-+	.n_irq			= 29,
-+};
-+
- static void ocelot_irq_unmask(struct irq_data *data)
- {
- 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
-@@ -237,3 +249,11 @@ static int __init luton_irq_init(struct device_node *node,
- }
- 
- IRQCHIP_DECLARE(luton_icpu, "mscc,luton-icpu-intr", luton_irq_init);
-+
-+static int __init jaguar2_irq_init(struct device_node *node,
-+				   struct device_node *parent)
-+{
-+	return vcoreiii_irq_init(node, parent, &jaguar2_props);
-+}
-+
-+IRQCHIP_DECLARE(jaguar2_icpu, "mscc,jaguar2-icpu-intr", jaguar2_irq_init);
--- 
-2.28.0
+On 11/9/20 10:34 PM, Kishon Vijay Abraham I wrote:
+> Add PCIe device tree node (both RC and EP) for the single PCIe
+> instance present in j7200.
+> 
 
+nit: s/j7200/J7200
+
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+[...]
