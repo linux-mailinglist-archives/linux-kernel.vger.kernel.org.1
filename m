@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B834A2B0E63
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ECE2B0E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgKLTlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:41:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726310AbgKLTlu (ORCPT
+        id S1726776AbgKLTpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:45:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgKLTpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:41:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605210110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B23U3gg95JNs9PQEfTQosUDSG0cp4zCcIfz1B+t7gA8=;
-        b=ffnPr5rR8bGRpIjBZPoSLXOpDYtU2xDi0Aq0jjnveDVwzpxg91s/352wgfeDYFGvZ4BasT
-        ge7KSLcB1MZjrgRT2//vvgdplprgxIQvQBh5KPEeK8EtMQccylRrYvYf3MhP8fe0+q5453
-        GK5YLxw87+0HiZxxuojjhnW+H1NF+xQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-FeSgfCcVP_mA90IFEUIXbQ-1; Thu, 12 Nov 2020 14:41:46 -0500
-X-MC-Unique: FeSgfCcVP_mA90IFEUIXbQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0244803625;
-        Thu, 12 Nov 2020 19:41:43 +0000 (UTC)
-Received: from ovpn-66-145.rdu2.redhat.com (ovpn-66-145.rdu2.redhat.com [10.10.66.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C0905B4B2;
-        Thu, 12 Nov 2020 19:41:35 +0000 (UTC)
-Message-ID: <a61baa42fbb5a5d7bcc167589c856e34b68b431c.camel@redhat.com>
-Subject: Re: [PATCH v4 10/19] sched: Fix migrate_disable() vs
- set_cpus_allowed_ptr()
-From:   Qian Cai <cai@redhat.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Date:   Thu, 12 Nov 2020 14:41:34 -0500
-In-Reply-To: <jhja6vmxthb.mognet@arm.com>
-References: <20201023101158.088940906@infradead.org>
-         <20201023102346.921768277@infradead.org>
-         <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com>
-         <jhjd00ixz9z.mognet@arm.com>
-         <13786aa5a5fc958708ef1182c885d1a574449d99.camel@redhat.com>
-         <jhja6vmxthb.mognet@arm.com>
+        Thu, 12 Nov 2020 14:45:30 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C96C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:45:30 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id i7so5088629pgh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tUsjnJsE70MPGpys5UT1OEoJSxFeQtN6aLTMo3hfEjk=;
+        b=rKHdDyXn6oy67dBTpOqWUs9smSJZlYHldHIVXW792bY88duJKOdd/NkTFB1d9HduJh
+         P7Mf3B8aMHapHeIsfXPwxlINzYZn7DBii1N/WZDxfDADxzU94FU9xvanoou6XfEHZCjr
+         whOOUFtVeiU0pmGOfojKOAhlF1sylbgR4v1J5V9xRPdS19rJQZxIqGDxRFUzZbC5opox
+         W9uUvJxCeWfLX61dhfLmvQJl3jLwWBBLzRO8p8+woJeBg+gkiJF4ilo75Gwm6mpqinCN
+         ApVM1EuWvnU9jDx23PEYN6g7Y0WYHKXOX64Y6Ap6CoCZCt76JGnCsAl0q8+9Nkjt9TWt
+         R12w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tUsjnJsE70MPGpys5UT1OEoJSxFeQtN6aLTMo3hfEjk=;
+        b=SfdQJWpSFuSSlk19E5xS80LOWsc6sl9wyD94IUbcpQbJdnUNAtkqijjFpBCpl5U0X8
+         6FlR/vgscnP0ytGiKB0XNPRKf/x1734XjCqchak/w1T9AdSE5lOleyi0fTFPyfU0x3FH
+         neF+6toHpAy2BDMJfOl0sl6fKQqS0Ddvz9hnaAvMF+NpnS2+C2rPU9QCXtWgJkTOobX9
+         Ssp8NbXcLVKWAl9al27GMwJUEWX6yhkvBLwWAK3PYmXlUxdZtjJ00SmDkymSuLfCriDq
+         iwx4X1fTp5x+wmA4Md1uzn1II0bx10X8In34h+lLrze6cIhySGkqP+DhriKyUvq6wZqg
+         39kA==
+X-Gm-Message-State: AOAM530iB+OczJ2tl+mJ4WB7cZjMZ552M70CPgcGPqX6xuGCT1cZ5QgR
+        pjvsIm6Nbqa+pmHLCHZ+WJiTNvBhxMO9Ch3BfpL0hQ==
+X-Google-Smtp-Source: ABdhPJymqAxJryKKC0ktlr8u0WBlSEAGCjBRalcMM6ulBX9LDg37qw1ly1XhtUHYBUIPWFyPX+Fs5wEsiV0gSU3nLUM=
+X-Received: by 2002:a05:6a00:16c4:b029:162:bf9f:6458 with SMTP id
+ l4-20020a056a0016c4b0290162bf9f6458mr947513pfc.55.1605210329356; Thu, 12 Nov
+ 2020 11:45:29 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605046662.git.andreyknvl@google.com> <0a9b63bff116734ab63d99ebd09c244332d71958.1605046662.git.andreyknvl@google.com>
+ <20201111174902.GK517454@elver.google.com>
+In-Reply-To: <20201111174902.GK517454@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 12 Nov 2020 20:45:18 +0100
+Message-ID: <CAAeHK+wvvkYko=tM=NHODkKas13h5Jvsswvg05jhv9LqE0jSjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 10/20] kasan: inline and rename kasan_unpoison_memory
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 19:31 +0000, Valentin Schneider wrote:
-> One thing I don't get: that trace shows refcount_dec_and_test()
-> (kernel/sched/core.c:2263) happening before the wait_for_completion(). It's
-> not the case in the below trace.
+On Wed, Nov 11, 2020 at 6:49 PM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> > Currently kasan_unpoison_memory() is used as both an external annotation
+> > and as an internal memory poisoning helper. Rename external annotation to
+> > kasan_unpoison_data() and inline the internal helper for hardware
+> > tag-based mode to avoid undeeded function calls.
+>
+> I don't understand why this needs to be renamed again. The users of
+> kasan_unpoison_memory() outweigh those of kasan_unpoison_slab(), of
+> which there seems to be only 1!
 
-Yes, that is normal. Sometimes, the decoding is a bit off not sure because of
-some debugging options like KASAN obscures it.
+The idea is to make kasan_(un)poison_memory() functions inlinable for
+internal use. It doesn't have anything to do with the number of times
+they are used.
 
-> a) Do you also get this on CONFIG_PREEMPT=y?
+Perhaps we can drop the kasan_ prefix for the internal implementations
+though, and keep using kasan_unpoison_memory() externally.
 
-I don't know. None of the systems here has that, but I could probably try.
+> So can't we just get rid of kasan_unpoison_slab() and just open-code it
+> in mm/mempool.c:kasan_unpoison_element()? That function is already
+> kasan-prefixed, so we can even place a small comment there (which would
+> also be an improvement over current interface, since
+> kasan_unpoison_slab() is not documented and its existence not quite
+> justified).
 
-> b) Could you try the below?
-
-Let me run it and report.
-
-> 
-> ---
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 02076e6d3792..fad0a8e62aca 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1923,7 +1923,7 @@ static int migration_cpu_stop(void *data)
->  		else
->  			p->wake_cpu = dest_cpu;
->  
-> -	} else if (dest_cpu < 0) {
-> +	} else if (dest_cpu < 0 || pending) {
->  		/*
->  		 * This happens when we get migrated between migrate_enable()'s
->  		 * preempt_enable() and scheduling the stopper task. At that
-> @@ -1933,6 +1933,17 @@ static int migration_cpu_stop(void *data)
->  		 * more likely.
->  		 */
->  
-> +		/*
-> +		 * The task moved before the stopper got to run. We're holding
-> +		 * ->pi_lock, so the allowed mask is stable - if it got
-> +		 * somewhere allowed, we're done.
-> +		 */
-> +		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
-> +			p->migration_pending = NULL;
-> +			complete = true;
-> +			goto out;
-> +		}
-> +
->  		/*
->  		 * When this was migrate_enable() but we no longer have an
->  		 * @pending, a concurrent SCA 'fixed' things and we should be
-> 
-
+We can, but this is a change unrelated to this patch.
