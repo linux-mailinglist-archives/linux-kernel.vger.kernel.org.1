@@ -2,161 +2,545 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15D62B12DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345592B12E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgKLXrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 18:47:41 -0500
-Received: from ozlabs.org ([203.11.71.1]:56441 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgKLXrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:47:40 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CXJDn6N2tz9sSn;
-        Fri, 13 Nov 2020 10:47:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605224858;
-        bh=YgirdeSpCk/2ef+l+i0o+4fXCM26fJou7/3/XMXIETk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OPTy/eX4vRXcpxyLDnAizbYChvdqUGmjCP1hgRVjmg5oyyJPNiTOwYCVZCWj0ldZq
-         98x903KI6YuvxDOjCT9jpGxfz2/n2E53Uovn/CFtvkiDZknw75pfOj1u8LZG0SF4KJ
-         htWypebF2AWOqcaEFPDCp2O8S9hr/59mLQspKJa+6/EOw1yJVl0fMjlY7uaU6Ye4nz
-         Ks3ZqmF23rIE6Ri5PrOTi3SEhlPuSKfr/jFJbbKu+aNQpfpl0V2jwMl22/8fIihuOE
-         5EcGdZyZcsJhz+APkiXqjQM1twsUnLsZiwpEo8xdHzP5lo3wU+TvJKkIRDe38Vr1cz
-         6pQfqpuPfHdQg==
-Date:   Fri, 13 Nov 2020 10:47:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the ext3 tree
-Message-ID: <20201113104736.0d6ea84e@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gItWAFBWgJ_=3hCeD6U2tez";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726121AbgKLX4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 18:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgKLX4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 18:56:19 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7F2C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 15:56:18 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id c71so3994737qkg.21
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 15:56:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=fefEaKBLbwaoT4XvZCEfnDj0tRbpimXZIYil0Pvzfe8=;
+        b=LvojQ1/rvA/H6lREdR2We30D7F/VF19yP/wEeUVbHGIYB8n8btPXW/CC9YA3RF1+vT
+         OC7lAgCYyiJmswh2tSvc0au3mZMGl/BCy4jrrw82HquMM8qfk0TnaN96L+2rt0vuIx4B
+         svIJgaZtxbryRHhjxm/pDM29JBmVG5zQpQxPPDVBYFcuekrIT+QS//yHhynowbeW6wN/
+         C5nz0jLkI6rDgyvd2w/DmSU/DxiAPPt4GxP6GIv/MEuNtBB8zS2Zreco9DfMgD09YrD1
+         9uQJo6higG4R6sJkGi0+H7rvpaEsi1cJzxEue2wYWeicVQY8/wnV/EIAAr/kfmOADeBT
+         +b+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=fefEaKBLbwaoT4XvZCEfnDj0tRbpimXZIYil0Pvzfe8=;
+        b=YAAfeirfyOsATa0IiyI/5ZDhnDiYT+AJGe3B+4GqXxBZVqxfyfZ5odtoYUuPRx3VwW
+         M/RIVom2fsxNX54PyPsSonFy2+hhpswuHsiTTEctcmij5UbiDvZWyISm/9mLhABU9BOb
+         upF9Xg+nG2JCUgytr3Gl6BYJ3ICvf32gKQ92D1s+zo45c3cpTa1FdxxMcws6kwGMIeCC
+         L3nOXWkJoCZh6Rpb+lAdp0MbwhY85xjWBZiQp3kipVkeQSqZh0T5qwmvL6VKnXZGxkBT
+         rM2kCC4SzAR9hTthcdWj9zh+YkcTDFiQJwGl+/B52/E1BArcpNlx42inTupC4bdGgr2R
+         u6aA==
+X-Gm-Message-State: AOAM532oOvDreB94vfiEGyKHsloRz5rfTmSbq1HklY+6gshSlFZscGaK
+        tvdOfAZLAh5c+bRZki4dP9YdBrFk
+X-Google-Smtp-Source: ABdhPJw9DnJIB6atqWnGQjPt/2nxSyFQDK4XPATnTzjZjHQYU+EnrKEhjauxIQqA3ecOclWQuBi42KI0
+Sender: "rkir via sendgmr" <rkir@rkir.kir.corp.google.com>
+X-Received: from rkir.kir.corp.google.com ([2620:15c:29:200:3e52:82ff:fe5f:f95])
+ (user=rkir job=sendgmr) by 2002:ad4:524b:: with SMTP id s11mr2389624qvq.3.1605225377089;
+ Thu, 12 Nov 2020 15:56:17 -0800 (PST)
+Date:   Thu, 12 Nov 2020 15:49:07 -0800
+Message-Id: <20201112234907.3761694-1-rkir@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH] drivers: staging: retire drivers/staging/goldfish
+From:   rkir@google.com
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, lfy@google.com,
+        Roman Kiryanov <rkir@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gItWAFBWgJ_=3hCeD6U2tez
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Roman Kiryanov <rkir@google.com>
 
-Hi all,
+Android Studio Emulator (goldfish) migrated
+to Intel HDA.
 
-After merging the ext3 tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+Signed-off-by: Roman Kiryanov <rkir@google.com>
+---
+ arch/mips/configs/generic/board-ranchu.config |   1 -
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/goldfish/Kconfig              |   7 -
+ drivers/staging/goldfish/Makefile             |   6 -
+ drivers/staging/goldfish/README               |   5 -
+ drivers/staging/goldfish/goldfish_audio.c     | 383 ------------------
+ 7 files changed, 405 deletions(-)
+ delete mode 100644 drivers/staging/goldfish/Kconfig
+ delete mode 100644 drivers/staging/goldfish/Makefile
+ delete mode 100644 drivers/staging/goldfish/README
+ delete mode 100644 drivers/staging/goldfish/goldfish_audio.c
 
-In file included from fs/ext2/file.c:28:
-fs/ext2/ext2.h: In function 'ext2_get_page':
-fs/ext2/ext2.h:764:28: error: implicit declaration of function 'ext2_check_=
-page'; did you mean 'ext2_get_page'? [-Werror=3Dimplicit-function-declarati=
-on]
-  764 |    if (PageError(page) || !ext2_check_page(page, quiet))
-      |                            ^~~~~~~~~~~~~~~
-      |                            ext2_get_page
-In file included from fs/ext2/balloc.c:15:
-fs/ext2/ext2.h: In function 'ext2_get_page':
-fs/ext2/ext2.h:760:22: error: implicit declaration of function 'read_mappin=
-g_page'; did you mean 'unmap_mapping_pages'? [-Werror=3Dimplicit-function-d=
-eclaration]
-  760 |  struct page *page =3D read_mapping_page(mapping, n, NULL);
-      |                      ^~~~~~~~~~~~~~~~~
-      |                      unmap_mapping_pages
-fs/ext2/ext2.h:760:22: warning: initialization of 'struct page *' from 'int=
-' makes pointer from integer without a cast [-Wint-conversion]
-fs/ext2/ext2.h:764:28: error: implicit declaration of function 'ext2_check_=
-page'; did you mean 'ext2_get_page'? [-Werror=3Dimplicit-function-declarati=
-on]
-  764 |    if (PageError(page) || !ext2_check_page(page, quiet))
-      |                            ^~~~~~~~~~~~~~~
-      |                            ext2_get_page
-In file included from include/linux/buffer_head.h:14,
-                 from fs/ext2/balloc.c:20:
-include/linux/pagemap.h: At top level:
-include/linux/pagemap.h:497:28: error: conflicting types for 'read_mapping_=
-page'
-  497 | static inline struct page *read_mapping_page(struct address_space *=
-mapping,
-      |                            ^~~~~~~~~~~~~~~~~
-In file included from fs/ext2/balloc.c:15:
-fs/ext2/ext2.h:760:22: note: previous implicit declaration of 'read_mapping=
-_page' was here
-  760 |  struct page *page =3D read_mapping_page(mapping, n, NULL);
-      |                      ^~~~~~~~~~~~~~~~~
-In file included from fs/ext2/dir.c:25:
-fs/ext2/ext2.h: In function 'ext2_get_page':
-fs/ext2/ext2.h:760:22: error: implicit declaration of function 'read_mappin=
-g_page'; did you mean 'unmap_mapping_pages'? [-Werror=3Dimplicit-function-d=
-eclaration]
-  760 |  struct page *page =3D read_mapping_page(mapping, n, NULL);
-      |                      ^~~~~~~~~~~~~~~~~
-      |                      unmap_mapping_pages
-fs/ext2/ext2.h:760:22: warning: initialization of 'struct page *' from 'int=
-' makes pointer from integer without a cast [-Wint-conversion]
-fs/ext2/ext2.h:764:28: error: implicit declaration of function 'ext2_check_=
-page'; did you mean 'ext2_get_page'? [-Werror=3Dimplicit-function-declarati=
-on]
-  764 |    if (PageError(page) || !ext2_check_page(page, quiet))
-      |                            ^~~~~~~~~~~~~~~
-      |                            ext2_get_page
-In file included from include/linux/buffer_head.h:14,
-                 from fs/ext2/dir.c:26:
-include/linux/pagemap.h: At top level:
-include/linux/pagemap.h:497:28: error: conflicting types for 'read_mapping_=
-page'
-  497 | static inline struct page *read_mapping_page(struct address_space *=
-mapping,
-      |                            ^~~~~~~~~~~~~~~~~
-In file included from fs/ext2/dir.c:25:
-fs/ext2/ext2.h:760:22: note: previous implicit declaration of 'read_mapping=
-_page' was here
-  760 |  struct page *page =3D read_mapping_page(mapping, n, NULL);
-      |                      ^~~~~~~~~~~~~~~~~
-fs/ext2/dir.c:109:13: error: conflicting types for 'ext2_check_page'
-  109 | static bool ext2_check_page(struct page *page, int quiet)
-      |             ^~~~~~~~~~~~~~~
-In file included from fs/ext2/dir.c:25:
-fs/ext2/ext2.h:764:28: note: previous implicit declaration of 'ext2_check_p=
-age' was here
-  764 |    if (PageError(page) || !ext2_check_page(page, quiet))
-      |                            ^~~~~~~~~~~~~~~
-fs/ext2/dir.c:109:13: warning: 'ext2_check_page' defined but not used [-Wun=
-used-function]
-  109 | static bool ext2_check_page(struct page *page, int quiet)
-      |             ^~~~~~~~~~~~~~~
+diff --git a/arch/mips/configs/generic/board-ranchu.config b/arch/mips/configs/generic/board-ranchu.config
+index fee9ad4c5598..640aac845ebe 100644
+--- a/arch/mips/configs/generic/board-ranchu.config
++++ b/arch/mips/configs/generic/board-ranchu.config
+@@ -5,7 +5,6 @@ CONFIG_FB=y
+ CONFIG_FB_GOLDFISH=y
+ CONFIG_GOLDFISH=y
+ CONFIG_STAGING=y
+-CONFIG_GOLDFISH_AUDIO=y
+ CONFIG_GOLDFISH_PIC=y
+ CONFIG_GOLDFISH_PIPE=y
+ CONFIG_GOLDFISH_TTY=y
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index 2d0310448eba..c4fb7312392a 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -68,8 +68,6 @@ source "drivers/staging/gdm724x/Kconfig"
+ 
+ source "drivers/staging/fwserial/Kconfig"
+ 
+-source "drivers/staging/goldfish/Kconfig"
+-
+ source "drivers/staging/netlogic/Kconfig"
+ 
+ source "drivers/staging/gs_fpgaboot/Kconfig"
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 757a892ab5b9..b72c3a04899b 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -25,7 +25,6 @@ obj-$(CONFIG_ANDROID)		+= android/
+ obj-$(CONFIG_STAGING_BOARD)	+= board/
+ obj-$(CONFIG_LTE_GDM724X)	+= gdm724x/
+ obj-$(CONFIG_FIREWIRE_SERIAL)	+= fwserial/
+-obj-$(CONFIG_GOLDFISH)		+= goldfish/
+ obj-$(CONFIG_GS_FPGABOOT)	+= gs_fpgaboot/
+ obj-$(CONFIG_UNISYSSPAR)	+= unisys/
+ obj-$(CONFIG_COMMON_CLK_XLNX_CLKWZRD)	+= clocking-wizard/
+diff --git a/drivers/staging/goldfish/Kconfig b/drivers/staging/goldfish/Kconfig
+deleted file mode 100644
+index 728f4700b98d..000000000000
+--- a/drivers/staging/goldfish/Kconfig
++++ /dev/null
+@@ -1,7 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-config GOLDFISH_AUDIO
+-	tristate "Goldfish AVD Audio Device"
+-	depends on GOLDFISH
+-	help
+-	  Emulated audio channel for the Goldfish Android Virtual Device
+-
+diff --git a/drivers/staging/goldfish/Makefile b/drivers/staging/goldfish/Makefile
+deleted file mode 100644
+index f7cee15529c3..000000000000
+--- a/drivers/staging/goldfish/Makefile
++++ /dev/null
+@@ -1,6 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-#
+-# Makefile for the Goldfish audio driver
+-#
+-
+-obj-$(CONFIG_GOLDFISH_AUDIO) += goldfish_audio.o
+diff --git a/drivers/staging/goldfish/README b/drivers/staging/goldfish/README
+deleted file mode 100644
+index ed08c4d46e75..000000000000
+--- a/drivers/staging/goldfish/README
++++ /dev/null
+@@ -1,5 +0,0 @@
+-Audio
+------
+-- Move to using the ALSA framework not faking it
+-- Fix the wrong user page DMA (moving to ALSA may fix that too)
+-
+diff --git a/drivers/staging/goldfish/goldfish_audio.c b/drivers/staging/goldfish/goldfish_audio.c
+deleted file mode 100644
+index 0c65a0121dde..000000000000
+--- a/drivers/staging/goldfish/goldfish_audio.c
++++ /dev/null
+@@ -1,383 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * drivers/misc/goldfish_audio.c
+- *
+- * Copyright (C) 2007 Google, Inc.
+- * Copyright (C) 2012 Intel, Inc.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/miscdevice.h>
+-#include <linux/fs.h>
+-#include <linux/platform_device.h>
+-#include <linux/types.h>
+-#include <linux/pci.h>
+-#include <linux/interrupt.h>
+-#include <linux/io.h>
+-#include <linux/sched.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/uaccess.h>
+-#include <linux/slab.h>
+-#include <linux/goldfish.h>
+-#include <linux/acpi.h>
+-
+-MODULE_AUTHOR("Google, Inc.");
+-MODULE_DESCRIPTION("Android QEMU Audio Driver");
+-MODULE_LICENSE("GPL");
+-MODULE_VERSION("1.0");
+-
+-struct goldfish_audio {
+-	char __iomem *reg_base;
+-	int irq;
+-
+-	/* lock protects access to buffer_status and to device registers */
+-	spinlock_t lock;
+-	wait_queue_head_t wait;
+-
+-	char *buffer_virt;		/* combined buffer virtual address */
+-	unsigned long buffer_phys;	/* combined buffer physical address */
+-
+-	char *write_buffer1;		/* write buffer 1 virtual address */
+-	char *write_buffer2;		/* write buffer 2 virtual address */
+-	char *read_buffer;		/* read buffer virtual address */
+-	int buffer_status;
+-	int read_supported;	/* true if we have audio input support */
+-};
+-
+-/*
+- *  We will allocate two read buffers and two write buffers.
+- *  Having two read buffers facilitate stereo -> mono conversion.
+- *  Having two write buffers facilitate interleaved IO.
+- */
+-#define READ_BUFFER_SIZE	16384
+-#define WRITE_BUFFER_SIZE	16384
+-#define COMBINED_BUFFER_SIZE	((2 * READ_BUFFER_SIZE) + \
+-					(2 * WRITE_BUFFER_SIZE))
+-
+-/*
+- *  temporary variable used between goldfish_audio_probe() and
+- *  goldfish_audio_open()
+- */
+-static struct goldfish_audio *audio_data;
+-
+-enum {
+-	/* audio status register */
+-	AUDIO_INT_STATUS	= 0x00,
+-	/* set this to enable IRQ */
+-	AUDIO_INT_ENABLE	= 0x04,
+-	/* set these to specify buffer addresses */
+-	AUDIO_SET_WRITE_BUFFER_1 = 0x08,
+-	AUDIO_SET_WRITE_BUFFER_2 = 0x0C,
+-	/* set number of bytes in buffer to write */
+-	AUDIO_WRITE_BUFFER_1  = 0x10,
+-	AUDIO_WRITE_BUFFER_2  = 0x14,
+-	AUDIO_SET_WRITE_BUFFER_1_HIGH = 0x28,
+-	AUDIO_SET_WRITE_BUFFER_2_HIGH = 0x30,
+-
+-	/* true if audio input is supported */
+-	AUDIO_READ_SUPPORTED = 0x18,
+-	/* buffer to use for audio input */
+-	AUDIO_SET_READ_BUFFER = 0x1C,
+-	AUDIO_SET_READ_BUFFER_HIGH = 0x34,
+-
+-	/* driver writes number of bytes to read */
+-	AUDIO_START_READ  = 0x20,
+-
+-	/* number of bytes available in read buffer */
+-	AUDIO_READ_BUFFER_AVAILABLE  = 0x24,
+-
+-	/* AUDIO_INT_STATUS bits */
+-
+-	/* this bit set when it is safe to write more bytes to the buffer */
+-	AUDIO_INT_WRITE_BUFFER_1_EMPTY	= 1U << 0,
+-	AUDIO_INT_WRITE_BUFFER_2_EMPTY	= 1U << 1,
+-	AUDIO_INT_READ_BUFFER_FULL	= 1U << 2,
+-
+-	AUDIO_INT_MASK			= AUDIO_INT_WRITE_BUFFER_1_EMPTY |
+-					  AUDIO_INT_WRITE_BUFFER_2_EMPTY |
+-					  AUDIO_INT_READ_BUFFER_FULL,
+-};
+-
+-static atomic_t open_count = ATOMIC_INIT(0);
+-
+-static unsigned int audio_read(const struct goldfish_audio *data, int addr)
+-{
+-	return readl(data->reg_base + addr);
+-}
+-
+-static void audio_write(const struct goldfish_audio *data,
+-			int addr, unsigned int x)
+-{
+-	writel(x, data->reg_base + addr);
+-}
+-
+-static void audio_write64(const struct goldfish_audio *data,
+-			  int addr_lo, int addr_hi, unsigned int x)
+-{
+-	char __iomem *reg_base = data->reg_base;
+-
+-	gf_write_dma_addr(x, reg_base + addr_lo, reg_base + addr_hi);
+-}
+-
+-static ssize_t goldfish_audio_read(struct file *fp, char __user *buf,
+-				   size_t count, loff_t *pos)
+-{
+-	struct goldfish_audio *data = fp->private_data;
+-	unsigned long irq_flags;
+-	int length;
+-	int result = 0;
+-
+-	if (!data->read_supported)
+-		return -ENODEV;
+-
+-	while (count > 0) {
+-		length = (count > READ_BUFFER_SIZE ? READ_BUFFER_SIZE : count);
+-		audio_write(data, AUDIO_START_READ, length);
+-
+-		wait_event_interruptible(data->wait, data->buffer_status &
+-					 AUDIO_INT_READ_BUFFER_FULL);
+-
+-		spin_lock_irqsave(&data->lock, irq_flags);
+-		data->buffer_status &= ~AUDIO_INT_READ_BUFFER_FULL;
+-		spin_unlock_irqrestore(&data->lock, irq_flags);
+-
+-		length = audio_read(data, AUDIO_READ_BUFFER_AVAILABLE);
+-
+-		/* copy data to user space */
+-		if (copy_to_user(buf, data->read_buffer, length))
+-			return -EFAULT;
+-
+-		result += length;
+-		buf += length;
+-		count -= length;
+-	}
+-	return result;
+-}
+-
+-static ssize_t goldfish_audio_write(struct file *fp, const char __user *buf,
+-				    size_t count, loff_t *pos)
+-{
+-	struct goldfish_audio *data = fp->private_data;
+-	unsigned long irq_flags;
+-	ssize_t result = 0;
+-	char *kbuf;
+-
+-	while (count > 0) {
+-		ssize_t copy = count;
+-
+-		if (copy > WRITE_BUFFER_SIZE)
+-			copy = WRITE_BUFFER_SIZE;
+-		wait_event_interruptible(data->wait, data->buffer_status &
+-					(AUDIO_INT_WRITE_BUFFER_1_EMPTY |
+-					AUDIO_INT_WRITE_BUFFER_2_EMPTY));
+-
+-		if ((data->buffer_status & AUDIO_INT_WRITE_BUFFER_1_EMPTY) != 0)
+-			kbuf = data->write_buffer1;
+-		else
+-			kbuf = data->write_buffer2;
+-
+-		/* copy from user space to the appropriate buffer */
+-		if (copy_from_user(kbuf, buf, copy)) {
+-			result = -EFAULT;
+-			break;
+-		}
+-
+-		spin_lock_irqsave(&data->lock, irq_flags);
+-		/*
+-		 *  clear the buffer empty flag, and signal the emulator
+-		 *  to start writing the buffer
+-		 */
+-		if (kbuf == data->write_buffer1) {
+-			data->buffer_status &= ~AUDIO_INT_WRITE_BUFFER_1_EMPTY;
+-			audio_write(data, AUDIO_WRITE_BUFFER_1, copy);
+-		} else {
+-			data->buffer_status &= ~AUDIO_INT_WRITE_BUFFER_2_EMPTY;
+-			audio_write(data, AUDIO_WRITE_BUFFER_2, copy);
+-		}
+-		spin_unlock_irqrestore(&data->lock, irq_flags);
+-
+-		buf += copy;
+-		result += copy;
+-		count -= copy;
+-	}
+-	return result;
+-}
+-
+-static int goldfish_audio_open(struct inode *ip, struct file *fp)
+-{
+-	if (!audio_data)
+-		return -ENODEV;
+-
+-	if (atomic_inc_return(&open_count) == 1) {
+-		fp->private_data = audio_data;
+-		audio_data->buffer_status = (AUDIO_INT_WRITE_BUFFER_1_EMPTY |
+-					     AUDIO_INT_WRITE_BUFFER_2_EMPTY);
+-		audio_write(audio_data, AUDIO_INT_ENABLE, AUDIO_INT_MASK);
+-		return 0;
+-	}
+-
+-	atomic_dec(&open_count);
+-	return -EBUSY;
+-}
+-
+-static int goldfish_audio_release(struct inode *ip, struct file *fp)
+-{
+-	atomic_dec(&open_count);
+-	/* FIXME: surely this is wrong for the multi-opened case */
+-	audio_write(audio_data, AUDIO_INT_ENABLE, 0);
+-	return 0;
+-}
+-
+-static long goldfish_audio_ioctl(struct file *fp, unsigned int cmd,
+-				 unsigned long arg)
+-{
+-	/* temporary workaround, until we switch to the ALSA API */
+-	if (cmd == 315)
+-		return -1;
+-
+-	return 0;
+-}
+-
+-static irqreturn_t goldfish_audio_interrupt(int irq, void *dev_id)
+-{
+-	unsigned long irq_flags;
+-	struct goldfish_audio	*data = dev_id;
+-	u32 status;
+-
+-	spin_lock_irqsave(&data->lock, irq_flags);
+-
+-	/* read buffer status flags */
+-	status = audio_read(data, AUDIO_INT_STATUS);
+-	status &= AUDIO_INT_MASK;
+-	/*
+-	 *  if buffers are newly empty, wake up blocked
+-	 *  goldfish_audio_write() call
+-	 */
+-	if (status) {
+-		data->buffer_status = status;
+-		wake_up(&data->wait);
+-	}
+-
+-	spin_unlock_irqrestore(&data->lock, irq_flags);
+-	return status ? IRQ_HANDLED : IRQ_NONE;
+-}
+-
+-/* file operations for /dev/eac */
+-static const struct file_operations goldfish_audio_fops = {
+-	.owner = THIS_MODULE,
+-	.read = goldfish_audio_read,
+-	.write = goldfish_audio_write,
+-	.open = goldfish_audio_open,
+-	.release = goldfish_audio_release,
+-	.unlocked_ioctl = goldfish_audio_ioctl,
+-};
+-
+-static struct miscdevice goldfish_audio_device = {
+-	.minor = MISC_DYNAMIC_MINOR,
+-	.name = "eac",
+-	.fops = &goldfish_audio_fops,
+-};
+-
+-static int goldfish_audio_probe(struct platform_device *pdev)
+-{
+-	int ret;
+-	struct resource *r;
+-	struct goldfish_audio *data;
+-	dma_addr_t buf_addr;
+-
+-	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+-	if (!data)
+-		return -ENOMEM;
+-	spin_lock_init(&data->lock);
+-	init_waitqueue_head(&data->wait);
+-	platform_set_drvdata(pdev, data);
+-
+-	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!r) {
+-		dev_err(&pdev->dev, "platform_get_resource failed\n");
+-		return -ENODEV;
+-	}
+-	data->reg_base = devm_ioremap(&pdev->dev, r->start, PAGE_SIZE);
+-	if (!data->reg_base)
+-		return -ENOMEM;
+-
+-	data->irq = platform_get_irq(pdev, 0);
+-	if (data->irq < 0)
+-		return -ENODEV;
+-	data->buffer_virt = dmam_alloc_coherent(&pdev->dev,
+-						COMBINED_BUFFER_SIZE,
+-						&buf_addr, GFP_KERNEL);
+-	if (!data->buffer_virt) {
+-		dev_err(&pdev->dev, "allocate buffer failed\n");
+-		return -ENOMEM;
+-	}
+-	data->buffer_phys = buf_addr;
+-	data->write_buffer1 = data->buffer_virt;
+-	data->write_buffer2 = data->buffer_virt + WRITE_BUFFER_SIZE;
+-	data->read_buffer = data->buffer_virt + 2 * WRITE_BUFFER_SIZE;
+-
+-	ret = devm_request_irq(&pdev->dev, data->irq, goldfish_audio_interrupt,
+-			       IRQF_SHARED, pdev->name, data);
+-	if (ret) {
+-		dev_err(&pdev->dev, "request_irq failed\n");
+-		return ret;
+-	}
+-
+-	ret = misc_register(&goldfish_audio_device);
+-	if (ret) {
+-		dev_err(&pdev->dev,
+-			"misc_register returned %d in goldfish_audio_init\n",
+-								ret);
+-		return ret;
+-	}
+-
+-	audio_write64(data, AUDIO_SET_WRITE_BUFFER_1,
+-		      AUDIO_SET_WRITE_BUFFER_1_HIGH, buf_addr);
+-	buf_addr += WRITE_BUFFER_SIZE;
+-
+-	audio_write64(data, AUDIO_SET_WRITE_BUFFER_2,
+-		      AUDIO_SET_WRITE_BUFFER_2_HIGH, buf_addr);
+-
+-	buf_addr += WRITE_BUFFER_SIZE;
+-
+-	data->read_supported = audio_read(data, AUDIO_READ_SUPPORTED);
+-	if (data->read_supported)
+-		audio_write64(data, AUDIO_SET_READ_BUFFER,
+-			      AUDIO_SET_READ_BUFFER_HIGH, buf_addr);
+-
+-	audio_data = data;
+-	return 0;
+-}
+-
+-static int goldfish_audio_remove(struct platform_device *pdev)
+-{
+-	misc_deregister(&goldfish_audio_device);
+-	audio_data = NULL;
+-	return 0;
+-}
+-
+-static const struct of_device_id goldfish_audio_of_match[] = {
+-	{ .compatible = "google,goldfish-audio", },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, goldfish_audio_of_match);
+-
+-#ifdef CONFIG_ACPI
+-static const struct acpi_device_id goldfish_audio_acpi_match[] = {
+-	{ "GFSH0005", 0 },
+-	{ },
+-};
+-MODULE_DEVICE_TABLE(acpi, goldfish_audio_acpi_match);
+-#endif
+-
+-static struct platform_driver goldfish_audio_driver = {
+-	.probe		= goldfish_audio_probe,
+-	.remove		= goldfish_audio_remove,
+-	.driver = {
+-		.name = "goldfish_audio",
+-		.of_match_table = goldfish_audio_of_match,
+-		.acpi_match_table = ACPI_PTR(goldfish_audio_acpi_match),
+-	}
+-};
+-
+-module_platform_driver(goldfish_audio_driver);
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
-
-Caused by commit
-
-  32559cea1f55 ("fs/ext2: Use ext2_put_page")
-
-Presumably some missing includes :-(
-
-I have used the ext3 tree from next-20201112 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gItWAFBWgJ_=3hCeD6U2tez
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+tyZkACgkQAVBC80lX
-0GyHbwf/VqAx7m9rvPZHLnalGGZzRVtH12CspxiP5MyVnA3yMAUamCLE6VxHd5YI
-ZjNgVzCCDrTWt3WOuvNJe/fyN6u/9qDFn7gBiNzZY9yAcBXggNaqwnRlRkB+xZAp
-qj7T7jlG+BCk0wWc6yyyk1tWQLcVs+cYhSwQ8ryhFs7Ie42+g5zKdPzCiLpLslsr
-qZr0QdU2PCBGiUbKM+8c69N9OkDVouRPY7TEyg/BpA4mJ9oBI+eHZTKWEvozTNcx
-6UhFET3b+iMRPXt76y0qmoH/KyiL860hKAHLmS8+nULVljuJfvaxuAfWaeRoL8y+
-7/3zvZxBuCp9ahFpRcZJC+RjPptXwQ==
-=OksF
------END PGP SIGNATURE-----
-
---Sig_/gItWAFBWgJ_=3hCeD6U2tez--
