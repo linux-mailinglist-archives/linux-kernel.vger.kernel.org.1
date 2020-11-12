@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA382B0A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3549B2B0A35
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgKLQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:37:51 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:51062 "EHLO
+        id S1728826AbgKLQiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:38:13 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:51066 "EHLO
         mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728756AbgKLQhR (ORCPT
+        with ESMTP id S1728757AbgKLQhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:37:17 -0500
+        Thu, 12 Nov 2020 11:37:16 -0500
 Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 69CA93B925E
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 97A433B925F
         for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:28:19 +0000 (UTC)
 Received: from uno.lan (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
         (Authenticated sender: jacopo@jmondi.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C6694100002;
-        Thu, 12 Nov 2020 16:27:52 +0000 (UTC)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 4309510000B;
+        Thu, 12 Nov 2020 16:27:55 +0000 (UTC)
 From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
 To:     kieran.bingham+renesas@ideasonboard.com,
         laurent.pinchart+renesas@ideasonboard.com,
@@ -27,9 +27,9 @@ Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
         linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v4 4/8] media: i2c: max9286: Make channel amplitude programmable
-Date:   Thu, 12 Nov 2020 17:27:25 +0100
-Message-Id: <20201112162729.101384-5-jacopo+renesas@jmondi.org>
+Subject: [PATCH v4 5/8] media: i2c: max9286: Configure reverse channel amplitude
+Date:   Thu, 12 Nov 2020 17:27:26 +0100
+Message-Id: <20201112162729.101384-6-jacopo+renesas@jmondi.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201112162729.101384-1-jacopo+renesas@jmondi.org>
 References: <20201112162729.101384-1-jacopo+renesas@jmondi.org>
@@ -39,66 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instrument the function that configures the reverse channel with a
-programmable amplitude value.
+Adjust the initial reverse channel amplitude parsing from
+firmware interface the 'maxim,initial-reverse-channel-mV'
+property.
 
-This change serves to prepare to adjust the reverse channel amplitude
-depending on the remote end high-threshold configuration.
+This change is required for both rdacm20 and rdacm21 camera
+modules to be correctly probed when used in combination with
+the max9286 deserializer.
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 ---
- drivers/media/i2c/max9286.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ drivers/media/i2c/max9286.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-index 526b6e557dfb..31e27d0f34f1 100644
+index 31e27d0f34f1..11ba047f3793 100644
 --- a/drivers/media/i2c/max9286.c
 +++ b/drivers/media/i2c/max9286.c
-@@ -336,19 +336,29 @@ static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
- 	usleep_range(3000, 5000);
- }
+@@ -163,6 +163,8 @@ struct max9286_priv {
+ 	unsigned int mux_channel;
+ 	bool mux_open;
  
--static void max9286_reverse_channel_setup(struct max9286_priv *priv)
-+static void max9286_reverse_channel_setup(struct max9286_priv *priv,
-+					  unsigned int chan_amplitude)
- {
-+	/* Reverse channel transmission time: default to 1. */
-+	u8 chan_config = MAX9286_REV_TRF(1);
++	u32 reverse_channel_mV;
 +
- 	/*
- 	 * Reverse channel setup.
+ 	struct v4l2_ctrl_handler ctrls;
+ 	struct v4l2_ctrl *pixelrate;
+ 
+@@ -557,10 +559,14 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+ 	 * All enabled sources have probed and enabled their reverse control
+ 	 * channels:
  	 *
- 	 * - Enable custom reverse channel configuration (through register 0x3f)
- 	 *   and set the first pulse length to 35 clock cycles.
--	 * - Increase the reverse channel amplitude to 170mV to accommodate the
--	 *   high threshold enabled by the serializer driver.
-+	 * - Adjust reverse channel amplitude: values > 130 are programmed
-+	 *   using the additional +100mV REV_AMP_X boost flag
++	 * - Increase the reverse channel amplitude to compensate for the
++	 *   remote ends high threshold, if not done already
+ 	 * - Verify all configuration links are properly detected
+ 	 * - Disable auto-ack as communication on the control channel are now
+ 	 *   stable.
  	 */
- 	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
--	max9286_write(priv, 0x3b, MAX9286_REV_TRF(1) | MAX9286_REV_AMP(70) |
--		      MAX9286_REV_AMP_X);
-+
-+	if (chan_amplitude > 100) {
-+		/* It is not possible to express values (100 < x < 130) */
-+		chan_amplitude = chan_amplitude < 130
-+			       ? 30 : chan_amplitude - 100;
-+		chan_config |= MAX9286_REV_AMP_X;
-+	}
-+	max9286_write(priv, 0x3b, chan_config | MAX9286_REV_AMP(chan_amplitude));
- 	usleep_range(2000, 2500);
- }
++	if (priv->reverse_channel_mV < 170)
++		max9286_reverse_channel_setup(priv, 170);
+ 	max9286_check_config_link(priv, priv->source_mask);
  
-@@ -957,7 +967,7 @@ static int max9286_setup(struct max9286_priv *priv)
+ 	/*
+@@ -967,7 +973,7 @@ static int max9286_setup(struct max9286_priv *priv)
  	 * only. This should be disabled after the mux is initialised.
  	 */
  	max9286_configure_i2c(priv, true);
--	max9286_reverse_channel_setup(priv);
-+	max9286_reverse_channel_setup(priv, 170);
+-	max9286_reverse_channel_setup(priv, 170);
++	max9286_reverse_channel_setup(priv, priv->reverse_channel_mV);
  
  	/*
  	 * Enable GMSL links, mask unused ones and autodetect link
+@@ -1235,6 +1241,18 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+ 	}
+ 	of_node_put(node);
+ 
++	/*
++	 * Parse the initial value of the reverse channel amplitude from
++	 * the firmware interface.
++	 *
++	 * Default it to 170mV for backward compatibility with DTB that do not
++	 * provide the property.
++	 */
++	if (of_property_read_u32(dev->of_node,
++				 "maxim,initial-reverse-channel-mV",
++				 &priv->reverse_channel_mV))
++		priv->reverse_channel_mV = 170;
++
+ 	priv->route_mask = priv->source_mask;
+ 
+ 	return 0;
 -- 
 2.29.1
 
