@@ -2,67 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8344D2B0DF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562352B0DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgKLTZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:25:20 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:65090 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727022AbgKLTZS (ORCPT
+        id S1727061AbgKLTZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:25:27 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:46225 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727022AbgKLTZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:25:18 -0500
-Received: from 89-64-87-233.dynamic.chello.pl (89.64.87.233) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
- id e8aaa7f4f64da90c; Thu, 12 Nov 2020 20:25:16 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] cpufreq: intel_pstate: Simplify intel_cpufreq_update_pstate()
-Date:   Thu, 12 Nov 2020 20:25:15 +0100
-Message-ID: <1628789.U0t87mjxhl@kreacher>
+        Thu, 12 Nov 2020 14:25:25 -0500
+Received: (qmail 288074 invoked by uid 1000); 12 Nov 2020 14:25:24 -0500
+Date:   Thu, 12 Nov 2020 14:25:24 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     John Boero <boeroboy@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
+Message-ID: <20201112192524.GB287229@rowland.harvard.edu>
+References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
+ <X61rce8GANHW1ysh@kroah.com>
+ <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
+ <X613chtPVIg8kquH@kroah.com>
+ <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Nov 12, 2020 at 06:15:08PM +0000, John Boero wrote:
+> Then why does line 278 right below it check for NULL?
 
-Avoid doing the same assignment in both branches of a conditional,
-do it after the whole conditional instead.
+Are you asking about line 278 in drivers/usb/core/usb.c?  The statement 
+which says:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpufreq/intel_pstate.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+	if (!config)
+		return NULL;
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -2569,14 +2569,13 @@ static int intel_cpufreq_update_pstate(s
- 	int old_pstate = cpu->pstate.current_pstate;
- 
- 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
--	if (hwp_active) {
-+	if (hwp_active)
- 		intel_cpufreq_adjust_hwp(cpu, target_pstate,
- 					 policy->strict_target, fast_switch);
--		cpu->pstate.current_pstate = target_pstate;
--	} else if (target_pstate != old_pstate) {
-+	else if (target_pstate != old_pstate)
- 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
--		cpu->pstate.current_pstate = target_pstate;
--	}
-+
-+	cpu->pstate.current_pstate = target_pstate;
- 
- 	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
- 			    INTEL_PSTATE_TRACE_TARGET, old_pstate);
+This is because it is perfectly valid for config to be NULL at this 
+point.  But it is not valid for dev to be NULL.  If dev is NULL then 
+there is a bug in the caller.
 
-
-
+Alan Stern
