@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D77E2B105D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5072B1068
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbgKLV1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S1727346AbgKLV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727676AbgKLV1w (ORCPT
+        with ESMTP id S1726960AbgKLV2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:27:52 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B14C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:27:52 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id y9so6660688ilb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:27:51 -0800 (PST)
+        Thu, 12 Nov 2020 16:28:54 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AF4C0613D1;
+        Thu, 12 Nov 2020 13:28:54 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c9so6468664wml.5;
+        Thu, 12 Nov 2020 13:28:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Pe7knPPM6RlQRiyKkqHKowghuuy1LIXCQskVBXm8l/4=;
-        b=a4nIvoFdd07r8vUOoQfGfMWVPK1O+s3ylwqh1FSBwKi2gBJxL5iI84Bw5zkNhxJo8E
-         T4Jrb7aWCnL5uxBa9duWfo71MKj5BAxPTy5Q8BQ+32pTQ6T1TenQNbH+Fh9FjL5m60PJ
-         wC2dzl66KcrD9IwOc3RwQZnssW2HnC1AhmnSc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=G2BYNuIxlaObS9p75wcHPXenJKV2OHZTqCiRZ3u3/NU=;
+        b=MjSmxuzUy3A5nn2fW066uU93yV94ooVSUHoz6odmOf1nsFJ03GGRyLVDJVCSyYOY85
+         8u7A1f43k99+/zp9KJUZ2aXt3pkZ1x1fbWRfRDFXLwnOd0EX6W7bfBuG6Ww0CSZQOD5K
+         xeM7/Xw2pc+2/ZRW7NKqr3he6CaUEQfzuswJ5vpMnSp0tz3natDcFiqp0DOwAisWXBdt
+         AShV7rRe5dbd74S0/maGQK0u88EIwPn/JgtF5Rc0Xy8N2FCLafPZGvKYSWRxzZVYUYdT
+         VaTklWmbH8dCI6aK/0sv1qpWkNgSP5u7yc9wmLkaf+yGTYudq1KpsVZFEnrfGDH6K0Ir
+         rPkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pe7knPPM6RlQRiyKkqHKowghuuy1LIXCQskVBXm8l/4=;
-        b=BBTDeVMsnO/BPc9+aj8FxvrVvLfjUjCUEwb5drmkTy2qWEw7/yZ+mzIEnuf+PJuK26
-         MeeUht6x7gmus25i+g7Kd+dY2pciRxrujYjB28th1iSCGBm5vjTLcoAbCbTKUXD1OAGa
-         CXWuWpJOGqZ2FKLUaIJBA/+l+lExbnlY/5e3A/efloV4rX0COpCQp4jcvfEPikuiaN8q
-         oquD1bC9peYfAZHXFNub5DGdqWubL0p9rLP2NQR/zM1hDgt3hqqQZb+dnZOr7vrQElQj
-         3KR0Kb1IX7dVpZriRAxSlX4WVkQzKGhv/5KqjUgi9PxGVf06g9E4fOdVc5A4mxsjEi2D
-         g7ew==
-X-Gm-Message-State: AOAM5315j7Vl79eueqm2T5OGlyUhJh88KnzQ/BkQylTWTXpU13S7g3lL
-        sUnRXBd3+l02SZETVwbd3yO/fQ==
-X-Google-Smtp-Source: ABdhPJwrPDF8nlrvD3hxuIrtrSQDWQIdi9vBTbEo2An0oCHD8zWfGIs/vBLQ26UesmiscVzXPhKAPw==
-X-Received: by 2002:a92:ba8c:: with SMTP id t12mr1184674ill.243.1605216471357;
-        Thu, 12 Nov 2020 13:27:51 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d14sm3525098ila.42.2020.11.12.13.27.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 13:27:50 -0800 (PST)
-Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
-To:     Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     corbet@lwn.net, peterz@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1605027593.git.skhan@linuxfoundation.org>
- <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
- <X6r7BIG8JTUOLcY0@kroah.com> <X6r7Vl45bgGQiAD2@kroah.com>
- <202011101614.E7D880689@keescook>
- <3075a4fd-8615-1459-2b20-b7d9d2be34ff@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f2b3ae49-bc41-0061-e811-1a7e41040366@linuxfoundation.org>
-Date:   Thu, 12 Nov 2020 14:27:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G2BYNuIxlaObS9p75wcHPXenJKV2OHZTqCiRZ3u3/NU=;
+        b=i/iGoyfyIjf2dsb9ZFQ2thEEsBDWlYfIOyOlCq/SB+q+rk5HPM47/3rXwjGfxdR6pu
+         bD7q7yLg1PMkytykz9it7OdevLoGLmtyl5XJn9ssY5A+sYN4M3Bmx+YlTJdYbodNqgVA
+         R/HcmbavJ+ZrU23c/FPXEEltzuBVjs4hsVb7jTQQIznO5Pmezo/4ispwU0FlzPcZutQw
+         u9Lm7h4mTa9iQfTZs/pjqWsrhQZLxJ4kqzCWdznMZAR5tEHLYrLBLIOC++i8Xv5vgdNL
+         i+pQox5uWcLti1MGzPZ+ySDg1GcqacriiaXKmEe8XfscdS0MWbg3Pvl2Pd9JzaRW/xX2
+         2trw==
+X-Gm-Message-State: AOAM5306ZAJwUZmj+U6LgOtO0BJqubbJSzvEkLbmzJ/VbyJ8xeSHRV61
+        IASs7uKyycrohwaEvq42H9fmIJszOQKr37ETrGU=
+X-Google-Smtp-Source: ABdhPJwACnsJDr0htDUIcZ1390M+ztGM6mHPEVrjB75T5GqTdIpxllFizlL3nKTN1oMXRIMVR4CpDhPQIZX/zXW37Sk=
+X-Received: by 2002:a1c:8150:: with SMTP id c77mr1687617wmd.26.1605216522204;
+ Thu, 12 Nov 2020 13:28:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3075a4fd-8615-1459-2b20-b7d9d2be34ff@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-20-lee.jones@linaro.org>
+In-Reply-To: <20201112190039.2785914-20-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 12 Nov 2020 16:28:30 -0500
+Message-ID: <CADnq5_Pu0v=JHsRnB_M1OJNqKOZT0otcU1GCtif12GnKt4ArAg@mail.gmail.com>
+Subject: Re: [PATCH 19/30] drm/amd/amdgpu/amdgpu_cs: Add a couple of missing
+ function param descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 12:23 PM, Shuah Khan wrote:
-> On 11/10/20 5:18 PM, Kees Cook wrote:
->> On Tue, Nov 10, 2020 at 09:43:02PM +0100, Greg KH wrote:
->>> On Tue, Nov 10, 2020 at 09:41:40PM +0100, Greg KH wrote:
->>>> On Tue, Nov 10, 2020 at 12:53:27PM -0700, Shuah Khan wrote:
->>>>> +Decrement interface
->>>>> +-------------------
->>>>> +
->>>>> +Decrements sequence number and doesn't return the new value. ::
->>>>> +
->>>>> +        seqnum32_dec() --> atomic_dec()
->>>>> +        seqnum64_dec() --> atomic64_dec()
->>>>
->>>> Why would you need to decrement a sequence number?  Shouldn't they just
->>>> always go up?
->>>>
->>>> I see you use them in your patch 12/13, but I don't think that 
->>>> really is
->>>> a sequence number there, but rather just some other odd value :)
->>
->> To that end, they should likely be internally cast to u32 and u64 (and
->> why is seqnum64 ifdef on CONFIG_64BIT?).
->>
-> 
+On Thu, Nov 12, 2020 at 2:07 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:685: warning: Function parameter =
+or member 'backoff' not described in 'amdgpu_cs_parser_fini'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1655: warning: Function parameter=
+ or member 'map' not described in 'amdgpu_cs_find_mapping'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-atomic64_t depends on CONFIG_64BIT
+Applied.  Thanks!
 
-include/linux/types.h
+Alex
 
-#ifdef CONFIG_64BIT
-typedef struct {
-         s64 counter;
-} atomic64_t;
-#endif
 
-thanks,
--- Shuah
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd=
+/amdgpu/amdgpu_cs.c
+> index 8d2878e950dab..594a0108e90fa 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> @@ -676,6 +676,7 @@ static int amdgpu_cs_sync_rings(struct amdgpu_cs_pars=
+er *p)
+>   * cs_parser_fini() - clean parser states
+>   * @parser:    parser structure holding parsing context.
+>   * @error:     error number
+> + * @backoff:   indicator to backoff the reservation
+>   *
+>   * If error is set than unvalidate buffer, otherwise just free memory
+>   * used by parsing context.
+> @@ -1644,6 +1645,7 @@ int amdgpu_cs_wait_fences_ioctl(struct drm_device *=
+dev, void *data,
+>   * @parser: command submission parser context
+>   * @addr: VM address
+>   * @bo: resulting BO of the mapping found
+> + * @map: Placeholder to return found BO mapping
+>   *
+>   * Search the buffer objects in the command submission context for a cer=
+tain
+>   * virtual memory address. Returns allocation structure when found, NULL
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
