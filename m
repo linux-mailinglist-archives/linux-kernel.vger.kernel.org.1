@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7482AFC79
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7F72AFC7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgKLBh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:37:29 -0500
-Received: from mail-dm6nam12on2045.outbound.protection.outlook.com ([40.107.243.45]:4065
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728062AbgKLA3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:29:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KFHPmfM0fyLyDFislKF+yBwKo06mNBbb3zxHOlMsSEThcj+7ELqnWYqvFDjFBYhZBPv1U+VExShfxwcNzvGXJOtNEJ5bKVp8UAcBWLUiThWT/88q81/kI2rfK0rMZ1pF8BtZ+GDpCL3tsAPh1jnN1yDFAvhbYMV45sLfq9BsT/xnkiDWHBUT3yIkPbpP4/HB7/TCb9LYWUTWTHuAqJq92G5S75XP0FYg15ahWrrkoUS9nVRT9XvRdIlvPV0BixqVmMWauz2MbVdtdRM0zzgedMp9CIBNh0Ler78Tir/rrZCHYEq83tHwgEVxGuiHARUJu3SGPvUijFVHbVzOhOoKHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=24Aa+945JfFYUIpfbPY+NXHYF2KeL55BSIt0YsaL1OA=;
- b=A00frcLCQmHfIXepffxysKY1b/AgNsYeRkdz4zU6QdbMmGfTFoUebSLAPb3k/JUUVeuQFov3wuFVlWq4FYt/uEgdqMzuRBHdBLpf+cXUhubf6t8O+1di3E7J9q+V2ZpzFkEr4NiY1MQt9M+oV8YI1gyB4NwJZbZY+rSlZ3fD+90PibtLsZaX1fBRQyrvfQ8OQd9FDIYpWliyOQsTBENMZVu9wWXQ9cMlKAt+MCO9BnQ3yXcHGP+S+9SkjJUarCaar3AQiFaSPugRnPPFbGrJeo+niGC43kinlP/ht7xJmKd5pbMfguqtk8r0PVJ0KPxZ3wRktSL9hGATCd0TAzOd3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1728358AbgKLBhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728065AbgKLAbA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 19:31:00 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A47FC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:31:00 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id a20so3649228ilk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:31:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=24Aa+945JfFYUIpfbPY+NXHYF2KeL55BSIt0YsaL1OA=;
- b=ZDugBmcfYCW/Her/8W/IMbd/rmljsUGGbqhPnqHW9WnBo01FBOikkm/mp8YktTezWmEZ6Bvt8HL872NBQE+xa9pKILlpAZrcudFHkbrQEg0W2OkszH0eZ7VBOHW4Q2YbIlJOQgvs1jBcHTcoaOed7ZYyVAwDt6fK0ooeqlBoexk=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN6PR12MB4685.namprd12.prod.outlook.com (2603:10b6:805:b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
- 2020 00:28:28 +0000
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::d877:baf6:9425:ece]) by SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::d877:baf6:9425:ece%3]) with mapi id 15.20.3541.026; Thu, 12 Nov 2020
- 00:28:28 +0000
-Subject: [PATCH 2/2] KVM:SVM: Mask SEV encryption bit from CR3 reserved bits
-From:   Babu Moger <babu.moger@amd.com>
-To:     pbonzini@redhat.com
-Cc:     junaids@google.com, wanpengli@tencent.com, kvm@vger.kernel.org,
-        joro@8bytes.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        sean.j.christopherson@intel.com, mingo@redhat.com, bp@alien8.de,
-        hpa@zytor.com, tglx@linutronix.de, vkuznets@redhat.com,
-        jmattson@google.com
-Date:   Wed, 11 Nov 2020 18:28:26 -0600
-Message-ID: <160514090654.31583.12433653224184517852.stgit@bmoger-ubuntu>
-In-Reply-To: <160514082171.31583.9995411273370528911.stgit@bmoger-ubuntu>
-References: <160514082171.31583.9995411273370528911.stgit@bmoger-ubuntu>
-User-Agent: StGit/0.17.1-dirty
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM5PR21CA0013.namprd21.prod.outlook.com
- (2603:10b6:3:ac::23) To SN1PR12MB2560.namprd12.prod.outlook.com
- (2603:10b6:802:26::19)
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=8l0j+cAspJw3PKNvEwGXKQZgH357sPK1IXSg0Dm5rWM=;
+        b=LNGJWwVJv/+IA3kzIbW9fZVxxRU3l/QIh+VULZZbgiI0DBdOi/8sRaA3pP1V6rSXl4
+         x7epCo6q0RIQza7V/yhUR37RzB+Z0Jtj8mF+Mgw3foZIc29WoH4RyrBlX46WajyP/ptQ
+         pUDCbrrL6sPgMZeAN/TQqnhO2c0+Ar/MjfGls=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=8l0j+cAspJw3PKNvEwGXKQZgH357sPK1IXSg0Dm5rWM=;
+        b=dx19CK+ksP9qyMJ+q4kQwsQ3gMzAELazqvFz3XWlACKEDDyBfGsOQ5JKMG83DC0HfV
+         glY9NWQWBSZmtVVwkQjjrMEN3CHM8cG0kxiWI/c9dBno/PwGs8KRxFOlX8+cQIl79zPQ
+         L+BuM2NChqYyOI8BGECUspKbmAPQJYWYCetv70i+extz2fUZJ9FLSzTZtnvj7Mu+i8Vx
+         JuuG+z1RzT3wM1Z1nTzpsfeaFc/VpwCA3+z76GSXx/bWnlEg+0115dotALnKUfVFuN8B
+         5l4DTLgv9WWVVSglGCJxMT/Sm4PDftU5QZdOY4kMID8WSUzkm8xGsacBojWzdo9pa2HH
+         nHHg==
+X-Gm-Message-State: AOAM533ld4f84m74JpgM5wGvCEg6+iEgFJ+x0hrmCBbamS9uyVEq8C9/
+        CmUtisKj6IfLaWp8MkF8vVNGBw==
+X-Google-Smtp-Source: ABdhPJx1a97kaxKxxIObDOxrDXMR9vrr9lZfPgLuYHRngybHUM+LAZuPz2yhltqA1jFrW78j7RVysA==
+X-Received: by 2002:a92:3312:: with SMTP id a18mr21071286ilf.165.1605141059275;
+        Wed, 11 Nov 2020 16:30:59 -0800 (PST)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id m9sm1831941ioc.15.2020.11.11.16.30.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 11 Nov 2020 16:30:58 -0800 (PST)
+Date:   Thu, 12 Nov 2020 00:30:57 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "smayhew@redhat.com" <smayhew@redhat.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
+        "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
+        "bfields@fieldses.org" <bfields@fieldses.org>
+Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
+ namespaces
+Message-ID: <20201112003056.GA351@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20201102174737.2740-1-sargun@sargun.me>
+ <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
+ <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
+ <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
+ <8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com>
+ <20201111185727.GA27945@ircssh-2.c.rugged-nimbus-611.internal>
+ <17d0e6c2e30d5b28cc1cb0313822e5ca39a2245c.camel@hammerspace.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [127.0.1.1] (165.204.77.1) by DM5PR21CA0013.namprd21.prod.outlook.com (2603:10b6:3:ac::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.9 via Frontend Transport; Thu, 12 Nov 2020 00:28:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e1dd068b-2fbf-4596-ab8f-08d886a1e033
-X-MS-TrafficTypeDiagnostic: SN6PR12MB4685:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB46854D73BBF0E94503BD3CF395E70@SN6PR12MB4685.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gf/X5cjOloAuxcFc8vpAi5RmjKjc9um+LjxQXg5JxTFn1mRp1WhjkqXicGJFQ3G2jL+sl8WYpDT/Mtjn3DbOnyRR3+uRFPls0TCQD9wxPQB1efraaTgt6/OatmI65IVFySljwrN4uqsVAZ9pEkk3Nsr2/XTCIqzsDjjHUyGs4y6aanK7WmAadkrzmtNDq1TTS5z2XF7UUXOyZh+QgHkcUSXNaFVx/Kjy06/JsRLkPXkptdzwuwRbOWZr14QtJcYf1XbuJTfSWO317Fnp9m/4pVI+2LUst6PBnJTQw/sznkQR4uqxjW14ciSwLxN9M/1KAwxuzGjdVv1ETMdlKAN3eQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(39860400002)(136003)(396003)(346002)(376002)(83380400001)(52116002)(186003)(9686003)(26005)(6916009)(7416002)(66946007)(44832011)(16576012)(33716001)(103116003)(956004)(66556008)(4326008)(66476007)(316002)(2906002)(16526019)(6486002)(5660300002)(478600001)(8676002)(8936002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 78jCJmmTbqFj8tOKfJmga/9kVDI+JgCNo+kp/S60O7oRHjnZFYb8/UBZjEhf3jlflG2awIJdTNzDXdjZubjBxAWebbRJUKRlwjYKWc20cK8kCK96qluCosoukLYtnb9PBMEi2WiRIf6CHn0spmHzfj24Q7SJEIPan8rNJ6BAgMhNESX4KeBjzLt4oDTKc7pqSJMlzKJ0I1Bi6htaX1Dzs3iekntUHX7Fr21XxIB5p1fsQIC7sI34IsqVmY7JYwK2cPS2bKh8B4p5shGWVOLLPKiwVy8c6YXi+L6rIIvYASo45GtrY8PJXAiYMxdQnGzUY+/4mgGxQaSKshQP97OsOAOPgb55KjoY+6PYh8Ge4SGyFO3bSBDffxt1C3jZ4w4xfZjsmlmNeRqVM80RJbEYfOrAP4aRKpV1vJ8GDqnTIct+daDkVf3r8OAziL+/kB75fa/UsTRilJ5Gwqrco3PJULbu43aLBbo8LiF4fzcvpL70vhdjGVhsf75O9+Hxs4OGP7sRTqAGHd+hYFkrWJu7LFZBzgPAagOEBDDZydznGbURnn6GDASk//JMs1QFK6KmG5aspp/0VYdpGL9qfnDWTmwDhRvO3DkMSk6KrYKtq7SYmpVPRvRbl0pabTt3LhGrUT+/eCgQQbVzp1QGzvoOkA==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1dd068b-2fbf-4596-ab8f-08d886a1e033
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 00:28:28.4263
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HSh6BAt0820Du6qVEO2CMSlvYwqiX72W+XasRKvr9TYSGAhQSLe2uA6y4zp7KUg5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4685
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17d0e6c2e30d5b28cc1cb0313822e5ca39a2245c.camel@hammerspace.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to the mask_cr3_rsvd_bits() callback to mask the
-encryption bit from the CR3 value when SEV is enabled.
+On Wed, Nov 11, 2020 at 08:03:18PM +0000, Trond Myklebust wrote:
+> On Wed, 2020-11-11 at 18:57 +0000, Sargun Dhillon wrote:
+> > On Wed, Nov 11, 2020 at 02:38:11PM +0000, Trond Myklebust wrote:
+> > > On Wed, 2020-11-11 at 11:12 +0000, Sargun Dhillon wrote:
+> > > 
+> > > The current code for setting server->cred was developed
+> > > independently
+> > > of fsopen() (and predates it actually). I'm fine with the change to
+> > > have server->cred be the cred of the user that called fsopen().
+> > > That's
+> > > in line with what we used to do for sys_mount().
+> > > 
+> > Just curious, without FS_USERNS, how were you mounting NFSv4 in an
+> > unprivileged user ns?
+> 
+> The code was originally developed on a 5.1 kernel. So all my testing
+> has been with ordinary sys_mount() calls in a container that had
+> CAP_SYS_ADMIN privileges.
+> 
+> > > However all the other stuff to throw errors when the user namespace
+> > > is
+> > > not init_user_ns introduces massive regressions.
+> > > 
+> > 
+> > I can remove that and respin the patch. How do you feel about that? 
+> > I would 
+> > still like to keep the log lines though because it is a uapi change.
+> > I am 
+> > worried that someone might exercise this path with GSS and allow for
+> > upcalls 
+> > into the main namespaces by accident -- or be confused of why they're
+> > seeing 
+> > upcalls "in a different namespace".
+> > 
+> > Are you okay with picking up ("NFS: NFSv2/NFSv3: Use cred from
+> > fs_context during 
+> > mount") without any changes?
+> 
+> Why do we need the dprintk()s? It seems to me that either they should
+> be reporting something that the user needs to know (in which case they
+> should be real printk()s) or they are telling us something that we
+> should already know. To me they seem to fit more in the latter
+> category.
+> 
+> > 
+> > I can respin ("NFSv4: Refactor NFS to use user namespaces") without:
+> > /*
+> >  * nfs4idmap is not fully isolated by user namespaces. It is
+> > currently
+> >  * only network namespace aware. If upcalls never happen, we do not
+> >  * need to worry as nfs_client instances aren't shared between
+> >  * user namespaces.
+> >  */
+> > if (idmap_userns(server->nfs_client->cl_idmap) != &init_user_ns && 
+> >         !(server->caps & NFS_CAP_UIDGID_NOMAP)) {
+> >         error = -EINVAL;
+> >         errorf(fc, "Mount credentials are from non init user
+> > namespace and ID mapping is enabled. This is not allowed.");
+> >         goto error;
+> > }
+> > 
+> > (and making it so we can call idmap_userns)
+> > 
+> 
+> Yes. That would be acceptable. Again, though, I'd like to see the
+> dprintk()s gone.
+> 
 
-Additionally, cache the encryption mask for quick access during
-the check.
-
-Fixes: a780a3ea628268b2 ("KVM: X86: Fix reserved bits check for MOV to CR3")
-Signed-off-by: Babu Moger <babu.moger@amd.com>
----
- arch/x86/kvm/svm/svm.c |   11 ++++++++++-
- arch/x86/kvm/svm/svm.h |    3 +++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index a491a47d7f5c..c2b1e52810c6 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3741,6 +3741,7 @@ static u64 svm_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
- static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
-+	struct kvm_cpuid_entry2 *best;
- 
- 	vcpu->arch.xsaves_enabled = guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
- 				    boot_cpu_has(X86_FEATURE_XSAVE) &&
-@@ -3771,6 +3772,12 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
- 		kvm_request_apicv_update(vcpu->kvm, false,
- 					 APICV_INHIBIT_REASON_NESTED);
-+
-+	best = kvm_find_cpuid_entry(vcpu, 0x8000001F, 0);
-+	if (best)
-+		svm->sev_enc_mask = ~(1UL << (best->ebx & 0x3f));
-+	else
-+		svm->sev_enc_mask = ~0UL;
- }
- 
- static bool svm_has_wbinvd_exit(void)
-@@ -4072,7 +4079,9 @@ static void enable_smi_window(struct kvm_vcpu *vcpu)
- 
- static unsigned long svm_mask_cr3_rsvd_bits(struct kvm_vcpu *vcpu, unsigned long cr3)
- {
--	return cr3;
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+
-+	return sev_guest(vcpu->kvm) ? (cr3 & svm->sev_enc_mask) : cr3;
- }
- 
- static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, void *insn, int insn_len)
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 1d853fe4c778..57a36645a0e4 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -152,6 +152,9 @@ struct vcpu_svm {
- 	u64 *avic_physical_id_cache;
- 	bool avic_is_running;
- 
-+	/* SEV Memory encryption mask */
-+	unsigned long sev_enc_mask;
-+
- 	/*
- 	 * Per-vcpu list of struct amd_svm_iommu_ir:
- 	 * This is used mainly to store interrupt remapping information used
-
+I can drop the dprintks, but given this is a uapi change, does it make sense to 
+pr_info_once? Especially, because this can have security impact?
