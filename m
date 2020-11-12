@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658192B1108
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7782B110B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgKLWJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:09:02 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6626 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727268AbgKLWJB (ORCPT
+        id S1727479AbgKLWJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:09:31 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56352 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727352AbgKLWJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:09:01 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fadb2850001>; Thu, 12 Nov 2020 14:09:09 -0800
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 22:08:56 +0000
-Subject: Re: [RFC PATCH 5/6] mm: truncate: split thp to a non-zero order if
- possible.
-To:     Zi Yan <ziy@nvidia.com>, <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-6-zi.yan@sent.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <fb468c74-7da3-8b2c-e98e-ebb12793846e@nvidia.com>
-Date:   Thu, 12 Nov 2020 14:08:56 -0800
+        Thu, 12 Nov 2020 17:09:31 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id F2E2220C2877;
+        Thu, 12 Nov 2020 14:09:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F2E2220C2877
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605218970;
+        bh=+K+BtIDhTV9Ivac9LmNJpqVeNvuYixjagXLIJ2abKpo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Q56yVPRySGgKWN1B/uhkEAS+baWIEekWvsuLhHdIbtlSnCbj77NAMuWAmqPRW7ZAz
+         jH3p02AIPCUmcoL8jlSWUjqH2cyQ6zWEgoHx1daRwCSBOZqQOqiFOx9ldNJjIEtSml
+         Ra8+MHltYegvY1heqhS+j05RYE5NYTcNNrppnPck=
+Subject: Re: [PATCH v5 5/7] IMA: validate supported kernel data sources before
+ measurement
+To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+ <20201101222626.6111-6-tusharsu@linux.microsoft.com>
+ <bef97a69db37d358db21668b179fd8821430b1b4.camel@linux.ibm.com>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <5826d3df-c263-f6c8-cac0-094b3c5a9395@linux.microsoft.com>
+Date:   Thu, 12 Nov 2020 14:09:28 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201111204008.21332-6-zi.yan@sent.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <bef97a69db37d358db21668b179fd8821430b1b4.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605218949; bh=NDadN03xqNXrvsneHUexyQUsnW4XqQpKoZq/QqGvCrw=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ONeUNh4lG4o9qWXiR88CyF1ZxcdWwee7RTtb/uWeGAnlrf8wXC2ARsJLpNsGVBdxN
-         aEc4mC8Myjj1a9DfqvM8o2404w4c+7crPIpIo5lXWsM5MkgLSjQ1wPWUet0SqC2sFs
-         Dvr8aEbpecCyV9qrXet+AdZHAuLskwjJW+hjxpuL33VtEOZM9drs9dR52IkqGxS+nb
-         z09Pb8R81cxJBpS0KwNr5p1KoTnIYzHU557XdAecMGuerjhwH7uqLn2Fiqp1PuGYt3
-         lgWfsPUWOboleiRMcdJH54EXXOxFCyOxLWzVKYD2oab5cOP4qNsZdaNlCopPgZt36m
-         A025KYcb7B57A==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/11/20 12:40 PM, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> To minimize the number of pages after a truncation, when truncating a
-> THP, we do not need to split it all the way down to order-0. The THP has
-> at most three parts, the part before offset, the part to be truncated,
-> the part left at the end. Use the non-zero minimum of them to decide
-> what order we split the THP to.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->   mm/truncate.c | 22 ++++++++++++++++++++--
->   1 file changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index 20bd17538ec2..6d8e3c6115bc 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -237,7 +237,7 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
->   bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
->   {
->   	loff_t pos = page_offset(page);
-> -	unsigned int offset, length;
-> +	unsigned int offset, length, left, min_subpage_size = PAGE_SIZE;
 
-Maybe use "remaining" instead of "left" since I think of the latter as the length of the
-left side (offset).
-  
->   	if (pos < start)
->   		offset = start - pos;
-> @@ -248,6 +248,7 @@ bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
->   		length = length - offset;
->   	else
->   		length = end + 1 - pos - offset;
-> +	left = thp_size(page) - offset - length;
->   
->   	wait_on_page_writeback(page);
->   	if (length == thp_size(page)) {
-> @@ -267,7 +268,24 @@ bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
->   		do_invalidatepage(page, offset, length);
->   	if (!PageTransHuge(page))
->   		return true;
-> -	return split_huge_page(page) == 0;
-> +
-> +	/*
-> +	 * find the non-zero minimum of offset, length, and left and use it to
-> +	 * decide the new order of the page after split
-> +	 */
-> +	if (offset && left)
-> +		min_subpage_size = min_t(unsigned int,
-> +					 min_t(unsigned int, offset, length),
-> +					 left);
-> +	else if (!offset)
-> +		min_subpage_size = min_t(unsigned int, length, left);
-> +	else /* !left */
-> +		min_subpage_size = min_t(unsigned int, length, offset);
-> +
-> +	min_subpage_size = max_t(unsigned int, PAGE_SIZE, min_subpage_size);
-> +
-> +	return split_huge_page_to_list_to_order(page, NULL,
-> +				ilog2(min_subpage_size/PAGE_SIZE)) == 0;
->   }
+On 2020-11-06 6:01 a.m., Mimi Zohar wrote:
+> Hi Tushar,
+> 
+> On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+>> Currently, IMA does not restrict random data sources from measuring
+>> their data using ima_measure_critical_data(). Any kernel data source can
+>> call the function, and it's data will get measured as long as the input
+>> event_data_source is part of the IMA policy - CRITICAL_DATA+data_sources.
+>>
+>> To ensure that only data from supported sources are measured, the kernel
+>> subsystem name needs to be added to a compile-time list of supported
+>> sources (an "allowed list of components"). IMA then validates the input
+>> parameter - "event_data_source" passed to ima_measure_critical_data()
+>> against this allowed list at run-time.
+>>
+>> This compile-time list must be updated when kernel subsystems are
+>> updated to measure their data using IMA.
+>>
+>> Provide an infrastructure for kernel data sources to be added to
+>> IMA's supported data sources list at compile-time. Update
+>> ima_measure_critical_data() to validate, at run-time, that the data
+>> source is supported before measuring the data coming from that source.
+> 
+> For those interested in limiting which critical data to measure, the
+> "data sources" IMA policy rule option already does that.   Why is this
+> needed?
+> 
+> thanks,
+> 
+> Mimi
+> 
 
-What if "min_subpage_size" is 1/2 the THP but offset isn't aligned to 1/2?
-Splitting the page in half wouldn't result in a page that could be freed
-but maybe splitting to 1/4 would (assuming the THP is at least 8x PAGE_SIZE).
+This wasn’t part of the initial series. And I wasn’t convinced if it was
+really needed. :) I added it based on the feedback in v2 of this
+series. (pasted below for reference[1]).
+
+Maybe I misunderstood your feedback at that time.
+
+*Question*
+Could you please let me know if you want us to remove this patch?
+
+
+[1] From v2 of this series:
+https://patchwork.kernel.org/project/linux-integrity/patch/20200821182107.5328-3-tusharsu@linux.microsoft.com/ 
+
+
+ >>>> "keyrings=" isn't bounded because keyrings can be created by 
+userspace.
+ >>>> Perhaps keyring names has a minimum/maximum length.  IMA isn't
+ >>>> measuring userspace construsts.  Shouldn't the list of critical data
+ >>>> being measured be bounded and verified?
+ >>> The comment is not entirely clear.
+ >>> Do you mean there should be some sort of allow_list in IMA, against
+ >>> which the values in "data_sources=" should be vetted? And if the
+ >>> value is present in the IMA allow_list, then only the measurements for
+ >>> that data source are allowed?
+ >>>
+ >>> Or do you mean something else?
+ >>
+ >> Yes, something along those lines.  Does the list of critical data need
+ >> to be vetted?  And if so, against what?
+ > I am thinking of having an enum and string array - just like ima_hooks
+ > and ima_hooks_measure_str in ima.h.
+ > And any new kernel component that would support generic IMA measurements
+ > in future would have to add itself to the enum/array.
+ > And the param *event_data_source in ima_measure_critical_data() will be
+ > vetted against the above enum/string array.
+ >
+ > I will implement it in the next iteration, and hopefully the vetting
+ > workflow will be more clear.
+ >
+ > ~Tushar
+ >>
+ >> Mimi
