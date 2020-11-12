@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2EB2B052B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494202B052D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgKLMwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:52:16 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1158 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727223AbgKLMwP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:52:15 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fad2ff90000>; Thu, 12 Nov 2020 04:52:09 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 12:52:14 +0000
-Received: from moonraker.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 12 Nov 2020 12:52:13 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH V2] ARM: tegra: Populate OPP table for Tegra20 Ventana
-Date:   Thu, 12 Nov 2020 12:52:10 +0000
-Message-ID: <20201112125210.214517-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728142AbgKLMwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:52:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:49462 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727997AbgKLMwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:52:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D0D0101E;
+        Thu, 12 Nov 2020 04:52:22 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 598A13F718;
+        Thu, 12 Nov 2020 04:52:20 -0800 (PST)
+References: <20201112111201.2081902-1-qperret@google.com> <jhjh7puyczc.mognet@arm.com> <20201112123854.GA2222462@google.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@qperret.net>,
+        "open list\:SCHEDULER" <linux-kernel@vger.kernel.org>,
+        kernel-team@android.com, Rick Yiu <rickyiu@google.com>
+Subject: Re: [PATCH] sched/fair: Fix overutilized update in enqueue_task_fair()
+In-reply-to: <20201112123854.GA2222462@google.com>
+Date:   Thu, 12 Nov 2020 12:52:18 +0000
+Message-ID: <jhjeekyyby5.mognet@arm.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605185529; bh=aUrF7mTyktNQ/LBkcSGmc6+2uSxejCTBWAPuhk1LS7U=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=oU4bKU7TkhZrj5fkR5hnqStyziypBOn+zoYfIgJTjmr7Lh72NEwx6nlSCFgZJU+Ki
-         72Xn8yTFCyKm1wlYD85pAWHIyzaGwxPGLUfBYZqjSFGM/6XlEKyIaFQ2a35E1vmYB+
-         5xVqxj8pC8pJ681maWMvsZ4zBGjah7mBGx4/FFINdfaIfWZFMsgD+PhQG8OD6cg1W8
-         KRsUsj/XsTKylV6BEXAuUyJeT+FMsomLvYQvLnSNRe1WT829IO/whqQGw6UCkdGN/w
-         mWiYgd1KfL47xBc+yCH2Kxw6Tcyg/4k3kF2UtHu8RzQBxo4AqkBwo+sbiCV9+mEkjK
-         he3ZTTD9V1ITw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
-(Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
-generic CPUFREQ device-tree driver. Since this change CPUFREQ support
-on the Tegra20 Ventana platform has been broken because the necessary
-device-tree nodes with the operating point information are not populated
-for this platform. Fix this by updating device-tree for Venata to
-include the operating point informration for Tegra20.
 
-Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegr=
-a30 supported now)")
-Cc: stable@vger.kernel.org
+On 12/11/20 12:38, Quentin Perret wrote:
+> On Thursday 12 Nov 2020 at 12:29:59 (+0000), Valentin Schneider wrote:
+>> Alternatively: how much does not updating the overutilized status here help
+>> us? The next tick will unconditionally update it, which for arm64 is
+>> anywhere in the next ]0, 4]ms. That "fake" fork-time util_avg should already
+>> be accounted in the rq util_avg, and even if the new task was running the
+>> entire time, 4ms doesn't buy us much decay.
+>
+> Yes, this is arguably a dodgy hack, which will not save us in a number
+> of cases. The only situation where this helps is for short-lived tasks
+> that will run only once. And this is a sadly common programming pattern.
+>
+> So yeah, this is not the prettiest thing in the world, but it doesn't
+> cost us much and helps some real-world workloads, so ...
+>
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
-Changes since V1:
-- Remove unneeded 'cpu0' phandle
+Aye aye
 
- arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegr=
-a20-ventana.dts
-index b158771ac0b7..1b2a0dcd929a 100644
---- a/arch/arm/boot/dts/tegra20-ventana.dts
-+++ b/arch/arm/boot/dts/tegra20-ventana.dts
-@@ -3,6 +3,7 @@
-=20
- #include <dt-bindings/input/input.h>
- #include "tegra20.dtsi"
-+#include "tegra20-cpu-opp.dtsi"
-=20
- / {
- 	model =3D "NVIDIA Tegra20 Ventana evaluation board";
-@@ -592,6 +593,16 @@ clk32k_in: clock@0 {
- 		#clock-cells =3D <0>;
- 	};
-=20
-+	cpus {
-+		cpu@0 {
-+			operating-points-v2 =3D <&cpu0_opp_table>;
-+		};
-+
-+		cpu@1 {
-+			operating-points-v2 =3D <&cpu0_opp_table>;
-+		};
-+	};
-+
- 	gpio-keys {
- 		compatible =3D "gpio-keys";
-=20
---=20
-2.25.1
-
+> Thanks,
+> Quentin
