@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314DA2AFEE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B852AFE5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgKLFhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:37:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        id S1727238AbgKLFhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:37:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728581AbgKLEIw (ORCPT
+        with ESMTP id S1728619AbgKLEIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 23:08:52 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54541C061A4A
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 20:07:00 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id x22so3376867qkb.16
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 20:07:00 -0800 (PST)
+        Wed, 11 Nov 2020 23:08:54 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6563C061A4E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 20:07:03 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id 144so2915664pfv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 20:07:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=hG49dpXG23551Q1ZScOL6kFRVUg14DXkPPIp9ofvONU=;
-        b=nMODosmJXIBwLmjtUD/lpZvg4hzkZGQDfCplkgOs6MRkUOu9PJohF6Y+uENUAayxz3
-         ieMA6eYz9qPsrXWzope7bG460GHK+VifCUpnaCxSIIHcyc/jpWwA000gkB2Q0h1gIdaQ
-         aEWE7XFzcpJ+yjAV3bOg7iz6gjX+koUXk1vMicvPHv/Pv4Ehfd1H1LzYZP+cd0Q3QQsz
-         0o1LrRVe9NvZGLnT92Ld6UVxn/eihVCLHhC5/0tV3+wHDIKcJFRMKfCEL5+cnQaS1qPM
-         msUlv9mxeaRR7EiJq/TzF0OKMLvU83ulnBFa3oNP9zgyZaQfD9tN87vRdfpLGLTG4MHe
-         mqnQ==
+        bh=ug0jJlb8P0YSNzd4ECXIheLwlAEh7cIHXtwSmBO57G0=;
+        b=CW0qJNPF4MgQYJN4ZF4hdsBKuM5p/nYYn2/zeolITDFQQhidNj5J8JULF2pFNA0ejv
+         vbSczxbiHYpVCf0btvm8jxHI0Zi+meu3OMAPEepoBJR2HfKwhQtRnr/3L9qUVrmPzLF1
+         rSqOqueMblvRL/EzkvpTorH9nA89DxDhNYTfQqc4b9Q8yoxOo27uSFuZLSNNfaAuXTVX
+         Tmkt/LI2LSXxLyMkjVywaddh4funPR7vNAa4qWFdiE11u03rncXr8z5SGtz7F70LY9Cm
+         cXuLGDAauo1YJ9OrF7VPZgLatS3XIsURfwR0CvT8Gfq7omfCZug1yqdTcpX29q3utiCt
+         CsWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=hG49dpXG23551Q1ZScOL6kFRVUg14DXkPPIp9ofvONU=;
-        b=Kr1GzjkSxGUDkEH+e2PY+5hiM9I5QJqS0+x2Sva5VMIuR/G9ZzM5DllV4cj3o+sKRd
-         vDQnOCxp2D1/4Yz6uFi3AAQgddGqsC5usg9aBKS1jvX3GTBla/FWcu5WzCwYn74r9mZ0
-         zIU4aHF57ab5E17sdac5RkVcHobTAlE481agu64ugsL8vlUfwsal5Y3YuOTiRhvbjHiz
-         q0YFIoKLn+hMoSVm+bpFB24wM8phquz+BJ+uMIg2hmYKMXXktLdQ1tSUQWrxmo8gRkiM
-         mmvb9jp+nTRhhpNVDU0lLZv1n0HBo2KMWaydUWh+6/pFJUl82MfW+xzhidLgkbiNUldu
-         Lw1A==
-X-Gm-Message-State: AOAM530SNgMkzG19qULp6Xj2rwFVL/qO2RLeeGTt83OFTaNFft+GMhTK
-        SUUpfo+Z5euTrIeCwu0b1WT2URYbN3Zh/13Aqw==
-X-Google-Smtp-Source: ABdhPJywMKHI5tPk56z6t/hOdNvG04DOBRZe2JgVd2cHxZz0UglBYavO81gi8ofNugYmy4PMr/gxUqSs4V9junXb9w==
+        bh=ug0jJlb8P0YSNzd4ECXIheLwlAEh7cIHXtwSmBO57G0=;
+        b=IWTJ3S9HoIK6z+aY0L9RxUIAWWvxJCCEEFoJyad98Sw/LZpNCJcC/nGb2KEZUg7EAO
+         9JiGBAi/8k7VAfsJ6x7q/s3Dq8LYf9GL1TCWLD+aR5JMe3GhwBNZEXvkGT3A+M0yJwwx
+         ZZAPtc9hXv4PxECYPfrye8/858zxJWCak1BEbObsKGmc5ebMgtpuTqwqYyf88z/rBx7T
+         Qgmp9xODe4Z8HAWtHW4I+Ao0zDaD4WvM5k1/uuaYvMgXF/qkg2V31cDckJnMv+giVrwE
+         Y88wR+TkcHxmiObatmhXebjPQpLvOi/VW01/RO5AOCau0Fi+cxlCHVh5IMuEQfdRP70e
+         AzTA==
+X-Gm-Message-State: AOAM532Yby4RdxOfW90CQoDxhVA9sisZj3iN+eSOj+EADHeDk/xNE3Dq
+        qXbZMPwIYXudP3hkm1QLF9MjHp7cDoivY0jmHg==
+X-Google-Smtp-Source: ABdhPJxk5uQSsOu+/MTIk+c+SeQcCGMcS+RuHrmJ5XNLDg8wV+JsOafcWctsRRrMZntEeJKA4r9zoZjKomrNvXh5KA==
 Sender: "howardchung via sendgmr" 
         <howardchung@howardchung-p920.tpe.corp.google.com>
 X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
- (user=howardchung job=sendgmr) by 2002:ad4:47b0:: with SMTP id
- a16mr27960088qvz.22.1605154019539; Wed, 11 Nov 2020 20:06:59 -0800 (PST)
-Date:   Thu, 12 Nov 2020 12:06:39 +0800
+ (user=howardchung job=sendgmr) by 2002:a17:902:74c7:b029:d7:e593:fcb with
+ SMTP id f7-20020a17090274c7b02900d7e5930fcbmr15637736plt.71.1605154023415;
+ Wed, 11 Nov 2020 20:07:03 -0800 (PST)
+Date:   Thu, 12 Nov 2020 12:06:40 +0800
 In-Reply-To: <20201112120532.v10.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
-Message-Id: <20201112120532.v10.4.I9231b35b0be815c32c3a3ec48dcd1d68fa65daf4@changeid>
+Message-Id: <20201112120532.v10.5.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
 Mime-Version: 1.0
 References: <20201112120532.v10.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v10 4/5] Bluetooth: Refactor read default sys config for
- various types
+Subject: [PATCH v10 5/5] Bluetooth: Add toggle to switch off interleave scan
 From:   Howard Chung <howardchung@google.com>
 To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
         luiz.dentz@gmail.com
@@ -69,181 +69,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor read default system configuration function so that it's capable
-of returning different types than u16
+This patch add a configurable parameter to switch off the interleave
+scan feature.
 
+Reviewed-by: Alain Michaud <alainm@chromium.org>
 Signed-off-by: Howard Chung <howardchung@google.com>
 ---
 
-(no changes since v8)
+(no changes since v9)
 
-Changes in v8:
-- Update the commit title and message
+Changes in v9:
+- Update and rename the macro TLV_GET_LE8
 
- net/bluetooth/mgmt_config.c | 140 +++++++++++++++++++++---------------
- 1 file changed, 84 insertions(+), 56 deletions(-)
+Changes in v7:
+- Fix bt_dev_warn arguemnt type warning
 
+Changes in v6:
+- Set EnableAdvMonInterleaveScan to 1 byte long
+
+Changes in v4:
+- Set EnableAdvMonInterleaveScan default to Disable
+- Fix 80 chars limit in mgmt_config.c
+
+ include/net/bluetooth/hci_core.h |  1 +
+ net/bluetooth/hci_core.c         |  1 +
+ net/bluetooth/hci_request.c      |  3 ++-
+ net/bluetooth/mgmt_config.c      | 41 +++++++++++++++++++++++++-------
+ 4 files changed, 37 insertions(+), 9 deletions(-)
+
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index cfede18709d8f..63c6d656564a1 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -363,6 +363,7 @@ struct hci_dev {
+ 	__u32		clock;
+ 	__u16		advmon_allowlist_duration;
+ 	__u16		advmon_no_filter_duration;
++	__u8		enable_advmon_interleave_scan;
+ 
+ 	__u16		devid_source;
+ 	__u16		devid_vendor;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 28ca419dcda6f..5b3f3f92a2e43 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3594,6 +3594,7 @@ struct hci_dev *hci_alloc_dev(void)
+ 
+ 	hdev->advmon_allowlist_duration = 300;
+ 	hdev->advmon_no_filter_duration = 500;
++	hdev->enable_advmon_interleave_scan = 0x00;	/* Default to disable */
+ 
+ 	hdev->sniff_max_interval = 800;
+ 	hdev->sniff_min_interval = 80;
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 2368b050c17f1..e669988a3785c 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1057,7 +1057,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
+ 				      &own_addr_type))
+ 		return;
+ 
+-	if (__hci_update_interleaved_scan(hdev))
++	if (hdev->enable_advmon_interleave_scan &&
++	    __hci_update_interleaved_scan(hdev))
+ 		return;
+ 
+ 	bt_dev_dbg(hdev, "interleave state %d", hdev->interleave_scan_state);
 diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-index 2d3ad288c78ac..282fbf82f3192 100644
+index 282fbf82f3192..1deb0ca7a9297 100644
 --- a/net/bluetooth/mgmt_config.c
 +++ b/net/bluetooth/mgmt_config.c
-@@ -11,72 +11,100 @@
- #include "mgmt_util.h"
- #include "mgmt_config.h"
+@@ -17,12 +17,24 @@
+ 		__le16 value; \
+ 	} __packed _param_name_
  
--#define HDEV_PARAM_U16(_param_code_, _param_name_) \
--{ \
--	{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
--	{ cpu_to_le16(hdev->_param_name_) } \
--}
-+#define HDEV_PARAM_U16(_param_name_) \
++#define HDEV_PARAM_U8(_param_name_) \
 +	struct {\
 +		struct mgmt_tlv entry; \
-+		__le16 value; \
++		__u8 value; \
 +	} __packed _param_name_
++
+ #define TLV_SET_U16(_param_code_, _param_name_) \
+ 	{ \
+ 		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
+ 		cpu_to_le16(hdev->_param_name_) \
+ 	}
  
--#define HDEV_PARAM_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
--{ \
--	{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
--	{ cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) } \
--}
-+#define TLV_SET_U16(_param_code_, _param_name_) \
++#define TLV_SET_U8(_param_code_, _param_name_) \
 +	{ \
-+		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-+		cpu_to_le16(hdev->_param_name_) \
++		{ cpu_to_le16(_param_code_), sizeof(__u8) }, \
++		hdev->_param_name_ \
 +	}
 +
-+#define TLV_SET_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
-+	{ \
-+		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-+		cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) \
-+	}
- 
- int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 			   u16 data_len)
- {
--	struct {
--		struct mgmt_tlv entry;
--		union {
--			/* This is a simplification for now since all values
--			 * are 16 bits.  In the future, this code may need
--			 * refactoring to account for variable length values
--			 * and properly calculate the required buffer size.
--			 */
--			__le16 value;
--		};
--	} __packed params[] = {
-+	int ret;
-+	struct mgmt_rp_read_def_system_config {
- 		/* Please see mgmt-api.txt for documentation of these values */
--		HDEV_PARAM_U16(0x0000, def_page_scan_type),
--		HDEV_PARAM_U16(0x0001, def_page_scan_int),
--		HDEV_PARAM_U16(0x0002, def_page_scan_window),
--		HDEV_PARAM_U16(0x0003, def_inq_scan_type),
--		HDEV_PARAM_U16(0x0004, def_inq_scan_int),
--		HDEV_PARAM_U16(0x0005, def_inq_scan_window),
--		HDEV_PARAM_U16(0x0006, def_br_lsto),
--		HDEV_PARAM_U16(0x0007, def_page_timeout),
--		HDEV_PARAM_U16(0x0008, sniff_min_interval),
--		HDEV_PARAM_U16(0x0009, sniff_max_interval),
--		HDEV_PARAM_U16(0x000a, le_adv_min_interval),
--		HDEV_PARAM_U16(0x000b, le_adv_max_interval),
--		HDEV_PARAM_U16(0x000c, def_multi_adv_rotation_duration),
--		HDEV_PARAM_U16(0x000d, le_scan_interval),
--		HDEV_PARAM_U16(0x000e, le_scan_window),
--		HDEV_PARAM_U16(0x000f, le_scan_int_suspend),
--		HDEV_PARAM_U16(0x0010, le_scan_window_suspend),
--		HDEV_PARAM_U16(0x0011, le_scan_int_discovery),
--		HDEV_PARAM_U16(0x0012, le_scan_window_discovery),
--		HDEV_PARAM_U16(0x0013, le_scan_int_adv_monitor),
--		HDEV_PARAM_U16(0x0014, le_scan_window_adv_monitor),
--		HDEV_PARAM_U16(0x0015, le_scan_int_connect),
--		HDEV_PARAM_U16(0x0016, le_scan_window_connect),
--		HDEV_PARAM_U16(0x0017, le_conn_min_interval),
--		HDEV_PARAM_U16(0x0018, le_conn_max_interval),
--		HDEV_PARAM_U16(0x0019, le_conn_latency),
--		HDEV_PARAM_U16(0x001a, le_supv_timeout),
--		HDEV_PARAM_U16_JIFFIES_TO_MSECS(0x001b,
--						def_le_autoconnect_timeout),
--		HDEV_PARAM_U16(0x001d, advmon_allowlist_duration),
--		HDEV_PARAM_U16(0x001e, advmon_no_filter_duration),
-+		HDEV_PARAM_U16(def_page_scan_type);
-+		HDEV_PARAM_U16(def_page_scan_int);
-+		HDEV_PARAM_U16(def_page_scan_window);
-+		HDEV_PARAM_U16(def_inq_scan_type);
-+		HDEV_PARAM_U16(def_inq_scan_int);
-+		HDEV_PARAM_U16(def_inq_scan_window);
-+		HDEV_PARAM_U16(def_br_lsto);
-+		HDEV_PARAM_U16(def_page_timeout);
-+		HDEV_PARAM_U16(sniff_min_interval);
-+		HDEV_PARAM_U16(sniff_max_interval);
-+		HDEV_PARAM_U16(le_adv_min_interval);
-+		HDEV_PARAM_U16(le_adv_max_interval);
-+		HDEV_PARAM_U16(def_multi_adv_rotation_duration);
-+		HDEV_PARAM_U16(le_scan_interval);
-+		HDEV_PARAM_U16(le_scan_window);
-+		HDEV_PARAM_U16(le_scan_int_suspend);
-+		HDEV_PARAM_U16(le_scan_window_suspend);
-+		HDEV_PARAM_U16(le_scan_int_discovery);
-+		HDEV_PARAM_U16(le_scan_window_discovery);
-+		HDEV_PARAM_U16(le_scan_int_adv_monitor);
-+		HDEV_PARAM_U16(le_scan_window_adv_monitor);
-+		HDEV_PARAM_U16(le_scan_int_connect);
-+		HDEV_PARAM_U16(le_scan_window_connect);
-+		HDEV_PARAM_U16(le_conn_min_interval);
-+		HDEV_PARAM_U16(le_conn_max_interval);
-+		HDEV_PARAM_U16(le_conn_latency);
-+		HDEV_PARAM_U16(le_supv_timeout);
-+		HDEV_PARAM_U16(def_le_autoconnect_timeout);
-+		HDEV_PARAM_U16(advmon_allowlist_duration);
-+		HDEV_PARAM_U16(advmon_no_filter_duration);
-+	} __packed rp = {
-+		TLV_SET_U16(0x0000, def_page_scan_type),
-+		TLV_SET_U16(0x0001, def_page_scan_int),
-+		TLV_SET_U16(0x0002, def_page_scan_window),
-+		TLV_SET_U16(0x0003, def_inq_scan_type),
-+		TLV_SET_U16(0x0004, def_inq_scan_int),
-+		TLV_SET_U16(0x0005, def_inq_scan_window),
-+		TLV_SET_U16(0x0006, def_br_lsto),
-+		TLV_SET_U16(0x0007, def_page_timeout),
-+		TLV_SET_U16(0x0008, sniff_min_interval),
-+		TLV_SET_U16(0x0009, sniff_max_interval),
-+		TLV_SET_U16(0x000a, le_adv_min_interval),
-+		TLV_SET_U16(0x000b, le_adv_max_interval),
-+		TLV_SET_U16(0x000c, def_multi_adv_rotation_duration),
-+		TLV_SET_U16(0x000d, le_scan_interval),
-+		TLV_SET_U16(0x000e, le_scan_window),
-+		TLV_SET_U16(0x000f, le_scan_int_suspend),
-+		TLV_SET_U16(0x0010, le_scan_window_suspend),
-+		TLV_SET_U16(0x0011, le_scan_int_discovery),
-+		TLV_SET_U16(0x0012, le_scan_window_discovery),
-+		TLV_SET_U16(0x0013, le_scan_int_adv_monitor),
-+		TLV_SET_U16(0x0014, le_scan_window_adv_monitor),
-+		TLV_SET_U16(0x0015, le_scan_int_connect),
-+		TLV_SET_U16(0x0016, le_scan_window_connect),
-+		TLV_SET_U16(0x0017, le_conn_min_interval),
-+		TLV_SET_U16(0x0018, le_conn_max_interval),
-+		TLV_SET_U16(0x0019, le_conn_latency),
-+		TLV_SET_U16(0x001a, le_supv_timeout),
-+		TLV_SET_U16_JIFFIES_TO_MSECS(0x001b,
-+					     def_le_autoconnect_timeout),
-+		TLV_SET_U16(0x001d, advmon_allowlist_duration),
-+		TLV_SET_U16(0x001e, advmon_no_filter_duration),
+ #define TLV_SET_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
+ 	{ \
+ 		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
+@@ -65,6 +77,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+ 		HDEV_PARAM_U16(def_le_autoconnect_timeout);
+ 		HDEV_PARAM_U16(advmon_allowlist_duration);
+ 		HDEV_PARAM_U16(advmon_no_filter_duration);
++		HDEV_PARAM_U8(enable_advmon_interleave_scan);
+ 	} __packed rp = {
+ 		TLV_SET_U16(0x0000, def_page_scan_type),
+ 		TLV_SET_U16(0x0001, def_page_scan_int),
+@@ -97,6 +110,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+ 					     def_le_autoconnect_timeout),
+ 		TLV_SET_U16(0x001d, advmon_allowlist_duration),
+ 		TLV_SET_U16(0x001e, advmon_no_filter_duration),
++		TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
  	};
--	struct mgmt_rp_read_def_system_config *rp = (void *)params;
  
  	bt_dev_dbg(hdev, "sock %p", sk);
- 
--	return mgmt_cmd_complete(sk, hdev->id,
--				 MGMT_OP_READ_DEF_SYSTEM_CONFIG,
--				 0, rp, sizeof(params));
-+	ret = mgmt_cmd_complete(sk, hdev->id,
-+				MGMT_OP_READ_DEF_SYSTEM_CONFIG,
-+				0, &rp, sizeof(rp));
-+	return ret;
- }
+@@ -109,6 +123,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
  
  #define TO_TLV(x)		((struct mgmt_tlv *)(x))
+ #define TLV_GET_LE16(tlv)	le16_to_cpu(*((__le16 *)(TO_TLV(tlv)->value)))
++#define TLV_GET_U8(tlv)		(*((__u8 *)(TO_TLV(tlv)->value)))
+ 
+ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+ 			  u16 data_len)
+@@ -125,6 +140,7 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+ 	/* First pass to validate the tlv */
+ 	while (buffer_left >= sizeof(struct mgmt_tlv)) {
+ 		const u8 len = TO_TLV(buffer)->length;
++		size_t exp_type_len;
+ 		const u16 exp_len = sizeof(struct mgmt_tlv) +
+ 				    len;
+ 		const u16 type = le16_to_cpu(TO_TLV(buffer)->type);
+@@ -170,20 +186,26 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+ 		case 0x001b:
+ 		case 0x001d:
+ 		case 0x001e:
+-			if (len != sizeof(u16)) {
+-				bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
+-					    len, sizeof(u16), type);
+-
+-				return mgmt_cmd_status(sk, hdev->id,
+-					MGMT_OP_SET_DEF_SYSTEM_CONFIG,
+-					MGMT_STATUS_INVALID_PARAMS);
+-			}
++			exp_type_len = sizeof(u16);
++			break;
++		case 0x001f:
++			exp_type_len = sizeof(u8);
+ 			break;
+ 		default:
++			exp_type_len = 0;
+ 			bt_dev_warn(hdev, "unsupported parameter %u", type);
+ 			break;
+ 		}
+ 
++		if (exp_type_len && len != exp_type_len) {
++			bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
++				    len, exp_type_len, type);
++
++			return mgmt_cmd_status(sk, hdev->id,
++				MGMT_OP_SET_DEF_SYSTEM_CONFIG,
++				MGMT_STATUS_INVALID_PARAMS);
++		}
++
+ 		buffer_left -= exp_len;
+ 		buffer += exp_len;
+ 	}
+@@ -289,6 +311,9 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+ 		case 0x0001e:
+ 			hdev->advmon_no_filter_duration = TLV_GET_LE16(buffer);
+ 			break;
++		case 0x0001f:
++			hdev->enable_advmon_interleave_scan = TLV_GET_U8(buffer);
++			break;
+ 		default:
+ 			bt_dev_warn(hdev, "unsupported parameter %u", type);
+ 			break;
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
