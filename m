@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADA82AFF65
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4B72AFF7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgKLFp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:45:56 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52217 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725920AbgKLFpu (ORCPT
+        id S1726112AbgKLFtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgKLFtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 00:45:50 -0500
-X-UUID: 3619e16383324db68f09494592aaac68-20201112
-X-UUID: 3619e16383324db68f09494592aaac68-20201112
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1261890501; Thu, 12 Nov 2020 13:45:41 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 12 Nov 2020 13:45:38 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 12 Nov 2020 13:45:38 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH] scsi: ufs: Add retry flow for failed hba enabling
-Date:   Thu, 12 Nov 2020 13:45:37 +0800
-Message-ID: <20201112054537.22494-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 12 Nov 2020 00:49:46 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B197C0613D1;
+        Wed, 11 Nov 2020 21:49:46 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id q22so4314448qkq.6;
+        Wed, 11 Nov 2020 21:49:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4a2oSB1VYPakWNSHoJzJAW0JkOV/UfRXeOLulthOs2A=;
+        b=BpoMJ/zFwtaKZkXrXCWPYeFmFimpEX1DySUcOH0lLRwFsEcVV1lOgP9b6OMXD3Zfs9
+         KDB7YwsP7DDbnTzf3DCCMgnMWXuoCFrYFMmeGVWilof8Y65AfxJtkfasPsf6arrZFUnf
+         CtH6k4zMiHH1KSGn1A+HzkRDq1qhYaXl9HJuA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4a2oSB1VYPakWNSHoJzJAW0JkOV/UfRXeOLulthOs2A=;
+        b=if0z6pxPi/fNcIZEMkEt5VJImTQej9zV/AqZAwMRgNFMFjshULj/jSqER3R2BdIhB5
+         SavEwoh5WXZ7gBSpZIInDV0tUc31vhaMEozB+zg2jvr+etP4Zk4Ghbr5gDBRoBQZeqao
+         Br1Nv+Edap6+n1PrEhJ5MvxKqjoszJk7DadvYLrcl1P7x1AsB3M81HbOcAqUNQ50fD+1
+         vEB0EEJowxvNIwUK2/AytMb4Q/42PbGGef+Uxe0KCEXD9H4yIRVBRdBS3PLDS0t9r70f
+         6mI0FnrKzphsfTl7vct3yrBTM+LogGRg3vfHYuyjUEMcCvik9UdnClH9Qt4GGZU03J0/
+         pv+g==
+X-Gm-Message-State: AOAM531ZUsk6NvWypdQAQVzEpyDIjdEluC7TPgBoh4E1d1b9C/lFl+5L
+        ZtuAi5Ygn+6SmtyOzF7DOI+PwAkp14FnMMNnbPc=
+X-Google-Smtp-Source: ABdhPJxU7xvfiJ65YQ5ovY7yFDZRtlv6qHOAerJCI7Uj6w7moqYf46aVjZDaxwp39Bj/PBVIUX/RBZi88EVUBvOqsgg=
+X-Received: by 2002:a37:664d:: with SMTP id a74mr20150207qkc.487.1605160185441;
+ Wed, 11 Nov 2020 21:49:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 71C1B6B624CEB4EED4AABDF7C779B0B4F80EF6905439682D9094502A978056822000:8
-X-MTK:  N
+References: <20201111232330.30843-1-rentao.bupt@gmail.com> <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
+ <20201112031828.GA4495@heinlein>
+In-Reply-To: <20201112031828.GA4495@heinlein>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 12 Nov 2020 05:49:30 +0000
+Message-ID: <CACPK8Xf07AZNb3K76sDsZDHNOPuhpkkUGST0=RTCTS5BXgncmA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
+To:     Patrick Williams <patrick@stwcx.xyz>
+Cc:     Tao Ren <rentao.bupt@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Andrew Jeffery <andrew@aj.id.au>, Tao Ren <taoren@fb.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once hba enabling is failed, add retry mechanism and in the
-meanwhile allow vendors to apply specific handlings before
-the next retry. For example, vendors can do vendor-specific
-host reset flow in variant function "ufshcd_vops_hce_enable_notify()".
+On Thu, 12 Nov 2020 at 03:18, Patrick Williams <patrick@stwcx.xyz> wrote:
+>
+> On Wed, Nov 11, 2020 at 11:34:10PM +0000, Joel Stanley wrote:
+> > On Wed, 11 Nov 2020 at 23:23, <rentao.bupt@gmail.com> wrote:
+> > >
+> > > From: Tao Ren <rentao.bupt@gmail.com>
+> > >
+> > > The patch series adds the initial version of device tree for Facebook
+> > > Galaxy100 (AST2400) BMC.
+> > >
+> > > Patch #1 adds common dtsi to minimize duplicated device entries across
+> > > Facebook Network AST2400 BMC device trees.
+> > >
+> > > Patch #2 simplfies Wedge40 device tree by using the common dtsi.
+> > >
+> > > Patch #3 simplfies Wedge100 device tree by using the common dtsi.
+> > >
+> > > Patch #4 adds the initial version of device tree for Facebook Galaxy100
+> > > BMC.
+> >
+> > Nice. They look good to me.
+> >
+> > Reviewed-by: Joel Stanley <joel@jms.id.au>
+> >
+> > Is there another person familiar with the design you would like to
+> > review before I merge?
+>
+> Also,
+>
+> Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
 
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Thanks. I have merged them into the aspeed tree for 5.11.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 8001bbfec5c0..9186ee01379a 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -4328,8 +4328,10 @@ static inline void ufshcd_hba_stop(struct ufs_hba *hba)
-  */
- static int ufshcd_hba_execute_hce(struct ufs_hba *hba)
- {
--	int retry;
-+	int retry_outer = 3;
-+	int retry_inner;
- 
-+start:
- 	if (!ufshcd_is_hba_active(hba))
- 		/* change controller state to "reset state" */
- 		ufshcd_hba_stop(hba);
-@@ -4355,13 +4357,17 @@ static int ufshcd_hba_execute_hce(struct ufs_hba *hba)
- 	ufshcd_delay_us(hba->vps->hba_enable_delay_us, 100);
- 
- 	/* wait for the host controller to complete initialization */
--	retry = 50;
-+	retry_inner = 50;
- 	while (ufshcd_is_hba_active(hba)) {
--		if (retry) {
--			retry--;
-+		if (retry_inner) {
-+			retry_inner--;
- 		} else {
- 			dev_err(hba->dev,
- 				"Controller enable failed\n");
-+			if (retry_outer) {
-+				retry_outer--;
-+				goto start;
-+			}
- 			return -EIO;
- 		}
- 		usleep_range(1000, 1100);
--- 
-2.18.0
+Cheers,
 
+Joel
