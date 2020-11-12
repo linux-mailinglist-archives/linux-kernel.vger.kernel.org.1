@@ -2,215 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC0C2AFE30
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C0D2AFE31
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgKLFfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:35:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbgKLDCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:02:43 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22384C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 19:02:42 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c66so3177420pfa.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 19:02:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=u1Z2NSc7OdBliF+CAohHDIZcKs+1qDehj7Sa56B/doM=;
-        b=GrVY67luTLcbY3ajRGiOupAYT4DAGVqI+HmE2CJ3z6l2/BLCLK2zx2aMGiHeVE3ZGI
-         C0GreGX01xXTUgSCAfr/egpBmyEWdr8fhAVq4NZ4StcnDKxQKOdO4vikMnlmKhwk0KED
-         ZoalMb88kkEUfPnbnFBFS9Brk/v7bv1EucHf1tOYkeHdsZRtbQDKOVSt55Gos0ZFdclI
-         mpcVoeSMs9nRqv7CQcnqze3sMpAqu1A2pdtAi3Mse5UiIkusvjNi6QoXGoogbpdKvUDI
-         zQFZh6GhjwXsLqN0HeXNwtFQOwbszVt3qdrjy0awGQ0I68lUpmj3dNcIwJzM9G2EtBbn
-         4yJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=u1Z2NSc7OdBliF+CAohHDIZcKs+1qDehj7Sa56B/doM=;
-        b=YG5ajneXYSXx1MjXLOIko40DxrnLLfifR6WOS5BXWM4K0BMETdCzNUrmw888RmTvWR
-         t/BiPImuO1N8Ng7OFaRR+AlZHtcijsDGZWmmzdgu4BDcDvsRkDvo+S3lHUvXUMhJSrj7
-         Me4kWWtUkXJODy/hb2Rv0dmKCO5C+stYYZ4Eq4v3R8iIradyfLwxjmdBDXM5EAbDrUxM
-         marSROcL846hTlWzJ+nF/Cp5ka8OP/g04A+HqRx4CNMUx6CNUa57rQ0tVByMrthZdtk+
-         F5ai8UFRlSuXuRKNmCAVzGuiXuwRKMKv3HqGFFFPn5s3DlHS8e5JRoe7PbsaVhP8Kudq
-         JJeQ==
-X-Gm-Message-State: AOAM5306N4LBjkTipL8zRPLgyr+LXCkti6Q7kQW6if6M4LfWCH5o8ZdY
-        Hl+I8+LOZfoI7lhfihJc0yTquA==
-X-Google-Smtp-Source: ABdhPJz74YOaEAuNv8XIKvpgOdBT5TaWqYLDqWohCdfP16gn1Ep0Lhj9hnXmc93P3RymrugY666Ghw==
-X-Received: by 2002:a17:90a:1b84:: with SMTP id w4mr7083341pjc.65.1605150161523;
-        Wed, 11 Nov 2020 19:02:41 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.127.239.100])
-        by smtp.gmail.com with ESMTPSA id h13sm4251423pjj.30.2020.11.11.19.02.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Nov 2020 19:02:40 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:02:35 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Dave Martin' <Dave.Martin@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andre Przywara <Andre.Przywara@arm.com>,
-        James Clark <James.Clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 06/22] perf arm-spe: Refactor printing string to buffer
-Message-ID: <20201112030235.GC5852@leoy-ThinkPad-X240s>
-References: <20201111071149.815-1-leo.yan@linaro.org>
- <20201111071149.815-7-leo.yan@linaro.org>
- <20201111153555.GG355344@kernel.org>
- <a1ca3412-3815-e2a8-0334-f3059802df6a@arm.com>
- <20201111173922.GA380127@kernel.org>
- <20201111175827.GR6882@arm.com>
- <3dc873b262bd4659a2c6ae935d69c8fc@AcuMS.aculab.com>
+        id S1728861AbgKLFfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:35:06 -0500
+Received: from mail-eopbgr00043.outbound.protection.outlook.com ([40.107.0.43]:9485
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727975AbgKLDGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 22:06:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mKDDE1gn2lgZSjpcY7T/7Qp/Xaz23ZLU0b3QgLgN6UPmvwK8sUMOTa6G0zGpAz+Z+YSmidg09RKVwwbdIfk+JQIhuDgRDqGecH3gwulxX3puQ9bcLXeguVXPOcsv9xqRX2gx0fyELvKIdKNx/pi1QpbKGObVYkt/5M6aJhEXZYPVW7NV0oBIVGL5Ai0A/bNAEhVuAz0or0U9rh5UPfEQHjEKuleMsVvQ0vpsFPg3NPcup8O/sUUYbLiZpgJF5co5/1FmKCul5IVhw2X9dUpZBZq4Ipdu3GvUkCjbOzsOJWFCOSm0N8Uxlcx8miez64ZYoPcXutdTRf5xxVpCwzVlCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvITuTmSYsvAA1+k50R3d+aeX6yT2r2tPly+W8uEb8k=;
+ b=QgMaav6mx/UXtxlQikxrxspC7UPn6h3BkNRPy5yOh/mBLvBMiX3cbglXmcO5kp4UaUm5s7ZVjir5AWRgowQvIp42lZXh83cToRmMnNQfPE+41dzCnBv7P6MhZ81AzZfbKv6NXDyjc3BsX8Q2krKfcwF5uoRrYkXX0n02wVe0dAms3tASu0n0VAOV4LOzXr6zSIWTST2/2Vp09T2kKn9tyI1naJZc2Db06VkeSIRkYu2QYtLVgBVo8GldkS/XGA87jDMmiwLreJMYAVu0FvqGaIaHP1n5ObUXlbKQLY+q7htAffSWHChZOiOTI35f4kJUnSVT4UH8l9fXLmJXUl8TpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvITuTmSYsvAA1+k50R3d+aeX6yT2r2tPly+W8uEb8k=;
+ b=M282ZfYxxSXNPFAD2i3j6ta2fOe8bvXvfqN9AryMSB6tavjUo8KD8DpuiBfT3IJvzTPQxHnly20fwtmIHEZKNYzTVy3o2z0sYm+s6E9OSAHHxXXveIrAnG1kvBtALaITwl+WTtb8lhcgPjZv7ePNZ7qY2f+d2G6okWOKJNe5h+Q=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM5PR04MB3137.eurprd04.prod.outlook.com (2603:10a6:206:c::18)
+ by AM7PR04MB6997.eurprd04.prod.outlook.com (2603:10a6:20b:10d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 03:06:32 +0000
+Received: from AM5PR04MB3137.eurprd04.prod.outlook.com
+ ([fe80::2d75:aaf5:5aa6:5de9]) by AM5PR04MB3137.eurprd04.prod.outlook.com
+ ([fe80::2d75:aaf5:5aa6:5de9%6]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
+ 03:06:31 +0000
+From:   "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, shawnguo@kernel.org,
+        robh+dt@kernel.org, p.zabel@pengutronix.de
+Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, ezequiel@collabora.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+Subject: [PATCH v5 00/10] Add V4L2 driver for i.MX8 JPEG Encoder/Decoder
+Date:   Thu, 12 Nov 2020 05:05:47 +0200
+Message-Id: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [86.124.171.138]
+X-ClientProxiedBy: AM0PR06CA0100.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::41) To AM5PR04MB3137.eurprd04.prod.outlook.com
+ (2603:10a6:206:c::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3dc873b262bd4659a2c6ae935d69c8fc@AcuMS.aculab.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1664-134.ea.freescale.net (86.124.171.138) by AM0PR06CA0100.eurprd06.prod.outlook.com (2603:10a6:208:fa::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 03:06:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: dd99f944-377e-4d2f-306c-08d886b7f4c7
+X-MS-TrafficTypeDiagnostic: AM7PR04MB6997:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR04MB6997413A64DF7468ECB81101CEE70@AM7PR04MB6997.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tp7LDero9X63tFa88XWG3prO9uTMc+zV0Ojn6BYNH+Wry6YeK6v8rjFX7si847xfvcM7M+P+Sn5ThyM02eWEEF+iKipaxyd1FA4SArmjqX1INe8sWIEEaqsp3qEpVMQpSKIoey2pdkdA0gZ9OrQXsNB694FGPn1Lubg9jc6MlvekjbMyMuenks2eYY3KMs7A+kr9vI9c4C1pdMGl6CbW1KjWJ2cqgY/5MWEz94wwEdxNaMIql2M7pmxvbQuIdhDHT+NV+DoXIQvP6aFWIpGUKaJXVTznwpSArJna37cpbr8YcZ7C/peytLIIKin3mHtLbJbJtshr5fr0fyhAB20+OA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3137.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(366004)(6666004)(1076003)(316002)(26005)(478600001)(6506007)(4001150100001)(4326008)(6512007)(66946007)(66476007)(186003)(6486002)(2906002)(66556008)(5660300002)(16526019)(8676002)(52116002)(86362001)(7416002)(8936002)(2616005)(956004)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: KuDsASPhSmhV9KCOcWpNQOoBhb2y75dBRDmbSGwOkNQu/ADlfNaXIlsT+O+B2JmJ5yN3PoueTOjDsQfpUarSG5QgTB+NW6wuYErPhgp9p+C1Hm7e+aJlkbYUCe2cxchHcI8wug8OzM5jDn7qc0ggWuqLCmuG2c/a2dbWdL8UA0lg/X11gRvCct47nlgJo3RmWVKY9aN57RPpn7S9+BZQ0fGupa5ImXRBM8rU4DVhhisAT3oYWw2kuSpr9imPkLZjyF8UJ82CT40twoQAidTf4z47SKh6ExFQ6was7mdz/aFT1cN/5B5fd3MRCbZgDwp3Rc6DSeorNCFtB+AvBm7A3aYQ/mC1Nd6VwS9GVY3ZHoctr14EzQLEcxKUY7yt74ViSjKU7XCLVdp+rt7paIGj8ybPZpZ+NNL5YPKSuDybHLxMQTrxwQkmzYBscO+9Zq0/DrFweVtc8jUkegySMO9q7z+KjTbdI8z+1HVPvIUEsWG8n2ab5q98uQcoJFKK/V6xXc+0qjyf3Dc3iwwJlb0KOKeYJZY/Gs78gz8ns+Tl2S8G0r90SJQKNtbx+VbNt0Vpy7rSu/vYMvzaCh+eL9UlY6/SzUjLEPzat2/7Xa/Ro9fnf4wypp4+CUglvosarQsEV3OQ/XF6NJC00NY4E4PBDenmwrgSaP07vaVSnvF0Jzv92WHHN3e+O5b53l6wwIBDfPdayQ1MhhDu8kCekeBAB2T695/Vnq9o1ChGMrpKfvQGY3PQg+zarnw54v5QPCssxO7otgPNKE+W2ZSJFpV1FgE8Gmcxnrl6WtI5RbBqC7oGYnd9Z7Ht9f+zSUKVDOo91A2WfztUeQe4TQ3/Sk6J18AYYkBHy/OhtOKLPOA5crb8ryEr3Z0obp/qYbLChczJ7UQKZcZiDHhsjpNcWJSGwg==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd99f944-377e-4d2f-306c-08d886b7f4c7
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3137.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 03:06:31.8765
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YS9g7+dAFg3D9H++1RNSeTpZuYmBnmV33SmuTplETm7Gp0qVulXiDj7EmSwJ/VJOc2GscydaPNEfnu7MN28U0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6997
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+From: Mirela Rabulea <mirela.rabulea@nxp.com>
 
-On Wed, Nov 11, 2020 at 11:03:47PM +0000, David Laight wrote:
-> From: Dave Martin
-> > Sent: 11 November 2020 17:58
-> > 
-> > On Wed, Nov 11, 2020 at 05:39:22PM +0000, Arnaldo Carvalho de Melo wrote:
-> > > Em Wed, Nov 11, 2020 at 03:45:23PM +0000, Andr� Przywara escreveu:
-> > > > On 11/11/2020 15:35, Arnaldo Carvalho de Melo wrote:
-> > > >
-> > > > Hi Arnaldo,
-> > > >
-> > > > thanks for taking a look!
-> > > >
-> > > > > Em Wed, Nov 11, 2020 at 03:11:33PM +0800, Leo Yan escreveu:
-> > > > >> When outputs strings to the decoding buffer with function snprintf(),
-> > > > >> SPE decoder needs to detects if any error returns from snprintf() and if
-> > > > >> so needs to directly bail out.  If snprintf() returns success, it needs
-> > > > >> to update buffer pointer and reduce the buffer length so can continue to
-> > > > >> output the next string into the consequent memory space.
-> > > > >>
-> > > > >> This complex logics are spreading in the function arm_spe_pkt_desc() so
-> > > > >> there has many duplicate codes for handling error detecting, increment
-> > > > >> buffer pointer and decrement buffer size.
-> > > > >>
-> > > > >> To avoid the duplicate code, this patch introduces a new helper function
-> > > > >> arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
-> > > > >> it's used by the caller arm_spe_pkt_desc().
-> > > > >>
-> > > > >> This patch also moves the variable 'blen' as the function's local
-> > > > >> variable, this allows to remove the unnecessary braces and improve the
-> > > > >> readability.
-> > > > >>
-> > > > >> Suggested-by: Dave Martin <Dave.Martin@arm.com>
-> > > > >> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > > > >> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-> > > > >> ---
-> > > > >>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 260 +++++++++---------
-> > > > >>  1 file changed, 126 insertions(+), 134 deletions(-)
-> > > > >>
-> > > > >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-
-> > decoder/arm-spe-pkt-decoder.c
-> > > > >> index 04fd7fd7c15f..1970686f7020 100644
-> > > > >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > > >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > > >> @@ -9,6 +9,7 @@
-> > > > >>  #include <endian.h>
-> > > > >>  #include <byteswap.h>
-> > > > >>  #include <linux/bitops.h>
-> > > > >> +#include <stdarg.h>
-> > > > >>
-> > > > >>  #include "arm-spe-pkt-decoder.h"
-> > > > >>
-> > > > >> @@ -258,192 +259,183 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
-> > > > >>  	return ret;
-> > > > >>  }
-> > > > >>
-> > > > >> +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
-> > > > >> +				const char *fmt, ...)
-> > > > >> +{
-> > > > >> +	va_list ap;
-> > > > >> +	int ret;
-> > > > >> +
-> > > > >> +	/* Bail out if any error occurred */
-> > > > >> +	if (err && *err)
-> > > > >> +		return *err;
-> > > > >> +
-> > > > >> +	va_start(ap, fmt);
-> > > > >> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
-> > > > >> +	va_end(ap);
-> > > > >> +
-> > > > >> +	if (ret < 0) {
-> > > > >> +		if (err && !*err)
-> > > > >> +			*err = ret;
-> > > > >> +
-> > > > >> +	/*
-> > > > >> +	 * A return value of (*blen - 1) or more means that the
-> > > > >> +	 * output was truncated and the buffer is overrun.
-> > > > >> +	 */
-> > > > >> +	} else if (ret >= ((int)*blen - 1)) {
-> > > > >> +		(*buf_p)[*blen - 1] = '\0';
-> > > > >> +
-> > > > >> +		/*
-> > > > >> +		 * Set *err to 'ret' to avoid overflow if tries to
-> > > > >> +		 * fill this buffer sequentially.
-> > > > >> +		 */
-> > > > >> +		if (err && !*err)
-> > > > >> +			*err = ret;
-> > > > >> +	} else {
-> > > > >> +		*buf_p += ret;
-> > > > >> +		*blen -= ret;
-> > > > >> +	}
-> > > > >> +
-> > > > >> +	return ret;
-> > > > >> +}
-> > > > >> +
-> 
-> I'm not entirely sure that snprintf() can actually return a negative value.
-> 
-> Every implementation (except the microsoft one) also always writes a '\0'
-> even when the buffer is too short.
-> 
-> A simple wrapper that lets you append output and detect overflow is:
-> 	ret = vsnprintf(buf, len, ...);
-> 	if (ret < 0)
-> 		/* just in case */
-> 		return 0;
-> 	return ret > len ? len : ret;
-> 
-> So on overflow the sum of the lengths is equal to the buffer size
-> (ie includes the terminating '\0'.
+This patch set adds the V4L2 driver for i.MX8QXP/QM JPEG encoder/decoder
+and it's dependencies.
+The driver was tested on i.MX8QXP, using a unit test application and
+the v4l2-compliance tool, including the  streaming tests for decoder & encoder.
 
-We had some discussion for the return value in the old patch set, since
-we want to keep the same scenmatics for the return value with
-vsnprintf(), so the function arm_spe_pkt_snprintf() directly delivers
-the return value from vsnprintf().
+The output of latest v4l2-compliance on i.MX8QXP, decoder & encoder:
 
-And if look at the patch 07/22, you could find the 'ret' value is not
-really used at the end; the parameter 'err' is used as an accumulative
-error value and it will be returned to up stack (0 means success and
-non-zero means any failure).
+root@imx8qxpmek:/unit_tests/JPEG# ./v4l2-compliance-master -d /dev/video0 -s
+v4l2-compliance 1.21.0-4679, 64 bits, 64-bit time_t
+v4l2-compliance SHA: 225c6c2a17be 2020-10-30 15:13:07
 
-For these two reasons, I'd like to keep as it is rather than converting
-to other values.
+Compliance test for mxc-jpeg decode device /dev/video0:
 
-Thanks for suggestion!
-Leo
+Driver Info:
+	Driver name      : mxc-jpeg decode
+	Card type        : mxc-jpeg decoder
+	Bus info         : platform:58400000.jpegdec
+	Driver version   : 5.10.0
+	Capabilities     : 0x84204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+	Detected JPEG Decoder
+
+Required ioctls:
+	test VIDIOC_QUERYCAP: OK
+
+Allow for multiple opens:
+	test second /dev/video0 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
+
+	test invalid ioctls: OK
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+	test VIDIOC_QUERYCTRL: OK (Not Supported)
+	test VIDIOC_G/S_CTRL: OK (Not Supported)
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 0 Private Controls: 0
+
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK (Not Supported)
+	test Composing: OK (Not Supported)
+	test Scaling: OK
+
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK
+
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK (Not Supported)
+
+Test input 0:
+
+Streaming ioctls:
+	test read/write: OK (Not Supported)
+	test blocking wait: OK
+	Video Capture Multiplanar: Captured 58 buffers    
+	test MMAP (no poll): OK
+	Video Capture Multiplanar: Captured 58 buffers    
+	test MMAP (select): OK
+	Video Capture Multiplanar: Captured 58 buffers    
+	test MMAP (epoll): OK
+	test USERPTR (no poll): OK (Not Supported)
+	test USERPTR (select): OK (Not Supported)
+	test DMABUF: Cannot test, specify --expbuf-device
+
+Total for mxc-jpeg decode device /dev/video0: 52, Succeeded: 52, Failed: 0, Warnings: 0
+
+root@imx8qxpmek:/unit_tests/JPEG# ./v4l2-compliance-master -d /dev/video1 -s
+v4l2-compliance 1.21.0-4679, 64 bits, 64-bit time_t
+v4l2-compliance SHA: 225c6c2a17be 2020-10-30 15:13:07
+
+Compliance test for mxc-jpeg decode device /dev/video1:
+
+Driver Info:
+	Driver name      : mxc-jpeg decode
+	Card type        : mxc-jpeg decoder
+	Bus info         : platform:58450000.jpegenc
+	Driver version   : 5.10.0
+	Capabilities     : 0x84204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+	Detected JPEG Encoder
+
+Required ioctls:
+	test VIDIOC_QUERYCAP: OK
+
+Allow for multiple opens:
+	test second /dev/video1 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
+
+	test invalid ioctls: OK
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+	test VIDIOC_QUERYCTRL: OK (Not Supported)
+	test VIDIOC_G/S_CTRL: OK (Not Supported)
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 0 Private Controls: 0
+
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK (Not Supported)
+	test Composing: OK (Not Supported)
+	test Scaling: OK (Not Supported)
+
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK
+
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK (Not Supported)
+
+Test input 0:
+
+Streaming ioctls:
+	test read/write: OK (Not Supported)
+	test blocking wait: OK
+	Video Capture Multiplanar: Captured 58 buffers    
+	test MMAP (no poll): OK
+	Video Capture Multiplanar: Captured 58 buffers    
+	test MMAP (select): OK
+	Video Capture Multiplanar: Captured 58 buffers    
+	test MMAP (epoll): OK
+	test USERPTR (no poll): OK (Not Supported)
+	test USERPTR (select): OK (Not Supported)
+	test DMABUF: Cannot test, specify --expbuf-device
+
+Total for mxc-jpeg decode device /dev/video1: 52, Succeeded: 52, Failed: 0, Warnings: 0
+
+Mirela Rabulea (10):
+  media: v4l: Add packed YUV444 24bpp pixel format
+  firmware: imx: scu-pd: Add power domains for imx-jpeg
+  media: dt-bindings: Add bindings for i.MX8QXP/QM JPEG driver
+  media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder
+  arm64: dts: imx8qxp: Add jpeg encoder/decoder nodes
+  Add maintainer for IMX jpeg v4l2 driver
+  media: Add parsing for APP14 data segment in jpeg helpers
+  media: Quit parsing stream if doesn't start with SOI
+  media: Avoid parsing quantization and huffman tables
+  media: imx-jpeg: Use v4l2 jpeg helpers in mxc-jpeg
+
+ .../bindings/media/nxp,imx8-jpeg.yaml         |   84 +
+ .../media/v4l/pixfmt-packed-yuv.rst           |   37 +-
+ MAINTAINERS                                   |    8 +
+ arch/arm64/boot/dts/freescale/imx8qxp-mek.dts |    8 +
+ arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |   37 +
+ drivers/firmware/imx/scu-pd.c                 |    6 +
+ drivers/media/platform/Kconfig                |    2 +
+ drivers/media/platform/Makefile               |    1 +
+ drivers/media/platform/imx-jpeg/Kconfig       |   11 +
+ drivers/media/platform/imx-jpeg/Makefile      |    3 +
+ drivers/media/platform/imx-jpeg/mxc-jpeg-hw.c |  168 ++
+ drivers/media/platform/imx-jpeg/mxc-jpeg-hw.h |  140 ++
+ drivers/media/platform/imx-jpeg/mxc-jpeg.c    | 2193 +++++++++++++++++
+ drivers/media/platform/imx-jpeg/mxc-jpeg.h    |  180 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ drivers/media/v4l2-core/v4l2-jpeg.c           |   52 +-
+ include/media/v4l2-jpeg.h                     |    6 +-
+ include/uapi/linux/videodev2.h                |    1 +
+ 18 files changed, 2928 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+ create mode 100644 drivers/media/platform/imx-jpeg/Kconfig
+ create mode 100644 drivers/media/platform/imx-jpeg/Makefile
+ create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg-hw.c
+ create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg-hw.h
+ create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg.c
+ create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg.h
+
+-- 
+2.17.1
+
