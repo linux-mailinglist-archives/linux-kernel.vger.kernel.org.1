@@ -2,124 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAEB2B0D51
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6774A2B0D5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgKLTCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKLTCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:02:07 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AA7C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:02:05 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id b8so7183118wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UWqlo59xqRNbYAmn4BNS5/vO78FqqGPqkNlmHGs4xwA=;
-        b=MJ6c3goReMhaSFgiRLRh0X9/s6/nsnmyHSY05hBaUKTo1vyUEnnrqyHV1fpaHjPkAY
-         Ge28+57V/vdo4/piTxzgOHYOWbAHbV0uO1F66kg/+vL0PrMJPxnq2qHDdlD48qy8dmKR
-         mq9F+2Evv3b0QF6eNP02TeYyrxp2GuE/s4ZHq8SDqItPLwH+ABB6lhrrX32medDC/pNa
-         e7b3heiLAjvxuAwdSQdKZ6I41ZcLfwAvRCSiaorLeWLd9gP5yyYJ80JJ83FNNNEj7YGT
-         Rw8cobZWIhfe5eIDmfyJWbcIVhDcXRqTDY4SRc7feutL5WpLFhjwv+D0zR1zySulCpsK
-         LMdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UWqlo59xqRNbYAmn4BNS5/vO78FqqGPqkNlmHGs4xwA=;
-        b=tDclcGtq1fgm0K7vtkkOg1dDuJ77iQMv27Dxhd8kbAgmk8Z+0Coe0Qt0yDFti2s++2
-         RtsfYN46VM1KGqPkT9tlkguPYxfWan77ghnDXn3hjpFBLAyIdvYXMVI3fnPegHCdux8B
-         lVmIyqAmFOAH8HQJZLLd+3xdU2LiCPHaYF/CL5WBs0jsh+ucKDhnhLMkWSjBEw1PZtBp
-         1/sowxJdialoq2Ym0BGWLsyVNq9bzr7n1Bbdp6zIUpapnGYI+zJ+nOHtc4lyXiXATnzq
-         OanfxGK4c63VeXO0tHzwpZ4sjT9cq3/LEfekIT4SKx98+SiFC+lkTzpb5VR6wngioYjc
-         mzCg==
-X-Gm-Message-State: AOAM530BDqCM+nC7ax/ynhSPkOVRZOR4Azhpa1nsO+xH5VfslD8LTHzQ
-        kSusxNLVa4VORtbJf/JhljWZ7A==
-X-Google-Smtp-Source: ABdhPJy/tf9x9XL6lVW1EsHu7SfnFG0sEdt1ylmwiJj8zF3LcgC+ynQzPEu1SA5jj1NtLF7/FzILIQ==
-X-Received: by 2002:adf:f24b:: with SMTP id b11mr1178399wrp.342.1605207724638;
-        Thu, 12 Nov 2020 11:02:04 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 18sm7082827wmo.3.2020.11.12.11.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:02:03 -0800 (PST)
-Date:   Thu, 12 Nov 2020 19:02:02 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     santosh.shilimkar@oracle.com
-Cc:     Tero Kristo <t-kristo@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <ssantosh@kernel.org>, tomi.valkeinen@ti.com,
-        kishon@ti.com, dmurphy@ti.com, s-anna@ti.com
-Subject: Re: [PATCH 06/25] soc: ti: knav_qmss_queue: Remove set but unchecked
- variable 'ret'
-Message-ID: <20201112190202.GN1997862@dell>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <20201103152838.1290217-7-lee.jones@linaro.org>
- <20201112103130.GD1997862@dell>
- <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
- <20201112132145.GI1997862@dell>
- <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
+        id S1727167AbgKLTCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:02:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgKLTCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:02:47 -0500
+Received: from cakuba.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B25A206FB;
+        Thu, 12 Nov 2020 19:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605207766;
+        bh=qU3FIwF5esnEoUW9gj+mC+tQk8lUt+5mtp1vS7vMdMA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QuKean4d6K/BwlHQYRYxw/r1uR7sH2ok4Ewsg6xi64KD+0GrSO8fIehJOh4VgfeMl
+         GU9xEMHLO1edM8ncZ80s7cwE9AWxkM983yeIySsKObHxRHaQGkZZ2LNTY9baQeA5fd
+         SmXK3NKT1Jk1bGytj/debZ7ZmrCuvxB/WjJTL5Vw=
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Networking
+Date:   Thu, 12 Nov 2020 11:02:45 -0800
+Message-Id: <20201112190245.2041381-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020, santosh.shilimkar@oracle.com wrote:
+The following changes since commit bf3e76289cd28b87f679cd53e26d67fd708d718a:
 
-> On 11/12/20 5:21 AM, Lee Jones wrote:
-> > On Thu, 12 Nov 2020, Tero Kristo wrote:
-> > 
-> > > On 12/11/2020 12:31, Lee Jones wrote:
-> > > > Cc:ing a few people I know.
-> > > > 
-> > > > On Tue, 03 Nov 2020, Lee Jones wrote:
-> > > > 
-> > > > > Fixes the following W=1 kernel build warning(s):
-> > > > > 
-> > > > >    drivers/soc/ti/knav_qmss_queue.c: In function ‘knav_setup_queue_pools’:
-> > > > >    drivers/soc/ti/knav_qmss_queue.c:1310:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-> > > > > 
-> > > > > Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> > > > > Cc: Sandeep Nair <sandeep_n@ti.com>
-> > > > > Cc: Cyril Chemparathy <cyril@ti.com>
-> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >    drivers/soc/ti/knav_qmss_queue.c | 3 +--
-> > > > >    1 file changed, 1 insertion(+), 2 deletions(-)
-> > > > 
-> > > > Any idea who will take these TI patches?
-> > > > 
-> > > > https://urldefense.com/v3/__https://lore.kernel.org/linux-arm-kernel/20201111052540.GH173948@builder.lan/__;!!GqivPVa7Brio!KEeMCT-GwmLNnDFCOqxnunXXiCrCpj3ZFXpiMzj55VmlOJ-FVhKmom-O7sq-CkL8s0sjAg$
-> > > > 
-> > > 
-> > > (Dropped a few inactive emails from delivery.)
-> > > 
-> > > Santosh is the maintainer for the subsystem, so my vote would go for him.
-> > 
-> > Thanks for your prompt reply Tero.
-> > 
-> > It looks as though Santosh has been on Cc since the start.  He must
-> > just be busy.  I'll give him a little while longer before submitting a
-> > [RESEND].
-> > 
-> Go ahead and re-post. These seems to be trivial so will pick
-> it up.
+  Merge branch 'mtd/fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux (2020-11-06 13:08:25 -0800)
 
-If you are in receipt of the first iteration, there shouldn't be any
-requirement for a [RESEND].  Unless you deleted them from your inbox?
+are available in the Git repository at:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc4
+
+for you to fetch changes up to edbc21113bde13ca3d06eec24b621b1f628583dd:
+
+  lan743x: fix use of uninitialized variable (2020-11-12 10:03:16 -0800)
+
+----------------------------------------------------------------
+Networking fixes for 5.10-rc4, including fixes from the bpf subtree.
+
+Current release - regressions:
+
+ - arm64: dts: fsl-ls1028a-kontron-sl28: specify in-band mode for ENETC
+
+Current release - bugs in new features:
+
+ - mptcp: provide rmem[0] limit offset to fix oops
+
+Previous release - regressions:
+
+ - IPv6: Set SIT tunnel hard_header_len to zero to fix path MTU
+   calculations
+
+ - lan743x: correctly handle chips with internal PHY
+
+ - bpf: Don't rely on GCC __attribute__((optimize)) to disable GCSE
+
+ - mlx5e: Fix VXLAN port table synchronization after function reload
+
+Previous release - always broken:
+
+ - bpf: Zero-fill re-used per-cpu map element
+
+ - net: udp: fix out-of-order packets when forwarding with UDP GSO
+             fraglists turned on
+   - fix UDP header access on Fast/frag0 UDP GRO
+   - fix IP header access and skb lookup on Fast/frag0 UDP GRO
+
+ - ethtool: netlink: add missing netdev_features_change() call
+
+ - net: Update window_clamp if SOCK_RCVBUF is set
+
+ - igc: Fix returning wrong statistics
+
+ - ch_ktls: fix multiple leaks and corner cases in Chelsio TLS offload
+
+ - tunnels: Fix off-by-one in lower MTU bounds for ICMP/ICMPv6 replies
+
+ - r8169: disable hw csum for short packets on all chip versions
+
+ - vrf: Fix fast path output packet handling with async Netfilter rules
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Alexander Lobakin (3):
+      ethtool: netlink: add missing netdev_features_change() call
+      net: udp: fix UDP header access on Fast/frag0 UDP GRO
+      net: udp: fix IP header access and skb lookup on Fast/frag0 UDP GRO
+
+Andrii Nakryiko (2):
+      selftest/bpf: Fix profiler test using CO-RE relocation for enums
+      bpf: Add struct bpf_redir_neigh forward declaration to BPF helper defs
+
+Ard Biesheuvel (1):
+      bpf: Don't rely on GCC __attribute__((optimize)) to disable GCSE
+
+Arnd Bergmann (1):
+      bpf: Fix -Wshadow warnings
+
+Aya Levin (1):
+      net/mlx5e: Fix VXLAN synchronization after function reload
+
+Dan Carpenter (1):
+      i40e, xsk: uninitialized variable in i40e_clean_rx_irq_zc()
+
+David Verbeiren (1):
+      bpf: Zero-fill re-used per-cpu map element
+
+Heiner Kallweit (3):
+      r8169: fix potential skb double free in an error path
+      r8169: disable hw csum for short packets on all chip versions
+      net: phy: realtek: support paged operations on RTL8201CP
+
+Ian Rogers (3):
+      tools, bpftool: Avoid array index warnings.
+      tools, bpftool: Remove two unused variables.
+      libbpf, hashmap: Fix undefined behavior in hash_bits
+
+Jakub Kicinski (7):
+      Merge git://git.kernel.org/.../bpf/bpf
+      Merge tag 'mlx5-fixes-2020-11-03' of git://git.kernel.org/.../saeed/linux
+      Merge branch 'net-iucv-fixes-2020-11-09'
+      Merge branch 'cxgb4-ch_ktls-fixes-in-nic-tls-code'
+      net: switch to the kernel.org patchwork instance
+      Merge branch '40GbE' of git://git.kernel.org/.../tnguy/net-queue
+      Merge branch 'net-udp-fix-fast-frag0-udp-gro'
+
+Jonathan Neuschäfer (1):
+      docs: networking: phy: s/2.5 times faster/2.5 times as fast/
+
+KP Singh (1):
+      bpf: Update verification logic for LSM programs
+
+Lorenz Bauer (1):
+      tools/bpftool: Fix attaching flow dissector
+
+Magnus Karlsson (3):
+      xsk: Fix possible memory leak at socket close
+      libbpf: Fix null dereference in xsk_socket__delete
+      libbpf: Fix possible use after free in xsk_socket__delete
+
+Mao Wenan (1):
+      net: Update window_clamp if SOCK_RCVBUF is set
+
+Maor Dickman (1):
+      net/mlx5e: Fix modify header actions memory leak
+
+Maor Gottlieb (1):
+      net/mlx5: Fix deletion of duplicate rules
+
+Martin Schiller (1):
+      net/x25: Fix null-ptr-deref in x25_connect
+
+Martin Willi (1):
+      vrf: Fix fast path output packet handling with async Netfilter rules
+
+Maxim Mikityanskiy (2):
+      net/mlx5e: Use spin_lock_bh for async_icosq_lock
+      net/mlx5e: Fix incorrect access of RCU-protected xdp_prog
+
+Michael Walle (1):
+      arm64: dts: fsl-ls1028a-kontron-sl28: specify in-band mode for ENETC
+
+Oliver Herms (1):
+      IPv6: Set SIT tunnel hard_header_len to zero
+
+Paolo Abeni (1):
+      mptcp: provide rmem[0] limit
+
+Parav Pandit (2):
+      net/mlx5: E-switch, Avoid extack error log for disabled vport
+      devlink: Avoid overwriting port attributes of registered port
+
+Paul Moore (1):
+      netlabel: fix our progress tracking in netlbl_unlabel_staticlist()
+
+Randy Dunlap (1):
+      bpf: BPF_PRELOAD depends on BPF_SYSCALL
+
+Rohit Maheshwari (12):
+      cxgb4/ch_ktls: decrypted bit is not enough
+      ch_ktls: Correction in finding correct length
+      ch_ktls: Update cheksum information
+      cxgb4/ch_ktls: creating skbs causes panic
+      ch_ktls: Correction in trimmed_len calculation
+      ch_ktls: missing handling of header alone
+      ch_ktls: Correction in middle record handling
+      ch_ktls: packet handling prior to start marker
+      ch_ktls: don't free skb before sending FIN
+      ch_ktls/cxgb4: handle partial tag alone SKBs
+      ch_ktls: tcb update fails sometimes
+      ch_ktls: stop the txq if reaches threshold
+
+Slawomir Laba (1):
+      i40e: Fix MAC address setting for a VF via Host/VM
+
+Stefano Brivio (1):
+      tunnels: Fix off-by-one in lower MTU bounds for ICMP/ICMPv6 replies
+
+Sven Van Asbroeck (3):
+      lan743x: correctly handle chips with internal PHY
+      lan743x: fix "BUG: invalid wait context" when setting rx mode
+      lan743x: fix use of uninitialized variable
+
+Toke Høiland-Jørgensen (1):
+      samples/bpf: Set rlimit for memlock to infinity in all samples
+
+Tony Nguyen (1):
+      MAINTAINERS: Update repositories for Intel Ethernet Drivers
+
+Ursula Braun (2):
+      net/af_iucv: fix null pointer dereference on shutdown
+      MAINTAINERS: remove Ursula Braun as s390 network maintainer
+
+Vadym Kochan (1):
+      net: marvell: prestera: fix compilation with CONFIG_BRIDGE=m
+
+Vinicius Costa Gomes (1):
+      igc: Fix returning wrong statistics
+
+Vlad Buslov (2):
+      net/mlx5e: Protect encap route dev from concurrent release
+      selftest: fix flower terse dump tests
+
+Wang Hai (2):
+      tipc: fix memory leak in tipc_topsrv_start()
+      cosa: Add missing kfree in error path of cosa_write
+
+zhangxiaoxu (1):
+      net: dsa: mv88e6xxx: Fix memleak in mv88e6xxx_region_atu_snapshot
+
+ Documentation/networking/netdev-FAQ.rst            |   4 +-
+ Documentation/networking/phy.rst                   |   4 +-
+ Documentation/process/stable-kernel-rules.rst      |   2 +-
+ .../it_IT/process/stable-kernel-rules.rst          |   2 +-
+ MAINTAINERS                                        |  27 +-
+ .../dts/freescale/fsl-ls1028a-kontron-sl28.dts     |   1 +
+ drivers/net/dsa/mv88e6xxx/devlink.c                |   4 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4.h         |   3 +
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c |   2 +
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c    |   1 +
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h     |   6 +
+ drivers/net/ethernet/chelsio/cxgb4/sge.c           | 111 +++-
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c      | 582 +++++++++++++--------
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.h      |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  26 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c          |  14 +-
+ drivers/net/ethernet/marvell/prestera/Kconfig      |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en/rep/tc.c    |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/en/tc_tun.c    |  72 ++-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.c |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.c    |   4 +-
+ .../ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c |  14 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.h   |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |   2 +
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |   2 -
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |   7 +-
+ .../net/ethernet/mellanox/mlx5/core/lib/vxlan.c    |  23 +-
+ .../net/ethernet/mellanox/mlx5/core/lib/vxlan.h    |   2 +
+ drivers/net/ethernet/microchip/lan743x_main.c      |  24 +-
+ drivers/net/ethernet/microchip/lan743x_main.h      |   3 -
+ drivers/net/ethernet/realtek/r8169_main.c          |  18 +-
+ drivers/net/phy/realtek.c                          |   2 +
+ drivers/net/vrf.c                                  |  92 +++-
+ drivers/net/wan/cosa.c                             |   1 +
+ include/linux/compiler-gcc.h                       |   2 -
+ include/linux/compiler_types.h                     |   4 -
+ include/linux/filter.h                             |  22 +-
+ include/net/xsk_buff_pool.h                        |   2 +-
+ kernel/bpf/Makefile                                |   6 +-
+ kernel/bpf/bpf_lsm.c                               |  10 +-
+ kernel/bpf/core.c                                  |   2 +-
+ kernel/bpf/hashtab.c                               |  30 +-
+ kernel/bpf/preload/Kconfig                         |   1 +
+ net/core/devlink.c                                 |   8 +-
+ net/ethtool/features.c                             |   2 +-
+ net/ipv4/ip_tunnel_core.c                          |   4 +-
+ net/ipv4/syncookies.c                              |   9 +-
+ net/ipv4/udp_offload.c                             |  19 +-
+ net/ipv6/sit.c                                     |   2 -
+ net/ipv6/syncookies.c                              |  10 +-
+ net/ipv6/udp_offload.c                             |  17 +-
+ net/iucv/af_iucv.c                                 |   3 +-
+ net/mptcp/protocol.c                               |   1 +
+ net/netlabel/netlabel_unlabeled.c                  |  17 +-
+ net/tipc/topsrv.c                                  |  10 +-
+ net/x25/af_x25.c                                   |   2 +-
+ net/xdp/xsk.c                                      |   3 +-
+ net/xdp/xsk_buff_pool.c                            |   7 +-
+ samples/bpf/task_fd_query_user.c                   |   2 +-
+ samples/bpf/tracex2_user.c                         |   2 +-
+ samples/bpf/tracex3_user.c                         |   2 +-
+ samples/bpf/xdp_redirect_cpu_user.c                |   2 +-
+ samples/bpf/xdp_rxq_info_user.c                    |   2 +-
+ scripts/bpf_helpers_doc.py                         |   1 +
+ tools/bpf/bpftool/feature.c                        |   7 +-
+ tools/bpf/bpftool/prog.c                           |   2 +-
+ tools/bpf/bpftool/skeleton/profiler.bpf.c          |   4 +-
+ tools/lib/bpf/hashmap.h                            |  15 +-
+ tools/lib/bpf/xsk.c                                |   9 +-
+ tools/testing/selftests/bpf/prog_tests/map_init.c  | 214 ++++++++
+ tools/testing/selftests/bpf/progs/profiler.inc.h   |  11 +-
+ tools/testing/selftests/bpf/progs/test_map_init.c  |  33 ++
+ .../tc-testing/tc-tests/filters/tests.json         |   4 +-
+ 76 files changed, 1138 insertions(+), 439 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_map_init.c
