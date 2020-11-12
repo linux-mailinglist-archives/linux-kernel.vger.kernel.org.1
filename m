@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F7E2B0652
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639352B0655
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgKLNWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:22:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727646AbgKLNWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:22:05 -0500
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3097D22201;
-        Thu, 12 Nov 2020 13:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605187324;
-        bh=E03FFk10N59RLyLQTqGfmVdga98+suTAIqgHYMBC3Mo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=TWJa+JBdlE7HgqNQbOvPjNK2xscH2t3RGe207eeU8sPLUUhkrR1FsvOR1/fOsGC4y
-         BFJO9+b7zN90OEXAPfmvu3S/fWd7D9mdh1GPhg35k0BCrwYxOgxhjWHXE/sECLH+c5
-         2bbXclKRGWIxrpZ+taFYcUfHtv4yTMNMrBhbyGiU=
-Message-ID: <2e81958e92563a568f2b9b5b4d23c4c7bab52f1c.camel@kernel.org>
-Subject: Re: [PATCH] ceph: fix race in concurrent __ceph_remove_cap
- invocations
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "Yan, Zheng" <ukernel@gmail.com>,
-        Luis Henriques <lhenriques@suse.de>
-Cc:     Ilya Dryomov <idryomov@gmail.com>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 12 Nov 2020 08:22:02 -0500
-In-Reply-To: <CAAM7YA=eO-1AdgPJk6-3=FbDFtHJ9e_Rydo+7LDHqVwxtk1-jA@mail.gmail.com>
-References: <20201112104512.17472-1-lhenriques@suse.de>
-         <CAAM7YA=eO-1AdgPJk6-3=FbDFtHJ9e_Rydo+7LDHqVwxtk1-jA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S1728286AbgKLNWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728062AbgKLNW3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:22:29 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34732C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:22:28 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b6so5987718wrt.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:22:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=e7pBgBavWmbh88zcXl/zlYhiEN/3DVez/GFf+X/Rer4=;
+        b=IrAl/NxVVTV1qdet4SUrnEtA0m3lNbiKHYEeuFpfH4n3CWgwZOQCFLriH0Mw+vEUjz
+         l1l8iPqimV2fV5XFyGIUCgrllfodI3RC/eWT8ykCEnPGN2cSRxqhujLBwo2xZhxi1WF3
+         dzl2R/Z97LcvPNTqz1J/BajwPJ0eAOYLPI+CMP6iCv8iZT7IE+F8L3Fo2pOaMd3zLA8C
+         tDQmxvDqekI20g1Q92mmcCZZC5tNVLE9ME2yhnYmii7/bE9DLouMp8ngVX3u8bUPDhGb
+         OBJhq+aZuaOQWGCEAd90iHJV8Vu3MjxoI7m2SghJ4afdnbFqhRPzbS7xGC/jl+zTee7D
+         kbMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=e7pBgBavWmbh88zcXl/zlYhiEN/3DVez/GFf+X/Rer4=;
+        b=B/LaccpCk6ZsXmkeQEsrQSh0JflwtptOsFf9Sl1djbum1MnW4spvzRAmODHrtLWD08
+         BbYfeG5j1ByQgBNwTkb825a0ymSWDhYv6/lyXDmHfCVnj8XltdDQOep3z6j1ySMbC5T7
+         QDGTtAYuQLsXUPVvapjXCs3enozMRmxsIVDCWuTMfKrvxV01Yzolj+neuvgCJ4j68e6o
+         Dw2eYY9aelxMznnBSrKWopgsBcx8QdOD6OvSd4xMjQAreKHkiFvagBkB6f9GuZfsVAY9
+         D6R6HVk4M3cxR1U1b8A6neWiOfyuvbWPxd3Gq9RnU5nWTqP6kLjzS6ixw10U0mDH3gh3
+         iNbQ==
+X-Gm-Message-State: AOAM531R6OiYRmu1+hvTn1YVa/G5Efq4qb/eMdivJQrP2ur4McPDqbzp
+        nPkK7a4sv5ZIQQen/0ivzIqbYA==
+X-Google-Smtp-Source: ABdhPJwkg72DshracLWbmJBfGLTYAfMiRyOd6R2eNdOb6G5GA4JF8KLUpn154NbisRXDlMYBfEID8A==
+X-Received: by 2002:adf:a54d:: with SMTP id j13mr33030337wrb.132.1605187346974;
+        Thu, 12 Nov 2020 05:22:26 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id t17sm6440829wmi.3.2020.11.12.05.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 05:22:26 -0800 (PST)
+Date:   Thu, 12 Nov 2020 13:22:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 05/25] soc: rockchip: io-domain: Remove incorrect and
+ incomplete comment header
+Message-ID: <20201112132224.GJ1997862@dell>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-6-lee.jones@linaro.org>
+ <20201112103344.GF1997862@dell>
+ <40131312.rmDrfLbc3i@diego>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <40131312.rmDrfLbc3i@diego>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 20:43 +0800, Yan, Zheng wrote:
-> On Thu, Nov 12, 2020 at 6:48 PM Luis Henriques <lhenriques@suse.de> wrote:
-> > 
-> > A NULL pointer dereference may occur in __ceph_remove_cap with some of the
-> > callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
-> > remove_session_caps_cb.  These aren't protected against the concurrent
-> > execution of __ceph_remove_cap.
-> > 
-> 
-> they are protected by session mutex, never get executed concurrently
-> 
+On Thu, 12 Nov 2020, Heiko Stübner wrote:
 
-Maybe not concurrently with one another, but the s_mutex is _not_ held
-when __ceph_remove_caps is called from ceph_evict_inode. We can't rely
-on it to protect this.
+> Am Donnerstag, 12. November 2020, 11:33:44 CET schrieb Lee Jones:
+> > On Tue, 03 Nov 2020, Lee Jones wrote:
+> > 
+> > > Fixes the following W=1 kernel build warning(s):
+> > > 
+> > >  drivers/soc/rockchip/io-domain.c:57: warning: Cannot understand  * @supplies: voltage settings matching the register bits.
+> > > 
+> > > Cc: Heiko Stuebner <heiko@sntech.de>
+> > > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > > Cc: Mark Brown <broonie@kernel.org>
+> > > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> > > Cc: Doug Anderson <dianders@chromium.org>
+> > > Cc: linux-rockchip@lists.infradead.org
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >  drivers/soc/rockchip/io-domain.c | 3 ---
+> > >  1 file changed, 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+> > > index eece97f97ef8f..d13d2d497720b 100644
+> > > --- a/drivers/soc/rockchip/io-domain.c
+> > > +++ b/drivers/soc/rockchip/io-domain.c
+> > > @@ -53,9 +53,6 @@
+> > >  
+> > >  struct rockchip_iodomain;
+> > >  
+> > > -/**
+> > > - * @supplies: voltage settings matching the register bits.
+> > > - */
+> > >  struct rockchip_iodomain_soc_data {
+> > >  	int grf_offset;
+> > >  	const char *supply_names[MAX_SUPPLIES];
+> > 
+> > Any idea who will pick this up?
+> 
+> me :-)
 
-> > Since the callers of this function hold the i_ceph_lock, the fix is simply
-> > a matter of returning immediately if caps->ci is NULL.
-> > 
-> > Based on a patch from Jeff Layton.
-> > 
-> > Cc: stable@vger.kernel.org
-> > URL: https://tracker.ceph.com/issues/43272
-> > Link: https://www.spinics.net/lists/ceph-devel/msg47064.html
-> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > ---
-> >  fs/ceph/caps.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> > index ded4229c314a..443f164760d5 100644
-> > --- a/fs/ceph/caps.c
-> > +++ b/fs/ceph/caps.c
-> > @@ -1140,12 +1140,19 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
-> >  {
-> >         struct ceph_mds_session *session = cap->session;
-> >         struct ceph_inode_info *ci = cap->ci;
-> > -       struct ceph_mds_client *mdsc =
-> > -               ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
-> > +       struct ceph_mds_client *mdsc;
-> >         int removed = 0;
-> > 
-> > +       /* 'ci' being NULL means he remove have already occurred */
-> > +       if (!ci) {
-> > +               dout("%s: cap inode is NULL\n", __func__);
-> > +               return;
-> > +       }
-> > +
-> >         dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
-> > 
-> > +       mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
-> > +
-> >         /* remove from inode's cap rbtree, and clear auth cap */
-> >         rb_erase(&cap->ci_node, &ci->i_caps);
-> >         if (ci->i_auth_cap == cap) {
+Well, that's certainly a start. :)
+
+What are your plans?
 
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
