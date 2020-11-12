@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721A52B01D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB8F2B01E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgKLJOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgKLJOG (ORCPT
+        id S1726776AbgKLJS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:18:27 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42017 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726028AbgKLJS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:14:06 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D308C0613D1;
-        Thu, 12 Nov 2020 01:14:06 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id y22so2467426plr.6;
-        Thu, 12 Nov 2020 01:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=uHAT9NIQOmV3xlfk56csymxbJFSSoYDhng2Y5p+8Fyk=;
-        b=se8skr7NQR8cOnUlsICyx+H+Clcf1XNWXLVGU5waUaFk8i3mVUi5E1+4OlFatawQZi
-         A2TeTLTi9qtWpELpYckksSK9n5hUgBkvH7Cbv0euNsN2kS5qcsVBw0AFkdDQmeD2FY/H
-         PVZlJ6LwPUMFm+ZbB29tNJAZKxTL2dWmuFAKZ+HsykF7px36Dad7TCWuw2A/fHn3QnY0
-         bDKpld60/EtekZF53PcV7m7fHqmgLWrBngtiVbXG86dzS8/ZE2dijnvK8n/kNRHAoeZm
-         jODx8WJ3E6j1Y/SodMa4sJq0YM0SHyfmfBtAi/QpMxHhPNyayOuj6j5tMWXazx2rLBfX
-         81qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=uHAT9NIQOmV3xlfk56csymxbJFSSoYDhng2Y5p+8Fyk=;
-        b=bqkzKRCIFUhlDZN7gQljLEt0ztITeu8qMdzEZ1+kRLftqII3XWKbHRLD/wE+69n0xg
-         mw/0mOnEixiJYbH++OHQCIzDSLz+MFJ2pLKVzitz22i4Z3aG+PtggNokcSARJpSxIOoT
-         5wGUiEmhlS+wuDu1MEocelhxKSU35372gTYTWHoqOue7NdzW9HNkVN05GUos3qwp9Dbc
-         ehCpH/coCt5Fsq6Gy9SSg8LUwb857FMe6FltrN9DAUmB0sJ/vlfxQyz7NsHV+s+sYB4F
-         FNcmhuuvPQ28u+7dJ2sSCxuKtuzOGK+S+21gYulRa9uHp0s5lr1looUzdWua9Vx1o+AT
-         aVIw==
-X-Gm-Message-State: AOAM5329vb7MO9UouggjwheKjnEMAklVHFhRI1Gbhxzd+/EJw0CUU6z2
-        akhi8iFev7pf9yTy7LRFB+JPYOgkmCtc
-X-Google-Smtp-Source: ABdhPJy6NTXYlf5HaYJ/l2A8eLa0i/fEuLgbOgnrGoWZ5ynZILwf9/WeLeriZqyi17C5JMVyr7Ol1A==
-X-Received: by 2002:a17:902:c154:b029:d6:efa5:4ce7 with SMTP id 20-20020a170902c154b02900d6efa54ce7mr24720694plj.73.1605172445533;
-        Thu, 12 Nov 2020 01:14:05 -0800 (PST)
-Received: from Sleakybeast ([14.192.29.96])
-        by smtp.gmail.com with ESMTPSA id p188sm5229317pgp.65.2020.11.12.01.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 01:14:04 -0800 (PST)
-Date:   Thu, 12 Nov 2020 14:43:53 +0530
-From:   Siddhant Gupta <siddhantgupta416@gmail.com>
-To:     corbet@lwn.net
-Cc:     mortonm@chromium.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mamtashukla555@gmail.com,
-        himadrispandya@gmail.com
-Subject: [PATCH] Documentation: admin-guide: LSM: improve the title underline 
-Message-ID: <20201112091353.GA19262@Sleakybeast>
+        Thu, 12 Nov 2020 04:18:26 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-158-m1HELxZiPqWeLTpHkzyMew-1; Thu, 12 Nov 2020 09:18:22 +0000
+X-MC-Unique: m1HELxZiPqWeLTpHkzyMew-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 12 Nov 2020 09:18:21 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 12 Nov 2020 09:18:21 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Steven Rostedt' <rostedt@goodmis.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: RE: [for-next][PATCH 12/17] fgraph: Make overruns 4 bytes in graph
+ stack structure
+Thread-Topic: [for-next][PATCH 12/17] fgraph: Make overruns 4 bytes in graph
+ stack structure
+Thread-Index: AQHWuJR2c5B6TfjjKUaXE5SkSnLH0KnEN84Q
+Date:   Thu, 12 Nov 2020 09:18:21 +0000
+Message-ID: <aabe0dd1fd7b46aaaadb2b34912b6718@AcuMS.aculab.com>
+References: <20201112003244.764326960@goodmis.org>
+ <20201112003334.906341178@goodmis.org>
+In-Reply-To: <20201112003334.906341178@goodmis.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning of title underline too short
-
-Signed-off-by: Siddhant Gupta <siddhantgupta416@gmail.com>
----
- Documentation/admin-guide/LSM/SafeSetID.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/LSM/SafeSetID.rst b/Documentation/admin-guide/LSM/SafeSetID.rst
-index 17996c9070e2..0ec34863c674 100644
---- a/Documentation/admin-guide/LSM/SafeSetID.rst
-+++ b/Documentation/admin-guide/LSM/SafeSetID.rst
-@@ -107,7 +107,7 @@ for a UID/GID will prevent that UID/GID from obtaining auxiliary setid
- privileges, such as allowing a user to set up user namespace UID/GID mappings.
- 
- Note on GID policies and setgroups()
--==================
-+====================================
- In v5.9 we are adding support for limiting CAP_SETGID privileges as was done
- previously for CAP_SETUID. However, for compatibility with common sandboxing
- related code conventions in userspace, we currently allow arbitrary
--- 
-2.25.1
+RnJvbTogU3RldmVuIFJvc3RlZHQNCj4gU2VudDogMTIgTm92ZW1iZXIgMjAyMCAwMDozMw0KPiAN
+Cj4gSW5zcGVjdGluZyB0aGUgZGF0YSBzdHJ1Y3R1cmVzIG9mIHRoZSBmdW5jdGlvbiBncmFwaCB0
+cmFjZXIsIEkgZm91bmQgdGhhdA0KPiB0aGUgb3ZlcnJ1biB2YWx1ZSBpcyB1bnNpZ25lZCBsb25n
+LCB3aGljaCBpcyA4IGJ5dGVzIG9uIGEgNjQgYml0IG1hY2hpbmUsDQo+IGFuZCBub3Qgb25seSB0
+aGF0LCB0aGUgZGVwdGggaXMgYW4gaW50ICg0IGJ5dGVzKS4gVGhlIG92ZXJydW4gY2FuIGJlIHNp
+bXBseQ0KPiBhbiB1bnNpZ25lZCBpbnQgKDQgYnl0ZXMpIGFuZCBwYWNrIHRoZSBmdHJhY2VfZ3Jh
+cGhfcmV0IHN0cnVjdHVyZSBiZXR0ZXIuDQo+IA0KPiBUaGUgZGVwdGggaXMgbW92ZWQgdXAgbmV4
+dCB0byB0aGUgZnVuYywgYXMgaXQgaXMgdXNlZCBtb3JlIG9mdGVuIHdpdGggZnVuYywNCj4gYW5k
+IGltcHJvdmVzIGNhY2hlIGxvY2FsaXR5Lg0KLi4uDQo+ICB9IF9fcGFja2VkOw0KDQpEb2VzIHRo
+aXMgbWFueSBhbnkvbXVjaCBkaWZmZXJlbmNlIGdpdmVuIHRoYXQgdGhlIHN0cnVjdHVyZSBpcw0K
+bWFya2VkIF9fcGFja2VkPw0KDQpPVE9IIHRoZSBfX3BhY2tlZCB3aWxsIChwcm9iYWJseSkga2ls
+bCBwZXJmb3JtYW5jZSBvbiBzeXN0ZW1zDQp0aGF0IGRvbid0IHN1cHBvcnQgbWlzLWFsaWduZWQg
+YWNjZXNzZXMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJy
+YW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lz
+dHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
