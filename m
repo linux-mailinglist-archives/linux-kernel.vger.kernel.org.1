@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33162B09CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5BA2B09CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgKLQWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:22:09 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:52600 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728810AbgKLQWI (ORCPT
+        id S1729024AbgKLQV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:21:59 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48484 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728756AbgKLQV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:22:08 -0500
-Date:   Thu, 12 Nov 2020 16:21:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1605198122;
-        bh=60QH1a+TVI08YpXeGzWDO0EvkYdD3qR8q/SmQcupZCA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=rBVw6ZUC524rPW0k3tzwgkedXqW5UWXoUp6w8mDYe5w89UIrj7TK7Dm/NShiSMM9Q
-         NFrxy2mBW2kQqu/q4xZIjtm5efSyscE0wiDlaynbeZAJO0SDQ1fHG/63xD4F2K4V1J
-         0rdIpT6Od8xgOvweuWOhJkFtojyk4MgHnq/qlnn4=
-To:     linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Caleb Connolly <caleb@connolly.tech>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH 4/5] dt-bindings: add vendor bindings for OnePlus
-Message-ID: <20201112161920.2671430-5-caleb@connolly.tech>
-In-Reply-To: <20201112161920.2671430-1-caleb@connolly.tech>
-References: <20201112161920.2671430-1-caleb@connolly.tech>
+        Thu, 12 Nov 2020 11:21:58 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id C87BC8030809;
+        Thu, 12 Nov 2020 16:21:55 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id cgeN630w8DLP; Thu, 12 Nov 2020 19:21:55 +0300 (MSK)
+Date:   Thu, 12 Nov 2020 19:21:54 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201112162154.h66dtak7e7bcblnq@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+ <20201110113827.hl5i27cpl6exo3md@mobilestation>
+ <20201110163556.3e3423f6@xps13>
+ <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+ <20201112092715.7e466405@xps13>
+ <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
+ <20201112152739.r4673zyeixkcwukx@mobilestation>
+ <20201112164301.60032276@xps13>
+ <20201112161043.brhpuo7rykdip3hs@mobilestation>
+ <20201112171510.0b0b8b80@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112171510.0b0b8b80@xps13>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Used by the OnePlus 6/T device trees
+On Thu, Nov 12, 2020 at 05:15:10PM +0100, Miquel Raynal wrote:
+> Hi Serge,
+> 
+> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Thu, 12 Nov
+> 2020 19:10:43 +0300:
+> 
+> > On Thu, Nov 12, 2020 at 04:43:01PM +0100, Miquel Raynal wrote:
+> > > Hi Serge,
+> > > 
+> > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Thu, 12 Nov
+> > > 2020 18:27:39 +0300:
+> > >   
+> > > > Hello Vignesh
+> > > > 
+> > > > On Thu, Nov 12, 2020 at 08:30:42PM +0530, Vignesh Raghavendra wrote:  
+> > > > > 
+> > > > > 
+> > > > > On 11/12/20 1:57 PM, Miquel Raynal wrote:    
+> > > > > > Hi Sergey,
+> > > > > > 
+> > > > > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
+> > > > > > 2020 22:22:59 +0300:
+> > > > > >     
+> > > > > >> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:    
+> > > > > >>> Hi Serge,
+> > > > > >>>
+> > > > > >>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
+> > > > > >>> 2020 14:38:27 +0300:
+> > > > > >>>       
+> > > > > >>>> Hello Miquel,
+> > > > > >>>>
+> > > > > >>>> A situation noted by the warning below won't cause any problem because
+> > > > > >>>> the casting is done to a non-dereferenced variable. It is utilized
+> > > > > >>>> as a pointer bias later in that function. Shall we just ignore the
+> > > > > >>>> warning or still fix it somehow?      
+> > > > > >>>       
+> > > > > >>    
+> > > > > >>> Do you think the cast to a !__iomem value is mandatory here?      
+> > > > > >>
+> > > > > >> It's not mandatory to have the casting with no __iomem, but wouldn't
+> > > > > >> doing like this:
+> > > > > >> + 	shift = (ssize_t __iomem)src & 0x3;
+> > > > > >> be looking weird? Really, is there a good way to somehow extract the first
+> > > > > >> two bits of a __iomem pointer without getting the sparse warning?    
+> > > > > > 
+> > > > > > I asked around me, what about trying uintptr_t?
+> > > > > >     
+> > > > >     
+> > > >   
+> > > > > One more way is to use __force to tell sparse that this casting is
+> > > > > intentional:
+> > > > > 
+> > > > >        shift = (__force ssize_t)src & 0x3;    
+> > > > 
+> > > > Oh, great! That solution is actually much better than using some
+> > > > currently unexplained sparse peculiarity! I was thinking about applying
+> > > > some other attribute, but __force just didn't come to my mind. Thank
+> > > > you very much for the suggestion. I'll post the fix with the solution
+> > > > suggested by you.  
+> > >   
+> > 
+> > > Is the ssize_t cast the right one btw? I would definitely prefer an
+> > > unsigned type here.  
+> > 
+> > The reason of me deciding to use the ssize_t type here was to prevent
+> > the types casting across the "shift", "chunk" and "len" variables
+> > within this method. It seemed a bit better than having a standard type
+> > like "unsigned int" here seeing the ssize_t type width won't exceed
+> > the long type size anyway. Moreover since the "len" variable has got
+> > the ssize_t type and I couldn't change it (the method is the map_info
+> > callback), I've decided to stick with what is available and defined
+> > "shift" and "chunk" as ssize_t-es. Another callback method
+> > bt1_rom_map_read() in his module has been designed in the same way.
+> > 
+> > Do you think it's better to change it in favor of using a different
+> > type like "unsigned int" here anyway?
+> 
 
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
----
- .../bindings/arm/oneplus/oneplus-boards.yaml  | 25 +++++++++++++++++++
- .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
- 2 files changed, 27 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/arm/oneplus/oneplus-b=
-oards.yaml
+> I would say yes.
+> 
+> > If so for unification I'd need to
+> > change bt1_rom_map_read() (though the "shift" variable has been
+> > defined as "unsigned long" there in the first place because the offs
+> > argument has got that type).
+> 
+> Fine.
+> 
+> > 
+> > What to do with the __force attribute here? It does seem appropriate
+> > even if for some mystical reasons we haven't got the sparse warning
+> > for the unsigned types.
+> 
+> Yeah this is strange. I would, however, suggest not to add this keyword
+> if we don't need it.
 
-diff --git a/Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.y=
-aml b/Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.yaml
-new file mode 100644
-index 000000000000..a4d9bbd5681f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.yaml
-@@ -0,0 +1,25 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/oneplus/oneplus-boards.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OnePlus based boards
-+
-+maintainers:
-+  - Caleb Connolly <caleb@connolly.tech>
-+
-+properties:
-+  $nodename:
-+    const: '/'
-+  compatible:
-+    oneOf:
-+      - description: SDM845 based boards
-+        items:
-+          - enum:
-+              - oneplus,enchilada               # OnePlus 6
-+              - oneplus,fajita                  # OnePlus 6T
-+          - const: oneplus,oneplus6             # OnePlus 6 and derivative=
-s
-+
-+required:
-+  - compatible
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Docum=
-entation/devicetree/bindings/vendor-prefixes.yaml
-index 2735be1a8470..372c1136081e 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -768,6 +768,8 @@ patternProperties:
-     description: OLIMEX Ltd.
-   "^olpc,.*":
-     description: One Laptop Per Child
-+  "^oneplus,.*":
-+    description: One Plus Technology (Shenzhen) Co., Ltd.
-   "^onion,.*":
-     description: Onion Corporation
-   "^onnn,.*":
---=20
-2.29.2
+Ok. "unsigned int" it is then.
 
+-Sergey
 
+> 
+> Thanks,
+> Miquèl
