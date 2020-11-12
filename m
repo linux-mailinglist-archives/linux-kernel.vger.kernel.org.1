@@ -2,98 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006A62B02C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24D52B02CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgKLKfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:35:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
+        id S1727863AbgKLKiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:38:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbgKLKfL (ORCPT
+        with ESMTP id S1726776AbgKLKiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:35:11 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2992FC0613D1;
-        Thu, 12 Nov 2020 02:35:11 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id w11so2559037pll.8;
-        Thu, 12 Nov 2020 02:35:11 -0800 (PST)
+        Thu, 12 Nov 2020 05:38:04 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56129C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:38:04 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id w142so7582939lff.8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:38:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gBKoO0l+krTYZHCpZSloeyBlfr5Et+++JAx3n38Lrro=;
-        b=mqVB3HMNViODmnTRpgcEm5Ec3hRXWO7EETfzUGekhn/qSktkQbXMX0olrCSqtFpgRC
-         f8VlzVjg/2gXI1nBdg3dnWv/cKIHTLVUpWczXRr3s+z/CX2hlMhzY5lQ+04t67teMODF
-         bERmKJnqqhSXcIqACTmbpYEI8Ed48gC2SRtmPWzJlnsAkNr2+l52tiERGB0brT/Ed6vj
-         hLUTtlsG8/TrncXB9EQawAyjIBZMjSbpt2mKe8seZ/RZRxwf7moHRTRPR/NlHyDhH71h
-         w4U6qM/nkys4hNQrNad/ankvFRFBgCmfO5h6wMLm9KM3413rjv+VRO+ru2DJdkWPDbjF
-         1JsQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3+A/vQ2vpSPhL2cGD7MVzrNKm83MOBEdHKwC0JmJucQ=;
+        b=QMC4BkXqJqc2FehnhxxYJ+tI5tSBh6b+Sp+PSWOBEO0f23ZHtwb3uVWJg45+Bu3M3M
+         v5GwXcvlTcVUgTEO0oPtp9RDsZniHoyi8UKDj6Snj1a58LkacDGBKdOC5wjm7w+Mvggh
+         xWXaLK9xL7IRgEyKJB8HP7ovcRmPq83pFvj5zQ4E4OOSEBOOctLojk4KkHgsYUbjeH0K
+         +FsTR6oZHseFDreBbHDQskWoSmfjInIcaP5W7XtXQ3Cgpl6yCoVkb6kGVQJLwOSK1a3q
+         kh8Ws1CMExGV1F9+fOwCw5jGKqedQ+jlZnIpstNUimbDr7pC/nwlIuTscAl7Mpc2ovOy
+         dmfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gBKoO0l+krTYZHCpZSloeyBlfr5Et+++JAx3n38Lrro=;
-        b=BKn7jOZL94CV6aVYYL6QTDDls/ihsK5pLIkO9xAd7cNNinPg+Hp/FnlHBBv9+bh8lY
-         FnaZ7F8vEguuhlxdkJdgtHu9uTGO+WIyWQYl9v3C81Ee3gEPkHUUAzOOl0trlqh7sa/G
-         RXqR5zG0ZV/PLWdxtbBJ80zyw+OshJhqfsa84S49wen26rP4SWx+oFa4JWhkXOfNRsSP
-         mhUVX+8eiAol4Wnv5KQReqOBXtXizXFV+VzEuE4k44EJ+uTQqlCftLfyF0+h5DVk+HTG
-         1I5BjEkdUX7WC1llBmxh4FEuOO1Ocf3zYggPbV2WFRRDvdMofV7+FC9S0yMHlUfSwerH
-         oB8Q==
-X-Gm-Message-State: AOAM530FPudiYe2v8MCgRySBzw4mkKscqCSFMNm2T+1OpUC49yoV4uFd
-        QBv77vCSzIPmIU8jz1kCLd4NNo516eo=
-X-Google-Smtp-Source: ABdhPJwTNmx7Osf/AWo/E8V5brGSWpkSVTmxInq33sTns/D22sVqOCy2WRG5XQpWGqLMpcOKViFRqA==
-X-Received: by 2002:a17:902:a381:b029:d8:bdca:77dc with SMTP id x1-20020a170902a381b02900d8bdca77dcmr6528791pla.14.1605177310653;
-        Thu, 12 Nov 2020 02:35:10 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:50f6:9265:b24d:a776])
-        by smtp.gmail.com with ESMTPSA id 35sm2652383pgp.26.2020.11.12.02.35.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 02:35:10 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net v2] net: x25: Increase refcnt of "struct x25_neigh" in x25_rx_call_request
-Date:   Thu, 12 Nov 2020 02:35:06 -0800
-Message-Id: <20201112103506.5875-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3+A/vQ2vpSPhL2cGD7MVzrNKm83MOBEdHKwC0JmJucQ=;
+        b=lB6rAzBAGQms2VW067KoI/zxzLP1FBslweEEoluPZTd/UFlTrXmjSUG2b6HDrk0tw+
+         /BlsL7CpdHFvMnAQq15yVnPxKBb6vhhcJEge8VtAC8g3mAaymufnTFXHMukVp9XKKPT6
+         D3gCxKQhPc3ymMwRDJxWslEJJOwVG07XBgCtSitWUs+XC7czoWCMmDW5MJi8Ppsaovmv
+         hz0XhGOKW5ThjuSN3B/DpNMEJaYw1b8c5wl/Zjs7JfKKkKg+8NIChUO0gR5MiVdup5XF
+         RD6wVRkvK/U/4v67oU+l8cVNyEP8oAFTRhv5kTMHkLTH1WroJyRxqWGKMKgrizLg9Bpm
+         KjeQ==
+X-Gm-Message-State: AOAM531ecHMX+/l9SamGos5xN+AMgaFRBwoeagIy9m3zBGwhDMGdoOHD
+        0Y6g7J8ReCVaFr9rfV69QyBlDZ52W6KDjRK9RPK6nSwVO58=
+X-Google-Smtp-Source: ABdhPJwVUogLbLgWh0H+1t04PcWwoEMWk9Msl9Y2j39LCUMrTYAzG8h8hrNPM3bWsKod/qZ2dNp3JOXgm8pvSPuSuTs=
+X-Received: by 2002:a05:6512:21c:: with SMTP id a28mr4472348lfo.486.1605177482733;
+ Thu, 12 Nov 2020 02:38:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
+ <1605012309-24812-3-git-send-email-anshuman.khandual@arm.com> <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
+In-Reply-To: <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
+From:   Linu Cherian <linuc.decode@gmail.com>
+Date:   Thu, 12 Nov 2020 16:07:50 +0530
+Message-ID: <CAAHhmWiWbUTt-BvjeqGm3mfN2L8A8gUOVVDNX0P=WCEDj=Mc4A@mail.gmail.com>
+Subject: Re: [RFC 02/11] coresight: etm-perf: Allow an event to use different sinks
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The x25_disconnect function in x25_subr.c would decrease the refcount of
-"x25->neighbour" (struct x25_neigh) and reset this pointer to NULL.
+Hi Suzuki,
 
-However, the x25_rx_call_request function in af_x25.c, which is called
-when we receive a connection request, does not increase the refcount when
-it assigns the pointer.
+On Thu, Nov 12, 2020 at 2:51 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>
+> Hi Linu,
+>
+> Please could you test this slightly modified version and give us
+> a Tested-by tag if you are happy with the results ?
+>
+> Suzuki
+>
+>
+> On 11/10/20 12:45 PM, Anshuman Khandual wrote:
+> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >
+> > When there are multiple sinks on the system, in the absence
+> > of a specified sink, it is quite possible that a default sink
+> > for an ETM could be different from that of another ETM. However
+> > we do not support having multiple sinks for an event yet. This
+> > patch allows the event to use the default sinks on the ETMs
+> > where they are scheduled as long as the sinks are of the same
+> > type.
+> >
+> > e.g, if we have 1x1 topology with per-CPU ETRs, the event can
+> > use the per-CPU ETR for the session. However, if the sinks
+> > are of different type, e.g TMC-ETR on one and a custom sink
+> > on another, the event will only trace on the first detected
+> > sink.
+> >
+> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > ---
+> >   drivers/hwtracing/coresight/coresight-etm-perf.c | 50 ++++++++++++++++++------
+> >   1 file changed, 39 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > index c2c9b12..ea73cfa 100644
+> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > @@ -204,14 +204,22 @@ static void etm_free_aux(void *data)
+> >       schedule_work(&event_data->work);
+> >   }
+> >
+> > +static bool sinks_match(struct coresight_device *a, struct coresight_device *b)
+> > +{
+> > +     if (!a || !b)
+> > +             return false;
+> > +     return (sink_ops(a) == sink_ops(b));
+> > +}
+> > +
+> >   static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >                          int nr_pages, bool overwrite)
+> >   {
+> >       u32 id;
+> >       int cpu = event->cpu;
+> >       cpumask_t *mask;
+> > -     struct coresight_device *sink;
+> > +     struct coresight_device *sink = NULL;
+> >       struct etm_event_data *event_data = NULL;
+> > +     bool sink_forced = false;
+> >
+> >       event_data = alloc_event_data(cpu);
+> >       if (!event_data)
+> > @@ -222,6 +230,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >       if (event->attr.config2) {
+> >               id = (u32)event->attr.config2;
+> >               sink = coresight_get_sink_by_id(id);
+> > +             sink_forced = true;
+> >       }
+> >
+> >       mask = &event_data->mask;
+> > @@ -235,7 +244,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >        */
+> >       for_each_cpu(cpu, mask) {
+> >               struct list_head *path;
+> > -             struct coresight_device *csdev;
+> > +             struct coresight_device *csdev, *new_sink;
+> >
+> >               csdev = per_cpu(csdev_src, cpu);
+> >               /*
+> > @@ -249,21 +258,35 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >               }
+> >
+> >               /*
+> > -              * No sink provided - look for a default sink for one of the
+> > -              * devices. At present we only support topology where all CPUs
+> > -              * use the same sink [N:1], so only need to find one sink. The
+> > -              * coresight_build_path later will remove any CPU that does not
+> > -              * attach to the sink, or if we have not found a sink.
+> > +              * No sink provided - look for a default sink for all the devices.
+> > +              * We only support multiple sinks, only if all the default sinks
+> > +              * are of the same type, so that the sink buffer can be shared
+> > +              * as the event moves around. We don't trace on a CPU if it can't
+> > +              *
+> >                */
+> > -             if (!sink)
+> > -                     sink = coresight_find_default_sink(csdev);
+> > +             if (!sink_forced) {
+> > +                     new_sink = coresight_find_default_sink(csdev);
+> > +                     if (!new_sink) {
+> > +                             cpumask_clear_cpu(cpu, mask);
+> > +                             continue;
+> > +                     }
+> > +                     /* Skip checks for the first sink */
+> > +                     if (!sink) {
+> > +                             sink = new_sink;
+> > +                     } else if (!sinks_match(new_sink, sink)) {
+> > +                             cpumask_clear_cpu(cpu, mask);
+> > +                             continue;
+> > +                     }
+> > +             } else {
+> > +                     new_sink = sink;
+> > +             }
+> >
+> >               /*
+> >                * Building a path doesn't enable it, it simply builds a
+> >                * list of devices from source to sink that can be
+> >                * referenced later when the path is actually needed.
+> >                */
+> > -             path = coresight_build_path(csdev, sink);
+> > +             path = coresight_build_path(csdev, new_sink);
+> >               if (IS_ERR(path)) {
+> >                       cpumask_clear_cpu(cpu, mask);
+> >                       continue;
+> > @@ -284,7 +307,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >       if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
+> >               goto err;
+> >
+> > -     /* Allocate the sink buffer for this session */
+> > +     /*
+> > +      * Allocate the sink buffer for this session. All the sinks
+> > +      * where this event can be scheduled are ensured to be of the
+> > +      * same type. Thus the same sink configuration is used by the
+> > +      * sinks.
+> > +      */
+> >       event_data->snk_config =
+> >                       sink_ops(sink)->alloc_buffer(sink, event, pages,
+> >                                                    nr_pages, overwrite);
+> >
+>
 
-Fix this issue by increasing the refcount of "struct x25_neigh" in
-x25_rx_call_request.
+Perf record and report worked fine with this as well, with formatting
+related opencsd hacks.
 
-This patch fixes frequent kernel crashes when using AF_X25 sockets.
+Tested-by : Linu Cherian <lcherian@marvell.com>
 
-Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- net/x25/af_x25.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 046d3fee66a9..a10487e7574c 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -1050,6 +1050,7 @@ int x25_rx_call_request(struct sk_buff *skb, struct x25_neigh *nb,
- 	makex25->lci           = lci;
- 	makex25->dest_addr     = dest_addr;
- 	makex25->source_addr   = source_addr;
-+	x25_neigh_hold(nb);
- 	makex25->neighbour     = nb;
- 	makex25->facilities    = facilities;
- 	makex25->dte_facilities= dte_facilities;
--- 
-2.27.0
-
+Thanks.
