@@ -2,257 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8E82B0EB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1946D2B0EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgKLUCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S1727070AbgKLUCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:02:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbgKLUCN (ORCPT
+        with ESMTP id S1726868AbgKLUCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:02:13 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45837C0613D1;
-        Thu, 12 Nov 2020 12:02:13 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id o11so7338521ioo.11;
-        Thu, 12 Nov 2020 12:02:13 -0800 (PST)
+        Thu, 12 Nov 2020 15:02:36 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FADEC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:02:36 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d17so10269008lfq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:02:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AF4OkJVFDnImMNJP1h9DKgAEggI96n+VpJtZTsS6eSo=;
-        b=IW/asP/lBn4FK8Sy11uUcIEtwsoqiHCCaGvjP5Erz54fDHscKlwvtbPiMtMUT4UyCH
-         ekIQ7KQv9uphLHAyVgOI/xDQtBPRDMLFn3Jg8xqWYmXpQRBCK2jN4QM0hbzCqT5S5Jmj
-         aA+NlpbGIrkNPIqBTfjd2bLtfuwq1Qzs9In3u4fiHf4xl5FNY/JTzxqV7+EINcwBx7qb
-         vmQ9vDVQv7EVPe2vaXA+t08XySe3Zbkw15KnYvvciyAtAbhXJt9dNLfokbf4r7Ehrz+C
-         s7rQMylghl1ISbYgSOmSfzH45OjlpujEF00nme8fcMce6dMRNgCOhv2rjaRhhlc1iC+a
-         MM7g==
+        bh=qR0IUP6IVaE1RvdjaglCpziTVWplPEcUYsh9Hsh3APM=;
+        b=VLrQwsGEaVVIbZE6uh58ehLoeWzPeBMn+fJYn8cOL9JDxuxAXq4my6t/KjjMP3sDRt
+         EcUGpb3WsRCEHqPq8QoQBKpo/nIDGjWZiRCZawbnM7DpYIv4xfM93fL1vl4cmDGyaHj4
+         BRCZW0l41NN5sXvHi5rAGOtiwM5z74JrVtIvw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AF4OkJVFDnImMNJP1h9DKgAEggI96n+VpJtZTsS6eSo=;
-        b=PxzUrPrD+TvKL+bIm2d293KWDyHl4iNNufcCf/LhoNQS5l7DStjdgF0QHBach0yMey
-         fszShXDGO/p2gWMvSXYMGj6Q0yBtSzZF/vrYpOuG+62XC4UGF8aXt0fqmoREJo3QVLUe
-         5jGwOtXuSsbaTeVd1apniMNu0cuKqQZv9f/lm7uI3pzfW3TERCd08CM04suJiSWcjFKI
-         z7aPBA8I8VKugcJNJJ6HP8MUGK6xvqIA0eM2oFXkeEaIFx/W9xO5KZqVjIMoKbJrhoeY
-         y3+hXpfRIgv8Z6IkkCvtv2WGnQo77D85ozWyuJ6tX8E0Mf6q/WdvPXfdQjJyBrh4nsxV
-         k5bw==
-X-Gm-Message-State: AOAM531SHuhd0heoMIbHwA9262nX2OLAwkd5B0dcqDVsILkxBACnvIrN
-        C8ozx9j7v1C9p7yfbWI3/Tbnb1ASmjfgAqKJRwEsnXpM8a0=
-X-Google-Smtp-Source: ABdhPJzSSXzEmfYl5c97AWJT79TMT2VPnKUz6aDwmB0Na6Ahrsl+GgC+/dhv72csarVoyt1nJzbbOsWpFUmQfmrl9Rk=
-X-Received: by 2002:a6b:780b:: with SMTP id j11mr624752iom.5.1605211332457;
- Thu, 12 Nov 2020 12:02:12 -0800 (PST)
+        bh=qR0IUP6IVaE1RvdjaglCpziTVWplPEcUYsh9Hsh3APM=;
+        b=J3HuXH96lpybV8SQEqSQmRHqXosfr0cVDtj9G9j5tr+MdNCmz3sgzC6BbfO0ebGjNG
+         x2x1Xf0pGmMo/dokbueZ1pqSpdwCfIvAZ+dvFi8F6QGZjUi7Gaq26Vsdl+JpxrC/Z7Cu
+         JAYtrjBAr5N93DaYFpBN5pRoOY3izJi1C/uEeGNQuz4s4t3+eXciMEQtE2eCEC2WieM5
+         6HM40pI6azduZFpHEVeAadR9HSP/XpJFrCt08S4QqKMvfxHPN3cG8iISe6tzv9BD6tmM
+         HmvZLW9N1EU9j/gdTTb9CqGFKgPVK/ougxrsznLghK5JzA5W98fAOxO3ee4nHy00QgFg
+         QMxA==
+X-Gm-Message-State: AOAM531mowK9VdpTmiuG65WKi9hiJbWcZ+o1tNCB5EKCZhiMSzahOlnL
+        UNPLwEPXlUKQld/39rR1hMFVWAPTq1JM1Y9afDUL5w==
+X-Google-Smtp-Source: ABdhPJxQBmu4mBPDxVehaQ75/6jtk2VGWuq3jwJ+5tJbc48YyvqLC0VqFJgbn3GhAsBRr8SysH6Dm0odMC5gDigsgSM=
+X-Received: by 2002:ac2:5591:: with SMTP id v17mr387091lfg.562.1605211354583;
+ Thu, 12 Nov 2020 12:02:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201111071404.29620-1-naveenm@marvell.com> <20201111071404.29620-2-naveenm@marvell.com>
-In-Reply-To: <20201111071404.29620-2-naveenm@marvell.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 12 Nov 2020 12:02:01 -0800
-Message-ID: <CAKgT0Ud5L60j90pCikPNLBn51o5PJ3XQOsbVcOffWwmeF2-njw@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 01/13] octeontx2-af: Modify default KEX
- profile to extract TX packet fields
-To:     Naveen Mamindlapalli <naveenm@marvell.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, saeed@kernel.org,
-        sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+References: <20201112171907.373433-1-kpsingh@chromium.org> <CAEf4BzZNg98qBmddzmw_HnzhqKJSJxEvAkfcFjz9hB8STaxvfw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZNg98qBmddzmw_HnzhqKJSJxEvAkfcFjz9hB8STaxvfw@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Thu, 12 Nov 2020 21:02:23 +0100
+Message-ID: <CACYkzJ49EkB7AFtmapXskM1n+K1qmReRpDK2Ke9+CGt5xz12sA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Augment the set of sleepable LSM hooks
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:22 PM Naveen Mamindlapalli
-<naveenm@marvell.com> wrote:
+On Thu, Nov 12, 2020 at 7:48 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> From: Stanislaw Kardach <skardach@marvell.com>
+> On Thu, Nov 12, 2020 at 9:20 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > Update the set of sleepable hooks with the ones that do not trigger
+> > a warning with might_fault() when exercised with the correct kernel
+> > config options enabled, i.e.
+> >
+> >         DEBUG_ATOMIC_SLEEP=y
+> >         LOCKDEP=y
+> >         PROVE_LOCKING=y
+> >
+> > This means that a sleepable LSM eBPF prorgam can be attached to these
 >
-> The current default Key Extraction(KEX) profile can only use RX
-> packet fields while generating the MCAM search key. The profile
-> can't be used for matching TX packet fields. This patch modifies
-> the default KEX profile to add support for extracting TX packet
-> fields into MCAM search key. Enabled Tx KPU packet parsing by
-> configuring TX PKIND in tx_parse_cfg.
+> typo: program
+
+Fixed.
+
 >
-> Also modified the default KEX profile to extract VLAN TCI from
-> the LB_PTR and exact byte offset of VLAN header. The NPC KPU
-> parser was modified to point LB_PTR to the starting byte offset
-> of VLAN header which points to the tpid field.
+> > LSM hooks. A new helper method bpf_lsm_is_sleepable_hook is added and
+> > the set is maintained locally in bpf_lsm.c
+> >
+> > A comment is added about the list of LSM hooks that have been observed
+> > to be called from softirqs, atomic contexts, or the ones that can
+> > trigger pagefaults and thus should not be added to this list.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  include/linux/bpf_lsm.h |   7 +++
+> >  kernel/bpf/bpf_lsm.c    | 120 ++++++++++++++++++++++++++++++++++++++++
+> >  kernel/bpf/verifier.c   |  16 +-----
+> >  3 files changed, 128 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > index 73226181b744..0d1c33ace398 100644
+> > --- a/include/linux/bpf_lsm.h
+> > +++ b/include/linux/bpf_lsm.h
+> > @@ -27,6 +27,8 @@ extern struct lsm_blob_sizes bpf_lsm_blob_sizes;
+> >  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> >                         const struct bpf_prog *prog);
+> >
+> > +bool bpf_lsm_is_sleepable_hook(u32 btf_id);
+> > +
+> >  static inline struct bpf_storage_blob *bpf_inode(
+> >         const struct inode *inode)
+> >  {
+> > @@ -54,6 +56,11 @@ void bpf_task_storage_free(struct task_struct *task);
+> >
+> >  #else /* !CONFIG_BPF_LSM */
+> >
+> > +static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
+> > +{
+> > +       return false;
+> > +}
+> > +
+> >  static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> >                                       const struct bpf_prog *prog)
+> >  {
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index e92c51bebb47..3a6e927485c2 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/bpf_verifier.h>
+> >  #include <net/bpf_sk_storage.h>
+> >  #include <linux/bpf_local_storage.h>
+> > +#include <linux/btf_ids.h>
+> >
+> >  /* For every LSM hook that allows attachment of BPF programs, declare a nop
+> >   * function where a BPF program can be attached.
+> > @@ -72,6 +73,125 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >         }
+> >  }
+> >
+> > +/* The set of hooks which are called without pagefaults disabled and are allowed
+> > + * to "sleep and thus can be used for sleeable BPF programs.
 >
-> Signed-off-by: Stanislaw Kardach <skardach@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
+> typo: "sleep" (both quotes) or no quotes at all?
 
-A bit more documentation would be useful. However other than that the
-code itself appears to make sense.
+Fixed.
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-
-> ---
->  .../ethernet/marvell/octeontx2/af/npc_profile.h    | 71 ++++++++++++++++++++--
->  .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  6 ++
->  2 files changed, 72 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-> index 199448610e3e..c5b13385c81d 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-> @@ -13386,8 +13386,8 @@ static struct npc_mcam_kex npc_mkex_default = {
->         .kpu_version = NPC_KPU_PROFILE_VER,
->         .keyx_cfg = {
->                 /* nibble: LA..LE (ltype only) + Channel */
-> -               [NIX_INTF_RX] = ((u64)NPC_MCAM_KEY_X2 << 32) | 0x49247,
-> -               [NIX_INTF_TX] = ((u64)NPC_MCAM_KEY_X2 << 32) | ((1ULL << 19) - 1),
-> +               [NIX_INTF_RX] = ((u64)NPC_MCAM_KEY_X2 << 32) | 0x249207,
-> +               [NIX_INTF_TX] = ((u64)NPC_MCAM_KEY_X2 << 32) | 0x249200,
->         },
->         .intf_lid_lt_ld = {
->         /* Default RX MCAM KEX profile */
-//
-Any sort of explanation for what some of these magic numbers means
-might be useful. I'm left wondering if the lower 32b is a bitfield or
-a fixed value. I am guessing bit field based on the fact that it was
-originally being set using ((1ULL << X) - 1) however if there were
-macros defined for each bit explaining what each bit was that would be
-useful.
-
-> @@ -13405,12 +13405,14 @@ static struct npc_mcam_kex npc_mkex_default = {
->                         /* Layer B: Single VLAN (CTAG) */
->                         /* CTAG VLAN[2..3] + Ethertype, 4 bytes, KW0[63:32] */
->                         [NPC_LT_LB_CTAG] = {
-> -                               KEX_LD_CFG(0x03, 0x0, 0x1, 0x0, 0x4),
-> +                               KEX_LD_CFG(0x03, 0x2, 0x1, 0x0, 0x4),
->                         },
-
-Similarly here some explanation for KEX_LD_CFG would be useful. From
-what I can tell it seems like this may be some sort of fix as you are
-adjusting the "hdr_ofs" field from 0 to 2.
-
->                         /* Layer B: Stacked VLAN (STAG|QinQ) */
->                         [NPC_LT_LB_STAG_QINQ] = {
-> -                               /* CTAG VLAN[2..3] + Ethertype, 4 bytes, KW0[63:32] */
-> -                               KEX_LD_CFG(0x03, 0x4, 0x1, 0x0, 0x4),
-> +                               /* Outer VLAN: 2 bytes, KW0[63:48] */
-> +                               KEX_LD_CFG(0x01, 0x2, 0x1, 0x0, 0x6),
-> +                               /* Ethertype: 2 bytes, KW0[47:32] */
-> +                               KEX_LD_CFG(0x01, 0x8, 0x1, 0x0, 0x4),
-
-Just to confirm, are you matching up the outer VLAN with the inner
-Ethertype here? It seems like an odd combination. I assume you need
-the inner ethertype in order to identify the L3 traffic?
-
->                         },
->                         [NPC_LT_LB_FDSA] = {
->                                 /* SWITCH PORT: 1 byte, KW0[63:48] */
-> @@ -13450,6 +13452,65 @@ static struct npc_mcam_kex npc_mkex_default = {
->                         },
->                 },
->         },
-> +
-> +       /* Default TX MCAM KEX profile */
-> +       [NIX_INTF_TX] = {
-> +               [NPC_LID_LA] = {
-> +                       /* Layer A: Ethernet: */
-> +                       [NPC_LT_LA_IH_NIX_ETHER] = {
-> +                               /* PF_FUNC: 2B , KW0 [47:32] */
-> +                               KEX_LD_CFG(0x01, 0x0, 0x1, 0x0, 0x4),
-
-I'm assuming you have an 8B internal header that is being parsed? A
-comment explaining that this is parsing a preamble that is at the
-start of things might be useful.
-
-> +                               /* DMAC: 6 bytes, KW1[63:16] */
-> +                               KEX_LD_CFG(0x05, 0x8, 0x1, 0x0, 0xa),
-> +                       },
-> +               },
-> +               [NPC_LID_LB] = {
-> +                       /* Layer B: Single VLAN (CTAG) */
-> +                       [NPC_LT_LB_CTAG] = {
-> +                               /* CTAG VLAN[2..3] KW0[63:48] */
-> +                               KEX_LD_CFG(0x01, 0x2, 0x1, 0x0, 0x6),
-> +                               /* CTAG VLAN[2..3] KW1[15:0] */
-> +                               KEX_LD_CFG(0x01, 0x4, 0x1, 0x0, 0x8),
-> +                       },
-> +                       /* Layer B: Stacked VLAN (STAG|QinQ) */
-> +                       [NPC_LT_LB_STAG_QINQ] = {
-> +                               /* Outer VLAN: 2 bytes, KW0[63:48] */
-> +                               KEX_LD_CFG(0x01, 0x2, 0x1, 0x0, 0x6),
-> +                               /* Outer VLAN: 2 Bytes, KW1[15:0] */
-> +                               KEX_LD_CFG(0x01, 0x8, 0x1, 0x0, 0x8),
-> +                       },
-> +               },
-> +               [NPC_LID_LC] = {
-> +                       /* Layer C: IPv4 */
-> +                       [NPC_LT_LC_IP] = {
-> +                               /* SIP+DIP: 8 bytes, KW2[63:0] */
-> +                               KEX_LD_CFG(0x07, 0xc, 0x1, 0x0, 0x10),
-> +                               /* TOS: 1 byte, KW1[63:56] */
-> +                               KEX_LD_CFG(0x0, 0x1, 0x1, 0x0, 0xf),
-> +                       },
-> +                       /* Layer C: IPv6 */
-> +                       [NPC_LT_LC_IP6] = {
-> +                               /* Everything up to SADDR: 8 bytes, KW2[63:0] */
-> +                               KEX_LD_CFG(0x07, 0x0, 0x1, 0x0, 0x10),
-> +                       },
-> +               },
-> +               [NPC_LID_LD] = {
-> +                       /* Layer D:UDP */
-> +                       [NPC_LT_LD_UDP] = {
-> +                               /* SPORT: 2 bytes, KW3[15:0] */
-> +                               KEX_LD_CFG(0x1, 0x0, 0x1, 0x0, 0x18),
-> +                               /* DPORT: 2 bytes, KW3[31:16] */
-> +                               KEX_LD_CFG(0x1, 0x2, 0x1, 0x0, 0x1a),
-
-I am curious why this is being done as two pieces instead of just one.
-From what I can tell you could just have a single rule that copies the
-4 bytes for both ports in one shot and they would end up in the same
-place wouldn't they?
-
-> +                       },
-> +                       /* Layer D:TCP */
-> +                       [NPC_LT_LD_TCP] = {
-> +                               /* SPORT: 2 bytes, KW3[15:0] */
-> +                               KEX_LD_CFG(0x1, 0x0, 0x1, 0x0, 0x18),
-> +                               /* DPORT: 2 bytes, KW3[31:16] */
-> +                               KEX_LD_CFG(0x1, 0x2, 0x1, 0x0, 0x1a),
-> +                       },
-> +               },
-> +       },
->         },
->  };
+> > + *
+> > + * There are some hooks which have been observed to be called from a
+> > + * non-sleepable context and should not be added to this set:
+> > + *
+> > + *  bpf_lsm_bpf_prog_free_security
+> > + *  bpf_lsm_capable
+> > + *  bpf_lsm_cred_free
+> > + *  bpf_lsm_d_instantiate
+> > + *  bpf_lsm_file_alloc_security
+> > + *  bpf_lsm_file_mprotect
+> > + *  bpf_lsm_file_send_sigiotask
+> > + *  bpf_lsm_inet_conn_request
+> > + *  bpf_lsm_inet_csk_clone
+> > + *  bpf_lsm_inode_alloc_security
+> > + *  bpf_lsm_inode_follow_link
+> > + *  bpf_lsm_inode_permission
+> > + *  bpf_lsm_key_permission
+> > + *  bpf_lsm_locked_down
+> > + *  bpf_lsm_mmap_addr
+> > + *  bpf_lsm_perf_event_read
+> > + *  bpf_lsm_ptrace_access_check
+> > + *  bpf_lsm_req_classify_flow
+> > + *  bpf_lsm_sb_free_security
+> > + *  bpf_lsm_sk_alloc_security
+> > + *  bpf_lsm_sk_clone_security
+> > + *  bpf_lsm_sk_free_security
+> > + *  bpf_lsm_sk_getsecid
+> > + *  bpf_lsm_socket_sock_rcv_skb
+> > + *  bpf_lsm_sock_graft
+> > + *  bpf_lsm_task_free
+> > + *  bpf_lsm_task_getioprio
+> > + *  bpf_lsm_task_getscheduler
+> > + *  bpf_lsm_task_kill
+> > + *  bpf_lsm_task_setioprio
+> > + *  bpf_lsm_task_setnice
+> > + *  bpf_lsm_task_setpgid
+> > + *  bpf_lsm_task_setrlimit
+> > + *  bpf_lsm_unix_may_send
+> > + *  bpf_lsm_unix_stream_connect
+> > + *  bpf_lsm_vm_enough_memory
+> > + */
+> > +BTF_SET_START(sleepable_lsm_hooks)BTF_ID(func, bpf_lsm_bpf)
 >
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> index 8bac1dd3a1c2..8c11abdbd9d1 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> @@ -57,6 +57,8 @@ enum nix_makr_fmt_indexes {
->         NIX_MARK_CFG_MAX,
->  };
->
-> +#define NIX_TX_PKIND   63ULL
-> +
+> something is off here
 
-A comment explaining the magic number would be useful. From what I can
-tell this looks like a "just turn everything on" sort of config where
-you are enabling bit flags 0 - 5.
+Oops. Fixed.
 
-
->  /* For now considering MC resources needed for broadcast
->   * pkt replication only. i.e 256 HWVFs + 12 PFs.
->   */
-> @@ -1182,6 +1184,10 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
->         /* Config Rx pkt length, csum checks and apad  enable / disable */
->         rvu_write64(rvu, blkaddr, NIX_AF_LFX_RX_CFG(nixlf), req->rx_cfg);
 >
-> +       /* Configure pkind for TX parse config, 63 from npc_profile */
-> +       cfg = NIX_TX_PKIND;
-> +       rvu_write64(rvu, blkaddr, NIX_AF_LFX_TX_PARSE_CFG(nixlf), cfg);
-> +
->         intf = is_afvf(pcifunc) ? NIX_INTF_TYPE_LBK : NIX_INTF_TYPE_CGX;
->         err = nix_interface_init(rvu, pcifunc, intf, nixlf);
->         if (err)
-> --
-> 2.16.5
+> > +BTF_ID(func, bpf_lsm_bpf_map)
+> > +BTF_ID(func, bpf_lsm_bpf_map_alloc_security)
+> > +BTF_ID(func, bpf_lsm_bpf_map_free_security)
+> > +BTF_ID(func, bpf_lsm_bpf_prog)
 >
+> [...]
