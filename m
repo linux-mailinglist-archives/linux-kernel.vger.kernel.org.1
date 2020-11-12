@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3892B0254
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1229E2B0258
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727241AbgKLJ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
+        id S1727560AbgKLJ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:57:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726158AbgKLJ4U (ORCPT
+        with ESMTP id S1725928AbgKLJ5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:56:20 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE23C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:56:20 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so5269190wrr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:56:20 -0800 (PST)
+        Thu, 12 Nov 2020 04:57:19 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A7AC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:57:19 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 23so5801872wmg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:57:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cxDZR78f1uAjoaTSqfFbkuzSwbFVGDkZXidPHX71G9c=;
-        b=YJ0+2ZMBF11Z542eqUsAqitgHb1xPMZ9lech+gtY3w1F7OShr8zrOCrXG/V2z/Vf9D
-         HvJMT0pS3sKdFvG56bx1LvN6uF/lhDOzA1YfuOcJrkfOS77zNBxHMGj8IusEA8/Evn9n
-         vEUDFgaNl0eXFe71Zx5ivyXt/FVmjekvELTABnl8IThNTg4mQZES6Ls1Sj+/CCnAaW8s
-         D/poUG+CS3XKDKNfiUrnWUKSQX2FNYipld7UOIAeSpgaQ152qnUGHktwJPgARaTmEEWL
-         eZN+kAZ3YTV4KiBAUS62tIvHl3nYE2Ii0u3zoEFmkOd5nNkEQTgKsjtihGwlp/GcxvrL
-         G9xA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SJdlB8xXslxrXWz+83yO6rq8sfEN0xtnjkNe/5k6q8o=;
+        b=xC0FljWqdDp0JYyC2N6sRxyC4M5oR8YfJDzzWjOcUUI2nmbP1cPJsYPk+zSNsuZl91
+         I2y+3FjkSM/lnfwZcAbKvd4jRftxtMK66fC2xdbI14LiJtQl2H83DDZOATO4jAtyEz1K
+         CEr728uOPMjJeqsa239TbdxYsFO6ufLh9/bPVnMS+etRZ5NA6kQBhBbrbESm5lkO1q/S
+         xMQjty3iW7tgKcYqnKYaU5RnAcGeNs838Z9B5bRVoVjrZYv3hJeuZzLeFB06ZW+msqOQ
+         m1/0uQsgIPTLp6+nN0v/N82+WrU7N66Kfk4TRwhLvXwgZGcLpyjmSoSzoybIjwE5u9Tv
+         QKWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cxDZR78f1uAjoaTSqfFbkuzSwbFVGDkZXidPHX71G9c=;
-        b=INkH6qOoymt/J7McErf1KsCRS7TucaPt3JMeMTOGYFxanHxyRsjEfbJxfKSqAwajPz
-         p/D/ee5vc6Gtb4oXlOMeDv22mD2q3uBHV3oAmF6Z5gGZgLBbnUX/djaqrT74qRentHVr
-         4f4S7Jx/x4cXuQFEbQKaazx0t3ZDt1AXM422YfWkVsBoYodJ3ar7ntwDOGD48Cw6KYW7
-         5wCuUkPAb6T5/+xQD/k4bnVp8J72lPxQ3OJ6O5s21pGDYHMnBCLWGtTxmEwSGaLOsG+Y
-         m3mxZrofbjT6GFheGxsEa89b76vg7vxVaSqZOsH2NBV72rOJAmktS5hsj+bnql2CNzXw
-         UYYA==
-X-Gm-Message-State: AOAM533N16sDSjGCWHQ06npCkkuniG1q8vNMEirBvhQ+UZMhOijNFdiw
-        CZoisY1oePLhi7cJ41cGPn7FetYVlGSw4Q==
-X-Google-Smtp-Source: ABdhPJwZ8/k2DYgb9fv+4YPP3KOxKbE1pra7CozavXciwAz8421GIRgYfLL5qZ+6yrj+dSeMgUX0Pw==
-X-Received: by 2002:adf:9d44:: with SMTP id o4mr36796016wre.229.1605174979204;
-        Thu, 12 Nov 2020 01:56:19 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
-        by smtp.googlemail.com with ESMTPSA id m126sm5866401wmm.0.2020.11.12.01.56.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 01:56:18 -0800 (PST)
-Subject: Re: [PATCH v2 05/17] clocksource/hyperv: use MSR-based access if
- running as root
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-6-wei.liu@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <3527e98a-faab-2360-f521-aa04bbe92edf@linaro.org>
-Date:   Thu, 12 Nov 2020 10:56:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=SJdlB8xXslxrXWz+83yO6rq8sfEN0xtnjkNe/5k6q8o=;
+        b=JlGw08ifKeGmmHq9r/2d80bFkliLLk39ZeLK7OftzP2BeNFYwwq0T853h/VLidL0H5
+         bscC0TN1anpIGkmjmU/54ywvcPON3iifuGatogmdqtorcIhhqXST7T58twplXHmbwwJE
+         gWkny6osvxe+VR0puaFgY3pPi9LLyqVNGBj9xGpA+UkazsvbhMDTLEB0tfKzisJuwYha
+         BtCXf7gdsbbdw9iS9MsvQvNhzHVcmEYhfTbmpBEPUK1I2QjBSh155+CDLpnM3o3h5EWx
+         BPuqR02/y9KYhf09erOg4DGDUWftnKoImzvmKRRiR2JuCW8tP+ZtlP7H6d7jjaXrIk7z
+         6dvQ==
+X-Gm-Message-State: AOAM5312rdxVg5gSoFilsiJ7rQeP+gvGtGqF/hTikSwyEXYZvMDXE4IX
+        eSyCri0V442AdPbk7v6Bf0UnnQ==
+X-Google-Smtp-Source: ABdhPJxg3Ef2Soll0LH/c+2LR15Uk1TaaSB8m0drUb+pvQ4sDVM8xS9tns/UgMX2m4xG1FCkRr4LAQ==
+X-Received: by 2002:a7b:c2f7:: with SMTP id e23mr8872342wmk.100.1605175038192;
+        Thu, 12 Nov 2020 01:57:18 -0800 (PST)
+Received: from dell.default ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id n15sm6138792wrq.48.2020.11.12.01.57.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 01:57:17 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        "Andrew F. Davis" <afd@ti.com>,
+        Beniamin Bia <beniamin.bia@analog.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
+        Paul Mackerras <paulus@samba.org>
+Subject: [PATCH 0/3] Rid W=1 warnings from HWMON
+Date:   Thu, 12 Nov 2020 09:57:12 +0000
+Message-Id: <20201112095715.1993117-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201105165814.29233-6-wei.liu@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 17:58, Wei Liu wrote:
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-I would like to apply this patch but the changelog is too short (one line).
+Lee Jones (3):
+  hwmon: adm1177: Fix kerneldoc attribute formatting
+  hwmon: ina3221: Demote seemingly unintentional kerneldoc header
+  hwmon: ibmpowernv: Silence strncpy() warning
 
-Please add a small paragraph (no need to resend just answer here, I will
-amend the log myself.
+ drivers/hwmon/adm1177.c    | 10 +++++-----
+ drivers/hwmon/ibmpowernv.c |  2 +-
+ drivers/hwmon/ina3221.c    |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
->  drivers/clocksource/hyperv_timer.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-> index ba04cb381cd3..269a691bd2c4 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -426,6 +426,9 @@ static bool __init hv_init_tsc_clocksource(void)
->  	if (!(ms_hyperv.features & HV_MSR_REFERENCE_TSC_AVAILABLE))
->  		return false;
->  
-> +	if (hv_root_partition)
-> +		return false;
-> +
->  	hv_read_reference_counter = read_hv_clock_tsc;
->  	phys_addr = virt_to_phys(hv_get_tsc_page());
->  
-> 
-
-
+Cc: "Andrew F. Davis" <afd@ti.com>
+Cc: Beniamin Bia <beniamin.bia@analog.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: linux-hwmon@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+Cc: Neelesh Gupta <neelegup@linux.vnet.ibm.com>
+Cc: Paul Mackerras <paulus@samba.org>
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
