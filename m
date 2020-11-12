@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9D12B0222
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C724F2B0225
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727739AbgKLJla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
+        id S1727790AbgKLJmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgKLJl3 (ORCPT
+        with ESMTP id S1725966AbgKLJmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:41:29 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C7AC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:41:27 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id e21so3689885pgr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:41:27 -0800 (PST)
+        Thu, 12 Nov 2020 04:42:45 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D322C0613D1;
+        Thu, 12 Nov 2020 01:42:45 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 10so4020385pfp.5;
+        Thu, 12 Nov 2020 01:42:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wVL/s/yrlnPufi8DrUfp2Umli3Q6ESCeDHBpTl7tchw=;
-        b=hm/piCDTZaros+BuKuNZ5YkivpyT666h9e7P2HpzoNzlwuMA3PEmv5/G0yLhA8LRaS
-         1fEgPT9sLbfJWS1+KGjhOK2XLK5Ig789bR3VstJLhhcIos2eGjt0IqIQOV2Sfs6VH1CD
-         rs17zrt3qxVbepVAHaT7wWHLuhr4ZQVKEtn4sJ1qiO4nP8sz8KDNQcxgj9XX2LjzQO2B
-         rdKtm/GMNqofASVPKM8325R/lVT8I1fCbjy+bW03P5IOP3RgC4x5B0qWnlNahSHOCbIZ
-         lyYdGC82hQKHyv8T6ebPotjDTyDVNdYnf2WOQlzZJ2JP9043Q6vWVi3uz874TwbOpStQ
-         E+Fg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5W+o639lHZ25tp12ttWBBd5JJlogsy7RLDvSupOMn2Q=;
+        b=iDLrnXYUeWekNi9FUWPHaaNfIa2cYDEY0x0jwvrxBr+L0KbiQXFRrsj0LdmE2OwT3a
+         lkQUH2ZqgQ/gk8S4/yqTcS/knSC3wRb//cCGnATqrYo3pE60ORarCBNURIZbJNcELNbb
+         +/FEaiJX9KC2UsuD87GS61pJnDr5RwgXGt5heCJUzsEauWuIsbNYUGW5rmU3muzV/niw
+         lphTB8n547XVoDJcC5wcHu5OgBIhPjYtpsiTlC0z0xlX275pPlTu5R11aiaRmXtZyDqN
+         N7u8F0zZoMQxrnMNriy91MrCYwtKk8GLDcrm1PytWUsCERbzCzzjP1w49sQgiegocWpE
+         ihWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wVL/s/yrlnPufi8DrUfp2Umli3Q6ESCeDHBpTl7tchw=;
-        b=VN7FxNqEWtRgHvJaPNYOxYk2VnRfMxTkvRDZlmICVhXmimZgXVARBARVMJIZ+AyAVf
-         PyGL6rlV1fmsDKUvRzk1wG9JR7+USsLG3xS6u+oOAZeTEPvkbF4oVjc8Qq0QX5387lwE
-         qdvpQjIcRC6zK53lQ3wX15bDvZCuEgc9xZ6Fo5zxK64/KMqWYxeWIelEe2s8aOLu+VEk
-         Ey6U/v6RzoTvx/Rl822o5IblNY/Wemi1SU3o7Iz5hFidm5j61oorc9P53ChduqSNklUX
-         AkdEYPJnsvj/eFhwk7L7McAAusGLosOjthq7M7UCL02k5J+5nmTEtVRF8x9xlakqb5Ed
-         +Avw==
-X-Gm-Message-State: AOAM5328W4vPRgUGZ9nZ9408MOb1z4W9Om+oT3FhbkHGq58fLXe1w9Sy
-        fUd1TTBv+yHC5FACZS5I4N/VCg==
-X-Google-Smtp-Source: ABdhPJwxrITs8pIGkWSW4BQAIwd1XdN02tcgPX0pu26Rfnd+/UZX3j7JPfj4pUdC1Cuvb1gfrO2gHQ==
-X-Received: by 2002:a17:90a:1d09:: with SMTP id c9mr8601165pjd.80.1605174087438;
-        Thu, 12 Nov 2020 01:41:27 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id x30sm5414261pgc.86.2020.11.12.01.41.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Nov 2020 01:41:26 -0800 (PST)
-Date:   Thu, 12 Nov 2020 15:11:23 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
-        Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util()
-Message-ID: <20201112094123.zgua2wq6iochrv2e@vireshk-i7>
-References: <cover.1603448113.git.viresh.kumar@linaro.org>
- <11e7c7dcb07ae258fa02e187c9697252f3835466.1603448113.git.viresh.kumar@linaro.org>
- <20201023103712.GL2594@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5W+o639lHZ25tp12ttWBBd5JJlogsy7RLDvSupOMn2Q=;
+        b=awP0beSjclBRuOoj3JTc6oFS5+EPseQBYAsTajiJYXMO5ceyJD/wqmNdYbWIOIMKQ6
+         mYBzSe0yzbmjt5L4WpZjXZpAOhRzZR7hx9elJ0LYr/t+fyEd8MsvjCjrvDcjVoTRk9lw
+         Hr5hixFrW13I7w+zspGjR4Xg5gzGLlX+fxdxnQTuuku2aKRrt9RUBrQmVZjcWPoQbnV8
+         lt6UIErWLNkSca6mYKhDOK5wlOyECSKutJI+i+nA1XbqCZBHD7iAS/N1WVYoGN0+2MoV
+         glGBwueJUun5UsFNPT7O81IzmAwMBxjcjX30I3sUgGQX0HovyYsMDJzbT8nl8R3sN6VE
+         LYzQ==
+X-Gm-Message-State: AOAM530h9g3Hn+/Y4a1rdubAjZZhDVQ3UMpUYpJ7AvGy3w85EDoP8HJO
+        sUCzTdy8XpnPKJ42muDp3MU=
+X-Google-Smtp-Source: ABdhPJzW8aF3dzV1nheTLVlEB/j+quAUoBuS7b61kG2QpZLIzYxpF+oVm3sBRas/l218EdfJzhUSVQ==
+X-Received: by 2002:a17:90a:940f:: with SMTP id r15mr1712977pjo.219.1605174164947;
+        Thu, 12 Nov 2020 01:42:44 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:50f6:9265:b24d:a776])
+        by smtp.gmail.com with ESMTPSA id w6sm4917402pgr.71.2020.11.12.01.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 01:42:44 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net] net: x25: Increase refcnt of "struct x25_neigh" in x25_rx_call_request
+Date:   Thu, 12 Nov 2020 01:42:37 -0800
+Message-Id: <20201112094237.4288-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023103712.GL2594@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-10-20, 12:37, Peter Zijlstra wrote:
-> Actual numbers that show the goodness would be nice ;-) Because clearly
-> we're doing this make it better.
+The x25_disconnect function in x25_subr.c would decrease the refcount of
+"x25->neighbour" (struct x25_neigh) and reset this pointer to NULL.
 
-Hi Peter,
+However, in the x25_rx_call_request function in af_x25.c, which is called
+when we receive a connection request, does not increase the refcount when
+it assigns the pointer.
 
-I tried the patchset with hackbench, sysbench and schbench. None of them showed
-any regression or significant improvements. schbench was the one I was most
-hopeful with as it creates the scenario where the utilization numbers provide a
-better estimate of the future.
+Fix this issue by increasing the refcount of "struct x25_neigh" in
+x25_rx_call_request.
 
-Scenario 1: The CPUs were mostly idle in the previous polling window of the IPA
-governor as the tasks were sleeping and here are the details from traces (load
-is in %):
+This patch fixes frequent kernel crashes when using AF_X25 sockets.
 
-   thermal_power_cpu_get_power: Old: cpus=00000000,000000ff freq=1200000 total_load=203 load={{0x35,0x1,0x0,0x31,0x0,0x0,0x64,0x0}} dynamic_power=1339
-   thermal_power_cpu_get_power: New: cpus=00000000,000000ff freq=1200000 total_load=600 load={{0x60,0x46,0x45,0x45,0x48,0x3b,0x61,0x44}} dynamic_power=3960
+Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ net/x25/af_x25.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Here, the "Old" line gives the load and requested_power (dynamic_power here)
-numbers calculated using the idle time based implementation. And "New" is based
-on CPU utilization from this patchset.
-
-As can be clearly seen, the load and requested_power numbers are simply
-incorrect in the idle time based approach and the numbers collected from CPU's
-utilization are much better and will also match the expectations of the
-schedutil governor.
-
-Scenario 2: The CPUs were busy in the previous polling window of the IPA
-governor:
-
-   thermal_power_cpu_get_power: Old: cpus=00000000,000000ff freq=1200000 total_load=800 load={{0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64}} dynamic_power=5280
-   thermal_power_cpu_get_power: New: cpus=00000000,000000ff freq=1200000 total_load=708 load={{0x4d,0x5c,0x5c,0x5b,0x5c,0x5c,0x51,0x5b}} dynamic_power=4672
-
-As can be seen, the idle time based load is 100% for all the CPUs as it took
-only the last window into account, but in reality the CPUs aren't that loaded as
-shown by the utilazation numbers.
-
-Though this patchset improves the power estimation done by the cpufreq_cooling
-driver (which matches with the freq scaling governor, schedutil, as well), the
-IPA governor doesn't necessarily appreciate the correctness of it as it takes
-the decision to choose the next cooling state based on multiple factors, like
-current temperature, target temperature, requested_power, all power players (who
-request power from it), etc. The algorithm is complex there and I am afraid the
-improved numbers here don't necessarily translate to better numbers for the
-benchmarks like schbench. Another factor can be IPAs tuning for my platform
-(Hikey6220).
-
-Irrespective of the IPA governor, the estimate provided by the cpufreq cooling
-driver does improve a lot with this patchset and are better aligned with the
-schedutil governor and I believe it would be better to merge this nevertheless.
-
-I have already prepared the next version which takes care of !SMP case, was just
-holding it off until I was trying to get some numbers out.
-
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index 046d3fee66a9..a10487e7574c 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -1050,6 +1050,7 @@ int x25_rx_call_request(struct sk_buff *skb, struct x25_neigh *nb,
+ 	makex25->lci           = lci;
+ 	makex25->dest_addr     = dest_addr;
+ 	makex25->source_addr   = source_addr;
++	x25_neigh_hold(nb);
+ 	makex25->neighbour     = nb;
+ 	makex25->facilities    = facilities;
+ 	makex25->dte_facilities= dte_facilities;
 -- 
-viresh
+2.27.0
+
