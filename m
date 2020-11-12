@@ -2,156 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF392B0EA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CB62B0EB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgKLUBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgKLUBF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:01:05 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA74C0613D1;
-        Thu, 12 Nov 2020 12:01:05 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id x15so4216555pfm.9;
-        Thu, 12 Nov 2020 12:01:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R2BNJDwXzv8M8C0Eyq8UgKrkxHVHY2hGkyMgoh70ozU=;
-        b=bP0C57H1fGFgL6VKco3kBy8D0joD/MKbu+NiH/ZkcrcFtGohm5BT4EMwCVyo/t688A
-         GEEdlcQyDbU2cyTMV49ZVDa4szJaPRKx6gKo2UFXxjxFksSQKuZJJzqenmE4OXBW4aYP
-         +YtEygo8BKbi3lZUYRjUs2eVt3r7/MMxmXQMBqWx7ajNpZpCIJgnzP+/Sbv+4hlO8ib8
-         U0jtqY4Cnxj3FvcwOjM4J6uFCqu/pTp6q9Id1Y/JeViYpzR7yFOmstU0/vYAq1tFPACj
-         I8FIrMEfd+MFFixhgnAEpvFmxTmtJkLypbBcIL5b28l+2acEVHINOJ6gsbTf6Ck/jHEr
-         x/eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=R2BNJDwXzv8M8C0Eyq8UgKrkxHVHY2hGkyMgoh70ozU=;
-        b=Km40Uct2owjXyNZfCU4H76YZUxMsuX9xFX5GtRo0QGboxtXrSsoRSS4z8Ou3ft8Wyx
-         pheISxa0JXb9i9YcM3Bbmi1kYNjOtFhwT5kdKijEUMJqKz9FMxpo7P39bwPkCa3kgUGg
-         KkwuGIQXMfyPG4LAmaA0AfcrGAJUF3U7gD7EtpWpPQHdMFWLKce6vEeJqF1s58dh+y69
-         7DmnZT9n3PAqy2tqDUBT4fFx9T0OH9laHYoKthtf3LIa8109Zswpez939PopI3Jl3nPm
-         /pFll12/27SHD01NgIgUgXDxcUYqh5qWtOkqPpgeeSsF1gBAXhmn52mHKJ0V8GJqMTkW
-         zOFQ==
-X-Gm-Message-State: AOAM532SmTEYnvpssgI737uHvtx/GF/W4jujlsOoedtgzw+U1qxx9tbm
-        OLbBvej5x3sv5YuEePB4FPU=
-X-Google-Smtp-Source: ABdhPJwPKTlDvsq79aILWrcBKyZuupQNl07PvW/5SA2XFZ9MCByABvk627pjG8OVMVhhKrOchzMDQw==
-X-Received: by 2002:a17:90a:67c5:: with SMTP id g5mr895932pjm.13.1605211264705;
-        Thu, 12 Nov 2020 12:01:04 -0800 (PST)
-Received: from google.com (c-67-188-94-199.hsd1.ca.comcast.net. [67.188.94.199])
-        by smtp.gmail.com with ESMTPSA id r205sm7464075pfr.25.2020.11.12.12.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 12:01:03 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 12 Nov 2020 12:01:01 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm/vunmap: add cond_resched() in
- vunmap_pmd_range"
-Message-ID: <20201112200101.GC123036@google.com>
-References: <20201105170249.387069-1-minchan@kernel.org>
- <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
- <20201107083939.GA1633068@google.com>
+        id S1726985AbgKLUBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:01:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgKLUBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 15:01:41 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E47BA206C0;
+        Thu, 12 Nov 2020 20:01:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605211299;
+        bh=MKJDXGpNlGKLCI9dNv7dDPKVeEJe0VJ/HK7E+grpTDA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n/ksYSCI1J9IPc6Tjsze3uiUdqAwqqI6fTydzuEQ/zllsZIZX9gf+6kkRQEr4VR1N
+         sI/Sfb9exPJr5bz8iuS/yvboFP25H3+cmbL1VIsZcCdrlFbr/qs71AIKKx4mBv5LYo
+         0Ok1y77dTkY2b68mM3G/uNiu47PwTZ0ITkWabBQM=
+Date:   Thu, 12 Nov 2020 20:01:23 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
+ scaling
+Message-ID: <20201112200123.GF4742@sirena.org.uk>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-12-digetx@gmail.com>
+ <20201110202945.GF2375022@ulmo>
+ <20201110203257.GC5957@sirena.org.uk>
+ <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
+ <20201111115534.GA4847@sirena.org.uk>
+ <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
+ <20201112171600.GD4742@sirena.org.uk>
+ <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s5/bjXLgkIwAv6Hi"
 Content-Disposition: inline
-In-Reply-To: <20201107083939.GA1633068@google.com>
+In-Reply-To: <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
+X-Cookie: Danger: do not shake.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
 
-How should we proceed this problem?
+--s5/bjXLgkIwAv6Hi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 07, 2020 at 12:39:39AM -0800, Minchan Kim wrote:
-> Hi Andrew,
-> 
-> On Fri, Nov 06, 2020 at 05:59:33PM -0800, Andrew Morton wrote:
-> > On Thu,  5 Nov 2020 09:02:49 -0800 Minchan Kim <minchan@kernel.org> wrote:
-> > 
-> > > This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
-> > > 
-> > > While I was doing zram testing, I found sometimes decompression failed
-> > > since the compression buffer was corrupted. With investigation,
-> > > I found below commit calls cond_resched unconditionally so it could
-> > > make a problem in atomic context if the task is reschedule.
-> > > 
-> > > Revert the original commit for now.
-> > > 
-> > > [   55.109012] BUG: sleeping function called from invalid context at mm/vmalloc.c:108
-> > > [   55.110774] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 946, name: memhog
-> > > [   55.111973] 3 locks held by memhog/946:
-> > > [   55.112807]  #0: ffff9d01d4b193e8 (&mm->mmap_lock#2){++++}-{4:4}, at: __mm_populate+0x103/0x160
-> > > [   55.114151]  #1: ffffffffa3d53de0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0xa98/0x1160
-> > > [   55.115848]  #2: ffff9d01d56b8110 (&zspage->lock){.+.+}-{3:3}, at: zs_map_object+0x8e/0x1f0
-> > > [   55.118947] CPU: 0 PID: 946 Comm: memhog Not tainted 5.9.3-00011-gc5bfc0287345-dirty #316
-> > > [   55.121265] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > > [   55.122540] Call Trace:
-> > > [   55.122974]  dump_stack+0x8b/0xb8
-> > > [   55.123588]  ___might_sleep.cold+0xb6/0xc6
-> > > [   55.124328]  unmap_kernel_range_noflush+0x2eb/0x350
-> > > [   55.125198]  unmap_kernel_range+0x14/0x30
-> > > [   55.125920]  zs_unmap_object+0xd5/0xe0
-> > > [   55.126604]  zram_bvec_rw.isra.0+0x38c/0x8e0
-> > > [   55.127462]  zram_rw_page+0x90/0x101
-> > > [   55.128199]  bdev_write_page+0x92/0xe0
-> > > [   55.128957]  ? swap_slot_free_notify+0xb0/0xb0
-> > > [   55.129841]  __swap_writepage+0x94/0x4a0
-> > > [   55.130636]  ? do_raw_spin_unlock+0x4b/0xa0
-> > > [   55.131462]  ? _raw_spin_unlock+0x1f/0x30
-> > > [   55.132261]  ? page_swapcount+0x6c/0x90
-> > > [   55.133038]  pageout+0xe3/0x3a0
-> > > [   55.133702]  shrink_page_list+0xb94/0xd60
-> > > [   55.134626]  shrink_inactive_list+0x158/0x460
-> > >
-> > > ...
-> > >
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -102,8 +102,6 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
-> > >  		if (pmd_none_or_clear_bad(pmd))
-> > >  			continue;
-> > >  		vunmap_pte_range(pmd, addr, next, mask);
-> > > -
-> > > -		cond_resched();
-> > >  	} while (pmd++, addr = next, addr != end);
-> > >  }
-> > 
-> > If this is triggering a warning then why isn't the might_sleep() in
-> > remove_vm_area() also triggering?
-> 
-> I don't understand what specific callpath you are talking but if
-> it's clearly called in atomic context, the reason would be config
-> combination I met.
->     
->     CONFIG_PREEMPT_VOLUNTARY + no CONFIG_DEBUG_ATOMIC_SLEEP
-> 
-> It makes preempt_count logic void so might_sleep warning will not work.
-> 
-> > 
-> > Sigh.  I also cannot remember why these vfree() functions have to be so
-> > awkward.  The mutex_trylock(&vmap_purge_lock) isn't permitted in
-> > interrupt context because mutex_trylock() is stupid, but what was the
-> > issue with non-interrupt atomic code?
-> > 
-> 
-> Seems like a latency issue.
-> 
-> commit f9e09977671b
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Mon Dec 12 16:44:23 2016 -0800
-> 
->     mm: turn vmap_purge_lock into a mutex
-> 
-> The purge_lock spinlock causes high latencies with non RT kernel,
-> 
+On Thu, Nov 12, 2020 at 10:16:14PM +0300, Dmitry Osipenko wrote:
+> 12.11.2020 20:16, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Thu, Nov 12, 2020 at 07:59:36PM +0300, Dmitry Osipenko wrote:
+
+> >> Also, some device-trees won't have that regulator anyways because board
+> >> schematics isn't available, and thus, we can't fix them.
+
+> > This is what dummy supplies are for?
+
+> But it's not allowed to change voltage of a dummy regulator, is it
+> intentional?
+
+Of course not, we can't know if the requested new voltage is valid - the
+driver would have to have explict support for handling situations where
+it's not possible to change the voltage (which it can detect through
+enumerating the values it wants to set at startup).
+
+[Requesting the same supply multiple times]
+> > So there's no known obstacle to putting enumeration of supported
+> > voltages into the OPP core then?  I'm a bit confused here.
+
+> It's an obstacle if both OPP and device driver need to get the same
+> regulator. Like in the case of this DRM driver, which need to control
+> the voltage instead of allowing OPP core to do it.
+
+It wasn't entirely deliberate but the warnings have proven useful in
+catching bugs (eg, leaked regulator requests).  The general thought is
+that if two things both claim to control the same supply on a consumer
+then they really ought to be coordinating with each other.
+
+> Please notice that devm_tegra_dc_opp_table_init() of this patch doesn't
+> use dev_pm_opp_set_regulators(), which would allow OPP core to filter
+> out unsupported OPPs. But then OPP core will need need to get an already
+> requested regulator and this doesn't work well.
+
+There is nothing stopping us adding a variant of that call which passes
+in the regulators that were acquired by the caller rather than having
+the OPP core do the requesting, or equally the OPP core could provide a
+mechanism for the caller to get the regulators that were requested.
+
+> > Ah, so each board duplicates the OPP tables then, or there's an
+> > expectation that if there's some limit then they'll copy and modify the
+> > table?  If that's the case then it's a bit redundant to do filtering
+> > indeed.
+
+> I think this is not strictly defined. Either way will work, although
+> perhaps it should be more preferred that unsupported OPPs aren't present
+> in a device-tree.
+
+OTOH that does mean that if there's an updated information on OPPs (new
+ones added, old ones determined to be unstable) then you can't just
+update a central place.  It depends if the OPPs are thought of as
+describing the SoC or the system as a whole I guess.
+
+--s5/bjXLgkIwAv6Hi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+tlJMACgkQJNaLcl1U
+h9COcgf9EH4d/GUFioibikErfQGZW508vh8gf7BzEhMbZ1U44T4UeBcZN5+Sxfi9
+Y9qKnb/EnnOFXZXcSjcQUtGaS5eEjFxd+bak7yLpfFNKYEsMKnEOdVDtbxB5NQ1W
+FJiZYR2ccixR9FdgWI9DsNRxScr3EnqfV+IvHV33Agn/Kyq2KkA7Q8Qu5SupHm5O
+XJ3/b2MSiW1P1rpQzA+yp+qUWdm4HCqpf+fL6eGqdDY+WG5QDHAjBubPN4ReUNIe
+Abev8erADzNJMrfGC86F0yJmPA/BwOIBqFSJHOKE4FIaxASi0ZDQAy+akWh4rbB4
+kLMQ2gKElTmSDF8Gx2rTqPmKzhtW9w==
+=Dp9/
+-----END PGP SIGNATURE-----
+
+--s5/bjXLgkIwAv6Hi--
