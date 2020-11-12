@@ -2,36 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B8E2B067C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496DC2B06E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgKLNdK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:33:10 -0500
-Received: from bl22-133-207.dsl.telepac.pt ([2.83.133.207]:42223 "HELO
-        BlackDesktop" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with SMTP
-        id S1727827AbgKLNdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:33:10 -0500
-Message-Id: <BP44HPFN-5L85-7IGM-MW04-POY7UF5MJPG0@gmail.com>
-Mime-Version: 1.0
-From:   Joe Pereira Guerra <jsguerra513@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Subject: The Miraculous Fatima Rosary
-Date:   Thu, 12 Nov 2020 10:44:51 GMT
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+        id S1728364AbgKLNpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:45:04 -0500
+Received: from [110.188.70.11] ([110.188.70.11]:3518 "EHLO spam2.hygon.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727790AbgKLNpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:45:03 -0500
+X-Greylist: delayed 1420 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Nov 2020 08:44:01 EST
+Received: from spam2.hygon.cn (localhost [127.0.0.2] (may be forged))
+        by spam2.hygon.cn with ESMTP id 0ACDKFwo058657
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 21:20:15 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from MK-DB.hygon.cn ([172.23.18.60])
+        by spam2.hygon.cn with ESMTP id 0ACDFfPK058184;
+        Thu, 12 Nov 2020 21:15:42 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn ([172.23.18.10])
+        by MK-DB.hygon.cn with ESMTP id 0ACDFe3i005842;
+        Thu, 12 Nov 2020 21:15:40 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn (172.23.18.10) by cncheex01.Hygon.cn
+ (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Thu, 12 Nov
+ 2020 21:15:33 +0800
+Received: from cncheex01.Hygon.cn ([172.23.18.10]) by cncheex01.Hygon.cn
+ ([172.23.18.10]) with mapi id 15.01.1466.003; Thu, 12 Nov 2020 21:15:33 +0800
+From:   Wen Pu <puwen@hygon.cn>
+To:     Dave Airlie <airlied@gmail.com>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [git pull] drm next pull for 5.10-rc1
+Thread-Topic: [git pull] drm next pull for 5.10-rc1
+Thread-Index: AQHWuMgqRTntvTjDY0CXN6PBUWhRl6nD9B8A
+Date:   Thu, 12 Nov 2020 13:15:33 +0000
+Message-ID: <746a573d-508b-4eb2-22ba-f361f5acdaa3@hygon.cn>
+References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+In-Reply-To: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.23.18.44]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A92D4B80897B4F42A96B02D1903186E6@Hygon.cn>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MAIL: spam2.hygon.cn 0ACDFfPK058184
+X-DNSRBL: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Miraculous Fatima Rosary
- HYPERLINK "https://dightongroup.files.wordpress.com/2020/11/rosary-brochure-en_pagenumber.001-1.png"
-A specially hand made Rosary made the old fashion way by senior citizens in the area of Fatima, Portugal, which aids them with their low retirement income which in times is not even sufficient for their medication needs. Saddly to say but lets help them as much as possible.
-This Rosary is had-made in Fatima with beads collected from the Holy Trees located in the path of the Apparitions of Our Lady of Fatima. The beads have also been found to have certain healing powers and were used in ancient time for their healing effects.
-Service A
-Request the Rosary free of all costs including shipping. Once received and when it is confortable for you send us your donation to help keep this free program alive.
-Service B
-Request large quantities of the Rosaries and we will facilitate the costs and payment options based on your situation and needs.
-Service C
-Become a resaller and we will ship out the merchandise directly to your clients with your specific instructions.Use our Rosary in your Fund Raising Campaigns and we will participate with donations.
-
-
+T24gMjAyMC8xMC8xNSA5OjMzLCBEYXZlIEFpcmxpZSB3cm90ZToNCj4gICAgICAgZHJtL3ZyYW0t
+aGVscGVyOiBzdG9wIHVzaW5nIFRUTSBwbGFjZW1lbnQgZmxhZ3MNCg0KVGhpcyBjb21taXQgKDcw
+NTNlMGVhYjQ3MykgcHJvZHVjZSBjYWxsIHRyYWNlIGZvciBtZSBhcyBiZWxvdzoNCg0KWyAgIDY0
+Ljc4MjM0MF0gV0FSTklORzogQ1BVOiA1MSBQSUQ6IDE5NjQgYXQgZHJpdmVycy9ncHUvZHJtL2Ry
+bV9nZW1fdnJhbV9oZWxwZXIuYzoyODQgZHJtX2dlbV92cmFtX29mZnNldCsweDM1LzB4NDAgW2Ry
+bV92cmFtX2hlbHBlcl0NClsgICA2NC43ODI0MTFdIENQVTogNTEgUElEOiAxOTY0IENvbW06IFhv
+cmcgTm90IHRhaW50ZWQgNS4xMC4wLXJjMyAjMTINClsgICA2NC43ODI0MTNdIEhhcmR3YXJlIG5h
+bWU6IFRvIGJlIGZpbGxlZC4NClsgICA2NC43ODI0MTldIFJJUDogMDAxMDpkcm1fZ2VtX3ZyYW1f
+b2Zmc2V0KzB4MzUvMHg0MCBbZHJtX3ZyYW1faGVscGVyXQ0KWyAgIDY0Ljc4MjQyNF0gQ29kZTog
+MDAgNDggODkgZTUgODUgYzAgNzQgMTcgNDggODMgYmYgNzggMDEgMDAgMDAgMDAgNzQgMTggNDgg
+OGIgODcgODAgMDEgMDAgMDAgNWQgNDggYzEgZTAgMGMgYzMgMGYgMGIgNDggYzcgYzAgZWQgZmYg
+ZmYgZmYgNWQgYzMgPDBmPiAwYiAzMSBjMCA1ZCBjMyAwZiAxZiA0NCAwMCAwMCAwZiAxZiA0NCAw
+MCAwMCA1NSA0OCA4YiA4NyAxOCAwNg0KWyAgIDY0Ljc4MjQyN10gUlNQOiAwMDE4OmZmZmZhOTEy
+ODkwOWZhNjggRUZMQUdTOiAwMDAxMDI0Ng0KWyAgIDY0Ljc4MjQzMV0gUkFYOiAwMDAwMDAwMDAw
+MDAwMDAyIFJCWDogZmZmZjk1YTVjMjVlMWVjMCBSQ1g6IGZmZmZmZmZmYzAyYjY2MDANClsgICA2
+NC43ODI0MzNdIFJEWDogZmZmZjk1OWU0OTgyNDAwMCBSU0k6IGZmZmY5NWE1YzI1ZTBiNDAgUkRJ
+OiBmZmZmOTU5ZTRiMWMyYzAwDQpbICAgNjQuNzgyNDM0XSBSQlA6IGZmZmZhOTEyODkwOWZhNjgg
+UjA4OiAwMDAwMDAwMDAwMDAwMDQwIFIwOTogZmZmZjk1YTljNWRjYjY4OA0KWyAgIDY0Ljc4MjQz
+Nl0gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IGZmZmY5
+NTllNDk4MjQwMDANClsgICA2NC43ODI0MzddIFIxMzogMDAwMDAwMDAwMDAwMDAwMCBSMTQ6IDAw
+MDAwMDAwMDAwMDAwMDAgUjE1OiBmZmZmOTVhNWM1YzU2ZjAwDQpbICAgNjQuNzgyNDQwXSBGUzog
+IDAwMDA3ZjQ4NWQ0NjZhODAoMDAwMCkgR1M6ZmZmZjk1YTlhZmNjMDAwMCgwMDAwKSBrbmxHUzow
+MDAwMDAwMDAwMDAwMDAwDQpbICAgNjQuNzgyNDQyXSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAw
+MDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpbICAgNjQuNzgyNDQ0XSBDUjI6IDAwMDA3ZjQ4NWUy
+MDIwMDAgQ1IzOiAwMDAwMDAwYzgyYTBlMDAwIENSNDogMDAwMDAwMDAwMDM1MDZlMA0KWyAgIDY0
+Ljc4MjQ0Nl0gQ2FsbCBUcmFjZToNClsgICA2NC43ODI0NTVdICBhc3RfY3Vyc29yX3BhZ2VfZmxp
+cCsweDIyLzB4MTAwIFthc3RdDQpbICAgNjQuNzgyNDYwXSAgYXN0X2N1cnNvcl9wbGFuZV9oZWxw
+ZXJfYXRvbWljX3VwZGF0ZSsweDQ2LzB4NzAgW2FzdF0NClsgICA2NC43ODI0NzddICBkcm1fYXRv
+bWljX2hlbHBlcl9jb21taXRfcGxhbmVzKzB4YmQvMHgyMjAgW2RybV9rbXNfaGVscGVyXQ0KWyAg
+IDY0Ljc4MjQ5M10gIGRybV9hdG9taWNfaGVscGVyX2NvbW1pdF90YWlsX3JwbSsweDNhLzB4NzAg
+W2RybV9rbXNfaGVscGVyXQ0KWyAgIDY0Ljc4MjUwN10gIGNvbW1pdF90YWlsKzB4OTkvMHgxMzAg
+W2RybV9rbXNfaGVscGVyXQ0KWyAgIDY0Ljc4MjUyMV0gIGRybV9hdG9taWNfaGVscGVyX2NvbW1p
+dCsweDEyMy8weDE1MCBbZHJtX2ttc19oZWxwZXJdDQpbICAgNjQuNzgyNTUxXSAgZHJtX2F0b21p
+Y19jb21taXQrMHg0YS8weDUwIFtkcm1dDQpbICAgNjQuNzgyNTY1XSAgZHJtX2F0b21pY19oZWxw
+ZXJfdXBkYXRlX3BsYW5lKzB4ZTcvMHgxNDAgW2RybV9rbXNfaGVscGVyXQ0KWyAgIDY0Ljc4MjU5
+Ml0gIF9fc2V0cGxhbmVfYXRvbWljKzB4Y2MvMHgxMTAgW2RybV0NClsgICA2NC43ODI2MTldICBk
+cm1fbW9kZV9jdXJzb3JfdW5pdmVyc2FsKzB4MTNlLzB4MjYwIFtkcm1dDQpbICAgNjQuNzgyNjQ3
+XSAgZHJtX21vZGVfY3Vyc29yX2NvbW1vbisweGVmLzB4MjIwIFtkcm1dDQpbICAgNjQuNzgyNjU0
+XSAgPyB0b21veW9fcGF0aF9udW1iZXJfcGVybSsweDZmLzB4MjAwDQpbICAgNjQuNzgyNjgwXSAg
+PyBkcm1fbW9kZV9jdXJzb3JfaW9jdGwrMHg2MC8weDYwIFtkcm1dDQpbICAgNjQuNzgyNzA2XSAg
+ZHJtX21vZGVfY3Vyc29yMl9pb2N0bCsweGUvMHgxMCBbZHJtXQ0KWyAgIDY0Ljc4MjcyN10gIGRy
+bV9pb2N0bF9rZXJuZWwrMHhhZS8weGYwIFtkcm1dDQpbICAgNjQuNzgyNzQ5XSAgZHJtX2lvY3Rs
+KzB4MjQxLzB4M2YwIFtkcm1dDQpbICAgNjQuNzgyNzc0XSAgPyBkcm1fbW9kZV9jdXJzb3JfaW9j
+dGwrMHg2MC8weDYwIFtkcm1dDQpbICAgNjQuNzgyNzgxXSAgPyB0b21veW9fZmlsZV9pb2N0bCsw
+eDE5LzB4MjANClsgICA2NC43ODI3ODddICBfX3g2NF9zeXNfaW9jdGwrMHg5MS8weGMwDQpbICAg
+NjQuNzgyNzkyXSAgZG9fc3lzY2FsbF82NCsweDM4LzB4OTANClsgICA2NC43ODI3OTddICBlbnRy
+eV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5DQpbICAgNjQuNzgyODAwXSBSSVA6
+IDAwMzM6MHg3ZjQ4NWQ3YzYzN2INClsgICA2NC43ODI4MDRdIENvZGU6IDBmIDFlIGZhIDQ4IDhi
+IDA1IDE1IDNiIDBkIDAwIDY0IGM3IDAwIDI2IDAwIDAwIDAwIDQ4IGM3IGMwIGZmIGZmIGZmIGZm
+IGMzIDY2IDBmIDFmIDQ0IDAwIDAwIGYzIDBmIDFlIGZhIGI4IDEwIDAwIDAwIDAwIDBmIDA1IDw0
+OD4gM2QgMDEgZjAgZmYgZmYgNzMgMDEgYzMgNDggOGIgMGQgZTUgM2EgMGQgMDAgZjcgZDggNjQg
+ODkgMDEgNDgNClsgICA2NC43ODI4MDVdIFJTUDogMDAyYjowMDAwN2ZmZjc4NjgyYTI4IEVGTEFH
+UzogMDAwMDAyNDYgT1JJR19SQVg6IDAwMDAwMDAwMDAwMDAwMTANClsgICA2NC43ODI4MDhdIFJB
+WDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA3ZmZmNzg2ODJhNjAgUkNYOiAwMDAwN2Y0ODVk
+N2M2MzdiDQpbICAgNjQuNzgyODEwXSBSRFg6IDAwMDA3ZmZmNzg2ODJhNjAgUlNJOiAwMDAwMDAw
+MGMwMjQ2NGJiIFJESTogMDAwMDAwMDAwMDAwMDAwYw0KWyAgIDY0Ljc4MjgxMV0gUkJQOiAwMDAw
+MDAwMGMwMjQ2NGJiIFIwODogMDAwMDAwMDAwMDAwMDA0MCBSMDk6IDAwMDAwMDAwMDAwMDAwMDQN
+ClsgICA2NC43ODI4MTNdIFIxMDogMDAwMDAwMDAwMDAwMDAwMiBSMTE6IDAwMDAwMDAwMDAwMDAy
+NDYgUjEyOiAwMDAwNTU4NjQ3NzQ1ZTQwDQpbICAgNjQuNzgyODE0XSBSMTM6IDAwMDAwMDAwMDAw
+MDAwMGMgUjE0OiAwMDAwMDAwMDAwMDAwMDAyIFIxNTogMDAwMDAwMDAwMDAwMDJhZg0KWyAgIDY0
+Ljc4MjgyMF0gQ1BVOiA1MSBQSUQ6IDE5NjQgQ29tbTogWG9yZyBOb3QgdGFpbnRlZCA1LjEwLjAt
+cmMzICMxMg0KWyAgIDY0Ljc4MjgyMV0gSGFyZHdhcmUgbmFtZTogVG8gYmUgZmlsbGVkLg0KWyAg
+IDY0Ljc4MjgyMl0gQ2FsbCBUcmFjZToNClsgICA2NC43ODI4MjhdICBkdW1wX3N0YWNrKzB4NzQv
+MHg5Mg0KWyAgIDY0Ljc4MjgzMl0gID8gZHJtX2dlbV92cmFtX29mZnNldCsweDM1LzB4NDAgW2Ry
+bV92cmFtX2hlbHBlcl0NClsgICA2NC43ODI4MzZdICBfX3dhcm4uY29sZCsweDI0LzB4M2YNClsg
+ICA2NC43ODI4NDBdICA/IGRybV9nZW1fdnJhbV9vZmZzZXQrMHgzNS8weDQwIFtkcm1fdnJhbV9o
+ZWxwZXJdDQpbICAgNjQuNzgyODQ0XSAgcmVwb3J0X2J1ZysweGQ2LzB4MTAwDQpbICAgNjQuNzgy
+ODQ3XSAgaGFuZGxlX2J1ZysweDM5LzB4ODANClsgICA2NC43ODI4NTBdICBleGNfaW52YWxpZF9v
+cCsweDE5LzB4NzANClsgICA2NC43ODI4NTNdICBhc21fZXhjX2ludmFsaWRfb3ArMHgxMi8weDIw
+DQouLi4uLi4NCg0KSSBoYWNrZWQgdXAgcGF0Y2ggYW5kIGZvdW5kIHRoaXMgaHVuayBpbiBwYXJ0
+aWN1bGFyIGludHJvZHVjZWQgdGhlIGNhbGwgdHJhY2U6DQpAQCAtMTM1LDIwICsxMzUsMjMgQEAg
+c3RhdGljIHZvaWQgdHRtX2J1ZmZlcl9vYmplY3RfZGVzdHJveShzdHJ1Y3QgdHRtX2J1ZmZlcl9v
+YmplY3QgKmJvKQ0KLi4uLi4uDQorCWlmIChwbF9mbGFnICYgRFJNX0dFTV9WUkFNX1BMX0ZMQUdf
+VE9QRE9XTikNCisJCXBsX2ZsYWcgPSBUVE1fUExfRkxBR19UT1BET1dOOw0KDQpJdCBzZWVtcyB0
+aGF0IHRoZXNlIHR3byBsaW5lcyB3aWxsIGxlYWQgdG8gZ2JvLT5wbGFjZW1lbnRzW2NdLm1lbV90
+eXBlIGJlDQpmb3JjaWJseSBzZXQgdG8gVFRNX1BMX1NZU1RFTSBpbiB0aGUgbmV4dCBodW5rcyB3
+aGljaCBjYXVzZWQgdGhlIHByb2JsZW0sDQpldmVuIHRob3VnaCB0aGUgcGxfZmxhZyBpcyBEUk1f
+R0VNX1ZSQU1fUExfRkxBR19WUkFNICYgRFJNX0dFTV9WUkFNX1BMX0ZMQUdfVE9QRE9XTi4NCg0K
+SWYgSSBjb21tZW50IG91dCB0aGVzZSB0d28gbGluZXMsIHRoZXJlIHdpbGwgYmUgbm8gY2FsbCB0
+cmFjZSBhbnkgbW9yZS4NCg0KLS0gDQpSZWdhcmRzLA0KUHUgV2Vu
