@@ -2,101 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7982B1257
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D64D2B125F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgKLXDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 18:03:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKLXDI (ORCPT
+        id S1726525AbgKLXDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 18:03:54 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10990 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725929AbgKLXDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:03:08 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DCEC0613D1;
-        Thu, 12 Nov 2020 15:02:57 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id oq3so10502075ejb.7;
-        Thu, 12 Nov 2020 15:02:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fFCuLzHCF3NunfdYOvUYUqRdVNrtCS9FyDx6R97c2zw=;
-        b=TRtIDRlc7aNz4c+JwOh2/fhJ/Wkt1A+ziOnROykzE9Gmgn964r+fWw4czkNcfjcYE1
-         O8kP26p4nWAWFwT8Py5+4sGgSJx7wFCjuVKv9Bwx6VHd3A5ioGLLy+4s2MuN5BgX3LcK
-         CrYZo7f2fYd9WRBvqcVh6ZlLDLx2CLUVE3efZ0jO7RuT5+v8gr26p/C1ZbO+wCEjFuqk
-         JuMs2AoD6tbhqdZ+WvTbJu5v5dhnRiXM/Sr405NcsA0TC0BO6ZVDqfhZb5m9yaLpYtlr
-         Zv5YnjVzoOen8/6l1RdWOPDaqhzX67kEVHHGvJr9lZ/FXWy/5C9G8x2/3LuoR4k+gmlg
-         r4lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fFCuLzHCF3NunfdYOvUYUqRdVNrtCS9FyDx6R97c2zw=;
-        b=HYVR9cXZpCtPYafFd7BbDaUB+bUj10q+V46QSy5M/5Rhd7M4tQuwBzg4JNoFD5lWwd
-         DhbVRLjwD8JNFdTf/C/RK55a0kealYHRlbUKq1X7FgsztM6XTwmhgMlT2WOyNAlYzuCk
-         srT8lNq4T2wAPGdHqyQfnVaIDwtiI3JrvSwno3xw2ye0u1DPgFaWz6ttdBZ+hYsBNvAN
-         Xx+I76u9N2Bl5ohUA+vcOIcqbbIGYsoSvmblfKzyqCKz7wfycB2X5aKJ+UM3CfTY/6Wy
-         YYn7UVDCFVuk+W8jzAeh4AEHiepcphdcX4N0UM5TKTsCTuGlo0Y6VIQ1Yt0NcM36N/Ha
-         iInA==
-X-Gm-Message-State: AOAM5315HzKo6V6HXXArUn2iUbeGWRnZ3r/vnq4GXogtvsg21f2nzAkN
-        1pIgazhGifmBkih26nP9p3E=
-X-Google-Smtp-Source: ABdhPJyo0ryDTr8bZPrg57Ideb/leoI2q59daDlVfI/r8YhkJ/hvQy5NItaQXyvkVPO17X/oIH5aMg==
-X-Received: by 2002:a17:906:bcf9:: with SMTP id op25mr1554430ejb.223.1605222176665;
-        Thu, 12 Nov 2020 15:02:56 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id d2sm2695782ejr.31.2020.11.12.15.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 15:02:56 -0800 (PST)
-Date:   Fri, 13 Nov 2020 01:02:54 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        Thu, 12 Nov 2020 18:03:54 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACN2sto042518;
+        Thu, 12 Nov 2020 18:03:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=FMOWnoGH4pRJTA4CZg+kIm+2FrFyGZ1RWFDcDb7biAk=;
+ b=Gvsyg2jdxLPi6Tv/aBEWEuVgqIyXVC/URlq3VOhh9s6gVlejyy08M95/OHEtRduXRTb5
+ e46yDq9+t1lfz8wLwi1bPMNdZX/JxXyyj+JaMLJRbbu1Wk0JwAVxdEbo0BiOtUq98K/s
+ w7J7fOE2tfMR9q1xzD4dEPjORgB2EkWmWAtlCDX3yruxh0+19zUxi2sd31SZmT+iqnTx
+ KLb0/foWhNtQkY0Egyvp7Nq+iLSJUbsRNfSqnrywsIsk8xSrqYMQ8FvWTCHZtI0Rfe48
+ MZrsUfEMfVNlbyThMFO+sx6F/PBzoIV5wLA72owAAlAEqB//2TdMZ4W7gJedMXJy5Yhh 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34sbjv4gxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 18:03:24 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ACN31Hj043178;
+        Thu, 12 Nov 2020 18:03:24 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34sbjv4gw2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 18:03:24 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ACMqDEx000681;
+        Thu, 12 Nov 2020 23:03:21 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 34njuh64m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 23:03:21 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ACN3JEH4981500
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 23:03:19 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 345B84C04A;
+        Thu, 12 Nov 2020 23:03:19 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 97EF14C040;
+        Thu, 12 Nov 2020 23:03:18 +0000 (GMT)
+Received: from localhost (unknown [9.171.90.1])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 12 Nov 2020 23:03:18 +0000 (GMT)
+Date:   Fri, 13 Nov 2020 00:03:17 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 03/11] net: dsa: microchip: split ksz_common.h
-Message-ID: <20201112230254.v6bzsud3jlcmsjm2@skbuf>
-References: <20201112153537.22383-1-ceggers@arri.de>
- <20201112153537.22383-4-ceggers@arri.de>
+Subject: [PATCH v5 0/5] objtool and cross compilation
+Message-ID: <cover.thread-1e2854.your-ad-here.call-01605220128-ext-6070@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201112153537.22383-4-ceggers@arri.de>
+X-Patchwork-Bot: notify
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_14:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 clxscore=1011 adultscore=0 priorityscore=1501
+ suspectscore=0 spamscore=0 malwarescore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:35:29PM +0100, Christian Eggers wrote:
-> Parts of ksz_common.h (struct ksz_device) will be required in
-> net/dsa/tag_ksz.c soon. So move the relevant parts into a new header
-> file.
-> 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> ---
+The patch series is resent with additional patch for the instruction
+decoder selftest, since it has been dropped from the tip/objtool/core
+due to instruction decoder selftest build failure.
 
-I had to skip ahead to see what you're going to use struct ksz_port and
-struct ksz_device for. It looks like you need:
+Previous version can be found here:
+https://lore.kernel.org/lkml/cover.thread-b2a547.your-ad-here.call-01601912612-ext-9766@work.hours/
 
-	struct ksz_port::tstamp_rx_latency_ns
-	struct ksz_device::ptp_clock_lock
-	struct ksz_device::ptp_clock_time
+rfc v4 - v5:
+ - original patch 1 has been merged. It has been replaced with the patch
+   which moves instruction decoder selftests to tools headers usage.
+   This effectively fixes x86 kernel cross-compilation with
+   CONFIG_X86_DECODER_SELFTEST=y. And posttests are run successfully at
+   least on s390 (with entire patch series applied).
+ - patch 2 has instruction decoder selftest fixup added.
+ - also includes patch 5 for objtool header include paths rework.
+ - patches 2-5 titles changed to those with which they were picked up
+   into tip/objtool/core.
 
-Not more.
+rfc v3 - rfc v4:
+ - patch 4: objtool: fix x86 orc generation on big endian cross compiles
+   - introduced "bswap_if_needed()" macro for multi-byte values
+     conversion, which are read from / about to be written to a target
+     native endianness ELF file.
+ - patch 2: x86/insn: instruction decoder and big endian cross compiles
+   - changed subject prefix from objtool to x86/insn
+   - reformated leXX_to_cpu macro make it easier to read
 
-Why don't you go the other way around, i.e. exporting some functions
-from your driver, and calling them from the tagger? You could even move
-the entire ksz9477_tstamp_to_clock() into the driver as-is, as far as I
-can see.
+rfc v2 - rfc v3:
+ - reused __*_ENDIAN_BITFIELD and dropped unneeded byteswap if __KERNEL__
+   is defined following David's suggestions,
+ - re-splitted changes and made x86 instruction decoder a separate patch,
+ - extra patch to add -Wno-nested-externs build flag to enable BUILD_BUG()
+   usage,
+ - added a safer and more readable leXX_to_cpu macro in x86 instruction
+   decoder,
+ - simplified includes. Switched to using leXX_to_cpu/cpu_to_leXX in
+   the objtool and x86 instruction decoder since
+   <linux/kernel.h> is included in the objtool already.
+
+rfc v1 - rfc v2:
+ - rebased onto tip/objtool/core
+ - reformatted couple of lines
+
+Currently objtool seems to be the only tool from all the build tools
+needed for x86 build which breaks x86 cross compilation on big endian
+systems.
+
+But besides x86 cross compilation, endianness awareness is also needed
+for big endian architectures objtool support in general.
+
+We have working prototype of objtool support and orc unwinder for s390
+made originally by Martin Schwidefsky. I'm trying to bring it in shape
+again and refactor to share more code with "generic" part.
+
+But first things first. This patch series points to endianness problems
+which should be addressed. Recent "other architectures support" patches
+currently moved only some problematic parts into x86 arch specific folder.
+Besides that even though big endian stuff is only needed for the objtool
+arch/x86/lib/insn.c and arch/x86/include/asm/insn.h are shared across
+the kernel source and the tools, so changes are applied to both.
+
+Martin Schwidefsky (2):
+  x86/insn: Support big endian cross-compiles
+  objtool: Fix reloc generation on big endian cross compiles
+
+Vasily Gorbik (3):
+  x86/tools: Use tools headers for instruction decoder selftests
+  objtool: Fix x86 orc generation on big endian cross compiles
+  objtool: Rework header include paths
+
+ arch/x86/include/asm/insn.h                   |  33 ++++++
+ arch/x86/include/asm/orc_types.h              |  10 ++
+ arch/x86/lib/insn.c                           | 101 ++++++++----------
+ arch/x86/tools/Makefile                       |   8 +-
+ arch/x86/tools/insn_sanity.c                  |   4 -
+ tools/arch/x86/include/asm/insn.h             |  33 ++++++
+ tools/arch/x86/include/asm/orc_types.h        |  10 ++
+ tools/arch/x86/lib/insn.c                     | 101 ++++++++----------
+ tools/objtool/.gitignore                      |   2 +-
+ tools/objtool/Makefile                        |   1 +
+ tools/objtool/arch/x86/decode.c               |   8 +-
+ .../arch/x86/include/{ => arch}/cfi_regs.h    |   0
+ .../x86/include/{arch_elf.h => arch/elf.h}    |   0
+ .../arch/x86/include/arch/endianness.h        |   9 ++
+ .../{arch_special.h => arch/special.h}        |   0
+ tools/objtool/arch/x86/special.c              |   4 +-
+ tools/objtool/builtin-check.c                 |   4 +-
+ tools/objtool/builtin-orc.c                   |   4 +-
+ tools/objtool/check.c                         |  19 ++--
+ tools/objtool/elf.c                           |  40 +++----
+ tools/objtool/{ => include/objtool}/arch.h    |   4 +-
+ tools/objtool/{ => include/objtool}/builtin.h |   0
+ tools/objtool/{ => include/objtool}/cfi.h     |   2 +-
+ tools/objtool/{ => include/objtool}/check.h   |   4 +-
+ tools/objtool/{ => include/objtool}/elf.h     |   0
+ tools/objtool/include/objtool/endianness.h    |  38 +++++++
+ tools/objtool/{ => include/objtool}/objtool.h |   2 +-
+ tools/objtool/{ => include/objtool}/special.h |   4 +-
+ tools/objtool/{ => include/objtool}/warn.h    |   2 +-
+ tools/objtool/objtool.c                       |   6 +-
+ tools/objtool/orc_dump.c                      |   9 +-
+ tools/objtool/orc_gen.c                       |   7 +-
+ tools/objtool/special.c                       |  14 +--
+ tools/objtool/weak.c                          |   2 +-
+ 34 files changed, 306 insertions(+), 179 deletions(-)
+ rename tools/objtool/arch/x86/include/{ => arch}/cfi_regs.h (100%)
+ rename tools/objtool/arch/x86/include/{arch_elf.h => arch/elf.h} (100%)
+ create mode 100644 tools/objtool/arch/x86/include/arch/endianness.h
+ rename tools/objtool/arch/x86/include/{arch_special.h => arch/special.h} (100%)
+ rename tools/objtool/{ => include/objtool}/arch.h (96%)
+ rename tools/objtool/{ => include/objtool}/builtin.h (100%)
+ rename tools/objtool/{ => include/objtool}/cfi.h (96%)
+ rename tools/objtool/{ => include/objtool}/check.h (96%)
+ rename tools/objtool/{ => include/objtool}/elf.h (100%)
+ create mode 100644 tools/objtool/include/objtool/endianness.h
+ rename tools/objtool/{ => include/objtool}/objtool.h (96%)
+ rename tools/objtool/{ => include/objtool}/special.h (94%)
+ rename tools/objtool/{ => include/objtool}/warn.h (98%)
+
+-- 
+2.25.4
