@@ -2,78 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60682B042D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D328A2B0436
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgKLLon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:44:43 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38540 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728101AbgKLLm5 (ORCPT
+        id S1727796AbgKLLpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:45:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727934AbgKLLoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:42:57 -0500
-Received: by mail-wm1-f66.google.com with SMTP id h62so5216582wme.3;
-        Thu, 12 Nov 2020 03:42:55 -0800 (PST)
+        Thu, 12 Nov 2020 06:44:30 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9390C0613D1;
+        Thu, 12 Nov 2020 03:44:28 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id u21so5657257iol.12;
+        Thu, 12 Nov 2020 03:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bjG+3fN6tWT0l9kBXwiMBUPZHTw/Ki7x6SY3rKyWanI=;
+        b=uqztGz9E5O3z4VS98sgFfWVmfAZ7ztqXBoHmagSMuHnpvSO8ShCExSkETu/j/MY4y/
+         WDP0+llM3771v0RFj6xFmylSk3xaNzgNkFjh6PsRwVHfU74ptHyfJ+26dQ1Z/+OfDA+i
+         IGMF2eEoGMbcmHKEjIaoXsL1Gr/hvEAyOQku4KRB8if5CqS0DsRIRW/W/hAC7j3zRqms
+         3fA/eJkvJk9OaHnoVZYJdy5viobUocBSSDVehCUW/sdnAzj+PcNYWM/SdnEoLv9ywZnY
+         KEkm1X+roX0k4jgO9tflZZVfFToKpzS7W0y67BR8c2ZTsgJYdPUsiveCjWFQtDsO4vO4
+         Rw7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5UTykdoKscM0sS9MBqMZhmWdVnfXzwZ/4BylVoY+13s=;
-        b=feOIwIcQAHbsbEwIgZav7DPYtOzJ0b73CLPW5D17MdSYye7c9c5IEDl7H5Tkg3axAw
-         bUdzUdcnSONqJet6LexksdD2DPQKmh2qdRPGP6gujlOnqZY8dgbc+moa/dsJaEuQH9bM
-         pUAc0zZWxXBChGMb25ugUjc75WO+js3WjqvKw+T94l6lBpvMv1QXyXir3gqlOYqT7HSR
-         i4AzHXWTUjM9grUkgbE3LdHswLWJxRlGpNvT6t5HiXEpwz+vfLw3JUom6Dml9O7Y+4MR
-         g9Iv+EG2gffRXvFG86z/rXjFZk87CLRkqsPGjJaPf8YebREuVy//SEBBPCplu0vimDvM
-         Qz1A==
-X-Gm-Message-State: AOAM532wN5N+DXZWisATqmRvyq7jt4UtZRL7qAq+gcNKzTkLtRD2PWRM
-        IjUHeFztgUodV9OaIF/7sRZQkh2EVHg=
-X-Google-Smtp-Source: ABdhPJwnINoYhgOIO3/w1vhg7hRKMG+scXHr6/ROX3sPszoncfIUMEEj9dtuYc1uifHmfx4D8NgCqQ==
-X-Received: by 2002:a7b:c08e:: with SMTP id r14mr9572071wmh.165.1605181375124;
-        Thu, 12 Nov 2020 03:42:55 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id p4sm6560988wrm.51.2020.11.12.03.42.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 03:42:54 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:42:53 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 05/17] clocksource/hyperv: use MSR-based access if
- running as root
-Message-ID: <20201112114253.hoaeijs55lrueoey@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-6-wei.liu@kernel.org>
- <3527e98a-faab-2360-f521-aa04bbe92edf@linaro.org>
- <20201112112437.lt3g5bhpjym3evu5@liuwe-devbox-debian-v2>
- <2c5101fb-f3de-7b0c-ee76-e5a0e6b32098@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bjG+3fN6tWT0l9kBXwiMBUPZHTw/Ki7x6SY3rKyWanI=;
+        b=od+LIafELzo0aWkGQtCp3Aj+D0VXfElStwDGf4TGJMyZHF+Up4oVk0zxWQaBWcIxOc
+         fROLLeazH1xDEzIfLx8ugQbUKlrso8jjQI/3uxTpHcTnE9hBoMZrX5zB5uZ6Xnj3vgul
+         oLdDyPh3Tv2i3V60039AhtTgeZ2+lbNd8vx4KOGzeKt7n4WCNAfIMgc1kBzoKcFpNDxx
+         BBVbY8zVxHTXiJ3Mh+r6W8TfpLGcMhjyQXkOnl/SZIOkk8seEzUT3Uyfo39dUhWXUxr4
+         p186fEJeDbGNxwv7slMrFfnjmTBAuK17WMcnuZx3Hpf/WninE8vlwiiPslfBRtu+bwYa
+         jV5Q==
+X-Gm-Message-State: AOAM531rqNM0DWR2h/nPSU1vGSEqeUlb3xZAmKVkiHXPwgc2cxx2UBW0
+        YsJbaR1QrZJx0Ayg7W6YJ6mALO0a7kmzBQXQ/wI=
+X-Google-Smtp-Source: ABdhPJw6mtg+Wsg99W56SGu91b1DRfwQGGbt3J8n99qr1kWI36WvQ+CgwQxUWY4OSIgBtJAdzTBLlUI3RTj8Q0jsg4g=
+X-Received: by 2002:a5d:824b:: with SMTP id n11mr12310712ioo.10.1605181468096;
+ Thu, 12 Nov 2020 03:44:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c5101fb-f3de-7b0c-ee76-e5a0e6b32098@linaro.org>
-User-Agent: NeoMutt/20180716
+References: <20201111152523.76254-1-aford173@gmail.com> <20201111191809.GA1859246@bogus>
+In-Reply-To: <20201111191809.GA1859246@bogus>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 12 Nov 2020 06:44:16 -0500
+Message-ID: <CAHCN7x+w3wpELWHVSd1-U38N+4TEDKWDRxzXEtDX2svkrTGJCw@mail.gmail.com>
+Subject: Re: [PATCH V4] dt-bindings: soc: imx: Add binding doc for spba bus
+To:     Rob Herring <robh@kernel.org>
+Cc:     Adam Ford-BE <aford@beaconembedded.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:40:53PM +0100, Daniel Lezcano wrote:
-> On 12/11/2020 12:24, Wei Liu wrote:
-> > On Thu, Nov 12, 2020 at 10:56:17AM +0100, Daniel Lezcano wrote:
-> >> On 05/11/2020 17:58, Wei Liu wrote:
-> >>> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> 
-> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On Wed, Nov 11, 2020 at 2:18 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, 11 Nov 2020 09:25:23 -0600, Adam Ford wrote:
+> > Add binding doc for fsl,spba-bus.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> > make dt_binding_check showed no errors if I did this right.
+> >
+> > V4:  Remove an accidental makefile change
+> >      Move type:object under additional properties
+> >
+> > V3:  Rebase sample from aips-bus example
+> >      Split off from series adding i.MX8M Nano functions to reduce noise
+> >
+> > V2:  Attempted to update yaml from feedback
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml: bus@30000000: reg: [[805306368, 1048576]] is not of type 'object'
+>         From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+>
 
-Thanks Daniel.
+Rob,
 
-Wei.
+Can you give me a pointer on what this message is saying?  I don't
+undertsand the YAML language, and I cannot get my machine to generate
+the same messages you're seeing.
+>
+> See https://patchwork.ozlabs.org/patch/1398351
+>
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+
+I have installed yamllint, and I have run the above line, but when I
+run make dt_binding_check it fails to finish script even before I add
+this new binding.  If I revert the Makefile back to before the
+implementation of yamllint, it works, but doesn't show the error.
+When I restore the Makefile, it runs but it doesn't show the error.
+Once I do a make clean, and run the dt_binding_check again, it fails
+to finish with the following error
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:59:
+Documentation/devicetree/bindings/processed-schema-examples.json]
+Error 123
+
+It appears as if the processed-schema-examples.json is not generated at all.
+
+When I revert back to the older makefile, it appears that file is
+generated, but when I restore the makefile to the current version and
+run it again, it doesn't show the dtschema warnings/errors you see.
+I am guessing it's because the processed-schema-examples.json isn't
+being generated correctly after I run make clean.
+
+Do you have any ideas what might be missing from my build machine?
+
+adam
+
+>
+> Please check and re-submit.
+>
