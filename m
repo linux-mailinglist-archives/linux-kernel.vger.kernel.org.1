@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3612B0ED3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 290642B0ECC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgKLUJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:09:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55694 "EHLO
+        id S1727026AbgKLUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727092AbgKLUJw (ORCPT
+        with ESMTP id S1726854AbgKLUJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:09:52 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CECC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:09:51 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id z24so5153182pgk.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:09:51 -0800 (PST)
+        Thu, 12 Nov 2020 15:09:36 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4593C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:09:35 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id d12so7309563wrr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:09:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MVLSS8HPdDnbBl9RWXiGBoIgCQcE3Pg+Hs5tlG/jhj8=;
-        b=nC/m2xDs/Tu21OYF4O+DPHWIoNfV0ihYGWNDzJcPGIbYfm0AHVxxmZbX06hl+VkUQm
-         SWxa0Fh7W+gp7w2HOQpgX/6v4B1fyN/iGLRg5SX5ddAkB72rY9e4vJWLo3hxRy3f8R3i
-         cvuU+NsUJU9vSqOr+7Bpd+i4mH3ae1TT1eGPg=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y7TtYo1PxIxzaXqQ92+BjQcHOSuanEJBk/khixUznWc=;
+        b=QJ8Jtl+WZpjf5yduhb8CapzzbPXA3g3XODaEtW2SWUv6Ock/nei1tkkhKhv0Uu3vCz
+         9HpCSmQOKbqt7EENwfppy8KpRVLY9hfLjrI0xeWiTVbd2D+/3TnW6gIVVbGY4qMRj1nc
+         Hv4M8a+lF0N9cUNgH4I3SrgerWJty9FJpLJ6Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MVLSS8HPdDnbBl9RWXiGBoIgCQcE3Pg+Hs5tlG/jhj8=;
-        b=cd3tS3s8oiTf6FRN/5JA7yYTFfNF8gM0SdXX0i5SatmiLQsfB3D7GGSGm3dAUx+4lm
-         lsAFHabRcAoACKHV+FwZ2kBcgOfkWU3xSl38B8xcoRPiheRlgY0dTKQa+qGQREVemFu8
-         lRRjf7sa/sxmMm/A3fPULbj9RpAdOWF4OmjqC79GGfKjHAxkZ+zSEEVy5LF0kLganWGE
-         25uA268i86de8tXFhw2vXb5H5XLKcmq8pKSuOYCFwNT4Y2hn557Ek9HMHtcGvGr5+1jI
-         6SxOJxUiVBdJ35BKbaqQ7HpNdihVpqqcHahX24wNDQfoXkNVYyeyQiut+7Se/kddBv7+
-         yLXA==
-X-Gm-Message-State: AOAM531RjXDkZw6DNivfBv8L7N3JHSlcA3rtnc1REf2I02X1fiSfLXRL
-        2LnSA1Q3S+7iTv+eP/U5BB1aaQ==
-X-Google-Smtp-Source: ABdhPJwxX8rLDWm74xvYqVKwE2NYNrD1rXlUb9Qxr1RnLidy+DS7kzxi8+hbzN7HLONgbFgBysz5VA==
-X-Received: by 2002:aa7:9601:0:b029:18a:e777:dac1 with SMTP id q1-20020aa796010000b029018ae777dac1mr1154792pfg.4.1605211791112;
-        Thu, 12 Nov 2020 12:09:51 -0800 (PST)
-Received: from kuabhs-cdev.c.googlers.com.com (152.33.83.34.bc.googleusercontent.com. [34.83.33.152])
-        by smtp.gmail.com with ESMTPSA id gc17sm7590260pjb.47.2020.11.12.12.09.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y7TtYo1PxIxzaXqQ92+BjQcHOSuanEJBk/khixUznWc=;
+        b=mS+hAJs1Coi3DbANhThejED5swz52C6EwWts+S8gfdP6BGB8pWnV0ltIzcbR44/BBY
+         Od44zLa2jMe/wVi56QAqg2SKazxEirdauEW+Xg8xHXDrSPe7APyGZbF4emnNhT/YhVXI
+         9Ci8rYUHBgPlbm9tmcW9MJSgDrPQH9WOVNJ08nRxDHMndmvUQt+M9iH+J7Q5HP9cZNwp
+         kfSVxu9ek6evMDXaY296berSpptzWWk1ChVgk+sv5xnRmH3MdkF9Bx+p3R2d98SUgWXr
+         xb0mZrtcBMAHY0pXF6H7j6tLYy0B4anLk+iZ9TzBe6NGAzw3NbHrJ8OdJnDDMOnGiQUy
+         x1ww==
+X-Gm-Message-State: AOAM531hqzYSKzBVoGhZUDRj/mXTN9GHXSZyesOm5Rgr2FWtyQqvmpoY
+        1QjhsAR36MG22FY+uy1p74VSTQ==
+X-Google-Smtp-Source: ABdhPJyFTHpTMFFLXUqoegQKs9aIO0k6XsjW9NUhBoGiF0NBrYgkmk1CXv7vmBywKXeD8k7OORJeDA==
+X-Received: by 2002:adf:9407:: with SMTP id 7mr1552417wrq.182.1605211773935;
+        Thu, 12 Nov 2020 12:09:33 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id g4sm6913032wrp.0.2020.11.12.12.09.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 12:09:50 -0800 (PST)
-From:   Abhishek Kumar <kuabhs@chromium.org>
-To:     kvalo@codeaurora.org, pillair@codeaurora.org
-Cc:     dianders@chromium.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org, briannorris@chromium.org,
-        linux-wireless@vger.kernel.org,
-        Abhishek Kumar <kuabhs@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
-Date:   Thu, 12 Nov 2020 20:09:06 +0000
-Message-Id: <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
+        Thu, 12 Nov 2020 12:09:33 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
+        andrii@kernel.org, kpsingh@chromium.org, jackmanb@chromium.org,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@google.com>
+Subject: [PATCH] bpf: Expose bpf_sk_storage_* to iterator programs
+Date:   Thu, 12 Nov 2020 21:09:14 +0100
+Message-Id: <20201112200914.2726327-1-revest@chromium.org>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-In-Reply-To: <20201112200906.991086-1-kuabhs@chromium.org>
-References: <20201112200906.991086-1-kuabhs@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some devices difference in chip-id should be enough to pick
-the right BDF. Add another support for chip-id based BDF selection.
-With this new option, ath10k supports 2 fallback options.
+From: Florent Revest <revest@google.com>
 
-The board name with chip-id as option looks as follows
-board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+Iterators are currently used to expose kernel information to userspace
+over fast procfs-like files but iterators could also be used to
+initialize local storage. For example, the task_file iterator could be
+used to store associations between processes and sockets.
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+This exposes the socket local storage helpers to all iterators. Martin
+Kafai checked that this was safe to call these helpers from the
+sk_storage_map iterators.
+
+Signed-off-by: Florent Revest <revest@google.com>
 ---
+ kernel/trace/bpf_trace.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-(no changes since v1)
-
- drivers/net/wireless/ath/ath10k/core.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index d73ad60b571c..fa9e676b26d9 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1419,12 +1419,13 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- }
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e4515b0f62a8..3530120fa280 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -17,6 +17,8 @@
+ #include <linux/error-injection.h>
+ #include <linux/btf_ids.h>
  
- static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
--					 size_t name_len, bool with_variant)
-+					 size_t name_len,
-+					 bool with_additional_params)
- {
- 	/* strlen(',variant=') + strlen(ar->id.bdf_ext) */
- 	char variant[9 + ATH10K_SMBIOS_BDF_EXT_STR_LENGTH] = { 0 };
++#include <net/bpf_sk_storage.h>
++
+ #include <uapi/linux/bpf.h>
+ #include <uapi/linux/btf.h>
  
--	if (with_variant && ar->id.bdf_ext[0] != '\0')
-+	if (with_additional_params && ar->id.bdf_ext[0] != '\0')
- 		scnprintf(variant, sizeof(variant), ",variant=%s",
- 			  ar->id.bdf_ext);
- 
-@@ -1438,12 +1439,17 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+@@ -1750,6 +1752,14 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		       NULL;
+ 	case BPF_FUNC_d_path:
+ 		return &bpf_d_path_proto;
++	case BPF_FUNC_sk_storage_get:
++		return prog->expected_attach_type == BPF_TRACE_ITER ?
++		       &bpf_sk_storage_get_proto :
++		       NULL;
++	case BPF_FUNC_sk_storage_delete:
++		return prog->expected_attach_type == BPF_TRACE_ITER ?
++		       &bpf_sk_storage_delete_proto :
++		       NULL;
+ 	default:
+ 		return raw_tp_prog_func_proto(func_id, prog);
  	}
- 
- 	if (ar->id.qmi_ids_valid) {
--		if (with_variant && ar->id.bdf_ext[0] != '\0')
-+		if (with_additional_params && ar->id.bdf_ext[0] != '\0')
- 			scnprintf(name, name_len,
- 				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
- 				  ath10k_bus_str(ar->hif.bus),
- 				  ar->id.qmi_board_id, ar->id.qmi_chip_id,
- 				  variant);
-+		else if (with_additional_params)
-+			scnprintf(name, name_len,
-+				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
-+				  ath10k_bus_str(ar->hif.bus),
-+				  ar->id.qmi_board_id, ar->id.qmi_chip_id);
- 		else
- 			scnprintf(name, name_len,
- 				  "bus=%s,qmi-board-id=%x",
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
