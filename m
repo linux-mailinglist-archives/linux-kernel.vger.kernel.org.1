@@ -2,77 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0EB2B031F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BBD2B0321
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgKLKuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:50:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
+        id S1727890AbgKLKv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgKLKuh (ORCPT
+        with ESMTP id S1726776AbgKLKvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:50:37 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DEEC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:50:35 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id m143so5891783oig.7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:50:35 -0800 (PST)
+        Thu, 12 Nov 2020 05:51:25 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3A1C0613D1;
+        Thu, 12 Nov 2020 02:51:25 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id l10so5557701lji.4;
+        Thu, 12 Nov 2020 02:51:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=N1vM8gnnnz10waisV0y9/LwxkD3dU1KYxH+jtMLGRoekTiVMKLOwAQhV/hOmuhTIzL
-         Ei9z9fqSiInrGqVp6WEqlonSnXUtfQf8ki/0Rm6Q/oowO9hdJvtITIF93plvs3+xxdXj
-         QSrGV7NbBXCtWIvyvdJCzzqcvREp4gZY8lAnkQSGUP6NIaCKQhv/ostAjkx3ikZVMvmd
-         +uA4EhJGHcPaLwkbmW5NblWwwQEqclmpSKeG9AwAwxwtLQeLPI0BzV+4tZPPuEctowxw
-         cy78/f6yeBdYxCWnOkSPefo6UNvTISfJpO70OX9ixlyflNO4cR7rBNXHd93WtOGBLdaT
-         C5DQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ko0Hen9xgaMvsVz22vy0N1Bw1MmjjCfm//RLZdh5Ix8=;
+        b=LPh4+MZNokEWonIni3ZCTu6odNHux9zEsd4ClN9OceJOADqpT2H0Xz7Rp+iD7yOivi
+         3MKl/vtsXpB9dqAR8HFyp11eNrmPkJ6CNfjRC4ftuMgL/czjicmgi0SGguihWckbiO09
+         1SOkAYTFUbWiajY2p1UjfWC3vg0VvvSQuYvERAdh9DqFR96PU9L+yElqLUJPTm/GVjDW
+         I6V9XIQYZHORg9datYkQ8BNKweLUxWH3gjbLmBVYDIXjCEzXD09TwKXIqumrWbvkd98W
+         z4yvE4J5SHGxs9sBaG+GfK5fcQDxSzBsqvUlrt9AypnTC0GECcfPHQrf2EjldFc56VZw
+         abMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=IH0mpgBo1UwtO400k78uS+a5/j4lBYH+s8AekcEwjS0aDlYFpgGFKaZr8MrGQ8jy5Y
-         jgyppfZyAAqrpjl+8GtYxK64Kt0epvVNtNDI7k2TS/Rd2gWnCiSqTVb1HDDMAcNJ2+FI
-         buTNqsgWqqFpBZkp0ogM8v9g9LbsaX2vNr9NpLSvlB9stBMD2yPp+escrsQoxuZs+yTX
-         Lfyp1l/khvyAMrJK31KNmJS33fJlgeyVdVLS0s6/Lo38Rq+IGCVGRzUrDh41XTJK+ceA
-         OsxUAoKTD0MLEuchY5T2U26hV1FwwGLidf0JJUnmZV1IdgoV2X/ySXp+AbYTbO7HRO/Q
-         qSEQ==
-X-Gm-Message-State: AOAM531RwivlkjiWcqx9K2V43yMBSlD4dlYr/5SOQ7RlpEippbBxTuOb
-        1r3NxaY0s/DLsxo4P8Q2QQMrgbUF85Gl0zoJzbg=
-X-Google-Smtp-Source: ABdhPJyZVMCLgetrSTNNdC5p3gCJOgjsvrEEwZtl9XilfBizT+JCWvKHdj7OwdEUrH1L573Hb8fe03ypwrUh4TsKk8Y=
-X-Received: by 2002:aca:c6cb:: with SMTP id w194mr5061202oif.27.1605178235029;
- Thu, 12 Nov 2020 02:50:35 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ko0Hen9xgaMvsVz22vy0N1Bw1MmjjCfm//RLZdh5Ix8=;
+        b=rnTWHeGy6/kyjW324nMLvPuV7bm4nlfDuciroDuKcaO4Ie3kkXUNTxbOCaYTRfI+GQ
+         3lc+hDxIOMcrnUK19Vi0PvltLi7/dEpQFsfJuW3o9HaukvYmkYVEreq5fm0ShKxb6ZL0
+         UHRN1FH4XnOuYokCwerRNJLbuAbE5bjRDipWDZ3ffIpy5pXl74GNwNKDCdUZOeGFh9RU
+         oWFxMpj726R6nKihQFh0wxKeUtRakV5lYOap8ovnnFw4YDP9j43vsaIdKPH6C/3YKAIF
+         /0jseCMr+96yjO5CCaHGRCOVtNMQlBgcXR3ZmalQbdMp6y4ta6oSo4M19GkKqFmsZ8sP
+         z3Nw==
+X-Gm-Message-State: AOAM533g/cfrTnQ2QFezF2lTUJgg1aj5jqZfxC5psfoLH0BUEQ15Vujp
+        lMKjUhuHQJoMGC9TFMIaCzQqH4p9Ji8=
+X-Google-Smtp-Source: ABdhPJx5jh8tGHEuJkyGBvzo+p6Dj1SKhoFVTyWjBdyt/XAQJ8z7s9E0l5okKEl+Ehy5UU5etZocEw==
+X-Received: by 2002:a2e:7a18:: with SMTP id v24mr6174698ljc.224.1605178283664;
+        Thu, 12 Nov 2020 02:51:23 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id b13sm504831ljf.107.2020.11.12.02.51.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 02:51:22 -0800 (PST)
+Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20201111103847.152721-1-jonathanh@nvidia.com>
+ <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
+ <5409bbb4-d3f9-ccc9-ac3e-6344975bd58e@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <acadbf40-5dea-eee1-b05e-ad788df56bf7@gmail.com>
+Date:   Thu, 12 Nov 2020 13:51:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Received: by 2002:a9d:23a2:0:0:0:0:0 with HTTP; Thu, 12 Nov 2020 02:50:34
- -0800 (PST)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <barrimurphy1965@gmail.com>
-Date:   Thu, 12 Nov 2020 11:50:34 +0100
-Message-ID: <CAGZA+7rJ4bODbQhqT-2jKPC1ZeGgkKUiuiyjxu4_LNTg4WTmBQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5409bbb4-d3f9-ccc9-ac3e-6344975bd58e@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
+11.11.2020 23:31, Jon Hunter пишет:
+> 
+> On 11/11/2020 13:47, Dmitry Osipenko wrote:
+>> 11.11.2020 13:38, Jon Hunter пишет:
+>>> Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
+>>> (Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
+>>> generic CPUFREQ device-tree driver. Since this change CPUFREQ support
+>>> on the Tegra20 Ventana platform has been broken because the necessary
+>>> device-tree nodes with the operating point information are not populated
+>>> for this platform. Fix this by updating device-tree for Venata to
+>>> include the operating point informration for Tegra20.
+>>>
+>>> Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegra30 supported now)")
+>>> Cc: stable@vger.kernel.org
+>>>
+>>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+>>> ---
+>>>  arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
+>>>  1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
+>>> index b158771ac0b7..055334ae3d28 100644
+>>> --- a/arch/arm/boot/dts/tegra20-ventana.dts
+>>> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
+>>> @@ -3,6 +3,7 @@
+>>>  
+>>>  #include <dt-bindings/input/input.h>
+>>>  #include "tegra20.dtsi"
+>>> +#include "tegra20-cpu-opp.dtsi"
+>>>  
+>>>  / {
+>>>  	model = "NVIDIA Tegra20 Ventana evaluation board";
+>>> @@ -592,6 +593,16 @@ clk32k_in: clock@0 {
+>>>  		#clock-cells = <0>;
+>>>  	};
+>>>  
+>>> +	cpus {
+>>> +		cpu0: cpu@0 {
+>>> +			operating-points-v2 = <&cpu0_opp_table>;
+>>> +		};
+>>> +
+>>> +		cpu@1 {
+>>> +			operating-points-v2 = <&cpu0_opp_table>;
+>>> +		};
+>>> +	};
+>>> +
+>>>  	gpio-keys {
+>>>  		compatible = "gpio-keys";
+>>>  
+>>>
+>>
+>> This could be wrong to do because CPU voltage is fixed to 1000mV in
+>> Ventana's DT, are you sure that higher clock rates don't require higher
+>> voltages? What is the CPU process ID and SoC speedo ID on Ventana?
+> 
+> I see this in the bootlog ...
+> 
+> [    2.797684] tegra20-cpufreq tegra20-cpufreq: hardware version 0x2 0x2
+> 
+>> You could easily hook up CPU voltage scaling, please see acer-500 DT and
+>> patch [1] for examples of how to set up regulators in DT. But then it
+>> shouldn't be a stable patch.
+> 
+> According to the Ventana design guide the CPU voltage range is 0.8-1.0V
+> and so it appears to be set to the max. The CPUFREQ test is reporting
+> the following ...
+> 
+> cpu: cpufreq: - CPU#0:
+> cpu: cpufreq:   - supported governors:
+> cpu: cpufreq:     - ondemand *
+> cpu: cpufreq:     - performance
+> cpu: cpufreq:     - schedutil
+> cpu: cpufreq:   - supported rates:
+> cpu: cpufreq:     -  216000
+> cpu: cpufreq:     -  312000
+> cpu: cpufreq:     -  456000
+> cpu: cpufreq:     -  608000
+> cpu: cpufreq:     -  760000
+> cpu: cpufreq:     -  816000
+> cpu: cpufreq:     -  912000
+> cpu: cpufreq:     - 1000000 *
+> cpu: cpufreq: - CPU#1:
+> cpu: cpufreq:   - supported governors:
+> cpu: cpufreq:     - ondemand *
+> cpu: cpufreq:     - performance
+> cpu: cpufreq:     - schedutil
+> cpu: cpufreq:   - supported rates:
+> cpu: cpufreq:     -  216000
+> cpu: cpufreq:     -  312000
+> cpu: cpufreq:     -  456000
+> cpu: cpufreq:     -  608000
+> cpu: cpufreq:     -  760000
+> cpu: cpufreq:     -  816000
+> cpu: cpufreq:     -  912000
+> cpu: cpufreq:     - 1000000 *
 
-Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
-Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
-
-Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
-einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: georgemike7031@gmail.com
-
-Vielen Dank im Voraus,
-Mr. George Mike,
+If you don't see a message in KMSG saying "bringing vdd_cpu to
+1000000uV", then should be good.
