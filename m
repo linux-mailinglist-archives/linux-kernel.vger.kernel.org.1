@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041842B03A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63692B03AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgKLLPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:15:46 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57150 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLLPp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:15:45 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACBFcaI009766;
-        Thu, 12 Nov 2020 05:15:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605179738;
-        bh=2qkNvREGB6upemw2NWJh9LDH9SjawC+AaQHptIVURaU=;
-        h=From:To:CC:Subject:Date;
-        b=TrlhxvlbWT8h7c0pu9qlVVOLBhWz2v7FMK/szdxGG0DMuOK7dvUv8JriCbkY2mAuh
-         XwQIHgQOOS8Qu5Zk+klOXE7Cd3U1zkUh+wtum2P3S9EekipxkJLRH0OYAj0sxhb9MO
-         UavJ+Jd7bdNrBBadPoFamgfGOaaMYUJr0ylAvn9E=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACBFc6a058380
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 05:15:38 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 05:15:37 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 05:15:37 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACBFaoE099039;
-        Thu, 12 Nov 2020 05:15:37 -0600
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH] net: ethernet: ti: cpsw: fix cpts irq after suspend
-Date:   Thu, 12 Nov 2020 13:15:46 +0200
-Message-ID: <20201112111546.20343-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728073AbgKLLQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:16:15 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:49094 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgKLLQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:16:14 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kdAaB-0000QA-9Q; Thu, 12 Nov 2020 12:16:03 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Scott Wood <scottwood@freescale.com>,
+        linux-arm-msm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Li Yang <leoyang.li@nxp.com>, Qiang Zhao <qiang.zhao@nxp.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linuxppc-dev@lists.ozlabs.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Roy Pledge <Roy.Pledge@nxp.com>,
+        Dan Malek <dan@embeddedalley.com>,
+        Cyril Chemparathy <cyril@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Vitaly Bordug <vbordug@ru.mvista.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-rockchip@lists.infradead.org, Ben Dooks <ben@simtec.co.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Andy Gross <agross@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sandeep Nair <sandeep_n@ti.com>,
+        Mark Brown <broonie@kernel.org>, act <dmalek@jlc.net>,
+        "Software, Inc" <source@mvista.com>
+Subject: Re: [PATCH 00/25] Rid W=1 warnings in SoC
+Date:   Thu, 12 Nov 2020 12:16:00 +0100
+Message-Id: <160517975455.81506.16289432612279089945.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201103152838.1290217-1-lee.jones@linaro.org>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on the SoC/platform the CPSW can completely lose context after a
-suspend/resume cycle, including CPSW wrapper (WR) which will cause reset of
-WR_C0_MISC_EN register, so CPTS IRQ will became disabled.
+On Tue, 3 Nov 2020 15:28:13 +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> Lee Jones (25):
+>   soc: bcm: brcmstb: pm: pm-arm: Provide prototype for
+>     brcmstb_pm_s3_finish()
+>   soc: qcom: qcom_aoss: Remove set but unused variable 'tlen'
+>   soc: qcom: qcom_aoss: Add missing description for 'cooling_devs'
+>   soc: fsl: dpio: qbman-portal: Fix a bunch of kernel-doc misdemeanours
+>   soc: rockchip: io-domain: Remove incorrect and incomplete comment
+>     header
+>   soc: ti: knav_qmss_queue: Remove set but unchecked variable 'ret'
+>   soc: ti: knav_qmss_queue: Fix a whole host of function documentation
+>     issues
+>   soc: ti: knav_dma: Fix a kernel function doc formatting issue
+>   soc: ti: pm33xx: Remove set but unused variable 'ret'
+>   soc: ti: wkup_m3_ipc: Document 'm3_ipc' parameter throughout
+>   soc: fsl: qe: qe_common: Fix misnamed function attribute 'addr'
+>   soc: qcom: qcom-geni-se: Fix misnamed function parameter 'rx_rfr'
+>   soc: tegra: fuse: speedo-tegra124: Remove some set but unused
+>     variables
+>   soc: samsung: s3c-pm-check: Fix incorrectly named variable 'val'
+>   soc: qcom: rpmh: Fix possible doc-rot in rpmh_write()'s header
+>   soc: qcom: smem: Fix formatting and missing documentation issues
+>   soc: qcom: smsm: Fix some kernel-doc formatting and naming problems
+>   soc: qcom: wcnss_ctrl: Demote non-conformant struct header and fix
+>     function headers
+>   soc: qcom: smp2p: Remove unused struct attribute provide another
+>   soc: qcom: llcc-qcom: Fix expected kernel-doc formatting
+>   soc: qcom: rpmhpd: Provide some missing struct member descriptions
+>   soc: qcom: kryo-l2-accessors: Fix misnaming of 'val'
+>   soc: ti: k3-ringacc: Provide documentation for 'k3_ring's 'state'
+>   soc: tegra: fuse: speedo-tegra210: Remove a group of set but unused
+>     variables
+>   soc: fsl: qbman: qman: Remove unused variable 'dequeue_wq'
+> 
+> [...]
 
-Fix it by moving CPTS IRQ enabling in cpsw_ndo_open() where CPTS is
-actually started.
+Applied, thanks!
 
-Fixes: 84ea9c0a95d7 ("net: ethernet: ti: cpsw: enable cpts irq")
-Reported-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/cpsw.c     | 10 ++++++----
- drivers/net/ethernet/ti/cpsw_new.c |  9 ++++++---
- 2 files changed, 12 insertions(+), 7 deletions(-)
+[1/1] soc: rockchip: io-domain: Remove incorrect and incomplete comment header
+      commit: a6a3a24c129d229a0eb26b329ab617e2a04245dd
 
-diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
-index 9fd1f77190ad..fa2d1025cbb2 100644
---- a/drivers/net/ethernet/ti/cpsw.c
-+++ b/drivers/net/ethernet/ti/cpsw.c
-@@ -838,9 +838,12 @@ static int cpsw_ndo_open(struct net_device *ndev)
- 		if (ret < 0)
- 			goto err_cleanup;
- 
--		if (cpts_register(cpsw->cpts))
--			dev_err(priv->dev, "error registering cpts device\n");
--
-+		if (cpsw->cpts) {
-+			if (cpts_register(cpsw->cpts))
-+				dev_err(priv->dev, "error registering cpts device\n");
-+			else
-+				writel(0x10, &cpsw->wr_regs->misc_en);
-+		}
- 	}
- 
- 	cpsw_restore(priv);
-@@ -1716,7 +1719,6 @@ static int cpsw_probe(struct platform_device *pdev)
- 
- 	/* Enable misc CPTS evnt_pend IRQ */
- 	cpts_set_irqpoll(cpsw->cpts, false);
--	writel(0x10, &cpsw->wr_regs->misc_en);
- 
- skip_cpts:
- 	cpsw_notice(priv, probe,
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index f779d2e1b5c5..2f5e0ad23ad7 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -873,8 +873,12 @@ static int cpsw_ndo_open(struct net_device *ndev)
- 		if (ret < 0)
- 			goto err_cleanup;
- 
--		if (cpts_register(cpsw->cpts))
--			dev_err(priv->dev, "error registering cpts device\n");
-+		if (cpsw->cpts) {
-+			if (cpts_register(cpsw->cpts))
-+				dev_err(priv->dev, "error registering cpts device\n");
-+			else
-+				writel(0x10, &cpsw->wr_regs->misc_en);
-+		}
- 
- 		napi_enable(&cpsw->napi_rx);
- 		napi_enable(&cpsw->napi_tx);
-@@ -2006,7 +2010,6 @@ static int cpsw_probe(struct platform_device *pdev)
- 
- 	/* Enable misc CPTS evnt_pend IRQ */
- 	cpts_set_irqpoll(cpsw->cpts, false);
--	writel(0x10, &cpsw->wr_regs->misc_en);
- 
- skip_cpts:
- 	ret = cpsw_register_notifiers(cpsw);
+Best regards,
 -- 
-2.17.1
-
+Heiko Stuebner <heiko@sntech.de>
