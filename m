@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1A72B0454
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFC22B0450
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgKLLuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728226AbgKLLtU (ORCPT
+        id S1728241AbgKLLts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:49:48 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2061 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728151AbgKLLtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:49:20 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB5AC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:48:57 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kdB5w-0006Lf-Ft; Thu, 12 Nov 2020 12:48:52 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kdB5v-0001Wn-VL; Thu, 12 Nov 2020 12:48:51 +0100
-Date:   Thu, 12 Nov 2020 12:48:51 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH v2] Input: touchscreen: ads7846.c: Fix race that causes
- missing releases
-Message-ID: <20201112114851.mlhhxxjonhx5n4sz@pengutronix.de>
-References: <20201027105416.18773-1-o.rempel@pengutronix.de>
- <20201111190740.GY1003057@dtor-ws>
+        Thu, 12 Nov 2020 06:49:31 -0500
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CX0Hn5NMjzVnBN;
+        Thu, 12 Nov 2020 19:49:09 +0800 (CST)
+Received: from [10.174.184.120] (10.174.184.120) by
+ dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 12 Nov 2020 19:49:28 +0800
+Subject: Re: [PATCH] vfio iommu type1: Improve vfio_iommu_type1_pin_pages
+ performance
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <kwankhede@nvidia.com>, <wu.wubin@huawei.com>,
+        <maoming.maoming@huawei.com>, <xieyingtai@huawei.com>,
+        <lizhengui@huawei.com>, <wubinfeng@huawei.com>
+References: <2553f102-de17-b23b-4cd8-fefaf2a04f24@huawei.com>
+ <20201111085639.7235fb42@w520.home>
+From:   "xuxiaoyang (C)" <xuxiaoyang2@huawei.com>
+Message-ID: <928f2c25-6a39-a9c0-64eb-05933fd46ce5@huawei.com>
+Date:   Thu, 12 Nov 2020 19:49:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201111190740.GY1003057@dtor-ws>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:48:21 up 363 days,  3:06, 30 users,  load average: 0.03, 0.07,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201111085639.7235fb42@w520.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.120]
+X-ClientProxiedBy: dggeme703-chm.china.huawei.com (10.1.199.99) To
+ dggeme753-chm.china.huawei.com (10.3.19.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:07:40AM -0800, Dmitry Torokhov wrote:
-> Hi Oleksij,
+On 2020/11/11 23:56, Alex Williamson wrote:
+> On Tue, 10 Nov 2020 21:42:33 +0800
+> "xuxiaoyang (C)" <xuxiaoyang2@huawei.com> wrote:
 > 
-> On Tue, Oct 27, 2020 at 11:54:16AM +0100, Oleksij Rempel wrote:
-> > From: David Jander <david@protonic.nl>
-> > 
-> > If touchscreen is released while busy reading HWMON device, the release
-> > can be missed. The IRQ thread is not started because no touch is active
-> > and BTN_TOUCH release event is never sent.
-> > 
-> > Fixes: f5a28a7d4858f94a ("Input: ads7846 - avoid pen up/down when reading hwmon")
-> > Co-Developed-by: David Jander <david@protonic.nl>
+>> vfio_iommu_type1_pin_pages is very inefficient because
+>> it is processed page by page when calling vfio_pin_page_external.
+>> Added contiguous_vaddr_get_pfn to process continuous pages
+>> to reduce the number of loops, thereby improving performance.
 > 
-> Since the patch is nominally attributed to David (via the From: tag)
-> I'll be changing Co-developed-by tag to your name, OK?
-
-OK.
-
+> vfio_pin_pages() accepts an array of unrelated iova pfns and processes
+> each to return the physical pfn.  AFAICT this proposal makes an
+> unfounded and unverified assumption that the caller is asking for a
+> range of contiguous iova pfns.  That's not the semantics of the call.
+> This is wrong.  Thanks,
 > 
-> > Signed-off-by: David Jander <david@protonic.nl>
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Alex
+> 
+> .
+> 
+Thank you for your reply.  Sorry that the comment is too simple
+and not clear enough.
+We did not change the external behavior of the function.  What we
+have to do is to divide the iova pfn array into multiple continuous
+ranges and optimize them.  For example, when the iova pfn array is
+{1,5,6,7,9}, it will be divided into three groups {1}, {5,6,7}, {9}
+for processing.  When processing {5,6,7}, the number of calls to
+pin_user_pages_remote is reduced from 3 times to once.  The more
+continuous the iova pfn array, the greater the performance improvement.
+I see that most of the iova pfn arrays processed by callers are
+continuous, such as pfn_array_pin, gvt_pin_guest_page.  For them,
+performance will be improved.
 
 Regards,
-Oleksij
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Xu
