@@ -2,205 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3792B1203
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621BE2B1208
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKLWsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:48:02 -0500
-Received: from mga18.intel.com ([134.134.136.126]:32655 "EHLO mga18.intel.com"
+        id S1726751AbgKLWte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:49:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgKLWsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:48:02 -0500
-IronPort-SDR: Wv4GE+4e0ahp6Opl51GXhMNLuOqLgS7uJEBBFDHukSHgpuESzHYh+NyOWWAPjpD0cgUymBZB9g
- ZoMoPTH5qdbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="158171326"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="158171326"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 14:47:59 -0800
-IronPort-SDR: J3ZH+wu+pXKfBLm5QNeSUZl8Zj2CfLM0Gj1fhrziWz/8I3BcLaiEIKKIrPjRd5PqawUEcnYPun
- v8a7imDhAurQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="357273441"
-Received: from lkp-server02.sh.intel.com (HELO 6c110fa9b5d1) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Nov 2020 14:47:58 -0800
-Received: from kbuild by 6c110fa9b5d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kdLNl-000061-IJ; Thu, 12 Nov 2020 22:47:57 +0000
-Date:   Fri, 13 Nov 2020 06:47:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/clang/fallthrough] BUILD SUCCESS
- d16b79b21df4c592423c69b59b31a6a9ec6b0fd6
-Message-ID: <5fadbb7c.IgA2+RPbbY2LpFGC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1725903AbgKLWte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 17:49:34 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61FCA2085B;
+        Thu, 12 Nov 2020 22:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605221360;
+        bh=N2fT6BovsDy9Ao7zSSbwkfqL4sixyk1hOcDkGMQ4iuY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gBGKEhePfVob0pPdepdYdfcFpZ71O1UuGLdwuEphsS6uLXqnub4VW9HGPgeaMVrcJ
+         RB5hum3NYpfQaSCzYWbkC2uEBCwjZnX/0BpWFtRDOsSQg8scFebwFeRTiPkCyKBxjy
+         wcYYCNbTUAR6xawMwyumo4CLQ9h6ZiI3/mcwSdGo=
+Date:   Thu, 12 Nov 2020 14:49:19 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] Revert
+ "mm/vunmap: add cond_resched() in vunmap_pmd_range"
+Message-Id: <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
+In-Reply-To: <20201112200101.GC123036@google.com>
+References: <20201105170249.387069-1-minchan@kernel.org>
+        <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
+        <20201107083939.GA1633068@google.com>
+        <20201112200101.GC123036@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/clang/fallthrough
-branch HEAD: d16b79b21df4c592423c69b59b31a6a9ec6b0fd6  treewide: Fix fall-through warnings for Clang
+On Thu, 12 Nov 2020 12:01:01 -0800 Minchan Kim <minchan@kernel.org> wrote:
 
-elapsed time: 723m
+> 
+> On Sat, Nov 07, 2020 at 12:39:39AM -0800, Minchan Kim wrote:
+> > Hi Andrew,
+> > 
+> > On Fri, Nov 06, 2020 at 05:59:33PM -0800, Andrew Morton wrote:
+> > > On Thu,  5 Nov 2020 09:02:49 -0800 Minchan Kim <minchan@kernel.org> wrote:
+> > > 
+> > > > This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
+> > > > 
+> > > > While I was doing zram testing, I found sometimes decompression failed
+> > > > since the compression buffer was corrupted. With investigation,
+> > > > I found below commit calls cond_resched unconditionally so it could
+> > > > make a problem in atomic context if the task is reschedule.
+> > > > 
+> > > > Revert the original commit for now.
+>
+> How should we proceed this problem?
+>
 
-configs tested: 141
-configs skipped: 2
+(top-posting repaired - please don't).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Well, we don't want to reintroduce the softlockup reports which
+e47110e90584a2 fixed, and we certainly don't want to do that on behalf
+of code which is using the unmap_kernel_range() interface incorrectly.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                       ebony_defconfig
-m68k                          atari_defconfig
-mips                        jmr3927_defconfig
-sh                         microdev_defconfig
-powerpc                      katmai_defconfig
-sh                   sh7770_generic_defconfig
-sh                            hp6xx_defconfig
-riscv                            allmodconfig
-arm                            u300_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                          lboxre2_defconfig
-powerpc                      obs600_defconfig
-arm                             rpc_defconfig
-arm                        realview_defconfig
-arm                           u8500_defconfig
-mips                             allmodconfig
-mips                        workpad_defconfig
-arc                                 defconfig
-m68k                         apollo_defconfig
-sh                ecovec24-romimage_defconfig
-riscv                            alldefconfig
-riscv                             allnoconfig
-arm                          pxa3xx_defconfig
-powerpc                     pq2fads_defconfig
-arm                           tegra_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                   lite5200b_defconfig
-arm                       cns3420vb_defconfig
-arm                        mvebu_v5_defconfig
-csky                             alldefconfig
-um                           x86_64_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                         tb0226_defconfig
-sh                             shx3_defconfig
-powerpc                       maple_defconfig
-arm                           h3600_defconfig
-m68k                        m5407c3_defconfig
-m68k                        mvme16x_defconfig
-arm                         shannon_defconfig
-powerpc                     asp8347_defconfig
-powerpc                         wii_defconfig
-sh                           sh2007_defconfig
-sh                             sh03_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                         nhk8815_defconfig
-arm                          moxart_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                   currituck_defconfig
-powerpc                 mpc837x_mds_defconfig
-m68k                           sun3_defconfig
-c6x                        evmc6474_defconfig
-sh                           se7705_defconfig
-mips                      pistachio_defconfig
-arm                          collie_defconfig
-mips                         cobalt_defconfig
-c6x                        evmc6457_defconfig
-powerpc                    socrates_defconfig
-powerpc                 mpc832x_rdb_defconfig
-m68k                         amcore_defconfig
-mips                       lemote2f_defconfig
-m68k                          hp300_defconfig
-arm                         socfpga_defconfig
-m68k                          sun3x_defconfig
-m68k                                defconfig
-sh                     magicpanelr2_defconfig
-powerpc                           allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a006-20201112
-i386                 randconfig-a005-20201112
-i386                 randconfig-a002-20201112
-i386                 randconfig-a001-20201112
-i386                 randconfig-a003-20201112
-i386                 randconfig-a004-20201112
-i386                 randconfig-a006-20201111
-i386                 randconfig-a005-20201111
-i386                 randconfig-a002-20201111
-i386                 randconfig-a001-20201111
-i386                 randconfig-a003-20201111
-i386                 randconfig-a004-20201111
-x86_64               randconfig-a015-20201111
-x86_64               randconfig-a011-20201111
-x86_64               randconfig-a014-20201111
-x86_64               randconfig-a013-20201111
-x86_64               randconfig-a016-20201111
-x86_64               randconfig-a012-20201111
-i386                 randconfig-a012-20201111
-i386                 randconfig-a014-20201111
-i386                 randconfig-a016-20201111
-i386                 randconfig-a011-20201111
-i386                 randconfig-a015-20201111
-i386                 randconfig-a013-20201111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+So I suggest either
 
-clang tested configs:
-x86_64               randconfig-a003-20201111
-x86_64               randconfig-a005-20201111
-x86_64               randconfig-a004-20201111
-x86_64               randconfig-a002-20201111
-x86_64               randconfig-a006-20201111
-x86_64               randconfig-a001-20201111
+a) make zs_unmap_object() stop doing the unmapping from atomic context or
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+b) figure out whether the vmalloc unmap code is *truly* unsafe from
+   atomic context - perhaps it is only unsafe from interrupt context,
+   in which case we can rework the vmalloc.c checks to reflect this, or
+
+c) make the vfree code callable from all contexts.  Which is by far
+   the preferred solution, but may be tough.
+
+
+Or maybe not so tough - if the only problem in the vmalloc code is the
+use of mutex_trylock() from irqs then it may be as simple as switching
+to old-style semaphores and using down_trylock(), which I think is
+irq-safe.
+
+However old-style semaphores are deprecated.  A hackyish approach might
+be to use an rwsem always in down_write mode and use
+down_write_trylock(), which I think is also callable from interrrupt
+context.
+
+But I have a feeling that there are other reasons why vfree shouldn't
+be called from atomic context, apart from the mutex_trylock-in-irq
+issue.
