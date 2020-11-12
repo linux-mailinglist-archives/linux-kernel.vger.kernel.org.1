@@ -2,146 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88882B0A6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C172B0A8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgKLQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:44:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55089 "EHLO
+        id S1728985AbgKLQo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:44:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52901 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728643AbgKLQoA (ORCPT
+        by vger.kernel.org with ESMTP id S1728086AbgKLQoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:44:00 -0500
+        Thu, 12 Nov 2020 11:44:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605199439;
+        s=mimecast20190719; t=1605199493;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fvJuASutVFvvlokiKoye0dqnyzVMyo7DAgHLXVqrfgQ=;
-        b=NaChkoKLRgIplsUVphI1m8gxEp275LdLsnR0T9N1yfwiG48r5cG1xWavjh7vmvYkc8FNX1
-        aF/FvvzvyhjE8ZzuuxgegqvePZjxPsiHoLLWOHzTA3WtjRcXLAqdSPtunQKaj2q4sUy5nA
-        qBgQ750+EEC8e5dkB/5sx1hApCuhQho=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-Kf8_I5NxMeGKTaoncJ3QgA-1; Thu, 12 Nov 2020 11:43:55 -0500
-X-MC-Unique: Kf8_I5NxMeGKTaoncJ3QgA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C5F61074659;
-        Thu, 12 Nov 2020 16:43:53 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-44.rdu2.redhat.com [10.10.117.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 33CFB5B4A3;
-        Thu, 12 Nov 2020 16:43:51 +0000 (UTC)
-Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
- -22.7% regression
-To:     Michal Hocko <mhocko@suse.com>, Feng Tang <feng.tang@intel.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@intel.com, ying.huang@intel.com
-References: <20201102091543.GM31092@shao2-debian>
- <20201102092754.GD22613@dhcp22.suse.cz>
- <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
- <20201102100247.GF22613@dhcp22.suse.cz>
- <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
- <20201104081546.GB10052@dhcp22.suse.cz>
- <20201112122844.GA11000@shbuild999.sh.intel.com>
- <20201112141654.GC12240@dhcp22.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <7e40849b-f9e0-34d4-4254-c2c99dd71f78@redhat.com>
-Date:   Thu, 12 Nov 2020 11:43:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        bh=oBaJhrVAS26Rm76b8qfX/jPZQo0xctgs1+BzsCLEDzc=;
+        b=iz/k5B0xNQWja3Ml7pVT02uN8jbb0++Vtf14EtConmEyPZEsxrcLYXzMu6h7ILD0BMD79M
+        gdoGVC3ZrkTkQDl4BoPVgVUzrx7UjWowNwHWJc6s33zlfBN9pUlERoBzNsZKJmwfaNYQaP
+        Tkyc8H0RsjC147frFdqBsvxK//Ux70A=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-4hw8cJhKOmCO0AJ4cEkv4Q-1; Thu, 12 Nov 2020 11:44:52 -0500
+X-MC-Unique: 4hw8cJhKOmCO0AJ4cEkv4Q-1
+Received: by mail-wm1-f71.google.com with SMTP id z62so3993949wmb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:44:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=oBaJhrVAS26Rm76b8qfX/jPZQo0xctgs1+BzsCLEDzc=;
+        b=E3zs61blK6Hnb8y/TMY6pYM26MkDxkRAkXSeAHNcyr67/0zNnIMSLn5wt0EfZltEoN
+         SARkpewdm8rK0FS3Tjtoo9kyiD4UoOKzZZTgidJo54lFRIJYGFzIaB1Vb7Mfbw7HvXtI
+         TE1ELPBfL840XmPmyjv86kLwmcTctCTwvzJVadJ4Ny3yXeHxfuBOPKnglknu4bt6FNoG
+         FdwhUX+YJOugth/tEHxur5Vhz3YeJiXZ+YTH++B/cYmLwJ9OQlo7+Mc0fTbOB3LcWDSG
+         LLa+JWPyOXMCIKwzwToQDCMNXMZYnGW+zm0qzJDGFu/X95i4C3SV1qdfO8xlPOo4Fm2/
+         F9yw==
+X-Gm-Message-State: AOAM533FvoAXijf/59cdVBSCkhaTfU+zSzYE1dDVDdy9DS+yKbPUot/5
+        L9O609rsLL5C7QWUB0NPhLdIWNG+C18EcC9k7qAESQduPb22Vr8oxwX6wzxZO+Irs+5sPYk0xvn
+        XHPd8xTERu1oJlVXpiwZHBPpy
+X-Received: by 2002:a1c:ddd7:: with SMTP id u206mr509459wmg.27.1605199490666;
+        Thu, 12 Nov 2020 08:44:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwejZcKtx6F+o5hHeSMVHcvBzx8/ntsqvQ7ohWy6THyGvnfCHkeEWFtHXBT1nj5ZKtcZTpVUA==
+X-Received: by 2002:a1c:ddd7:: with SMTP id u206mr509445wmg.27.1605199490460;
+        Thu, 12 Nov 2020 08:44:50 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id m3sm3190396wrv.6.2020.11.12.08.44.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 08:44:49 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 10/17] x86/hyperv: implement and use hv_smp_prepare_cpus
+In-Reply-To: <20201105165814.29233-11-wei.liu@kernel.org>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-11-wei.liu@kernel.org>
+Date:   Thu, 12 Nov 2020 17:44:48 +0100
+Message-ID: <87y2j6wmm7.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112141654.GC12240@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 9:16 AM, Michal Hocko wrote:
-> On Thu 12-11-20 20:28:44, Feng Tang wrote:
->> Hi Michal,
->>
->> On Wed, Nov 04, 2020 at 09:15:46AM +0100, Michal Hocko wrote:
->>>>>> Hi Michal,
->>>>>>
->>>>>> We used the default configure of cgroups, not sure what configuration you
->>>>>> want,
->>>>>> could you give me more details? and here is the cgroup info of will-it-scale
->>>>>> process:
->>>>>>
->>>>>> $ cat /proc/3042/cgroup
->>>>>> 12:hugetlb:/
->>>>>> 11:memory:/system.slice/lkp-bootstrap.service
->>>>> OK, this means that memory controler is enabled and in use. Btw. do you
->>>>> get the original performance if you add one phony page_counter after the
->>>>> union?
->>>>>
->>>> I add one phony page_counter after the union and re-test, the regression
->>>> reduced to -1.2%. It looks like the regression caused by the data structure
->>>> layout change.
->>> Thanks for double checking. Could you try to cache align the
->>> page_counter struct? If that helps then we should figure which counters
->>> acks against each other by adding the alignement between the respective
->>> counters.
->> We tried below patch to make the 'page_counter' aligned.
->>    
->>    diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
->>    index bab7e57..9efa6f7 100644
->>    --- a/include/linux/page_counter.h
->>    +++ b/include/linux/page_counter.h
->>    @@ -26,7 +26,7 @@ struct page_counter {
->>     	/* legacy */
->>     	unsigned long watermark;
->>     	unsigned long failcnt;
->>    -};
->>    +} ____cacheline_internodealigned_in_smp;
->>     
->> and with it, the -22.7% peformance change turns to a small -1.7%, which
->> confirms the performance bump is caused by the change to data alignment.
->>
->> After the patch, size of 'page_counter' increases from 104 bytes to 128
->> bytes, and the size of 'mem_cgroup' increases from 2880 bytes to 3008
->> bytes(with our kernel config). Another major data structure which
->> contains 'page_counter' is 'hugetlb_cgroup', whose size will change
->> from 912B to 1024B.
->>
->> Should we make these page_counters aligned to reduce cacheline conflict?
-> I would rather focus on a more effective mem_cgroup layout. It is very
-> likely that we are just stumbling over two counters here.
->
-> Could you try to add cache alignment of counters after memory and see
-> which one makes the difference? I do not expect memsw to be the one
-> because that one is used together with the main counter. But who knows
-> maybe the way it crosses the cache line has the exact effect. Hard to
-> tell without other numbers.
->
-> Btw. it would be great to see what the effect is on cgroup v2 as well.
->
-> Thanks for pursuing this!
+Wei Liu <wei.liu@kernel.org> writes:
 
-The contention may be in the page counters themselves or it can be in 
-other fields below the page counters. The cacheline alignment will cause 
-"high_work" just after the page counters to start at a cacheline 
-boundary. I will try removing the cacheline alignment in the page 
-counter and add it to high_work to see there is any change in 
-performance. If there is no change, the performance problem will not be 
-in the page counters.
+> Microsoft Hypervisor requires the root partition to make a few
+> hypercalls to setup application processors before they can be used.
+>
+> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+> CPU hotplug and unplug is not yet supported in this setup, so those
+> paths remain untouched.
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index f7633e1e4c82..4795e54550e6 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -31,6 +31,7 @@
+>  #include <asm/reboot.h>
+>  #include <asm/nmi.h>
+>  #include <clocksource/hyperv_timer.h>
+> +#include <asm/numa.h>
+>  
+>  struct ms_hyperv_info ms_hyperv;
+>  EXPORT_SYMBOL_GPL(ms_hyperv);
+> @@ -208,6 +209,30 @@ static void __init hv_smp_prepare_boot_cpu(void)
+>  	hv_init_spinlocks();
+>  #endif
+>  }
+> +
+> +static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+> +{
+> +#if defined(CONFIG_X86_64)
 
-Cheers,
-Longman
+'#ifdef CONFIG_X86_64' is equally good as you can't compile x86_64
+support as a module :-)
+
+> +	int i;
+> +	int ret;
+> +
+> +	native_smp_prepare_cpus(max_cpus);
+> +
+
+So hypotetically, if hv_root_partition is true but 'ifdef CONFIG_X86_64'
+is false, we won't even be doing native_smp_prepare_cpus()? This doesn't
+sound right. Either move it outside of #ifdef or put the #ifdef around
+'smp_ops.smp_prepare_cpus' assignment too.
+
+> +	for_each_present_cpu(i) {
+> +		if (i == 0)
+> +			continue;
+> +		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(i));
+> +		BUG_ON(ret);
+> +	}
+> +
+> +	for_each_present_cpu(i) {
+> +		if (i == 0)
+> +			continue;
+> +		ret = hv_call_create_vp(numa_cpu_node(i), hv_current_partition_id, i, i);
+> +		BUG_ON(ret);
+> +	}
+> +#endif
+> +}
+>  #endif
+>  
+>  static void __init ms_hyperv_init_platform(void)
+> @@ -364,6 +389,8 @@ static void __init ms_hyperv_init_platform(void)
+>  
+>  # ifdef CONFIG_SMP
+>  	smp_ops.smp_prepare_boot_cpu = hv_smp_prepare_boot_cpu;
+> +	if (hv_root_partition)
+> +		smp_ops.smp_prepare_cpus = hv_smp_prepare_cpus;
+>  # endif
+>  
+>  	/*
+
+-- 
+Vitaly
 
