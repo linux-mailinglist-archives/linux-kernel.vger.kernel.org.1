@@ -2,220 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632A82AFE29
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77A02AFE28
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbgKLFeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:37 -0500
-Received: from mga18.intel.com ([134.134.136.126]:53611 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgKLCbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:31:17 -0500
-IronPort-SDR: 1Vbx+1fYqMdm+i0eNsQuRrVP+w7/4XAzEjqjLlS60VZmAVBrSZEBV2Z+wX+yZ3mcOiDJWafhkl
- RBWBR/AGQI0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="158027947"
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="158027947"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 18:31:14 -0800
-IronPort-SDR: RqmfoNvjRlzJ+AZ0ZVwfPxQdbl9++xpGWOTNcFQUqDkXqk2nSnkuemt/WizPYJwrPXhU8GCLmI
- pSM7JC62A6xg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="366450979"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Nov 2020 18:31:10 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] vfio/type1: Add subdev_ioasid callback to vfio_iommu_driver_ops
-Date:   Thu, 12 Nov 2020 10:24:07 +0800
-Message-Id: <20201112022407.2063896-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728747AbgKLFee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727672AbgKLC2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 21:28:44 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0244C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:28:42 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id n89so4189168otn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:28:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=AvwRUTHJ9jTp1FV7SvxjXPTpodIViw+Olzzn0cdboYg=;
+        b=lMyQa3HoSGrWwK8T9kKUMIlmfO5rgLpJnycM2uiTklWJC1raq7dGrWwm2m9/O/if2P
+         3n7ga50tjyyPXWvWHiYwKwgL71HOGc0UsHfCamf5Lb/v6jwKiGtkZaV+P/Wht/+eQ0gk
+         72CTbdBOF5eQeyXTRetfdXuu3yjIbyVQER+3mo8NswaNnZCCSwUw3+GXKNdL+WpEJPsc
+         ZiloYfx5zK7I6BMUOJdaXePB/dRGYPw1vVDN88kE+Fh7udX6Jzsp3ynwIwSGo4T8Wq8k
+         XyE0c8ANci/qxhmbZ7uB9liD3aqNmaCP5Ne/bJd5re/Pi7/eHeAqVlF05mv7yH2RRQyu
+         ZXKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=AvwRUTHJ9jTp1FV7SvxjXPTpodIViw+Olzzn0cdboYg=;
+        b=pNsYdV4YE29XpkfcxPfXEXIFhj0ktLtsnqVZOInIbmNVSA+QVzff3GU9b9gXmbtfS0
+         QSsabkNnj4rUFDpZJPCtBvnCvTvlPtsyzBzCK+shE1a8TiJEt38/PDVBNhXlY8207ofI
+         eHCz8Fng6ajExBQ9BJVEnxf+VIg3eII2S1JpClb6jrOYkrIZzBvdK6FR9HZwX9ayBBWe
+         zUNd048G9lsKEWUrnZyjyb2RBYX+3c3wmJTPMcYy5bpmThAPUWjeifXtwQKnsnyBebyH
+         EOi7of5fOXkbesMj7HwuFyPZEB/iZf1XJutTgUIZK0pitli53xlzzlUjW/BKlbOVuxA3
+         dTfQ==
+X-Gm-Message-State: AOAM531BYcJmxA+TcZUQ210scCbYPYxjE/hsqASfSE0/5IRUcC/FJjxo
+        xWkSADjKdQac9opSVHFI2gYJvg==
+X-Google-Smtp-Source: ABdhPJyzQWbqz38yLAmtNxgQ/7L8jQxu79O3IRdahxiukEm5uaBC3UhwBHYm+Dr9JmbN+3xGvHDZGw==
+X-Received: by 2002:a9d:6a96:: with SMTP id l22mr4298651otq.156.1605148121715;
+        Wed, 11 Nov 2020 18:28:41 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s14sm851761oij.4.2020.11.11.18.28.39
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 11 Nov 2020 18:28:40 -0800 (PST)
+Date:   Wed, 11 Nov 2020 18:28:38 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Vlastimil Babka <vbabka@suse.cz>
+cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Subject: Re: [PATCH v21 15/19] mm/compaction: do page isolation first in
+ compaction
+In-Reply-To: <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
+Message-ID: <alpine.LSU.2.11.2011111803580.2174@eggly.anvils>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com> <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com> <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add API for getting the ioasid of a subdevice (vfio/mdev). This calls
-into the backend IOMMU module to get the actual value or error number
-if ioasid for subdevice is not supported. The physical device driver
-implementations which rely on the vfio/mdev framework for mediated
-device user level access could typically consume this interface like
-below:
+On Wed, 11 Nov 2020, Vlastimil Babka wrote:
+> On 11/5/20 9:55 AM, Alex Shi wrote:
+> 
+> > @@ -979,10 +995,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+> >   					goto isolate_abort;
+> >   			}
+> >   -			/* Recheck PageLRU and PageCompound under lock */
+> > -			if (!PageLRU(page))
+> > -				goto isolate_fail;
+> > -
+> >   			/*
+> >   			 * Page become compound since the non-locked check,
+> >   			 * and it's on LRU. It can only be a THP so the order
+> > @@ -990,16 +1002,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
 
-	struct device *dev = mdev_dev(mdev);
-	unsigned int pasid;
-	int ret;
+Completely off-topic, and won't matter at all when Andrew rediffs into
+mmotm: but isn't it weird that this is showing "too_many_isolated(",
+when actually the function is isolate_migratepages_block()?
 
-	ret = vfio_subdev_ioasid(dev, &pasid);
-	if (ret < 0)
-		return ret;
+> >   			 */
+> >   			if (unlikely(PageCompound(page) &&
+> > !cc->alloc_contig)) {
+> >   				low_pfn += compound_nr(page) - 1;
+> > -				goto isolate_fail;
+> > +				SetPageLRU(page);
+> > +				goto isolate_fail_put;
+> >   			}
+> 
+> IIUC the danger here is khugepaged will collapse a THP. For that,
+> __collapse_huge_page_isolate() has to succeed isolate_lru_page(). Under the
+> new scheme, it shouldn't be possible, right? If that's correct, we can remove
+> this part?
 
-         /* Program device context with pasid value. */
-         ....
+I don't think so.  A preliminary check for PageCompound was made much
+higher up, before taking a reference on the page, but it can easily have
+become PageCompound since then (when racing prep_new_page() calls
+prep_compound_page()).
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/vfio/vfio.c             | 34 ++++++++++++++++++++
- drivers/vfio/vfio_iommu_type1.c | 57 +++++++++++++++++++++++++++++++++
- include/linux/vfio.h            |  4 +++
- 3 files changed, 95 insertions(+)
+And __collapse_huge_page_isolate() does not turn a non-compound page
+into a compound page: it isolates small pages before copying them into
+the compound page (in the usual case: I can see there's also allowance
+for PageCompound there too, which will do something different).
 
-diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-index 2151bc7f87ab..4931e1492921 100644
---- a/drivers/vfio/vfio.c
-+++ b/drivers/vfio/vfio.c
-@@ -2331,6 +2331,40 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
- }
- EXPORT_SYMBOL(vfio_unregister_notifier);
- 
-+int vfio_subdev_ioasid(struct device *dev, unsigned int *id)
-+{
-+	struct vfio_container *container;
-+	struct vfio_iommu_driver *driver;
-+	struct vfio_group *group;
-+	int ret;
-+
-+	if (!dev || !id)
-+		return -EINVAL;
-+
-+	group = vfio_group_get_from_dev(dev);
-+	if (!group)
-+		return -ENODEV;
-+
-+	ret = vfio_group_add_container_user(group);
-+	if (ret)
-+		goto out;
-+
-+	container = group->container;
-+	driver = container->iommu_driver;
-+	if (likely(driver && driver->ops->subdev_ioasid))
-+		ret = driver->ops->subdev_ioasid(container->iommu_data,
-+						 group->iommu_group, id);
-+	else
-+		ret = -ENOTTY;
-+
-+	vfio_group_try_dissolve_container(group);
-+
-+out:
-+	vfio_group_put(group);
-+	return ret;
-+}
-+EXPORT_SYMBOL(vfio_subdev_ioasid);
-+
- /**
-  * Module/class support
-  */
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 67e827638995..f94cc7707d7e 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2980,6 +2980,62 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
- 	return ret;
- }
- 
-+static int vfio_iommu_type1_subdev_ioasid(void *iommu_data,
-+					  struct iommu_group *iommu_group,
-+					  unsigned int *id)
-+{
-+	struct vfio_iommu *iommu = iommu_data;
-+	struct vfio_domain *domain = NULL, *d;
-+	struct device *iommu_device = NULL;
-+	struct bus_type *bus = NULL;
-+	int ret;
-+
-+	if (!iommu || !iommu_group || !id)
-+		return -EINVAL;
-+
-+	mutex_lock(&iommu->lock);
-+	ret = iommu_group_for_each_dev(iommu_group, &bus, vfio_bus_type);
-+	if (ret)
-+		goto out;
-+
-+	if (!vfio_bus_is_mdev(bus)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = iommu_group_for_each_dev(iommu_group, &iommu_device,
-+				       vfio_mdev_iommu_device);
-+	if (ret || !iommu_device ||
-+	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX)) {
-+		ret = -ENODEV;
-+		goto out;
-+	}
-+
-+	list_for_each_entry(d, &iommu->domain_list, next) {
-+		if (find_iommu_group(d, iommu_group)) {
-+			domain = d;
-+			break;
-+		}
-+	}
-+
-+	if (!domain) {
-+		ret = -ENODEV;
-+		goto out;
-+	}
-+
-+	ret = iommu_aux_get_pasid(domain->domain, iommu_device);
-+	if (ret > 0) {
-+		*id = ret;
-+		ret = 0;
-+	} else {
-+		ret = -ENOSPC;
-+	}
-+
-+out:
-+	mutex_unlock(&iommu->lock);
-+	return ret;
-+}
-+
- static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
- 	.name			= "vfio-iommu-type1",
- 	.owner			= THIS_MODULE,
-@@ -2993,6 +3049,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
- 	.register_notifier	= vfio_iommu_type1_register_notifier,
- 	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
- 	.dma_rw			= vfio_iommu_type1_dma_rw,
-+	.subdev_ioasid		= vfio_iommu_type1_subdev_ioasid,
- };
- 
- static int __init vfio_iommu_type1_init(void)
-diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-index 38d3c6a8dc7e..6dcf09a2796d 100644
---- a/include/linux/vfio.h
-+++ b/include/linux/vfio.h
-@@ -90,6 +90,9 @@ struct vfio_iommu_driver_ops {
- 					       struct notifier_block *nb);
- 	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
- 				  void *data, size_t count, bool write);
-+	int		(*subdev_ioasid)(void *iommu_data,
-+					 struct iommu_group *group,
-+					 unsigned int *id);
- };
- 
- extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
-@@ -125,6 +128,7 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
- 
- extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
- 		       void *data, size_t len, bool write);
-+extern int vfio_subdev_ioasid(struct device *dev, unsigned int *id);
- 
- /* each type has independent events */
- enum vfio_notify_type {
--- 
-2.25.1
-
+Hugh
