@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDBA2B024C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531AD2B024F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgKLJy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:54:26 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58887 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727654AbgKLJyZ (ORCPT
+        id S1727847AbgKLJyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:54:37 -0500
+Received: from www381.your-server.de ([78.46.137.84]:36762 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727654AbgKLJyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:54:25 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4209B5C0270;
-        Thu, 12 Nov 2020 04:54:24 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 12 Nov 2020 04:54:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=TuclOS/aZHuG6/ZdRLGM53ZDxtW
-        QD1qVs4e0nGcIEIA=; b=Ux1+UQx1k1DximQrtrmf5rO0OzZwAwufUnBr+BVIQQC
-        IFaGo4JmFfAxn0BWAerlKDeF2dmFh8486B/oGV+n44Ne+I6QtrckniyuMmb7tjCC
-        hTbL86iQDsojPboBA+ZxiZJoUvqG4sYrfHbCJ6cgp/1IttOnQqS7BDCOyKV/uiyw
-        A/bSQMVnJSZwJ7Olv4dmXx3PgxPCNuYFROLWn04vps1BN/Qvyoi+p/ej3PWkN7OS
-        NYhihkXl0n/vnjabU98iLZdCFkOwy4MSxsaArwnZ/CzwOV6FWgrHUPKtg9tQutOA
-        MpgR+YHFIQNtLFuUPg21lp5+doq+umcs1EZNWF3CDjQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TuclOS
-        /aZHuG6/ZdRLGM53ZDxtWQD1qVs4e0nGcIEIA=; b=MPb6lm5Wq5oqjfpAK8uNoI
-        aqqFAYRjIp4H8uEuYRAom51vyL74fau9RKAfKK4pG7H0KPH4pxzv7wiX1WEsQ3bI
-        NZMWP8AT2vg0Zx0zSiK6bNDpSQakMG6riDMfhsX5XN3YKb7Dx12wkkgW0l+YS3Sz
-        ImVubpcXFDx9/MV1dCkb4kSQCH5sihzgTgX957m0aMSXHjKOXYjmnJkdefkx+rlW
-        AzxEuo08VtX/7hW3W9J+BzgHQS2tR3dz90XKIWtv96O8/BklEz6t+gAeN/lUghPu
-        D1FDZ4Cfl22nSQh0Fg6YeAgLS7VUzmE7E9fAtywK4OL6rA9zHlYYp+UxStH8D6/w
-        ==
-X-ME-Sender: <xms:UAatX_mPWFEPqROPoEdRfsjEEhbBMuZh_H1MBPQQ63Lz86hPUxAH5A>
-    <xme:UAatXy0fkSM-OT2RnrhTh9RMq9rU63dvDsr6d03kaiH3Mr1Pw_LgziSXskuPN4YIV
-    6_O0wVLcKYizAAmBO4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvvddgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:UAatX1oMqUGAdBYgm7bGNmhMQmkAvTeTC-ouiKWNdxjIUc67dzvCSA>
-    <xmx:UAatX3mK7omnIpcP-26YrV8APNg50hqj5GoeaScFtB4Dvr_akXmg8Q>
-    <xmx:UAatX91vydy1KFon42XqnLVDqFvQSa4bIs8277qGfXrtHYXWTvfipw>
-    <xmx:UAatX4TsFidiWG0MxXVol0NeBgkf99SzvGPXSaLkyNMxDpw-c-uM3Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B97943066098;
-        Thu, 12 Nov 2020 04:54:23 -0500 (EST)
-Date:   Thu, 12 Nov 2020 10:54:22 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tiny.windzz@gmail.com
-Subject: Re: [PATCH] arm64: dts: allwinner: a64: fix sid node name
-Message-ID: <20201112095422.in6s5ctgv7in35on@gilmour.lan>
-References: <20201109122101.23302-1-frank@allwinnertech.com>
+        Thu, 12 Nov 2020 04:54:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=YMQMwTpaxzI06pmi27VpklODHSICBLhVazxEQ59Cm8o=; b=ajfwKlC6WnRJSBpsno0+0ZcUdk
+        MwV54OGYBNrhvqy8A+wbm+i4aO+zccN+AXQ+Xo7lr//eSYhjzrTBkNhQcYydHUYF6678kUbgwmDiy
+        fcMqTA5ZrIGW1Fh262PpoO/zSbburrxAlggIXJm6SAN3pCONZ+RKaaA1kwTHUhXlzgqHq1TUqJteC
+        6m4tfCS/ToofC1YSfYSFrjZ3Goasj2flj6SpBynA0dVahtdgndiKGfOkcpZvsqhAsOR8HS7ivFdfD
+        ZB1hvZ6CuMazbDvwdmHWHiF9+RFpUFKixs6ymQspwdA9zNv1zE1guap5EGWjq4c2qnWk3tbNpQp2G
+        Fu+BMvfw==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1kd9JJ-0003Hw-Ja; Thu, 12 Nov 2020 10:54:33 +0100
+Received: from [62.216.202.98] (helo=[192.168.178.20])
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1kd9JJ-000ATN-FP; Thu, 12 Nov 2020 10:54:33 +0100
+Subject: Re: [PATCH] iio: ad_sigma_delta: Don't put SPI transfer buffer on the
+ stack
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org
+References: <20201112091050.84991-1-alexandru.ardelean@analog.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <49aea6de-9084-d5a2-a6be-967196570830@metafoo.de>
+Date:   Thu, 12 Nov 2020 10:54:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ja54jhtdryuhpwu3"
-Content-Disposition: inline
-In-Reply-To: <20201109122101.23302-1-frank@allwinnertech.com>
+In-Reply-To: <20201112091050.84991-1-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ja54jhtdryuhpwu3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Nov 09, 2020 at 08:21:01PM +0800, Frank Lee wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
->=20
-> Sid should be an efuse type device accurately. And no one
-> needs sid label, so delete it.
->=20
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+On 11/12/20 10:10 AM, Alexandru Ardelean wrote:
+> From: Lars-Peter Clausen <lars@metafoo.de>
+>
+> Use a heap allocated memory for the SPI transfer buffer. Using stack memory
+> can corrupt stack memory when using DMA on some systems.
+>
+> This change adds 4 bytes at the end of the current DMA buffer, which will
+> be used by the trigger handler.
+> This is required because the first 4 bytes are reserved for register data.
+>
+> Fixes: af3008485ea03 ("iio:adc: Add common code for ADI Sigma Delta devices")
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 > ---
->  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/b=
-oot/dts/allwinner/sun50i-a64.dtsi
-> index dc238814013c..96543df5d890 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> @@ -520,7 +520,7 @@ mmc2: mmc@1c11000 {
->  			#size-cells =3D <0>;
->  		};
-> =20
-> -		sid: eeprom@1c14000 {
-> +		efuse@1c14000 {
->  			compatible =3D "allwinner,sun50i-a64-sid";
->  			reg =3D <0x1c14000 0x400>;
->  			#address-cells =3D <1>;
+>   drivers/iio/adc/ad_sigma_delta.c       | 4 ++--
+>   include/linux/iio/adc/ad_sigma_delta.h | 2 +-
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+> index 86039e9ecaca..33297f26508a 100644
+> --- a/drivers/iio/adc/ad_sigma_delta.c
+> +++ b/drivers/iio/adc/ad_sigma_delta.c
+> @@ -395,11 +395,11 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
+>   	struct iio_poll_func *pf = p;
+>   	struct iio_dev *indio_dev = pf->indio_dev;
+>   	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+> +	uint8_t *data = &sigma_delta->data[4];
+>   	unsigned int reg_size;
+>   	unsigned int data_reg;
+> -	uint8_t data[16];
+>   
+> -	memset(data, 0x00, 16);
+> +	memset(data, 0x00, 4);
 
-I agree with this on principle, but we should do it on all the SoCs at
-once. Can you send another version doing so?
+Younger me didn't know what he was doing, this is wrong. We need the 
+extra space for the padding and timestamp.
 
-Thanks!
-Maxime
+We also can't put the beginning of the buffer at an 4 byte offset since 
+it needs to be 8 byte aligned for the timestamp.
 
---ja54jhtdryuhpwu3
-Content-Type: application/pgp-signature; name="signature.asc"
+>   
+>   	reg_size = indio_dev->channels[0].scan_type.realbits +
+>   			indio_dev->channels[0].scan_type.shift;
+> diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
+> index a3a838dcf8e4..ac4ac4752c62 100644
+> --- a/include/linux/iio/adc/ad_sigma_delta.h
+> +++ b/include/linux/iio/adc/ad_sigma_delta.h
+> @@ -80,7 +80,7 @@ struct ad_sigma_delta {
+>   	 * DMA (thus cache coherency maintenance) requires the
+>   	 * transfer buffers to live in their own cache lines.
+>   	 */
+> -	uint8_t				data[4] ____cacheline_aligned;
+> +	uint8_t				data[8] ____cacheline_aligned;
+>   };
+>   
+>   static inline int ad_sigma_delta_set_channel(struct ad_sigma_delta *sd,
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX60GTgAKCRDj7w1vZxhR
-xVERAP97kOrnqreDaUK+yUflbqy4M0PS2Zje0xX+CM4v2nj/EgD/XqZe6xQGR5vD
-WBR+Qr+EY72WpPHKCiZQqgZN0IhPwg0=
-=kh5v
------END PGP SIGNATURE-----
-
---ja54jhtdryuhpwu3--
