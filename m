@@ -2,226 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1902AFFB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 07:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387EC2AFFB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 07:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbgKLGfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 01:35:45 -0500
-Received: from mga06.intel.com ([134.134.136.31]:24011 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725860AbgKLGfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 01:35:44 -0500
-IronPort-SDR: fIn6TwWrvxni4a4XSVqQrNlVvgOTSfua/yiUah/ySIyif26Lg9ueyH/8mQxvuGPV5hgbdRTtYw
- qXRfC+THH3bA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="231886775"
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="231886775"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 22:35:43 -0800
-IronPort-SDR: V27cEYIko+0b1B2J4zogDP8ViHJtVurMA46rtZpjf9TFOsIh7Cfe3ZMMSceXZ/2Lb5TjBjUxFR
- 5xuzFzSE5cbQ==
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="339306684"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 22:35:43 -0800
-Date:   Wed, 11 Nov 2020 22:35:42 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-Subject: Re: [RFC PATCH 00/12] Topdown parser
-Message-ID: <20201112063542.GD894261@tassilo.jf.intel.com>
-References: <20201110100346.2527031-1-irogers@google.com>
- <20201111214635.GA894261@tassilo.jf.intel.com>
- <CAP-5=fXedJEZcYhxmPAzRVx5kdW2YA71Ks3BycqurAHydtXh8A@mail.gmail.com>
- <20201112031049.GC894261@tassilo.jf.intel.com>
- <CAP-5=fUDOLzfpuJNjk_D6KrAGMNXKXOFKfVi9O7qXRDdP_4Rpg@mail.gmail.com>
+        id S1725995AbgKLGjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 01:39:39 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:54024 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725898AbgKLGjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 01:39:37 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AC6Vxnp007499;
+        Thu, 12 Nov 2020 01:39:36 -0500
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34nsc984dj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 01:39:36 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CEdj9Li2sHYl373Gi5wGTfhicr/mdgc5dOtknP77BEBgjk0CvtFGO6ck8irhusA1cCW0fYjsIVCbMxBmLX2/77zX0DIAyC1n/OGG6rcdyXZz2SCKmgdixpo9WwZbfe3lQzkaXpm7el1OJpfskE0AAY0JhpCFFfiS3UUS+KGeUQbURXe9sERgavuVKkfIFchC442ihhqNG4aFtw8qH4CH93YrldVNgZ89PKEo00KjSeghbml9InmhVzAJWW+RpZAV8n2L67nnJoZyMRhjgV5kQYXXnwXMRQxyHxtVsxa+vL57iPcXKqbGR+Is8oVYgyAiTYrTWfvqxPM90Wz5XAfljg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qwRqwG9EXbcuhRWolvAqcLThS3ImCPcBbGgBZFu2vJg=;
+ b=iCB/yHxj989SAo+hlF8+D8XI9dlPZMHiqjeloqa4EKZc9Pxf96zKBEaMFu/ZUhueiM8IO26N+8OsaMVcMbry0TaiMexOph6SdUaKbZAI+bsuINb30cxwuB3/mDwuwfj4FNHSLOfvuoke/YXbbZVvWEqAvytRXbc5Iwf2B2qgwV8E2m0s/cOFC1RP2CwAMuTdSBUn7NsymjyTYBcSN/0/xTPTKgsnGgGhijQo4yprGlNPJnzmdVFIGxqrGLM9z+s6XWg34IumwLDG009HHGL4UCekvtctcN2+aLg2FOcBg26iA4IU7HpzGOLZYGNRrNnO1ZvpyLSOknbyGL3ots5TwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qwRqwG9EXbcuhRWolvAqcLThS3ImCPcBbGgBZFu2vJg=;
+ b=irwkz2xs7RIpDN+LU5QWT5QNpXJuBXcWW51w7qElfj6j0QkUS40/pCD/VzPKtZ19bqDq+xcEdkaYEenikOyep8HFkVGBegomfwhdsfRvX3+lAb2YDOd93gqLNktK6fhbKagwbJSILOc4QZehNN9IAIMhqmL5tZls2iXxJR5f3Uc=
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
+ by DM6PR03MB3851.namprd03.prod.outlook.com (2603:10b6:5:46::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 06:39:33 +0000
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f8dc:93bc:313c:fc22]) by DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f8dc:93bc:313c:fc22%6]) with mapi id 15.20.3499.034; Thu, 12 Nov 2020
+ 06:39:33 +0000
+From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/6] Input: adp5589: use a single variable for error in
+ probe
+Thread-Topic: [PATCH 1/6] Input: adp5589: use a single variable for error in
+ probe
+Thread-Index: AQHWuAa+GlSvf4QZ5USdLlxwh/EZS6nDp/0AgABlBhA=
+Date:   Thu, 12 Nov 2020 06:39:33 +0000
+Message-ID: <DM6PR03MB4411AC5AC6EC2F0F4337A05CF9E70@DM6PR03MB4411.namprd03.prod.outlook.com>
+References: <20201111084833.40995-1-alexandru.ardelean@analog.com>
+ <20201111084833.40995-2-alexandru.ardelean@analog.com>
+ <20201112003738.GZ1003057@dtor-ws>
+In-Reply-To: <20201112003738.GZ1003057@dtor-ws>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYWFyZGVsZWFc?=
+ =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy1kMjgzNTlhZi0yNGIxLTExZWItYTViZS00MTU2?=
+ =?us-ascii?Q?NDUwMDAwMzBcYW1lLXRlc3RcZDI4MzU5YjEtMjRiMS0xMWViLWE1YmUtNDE1?=
+ =?us-ascii?Q?NjQ1MDAwMDMwYm9keS50eHQiIHN6PSIxMDIxIiB0PSIxMzI0OTYzNjc3MzQ3?=
+ =?us-ascii?Q?NzY1ODAiIGg9IkVWMVh5MXZ2Mnp1TDlQcDZPdEdSTTlnblRFQT0iIGlkPSIi?=
+ =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUVvQ0FB?=
+ =?us-ascii?Q?QUVZOXlVdnJqV0FWdGNvYUZDNlFaMFcxeWhvVUxwQm5RREFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQURhQVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFRQUJBQUFBS1ZJV2JnQUFBQUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFh?=
+ =?us-ascii?Q?UUJmQUhNQVpRQmpBSFVBY2dCbEFGOEFjQUJ5QUc4QWFnQmxBR01BZEFCekFG?=
+ =?us-ascii?Q?OEFaZ0JoQUd3QWN3QmxBRjhBWmdCdkFITUFhUUIwQUdrQWRnQmxBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBWkFCcEFGOEFjd0JsQUdNQWRR?=
+ =?us-ascii?Q?QnlBR1VBWHdCd0FISUFid0JxQUdVQVl3QjBBSE1BWHdCMEFHa0FaUUJ5QURF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVlRQmtBR2tBWHdCekFHVUFZd0IxQUhJQVpRQmZBSEFBY2dC?=
+ =?us-ascii?Q?dkFHb0FaUUJqQUhRQWN3QmZBSFFBYVFCbEFISUFNZ0FBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFBPT0iLz48L21l?=
+ =?us-ascii?Q?dGE+?=
+x-dg-rorf: true
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=analog.com;
+x-originating-ip: [188.27.128.26]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2391890a-08c6-4c7d-8242-08d886d5b78b
+x-ms-traffictypediagnostic: DM6PR03MB3851:
+x-microsoft-antispam-prvs: <DM6PR03MB3851E893907B9FBBB19CDDB1F9E70@DM6PR03MB3851.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pDTbHDixwZ7pDgSFMx//7Op8+pG0FPCkj5XP+jivECC3DKMX0z50fxe8KVkhSjQk/91wwWc/GU4gULIpSk607oz0eKLByYZq6816+wjvKuE12zIKE/y3EkRl/w43pBO+Tk9dOHHvxku1SCdGr4C/Itap0pgE1u4YA7wXVu2PsLhDfWcYJxx4AnwXni0bUneomyviAOnJStMhqaRq45K3qlybm1idcANSM89nWq6ka0U8WMdIbtpSYIqK0/B6ohmj2vkBrvc+uSgr3bbNsw9qVDhGArOrlF2YoTZwf17frnnITemDcCi8z3YRrnluHDWk
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(396003)(39860400002)(66476007)(66446008)(316002)(8676002)(54906003)(26005)(6916009)(2906002)(186003)(71200400001)(478600001)(4744005)(7696005)(53546011)(6506007)(66946007)(33656002)(66556008)(8936002)(64756008)(76116006)(55016002)(5660300002)(9686003)(4326008)(83380400001)(86362001)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Hb6Zv618C81Iv0ovRgqNXgl1ew72pO6+W6aMNOY2LPIHU7Rllsnib8oFlhSSTHOOnaKRgXLpvVAd8sxJ/t4qndrP08rLUCiuwoDoGK288L9dugmBbfKzLKGywT467fY5Gaj9eB5Y4c0GygSlnJNvAJKTAiIIkTZ6imRFcnkER4l1OrNFf5rDuBrg/ThtDyYLiP9EQYVKoMNHr0I0FVj6Q4xZikT0lKDW9aIjqwv3olINrTA5ZZHdkle3gTzCoPIeg4edvZLTeeGFMjNogIjHmv15xArbKZQaLkuBZDTaT/WA/kuIeqcSRE+uXW5BNn68vZ/zfP1NZrrjkGCiuXPNm0qaT9KR8eEGenmfaDk5L2d+YtZUH5OTNQaU4AqTuVegIIE79eC56cFz+4aDkZt8i+GCy1qZY2oIMs9bg2+OklBu7EBsNY+5bPMN8RyUsOooDtTXrmFJj/WtuUGXKIMXBnYaPxSAltl9waQP0Smk9TWLdWjJXiVJnHYFyL7+BbyLNsg0VBuVUNcgYoSYcN/wgxdGXFueQuUQnfxmVipucy5+0if/ZPuAkJAWerDnSjBzIE451AJzJdvaj3Xp1+cCmpecQi6r4cFEmQoNTIVHO9fWlrScedcXznQW7Mo95xnqrUgtoO2+2fDEahilPz9zpg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUDOLzfpuJNjk_D6KrAGMNXKXOFKfVi9O7qXRDdP_4Rpg@mail.gmail.com>
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4411.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2391890a-08c6-4c7d-8242-08d886d5b78b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 06:39:33.6855
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HaLfLhwkbg5as1G1l2UbPvzOssmux6J6bHVl+P2M3OCfBlrSWzWyvIofPd7JQ3lyd5Rh3H5azqlT9KIWo+alhfbd9RQzIBoW68p5E9dfDTY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB3851
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_12:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=971 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 08:09:49PM -0800, Ian Rogers wrote:
->      >    to the optimization manual the group Topdown_Group_TopDownL1
->      provides the
->      >   
->      metrics Topdown_Metric_Frontend_Bound, Topdown_Metric_Backend_Bound, Topdown_Metric_Bad_Speculation
->      >    and Topdown_Metric_Retiring. The hope is the events here will all
->      be
->      >    scheduled without multiplexing.
-> 
->      That's not necessarily true. Some of the newer expressions are quite
->      complex (e.g .due to workarounds or because the events are complex, like
->      the FLOPS events) There's also some problems with the
->      scheduling of the fixed metrics on Icelake+, that need special handling.
-> 
->    For FLOPS I see:
->    ( #FP_Arith_Scalar + #FP_Arith_Vector ) / ( 2 * CORE_CLKS ) 
->    is the concern about multiplexing? Could we create metrics/groups aware of
->    the limitations?
 
-If you expand it you'll end up with a lot of events, so it has to be split
-into groups. But you still need to understand the rules, otherwise the tool
-ends up with non schedulable groups.
+> -----Original Message-----
+> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Sent: Thursday, November 12, 2020 2:38 AM
+> To: Ardelean, Alexandru <alexandru.Ardelean@analog.com>
+> Cc: linux-input@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 1/6] Input: adp5589: use a single variable for error =
+in probe
+>=20
+> [External]
+>=20
+> Hi Alexandru,
+>=20
+> On Wed, Nov 11, 2020 at 10:48:28AM +0200, Alexandru Ardelean wrote:
+> > The 'error' & 'ret' variables are used. This is a bit of duplication.
+> > This change replaces the use of error with the 'ret' variable since
+> > the name is a bit more generic.
+>=20
+> I really prefer variables that carry error codes/success and are used in =
+error
+> paths to be called "error", and "ret" or "retval" to be used in cases whe=
+re we
+> may return actual data.
+>=20
 
-For example here's a group schedule generated by toplev for level 3 Icelake.
-On pre Icelake with only 4 counters it's more complicated.
+Ack.
+Will do it the other way around for v2.
 
-Microcode_Sequencer[3] Heavy_Operations[1] Memory_Bound[1]
-Branch_Mispredicts[1] Fetch_Bandwidth[1] Other[4] Heavy_Operations[3]
-Frontend_Bound[1] FP_Arith[1] Backend_Bound[1] Light_Operations[3]
-Microcode_Sequencer[1] FP_Arith[4] Fetch_Bandwidth[2] Light_Operations[1]
-Retiring[1] Bad_Speculation[1] Machine_Clears[1] Other[1] Core_Bound[1]
-Ports_Utilization[1]:
-  perf_metrics.frontend_bound[f] perf_metrics.bad_speculation[f]
-  topdown.slots[f] perf_metrics.backend_bound[f] perf_metrics.retiring[f] [0
-  counters]
-Machine_Clears[2] Branch_Mispredicts[2] ITLB_Misses[3] Branch_Mispredicts[1]
-Fetch_Bandwidth[1] Machine_Clears[1] Frontend_Bound[1] Backend_Bound[1]
-ICache_Misses[3] Fetch_Latency[2] Fetch_Bandwidth[2] Bad_Speculation[1]
-Memory_Bound[1] DSB_Switches[3]:
-  inst_retired.any[f] machine_clears.count cpu_clk_unhalted.thread[f]
-  int_misc.recovery_cycles:c1:e1 br_misp_retired.all_branches
-  idq_uops_not_delivered.cycles_0_uops_deliv.core topdown.slots[f]
-  dsb2mite_switches.penalty_cycles icache_64b.iftag_stall
-  int_misc.uop_dropping icache_16b.ifdata_stall [8 counters]
-Core_Bound[1] Core_Bound[2] Heavy_Operations[3] Memory_Bound[2]
-Light_Operations[3]:
-  cycle_activity.stalls_mem_any idq.ms_uops exe_activity.1_ports_util
-  exe_activity.exe_bound_0_ports exe_activity.2_ports_util
-  exe_activity.bound_on_stores int_misc.recovery_cycles:c1:e1 uops_issued.any
-  [8 counters]
-Microcode_Sequencer[3] Store_Bound[3] Branch_Resteers[3] MS_Switches[3]
-Divider[3] LCP[3]:
-  int_misc.clear_resteer_cycles arith.divider_active
-  cpu_clk_unhalted.thread[f] idq.ms_switches ild_stall.lcp baclears.any
-  exe_activity.bound_on_stores idq.ms_uops uops_issued.any [8 counters]
-L1_Bound[3] L3_Bound[3]:
-  cycle_activity.stalls_l1d_miss cycle_activity.stalls_mem_any
-  cycle_activity.stalls_l2_miss cpu_clk_unhalted.thread[f]
-  cycle_activity.stalls_l3_miss [4 counters]
-DSB[3] MITE[3]:
-  idq.mite_cycles_ok idq.mite_cycles_any cpu_clk_unhalted.distributed
-  idq.dsb_cycles_any idq.dsb_cycles_ok [5 counters]
-LSD[3] L2_Bound[3]:
-  cycle_activity.stalls_l1d_miss cpu_clk_unhalted.thread[f]
-  cpu_clk_unhalted.distributed lsd.cycles_ok lsd.cycles_active
-  cycle_activity.stalls_l2_miss [5 counters]
-Other[4] FP_Arith[4] L2_Bound[3] DRAM_Bound[3]:
-  mem_load_retired.fb_hit mem_load_retired.l2_hit
-  fp_arith_inst_retired.512b_packed_single mem_load_retired.l1_miss
-  fp_arith_inst_retired.512b_packed_double l1d_pend_miss.fb_full_periods [6
-  counters]
-Ports_Utilization[3] DRAM_Bound[3]:
-  cycle_activity.stalls_l1d_miss arith.divider_active mem_load_retired.l2_hit
-  exe_activity.1_ports_util cpu_clk_unhalted.thread[f]
-  cycle_activity.stalls_l3_miss exe_activity.2_ports_util
-  cycle_activity.stalls_l2_miss exe_activity.exe_bound_0_ports [8 counters]
-Other[4] FP_Arith[4]:
-  fp_arith_inst_retired.128b_packed_single uops_executed.thread
-  uops_executed.x87 fp_arith_inst_retired.scalar_double
-  fp_arith_inst_retired.256b_packed_single
-  fp_arith_inst_retired.scalar_single
-  fp_arith_inst_retired.128b_packed_double
-  fp_arith_inst_retired.256b_packed_double [8 counters]
-
-
->    Ok, so we can read the threshold from the spreadsheet and create an extra
->    metric for if the metric above the threshold?
-
-Yes it can be all derived from the spreadsheet.
-
-You need a much more complicated evaluation algorithm though, single
-pass is not enough.
-
-> 
->      Also in other cases it's probably better to not drilldown, but collect
->      everything upfront, e.g. when someone else is doing the collection
->      for you. In this case the thresholding has to be figured out from
->      existing data.
-> 
->    This sounds like perf record support for metrics, which I think is a good
->    idea but not currently a use-case I'm trying to solve.
-
-I meant just a single collection with perf stat, but with all events for all 
-metrics/nodes collected. But the tool automatically figures out the bottleneck
-and only shows the relevant information instead of all.
-
-That's a good use case when it's not feasible to iterate (e.g. you ask
-someone else to measure)
-
->      The other biggie which is currently not in metrics is per core mode,
->      which is needed for many metrics on CPUs older than Icelake. This really
->      has to be supported in some way, otherwise the results on pre Icelake
->      SMT
->      are not good (Icelake fixes this problem)
-> 
->    I think this can be added in the style of event modifiers. We may want to
->    distinguish metrics from user or kernel code. We may want one cpu, etc.
-
-There is a per core qualifier now, but you would also need to teach the perf stat output
-to show the shared nodes. That's likely significant surgery.
-
->    Sure, but I'm not understanding how a user without vtune or toplev is
->    expected follow top down? 
-
-It's fairly difficult. Some experts can do it, but it's not a common skill.
-
-Giving the metrics automates a lot of the
->    process as well as alleviating differences across different models.
->    Previously a lot of metrics had just broken expressions. Were C code used
-
-These problems should be all fixed now. We had some testing challenges,
-but they have been addressed
-
->    instead of strings in json, these would have resulted in compilation
->    errors. Even with the metrics being broken in perf I didn't see users
->    complaining. I suspect metrics are outside of most people's use, but that
->    doesn't mean we shouldn't make them convenient to use if they want them.
->    Yes there are issues, but that's also true for most events.
->    I think ideally we have the TMA_Metrics.csv (and related tools)
->    contributed to Linux, this would be processed at build time to build all
->    events and metrics (what this patch series does). Making the metrics work,
->    complexity, multiplexing, etc. are all issues, but ones worth fixing.
-
-My feeling before was that some selected nodes and the non TMA metrics make 
-sense and that's the current metrics in fact. Perhaps it wasn't perfect,
-but at least it was something, and they work already quite well
-with the current perf infrastructure.
-
-It probably also makes sense to add a few more nodes (let's say level 2
-or maybe level 3).
-
-But if you add much more you'll need all this extra machinery I described.
-Without it adding all the lower level nodes blindly is not a good idea
-because it will not be very usable, or worse even misleading.
-
-Even for level 2/3 we should probably have some simple thresholding at least,
-but maybe could get away with not having it yet.
-
-While it's of course possible to add this too it would be significant surgery.
-I actually considered doing it all in perf at some point, but it was quite
-complicated.
-
-I personally found it simpler to handle those higher level algorithms in a
-separate tool.
-
--Andi
+> Thanks.
+>=20
+> --
+> Dmitry
