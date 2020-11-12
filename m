@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2352B06A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AD02B06A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgKLNiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:38:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38262 "EHLO
+        id S1728409AbgKLNiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:38:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27185 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728356AbgKLNiu (ORCPT
+        by vger.kernel.org with ESMTP id S1728377AbgKLNix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:38:50 -0500
+        Thu, 12 Nov 2020 08:38:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605188328;
+        s=mimecast20190719; t=1605188330;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X0WfQnw15Vm9t+Uqndhh69vgkO1/7kUW5WBgUBhjrGY=;
-        b=A1pnE5UnPbLnMIPzC0eldpXkfh9I605Kg0+WErRnqQvOlZHhoRHwckccs7lTQ/oItXRJIJ
-        eD/v7kUC8eYKuj82fJeZvzVOFUFDEMoTI/4bLXksCnpsQmHWTi/hQhXrlC4hrlXzx4FyZj
-        6iuWoEQCLAHZE75A6ZP8jBlFMFBhUgQ=
+        bh=hEe6VBE/5yZyIS6nKePb3w8IGCBXjgtR7vD5nfLEPS4=;
+        b=eSD8yy8DOnshy7kcXxJjTk8dR/Q0gpeBsZ1FMG1sRsmrBx5AXjVXZuuKXl8eXxE5bGHZza
+        5ei+Cel4xd0WDVwWoYM86e8gaN0QUwoUbqMqURVKpBcmSSt8AFghuMU2Ma5J5QCuCufxMK
+        1SByl2ceWmkN2XfKnWxtBo0sX9GqzK4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-k-FLLVhEMsmObHVn5xkdtw-1; Thu, 12 Nov 2020 08:38:46 -0500
-X-MC-Unique: k-FLLVhEMsmObHVn5xkdtw-1
+ us-mta-383-_OjfKXOoNG6x4NfMOn8JpQ-1; Thu, 12 Nov 2020 08:38:48 -0500
+X-MC-Unique: _OjfKXOoNG6x4NfMOn8JpQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 215E01030986;
-        Thu, 12 Nov 2020 13:38:45 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CE8518BA28D;
+        Thu, 12 Nov 2020 13:38:47 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-115-61.ams2.redhat.com [10.36.115.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F2EB955765;
-        Thu, 12 Nov 2020 13:38:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7509155765;
+        Thu, 12 Nov 2020 13:38:45 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
         "Michael S . Tsirkin" <mst@redhat.com>,
         David Hildenbrand <david@redhat.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v2 06/29] virtio-mem: factor out calculation of the bit number within the subblock bitmap
-Date:   Thu, 12 Nov 2020 14:37:52 +0100
-Message-Id: <20201112133815.13332-7-david@redhat.com>
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: [PATCH v2 07/29] virtio-mem: print debug messages from virtio_mem_send_*_request()
+Date:   Thu, 12 Nov 2020 14:37:53 +0100
+Message-Id: <20201112133815.13332-8-david@redhat.com>
 In-Reply-To: <20201112133815.13332-1-david@redhat.com>
 References: <20201112133815.13332-1-david@redhat.com>
 MIME-Version: 1.0
@@ -54,85 +54,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The calculation is already complicated enough, let's limit it to one
-location.
+Let's move the existing dev_dbg() into the functions, print if something
+went wrong, and also print for virtio_mem_send_unplug_all_request().
 
 Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Cc: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: Jason Wang <jasowang@redhat.com>
 Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/virtio/virtio_mem.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/virtio/virtio_mem.c | 50 ++++++++++++++++++++++++++-----------
+ 1 file changed, 35 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 94451b401fba..30b4d07f5263 100644
+index 30b4d07f5263..4742497feff0 100644
 --- a/drivers/virtio/virtio_mem.c
 +++ b/drivers/virtio/virtio_mem.c
-@@ -290,6 +290,16 @@ static int virtio_mem_mb_state_prepare_next_mb(struct virtio_mem *vm)
- 	     _mb_id--) \
- 		if (virtio_mem_mb_get_state(_vm, _mb_id) == _state)
+@@ -869,23 +869,33 @@ static int virtio_mem_send_plug_request(struct virtio_mem *vm, uint64_t addr,
+ 		.u.plug.addr = cpu_to_virtio64(vm->vdev, addr),
+ 		.u.plug.nb_blocks = cpu_to_virtio16(vm->vdev, nb_vm_blocks),
+ 	};
++	int rc = -ENOMEM;
  
-+/*
-+ * Calculate the bit number in the subblock bitmap for the given subblock
-+ * inside the given memory block.
-+ */
-+static int virtio_mem_sb_bitmap_bit_nr(struct virtio_mem *vm,
-+				       unsigned long mb_id, int sb_id)
-+{
-+	return (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+}
+ 	if (atomic_read(&vm->config_changed))
+ 		return -EAGAIN;
+ 
++	dev_dbg(&vm->vdev->dev, "plugging memory: 0x%llx - 0x%llx\n", addr,
++		addr + size - 1);
 +
+ 	switch (virtio_mem_send_request(vm, &req)) {
+ 	case VIRTIO_MEM_RESP_ACK:
+ 		vm->plugged_size += size;
+ 		return 0;
+ 	case VIRTIO_MEM_RESP_NACK:
+-		return -EAGAIN;
++		rc = -EAGAIN;
++		break;
+ 	case VIRTIO_MEM_RESP_BUSY:
+-		return -ETXTBSY;
++		rc = -ETXTBSY;
++		break;
+ 	case VIRTIO_MEM_RESP_ERROR:
+-		return -EINVAL;
++		rc = -EINVAL;
++		break;
+ 	default:
+-		return -ENOMEM;
++		break;
+ 	}
++
++	dev_dbg(&vm->vdev->dev, "plugging memory failed: %d\n", rc);
++	return rc;
+ }
+ 
+ static int virtio_mem_send_unplug_request(struct virtio_mem *vm, uint64_t addr,
+@@ -897,21 +907,30 @@ static int virtio_mem_send_unplug_request(struct virtio_mem *vm, uint64_t addr,
+ 		.u.unplug.addr = cpu_to_virtio64(vm->vdev, addr),
+ 		.u.unplug.nb_blocks = cpu_to_virtio16(vm->vdev, nb_vm_blocks),
+ 	};
++	int rc = -ENOMEM;
+ 
+ 	if (atomic_read(&vm->config_changed))
+ 		return -EAGAIN;
+ 
++	dev_dbg(&vm->vdev->dev, "unplugging memory: 0x%llx - 0x%llx\n", addr,
++		addr + size - 1);
++
+ 	switch (virtio_mem_send_request(vm, &req)) {
+ 	case VIRTIO_MEM_RESP_ACK:
+ 		vm->plugged_size -= size;
+ 		return 0;
+ 	case VIRTIO_MEM_RESP_BUSY:
+-		return -ETXTBSY;
++		rc = -ETXTBSY;
++		break;
+ 	case VIRTIO_MEM_RESP_ERROR:
+-		return -EINVAL;
++		rc = -EINVAL;
++		break;
+ 	default:
+-		return -ENOMEM;
++		break;
+ 	}
++
++	dev_dbg(&vm->vdev->dev, "unplugging memory failed: %d\n", rc);
++	return rc;
+ }
+ 
+ static int virtio_mem_send_unplug_all_request(struct virtio_mem *vm)
+@@ -919,6 +938,9 @@ static int virtio_mem_send_unplug_all_request(struct virtio_mem *vm)
+ 	const struct virtio_mem_req req = {
+ 		.type = cpu_to_virtio16(vm->vdev, VIRTIO_MEM_REQ_UNPLUG_ALL),
+ 	};
++	int rc = -ENOMEM;
++
++	dev_dbg(&vm->vdev->dev, "unplugging all memory");
+ 
+ 	switch (virtio_mem_send_request(vm, &req)) {
+ 	case VIRTIO_MEM_RESP_ACK:
+@@ -928,10 +950,14 @@ static int virtio_mem_send_unplug_all_request(struct virtio_mem *vm)
+ 		atomic_set(&vm->config_changed, 1);
+ 		return 0;
+ 	case VIRTIO_MEM_RESP_BUSY:
+-		return -ETXTBSY;
++		rc = -ETXTBSY;
++		break;
+ 	default:
+-		return -ENOMEM;
++		break;
+ 	}
++
++	dev_dbg(&vm->vdev->dev, "unplugging all memory failed: %d\n", rc);
++	return rc;
+ }
+ 
  /*
-  * Mark all selected subblocks plugged.
-  *
-@@ -299,7 +309,7 @@ static void virtio_mem_mb_set_sb_plugged(struct virtio_mem *vm,
- 					 unsigned long mb_id, int sb_id,
- 					 int count)
- {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sb_bitmap_bit_nr(vm, mb_id, sb_id);
+@@ -946,9 +972,6 @@ static int virtio_mem_mb_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+ 	const uint64_t size = count * vm->subblock_size;
+ 	int rc;
  
- 	__bitmap_set(vm->sb_bitmap, bit, count);
- }
-@@ -313,7 +323,7 @@ static void virtio_mem_mb_set_sb_unplugged(struct virtio_mem *vm,
- 					   unsigned long mb_id, int sb_id,
- 					   int count)
- {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sb_bitmap_bit_nr(vm, mb_id, sb_id);
+-	dev_dbg(&vm->vdev->dev, "plugging memory block: %lu : %i - %i\n", mb_id,
+-		sb_id, sb_id + count - 1);
+-
+ 	rc = virtio_mem_send_plug_request(vm, addr, size);
+ 	if (!rc)
+ 		virtio_mem_mb_set_sb_plugged(vm, mb_id, sb_id, count);
+@@ -967,9 +990,6 @@ static int virtio_mem_mb_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+ 	const uint64_t size = count * vm->subblock_size;
+ 	int rc;
  
- 	__bitmap_clear(vm->sb_bitmap, bit, count);
- }
-@@ -325,7 +335,7 @@ static bool virtio_mem_mb_test_sb_plugged(struct virtio_mem *vm,
- 					  unsigned long mb_id, int sb_id,
- 					  int count)
- {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sb_bitmap_bit_nr(vm, mb_id, sb_id);
- 
- 	if (count == 1)
- 		return test_bit(bit, vm->sb_bitmap);
-@@ -342,7 +352,7 @@ static bool virtio_mem_mb_test_sb_unplugged(struct virtio_mem *vm,
- 					    unsigned long mb_id, int sb_id,
- 					    int count)
- {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sb_bitmap_bit_nr(vm, mb_id, sb_id);
- 
- 	/* TODO: Helper similar to bitmap_set() */
- 	return find_next_bit(vm->sb_bitmap, bit + count, bit) >= bit + count;
-@@ -355,7 +365,7 @@ static bool virtio_mem_mb_test_sb_unplugged(struct virtio_mem *vm,
- static int virtio_mem_mb_first_unplugged_sb(struct virtio_mem *vm,
- 					    unsigned long mb_id)
- {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb;
-+	const int bit = virtio_mem_sb_bitmap_bit_nr(vm, mb_id, 0);
- 
- 	return find_next_zero_bit(vm->sb_bitmap, bit + vm->nb_sb_per_mb, bit) -
- 	       bit;
+-	dev_dbg(&vm->vdev->dev, "unplugging memory block: %lu : %i - %i\n",
+-		mb_id, sb_id, sb_id + count - 1);
+-
+ 	rc = virtio_mem_send_unplug_request(vm, addr, size);
+ 	if (!rc)
+ 		virtio_mem_mb_set_sb_unplugged(vm, mb_id, sb_id, count);
 -- 
 2.26.2
 
