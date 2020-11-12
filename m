@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9012B051A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3FE2B051C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgKLMnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLMnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:43:20 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B507C0613D1;
-        Thu, 12 Nov 2020 04:43:20 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id l12so5131823ilo.1;
-        Thu, 12 Nov 2020 04:43:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MlAb6y3L6B0gxC6J89zHhiEG7zWhwPlcRccdjczsJQM=;
-        b=BeQ3u9i5t4j3EBMrMQ568M97r+HOLRmBcawXlcoPLGjkaPcV2U5sR3UfeZOPfvMmUT
-         WRpJqeiDJuq1QWqgqqMxDqOBZwYK/Tz/zQO2BSEd5FKx+FFXf/zbeML8rqLFhD+fSJZQ
-         0HVQrcwjSsaNHTtz6gq2ImGd3xM8uX181oRiERikIxs0GVv4whWJLZehTh3LA5HYDeOk
-         2KXMqGgZxvaGSRZsakidh43HktnA9MRpsD+DHqWsZDj00/MEcS+t7Sf779UecPA+uhRi
-         3vhB9UH1zVMMsoTRVpHEzhm4wSQa3//4s+M80deRGtUi6xUji+via2ezAmfqLrNsoCVD
-         3dpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MlAb6y3L6B0gxC6J89zHhiEG7zWhwPlcRccdjczsJQM=;
-        b=TMRiXJ2OXDCBE6n8D7Yt9/goy2Bd1yxHTygJBERPXsOvT5zSNSH9StJDJrtFXDNJLq
-         /Yfr5dPPcJm9lbK1H9IkmMbLU8uHs8lcnbzr1pKeIe/T1zN9uMwHK7YtvT7IZswEs+N1
-         jJmPtFvOHf0nfD+0E0KeGjj73xxAq1y57XPBhH21Bxpp2TK4LKWjjLGQ6CqIT2P9B3yW
-         XcqOdsRxtXQZ0SsOLFK83cLomh1lZ/p0yN0588nq/NqbgOmjBInquRqanF8mZr+surPS
-         KvdflWEOMOuixMhs6k8sv1uqhgavX9Vh6Bl5cf0ZeLsgzh3j1sTFR05NYjC4iO0PtvX7
-         wRbQ==
-X-Gm-Message-State: AOAM532wKmX6jrIZ2kWd0B9Mcch6kMXfjecOpRL//BZjA7pHNOpF9p0A
-        KdKI0RIci/vXegjqFjZ59mdZ+9wwJdhh9yl47Yk=
-X-Google-Smtp-Source: ABdhPJwAwbdiOCs/u+Tl9UCmTvdqxWJDeGCgkBq1ryhxZY6Brx/+eB+NKznGziTJea8lSdYcR6nnGgPxpILwtixBYAg=
-X-Received: by 2002:a92:c7c6:: with SMTP id g6mr24377195ilk.230.1605185000074;
- Thu, 12 Nov 2020 04:43:20 -0800 (PST)
+        id S1728101AbgKLMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:43:50 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60504 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727646AbgKLMnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:43:50 -0500
+IronPort-SDR: otbR1JLwLu1RBxt6bzxquAa1N3WDBUkrkQLoC7YsQkjB5q1cpoqinH1jMkBAwv857eZKizHW2j
+ 2geA9X9OjzVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="167717469"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="167717469"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 04:43:48 -0800
+IronPort-SDR: fsFIy+cgjj5mCIALl4pFdwQtH9jpbeYRKJ+LkG20X3MmxlB61B5wkqSOhDDYdp7CfF7ZMlVneK
+ 4/3UU/iW/AwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="429188768"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 12 Nov 2020 04:43:46 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 12 Nov 2020 14:43:45 +0200
+Date:   Thu, 12 Nov 2020 14:43:45 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>
+Subject: Re: [PATCH v3 2/2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201112124345.GS1224435@kuha.fi.intel.com>
+References: <20201023214328.1262883-1-pmalani@chromium.org>
+ <20201023214328.1262883-2-pmalani@chromium.org>
+ <20201110115453.GI1224435@kuha.fi.intel.com>
+ <20201112024055.GA1367855@google.com>
 MIME-Version: 1.0
-References: <20201112104512.17472-1-lhenriques@suse.de>
-In-Reply-To: <20201112104512.17472-1-lhenriques@suse.de>
-From:   "Yan, Zheng" <ukernel@gmail.com>
-Date:   Thu, 12 Nov 2020 20:43:08 +0800
-Message-ID: <CAAM7YA=eO-1AdgPJk6-3=FbDFtHJ9e_Rydo+7LDHqVwxtk1-jA@mail.gmail.com>
-Subject: Re: [PATCH] ceph: fix race in concurrent __ceph_remove_cap invocations
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112024055.GA1367855@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 6:48 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> A NULL pointer dereference may occur in __ceph_remove_cap with some of the
-> callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
-> remove_session_caps_cb.  These aren't protected against the concurrent
-> execution of __ceph_remove_cap.
->
+On Wed, Nov 11, 2020 at 06:40:55PM -0800, Prashant Malani wrote:
+> Hi Heikki,
+> 
+> On Tue, Nov 10, 2020 at 01:54:53PM +0200, Heikki Krogerus wrote:
+> > On Fri, Oct 23, 2020 at 02:43:28PM -0700, Prashant Malani wrote:
+> > 
+> > I've now come to the conclusion that this is not the correct approach.
+> > Instead, the whole identity, all six VDOs, should be supplied
+> > separately with a "raw" sysfs attribute file after all.
+> > 
+> > The three attribute files that we already have - so id_header,
+> > cert_stat and product - can always supply the actual VDO as is,
+> > regardless of the product type, so they are fine. But these new
+> > attribute files, product_type_vdoX, would behave differently as they
+> > supply different information depending on the product type. That just
+> > does not feel right to me.
+> 
+> OOI: I'd like to understand the reservations around this approach. Can't
+> userspace just read these and then interpret them appropriately according
+> to the id_header as well as PD revision (and version number) if that's exposed?
+> The only thing I see changing is how we name those product_type_vdoX
+> sysfs files, i.e product_type_vdo0 == passive_cable_vdo OR active_cable_vdo1
+> depending on the product type.
+> 
+> That said, perhaps I'm missing some aspect of this.
 
-they are protected by session mutex, never get executed concurrently
+I don't think the userspace should have to interpret any of these
+VDOs. If the userspace has to interpret the information, then the
+userspace should interpret everything for the sake of consistency (so
+the "raw" attribute file).
 
-> Since the callers of this function hold the i_ceph_lock, the fix is simply
-> a matter of returning immediately if caps->ci is NULL.
->
-> Based on a patch from Jeff Layton.
->
-> Cc: stable@vger.kernel.org
-> URL: https://tracker.ceph.com/issues/43272
-> Link: https://www.spinics.net/lists/ceph-devel/msg47064.html
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
->  fs/ceph/caps.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> index ded4229c314a..443f164760d5 100644
-> --- a/fs/ceph/caps.c
-> +++ b/fs/ceph/caps.c
-> @@ -1140,12 +1140,19 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
->  {
->         struct ceph_mds_session *session = cap->session;
->         struct ceph_inode_info *ci = cap->ci;
-> -       struct ceph_mds_client *mdsc =
-> -               ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
-> +       struct ceph_mds_client *mdsc;
->         int removed = 0;
->
-> +       /* 'ci' being NULL means he remove have already occurred */
-> +       if (!ci) {
-> +               dout("%s: cap inode is NULL\n", __func__);
-> +               return;
-> +       }
-> +
->         dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
->
-> +       mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
-> +
->         /* remove from inode's cap rbtree, and clear auth cap */
->         rb_erase(&cap->ci_node, &ci->i_caps);
->         if (ci->i_auth_cap == cap) {
+But I still think that defining separate device types for every
+product type would be the best way to handle the identity. We could
+then have sysfs attribute files that are specific for each product
+type. It does not even matter that some of the product types are going
+to be removed. We will have to handle all of them in any case,
+including the ones that were removed. This way things would be much
+more clear for the userspace.
+
+The only problem IMO with the separate device types for each product
+type is that we don't always have access to the Discover Identity
+result. It means depending on your system we will claim the
+partner device type is "default" (no identity information) or the
+actual product type. That is also a bit inconsistent, but is is
+acceptable? I would really like to here what Greg thinks about all
+this.
+
+> > So lets just add the "raw" sysfs attribute file. We can think about
+> > extracting some other details from the product type VDOs once the
+> > specification has settled down a bit and we can be quite certain that
+> > those details will always be available.
+> > 
+> > Would this be OK to you? I think we should be able to dump the data to
+> > the "raw" sysfs attribute file with something like hex_dump_to_buffer().
+> 
+> FWIW, "raw" option SGTM (the product type VDOs can be parsed from the
+> buffer since the format is fixed).
+
+Well, I'm starting to think that what if we just prepare patches where
+we propose separate device type for every product type? Of course, if
+they are OK to you?
+
+
+thanks,
+
+-- 
+heikki
