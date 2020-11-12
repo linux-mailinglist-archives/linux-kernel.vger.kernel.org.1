@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A742E2B01ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E162B01F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgKLJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:25:15 -0500
-Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:64096
+        id S1727489AbgKLJ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:26:31 -0500
+Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:44384
         "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726158AbgKLJZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:25:12 -0500
+        id S1726028AbgKLJ0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:26:30 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DG/cjS4u0Jne2m4awm5nfTqRT3dVT/0Sb4Tr1O1czgcptUGhr2FvQRuIFQItqRR+iPxo1Xl+QleFaBu74LklajV1v13QCMw+1r3HuSkgRuhJcnxpscG39gk+vV/F0uX8JPLZ7dUNZJKSH/BYOSlvR8eBZkL3g6aD4A10D1cA1c2anAl08T3yo88fhAJpX/x+K548i8HSJFwXzo24NV7moOvalVVv9luR0db1AtEadGjxP3GwF7AC1fglKSHhwYSDd2qVQhpL4guPHES5vQm3+EQzdyahBoZcykZOH/qBKLcxN8DTTbrMXvwcCrB7DbQHdM8YQIdTs++xt8itMZcZ7g==
+ b=SsdJCql3vapK4h5mFDe9ZtDw1EaTDZq+KocIbcA07E1DmFOwZ4Um87p2BdSIJxxmAa+SlPk6RUaluN4eZJbBc1upuyDxH0Tdb0Wcx4E0bUZopzHkVnvZ3yaP7SYn4IVs6o+sNJR2f+h80rsQvM5T5CyvlvrhqRvvl8/uAEWUBc4+qRkxnG6YS0cfL0otsri4aJqAtZSdEFZrAhMi0dxtM024toMS2skiyrQ7cugKJzKPmz1TrPhM49kzPrkuJnt2CGOUegKNU9vaNV3DaYMuiQFqs6rAQljyOq48Dl3+EUW4FvlR1k3ddk7eQC7VlcCJdeFwoQWJbUV7AYBP0KxK4w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ktpTill6Y7CCdhYXMg+PhoXPpR2thiNndJbB0l2Aa1I=;
- b=VZv7gpFiBwsUoqe2vwNRqiQOfieWxYM2UWjd+pA6hhZenQEMEctpRwxmdke2CSnwp3GuOB8Q/aIy6xBmxt9NrufXppp+iUo1EJqdua6gip2u8R/+9GHEcflQ/+7lXol1w9jCwILH32Eyfis19rjDt12Zl2qAb+i5OX4+ONWW9Z7o0sJcbWbqKGcQyz+XO7+tRYHCkzQ9+R5XFzWRuSQ+XEahCHMuXfltSdmG6T1+oBLdOumKGkZTtXdWgBvx29S/P6A06ETNQT+vg7eoZodZ4QEnvo++HyJiX8SH/S9cQwt8jDmvVEiy+yuyQA3lA61OOmOtfizOLwSFJwbj+c6Dzg==
+ bh=2LW5V7vavo3K6A1EiIYj1cguX7jueHHc60WKxVU2ffs=;
+ b=SKwxSp9vO//YwCjkD2QaA9QIPLGgONI6CnYhtSE1Ldx0DxPb3MZ7NBqQYWb/CjvbAETibMy2xfrVHw9X10PtsnmIsdiewhDJDbIMq3FDEW+0UOMr/AT9IClM7zpS6UjC8sgiivtKpUPU4ECKRI/zGUVE5QkhDrKup18ODo4o36kCZr7DvOSCm0WlFxUE2aYc74mtUoT36RXrKSkD4PDtPzrKj86qCZD6tljqyLEMPuGs6NY/Y4qqxpVJt7PjEgFsSSW5IYGuhrqL7kP9JZieZf6unWCnBuUYZg3sIXIMTQbki5afqdKJ1j4earm3xHeAq7RUF5KNW3b8PxddkkLHFg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=windriver.com; dmarc=pass action=none
  header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
@@ -26,54 +26,57 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=windriversystems.onmicrosoft.com;
  s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ktpTill6Y7CCdhYXMg+PhoXPpR2thiNndJbB0l2Aa1I=;
- b=HAXpJMWnK0+Tz8ax5Cp4AqmpM0EtWuIWNsVBLNmbxryolb0F+hmaUnUTHZMTvxnyiZLxvwqj6ltol7Z+iFjBXQ9PiwovNO9K5dlH2fAKmoHneip0WB1CBL5bMJ3UjLmNA+38pKn2zMbf2HCbiSFuoPzoPgUiTQv4tCT//2K/3iU=
-Authentication-Results: mit.edu; dkim=none (message not signed)
- header.d=none;mit.edu; dmarc=none action=none header.from=windriver.com;
+ bh=2LW5V7vavo3K6A1EiIYj1cguX7jueHHc60WKxVU2ffs=;
+ b=HPtq1DU5uruddymy1d5aomuRFudPUK9D0F5BqCI5hJRcwe32WPBBrHsHWZmxaNKWjB7Q9Km28AUIfcv/6QtUodVJ/Fdbh9fq3LxufyccYXbPi/462s0DXdAmWUA41Md12pn3szP5hVbcqww5n0uoUq1IEM67XZ5RCcDcaDgpkuk=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=windriver.com;
 Received: from BN7PR11MB2658.namprd11.prod.outlook.com (2603:10b6:406:ae::16)
  by BN7PR11MB2722.namprd11.prod.outlook.com (2603:10b6:406:b8::30) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 12 Nov
- 2020 09:25:07 +0000
+ 2020 09:26:27 +0000
 Received: from BN7PR11MB2658.namprd11.prod.outlook.com
  ([fe80::e187:114c:b6cc:b4c2]) by BN7PR11MB2658.namprd11.prod.outlook.com
  ([fe80::e187:114c:b6cc:b4c2%6]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
- 09:25:07 +0000
+ 09:26:27 +0000
 From:   Kang Wenlin <wenlin.kang@windriver.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: fix -Wstringop-truncation warnings
-Date:   Thu, 12 Nov 2020 17:33:24 +0800
-Message-Id: <20201112093324.8052-1-wenlin.kang@windriver.com>
+To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] tipc: fix -Wstringop-truncation warnings
+Date:   Thu, 12 Nov 2020 17:34:42 +0800
+Message-Id: <20201112093442.8132-1-wenlin.kang@windriver.com>
 X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain
 X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HKAPR03CA0019.apcprd03.prod.outlook.com
- (2603:1096:203:c9::6) To BN7PR11MB2658.namprd11.prod.outlook.com
+X-ClientProxiedBy: HK0PR01CA0064.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::28) To BN7PR11MB2658.namprd11.prod.outlook.com
  (2603:10b6:406:ae::16)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-wkang-d1.wrs.com (60.247.85.82) by HKAPR03CA0019.apcprd03.prod.outlook.com (2603:1096:203:c9::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Thu, 12 Nov 2020 09:25:05 +0000
+Received: from pek-wkang-d1.wrs.com (60.247.85.82) by HK0PR01CA0064.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 09:26:24 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 73bb01d1-5764-4737-ef0f-08d886ecd84a
+X-MS-Office365-Filtering-Correlation-Id: 0ccc6fdb-e038-476b-49c0-08d886ed07e5
 X-MS-TrafficTypeDiagnostic: BN7PR11MB2722:
-X-Microsoft-Antispam-PRVS: <BN7PR11MB27229BE1A6E13B611C07F050E1E70@BN7PR11MB2722.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:12;
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN7PR11MB2722F5BA6114BD22803D946FE1E70@BN7PR11MB2722.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JB8Uq4bOg271pA1hHwi0k3vxncsxJ5g5JO3y/oAe/2OZZDq1xMaGwsTs+jJPiRh4YnPENat3vPqtl6ToHMlc+MG8kVOLjT6Gbm5oG6cO6aROVIbJ1JPteKE3pdCiF71DrZToPrY6tQ8ezbfHXkgHkCexkcK+fPYJ5/EqrldIhUPeyi9mwQQAWotPibK4j9zG3EEAz8s7Eat5tfoTph3fRguOtVhbrrzdkpPfXSkOKMBD8ukaRzJzxQMtAkmDdXyntCzZF0/9EUOhylGguA59cn1nqdKnFsN4JpMW2pPKN8RZGOmaZC1qIxF8gBTExP8Z89SlVYjgGELWjHXHpqcwYg==
+X-Microsoft-Antispam-Message-Info: suN/OSmrq1rFALcLExQ6fjdl8bi8E5mImNknFbTC9OVWihiP3Sz4mW9YmfBvmLkViuDYEM9KIMX/eM4qxGElT9vBcQyROHlikZZkyNfUw6hwdqfJfPBnot5Qv5JISHC6l1T/kyEdas/DUD8cWGZ6OtkkOzRl3Q22JA+z8CDCB/9tzo/2vJueljOPoc1lU1plVLMU/rrLNDB9RDjJrghWfnw9Ii++426Y/K5y8FO1f/o9s+iYfQj07xOikqZmbmyLsRii6TfSikQf4ixrXX867yGWY9fjorsMbky5O97B+01ScYHfpMDtDPjqJKzwLu81uCDujRffNUS9ADQdqMBwnw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR11MB2658.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39850400004)(136003)(396003)(8936002)(8676002)(2906002)(86362001)(1076003)(36756003)(16526019)(4326008)(6666004)(478600001)(6486002)(6512007)(66476007)(316002)(66556008)(26005)(186003)(5660300002)(2616005)(52116002)(956004)(66946007)(6506007)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Zc6tGsh9V6t1bFswLk0GOuJ3sG2bve0z/P8Whbrju8UxEwy8S7oOJt7ajK8x+7/SoBi90KrXm0nlAb+ejpEerg5bKFV0IAR2INJg+6TN3tsgYS3Bc+ef/gxAw2wMozDOA0m9v1vMknfUKImZ2JLKeBrkhfmLBOuEgJ8DIMdmKa7713u65ayX7T1e4NaR88zFwZXyfTp4oRz/z70dO3aMwA9h0sauSM38XezT0F6QZW8l9+A1Hob59r7ZzJrXH1gwF63uqLYOtK4vxNOKtdVKqMtmuSV5s2ww+ZYdnOx2dX6a1F6gCcjzncIu3F6WbDgSNTk1BldsMnytI+tiR4zeYaXN5W4mYirlvO9rJI7HLuOV76MrPw85iABZVthb0G/IR0NnpRdIkcWRQ7+XrCDBM7FrxzPHyvyVxMgL5DkwfBcTEaaF9Ye6HDi7zsENg1yI4USqwsbETrz6oLg5yn9YFLVeaFw5cb8LKPSDKKb/VnglYKOC3Z+gJswS0mjC19j3lyxKIat9HWPaAT1PR629syJUCYW5PmVuXGjQs8JZvTTUCqc9PMiECJA5FKZfr0RLu9Agxv/Griyf0IhzU4IOBBtIys+yUZGUSp2bVtQo9ec0UaPOH+qlaC+y6KKIMRkOS0KQDzbSxH1oEv6R4KQw6rrWSUVq92Wx+Z/d+jdjMVYu6ayvJD8asbrIQqIvfnivi+4qfZRKK5ZNkVgS8NqotVcDv/oX1G4ff+W+sCE2NQEYSsv7dfpOmd2AQdpf4ba92xGLilHDJvk1/FXy+u4bAduOjg2WfEdqWdHsJ2eJiIAH53ApL6sryC1zp/OkZ6D4MhyfutEeZZCx6Zq2EbnSpkiRZEj+yX0uh0PRmLiMGqaZd+7MrRanco/eiX2C7YTsNFPSUHCyrTTiYZXcKrtlcA==
+X-MS-Exchange-AntiSpam-MessageData: ZWvcTZDqQPIRHR8p1r9DsTYik3psr+mjUB7zY72QCDcJtTqOpnzCrlttD1Rfl2lmmSmJjmvnp660XDbUCeAGsQg75qN7mmfhhdbeQNFDPDl2A9kKd17LKOQeAgl9stL2br6aigcdBCaYadd+VO7a1+2I/AgAyC2HiaTrewjfH77duI5hUUoc0U24De+SEz8fe7yK4Crd1oSCjflXeR/IP/GCAGZBznvJIw8d82WGlNw2A1PMHoPivoB8PNP0OwawruiUiA9ug6MNPQ/ZSORlZJDdbMSSz6MQ36CyBfo9pkCHqylTdS7PMdiFDYXmUhjpM2SX89xyoxZST/oO8thxWPd4+/8b9RMC0YOGhxbJQmZB3s4tvAUAFntTpF1zqrlLuB9JIvDOJIHGJYzMX9Jk1TPaaeIlQVUty2gCwpSAPq+N5gO043F5S/7wY9snUQUUEsxNsu/IJ2CZoVu6YK14LbwMCJu1dMRK32MqWn/Fie04hSYqfxXkQ/UAdg/tHMiCv/bNGlN4BKL91O4WUN0LQixZsevfMwUXKjWj85oZh8ynHSOpr+WADIriSDXM++Qg8bR037+Ej914YNbSCbgcenvDVqvP5OedDeceuD73cflvaBIaTJRNCGCt9HEdsgUF362l/kvaPf20dvUPUdDgKsCTms5HQRtBhio+NSjpFeRHQAFu6TFrOkclGcTLSaQHtW/oCGLSmsZTz2akLbpAD9W40nsfW0snR2WPR3JzmDmhVzGQtUj5ZoDnKhARwTz2MbUm7K4ms4t5VNIJqRlN3XwYzhq6hq76yA3SpCOZceTKfL8tZLSnr9qa+gMHZ8CY4TIJy4wZa038IiLqYxI9NgSNtUSs8wEzFod17D+wjozWr6OjB0KsRwVzusFxzHCyqUyAwbPRtgBk5tzF10uYsg==
 X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73bb01d1-5764-4737-ef0f-08d886ecd84a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ccc6fdb-e038-476b-49c0-08d886ed07e5
 X-MS-Exchange-CrossTenant-AuthSource: BN7PR11MB2658.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 09:25:07.4327
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 09:26:27.5150
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M6jtnZMUmXcClXKJ+hmpsHf6/kVfGZl143ScLoJD2qKyVPxZip1bEL+V3sA8C44AxaG5svS82CScwIvOu9AnVnZHf1OUOd1PzwrZBQ1LssQ=
+X-MS-Exchange-CrossTenant-UserPrincipalName: XOOXqLWfVLilHfidzb2JOql3c0VgGfJVvDzl4RTx9L1fF1eRgUt5V3tMCkCwLgFzpcCYhT9v+Fv3mnGf7ELq1wVftGcxLRjhzm2JEWXB9xM=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2722
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -81,48 +84,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wenlin Kang <wenlin.kang@windriver.com>
 
-The strncpy() function may create a unterminated string,
-use strscpy_pad() instead.
+Replace strncpy() with strscpy(), fixes the following warning:
 
-This fixes the following warning:
-
-fs/ext4/super.c: In function '__save_error_info':
-fs/ext4/super.c:349:2: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
-  strncpy(es->s_last_error_func, func, sizeof(es->s_last_error_func));
-  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-fs/ext4/super.c:353:3: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
-   strncpy(es->s_first_error_func, func,
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    sizeof(es->s_first_error_func));
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'bearer_name_validate',
+    inlined from 'tipc_enable_bearer' at net/tipc/bearer.c:246:7:
+net/tipc/bearer.c:141:2: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
+  strncpy(name_copy, name, TIPC_MAX_BEARER_NAME);
+  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
 ---
- fs/ext4/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/tipc/bearer.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c3b864588a0b..3ade6e1f7a4d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -446,7 +446,7 @@ static void __save_error_info(struct super_block *sb, int error,
- 		return;
- 	es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
- 	ext4_update_tstamp(es, s_last_error_time);
--	strncpy(es->s_last_error_func, func, sizeof(es->s_last_error_func));
-+	strscpy_pad(es->s_last_error_func, func, sizeof(es->s_last_error_func));
- 	es->s_last_error_line = cpu_to_le32(line);
- 	es->s_last_error_ino = cpu_to_le32(ino);
- 	es->s_last_error_block = cpu_to_le64(block);
-@@ -507,7 +507,7 @@ static void __save_error_info(struct super_block *sb, int error,
- 	if (!es->s_first_error_time) {
- 		es->s_first_error_time = es->s_last_error_time;
- 		es->s_first_error_time_hi = es->s_last_error_time_hi;
--		strncpy(es->s_first_error_func, func,
-+		strscpy_pad(es->s_first_error_func, func,
- 			sizeof(es->s_first_error_func));
- 		es->s_first_error_line = cpu_to_le32(line);
- 		es->s_first_error_ino = es->s_last_error_ino;
+diff --git a/net/tipc/bearer.c b/net/tipc/bearer.c
+index 650414110452..2241d5a38f7b 100644
+--- a/net/tipc/bearer.c
++++ b/net/tipc/bearer.c
+@@ -139,10 +139,7 @@ static int bearer_name_validate(const char *name,
+ 	u32 if_len;
+ 
+ 	/* copy bearer name & ensure length is OK */
+-	name_copy[TIPC_MAX_BEARER_NAME - 1] = 0;
+-	/* need above in case non-Posix strncpy() doesn't pad with nulls */
+-	strncpy(name_copy, name, TIPC_MAX_BEARER_NAME);
+-	if (name_copy[TIPC_MAX_BEARER_NAME - 1] != 0)
++	if (strscpy(name_copy, name, TIPC_MAX_BEARER_NAME) < 0)
+ 		return 0;
+ 
+ 	/* ensure all component parts of bearer name are present */
 -- 
 2.17.1
 
