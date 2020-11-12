@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D2A2B0D50
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAEB2B0D51
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgKLTCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S1727109AbgKLTCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727045AbgKLTBx (ORCPT
+        with ESMTP id S1726310AbgKLTCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:01:53 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBA7C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:52 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 23so6759169wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:52 -0800 (PST)
+        Thu, 12 Nov 2020 14:02:07 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AA7C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:02:05 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id b8so7183118wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:02:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lV20qvkcXuKJ/8kdoQy2xSMx6pSot2KZYylCMdc97vk=;
-        b=FLer8tlTJpW9/03wMweKDBS55avbIBPNMLVtPNnoxD4MVGnFei7f6YAUPIu9J2n2Gg
-         +Pdyq75fTNEUeCBTcdXceFn0HzcUeXJxghFUDF6I7M4qx6yCAdYvds2tB5Np4BBOv2cI
-         t8jYVNyEU0qnCvxYIhyWwRsHymc31CJa6rbyWGWmd4psXhR2pAvKq9sYOjLn5yYqxv0Q
-         IdoP1C1LJvHsCcTkD6WmAjsOOSxxFTPTxeo627RMfQDiMpAu/4GwmOBwcNLcpStOKMqY
-         Hwtv55Vxa1wzZdsOhTxilW8KPfa0IwU7MpU2MuMucnSHkdEn5I0AxGoJ+GAbffpCBMJI
-         tpbA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UWqlo59xqRNbYAmn4BNS5/vO78FqqGPqkNlmHGs4xwA=;
+        b=MJ6c3goReMhaSFgiRLRh0X9/s6/nsnmyHSY05hBaUKTo1vyUEnnrqyHV1fpaHjPkAY
+         Ge28+57V/vdo4/piTxzgOHYOWbAHbV0uO1F66kg/+vL0PrMJPxnq2qHDdlD48qy8dmKR
+         mq9F+2Evv3b0QF6eNP02TeYyrxp2GuE/s4ZHq8SDqItPLwH+ABB6lhrrX32medDC/pNa
+         e7b3heiLAjvxuAwdSQdKZ6I41ZcLfwAvRCSiaorLeWLd9gP5yyYJ80JJ83FNNNEj7YGT
+         Rw8cobZWIhfe5eIDmfyJWbcIVhDcXRqTDY4SRc7feutL5WpLFhjwv+D0zR1zySulCpsK
+         LMdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lV20qvkcXuKJ/8kdoQy2xSMx6pSot2KZYylCMdc97vk=;
-        b=DikFDZfXS4+trf8MlKAUXtBDS7r0MawxgDVkPqWgVuVaPShgWfFzKek0PCIdkoXWTR
-         ogtraJQOI8lNw9MNX9azJCKju/ORa3hmgKmHYuId155s+2ZzLh/Nvh7aeQMqVOW1hVZM
-         Y1jxcW68AvVD+9mzEIHB95VUesuTfy3IZx/8SxPThrltR3fMNPUmU8QzGM/6InmcXw+l
-         WL7xcTP90LO64v+KaNVagHmqfJiDMslUEuUv8mTdwY6abthez1GRdGALBCDZxegczwqV
-         UTvRHTc4ABE/OBcIKUNPa2irKoLoF3jZIfCDm6kHIkumkLu3O5IhqFNkLRHEZ/ymqgZF
-         cxIQ==
-X-Gm-Message-State: AOAM531bLIglTwT8+uRELSJY8hsfQskYpL+eeLemsLvkDX5bTrjWOcmB
-        o81Qp749GYHD+CumOSgR/lIBLw==
-X-Google-Smtp-Source: ABdhPJyAsIo5Mm2tjgv7zGGnj0raCm6z8NlmoYajDaNb+hIDZ+v4dJAu7qWeEXrYmi1tid6oDwkBWg==
-X-Received: by 2002:a7b:cf05:: with SMTP id l5mr1029949wmg.81.1605207711389;
-        Thu, 12 Nov 2020 11:01:51 -0800 (PST)
-Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UWqlo59xqRNbYAmn4BNS5/vO78FqqGPqkNlmHGs4xwA=;
+        b=tDclcGtq1fgm0K7vtkkOg1dDuJ77iQMv27Dxhd8kbAgmk8Z+0Coe0Qt0yDFti2s++2
+         RtsfYN46VM1KGqPkT9tlkguPYxfWan77ghnDXn3hjpFBLAyIdvYXMVI3fnPegHCdux8B
+         lVmIyqAmFOAH8HQJZLLd+3xdU2LiCPHaYF/CL5WBs0jsh+ucKDhnhLMkWSjBEw1PZtBp
+         1/sowxJdialoq2Ym0BGWLsyVNq9bzr7n1Bbdp6zIUpapnGYI+zJ+nOHtc4lyXiXATnzq
+         OanfxGK4c63VeXO0tHzwpZ4sjT9cq3/LEfekIT4SKx98+SiFC+lkTzpb5VR6wngioYjc
+         mzCg==
+X-Gm-Message-State: AOAM530BDqCM+nC7ax/ynhSPkOVRZOR4Azhpa1nsO+xH5VfslD8LTHzQ
+        kSusxNLVa4VORtbJf/JhljWZ7A==
+X-Google-Smtp-Source: ABdhPJy/tf9x9XL6lVW1EsHu7SfnFG0sEdt1ylmwiJj8zF3LcgC+ynQzPEu1SA5jj1NtLF7/FzILIQ==
+X-Received: by 2002:adf:f24b:: with SMTP id b11mr1178399wrp.342.1605207724638;
+        Thu, 12 Nov 2020 11:02:04 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id 18sm7082827wmo.3.2020.11.12.11.02.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:01:50 -0800 (PST)
+        Thu, 12 Nov 2020 11:02:03 -0800 (PST)
+Date:   Thu, 12 Nov 2020 19:02:02 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 30/30] drm/mediatek/mtk_disp_ovl: Fix formatting and provide missing member description
-Date:   Thu, 12 Nov 2020 19:00:39 +0000
-Message-Id: <20201112190039.2785914-31-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
-References: <20201112190039.2785914-1-lee.jones@linaro.org>
+To:     santosh.shilimkar@oracle.com
+Cc:     Tero Kristo <t-kristo@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <ssantosh@kernel.org>, tomi.valkeinen@ti.com,
+        kishon@ti.com, dmurphy@ti.com, s-anna@ti.com
+Subject: Re: [PATCH 06/25] soc: ti: knav_qmss_queue: Remove set but unchecked
+ variable 'ret'
+Message-ID: <20201112190202.GN1997862@dell>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-7-lee.jones@linaro.org>
+ <20201112103130.GD1997862@dell>
+ <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
+ <20201112132145.GI1997862@dell>
+ <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, 12 Nov 2020, santosh.shilimkar@oracle.com wrote:
 
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c:75: warning: Function parameter or member 'ddp_comp' not described in 'mtk_disp_ovl'
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c:75: warning: Function parameter or member 'crtc' not described in 'mtk_disp_ovl'
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c:75: warning: Function parameter or member 'data' not described in 'mtk_disp_ovl'
+> On 11/12/20 5:21 AM, Lee Jones wrote:
+> > On Thu, 12 Nov 2020, Tero Kristo wrote:
+> > 
+> > > On 12/11/2020 12:31, Lee Jones wrote:
+> > > > Cc:ing a few people I know.
+> > > > 
+> > > > On Tue, 03 Nov 2020, Lee Jones wrote:
+> > > > 
+> > > > > Fixes the following W=1 kernel build warning(s):
+> > > > > 
+> > > > >    drivers/soc/ti/knav_qmss_queue.c: In function ‘knav_setup_queue_pools’:
+> > > > >    drivers/soc/ti/knav_qmss_queue.c:1310:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+> > > > > 
+> > > > > Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> > > > > Cc: Sandeep Nair <sandeep_n@ti.com>
+> > > > > Cc: Cyril Chemparathy <cyril@ti.com>
+> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > > ---
+> > > > >    drivers/soc/ti/knav_qmss_queue.c | 3 +--
+> > > > >    1 file changed, 1 insertion(+), 2 deletions(-)
+> > > > 
+> > > > Any idea who will take these TI patches?
+> > > > 
+> > > > https://urldefense.com/v3/__https://lore.kernel.org/linux-arm-kernel/20201111052540.GH173948@builder.lan/__;!!GqivPVa7Brio!KEeMCT-GwmLNnDFCOqxnunXXiCrCpj3ZFXpiMzj55VmlOJ-FVhKmom-O7sq-CkL8s0sjAg$
+> > > > 
+> > > 
+> > > (Dropped a few inactive emails from delivery.)
+> > > 
+> > > Santosh is the maintainer for the subsystem, so my vote would go for him.
+> > 
+> > Thanks for your prompt reply Tero.
+> > 
+> > It looks as though Santosh has been on Cc since the start.  He must
+> > just be busy.  I'll give him a little while longer before submitting a
+> > [RESEND].
+> > 
+> Go ahead and re-post. These seems to be trivial so will pick
+> it up.
 
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+If you are in receipt of the first iteration, there shouldn't be any
+requirement for a [RESEND].  Unless you deleted them from your inbox?
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 28651bc579bc9..74ef6fc0528b6 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -65,8 +65,9 @@ struct mtk_disp_ovl_data {
- 
- /**
-  * struct mtk_disp_ovl - DISP_OVL driver structure
-- * @ddp_comp - structure containing type enum and hardware resources
-- * @crtc - associated crtc to report vblank events to
-+ * @ddp_comp: structure containing type enum and hardware resources
-+ * @crtc: associated crtc to report vblank events to
-+ * @data: platform data
-  */
- struct mtk_disp_ovl {
- 	struct mtk_ddp_comp		ddp_comp;
 -- 
-2.25.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
