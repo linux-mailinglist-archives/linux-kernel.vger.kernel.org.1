@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6265F2B04FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75B32B0523
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgKLMfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:35:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S1727865AbgKLMtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:49:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727869AbgKLMfL (ORCPT
+        with ESMTP id S1727035AbgKLMtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:35:11 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC265C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:35:11 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id a18so4417560pfl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:35:11 -0800 (PST)
+        Thu, 12 Nov 2020 07:49:15 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F82C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:49:13 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id g4so1271375oom.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:49:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rCwShEJ1S536/xkh+3GVTeVZejAQE5Qc7zpd9NfWzKc=;
-        b=rT055RtV0Roeh796iKXSoZstP4XRY/SULcBe4BuxustrpZgcALNdZ8HiPiH/YTecSU
-         KLzWCLYTmK8jPi+uETG8qARh50vqoyNxtejELdTTlLvXAyEsZgETKi4PCxyZRPay+8W+
-         QeQIFFNAoLaa1askGv0Rz35sX728BgzkEvZEjLS7Tc6++xV1fGmg3Ue3pocG7V1BR1M1
-         ABrlDJaw4rmsgRzpPPmf0tINz2LNj/rxAOAwPIoLAlYI9adBgtanTx2z9cN6FwJ/jnPC
-         kf7BFoE4agHuavAMY0WQqPVR3rMHBu1CQkOCYmRMslUWmUFVFpG6r5BHlaeaYFYlow9M
-         AvOQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/zzVT0v3gmep680s+NflLICQeHQjw0uUukpoJ+hjBrc=;
+        b=DtSbpKCyJJlwdxbWSfe0mwiJTWQ79UKf/WmXV7b9uNhKBwdsDZRrmG2xoCpBl6Kp3j
+         8ae0sk0MxeZLjTdjiiYAnhQGr7R2W8Rb7kFoGg5DxQzY/+cFfHgkDgFnfw6QTy9pT/8i
+         oPXDHPDZrPUwPm0U3tGNw2qdt/0v28MsVQB33rsNyEeqJA3MqHlsXecSAk32RXAhCXbM
+         uwZUt2VpW8p4LghTLwYSWxtKXma6FJvJ+Z5aeqZal8qb7/fNSJzZybJI8yKuckhmtqN7
+         yUiS+W+bOhnxGSbX48a2akomtCU9Qtu0ld0YS6p4FhSusuBPKldZxmdKciDBgX8gA497
+         LxFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rCwShEJ1S536/xkh+3GVTeVZejAQE5Qc7zpd9NfWzKc=;
-        b=bsmhToVWqlrJZKrf5ces9dhUx8RlfWHC9MBgwCvennqyQYDQjc3Pk4NeXA4sdQgiP8
-         fQ1qh4NGTre0LbyHH4+w8V1/GXDSlyiaTLWwN9v/ImMIflS1DI/UMU94wHqz6En6Xsbu
-         GEWTyCfjSIvSZpMmchilZmt+yhSC7Z3RSYbAXxjs4b5VX1XR4Q4O9fNaK07pCFYr7G8W
-         ePZplUKOQqCXgyzg/ZDltBFmWmUi3MnfhDTEP4StA897dKoqd04TELttxlCPIzIot++v
-         mfXq/cXq3DIPGQ+yYo+kbYvJBBTr2CQKwez20AV05QuG39XFMwK8xNBDNgovFF85xeH0
-         xALg==
-X-Gm-Message-State: AOAM531jySfeCIRCsueuj8vksKCJOb6JEdeBHgPCVTdjWJ0LioS71rg7
-        8tu4ETpkr8JJShkay6gCYAwTTmwgVMojFDkB
-X-Google-Smtp-Source: ABdhPJwEWXQmdfWWt2Kb7Nh6DvVqJ2jakGN1wK2g/4uM/H4V/S8hu7ZSxj/LjaPWt8JczWrXHoV7mw==
-X-Received: by 2002:a17:90a:f292:: with SMTP id fs18mr9286237pjb.222.1605184511235;
-        Thu, 12 Nov 2020 04:35:11 -0800 (PST)
-Received: from [192.168.11.16] (softbank126112255110.biz.bbtec.net. [126.112.255.110])
-        by smtp.gmail.com with ESMTPSA id s10sm2425237pjn.35.2020.11.12.04.35.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 04:35:10 -0800 (PST)
-Subject: Re: ac0e958a00:
- Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:run_init_process
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        0day robot <lkp@intel.com>, lkp@lists.01.org
-References: <20201112071145.GC17067@xsang-OptiPlex-9020>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <87765a0e-3a49-d437-4010-4848b8ece199@landley.net>
-Date:   Thu, 12 Nov 2020 06:46:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/zzVT0v3gmep680s+NflLICQeHQjw0uUukpoJ+hjBrc=;
+        b=PyVFw/Rp9qCVl3nxdxOAYyqZbeAEEya4W6JkQqWz5GGgK/3axlMTQpSTnjelNZZC8y
+         leysSwlA8cQqjZgxAKdshe9/SmFOjrg1HE0XiQ8AORcpiSyadpR93whgtrs8a59CCgXL
+         uETAmBYkCDBlT4jV7sFUmGPUntRKX/7ZHQG6WcQk8Q+iaG+ffd1mPkri5zesqjKZzsST
+         D8l87FPVUb/Re/FXmoGWyUR11cSXIH9TlqeG+jGFsrQRoI0yFExaoz7O+TZPGhJsIzhy
+         Q1gkyvsmx086tP8DNNXo64FFPGvgwT8ZYVk5Yz8/aI4+BR3fe36X++OVK5VmBYTX4VoL
+         RaAw==
+X-Gm-Message-State: AOAM530SFqexzlVbwc0Azh5zHwRpjNVa/b9ryiUmF8uYQ35Aise0DROB
+        S+Z5YTDSYNOU7saHBGK4Skuh6yBXjZENSnVijtidQg==
+X-Google-Smtp-Source: ABdhPJy4T/4JR0HsAHFI4mQwdqG3dv1YlLSLp/cBeR6FlVgRLJAq1qC/K03YTVySQnpytt2zTK43iORmhePWvN2Qx4Y=
+X-Received: by 2002:a4a:d886:: with SMTP id b6mr1622933oov.14.1605185352811;
+ Thu, 12 Nov 2020 04:49:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201112071145.GC17067@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201110135320.3309507-1-elver@google.com> <CADYN=9+=-ApMi_eEdAeHU6TyuQ7ZJSTQ8F-FCSD33kZH8HR+xg@mail.gmail.com>
+ <CANpmjNM8MZphvkTSo=KgCBXQ6fNY4qo6NZD5SBHjNse_L9i5FQ@mail.gmail.com>
+ <20201111133813.GA81547@elver.google.com> <20201111130543.27d29462@gandalf.local.home>
+ <20201111182333.GA3249@paulmck-ThinkPad-P72> <20201111183430.GN517454@elver.google.com>
+ <20201111192123.GB3249@paulmck-ThinkPad-P72> <20201111202153.GT517454@elver.google.com>
+ <20201112001129.GD3249@paulmck-ThinkPad-P72>
+In-Reply-To: <20201112001129.GD3249@paulmck-ThinkPad-P72>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Nov 2020 13:49:00 +0100
+Message-ID: <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without allocations
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 1:11 AM, kernel test robot wrote:
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
+On Thu, 12 Nov 2020 at 01:11, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Nov 11, 2020 at 09:21:53PM +0100, Marco Elver wrote:
+> > On Wed, Nov 11, 2020 at 11:21AM -0800, Paul E. McKenney wrote:
+> > [...]
+> > > > >     rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+> > > >
+> > > > Sadly, no, next-20201110 already included that one, and that's what I
+> > > > tested and got me all those warnings above.
+> > >
+> > > Hey, I had to ask!  The only uncertainty I seee is the acquisition of
+> > > the lock in rcu_iw_handler(), for which I add a lockdep check in the
+> > > (untested) patch below.  The other thing I could do is sprinkle such
+> > > checks through the stall-warning code on the assumption that something
+> > > RCU is calling is enabling interrupts.
+> > >
+> > > Other thoughts?
+> > >
+> > >                                                     Thanx, Paul
+> > >
+> > > ------------------------------------------------------------------------
+> > >
+> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > > index 70d48c5..3d67650 100644
+> > > --- a/kernel/rcu/tree_stall.h
+> > > +++ b/kernel/rcu/tree_stall.h
+> > > @@ -189,6 +189,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
+> > >
+> > >     rdp = container_of(iwp, struct rcu_data, rcu_iw);
+> > >     rnp = rdp->mynode;
+> > > +   lockdep_assert_irqs_disabled();
+> > >     raw_spin_lock_rcu_node(rnp);
+> > >     if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
+> > >             rdp->rcu_iw_gp_seq = rnp->gp_seq;
+> >
+> > This assert didn't fire yet, I just get more of the below. I'll keep
+> > rerunning, but am not too hopeful...
+>
+> Is bisection a possibility?
 
-Blah, switched from strlcpy to sprintf due to the lack of spaces and didn't
-adjust the size.
+I've been running a bisection for past ~12h, and am making slow
+progress. It might be another 12h, but I think it'll get there.
 
-(And yes, the compiler's lifetime analysis should free the stack space before
-the tail call, and I'd assume exec restarts the stack anyway.)
+> Failing that, please see the updated patch below.  This adds a few more
+> calls to lockdep_assert_irqs_disabled(), but perhaps more helpfully dumps
+> the current stack of the CPU that the RCU grace-period kthread wants to
+> run on in the case where this kthread has been starved of CPU.
 
-Second-attempt-by: Rob Landley <rob@landley.net>
----
+Thanks, I will apply that after the bisection runs.
 
- init/main.c |   15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/init/main.c b/init/main.c
-index 130376ec10ba..e92320816ef8 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1328,15 +1328,16 @@ static void __init do_pre_smp_initcalls(void)
- static int run_init_process(const char *init_filename)
- {
- 	const char *const *p;
-+	char buf[512], *s = buf;
-
- 	argv_init[0] = init_filename;
--	pr_info("Run %s as init process\n", init_filename);
--	pr_debug("  with arguments:\n");
--	for (p = argv_init; *p; p++)
--		pr_debug("    %s\n", *p);
--	pr_debug("  with environment:\n");
--	for (p = envp_init; *p; p++)
--		pr_debug("    %s\n", *p);
-+
-+	for (p = (void *)envp_init; *p; p++)
-+		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
-+	for (p = (void *)argv_init; *p; p++)
-+		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
-+	pr_info("Run init: %s\n", buf);
-+
- 	return kernel_execve(init_filename, argv_init, envp_init);
- }
+>                                                         Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 70d48c5..d203ea0 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -189,6 +189,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
+>
+>         rdp = container_of(iwp, struct rcu_data, rcu_iw);
+>         rnp = rdp->mynode;
+> +       lockdep_assert_irqs_disabled();
+>         raw_spin_lock_rcu_node(rnp);
+>         if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
+>                 rdp->rcu_iw_gp_seq = rnp->gp_seq;
+> @@ -449,21 +450,32 @@ static void print_cpu_stall_info(int cpu)
+>  /* Complain about starvation of grace-period kthread.  */
+>  static void rcu_check_gp_kthread_starvation(void)
+>  {
+> +       int cpu;
+>         struct task_struct *gpk = rcu_state.gp_kthread;
+>         unsigned long j;
+>
+>         if (rcu_is_gp_kthread_starving(&j)) {
+> +               cpu = gpk ? task_cpu(gpk) : -1;
+>                 pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx ->cpu=%d\n",
+>                        rcu_state.name, j,
+>                        (long)rcu_seq_current(&rcu_state.gp_seq),
+>                        data_race(rcu_state.gp_flags),
+>                        gp_state_getname(rcu_state.gp_state), rcu_state.gp_state,
+> -                      gpk ? gpk->state : ~0, gpk ? task_cpu(gpk) : -1);
+> +                      gpk ? gpk->state : ~0, cpu);
+>                 if (gpk) {
+>                         pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
+>                         pr_err("RCU grace-period kthread stack dump:\n");
+> +                       lockdep_assert_irqs_disabled();
+>                         sched_show_task(gpk);
+> +                       lockdep_assert_irqs_disabled();
+> +                       if (cpu >= 0) {
+> +                               pr_err("Stack dump where RCU grace-period kthread last ran:\n");
+> +                               if (!trigger_single_cpu_backtrace(cpu))
+> +                                       dump_cpu_task(cpu);
+> +                       }
+> +                       lockdep_assert_irqs_disabled();
+>                         wake_up_process(gpk);
+> +                       lockdep_assert_irqs_disabled();
+>                 }
+>         }
+>  }
