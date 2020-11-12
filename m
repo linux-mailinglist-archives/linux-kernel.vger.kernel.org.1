@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFDC2B019D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1415B2B017B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgKLJHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:07:15 -0500
-Received: from mga05.intel.com ([192.55.52.43]:38735 "EHLO mga05.intel.com"
+        id S1727147AbgKLJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:02:53 -0500
+Received: from smtp.asem.it ([151.1.184.197]:50005 "EHLO smtp.asem.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727845AbgKLJHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:07:08 -0500
-IronPort-SDR: +H+1Xz+qSgGpdE70EiZbdI02B/IaluvgbBXXyv1aJA7K32Ps4vsflw7vVYwqZnBOiYH/D69ZsB
- NA52fdw7HhtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="254988333"
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="254988333"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 01:07:08 -0800
-IronPort-SDR: /exYc94LmtEFWbbmjyIFNbgIZqmFnaaL8C2lYCI1MigXZRDdUCF37XiyclEerDI7zW4abJG1UO
- HnLbs3oMKX4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="360911782"
-Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
-  by fmsmga002.fm.intel.com with ESMTP; 12 Nov 2020 01:07:06 -0800
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v3 15/15] dmaengine: dw-axi-dmac: Set constraint to the Max segment size
-Date:   Thu, 12 Nov 2020 16:49:53 +0800
-Message-Id: <20201112084953.21629-16-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201112084953.21629-1-jee.heng.sia@intel.com>
-References: <20201112084953.21629-1-jee.heng.sia@intel.com>
+        id S1725902AbgKLJCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:02:52 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000602409.MSG 
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 10:02:45 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 10:02:42 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 12 Nov 2020 10:02:42 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v2] Documentation: ACPI: explain how to use gpio-line-names
+Date:   Thu, 12 Nov 2020 10:02:41 +0100
+Message-ID: <20201112090241.570637-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090207.5FACFA33.0003,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for DMA Scatter-Gather (SG) constraint so that DMA clients can
-handle the AxiDMA limitation.
+The "gpio-line-names" declaration is not fully
+documented, so can be useful to add some important
+information and one more example.
 
-Without supporting DMA constraint the default Max segment size reported by
-dmaengine is 64KB, which is not supported by Intel KeemBay AxiDMA.
+This commit also fixes a trivial spelling mistake.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 ---
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 8 ++++++++
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 1 +
- 2 files changed, 9 insertions(+)
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index 812f51c717e6..7e00d9df4d4d 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -12,6 +12,7 @@
- #include <linux/device.h>
- #include <linux/dmaengine.h>
- #include <linux/dmapool.h>
-+#include <linux/dma-mapping.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -1353,6 +1354,13 @@ static int dw_probe(struct platform_device *pdev)
- 	dw->dma.device_prep_slave_sg = dw_axi_dma_chan_prep_slave_sg;
- 	dw->dma.device_prep_dma_cyclic = dw_axi_dma_chan_prep_cyclic;
+v2: - fix commit spelling mistakes
+    - add double back quotes to gpio-line-names
+    - adjust documentation lines layout
+    - add comma at the end of Package list names in the first example
+
+ .../firmware-guide/acpi/gpio-properties.rst   | 58 ++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
+index bb6d74f23ee0..ae5396a1f092 100644
+--- a/Documentation/firmware-guide/acpi/gpio-properties.rst
++++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
+@@ -107,7 +107,61 @@ Example::
  
-+	/*
-+	 * Synopsis DesignWare AxiDMA datasheet mentioned Maximum
-+	 * supported blocks is 1024. Device register width is 4 bytes.
-+	 * Therefore, set constraint to 1024 * 4.
-+	 */
-+	dw->dma.dev->dma_parms = &dw->dma_parms;
-+	dma_set_max_seg_size(&pdev->dev, MAX_BLOCK_SIZE);
- 	platform_set_drvdata(pdev, chip);
+ - gpio-line-names
  
- 	pm_runtime_enable(chip->dev);
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index f64e8d33b127..67669049cead 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -54,6 +54,7 @@ struct axi_dma_chan {
- struct dw_axi_dma {
- 	struct dma_device	dma;
- 	struct dw_axi_dma_hcfg	*hdata;
-+	struct device_dma_parameters	dma_parms;
+-Example::
++The ``gpio-line-names`` declaration is a list of strings ("names"), which
++describes each line/pin of a GPIO controller/expander. This list, contained in
++a package, must be inserted inside the GPIO controller declaration of an ACPI
++table (typically inside the DSDT). The ``gpio-line-names`` list must respect the
++following rules (see also the examples):
++
++  - the first name in the list corresponds with the first line/pin of the GPIO
++    controller/expander
++  - the names inside the list must be consecutive (no "holes" are permitted)
++  - the list can be incomplete and can end before the last GPIO line: in
++    other words, it is not mandatory to fill all the GPIO lines
++  - empty names are allowed (two quotation marks ``""`` correspond to an empty
++    name)
++
++Example of a GPIO controller of 16 lines, with an incomplete list with two
++empty names::
++
++  Package () {
++      "gpio-line-names",
++      Package () {
++          "pin_0",
++          "pin_1",
++          "",
++          "",
++          "pin_3",
++          "pin_4_push_button",
++      }
++  }
++
++At runtime, the above declaration produces the following result (using the
++"libgpiod" tools)::
++
++  root@debian:~# gpioinfo gpiochip4
++  gpiochip4 - 16 lines:
++          line   0:      "pin_0"       unused   input  active-high
++          line   1:      "pin_1"       unused   input  active-high
++          line   2:      unnamed       unused   input  active-high
++          line   3:      unnamed       unused   input  active-high
++          line   4:      "pin_3"       unused   input  active-high
++          line   5: "pin_4_push_button" unused input active-high
++          line   6:      unnamed       unused   input  active-high
++          line   7       unnamed       unused   input  active-high
++          line   8:      unnamed       unused   input  active-high
++          line   9:      unnamed       unused   input  active-high
++          line  10:      unnamed       unused   input  active-high
++          line  11:      unnamed       unused   input  active-high
++          line  12:      unnamed       unused   input  active-high
++          line  13:      unnamed       unused   input  active-high
++          line  14:      unnamed       unused   input  active-high
++          line  15:      unnamed       unused   input  active-high
++  root@debian:~# gpiofind pin_4_push_button
++  gpiochip4 5
++  root@debian:~#
++
++Another example::
  
- 	/* channels */
- 	struct axi_dma_chan	*chan;
+   Package () {
+       "gpio-line-names",
+@@ -191,7 +245,7 @@ The driver might expect to get the right GPIO when it does::
+ but since there is no way to know the mapping between "reset" and
+ the GpioIo() in _CRS desc will hold ERR_PTR(-ENOENT).
+ 
+-The driver author can solve this by passing the mapping explictly
++The driver author can solve this by passing the mapping explicitly
+ (the recommended way and documented in the above chapter).
+ 
+ The ACPI GPIO mapping tables should not contaminate drivers that are not
 -- 
-2.18.0
+2.25.1
 
