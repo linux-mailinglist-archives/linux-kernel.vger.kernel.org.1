@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296482B06D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345272B06A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgKLNkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:40:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33741 "EHLO
+        id S1728383AbgKLNiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:38:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46201 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728452AbgKLNkd (ORCPT
+        by vger.kernel.org with ESMTP id S1728352AbgKLNit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:40:33 -0500
+        Thu, 12 Nov 2020 08:38:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605188431;
+        s=mimecast20190719; t=1605188327;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ci9DwN+WAadijoV1wNIhAPoOIaorog2wpuEd9B8XADw=;
-        b=UPqyhPgv/pjSZDwwOfcF5HbPePMddO4JdU/K6is6But5ZJAUQPeqH7CiM0SNiOLRi83I2n
-        Z0mWQuV5T1zUEid2ACzb/V+OGpTFURbMxKRhk1HAgEWxAhGbLyERyKnpKvAE4adxp/Saw1
-        3RKdqv/aW6QKXUfomN0IubZY7BCNPyI=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=abUq5jbfG1UBROW4rb4tFxmNdN4AY+VydbRPLh7tSWA=;
+        b=HSYDFT0hDgwufRsUacTOx2Ba/SxoyzX+pHPVtVLK46v7GyvKK3HQs0Kdr3H+DjAb642rw3
+        CeNvu4GvR0zkEsi6U26SFffji0zezE8lW7r1NdwvmhXgadY8oVp8iOD7qYXTNEyJNwrjj4
+        Rq4izby2SzZF2iM774V3R0LykXEbIIU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-g7TRWyFLPQWIiWe1xJpGPw-1; Thu, 12 Nov 2020 08:40:27 -0500
-X-MC-Unique: g7TRWyFLPQWIiWe1xJpGPw-1
+ us-mta-486-lN1BtpxjMNOzVIvKz_KENw-1; Thu, 12 Nov 2020 08:38:45 -0500
+X-MC-Unique: lN1BtpxjMNOzVIvKz_KENw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC5B1108E1B0;
-        Thu, 12 Nov 2020 13:40:25 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-115-61.ams2.redhat.com [10.36.115.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BDE7175132;
-        Thu, 12 Nov 2020 13:40:16 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 29/29] virtio-mem: Big Block Mode (BBM) - safe memory hotunplug
-Date:   Thu, 12 Nov 2020 14:38:15 +0100
-Message-Id: <20201112133815.13332-30-david@redhat.com>
-In-Reply-To: <20201112133815.13332-1-david@redhat.com>
-References: <20201112133815.13332-1-david@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54825103098D;
+        Thu, 12 Nov 2020 13:38:44 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-255.ams2.redhat.com [10.36.113.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 27FBD75139;
+        Thu, 12 Nov 2020 13:38:37 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Jorgen Hansen <jhansen@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dexuan Cui <decui@microsoft.com>,
+        Anthony Liguori <aliguori@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.de>
+Subject: [PATCH net] vsock: forward all packets to the host when no H2G is registered
+Date:   Thu, 12 Nov 2020 14:38:37 +0100
+Message-Id: <20201112133837.34183-1-sgarzare@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
@@ -57,195 +56,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's add a safe mechanism to unplug memory, avoiding long/endless loops
-when trying to offline memory - similar to in SBM.
+Before commit c0cfa2d8a788 ("vsock: add multi-transports support"),
+if a G2H transport was loaded (e.g. virtio transport), every packets
+was forwarded to the host, regardless of the destination CID.
+The H2G transports implemented until then (vhost-vsock, VMCI) always
+responded with an error, if the destination CID was not
+VMADDR_CID_HOST.
 
-Fake-offline all memory (via alloc_contig_range()) before trying to
-offline+remove it. Use this mode as default, but allow to enable the other
-mode explicitly (which could give better memory hotunplug guarantees in
-some environments).
+From that commit, we are using the remote CID to decide which
+transport to use, so packets with remote CID > VMADDR_CID_HOST(2)
+are sent only through H2G transport. If no H2G is available, packets
+are discarded directly in the guest.
 
-The "unsafe" mode can be enabled e.g., via virtio_mem.bbm_safe_unplug=0
-on the cmdline.
+Some use cases (e.g. Nitro Enclaves [1]) rely on the old behaviour
+to implement sibling VMs communication, so we restore the old
+behavior when no H2G is registered.
+It will be up to the host to discard packets if the destination is
+not the right one. As it was already implemented before adding
+multi-transport support.
 
-Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Tested with nested QEMU/KVM by me and Nitro Enclaves by Andra.
+
+[1] Documentation/virt/ne_overview.rst
+
+Cc: Jorgen Hansen <jhansen@vmware.com>
+Cc: Dexuan Cui <decui@microsoft.com>
+Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+Reported-by: Andra Paraschiv <andraprs@amazon.com>
+Tested-by: Andra Paraschiv <andraprs@amazon.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- drivers/virtio/virtio_mem.c | 97 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 95 insertions(+), 2 deletions(-)
+ net/vmw_vsock/af_vsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index f1696cdb7b0c..9fc9ec4a25f5 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -37,6 +37,11 @@ module_param(bbm_block_size, ulong, 0444);
- MODULE_PARM_DESC(bbm_block_size,
- 		 "Big Block size in bytes. Default is 0 (auto-detection).");
- 
-+static bool bbm_safe_unplug = true;
-+module_param(bbm_safe_unplug, bool, 0444);
-+MODULE_PARM_DESC(bbm_safe_unplug,
-+	     "Use a safe unplug mechanism in BBM, avoiding long/endless loops");
-+
- /*
-  * virtio-mem currently supports the following modes of operation:
-  *
-@@ -87,6 +92,8 @@ enum virtio_mem_bbm_bb_state {
- 	VIRTIO_MEM_BBM_BB_PLUGGED,
- 	/* Plugged and added to Linux. */
- 	VIRTIO_MEM_BBM_BB_ADDED,
-+	/* All online parts are fake-offline, ready to remove. */
-+	VIRTIO_MEM_BBM_BB_FAKE_OFFLINE,
- 	VIRTIO_MEM_BBM_BB_COUNT
- };
- 
-@@ -889,6 +896,32 @@ static void virtio_mem_sbm_notify_cancel_offline(struct virtio_mem *vm,
- 	}
- }
- 
-+static void virtio_mem_bbm_notify_going_offline(struct virtio_mem *vm,
-+						unsigned long bb_id,
-+						unsigned long pfn,
-+						unsigned long nr_pages)
-+{
-+	/*
-+	 * When marked as "fake-offline", all online memory of this device block
-+	 * is allocated by us. Otherwise, we don't have any memory allocated.
-+	 */
-+	if (virtio_mem_bbm_get_bb_state(vm, bb_id) !=
-+	    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE)
-+		return;
-+	virtio_mem_fake_offline_going_offline(pfn, nr_pages);
-+}
-+
-+static void virtio_mem_bbm_notify_cancel_offline(struct virtio_mem *vm,
-+						 unsigned long bb_id,
-+						 unsigned long pfn,
-+						 unsigned long nr_pages)
-+{
-+	if (virtio_mem_bbm_get_bb_state(vm, bb_id) !=
-+	    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE)
-+		return;
-+	virtio_mem_fake_offline_cancel_offline(pfn, nr_pages);
-+}
-+
- /*
-  * This callback will either be called synchronously from add_memory() or
-  * asynchronously (e.g., triggered via user space). We have to be careful
-@@ -949,6 +982,10 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
- 		vm->hotplug_active = true;
- 		if (vm->in_sbm)
- 			virtio_mem_sbm_notify_going_offline(vm, id);
-+		else
-+			virtio_mem_bbm_notify_going_offline(vm, id,
-+							    mhp->start_pfn,
-+							    mhp->nr_pages);
- 		break;
- 	case MEM_GOING_ONLINE:
- 		mutex_lock(&vm->hotplug_mutex);
-@@ -999,6 +1036,10 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
- 			break;
- 		if (vm->in_sbm)
- 			virtio_mem_sbm_notify_cancel_offline(vm, id);
-+		else
-+			virtio_mem_bbm_notify_cancel_offline(vm, id,
-+							     mhp->start_pfn,
-+							     mhp->nr_pages);
- 		vm->hotplug_active = false;
- 		mutex_unlock(&vm->hotplug_mutex);
- 		break;
-@@ -1189,7 +1230,13 @@ static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
- 			do_online = virtio_mem_sbm_test_sb_plugged(vm, id,
- 								   sb_id, 1);
- 		} else {
--			do_online = true;
-+			/*
-+			 * If the whole block is marked fake offline, keep
-+			 * everything that way.
-+			 */
-+			id = virtio_mem_phys_to_bb_id(vm, addr);
-+			do_online = virtio_mem_bbm_get_bb_state(vm, id) !=
-+				    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE;
- 		}
- 		if (do_online)
- 			generic_online_page(page, order);
-@@ -1969,15 +2016,50 @@ static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
- static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
- 						       unsigned long bb_id)
- {
-+	const unsigned long start_pfn = PFN_DOWN(virtio_mem_bb_id_to_phys(vm, bb_id));
-+	const unsigned long nr_pages = PFN_DOWN(vm->bbm.bb_size);
-+	unsigned long end_pfn = start_pfn + nr_pages;
-+	unsigned long pfn;
-+	struct page *page;
- 	int rc;
- 
- 	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
- 			 VIRTIO_MEM_BBM_BB_ADDED))
- 		return -EINVAL;
- 
-+	if (bbm_safe_unplug) {
-+		/*
-+		 * Start by fake-offlining all memory. Once we marked the device
-+		 * block as fake-offline, all newly onlined memory will
-+		 * automatically be kept fake-offline. Protect from concurrent
-+		 * onlining/offlining until we have a consistent state.
-+		 */
-+		mutex_lock(&vm->hotplug_mutex);
-+		virtio_mem_bbm_set_bb_state(vm, bb_id,
-+					    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE);
-+
-+		for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
-+			page = pfn_to_online_page(pfn);
-+			if (!page)
-+				continue;
-+
-+			rc = virtio_mem_fake_offline(pfn, PAGES_PER_SECTION);
-+			if (rc) {
-+				end_pfn = pfn;
-+				goto rollback_safe_unplug;
-+			}
-+		}
-+		mutex_unlock(&vm->hotplug_mutex);
-+	}
-+
- 	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
--	if (rc)
-+	if (rc) {
-+		if (bbm_safe_unplug) {
-+			mutex_lock(&vm->hotplug_mutex);
-+			goto rollback_safe_unplug;
-+		}
- 		return rc;
-+	}
- 
- 	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
- 	if (rc)
-@@ -1987,6 +2069,17 @@ static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
- 		virtio_mem_bbm_set_bb_state(vm, bb_id,
- 					    VIRTIO_MEM_BBM_BB_UNUSED);
- 	return rc;
-+
-+rollback_safe_unplug:
-+	for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
-+		page = pfn_to_online_page(pfn);
-+		if (!page)
-+			continue;
-+		virtio_mem_fake_online(pfn, PAGES_PER_SECTION);
-+	}
-+	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED);
-+	mutex_unlock(&vm->hotplug_mutex);
-+	return rc;
- }
- 
- /*
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index b4d7b8aba003..d10916ab4526 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -438,7 +438,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+ 	case SOCK_STREAM:
+ 		if (vsock_use_local_transport(remote_cid))
+ 			new_transport = transport_local;
+-		else if (remote_cid <= VMADDR_CID_HOST)
++		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g)
+ 			new_transport = transport_g2h;
+ 		else
+ 			new_transport = transport_h2g;
 -- 
 2.26.2
 
