@@ -2,130 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774F12B0143
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C592B0145
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgKLIhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:37:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22491 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726419AbgKLIhE (ORCPT
+        id S1726969AbgKLIhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgKLIhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:37:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605170222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4rbM80lc2QHuCaufuKXk42IV+QKxU+fnFTQm9bwNqVY=;
-        b=aB44OfD7Nd9igdjEi00bk4h/tSXS81AquYOlGgZvh8+835LwpkZ2aYnV4p8/HPnQfw3zUM
-        TJVQcvNNNMreq1uNuYdP+oTCV5eudLKmIhOAJjgKEmUFEXrgVWilErMWRFhXYPsVrDGW0p
-        4ktJ8IUZcrdLSflN7XWLjLo3a2SsVpc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-DC-gKL_APRCgSIVLLOv0LQ-1; Thu, 12 Nov 2020 03:36:58 -0500
-X-MC-Unique: DC-gKL_APRCgSIVLLOv0LQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7C0E64157;
-        Thu, 12 Nov 2020 08:36:55 +0000 (UTC)
-Received: from localhost (ovpn-12-196.pek2.redhat.com [10.72.12.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 04AB15DA82;
-        Thu, 12 Nov 2020 08:36:48 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 16:36:45 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     chenzhou <chenzhou10@huawei.com>, tglx@linutronix.de,
-        mingo@redhat.com, dyoung@redhat.com, catalin.marinas@arm.com,
-        will@kernel.org, corbet@lwn.net, John.P.donnelly@oracle.com,
-        bhsharma@redhat.com, prabhakar.pkin@gmail.com,
-        wangkefeng.wang@huawei.com, arnd@arndb.de,
-        linux-doc@vger.kernel.org, xiexiuqi@huawei.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, horms@verge.net.au, james.morse@arm.com,
-        linux-arm-kernel@lists.infradead.org, huawei.libin@huawei.com,
-        guohanjun@huawei.com, nsaenzjulienne@suse.de
-Subject: Re: [PATCH v13 6/8] arm64: kdump: reimplement crashkernel=X
-Message-ID: <20201112083645.GL8486@MiWiFi-R3L-srv>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
- <20201031074437.168008-7-chenzhou10@huawei.com>
- <20201111015926.GD24747@MiWiFi-R3L-srv>
- <23389389-2855-50fd-25b7-4f7d4246bf0c@huawei.com>
- <20201111135448.GF8486@MiWiFi-R3L-srv>
- <20201112082509.GL4758@kernel.org>
+        Thu, 12 Nov 2020 03:37:13 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E295BC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 00:37:12 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id k7so2426354plk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 00:37:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zaUoYSUdJvqs+oll9H2A29HKqXrBBwjsOfx6mYBumWY=;
+        b=ZIy2GJjcCFwfpMy4062YJvaK8zi7aYisftRctVk23KTPa3ygyvwW66WOCvtqPsaigT
+         hEdxxfH4ogvdpV784/xVKofdQEIdDBvODGryVZX2nUzd6D+Ib3vP9ENoKqsxhg9PGFcd
+         9fDP3/og/lYko6eh0JgM/HAm6rSMSGFIbu+eg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zaUoYSUdJvqs+oll9H2A29HKqXrBBwjsOfx6mYBumWY=;
+        b=CukKfW2GA/SpuMCTf4NGQ0LvAkkzicyk7hK5GHM9QfTvo4v5izwP8y9SkT4j17Mdx8
+         uacePaTrNCRNUGuE8y4RXoD/YTiBt739Kmen7tUCETjpXUQshA7SEstOqRHtOZLdyIAC
+         E3SUmfrv2w0pYzNwxAI7Wyq3uo0VQQ45MQu+qGkZtNODO4pySHY2f4jbG3hWi/hXtqbA
+         c4LUkK1fEo6H60O8FjWjKenrZGPVm5xpHqfR6BgUI7EVVqpYk4idZBsev5t5W5vvKSnM
+         bFvCpVIYVCcc+YSR8XNkCPUIUzxdI+gAtF44LVz01/xWQA5mTHZ/zLpiDmHr0ohN9cn8
+         CC7Q==
+X-Gm-Message-State: AOAM530qzr4xpkaIxiUlGNYJMuteFRp0vK/DWGjSEC6UVTQE2h1oCp9S
+        pPe9XLRU1zhMcnb0SCqh7KrTPA==
+X-Google-Smtp-Source: ABdhPJy7XEDWu/EeS5RAKL2jFwMrhKq4BgMz3vXq/F1wjzEjdEFSG4EeubSX7/hJRR+IOJD+bpF1bg==
+X-Received: by 2002:a17:902:7c14:b029:d4:d894:7eed with SMTP id x20-20020a1709027c14b02900d4d8947eedmr22255515pll.81.1605170232380;
+        Thu, 12 Nov 2020 00:37:12 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
+        by smtp.gmail.com with ESMTPSA id a8sm4328404pfa.132.2020.11.12.00.37.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 00:37:11 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: [PATCH 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
+Date:   Thu, 12 Nov 2020 16:37:03 +0800
+Message-Id: <20201112083704.1173908-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112082509.GL4758@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 at 10:25am, Mike Rapoport wrote:
-> On Wed, Nov 11, 2020 at 09:54:48PM +0800, Baoquan He wrote:
-> > On 11/11/20 at 09:27pm, chenzhou wrote:
-> > > Hi Baoquan,
-> > ...
-> > > >>  #ifdef CONFIG_CRASH_DUMP
-> > > >>  static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
-> > > >> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> > > >> index 1c0f3e02f731..c55cee290bbb 100644
-> > > >> --- a/arch/arm64/mm/mmu.c
-> > > >> +++ b/arch/arm64/mm/mmu.c
-> > > >> @@ -488,6 +488,10 @@ static void __init map_mem(pgd_t *pgdp)
-> > > >>  	 */
-> > > >>  	memblock_mark_nomap(kernel_start, kernel_end - kernel_start);
-> > > >>  #ifdef CONFIG_KEXEC_CORE
-> > > >> +	if (crashk_low_res.end)
-> > > >> +		memblock_mark_nomap(crashk_low_res.start,
-> > > >> +				    resource_size(&crashk_low_res));
-> > > >> +
-> > > >>  	if (crashk_res.end)
-> > > >>  		memblock_mark_nomap(crashk_res.start,
-> > > >>  				    resource_size(&crashk_res));
-> > > >> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> > > >> index d39892bdb9ae..cdef7d8c91a6 100644
-> > > >> --- a/kernel/crash_core.c
-> > > >> +++ b/kernel/crash_core.c
-> > > >> @@ -321,7 +321,7 @@ int __init parse_crashkernel_low(char *cmdline,
-> > > >>  
-> > > >>  int __init reserve_crashkernel_low(void)
-> > > >>  {
-> > > >> -#ifdef CONFIG_X86_64
-> > > >> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
-> > > > Not very sure if a CONFIG_64BIT checking is better.
-> > > If doing like this, there may be some compiling errors for other 64-bit kernel, such as mips.
-> > > >
-> > > >>  	unsigned long long base, low_base = 0, low_size = 0;
-> > > >>  	unsigned long low_mem_limit;
-> > > >>  	int ret;
-> > > >> @@ -362,12 +362,14 @@ int __init reserve_crashkernel_low(void)
-> > > >>  
-> > > >>  	crashk_low_res.start = low_base;
-> > > >>  	crashk_low_res.end   = low_base + low_size - 1;
-> > > >> +#ifdef CONFIG_X86_64
-> > > >>  	insert_resource(&iomem_resource, &crashk_low_res);
-> > > >> +#endif
-> > > >>  #endif
-> > > >>  	return 0;
-> > > >>  }
-> > > >>  
-> > > >> -#ifdef CONFIG_X86
-> > > >> +#if defined(CONFIG_X86) || defined(CONFIG_ARM64)
-> > > > Should we make this weak default so that we can remove the ARCH config?
-> > > The same as above, some arch may not support kdump, in that case,  compiling errors occur.
-> > 
-> > OK, not sure if other people have better idea, oterwise, we can leave with it. 
-> > Thanks for telling.
-> 
-> I think it would be better to have CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL
-> in arch/Kconfig and select this by X86 and ARM64.
-> 
-> Since reserve_crashkernel() implementations are quite similart on other
-> architectures as well, we can have more users of this later.
+anx7625 requires 3 power supply regulators.
 
-Yes, this sounds like a nice way.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ .../display/bridge/analogix,anx7625.yaml       | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+index 60585a4fc22b..1aa08f10d894 100644
+--- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -34,6 +34,18 @@ properties:
+     description: used for reset chip control, RESET_N pin B7.
+     maxItems: 1
+ 
++  vdd10-supply:
++    description: Regulator that provides the supply 1.0V power.
++    maxItems: 1
++
++  vdd18-supply:
++    description: Regulator that provides the supply 1.8V power.
++    maxItems: 1
++
++  vdd33-supply:
++    description: Regulator that provides the supply 3.3V power.
++    maxItems: 1
++
+   ports:
+     type: object
+ 
+@@ -55,6 +67,9 @@ properties:
+ required:
+   - compatible
+   - reg
++  - vdd10-supply
++  - vdd18-supply
++  - vdd33-supply
+   - ports
+ 
+ additionalProperties: false
+@@ -72,6 +87,9 @@ examples:
+             reg = <0x58>;
+             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
++            vdd10-supply = <&pp1000_mipibrdg>;
++            vdd18-supply = <&pp1800_mipibrdg>;
++            vdd33-supply = <&pp3300_mipibrdg>;
+ 
+             ports {
+                 #address-cells = <1>;
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
