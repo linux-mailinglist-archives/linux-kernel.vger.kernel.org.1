@@ -2,110 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818992B0DD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8344D2B0DF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgKLTYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:24:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgKLTYp (ORCPT
+        id S1727031AbgKLTZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:25:20 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:65090 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727022AbgKLTZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:24:45 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493EFC0613D1;
-        Thu, 12 Nov 2020 11:24:45 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id 10so6404498ybx.9;
-        Thu, 12 Nov 2020 11:24:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KnzRuEV+LobstJGC6w0tpv3PvSKrX4rxoaQQBRAzYiU=;
-        b=qsk3kUpZlKRzjcppq/TpRxDrqUJwKXNA+RdYZFuY+2q1qDvz67P5ffJm80V+GDTlmt
-         XHNZPw+n8n4X/im0JL3VZqEDaxPzn9JYN2frHecwUGdcKUIXwDhQYWQhUTvhUd0pzUIP
-         qzL3ph2DGhvoAY/eZ61I6su8xFDa6DMvRKzfq30ClK/Rx9CjCcUuvmTtYWcjbBEzVrws
-         GJryqjb4RnmI1Goml4ZI92c7R5py9JKpj0H9Eg0W7ihYdqLSZcT3xR1dHM/0ihGXaf3g
-         eRXBmwEKqQQ79kzxg8ZzYqVc40JJAemb2QFKianeaiBOU6a41fhrEo3an633T509pCG4
-         QPFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KnzRuEV+LobstJGC6w0tpv3PvSKrX4rxoaQQBRAzYiU=;
-        b=OjGSOjDL545896JIHpBXE6JO0M6SXFu2erOHKxjRnEcfa+BHec5ZLvLHMdFveq4H6r
-         6M4MRnlu0/kucxWuSJLzG4eFXis+F9Qenxx3RjXoP3syRP4By3huWK3Xe9leUR+ov13A
-         B075Du0lJok0Q1BAdRiebLEBVbU9YVn9ZDfzZlBB8HemsGd/NlJaITVVq4MARLfTc3hU
-         0b00PoHm2NZkubcoG38GySxPIMGQHZE2PSDCqA1UIx1O+EJLdwwg+orezQrSUAz2vIas
-         2PhBVRvl6tQVm1IjjjVFt/AdO6Z/e/HCSLFnPlPEgxOIU3ugqTOhnqOmEPepbZIRg6nQ
-         J9Fw==
-X-Gm-Message-State: AOAM531gAdrP6hbsqM1fZ4tF+Jz9NXDHisPxED+eUymowUnV9dMSVzLa
-        IS58IqXG2qWnYXKWfofectNGycoA08+Se3lg0qyaUJA2Y7aCmQ==
-X-Google-Smtp-Source: ABdhPJyUinMpjkcfznM+FAC0oxxriKsIXBlmCzj8P5GxmtnV5c6lyXypi9st2/cRl4GZl9weJLe/Bd/BC0g4PX/SOUs=
-X-Received: by 2002:a25:df82:: with SMTP id w124mr1332716ybg.347.1605209084086;
- Thu, 12 Nov 2020 11:24:44 -0800 (PST)
+        Thu, 12 Nov 2020 14:25:18 -0500
+Received: from 89-64-87-233.dynamic.chello.pl (89.64.87.233) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id e8aaa7f4f64da90c; Thu, 12 Nov 2020 20:25:16 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpufreq: intel_pstate: Simplify intel_cpufreq_update_pstate()
+Date:   Thu, 12 Nov 2020 20:25:15 +0100
+Message-ID: <1628789.U0t87mjxhl@kreacher>
 MIME-Version: 1.0
-References: <CAEf4BzZx=7N6dbKk8Eb_k-FA-PmmPFBJ=V-PLhbDu38wuXkOkw@mail.gmail.com>
- <C71IU5Z0R6UI.29FQP3BCZ65ZC@maharaja>
-In-Reply-To: <C71IU5Z0R6UI.29FQP3BCZ65ZC@maharaja>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Nov 2020 11:24:33 -0800
-Message-ID: <CAEf4BzadBt2On==P81dQmVbx1Uo8q43-mpCsW_0mS9w2sbrUfA@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 0/2] Fix bpf_probe_read_user_str() overcopying
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:13 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> On Wed Nov 11, 2020 at 3:22 PM PST, Andrii Nakryiko wrote:
-> > On Wed, Nov 11, 2020 at 2:46 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > >
-> > > 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
-> > > kernel}_str helpers") introduced a subtle bug where
-> > > bpf_probe_read_user_str() would potentially copy a few extra bytes after
-> > > the NUL terminator.
-> > >
-> > > This issue is particularly nefarious when strings are used as map keys,
-> > > as seemingly identical strings can occupy multiple entries in a map.
-> > >
-> > > This patchset fixes the issue and introduces a selftest to prevent
-> > > future regressions.
-> > >
-> > > v4 -> v5:
-> > > * don't read potentially uninitialized memory
-> >
-> > I think the bigger problem was that it could overwrite unintended
-> > memory. E.g., in BPF program, if you had something like:
-> >
-> > char my_buf[8 + 3];
-> > char my_precious_data[5] = {1, 2, 3, 4, 5};
->
-> How does that happen?
->
-> The
->
->     while (max >= sizeof(unsigned long)) {
->             /* copy 4 bytes */
->
->             max -= sizeof(unsigned long)
->     }
->
->     /* copy byte at a time */
->
-> where `max` is the user supplied length should prevent that kind of
-> corruption, right?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Yes, you are right, I got confused. If the user specified the correct
-max, then this would have never happened. Never mind.
+Avoid doing the same assignment in both branches of a conditional,
+do it after the whole conditional instead.
 
->
-> [...]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -2569,14 +2569,13 @@ static int intel_cpufreq_update_pstate(s
+ 	int old_pstate = cpu->pstate.current_pstate;
+ 
+ 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+-	if (hwp_active) {
++	if (hwp_active)
+ 		intel_cpufreq_adjust_hwp(cpu, target_pstate,
+ 					 policy->strict_target, fast_switch);
+-		cpu->pstate.current_pstate = target_pstate;
+-	} else if (target_pstate != old_pstate) {
++	else if (target_pstate != old_pstate)
+ 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
+-		cpu->pstate.current_pstate = target_pstate;
+-	}
++
++	cpu->pstate.current_pstate = target_pstate;
+ 
+ 	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
+ 			    INTEL_PSTATE_TRACE_TARGET, old_pstate);
+
+
+
