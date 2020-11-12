@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110272B04E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5402B04EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgKLMVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:21:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLMVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:21:44 -0500
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F7722068E;
-        Thu, 12 Nov 2020 12:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605183703;
-        bh=jCILeS3TmTG7+EYr41cDju+mXqTjz+ftOLjjqMARJTE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=07UB+BlTAU4rivVBHLhBA7wk0rodzZ+SmRp910cQfx+ZjEEg0Z9gbb8wJLBUakJft
-         +p0yekIziDgjTIVvgRpUpuOTjfakp0H8aXTleZ6NRXhpNyU0UR4oCJf3TEx+aSFFVo
-         RYjjGX+PQe7TqjAGL/+8GdsPhop3p3QOzn0jeoNw=
-Message-ID: <357cdb432c2111770e24495618f32b2d7ef78bd7.camel@kernel.org>
-Subject: Re: [PATCH] ceph: fix race in concurrent __ceph_remove_cap
- invocations
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 12 Nov 2020 07:21:42 -0500
-In-Reply-To: <20201112104512.17472-1-lhenriques@suse.de>
-References: <20201112104512.17472-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S1727975AbgKLMWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:22:49 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46470 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbgKLMWs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:22:48 -0500
+Received: by mail-wr1-f66.google.com with SMTP id d12so5745480wrr.13;
+        Thu, 12 Nov 2020 04:22:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xHCY2DjRGkOOOGpka/yFzszZn14CgeehFgZ388x4V6Q=;
+        b=fhN7cv1V8MfT59d3Se+UsvzWVElFel0Miew9RrhmHH5rpbWkTTt2XEAFFKsaER/0Dc
+         wc6mqJ0GQAigOLTm0znvQY74WC/ctqIq94tQguXQxwAWXdw3O2C91ZU4eh2CEdig/nzt
+         8oU+at+JmjFWw5xdGmhb7FY9LSKaLImR4X1txaycJ+Sy9DT2Z6jxHhAqhYtu6suQB/NZ
+         7pweeQFebM+4HKMNGTOokteSk5vuK8r5b0YP9ftLDYNHQsCsipzYwPhE2mEFzj68BfdH
+         LVrrMIkYLDehUO8bGvhmSt2SXjbryiY07Hdq8lCIu4t1pCJYLramXGZsdMpubRCqILrt
+         T4VQ==
+X-Gm-Message-State: AOAM530rtw6FnCj/b1CfOddeu/Ekk76pxMb/d1IMBTQa9HBuptRQfQ4e
+        nTGEK1PrGsHCmSwUlNWiEfw=
+X-Google-Smtp-Source: ABdhPJwlmtNviTgepiWU0E5L3IkOXaRnh0pXvNGFAjg+MJQpFr2cyIhqIJ0Om9SAAtB4Po4y2uuzIQ==
+X-Received: by 2002:adf:fd06:: with SMTP id e6mr35712234wrr.206.1605183766993;
+        Thu, 12 Nov 2020 04:22:46 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id k16sm6879514wrl.65.2020.11.12.04.22.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 04:22:46 -0800 (PST)
+Date:   Thu, 12 Nov 2020 12:22:45 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        kbuild-all@lists.01.org, virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root
+ partition
+Message-ID: <20201112122244.xy5zdf7yfxdnomdt@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-3-wei.liu@kernel.org>
+ <202011060303.LvuPfl7N-lkp@intel.com>
+ <20201112114215.kytfavkneta6n4qj@liuwe-devbox-debian-v2>
+ <20201112114641.fstyteqqsic7h6xh@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112114641.fstyteqqsic7h6xh@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 10:45 +0000, Luis Henriques wrote:
-> A NULL pointer dereference may occur in __ceph_remove_cap with some of the
-> callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
-> remove_session_caps_cb.  These aren't protected against the concurrent
-> execution of __ceph_remove_cap.
+On Thu, Nov 12, 2020 at 11:46:41AM +0000, Wei Liu wrote:
+> On Thu, Nov 12, 2020 at 11:42:15AM +0000, Wei Liu wrote:
+> > On Fri, Nov 06, 2020 at 03:16:07AM +0800, kernel test robot wrote:
+> > > Hi Wei,
+> > > 
+> > > I love your patch! Yet something to improve:
+> > > 
+> > > [auto build test ERROR on tip/x86/core]
+> > > [also build test ERROR on asm-generic/master iommu/next tip/timers/core pci/next linus/master v5.10-rc2 next-20201105]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > And when submitting patch, we suggest to use '--base' as documented in
+> > > https://git-scm.com/docs/git-format-patch]
+> > > 
+> > 
+> > This report is incorrect.
+> > 
+> > The bot seems to have only picked up this one patch but not the whole
+> > series. While the patch can apply cleanly to all those trees, it has a
+> > dependency on an earlier patch in this series.
 > 
-> Since the callers of this function hold the i_ceph_lock, the fix is simply
-> a matter of returning immediately if caps->ci is NULL.
-> 
-> Based on a patch from Jeff Layton.
-> 
-> Cc: stable@vger.kernel.org
-> URL: https://tracker.ceph.com/issues/43272
-> Link: https://www.spinics.net/lists/ceph-devel/msg47064.html
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
->  fs/ceph/caps.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> index ded4229c314a..443f164760d5 100644
-> --- a/fs/ceph/caps.c
-> +++ b/fs/ceph/caps.c
-> @@ -1140,12 +1140,19 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
->  {
->  	struct ceph_mds_session *session = cap->session;
->  	struct ceph_inode_info *ci = cap->ci;
-> -	struct ceph_mds_client *mdsc =
-> -		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
-> +	struct ceph_mds_client *mdsc;
->  	int removed = 0;
->  
-> 
-> +	/* 'ci' being NULL means he remove have already occurred */
-> +	if (!ci) {
-> +		dout("%s: cap inode is NULL\n", __func__);
-> +		return;
-> +	}
-> +
->  	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
->  
-> 
-> +	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
-> +
->  	/* remove from inode's cap rbtree, and clear auth cap */
->  	rb_erase(&cap->ci_node, &ci->i_caps);
->  	if (ci->i_auth_cap == cap) {
+> I misread this report and I'm confused now. Let me fetch the config and
+> try locally first.
 
-Merged into testing branch (with a minor fix to the comment).
--- 
-Jeff Layton <jlayton@kernel.org>
+The attached config file has
 
+  # CONFIG_HYPERV is not set
+.
+
+The reported issue has been fixed by moving hv_root_partition to
+mshyperv.c.
+
+Wei.
