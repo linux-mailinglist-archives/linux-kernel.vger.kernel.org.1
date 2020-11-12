@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54FB2B02FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9932B02FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgKLKoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:44:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S1727974AbgKLKo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKLKoH (ORCPT
+        with ESMTP id S1727936AbgKLKoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:44:07 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F14C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:44:05 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id h12so3570055qtc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:44:05 -0800 (PST)
+        Thu, 12 Nov 2020 05:44:25 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FE6C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:44:24 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h2so4862845wmm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:44:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pVLGh5FifLkYqQfVM082cyaY5vQXpe21CNDZNGO5gkQ=;
-        b=Jz/qwHRoejvsxbEHWKyetXdokqooB4QwLuogszMZAcdWKYnHzONmxNySc2ZlYKUMgS
-         DzfTe8ngXCRGXfUpiuel07k7sRP3XzmApYMq+q3s4Z5zFTEVqXZz7Nx9115lRebpnzIW
-         qfwxWDpVNE8QrxsgdtbJg4K+bWtW1Vw/vj4G6c2Sru3DE8CcDTs26kgJluHHsuQAVa4r
-         eW8biZnAQ54WS4tpweaYK3mCLEdZODggBVQWLylB2BXnGoxS7rkEgTuhRYQT+y0q8Fuy
-         E4WXyJpwZdpv8Qp8JvySHD9xo7xrOntoJCQQwNmOkN8YWnwDPerax/Hx4/6SmERT6myx
-         XOKQ==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ygXEyC17mmqkLuT+LSwnv8yANRbLqR9DFVnrEPXtZ4M=;
+        b=I6ogObdQP+1zd9NhSXGSnPGJAG4gcJxrpgTyuCCN5IYGW5plCifjhj9ca2dMhtwJBj
+         +jAJIokPCuZDcPcoK16EIoxoHBrIJcm5KCT1lZwZfpyso0Cr0bQqsB/PbW+chwaIIN7Q
+         RIwBigEbiHi8+MKGZwG4/OfPhr5JXtoTtf4CE+AYu4I9Ae7J9/Y8FnL481pzNwSw4pWj
+         iQCws3HhM81hlBYKDbsuiZZ5xEDoXR1TUo2SghQx9hNtGb6eDUaMjD5cbffC888x6Le+
+         f7CEDPIPfSVSLFTAXpgXbi2/jAYDOlXH3AthoEzNKrCI/VO4t4DkhcO6vjbsCkRK0+SO
+         /Drw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pVLGh5FifLkYqQfVM082cyaY5vQXpe21CNDZNGO5gkQ=;
-        b=hyLWT984OFuq6vOH0fF/i9JSnqcuqFGtq03HkvIUMVQ7HPdta/dvQZpRYHS6Zth57z
-         iztNKATClIIT8FIMn94SgZxDOYdXRYborZhBLiwIGZWkeL2aX9afuEn/enJ84c6BVLxC
-         /nitjh4MHYvNL1yeXSAtyK9kOolhkuW5FI5V/byqyweLyMnDZ9dmrDwRhTHJXq71YOJ7
-         f+AXTejmc05bmX8nLJN+8uXf7lrZS05PbyspT+fpeIO3wUbVxsi42BqYuIz3ehd9GYWQ
-         8R7Er8+X2xe7JEpUrte7KU/Wkc1Y8HgBqMu5leiaCk+d1PcEZXWHTZslnjquZ7yVjY7F
-         mMDA==
-X-Gm-Message-State: AOAM530cjzXFP600k23gZed0cLq5cqxv6ywBbUuq2UfMNjT6Hg47DEvp
-        jDqlHPFKtEUdsdjSza8MFwr/K6PjpUrXgYCPM5orAg==
-X-Google-Smtp-Source: ABdhPJyJxipBI9psRLogYjFCDUIBkvuG9qnVgFqpuycss8mi/cWQCxoLkywYWkrSDeuEg1zYSLKH4U8zKhsChZuEVbo=
-X-Received: by 2002:ac8:e41:: with SMTP id j1mr25910351qti.43.1605177844947;
- Thu, 12 Nov 2020 02:44:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ygXEyC17mmqkLuT+LSwnv8yANRbLqR9DFVnrEPXtZ4M=;
+        b=QyUkhJIU4G7CrKHdzCD2jE2EOKzGjajJIn0YNHokQaikS5IKZWvuj/hb20OQ2ajJVI
+         GAq6Uq0vHBl407alLXs+AmCbMZNFT1yuzUF14sfDrRNkmGZIiuE3SL/9dFQBkX+IiHZ2
+         RneffdePEpGatC/D8/VWa9Y5Bwiqe63wh8mRfVTC9mucXaPpN64EHVfqcz5FrxUvj/xc
+         fc/Jk8n1bTvbh0TKYlFjpy2Lq/yks1lf/cq/9fbBgEKkcNFemC3Opg71z4GnrLVjQUHN
+         ee7NszxUdKpB+ZQWc2bocVl0eVZTd1cV0Gy9nzLfpu+wc85NTvteeRvnRotPnslSXpCk
+         CH5Q==
+X-Gm-Message-State: AOAM5314pektBQG5y6+Cb1RUs8LX4WEqqcrch7cyV/tzxb4YZcitQflR
+        2xh/eOf2lmsHXyh/EjsV36uxfqTXrWISCrb9
+X-Google-Smtp-Source: ABdhPJxxSp68T0y9TRXVHc8JIto9ZdMg6AEEVOoiRgdoeOZ7uP+qT6GcEu2n8vbhXI9PC5geDUUPmA==
+X-Received: by 2002:a1c:7d12:: with SMTP id y18mr8856951wmc.103.1605177862562;
+        Thu, 12 Nov 2020 02:44:22 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id h62sm6060487wrh.82.2020.11.12.02.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 02:44:21 -0800 (PST)
+Date:   Thu, 12 Nov 2020 10:44:20 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dusonlin@emc.com.tw, KT Liao <kt.liao@emc.com.tw>,
+        linux-input@vger.kernel.org
+Subject: [PATCH] input: mouse: elan_i2c_core: Move header inclusion inside
+Message-ID: <20201112104420.GG1997862@dell>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-7-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
- <20201112103125.GV2628@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201112103125.GV2628@hirez.programming.kicks-ass.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 12 Nov 2020 11:43:53 +0100
-Message-ID: <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
-Subject: Re: Process-wide watchpoints
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Morehouse <mascasa@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104162427.2984742-7-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:31 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Nov 12, 2020 at 08:46:23AM +0100, Dmitry Vyukov wrote:
->
-> > for sampling race detection),
-> > number of threads in the process can be up to, say, ~~10K and the
-> > watchpoint is intended to be set for a very brief period of time
-> > (~~few ms).
->
-> Performance is a consideration here, doing lots of IPIs in such a short
-> window, on potentially large machines is a DoS risk.
->
-> > This can be done today with both perf_event_open and ptrace.
-> > However, the problem is that both APIs work on a single thread level
-> > (? perf_event_open can be inherited by children, but not for existing
-> > siblings). So doing this would require iterating over, say, 10K
->
-> One way would be to create the event before the process starts spawning
-> threads and keeping it disabled. Then every thread will inherit it, but
-> it'll be inactive.
->
-> > I see at least one potential problem: what do we do if some sibling
-> > thread already has all 4 watchpoints consumed?
->
-> That would be immediately avoided by this, since it will have the
-> watchpoint reserved per inheriting the event.
->
-> Then you can do ioctl(PERF_EVENT_IOC_{MODIFY_ATTRIBUTES,ENABLE,DISABLE})
-> to update the watch location and enable/disable it. This _will_ indeed
-> result in a shitload of IPIs if the threads are active, but it should
-> work.
+The same clause as its use.
 
-Aha! That's the possibility I missed.
-We will try to prototype this and get back with more questions if/when
-we have them.
-Thanks!
+Fixes the following W=1 kernel build warning(s):
+
+ include/linux/input/elan-i2c-ids.h:26:36: warning: ‘elan_acpi_id’ defined but not used [-Wunused-const-variable=]
+
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Henrik Rydberg <rydberg@bitmath.org>
+Cc: Jingle Wu <jingle.wu@emc.com.tw>
+Cc: dusonlin@emc.com.tw
+Cc: KT Liao <kt.liao@emc.com.tw>
+Cc: linux-input@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/input/mouse/elan_i2c_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+index c599e21a84784..65d21a050cea0 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -34,7 +34,6 @@
+ #include <linux/completion.h>
+ #include <linux/of.h>
+ #include <linux/property.h>
+-#include <linux/input/elan-i2c-ids.h>
+ #include <linux/regulator/consumer.h>
+ #include <asm/unaligned.h>
+ 
+@@ -1413,6 +1412,7 @@ static const struct i2c_device_id elan_id[] = {
+ MODULE_DEVICE_TABLE(i2c, elan_id);
+ 
+ #ifdef CONFIG_ACPI
++#include <linux/input/elan-i2c-ids.h>
+ MODULE_DEVICE_TABLE(acpi, elan_acpi_id);
+ #endif
+ 
+-- 
+2.25.1
