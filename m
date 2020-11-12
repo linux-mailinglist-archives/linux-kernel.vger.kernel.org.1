@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1ECE2B0E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7752B0E74
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgKLTpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKLTpa (ORCPT
+        id S1726788AbgKLTrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:47:33 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:41110 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbgKLTrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:45:30 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C96C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:45:30 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id i7so5088629pgh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:45:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tUsjnJsE70MPGpys5UT1OEoJSxFeQtN6aLTMo3hfEjk=;
-        b=rKHdDyXn6oy67dBTpOqWUs9smSJZlYHldHIVXW792bY88duJKOdd/NkTFB1d9HduJh
-         P7Mf3B8aMHapHeIsfXPwxlINzYZn7DBii1N/WZDxfDADxzU94FU9xvanoou6XfEHZCjr
-         whOOUFtVeiU0pmGOfojKOAhlF1sylbgR4v1J5V9xRPdS19rJQZxIqGDxRFUzZbC5opox
-         W9uUvJxCeWfLX61dhfLmvQJl3jLwWBBLzRO8p8+woJeBg+gkiJF4ilo75Gwm6mpqinCN
-         ApVM1EuWvnU9jDx23PEYN6g7Y0WYHKXOX64Y6Ap6CoCZCt76JGnCsAl0q8+9Nkjt9TWt
-         R12w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUsjnJsE70MPGpys5UT1OEoJSxFeQtN6aLTMo3hfEjk=;
-        b=SfdQJWpSFuSSlk19E5xS80LOWsc6sl9wyD94IUbcpQbJdnUNAtkqijjFpBCpl5U0X8
-         6FlR/vgscnP0ytGiKB0XNPRKf/x1734XjCqchak/w1T9AdSE5lOleyi0fTFPyfU0x3FH
-         neF+6toHpAy2BDMJfOl0sl6fKQqS0Ddvz9hnaAvMF+NpnS2+C2rPU9QCXtWgJkTOobX9
-         Ssp8NbXcLVKWAl9al27GMwJUEWX6yhkvBLwWAK3PYmXlUxdZtjJ00SmDkymSuLfCriDq
-         iwx4X1fTp5x+wmA4Md1uzn1II0bx10X8In34h+lLrze6cIhySGkqP+DhriKyUvq6wZqg
-         39kA==
-X-Gm-Message-State: AOAM530iB+OczJ2tl+mJ4WB7cZjMZ552M70CPgcGPqX6xuGCT1cZ5QgR
-        pjvsIm6Nbqa+pmHLCHZ+WJiTNvBhxMO9Ch3BfpL0hQ==
-X-Google-Smtp-Source: ABdhPJymqAxJryKKC0ktlr8u0WBlSEAGCjBRalcMM6ulBX9LDg37qw1ly1XhtUHYBUIPWFyPX+Fs5wEsiV0gSU3nLUM=
-X-Received: by 2002:a05:6a00:16c4:b029:162:bf9f:6458 with SMTP id
- l4-20020a056a0016c4b0290162bf9f6458mr947513pfc.55.1605210329356; Thu, 12 Nov
- 2020 11:45:29 -0800 (PST)
+        Thu, 12 Nov 2020 14:47:32 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACJTxtv195978;
+        Thu, 12 Nov 2020 19:47:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=HGMviIuFYUKlCN0Vin6GjuHkG8HPDmS2g5OiyzHRioA=;
+ b=CcrXe7MsL4Qy049GnDlcLAg44VnZUBZzzbetOdTMmX4bV8J9KbO7GrK5Xv0vNmsyZEbb
+ qttDWZBXfSZBTjZVJL7xgLc8waZXpc6EQ2mPxhbeG6sfmVkk0j2oHUAsnzJyn8fyRiM0
+ 3Y+h2WlHdI1poHwSDbrK3fzVT/Gby13dBjq2NGzTIJq/Q8DaJkRO/iR4CrGNNg393mBC
+ 08XU0mLSMOHeorw/Ri/trfOoacROs7UDp1wOVm7mM0Dst5mK2lO+9OW1prGuugKmnNvW
+ /WhxdbezeYDVT5YoXrYkC9hevmh0kTle2jelaNbaswZk4Huq/vpbBsMadloBgdnYOQCN BA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34nh3b7h9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 19:47:24 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACJVKQr117478;
+        Thu, 12 Nov 2020 19:47:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 34p55rsyxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 19:47:24 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ACJlMfX030632;
+        Thu, 12 Nov 2020 19:47:22 GMT
+Received: from [10.74.105.253] (/10.74.105.253)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 12 Nov 2020 11:47:22 -0800
+Subject: Re: [PATCH 06/25] soc: ti: knav_qmss_queue: Remove set but unchecked
+ variable 'ret'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Tero Kristo <t-kristo@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <ssantosh@kernel.org>, tomi.valkeinen@ti.com,
+        kishon@ti.com, dmurphy@ti.com, s-anna@ti.com
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-7-lee.jones@linaro.org>
+ <20201112103130.GD1997862@dell> <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
+ <20201112132145.GI1997862@dell>
+ <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
+ <20201112190202.GN1997862@dell>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <764d71c8-447b-80dd-c46f-bdaf729b5a7a@oracle.com>
+Date:   Thu, 12 Nov 2020 11:47:20 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <cover.1605046662.git.andreyknvl@google.com> <0a9b63bff116734ab63d99ebd09c244332d71958.1605046662.git.andreyknvl@google.com>
- <20201111174902.GK517454@elver.google.com>
-In-Reply-To: <20201111174902.GK517454@elver.google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 12 Nov 2020 20:45:18 +0100
-Message-ID: <CAAeHK+wvvkYko=tM=NHODkKas13h5Jvsswvg05jhv9LqE0jSjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/20] kasan: inline and rename kasan_unpoison_memory
-To:     Marco Elver <elver@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201112190202.GN1997862@dell>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 6:49 PM Marco Elver <elver@google.com> wrote:
->
-> On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> > Currently kasan_unpoison_memory() is used as both an external annotation
-> > and as an internal memory poisoning helper. Rename external annotation to
-> > kasan_unpoison_data() and inline the internal helper for hardware
-> > tag-based mode to avoid undeeded function calls.
->
-> I don't understand why this needs to be renamed again. The users of
-> kasan_unpoison_memory() outweigh those of kasan_unpoison_slab(), of
-> which there seems to be only 1!
+On 11/12/20 11:02 AM, Lee Jones wrote:
+> On Thu, 12 Nov 2020, santosh.shilimkar@oracle.com wrote:
+> 
+>> On 11/12/20 5:21 AM, Lee Jones wrote:
+>>> On Thu, 12 Nov 2020, Tero Kristo wrote:
+>>>
+>>>> On 12/11/2020 12:31, Lee Jones wrote:
+>>>>> Cc:ing a few people I know.
+>>>>>
+>>>>> On Tue, 03 Nov 2020, Lee Jones wrote:
+>>>>>
+>>>>>> Fixes the following W=1 kernel build warning(s):
+>>>>>>
+>>>>>>     drivers/soc/ti/knav_qmss_queue.c: In function ‘knav_setup_queue_pools’:
+>>>>>>     drivers/soc/ti/knav_qmss_queue.c:1310:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+>>>>>>
+>>>>>> Cc: Santosh Shilimkar <ssantosh@kernel.org>
+>>>>>> Cc: Sandeep Nair <sandeep_n@ti.com>
+>>>>>> Cc: Cyril Chemparathy <cyril@ti.com>
+>>>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>>>>> ---
+>>>>>>     drivers/soc/ti/knav_qmss_queue.c | 3 +--
+>>>>>>     1 file changed, 1 insertion(+), 2 deletions(-)
+>>>>>
+>>>>> Any idea who will take these TI patches?
+>>>>>
+>>>>> https://urldefense.com/v3/__https://lore.kernel.org/linux-arm-kernel/20201111052540.GH173948@builder.lan/__;!!GqivPVa7Brio!KEeMCT-GwmLNnDFCOqxnunXXiCrCpj3ZFXpiMzj55VmlOJ-FVhKmom-O7sq-CkL8s0sjAg$
+>>>>>
+>>>>
+>>>> (Dropped a few inactive emails from delivery.)
+>>>>
+>>>> Santosh is the maintainer for the subsystem, so my vote would go for him.
+>>>
+>>> Thanks for your prompt reply Tero.
+>>>
+>>> It looks as though Santosh has been on Cc since the start.  He must
+>>> just be busy.  I'll give him a little while longer before submitting a
+>>> [RESEND].
+>>>
+>> Go ahead and re-post. These seems to be trivial so will pick
+>> it up.
+> 
+> If you are in receipt of the first iteration, there shouldn't be any
+> requirement for a [RESEND].  Unless you deleted them from your inbox?
+> 
+I haven't deleted anything. I thought you are going to repost based
+on "I'll give him a little while longer before submitting a [RESEND]"
+:-)
 
-The idea is to make kasan_(un)poison_memory() functions inlinable for
-internal use. It doesn't have anything to do with the number of times
-they are used.
+Regards,
+Santosh
 
-Perhaps we can drop the kasan_ prefix for the internal implementations
-though, and keep using kasan_unpoison_memory() externally.
 
-> So can't we just get rid of kasan_unpoison_slab() and just open-code it
-> in mm/mempool.c:kasan_unpoison_element()? That function is already
-> kasan-prefixed, so we can even place a small comment there (which would
-> also be an improvement over current interface, since
-> kasan_unpoison_slab() is not documented and its existence not quite
-> justified).
-
-We can, but this is a change unrelated to this patch.
+Regards,
+Santosh
