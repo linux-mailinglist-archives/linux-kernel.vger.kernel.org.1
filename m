@@ -2,86 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2F22B0440
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872132B043F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgKLLrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:47:13 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:47024 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgKLLqp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:46:45 -0500
-Received: by mail-wr1-f65.google.com with SMTP id d12so5629855wrr.13;
-        Thu, 12 Nov 2020 03:46:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9jL9FUqxLDIX1r+bLqA4BxTMQd6KKBsm8f4f5MhHfBo=;
-        b=r79Bd+dhAVO9cPqvIcR+jSaTnZDb7o0eYb66U8V1I7dzvwOpsIFnbnINwWWKwFVreP
-         cE8WOmsr5H6+hlo/Vwr9YMsp+n4dolkuqTFl2QqbXgqOrjPEPDNH/FmgIhY5ipwkagNQ
-         aWzFZr2a7/6F/bi/X+NLZSxZlKngi2aqau1cV2drQ5zN0ES9w5pK+7pAyFU6+cBXLgZi
-         XAm/haJYhqLPC3Qkd/E1RfJN3vllWg3nfhTUjETAITaGOpTgjNqfmgI2IAET0nvHBRS7
-         BikVwAycEmTv9IG/WV1Tdx626UuFfylWJ8o5oVve8mtwxIBX/6HZlOlZP4EgCF9rCCq/
-         hfaA==
-X-Gm-Message-State: AOAM531A6YRKh+BtFnmDGGTnQdeiedLSfEorf6pp8OUGBTGEEfb8nDXh
-        hLgNA059JPR5XuocewjMFdieaAIRHr4=
-X-Google-Smtp-Source: ABdhPJzwcVtzji8/dSn8xXDo7eMvY9+n/MPB9taxXXmbXA8Fk4exE+jlCHts3xuDQMcVvE5V0SXwCw==
-X-Received: by 2002:adf:e541:: with SMTP id z1mr7057091wrm.389.1605181603454;
-        Thu, 12 Nov 2020 03:46:43 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id 34sm6405320wrq.27.2020.11.12.03.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 03:46:42 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:46:41 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        kbuild-all@lists.01.org, virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root
- partition
-Message-ID: <20201112114641.fstyteqqsic7h6xh@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-3-wei.liu@kernel.org>
- <202011060303.LvuPfl7N-lkp@intel.com>
- <20201112114215.kytfavkneta6n4qj@liuwe-devbox-debian-v2>
+        id S1728059AbgKLLrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:47:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727790AbgKLLqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:46:51 -0500
+Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B6EE216FD;
+        Thu, 12 Nov 2020 11:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605181611;
+        bh=LyBs53NwKy2mPKk7gJAcahZY7ivoN/ZymUmvWPGCTjQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=04N1AtC5I7O3r+Sd+ShWoaOS6k2cNn1dNWWHlVXmcGysjaTnMMMnjdwpbJM3moMep
+         UCuD44hukrM+HXZiw+uPOt13wGS3Q55RJbl21LyJjRAz2+mD7O9y17N9uGbQX7Zsnr
+         Z+BqXDT2T5TFqmT/5qyL6JpPo7o2xPYtgRj4+EWE=
+Date:   Thu, 12 Nov 2020 13:46:46 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, maorg@mellanox.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] RDMA/core: Fix error return code in _ib_modify_qp()
+Message-ID: <20201112114646.GB3628@unreal>
+References: <20201112090626.184976-1-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112114215.kytfavkneta6n4qj@liuwe-devbox-debian-v2>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201112090626.184976-1-chenzhou10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:42:15AM +0000, Wei Liu wrote:
-> On Fri, Nov 06, 2020 at 03:16:07AM +0800, kernel test robot wrote:
-> > Hi Wei,
-> > 
-> > I love your patch! Yet something to improve:
-> > 
-> > [auto build test ERROR on tip/x86/core]
-> > [also build test ERROR on asm-generic/master iommu/next tip/timers/core pci/next linus/master v5.10-rc2 next-20201105]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> > 
-> 
-> This report is incorrect.
-> 
-> The bot seems to have only picked up this one patch but not the whole
-> series. While the patch can apply cleanly to all those trees, it has a
-> dependency on an earlier patch in this series.
+On Thu, Nov 12, 2020 at 05:06:26PM +0800, Chen Zhou wrote:
+> Fix to return a negative error code from the error handling case
+> instead of 0 in function _ib_modify_qp(), as done elsewhere in this
+> function.
+>
+> Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> ---
+>  drivers/infiniband/core/verbs.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-I misread this report and I'm confused now. Let me fetch the config and
-try locally first.
-
-Wei.
+It is already fixed in the commit
+5333499c6014 ("RDMA/core: Fix error return in _ib_modify_qp()")
+Thanks
