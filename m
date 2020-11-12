@@ -2,108 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2A62B10BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F43F2B10C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgKLV4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:56:06 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49492 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727249AbgKLV4F (ORCPT
+        id S1727300AbgKLV5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:57:25 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54722 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727043AbgKLV5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:56:05 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACLu0EY010957;
-        Thu, 12 Nov 2020 15:56:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605218160;
-        bh=vZeuvlVCxBHj41lGZcfVpWofJ2yUXkbd5bHCA2deX1k=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=jVNCypw4Fvue8pTZQgVBHHe51fWMGqciGKTEKcAEFH+RMBOg2wk/DuMxKWJt74OHK
-         00/QmEBavmh30NfkSJQTsYEfy9FdQvZMvn2IA7lX1GkBbGMLxOf08asRdjJZuZJ3Lm
-         etSo2UJwy9yaHs5HYUhWH1hsxsyG1MbybQb2jNzg=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACLu0Re024449
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 15:56:00 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 15:56:00 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 15:56:00 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACLu0Fl096988;
-        Thu, 12 Nov 2020 15:56:00 -0600
-Date:   Thu, 12 Nov 2020 15:56:00 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Lokesh Vutla <lokeshvutla@ti.com>
-CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Yuti Amonkar <yamonkar@cadence.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        Jyri Sarha <jsarha@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
-Message-ID: <20201112215600.npr4g24gt4tvc5tm@kahuna>
-References: <20201026170624.24241-1-nm@ti.com>
- <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
- <20201026190808.im4nb32jn4rd3xhu@crayon>
+        Thu, 12 Nov 2020 16:57:24 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CBA5920C2872;
+        Thu, 12 Nov 2020 13:57:22 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CBA5920C2872
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605218243;
+        bh=PkdjkruNANX8wdTbYPq9U2AHzVXQRRmafd7bWjQQQ9Y=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pb5+ds9Y1dHnrmNkg9sdbhb7z8gLlGW/fGr6/SoubR2iPOSlWiXvd8Cuj8JRaXBJ+
+         zCz4CA7hkVKQ/Jxg4W1xa03C7v0iARqYKG8lptnRBYBhctzmlh2naTTJrP/2HwfMVd
+         WM5cawaRS7G50Pc3DbXOkRnm7IH9v2F2XoizC3WY=
+Subject: Re: [PATCH v5 3/7] IMA: add hook to measure critical data
+To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+ <20201101222626.6111-4-tusharsu@linux.microsoft.com>
+ <1f83ec246cb6356c340b379ab00e43f0b5bba0ae.camel@linux.ibm.com>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <25622ca6-359d-fa97-c5e6-e314cba51306@linux.microsoft.com>
+Date:   Thu, 12 Nov 2020 13:57:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+In-Reply-To: <1f83ec246cb6356c340b379ab00e43f0b5bba0ae.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201026190808.im4nb32jn4rd3xhu@crayon>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14:08-20201026, Nishanth Menon wrote:
-> On 23:30-20201026, Lokesh Vutla wrote:
-> [..]
-> > ➜  linux git:(master) git grep -in ARCH_K3_AM6_SOC
-> > arch/arm64/configs/defconfig:961:CONFIG_ARCH_K3_AM6_SOC=y
-> > drivers/soc/ti/Kconfig:7:config ARCH_K3_AM6_SOC
-> > ➜  linux git:(master) git grep -in ARCH_K3_J721E_SOC
-> > arch/arm64/configs/defconfig:962:CONFIG_ARCH_K3_J721E_SOC=y
-> > drivers/gpu/drm/bridge/cadence/Kconfig:16:  depends on ARCH_K3_J721E_SOC ||
-> > COMPILE_TEST
-> > drivers/soc/ti/Kconfig:12:config ARCH_K3_J721E_SOC
-> > 
-> > 
-> > I see drm bridge Kconfig is cleaned[0]. Please clean the defconfig as well.
-> > 
-> > [0]
-> > https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
-> > 
+
+
+On 2020-11-06 5:24 a.m., Mimi Zohar wrote:
+> Hi Tushar,
 > 
-> Yes, the defconfig patches have to be queued up in a different queue,
-> Lets see where the two patches fall and will post the defconfig
-> updates as well.
+> On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+>> Currently, IMA does not provide a generic function for kernel subsystems
+>> to measure their critical data. Examples of critical data in this context
+>> could be kernel in-memory r/o structures, hash of the memory structures,
+>> or data that represents a linux kernel subsystem state change. The
+>> critical data, if accidentally or maliciously altered, can compromise
+>> the integrity of the system.
+> 
+> Start out with what IMA does do (e.g. measures files and more recently
+> buffer data).  Afterwards continue with kernel integrity critical data
+> should also be measured.  Please include a definition of kernel
+> integrity critical data here, as well as in the cover letter.
+> 
+Yes, will do. I will also describe what kernel integrity critical data
+is – by providing a definition, and not by example -  as you suggested.
+(here and in the cover letter)
 
+>>
+>> A generic function provided by IMA to measure critical data would enable
+>> various subsystems with easier and faster on-boarding to use IMA
+>> infrastructure and would also avoid code duplication.
+> 
+> By definition LSM and IMA hooks are generic with callers in appropriate
+> places in the kernel.   This paragraph is redundant.
+> 
+Sounds good. I will remove this paragraph.
+>>
+>> Add a new IMA func CRITICAL_DATA and a corresponding IMA hook
+>> ima_measure_critical_data() to support measuring critical data for
+>> various kernel subsystems.
+> 
+> Instead of using the word "add", it would be more appropriate to use
+> the word "define".   Define a new IMA hook named
+> ima_measure_critical_data to measure kernel integrity critical data.
+> Please also update the Subject line as well.  "ima: define an IMA hook
+> to measure kernel integrity critical data".
+> 
+Sounds good. Will do.
+>>
+>> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+>> ---
+>>
+>> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+>> index 4485d87c0aa5..6e1b11dcba53 100644
+>> --- a/security/integrity/ima/ima_main.c
+>> +++ b/security/integrity/ima/ima_main.c
+>> @@ -921,6 +921,44 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>>   	fdput(f);
+>>   }
+>>   
+>> +/**
+>> + * ima_measure_critical_data - measure kernel subsystem data
+>> + * critical to integrity of the kernel
+> 
+> Please change this to "measure kernel integrity critical data".
+> 
+*Question*
+Thanks Mimi. Do you want us just to update the description, or do you
+want us to update the function name too?
 
-Santosh,
+I believe you meant just description, but still want to clarify.
 
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
-looks available in next now.
+ima_measure_kernel_integrity_critical_data() would be too long.
+Maybe ima_measure_integrity_critical_data()?
 
-Can we queue this patch[1] up for 5.11 window?
+Or do you want us to keep the existing ima_measure_critical_data()?
+Could you please let us know?
 
-Depending on your preference, I can carry the defconfig patch[2] (to
-prevent merge dependencies, might be good to get an immutable tag) OR
-you can pick the defconfig patch up that cleans after removing the
-symbol.
+>> + * @event_data_source: name of the data source being measured;
+>> + * typically it should be the name of the kernel subsystem that is sending
+>> + * the data for measurement
+> 
+> Including "data_source" here isn't quite right.  "data source" should
+> only be added in the first patch which uses it, not here.   When adding
+> it please shorten the field description to "kernel data source".   The
+> longer explanation can be included in the longer function description.
+> 
+*Question*
+Do you mean the parameter @event_data_source should be removed from this
+patch? And then later added in patch 7/7 – where SeLinux uses it?
 
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026170624.24241-1-nm@ti.com/
-[2] https://lore.kernel.org/lkml/20201112215438.31432-1-nm@ti.com/
+But ima_measure_critical_data() calls process_buffer_measurement(), and
+p_b_m() accepts it as part of the param @func_data.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+What should we pass to p_b_m() @func_data in this patch, if we remove
+@event_data_source from this patch?
+
+>> + * @event_name: name of an event from the kernel subsystem that is sending
+>> + * the data for measurement
+> 
+> As this is being passed to process_buffer_measurement(), this should be
+> the same or similar to the existing definition.
+> 
+Ok. I will change this to @eventname to be consistemt with p_b_m().
+
+>> + * @buf: pointer to buffer containing data to measure
+>> + * @buf_len: length of buffer(in bytes)
+>> + * @measure_buf_hash: if set to true - will measure hash of the buf,
+>> + *                    instead of buf
+> 
+>   kernel doc requires a single line.  In this case, please shorten the
+> argument definition to "measure buffer data or buffer data hash".   The
+> details can be included in the longer function description.
+> 
+Sounds good. Will do.
+>> + *
+>> + * A given kernel subsystem (event_data_source) may send
+>> + * data (buf) to be measured when the data or the subsystem state changes.
+>> + * The state/data change can be described by event_name.
+>> + * Examples of critical data (buf) could be kernel in-memory r/o structures,
+>> + * hash of the memory structures, or data that represents subsystem
+>> + * state change.
+>> + * measure_buf_hash can be used to save space, if the data being measured
+>> + * is too large.
+>> + * The data (buf) can only be measured, not appraised.
+>> + */
+> 
+> Please remove this longer function description, replacing it something
+> more appropriate.  The subsequent patch that introduces the "data
+> source" parameter would expand the description.
+> 
+> thanks,
+> 
+> Mimi
+> 
+*Question*
+Hi Mimi, will do.
+Do you want the data_source to be part of SeLinux patch? (patch 7/7 of
+this series).
+Or a separate patch before it?
+~Tushar
+
+>> +void ima_measure_critical_data(const char *event_data_source,
+>> +			       const char *event_name,
+>> +			       const void *buf, int buf_len,
+>> +			       bool measure_buf_hash)
+>> +{
+>> +	if (!event_name || !event_data_source || !buf || !buf_len) {
+>> +		pr_err("Invalid arguments passed to %s().\n", __func__);
+>> +		return;
+>> +	}
+>> +
+>> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
+>> +				   CRITICAL_DATA, 0, event_data_source,
+>> +				   measure_buf_hash);
+>> +}
+>> +
+>>   static int __init init_ima(void)
+>>   {
+>>   	int error;
