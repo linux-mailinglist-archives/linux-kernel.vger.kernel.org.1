@@ -2,254 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EF92B1049
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAA02B1040
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgKLV1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbgKLV1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:27:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE5DC0613D1;
-        Thu, 12 Nov 2020 13:27:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=adf3HaAGq3GYSYScBgfrGImWJpmiJMbnVTcYKwTbD/g=; b=DjSUCPuPtO63YmeC25BzRezanj
-        p34lGa1kjErYiI7HZAZ+rMUDmRDGm4SY3OitbXv6N4ePjRWsjMLnBjXGozzU2qt3mLuquHsJCV/2c
-        kH+/3QvTENN9IXRCnYS4/8ht0+ySf/RAC2eNAzdq8qFbTmu4r8UktfVtT0yBlDu2UUS+iDe3bnHMY
-        NrRxt1Fv2ujNUNMXtTFdwWhrR+sIXpixOk9fMF8y4DdrD7OFh9Hry12iofIXK4D/2nqJuA/pU3Lyw
-        kkaP0Gj8WVq+/Bo5eEjv/i2cx0XHJl766fqreFvaEIAAx+URtpabb2LOJQHc2MslcbbFB2+tpzmJo
-        oi3NFk8g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdK7C-0007GZ-3g; Thu, 12 Nov 2020 21:26:46 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org, hughd@google.com, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCH v4 07/16] mm/filemap: Add mapping_seek_hole_data
-Date:   Thu, 12 Nov 2020 21:26:32 +0000
-Message-Id: <20201112212641.27837-8-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201112212641.27837-1-willy@infradead.org>
-References: <20201112212641.27837-1-willy@infradead.org>
+        id S1727382AbgKLV0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:26:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:57394 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726960AbgKLV0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 16:26:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 637E1142F;
+        Thu, 12 Nov 2020 13:26:38 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EBE03F73C;
+        Thu, 12 Nov 2020 13:26:36 -0800 (PST)
+References: <20201023101158.088940906@infradead.org> <20201023102346.921768277@infradead.org> <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com> <jhjd00ixz9z.mognet@arm.com> <13786aa5a5fc958708ef1182c885d1a574449d99.camel@redhat.com> <jhja6vmxthb.mognet@arm.com> <371cfc80a1ecaa526a774efbe36369cc66b4ae69.camel@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
+In-reply-to: <371cfc80a1ecaa526a774efbe36369cc66b4ae69.camel@redhat.com>
+Date:   Thu, 12 Nov 2020 21:26:33 +0000
+Message-ID: <jhj8sb6xo52.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rewrite shmem_seek_hole_data() and move it to filemap.c.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
----
- include/linux/pagemap.h |  2 ++
- mm/filemap.c            | 75 +++++++++++++++++++++++++++++++++++++++++
- mm/shmem.c              | 74 +++-------------------------------------
- 3 files changed, 81 insertions(+), 70 deletions(-)
+On 12/11/20 20:37, Qian Cai wrote:
+> On Thu, 2020-11-12 at 19:31 +0000, Valentin Schneider wrote:
+>> a) Do you also get this on CONFIG_PREEMPT=y?
+>
+> This also happens with:
+>
+> CONFIG_PREEMPT=y
+> CONFIG_PREEMPTION=y
+> CONFIG_PREEMPT_RCU=y
+> CONFIG_PREEMPT_NOTIFIERS=y
+> CONFIG_DEBUG_PREEMPT=y
+> CONFIG_PREEMPTIRQ_TRACEPOINTS=y
+>
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 55e1bff1c4b9..9f1f4ab9612a 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -759,6 +759,8 @@ extern void __delete_from_page_cache(struct page *page, void *shadow);
- int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask);
- void delete_from_page_cache_batch(struct address_space *mapping,
- 				  struct pagevec *pvec);
-+loff_t mapping_seek_hole_data(struct address_space *, loff_t start, loff_t end,
-+		int whence);
- 
- /*
-  * Like add_to_page_cache_locked, but used to add newly allocated pages:
-diff --git a/mm/filemap.c b/mm/filemap.c
-index e0d9cfa2ae90..ab7103eb7e11 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2586,6 +2586,81 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- }
- EXPORT_SYMBOL(generic_file_read_iter);
- 
-+static inline bool page_seek_match(struct page *page, bool seek_data)
-+{
-+	if (xa_is_value(page) || PageUptodate(page))
-+		return seek_data;
-+	return !seek_data;
-+}
-+
-+static inline
-+unsigned int seek_page_size(struct xa_state *xas, struct page *page)
-+{
-+	if (xa_is_value(page))
-+		return PAGE_SIZE << xa_get_order(xas->xa, xas->xa_index);
-+	return thp_size(page);
-+}
-+
-+/**
-+ * mapping_seek_hole_data - Seek for SEEK_DATA / SEEK_HOLE in the page cache.
-+ * @mapping: Address space to search.
-+ * @start: First byte to consider.
-+ * @end: Limit of search (exclusive).
-+ * @whence: Either SEEK_HOLE or SEEK_DATA.
-+ *
-+ * If the page cache knows which blocks contain holes and which blocks
-+ * contain data, your filesystem can use this function to implement
-+ * SEEK_HOLE and SEEK_DATA.  This is useful for filesystems which are
-+ * entirely memory-based such as tmpfs, and filesystems which support
-+ * unwritten extents.
-+ *
-+ * Return: The requested offset on successs, or -ENXIO if @whence specifies
-+ * SEEK_DATA and there is no data after @start.  There is an implicit hole
-+ * after @end - 1, so SEEK_HOLE returns @end if all the bytes between @start
-+ * and @end contain data.
-+ */
-+loff_t mapping_seek_hole_data(struct address_space *mapping, loff_t start,
-+		loff_t end, int whence)
-+{
-+	XA_STATE(xas, &mapping->i_pages, start >> PAGE_SHIFT);
-+	pgoff_t max = (end - 1) / PAGE_SIZE;
-+	bool seek_data = (whence == SEEK_DATA);
-+	struct page *page;
-+
-+	if (end <= start)
-+		return -ENXIO;
-+
-+	rcu_read_lock();
-+	while ((page = find_get_entry(&xas, max, XA_PRESENT))) {
-+		loff_t pos = xas.xa_index * PAGE_SIZE;
-+
-+		if (start < pos) {
-+			if (!seek_data)
-+				goto unlock;
-+			start = pos;
-+		}
-+
-+		if (page_seek_match(page, seek_data))
-+			goto unlock;
-+		start = pos + seek_page_size(&xas, page);
-+		put_page(page);
-+	}
-+	rcu_read_unlock();
-+
-+	if (seek_data)
-+		return -ENXIO;
-+	goto out;
-+
-+unlock:
-+	rcu_read_unlock();
-+	if (!xa_is_value(page))
-+		put_page(page);
-+out:
-+	if (start > end)
-+		return end;
-+	return start;
-+}
-+
- #ifdef CONFIG_MMU
- #define MMAP_LOTSAMISS  (100)
- /*
-diff --git a/mm/shmem.c b/mm/shmem.c
-index c4feb05425f2..6afea99a0dc0 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2694,86 +2694,20 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	return retval ? retval : error;
- }
- 
--/*
-- * llseek SEEK_DATA or SEEK_HOLE through the page cache.
-- */
--static pgoff_t shmem_seek_hole_data(struct address_space *mapping,
--				    pgoff_t index, pgoff_t end, int whence)
--{
--	struct page *page;
--	struct pagevec pvec;
--	pgoff_t indices[PAGEVEC_SIZE];
--	bool done = false;
--	int i;
--
--	pagevec_init(&pvec);
--	pvec.nr = 1;		/* start small: we may be there already */
--	while (!done) {
--		pvec.nr = find_get_entries(mapping, index,
--					pvec.nr, pvec.pages, indices);
--		if (!pvec.nr) {
--			if (whence == SEEK_DATA)
--				index = end;
--			break;
--		}
--		for (i = 0; i < pvec.nr; i++, index++) {
--			if (index < indices[i]) {
--				if (whence == SEEK_HOLE) {
--					done = true;
--					break;
--				}
--				index = indices[i];
--			}
--			page = pvec.pages[i];
--			if (page && !xa_is_value(page)) {
--				if (!PageUptodate(page))
--					page = NULL;
--			}
--			if (index >= end ||
--			    (page && whence == SEEK_DATA) ||
--			    (!page && whence == SEEK_HOLE)) {
--				done = true;
--				break;
--			}
--		}
--		pagevec_remove_exceptionals(&pvec);
--		pagevec_release(&pvec);
--		pvec.nr = PAGEVEC_SIZE;
--		cond_resched();
--	}
--	return index;
--}
--
- static loff_t shmem_file_llseek(struct file *file, loff_t offset, int whence)
- {
- 	struct address_space *mapping = file->f_mapping;
- 	struct inode *inode = mapping->host;
--	pgoff_t start, end;
--	loff_t new_offset;
- 
- 	if (whence != SEEK_DATA && whence != SEEK_HOLE)
- 		return generic_file_llseek_size(file, offset, whence,
- 					MAX_LFS_FILESIZE, i_size_read(inode));
-+	if (offset < 0)
-+		return -ENXIO;
-+
- 	inode_lock(inode);
- 	/* We're holding i_mutex so we can access i_size directly */
--
--	if (offset < 0 || offset >= inode->i_size)
--		offset = -ENXIO;
--	else {
--		start = offset >> PAGE_SHIFT;
--		end = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
--		new_offset = shmem_seek_hole_data(mapping, start, end, whence);
--		new_offset <<= PAGE_SHIFT;
--		if (new_offset > offset) {
--			if (new_offset < inode->i_size)
--				offset = new_offset;
--			else if (whence == SEEK_DATA)
--				offset = -ENXIO;
--			else
--				offset = inode->i_size;
--		}
--	}
--
-+	offset = mapping_seek_hole_data(mapping, offset, inode->i_size, whence);
- 	if (offset >= 0)
- 		offset = vfs_setpos(file, offset, MAX_LFS_FILESIZE);
- 	inode_unlock(inode);
--- 
-2.28.0
+Hmph, it should be much less likely to happen with PREEMPT=y, but isn't per
+se impossible. Thanks for giving it a shot.
 
+> [ 1235.044945][  T330] INFO: task trinity-c4:60050 blocked for more than 245 seconds.
+> [ 1235.052540][  T330]       Not tainted 5.10.0-rc3-next-20201112+ #2
+> [ 1235.058774][  T330] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [ 1235.067392][  T330] task:trinity-c4      state:D stack:26880 pid:60050 ppid:  1722 flags:0x00004000
+> [ 1235.076505][  T330] Call Trace:
+> [ 1235.079680][ T330] __schedule (kernel/sched/core.c:4272 kernel/sched/core.c:5019) 
+> [ 1235.083971][ T330] ? __sched_text_start (kernel/sched/core.c:4901) 
+> [ 1235.088721][ T330] schedule (kernel/sched/core.c:5099 (discriminator 1)) 
+> [ 1235.092661][ T330] schedule_timeout (kernel/time/timer.c:1848) 
+> [ 1235.097399][ T330] ? usleep_range (kernel/time/timer.c:1833) 
+> [ 1235.101945][ T330] ? wait_for_completion (kernel/sched/completion.c:85 kernel/sched/completion.c:106 kernel/sched/completion.c:117 kernel/sched/completion.c:138) 
+> [ 1235.107156][ T330] ? lock_downgrade (kernel/locking/lockdep.c:5443) 
+> [ 1235.111883][ T330] ? rcu_read_unlock (./include/linux/rcupdate.h:692 (discriminator 5)) 
+> [ 1235.116561][ T330] ? do_raw_spin_lock (./arch/x86/include/asm/atomic.h:202 ./include/asm-generic/atomic-instrumented.h:707 ./include/asm-generic/qspinlock.h:82 kernel/locking/spinlock_debug.c:113) 
+> [ 1235.121459][ T330] ? _raw_spin_unlock_irq (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 ./include/linux/spinlock_api_smp.h:168 kernel/locking/spinlock.c:199) 
+> [ 1235.126601][ T330] wait_for_completion (kernel/sched/completion.c:86 kernel/sched/completion.c:106 kernel/sched/completion.c:117 kernel/sched/completion.c:138) 
+> [ 1235.131591][ T330] ? wait_for_completion_interruptible (kernel/sched/completion.c:137) 
+> [ 1235.138013][ T330] ? _raw_spin_unlock_irqrestore (./include/linux/spinlock_api_smp.h:160 kernel/locking/spinlock.c:191) 
+> [ 1235.143698][ T330] affine_move_task (./include/linux/instrumented.h:101 ./include/asm-generic/atomic-instrumented.h:220 ./include/linux/refcount.h:272 ./include/linux/refcount.h:315 ./include/linux/refcount.h:333 kernel/sched/core.c:2263) 
+> [ 1235.148451][ T330] ? move_queued_task (kernel/sched/core.c:2151) 
+> [ 1235.153351][ T330] ? update_curr (kernel/sched/sched.h:1176 kernel/sched/fair.c:845) 
+> [ 1235.157848][ T330] ? enqueue_entity (kernel/sched/fair.c:4247) 
+> [ 1235.162658][ T330] ? set_next_task_fair (./arch/x86/include/asm/jump_label.h:25 (discriminator 2) ./include/linux/jump_label.h:200 (discriminator 2) kernel/sched/fair.c:4567 (discriminator 2) kernel/sched/fair.c:4683 (discriminator 2) kernel/sched/fair.c:10953 (discriminator 2)) 
+> [ 1235.167667][ T330] __set_cpus_allowed_ptr (kernel/sched/core.c:2353) 
+> [ 1235.172905][ T330] ? affine_move_task (kernel/sched/core.c:2287) 
+> [ 1235.177826][ T330] ? _raw_spin_unlock_irqrestore (./include/linux/spinlock_api_smp.h:160 kernel/locking/spinlock.c:191) 
+> [ 1235.183501][ T330] sched_setaffinity (kernel/sched/core.c:6460) 
+> [ 1235.188345][ T330] ? __ia32_sys_sched_getattr (kernel/sched/core.c:6393) 
+> [ 1235.193937][ T330] ? _copy_from_user (./arch/x86/include/asm/uaccess_64.h:46 ./arch/x86/include/asm/uaccess_64.h:52 lib/usercopy.c:16) 
+> [ 1235.198605][ T330] __x64_sys_sched_setaffinity (kernel/sched/core.c:6511 kernel/sched/core.c:6500 kernel/sched/core.c:6500) 
+> [ 1235.204291][ T330] ? sched_setaffinity (kernel/sched/core.c:6500) 
+> [ 1235.209324][ T330] ? syscall_enter_from_user_mode (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 kernel/entry/common.c:98) 
+> [ 1235.215133][ T330] do_syscall_64 (arch/x86/entry/common.c:46) 
+> [ 1235.219431][ T330] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:127) 
+> [ 1235.225251][  T330] RIP: 0033:0x7fb102b1178d
+>
+>> b) Could you try the below?
+>
+> It is running good so far on multiple systems. I'll keep it running and report
+> back if it happens again.
+
+Thanks! All of this is somewhat fragile, so I'll want to have another look
+with a fresher mind; if the diff makes a difference at least it'll mean
+I wasn't completely off.
