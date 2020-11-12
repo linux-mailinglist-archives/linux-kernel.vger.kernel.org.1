@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E5F2B08F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E84B2B08F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgKLPwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728274AbgKLPwP (ORCPT
+        id S1728602AbgKLPwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:52:18 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35190 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728218AbgKLPwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:52:15 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E986EC0613D1;
-        Thu, 12 Nov 2020 07:52:14 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id m17so6882950oie.4;
-        Thu, 12 Nov 2020 07:52:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=MIVD3ec0pMDUnB/9PHlMhpg4aZF0Cw3HdcfpgHfnm9o=;
-        b=e3rEPnCUToZm5Auuc2kEjfMVYhGgtYli/SBoiMGAGsCoAroVu4wW5EZ3o+iG2by1nF
-         qr2/wTqIj+Ic/t5+zK2A2LDV/wRKNy+zC0N7zszbmxcrC6R5Dh+nuG0xmfCjU71WIZtg
-         AJ0Tanvonq6536yxNEOjKE97UKhAEAE5JsvH8zEo1hbBt9m7PhqQBQcPZZ7VMhPziw9g
-         e/GEPChTM9lFlegJVyZpgSTdajf/pwItZeZeqcxD/eZgsIV34g4Wuv9VMK9Dk5EvVeg2
-         3rBqSjEq8+uGG3jLyO5MXCUAk8HPhfUJTVQMbRt9aglzZnS97pdkUs2m8OzRWr5ID+nC
-         Uqfg==
+        Thu, 12 Nov 2020 10:52:16 -0500
+Received: by mail-wr1-f66.google.com with SMTP id k2so6526551wrx.2;
+        Thu, 12 Nov 2020 07:52:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=MIVD3ec0pMDUnB/9PHlMhpg4aZF0Cw3HdcfpgHfnm9o=;
-        b=hdPAd7jQBrZOjHvx9sJLV+lGN8b+v4rqJSRpVyWNy3gj5ru5JOcfMKkUoDH8KElGtr
-         BLnfKWDnF2itZ9JaFWC6rG245QIs9acprdc1ZNEg82oDGcfbY9otVfn2HnLlDK9lN7ag
-         i7v3kq+cxOqZalqfXY3uDpozfgz90mZKWNtHLPFCQsiLf97XPdAbybvo9ZplE15pOmYz
-         lva9NZ0GBGdncMGGIyNsGphgjwzhCDxkvo8LmHAFvPJcrCxzwvA6FFOOrbUCfFmbgYQd
-         WxEcry2A9CIkL9ab6L6jr8e31KWfS1PEhO1nRNl2V93qRwDiTGJ3JYL4mSYz8H54IAtc
-         yxBg==
-X-Gm-Message-State: AOAM533eqo10FuksqbqHmmy7bxp7Yf0xvNrWSPLZ11iZ8Hy+Ehme+Rds
-        ybMP5DYXDIjU0uwSpwmB43TV6qrJ6xWeZuQrZbf23mR0X8Wyng==
-X-Google-Smtp-Source: ABdhPJwaGZvLg3cxotGZ2nYmKL0QSsibauQxy6Q/maqt4lPWs92SRosc9XQushbmxSDrR3grHmDG+8RMVAhIgW2b6rM=
-X-Received: by 2002:aca:ad07:: with SMTP id w7mr182696oie.122.1605196334088;
- Thu, 12 Nov 2020 07:52:14 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=k07t8PwybZxtbCrPL/7Du9KIxCNFtVk3g/FoEkvWuKQ=;
+        b=spfkCiz/Pk/29NjRpDPIkj9Tq6B1FcVjjTJXY6/SWbdFzHVEdVIiDZthsuCwMVBC5/
+         iXLieRqvrw5hfMCcdfHWOxYUrm5at+mMIo+lytfuq0jHLQWyVkEndr/e6UFpybPps4Hw
+         v3Bnn0Lg1K0kpf43UWCCCV7oZGlct3j0bHmNDngumKtIrw157JC1SG353LrlqB1h8pYm
+         Ew1DMDOVmvFADDO4I/2ybvRMX4IKbLrYfiDVbVXyzWt2s/yoyUIAno25lA+QIKVfr6yw
+         0uUErkriKhpek3MJVoRaFSzKrlrN9S9Sfiw0MDgowYTds72TajtXUWqYpUm1nhbVtQKP
+         53gg==
+X-Gm-Message-State: AOAM530gBvhVEkRUj8woToGDve2G9GI4iyB0wcW8k7Y24xlC5Ww6/SKl
+        U7HSrMjAuICgvmI6rcSVk6w=
+X-Google-Smtp-Source: ABdhPJxbmSkWXEUAhLwzzGSYqAcBhvEj5M8opeo42HFLa4+0jVYjoeIHWoWx3AgLjPqfggXdzZ/fFQ==
+X-Received: by 2002:adf:e2c9:: with SMTP id d9mr177680wrj.11.1605196332801;
+        Thu, 12 Nov 2020 07:52:12 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g23sm6987164wmh.21.2020.11.12.07.52.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 07:52:12 -0800 (PST)
+Date:   Thu, 12 Nov 2020 15:52:11 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 05/17] clocksource/hyperv: use MSR-based access if
+ running as root
+Message-ID: <20201112155210.dwpzbyf6ytsmt2dh@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-6-wei.liu@kernel.org>
+ <87d00iy4lq.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-From:   John Boero <boeroboy@gmail.com>
-Date:   Thu, 12 Nov 2020 15:52:02 +0000
-Message-ID: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
-Subject: [PATCH] usb: core: Null deref in kernel with USB webcams.
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d00iy4lq.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 54f9886454e9a28e8d943c1cef15df9c11555df7 Mon Sep 17 00:00:00 2001
-From: JohnnyB <jboero@users.noreply.github.com>
-Date: Thu, 12 Nov 2020 15:28:29 +0000
-Subject: [PATCH] usb: core: Null deref in kernel with USB webcams.
+On Thu, Nov 12, 2020 at 04:30:57PM +0100, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
+> 
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> 
+> In the missing commit message I'd like to see why we don't use 'TSC
+> page' clocksource for the root partition. My guess would be that it's
+> not available and actually we're supposed to use raw TSC value (because
+> root partitions never migrate) but please spell it out.
 
-Fixes: Ubuntu Launchpad bug 1827452
+See my exchange with Daniel.
 
-This is my first attempt at a kernel contribution so sorry if sloppy.
-
-There is some kind of race condition affecting Logitech
-webcams that crash USB with a null dereference.
-Affects raspberry pi devices as well as x86.
-No check on dev before dereference.
-Simple fix for issue experienced for months in
-both x86 and arm/rpi environments.
-
-Signed-off-by: John Boero <boeroboy@gmail.com>
-
----
-drivers/usb/core/usb.c | 6 +-----
-1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-index d8756ffe513a..9b4ac4415f1a 100644
---- a/drivers/usb/core/usb.c
-+++ b/drivers/usb/core/usb.c
-@@ -272,13 +272,9 @@ EXPORT_SYMBOL_GPL(usb_find_alt_setting);
-struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev,
-                                     unsigned ifnum)
-{
--       struct usb_host_config *config = NULL;
-+       struct usb_host_config *config = dev->actconfig;
-       int i;
-
--       if (!dev)
--               return NULL;
--
--       config = dev->actconfig;
-       if (!config)
-               return NULL;
-       for (i = 0; i < config->desc.bNumInterfaces; i++)
---
-2.26.2
+Wei.
