@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30BF2B0802
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E81B02B0811
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbgKLPBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:01:11 -0500
-Received: from mga09.intel.com ([134.134.136.24]:19209 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728274AbgKLPBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:01:11 -0500
-IronPort-SDR: SA17ywlREMJjSv2z9w7fU9auOeCece+66fM6ClBe60gbbZ0sassSCl0027shyuvZ/6XCtaAgQW
- xCHs61WRVwhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170484642"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="170484642"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 07:00:50 -0800
-IronPort-SDR: u3tDXpGUjDw9O51RhauCnc1oON5mujg12Q6rjz+3Z5fBHGLyHsUfNskMcIRi4/7LZzICP/PyYB
- cL++A5tq6i4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="530693031"
-Received: from glass.png.intel.com ([172.30.181.98])
-  by fmsmga006.fm.intel.com with ESMTP; 12 Nov 2020 07:00:48 -0800
-From:   Wong Vee Khee <vee.khee.wong@intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: [PATCH net-next 1/1] net: phy: Add additional logics on probing C45 PHY devices
-Date:   Thu, 12 Nov 2020 23:03:51 +0800
-Message-Id: <20201112150351.12662-1-vee.khee.wong@intel.com>
-X-Mailer: git-send-email 2.17.0
+        id S1728501AbgKLPEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:04:15 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40814 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728284AbgKLPEO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:04:14 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACEVmCw014412;
+        Thu, 12 Nov 2020 10:04:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=IPujSi3x6A4jX1jC3ND/CHuY8u9bHDgcVwgmoZ6SlV8=;
+ b=cdoEDJJcGiO8DTtv2sEfcUxXH/5hL67cuoqpo4Pje9nqlO74Mbqv4XcaIal5KfnFiZpp
+ kSwGL1d4UKes4TMi92+ZSoucEPPEo5nV5T2TkDcRn432OwXT5MaW1vKvSxKOrWdZmoEL
+ eXbeOy/VkkZpqk8fgnDEaWjPCeSwaR0mCegZF6WHz7jTuOySecSO3zlN+odIChsHNhoF
+ QEQnrnnELyQBQO2d2xvJgI7AOSR2BgYUM4rsnsgEjrPZUA34psWOLQgiF+BZFwBBXp0q
+ i+c4RkK8JC8uP2b7bn3QDZegNEXReDnnxAiIkWoNxpuZbCeBy8hPCxOBAjuA9W0TU9TL Qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34s2wq8eya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 10:04:12 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ACEW3rA015775;
+        Thu, 12 Nov 2020 10:04:11 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34s2wq8exa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 10:04:11 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ACF2k1U017528;
+        Thu, 12 Nov 2020 15:04:09 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 34njuh5sxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 15:04:09 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ACF47v047055244
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 15:04:07 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5ED6042042;
+        Thu, 12 Nov 2020 15:04:07 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 346E242041;
+        Thu, 12 Nov 2020 15:04:07 +0000 (GMT)
+Received: from [9.145.71.125] (unknown [9.145.71.125])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Nov 2020 15:04:07 +0000 (GMT)
+Subject: Re: [PATCH] gcov: remove support for GCC < 4.9
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+References: <20201111030557.2015680-1-ndesaulniers@google.com>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <122d1259-19d5-008d-d290-62e22f279ffe@linux.ibm.com>
+Date:   Thu, 12 Nov 2020 16:04:07 +0100
+MIME-Version: 1.0
+In-Reply-To: <20201111030557.2015680-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_05:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 clxscore=1011 phishscore=0 mlxscore=0 bulkscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011120084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For clause 45 PHY, introduce additional logics in get_phy_c45_ids() to
-check if there is at least one valid device ID, return 0 on true, and
--ENODEV otherwise.
+On 11.11.2020 04:05, Nick Desaulniers wrote:
+> Since
+> commit 0bddd227f3dc ("Documentation: update for gcc 4.9 requirement")
+> the minimum supported version of GCC is gcc-4.9. It's now safe to remove
+> this code.
+> 
+> Similar to
+> commit 10415533a906 ("gcov: Remove old GCC 3.4 support")
+> but that was for GCC 4.8 and this is for GCC 4.9.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/427
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
----
- drivers/net/phy/phy_device.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Looks good, thanks!
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index e13a46c25437..c9ddcd7a63d4 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -730,6 +730,7 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr,
- 	const int num_ids = ARRAY_SIZE(c45_ids->device_ids);
- 	u32 devs_in_pkg = 0;
- 	int i, ret, phy_reg;
-+	u32 valid_did = 0;
- 
- 	/* Find first non-zero Devices In package. Device zero is reserved
- 	 * for 802.3 c45 complied PHYs, so don't probe it at first.
-@@ -796,12 +797,21 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr,
- 		if (phy_reg < 0)
- 			return -EIO;
- 		c45_ids->device_ids[i] |= phy_reg;
-+
-+		/* Check if there is at least one valid device ID */
-+		if (c45_ids->device_ids[i] &&
-+		    (c45_ids->device_ids[i] & 0x1fffffff) != 0x1fffffff)
-+			valid_did |= (1 << i);
- 	}
- 
- 	c45_ids->devices_in_package = devs_in_pkg;
- 	/* Bit 0 doesn't represent a device, it indicates c22 regs presence */
- 	c45_ids->mmds_present = devs_in_pkg & ~BIT(0);
- 
-+	/* There is no valid device ID */
-+	if (!valid_did)
-+		return -ENODEV;
-+
- 	return 0;
- }
- 
+Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+
+Andrew, could you pick this up via your tree?
+
+> ---
+>  kernel/gcov/gcc_4_7.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
+> index 53c67c87f141..0da0aacc1f26 100644
+> --- a/kernel/gcov/gcc_4_7.c
+> +++ b/kernel/gcov/gcc_4_7.c
+> @@ -25,10 +25,8 @@
+>  #define GCOV_COUNTERS			9
+>  #elif (__GNUC__ > 5) || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
+>  #define GCOV_COUNTERS			10
+> -#elif __GNUC__ == 4 && __GNUC_MINOR__ >= 9
+> -#define GCOV_COUNTERS			9
+>  #else
+> -#define GCOV_COUNTERS			8
+> +#define GCOV_COUNTERS			9
+>  #endif
+>  
+>  #define GCOV_TAG_FUNCTION_LENGTH	3
+> 
+
+
 -- 
-2.17.0
-
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
