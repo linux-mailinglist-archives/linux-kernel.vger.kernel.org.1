@@ -2,257 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3452B0CE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D995B2B0CF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgKLSnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:43:17 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48820 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgKLSnR (ORCPT
+        id S1726352AbgKLSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:48:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgKLSsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:43:17 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 94E04803017D;
-        Thu, 12 Nov 2020 18:43:11 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a0u_gBbCrOP8; Thu, 12 Nov 2020 21:43:09 +0300 (MSK)
-Date:   Thu, 12 Nov 2020 21:43:08 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 18/18] arm64: dts: qcom: Harmonize DWC USB3 DT nodes
- name
-Message-ID: <20201112184308.7xrrpji257ufivx4@mobilestation>
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
- <20201111091552.15593-19-Sergey.Semin@baikalelectronics.ru>
- <20201111160844.GJ173948@builder.lan>
+        Thu, 12 Nov 2020 13:48:54 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51239C0613D1;
+        Thu, 12 Nov 2020 10:48:54 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id 2so6292518ybc.12;
+        Thu, 12 Nov 2020 10:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a/LSpoK4pF1N1+aP0XtCo5Ki3nIgahuAJyPwcfQ2DDA=;
+        b=iWylZhtM3mLGYX+u/virHX72znt6VYnfX/oCsvxHtoOQGJINCcIuCOQ+cCoRP3ltzf
+         2cfkZ5tNIBBlLbfzrHv1RXVw6Mz/4D80AB4fTS57XM49A3brQQKVgvXeZRBEm7OczaaR
+         xdZ3ZmbgPn4nE2fkt7gXMmzRh2cBG/Hw0LVwumAsX2KxkTmYNQx1pXIbcvk8EJr2OX8S
+         us3kd+r5fajUcYuwq3p1189uhj65JlRZgv8mU+yzbUJpEbWIRyW0dncw9FX2n4saJhT4
+         9y57c0znVy9+uxBmgjaVy5l6gUsw6wJE55bMp9XCHgU4Ia2A81+0hUq6w81rRkXJ4IFV
+         kTTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a/LSpoK4pF1N1+aP0XtCo5Ki3nIgahuAJyPwcfQ2DDA=;
+        b=EQAnJ90k9dsbQ0nhA98o96D3Hzp3EKeni8HOGVxLqycLqSl8nck20BKia+Rxm44YYR
+         WiSwIt9Y8cnzxGc63VDYbTJTh8eyA+abvDsGtwtHteFCa7QJj+JRPZwoQYmNwBBEHwq7
+         PLD2ZYbbWPMkaKSxp04WwIC5NeNMLg8MSiqCzjj/8ftiMy6XLSrzY2Zlo6tDhsYX5kHJ
+         WO70394PmLQJviIV39OKsRB8FgLDMFMEAYzaUUenGXeDvdvx6JJCjeYT5gc5hpvX5jMC
+         pfofiFGrlqNRTGOKsCaT/BOiyiBDk/HGrSKEEb5YcBUQFi8nwPD057G0qrUCUviCJDMi
+         ZGWQ==
+X-Gm-Message-State: AOAM531x4FeK0paDCM4jSZH/AopfjPTetRXU+u8su7aAQb2vBrb5JLhZ
+        cgyNz+NIXg1Zgq+zORmnOBYt5sd/rcVbkde+F50=
+X-Google-Smtp-Source: ABdhPJy2gsbOngrUjH8vGxp5DtVXTWhELUQDt9v8jenfp68RdrujtAPy98vpBLuCOtIH09mEO0fQrQ+wOy/OS7n1Ssg=
+X-Received: by 2002:a25:7717:: with SMTP id s23mr1121427ybc.459.1605206933429;
+ Thu, 12 Nov 2020 10:48:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201111160844.GJ173948@builder.lan>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20201112171907.373433-1-kpsingh@chromium.org>
+In-Reply-To: <20201112171907.373433-1-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 12 Nov 2020 10:48:42 -0800
+Message-ID: <CAEf4BzZNg98qBmddzmw_HnzhqKJSJxEvAkfcFjz9hB8STaxvfw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Augment the set of sleepable LSM hooks
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bjorn
+On Thu, Nov 12, 2020 at 9:20 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> Update the set of sleepable hooks with the ones that do not trigger
+> a warning with might_fault() when exercised with the correct kernel
+> config options enabled, i.e.
+>
+>         DEBUG_ATOMIC_SLEEP=y
+>         LOCKDEP=y
+>         PROVE_LOCKING=y
+>
+> This means that a sleepable LSM eBPF prorgam can be attached to these
 
-On Wed, Nov 11, 2020 at 10:08:44AM -0600, Bjorn Andersson wrote:
-> On Wed 11 Nov 03:15 CST 2020, Serge Semin wrote:
-> 
-> > In accordance with the DWC USB3 bindings the corresponding node
-> > name is suppose to comply with the Generic USB HCD DT schema, which
-> > requires the USB nodes to have the name acceptable by the regexp:
-> > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> > named.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
+typo: program
 
-> Given the risk of merge conflicts with this patch I would prefer to take
-> it through the qcom dts tree. Please let me know when patch 17 has been
-> merged (or if you prefer that I take it through the same path).
+> LSM hooks. A new helper method bpf_lsm_is_sleepable_hook is added and
+> the set is maintained locally in bpf_lsm.c
+>
+> A comment is added about the list of LSM hooks that have been observed
+> to be called from softirqs, atomic contexts, or the ones that can
+> trigger pagefaults and thus should not be added to this list.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>  include/linux/bpf_lsm.h |   7 +++
+>  kernel/bpf/bpf_lsm.c    | 120 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c   |  16 +-----
+>  3 files changed, 128 insertions(+), 15 deletions(-)
+>
+> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> index 73226181b744..0d1c33ace398 100644
+> --- a/include/linux/bpf_lsm.h
+> +++ b/include/linux/bpf_lsm.h
+> @@ -27,6 +27,8 @@ extern struct lsm_blob_sizes bpf_lsm_blob_sizes;
+>  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+>                         const struct bpf_prog *prog);
+>
+> +bool bpf_lsm_is_sleepable_hook(u32 btf_id);
+> +
+>  static inline struct bpf_storage_blob *bpf_inode(
+>         const struct inode *inode)
+>  {
+> @@ -54,6 +56,11 @@ void bpf_task_storage_free(struct task_struct *task);
+>
+>  #else /* !CONFIG_BPF_LSM */
+>
+> +static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
+> +{
+> +       return false;
+> +}
+> +
+>  static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+>                                       const struct bpf_prog *prog)
+>  {
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index e92c51bebb47..3a6e927485c2 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/bpf_verifier.h>
+>  #include <net/bpf_sk_storage.h>
+>  #include <linux/bpf_local_storage.h>
+> +#include <linux/btf_ids.h>
+>
+>  /* For every LSM hook that allows attachment of BPF programs, declare a nop
+>   * function where a BPF program can be attached.
+> @@ -72,6 +73,125 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>         }
+>  }
+>
+> +/* The set of hooks which are called without pagefaults disabled and are allowed
+> + * to "sleep and thus can be used for sleeable BPF programs.
 
-I don't really know through what path the patch was supposed to find
-its way into the kernel. Since I haven't got a public repo then for me a
-preferred solution would be to merge this patch and the other by means
-of the qcom tree.
+typo: "sleep" (both quotes) or no quotes at all?
 
-Thanks
--Sergey
+> + *
+> + * There are some hooks which have been observed to be called from a
+> + * non-sleepable context and should not be added to this set:
+> + *
+> + *  bpf_lsm_bpf_prog_free_security
+> + *  bpf_lsm_capable
+> + *  bpf_lsm_cred_free
+> + *  bpf_lsm_d_instantiate
+> + *  bpf_lsm_file_alloc_security
+> + *  bpf_lsm_file_mprotect
+> + *  bpf_lsm_file_send_sigiotask
+> + *  bpf_lsm_inet_conn_request
+> + *  bpf_lsm_inet_csk_clone
+> + *  bpf_lsm_inode_alloc_security
+> + *  bpf_lsm_inode_follow_link
+> + *  bpf_lsm_inode_permission
+> + *  bpf_lsm_key_permission
+> + *  bpf_lsm_locked_down
+> + *  bpf_lsm_mmap_addr
+> + *  bpf_lsm_perf_event_read
+> + *  bpf_lsm_ptrace_access_check
+> + *  bpf_lsm_req_classify_flow
+> + *  bpf_lsm_sb_free_security
+> + *  bpf_lsm_sk_alloc_security
+> + *  bpf_lsm_sk_clone_security
+> + *  bpf_lsm_sk_free_security
+> + *  bpf_lsm_sk_getsecid
+> + *  bpf_lsm_socket_sock_rcv_skb
+> + *  bpf_lsm_sock_graft
+> + *  bpf_lsm_task_free
+> + *  bpf_lsm_task_getioprio
+> + *  bpf_lsm_task_getscheduler
+> + *  bpf_lsm_task_kill
+> + *  bpf_lsm_task_setioprio
+> + *  bpf_lsm_task_setnice
+> + *  bpf_lsm_task_setpgid
+> + *  bpf_lsm_task_setrlimit
+> + *  bpf_lsm_unix_may_send
+> + *  bpf_lsm_unix_stream_connect
+> + *  bpf_lsm_vm_enough_memory
+> + */
+> +BTF_SET_START(sleepable_lsm_hooks)BTF_ID(func, bpf_lsm_bpf)
 
-> 
-> Regards,
-> Bjorn
-> 
-> > ---
-> >  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
-> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
-> >  arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
-> >  arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
-> >  arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
-> >  arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
-> >  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
-> >  arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
-> >  arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
-> >  9 files changed, 14 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> > index defcbd15edf9..34e97da98270 100644
-> > --- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> > @@ -1064,7 +1064,7 @@ &usb2 {
-> >  	status = "okay";
-> >  	extcon = <&usb2_id>;
-> >  
-> > -	dwc3@7600000 {
-> > +	usb@7600000 {
-> >  		extcon = <&usb2_id>;
-> >  		dr_mode = "otg";
-> >  		maximum-speed = "high-speed";
-> > @@ -1075,7 +1075,7 @@ &usb3 {
-> >  	status = "okay";
-> >  	extcon = <&usb3_id>;
-> >  
-> > -	dwc3@6a00000 {
-> > +	usb@6a00000 {
-> >  		extcon = <&usb3_id>;
-> >  		dr_mode = "otg";
-> >  	};
-> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > index 96a5ec89b5f0..1129062a4ca1 100644
-> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > @@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
-> >  			resets = <&gcc GCC_USB0_BCR>;
-> >  			status = "disabled";
-> >  
-> > -			dwc_0: dwc3@8a00000 {
-> > +			dwc_0: usb@8a00000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x8a00000 0xcd00>;
-> >  				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-> > @@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
-> >  			resets = <&gcc GCC_USB1_BCR>;
-> >  			status = "disabled";
-> >  
-> > -			dwc_1: dwc3@8c00000 {
-> > +			dwc_1: usb@8c00000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x8c00000 0xcd00>;
-> >  				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-> > diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > index 9951286db775..66b6d2f0a093 100644
-> > --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > @@ -1767,7 +1767,7 @@ usb3: usb@6af8800 {
-> >  			power-domains = <&gcc USB30_GDSC>;
-> >  			status = "disabled";
-> >  
-> > -			dwc3@6a00000 {
-> > +			usb@6a00000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x06a00000 0xcc00>;
-> >  				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
-> > @@ -1978,7 +1978,7 @@ usb2: usb@76f8800 {
-> >  			power-domains = <&gcc USB30_GDSC>;
-> >  			status = "disabled";
-> >  
-> > -			dwc3@7600000 {
-> > +			usb@7600000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x07600000 0xcc00>;
-> >  				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
-> > diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> > index c45870600909..7cc7897e7b83 100644
-> > --- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> > @@ -1678,7 +1678,7 @@ usb3: usb@a8f8800 {
-> >  
-> >  			resets = <&gcc GCC_USB_30_BCR>;
-> >  
-> > -			usb3_dwc3: dwc3@a800000 {
-> > +			usb3_dwc3: usb@a800000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x0a800000 0xcd00>;
-> >  				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-> > diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-> > index 6422cf9d5855..88d7b7a53743 100644
-> > --- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-> > @@ -337,7 +337,7 @@ &usb2_phy_sec {
-> >  &usb3 {
-> >  	status = "okay";
-> >  
-> > -	dwc3@7580000 {
-> > +	usb@7580000 {
-> >  		dr_mode = "host";
-> >  	};
-> >  };
-> > diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-> > index b654b802e95c..f6ef17553064 100644
-> > --- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-> > @@ -544,7 +544,7 @@ usb3: usb@7678800 {
-> >  			assigned-clock-rates = <19200000>, <200000000>;
-> >  			status = "disabled";
-> >  
-> > -			dwc3@7580000 {
-> > +			usb@7580000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x07580000 0xcd00>;
-> >  				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> > @@ -573,7 +573,7 @@ usb2: usb@79b8800 {
-> >  			assigned-clock-rates = <19200000>, <133333333>;
-> >  			status = "disabled";
-> >  
-> > -			dwc3@78c0000 {
-> > +			usb@78c0000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0x078c0000 0xcc00>;
-> >  				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > index d46b3833e52f..bbc9a2b5c570 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > @@ -2673,7 +2673,7 @@ usb_1: usb@a6f8800 {
-> >  					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3>;
-> >  			interconnect-names = "usb-ddr", "apps-usb";
-> >  
-> > -			usb_1_dwc3: dwc3@a600000 {
-> > +			usb_1_dwc3: usb@a600000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0 0x0a600000 0 0xe000>;
-> >  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> > diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> > index 2884577dcb77..ca20e4e91f61 100644
-> > --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> > @@ -3573,7 +3573,7 @@ usb_1: usb@a6f8800 {
-> >  					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_0>;
-> >  			interconnect-names = "usb-ddr", "apps-usb";
-> >  
-> > -			usb_1_dwc3: dwc3@a600000 {
-> > +			usb_1_dwc3: usb@a600000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0 0x0a600000 0 0xcd00>;
-> >  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> > @@ -3621,7 +3621,7 @@ usb_2: usb@a8f8800 {
-> >  					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_1>;
-> >  			interconnect-names = "usb-ddr", "apps-usb";
-> >  
-> > -			usb_2_dwc3: dwc3@a800000 {
-> > +			usb_2_dwc3: usb@a800000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0 0x0a800000 0 0xcd00>;
-> >  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-> > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > index b86a7ead3006..167d14dda974 100644
-> > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > @@ -846,7 +846,7 @@ usb_1: usb@a6f8800 {
-> >  
-> >  			resets = <&gcc GCC_USB30_PRIM_BCR>;
-> >  
-> > -			usb_1_dwc3: dwc3@a600000 {
-> > +			usb_1_dwc3: usb@a600000 {
-> >  				compatible = "snps,dwc3";
-> >  				reg = <0 0x0a600000 0 0xcd00>;
-> >  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> > -- 
-> > 2.28.0
-> > 
+something is off here
+
+> +BTF_ID(func, bpf_lsm_bpf_map)
+> +BTF_ID(func, bpf_lsm_bpf_map_alloc_security)
+> +BTF_ID(func, bpf_lsm_bpf_map_free_security)
+> +BTF_ID(func, bpf_lsm_bpf_prog)
+
+[...]
