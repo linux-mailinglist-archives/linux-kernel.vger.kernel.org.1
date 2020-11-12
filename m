@@ -2,165 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96862AFFCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 07:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CD92AFFCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 07:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgKLGly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 01:41:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726774AbgKLGly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 01:41:54 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23B4B208FE;
-        Thu, 12 Nov 2020 06:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605163313;
-        bh=+Z3Lh4l9Mcd3ezYAp3/RL5kq9mbRpZ40imWuqW0MZcg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BmF9YqBqmurpUepBHeMSeeN2OYn33cVklu/OWQlCGaQYzmEPZ2EF3mo1qNLQdWTN8
-         ULhpufTY/ujvKjXUs4vcISWBo2HwyeJISCWj06Pb6vofxvZR8fBjsG36uhJa2g8bTQ
-         T07a+atsZlBljHZSFx3DGgVuzxXk1ToL90utllS0=
-Date:   Thu, 12 Nov 2020 07:42:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Brice Goglin <brice.goglin@gmail.com>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
-Message-ID: <X6zZaKt57Xl9NnuN@kroah.com>
-References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
- <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
- <20201003085345.GA114893@kroah.com>
- <20201006005736.GD6041@ranerica-svr.sc.intel.com>
- <20201006073744.GA6753@kroah.com>
- <20201007031447.GB27938@ranerica-svr.sc.intel.com>
- <20201007051546.GA47583@kroah.com>
- <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com>
+        id S1726157AbgKLGn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 01:43:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgKLGn1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 01:43:27 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC2DC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 22:43:27 -0800 (PST)
+Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=61564)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Business@ihsan-code.eu>)
+        id 1kd6KJ-0001n6-7p
+        for linux-kernel@vger.kernel.org; Thu, 12 Nov 2020 07:43:23 +0100
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Business@ihsan-code.eu>
+Subject: Fair Pay Main Point: Theophrastus vs La Quran
+Message-ID: <02e4ddf6-9248-e0f8-5247-e903666430d1@ihsan-code.eu>
+Date:   Thu, 12 Nov 2020 07:43:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 07:19:48AM +0100, Brice Goglin wrote:
-> Le 07/10/2020 à 07:15, Greg Kroah-Hartman a écrit :
-> > On Tue, Oct 06, 2020 at 08:14:47PM -0700, Ricardo Neri wrote:
-> >> On Tue, Oct 06, 2020 at 09:37:44AM +0200, Greg Kroah-Hartman wrote:
-> >>> On Mon, Oct 05, 2020 at 05:57:36PM -0700, Ricardo Neri wrote:
-> >>>> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
-> >>>>> On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
-> >>>>>> Hybrid CPU topologies combine CPUs of different microarchitectures in the
-> >>>>>> same die. Thus, even though the instruction set is compatible among all
-> >>>>>> CPUs, there may still be differences in features (e.g., some CPUs may
-> >>>>>> have counters that others CPU do not). There may be applications
-> >>>>>> interested in knowing the type of micro-architecture topology of the
-> >>>>>> system to make decisions about process affinity.
-> >>>>>>
-> >>>>>> While the existing sysfs for capacity (/sys/devices/system/cpu/cpuX/
-> >>>>>> cpu_capacity) may be used to infer the types of micro-architecture of the
-> >>>>>> CPUs in the platform, it may not be entirely accurate. For instance, two
-> >>>>>> subsets of CPUs with different types of micro-architecture may have the
-> >>>>>> same capacity due to power or thermal constraints.
-> >>>>>>
-> >>>>>> Create the new directory /sys/devices/system/cpu/types. Under such
-> >>>>>> directory, create individual subdirectories for each type of CPU micro-
-> >>>>>> architecture. Each subdirectory will have cpulist and cpumap files. This
-> >>>>>> makes it convenient for user space to read all the CPUs of the same type
-> >>>>>> at once without having to inspect each CPU individually.
-> >>>>>>
-> >>>>>> Implement a generic interface using weak functions that architectures can
-> >>>>>> override to indicate a) support for CPU types, b) the CPU type number, and
-> >>>>>> c) a string to identify the CPU vendor and type.
-> >>>>>>
-> >>>>>> For example, an x86 system with one Intel Core and four Intel Atom CPUs
-> >>>>>> would look like this (other architectures have the hooks to use whatever
-> >>>>>> directory naming convention below "types" that meets their needs):
-> >>>>>>
-> >>>>>> user@host:~$: ls /sys/devices/system/cpu/types
-> >>>>>> intel_atom_0  intel_core_0
-> >>>>>>
-> >>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
-> >>>>>> cpulist cpumap
-> >>>>>>
-> >>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
-> >>>>>> cpulist cpumap
-> >>>>>>
-> >>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpumap
-> >>>>>> 0f
-> >>>>>>
-> >>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpulist
-> >>>>>> 0-3
-> >>>>>>
-> >>>>>> user@ihost:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpumap
-> >>>>>> 10
-> >>>>>>
-> >>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpulist
-> >>>>>> 4
-> >>>> Thank you for the quick and detailed Greg!
-> >>>>
-> >>>>> The output of 'tree' sometimes makes it easier to see here, or:
-> >>>>> 	grep -R . *
-> >>>>> also works well.
-> >>>> Indeed, this would definitely make it more readable.
-> >>>>
-> >>>>>> On non-hybrid systems, the /sys/devices/system/cpu/types directory is not
-> >>>>>> created. Add a hook for this purpose.
-> >>>>> Why should these not show up if the system is not "hybrid"?
-> >>>> My thinking was that on a non-hybrid system, it does not make sense to
-> >>>> create this interface, as all the CPUs will be of the same type.
-> >>> Why not just have this an attribute type in the existing cpuX directory?
-> >>> Why do this have to be a totally separate directory and userspace has to
-> >>> figure out to look in two different spots for the same cpu to determine
-> >>> what it is?
-> >> But if the type is located under cpuX, usespace would need to traverse
-> >> all the CPUs and create its own cpu masks. Under the types directory it
-> >> would only need to look once for each type of CPU, IMHO.
-> > What does a "mask" do?  What does userspace care about this?  You would
-> > have to create it by traversing the directories you are creating anyway,
-> > so it's not much different, right?
-> 
-> 
-> Hello
-> 
-> Sorry for the late reply. As the first userspace consumer of this
-> interface [1], I can confirm that reading a single file to get the mask
-> would be better, at least for performance reason. On large platforms, we
-> already have to read thousands of sysfs files to get CPU topology and
-> cache information, I'd be happy not to read one more file per cpu.
-> 
-> Reading these sysfs files is slow, and it does not scale well when
-> multiple processes read them in parallel.
+It seems drinking customs of Oden, came back here, via Theophrastus, 
+reflecting a Fire Salamander, and Kyphosus Fish. (That now is LSD).
 
-Really?  Where is the slowdown?  Would something like readfile() work
-better for you for that?
-	https://lore.kernel.org/linux-api/20200704140250.423345-1-gregkh@linuxfoundation.org/
+This is not sufficient for Fair Pay background, and a clear argument for 
+a switch to a Quranic background.
 
-How does multiple processes slow anything down, there shouldn't be any
-shared locks here.
-
-> There are ways to avoid this
-> multiple discoveries by sharing hwloc info through XML or shmem, but it
-> will take years before all developers of different runtimes all
-> implement this :)
-
-I don't understand, what exactly are you suggesting we do here instead?
-
-thanks,
-
-greg k-h
+Serenity,
+Ywe CÃ¦rlyn
+https://ihsan-code.eu/
