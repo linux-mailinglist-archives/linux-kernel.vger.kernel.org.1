@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658B52AFF8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 07:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954402AFF8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 07:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgKLGOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 01:14:39 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21906 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725290AbgKLGOi (ORCPT
+        id S1726094AbgKLGQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 01:16:58 -0500
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:60291 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725290AbgKLGQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 01:14:38 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AC63IZ1171441;
-        Thu, 12 Nov 2020 01:13:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ZT0CFz77qbYUv5tKfJs3PFEiPvJMKpLi7jbkTW60L7o=;
- b=pXAZ6GlH3jSZnL/RGKS1ropdKKerkqq7Vm5qOj3QmIhnYAhWa4pWhpq5ZaIAeYO/Ze6D
- klB/gs/2GBc9GMPCD+JeDaZy8hwNpITkgZwmGBZl/UdnNo81C7c5hX//Y9esHNWxpLMX
- 37q+mkCf9NF3sjLDhKYDbrnbJtoEPdsaEyvddy5avbkQt6xDMJaDJsoKBdYlYatZS6Qz
- gkIrdfgyWP8I9SJs/u8Ka9JG3M9ZgEo6budxslgrBlwYl7L9TbpozKROc7WVHKxqCTHr
- ENZZD+PnhzCC4Qp1AdOHNYjJrf/YzCrITvH/8nvHjqpsUlWW7Jnta06URb8J2yb++KRY kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34r8a96jgn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 01:13:57 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AC63dWl173931;
-        Thu, 12 Nov 2020 01:13:57 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34r8a96jfs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 01:13:56 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AC6CQcZ022909;
-        Thu, 12 Nov 2020 06:13:54 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 34nk78nbkr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 06:13:54 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AC6DpKO61341984
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 06:13:52 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CF97A4C04A;
-        Thu, 12 Nov 2020 06:13:51 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A2334C04E;
-        Thu, 12 Nov 2020 06:13:48 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.77.203.181])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Nov 2020 06:13:47 +0000 (GMT)
-Subject: Re: Scheduler wakeup path tuning surface: Interface discussion
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Josef Bacik <jbacik@fb.com>,
-        Chris Hyser <chris.hyser@oracle.com>, riel@surriel.com
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <87v9kv2545.derkling@matbug.com> <87h7wd15v2.derkling@matbug.net>
- <87imgrlrqi.derkling@matbug.net> <87mu5sqwkt.derkling@matbug.net>
- <87eer42clt.derkling@matbug.net> <87imfi2qbk.derkling@matbug.net>
-From:   Parth Shah <parth@linux.ibm.com>
-Message-ID: <5a1b78c0-f286-bfaf-55bf-132093801131@linux.ibm.com>
-Date:   Thu, 12 Nov 2020 11:43:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 12 Nov 2020 01:16:57 -0500
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.53 with ESMTP; 12 Nov 2020 15:16:53 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.125 with ESMTP; 12 Nov 2020 15:16:53 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Thu, 12 Nov 2020 15:15:32 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: Re: [RFC] Are you good with Lockdep?
+Message-ID: <20201112061532.GA14554@X58A-UD3R>
+References: <20201111050559.GA24438@X58A-UD3R>
+ <20201111105441.GA78848@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87imfi2qbk.derkling@matbug.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-11_12:2020-11-10,2020-11-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- bulkscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011120036
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111105441.GA78848@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was analyzing LPC 2020 discussion regarding Latency-nice interface and
-have below points to initiate further discussion:
+On Wed, Nov 11, 2020 at 11:54:41AM +0100, Ingo Molnar wrote:
+> > We cannot get reported other than the first one.
+> 
+> Correct. Experience has shown that the overwhelming majority of 
+> lockdep reports are single-cause and single-report.
+> 
+> This is an optimal approach, because after a decade of exorcising 
+> locking bugs from the kernel, lockdep is currently, most of the time, 
 
-1. There was consensus that having interface like "Latency-nice" to
-provide scheduler hints about task latency requirement can be very useful.
+I also think Lockdep has been doing great job exorcising almost all
+locking bugs so far. Respect it.
 
-2. There are two use-case regarding the change in the number of CPUs to
-be searched in select_idle_cpu path:
-- milli-seconds optimization: Perform more scans to find idle CPUs to
-reduce latency in milliseconds
-- micro-seconds optimization: Perform less searches and queue it to any
-CPU when system is overloaded
+> in 'steady-state', with there being no reports for the overwhelming 
+> majority of testcases, so the statistical probability of there being 
+> just one new report is by far the highest.
 
-Both these optimization are contradictory since one requires to reduce
-search space for latency sensitive task while other wants to increase
-it. Though we can think about tuning select_idle_cpu path by keeping
-mask of idle CPUs or applying other tricks, it will always be a
-trade-off to search more or less and that's where latency-nice like
-attribute can be useful for task aware decisions.
+This is true if Lockdep is only for checking if maintainers' tree are
+ok and if we totally ignore how a tool could help folks in the middle of
+development esp. when developing something complicated wrt.
+synchronization.
 
-3. Using range is non-deterministic, meaning it is difficult to classify
-a task should be marked with value of -18 or -19 and there will be
-non-deterministic impact on system performance between these values.
+But I don't agree if a tool could help while developing something that
+could introduce many dependency issues.
 
-And that's where should we even think of using "Flags" or other type
-instead of range where we just say if a task is latency-sensitive or not
-and won't classify if a task is "relatively" latency-nice than others?
+> If on the other hand there's some bug in lockdep itself that causes 
+> excessive false positives, it's better to limit the number of reports 
+> to one per bootup, so that it's not seen as a nuisance debugging 
+> facility.
+> 
+> Or if lockdep gets extended that causes multiple previously unreported 
+> (but very much real) bugs to be reported, it's *still* better to 
+> handle them one by one: because lockdep doesn't know whether it's real 
 
+Why do you think we cannot handle them one by one with multi-reporting?
+We can handle them with the first one as we do with single-reporting.
+And also that's how we work, for example, when building the kernel or
+somethinig.
 
-Best,
-Parth
+> >    So the one who has introduced the first one should fix it as soon 
+> >    as possible so that the other problems can be reported and fixed. 
+> >    It will get even worse if it's a false positive because it's 
+> >    worth nothing but only preventing reporting real ones.
+> 
+> Since kernel development is highly distributed, and 90%+ of new 
+> commits get created in dozens of bigger and hundreds of smaller 
+> maintainer topic trees, the chance of getting two independent locking 
+> bugs in the same tree without the first bug being found & fixed is 
+> actually pretty low.
+
+Again, this is true if Lockdep is for checking maintainers' tree only.
+
+> linux-next offers several weeks/months advance integration testing to 
+> see whether the combination of maintainer trees causes 
+> problems/warnings.
+
+Good for us.
+
+> >    That's why kernel developers are so sensitive to Lockdep's false
+> >    positive reporting - I would, too. But precisely speaking, it's a
+> >    problem of how Lockdep was designed and implemented, not false
+> >    positive itself. Annoying false positives - as WARN()'s messages are
+> >    annoying - should be fixed but we don't have to be as sensitive as we
+> >    are now if the tool keeps normally working even after reporting.
+> 
+> I disagree, and even for WARN()s we are seeing a steady movement 
+> towards WARN_ON_ONCE(): exactly because developers are usually 
+> interested in the first warning primarily.
+> 
+> Followup warnings are even marked 'tainted' by the kernel - if a bug 
+> happened we cannot trust the state of the kernel anymore, even if it 
+> seems otherwise functional. This is doubly true for lockdep, where 
+
+I definitely think so. Already tainted kernel is not the kernel we can
+trust anymore. Again, IMO, a tool should help us not only for checking
+almost final trees but also in developing something. No?
+
+> But for lockdep there's another concern: we do occasionally report 
+> bugs in locking facilities themselves. In that case it's imperative 
+> for all lockdep activity to cease & desist, so that we are able to get 
+> a log entry out before the kernel goes down potentially.
+
+Sure. Makes sense.
+
+> I.e. there's a "race to log the bug as quickly as possible", which is 
+> the other reason we shut down lockdep immediately. But once shut down, 
+
+Not sure I understand this part.
+
+> all the lockdep data structures are hopelessly out of sync and it 
+> cannot be restarted reasonably.
+
+Is it about tracking IRQ and IRQ-enabled state? That's exactly what I'd
+like to point out. Or is there something else?
+
+> Not sure I understand the "problem 2)" outlined here, but I'm looking 
+> forward to your patchset!
+
+Thank you for the response.
+
+Thanks,
+Byungchul
