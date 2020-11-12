@@ -2,198 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D905D2B0A0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9D42B0A13
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgKLQeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:34:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37012 "EHLO mail.kernel.org"
+        id S1728699AbgKLQfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:35:47 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:63113 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728782AbgKLQeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:34:11 -0500
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727739AbgKLQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:35:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605198944; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=GpPKFpqRzHEfItsWz+dTFTuMqGgZmD5+BkFgaIg6jiw=; b=OsnFZLyWS/l1NqB0Yuor1cbegutaywSVpwiu+8tIu1AoL4tI2ChbeCiDoaj21cI1mId2/H1Y
+ NwBllieEmVHTHgPq5huh42V36VEt3qhUQzUSf4FF/oXP8YbIhW31QKxennHSQJKSBr0o7W6H
+ 0ge75Vb11px4cZ5nf7Ij3QgCg5g=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fad6456135ce186e9e6ff51 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Nov 2020 16:35:34
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0AFC7C433C9; Thu, 12 Nov 2020 16:35:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94A512100A;
-        Thu, 12 Nov 2020 16:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605198850;
-        bh=BWH/5RK3bhbqeyFgF9B8m4fJtj/VbbeDUvPgso3PLhQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ZZTj7IdcUtPHh3u8Ki1PzJrK2/mHJbjGyuu3UEEkrp7JDCPTtitiJBWgL3JNJHu6j
-         AwhYRFzszwTj/YrSK86hLO5/FIIqE/DrTHsQSpcKr1eeocyPh9ufAjtU2bVn13IbD3
-         6pmcu0VlgeFgwLB3TPP6AZyopNi9qU/hP/CptyJU=
-Message-ID: <fd770ab57aeabc60d42690272aa0e15b3e6b4e43.camel@kernel.org>
-Subject: Re: [PATCH] Revert "ceph: allow rename operation under different
- quota realms"
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 12 Nov 2020 11:34:08 -0500
-In-Reply-To: <20201112152321.32491-1-lhenriques@suse.de>
-References: <87ft5ed3gj.fsf@suse.de>
-         <20201112152321.32491-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9055C433C6;
+        Thu, 12 Nov 2020 16:35:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C9055C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Thu, 12 Nov 2020 09:35:27 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: Re: [PATCH] drm/msm: adreno: Make speed-bin support generic
+Message-ID: <20201112163527.GC2661@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+References: <1605196144-23516-1-git-send-email-akhilpo@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605196144-23516-1-git-send-email-akhilpo@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 15:23 +0000, Luis Henriques wrote:
-> This reverts commit dffdcd71458e699e839f0bf47c3d42d64210b939.
+On Thu, Nov 12, 2020 at 09:19:04PM +0530, Akhil P Oommen wrote:
+> So far a530v2 gpu has support for detecting its supported opps
+> based on a fuse value called speed-bin. This patch makes this
+> support generic across gpu families. This is in preparation to
+> extend speed-bin support to a6x family.
 > 
-> When doing a rename across quota realms, there's a corner case that isn't
-> handled correctly.  Here's a testcase:
-> 
->   mkdir files limit
->   truncate files/file -s 10G
->   setfattr limit -n ceph.quota.max_bytes -v 1000000
->   mv files limit/
-> 
-> The above will succeed because ftruncate(2) won't immediately notify the
-> MDSs with the new file size, and thus the quota realms stats won't be
-> updated.
-> 
-> Since the possible fixes for this issue would have a huge performance impact,
-> the solution for now is to simply revert to returning -EXDEV when doing a cross
-> quota realms rename.
-> 
-> URL: https://tracker.ceph.com/issues/48203
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
 > ---
->  fs/ceph/dir.c   |  9 ++++----
->  fs/ceph/quota.c | 58 +------------------------------------------------
->  fs/ceph/super.h |  3 +--
->  3 files changed, 6 insertions(+), 64 deletions(-)
+> This patch is rebased on top of msm-next-staging branch in rob's tree.
 > 
-> diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
-> index a4d48370b2b3..858ee7362ff5 100644
-> --- a/fs/ceph/dir.c
-> +++ b/fs/ceph/dir.c
-> @@ -1202,12 +1202,11 @@ static int ceph_rename(struct inode *old_dir, struct dentry *old_dentry,
->  			op = CEPH_MDS_OP_RENAMESNAP;
->  		else
->  			return -EROFS;
-> -	} else if (old_dir != new_dir) {
-> -		err = ceph_quota_check_rename(mdsc, d_inode(old_dentry),
-> -					      new_dir);
-> -		if (err)
-> -			return err;
->  	}
-> +	/* don't allow cross-quota renames */
-> +	if ((old_dir != new_dir) &&
-> +	    (!ceph_quota_is_same_realm(old_dir, new_dir)))
-> +		return -EXDEV;
->  
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 --------------
+>  drivers/gpu/drm/msm/adreno/adreno_device.c |  4 ++
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 71 ++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++
+>  4 files changed, 80 insertions(+), 34 deletions(-)
 > 
->  	dout("rename dir %p dentry %p to dir %p dentry %p\n",
->  	     old_dir, old_dentry, new_dir, new_dentry);
-> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
-> index 9b785f11e95a..4e32c9600ecc 100644
-> --- a/fs/ceph/quota.c
-> +++ b/fs/ceph/quota.c
-> @@ -264,7 +264,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
->  	return NULL;
->  }
->  
-> 
-> -static bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
-> +bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
->  {
->  	struct ceph_mds_client *mdsc = ceph_sb_to_mdsc(old->i_sb);
->  	struct ceph_snap_realm *old_realm, *new_realm;
-> @@ -516,59 +516,3 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
->  	return is_updated;
->  }
->  
-> 
-> -/*
-> - * ceph_quota_check_rename - check if a rename can be executed
-> - * @mdsc:	MDS client instance
-> - * @old:	inode to be copied
-> - * @new:	destination inode (directory)
-> - *
-> - * This function verifies if a rename (e.g. moving a file or directory) can be
-> - * executed.  It forces an rstat update in the @new target directory (and in the
-> - * source @old as well, if it's a directory).  The actual check is done both for
-> - * max_files and max_bytes.
-> - *
-> - * This function returns 0 if it's OK to do the rename, or, if quotas are
-> - * exceeded, -EXDEV (if @old is a directory) or -EDQUOT.
-> - */
-> -int ceph_quota_check_rename(struct ceph_mds_client *mdsc,
-> -			    struct inode *old, struct inode *new)
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index 8fa5c91..7d42321 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -1531,38 +1531,6 @@ static const struct adreno_gpu_funcs funcs = {
+>  	.get_timestamp = a5xx_get_timestamp,
+>  };
+>  
+> -static void check_speed_bin(struct device *dev)
 > -{
-> -	struct ceph_inode_info *ci_old = ceph_inode(old);
-> -	int ret = 0;
-> -
-> -	if (ceph_quota_is_same_realm(old, new))
-> -		return 0;
+> -	struct nvmem_cell *cell;
+> -	u32 val;
 > -
 > -	/*
-> -	 * Get the latest rstat for target directory (and for source, if a
-> -	 * directory)
+> -	 * If the OPP table specifies a opp-supported-hw property then we have
+> -	 * to set something with dev_pm_opp_set_supported_hw() or the table
+> -	 * doesn't get populated so pick an arbitrary value that should
+> -	 * ensure the default frequencies are selected but not conflict with any
+> -	 * actual bins
 > -	 */
-> -	ret = ceph_do_getattr(new, CEPH_STAT_RSTAT, false);
-> -	if (ret)
-> -		return ret;
+> -	val = 0x80;
 > -
-> -	if (S_ISDIR(old->i_mode)) {
-> -		ret = ceph_do_getattr(old, CEPH_STAT_RSTAT, false);
-> -		if (ret)
-> -			return ret;
-> -		ret = check_quota_exceeded(new, QUOTA_CHECK_MAX_BYTES_OP,
-> -					   ci_old->i_rbytes);
-> -		if (!ret)
-> -			ret = check_quota_exceeded(new,
-> -						   QUOTA_CHECK_MAX_FILES_OP,
-> -						   ci_old->i_rfiles +
-> -						   ci_old->i_rsubdirs);
-> -		if (ret)
-> -			ret = -EXDEV;
-> -	} else {
-> -		ret = check_quota_exceeded(new, QUOTA_CHECK_MAX_BYTES_OP,
-> -					   i_size_read(old));
-> -		if (!ret)
-> -			ret = check_quota_exceeded(new,
-> -						   QUOTA_CHECK_MAX_FILES_OP, 1);
-> -		if (ret)
-> -			ret = -EDQUOT;
+> -	cell = nvmem_cell_get(dev, "speed_bin");
+> -
+> -	if (!IS_ERR(cell)) {
+> -		void *buf = nvmem_cell_read(cell, NULL);
+> -
+> -		if (!IS_ERR(buf)) {
+> -			u8 bin = *((u8 *) buf);
+> -
+> -			val = (1 << bin);
+> -			kfree(buf);
+> -		}
+> -
+> -		nvmem_cell_put(cell);
 > -	}
 > -
-> -	return ret;
+> -	dev_pm_opp_set_supported_hw(dev, &val, 1);
 > -}
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index 482473e4cce1..8dbb0babddea 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -1222,14 +1222,13 @@ extern void ceph_handle_quota(struct ceph_mds_client *mdsc,
->  			      struct ceph_mds_session *session,
->  			      struct ceph_msg *msg);
->  extern bool ceph_quota_is_max_files_exceeded(struct inode *inode);
-> +extern bool ceph_quota_is_same_realm(struct inode *old, struct inode *new);
->  extern bool ceph_quota_is_max_bytes_exceeded(struct inode *inode,
->  					     loff_t newlen);
->  extern bool ceph_quota_is_max_bytes_approaching(struct inode *inode,
->  						loff_t newlen);
->  extern bool ceph_quota_update_statfs(struct ceph_fs_client *fsc,
->  				     struct kstatfs *buf);
-> -extern int ceph_quota_check_rename(struct ceph_mds_client *mdsc,
-> -				   struct inode *old, struct inode *new);
->  extern void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc);
->  
+> -
+>  struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+>  {
+>  	struct msm_drm_private *priv = dev->dev_private;
+> @@ -1588,8 +1556,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+>  
+>  	a5xx_gpu->lm_leakage = 0x4E001A;
+>  
+> -	check_speed_bin(&pdev->dev);
+> -
+>  	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 4);
+>  	if (ret) {
+>  		a5xx_destroy(&(a5xx_gpu->base.base));
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> index 87c8b03..e0ff16c 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> @@ -18,6 +18,8 @@ bool snapshot_debugbus = false;
+>  MODULE_PARM_DESC(snapshot_debugbus, "Include debugbus sections in GPU devcoredump (if not fused off)");
+>  module_param_named(snapshot_debugbus, snapshot_debugbus, bool, 0600);
+>  
+> +const u32 a530v2_speedbins[] = {0, 1, 2, 3, 4, 5, 6, 7};
+> +
+>  static const struct adreno_info gpulist[] = {
+>  	{
+>  		.rev   = ADRENO_REV(2, 0, 0, 0),
+> @@ -163,6 +165,8 @@ static const struct adreno_info gpulist[] = {
+>  			ADRENO_QUIRK_FAULT_DETECT_MASK,
+>  		.init = a5xx_gpu_init,
+>  		.zapfw = "a530_zap.mdt",
+> +		.speedbins = a530v2_speedbins,
+> +		.speedbins_count = ARRAY_SIZE(a530v2_speedbins),
+>  	}, {
+>  		.rev = ADRENO_REV(5, 4, 0, 2),
+>  		.revn = 540,
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index f21561d..cdd0c11 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/pm_opp.h>
+>  #include <linux/slab.h>
+>  #include <linux/soc/qcom/mdt_loader.h>
+> +#include <linux/nvmem-consumer.h>
+>  #include <soc/qcom/ocmem.h>
+>  #include "adreno_gpu.h"
+>  #include "msm_gem.h"
+> @@ -891,6 +892,69 @@ void adreno_gpu_ocmem_cleanup(struct adreno_ocmem *adreno_ocmem)
+>  			   adreno_ocmem->hdl);
+>  }
+>  
+> +static int adreno_set_supported_hw(struct device *dev,
+> +		struct adreno_gpu *adreno_gpu)
+> +{
+> +	u8 speedbins_count = adreno_gpu->info->speedbins_count;
+> +	const u32 *speedbins = adreno_gpu->info->speedbins;
+
+We don't need to make this generic and put it in the table. Just call the
+function from the target specific code and pass the speedbin array and size from
+there.
+
+> +	struct nvmem_cell *cell;
+> +	u32 bin, i;
+> +	u32 val = 0;
+> +	void *buf, *opp_table;
+> +
+> +	cell = nvmem_cell_get(dev, "speed_bin");
+> +	/*
+> +	 * -ENOENT means that the platform doesn't support speedbin which is
+> +	 * fine
+> +	 */
+> +	if (PTR_ERR(cell) == -ENOENT)
+> +		return 0;
+> +	else if (IS_ERR(cell))
+> +		return PTR_ERR(cell);
+> +
+> +	/* A speedbin table is must if the platform supports speedbin */
+> +	if (!speedbins) {
+> +		DRM_DEV_ERROR(dev, "speed-bin table is missing\n");
+> +		return -ENOENT;
+> +	}
+> +
+> +	buf = nvmem_cell_read(cell, NULL);
+> +	if (IS_ERR(buf)) {
+> +		nvmem_cell_put(cell);
+> +		return PTR_ERR(buf);
+> +	}
+> +
+> +	bin = *((u32 *) buf);
+> +
+> +	for (i = 0; i < speedbins_count; i++) {
+> +		if (bin == speedbins[i]) {
+> +			val = (1 << i);
+> +			break;
+> +		}
+> +	}
+> +
+> +	kfree(buf);
+> +	nvmem_cell_put(cell);
+> +
+> +	if (!val) {
+> +		DRM_DEV_ERROR(dev, "missing support for speed-bin: %u\n", bin);
+> +		return -ENOENT;
+> +	}
+> +
+> +	opp_table = dev_pm_opp_set_supported_hw(dev, &val, 1);
+> +	if (IS_ERR(opp_table))
+> +		return PTR_ERR(opp_table);
+> +
+> +	adreno_gpu->opp_table = opp_table;
+> +	return 0;
+> +}
+> +
+> +static void adreno_put_supported_hw(struct opp_table *opp_table)
+> +{
+> +	if (opp_table)
+> +		dev_pm_opp_put_supported_hw(opp_table);
+> +}
+> +
+>  int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>  		struct adreno_gpu *adreno_gpu,
+>  		const struct adreno_gpu_funcs *funcs, int nr_rings)
+> @@ -899,6 +963,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>  	struct adreno_platform_config *config = dev->platform_data;
+>  	struct msm_gpu_config adreno_gpu_config  = { 0 };
+>  	struct msm_gpu *gpu = &adreno_gpu->base;
+> +	int ret;
+>  
+>  	adreno_gpu->funcs = funcs;
+>  	adreno_gpu->info = adreno_info(config->rev);
+> @@ -910,6 +975,10 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>  
+>  	adreno_gpu_config.nr_rings = nr_rings;
+>  
+> +	ret = adreno_set_supported_hw(dev, adreno_gpu);
+> +	if (ret)
+> +		return ret;
+
+This bit should be in the target specific code
+> +
+>  	adreno_get_pwrlevels(dev, gpu);
+>  
+>  	pm_runtime_set_autosuspend_delay(dev,
+> @@ -936,4 +1005,6 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+>  
+>  	icc_put(gpu->icc_path);
+>  	icc_put(gpu->ocmem_icc_path);
+> +
+> +	adreno_put_supported_hw(adreno_gpu->opp_table);
+
+And this bit too, though it would be easier to just call the put function
+directly without having a intermediate function.  Also the OPP function should
+be NULL aware but thats a different story.
+
+Jordan
+>  }
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index c3775f7..a756ad7 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -55,6 +55,7 @@ struct adreno_reglist {
+>  };
+>  
+>  extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
+> +extern const u32 a618_speedbins[];
+>  
+>  struct adreno_info {
+>  	struct adreno_rev rev;
+> @@ -67,6 +68,8 @@ struct adreno_info {
+>  	const char *zapfw;
+>  	u32 inactive_period;
+>  	const struct adreno_reglist *hwcg;
+> +	const u32 *speedbins;
+> +	const u8 speedbins_count;
+>  };
+>  
+>  const struct adreno_info *adreno_info(struct adreno_rev rev);
+> @@ -112,6 +115,8 @@ struct adreno_gpu {
+>  	 * code (a3xx_gpu.c) and stored in this common location.
+>  	 */
+>  	const unsigned int *reg_offsets;
+> +
+> +	struct opp_table *opp_table;
+>  };
+>  #define to_adreno_gpu(x) container_of(x, struct adreno_gpu, base)
+>  
+> -- 
+> 2.7.4
 > 
->  #endif /* _FS_CEPH_SUPER_H */
 
-Ok, looks reasonable for now. I'll note that we probably _could_ allow
-for cross-quota renames of regular files since we know that we're only
-dealing with a single inode.
-
-That said, it might be weird to see EXDEV on a directory but not a
-regular file in the same parent dir.
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
