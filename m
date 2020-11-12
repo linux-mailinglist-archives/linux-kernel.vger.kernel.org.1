@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C432B049E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F492B04A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgKLMCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:02:13 -0500
-Received: from mail-bn8nam11on2062.outbound.protection.outlook.com ([40.107.236.62]:42880
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727934AbgKLMBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:01:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hazzx9HYIbfxUSFabvSsaTrufBIdxGH4/BIE+haFXu9N/wDbSdmxu3SskdVMqy8Gg2iOGYK+ijBP2aZNFykB8lS82rXArERJHPuDDn8UfyQpWRE1ybAKZiVmJrWujoc52XIRSuDIdooHmmCOFoW6F1IipWE8DUJMXbCibzqZnIBEXWU/pIf21JZvHQ1asa5yFTsKpbY7sDEOG4DdtDQ5XAPixWD/CGn/dsEUVyij2+QWmgnMCcyOXTVo9A2gSNf132uveD/N1YAfTgFClPwLu1nASq1GyThMiEMt2QsNm7cBYL4CKOOlUg06+/cLrf0xxgZfVr/SmsbBbjPCq5IJPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jk35HmHaCh8T/ew9e7fqwsiYaRqeL7aGgmL8crUZzWM=;
- b=Yolqj4hGvRY900W0G4cJJbvyXzycQFxWJrEoT4Jq/mHQ9i19+/WZ0K2q81+w3tgZ1Gl4RI8NJ4I1IRxzXZJdMKb3xOSMtmZT/7LpWP/DYIL4/M4B/aX0MkeBqdsMQtOtJW9sv0CTJI1qr751953lZ4lIgumaGkpAQ6OiRszLTwS8EInIbjAfSxciwysVjE8IfGqRRzXV/XBGx3yYdWJDW7x0Iuhtng8y2bK1qHiYj8/53N7bdb7PCcJNj97R4eOxtNgCIXuSNOjKTqSuHj+Aq3Q/x+HGpImhtVNyEW9nCHhfPy1+ImpsdeAU7TZS19pocLQ6j5YQL9B4RmYj5Ox8hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jk35HmHaCh8T/ew9e7fqwsiYaRqeL7aGgmL8crUZzWM=;
- b=gsBsi+LzaWb1ThqugqO2Y1y5ieYXILND9kLN96UOhavDtbdprmg8e2o73RRGltRkc6j1KEh6NHI23YnAQ4uD024z8272iCBnyxulqO2CMRwSWO7MXPItxUsw0yWlk9lX9XQjoCNPxBKFikB4srkXYteNB3aa19hQtJD+i0O2Fq0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=sifive.com;
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com (2603:10b6:a03:1d1::19)
- by BYAPR13MB2392.namprd13.prod.outlook.com (2603:10b6:a02:c5::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10; Thu, 12 Nov
- 2020 12:01:34 +0000
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::2c46:9095:ba12:6513]) by BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::2c46:9095:ba12:6513%8]) with mapi id 15.20.3564.021; Thu, 12 Nov 2020
- 12:01:34 +0000
-From:   Yash Shah <yash.shah@sifive.com>
-To:     robh+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rric@kernel.org
-Cc:     aou@eecs.berkeley.edu, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, sachin.ghadi@sifive.com,
-        Yash Shah <yash.shah@sifive.com>
-Subject: [PATCH 3/3] EDAC/sifive: Add support for SiFive BEU in SiFive platform EDAC
-Date:   Thu, 12 Nov 2020 17:30:57 +0530
-Message-Id: <1605182457-86046-3-git-send-email-yash.shah@sifive.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605182457-86046-1-git-send-email-yash.shah@sifive.com>
-References: <1605182457-86046-1-git-send-email-yash.shah@sifive.com>
-Content-Type: text/plain
-X-Originating-IP: [159.117.144.156]
-X-ClientProxiedBy: BMXPR01CA0024.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:d::34) To BY5PR13MB4453.namprd13.prod.outlook.com
- (2603:10b6:a03:1d1::19)
+        id S1728263AbgKLMDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727920AbgKLMDB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:03:01 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE63C0613D1;
+        Thu, 12 Nov 2020 04:03:00 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id e21so3977710pgr.11;
+        Thu, 12 Nov 2020 04:03:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/43Y/3X/hoeBtmO8tqJUraisqf0fxkJhB8uqeEFrzsw=;
+        b=hwyvUEoF0ZgAg8kegnX9ZqNSfajqoiDUgKk2VSuxnB6ZIVrBYmn3hHEyewkqOvK/7h
+         3jNlfSMC4E+cc5ItSQefgb3IhXrpUcAVFR1xsBngAkt1BfO1bY3eF3Tjmv/La4PvF//h
+         WNj+GXkq1Hc+Zmc1if00t22HFKQg/nNuAha8Sk2F5v86mE/XxaCwaezwEft6YbONmZQi
+         T4DLj78b3cIV9xNiYpOTi8Hi3jsWAdz7vV2VVnENzNO6tq465Tl1NIoUMemqGKo9h43f
+         EShLKeu1p0tLur6Gijq9ygdhyCQ48uYH+/UMXwJNI8cBjAlcZEsI95DELrp6maT5ToiT
+         Akeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/43Y/3X/hoeBtmO8tqJUraisqf0fxkJhB8uqeEFrzsw=;
+        b=lW1B/cuxhmsQ8XAwSNxPoHGH7ZGC1gf06QYEyPoSsqWYW4kKHhyoqzMP7y3P5Z/hox
+         QMYpSis37IUPjlbirXkk36fDSgRniTGmIZqTGWg/y5Yi3OC/Rz8giW5aOHpxlaaRNmSL
+         IhDV9QIcGJKl+KoEb545WZoZig6A7B7tU9w6sAKZVzgkw7eG5t0GziyBHzLjlfqL5yTg
+         3zNKghBipQx9CbbRFsVc0kb7wZK8bgh6c0OVJLH5zNe0z6bw2621kT5bZ9axiaLI7agR
+         LF6IidG15hdKAWCGHiBW5ICDzy9lFY+ElMo4aunYAISS9FuK/1Geb0mSUcm0/aQ0Nl6Z
+         33dw==
+X-Gm-Message-State: AOAM5300urU85JYUvg2OCMjWLDmscvvvxjzQjsFGEO0iQOn8SdpJpL9E
+        agEhJJmaiB1IMBFos4zjPw==
+X-Google-Smtp-Source: ABdhPJxaZyjPL9SkN0EysVCsBndTodxnZWlLB+Bj+yVl/0dZWbi6ZKNItjLgJglmEO95sB65ql1bUg==
+X-Received: by 2002:a63:c34d:: with SMTP id e13mr21802306pgd.22.1605182579963;
+        Thu, 12 Nov 2020 04:02:59 -0800 (PST)
+Received: from localhost.localdomain ([221.124.243.27])
+        by smtp.gmail.com with ESMTPSA id t8sm3729264pje.23.2020.11.12.04.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 04:02:59 -0800 (PST)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use FNTCHARCNT() in fbcon.c
+Date:   Thu, 12 Nov 2020 07:02:21 -0500
+Message-Id: <cover.1605169912.git.yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from osubuntu003.open-silicon.com (159.117.144.156) by BMXPR01CA0024.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:d::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 12:01:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: df0bbe6f-793c-4a44-6e5d-08d88702b33b
-X-MS-TrafficTypeDiagnostic: BYAPR13MB2392:
-X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR13MB2392CFD8BA443A551021D53F82E70@BYAPR13MB2392.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:849;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X0EQxBPUztdy6vmIwKz8JNyZtOmmckF2KJ7zznoosPWk3e1KZH7tR0u6FqjtXfa1k7m3pUw4PGDTbDvfTv9T9hk7UOiztzGh+/jLSOn0cVAvtTeVS8YUi1z9uONBP2t1yyY5bA77TKo/fZoxvsuR9PTqBZbBkAzqi0q6+k+8zPOjGNB7dB65dOyjYfh9N4r7Iuqyl70VHsVdT8g0Jty2ZNwqgBioawVpygKxtcTcUSasb4IdCqiZxTRqs6TzHtRQq2F49XTdQf6qDJXzUc5VoEY32Mk2o9srreeQ1c68uU7BdA0C7Jv9VmqKZx5T2sUJmQyueke/VVuVaJ0jyWEjug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR13MB4453.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(346002)(376002)(396003)(39850400004)(136003)(366004)(8936002)(42882007)(478600001)(5660300002)(66556008)(66476007)(6666004)(6506007)(316002)(36756003)(66946007)(6512007)(44832011)(26005)(16526019)(52116002)(107886003)(2906002)(6486002)(7416002)(83170400001)(83380400001)(8676002)(4326008)(956004)(186003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 4AY3H0yKNECUdtIdaU4LfaGPFjtueYoIOL5wogc6UN3WXsHvacFAl1qkXOep6/qHWatLTk0Lcty4v/3EEWL9OTsKY08cP7l8FkgScyjrnN6fsoQozH7ochm0nGQqSypZYqupwU1wZOovW0jkE51R+BMqtm9JQm1+BM2cHp02kfcXPtm72Z5jvCWWHFDOfgQSiwYab/FpXO1B5A5W7IAm0UZD22dplUbEuTEZXfuklAD649xTqTTR2muSfccpnEdtHxNqIy2HFm8l7JaTp/NLM/mh9n+lq7yOD/AGfTrLtw4FAW/E++iHBEDGu8l0EkpT1DdFUQ5JQhw+/of+vFHi6f0hh06ih+MTA1SeVmvdOQ8MGoadpz3OoYp/ixjFGyODjBFKCiPPAJvjLKIEMEBj2U2/Zz3IaizI1RVm9qEyPVND4Zjp0RQqFgZpwTwSxfL3pvazPJ7Lu4piQC6ldSR2WLgpc8O76BVbArWazOGm8DGUHKSe3yaGqSbIjqeQt4HJ9I4HywpeoJ1S6V+MZpZecJpHMKSJCG3QcuarsTa5ifkbwA7akFFXJKjBJoNsSk1+uZkeqcSw6hQLCb8kqVsSp9n9i8wnBi9r+asaSgklVLVvHdwvzt7TlnhdGtvIaPEXwvuaP7W0+JrIA1IJVsMmm93Y5O2s29UbOi1x2vSTuSEIUICIM7/TUwDUaBTjo+EM4d7WDuAEBZkOwYH2fvk8aba765rRVWQ4mPXQmAHnbPIRolHCz7+st8r67sNCTKG7LLpoMAv+x9ClO9900SiZ35TYuu4WahzOVptyFNFlQTpNi3X4dJQT68y2LNtFJy/KaV1h5HQxWKNpDzyTuGywUevaDKHSEVgVw+JaV1Llma6yijmwI+2ETGsJRud7cpIQVPR8XukSqnPMc8bNk+ScAw==
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df0bbe6f-793c-4a44-6e5d-08d88702b33b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR13MB4453.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 12:01:34.1547
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9BjAPE/qG72erWR7tarrc7ehZYzcDFpW1ZglEZG52vUqJjP82I6Ko3snciy/6uVDE9cGEXLXzjteL9JSz9Xg3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR13MB2392
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register for ECC error events from SiFive BEU in SiFive platform EDAC
-driver.
+Hi all,
 
-Signed-off-by: Yash Shah <yash.shah@sifive.com>
----
- drivers/edac/Kconfig       |  2 +-
- drivers/edac/sifive_edac.c | 13 +++++++++++--
- 2 files changed, 12 insertions(+), 3 deletions(-)
+This is a collection of some miscellaneous clean-ups for fbcon and some
+console drivers. Since v2, I rebased them on linux-next, added some
+Reviewed-by: tags from Daniel and Greg, and rewrote the commit messages as
+suggested by Jiri. See [1] for v2 links.
 
-diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
-index 7a47680..8f662ff 100644
---- a/drivers/edac/Kconfig
-+++ b/drivers/edac/Kconfig
-@@ -469,7 +469,7 @@ config EDAC_ALTERA_SDMMC
- 
- config EDAC_SIFIVE
- 	bool "Sifive platform EDAC driver"
--	depends on EDAC=y && SIFIVE_L2
-+	depends on EDAC=y && (SIFIVE_L2 || SIFIVE_BEU)
- 	help
- 	  Support for error detection and correction on the SiFive SoCs.
- 
-diff --git a/drivers/edac/sifive_edac.c b/drivers/edac/sifive_edac.c
-index 3a3dcb1..0f6d457 100644
---- a/drivers/edac/sifive_edac.c
-+++ b/drivers/edac/sifive_edac.c
-@@ -11,6 +11,7 @@
- #include <linux/platform_device.h>
- #include "edac_module.h"
- #include <soc/sifive/sifive_l2_cache.h>
-+#include <soc/sifive/sifive_beu.h>
- 
- #define DRVNAME "sifive_edac"
- 
-@@ -67,7 +68,11 @@ static int ecc_register(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	register_sifive_l2_error_notifier(&p->notifier);
-+	if (IS_ENABLED(CONFIG_SIFIVE_L2))
-+		register_sifive_l2_error_notifier(&p->notifier);
-+
-+	if (IS_ENABLED(CONFIG_SIFIVE_BEU))
-+		register_sifive_beu_error_notifier(&p->notifier);
- 
- 	return 0;
- 
-@@ -81,7 +86,11 @@ static int ecc_unregister(struct platform_device *pdev)
- {
- 	struct sifive_edac_priv *p = platform_get_drvdata(pdev);
- 
--	unregister_sifive_l2_error_notifier(&p->notifier);
-+	if (IS_ENABLED(CONFIG_SIFIVE_L2))
-+		unregister_sifive_l2_error_notifier(&p->notifier);
-+	if (IS_ENABLED(CONFIG_SIFIVE_BEU))
-+		unregister_sifive_beu_error_notifier(&p->notifier);
-+
- 	edac_device_del_device(&pdev->dev);
- 	edac_device_free_ctl_info(p->dci);
- 
+It does the following:
+
+  - Garbage collect KD_FONT_OP_COPY callbacks since we disabled it
+    recently. Mark it as obsolete.
+  - Delete dummy con_font_op() callbacks. (Reviewed by Greg)
+
+  - Add a charcount field to our new font descriptor, `struct font_desc`.
+    (Reviewed by Daniel)
+  - Do not use a hard-coded 256 for built-in font charcount in
+    console/sticore.c, use the new charcount field of `struct font_desc`
+    instead. (Reviewed by Daniel)
+  - Similarly, in fbcon.c, avoid using the magic negative-indexing macro,
+    FNTCHARCNT(). Set `vc->vc_font.charcount` properly and always use that
+    instead.
+
+Daniel, hopefully [5/5] removes FNTCHARCNT() for ever, but I have not
+tested it sufficiently yet. I remember you mentioned elsewhere that
+"fbtest.c" is insufficient for framebuffer testing, then how should we
+test it? The first 4 patches should be fine.
+
+Please reference commit messages for more information. Thank you!
+
+[1] v2 links:
+
+2/5: https://lore.kernel.org/lkml/c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com/
+3/5: https://lore.kernel.org/lkml/20201028060533.1206307-1-yepeilin.cs@gmail.com/
+4/5: https://lore.kernel.org/lkml/c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com/
+5/5: https://lore.kernel.org/lkml/20201028155139.1220549-1-yepeilin.cs@gmail.com/
+
+Peilin Ye (5):
+  console: Delete unused con_font_copy() callback implementations
+  console: Delete dummy con_font_set() and con_font_default() callback implementations
+  Fonts: Add charcount field to font_desc
+  parisc/sticore: Avoid hard-coding built-in font charcount
+  fbcon: Avoid using FNTCHARCNT() and hard-coded built-in font charcount
+
+ drivers/usb/misc/sisusbvga/sisusb_con.c | 21 --------
+ drivers/video/console/dummycon.c        | 20 --------
+ drivers/video/console/sticore.c         |  8 +--
+ drivers/video/fbdev/core/fbcon.c        | 68 ++++++++-----------------
+ drivers/video/fbdev/core/fbcon_rotate.c |  3 +-
+ drivers/video/fbdev/core/tileblit.c     |  4 +-
+ include/linux/console.h                 |  1 -
+ include/linux/font.h                    |  1 +
+ include/uapi/linux/kd.h                 |  2 +-
+ lib/fonts/font_10x18.c                  |  1 +
+ lib/fonts/font_6x10.c                   |  1 +
+ lib/fonts/font_6x11.c                   |  1 +
+ lib/fonts/font_6x8.c                    |  1 +
+ lib/fonts/font_7x14.c                   |  1 +
+ lib/fonts/font_8x16.c                   |  1 +
+ lib/fonts/font_8x8.c                    |  1 +
+ lib/fonts/font_acorn_8x8.c              |  1 +
+ lib/fonts/font_mini_4x6.c               |  1 +
+ lib/fonts/font_pearl_8x8.c              |  1 +
+ lib/fonts/font_sun12x22.c               |  1 +
+ lib/fonts/font_sun8x16.c                |  1 +
+ lib/fonts/font_ter16x32.c               |  1 +
+ 22 files changed, 42 insertions(+), 99 deletions(-)
+
 -- 
-2.7.4
+2.25.1
 
