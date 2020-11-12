@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732B72AFC8F
+	by mail.lfdr.de (Postfix) with ESMTP id EBBEC2AFC90
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729337AbgKLBjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:39:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
+        id S1728951AbgKLBjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgKLAhn (ORCPT
+        with ESMTP id S1728116AbgKLAlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:37:43 -0500
+        Wed, 11 Nov 2020 19:41:16 -0500
 Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA34DC0613D4;
-        Wed, 11 Nov 2020 16:37:42 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w6so2904879pfu.1;
-        Wed, 11 Nov 2020 16:37:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E91FC0613D6;
+        Wed, 11 Nov 2020 16:41:16 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c66so2901145pfa.4;
+        Wed, 11 Nov 2020 16:41:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mM9QG86V38tLRA60VPmwtkAR+Znxn+9PIF+rI2nOlIY=;
-        b=jGX4gTpi4pVihMOdKX/6tH9in1Jo9ery0yzFMEOf9KQeAMg4w0zuUmGry5KNXGY+DS
-         04SEIGtu3FHUVZ6Q3i2LH5+qYvg6ngXGkw8/n/0444hh8Tds2uQuWuHC+etuLeqx4Rqo
-         Gx1hocfoBTGU3MppVZsrOilc/9ivXc0ebxNzbooY4b23l/e9bjE2Jgqfd05zepO3CFUp
-         bmbGpHI9DllMRTvm1gQtiCnvExv9REVyLB/jylkxMW30fQDP2JasZrbFWBOavW8YdT/t
-         uxFOuwEoK49xH2cdhfAb0F/dK7zbOXo48nid9QZqIzXhaI1UcdW7/I2+xZGQHVsqOQYN
-         m96Q==
+         :content-disposition:in-reply-to:user-agent;
+        bh=hy+K1YgnwFdKlAc0ui0j41XCZFbpulfNL4llqoUSukQ=;
+        b=pSJiiSCQJBX1wSPW5tIs3qbjlpf4FlNsL99G/EMu5rAuxi1mu/4KZoFRgkbDtNrHsI
+         QRwgpVnwEIhf82OJS8mi2eFIB6LuQ77aRGCI2E1DUr8t4xnh2/FilkFtn/+R5hTuP+Ub
+         myio/ANiOAuhvAF+DLrIpVsljjnoXyF10s853krs1IJl2/JjcsQu+SZtOGdCjYjq/z/2
+         vxIJV/iEzTC8bFjTKJmO9qc3FmGSzK72P2x/vF2gjV3ap49pMnkmEmp6hyix4EwzLJGI
+         kom1bRANzZuIqo3Zlpr8fW3XUFg0j21iR+ON+3aAv87A68Vei645AHoeW1Pqk9ve/Wuc
+         yYdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mM9QG86V38tLRA60VPmwtkAR+Znxn+9PIF+rI2nOlIY=;
-        b=i6zlC1S/grXKbxKO1q10qlD0UWMx+j+8QPsGFNfNnHfpK3n7+txYwBxHodZwHDVOiX
-         It+/rltAqtab1gJtwOskuzOWjb0DfW17gipgCl9TF7+rTMaCcFP2iay5LFXaAoUb7FLk
-         cHgGSYcAWvd5dOhHvemis/OwoNenJLePZbV8BFhoXFdLnNKIbbf2JVTMBy6qwcxpJCCH
-         8EZhetObrB1WcUqYAoJ33XZzq/0UW57sEN+qWZeDZjtsAtcfljcLUpt+HcUKobvWzyte
-         uPi078YUSq46gAUhJogp4OTR6dM02l9D7Zd0jn17Dnoc9/cf+ItK11fhMqujyZUm/BVv
-         s9rQ==
-X-Gm-Message-State: AOAM532iMSgnIef3+4PXPq8Nu/wyLwnwUYVK1iqFKIDJLco1ERuZo/Wp
-        qVdYFOk73b7fNm4HU/C/W+A=
-X-Google-Smtp-Source: ABdhPJwwUP/3YiRKPA/36oGI5gQoClu23rc118P24HOIH+2zQqSYwKLzEPkhy2rbrWyHL4lTpKzL2w==
-X-Received: by 2002:aa7:8518:0:b029:18b:cc9c:efab with SMTP id v24-20020aa785180000b029018bcc9cefabmr21951853pfn.39.1605141462317;
-        Wed, 11 Nov 2020 16:37:42 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id b80sm4047441pfb.40.2020.11.11.16.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 16:37:41 -0800 (PST)
-Date:   Wed, 11 Nov 2020 16:37:38 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] Input: adp5589: use a single variable for error in
- probe
-Message-ID: <20201112003738.GZ1003057@dtor-ws>
-References: <20201111084833.40995-1-alexandru.ardelean@analog.com>
- <20201111084833.40995-2-alexandru.ardelean@analog.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hy+K1YgnwFdKlAc0ui0j41XCZFbpulfNL4llqoUSukQ=;
+        b=XI5iWXuARQE3b+nzCl+NzgPTYhJHQdKRec3NBu+t78Z6sBPMVKzJ+vKNjpBVvzLGIt
+         zvp+hAX70OLa1MdtXE97WVNMnFOX5y1QyRqz/mAdOb5P2Oje0kMPVjeK9UpCcZZAvt6V
+         g5Lm36ED9HcY/MwTNjcL5/UGbIxVCOZH979XUBwez9/fhzEMlO5Jv+Pj0WmgY5zAWbMJ
+         40IWD8eJFBdWZ46OHmAWin1li7gpGhZNi4FV62ytZQEH929oD7F6Fin7YNhPhTQNL+fx
+         dGD5f8Y1JWFXbDvMXPcDBsMjSNBmZvI9zwlVOQHDacaFzBROOpJgXVF23jlrw9YQlu0D
+         h8zw==
+X-Gm-Message-State: AOAM53231zpFcpVelcPznQAB1nkejF6u6cVXZJMx8nHnCWjZbz/7GbaX
+        g3XGQuGMzpiHImQqdLhVeoc=
+X-Google-Smtp-Source: ABdhPJyYGAhwK1wvgbPRZygnqvGf9L9Av/xAFmTIIyPPx6DmFzEUVef1MpHBcTjgdqXAIi1iLGjVgQ==
+X-Received: by 2002:aa7:908d:0:b029:15f:d774:584 with SMTP id i13-20020aa7908d0000b029015fd7740584mr167784pfa.6.1605141675790;
+        Wed, 11 Nov 2020 16:41:15 -0800 (PST)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id b4sm3854232pfi.208.2020.11.11.16.41.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 11 Nov 2020 16:41:15 -0800 (PST)
+Date:   Wed, 11 Nov 2020 16:41:08 -0800
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
+Message-ID: <20201112004107.GA31289@taoren-ubuntu-R90MNF91>
+References: <20201111232330.30843-1-rentao.bupt@gmail.com>
+ <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111084833.40995-2-alexandru.ardelean@analog.com>
+In-Reply-To: <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandru,
+On Wed, Nov 11, 2020 at 11:34:10PM +0000, Joel Stanley wrote:
+> On Wed, 11 Nov 2020 at 23:23, <rentao.bupt@gmail.com> wrote:
+> >
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> >
+> > The patch series adds the initial version of device tree for Facebook
+> > Galaxy100 (AST2400) BMC.
+> >
+> > Patch #1 adds common dtsi to minimize duplicated device entries across
+> > Facebook Network AST2400 BMC device trees.
+> >
+> > Patch #2 simplfies Wedge40 device tree by using the common dtsi.
+> >
+> > Patch #3 simplfies Wedge100 device tree by using the common dtsi.
+> >
+> > Patch #4 adds the initial version of device tree for Facebook Galaxy100
+> > BMC.
+> 
+> Nice. They look good to me.
+> 
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-On Wed, Nov 11, 2020 at 10:48:28AM +0200, Alexandru Ardelean wrote:
-> The 'error' & 'ret' variables are used. This is a bit of duplication.
-> This change replaces the use of error with the 'ret' variable since the
-> name is a bit more generic.
+Thanks a lot for the quick review, Joel.
 
-I really prefer variables that carry error codes/success and are used in
-error paths to be called "error", and "ret" or "retval" to be used in
-cases where we may return actual data.
+> Is there another person familiar with the design you would like to
+> review before I merge?
 
-Thanks.
+Patrick Williams sometimes helps reviewing my patches although he doesn't
+work on Network BMCs. Let me see if he has bandwidth this time :)
 
--- 
-Dmitry
+
+Cheers,
+
+Tao
