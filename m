@@ -2,124 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4782B0D31
+	by mail.lfdr.de (Postfix) with ESMTP id A9A412B0D32
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgKLTBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:01:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
+        id S1726890AbgKLTBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:01:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgKLTBQ (ORCPT
+        with ESMTP id S1726849AbgKLTBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:01:16 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80442C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:16 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id c9so6181478wml.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:16 -0800 (PST)
+        Thu, 12 Nov 2020 14:01:18 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0796FC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:18 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p1so7126842wrf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3tJhB0Hg6HAWYXnosRdlVU8vKZOSyhLIYiRgTEXQL+8=;
-        b=eFZ0nyMEgcF3m/AhK2jWUr98teTvtyaCoUBu+csBEw/gH1A2K8TWUlHFEXj1H91Dhn
-         zPTWKrK/hpTxawzZz18YGICA+DOS7OBbLkgfxRLIi164sk5OCFhSHC0gKW8nKeJ2yYFX
-         zxcyMqavnIwUKukY51JfOoe/m9NGE8DjSAutaGM3HWFbEshT2qAqyB6d/qAcohmVZAZ+
-         Q98TrI7uBD23HyyG5tmr481OLoDvvqDo/wIhi5G0bR+C9ChfGJ4LThfR/tcrBrtHKsGz
-         ptHhlRvurdkrblutEcv7VJ6CIt7MB2tocfQ+Ofw7vPVJiEKl4z/5fGc0Yo7i1ICnKLuW
-         /CNw==
+        bh=YpyVTU+tqYpOdqYFV7Yyz8eI/R9DV3oM3CFnCgiNLh8=;
+        b=Uu4xJvWHcKPPYDjs+hyK5B7d8HMBUj/yTACwflvslo/PKGX4dzLVg8Hm2afZX0yNzn
+         IDxJzY8ETvFBci87UC/2BGc2ifN3TWH8lMFAHzZndmdHXJYtrIwDZHJfeo03Y5ve8Zp5
+         x+W0zF325jR3ygT6nKBe7p1NieYmy6NrEQJYOBV1zP8RQxGbVKRhZVPXTBZZ4dF/cUx2
+         ugbkhIUsvKOdUYuhlxRpfXENXWUsYIDuof1ifFMSBFof/er1k5RLhLM6i+Fr2gfz9nDH
+         +QBN2RD5gFdbhcqQRP9+iwAQPFFmt1TJUSDskdxnPH5ilO/6PI7BmUPxEbRVR7r19B/2
+         tSmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3tJhB0Hg6HAWYXnosRdlVU8vKZOSyhLIYiRgTEXQL+8=;
-        b=DnN9kDivx37zmnNWeexjM7oGbfAJ5Pk8HassUT6aaJ4mkMU4JVAsXZVrAPfYa7gifa
-         iB+Q5Ul69dOc5XPnnq94iVNRU5cmBhZBOLZQ8/l8wApaLYirTveC9ORQYMJYDTOZPNmR
-         HD9Zr04NubfiOch/kzK7Hur0i1IeKbJnyckHEvs9mQElDChBd+Tsu6zij56ZHjxkNzAA
-         pR/MMj9BbqOmwgrzX+ZWr4Q7XPcIzxTdvpPFUzeN+yUVz+mkJw3T7CYRwfOPMwH1ddIX
-         dq3UH6ydrDEnr9YInpoKgEcsjHAEaqEv/t+GiJPBIPEU8nfnls3mK8lNfNF0v/s0FdiE
-         iHvg==
-X-Gm-Message-State: AOAM530NVCF1OUUYHhI/dk0/hWOHBGAC6Tx4zUNoklkvklI6bfZBp+qu
-        Ij+0MOYz4KpJ2cPNt9UNhCnudg==
-X-Google-Smtp-Source: ABdhPJyYloRTMiYF0nhZqEBftHyP2DamMNba6JvD6twKnF8vw60286TxWnCuWt58PP87X7470thDow==
-X-Received: by 2002:a1c:7418:: with SMTP id p24mr1088162wmc.36.1605207673415;
-        Thu, 12 Nov 2020 11:01:13 -0800 (PST)
+        bh=YpyVTU+tqYpOdqYFV7Yyz8eI/R9DV3oM3CFnCgiNLh8=;
+        b=EwBkk0Eakx8bXm59UHtifVtX58EJ029F4ItZq1PU7ytLmnOjsFCGL8qugZR5o2Ix5D
+         9d5Q8TQrH2PGPNginBC8iJ8qC/J+6oZAhLR3m7InnqbWRGUPOwROuDWhRu/QxR5GWRVX
+         KAN3i4OAsurS8ysBaOHR7i9WSkh2x7VUuiQHvWEXIKCeghe0SAvOBs5bO6mZX8yrzJqZ
+         nVf51ageOJdWL/32X2D82M/D5TdqfMsv2fAyQfqhaziC6NtBhEHineH57D0nw9y8kUSL
+         3CRzYASu/5vl8h/OBEVpWK4O4c/aXdPkCWU+hA1VkY9HLvhCs0LY1zrB5YAlXVkFKPFi
+         2RvQ==
+X-Gm-Message-State: AOAM5305XLAFMFiqHOx3eZogCz97emnG+eDln93SapyiyZ5CcuuTOW1I
+        NcbjfIP6RI2zs/M2UJjJ9+Rs4A==
+X-Google-Smtp-Source: ABdhPJzJ40gK1ueU/SRBTE+WvtebXdGobO4IoV/Z4CnmJ6+QGNkXlX+7zClpejlFtHF5WFI8Pe9XTA==
+X-Received: by 2002:a5d:6286:: with SMTP id k6mr1116225wru.216.1605207676690;
+        Thu, 12 Nov 2020 11:01:16 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.12
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:01:12 -0800 (PST)
+        Thu, 12 Nov 2020 11:01:16 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 13/30] drm/atmel-hlcdc/atmel_hlcdc_crtc: Apply correct formatting to struct docs
-Date:   Thu, 12 Nov 2020 19:00:22 +0000
-Message-Id: <20201112190039.2785914-14-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 14/30] drm/amd/amdgpu/amdgpu_ring: Fix a bunch of function misdocumentation
+Date:   Thu, 12 Nov 2020 19:00:23 +0000
+Message-Id: <20201112190039.2785914-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
 References: <20201112190039.2785914-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And fix-up a misnamed member description.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c:33: warning: cannot understand function prototype: 'struct atmel_hlcdc_crtc_state '
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c:52: warning: cannot understand function prototype: 'struct atmel_hlcdc_crtc '
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:63: warning: Excess function parameter 'adev' description in 'amdgpu_ring_alloc'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:122: warning: Excess function parameter 'adev' description in 'amdgpu_ring_commit'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:167: warning: Function parameter or member 'max_dw' not described in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:167: warning: Function parameter or member 'irq_src' not described in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:167: warning: Function parameter or member 'irq_type' not described in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:167: warning: Function parameter or member 'hw_prio' not described in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:167: warning: Excess function parameter 'max_ndw' description in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:167: warning: Excess function parameter 'nop' description in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:285: warning: Excess function parameter 'adev' description in 'amdgpu_ring_fini'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:325: warning: Function parameter or member 'ring' not described in 'amdgpu_ring_emit_reg_write_reg_wait_helper'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:325: warning: Excess function parameter 'adev' description in 'amdgpu_ring_emit_reg_write_reg_wait_helper'
 
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-index c17571a3cc2bf..c58fa00b4848c 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-@@ -25,7 +25,7 @@
- #include "atmel_hlcdc_dc.h"
- 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+index 2697b250dc326..a23b2079696a1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+@@ -52,7 +52,6 @@
  /**
-- * Atmel HLCDC CRTC state structure
-+ * struct atmel_hlcdc_crtc_state - Atmel HLCDC CRTC state structure
+  * amdgpu_ring_alloc - allocate space on the ring buffer
   *
-  * @base: base CRTC state
-  * @output_mode: RGBXXX output mode
-@@ -42,10 +42,10 @@ drm_crtc_state_to_atmel_hlcdc_crtc_state(struct drm_crtc_state *state)
+- * @adev: amdgpu_device pointer
+  * @ring: amdgpu_ring structure holding ring information
+  * @ndw: number of dwords to allocate in the ring buffer
+  *
+@@ -95,7 +94,8 @@ void amdgpu_ring_insert_nop(struct amdgpu_ring *ring, uint32_t count)
+ 		amdgpu_ring_write(ring, ring->funcs->nop);
  }
  
- /**
-- * Atmel HLCDC CRTC structure
-+ * struct atmel_hlcdc_crtc - Atmel HLCDC CRTC structure
+-/** amdgpu_ring_generic_pad_ib - pad IB with NOP packets
++/**
++ * amdgpu_ring_generic_pad_ib - pad IB with NOP packets
   *
-  * @base: base DRM CRTC structure
-- * @hlcdc: pointer to the atmel_hlcdc structure provided by the MFD device
-+ * @dc: pointer to the atmel_hlcdc structure provided by the MFD device
-  * @event: pointer to the current page flip event
-  * @id: CRTC id (returned by drm_crtc_index)
-  */
+  * @ring: amdgpu_ring structure holding ring information
+  * @ib: IB to add NOP packets to
+@@ -112,7 +112,6 @@ void amdgpu_ring_generic_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib)
+  * amdgpu_ring_commit - tell the GPU to execute the new
+  * commands on the ring buffer
+  *
+- * @adev: amdgpu_device pointer
+  * @ring: amdgpu_ring structure holding ring information
+  *
+  * Update the wptr (write pointer) to tell the GPU to
+@@ -156,7 +155,9 @@ void amdgpu_ring_undo(struct amdgpu_ring *ring)
+  * @adev: amdgpu_device pointer
+  * @ring: amdgpu_ring structure holding ring information
+  * @max_ndw: maximum number of dw for ring alloc
+- * @nop: nop packet for this ring
++ * @irq_src: interrupt source to use for this ring
++ * @irq_type: interrupt type to use for this ring
++ * @hw_prio: ring priority (NORMAL/HIGH)
+  *
+  * Initialize the driver information for the selected ring (all asics).
+  * Returns 0 on success, error on failure.
+@@ -276,7 +277,6 @@ int amdgpu_ring_init(struct amdgpu_device *adev, struct amdgpu_ring *ring,
+ /**
+  * amdgpu_ring_fini - tear down the driver ring struct.
+  *
+- * @adev: amdgpu_device pointer
+  * @ring: amdgpu_ring structure holding ring information
+  *
+  * Tear down the driver information for the selected ring (all asics).
+@@ -310,7 +310,7 @@ void amdgpu_ring_fini(struct amdgpu_ring *ring)
+ /**
+  * amdgpu_ring_emit_reg_write_reg_wait_helper - ring helper
+  *
+- * @adev: amdgpu_device pointer
++ * @ring: ring to write to
+  * @reg0: register to write
+  * @reg1: register to wait on
+  * @ref: reference value to write/wait on
 -- 
 2.25.1
 
