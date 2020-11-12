@@ -2,178 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D89E2B0BF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DED2B0BEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgKLSAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:00:24 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:52774 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726784AbgKLSAO (ORCPT
+        id S1726692AbgKLSAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:00:07 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15919 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgKLSAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:00:14 -0500
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D0BE120C287D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 10:00:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D0BE120C287D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605204012;
-        bh=rWOh7GylTqiAkTDgEMzJCdlRF0cb3PsMAOZugOSpS1M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J3+gj81JSfp/rX8sqnQ/HshhbCMpmkpaOU9NXMWxdPAxiEdVr1lqF+5zAtCgPp7us
-         m98v+Efc4HgGOTFMtzbURwLcoPDsAfnx4wiEubzGf6k9gpF+GZgbWtw8TBI7PBPjdm
-         cYcDVHM9w0aHEa1mAylu1zSnfEOOzGxF3HiL2EbM=
-Received: by mail-qv1-f45.google.com with SMTP id 63so3198849qva.7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 10:00:12 -0800 (PST)
-X-Gm-Message-State: AOAM532GUzfoVDkwEX1MWycD8942Tj+Qt5S4V+CT7mQN4j1uLz5A2Amq
-        qUsHrZU0j5E2lw/A+8TJAWSiJTibezXhKOzxuak=
-X-Google-Smtp-Source: ABdhPJwRbXkuEjeOv1DIoWIOKduAW/kWehPNWFoF6tP6LG3PD5GR+c3fEpeUyDxJhTnzzL4ytHNeTDNZb4cUvtEsQ4Q=
-X-Received: by 2002:a0c:cb04:: with SMTP id o4mr953748qvk.15.1605204011871;
- Thu, 12 Nov 2020 10:00:11 -0800 (PST)
+        Thu, 12 Nov 2020 13:00:02 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad781b0009>; Thu, 12 Nov 2020 09:59:55 -0800
+Received: from [10.2.174.128] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 17:59:59 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <linux-mm@kvack.org>, Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        "Michal Hocko" <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
+ order in split page_owner.
+Date:   Thu, 12 Nov 2020 12:59:57 -0500
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <8D0DD0A3-AE22-4029-8A56-39E47C0196EC@nvidia.com>
+In-Reply-To: <9e8f5412-d79a-7679-da96-35efa5b50684@nvidia.com>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-4-zi.yan@sent.com>
+ <9e8f5412-d79a-7679-da96-35efa5b50684@nvidia.com>
 MIME-Version: 1.0
-References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
- <20201112035023.974748-1-natechancellor@gmail.com> <CAFnufp2eEKW4tencrhUoYkY6C-eGB5xF_Fg5hms52zgJj68hJg@mail.gmail.com>
- <20201112174954.GA934563@ubuntu-m3-large-x86>
-In-Reply-To: <20201112174954.GA934563@ubuntu-m3-large-x86>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Thu, 12 Nov 2020 18:59:36 +0100
-X-Gmail-Original-Message-ID: <CAFnufp2edm5wkRtLzZf0XwL2xCKzJ7EgpZAKKg70QzZog_ND-Q@mail.gmail.com>
-Message-ID: <CAFnufp2edm5wkRtLzZf0XwL2xCKzJ7EgpZAKKg70QzZog_ND-Q@mail.gmail.com>
-Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed;
+        boundary="=_MailMate_AAD31587-D101-406A-9B65-C9A8A942B2C8_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605203995; bh=MAiG2sjsmxSzuO1jxjmhFszXXyJxQOHDOt1J20Qt1Q0=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=hDsFSos/u7Gi+/N93qsZfV/Ghw3iMpI3x1zmmttCVlth2547xEY48FDmrONxaw3fR
+         J6Kn8HgaSu0NsYGrkwLKeJA3VoRoBo59D6ipDHQZf1UlVR8kg5Aehzz/SG5KLy3Ag5
+         3plPRExMhnx/jLZgJ6GQBkGBCoAEWcUPgiZjGm2bRl/zo4pH9j0k91AIcUfSSFcRNU
+         0P+ZveuYi5BSXXbKzn6a7WpIFabwwHG62LZtH1q1YK7LPR5FLyxSJTyLPBagunv96H
+         9c+Du3uJvLSEwbBHvvYQ3o6W7WzvhxWOuM1x+OrWMZd9/8XK+SQC0jeG1lUK+nm/Y4
+         gXUkZrANna+qg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 6:49 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+--=_MailMate_AAD31587-D101-406A-9B65-C9A8A942B2C8_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On 12 Nov 2020, at 12:57, Ralph Campbell wrote:
+
+> On 11/11/20 12:40 PM, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> It adds a new_order parameter to set new page order in page owner.
+>> It prepares for upcoming changes to support split huge page to any low=
+er
+>> order.
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
 >
-> Hi Matteo,
+> Except for a minor fix below, you can add:
+> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+
+Thanks.
+
 >
-> On Thu, Nov 12, 2020 at 12:26:45PM +0100, Matteo Croce wrote:
-> > On Thu, Nov 12, 2020 at 4:50 AM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > Clang warns:
-> > >
-> > > kernel/reboot.c:707:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_TRIPLE;
-> > >                             ~ ^~~~~~~~~~~
-> > > kernel/reboot.c:709:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_KBD;
-> > >                             ~ ^~~~~~~~
-> > > kernel/reboot.c:711:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_BIOS;
-> > >                             ~ ^~~~~~~~~
-> > > kernel/reboot.c:713:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_ACPI;
-> > >                             ~ ^~~~~~~~~
-> > > kernel/reboot.c:715:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_EFI;
-> > >                             ~ ^~~~~~~~
-> > > kernel/reboot.c:717:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_CF9_FORCE;
-> > >                             ~ ^~~~~~~~~~~~~~
-> > > kernel/reboot.c:719:17: warning: implicit conversion from enumeration
-> > > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > > [-Wenum-conversion]
-> > >                 reboot_mode = BOOT_CF9_SAFE;
-> > >                             ~ ^~~~~~~~~~~~~
-> > > 7 warnings generated.
-> > >
-> > > It seems that these assignment should be to reboot_type, not
-> > > reboot_mode. Fix it so there are no more warnings and the code works
-> > > properly.
-> > >
-> > > Fixes: eab8da48579d ("reboot: allow to specify reboot mode via sysfs")
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1197
-> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > ---
-> > >  kernel/reboot.c | 14 +++++++-------
-> > >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/kernel/reboot.c b/kernel/reboot.c
-> > > index deba133a071b..8599d0d44aec 100644
-> > > --- a/kernel/reboot.c
-> > > +++ b/kernel/reboot.c
-> > > @@ -704,19 +704,19 @@ static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
-> > >                 return -EPERM;
-> > >
-> > >         if (!strncmp(buf, BOOT_TRIPLE_STR, strlen(BOOT_TRIPLE_STR)))
-> > > -               reboot_mode = BOOT_TRIPLE;
-> > > +               reboot_type = BOOT_TRIPLE;
-> > >         else if (!strncmp(buf, BOOT_KBD_STR, strlen(BOOT_KBD_STR)))
-> > > -               reboot_mode = BOOT_KBD;
-> > > +               reboot_type = BOOT_KBD;
-> > >         else if (!strncmp(buf, BOOT_BIOS_STR, strlen(BOOT_BIOS_STR)))
-> > > -               reboot_mode = BOOT_BIOS;
-> > > +               reboot_type = BOOT_BIOS;
-> > >         else if (!strncmp(buf, BOOT_ACPI_STR, strlen(BOOT_ACPI_STR)))
-> > > -               reboot_mode = BOOT_ACPI;
-> > > +               reboot_type = BOOT_ACPI;
-> > >         else if (!strncmp(buf, BOOT_EFI_STR, strlen(BOOT_EFI_STR)))
-> > > -               reboot_mode = BOOT_EFI;
-> > > +               reboot_type = BOOT_EFI;
-> > >         else if (!strncmp(buf, BOOT_CF9_FORCE_STR, strlen(BOOT_CF9_FORCE_STR)))
-> > > -               reboot_mode = BOOT_CF9_FORCE;
-> > > +               reboot_type = BOOT_CF9_FORCE;
-> > >         else if (!strncmp(buf, BOOT_CF9_SAFE_STR, strlen(BOOT_CF9_SAFE_STR)))
-> > > -               reboot_mode = BOOT_CF9_SAFE;
-> > > +               reboot_type = BOOT_CF9_SAFE;
-> > >         else
-> > >                 return -EINVAL;
-> > >
-> > >
-> > > base-commit: 3e14f70c05cda4794901ed8f976de3a88deebcc0
-> > > --
-> > > 2.29.2
-> > >
-> >
-> > Hmm, this was introduced in v3 I think.
-> >
-> > I wonder why my compiler doesn't warn about it, the two variables are
-> > defined as different enum type.
-> > I get the same warnings with GCC and -Wenum-conversion.
+>> ---
+>>   include/linux/page_owner.h | 7 ++++---
+>>   mm/huge_memory.c           | 2 +-
+>>   mm/page_alloc.c            | 2 +-
+>>   mm/page_owner.c            | 6 +++---
+>>   4 files changed, 9 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
+>> index 3468794f83d2..215cbb159568 100644
+>> --- a/include/linux/page_owner.h
+>> +++ b/include/linux/page_owner.h
+>> @@ -31,10 +31,11 @@ static inline void set_page_owner(struct page *pag=
+e,
+>>   		__set_page_owner(page, order, gfp_mask);
+>>   }
+>>  -static inline void split_page_owner(struct page *page, unsigned int =
+nr)
+>> +static inline void split_page_owner(struct page *page, unsigned int n=
+r,
+>> +			unsigned int new_order)
+>>   {
+>>   	if (static_branch_unlikely(&page_owner_inited))
+>> -		__split_page_owner(page, nr);
+>> +		__split_page_owner(page, nr, new_order);
+>>   }
+>>   static inline void copy_page_owner(struct page *oldpage, struct page=
+ *newpage)
+>>   {
+>> @@ -60,7 +61,7 @@ static inline void set_page_owner(struct page *page,=
+
+>>   {
+>>   }
+>>   static inline void split_page_owner(struct page *page,
+>> -			unsigned int order)
+>> +			unsigned int nr, unsigned int new_order)
+>>   {
+>>   }
+>>   static inline void copy_page_owner(struct page *oldpage, struct page=
+ *newpage)
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index f599f5b9bf7f..8b7d771ee962 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -2459,7 +2459,7 @@ static void __split_huge_page(struct page *page,=
+ struct list_head *list,
+>>    	ClearPageCompound(head);
+>>  -	split_page_owner(head, nr);
+>> +	split_page_owner(head, nr, 1);
 >
-> What version of GCC do you have? -Wenum-conversion is a fairly new
-> warning in GCC I think. Although if you get it now, maybe it was some
-> configuration error?
+> Shouldn't this be 0, not 1?
+> (new_order not new_nr).
 >
 
-Hi,
+Yes, I forgot to fix the call site after I change the function signature.=
+ Thanks.
 
-the one shipped in Fedora 33:
-gcc version 10.2.1 20201016 (Red Hat 10.2.1-6) (GCC)
+>>   	/* See comment in __split_huge_page_tail() */
+>>   	if (PageAnon(head)) {
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index d77220615fd5..a9eead0e091a 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -3284,7 +3284,7 @@ void split_page(struct page *page, unsigned int =
+order)
+>>    	for (i =3D 1; i < (1 << order); i++)
+>>   		set_page_refcounted(page + i);
+>> -	split_page_owner(page, 1 << order);
+>> +	split_page_owner(page, 1 << order, 1);
+>
+> Ditto, 0.
+>
 
-I enabled -Wenum-compare -Wenum-conversion globally in the root
-Makefile and I had only 15 warnings for an 'allyesconfig' x86_64
-build.
+Sure, will fix this too.
 
-Maybe it's worth fixing them and enable the warning, it's very useful.
 
-Thanks,
--- 
-per aspera ad upstream
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_AAD31587-D101-406A-9B65-C9A8A942B2C8_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+teB0PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKf3kQAKPjwlupDy5Dz/ZCZo1HZGEq9PEezteAOrP/
+diOBbW4tdj012ERs+p1h1M5s1ZAEdBE7W687YOh1DV0HQcFT587vBTWkARrIdOJU
+PpYzGEJghzpUR53iCZ6rLdK0af9fyGGX30DYWmNfyKIPIkrTAN7BwoQnnrx2sj0f
+0xxLE5UG9YmAGnHiqttwaTr6ha53oFbvwPGeps7WdEvAT6OyT+fvIaKaVPTuh/YG
+J4Zt1nPyArlXb7di0qoBaKZrmHZkqhBS4a7G9eRPJ/i2TGnP+24dCRfLpElqtzOB
+AJsW7MjZRnCNy/8K/VnEpv7v1wLyUW694y09BQPQUGOUChn8iNY86di2/2hm5XSN
+QFijAuiKZ8pn9NOCqjMZ1+Teno0Of1SkaUCLxgG8GzlHsVarIu4sxhi2Ed0HkTph
++wqaYtWv4HANcYeUEHRuFwZwrA87dELZsZ5yeTgcQ8wgEiyLWBm2czHN2v1FdNzu
+smKVxn76waw/s7cekrsEnaK2Je2ExcYZhPvFdDhb/TITy7p328751becw9bjcyCq
+Hj8I+2KXIXjdna8t1q1h2IxnY0EFa4h7TbYR3FKJYEe0omiXr/XAm+JH9ld7o74P
+CFu593a/R2J1PcI2TQ4SZUkOUBrvfQ8NN82uNeizDpOSlJKGl6tBc9gMd79+1odI
+34nAUzjd
+=PCQa
+-----END PGP SIGNATURE-----
+
+--=_MailMate_AAD31587-D101-406A-9B65-C9A8A942B2C8_=--
