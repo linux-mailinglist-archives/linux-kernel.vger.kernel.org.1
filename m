@@ -2,109 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94192B11C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 627972B11D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgKLWhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:37:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727798AbgKLWhG (ORCPT
+        id S1728011AbgKLWhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:37:47 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18724 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbgKLWhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:37:06 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F348C0613D1;
-        Thu, 12 Nov 2020 14:37:05 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id i6so10952069lfd.1;
-        Thu, 12 Nov 2020 14:37:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0qni2M87D+g89wV73PaUfeJOYq05vtoVkWdsLrYHeyg=;
-        b=kdYppoKFHiS9XKa3FhxlKioia9DpxhoAMnLvX3xxwUDyqIiDJ3HHl3IBW6p/6Hppgr
-         R1rrlU57Zy6cPF2EoCyeH+Vj7DtGbdUur/qeOJ5iivsuZWhBfoFYLANqy8A0ZN/hIbOC
-         hzMjgk+HOAKRJgwRKfqTFbsQQCm6O1j9Mk2vhjV5UCip2XhLqD1SR0a/iBKgVIIdZ89E
-         BYwaMCRnu8T3dfsnrarFGvnrKog6t/XXpNu/IZPXfANecW0enI19tvf+dIatOgQDZ7OK
-         TcsqlEJ0qKXLVGEQoZ/auOTRSu/cyJMRmB++w+tQm6Fjk+QGvmxT/rVGMvqP4kLUagKK
-         crgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0qni2M87D+g89wV73PaUfeJOYq05vtoVkWdsLrYHeyg=;
-        b=i9XT3DeEn66paWC21p/Q3Gn6OaYwiUeZDLeDkq4gp80c+OiqiSH1x8apchsO36co4V
-         YrUBWleQKWu6XRXSQJVELSkrXgiSb/mfK7L7+HF/XGGd2KK9Da/OOmEs82FuZiaaZOGm
-         R7WPsNhYUP1HHt836BXp/e2lbNN96jwWuLeUtWr7JLoUQHrCf5Qb48h0hXumwumRqoiF
-         sPwfBykQbRi6gKUCxnt+KIY/kg2hlJkF0Ujnwh1FcTISE1yT32e0YfeMnf1EIkOWo50W
-         g0TzPHnNKR7jITX6kUQK3782Ab5YNoGleZ1d9dlNd14iArN8W54zJm9F7nFqVB9vwSdS
-         mi+A==
-X-Gm-Message-State: AOAM532BgxESa2gbLJlSoya9/baP8ZMcnk8nAdOil512Y8H3nYBGtSRI
-        Av8f1zNOupkXjPx7wKecXIBeQd4XOtk=
-X-Google-Smtp-Source: ABdhPJz14sMvD+lHcp3Whn12ApfHxx9o6IGlXRIpcfSRQR0C4MBfRBbzrGgqZKxBnQTJLRiZ9wpHOA==
-X-Received: by 2002:a05:6512:3312:: with SMTP id k18mr654537lfe.403.1605220623351;
-        Thu, 12 Nov 2020 14:37:03 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id 1sm981505lfi.263.2020.11.12.14.37.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 14:37:02 -0800 (PST)
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20201104234427.26477-1-digetx@gmail.com>
- <20201104234427.26477-12-digetx@gmail.com> <20201110202945.GF2375022@ulmo>
- <20201110203257.GC5957@sirena.org.uk>
- <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
- <20201111115534.GA4847@sirena.org.uk>
- <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
- <20201112171600.GD4742@sirena.org.uk>
- <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
- <20201112200123.GF4742@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ce9e2d9f-917e-fb8a-7323-f3bf1a367e9d@gmail.com>
-Date:   Fri, 13 Nov 2020 01:37:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Thu, 12 Nov 2020 17:37:42 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fadb9300001>; Thu, 12 Nov 2020 14:37:36 -0800
+Received: from [10.2.174.128] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 22:37:36 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <linux-mm@kvack.org>, Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        "Michal Hocko" <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 5/6] mm: truncate: split thp to a non-zero order if
+ possible.
+Date:   Thu, 12 Nov 2020 17:37:34 -0500
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <77E2A434-4A28-4161-B145-8DC951BFA603@nvidia.com>
+In-Reply-To: <fb468c74-7da3-8b2c-e98e-ebb12793846e@nvidia.com>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-6-zi.yan@sent.com>
+ <fb468c74-7da3-8b2c-e98e-ebb12793846e@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112200123.GF4742@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed;
+        boundary="=_MailMate_DC93BADE-3D24-418E-81A1-0357978B8C2A_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605220656; bh=u2Hc1y/LdwmxJ07kFzHTWkMeNNuGrh2xp9EB8qf+MPM=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=Cp52WUxE2zzHXlicgvLYOIV/DH/0TQjyg06bXeBk60CirarrkMb1wJqd2QIa2kVYi
+         qEfg5AEnVWBKzN4DktY80mNq54FeijlfrjKBTZamOkz3qcOxHu/l0FfdBXpJWtW5Rz
+         De8BoZMJqyiGrRQZbgYZ+7SQZsZFFmI567OFJWTdIgXzJ+J11fnJe94/YHxcUa/oJa
+         Jxqn1mtTNZl7zX4Hc82sKkSh585xQMhBXzcV3sBG77VnKhVsL7qRctrsyrnFHuQk3y
+         51NRW2gNaRrgHuphDhSfqBywckDgW7pfIcvtFzzOmtWBnYCkCDqNlGdzfLiFm2wpme
+         4GrsduN1H1r6g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.11.2020 23:01, Mark Brown пишет:
->> But it's not allowed to change voltage of a dummy regulator, is it
->> intentional?
-> Of course not, we can't know if the requested new voltage is valid - the
-> driver would have to have explict support for handling situations where
-> it's not possible to change the voltage (which it can detect through
-> enumerating the values it wants to set at startup).
-> 
-> [Requesting the same supply multiple times]
+--=_MailMate_DC93BADE-3D24-418E-81A1-0357978B8C2A_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-But how driver is supposed to recognize that it's a dummy or buggy
-regulator if it rejects all voltages?
+On 12 Nov 2020, at 17:08, Ralph Campbell wrote:
+
+> On 11/11/20 12:40 PM, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> To minimize the number of pages after a truncation, when truncating a
+>> THP, we do not need to split it all the way down to order-0. The THP h=
+as
+>> at most three parts, the part before offset, the part to be truncated,=
+
+>> the part left at the end. Use the non-zero minimum of them to decide
+>> what order we split the THP to.
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>> ---
+>>   mm/truncate.c | 22 ++++++++++++++++++++--
+>>   1 file changed, 20 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/truncate.c b/mm/truncate.c
+>> index 20bd17538ec2..6d8e3c6115bc 100644
+>> --- a/mm/truncate.c
+>> +++ b/mm/truncate.c
+>> @@ -237,7 +237,7 @@ int truncate_inode_page(struct address_space *mapp=
+ing, struct page *page)
+>>   bool truncate_inode_partial_page(struct page *page, loff_t start, lo=
+ff_t end)
+>>   {
+>>   	loff_t pos =3D page_offset(page);
+>> -	unsigned int offset, length;
+>> +	unsigned int offset, length, left, min_subpage_size =3D PAGE_SIZE;
+>
+> Maybe use "remaining" instead of "left" since I think of the latter as =
+the length of the
+> left side (offset).
+
+Sure. Will change the name.
+
+>
+>>   	if (pos < start)
+>>   		offset =3D start - pos;
+>> @@ -248,6 +248,7 @@ bool truncate_inode_partial_page(struct page *page=
+, loff_t start, loff_t end)
+>>   		length =3D length - offset;
+>>   	else
+>>   		length =3D end + 1 - pos - offset;
+>> +	left =3D thp_size(page) - offset - length;
+>>    	wait_on_page_writeback(page);
+>>   	if (length =3D=3D thp_size(page)) {
+>> @@ -267,7 +268,24 @@ bool truncate_inode_partial_page(struct page *pag=
+e, loff_t start, loff_t end)
+>>   		do_invalidatepage(page, offset, length);
+>>   	if (!PageTransHuge(page))
+>>   		return true;
+>> -	return split_huge_page(page) =3D=3D 0;
+>> +
+>> +	/*
+>> +	 * find the non-zero minimum of offset, length, and left and use it =
+to
+>> +	 * decide the new order of the page after split
+>> +	 */
+>> +	if (offset && left)
+>> +		min_subpage_size =3D min_t(unsigned int,
+>> +					 min_t(unsigned int, offset, length),
+>> +					 left);
+>> +	else if (!offset)
+>> +		min_subpage_size =3D min_t(unsigned int, length, left);
+>> +	else /* !left */
+>> +		min_subpage_size =3D min_t(unsigned int, length, offset);
+>> +
+>> +	min_subpage_size =3D max_t(unsigned int, PAGE_SIZE, min_subpage_size=
+);
+>> +
+>> +	return split_huge_page_to_list_to_order(page, NULL,
+>> +				ilog2(min_subpage_size/PAGE_SIZE)) =3D=3D 0;
+>>   }
+>
+> What if "min_subpage_size" is 1/2 the THP but offset isn't aligned to 1=
+/2?
+> Splitting the page in half wouldn't result in a page that could be free=
+d
+> but maybe splitting to 1/4 would (assuming the THP is at least 8x PAGE_=
+SIZE).
+
+Is it possible? The whole THP is divided into three parts, offset, length=
+, and
+remaining (renamed from left). If offset is not aligned to 1/2, it is eit=
+her
+greater than 1/2 or smaller than 1/2. If it is the former, length and rem=
+aining
+will be smaller than 1/2, so min_subpage_size cannot be 1/2. If it is the=
+ latter,
+min_subpage_size cannot be 1/2 either. Because min_subpage_size is the sm=
+allest
+non-zero value of offset, length, and remaining. Let me know if I miss an=
+ything.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_DC93BADE-3D24-418E-81A1-0357978B8C2A_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+tuS4PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKZGkQAItilLhKZUMQgdYdP37xs6xcZRSu5D2EWyjZ
+ch7hzuC1+/DURRzdByYSJMuf3DQ8a6bzuTRIF17YSrKEo96Yrwo+hBY/pjfROlnZ
+mtmz5Nyf59ptRkTlu1ttPSCCe+fUWUQCS8dJM3mGcVnSybx0JCT6uKMc1sD3KHCP
+dEfCluUIuFH1hzm70AljH4oD5Pjx+R7XjUgbxr3W7cmXaZzyl1p2JxbcyDs/VvzQ
+OII3FzsZSHnr7M9bYe+VQbrF4yiHMkpe+Yk2vfpm2Bof8Xx+giIuqT95p6Ppjf+S
+E85X4bWXdVkjEM8S6ZQhaR9MMlD8DMuNB8CUfvB+bcft1oHGPrVtKsNG2c8e8fio
+N4NylDEu0f8/5kZJz8wPJy6kmnIfTNTCqeN/ztL6dae8hIHiOrU+lBk+Nu/TyD3L
+eeLLAOcOC9OlaSFePGH57Yi90o+zjOdX5nH+mLNJKCo6EuR7zPIvPqplF5Xoi/9f
+8DyTRxTGzyTGaHrkoCIOEnxcazL5zYRE/fBkQoU4AeZtjI6TdyAwnD8GOW5UOe5H
+dnNj18EqY3mZK4JTEqTjEDivxQaWxeycdWE4SzT51Zuo15i9zON28hHJHktkvlR2
+GFLm/XqED9+GPZJn0ziOm0GwDriwwFQUWoL017zdnLFUW/8RNC9gclgw3aXzDVHK
+PrD2fI46
+=SRw1
+-----END PGP SIGNATURE-----
+
+--=_MailMate_DC93BADE-3D24-418E-81A1-0357978B8C2A_=--
