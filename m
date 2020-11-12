@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F95A2B0E7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01182B0E81
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgKLTwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52908 "EHLO
+        id S1726897AbgKLTw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKLTwG (ORCPT
+        with ESMTP id S1726787AbgKLTwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:52:06 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2292C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:52:05 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id g7so5545513pfc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:52:05 -0800 (PST)
+        Thu, 12 Nov 2020 14:52:25 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D2C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:52:25 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id t143so7714088oif.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:52:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6grGTHRg8rsQq1ytOmJKPPc/a47JtcnHiEDyRqBbLFo=;
-        b=euZJ1KFslUbqxplovouyxG8p0U+5+xuKJD4/GMN4ixlQJDzc/G0SQZTp3Fl2aryH9a
-         jZuQg6p73xPEgXHx7QgnJGdxpcO43wqgWjrCEiigP6qhu0Z1ONy4LM69d5xWn5fqiAjf
-         nKQRjWnb43kbs/G6nf27kwm0DIdmx4dezF7NZ18jeI0t3egMDcup0GnZ2C86V2fJPBJf
-         O5Hjp9M28mx002EbXyvkABmb714LZbbKkBYqGZG7Sbv2lJZUBFQi+18Yw8nt7GZAmYC6
-         HR2kUslyxlb8trjZS5Y3X95dlNU7osxVXNTIhdobS1PtxwPkWIxUCsaMmLuKGdsZ3WpH
-         Q9LA==
+        bh=ku38Ht+p6L/Qff47Jz/ZEW3Rmq7V+uR73aOdxjfDMS0=;
+        b=LyRcRhjy9O9Onai4KalpJMvwS0HgVos89lh0h/DSDaGHtHndNCyX4CxpDLuicoH2FB
+         KwsEF5KZpU7cm359GOxKOSjFIw0SWUVglwF3TQFc7+Pw+EXy4jIEQsJd/mS7Y3iYsO90
+         9olyGHAl8rLyBIWdFeoBNytZEYeANkpdla2eH0ct5Hjqk2nnB90HcqfO1cILYDWgXN61
+         3KxG7dv6LgA+XUz/pRIEN5HB8/Un/Yn/R0KPLGJ6mSqEnBAc6HIbkTEYsUY8QFunQOMA
+         HLXF0ccMMJuHrStP7aFBzIh2HIqpbFxBa7mW74b6m+jhyjx2hxd3q+3PeGlS08iLoKwN
+         m65Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6grGTHRg8rsQq1ytOmJKPPc/a47JtcnHiEDyRqBbLFo=;
-        b=XxHe5preXqlfk/BVL27CR9d5zwHAe9Xh8acjIahsk5GqnQ5FAUZVfeDl7ZVRK1ej9E
-         S2LBbc8lBSXNZav96INuEfqySkbulWgXmWNRvIfrfpooGvBauv0TKVici8D78hGzomp1
-         Hnp7OMu4t3sLEEQe16D7tcsxZMX0MP5zBWJFzQ1lfxG+R6r3Au8zlsSqp4D/F7j9RVdZ
-         IhFzzqQCFSPFOINHqKv+oOXoeX6AnOAxmtpl0Nd0CKtkKbba2e0+jtkXciGtk+uFfYqx
-         5z6Fd2ob1wdLq1ykVKbIMvq5cZvgMrIPrJhDlZmN1KRvloKE903/dVfFWTI6U5C8CGVb
-         v0lA==
-X-Gm-Message-State: AOAM5335KgNZhUL2Kw7zZiLODN/mUauG6/9QhtVGSdO5/o3nnuY6wONJ
-        eXYtonH+/4XyXXMei9tdI85yoAt+TQelbPOfTdA6bQ==
-X-Google-Smtp-Source: ABdhPJwKzVqKpDX9KBt9y8fPXoFH25yT6OCFViJDkBsmWi4+WIsb92nIDpsfYsvWT4Q0Jq4is2aH0qhBhL/vC1bjOoE=
-X-Received: by 2002:a17:90a:eb02:: with SMTP id j2mr842940pjz.136.1605210725310;
- Thu, 12 Nov 2020 11:52:05 -0800 (PST)
+        bh=ku38Ht+p6L/Qff47Jz/ZEW3Rmq7V+uR73aOdxjfDMS0=;
+        b=LjbSWn7UTH7ArsQ7A4/GZLLRDmSI8iL2PE+wXLyrpBt7hV+t/+9jd6lWyDvZhiceb8
+         dl3apD+OGWV9NRaQQbSz8dl7HNirbhkGv+EMBKd/1rwnsR9wPZWIMyt6GRpaTId988za
+         tc905Gz8NTmGLkmAMy/soVlVoTyHXU6oqsFfctkB2WF1pefrkr3RM5TmhoMu1P5tXHDg
+         6+JYs4/rtF+/MZweGM2bPfS1T4DzPPla6NqK3jq2TVCOg8g6QF5CP1r1xcwEOZEVuh3l
+         2/UCqXAW7MjjjAvZUIbMAbKO4uwDU+B77iKy7CyFaYcjnWATHXMVcTdsi2X5r2GXXz/U
+         7p0A==
+X-Gm-Message-State: AOAM5330FjYR+bA/2Bj9K7n7MZrTVih/3iWTwFe+RHVfAqqopdTadfrf
+        Q145vk5A/o2Owh1wtAQPGuMClf8XH7LiWwNT6CtqfQ==
+X-Google-Smtp-Source: ABdhPJxGS7NXJM+KF1KuyYHIVqAed9DlcbOpk+BD8O26PFhlwzKyT5bWnxIP3ustua72qmFf7FMunXCN383WjCwEW5Q=
+X-Received: by 2002:aca:a988:: with SMTP id s130mr943053oie.172.1605210744714;
+ Thu, 12 Nov 2020 11:52:24 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605046662.git.andreyknvl@google.com> <fdf9e3aec8f57ebb2795710195f8aaf79e3b45bd.1605046662.git.andreyknvl@google.com>
- <20201111182931.GM517454@elver.google.com>
-In-Reply-To: <20201111182931.GM517454@elver.google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 12 Nov 2020 20:51:52 +0100
-Message-ID: <CAAeHK+wJz6qnX1Tsb9BTsbd4zjDXr61DLRmmNwDZ2+F6CwpQ1A@mail.gmail.com>
-Subject: Re: [PATCH v2 11/20] kasan: add and integrate kasan boot parameters
-To:     Marco Elver <elver@google.com>
+References: <cover.1605046662.git.andreyknvl@google.com> <0a9b63bff116734ab63d99ebd09c244332d71958.1605046662.git.andreyknvl@google.com>
+ <20201111174902.GK517454@elver.google.com> <CAAeHK+wvvkYko=tM=NHODkKas13h5Jvsswvg05jhv9LqE0jSjQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+wvvkYko=tM=NHODkKas13h5Jvsswvg05jhv9LqE0jSjQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Nov 2020 20:52:12 +0100
+Message-ID: <CANpmjNOboPh97HdMGAESSEYdeyd9+9MVy6E3QsvVAYuWVReRew@mail.gmail.com>
+Subject: Re: [PATCH v2 10/20] kasan: inline and rename kasan_unpoison_memory
+To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Dmitry Vyukov <dvyukov@google.com>,
         Alexander Potapenko <glider@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -72,27 +72,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 7:29 PM Marco Elver <elver@google.com> wrote:
+On Thu, 12 Nov 2020 at 20:45, Andrey Konovalov <andreyknvl@google.com> wrote:
 >
-> > +#include <linux/init.h>
-> > +#include <linux/jump_label.h>
+> On Wed, Nov 11, 2020 at 6:49 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> > > Currently kasan_unpoison_memory() is used as both an external annotation
+> > > and as an internal memory poisoning helper. Rename external annotation to
+> > > kasan_unpoison_data() and inline the internal helper for hardware
+> > > tag-based mode to avoid undeeded function calls.
+> >
+> > I don't understand why this needs to be renamed again. The users of
+> > kasan_unpoison_memory() outweigh those of kasan_unpoison_slab(), of
+> > which there seems to be only 1!
 >
-> This should include <linux/static_key.h> -- although the rest of the
-> kernel seems to also inconsistently use on or the other. Since the name,
-> as referred to also by macros are "static keys", perhaps the
-> static_key.h header is more appropriate...
-
-Will fix.
-
-> > +enum kasan_arg_stacktrace {
-> > +     KASAN_ARG_STACKTRACE_DEFAULT,
+> The idea is to make kasan_(un)poison_memory() functions inlinable for
+> internal use. It doesn't have anything to do with the number of times
+> they are used.
 >
-> It seems KASAN_ARG_STACKTRACE_DEFAULT is never used explicitly. Could
-> the switch statements just be changed to not have a 'default' but
-> instead refer to *DEFAULT where appropriate?
+> Perhaps we can drop the kasan_ prefix for the internal implementations
+> though, and keep using kasan_unpoison_memory() externally.
 
-We need to either cover all cases explicitly, or use default in each
-switch, otherwise there's a warning. I guess covering everything
-explicitly is a better approach, in case more values are added in the
-future, as we'll get warnings for those if they aren't covered in
-switches. Will do.
+Whatever avoids changing the external interface, because it seems
+really pointless. I can see why it's done, but it's a side-effect of
+the various wrappers being added.
+
+I'd much rather prefer we do it right from the beginning, and cleaning
+up things very much is related to this series vs. just making things
+uglier and hoping somebody will clean it up later.
+
+> > So can't we just get rid of kasan_unpoison_slab() and just open-code it
+> > in mm/mempool.c:kasan_unpoison_element()? That function is already
+> > kasan-prefixed, so we can even place a small comment there (which would
+> > also be an improvement over current interface, since
+> > kasan_unpoison_slab() is not documented and its existence not quite
+> > justified).
+>
+> We can, but this is a change unrelated to this patch.
+
+Not quite, we're trying to optimize KASAN which is related -- this
+patch as-is would obviously change, but replaced by a patch
+simplifying things. This change as-is makes 2 changes outside of
+KASAN, whereas if we removed it it would only be 1 and we end up with
+less cruft.
