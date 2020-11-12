@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5C62B008A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7EE2B008D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgKLHwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 02:52:18 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53523 "EHLO
+        id S1726852AbgKLHw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 02:52:27 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53561 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725884AbgKLHwQ (ORCPT
+        with ESMTP id S1725884AbgKLHwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 02:52:16 -0500
-X-UUID: 2eb16f9831d14d61be48c783d632a78e-20201112
-X-UUID: 2eb16f9831d14d61be48c783d632a78e-20201112
+        Thu, 12 Nov 2020 02:52:19 -0500
+X-UUID: f86e32c304ef4ebaa5b93d08d8b7ec87-20201112
+X-UUID: f86e32c304ef4ebaa5b93d08d8b7ec87-20201112
 Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <wenbin.mei@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1472409551; Thu, 12 Nov 2020 15:52:13 +0800
+        with ESMTP id 1451875633; Thu, 12 Nov 2020 15:52:15 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 12 Nov 2020 15:52:12 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Nov 2020 15:52:13 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 12 Nov 2020 15:52:11 +0800
+ Transport; Thu, 12 Nov 2020 15:52:12 +0800
 From:   Wenbin Mei <wenbin.mei@mediatek.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>
@@ -40,9 +40,9 @@ CC:     Matthias Brugger <matthias.bgg@gmail.com>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: [PATCH v1 2/3] arm64: dts: mt8192: Add cqe off flag
-Date:   Thu, 12 Nov 2020 15:52:07 +0800
-Message-ID: <20201112075208.28183-3-wenbin.mei@mediatek.com>
+Subject: [PATCH v1 3/3] mmc: core: Set cqe off during suspend flow
+Date:   Thu, 12 Nov 2020 15:52:08 +0800
+Message-ID: <20201112075208.28183-4-wenbin.mei@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20201112075208.28183-1-wenbin.mei@mediatek.com>
 References: <20201112075208.28183-1-wenbin.mei@mediatek.com>
@@ -53,25 +53,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cqe off flag for MT8192 mmc nodes.
+Before we got these errors on MT8192 platform:
+[   59.153891] Restarting tasks ...
+[   59.154540] done.
+[   59.159175] PM: suspend exit
+[   59.218724] mtk-msdc 11f60000.mmc: phase: [map:fffffffe] [maxlen:31]
+[final:16]
+[  119.776083] mmc0: cqhci: timeout for tag 9
+[  119.780196] mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
+[  119.786709] mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
+[  119.793225] mmc0: cqhci: Config:    0x00000101 | Control:  0x00000000
+[  119.799706] mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000000
+[  119.806177] mmc0: cqhci: Int sig:   0x00000000 | Int Coal: 0x00000000
+[  119.812670] mmc0: cqhci: TDL base:  0x00000000 | TDL up32: 0x00000000
+[  119.819149] mmc0: cqhci: Doorbell:  0x003ffc00 | TCN:      0x00000200
+[  119.825656] mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
+[  119.832155] mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
+[  119.838627] mmc0: cqhci: SSC2:      0x00000000 | DCMD rsp: 0x00000000
+[  119.845174] mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x0000891c
+[  119.851654] mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
+[  119.865773] mmc0: cqhci: : ===========================================
+[  119.872358] mmc0: running CQE recovery
+From these logs, we found TDL base was back to the default value.
+
+After suspend, the mmc host is powered off by HW, and bring CQE register
+to the default value, so CQE need to be re-initialized after resuming back.
 
 Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8192-evb.dts | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/core/host.c | 2 ++
+ drivers/mmc/core/mmc.c  | 5 +++++
+ include/linux/mmc/pm.h  | 1 +
+ 3 files changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-index a4279fa87c2b..0df78e4ea0d0 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-@@ -41,6 +41,7 @@
- 	mmc-hs400-1_8v;
- 	supports-cqe;
- 	cap-mmc-hw-reset;
-+	cqe-off-in-suspend;
- 	no-sdio;
- 	no-sd;
- 	hs400-ds-delay = <0x12814>;
+diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+index ce43f7573d80..c98486c8fb3b 100644
+--- a/drivers/mmc/core/host.c
++++ b/drivers/mmc/core/host.c
+@@ -284,6 +284,8 @@ int mmc_of_parse(struct mmc_host *host)
+ 	if (device_property_read_bool(dev, "wakeup-source") ||
+ 	    device_property_read_bool(dev, "enable-sdio-wakeup")) /* legacy */
+ 		host->pm_caps |= MMC_PM_WAKE_SDIO_IRQ;
++	if (device_property_read_bool(dev, "cqe-off-in-suspend"))
++		host->pm_caps |= MMC_PM_CQE_OFF_IN_SUSPEND;
+ 	if (device_property_read_bool(dev, "mmc-ddr-3_3v"))
+ 		host->caps |= MMC_CAP_3_3V_DDR;
+ 	if (device_property_read_bool(dev, "mmc-ddr-1_8v"))
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index b3fa193de846..f5ae1f13a867 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -2047,6 +2047,11 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
+ 		err = mmc_deselect_cards(host);
+ 
+ 	if (!err) {
++		if (host->cqe_enabled &&
++		    (host->pm_caps & MMC_PM_CQE_OFF_IN_SUSPEND)) {
++			host->cqe_ops->cqe_disable(host);
++			host->cqe_enabled = false;
++		}
+ 		mmc_power_off(host);
+ 		mmc_card_set_suspended(host->card);
+ 	}
+diff --git a/include/linux/mmc/pm.h b/include/linux/mmc/pm.h
+index 3549f8045784..3dd1046f2c8f 100644
+--- a/include/linux/mmc/pm.h
++++ b/include/linux/mmc/pm.h
+@@ -23,5 +23,6 @@ typedef unsigned int mmc_pm_flag_t;
+ 
+ #define MMC_PM_KEEP_POWER	(1 << 0)	/* preserve card power during suspend */
+ #define MMC_PM_WAKE_SDIO_IRQ	(1 << 1)	/* wake up host system on SDIO IRQ assertion */
++#define MMC_PM_CQE_OFF_IN_SUSPEND  (1 << 2)	/* cqe off during suspend */
+ 
+ #endif /* LINUX_MMC_PM_H */
 -- 
 2.18.0
 
