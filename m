@@ -2,213 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20ADB2B03F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F6D2B03FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgKLLda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:33:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728170AbgKLLdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:33:24 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1B782220B;
-        Thu, 12 Nov 2020 11:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605180801;
-        bh=/FH7TCo6+O0/udmjeFflZsUVtWi4Q6V5R0zuSt8YjzU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ldkWJEAbEpQ/kZXIZ/Qjgf93uiijQ1/hZRaRbO4Rn3FuZNU+w3xoIdBBAmrGp+PYj
-         z5sGH3XJQeKRc6TnHeHhFFs8nSfuje3g0tmfmsQaDMXPw5O598usuAGWFwyEfqORn1
-         nxTFenSeb0ffFzHJkps2L1zTunW7T+8VUIhvKyPA=
-Date:   Thu, 12 Nov 2020 12:34:20 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Brice Goglin <brice.goglin@gmail.com>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
-Message-ID: <X60dvJoT4fURcnsF@kroah.com>
-References: <20201003085345.GA114893@kroah.com>
- <20201006005736.GD6041@ranerica-svr.sc.intel.com>
- <20201006073744.GA6753@kroah.com>
- <20201007031447.GB27938@ranerica-svr.sc.intel.com>
- <20201007051546.GA47583@kroah.com>
- <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com>
- <X6zZaKt57Xl9NnuN@kroah.com>
- <d7ac96f2-10e8-209d-2903-1bbe8fc552f4@gmail.com>
- <X60TJ2u47WK3yY/y@kroah.com>
- <38f290d2-4c3a-d1b0-f3cc-a0897ea10abd@gmail.com>
+        id S1728010AbgKLLeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:34:46 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18871 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727223AbgKLLeo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:34:44 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad1ddb0001>; Thu, 12 Nov 2020 03:34:51 -0800
+Received: from [10.26.72.124] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 11:34:40 +0000
+Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20201111103847.152721-1-jonathanh@nvidia.com>
+ <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
+ <5409bbb4-d3f9-ccc9-ac3e-6344975bd58e@nvidia.com>
+ <acadbf40-5dea-eee1-b05e-ad788df56bf7@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <21158311-2843-0c83-2fd5-19dacdd9c21a@nvidia.com>
+Date:   Thu, 12 Nov 2020 11:34:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <38f290d2-4c3a-d1b0-f3cc-a0897ea10abd@gmail.com>
+In-Reply-To: <acadbf40-5dea-eee1-b05e-ad788df56bf7@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605180891; bh=IHvwAMbKqrHNR5N1GZkSBeag2qQBKHNZAPTqztYrHTU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=JejLUMD3iIlG0EXmEkmkcOEyW9xqomHi32i6ZOZooYeCh5yNBkqofLz3lghjx2vey
+         ghDkxXewIjzZpzFHvLonRj9dKvuT1o4m6XGaFxiBWGdfQBG7HCH3ZIrXVFyIvgbQQP
+         6ZYJK6c45fqo7eO9f2AKl+ieZf8bPeFhHafymoOzGIwMrDPanL4MwET1z0W0WuWYES
+         N56FXGBD9oYGv5m7+8c/P/ZLnqw6NnWoBY59+GdzhF/sE6fwzW74dmBER1wrl9Vbdy
+         gb8gZDuRt5Y8hPNi0Ls0p7qAuRTNUrIJfNgg9x0WdkxjtcRvfXkzogq/7ZLYvUjn5W
+         ef2Y+P0RqENog==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:21:43PM +0100, Brice Goglin wrote:
-> 
-> Le 12/11/2020 à 11:49, Greg Kroah-Hartman a écrit :
-> > On Thu, Nov 12, 2020 at 10:10:57AM +0100, Brice Goglin wrote:
-> >> Le 12/11/2020 à 07:42, Greg Kroah-Hartman a écrit :
-> >>> On Thu, Nov 12, 2020 at 07:19:48AM +0100, Brice Goglin wrote:
-> >>>> Le 07/10/2020 à 07:15, Greg Kroah-Hartman a écrit :
-> >>>>> On Tue, Oct 06, 2020 at 08:14:47PM -0700, Ricardo Neri wrote:
-> >>>>>> On Tue, Oct 06, 2020 at 09:37:44AM +0200, Greg Kroah-Hartman wrote:
-> >>>>>>> On Mon, Oct 05, 2020 at 05:57:36PM -0700, Ricardo Neri wrote:
-> >>>>>>>> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
-> >>>>>>>>> On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
-> >>>>>>>>>> Hybrid CPU topologies combine CPUs of different microarchitectures in the
-> >>>>>>>>>> same die. Thus, even though the instruction set is compatible among all
-> >>>>>>>>>> CPUs, there may still be differences in features (e.g., some CPUs may
-> >>>>>>>>>> have counters that others CPU do not). There may be applications
-> >>>>>>>>>> interested in knowing the type of micro-architecture topology of the
-> >>>>>>>>>> system to make decisions about process affinity.
-> >>>>>>>>>>
-> >>>>>>>>>> While the existing sysfs for capacity (/sys/devices/system/cpu/cpuX/
-> >>>>>>>>>> cpu_capacity) may be used to infer the types of micro-architecture of the
-> >>>>>>>>>> CPUs in the platform, it may not be entirely accurate. For instance, two
-> >>>>>>>>>> subsets of CPUs with different types of micro-architecture may have the
-> >>>>>>>>>> same capacity due to power or thermal constraints.
-> >>>>>>>>>>
-> >>>>>>>>>> Create the new directory /sys/devices/system/cpu/types. Under such
-> >>>>>>>>>> directory, create individual subdirectories for each type of CPU micro-
-> >>>>>>>>>> architecture. Each subdirectory will have cpulist and cpumap files. This
-> >>>>>>>>>> makes it convenient for user space to read all the CPUs of the same type
-> >>>>>>>>>> at once without having to inspect each CPU individually.
-> >>>>>>>>>>
-> >>>>>>>>>> Implement a generic interface using weak functions that architectures can
-> >>>>>>>>>> override to indicate a) support for CPU types, b) the CPU type number, and
-> >>>>>>>>>> c) a string to identify the CPU vendor and type.
-> >>>>>>>>>>
-> >>>>>>>>>> For example, an x86 system with one Intel Core and four Intel Atom CPUs
-> >>>>>>>>>> would look like this (other architectures have the hooks to use whatever
-> >>>>>>>>>> directory naming convention below "types" that meets their needs):
-> >>>>>>>>>>
-> >>>>>>>>>> user@host:~$: ls /sys/devices/system/cpu/types
-> >>>>>>>>>> intel_atom_0  intel_core_0
-> >>>>>>>>>>
-> >>>>>>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
-> >>>>>>>>>> cpulist cpumap
-> >>>>>>>>>>
-> >>>>>>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
-> >>>>>>>>>> cpulist cpumap
-> >>>>>>>>>>
-> >>>>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpumap
-> >>>>>>>>>> 0f
-> >>>>>>>>>>
-> >>>>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpulist
-> >>>>>>>>>> 0-3
-> >>>>>>>>>>
-> >>>>>>>>>> user@ihost:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpumap
-> >>>>>>>>>> 10
-> >>>>>>>>>>
-> >>>>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpulist
-> >>>>>>>>>> 4
-> >>>>>>>> Thank you for the quick and detailed Greg!
-> >>>>>>>>
-> >>>>>>>>> The output of 'tree' sometimes makes it easier to see here, or:
-> >>>>>>>>> 	grep -R . *
-> >>>>>>>>> also works well.
-> >>>>>>>> Indeed, this would definitely make it more readable.
-> >>>>>>>>
-> >>>>>>>>>> On non-hybrid systems, the /sys/devices/system/cpu/types directory is not
-> >>>>>>>>>> created. Add a hook for this purpose.
-> >>>>>>>>> Why should these not show up if the system is not "hybrid"?
-> >>>>>>>> My thinking was that on a non-hybrid system, it does not make sense to
-> >>>>>>>> create this interface, as all the CPUs will be of the same type.
-> >>>>>>> Why not just have this an attribute type in the existing cpuX directory?
-> >>>>>>> Why do this have to be a totally separate directory and userspace has to
-> >>>>>>> figure out to look in two different spots for the same cpu to determine
-> >>>>>>> what it is?
-> >>>>>> But if the type is located under cpuX, usespace would need to traverse
-> >>>>>> all the CPUs and create its own cpu masks. Under the types directory it
-> >>>>>> would only need to look once for each type of CPU, IMHO.
-> >>>>> What does a "mask" do?  What does userspace care about this?  You would
-> >>>>> have to create it by traversing the directories you are creating anyway,
-> >>>>> so it's not much different, right?
-> >>>> Hello
-> >>>>
-> >>>> Sorry for the late reply. As the first userspace consumer of this
-> >>>> interface [1], I can confirm that reading a single file to get the mask
-> >>>> would be better, at least for performance reason. On large platforms, we
-> >>>> already have to read thousands of sysfs files to get CPU topology and
-> >>>> cache information, I'd be happy not to read one more file per cpu.
-> >>>>
-> >>>> Reading these sysfs files is slow, and it does not scale well when
-> >>>> multiple processes read them in parallel.
-> >>> Really?  Where is the slowdown?  Would something like readfile() work
-> >>> better for you for that?
-> >>> 	https://lore.kernel.org/linux-api/20200704140250.423345-1-gregkh@linuxfoundation.org/
-> >>
-> >> I guess readfile would improve the sequential case by avoiding syscalls
-> >> but it would not improve the parallel case since syscalls shouldn't have
-> >> any parallel issue?
-> > syscalls should not have parallel issues at all.
-> >
-> >> We've been watching the status of readfile() since it was posted on LKML
-> >> 6 months ago, but we were actually wondering if it would end up being
-> >> included at some point.
-> > It needs a solid reason to be merged.  My "test" benchmarks are fun to
-> > run, but I have yet to find a real need for it anywhere as the
-> > open/read/close syscall overhead seems to be lost in the noise on any
-> > real application workload that I can find.
-> >
-> > If you have a real need, and it reduces overhead and cpu usage, I'm more
-> > than willing to update the patchset and resubmit it.
-> 
-> 
-> Good, I'll give it at try.
-> 
-> 
-> >>> How does multiple processes slow anything down, there shouldn't be any
-> >>> shared locks here.
-> >>
-> >> When I benchmarked this in 2016, reading a single (small) sysfs file was
-> >> 41x slower when running 64 processes simultaneously on a 64-core Knights
-> >> Landing than reading from a single process. On a SGI Altix UV with 12x
-> >> 8-core CPUs, reading from one process per CPU (12 total) was 60x slower
-> >> (which could mean NUMA affinity matters), and reading from one process
-> >> per core (96 total) was 491x slower.
-> >>
-> >> I will try to find some time to dig further on recent kernels with perf
-> >> and readfile (both machines were running RHEL7).
-> > 2016 was a long time ago in kernel-land, please retest on a kernel.org
-> > release, not a RHEL monstrosity.
-> 
-> 
-> Quick test on 5.8.14 from Debian (fairly close to mainline) on a server
-> with 2x20 cores.
-> 
-> I am measuring the time to do open+read+close of
-> /sys/devices/system/cpu/cpu15/topology/die_id 1000 times
-> 
-> With a single process, it takes 2ms (2us per open+read+close, looks OK).
-> 
-> With one process per core (with careful binding, etc), it jumps from 2ms
-> to 190ms (without much variation).
-> 
-> It looks like locks in kernfs_iop_permission and kernfs_dop_revalidate
-> are causing the issue.
-> 
-> I am attaching the perf report callgraph output below.
 
-Ouch, yes, we are hitting the single kernfs mutex for all of this, not
-nice.  I'll add this to my list of things to look at in the near future,
-thanks for the report!
+On 12/11/2020 10:51, Dmitry Osipenko wrote:
 
-greg k-h
+...
+
+> If you don't see a message in KMSG saying "bringing vdd_cpu to
+> 1000000uV", then should be good.
+
+The bootlog shows ...
+
+[    2.271768] tps6586x 3-0034: Found TPS658621C/D, VERSIONCRC is 2c
+
+[    2.280320] vdd_sys: supplied by vdd_5v0
+
+[    2.285153] vdd_sm0,vdd_core: supplied by vdd_sys
+
+[    2.294231] vdd_sm1,vdd_cpu: supplied by vdd_sys
+
+[    2.299984] vdd_sm2,vin_ldo*: supplied by vdd_sys
+
+[    2.305285] REG-LDO_0: supplied by vdd_sm2,vin_ldo*
+
+[    2.311492] vdd_ldo1,avdd_pll*: supplied by vdd_sm2,vin_ldo*
+
+[    2.318053] vdd_ldo2,vdd_rtc: supplied by vdd_sm2,vin_ldo*
+
+[    2.324786] vdd_ldo3,avdd_usb*: supplied by vdd_sm2,vin_ldo*
+
+[    2.331848] vdd_ldo4,avdd_osc,vddio_sys: supplied by vdd_sm2,vin_ldo*
+
+[    2.339104] vdd_ldo5,vcore_mmc: supplied by vdd_sys
+
+[    2.344447] vdd_ldo6,avdd_vdac: Bringing 2850000uV into 1800000-1800000uV
+
+[    2.352226] vdd_ldo6,avdd_vdac: supplied by vdd_sm2,vin_ldo*
+
+[    2.358814] vdd_ldo7,avdd_hdmi,vdd_fuse: supplied by vdd_sm2,vin_ldo*
+
+[    2.366176] vdd_ldo8,avdd_hdmi_pll: supplied by vdd_sm2,vin_ldo*
+
+[    2.372959] vdd_ldo9,avdd_2v85,vdd_ddr_rx: supplied by vdd_sm2,vin_ldo*
+
+[    2.380373] vdd_rtc_out,vdd_cell: supplied by vdd_sys
+
+
+Jon
