@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51BF2B0DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818992B0DD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgKLTYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:24:38 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56054 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgKLTYh (ORCPT
+        id S1726784AbgKLTYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:24:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbgKLTYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:24:37 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DDE511C0BA2; Thu, 12 Nov 2020 20:24:32 +0100 (CET)
-Date:   Thu, 12 Nov 2020 20:24:32 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jarkko.sakkinen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-Subject: Re: Linux 4.19.157 -- fixing SGX problem?
-Message-ID: <20201112192432.GA10247@amd>
-References: <160504197091230@kroah.com>
+        Thu, 12 Nov 2020 14:24:45 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493EFC0613D1;
+        Thu, 12 Nov 2020 11:24:45 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id 10so6404498ybx.9;
+        Thu, 12 Nov 2020 11:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KnzRuEV+LobstJGC6w0tpv3PvSKrX4rxoaQQBRAzYiU=;
+        b=qsk3kUpZlKRzjcppq/TpRxDrqUJwKXNA+RdYZFuY+2q1qDvz67P5ffJm80V+GDTlmt
+         XHNZPw+n8n4X/im0JL3VZqEDaxPzn9JYN2frHecwUGdcKUIXwDhQYWQhUTvhUd0pzUIP
+         qzL3ph2DGhvoAY/eZ61I6su8xFDa6DMvRKzfq30ClK/Rx9CjCcUuvmTtYWcjbBEzVrws
+         GJryqjb4RnmI1Goml4ZI92c7R5py9JKpj0H9Eg0W7ihYdqLSZcT3xR1dHM/0ihGXaf3g
+         eRXBmwEKqQQ79kzxg8ZzYqVc40JJAemb2QFKianeaiBOU6a41fhrEo3an633T509pCG4
+         QPFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KnzRuEV+LobstJGC6w0tpv3PvSKrX4rxoaQQBRAzYiU=;
+        b=OjGSOjDL545896JIHpBXE6JO0M6SXFu2erOHKxjRnEcfa+BHec5ZLvLHMdFveq4H6r
+         6M4MRnlu0/kucxWuSJLzG4eFXis+F9Qenxx3RjXoP3syRP4By3huWK3Xe9leUR+ov13A
+         B075Du0lJok0Q1BAdRiebLEBVbU9YVn9ZDfzZlBB8HemsGd/NlJaITVVq4MARLfTc3hU
+         0b00PoHm2NZkubcoG38GySxPIMGQHZE2PSDCqA1UIx1O+EJLdwwg+orezQrSUAz2vIas
+         2PhBVRvl6tQVm1IjjjVFt/AdO6Z/e/HCSLFnPlPEgxOIU3ugqTOhnqOmEPepbZIRg6nQ
+         J9Fw==
+X-Gm-Message-State: AOAM531gAdrP6hbsqM1fZ4tF+Jz9NXDHisPxED+eUymowUnV9dMSVzLa
+        IS58IqXG2qWnYXKWfofectNGycoA08+Se3lg0qyaUJA2Y7aCmQ==
+X-Google-Smtp-Source: ABdhPJyUinMpjkcfznM+FAC0oxxriKsIXBlmCzj8P5GxmtnV5c6lyXypi9st2/cRl4GZl9weJLe/Bd/BC0g4PX/SOUs=
+X-Received: by 2002:a25:df82:: with SMTP id w124mr1332716ybg.347.1605209084086;
+ Thu, 12 Nov 2020 11:24:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
-Content-Disposition: inline
-In-Reply-To: <160504197091230@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <CAEf4BzZx=7N6dbKk8Eb_k-FA-PmmPFBJ=V-PLhbDu38wuXkOkw@mail.gmail.com>
+ <C71IU5Z0R6UI.29FQP3BCZ65ZC@maharaja>
+In-Reply-To: <C71IU5Z0R6UI.29FQP3BCZ65ZC@maharaja>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 12 Nov 2020 11:24:33 -0800
+Message-ID: <CAEf4BzadBt2On==P81dQmVbx1Uo8q43-mpCsW_0mS9w2sbrUfA@mail.gmail.com>
+Subject: Re: [PATCH bpf v5 0/2] Fix bpf_probe_read_user_str() overcopying
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 11:13 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> On Wed Nov 11, 2020 at 3:22 PM PST, Andrii Nakryiko wrote:
+> > On Wed, Nov 11, 2020 at 2:46 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > >
+> > > 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
+> > > kernel}_str helpers") introduced a subtle bug where
+> > > bpf_probe_read_user_str() would potentially copy a few extra bytes after
+> > > the NUL terminator.
+> > >
+> > > This issue is particularly nefarious when strings are used as map keys,
+> > > as seemingly identical strings can occupy multiple entries in a map.
+> > >
+> > > This patchset fixes the issue and introduces a selftest to prevent
+> > > future regressions.
+> > >
+> > > v4 -> v5:
+> > > * don't read potentially uninitialized memory
+> >
+> > I think the bigger problem was that it could overwrite unintended
+> > memory. E.g., in BPF program, if you had something like:
+> >
+> > char my_buf[8 + 3];
+> > char my_precious_data[5] = {1, 2, 3, 4, 5};
+>
+> How does that happen?
+>
+> The
+>
+>     while (max >= sizeof(unsigned long)) {
+>             /* copy 4 bytes */
+>
+>             max -= sizeof(unsigned long)
+>     }
+>
+>     /* copy byte at a time */
+>
+> where `max` is the user supplied length should prevent that kind of
+> corruption, right?
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, you are right, I got confused. If the user specified the correct
+max, then this would have never happened. Never mind.
 
-Hi!
-
-> I'm announcing the release of the 4.19.157 kernel.
->=20
-> Please see the 5.9.8 announcement if you are curious if you should
-> upgrade or not:
-> 	https://lore.kernel.org/lkml/1605041246232108@kroah.com/
-
-Quoting:
-
-# Hint, if you are using SGX, then upgrade.  And then possibly
-# reconsider
-# the decisions you have recently made that caused you to write special
-# code to use that crazy thing.  Personally, it still feels like a
-# solution in search of a problem.
-
-I agree with you that SGX is "crazy", but this makes no sense.
-
-SGX is expected to protect enclave even from root. How does making
-interface root-only solve that?
-
-Plus, SGX is not in 4.19. I don't believe it is in mainline, either,
-as the patches are still reposted. We are at v40 now...
-
-Date: Wed,  4 Nov 2020 16:54:06 +0200
-=46rom: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH v40 00/24] Intel SGX foundations
-
-ls arch/x86/kernel/cpu/sgx shows nothing in mainline. It shows nothing
-in -next, either.
-
-Confused,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---zYM0uCDKw75PZbzx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+ti/AACgkQMOfwapXb+vK8rACgwnhKH9Rx+2tPuLAPkKSIMAdS
-WGAAoL/OaYF0YgJoJzFM2aSCarp7sjNs
-=Azbt
------END PGP SIGNATURE-----
-
---zYM0uCDKw75PZbzx--
+>
+> [...]
