@@ -2,63 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168332AFCA3
+	by mail.lfdr.de (Postfix) with ESMTP id 855AF2AFCA4
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgKLBlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:41:19 -0500
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:23485 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgKLBPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:15:10 -0500
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 364D928269E;
-        Thu, 12 Nov 2020 09:15:05 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AFoANwC7DUvmHhxeg4sBAapD.3.1605143705212.Hmail.wangqing@vivo.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWNCBuZXQtYnVnZml4c10gbmV0L2V0aGVybmV0OiBVcGRhdGUgcmV0IHdoZW4gcHRwX2Nsb2NrIGlzIEVSUk9S?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.213.83.156
-In-Reply-To: <20201111080027.7830f756@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Received: from wangqing@vivo.com( [58.213.83.156) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 12 Nov 2020 09:15:05 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Thu, 12 Nov 2020 09:15:05 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSR9KHkNKHU1MQxpPVkpNS05KT0hMS05JTUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU5CTUJKS09CSEtON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6PRQ6NQw4TD8uDRYzEwMeHE8IOToaCz9VSFVKTUtOSk9ITEtOTUNNVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSUpIVUNIVUpOTVlXWQgBWUFIT0NONwY+
-X-HM-Tid: 0a75ba0536899395kuws364d928269e
+        id S1729636AbgKLBlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:41:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728222AbgKLBSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 20:18:18 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DA002067D;
+        Thu, 12 Nov 2020 01:18:17 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kd1Ff-0002LS-Dt; Wed, 11 Nov 2020 20:18:15 -0500
+Message-ID: <20201112011516.589846126@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 11 Nov 2020 20:15:16 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH 0/3 v5] ftrace: Add access to function arguments for all callbacks
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gT24gV2VkLCBOb3YgMTEsIDIwMjAgYXQgMDM6MjQ6MzNQTSArMDIwMCwgR3J5Z29yaWkgU3Ry
-YXNoa28gd3JvdGU6Cj4+ID4gCj4+ID4gRm9sbG93aW5nIFJpY2hhcmQncyBjb21tZW50cyB2MSBv
-ZiB0aGUgcGF0Y2ggaGFzIHRvIGJlIGFwcGxpZWQgWzFdLgo+PiA+IEkndmUgYWxzbyBhZGRlZCBt
-eSBSZXZpZXdlZC1ieSB0aGVyZS4KPj4gPiAKPj4gPiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
-cmcvcGF0Y2h3b3JrL3BhdGNoLzEzMzQwNjcvICAKPj4gCj4+ICsxCj4+IAo+PiBKYWt1YiwgY2Fu
-IHlvdSBwbGVhc2UgdGFrZSB0aGUgb3JpZ2luYWwgdjEgb2YgdGhpcyBwYXRjaD8KPgo+SSBkb24n
-dCB0aGluayB2MSBidWlsZHMgY2xlYW5seSBmb2xrcyAobm90IDEwMCUgc3VyZSwgY3B0cyBpcyBu
-b3QKPmNvbXBpbGVkIG9uIHg4Nik6Cj4KPgkJcmV0ID0gY3B0cy0+cHRwX2Nsb2NrID8gY3B0cy0+
-cHRwX2Nsb2NrIDogKC1FTk9ERVYpOwo+Cj5wdHBfY2xvY2sgaXMgYSBwb2ludGVyLCByZXQgaXMg
-YW4gaW50ZWdlciwgcmlnaHQ/Cgp5ZWFoLCBJIHdpbGwgbW9kaWZ5IGxpa2U6IHJldCA9IGNwdHMt
-PnB0cF9jbG9jayA/IFBUUl9FUlIoY3B0cy0+cHRwX2Nsb2NrKSA6IC1FTk9ERVY7Cgo+Cj5Hcnln
-b3JpaSwgd291bGQgeW91IG1pbmQgc2VuZGluZyBhIGNvcnJlY3QgcGF0Y2ggaW4gc28gV2FuZyBR
-aW5nIGNhbgo+c2VlIGhvdyBpdCdzIGRvbmU/IEkndmUgYmVlbiBhc2tpbmcgZm9yIGEgZml4ZXMg
-dGFnIG11bHRpcGxlIHRpbWVzCj5hbHJlYWR5IDooCgpJIHN0aWxsIGRvbid0IHF1aXRlIHVuZGVy
-c3RhbmQgd2hhdCBhIGZpeGVzIHRhZyBtZWFuc++8jApjYW4geW91IHRlbGwgbWUgaG93IHRvIGRv
-IHRoaXMsIHRoYW5rcy4KCldhbmcgUWluZwoKDQoNCg==
+This is something I wanted to implement a long time ago, but held off until
+there was a good reason to do so. Now it appears that having access to the
+arguments of the function by default is very useful. As a bonus, because
+arguments must be saved regardless before calling a callback, because they
+need to be restored before returning back to the start of the traced
+function, there's not much work to do to have them always be there for
+normal function callbacks.
+
+The basic idea is that if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is set, then
+all callbacks registered to ftrace can use the regs parameter for the stack
+and arguments (kernel_stack_pointer(regs), regs_get_kernel_argument(regs, n)),
+without the need to set REGS that causes overhead by saving all registers as
+REGS simulates a breakpoint.
+
+This could be extended to move the REGS portion to kprobes itself, and
+remove the SAVE_REGS flag completely, but for now, kprobes still uses the
+full SAVE_REGS support.
+
+The last patch extends the WITH_ARGS to allow default function tracing to
+modify the instruction pointer, where livepatching for x86 no longer needs
+to save all registers.
+
+The idea of this approach is to give enough information to a callback that
+it could retrieve all arguments, which includes the stack pointer and
+instruction pointer.
+
+This can also be extended to modify the function graph tracer to use the
+function tracer instead of having a separate trampoline.
+
+Changes since v4:
+
+ - Fixed compile error for !CONFIG_FUNCTION_TRACER
+ - Fixed prototype of pstore ftrace callback function.
+
+ This also passed all my tests, and I will probably add this to my for-next soon
+ if there's no complaints.
+
+Steven Rostedt (VMware) (3):
+      ftrace: Have the callbacks receive a struct ftrace_regs instead of pt_regs
+      ftrace/x86: Allow for arguments to be passed in to ftrace_regs by default
+      livepatch: Use the default ftrace_ops instead of REGS when ARGS is available
+
+----
+ arch/powerpc/include/asm/livepatch.h |  4 +++-
+ arch/s390/include/asm/livepatch.h    |  5 ++++-
+ arch/x86/Kconfig                     |  1 +
+ arch/x86/include/asm/ftrace.h        | 18 ++++++++++++++++++
+ arch/x86/include/asm/livepatch.h     |  4 ++--
+ arch/x86/kernel/ftrace_64.S          | 15 +++++++++++++--
+ arch/x86/kernel/kprobes/ftrace.c     |  3 ++-
+ fs/pstore/ftrace.c                   |  2 +-
+ include/linux/ftrace.h               | 28 ++++++++++++++++++++++++++--
+ include/linux/kprobes.h              |  2 +-
+ kernel/livepatch/Kconfig             |  2 +-
+ kernel/livepatch/patch.c             | 10 ++++++----
+ kernel/trace/Kconfig                 |  9 +++++++++
+ kernel/trace/ftrace.c                | 27 +++++++++++++++------------
+ kernel/trace/trace_event_perf.c      |  2 +-
+ kernel/trace/trace_events.c          |  2 +-
+ kernel/trace/trace_functions.c       |  9 ++++-----
+ kernel/trace/trace_irqsoff.c         |  2 +-
+ kernel/trace/trace_sched_wakeup.c    |  2 +-
+ kernel/trace/trace_selftest.c        | 20 +++++++++++---------
+ kernel/trace/trace_stack.c           |  2 +-
+ 21 files changed, 122 insertions(+), 47 deletions(-)
