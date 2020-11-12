@@ -2,101 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAA02B1040
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A292B105F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgKLV0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:26:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:57394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726960AbgKLV0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:26:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 637E1142F;
-        Thu, 12 Nov 2020 13:26:38 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EBE03F73C;
-        Thu, 12 Nov 2020 13:26:36 -0800 (PST)
-References: <20201023101158.088940906@infradead.org> <20201023102346.921768277@infradead.org> <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com> <jhjd00ixz9z.mognet@arm.com> <13786aa5a5fc958708ef1182c885d1a574449d99.camel@redhat.com> <jhja6vmxthb.mognet@arm.com> <371cfc80a1ecaa526a774efbe36369cc66b4ae69.camel@redhat.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Subject: Re: [PATCH v4 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
-In-reply-to: <371cfc80a1ecaa526a774efbe36369cc66b4ae69.camel@redhat.com>
+        id S1727434AbgKLV0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:26:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727139AbgKLV0t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 16:26:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED42DC0613D4;
+        Thu, 12 Nov 2020 13:26:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=bTrDsmol5aUu0hNNGO8gHhFZiHT6t38oxGw0to6H7hI=; b=f/+BuA+klSCvPBZ5nrqnr6aDig
+        tnqHLooQ2xnBfUL/bh+29e9RMw2V47ZfmV3cvxL7Ldhv16pkZp/7LVF67l3JVezO/pCdL59fSwqWW
+        pBoJwjhNCAedzkvGZc/kh6aQvud1JKehsfneZ+Ygdp3S/mJqk4uWREZOTNs6L+M0nf/W2Zl0XxZMy
+        BVFpA+vPKQrgk9CRFrxOcHLKm4g5Y4Jy5n8fEiy2s1e0l6SoR0DRMdXfJvGOeAraOyGb4Vh3wXGRk
+        6yx7wubk7J6+jplA8nhom201WsiHPTfJnw5OPB6PuO/sl3IKgrL0/jZ3FUYdOXjSLM5CSfz9O4XXd
+        IDi9MOAg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdK7C-0007Ge-Tl; Thu, 12 Nov 2020 21:26:46 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org, hughd@google.com, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 08/16] iomap: Use mapping_seek_hole_data
 Date:   Thu, 12 Nov 2020 21:26:33 +0000
-Message-ID: <jhj8sb6xo52.mognet@arm.com>
+Message-Id: <20201112212641.27837-9-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
+In-Reply-To: <20201112212641.27837-1-willy@infradead.org>
+References: <20201112212641.27837-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Enhance mapping_seek_hole_data() to handle partially uptodate pages and
+convert the iomap seek code to call it.
 
-On 12/11/20 20:37, Qian Cai wrote:
-> On Thu, 2020-11-12 at 19:31 +0000, Valentin Schneider wrote:
->> a) Do you also get this on CONFIG_PREEMPT=y?
->
-> This also happens with:
->
-> CONFIG_PREEMPT=y
-> CONFIG_PREEMPTION=y
-> CONFIG_PREEMPT_RCU=y
-> CONFIG_PREEMPT_NOTIFIERS=y
-> CONFIG_DEBUG_PREEMPT=y
-> CONFIG_PREEMPTIRQ_TRACEPOINTS=y
->
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/iomap/seek.c | 125 +++++-------------------------------------------
+ mm/filemap.c    |  37 ++++++++++++--
+ 2 files changed, 43 insertions(+), 119 deletions(-)
 
-Hmph, it should be much less likely to happen with PREEMPT=y, but isn't per
-se impossible. Thanks for giving it a shot.
+diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
+index 107ee80c3568..dab1b02eba5b 100644
+--- a/fs/iomap/seek.c
++++ b/fs/iomap/seek.c
+@@ -10,122 +10,17 @@
+ #include <linux/pagemap.h>
+ #include <linux/pagevec.h>
+ 
+-/*
+- * Seek for SEEK_DATA / SEEK_HOLE within @page, starting at @lastoff.
+- * Returns true if found and updates @lastoff to the offset in file.
+- */
+-static bool
+-page_seek_hole_data(struct inode *inode, struct page *page, loff_t *lastoff,
+-		int whence)
+-{
+-	const struct address_space_operations *ops = inode->i_mapping->a_ops;
+-	unsigned int bsize = i_blocksize(inode), off;
+-	bool seek_data = whence == SEEK_DATA;
+-	loff_t poff = page_offset(page);
+-
+-	if (WARN_ON_ONCE(*lastoff >= poff + PAGE_SIZE))
+-		return false;
+-
+-	if (*lastoff < poff) {
+-		/*
+-		 * Last offset smaller than the start of the page means we found
+-		 * a hole:
+-		 */
+-		if (whence == SEEK_HOLE)
+-			return true;
+-		*lastoff = poff;
+-	}
+-
+-	/*
+-	 * Just check the page unless we can and should check block ranges:
+-	 */
+-	if (bsize == PAGE_SIZE || !ops->is_partially_uptodate)
+-		return PageUptodate(page) == seek_data;
+-
+-	lock_page(page);
+-	if (unlikely(page->mapping != inode->i_mapping))
+-		goto out_unlock_not_found;
+-
+-	for (off = 0; off < PAGE_SIZE; off += bsize) {
+-		if (offset_in_page(*lastoff) >= off + bsize)
+-			continue;
+-		if (ops->is_partially_uptodate(page, off, bsize) == seek_data) {
+-			unlock_page(page);
+-			return true;
+-		}
+-		*lastoff = poff + off + bsize;
+-	}
+-
+-out_unlock_not_found:
+-	unlock_page(page);
+-	return false;
+-}
+-
+-/*
+- * Seek for SEEK_DATA / SEEK_HOLE in the page cache.
+- *
+- * Within unwritten extents, the page cache determines which parts are holes
+- * and which are data: uptodate buffer heads count as data; everything else
+- * counts as a hole.
+- *
+- * Returns the resulting offset on successs, and -ENOENT otherwise.
+- */
+ static loff_t
+-page_cache_seek_hole_data(struct inode *inode, loff_t offset, loff_t length,
+-		int whence)
+-{
+-	pgoff_t index = offset >> PAGE_SHIFT;
+-	pgoff_t end = DIV_ROUND_UP(offset + length, PAGE_SIZE);
+-	loff_t lastoff = offset;
+-	struct pagevec pvec;
+-
+-	if (length <= 0)
+-		return -ENOENT;
+-
+-	pagevec_init(&pvec);
+-
+-	do {
+-		unsigned nr_pages, i;
+-
+-		nr_pages = pagevec_lookup_range(&pvec, inode->i_mapping, &index,
+-						end - 1);
+-		if (nr_pages == 0)
+-			break;
+-
+-		for (i = 0; i < nr_pages; i++) {
+-			struct page *page = pvec.pages[i];
+-
+-			if (page_seek_hole_data(inode, page, &lastoff, whence))
+-				goto check_range;
+-			lastoff = page_offset(page) + PAGE_SIZE;
+-		}
+-		pagevec_release(&pvec);
+-	} while (index < end);
+-
+-	/* When no page at lastoff and we are not done, we found a hole. */
+-	if (whence != SEEK_HOLE)
+-		goto not_found;
+-
+-check_range:
+-	if (lastoff < offset + length)
+-		goto out;
+-not_found:
+-	lastoff = -ENOENT;
+-out:
+-	pagevec_release(&pvec);
+-	return lastoff;
+-}
+-
+-
+-static loff_t
+-iomap_seek_hole_actor(struct inode *inode, loff_t offset, loff_t length,
++iomap_seek_hole_actor(struct inode *inode, loff_t start, loff_t length,
+ 		      void *data, struct iomap *iomap, struct iomap *srcmap)
+ {
++	loff_t offset = start;
++
+ 	switch (iomap->type) {
+ 	case IOMAP_UNWRITTEN:
+-		offset = page_cache_seek_hole_data(inode, offset, length,
+-						   SEEK_HOLE);
+-		if (offset < 0)
++		offset = mapping_seek_hole_data(inode->i_mapping, start,
++				start + length, SEEK_HOLE);
++		if (offset == start + length)
+ 			return length;
+ 		fallthrough;
+ 	case IOMAP_HOLE:
+@@ -164,15 +59,17 @@ iomap_seek_hole(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
+ EXPORT_SYMBOL_GPL(iomap_seek_hole);
+ 
+ static loff_t
+-iomap_seek_data_actor(struct inode *inode, loff_t offset, loff_t length,
++iomap_seek_data_actor(struct inode *inode, loff_t start, loff_t length,
+ 		      void *data, struct iomap *iomap, struct iomap *srcmap)
+ {
++	loff_t offset = start;
++
+ 	switch (iomap->type) {
+ 	case IOMAP_HOLE:
+ 		return length;
+ 	case IOMAP_UNWRITTEN:
+-		offset = page_cache_seek_hole_data(inode, offset, length,
+-						   SEEK_DATA);
++		offset = mapping_seek_hole_data(inode->i_mapping, start,
++				start + length, SEEK_DATA);
+ 		if (offset < 0)
+ 			return length;
+ 		fallthrough;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index ab7103eb7e11..ef7411ea3f91 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2586,11 +2586,36 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ }
+ EXPORT_SYMBOL(generic_file_read_iter);
+ 
+-static inline bool page_seek_match(struct page *page, bool seek_data)
++static inline loff_t page_seek_hole_data(struct xa_state *xas,
++		struct address_space *mapping, struct page *page,
++		loff_t start, loff_t end, bool seek_data)
+ {
++	const struct address_space_operations *ops = mapping->a_ops;
++	size_t offset, bsz = i_blocksize(mapping->host);
++
+ 	if (xa_is_value(page) || PageUptodate(page))
+-		return seek_data;
+-	return !seek_data;
++		return seek_data ? start : end;
++	if (!ops->is_partially_uptodate)
++		return seek_data ? end : start;
++
++	xas_pause(xas);
++	rcu_read_unlock();
++	lock_page(page);
++	if (unlikely(page->mapping != mapping))
++		goto unlock;
++
++	offset = offset_in_thp(page, start) & ~(bsz - 1);
++
++	do {
++		if (ops->is_partially_uptodate(page, offset, bsz) == seek_data)
++			break;
++		start = (start + bsz) & ~(bsz - 1);
++		offset += bsz;
++	} while (offset < thp_size(page));
++unlock:
++	unlock_page(page);
++	rcu_read_lock();
++	return start;
+ }
+ 
+ static inline
+@@ -2640,9 +2665,11 @@ loff_t mapping_seek_hole_data(struct address_space *mapping, loff_t start,
+ 			start = pos;
+ 		}
+ 
+-		if (page_seek_match(page, seek_data))
++		pos += seek_page_size(&xas, page);
++		start = page_seek_hole_data(&xas, mapping, page, start, pos,
++				seek_data);
++		if (start < pos)
+ 			goto unlock;
+-		start = pos + seek_page_size(&xas, page);
+ 		put_page(page);
+ 	}
+ 	rcu_read_unlock();
+-- 
+2.28.0
 
-> [ 1235.044945][  T330] INFO: task trinity-c4:60050 blocked for more than 245 seconds.
-> [ 1235.052540][  T330]       Not tainted 5.10.0-rc3-next-20201112+ #2
-> [ 1235.058774][  T330] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [ 1235.067392][  T330] task:trinity-c4      state:D stack:26880 pid:60050 ppid:  1722 flags:0x00004000
-> [ 1235.076505][  T330] Call Trace:
-> [ 1235.079680][ T330] __schedule (kernel/sched/core.c:4272 kernel/sched/core.c:5019) 
-> [ 1235.083971][ T330] ? __sched_text_start (kernel/sched/core.c:4901) 
-> [ 1235.088721][ T330] schedule (kernel/sched/core.c:5099 (discriminator 1)) 
-> [ 1235.092661][ T330] schedule_timeout (kernel/time/timer.c:1848) 
-> [ 1235.097399][ T330] ? usleep_range (kernel/time/timer.c:1833) 
-> [ 1235.101945][ T330] ? wait_for_completion (kernel/sched/completion.c:85 kernel/sched/completion.c:106 kernel/sched/completion.c:117 kernel/sched/completion.c:138) 
-> [ 1235.107156][ T330] ? lock_downgrade (kernel/locking/lockdep.c:5443) 
-> [ 1235.111883][ T330] ? rcu_read_unlock (./include/linux/rcupdate.h:692 (discriminator 5)) 
-> [ 1235.116561][ T330] ? do_raw_spin_lock (./arch/x86/include/asm/atomic.h:202 ./include/asm-generic/atomic-instrumented.h:707 ./include/asm-generic/qspinlock.h:82 kernel/locking/spinlock_debug.c:113) 
-> [ 1235.121459][ T330] ? _raw_spin_unlock_irq (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 ./include/linux/spinlock_api_smp.h:168 kernel/locking/spinlock.c:199) 
-> [ 1235.126601][ T330] wait_for_completion (kernel/sched/completion.c:86 kernel/sched/completion.c:106 kernel/sched/completion.c:117 kernel/sched/completion.c:138) 
-> [ 1235.131591][ T330] ? wait_for_completion_interruptible (kernel/sched/completion.c:137) 
-> [ 1235.138013][ T330] ? _raw_spin_unlock_irqrestore (./include/linux/spinlock_api_smp.h:160 kernel/locking/spinlock.c:191) 
-> [ 1235.143698][ T330] affine_move_task (./include/linux/instrumented.h:101 ./include/asm-generic/atomic-instrumented.h:220 ./include/linux/refcount.h:272 ./include/linux/refcount.h:315 ./include/linux/refcount.h:333 kernel/sched/core.c:2263) 
-> [ 1235.148451][ T330] ? move_queued_task (kernel/sched/core.c:2151) 
-> [ 1235.153351][ T330] ? update_curr (kernel/sched/sched.h:1176 kernel/sched/fair.c:845) 
-> [ 1235.157848][ T330] ? enqueue_entity (kernel/sched/fair.c:4247) 
-> [ 1235.162658][ T330] ? set_next_task_fair (./arch/x86/include/asm/jump_label.h:25 (discriminator 2) ./include/linux/jump_label.h:200 (discriminator 2) kernel/sched/fair.c:4567 (discriminator 2) kernel/sched/fair.c:4683 (discriminator 2) kernel/sched/fair.c:10953 (discriminator 2)) 
-> [ 1235.167667][ T330] __set_cpus_allowed_ptr (kernel/sched/core.c:2353) 
-> [ 1235.172905][ T330] ? affine_move_task (kernel/sched/core.c:2287) 
-> [ 1235.177826][ T330] ? _raw_spin_unlock_irqrestore (./include/linux/spinlock_api_smp.h:160 kernel/locking/spinlock.c:191) 
-> [ 1235.183501][ T330] sched_setaffinity (kernel/sched/core.c:6460) 
-> [ 1235.188345][ T330] ? __ia32_sys_sched_getattr (kernel/sched/core.c:6393) 
-> [ 1235.193937][ T330] ? _copy_from_user (./arch/x86/include/asm/uaccess_64.h:46 ./arch/x86/include/asm/uaccess_64.h:52 lib/usercopy.c:16) 
-> [ 1235.198605][ T330] __x64_sys_sched_setaffinity (kernel/sched/core.c:6511 kernel/sched/core.c:6500 kernel/sched/core.c:6500) 
-> [ 1235.204291][ T330] ? sched_setaffinity (kernel/sched/core.c:6500) 
-> [ 1235.209324][ T330] ? syscall_enter_from_user_mode (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 kernel/entry/common.c:98) 
-> [ 1235.215133][ T330] do_syscall_64 (arch/x86/entry/common.c:46) 
-> [ 1235.219431][ T330] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:127) 
-> [ 1235.225251][  T330] RIP: 0033:0x7fb102b1178d
->
->> b) Could you try the below?
->
-> It is running good so far on multiple systems. I'll keep it running and report
-> back if it happens again.
-
-Thanks! All of this is somewhat fragile, so I'll want to have another look
-with a fresher mind; if the diff makes a difference at least it'll mean
-I wasn't completely off.
