@@ -2,266 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F2B2AFC95
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050E12AFC96
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgKLBjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        id S1729423AbgKLBjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:39:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728135AbgKLAnl (ORCPT
+        with ESMTP id S1728139AbgKLAoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:43:41 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D172BC061A4F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:41:46 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id q5so2882822pfk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:41:46 -0800 (PST)
+        Wed, 11 Nov 2020 19:44:39 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71392C061A53
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:42:31 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id o11so4210242ioo.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:42:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bqfw24r492ZlSxiExdSPR4WpvJf90H3jjNhD9cbhKe0=;
-        b=Kd0H88a7tX2w/XF97VJcyfSLioITcS6U4Zddl9PL7ktta7ezTd0xPlpztFCwTcbkA9
-         rJQMUhUMuSKgMFwobCIhMngzseuQaJ6jgeqPI8QUfBzda8fkd2LhBlYSQpDii5Qpkrlx
-         p94rbWmQVWqn0yhPbUUnsULyNaHVl4lj8p0qE=
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=hVMls448WtiCHmEYYiwgm9q9rutrUQBdLNWKWdqqFcU=;
+        b=Zi58cWkSVR+SHmfNL35r+95ic21DnWOrCIrUzgP8XqgEbrE8/SsMjAHoNYLanGHwpf
+         dh0HZ06DEUcM/BBFwfvqMTRTvMd4sRZ4YvZqqao3Rmm/QbqPSJjAAPR8pxkfAJ/f6FXq
+         XMfXVbLuP6z/C4mPfYvUIOlzehmw7vpmWEB7w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bqfw24r492ZlSxiExdSPR4WpvJf90H3jjNhD9cbhKe0=;
-        b=paXZ/UoepmCTjJGGKUzZVsWUslGJx5Jtln6+8zlYDIJkVgaXd6i8tLvU3PTTnwKl16
-         /7Bcfa7/EkF1yphjWAIwj1lDMb4QcFmMzBMc5LLA3U1bqE0WWbYNDGItr1wb6PcON7ZQ
-         d+2l1DcMVC8zxgqwaB0qrNciacpIKPoClzwLqDZC0Zcc9U48MMlC8sd9cuU6O13twAg2
-         1tZgGKfyfwcVZD+LENpNno5TGIlfi+W+T7iB3P82sqJZZxknG94f+XXNJ0TronmhL0mW
-         9mJUAW8GjIxZovdHcprKURDi2M0rkf4sZDXdLnHNckhNmCpF2QUrhRbaHpAJVrwqFtFz
-         FjjQ==
-X-Gm-Message-State: AOAM5305N+iXNLC/T+G/qkQFue/2d1qUgtY2jnrtIK91d+YzdgGmLDYQ
-        DCzB/HYXgs2dY9d3Y4OJ4av32g==
-X-Google-Smtp-Source: ABdhPJwwXgAkiVtxlKSqCTPPg/hu9iNiNZWvePJh4DhcPN2gseOgWuR4njAx+IRatgNPm805aFIijA==
-X-Received: by 2002:a62:6885:0:b029:164:51c0:b849 with SMTP id d127-20020a6268850000b029016451c0b849mr24990185pfc.58.1605141706374;
-        Wed, 11 Nov 2020 16:41:46 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id t26sm4265522pfl.72.2020.11.11.16.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 16:41:45 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
-        gregkh@linuxfoundation.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     andrea@borgia.bo.it, robh+dt@kernel.org,
-        kai.heng.feng@canonical.com, swboyd@chromium.org,
-        linux-input@vger.kernel.org, hdegoede@redhat.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/4] HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
-Date:   Wed, 11 Nov 2020 16:41:30 -0800
-Message-Id: <20201111164027.v6.4.If41b7d621633b94d56653c6d53f5f89c5274de7b@changeid>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-In-Reply-To: <20201112004130.17290-1-dianders@chromium.org>
-References: <20201112004130.17290-1-dianders@chromium.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=hVMls448WtiCHmEYYiwgm9q9rutrUQBdLNWKWdqqFcU=;
+        b=cgVxyPeu7AKz4ep0NWfLdSg+yi+3OOZuovPEMXdinm0t3HuZF5tfcb25PFQYYXUsF4
+         YRfCU8yzD16/Xxp3bHxb3iMuwbg3jd+g3PqusXWVc1uuIcxbBBsGYy77D+qWyEtTQnTk
+         uCibD6agy4KXZKCUGlK3tzdPgA2ShgtsWmzrHGUPzqqr+Kxjg6okis0+JZn+mnUxlPiO
+         CtePH7KzoonqGCvPrTD+ZZpirREvfU3WiiiXWxRuehaQIqH5dsxv+aoOTYRMQkHyLy74
+         90UqSipALsRFzMpYPFfF8JF6bsqFoioj7FvFDRvPEOv6ds4UG9OwStjwuLk0IwcXF2Hi
+         TPnQ==
+X-Gm-Message-State: AOAM532mayhoALxGZryDNnQ0qCqY8sYRHF5IF/P6VmQC7KgR/hOcWhBP
+        aPOzITfU0AEwc02uoW+ukzA/cA==
+X-Google-Smtp-Source: ABdhPJyu4kzjNlE/3+zoxJPDn7rR6SX7QbtDmZGQHGsO4qttKjaX5ffav4Yal9zr/bH8X3ruhnY0MQ==
+X-Received: by 2002:a5e:8206:: with SMTP id l6mr20266636iom.126.1605141750643;
+        Wed, 11 Nov 2020 16:42:30 -0800 (PST)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id z18sm1829584iol.32.2020.11.11.16.42.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 11 Nov 2020 16:42:29 -0800 (PST)
+Date:   Thu, 12 Nov 2020 00:42:28 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "smayhew@redhat.com" <smayhew@redhat.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
+        "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
+        "bfields@fieldses.org" <bfields@fieldses.org>
+Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
+ namespaces
+Message-ID: <20201112004227.GB351@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20201102174737.2740-1-sargun@sargun.me>
+ <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
+ <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
+ <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
+ <8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com>
+ <20201111185727.GA27945@ircssh-2.c.rugged-nimbus-611.internal>
+ <17d0e6c2e30d5b28cc1cb0313822e5ca39a2245c.camel@hammerspace.com>
+ <20201112003056.GA351@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112003056.GA351@ircssh-2.c.rugged-nimbus-611.internal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Goodix i2c-hid touchscreens are mostly i2c-hid compliant but have some
-special power sequencing requirements, including the need to drive a
-reset line during the sequencing.
+On Thu, Nov 12, 2020 at 12:30:56AM +0000, Sargun Dhillon wrote:
+> On Wed, Nov 11, 2020 at 08:03:18PM +0000, Trond Myklebust wrote:
+> > On Wed, 2020-11-11 at 18:57 +0000, Sargun Dhillon wrote:
+> > > On Wed, Nov 11, 2020 at 02:38:11PM +0000, Trond Myklebust wrote:
+> > > > On Wed, 2020-11-11 at 11:12 +0000, Sargun Dhillon wrote:
+> > > > 
+> > > > The current code for setting server->cred was developed
+> > > > independently
+> > > > of fsopen() (and predates it actually). I'm fine with the change to
+> > > > have server->cred be the cred of the user that called fsopen().
+> > > > That's
+> > > > in line with what we used to do for sys_mount().
+> > > > 
+> > > Just curious, without FS_USERNS, how were you mounting NFSv4 in an
+> > > unprivileged user ns?
+> > 
+> > The code was originally developed on a 5.1 kernel. So all my testing
+> > has been with ordinary sys_mount() calls in a container that had
+> > CAP_SYS_ADMIN privileges.
+> > 
+> > > > However all the other stuff to throw errors when the user namespace
+> > > > is
+> > > > not init_user_ns introduces massive regressions.
+> > > > 
+> > > 
+> > > I can remove that and respin the patch. How do you feel about that? 
+> > > I would 
+> > > still like to keep the log lines though because it is a uapi change.
+> > > I am 
+> > > worried that someone might exercise this path with GSS and allow for
+> > > upcalls 
+> > > into the main namespaces by accident -- or be confused of why they're
+> > > seeing 
+> > > upcalls "in a different namespace".
+> > > 
+> > > Are you okay with picking up ("NFS: NFSv2/NFSv3: Use cred from
+> > > fs_context during 
+> > > mount") without any changes?
+> > 
+> > Why do we need the dprintk()s? It seems to me that either they should
+> > be reporting something that the user needs to know (in which case they
+> > should be real printk()s) or they are telling us something that we
+> > should already know. To me they seem to fit more in the latter
+> > category.
+> > 
+> > > 
+> > > I can respin ("NFSv4: Refactor NFS to use user namespaces") without:
+> > > /*
+> > >  * nfs4idmap is not fully isolated by user namespaces. It is
+> > > currently
+> > >  * only network namespace aware. If upcalls never happen, we do not
+> > >  * need to worry as nfs_client instances aren't shared between
+> > >  * user namespaces.
+> > >  */
+> > > if (idmap_userns(server->nfs_client->cl_idmap) != &init_user_ns && 
+> > >         !(server->caps & NFS_CAP_UIDGID_NOMAP)) {
+> > >         error = -EINVAL;
+> > >         errorf(fc, "Mount credentials are from non init user
+> > > namespace and ID mapping is enabled. This is not allowed.");
+> > >         goto error;
+> > > }
+> > > 
+> > > (and making it so we can call idmap_userns)
+> > > 
+> > 
+> > Yes. That would be acceptable. Again, though, I'd like to see the
+> > dprintk()s gone.
+> > 
+> 
+> I can drop the dprintks, but given this is a uapi change, does it make sense to 
+> pr_info_once? Especially, because this can have security impact?
 
-Let's use the new rejiggering of i2c-hid to support this with a thin
-wrapper driver to support the first Goodix i2c-hid touchscreen:
-GT7375P
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
-Changes in v6:
-- Suspend/resume are no longer exported from the core.
-
-Changes in v5:
-- i2chid_subclass_data => i2chid_ops.
-- power_up_device => power_up (same with power_down).
-- subclass => ops.
-
-Changes in v4:
-- Totally redid based on the new subclass system.
-
-Changes in v3:
-- Rework to use subclassing.
-
- drivers/hid/i2c-hid/Kconfig             |  19 +++-
- drivers/hid/i2c-hid/Makefile            |   1 +
- drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 116 ++++++++++++++++++++++++
- 3 files changed, 134 insertions(+), 2 deletions(-)
- create mode 100644 drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-
-diff --git a/drivers/hid/i2c-hid/Kconfig b/drivers/hid/i2c-hid/Kconfig
-index 819b7521c182..a16c6a69680b 100644
---- a/drivers/hid/i2c-hid/Kconfig
-+++ b/drivers/hid/i2c-hid/Kconfig
-@@ -32,10 +32,25 @@ config I2C_HID_OF
- 	  will be called i2c-hid-of.  It will also build/depend on the
- 	  module i2c-hid.
- 
-+config I2C_HID_OF_GOODIX
-+	tristate "Driver for Goodix hid-i2c based devices on OF systems"
-+	default n
-+	depends on I2C && INPUT && OF
-+	help
-+	  Say Y here if you want support for Goodix i2c devices that use
-+	  the i2c-hid protocol on Open Firmware (Device Tree)-based
-+	  systems.
-+
-+	  If unsure, say N.
-+
-+	  This support is also available as a module.  If so, the module
-+	  will be called i2c-hid-of-goodix.  It will also build/depend on
-+	  the module i2c-hid.
-+
- endmenu
- 
- config I2C_HID_CORE
- 	tristate
--	default y if I2C_HID_ACPI=y || I2C_HID_OF=y
--	default m if I2C_HID_ACPI=m || I2C_HID_OF=m
-+	default y if I2C_HID_ACPI=y || I2C_HID_OF=y || I2C_HID_OF_GOODIX=y
-+	default m if I2C_HID_ACPI=m || I2C_HID_OF=m || I2C_HID_OF_GOODIX=m
- 	select HID
-diff --git a/drivers/hid/i2c-hid/Makefile b/drivers/hid/i2c-hid/Makefile
-index 9b4a73446841..302545a771f3 100644
---- a/drivers/hid/i2c-hid/Makefile
-+++ b/drivers/hid/i2c-hid/Makefile
-@@ -10,3 +10,4 @@ i2c-hid-$(CONFIG_DMI)				+= i2c-hid-dmi-quirks.o
- 
- obj-$(CONFIG_I2C_HID_ACPI)			+= i2c-hid-acpi.o
- obj-$(CONFIG_I2C_HID_OF)			+= i2c-hid-of.o
-+obj-$(CONFIG_I2C_HID_OF_GOODIX)			+= i2c-hid-of-goodix.o
-diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-new file mode 100644
-index 000000000000..7cc51c25c609
---- /dev/null
-+++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for Goodix touchscreens that use the i2c-hid protocol.
-+ *
-+ * Copyright 2020 Google LLC
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/pm.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include "i2c-hid.h"
-+
-+struct goodix_i2c_hid_timing_data {
-+	unsigned int post_gpio_reset_delay_ms;
-+	unsigned int post_power_delay_ms;
-+};
-+
-+struct i2c_hid_of_goodix {
-+	struct i2chid_ops ops;
-+
-+	struct regulator *vdd;
-+	struct gpio_desc *reset_gpio;
-+	const struct goodix_i2c_hid_timing_data *timings;
-+};
-+
-+static int goodix_i2c_hid_power_up(struct i2chid_ops *ops)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(ops, struct i2c_hid_of_goodix, ops);
-+	int ret;
-+
-+	ret = regulator_enable(ihid_goodix->vdd);
-+	if (ret)
-+		return ret;
-+
-+	if (ihid_goodix->timings->post_power_delay_ms)
-+		msleep(ihid_goodix->timings->post_power_delay_ms);
-+
-+	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 0);
-+	if (ihid_goodix->timings->post_gpio_reset_delay_ms)
-+		msleep(ihid_goodix->timings->post_gpio_reset_delay_ms);
-+
-+	return 0;
-+}
-+
-+static void goodix_i2c_hid_power_down(struct i2chid_ops *ops)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(ops, struct i2c_hid_of_goodix, ops);
-+
-+	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
-+	regulator_disable(ihid_goodix->vdd);
-+}
-+
-+static int i2c_hid_of_goodix_probe(struct i2c_client *client,
-+				   const struct i2c_device_id *id)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix;
-+
-+	ihid_goodix = devm_kzalloc(&client->dev, sizeof(*ihid_goodix),
-+				   GFP_KERNEL);
-+	if (!ihid_goodix)
-+		return -ENOMEM;
-+
-+	ihid_goodix->ops.power_up = goodix_i2c_hid_power_up;
-+	ihid_goodix->ops.power_down = goodix_i2c_hid_power_down;
-+
-+	/* Start out with reset asserted */
-+	ihid_goodix->reset_gpio =
-+		devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ihid_goodix->reset_gpio))
-+		return PTR_ERR(ihid_goodix->reset_gpio);
-+
-+	ihid_goodix->vdd = devm_regulator_get(&client->dev, "vdd");
-+	if (IS_ERR(ihid_goodix->vdd))
-+		return PTR_ERR(ihid_goodix->vdd);
-+
-+	ihid_goodix->timings = device_get_match_data(&client->dev);
-+
-+	return i2c_hid_core_probe(client, &ihid_goodix->ops, 0x0001);
-+}
-+
-+static const struct goodix_i2c_hid_timing_data goodix_gt7375p_timing_data = {
-+	.post_power_delay_ms = 10,
-+	.post_gpio_reset_delay_ms = 120,
-+};
-+
-+static const struct of_device_id goodix_i2c_hid_of_match[] = {
-+	{ .compatible = "goodix,gt7375p", .data = &goodix_gt7375p_timing_data },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, goodix_i2c_hid_of_match);
-+
-+static struct i2c_driver goodix_i2c_hid_ts_driver = {
-+	.driver = {
-+		.name	= "i2c_hid_of_goodix",
-+		.pm	= &i2c_hid_core_pm,
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+		.of_match_table = of_match_ptr(goodix_i2c_hid_of_match),
-+	},
-+	.probe		= i2c_hid_of_goodix_probe,
-+	.remove		= i2c_hid_core_remove,
-+	.shutdown	= i2c_hid_core_shutdown,
-+};
-+module_i2c_driver(goodix_i2c_hid_ts_driver);
-+
-+MODULE_AUTHOR("Douglas Anderson <dianders@chromium.org>");
-+MODULE_DESCRIPTION("Goodix i2c-hid touchscreen driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.29.2.222.g5d2a92d10f8-goog
-
+Spending 5 minutes thinking about this, I think that best go out in another patch
+that I can spin, and we can discuss there.
