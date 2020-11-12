@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B382B0160
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5002B0156
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727130AbgKLIwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:52:38 -0500
-Received: from lgeamrelo13.lge.com ([156.147.23.53]:34154 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725902AbgKLIwi (ORCPT
+        id S1726731AbgKLIsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:48:38 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7211 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgKLIsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:52:38 -0500
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.53 with ESMTP; 12 Nov 2020 17:52:35 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.125 with ESMTP; 12 Nov 2020 17:52:35 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Thu, 12 Nov 2020 17:51:14 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201112085114.GC14554@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201112061532.GA14554@X58A-UD3R>
+        Thu, 12 Nov 2020 03:48:38 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWwH81JR4zkhQj;
+        Thu, 12 Nov 2020 16:48:20 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 12 Nov 2020 16:48:23 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <balbi@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <weiyongjun1@huawei.com>,
+        <jun.li@freescale.com>, <rogerq@ti.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chenzhou10@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] usb: gadget: mass_storage: fix error return code in msg_bind()
+Date:   Thu, 12 Nov 2020 16:53:24 +0800
+Message-ID: <20201112085324.181903-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112061532.GA14554@X58A-UD3R>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 03:15:32PM +0900, Byungchul Park wrote:
-> > If on the other hand there's some bug in lockdep itself that causes 
-> > excessive false positives, it's better to limit the number of reports 
-> > to one per bootup, so that it's not seen as a nuisance debugging 
-> > facility.
-> > 
-> > Or if lockdep gets extended that causes multiple previously unreported 
-> > (but very much real) bugs to be reported, it's *still* better to 
-> > handle them one by one: because lockdep doesn't know whether it's real 
-> 
-> Why do you think we cannot handle them one by one with multi-reporting?
-> We can handle them with the first one as we do with single-reporting.
-> And also that's how we work, for example, when building the kernel or
-> somethinig.
+Fix to return a negative error code from the error handling case
+instead of 0 in function msg_bind(), as done elsewhere in this
+function.
 
-Let me add a little bit more. I just said the fact that we are able to
-handle the bugs one by one as if we do with single-reporting.
+Fixes: d86788979761 ("usb: gadget: mass_storage: allocate and init otg descriptor by otg capabilities")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
+ drivers/usb/gadget/legacy/mass_storage.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-But the thing is multi-reporting could be more useful in some cases.
-More precisely speaking, bugs not caused by IRQ state will be reported
-without annoying nuisance. I bet you have experienced a ton of nuisances
-when multi-reporting Lockdep detected a deadlock by IRQ state.
+diff --git a/drivers/usb/gadget/legacy/mass_storage.c b/drivers/usb/gadget/legacy/mass_storage.c
+index 9ed22c5fb7fe..7a88c5282d61 100644
+--- a/drivers/usb/gadget/legacy/mass_storage.c
++++ b/drivers/usb/gadget/legacy/mass_storage.c
+@@ -175,8 +175,10 @@ static int msg_bind(struct usb_composite_dev *cdev)
+ 		struct usb_descriptor_header *usb_desc;
+ 
+ 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
+-		if (!usb_desc)
++		if (IS_ERR(usb_desc)) {
++			status = PTR_ERR(usb_desc);
+ 			goto fail_string_ids;
++		}
+ 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
+-- 
+2.20.1
 
-For some cases, multi-reporting is as useful as single-reporting, while
-for the other cases, multi-reporting is more useful. Then I think we
-have to go with mutil-reporting if there's no technical issue.
-
-Thanks,
-Byungchul
