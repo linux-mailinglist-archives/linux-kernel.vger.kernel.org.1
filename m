@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B38D2AFC74
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F1F2AFC73
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbgKLBhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:37:13 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:38782 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728047AbgKLATr (ORCPT
+        id S1729111AbgKLBhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728044AbgKLATB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:19:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UF0rPRQ_1605140382;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UF0rPRQ_1605140382)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Nov 2020 08:19:43 +0800
-Subject: Re: [PATCH] mm/filemap: add static for function
- __add_to_page_cache_locked
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
- <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
- <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
-Date:   Thu, 12 Nov 2020 08:18:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 11 Nov 2020 19:19:01 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEDDC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:19:01 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b3so1830945pls.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:19:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LtCB6ZCF5AGvMeS9/icU9Rx1IjLI7o2d2+oG/pddwrw=;
+        b=OaS8OCI9vb4kX6A8hupmj8NATt3fN/fgdTiQcAD1/I6BOuJtVeBmYKpIfu2F3qcqzR
+         eoTGEp9h8KeTFRsVOWOaV8C86OTlRGI6nzhp5AlfFoqLV3+DTgYfo6ZX2vzN2TsKr1KF
+         MljKYMnhYJHUDG21TW1ClzitF5AxABIlSe/sg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LtCB6ZCF5AGvMeS9/icU9Rx1IjLI7o2d2+oG/pddwrw=;
+        b=T7OLpTNmmrSFItA5gG8JdiNP9HmOZX+bUYXziuxcY3h+cxpEi5/V/i8CNhpoxvkd+l
+         0TnOTHLauAfjKgrMJWPCqK2WfWQ+OTUrZYVKKHDY38Qg/2lDsWJUg8UmtqV/YNIhqO73
+         Del2NK2I4GfoFiP0Oqgk2Fga9Gkr70zTonlnHhh9dFxJAoQ40kua1KjX99shF4ofYh2D
+         yOAjINh44JvsnTQXSz4Ah6H02TShWoUFon3NeCOXXRt7x1WO0JUZQDhFRGfuoa9ZRSSk
+         EblExXZsD9H4VUn8GVWmiXpZ8CckABPq/kOMk0P9Uyp3bZoAhkUH3f15dVkdkzVz7poJ
+         f/Yw==
+X-Gm-Message-State: AOAM530iNNvQzUojN3AwMTfBFYdiOyVRKiH5x1CvOdN1EU3mxOUlccE+
+        NYIZbKyWs2ZANIruCiFd/rMDYg==
+X-Google-Smtp-Source: ABdhPJy98FONnxapcMcTx6KXTK44zmyO5NEg2p5+rPybfcQDvSFSP+aBjDKSJ/YVgs6sXsi40n6ejA==
+X-Received: by 2002:a17:902:7482:b029:d6:682d:5c6c with SMTP id h2-20020a1709027482b02900d6682d5c6cmr22661750pll.84.1605140340819;
+        Wed, 11 Nov 2020 16:19:00 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j12sm4040230pfd.203.2020.11.11.16.18.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 16:18:59 -0800 (PST)
+Date:   Wed, 11 Nov 2020 16:18:58 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: Enable seccomp architecture tracking
+Message-ID: <202011111618.8315C4F4@keescook>
+References: <20201028002000.2666043-1-keescook@chromium.org>
+ <20201028002000.2666043-2-keescook@chromium.org>
+ <X6rNTgw8z4kreVD9@trantor>
 MIME-Version: 1.0
-In-Reply-To: <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6rNTgw8z4kreVD9@trantor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/11/11 上午3:50, Andrew Morton 写道:
-> On Tue, 10 Nov 2020 08:39:24 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
+On Tue, Nov 10, 2020 at 05:26:38PM +0000, Catalin Marinas wrote:
+> On Tue, Oct 27, 2020 at 05:19:59PM -0700, Kees Cook wrote:
+> > To enable seccomp constant action bitmaps, we need to have a static
+> > mapping to the audit architecture and system call table size. Add these
+> > for arm64.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  arch/arm64/include/asm/seccomp.h | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> > 
+> > diff --git a/arch/arm64/include/asm/seccomp.h b/arch/arm64/include/asm/seccomp.h
+> > index c36387170936..40f325e7a404 100644
+> > --- a/arch/arm64/include/asm/seccomp.h
+> > +++ b/arch/arm64/include/asm/seccomp.h
+> > @@ -19,4 +19,19 @@
+> >  
+> >  #include <asm-generic/seccomp.h>
+> >  
+> > +#ifdef CONFIG_ARM64
+> > +# define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_AARCH64
+> > +# define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
+> > +# define SECCOMP_ARCH_NATIVE_NAME	"arm64"
 > 
->> On Fri, Nov 6, 2020 at 4:55 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>>
->>> Otherwise it cause gcc warning:
->>>           ^~~~~~~~~~~~~~~
->>> ../mm/filemap.c:830:14: warning: no previous prototype for
->>> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
->>>  noinline int __add_to_page_cache_locked(struct page *page,
->>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Is CONFIG_DEBUG_INFO_BTF enabled in your .config ?
-> 
-> hm, yes.
+> "aarch64"? (to match ELF_PLATFORM; not sure what this is used for as
+> SECCOMP_ARCH_NATIVE_NAME is not defined in 5.10-rc3)
 
-When the config enabled, compiling looks good untill pahole tool
-used to get BTF info, but I still failed on a right version pahole
-> 1.16. Sorry.
+Ah yes, I was thinking of the arch/arm64 name. :) I will fix this.
 
 > 
->>>
->>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: linux-mm@kvack.org
->>> Cc: linux-kernel@vger.kernel.org
->>> ---
->>>  mm/filemap.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/mm/filemap.c b/mm/filemap.c
->>> index d90614f501da..249cf489f5df 100644
->>> --- a/mm/filemap.c
->>> +++ b/mm/filemap.c
->>> @@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
->>>  }
->>>  EXPORT_SYMBOL_GPL(replace_page_cache_page);
->>>
->>> -noinline int __add_to_page_cache_locked(struct page *page,
->>> +static noinline int __add_to_page_cache_locked(struct page *page,
->>>                                         struct address_space *mapping,
->>>                                         pgoff_t offset, gfp_t gfp,
->>>                                         void **shadowp)
+> > +# ifdef CONFIG_COMPAT
+> > +#  define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_ARM
+> > +#  define SECCOMP_ARCH_COMPAT_NR	__NR_compat_syscalls
+> > +#  define SECCOMP_ARCH_COMPAT_NAME	"arm"
+> > +# endif
+> > +#else /* !CONFIG_ARM64 */
+> > +# define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_ARM
+> > +# define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
+> > +# define SECCOMP_ARCH_NATIVE_NAME	"arm"
+> > +#endif
 > 
-> It's unclear to me whether BTF_ID() requires that the target symbol be
-> non-static.  It doesn't actually reference the symbol:
-> 
-> #define BTF_ID(prefix, name) \
->         __BTF_ID(__ID(__BTF_ID__##prefix##__##name##__))
-> 
+> Why do we need a !CONFIG_ARM64 in an arm64 header file?
 
-The above usage make me thought BTF don't require the symbol, though
-the symbol still exist in vmlinux with 'static'.
+Heh, again, sorry -- I'm so used to the 32/64 being combined as I did
+the other architectures. I'll fix this too.
 
-So any comments of this, Alexei? 
+Thanks!
 
-> Alexei, can you please comment?
-> 
+-- 
+Kees Cook
