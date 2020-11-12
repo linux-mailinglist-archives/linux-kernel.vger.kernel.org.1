@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE032B048A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7CE2B0486
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgKLL5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:57:39 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60924 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728184AbgKLL51 (ORCPT
+        id S1727489AbgKLL5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:57:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57007 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728158AbgKLL5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:57:27 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id D20BB1F462E9
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH 0/5] Stateless H.264 de-staging
-Date:   Thu, 12 Nov 2020 08:57:09 -0300
-Message-Id: <20201112115714.48081-1-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 12 Nov 2020 06:57:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605182241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=83w/1Q8eKBY/M3hgJMXofHi6YmZoj03v//KCkf2z5gI=;
+        b=bAp/0zCo8zohCsdR69CVJTUC2Jl3daLDQwhLk45NjN+10+8YS9DsuazRT87g96l6zKrJdL
+        bHJz5rbfKYO9ZsUFIqrrVA6NLE+0ktu3ohmM6uNTEMguGqJYmxRKUAbU1S16W+2jtRFee8
+        63OpSOAutirMLpklQxiYIUqlNd5oq9I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-D9yiioqgMCubAdQjgcyeqw-1; Thu, 12 Nov 2020 06:57:17 -0500
+X-MC-Unique: D9yiioqgMCubAdQjgcyeqw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14D28803F60;
+        Thu, 12 Nov 2020 11:57:15 +0000 (UTC)
+Received: from krava (unknown [10.40.194.120])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 56ED05B4B9;
+        Thu, 12 Nov 2020 11:57:11 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 12:57:10 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 24/24] perf record: Add --buildid-mmap option to enable
+ mmap's build id
+Message-ID: <20201112115710.GE619201@krava>
+References: <20201109215415.400153-1-jolsa@kernel.org>
+ <20201109215415.400153-25-jolsa@kernel.org>
+ <20201111170046.GB466880@tassilo.jf.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111170046.GB466880@tassilo.jf.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that H.264 stateless controls are solid, we can get it
-out of staging.
+On Wed, Nov 11, 2020 at 09:00:46AM -0800, Andi Kleen wrote:
+> On Mon, Nov 09, 2020 at 10:54:15PM +0100, Jiri Olsa wrote:
+> > Adding --buildid-mmap option to enable build id in mmap2 events.
+> > It will only work if there's kernel support for that and it disables
+> > build id cache (implies --no-buildid).
+> 
+> What's the point of the option? Why not enable it by default
+> if the kernel supports it?
+> 
+> With the option most user won't get the benefit.
+> 
+> The only reason I can think of for an option would be to disable
+> so that old tools can still process.
 
-Following some guidelines from Hans, this series creates a
-new stateless control class for the stable codec controls to land.
+yes, that was request in the rfc post, we want the new default
+perf.data be still readable by older perf tools
 
-This is compile-tested for now, and I'm sending it just to
-check if the approach looks good, or otherwise get feedback.
-
-I'll be porting GStreamer v4l2codecs to the new interface
-and running some tests soon.
-
-As far as I'm aware, Ffmpeg/libavcodec support is ready and
-waiting for stable uAPIs, so we can expect that to be added
-shortly after we land this.
-
-Thanks,
-Ezequiel
-
-Ezequiel Garcia (4):
-  media: cedrus: h264: Support profile control
-  media: Rename stateful codec control macros
-  media: Clean stateless control includes
-  media: uapi: move H264 stateless controls out of staging
-
-Jonas Karlman (1):
-  media: rkvdec: h264: Support profile and level controls
-
- .../userspace-api/media/v4l/common.rst        |   1 +
- .../userspace-api/media/v4l/dev-mem2mem.rst   |   2 +-
- .../media/v4l/ext-ctrls-codec-stateless.rst   | 674 ++++++++++++++++
- .../media/v4l/ext-ctrls-codec.rst             | 696 +----------------
- .../media/v4l/extended-controls.rst           |   8 +-
- .../media/v4l/pixfmt-compressed.rst           |  14 +-
- .../media/v4l/vidioc-g-ext-ctrls.rst          |   6 +-
- drivers/media/common/cx2341x.c                |   4 +-
- drivers/media/platform/s5p-mfc/s5p_mfc_dec.c  |   2 +-
- drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |   2 +-
- drivers/media/v4l2-core/v4l2-ctrls.c          |  40 +-
- drivers/staging/media/hantro/hantro_drv.c     |  26 +-
- drivers/staging/media/hantro/hantro_h264.c    |   8 +-
- drivers/staging/media/hantro/hantro_hw.h      |   4 +-
- drivers/staging/media/rkvdec/rkvdec-h264.c    |   8 +-
- drivers/staging/media/rkvdec/rkvdec.c         |  39 +-
- drivers/staging/media/sunxi/cedrus/cedrus.c   |  36 +-
- .../staging/media/sunxi/cedrus/cedrus_dec.c   |  12 +-
- include/media/fwht-ctrls.h                    |   2 +-
- include/media/h264-ctrls.h                    | 406 ----------
- include/media/hevc-ctrls.h                    |  10 +-
- include/media/mpeg2-ctrls.h                   |   4 +-
- include/media/v4l2-ctrls.h                    |   1 -
- include/media/v4l2-h264.h                     |   2 +-
- include/media/vp8-ctrls.h                     |   2 +-
- include/uapi/linux/v4l2-controls.h            | 731 +++++++++++++-----
- include/uapi/linux/videodev2.h                |   8 +
- 27 files changed, 1368 insertions(+), 1380 deletions(-)
- create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
- delete mode 100644 include/media/h264-ctrls.h
-
--- 
-2.27.0
+jirka
 
