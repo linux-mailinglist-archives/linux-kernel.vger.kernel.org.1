@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2412B0F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E8B2B0F16
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbgKLU31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:29:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgKLU31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:29:27 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB16FC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:29:19 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id s9so7753220ljo.11
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=5vf4lP9wnfH0LUzbBBcbdWfEQQ9TSKop8FfDOsd61Q0=;
-        b=P+h9KuxPhuu1NTJNRN9kJ6Wmc8UU3NznYihiPyXBupeX4raR8Fpk52/3I3VuYiUVNr
-         4BKWt4ZedxIhgt4FWtzH2/qsoPnmefgo/OjGrOVs9pFbApLdGjvSdHI0JwKcKsMKy06p
-         6/edl4EnbSVclpkxbUbNX2EHoAJfWn/55CO1M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=5vf4lP9wnfH0LUzbBBcbdWfEQQ9TSKop8FfDOsd61Q0=;
-        b=YvRENk6jOdZ0I6fWt2EO3VnipF2bRjhmvXUTTz7WlevFfoUUKIbu8l9S8CMpZ7D86A
-         pmu60jB7UI9HvGJkQn3gMkUmCIV7ZHYJs+hTWokNUrHRVPNA1n3rt7X7xUgC9+KQQyyF
-         vW8RCcCcu3FsUyZLAl7Bx+34Cmgapfi2VrFuWHMGmDg8NFvEwObqFcMImJ3HOPSq91LS
-         rpfFEle1P8VTNKkUJUi35Jb1oikPBMwBv/S17mWQnUZp1SvjtLclCaGsLsCmMETur5Tq
-         eq6I1V897Ig9lG/hnclIFgrQ5RRqLNYMyyNCj+Llkyz/+wixHVGyrZJ/0GAmXVVIV/It
-         vXug==
-X-Gm-Message-State: AOAM530pmJSjcETFqf8hkIUvS7X0GSw1Fv3xc6pUWVkCN9YV3EnA9N5j
-        batbGF10FWFukyxWNXbuDneUGgyrMefJzlKCcNVTmnYz3SbBK/ZK
-X-Google-Smtp-Source: ABdhPJx8vL6q4t437J/9H9nOcxD7k2iRyQ9ak4YEvh90L/tX/8ejTifHw6ttdjBsvo893UePV1C7nxP46h1hpkhI6Ew=
-X-Received: by 2002:a2e:8e3b:: with SMTP id r27mr533438ljk.466.1605212958196;
- Thu, 12 Nov 2020 12:29:18 -0800 (PST)
+        id S1727125AbgKLUeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:34:19 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:50373 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727025AbgKLUeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 15:34:18 -0500
+Received: from localhost.localdomain (ip5f5af1d9.dynamic.kabel-deutschland.de [95.90.241.217])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 347A62064712A;
+        Thu, 12 Nov 2020 21:34:15 +0100 (CET)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     Jostar Yang <jostar_yang@accton.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guohan Lu <lguohan@gmail.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: [PATCH] ixgbe: Support external GBE SerDes PHY BCM54616s
+Date:   Thu, 12 Nov 2020 21:33:56 +0100
+Message-Id: <20201112203356.344748-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201112200346.404864-1-kpsingh@chromium.org>
-In-Reply-To: <20201112200346.404864-1-kpsingh@chromium.org>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 12 Nov 2020 21:29:07 +0100
-Message-ID: <CACYkzJ5ctN0wJfy5gWsR=+-DnmqaNZBF=QO8+FEB_qH4Sfm3=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/2] Sleepable LSM Hooks
-To:     open list <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 9:03 PM KP Singh <kpsingh@chromium.org> wrote:
->
-> From: KP Singh <kpsingh@google.com>
->
-> # v1 -> v2
->
->   * Fixed typos and formatting errors.
->   * Added Andrii's ack.
+From: Jostar Yang <jostar_yang@accton.com>
 
-Oops, I sent an older patch file which does not have Andrii's ack.
+The Broadcom PHY is used in switches, so add the ID, and hook it up.
+
+This upstreams the Linux kernel patch from the network operating system
+SONiC from Februar 2020 [1].
+
+[1]: https://github.com/Azure/sonic-linux-kernel/pull/122
+
+Signed-off-by: Jostar Yang <jostar_yang@accton.com>
+Signed-off-by: Guohan Lu <lguohan@gmail.com>
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c  | 3 +++
+ drivers/net/ethernet/intel/ixgbe/ixgbe_type.h | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c
+index fc389eecdd2b..cb685e917b0c 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c
+@@ -380,6 +380,9 @@ static enum ixgbe_phy_type ixgbe_get_phy_type_from_id(u32 phy_id)
+ 	case X557_PHY_ID2:
+ 		phy_type = ixgbe_phy_x550em_ext_t;
+ 		break;
++	case BCM54616S_E_PHY_ID:
++		phy_type = ixgbe_phy_ext_1g_t;
++		break;
+ 	default:
+ 		phy_type = ixgbe_phy_unknown;
+ 		break;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_type.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_type.h
+index 2be1c4c72435..4c317b0dbfd4 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_type.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_type.h
+@@ -1407,6 +1407,7 @@ struct ixgbe_nvm_version {
+ #define QT2022_PHY_ID    0x0043A400
+ #define ATH_PHY_ID       0x03429050
+ #define AQ_FW_REV        0x20
++#define BCM54616S_E_PHY_ID 0x03625D10
+ 
+ /* Special PHY Init Routine */
+ #define IXGBE_PHY_INIT_OFFSET_NL 0x002B
+-- 
+2.29.2
+
