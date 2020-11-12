@@ -2,61 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC372B0658
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803172B061C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgKLNXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:23:14 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7181 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgKLNXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:23:13 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX2N458s4z15VD0;
-        Thu, 12 Nov 2020 21:23:00 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 21:23:02 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <jernej.skrabec@siol.net>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <wangxiongfeng2@huawei.com>, <chenzhou10@huawei.com>
-Subject: [PATCH] drm/sun4i: dw-hdmi: fix error return code in sun8i_dw_hdmi_bind()
-Date:   Thu, 12 Nov 2020 21:14:51 +0800
-Message-ID: <1605186891-47282-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1728171AbgKLNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:15:54 -0500
+Received: from smtp.asem.it ([151.1.184.197]:61543 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727909AbgKLNPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:15:53 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000603373.MSG 
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:15:47 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 14:15:45 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 12 Nov 2020 14:15:45 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v4] Documentation: ACPI: explain how to use gpio-line-names
+Date:   Thu, 12 Nov 2020 14:15:45 +0100
+Message-ID: <20201112131545.62628-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020B.5FAD3582.0097,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling case instead
-of 0 in function sun8i_dw_hdmi_bind().
+The "gpio-line-names" declaration is not fully
+documented, so can be useful to add some important
+information and one more example.
 
-Fixes: b7c7436a5ff0 ("drm/sun4i: Implement A83T HDMI driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+This commit also fixes a trivial spelling mistake.
+
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-index d4c0804..f010fe8 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -208,6 +208,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 	phy_node = of_parse_phandle(dev->of_node, "phys", 0);
- 	if (!phy_node) {
- 		dev_err(dev, "Can't found PHY phandle\n");
-+		ret = -ENODEV;
- 		goto err_disable_clk_tmds;
- 	}
+v2: - fix commit spelling mistakes
+    - add double back quotes to gpio-line-names
+    - adjust documentation lines layout
+    - add comma at the end of Package list names in the first example
+
+v3: - add: Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+v4: - add: Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+
+ .../firmware-guide/acpi/gpio-properties.rst   | 58 ++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
+index bb6d74f23ee0..ae5396a1f092 100644
+--- a/Documentation/firmware-guide/acpi/gpio-properties.rst
++++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
+@@ -107,7 +107,61 @@ Example::
  
+ - gpio-line-names
+ 
+-Example::
++The ``gpio-line-names`` declaration is a list of strings ("names"), which
++describes each line/pin of a GPIO controller/expander. This list, contained in
++a package, must be inserted inside the GPIO controller declaration of an ACPI
++table (typically inside the DSDT). The ``gpio-line-names`` list must respect the
++following rules (see also the examples):
++
++  - the first name in the list corresponds with the first line/pin of the GPIO
++    controller/expander
++  - the names inside the list must be consecutive (no "holes" are permitted)
++  - the list can be incomplete and can end before the last GPIO line: in
++    other words, it is not mandatory to fill all the GPIO lines
++  - empty names are allowed (two quotation marks ``""`` correspond to an empty
++    name)
++
++Example of a GPIO controller of 16 lines, with an incomplete list with two
++empty names::
++
++  Package () {
++      "gpio-line-names",
++      Package () {
++          "pin_0",
++          "pin_1",
++          "",
++          "",
++          "pin_3",
++          "pin_4_push_button",
++      }
++  }
++
++At runtime, the above declaration produces the following result (using the
++"libgpiod" tools)::
++
++  root@debian:~# gpioinfo gpiochip4
++  gpiochip4 - 16 lines:
++          line   0:      "pin_0"       unused   input  active-high
++          line   1:      "pin_1"       unused   input  active-high
++          line   2:      unnamed       unused   input  active-high
++          line   3:      unnamed       unused   input  active-high
++          line   4:      "pin_3"       unused   input  active-high
++          line   5: "pin_4_push_button" unused input active-high
++          line   6:      unnamed       unused   input  active-high
++          line   7       unnamed       unused   input  active-high
++          line   8:      unnamed       unused   input  active-high
++          line   9:      unnamed       unused   input  active-high
++          line  10:      unnamed       unused   input  active-high
++          line  11:      unnamed       unused   input  active-high
++          line  12:      unnamed       unused   input  active-high
++          line  13:      unnamed       unused   input  active-high
++          line  14:      unnamed       unused   input  active-high
++          line  15:      unnamed       unused   input  active-high
++  root@debian:~# gpiofind pin_4_push_button
++  gpiochip4 5
++  root@debian:~#
++
++Another example::
+ 
+   Package () {
+       "gpio-line-names",
+@@ -191,7 +245,7 @@ The driver might expect to get the right GPIO when it does::
+ but since there is no way to know the mapping between "reset" and
+ the GpioIo() in _CRS desc will hold ERR_PTR(-ENOENT).
+ 
+-The driver author can solve this by passing the mapping explictly
++The driver author can solve this by passing the mapping explicitly
+ (the recommended way and documented in the above chapter).
+ 
+ The ACPI GPIO mapping tables should not contaminate drivers that are not
 -- 
-1.7.12.4
+2.25.1
 
