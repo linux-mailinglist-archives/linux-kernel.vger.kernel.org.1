@@ -2,451 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062942B0BAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0157B2B0BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgKLRyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:54:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgKLRyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:54:09 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE9B2216C4;
-        Thu, 12 Nov 2020 17:54:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605203646;
-        bh=0yfGJ+azzAsU5ri0W67M6/sMGh74x41z1eltaLmINY4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=J0RvnCd9YZxWKZB3r/ibWXLeWHEg3y3oxxsXj9m70yRFwT0M+QnALDzBSS7G75PXy
-         SR+RN91EzcuyT7+GbFolz2duCNaAYbqPPlpEX/MbLwlXd6cj+6xzBpwefBEv2SauIS
-         eJ5RfNaJK430/mnnQSpMBRYQZK+YEkOW1PRbUsDs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5B0C3352287B; Thu, 12 Nov 2020 09:54:06 -0800 (PST)
-Date:   Thu, 12 Nov 2020 09:54:06 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
- allocations
-Message-ID: <20201112175406.GF3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CANpmjNM8MZphvkTSo=KgCBXQ6fNY4qo6NZD5SBHjNse_L9i5FQ@mail.gmail.com>
- <20201111133813.GA81547@elver.google.com>
- <20201111130543.27d29462@gandalf.local.home>
- <20201111182333.GA3249@paulmck-ThinkPad-P72>
- <20201111183430.GN517454@elver.google.com>
- <20201111192123.GB3249@paulmck-ThinkPad-P72>
- <20201111202153.GT517454@elver.google.com>
- <20201112001129.GD3249@paulmck-ThinkPad-P72>
- <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
- <20201112161439.GA2989297@elver.google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112161439.GA2989297@elver.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726321AbgKLR4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbgKLR4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:56:42 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E58C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:56:42 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id h6so4829478pgk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:56:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=fy4PfjIPEOBAK+7E6Yj4wIghZAu9isJNVnTgrc1oj9U=;
+        b=Jm7qiuKsls0XET1Fo+17T2lI0adV1F7P82RHyCta0JCfVVNf4ZDESMbdNBzKxOGjH7
+         H1tOozBtUgF1+qxGGMaHbbG25t8mcBfqF25h6+ZDDLg9NKFKeBc1y/HHdWnHFzvNr8Uf
+         HWimqN1YuPfGYJDyrZpf7C0hqRYeh8KMgayRM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fy4PfjIPEOBAK+7E6Yj4wIghZAu9isJNVnTgrc1oj9U=;
+        b=AtG0fVrKVfvTJQpOUKVRjqSJp0K7omzCoPgAbPTJnY3V5NWeIaECpolo/Vy5s6AxF7
+         v0xoxorvp5ZmTxkLTRPbcbf/7IZuC4HOmNmwOh2joUrl2lzaNsWuWK3KaBOHfg1D1jwv
+         +jQuYygnFe2TGxRjwasfeVrE25oaeLjImQmxLJxLEd0a9aO/gJTF0ZIL0k4WNSG/ICpg
+         wSARLLYTAcPXASJ1HnKhphZD3VEdwhDDHxTQ4SRSHDekSnB5Z3e9sZrQMFrkHAy3xZ62
+         2z77N2ot+dgdCcPZOZt0rpWi2uowyFrGVRVBBK6YC2yu1atPYEpEAtG3Zfu/2/pIUmjv
+         ittg==
+X-Gm-Message-State: AOAM5339NqbfDtdn3Jya9uDOnn0Zi00VkPY83MB4OzyChQ6I/Ra3miwh
+        FhW0VQkstSAhzompAAnJeHN//g==
+X-Google-Smtp-Source: ABdhPJzSaMpLBB2AaSQdmGd6JZfJ/yvrHIGE0OItFv/kEs4nU4M/7SA0geZze0S6Kf9UrCFCltfI1A==
+X-Received: by 2002:a65:6a56:: with SMTP id o22mr555972pgu.47.1605203801470;
+        Thu, 12 Nov 2020 09:56:41 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id q18sm6817303pfs.150.2020.11.12.09.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 09:56:40 -0800 (PST)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 0/2] firmware: arm_scmi: Augment SMC/HVC to allow optional interrupt
+Date:   Thu, 12 Nov 2020 12:56:25 -0500
+Message-Id: <20201112175632.42234-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000066f21a05b3eca278"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:14:39PM +0100, Marco Elver wrote:
-> On Thu, Nov 12, 2020 at 01:49PM +0100, Marco Elver wrote:
-> > On Thu, 12 Nov 2020 at 01:11, Paul E. McKenney <paulmck@kernel.org> wrote:
-> [...]
-> > > > This assert didn't fire yet, I just get more of the below. I'll keep
-> > > > rerunning, but am not too hopeful...
-> > >
-> > > Is bisection a possibility?
-> > 
-> > I've been running a bisection for past ~12h, and am making slow
-> > progress. It might be another 12h, but I think it'll get there.
-> 
-> Bisection gave me this:
-> 
-> | git bisect start
-> | # bad: [c07b306d7fa5680777e2132662d2e6c19fb53579] kfence: Avoid stalling work queue task without allocations
-> | git bisect bad c07b306d7fa5680777e2132662d2e6c19fb53579
-> | # good: [3cea11cd5e3b00d91caf0b4730194039b45c5891] Linux 5.10-rc2
-> | git bisect good 27598e7e73260ed0b2917eb02d4a515ebb578313
-> | # good: [3e5acbea719e66ef3be64fe74c99cc905ca697dc] Merge remote-tracking branch 'wireless-drivers-next/master' into master
-> | git bisect good 3e5acbea719e66ef3be64fe74c99cc905ca697dc
-> | # good: [491a5a9a2fea28353d99621b8abb83b6928b4e36] Merge remote-tracking branch 'sound-asoc/for-next' into master
-> | git bisect good 491a5a9a2fea28353d99621b8abb83b6928b4e36
-> | # bad: [502f8643d6e21c7e370a0b75131130cc51609055] Merge remote-tracking branch 'phy-next/next' into master
-> | git bisect bad 502f8643d6e21c7e370a0b75131130cc51609055
-> | # good: [6693cb1fa5ea7b91ec00f9404776a095713face5] Merge remote-tracking branch 'tip/auto-latest' into master
-> | git bisect good 6693cb1fa5ea7b91ec00f9404776a095713face5
-> | # bad: [b790e3afead9357195b6d1e1b6cd9b3521503ad2] Merge branch 'tglx-pc.2020.10.30a' into HEAD
-> | git bisect bad b790e3afead9357195b6d1e1b6cd9b3521503ad2
-> | # bad: [765b512bb3d639bfad7dd43c288ee085236c7267] Merge branches 'cpuinfo.2020.11.06a', 'doc.2020.11.06a', 'fixes.2020.11.02a', 'lockdep.2020.11.02a', 'tasks.2020.11.06a' and 'torture.2020.11.06a' into HEAD
-> | git bisect bad 765b512bb3d639bfad7dd43c288ee085236c7267
-> | # good: [01f9e708d9eae6335ae9ff25ab09893c20727a55] tools/rcutorture: Fix BUG parsing of console.log
+--00000000000066f21a05b3eca278
 
-So torture.2020.11.06a is OK.
+v2 -- Correct commit message, s/msg/message/, and remove extra WS on
+      "dt-bindings" commit (Sudeep)
+   -- Change interrupt name to "message-serviced", move irq assignent to end
+      of function. (Sudeep)
 
-> | git bisect good 01f9e708d9eae6335ae9ff25ab09893c20727a55
-> | # good: [1be6ab91e2db157faedb7f16ab0636a80745a073] srcu: Take early exit on memory-allocation failure
+v1 -- original.
 
-As is fixes.2020.11.02a.
+Jim Quinlan (2):
+  dt-bindings: arm: Add optional interrupt to smc/hvc SCMI transport
+  firmware: arm_scmi: Augment SMC/HVC to allow optional interrupt
 
-> | git bisect good 1be6ab91e2db157faedb7f16ab0636a80745a073
-> | # good: [65e9eb1ccfe56b41a0d8bfec651ea014968413cb] rcu: Prevent RCU_LOCKDEP_WARN() from swallowing the condition
+ .../devicetree/bindings/arm/arm,scmi.txt      |  8 ++++
+ drivers/firmware/arm_scmi/smc.c               | 38 ++++++++++++++++++-
+ 2 files changed, 45 insertions(+), 1 deletion(-)
 
-And lockdep.2020.11.02a.
+-- 
+2.17.1
 
-> | git bisect good 65e9eb1ccfe56b41a0d8bfec651ea014968413cb
-> | # good: [c386e29d43728778ddd642fa73cc582bee684171] docs/rcu: Update the call_rcu() API
 
-And doc.2020.11.06a.
+--00000000000066f21a05b3eca278
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-> | git bisect good c386e29d43728778ddd642fa73cc582bee684171
-> | # good: [27c0f1448389baf7f309b69e62d4b531c9395e88] rcutorture: Make grace-period kthread report match RCU flavor being tested
-
-And the first three commits of tasks.2020.11.06a.
-
-> | git bisect good 27c0f1448389baf7f309b69e62d4b531c9395e88
-> | # good: [3fcd6a230fa7d03bffcb831a81b40435c146c12b] x86/cpu: Avoid cpuinfo-induced IPIing of idle CPUs
-
-And cpuinfo.2020.11.06a.
-
-> | git bisect good 3fcd6a230fa7d03bffcb831a81b40435c146c12b
-> | # good: [75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374] rcu-tasks: Make the units of ->init_fract be jiffies
-
-And the remaining commit of tasks.2020.11.06a.
-
-> | git bisect good 75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374
-> | # first bad commit: [765b512bb3d639bfad7dd43c288ee085236c7267] Merge branches 'cpuinfo.2020.11.06a', 'doc.2020.11.06a', 'fixes.2020.11.02a', 'lockdep.2020.11.02a', 'tasks.2020.11.06a' and 'torture.2020.11.06a' into HEAD
-> 
-> This doesn't look very satisfying, given it's the merge commit. :-/
-
-So each individual branch is just fine, but the merge of them is not.  Fun.
-
-These have been passing quite a bit of rcutorture over here, including
-preemptible kernels running !SMP, but admittedly on x86 rather than ARMv8.
-
-One approach would be to binary-search the combinations of merges.
-Except that there are six of them, so there are 64 combinations, of
-which you have tested only 8 thus far (none, one each, and all).
-
-But are you sure that the bisection points labeled "good" really are good?
-For example, what is the distribution of first failure times in the
-points labeled "bad" vs. the runtime used to make a "good" determination?
-Alternatively, just try a longer run on each of the commits feeding into
-the merge point.
-
-> > > Failing that, please see the updated patch below.  This adds a few more
-> > > calls to lockdep_assert_irqs_disabled(), but perhaps more helpfully dumps
-> > > the current stack of the CPU that the RCU grace-period kthread wants to
-> > > run on in the case where this kthread has been starved of CPU.
-> > 
-> > Thanks, I will apply that after the bisection runs.
-> 
-> Here's a new log with it applied:
-
-Even more strangeness!  ;-)
-
-> | [  118.480959] Key type dns_resolver registered
-> | [  118.487752] registered taskstats version 1
-> | [  118.489798] Running tests on all trace events:
-> | [  118.490164] Testing all events: OK
-> | [  173.304186] Running tests again, along with the function tracer
-> | [  173.320155] Running tests on all trace events:
-> | [  173.331638] Testing all events: 
-> | [  173.485044] hrtimer: interrupt took 14340976 ns
-
-Fourteen milliseconds, so annoying from a real-time perspective, but
-unlikely to be the cause of this.
-
-Was the system responsive at this point, between three and ten minutes
-after boot?  Similar question for the other gaps in the dmesg log.
-The reason for the question is that workqueue's reported stall times
-don't span these intervals.
-
-> | [  334.160218] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 15s!
-
-It might be instructive to cause this code to provoke a backtrace.
-I suggest adding something like "trigger_single_cpu_backtrace(cpu)"
-in kernel/workqueue.c's function named wq_watchdog_timer_fn()
-somewhere within its "if" statement that is preceded with the "did we
-stall?" comment.  Or just search for "BUG: workqueue lockup - pool"
-within kernel/workqueue.c.
-
-> | [  334.259490] Showing busy workqueues and worker pools:
-> | [  334.265398] workqueue events: flags=0x0
-> | [  334.289070]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  334.300659]     pending: vmstat_shepherd
-> | [  453.541827] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 10s!
-> | [  453.655731] BUG: workqueue lockup - pool cpus=0 flags=0x4 nice=0 stuck for 10s!
-> | [  453.759839] Showing busy workqueues and worker pools:
-> | [  453.784294] workqueue events: flags=0x0
-> | [  453.812207]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  453.822108]     pending: vmstat_shepherd
-> | [  453.839855] workqueue events_power_efficient: flags=0x82
-> | [  453.865152]   pwq 2: cpus=0 flags=0x4 nice=0 active=2/256 refcnt=4
-> | [  453.874553]     pending: neigh_periodic_work, do_cache_clean
-> | [  481.424362] BUG: workqueue lockup - pool cpus=0 flags=0x4 nice=0 stuck for 10s!
-> | [  481.508136] Showing busy workqueues and worker pools:
-> | [  481.524265] workqueue events: flags=0x0
-> | [  481.550480]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  481.560690]     pending: vmstat_shepherd
-> | [  481.571255] workqueue events_power_efficient: flags=0x82
-> | [  481.592515]   pwq 2: cpus=0 flags=0x4 nice=0 active=1/256 refcnt=3
-> | [  481.601153]     pending: neigh_periodic_work
-> | [  532.108407] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 10s!
-> | [  532.203476] Showing busy workqueues and worker pools:
-> | [  532.215930] workqueue events: flags=0x0
-> | [  532.244203]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  532.254428]     pending: vmstat_shepherd
-> | [  739.567892] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 19s!
-> | [  739.656419] Showing busy workqueues and worker pools:
-> | [  739.699514] workqueue events: flags=0x0
-> | [  739.705111]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  739.715393]     pending: vmstat_shepherd
-> | [  739.733403] workqueue events_power_efficient: flags=0x82
-> | [  739.739433]   pwq 2: cpus=0 flags=0x4 nice=0 active=2/256 refcnt=4
-> | [  739.748156]     pending: check_lifetime, neigh_periodic_work
-> | [  811.578165] BUG: workqueue lockup - pool cpus=0 flags=0x5 nice=0 stuck for 14s!
-> | [  811.602913] Showing busy workqueues and worker pools:
-> | [  811.620424] workqueue events: flags=0x0
-> | [  811.652479]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  811.662686]     pending: vmstat_shepherd
-> | [  811.683811] workqueue events_power_efficient: flags=0x82
-> | [  811.716123]   pwq 2: cpus=0 flags=0x5 nice=0 active=1/256 refcnt=3
-> | [  811.724857]     pending: neigh_periodic_work
-> | [  811.749989] pool 2: cpus=0 flags=0x5 nice=0 hung=14s workers=2 manager: 61 idle: 7
-> | [  822.456290] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 11s!
-> | [  822.600359] BUG: workqueue lockup - pool cpus=0 flags=0x5 nice=0 stuck for 25s!
-> | [  822.675814] Showing busy workqueues and worker pools:
-> | [  822.720098] workqueue events: flags=0x0
-> | [  822.747304]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  822.757174]     pending: vmstat_shepherd
-> | [  822.768047] workqueue events_power_efficient: flags=0x82
-> | [  822.799954]   pwq 2: cpus=0 flags=0x5 nice=0 active=1/256 refcnt=3
-> | [  822.808488]     pending: neigh_periodic_work
-> | [  822.831900] pool 2: cpus=0 flags=0x5 nice=0 hung=25s workers=2 manager: 61 idle: 7
-> | [  834.116239] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 22s!
-> | [  834.246557] BUG: workqueue lockup - pool cpus=0 flags=0x5 nice=0 stuck for 37s!
-> | [  834.271069] Showing busy workqueues and worker pools:
-> | [  834.276687] workqueue events: flags=0x0
-> | [  834.296267]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> | [  834.306148]     pending: vmstat_shepherd
-> | [  834.324273] workqueue events_power_efficient: flags=0x82
-> | [  834.344433]   pwq 2: cpus=0 flags=0x5 nice=0 active=2/256 refcnt=4
-> | [  834.352891]     pending: neigh_periodic_work, do_cache_clean
-> | [  834.384530] pool 2: cpus=0 flags=0x5 nice=0 hung=37s workers=2 manager: 61 idle: 7
-> | [  840.906940] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> | [  840.912685] 	(detected by 0, t=3752 jiffies, g=2709, q=1)
-
-CPU 0 detected the stall.
-
-> | [  840.914587] rcu: All QSes seen, last rcu_preempt kthread activity 620 (4295099794-4295099174), jiffies_till_next_fqs=1, root ->qsmask 0x0
-
-As before, the grace period is not stalled, but instead the grace-period
-kthread is failing to detect the end of an already-ended grace period.
-
-> | [  840.925016] rcu: rcu_preempt kthread starved for 620 jiffies! g2709 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
-
-And CPU 0 is where the RCU grace-period kthread was last seen running.
-
-> | [  840.930687] rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> | [  840.936056] rcu: RCU grace-period kthread stack dump:
-> | [  840.940433] task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
-> | [  840.949160] Call trace:
-> | [  840.952822]  dump_backtrace+0x0/0x278
-> | [  840.956816]  show_stack+0x30/0x80
-> | [  840.960643]  sched_show_task+0x1a8/0x240
-> | [  840.964684]  rcu_check_gp_kthread_starvation+0x170/0x358
-> | [  840.969113]  rcu_sched_clock_irq+0x744/0xd18
-> | [  840.973232]  update_process_times+0x68/0x98
-> | [  840.977308]  tick_sched_handle.isra.16+0x54/0x80
-> | [  840.981504]  tick_sched_timer+0x64/0xd8
-> | [  840.985500]  __hrtimer_run_queues+0x2a4/0x750
-> | [  840.989628]  hrtimer_interrupt+0xf4/0x2a0
-> | [  840.993669]  arch_timer_handler_virt+0x44/0x70
-> | [  840.997841]  handle_percpu_devid_irq+0xfc/0x4d0
-> | [  841.002043]  generic_handle_irq+0x50/0x70
-> | [  841.006098]  __handle_domain_irq+0x9c/0x120
-> | [  841.010188]  gic_handle_irq+0xcc/0x108
-> | [  841.014132]  el1_irq+0xbc/0x180
-> | [  841.017935]  arch_local_irq_restore+0x4/0x8
-> | [  841.021993]  trace_preempt_on+0xf4/0x190
-> | [  841.026016]  preempt_schedule_common+0x12c/0x1b0
-> | [  841.030193]  preempt_schedule.part.88+0x20/0x28
-> | [  841.034373]  preempt_schedule+0x20/0x28
-> | [  841.038369]  _raw_spin_unlock_irq+0x80/0x90
-> | [  841.042498]  rcu_gp_kthread+0xe5c/0x19a8
-> | [  841.046504]  kthread+0x174/0x188
-> | [  841.050320]  ret_from_fork+0x10/0x18
-> | [  841.054312] rcu: Stack dump where RCU grace-period kthread last ran:
-> | [  841.058980] Task dump for CPU 0:
-> | [  841.062736] task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
-
-And RCU's grace-period kthread really is running on CPU 0 right now.
-It is just not making any forward progress.
-
-> | [  841.071073] Call trace:
-> | [  841.074662]  dump_backtrace+0x0/0x278
-> | [  841.078596]  show_stack+0x30/0x80
-> | [  841.082386]  sched_show_task+0x1a8/0x240
-> | [  841.086367]  dump_cpu_task+0x48/0x58
-> | [  841.090311]  rcu_check_gp_kthread_starvation+0x214/0x358
-> | [  841.094736]  rcu_sched_clock_irq+0x744/0xd18
-> | [  841.098852]  update_process_times+0x68/0x98
-> | [  841.102949]  tick_sched_handle.isra.16+0x54/0x80
-> | [  841.107119]  tick_sched_timer+0x64/0xd8
-> | [  841.111127]  __hrtimer_run_queues+0x2a4/0x750
-> | [  841.115264]  hrtimer_interrupt+0xf4/0x2a0
-> | [  841.119319]  arch_timer_handler_virt+0x44/0x70
-> | [  841.123525]  handle_percpu_devid_irq+0xfc/0x4d0
-> | [  841.127690]  generic_handle_irq+0x50/0x70
-> | [  841.131702]  __handle_domain_irq+0x9c/0x120
-> | [  841.135779]  gic_handle_irq+0xcc/0x108
-> | [  841.139743]  el1_irq+0xbc/0x180
-
-The code above this point was detecting and printing the RCU CPU stall
-warning.  The code below this point was doing what?
-
-Any chance of getting file names and line numbers for the rest of this
-stack?
-
-> | [  841.143527]  arch_local_irq_restore+0x4/0x8
-
-So we are just now restoring interrupts, hence our getting the
-interrupt at this point..
-
-> | [  841.147612]  trace_preempt_on+0xf4/0x190
-
-From within the trace code, which is apparently recording the fact
-that preemption is being enabled.
-
-> | [  841.151656]  preempt_schedule_common+0x12c/0x1b0
-> | [  841.155869]  preempt_schedule.part.88+0x20/0x28
-> | [  841.160036]  preempt_schedule+0x20/0x28
-
-I was not aware that releasing a raw spinlock could result in a direct
-call to preempt_schedule().
-
-> | [  841.164051]  _raw_spin_unlock_irq+0x80/0x90
-> | [  841.168139]  rcu_gp_kthread+0xe5c/0x19a8
-
-So the RCU grace-period kthread has spent many seconds attempting to
-release a lock?  Am I reading this correctly?  Mark Rutland, am I missing
-something here?
-
-> | [  841.172134]  kthread+0x174/0x188
-> | [  841.175953]  ret_from_fork+0x10/0x18
-> | [  841.191371] 
-> | [  841.193648] ================================
-> | [  841.196605] WARNING: inconsistent lock state
-> | [  841.199764] 5.10.0-rc3-next-20201110-00001-gc07b306d7fa5-dirty #23 Not tainted
-> | [  841.203564] --------------------------------
-
-Has lockdep recorded the fact that the lock is actually released?
-It had better, given that interrupts are now enabled.
-
-> | [  841.206550] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-> | [  841.210074] rcu_preempt/10 [HC0[0]:SC0[0]:HE0:SE1] takes:
-> | [  841.213453] ffffd787e91d4358 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x4a0/0xd18
-> | [  841.221240] {IN-HARDIRQ-W} state was registered at:
-> | [  841.224538]   __lock_acquire+0x7bc/0x15b8
-> | [  841.227541]   lock_acquire+0x244/0x498
-> | [  841.230442]   _raw_spin_lock_irqsave+0x78/0x144
-> | [  841.233555]   rcu_sched_clock_irq+0x4a0/0xd18
-> | [  841.236621]   update_process_times+0x68/0x98
-> | [  841.239645]   tick_sched_handle.isra.16+0x54/0x80
-> | [  841.242801]   tick_sched_timer+0x64/0xd8
-> | [  841.245745]   __hrtimer_run_queues+0x2a4/0x750
-> | [  841.248842]   hrtimer_interrupt+0xf4/0x2a0
-> | [  841.251846]   arch_timer_handler_virt+0x44/0x70
-> | [  841.254976]   handle_percpu_devid_irq+0xfc/0x4d0
-> | [  841.258131]   generic_handle_irq+0x50/0x70
-> | [  841.261146]   __handle_domain_irq+0x9c/0x120
-> | [  841.264169]   gic_handle_irq+0xcc/0x108
-> | [  841.267096]   el1_irq+0xbc/0x180
-> | [  841.269844]   arch_local_irq_restore+0x4/0x8
-> | [  841.272881]   trace_preempt_on+0xf4/0x190
-> | [  841.275847]   preempt_schedule_common+0x12c/0x1b0
-> | [  841.279017]   preempt_schedule.part.88+0x20/0x28
-> | [  841.282149]   preempt_schedule+0x20/0x28
-> | [  841.285112]   _raw_spin_unlock_irq+0x80/0x90
-> | [  841.288154]   rcu_gp_kthread+0xe5c/0x19a8
-> | [  841.291175]   kthread+0x174/0x188
-> | [  841.293952]   ret_from_fork+0x10/0x18
-> | [  841.296780] irq event stamp: 39750
-> | [  841.299604] hardirqs last  enabled at (39749): [<ffffd787e6d85738>] rcu_irq_enter_irqson+0x48/0x68
-> | [  841.303961] hardirqs last disabled at (39750): [<ffffd787e6c122bc>] el1_irq+0x7c/0x180
-> | [  841.308042] softirqs last  enabled at (36704): [<ffffd787e6c10b58>] __do_softirq+0x650/0x6a4
-> | [  841.312250] softirqs last disabled at (36683): [<ffffd787e6cc0b80>] irq_exit+0x1a8/0x1b0
-> | [  841.316257] 
-> | [  841.316257] other info that might help us debug this:
-> | [  841.319834]  Possible unsafe locking scenario:
-> | [  841.319834] 
-> | [  841.323217]        CPU0
-> | [  841.325656]        ----
-> | [  841.328097]   lock(rcu_node_0);
-> | [  841.332433]   <Interrupt>
-> | [  841.334966]     lock(rcu_node_0);
-> | [  841.339379] 
-> | [  841.339379]  *** DEADLOCK ***
-> | [  841.339379] 
-> | [  841.342829] 1 lock held by rcu_preempt/10:
-> | [  841.345794]  #0: ffffd787e91d4358 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x4a0/0xd18
-> | [  841.354415] 
-> | [  841.354415] stack backtrace:
-> | [  841.357664] CPU: 0 PID: 10 Comm: rcu_preempt Not tainted 5.10.0-rc3-next-20201110-00001-gc07b306d7fa5-dirty #23
-> | [  841.362249] Hardware name: linux,dummy-virt (DT)
-> | [  841.365352] Call trace:
-> | [  841.367862]  dump_backtrace+0x0/0x278
-> | [  841.370745]  show_stack+0x30/0x80
-> | [  841.373517]  dump_stack+0x138/0x1b0
-> | [  841.376339]  print_usage_bug+0x2d8/0x2f8
-> | [  841.379288]  mark_lock.part.46+0x370/0x480
-> | [  841.382304]  mark_held_locks+0x58/0x90
-> | [  841.385228]  lockdep_hardirqs_on_prepare+0xdc/0x298
-> | [  841.388452]  trace_hardirqs_on+0x90/0x388
-> | [  841.391434]  el1_irq+0xd8/0x180
-> | [  841.394178]  arch_local_irq_restore+0x4/0x8
-> | [  841.397186]  trace_preempt_on+0xf4/0x190
-> | [  841.400127]  preempt_schedule_common+0x12c/0x1b0
-> | [  841.403246]  preempt_schedule.part.88+0x20/0x28
-> | [  841.406347]  preempt_schedule+0x20/0x28
-> | [  841.409278]  _raw_spin_unlock_irq+0x80/0x90
-> | [  841.412290]  rcu_gp_kthread+0xe5c/0x19a8
-> | [  841.415237]  kthread+0x174/0x188
-> | [  841.418011]  ret_from_fork+0x10/0x18
-> | [  841.423450] BUG: scheduling while atomic: rcu_preempt/10/0x00000002
-> | [  841.431367] INFO: lockdep is turned off.
-> | [  841.439132] Modules linked in:
-> | [  841.450608] Preemption disabled at:
-> | [  841.452261] [<ffffd787e7fffec0>] preempt_schedule.part.88+0x20/0x28
-> | [  841.467324] CPU: 0 PID: 10 Comm: rcu_preempt Not tainted 5.10.0-rc3-next-20201110-00001-gc07b306d7fa5-dirty #23
-> | [  841.471926] Hardware name: linux,dummy-virt (DT)
-> | [  841.475030] Call trace:
-> | [  841.477581]  dump_backtrace+0x0/0x278
-> | [  841.480451]  show_stack+0x30/0x80
-> | [  841.483220]  dump_stack+0x138/0x1b0
-> | [  841.486057]  __schedule_bug+0x8c/0xe8
-> | [  841.488949]  __schedule+0x7e8/0x890
-> | [  841.491801]  preempt_schedule_common+0x44/0x1b0
-> | [  841.494927]  preempt_schedule.part.88+0x20/0x28
-> | [  841.498048]  preempt_schedule+0x20/0x28
-> | [  841.500963]  _raw_spin_unlock_irq+0x80/0x90
-> | [  841.503988]  rcu_gp_kthread+0xe5c/0x19a8
-> | [  841.506965]  kthread+0x174/0x188
-> | [  841.509732]  ret_from_fork+0x10/0x18
-> 
-> Thanks,
-> -- Marco
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMFye/KNqswo
+BcXBNFAQJCGlo0zHCB6oa6dAlqtcylpfMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTExMjE3NTY0MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCLoxowrT7ki1zrLzgQemCcKtNuLZIQ
+nXuGvPlzpI+6vg/vgXQenTviHjNuUqfYYMEZvvbm1kb7UNjgvHhXxD3dGvoQZzSjZ6LX+qy5+/4r
+grtB/zIyuuf7x0qvOCPAREKVvUypF7tbaEAvufrOHDflPOFkDeikJvsJhAzfG9G5TraSPM0RTgHT
+xAdOg+p5GWUFiEYHEwbot2qqcbHgtnUnZiaYuyMcyzVbnsN7/UST7mzySfYUCYhjGWsubSLCDvuR
+yaFM7xe8EA8vphixOPhc4CTTMsd3I2vXhkCa+2O0qf6vzmX1Yy6GDOp4Yk7NT+7NZUbF5XTmHSFV
+VeuSuQJG
+--00000000000066f21a05b3eca278--
