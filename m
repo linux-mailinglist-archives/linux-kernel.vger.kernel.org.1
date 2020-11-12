@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433AF2AFE3F
+	by mail.lfdr.de (Postfix) with ESMTP id B04EE2AFE40
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgKLFfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:35:55 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42167 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728258AbgKLDSg (ORCPT
+        id S1729074AbgKLFgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:36:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728268AbgKLDV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:18:36 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 9C25AB3B;
-        Wed, 11 Nov 2020 22:18:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 11 Nov 2020 22:18:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=PI+Uj0fEHIXD5fotEiMxeL9UVre
-        tyEkuGpP+BkHzNZw=; b=MQt20/kP910bOei9BuSJUZcFMQtnEqXsJtzVlRblbR9
-        JKyW4afcF7Hwhc1C9FtGIc621tX+pxselVRjx34XYGbcVv53Bxu+W3FpoSQdB/l1
-        BzhtlfBrp7C+f2cgdCBlInir3WJx3gob1KXNj7kRKTekzQKz1FeXQnoML//H0BIg
-        PfdByOTXhdvaZdIBCrcuhQeYlJTsCjOqhFGvSyTushDMvncUc25HX4qE3sZ05qaI
-        UTvBoDMMT8WvAGrfBT1X1zduBSLvMUmMpJVhwzOO9aBO7Q9sBy8SMupYPHENZvB+
-        mHiZoztN1utRjXCBakLSOIIMmUeBA0vtKe1XMVQ6osA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PI+Uj0
-        fEHIXD5fotEiMxeL9UVretyEkuGpP+BkHzNZw=; b=VvQTr1BJYwEukjB+21MHfZ
-        eIdIe5Zt0c00pMgvu6rXcj8ZHfPjGm4PK83dGmVtpxQZgbSl2MUOIBBnTUFtnYl0
-        r20kHStPRjxkwpTT+nvNUVHIqnduQk3I0Fx4iOkbTeqeUIJUtLw2ul5F86aGASCx
-        VC03Il9CtP/PuK+Fk88OtOEcI27bB+8yuKxGOeb81vo2iunbb6pduKxFXK/Mm/Uk
-        iCqBtyEhuTEh6HYKqM/8vBQBvN2TX4XQDw83a1NFf37IntRnrK/b14C1zsFVGb0w
-        ITKkIpOOZ2BiZavmgF8wJkILBULIHIqL+8tbF86J+v0yWsSV0ab4INxKaXYpgJ0w
-        ==
-X-ME-Sender: <xms:hqmsX9reRdV5uNDrwCNtsvrnQAKCOwafAoOsH4lzHWauNEP-FhgXIg>
-    <xme:hqmsX_ra5VnDoiK0py1ougo432YQQmhSfZvB-EBV2uJB9wQZdCbsZ4aL-TEe-18lS
-    XIkRfXO0y5Rsy4DVHM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvuddgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlvdefmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddt
-    vdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhessh
-    htfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepgeehheefffegkeevhedthffgudfh
-    geefgfdthefhkedtleffveekgfeuffehtdeinecukfhppeejiedrvdehtddrkeegrddvfe
-    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgr
-    thhrihgtkhesshhtfigtgidrgiihii
-X-ME-Proxy: <xmx:hqmsX6Mwc2tat3qGDWBwvSYLS_ka-LIAwCcuU40KQbo4a06kN_Xbog>
-    <xmx:hqmsX46T5bKbNtlO6ZFDGN1gt-FYRli6WFn-8jDlBotv6XVrXDl3yA>
-    <xmx:hqmsX84rfdX0tIaLxrPQKOaC1lfBF1BydhP-U4sFYfQiLm5fgmfl_Q>
-    <xmx:h6msX7YXxIo2VhJ8cx1Cv0otvVgUgOh6hJlXDyY7ysxO4jq2Z0Um6Q>
-Received: from localhost (76-250-84-236.lightspeed.austtx.sbcglobal.net [76.250.84.236])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4080C30644A1;
-        Wed, 11 Nov 2020 22:18:30 -0500 (EST)
-Date:   Wed, 11 Nov 2020 21:18:28 -0600
-From:   Patrick Williams <patrick@stwcx.xyz>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Tao Ren <rentao.bupt@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Andrew Jeffery <andrew@aj.id.au>, Tao Ren <taoren@fb.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
-Message-ID: <20201112031828.GA4495@heinlein>
-References: <20201111232330.30843-1-rentao.bupt@gmail.com>
- <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
+        Wed, 11 Nov 2020 22:21:57 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E17BC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 19:21:56 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 26F6B806A8;
+        Thu, 12 Nov 2020 16:21:52 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1605151312;
+        bh=45jFnjPQvGx+d5OYv1TMsUNV7V//9FDJa3Kw/rOB8XA=;
+        h=From:To:Cc:Subject:Date;
+        b=xI8P+jV4o2n7LGU3dInAAZuwH3B7UFZF5Tw/ybWNxW562RAf18d+hSs92tLQSilZR
+         F560bQJsM/btdKkFZz1v9f5VqVSA1WZRBuEyEoNvZgDlu/SawTDeqXE5MTOpRUheIx
+         0LKNOQre2qJWmGYPqaoDiHvYFvvPmOOwguaJl0sYfLXi7SRlx9bjePHCGVa125Wrx+
+         2imH0WBxXvPNzzyfJHudCo9qr4qDqaQF2T/kWAMmxBm23DRtr036FssWUE86EL2iNf
+         5dvu9scZpu5CI7S1T3fDNfhEijM8Iqit5tZeiO8o/dqQvP0uF6HuabHhJP/zhaKK8U
+         k5YhYQNjaDzKQ==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5facaa4f0000>; Thu, 12 Nov 2020 16:21:51 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 2A52813EE9C;
+        Thu, 12 Nov 2020 16:21:51 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id E4319280958; Thu, 12 Nov 2020 16:21:51 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     akpm@linux-foundation.org, rppt@kernel.org,
+        thomas.petazzoni@free-electrons.com, arnd@arndb.de,
+        jason@lakedaemon.net
+Cc:     linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] bus: mvebu-mbus: make iounmap() symmetric with ioremap()
+Date:   Thu, 12 Nov 2020 16:21:49 +1300
+Message-Id: <20201112032149.21906-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <CACPK8XdC8FRKOLQ9e583gVuDrL5829MOfx5L=O68dou6mjW_6g@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+make coccicheck complains:
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  ./drivers/bus/mvebu-mbus.c:1113:2-8: ERROR: missing iounmap; ioremap on=
+ line 1106 and execution via conditional on line 1111
 
-On Wed, Nov 11, 2020 at 11:34:10PM +0000, Joel Stanley wrote:
-> On Wed, 11 Nov 2020 at 23:23, <rentao.bupt@gmail.com> wrote:
-> >
-> > From: Tao Ren <rentao.bupt@gmail.com>
-> >
-> > The patch series adds the initial version of device tree for Facebook
-> > Galaxy100 (AST2400) BMC.
-> >
-> > Patch #1 adds common dtsi to minimize duplicated device entries across
-> > Facebook Network AST2400 BMC device trees.
-> >
-> > Patch #2 simplfies Wedge40 device tree by using the common dtsi.
-> >
-> > Patch #3 simplfies Wedge100 device tree by using the common dtsi.
-> >
-> > Patch #4 adds the initial version of device tree for Facebook Galaxy100
-> > BMC.
->=20
-> Nice. They look good to me.
->=20
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
->=20
-> Is there another person familiar with the design you would like to
-> review before I merge?
+It took some staring but I don't think there is a problem because the
+file global `mbus_state` is passed mvebu_mbus_common_init() as the
+`mbus` parameter so `mbus_state.mbuswins_base` and `mbus->mbuswins_base`
+are the same thing. But this is confusing for anyone reading the code
+and one less complaint from coccicheck would be nice so lets fix it.
 
-Also,
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+I haven't included
 
-Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
+Fixes: fddddb52a6c4 ("bus: introduce an Marvell EBU MBus driver")
 
+because that commit is quite old and it's probably not worth bothering
+the stable trees with what is essentially a no-op.
+
+ drivers/bus/mvebu-mbus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/bus/mvebu-mbus.c b/drivers/bus/mvebu-mbus.c
+index 2519ceede64b..dd9e7343a5e3 100644
+--- a/drivers/bus/mvebu-mbus.c
++++ b/drivers/bus/mvebu-mbus.c
+@@ -1111,7 +1111,7 @@ static int __init mvebu_mbus_common_init(struct mve=
+bu_mbus_state *mbus,
+=20
+ 	mbus->sdramwins_base =3D ioremap(sdramwins_phys_base, sdramwins_size);
+ 	if (!mbus->sdramwins_base) {
+-		iounmap(mbus_state.mbuswins_base);
++		iounmap(mbus->mbuswins_base);
+ 		return -ENOMEM;
+ 	}
+=20
 --=20
-Patrick Williams
+2.29.2
 
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAl+sqYIACgkQqwNHzC0A
-wRkjOA/+MVToyQOs6gmPPw8Mbeu5twaJfK1kiwCdZ85CUbMW4HPwsiibBYpy2boG
-AcxeQGuO7xoC8j5QJ4Rr7dvm5IDhk/nlnpXiP7g4b+Qq9HYZhTY7DjiuuLgUYOg8
-t2k47k3Mo+ttSfCH31afQ8whjiD26tVq0yj9mjAY9+VdrSwh6iuz02GG9bswHyw7
-MJsZUvWEHZP4aH/eKMd+X4MF/BN80hAF02KTQT3Foj2gPFBRiatvGFRcPb/e8xh/
-VN5R8N6MEDu09OKBGw7VBhWoWjjYt83XozqQwFM5R90gNOCyF9Ej/zCkmuGU6fxa
-hKoL/ESEHOCJa65B8hTcVLRInr8BrqJUK1GQzSnXj9n+jrMiwE12N2iffzrFUV0n
-LrO6fXhbg8yT7Z8t8lFxHTTVmIqTJJiZ8MPjPuu5DvqZQsXiFTebv+AhGk/tE9gp
-0xUge0NlPhN1IoQ6tBinGNmO42Q/X6tvEIfwm1bUkHn+orvDVc/By5d6dUyqjqiz
-HuTt3w5OgDI99qVoIVtmv27ZL8aleSRjNSc0SZ81lcnBEbqPwM1n7fQ6ymOX+wHQ
-uK90MNfNhdcSLIl68shGHbcsW/FVkqBilzV+XYIhOkwf9qYGyuLalRxFZyGjhm6S
-bxXZ/jaUt6kvKDqzf7FVQbDrXqhva9ZWadjuV0af1MZCsUiqVc0=
-=i9rh
------END PGP SIGNATURE-----
-
---LZvS9be/3tNcYl/X--
