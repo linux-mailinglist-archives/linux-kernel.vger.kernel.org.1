@@ -2,179 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4C92AFE25
+	by mail.lfdr.de (Postfix) with ESMTP id 97ED22AFE26
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgKLFe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
+        id S1728728AbgKLFea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbgKLCO2 (ORCPT
+        with ESMTP id S1727118AbgKLCVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:14:28 -0500
+        Wed, 11 Nov 2020 21:21:00 -0500
 Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CABBC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:14:28 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c20so3066400pfr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:14:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9293FC061A47
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:20:07 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id g7so3107485pfc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:20:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f79nMHVN8pv5/YKFzlWN37GawHBvq0Jjxuf2DH5PRsQ=;
-        b=KRuBmPx0j6RB/spfbXT+hnt4AA19u53vgZDvN9/qxbJ0suS4eNtHtiQLIJTJtMC/aE
-         Niw+du8T64qm5+uCHjrPjKqJ5aUJkcaxn3cFCLUHmxtlJwJR9saGKtHQ4sOV8aJs1Oxy
-         bB8kN2kOebHj0g4Ge7i4zqSnpxOUv6SDxN8CylGPypT0ZBfYPyUccCTYDbgAcUtotcvx
-         IfkWDtQ+9/mXX/3TiCb6r+JkEb84rjvV4zWpSKdMjN+QY5lWcLpNyW3+clD4iAuQ3/N9
-         069xwU3rX+zhDLMT0X0id3S1M+Cg4nscvDNxKh8kH9L4iA76VKZiNvfx4A414GnqCmeq
-         tuUQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=n9mkhOK1cTjJziFp+RemHGgP/Offi+hIAS6UwhyqMZM=;
+        b=RQEt0VxvDtrDuFopAECyXYCB6K4xI+lVQGmsiMTYYHKUWcCRFz9Q5DN3u08SE3pUgd
+         tOltkdRG9dpP9RZw0R8f7JdLkAACQwZm9wOJGGa0+3Jyv/9Jm/3c2dSekC96pqgSGNGp
+         X5acYnXYZttHEVCkHEd+J2pJ2l7ecXqcr7U9Rz7TehB6ib8FOqF+tIB+ozRjOmTTi0Jh
+         gTAwhjWRqU/5WMqfsvC+/ojqcU+syPzRDhTaYifq33+Wiu676yUEw7kP0ZiGkAngFvE3
+         NVj3yvP9XObFLIEwT94kqyhEYjh1OVe1tUCxtbxVB9uzftVvkKyFuTh9Z39ZI7PghPAV
+         dQ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f79nMHVN8pv5/YKFzlWN37GawHBvq0Jjxuf2DH5PRsQ=;
-        b=E/rNkWRp5ndfitaOgVCJ+9wZzJOnzjtvECDTnKNx2iiZwU81tYj4i0Xdn5nNpVJeJZ
-         yOftN6fbmxck3uaZn98vDI2CXVTaBzsauggQy2AOoFv8+dEZkpRp3jXgi9RaVxIc3+1T
-         pJ/Tu87Uk9OcjJTVJ9JrLHb4c9uKdVQTKHKZwsUk8Fng2FFw2S0cBJVz1ifcWNg7PNwH
-         dNQZt30tyh96JIe9LBQvc4r3+Q8re52LqB99yKf6QF1aQdcO3b6QRXTDiFpYHf/tFBfC
-         Pz/trYaP8MHhhd7f7LQsVctp+GjO86D75tCPU/5FNAa553UjWK7lYyY3OInqEEvKCTAe
-         XweA==
-X-Gm-Message-State: AOAM533LnsMMTvp/z8AvcqMiRo3I5Cw95obZVo2qJ2urNs6a3zOxkeNw
-        ED91GD9mTUVq5OYD8R/gkVNEkT4i8Qop3gb5uB6AL5n92ogAQg==
-X-Google-Smtp-Source: ABdhPJy9xgdSdOx+SZqZ1ij1E/mkeTghIhIV1PIo6Wehk3R7WiwQbBrvfjlWMt2FXpkUcmSX2ztUozvqC4cZJFn5pXE=
-X-Received: by 2002:a17:90a:4881:: with SMTP id b1mr6886626pjh.32.1605147267894;
- Wed, 11 Nov 2020 18:14:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112001422.340449-1-willmcvicker@google.com> <CAKwvOdkDG2wt=ZT93GT7r60_qXn=tdW_zWiJ1Gr5JVdRvcU8uw@mail.gmail.com>
-In-Reply-To: <CAKwvOdkDG2wt=ZT93GT7r60_qXn=tdW_zWiJ1Gr5JVdRvcU8uw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 11 Nov 2020 18:14:15 -0800
-Message-ID: <CAKwvOdnjMhjxawxNembM+XrMctitm13Cvh8gbMPEcXiPBhacPA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: Fix off-by-one vdso trampoline return value
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=n9mkhOK1cTjJziFp+RemHGgP/Offi+hIAS6UwhyqMZM=;
+        b=gKOZ7lKq+C/TpfjxB9j8ooixjTDE7LObJyfjx6MOW/iRwTx15MscZe+9Rr7h9Y4gGe
+         zpQ0uqXv+fkZtsmpK1w5S7bbL6xSNcv+9B3NPTiKrsgvMDmWHvZ2I6aNN79RvGBab9dp
+         AutUJ79bgNZ6KjlPgPanXvuUX3FYKj1J7EMai4QcMbjTiWGQfpi2pDE0g0EIH9v3Nsph
+         c6QSmL8se9wrzCALosB9m32c6/LVv4l7szrkFp6pYp9uXEHBX7W7nRDdjPQEF2JDDwRa
+         OUpQazLGFNtiQT7BxZzWWR2vjaKhG/0+55vLG/e6vTfTfBTS8MWTbO6GmhXu+ejQQCE+
+         w6jg==
+X-Gm-Message-State: AOAM5311JpvbTcO+XYquqX/MK/ujw3XGzJ33c0/+JxO6XoaP8/1r2ONF
+        MEOcvMk0/Ie2bHDDUcygbgg+vQ==
+X-Google-Smtp-Source: ABdhPJx3xyWGpT39Ext85b7DnT239h7dXhP8tTzutBNGtHtiWQUZEKvRp/VX8wM2A0MhAxhXnDt8Cg==
+X-Received: by 2002:a62:248:0:b029:18c:992f:e407 with SMTP id 69-20020a6202480000b029018c992fe407mr3589902pfc.37.1605147607035;
+        Wed, 11 Nov 2020 18:20:07 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([103.127.239.100])
+        by smtp.gmail.com with ESMTPSA id m66sm4230592pfm.54.2020.11.11.18.20.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 11 Nov 2020 18:20:06 -0800 (PST)
+Date:   Thu, 12 Nov 2020 10:20:00 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        Andre Przywara <Andre.Przywara@arm.com>,
+        James Clark <James.Clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
+        John Garry <john.garry@huawei.com>,
         Will Deacon <will@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 06/22] perf arm-spe: Refactor printing string to buffer
+Message-ID: <20201112022000.GB5852@leoy-ThinkPad-X240s>
+References: <20201111071149.815-1-leo.yan@linaro.org>
+ <20201111071149.815-7-leo.yan@linaro.org>
+ <20201111153555.GG355344@kernel.org>
+ <a1ca3412-3815-e2a8-0334-f3059802df6a@arm.com>
+ <20201111173922.GA380127@kernel.org>
+ <20201111175827.GR6882@arm.com>
+ <20201111180127.GD380127@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201111180127.GD380127@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 5:00 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Wed, Nov 11, 2020 at 4:14 PM Will McVicker <willmcvicker@google.com> wrote:
-> >
-> > Depending on your host nm version, the generated header
-> > `include/generated/vdso32-offsets.h` may have the bottom bit set for the
-> > thumb vdso offset addresses (as observed when using llvm-nm). This
->
-> Sorry, the commit message seems to imply a bug in llvm-nm, but I don't
-> think that's the case.  If it is, please, send us a bugreport.
->
-> $ aarch64-linux-gnu-nm arch/arm64/kernel/vdso32/vdso.so.raw | grep thumb
-> 00000968 T __kernel_rt_sigreturn_thumb
-> 00000960 T __kernel_sigreturn_thumb
-> 00000968 t VDSO_compat_rt_sigreturn_thumb
-> 00000960 t VDSO_compat_sigreturn_thumb
-> $ llvm-nm arch/arm64/kernel/vdso32/vdso.so.raw | grep thumb
-> 00000968 t VDSO_compat_rt_sigreturn_thumb
-> 00000960 t VDSO_compat_sigreturn_thumb
-> 00000968 T __kernel_rt_sigreturn_thumb
-> 00000960 T __kernel_sigreturn_thumb
-> $ /usr/bin/nm arch/arm64/kernel/vdso32/vdso.so.raw | grep thumb
-> 00000969 T __kernel_rt_sigreturn_thumb
-> 00000961 T __kernel_sigreturn_thumb
-> 00000969 t VDSO_compat_rt_sigreturn_thumb
-> 00000961 t VDSO_compat_sigreturn_thumb
-> $ /usr/bin/nm --version
-> GNU nm (GNU Binutils for Debian) 2.35.1
->
-> Would you mind amending the commit message to not imply that llvm-nm is broken?
+On Wed, Nov 11, 2020 at 03:01:27PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Nov 11, 2020 at 05:58:27PM +0000, Dave Martin escreveu:
+> > 
+> > On Wed, Nov 11, 2020 at 05:39:22PM +0000, Arnaldo Carvalho de Melo wrote:
+> > > Em Wed, Nov 11, 2020 at 03:45:23PM +0000, Andr� Przywara escreveu:
+> > > > On 11/11/2020 15:35, Arnaldo Carvalho de Melo wrote:
+> > > > > Isn't this 'ret +=' ? Otherwise if any of these arm_spe_pkt_snprintf()
+> > > > > calls are made the previous 'ret' value is simply discarded. Can you
+> > > > > clarify this?
+> 
+> > > > ret is the same as err. If err is negative (from previous calls), we
+> > > > return that straight away, so it does nothing but propagating the error.
+> 
+> > > Usually the return of a snprintf is used to account for buffer space, ok
+> > > I'll have to read it, which I shouldn't as snprintf has a well defined
+> > > meaning...
+> 
+> > > Ok, now that I look at it, I realize it is not a snprintf() routine, but
+> > > something with different semantics, that will look at a pointer to an
+> > > integer and then do nothing if it comes with some error, etc, confusing
+> > > :-/
+> 
+> > Would you be happier if the function were renamed?
+> 
+> > Originally we were aiming for snprintf() semantics, but this still
+> > spawns a lot of boilerplate code and encourages mistakes in the local
+> > caller here -- hence the current sticky error approach.
+> 
+> > So maybe the name should now be less "snprintf"-like.
+> 
+> Please, its important to stick to semantics for such well known type of
+> routines, helps reviewing, etc.
 
-Testing another set of configs:
+My bad, will change the function name to arm_spe_pkt_out_string().
 
-$ aarch64-linux-android-nm arch/arm64/kernel/vdso32/vdso.so.dbg | grep thumb
-00000950 T __kernel_rt_sigreturn_thumb
-00000948 T __kernel_sigreturn_thumb
-00000951 t VDSO_compat_rt_sigreturn_thumb
-00000949 t VDSO_compat_sigreturn_thumb
-$ /path/to/older/aarch64-linux-gnu-nm
-arch/arm64/kernel/vdso32/vdso.so.dbg | grep thumb
-00000950 T __kernel_rt_sigreturn_thumb
-00000948 T __kernel_sigreturn_thumb
-00000951 t VDSO_compat_rt_sigreturn_thumb
-00000949 t VDSO_compat_sigreturn_thumb
-$ /usr/bin/nm out/android-4.19-stable/common/arch/arm64/kernel/vdso32/vdso.so.dbg
-| grep thumb
-00000951 T __kernel_rt_sigreturn_thumb
-00000949 T __kernel_sigreturn_thumb
-00000951 t VDSO_compat_rt_sigreturn_thumb
-00000949 t VDSO_compat_sigreturn_thumb
-$ llvm-nm out/android-4.19-stable/common/arch/arm64/kernel/vdso32/vdso.so.dbg
-| grep thumb
-00000951 t VDSO_compat_rt_sigreturn_thumb
-00000949 t VDSO_compat_sigreturn_thumb
-00000950 T __kernel_rt_sigreturn_thumb
-00000948 T __kernel_sigreturn_thumb
+> I'll keep the series up to that point and will run my build tests, then
+> push it publicly to acme/perf/core and you can go from there, ok?
 
-(That llvm-nm sorts the output makes this trickier to follow). But
-shows that only host GNU `nm` differs.
+Will follow up and rebase patches for next version.
 
->
-> It might be of interest to find out why the host `nm` was invoked,
-> rather than $(NM)/$(CROSS_COMPILE)nm.
+> I've changed the BIT() to BIT_ULL() as Andre suggested and I'm testing
+> it again.
 
-Possibly commit 7b7891c7bdfd ("arm64: vdso32: Fix '--prefix=' value
-for newer versions of clang") missing from your tree, but I fail to
-see how that would mess up or invoke the incorrect $(NM).
+I worry that consumed your (Arnaldo/Andre/Dave) much time, but very
+appreciate you guy's helping.
 
->
-> > results in an additional +1 for thumb vdso trampoline return values
-> > since compat_setup_return() already includes `vdso_trampoline + thumb`.
-> > As a result, I see a SIGBUS error when running the LTP test
-> > syscalls.rt_sigaction01. To fix this, let's clear the bottom bit of the
-> > vdso_offset in the VDSO_SYMBOL macro.
-> >
-> > Test: LTP test syscalls.rt_sigaction01
-> > Fixes: f01703b3d2e6 ("arm64: compat: Get sigreturn trampolines from vDSO")
-> > Signed-off-by: Will McVicker <willmcvicker@google.com>
-> > ---
-> >  arch/arm64/include/asm/vdso.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/include/asm/vdso.h b/arch/arm64/include/asm/vdso.h
-> > index f99dcb94b438..a7384379e8e1 100644
-> > --- a/arch/arm64/include/asm/vdso.h
-> > +++ b/arch/arm64/include/asm/vdso.h
-> > @@ -23,7 +23,7 @@
-> >
-> >  #define VDSO_SYMBOL(base, name)                                                   \
-> >  ({                                                                        \
-> > -       (void *)(vdso_offset_##name - VDSO_LBASE + (unsigned long)(base)); \
-> > +       (void *)((vdso_offset_##name & ~1UL) - VDSO_LBASE + (unsigned long)(base)); \
-> >  })
-> >
-> >  #endif /* !__ASSEMBLY__ */
-> > --
-> > 2.29.2.299.gdc1121823c-goog
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
 Thanks,
-~Nick Desaulniers
+Leo
