@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71E82B0416
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6692B0452
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgKLLln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32942 "EHLO
+        id S1728209AbgKLLtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727973AbgKLLk5 (ORCPT
+        with ESMTP id S1728197AbgKLLli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:40:57 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE414C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:40:56 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p1so5627922wrf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:40:56 -0800 (PST)
+        Thu, 12 Nov 2020 06:41:38 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49139C0617A6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:41:38 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id dk16so7209235ejb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:41:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hiH9YFvFj7u18VTdjYlvXbTm7Y6vPC/QKgUkjRYPlj0=;
-        b=G3iMxfPdcSlq2kqWuNRyA9VaTuD6kH1gafYeQTw0/GJmXm8nu84CdTkmgl+t+wc3r5
-         Y94u72Lu4HTssWwQaKnT4PeHhaqIYZd6M7NGNGIcRhtirha3BVAw72dMUXPamn8zgP+N
-         lK6H1l6W0CdQBcxBobq9M1tB9Ds3P85FcNyrYybJqJxy5cy4PZd/42FrTFRFr26/aAA8
-         rAbWOAPdrk3IHvuvHxsvd3KxHYXbpwdcDIniGACLpY2hF+SKY2oH+alvlBwfNjaPuomu
-         3ZxDQo9Q9TK+GLus5qpsK9JB3jsGtQWiH3UV9bkTlxIEtDDv1vJ8HHiVTmA08ZY871sc
-         Js0A==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kl9tnH9JsEuY5xR1ZDNEf7fbe3orNGKtQm0f8d9FFN8=;
+        b=SjJNEMfZmVVaZ2hOamYxtStOa75uLPmpyaHl1JNBh1bQgQnkcFmNjs0ikRbJbMp1sb
+         tBkjGJLL9OpktGykqkkHskmQR4qVL45RIzToHoQTiVrRv+65crWBdISxkddxPktl8GrB
+         EFb4p6xrrG1JqLIXVU9Y6ETIGA70z0iR7SUVEnC7AdLrt3bNtFWKJE0GZmtaRsbqx94k
+         RszKNQ/dTU2+M4+zA3pZI4FG8FgO5bGBF6KtVIxpYbd9/eMKYg7NGnrbjGSMyqRjw7ZB
+         5wvNYpvkTVw5R8fP2BNrkbpcDLob1GHTy+T4Z8Cgk1BegmiFx8TmAMo59zByhU1xFpKq
+         IvDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hiH9YFvFj7u18VTdjYlvXbTm7Y6vPC/QKgUkjRYPlj0=;
-        b=Gq0ljLYeOHTrRSTOhOPEgKliBLTs6yuG1hEmPnDHaA/JU0vhn2/njdxQDOCV8sgIgs
-         w6XzjBa9uzHuX4OT9RjMeLxQ58Dj6wlO8SkI78b0U39mila/kYAlwZoVCEMoxnwNPvlu
-         YHJeVU4ux0wvrkihUBF2OWJkhgY/0M0mQrQWjV+KVAVMGxRgGBBimknw6l4uW18ggPsx
-         gtPdqGz4G1NZcksLtPZDJRDypsShOIC2lKsV0TAbNxV22lLhI/TYbQqGnTg/XFUbo7CX
-         mUgIShN5HyLI/G+DIj3u8wQ0+aF+xcqpJ3X60ibU7WlXD/unEYudvDudOdkpueGOCH6H
-         yitQ==
-X-Gm-Message-State: AOAM532cvxb5dNU0gbEqfrwRe4auLfQH+yyQxW+93Kau+90nL1CFV8XF
-        FSChFefRzOf0b2N7Wa4dk/e+LRVtEsxnSA==
-X-Google-Smtp-Source: ABdhPJyYnJvDHJTFtxxktHznzaXTPpIA0hl6/kGsg1GUlsBx6odch4HOXNEy7ilq+yAmu9wUWTR5lg==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr33909986wrs.377.1605181255351;
-        Thu, 12 Nov 2020 03:40:55 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
-        by smtp.googlemail.com with ESMTPSA id z3sm5815106wrw.87.2020.11.12.03.40.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 03:40:54 -0800 (PST)
-Subject: Re: [PATCH v2 05/17] clocksource/hyperv: use MSR-based access if
- running as root
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-6-wei.liu@kernel.org>
- <3527e98a-faab-2360-f521-aa04bbe92edf@linaro.org>
- <20201112112437.lt3g5bhpjym3evu5@liuwe-devbox-debian-v2>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2c5101fb-f3de-7b0c-ee76-e5a0e6b32098@linaro.org>
-Date:   Thu, 12 Nov 2020 12:40:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kl9tnH9JsEuY5xR1ZDNEf7fbe3orNGKtQm0f8d9FFN8=;
+        b=gUTa666U1R7pHNaCmVGGyn09yR7lUx+h1syNvbPbtZ8TuTr+Z54hfeyUCkNNPkdtDa
+         zbEKGecPx0yMPTd2Aieaa4X5mYjliPsz6FnyK4xv4jIEtdd5DOw6DpkXOFGwYwmnpCXo
+         9mvySQhPDMLqg+gBGxGNRWJxFbl88K8y2B7WgeW4px1bNYeWMexQRBTZY60JKIJk8my1
+         4nPAjubqsVHmCYde4Gl4Tb7vZ921X+S+yOtUTR4t6+8uUt5vus0q5LYV1mpQJfQ0DS7H
+         JmhOPaolUyGF9LkWkdCsAwWuPwvGSyXeRloriE/V9igd5+AbVsT97Y4G1jBRdUkr/M0A
+         R98Q==
+X-Gm-Message-State: AOAM5337nSM0R7hmvS2sCUFHjWtnRx7RXspV+20Veq5oOZvEL9lwubhG
+        RdS9SLPGkDUcgj6Ou8nLn3qhxzLRWd2vq2g9iXAhBQ==
+X-Google-Smtp-Source: ABdhPJxMeuASqaNc97krYC5AoaVThbcBdJdK5408UkNEwkL9fh4N87sDwky3OpV33fNJcFh8kODSW1Byauv8NiPRv/Q=
+X-Received: by 2002:a17:906:14d:: with SMTP id 13mr29245264ejh.516.1605181297002;
+ Thu, 12 Nov 2020 03:41:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201112112437.lt3g5bhpjym3evu5@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1605180879-2573-1-git-send-email-zhangchangzhong@huawei.com>
+In-Reply-To: <1605180879-2573-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 12 Nov 2020 12:41:26 +0100
+Message-ID: <CAMpxmJXy3upa=xMpuTzoNdgCUyuZ7YQ6kSHtuji8hj7xGo5KGQ@mail.gmail.com>
+Subject: Re: [PATCH net] net: ethernet: mtk-star-emac: fix error return code
+ in mtk_star_enable()
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     nbd@nbd.name, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/2020 12:24, Wei Liu wrote:
-> On Thu, Nov 12, 2020 at 10:56:17AM +0100, Daniel Lezcano wrote:
->> On 05/11/2020 17:58, Wei Liu wrote:
->>> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+On Thu, Nov 12, 2020 at 12:33 PM Zhang Changzhong
+<zhangchangzhong@huawei.com> wrote:
+>
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+>
+> Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> ---
+>  drivers/net/ethernet/mediatek/mtk_star_emac.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+> index 1325055..2ebacb6 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+> @@ -966,6 +966,7 @@ static int mtk_star_enable(struct net_device *ndev)
+>                                       mtk_star_adjust_link, 0, priv->phy_intf);
+>         if (!priv->phydev) {
+>                 netdev_err(ndev, "failed to connect to PHY\n");
+> +               ret = -ENODEV;
+>                 goto err_free_irq;
+>         }
+>
+> --
+> 2.9.5
+>
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
->>> ---
->>
->> I would like to apply this patch but the changelog is too short (one line).
->>
->> Please add a small paragraph (no need to resend just answer here, I will
->> amend the log myself.
-> 
-> Please don't apply this to your tree. It is dependent on a previous
-> patch. I expect this series to go through the hyperv tree.
-> 
-> I will add in this small paragraph in a later version:
-> 
->     When Linux runs as the root partition, the setup required for TSC page
->     is different. Luckily Linux also has access to the MSR based
->     clocksource. We can just disable the TSC page clocksource if Linux is
->     the root partition.
-> 
-> If you're happy with the description, I would love to have an ack from
-> you. I will funnel the patch via the hyperv tree.
-> 
-> Wei.
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
