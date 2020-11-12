@@ -2,156 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03C02B09D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4A02B09D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgKLQWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:22:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29174 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729073AbgKLQWU (ORCPT
+        id S1729067AbgKLQWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:22:16 -0500
+Received: from mail-03.mail-europe.com ([91.134.188.129]:52608 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729051AbgKLQWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:22:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605198137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZW4Cjdd1Y3wnZ8yyT80IuYNIT2MC5nPP7PSwDghDV1Q=;
-        b=NEZQgmYo85TTjpcF52kzhlxScWrst6z9esMx+i5EwXxrIS3msnsQjVGcL7tFMMqx4sIH3k
-        tGNLm17SZpOM3NkWWalzbEYCG52owE8pc5rYln6ehsO5Js7yh6W78KCOi8zhCRiBlYUG2D
-        CWOO5exy241iIVLe6zU3iz09mfPXtPw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-hg3tEq1OPgmdqYl9GCjLuQ-1; Thu, 12 Nov 2020 11:22:13 -0500
-X-MC-Unique: hg3tEq1OPgmdqYl9GCjLuQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB783100F7A6;
-        Thu, 12 Nov 2020 16:22:08 +0000 (UTC)
-Received: from [10.36.115.61] (ovpn-115-61.ams2.redhat.com [10.36.115.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6D5B6EF48;
-        Thu, 12 Nov 2020 16:22:01 +0000 (UTC)
-Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-3-rppt@kernel.org>
- <9e2fafd7-abb0-aa79-fa66-cd8662307446@redhat.com>
- <20201110180648.GB4758@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3194b507-a85f-965a-e0eb-512a79ede6a9@redhat.com>
-Date:   Thu, 12 Nov 2020 17:22:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 12 Nov 2020 11:22:11 -0500
+Date:   Thu, 12 Nov 2020 16:22:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1605198126;
+        bh=G5vIZonOu1YP1IFD5UKC7p+SMCBtaBVGRFKb/phoFDk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=A3CC7k+Nr4tS2kVm1B84u45rLjxXTIKOizlNks9oz0AdOIqj74aRSHUTgL642AWnp
+         afuGJUS6keIxbJDYSjfo5x7tdyP3EcbpQEskT1Yz01JhFJvIt/8e821EmWCqJLYNRz
+         zfahxVORYJLH63n/EKODUVhzpd0nlHPgh9IK7QAc=
+To:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Mukesh Savaliya <msavaliy@codeaurora.org>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Caleb Connolly <caleb@connolly.tech>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for OnePlus 6 devices
+Message-ID: <20201112161920.2671430-6-caleb@connolly.tech>
+In-Reply-To: <20201112161920.2671430-1-caleb@connolly.tech>
+References: <20201112161920.2671430-1-caleb@connolly.tech>
 MIME-Version: 1.0
-In-Reply-To: <20201110180648.GB4758@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.20 19:06, Mike Rapoport wrote:
-> On Tue, Nov 10, 2020 at 06:17:26PM +0100, David Hildenbrand wrote:
->> On 10.11.20 16:14, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> It will be used by the upcoming secret memory implementation.
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>> ---
->>>    mm/internal.h | 3 +++
->>>    mm/mmap.c     | 5 ++---
->>>    2 files changed, 5 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/mm/internal.h b/mm/internal.h
->>> index c43ccdddb0f6..ae146a260b14 100644
->>> --- a/mm/internal.h
->>> +++ b/mm/internal.h
->>> @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
->>>    extern void mlock_vma_page(struct page *page);
->>>    extern unsigned int munlock_vma_page(struct page *page);
->>> +extern int mlock_future_check(struct mm_struct *mm, unsigned long flags,
->>> +			      unsigned long len);
->>> +
->>>    /*
->>>     * Clear the page's PageMlocked().  This can be useful in a situation where
->>>     * we want to unconditionally remove a page from the pagecache -- e.g.,
->>> diff --git a/mm/mmap.c b/mm/mmap.c
->>> index 61f72b09d990..c481f088bd50 100644
->>> --- a/mm/mmap.c
->>> +++ b/mm/mmap.c
->>> @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
->>>    	return hint;
->>>    }
->>> -static inline int mlock_future_check(struct mm_struct *mm,
->>> -				     unsigned long flags,
->>> -				     unsigned long len)
->>> +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
->>> +		       unsigned long len)
->>>    {
->>>    	unsigned long locked, lock_limit;
->>>
->>
->> So, an interesting question is if you actually want to charge secretmem
->> pages against mlock now, or if you want a dedicated secretmem cgroup
->> controller instead?
-> 
-> Well, with the current implementation there are three limits an
-> administrator can use to control secretmem limits: mlock, memcg and
-> kernel parameter.
-> 
-> The kernel parameter puts a global upper limit for secretmem usage,
-> memcg accounts all secretmem allocations, including the unused memory in
-> large pages caching and mlock allows per task limit for secretmem
-> mappings, well, like mlock does.
-> 
-> I didn't consider a dedicated cgroup, as it seems we already have enough
-> existing knobs and a new one would be unnecessary.
+The OnePlus 6/T has the same issue as the Yoga c630 causing a crash when DM=
+A
+is used for i2c, so disable it.
 
-To me it feels like the mlock() limit is a wrong fit for secretmem. But 
-maybe there are other cases of using the mlock() limit without actually 
-doing mlock() that I am not aware of (most probably :) )?
+https://patchwork.kernel.org/patch/11133827/
 
-I mean, my concern is not earth shattering, this can be reworked later. 
-As I said, it just feels wrong.
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+---
+ drivers/i2c/busses/i2c-qcom-geni.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
--- 
-Thanks,
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qc=
+om-geni.c
+index 8b4c35f47a70..9acdcfe73be2 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -357,7 +357,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2=
+c, struct i2c_msg *msg,
+ =09struct geni_se *se =3D &gi2c->se;
+ =09size_t len =3D msg->len;
+=20
+-=09if (!of_machine_is_compatible("lenovo,yoga-c630"))
++=09if (!of_machine_is_compatible("lenovo,yoga-c630") &&
++=09    !of_machine_is_compatible("oneplus,oneplus6"))
+ =09=09dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
+=20
+ =09if (dma_buf)
+@@ -399,7 +400,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2=
+c, struct i2c_msg *msg,
+ =09struct geni_se *se =3D &gi2c->se;
+ =09size_t len =3D msg->len;
+=20
+-=09if (!of_machine_is_compatible("lenovo,yoga-c630"))
++=09if (!of_machine_is_compatible("lenovo,yoga-c630") &&
++=09    !of_machine_is_compatible("oneplus,oneplus6"))
+ =09=09dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
+=20
+ =09if (dma_buf)
+--=20
+2.29.2
 
-David / dhildenb
 
