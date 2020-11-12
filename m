@@ -2,132 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F9A2B0671
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E1E2B0670
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgKLN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728010AbgKLN2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:28:32 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C2EC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:28:31 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h62so5516035wme.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:28:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DKFGKs2xFbhbYJY6iHo3vK6PaFJgcL7PWGvvAZgASeA=;
-        b=AYZjBHlyliS7Ymssitl0ZrRCQwLbagKctseFoCZMVTZYsnM5VmcZqeyTnrIRnIUKFp
-         JyByvj31/nsiPt2UUsPVXOU+aPEXLvpTaihace8LfTZnv9tmibK9bB7PHvhYlB0FLLuE
-         WXG25GyT6kWteaPMVw0mM6T5U1R7tdIYpds/C6PStlXvXKcP82rwjEN8Y1y8lrktHiJI
-         9RzfRDmZNDDKJsUtvSqN9KC1uX8e6gEgKx43QNwx8zjPIXh6lFm7zKzNEthVZl8hEoza
-         mus1SV6qrgU6yqNlJ5ylLy6GA4qUeHJ9pDHehi/ybjEVvUG+1PzUNmiH+wAb0HCkaSCO
-         G8nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DKFGKs2xFbhbYJY6iHo3vK6PaFJgcL7PWGvvAZgASeA=;
-        b=HMBeDSUQdqsjpbBKcJUKW4SwIu5fVxwJkdvZBAjZXwHAS86d5KzG/O/Oi9NgpZ44yJ
-         8KW7w1EluqbBjbnr0KV4U4hHiZxnQNSTZDulZVtHXROVHeyK8Jgw/mqP2Ye70Z2+8f47
-         HQgvJOHIQY6nQtPOp2Kif73QUdkFgpAVCWHchRBsPAI6dTuO57WpqkNizqroQ00mCaLV
-         6heQtzi8o6VNwccG6uH2e0nHUhereTGThSEGiEyj07mh6f4L2OTf5+Us/F3VxBwIBYMV
-         f5MoQ4jNRuqOtB03ecgV+IRwN9OecgG8eviWacLP1nsFPpjgMXCQiYlYLHDcZrPCbldc
-         37ew==
-X-Gm-Message-State: AOAM532gDEl4V5IMMtUXrxhkG/sDXJBLBf27QNzhvpQdb0lMiLqKasXu
-        KpiEY53r0Ms/CgzPuZbcZKh4ZQ==
-X-Google-Smtp-Source: ABdhPJx9+9Zc/sobhlN/21jqgd6N2DrW+DWihpuemtsepdNTDhJLhJ/5gHtNFCUUQGYlqagI6xolEw==
-X-Received: by 2002:a1c:8150:: with SMTP id c77mr10167726wmd.26.1605187710531;
-        Thu, 12 Nov 2020 05:28:30 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id w10sm7088635wra.34.2020.11.12.05.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 05:28:29 -0800 (PST)
-Date:   Thu, 12 Nov 2020 13:28:28 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 05/25] soc: rockchip: io-domain: Remove incorrect and
- incomplete comment header
-Message-ID: <20201112132828.GK1997862@dell>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <40131312.rmDrfLbc3i@diego>
- <20201112132224.GJ1997862@dell>
- <2215873.HjEmSL4Tfo@diego>
+        id S1728032AbgKLN2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:28:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727646AbgKLN2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:28:23 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFF6C207BB;
+        Thu, 12 Nov 2020 13:28:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605187701;
+        bh=ZoJYtnjpFeo15zEgWAC3KwZ0Ql2KlZugewN+6qWIp5A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DrDYZx2ZQO8XiDnVzzxlTVuvAdhNdpoxAzVasz+Zrnvm0Nfxz7KFRTpBO9xxiqm+U
+         EqbsLlZ0lIJNXo/uIXHaO/bfzcwuDSV9XyF8YYRauuwQZF3YGRahfPk5hp2Sgc1ZfZ
+         ebV1zK+50yQhmvtkku++rus7F+Iq5Jvp1Xu3q0YI=
+Date:   Thu, 12 Nov 2020 14:29:19 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
+        keescook@chromium.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+Message-ID: <X604rzqJOoT+O+Ox@kroah.com>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <20201111082320.GR2611@hirez.programming.kicks-ass.net>
+ <7207fad6-6ca4-529b-60a8-63db998d10d9@linuxfoundation.org>
+ <20201111160411.GF2628@hirez.programming.kicks-ass.net>
+ <3fccb8d5-825a-a283-7b7e-6193e0c90237@linuxfoundation.org>
+ <20201111175031.GI2628@hirez.programming.kicks-ass.net>
+ <0aed620f-911d-4715-bd41-a6b9a37862b4@linuxfoundation.org>
+ <20201111201555.GN2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2215873.HjEmSL4Tfo@diego>
+In-Reply-To: <20201111201555.GN2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020, Heiko Stübner wrote:
-
-> Am Donnerstag, 12. November 2020, 14:22:24 CET schrieb Lee Jones:
-> > On Thu, 12 Nov 2020, Heiko Stübner wrote:
-> > 
-> > > Am Donnerstag, 12. November 2020, 11:33:44 CET schrieb Lee Jones:
-> > > > On Tue, 03 Nov 2020, Lee Jones wrote:
-> > > > 
-> > > > > Fixes the following W=1 kernel build warning(s):
-> > > > > 
-> > > > >  drivers/soc/rockchip/io-domain.c:57: warning: Cannot understand  * @supplies: voltage settings matching the register bits.
-> > > > > 
-> > > > > Cc: Heiko Stuebner <heiko@sntech.de>
-> > > > > Cc: Liam Girdwood <lgirdwood@gmail.com>
-> > > > > Cc: Mark Brown <broonie@kernel.org>
-> > > > > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > > > > Cc: Doug Anderson <dianders@chromium.org>
-> > > > > Cc: linux-rockchip@lists.infradead.org
-> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  drivers/soc/rockchip/io-domain.c | 3 ---
-> > > > >  1 file changed, 3 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-> > > > > index eece97f97ef8f..d13d2d497720b 100644
-> > > > > --- a/drivers/soc/rockchip/io-domain.c
-> > > > > +++ b/drivers/soc/rockchip/io-domain.c
-> > > > > @@ -53,9 +53,6 @@
-> > > > >  
-> > > > >  struct rockchip_iodomain;
-> > > > >  
-> > > > > -/**
-> > > > > - * @supplies: voltage settings matching the register bits.
-> > > > > - */
-> > > > >  struct rockchip_iodomain_soc_data {
-> > > > >  	int grf_offset;
-> > > > >  	const char *supply_names[MAX_SUPPLIES];
-> > > > 
-> > > > Any idea who will pick this up?
+On Wed, Nov 11, 2020 at 09:15:55PM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 11, 2020 at 11:28:13AM -0700, Shuah Khan wrote:
+> > On 11/11/20 10:50 AM, Peter Zijlstra wrote:
+> > > On Wed, Nov 11, 2020 at 10:34:05AM -0700, Shuah Khan wrote:
 > > > 
-> > > me :-)
+> > > > Not sure what to make of the 6080 atomic_read()s and 3413
+> > > > atomic_inc()s, some of which might be assuming uniqueness
+> > > > guarantee.
+> > > 
+> > > Well, clearly you just did: git grep atimic_{read,inc}() | wc -l and
+> > > didn't look at the usage. Equally clearly there can be bugs. Also
+> > > evidently much of those are not in fact sequence numbers.
+> > > 
 > > 
-> > Well, that's certainly a start. :)
-> > 
-> > What are your plans?
+> > Looking at the usage and classifying which usages are sequence
+> > numbers is part of may audit and we are covered. Your explanation
+> > and this discussion helps with do a better audit of these usages.
 > 
-> the usual, my rockchip-tree -> armsoc driver branch -> torvalds -> 5.11 ;-)
+> Auditing is fine, but I still don't see any point in actually having
+> these wrapping types. It's all a waste of space and compile-time IMO.
+> 
+> Neither this sequence counter, nor stat_t or whatever else bring any
+> actual differences. They're pure wrappers without change in semantics.
+> 
+> refcount_t is useful because it brought different semantics, it raises
+> exceptions on invalid usage (wraps). But this is just pointless NOPs.
+> 
+> So do your audit, but only introduce new types for things that actually
+> have different semantics. If you do a patch and the generated code is
+> 100% identical but you have many more lines of code, you've only made it
+> worse.
 
-Sorry, the ambiguity was my fault.
+I'm sorry, but as someone who reviews the second-most code in the
+kernel, I have to disagree.  If I see a "raw" atomic_t being used in a
+driver, I then have to look up all instances of where that variable is
+being used, to verify what they are using it for, why they are using,
+and if all of the means they are really using it in the correct way.
 
-When do you plan on hoovering it up?
+Always remember that atomic_t is way down there on the "Rusty scale of
+designing an API you can use properly" scale:
+	https://ozlabs.org/~rusty/ols-2003-keynote/img46.html
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+If I see a sequence_t variable (or whatever we end up calling it), then
+I instantly KNOW what this is for, and that is is impossible to get it
+wrong when using it as the API for that variable prevents it from being
+misused in horrible ways (like setting it to a value and decrementing
+it.)
+
+If me, as a kernel developer, wants to add a sequence number to my
+driver, yes, I can "open code" one using an atomic_t and get it right
+(or just use a u64 like we do for uevents), but then when I go back and
+look at the code in 5 years, I have to try to remember exactly what I
+did and where it is used and try to ensure that no one changed it
+incorrectly.  Again, if this is a sequence_t, all of that goes away.
+
+So this doesn't save codespace, or generated code, it saves mental
+energy which is the most limited resource we have.  We write code for
+the developers first, the compiler and cpu second, in order to create
+something that us developers can maintain for long periods of time.
+Kernel code is not like perl (write once, modify never), but like laws
+(write once, modify constantly).
+
+Remember us poor maintainers, who are doing the reviewing, and the
+junior developers, creating new drivers where they have to implement
+common features/patterns and the people that come after us and curse our
+name as they try to understand exactly what a specific atomic_t was
+supposed to be doing.  We want to make all of our lives easier, and this
+type of api does just that.
+
+thanks,
+
+greg k-h
