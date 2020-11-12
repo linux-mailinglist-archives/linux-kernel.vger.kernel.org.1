@@ -2,204 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936CC2B039A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5282B039F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgKLLMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:12:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44036 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728035AbgKLLMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:12:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB56AAEAA;
-        Thu, 12 Nov 2020 11:12:18 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 12:12:17 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
-Message-ID: <20201112111217.GF29778@kitsune.suse.cz>
-References: <cover.1604948373.git.msuchanek@suse.de>
- <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
- <20201109192419.GC9695@magnolia>
- <20201109202705.GZ29778@kitsune.suse.cz>
- <20201109210823.GI7391@dread.disaster.area>
- <20201111102848.GD29778@kitsune.suse.cz>
- <20201112014952.GL7391@dread.disaster.area>
+        id S1727993AbgKLLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:13:13 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56664 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgKLLNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:13:13 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACBCtoK009036;
+        Thu, 12 Nov 2020 05:12:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605179575;
+        bh=EFLylIoHv+6MexgkkHOndI5G3qy16unmmsW+jt8yB/w=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=H6pXY2SnxNwFaa63fqv6JYZ5xjb/rX2758wnZiol5AmICMXFsQrHOouRKygIKRNkX
+         ghlgbq4W8ssKXAxdWBaAYCGEF3tl92dRksFHmgMqASmVndGxeMFKH+c7D1+RHFlMKZ
+         KAfdivZvJIG2KdBo+j4aEREhrDOAQBQWKsRh7INA=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACBCtZF108612
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 05:12:55 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 05:12:55 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 05:12:55 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACBCnIs005765;
+        Thu, 12 Nov 2020 05:12:50 -0600
+Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express
+ Non-Transparent Bridge
+To:     Sherry Sun <sherry.sun@nxp.com>, Arnd Bergmann <arnd@kernel.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "jdmason@kudzu.us" <jdmason@kudzu.us>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "allenbh@gmail.com" <allenbh@gmail.com>,
+        "tjoseph@cadence.com" <tjoseph@cadence.com>,
+        Rob Herring <robh@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
+References: <20200930153519.7282-16-kishon@ti.com>
+ <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <d6d27475-3464-6772-2122-cc194b8ae022@ti.com>
+ <VI1PR04MB49602D24F65E11FF1F14294F92E90@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
+ <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
+ <5a9115c8-322e-ffd4-6274-ae98c375b21d@ti.com>
+ <VI1PR04MB496067EB79873EEC9329B9B992E80@VI1PR04MB4960.eurprd04.prod.outlook.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <c3e7cfaa-fda9-46f8-ec9a-b26818bef7b6@ti.com>
+Date:   Thu, 12 Nov 2020 16:42:43 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112014952.GL7391@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <VI1PR04MB496067EB79873EEC9329B9B992E80@VI1PR04MB4960.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:49:52PM +1100, Dave Chinner wrote:
-> On Wed, Nov 11, 2020 at 11:28:48AM +0100, Michal Suchánek wrote:
-> > On Tue, Nov 10, 2020 at 08:08:23AM +1100, Dave Chinner wrote:
-> > > On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
-> > > > On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
-> > > > > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
-> > > > > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
-> > > > > > options.
-> > > > > > 
-> > > > > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
-> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > > ---
-> > > > > >  fs/xfs/xfs_super.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > > > > > index e3e229e52512..a3b00003840d 100644
-> > > > > > --- a/fs/xfs/xfs_super.c
-> > > > > > +++ b/fs/xfs/xfs_super.c
-> > > > > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
-> > > > > >  		{ XFS_MOUNT_GRPID,		",grpid" },
-> > > > > >  		{ XFS_MOUNT_DISCARD,		",discard" },
-> > > > > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
-> > > > > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
-> > > > > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
-> > > > > 
-> > > > > NAK, programs that require DAX semantics for files stored on XFS must
-> > > > > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
-> > > > > DAX on xfs" in Documentation/filesystems/dax.txt.
-> > > > statx can be used to query S_DAX.  NOTE that only regular files will
-> > > > ever have S_DAX set and therefore statx will never indicate that S_DAX
-> > > > is set on directories.
-> > > 
-> > > Yup, by design.
-> > > 
-> > > The application doesn't need to do anything complex to make this
-> > > work. If the app wants to use DAX, then it should use
-> > > FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
-> > > for it's data dirs and files, and then STATX_ATTR_DAX will *always*
-> > > tell it whether DAX is actively in use at runtime. It's pretty
-> > > simple, really.
-> > > 
-> > > > The filesystem may not have any files so statx cannot be used.
-> > > 
-> > > Really?  The app or installer is about to *write to the fs* and has
-> > > all the permissions it needs to modify the contents of the fs. It's
-> > > pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
-> > > then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
-> > > see if DAX is active or not.....
-> > 
-> > Have you ever seen a 'wizard' style installer?
-> 
-> I wrote my first one in 1995 on Windows NT 3.51 using Installshield.
-> 
-> > Like one that firsts asks what to install, and then presents a list of
-> > suitable locations that have enough space, supported filesystem features
-> > enabled, and whatnot?
-> 
-> Hold on, 1995 is calling me. The application I was packaging used
-> ACLs. But the NTFS version created by windows NT 3.1 was
-> incompatible as ACL support didn't arrive until NT 3.51 and service
-> pack 4(?) for NT 3.1. Yes, I had to write code to probe the
-> filesystems to detect whether ACL support was available or not by
-> -trying to create an ACL-.
-> 
-> I guess you could say "been there, done that, learnt the lesson".
-So we are trying to be as bad as Windows now?
-> 
-> > So to present a list of mountpoints that support DAX one has to scribble
-> > over every mountpoint on the system?
-> 
-> If you are filtering storage options presented to the user by
-> supported features, then you have to probe for them in some way.
-> And that means you have to consider that many option filesystem
-> features that applications use cannot be detected via mount options
-> checking the filesytem config. That is, there are features that can
-> only be discovered by actually testing whether they work or not.
-> 
-> > That sounds ridiculous.
-> 
-> Reality is a harsh mistress. :/
-> 
-> [snip the rest because you're being ridiculous]
-> 
-> Are you aware of ndctl?
-> 
-> $ ndctl list
-> [
->   {
->     "dev":"namespace1.0",
->     "mode":"fsdax",
->     "map":"mem",
->     "size":8589934592,
->     "sector_size":512,
->     "blockdev":"pmem1"
->   },
->   {
->     "dev":"namespace0.0",
->     "mode":"fsdax",
->     "map":"mem",
->     "size":8589934592,
->     "sector_size":512,
->     "blockdev":"pmem0"
->   }
-> ]
-Yes, that tells me that the device can be configured for dax. Not if the
-filesystem will use it.
-> 
-> Oh, look there are two block devices on this machine that are
-> configured for filesystem DAX (fsdax). They are /dev/pmem0 and
-> /dev/pmem1.
-> 
-> What filesytsems are on them?
-> 
-> $ lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT /dev/pmem0 /dev/pmem1
-> NAME  SIZE FSTYPE MOUNTPOINT
-> pmem1   8G ext4   /mnt/test
-> pmem0   8G xfs    /mnt/scratch
-> $
-> 
-> One XFs, one ext4, both of which will be using DAX capable unless
-> the dax=never mount option is set. Which:
-Or the bock size does not match page size. Or whatever other requirement
-the filesystem might have is not met.
-> 
-> $ mount  |grep pmem
-> /dev/pmem0 on /mnt/scratch type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> /dev/pmem1 on /mnt/test type ext4 (rw,relatime)
-> $
-> 
-> is not set on either mount.
-> 
-> Hence both filesystems at DAX capable and enabled, and should be
-> presented as options to the user as such.
-No, it is not the case. That is why it would make sense for the kernel
-to make the information about DAX availability accessible somewhere.
-> 
-> And all this comes about because DAX is a property of the block
-> device, not the filesystem. Hence the only time a DAX capable
-> filesystem on a block device that is DAX capable will not be DAX
-> capable is if the dax=never is set...
-See, it is not property of the block device. It is property of the mount
-point. The availability on the device is one requirement but the
-filesystem options affect availability to the user in the end.
-> 
-> Of course, this is just encoding how existing filesystems behave -
-> it's not a requirement for future filesytsems so they may use other
-> mechanisms for enabling/disabling DAX. Which leaves you with the
-> only reliable mechanism of creating filesystem and checking
-> statx(STATX_ATTR_DAX)....
-Or the kernel could just tell the user. But right, information is power,
-and keeping the user in the dark is much more entertaining.
+Hi Sherry,
 
-OK
+On 11/11/20 8:19 am, Sherry Sun wrote:
+> Hi Kishon,
+> 
+>> Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express Non-
+>> Transparent Bridge
+>>
+>> Hi Sherry, Arnd,
+>>
+>> On 10/11/20 8:29 pm, Arnd Bergmann wrote:
+>>> On Tue, Nov 10, 2020 at 3:20 PM Kishon Vijay Abraham I <kishon@ti.com>
+>> wrote:
+>>>> On 10/11/20 7:55 am, Sherry Sun wrote:
+>>>
+>>>>> But for VOP, only two boards are needed(one board as host and one
+>>>>> board as card) to realize the communication between the two systems,
+>> so my question is what are the advantages of using NTB?
+>>>>
+>>>> NTB is a bridge that facilitates communication between two different
+>>>> systems. So it by itself will not be source or sink of any data
+>>>> unlike a normal EP to RP system (or the VOP) which will be source or sink
+>> of data.
+>>>>
+>>>>> Because I think the architecture of NTB seems more complicated. Many
+>> thanks!
+>>>>
+>>>> yeah, I think it enables a different use case all together. Consider
+>>>> you have two x86 HOST PCs (having RP) and they have to be communicate
+>>>> using PCIe. NTB can be used in such cases for the two x86 PCs to
+>>>> communicate with each other over PCIe, which wouldn't be possible
+>> without NTB.
+>>>
+>>> I think for VOP, we should have an abstraction that can work on either
+>>> NTB or directly on the endpoint framework but provide an interface
+>>> that then lets you create logical devices the same way.
+>>>
+>>> Doing VOP based on NTB plus the new NTB_EPF driver would also work and
+>>> just move the abstraction somewhere else, but I guess it would
+>>> complicate setting it up for those users that only care about the
+>>> simpler endpoint case.
+>>
+>> I'm not sure if you've got a chance to look at [1], where I added support for
+>> RP<->EP system both running Linux, with EP configured using Linux EP
+>> framework (as well as HOST ports connected to NTB switch, patches 20 and
+>> 21, that uses the Linux NTB framework) to communicate using virtio over
+>> PCIe.
+>>
+> 
+> I saw your patches at [1], here you take a rpmsg as an example to communicate between
+> two SoCs using PCIe RC<->EP and HOST1-NTB-HOST2 for different usercases.
+> The VOP code works under the PCIe RC<->EP framework, which means that we can also
+> make VOP works under the Linux NTB framework, just like the rpmsg way you did here, right?
 
-I guess I have exhausted sane discussion options here.
+Does VOP really work with EP framework? At-least whatever is in upstream
+doesn't seem to indicate so.
 
-Best regards
+The NTB framework lets one host with RP port to communicate with another
+host with RP port.
 
-Michal
+The EP Framework lets one device with EP port to communicate with a host
+with RP port.
+
+Rest of the trick should be how you tie them together.
+
+PCIe framework creates "pci_device" for each of the devices it
+enumerates. NTB framework works on this pci_device to communicate with
+the remote host using PCIe bridge. The remote host will use NTB
+framework as well.
+
+So depends on what interfaces VOP device provides you can use either NTB
+framework or EP framework. If it's going to connect two different
+devices in turn creating pci_device on each of the systems, then you can
+use NTB framework.
+
+Regards
+Kishon
