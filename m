@@ -2,105 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3D82B101F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578182B101D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727424AbgKLVVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:21:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726943AbgKLVVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:21:41 -0500
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A6302222F;
-        Thu, 12 Nov 2020 21:21:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605216100;
-        bh=aNzlXeKDeO/FWCYy+g3S3nGSWQBqBxHvUVIXEM+dZps=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=e7w8M0MRTPxNspmPyUL1EqtTOopZyHn17Pb6t6P6R4hJBgpejfhf+KkJRbgBsDyDN
-         Ag7ZiS0kmrQ2eSAHi4FrqJxdshtEUTpvvk/D+JQZAvE1QBK/SmIAk0s7ckIRmGXnFO
-         8SKFvylmFFo97YVOG9r5jWLEMfOk+FLpnlaawrEk=
-Received: by mail-oi1-f173.google.com with SMTP id c80so8057269oib.2;
-        Thu, 12 Nov 2020 13:21:39 -0800 (PST)
-X-Gm-Message-State: AOAM531Y7zL0ZpMeAxnvSzIxSC25yVvEFic/om/772xmyk5hMENxeatV
-        igJuKocdwdBwoD+uTjzvGhgZ8O/Ofgzbj7f4dm8=
-X-Google-Smtp-Source: ABdhPJzTCyUFP4Pr0r8PK5Kd4T1weSDX9B6TSm7WEKViy/jdps/YNBAzxgF+L20H5WKH/aeqr3yjWZ6vULQiwTx9pH8=
-X-Received: by 2002:a54:4597:: with SMTP id z23mr458428oib.0.1605216099110;
- Thu, 12 Nov 2020 13:21:39 -0800 (PST)
+        id S1727096AbgKLVVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726943AbgKLVVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 16:21:38 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F004EC0613D1;
+        Thu, 12 Nov 2020 13:21:37 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id o20so8163580eds.3;
+        Thu, 12 Nov 2020 13:21:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=F7pOkzR2g826W8yFIgMZddtTn8R1MT7RN19wNn/t72I=;
+        b=a9F7OyYR+DX5DX3Xy85b/DC2bN2b2wboNZlahnaZ2V14+zHHDfLBK6sm6VBcMXg7LZ
+         DgMR7JJpeLD2s4xs+a4oJIZBf7g+BktDSguINJKH6Ja6yxQJsQ2Hm+vRuWokKz7UTATL
+         FJVkTYJ7cfbvdFAxdf2yQ4UJodx/jN+vUxqsF4V6UaF3TaGQy7URYfi8dHnfLzKzjr0s
+         P1Z/cejkkLAKqxn8eeiuJYjWk6eTJlbC3EBTgr7LtHj5d/wy1T9ys8CkHcVmKlkj2Dne
+         GLFomayB/NYpU64mqUvbxdIkU+jq8K+gNyMyrCPWsdr0mivOmEgUIOUUZTXEvEpDzWXL
+         +5KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F7pOkzR2g826W8yFIgMZddtTn8R1MT7RN19wNn/t72I=;
+        b=NY5aI1eN5lffRNHsxFMREss0sykL+J5bh6MGokA4MqBC9xpWgBcOjsUzK2trYLTDhi
+         vacfqQe0WweccILDe/dLgeLzVVpH5SIE3oA87IbiBQ2Wr9BJoRy+MoRozBwQTvqL509S
+         6wxUNVhOXNHZn5Q7mFOx2VHi++8jq9h6I9mUCtbglGRYcCyt4BOzREMbaDgSn7z7qK2Z
+         DnAY53B6EMYt/PSQpQJxhDOwQfG+L2wHuuztup23XnEASF6Pg9EC+h64CZdrQ21PNClH
+         kSPXusRn+NhbpoLU5RG5R7c0N0Yltvz++mg7yzGNgrhP+7bo8lHTOJYCTnjWSs+nQlNy
+         yttw==
+X-Gm-Message-State: AOAM5320oM+2qoSY6cCZTrL5D1+a/Oz7ZcpyMwYZKSvppAVAB0/9bUVT
+        tKGBxlLyIb7IRPH0TeaCGQQ=
+X-Google-Smtp-Source: ABdhPJzRNHj5dkZ1bz6V9uC5W0Lmt/bSHJOdixo2u7RWB+XEX7l2/KbeQXHRIYKu9e+moKfpZ2jfeg==
+X-Received: by 2002:aa7:c617:: with SMTP id h23mr1983027edq.154.1605216096661;
+        Thu, 12 Nov 2020 13:21:36 -0800 (PST)
+Received: from debian64.daheim (p5b0d74e1.dip0.t-ipconnect.de. [91.13.116.225])
+        by smtp.gmail.com with ESMTPSA id og19sm2599561ejb.7.2020.11.12.13.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 13:21:36 -0800 (PST)
+Received: from localhost.daheim ([127.0.0.1])
+        by debian64.daheim with esmtp (Exim 4.94)
+        (envelope-from <chunkeey@gmail.com>)
+        id 1kdK2B-000F3t-92; Thu, 12 Nov 2020 22:21:35 +0100
+Subject: Re: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR in
+ crypto4xx_build_pd
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20201112200702.1664905-1-natechancellor@gmail.com>
+From:   Christian Lamparter <chunkeey@gmail.com>
+Message-ID: <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
+Date:   Thu, 12 Nov 2020 22:21:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20201111080027.7830f756@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <AFoANwC7DUvmHhxeg4sBAapD.3.1605143705212.Hmail.wangqing@vivo.com>
- <CAK8P3a3=eOxE-K25754+fB_-i_0BZzf9a9RfPTX3ppSwu9WZXw@mail.gmail.com> <20201112181954.GD21010@hoboy.vegasvil.org>
-In-Reply-To: <20201112181954.GD21010@hoboy.vegasvil.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 12 Nov 2020 22:21:21 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1pHpweXP+2mp7bdg2GvU5kk4NASsu4MQCRPtK-VpuXSA@mail.gmail.com>
-Message-ID: <CAK8P3a1pHpweXP+2mp7bdg2GvU5kk4NASsu4MQCRPtK-VpuXSA@mail.gmail.com>
-Subject: Re: Re: [PATCH V4 net-bugfixs] net/ethernet: Update ret when
- ptp_clock is ERROR
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201112200702.1664905-1-natechancellor@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:19 PM Richard Cochran
-<richardcochran@gmail.com> wrote:
->
-> On Thu, Nov 12, 2020 at 09:25:12AM +0100, Arnd Bergmann wrote:
-> > This is not really getting any better. If Richard is worried about
-> > Kconfig getting changed here, I would suggest handling the
-> > case of PTP being disabled by returning an error early on in the
-> > function, like
-> >
-> > struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
-> >                                    struct device_node *node)
-> > {
-> >         struct am65_cpts *cpts;
-> >         int ret, i;
-> >
-> >         if (!IS_ENABLED(CONFIG_PTP_1588_CLOCK))
-> >                  return -ENODEV;
->
-> No, please, no.  That only adds confusion.  The NULL return value
-> already signals that the compile time support was missing.  That was
-> the entire point of this...
->
->  * ptp_clock_register() - register a PTP hardware clock driver
->  *
->  * @info:   Structure describing the new clock.
->  * @parent: Pointer to the parent device of the new clock.
->  *
->  * Returns a valid pointer on success or PTR_ERR on failure.  If PHC
->  * support is missing at the configuration level, this function
->  * returns NULL, and drivers are expected to gracefully handle that
->  * case separately.
+Hello,
 
-The problem is that the caller doesn't handle that case gracefully,
-but it instead wants to return an error after all. I don't see a good
-solution either; as far as I'm concerned we should never be building
-code that fails if PTP_1588_CLOCK is disabled when it cannot
-do anything sensible in that configuration.
+On 12/11/2020 21:07, Nathan Chancellor wrote:
+> Clang warns:
+> 
+> drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
+> lower precedence than '|'; '|' will be evaluated first
+> [-Wbitwise-conditional-parentheses]
+>                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+>                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+> drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+> around the '|' expression to silence this warning
+>                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+>                                                                           ^
+>                                                                          )
+> drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+> around the '?:' expression to evaluate it first
+>                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+>                                                                           ^
+>                   (
+> 1 warning generated.
+> 
+> It looks like this should have been a logical OR so that
+> PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
+> is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD.
+Yes. This probably wasn't spotted earlier since the driver doesn't make
+use of CRYPTO_ALG_TYPE_AHASH (yet). This is because the hash accelerator
+setup cost was never worth it.
 
-I agree that the 'imply' keyword in Kconfig is what made this a
-lot worse, and it would be best to replace that with normal
-dependencies.
+> Change the operator so that everything works properly.
+I'm curious if this is true. Is there a way to break this somehow on purpose?
 
-It would be possible to have a ptp_clock_register_optional()
-interface in addition to ptp_clock_register(), which could then
-be changed to return an error. Some other subsystems follow
-this pattern, but it's not any less confusing either.
+I've extracted the code from line 921 and added the defines
+(the CRYPTO_ALG_... from the current 5.10-rc3 crypto.h and the PD_CTL_
+from crypto4xx_reg_def.h) and replaced the u32 with uint32_t
+so it runs in userspace too:
 
-     Arnd
+--- crypto4xx_test.c ---
+/* test study - is it possible to break the | vs || in crypto4xx's code */
+
+#include <stdio.h>
+#include <stdint.h>
+
+#define CRYPTO_ALG_TYPE_AEAD 	0x00000003
+#define CRYPTO_ALG_TYPE_AHASH	0x0000000f
+#define PD_CTL_HASH_FINAL	(1<<4) /* Stand-in for BIT(4) */
+#define PD_CTL_HOST_READY	(1<<0) /* BIT(0) */
+
+uint32_t func_with_bitwise_or(uint32_t alg_type)
+{
+	return PD_CTL_HOST_READY |
+		((alg_type == CRYPTO_ALG_TYPE_AHASH) |
+		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
+			PD_CTL_HASH_FINAL : 0);
+}
+
+uint32_t func_with_logical_or(uint32_t alg_type)
+{
+	return PD_CTL_HOST_READY |
+		((alg_type == CRYPTO_ALG_TYPE_AHASH) ||
+		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
+			PD_CTL_HASH_FINAL : 0);
+}
+
+int main(int arg, char **args)
+{
+	uint32_t alg;
+
+	for (alg = 0; alg < 0x10; alg++) { /* this is because CRYPTO_ALG_TYPE_MASK is 0xf */
+		if (func_with_bitwise_or(alg) != func_with_logical_or(alg)) {
+			printf("for alg_type:%d, the bitwise result=%d doesn't match the logical result=%d\n",
+				alg, func_with_bitwise_or(alg), func_with_logical_or(alg));
+			return 1;
+		}
+	}
+	printf("logical and bitwise always agreed.\n");
+
+	return 0;
+}
+--- EOF ---
+
+Both gcc (gcc version 10.2.0 (Debian 10.2.0-17)) or clang (clang version 9.0.1-15)
+version always gave the "logical and bitwise always agreed.". which means there wasn't
+anything wrong and this patch just makes clang happy? Or can you get it to break?
+
+Also, can you please give this patch a try:
+--- extra-bracket.patch
+
+--- a/drivers/crypto/amcc/crypto4xx_core.c
++++ b/drivers/crypto/amcc/crypto4xx_core.c
+@@ -932,8 +932,8 @@ int crypto4xx_build_pd(struct crypto_async_request *req,
+  	}
+
+  	pd->pd_ctl.w = PD_CTL_HOST_READY |
+-		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
+-		 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
++		(((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
++		  (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD)) ?
+  			PD_CTL_HASH_FINAL : 0);
+  	pd->pd_ctl_len.w = 0x00400000 | (assoclen + datalen);
+  	pd_uinfo->state = PD_ENTRY_INUSE | (is_busy ? PD_ENTRY_BUSY : 0);
+
+---
+I'm mostly curious if clang will warn about it too.
+
+That said:
+Reviewed-by: Christian Lamparter <chunkeey@gmail.com>
+
+Cheers,
+Christian
+
+> Fixes: 4b5b79998af6 ("crypto: crypto4xx - fix stalls under heavy load")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1198
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>   drivers/crypto/amcc/crypto4xx_core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
+> index 981de43ea5e2..2e3690f65786 100644
+> --- a/drivers/crypto/amcc/crypto4xx_core.c
+> +++ b/drivers/crypto/amcc/crypto4xx_core.c
+> @@ -917,7 +917,7 @@ int crypto4xx_build_pd(struct crypto_async_request *req,
+>   	}
+>   
+>   	pd->pd_ctl.w = PD_CTL_HOST_READY |
+> -		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
+> +		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) ||
+>   		 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+>   			 : 0);
+>   	pd->pd_ctl_len.w = 0x00400000 | (assoclen + datalen);
+> 
+> base-commit: f8394f232b1eab649ce2df5c5f15b0e528c92091
+> 
+
