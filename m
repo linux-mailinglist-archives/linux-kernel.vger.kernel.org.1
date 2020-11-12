@@ -2,179 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACDC2AFCA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168332AFCA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgKLBlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:41:16 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41558 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728214AbgKLBNk (ORCPT
+        id S1729599AbgKLBlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:41:19 -0500
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:23485 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728218AbgKLBPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:13:40 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605143617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NC+uvhL2XYSO0lp2yao70R5XrrcbGD310dMy9lHjfk0=;
-        b=oMtBw1dK6hwnAziR1Sa8n0nrEDU67WCC95A9JQj6dM7qem4HR9yausWmN9pKdbDKCOa8Mv
-        +nrKwuVUTvpRAO87CKbY+AmPfqP2eQAjgoYG/QCJxYG7Xc7xcMQukj0Uo6EP/7v4FIwgI5
-        O6hlKMxqfK5T/XkbyK3dIP0W6jTM5udWg8ZL/QuHEuYgTsPeEC4A39q74mAp6eDAk+CNFh
-        He38a8YVfbtGVOQ68jieQy7DRRBnpZUdo3zV2Q5GzBSeY2eaCl4SGXbzFaUwbJxvaSPgYw
-        ORSXBbLnH22RYGtcWC85d+QSiDkulHsCIdI5W7W0+8ZcjUPYeVsQhVqUM+NTaw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605143617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NC+uvhL2XYSO0lp2yao70R5XrrcbGD310dMy9lHjfk0=;
-        b=3z7QskZLwhekH6gqUujryf4f99GewEXIaxAyVy1SSUshTt6+NGvqmhEamYRXIm1BM35TBc
-        TIOmhz8YKbDE5oDA==
-To:     "Raj\, Ashok" <ashok.raj@intel.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "jing.lin\@intel.com" <jing.lin@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-In-Reply-To: <20201111230321.GC83266@otc-nc-03>
-References: <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03> <20201106175131.GW2620339@nvidia.com> <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com> <20201107001207.GA2620339@nvidia.com> <87pn4nk7nn.fsf@nanos.tec.linutronix.de> <d69953378bd1fdcdda54a2fbe285f6c0b1484e8a.camel@infradead.org> <20201111154159.GA24059@infradead.org> <20201111160922.GA83266@otc-nc-03> <87k0uro7fz.fsf@nanos.tec.linutronix.de> <20201111230321.GC83266@otc-nc-03>
-Date:   Thu, 12 Nov 2020 02:13:36 +0100
-Message-ID: <877dqrnzr3.fsf@nanos.tec.linutronix.de>
+        Wed, 11 Nov 2020 20:15:10 -0500
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 364D928269E;
+        Thu, 12 Nov 2020 09:15:05 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AFoANwC7DUvmHhxeg4sBAapD.3.1605143705212.Hmail.wangqing@vivo.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWNCBuZXQtYnVnZml4c10gbmV0L2V0aGVybmV0OiBVcGRhdGUgcmV0IHdoZW4gcHRwX2Nsb2NrIGlzIEVSUk9S?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.213.83.156
+In-Reply-To: <20201111080027.7830f756@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from wangqing@vivo.com( [58.213.83.156) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 12 Nov 2020 09:15:05 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Thu, 12 Nov 2020 09:15:05 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSR9KHkNKHU1MQxpPVkpNS05KT0hMS05JTUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU5CTUJKS09CSEtON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6PRQ6NQw4TD8uDRYzEwMeHE8IOToaCz9VSFVKTUtOSk9ITEtOTUNNVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSUpIVUNIVUpOTVlXWQgBWUFIT0NONwY+
+X-HM-Tid: 0a75ba0536899395kuws364d928269e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ashok,
-
-On Wed, Nov 11 2020 at 15:03, Ashok Raj wrote:
-> On Wed, Nov 11, 2020 at 11:27:28PM +0100, Thomas Gleixner wrote:
->> which is the obvious sane and safe logic. But sure, why am I asking for
->> sane and safe in the context of virtualization?
->
-> We can pick how to solve this, and just waiting for you to tell, what
-> mechanism you prefer that's less painful and architecturally acceptible for
-> virtualization and linux. We are all ears!
-
-Obviously we can't turn the time back. The point I was trying to make is
-that the general approach of just bolting things on top of the exiting
-maze is bad in general.
-
-Opt-out bits are error prone simply because anything which exists before
-that point does not know that it should set that bit. Obvious, right?
-
-CPUID bits are 'Feature available' and not 'Feature not longer
-available' for a reason.
-
-So with the introduction of VT this stringent road was left and the
-approach was: Don't tell the guest OS that it's not running on bare
-metal.
-
-That's a perfectly fine approach for running existing legacy OSes which
-do not care at all because they don't know about anything of this
-newfangled stuff.
-
-But it's a falls flat on it's nose for anything which comes past that
-point simply because there is no reliable way to tell in which context
-the OS runs.
-
-The VMM can decide not to set or is not having support for setting the
-software CPUID bit which tells the guest OS that it does NOT run on bare
-metal and still hand in new fangled PCI devices for which the guest OS
-happens to have a driver which then falls flat on it's nose because some
-magic functionality is not there.
-
-So we have the following matrix:
-
-VMM   		Guest OS
-Old             Old             -> Fine, does not support any of that
-New             Old             -> Fine, does not support any of that
-New             New             -> Fine, works as expected
-Old             New             -> FAIL
-
-To fix this we have to come up with heuristics again to figure out which
-context we are running in and whether some magic feature can be
-supported or not:
-
-probably_on_bare_metal()
-{
-        if (CPUID(FEATURE_HYPERVISOR))
-        	return false;
-       	if (dmi_match_hypervisor_vendor())
-        	return false;
-
-        return PROBABLY_RUNNING_ON_BARE_METAL;
-}
-
-Yes, it works probably in most cases, but it still works by chance and
-that's what I really hate about this; indeed 'hate' is not a strong
-enough word.
-
-Why on earth did VT not introduce a reliable way (instruction, CPUID
-leaf, MSR, whatever, which can't be manipulated by the VMM to let the OS
-figure out where it runs?)
-
-Just because the general approach to these problems is: We can fix that
-in software.
-
-No, you can't fix inconsistency in software at all.
-
-This is not the first time that we tell HW folks to stop this 'Fix this
-in software' attitude which has caused more problems than it solved.
-
-And you can argue in circles until you are blue, that inconsistency is
-not going away. 
-
-Everytime new (mis)features are added which need awareness of the OS
-whether it runs on bare-metal or in a VM we have this unsolvable dance
-of requiring that the underlying VMM has to tell the guest OS NOT to use
-it instead of having the guest OS making the simple decision:
-
-   if (!definitely_on_bare_metal())
-   	return -ENOTSUPP;
-
-or with a newer version of the guest OS:
-
-   if (!definitely_on_bare_metal() && !hypervisor->supportsthis())
-   	return -ENOTSUPP;
-
-I'm halfways content to go with the above probably_on_bare_metal()
-function as a replacement for definitely_on_bare_metal() to go forward,
-but only for the very simple reason that this is the only option we
-have.
-
-Thanks,
-
-        tglx
+Pj4gT24gV2VkLCBOb3YgMTEsIDIwMjAgYXQgMDM6MjQ6MzNQTSArMDIwMCwgR3J5Z29yaWkgU3Ry
+YXNoa28gd3JvdGU6Cj4+ID4gCj4+ID4gRm9sbG93aW5nIFJpY2hhcmQncyBjb21tZW50cyB2MSBv
+ZiB0aGUgcGF0Y2ggaGFzIHRvIGJlIGFwcGxpZWQgWzFdLgo+PiA+IEkndmUgYWxzbyBhZGRlZCBt
+eSBSZXZpZXdlZC1ieSB0aGVyZS4KPj4gPiAKPj4gPiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
+cmcvcGF0Y2h3b3JrL3BhdGNoLzEzMzQwNjcvICAKPj4gCj4+ICsxCj4+IAo+PiBKYWt1YiwgY2Fu
+IHlvdSBwbGVhc2UgdGFrZSB0aGUgb3JpZ2luYWwgdjEgb2YgdGhpcyBwYXRjaD8KPgo+SSBkb24n
+dCB0aGluayB2MSBidWlsZHMgY2xlYW5seSBmb2xrcyAobm90IDEwMCUgc3VyZSwgY3B0cyBpcyBu
+b3QKPmNvbXBpbGVkIG9uIHg4Nik6Cj4KPgkJcmV0ID0gY3B0cy0+cHRwX2Nsb2NrID8gY3B0cy0+
+cHRwX2Nsb2NrIDogKC1FTk9ERVYpOwo+Cj5wdHBfY2xvY2sgaXMgYSBwb2ludGVyLCByZXQgaXMg
+YW4gaW50ZWdlciwgcmlnaHQ/Cgp5ZWFoLCBJIHdpbGwgbW9kaWZ5IGxpa2U6IHJldCA9IGNwdHMt
+PnB0cF9jbG9jayA/IFBUUl9FUlIoY3B0cy0+cHRwX2Nsb2NrKSA6IC1FTk9ERVY7Cgo+Cj5Hcnln
+b3JpaSwgd291bGQgeW91IG1pbmQgc2VuZGluZyBhIGNvcnJlY3QgcGF0Y2ggaW4gc28gV2FuZyBR
+aW5nIGNhbgo+c2VlIGhvdyBpdCdzIGRvbmU/IEkndmUgYmVlbiBhc2tpbmcgZm9yIGEgZml4ZXMg
+dGFnIG11bHRpcGxlIHRpbWVzCj5hbHJlYWR5IDooCgpJIHN0aWxsIGRvbid0IHF1aXRlIHVuZGVy
+c3RhbmQgd2hhdCBhIGZpeGVzIHRhZyBtZWFuc++8jApjYW4geW91IHRlbGwgbWUgaG93IHRvIGRv
+IHRoaXMsIHRoYW5rcy4KCldhbmcgUWluZwoKDQoNCg==
