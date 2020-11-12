@@ -2,59 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60242B072D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8342B073B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgKLOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:01:21 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7223 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727819AbgKLOBV (ORCPT
+        id S1728345AbgKLOGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:06:31 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:45191 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727934AbgKLOGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:01:21 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX3Cz2W69zkj7b;
-        Thu, 12 Nov 2020 22:01:03 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 22:01:09 +0800
-From:   Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-To:     <zhangxiaoxu5@huawei.com>, <dhowells@redhat.com>,
-        <jarkko@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] watch_queue: Fix wrong return value of watch_queue_set_size()
-Date:   Thu, 12 Nov 2020 09:03:54 -0500
-Message-ID: <20201112140354.2260499-1-zhangxiaoxu5@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Thu, 12 Nov 2020 09:06:30 -0500
+Received: by mail-oi1-f193.google.com with SMTP id j7so6445397oie.12;
+        Thu, 12 Nov 2020 06:06:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGu5oH3VQ7eWe40maLCTjTDEjDF7H6L/YZ+Yi4SWhhQ=;
+        b=Gyn/deUUNTYGJ9B3FSwO82A+M06DRLVxBoeYtbU2got9/XWEEXo1rbtwDnp56egkhk
+         5FtfiQcq+em441kQWLa0yCOOMqVYsYcclQEL1ccB10EisR0+Yhu3KM9wCIc/tiBsxn0l
+         pYwDmPXi8SkyvSA8P1yLtWo4HGpN+KO9ptsOAV2ugLlYSJFn7Bgqeqolowk1+9Z+K+Ow
+         AGfQ2IlEE/L+Cyxmp7Nv9Y3982/W4vcMJU6Wz4lfpiQOLCJTS78ES/OTX+I+stXRMlcn
+         +1uoap5s0ieLvDW/y2ztQzHTNjnoQeC/J0zgQiJMYYAXTntphmEAt57ipWYP9Q42+IoT
+         X7fg==
+X-Gm-Message-State: AOAM532wbFxDiaStue+eLjTdyWm6MVevdNYWIr0sLcN0uHKrgdyCNRUF
+        u6UE7T/yk/cxBqh8DkfgFsF8mILD8aeZ7aUMptw=
+X-Google-Smtp-Source: ABdhPJxpCp2qCzeHMj+SzRZmg2+cyQ0fJmsK4ddq2wFUq7KoWV5tdQEVQBG+ypkDNCW7qxO048aLaKhEEYd8bC/QY9U=
+X-Received: by 2002:aca:52c9:: with SMTP id g192mr5844659oib.54.1605189987900;
+ Thu, 12 Nov 2020 06:06:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+References: <20200916084017.14086-1-huobean@gmail.com>
+In-Reply-To: <20200916084017.14086-1-huobean@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Nov 2020 15:06:16 +0100
+Message-ID: <CAMuHMdVZbAZN41jpRrSUD9F+nkgFBTeFoBEu-bumXciT=o4Svw@mail.gmail.com>
+Subject: Re: [PATCH v2] scsi: ufs-exynos: use devm_platform_ioremap_resource_byname()
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stanley.chu@mediatek.com,
+        =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= 
+        <beanhuo@micron.com>, Bart Van Assche <bvanassche@acm.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, cang@codeaurora.org,
+        scsi <linux-scsi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If memory allocate failed, we should return -ENOMEM rather than 0.
+Hi Bean,
 
-Fixes: c73be61cede5 ("pipe: Add general notification queue support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
----
- kernel/watch_queue.c | 1 +
- 1 file changed, 1 insertion(+)
+On Wed, Sep 16, 2020 at 10:43 AM Bean Huo <huobean@gmail.com> wrote:
+> From: Bean Huo <beanhuo@micron.com>
+>
+> Use devm_platform_ioremap_resource_byname() to simplify the code.
+>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-index 0ef8f65bd2d7..3084060a52d2 100644
---- a/kernel/watch_queue.c
-+++ b/kernel/watch_queue.c
-@@ -247,6 +247,7 @@ long watch_queue_set_size(struct pipe_inode_info *pipe, unsigned int nr_notes)
- 	if (ret < 0)
- 		goto error;
- 
-+	ret = -ENOMEM;
- 	pages = kcalloc(sizeof(struct page *), nr_pages, GFP_KERNEL);
- 	if (!pages)
- 		goto error;
+Thanks for your patch, which is now commit 2dd39fad92a1f25f ("scsi: ufs:
+ufs-exynos: Use devm_platform_ioremap_resource_byname()") in v5.10-rc1.
+
+> --- a/drivers/scsi/ufs/ufs-exynos.c
+> +++ b/drivers/scsi/ufs/ufs-exynos.c
+> @@ -940,7 +940,6 @@ static int exynos_ufs_init(struct ufs_hba *hba)
+>         struct device *dev = hba->dev;
+>         struct platform_device *pdev = to_platform_device(dev);
+>         struct exynos_ufs *ufs;
+> -       struct resource *res;
+>         int ret;
+>
+>         ufs = devm_kzalloc(dev, sizeof(*ufs), GFP_KERNEL);
+> @@ -948,24 +947,21 @@ static int exynos_ufs_init(struct ufs_hba *hba)
+>                 return -ENOMEM;
+>
+>         /* exynos-specific hci */
+> -       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "vs_hci");
+> -       ufs->reg_hci = devm_ioremap_resource(dev, res);
+> +       ufs->reg_hci = devm_platform_ioremap_resource_byname(pdev, "vs_hci");
+
+Are you sure this is equivalent?
+Before, devm_ioremap_resource() was called on "dev" (hba->dev),
+after it is called on "&pdev->dev" .
+
+>         if (IS_ERR(ufs->reg_hci)) {
+>                 dev_err(dev, "cannot ioremap for hci vendor register\n");
+>                 return PTR_ERR(ufs->reg_hci);
+>         }
+>
+>         /* unipro */
+> -       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "unipro");
+> -       ufs->reg_unipro = devm_ioremap_resource(dev, res);
+> +       ufs->reg_unipro = devm_platform_ioremap_resource_byname(pdev, "unipro");
+>         if (IS_ERR(ufs->reg_unipro)) {
+>                 dev_err(dev, "cannot ioremap for unipro register\n");
+>                 return PTR_ERR(ufs->reg_unipro);
+>         }
+>
+>         /* ufs protector */
+> -       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ufsp");
+> -       ufs->reg_ufsp = devm_ioremap_resource(dev, res);
+> +       ufs->reg_ufsp = devm_platform_ioremap_resource_byname(pdev, "ufsp");
+>         if (IS_ERR(ufs->reg_ufsp)) {
+>                 dev_err(dev, "cannot ioremap for ufs protector register\n");
+>                 return PTR_ERR(ufs->reg_ufsp);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
