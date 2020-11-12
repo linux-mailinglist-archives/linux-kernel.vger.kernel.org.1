@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5602B0EBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590FB2B0EC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgKLUDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
+        id S1726942AbgKLUHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727026AbgKLUDv (ORCPT
+        with ESMTP id S1726738AbgKLUHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:03:51 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D79C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:03:51 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a3so6549826wmb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:03:51 -0800 (PST)
+        Thu, 12 Nov 2020 15:07:15 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC0DC0613D1;
+        Thu, 12 Nov 2020 12:07:13 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id t5so5031567qtp.2;
+        Thu, 12 Nov 2020 12:07:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6XvDI+wpjgB/udB/U6ZUMsnDIItG6AuNAvWmNdWpIRQ=;
-        b=dhQ8kJuhFZGAfKx5/P+68g0YfqOiER21XLOeWatvwbhmto4adSSdyxnwL1DDPhMlOU
-         jeq7QSlfEXzfxE+Jj+6gdGWgCiVUQycpZMHORgHjxrlk9cl9n/ORjyIBQAhdyKJdyuqH
-         ljuRpjXPLvpjERXK/VH700QO4WPw5J/RgXpTs=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E6ppXCmiSFyh9upyqD1fFw+i5gNBFjv39zREmHQXKsI=;
+        b=myhEdHA1B+Ej9tlUM2QY462pQS+lE1+d0F8YJn7uklWfzytdxoWcCAY7P0ddXLrRDi
+         088d1KYqblvd+TKWi/We+OXgH4RO15ateqbXuxp4CoAvzm3O+hPOUOZ7ImTo2JOmpbGi
+         8J9V5W+0hjdMa/khKXfNGf7ULDi7+Zda1GOng3kRHW41Qbdd4wsQ7CqSLBM0bjijzqN8
+         NINcJQ6a6UqrCowsKdOYlXdfLe03nnMuwJZWruePkHy76YQcsHc4Iv7k5ymP2Ezf0xix
+         vCFRlGzW0Yj5bFx2udjeoppzzSLw5hZBr1AkWmvrrHcgzCJtu5ESuScfXAmTGRYn9See
+         wh6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6XvDI+wpjgB/udB/U6ZUMsnDIItG6AuNAvWmNdWpIRQ=;
-        b=srjZkr490v2b4Bb+3S6k9OYPpB3fPYue2Fta1xGMgEWm816LERbGhSvN47flR53Ate
-         vdrXXEI3f4U25jD7MzBlqPbiZHbUA339jHJd+zOiKzdgk8NzGAa1+zxVNW3Q7eDYPdRS
-         zkUSBHHFs8Y+Bwo97FBUOlUCIhfP3jGRSfOY0fbs2uiabDxNlIZCaiw5KuqdjU+xXJud
-         447nSVIipaIMREKp9vdukhyarYoLiV38oG7emMLfx/cZPo48DxWuCltrYMLLlVYjUqyj
-         VznF/9SceCNWBlEhRqDz27nZk+ehLT6Ix9cZrGDVt1uupIzEwo2obOrPsOnp4gxNqdX5
-         9zQQ==
-X-Gm-Message-State: AOAM533VXFc+yO9R7Wy6SVF7qHIv8jbYd122SGtot03y8P7Ru7HTWqsd
-        2YelXiYQDVKUl2ua/Yl32F9SeK8nx1kzv8SV
-X-Google-Smtp-Source: ABdhPJwrX54iWcDGKz0HeNvEQPqmgSDXxgBOwoPc4cdWoBVBRrjzZ09+sWbLY+RQBALjcPD4mURyRQ==
-X-Received: by 2002:a1c:1906:: with SMTP id 6mr1249717wmz.87.1605211429993;
-        Thu, 12 Nov 2020 12:03:49 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id f5sm8488472wrg.32.2020.11.12.12.03.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E6ppXCmiSFyh9upyqD1fFw+i5gNBFjv39zREmHQXKsI=;
+        b=Z9Dk8jG9J0XkRkFJUXYidVKgxjsJ+TTnof3DluRSoKoocNXxcpriGdyG5g4HSdg/vM
+         bKHQGz2X2HynVSiSUjjoC3Tl1dZ7GdQE2cTk9Tj1Y8IW/1BZi4/++YdNbnCATExWM5v3
+         q4fmUDClZer7MZPHh4Emg5y2mnszviU1zxjqrRTfDPn3M+9GZEk8Qu5dkdosm1dOPdcT
+         W+VoyFQFVxoMZwXEc0/abDHFFNdXylQQxcEDCThck4nTwjv2mnt41VscoZZa2A4RWeTy
+         E/Y69xm4AAF2ocnZcie28p8srFfTKZPg40ri7wD0ND+la2RtGwpxW4FnyxUkQ4eG9OFi
+         s6eQ==
+X-Gm-Message-State: AOAM531lphbQfG7uwHVjTzJd8+3kLow237+bioUIiVnB8kmp6pN4ibbe
+        hWvFCCcSsBfSjHy4nyRw1N4mTyVFyQiCDg==
+X-Google-Smtp-Source: ABdhPJyK2VTdheMhc7GlPstCpcPRnyiVHSljX9I6UvY8La8RTbcrrIwralXAX9uEeXERp6sXedo/Iw==
+X-Received: by 2002:ac8:75da:: with SMTP id z26mr933380qtq.36.1605211632407;
+        Thu, 12 Nov 2020 12:07:12 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id 207sm700295qki.91.2020.11.12.12.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 12:03:49 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next v2 2/2] bpf: Expose bpf_d_path helper to sleepable LSM hooks
-Date:   Thu, 12 Nov 2020 20:03:46 +0000
-Message-Id: <20201112200346.404864-3-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-In-Reply-To: <20201112200346.404864-1-kpsingh@chromium.org>
-References: <20201112200346.404864-1-kpsingh@chromium.org>
+        Thu, 12 Nov 2020 12:07:11 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR in crypto4xx_build_pd
+Date:   Thu, 12 Nov 2020 13:07:02 -0700
+Message-Id: <20201112200702.1664905-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+Clang warns:
 
-Sleepable hooks are never called from an NMI/interrupt context, so it is
-safe to use the bpf_d_path helper in LSM programs attaching to these
-hooks.
+drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
+lower precedence than '|'; '|' will be evaluated first
+[-Wbitwise-conditional-parentheses]
+                 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+around the '|' expression to silence this warning
+                 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+                                                                         ^
+                                                                        )
+drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+around the '?:' expression to evaluate it first
+                 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+                                                                         ^
+                 (
+1 warning generated.
 
-The helper is not restricted to sleepable programs and merely uses the
-list of sleeable hooks as the initial subset of LSM hooks where it can
-be used.
+It looks like this should have been a logical OR so that
+PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
+is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD. Change the
+operator so that everything works properly.
 
-Signed-off-by: KP Singh <kpsingh@google.com>
+Fixes: 4b5b79998af6 ("crypto: crypto4xx - fix stalls under heavy load")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1198
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- kernel/trace/bpf_trace.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/crypto/amcc/crypto4xx_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index e4515b0f62a8..eab1af02c90d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -16,6 +16,7 @@
- #include <linux/syscalls.h>
- #include <linux/error-injection.h>
- #include <linux/btf_ids.h>
-+#include <linux/bpf_lsm.h>
+diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
+index 981de43ea5e2..2e3690f65786 100644
+--- a/drivers/crypto/amcc/crypto4xx_core.c
++++ b/drivers/crypto/amcc/crypto4xx_core.c
+@@ -917,7 +917,7 @@ int crypto4xx_build_pd(struct crypto_async_request *req,
+ 	}
  
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/btf.h>
-@@ -1178,7 +1179,11 @@ BTF_SET_END(btf_allowlist_d_path)
- 
- static bool bpf_d_path_allowed(const struct bpf_prog *prog)
- {
--	return btf_id_set_contains(&btf_allowlist_d_path, prog->aux->attach_btf_id);
-+	if (prog->type == BPF_PROG_TYPE_LSM)
-+		return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
-+
-+	return btf_id_set_contains(&btf_allowlist_d_path,
-+				   prog->aux->attach_btf_id);
- }
- 
- BTF_ID_LIST_SINGLE(bpf_d_path_btf_ids, struct, path)
+ 	pd->pd_ctl.w = PD_CTL_HOST_READY |
+-		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
++		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) ||
+ 		 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+ 			PD_CTL_HASH_FINAL : 0);
+ 	pd->pd_ctl_len.w = 0x00400000 | (assoclen + datalen);
+
+base-commit: f8394f232b1eab649ce2df5c5f15b0e528c92091
 -- 
-2.29.2.222.g5d2a92d10f8-goog
+2.29.2
 
