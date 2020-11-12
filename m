@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504472B0383
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E242B037F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgKLLHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgKLK7H (ORCPT
+        id S1727827AbgKLLHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:07:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23452 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727962AbgKLK7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:59:07 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692C7C061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:59:06 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id p19so5916988wmg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:59:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wgyLyFchGL7Sp7PDuveL5Dq/jWJMAfMom/lcxhPZFGk=;
-        b=OIcAU4L2NY90scoNe97J7Lo3gdQ4brKCLe5fP7yOH2yD67Ofz0aO0Wo5MUjF2m7/2C
-         iqhZfqgE7sx7uOpFPy6Ej8kW1KzNWFmtq5SPp7JzD7HcWn46JIHoJagCqfDo1sLnBMmW
-         8Ag48q1gpX4QthRyaDE+UI3Mt18iHtxM0E6J81ecjFGOXmqgtNRJkbanRvJMVY+ewKaZ
-         yKEIWMnBWpwiUDnYYiK+r6VCsU2UdmV9yTj07zJZJMrzl00HxHjL52MRjrnzsiZLqanr
-         olAQRFJvinPjCXmYaWsofa2c+EJTF0jTIVk2+chj6Zx6LKZcVdSbdxxJR5dgoozgc9p4
-         XSZQ==
+        Thu, 12 Nov 2020 05:59:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605178755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PHjBjRZowY+IjVGBZ60XjvH5JSPQwQ4zt8y3iTk+Z+0=;
+        b=E7RcpYs2Z8Vz5ZoQ6PDc7HBgWu/Zn0ESg7tyiaFgUL/14jygNPEUZv/dSRkvIDBf4Fab2T
+        OCAbnwRfLrlKjnW6skZP/lBBgbcE7bhQSj7V4LWmo/tuEyGAfkeLR4UGJbdpAMkWKUC6s0
+        MMEr9CgwgOSLElXGrcthlmKKQ++7NTU=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-dbrB9FTIOsCrsXaMt0GhXA-1; Thu, 12 Nov 2020 05:59:14 -0500
+X-MC-Unique: dbrB9FTIOsCrsXaMt0GhXA-1
+Received: by mail-wm1-f70.google.com with SMTP id b206so1614281wmd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:59:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wgyLyFchGL7Sp7PDuveL5Dq/jWJMAfMom/lcxhPZFGk=;
-        b=MlHhPmWS3Oiw+JGP9cWcKjkEWN4EscTAwg7aV1NcsXGUSVMS3O8F//tZiIqx3n8SZZ
-         DnQ00LdGxxwAXZBHFKhv8BKolxF4idGKp5ODzXR7x0KifpXUPVgPjIS95r3uUCrQiiR7
-         7VpSFhV6Q7nz8aII4mKqOlcwp6TGhD0tQ4XZsoydT9sJr5Dx8di5gB2YGhZDBQO0bQLL
-         RCiCzaURvQmOD21bLRNeuU5aiwMiCbCeNxs5LIKN8Pw6fLGdHix9s9KojnbYGUFcWtPo
-         kOwHskoPaDkhak7YiGi50VfGVEKD8F6pZ/WK+yvHxQ6mLjUtBqyRHXANSfu4PfzNykJ+
-         ARhw==
-X-Gm-Message-State: AOAM530Mh7zl73AWrvo8/Ax63RT+wvNiHGDtilrd+pU0npFeJdJ72LkU
-        3yhvg4MkVuqCrzKOjjk0h+noTg==
-X-Google-Smtp-Source: ABdhPJypm3E5Z4Dtn6FAq2BnkUT91LvIbDHRoSB1aVRFTBICzorGYZNNLlfeGh36eCzBVJ5tkNl0tQ==
-X-Received: by 2002:a1c:4c09:: with SMTP id z9mr9042901wmf.55.1605178745182;
-        Thu, 12 Nov 2020 02:59:05 -0800 (PST)
-Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id u5sm1167239wro.56.2020.11.12.02.59.03
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PHjBjRZowY+IjVGBZ60XjvH5JSPQwQ4zt8y3iTk+Z+0=;
+        b=OM0wxf3QeS4tFNW6JdI8kIYa+NJwMAYUDTrmpOGjv7Zm6JS++30iDMLuTlPFlzwZan
+         NlZ81tXIdpmkoKEKauQedu7ZTaImKrVGC99CylFUi0qRtN7Rc16M7QAXphSKdLCbXhd0
+         ddhEDUg7pHSy5MxGerHWm3dkeC1g3JgWiljYY9Ui4bujfT7PBRIGxJJAko8zmdLxUcgA
+         5CoW3nNUqbhy1o1nTrD2EdB91YNQeraR0Z7pXVE1lhwtOkPJh1W0JhWDd5NNkebUUbox
+         vrDsRLMLkVuCOcJQk64AJ+LTGYdr4GvZyjdLDR7qXKYKfruPLB2CYCfmT+XLDKgAqIhp
+         ICQw==
+X-Gm-Message-State: AOAM530GUckDiljFSzI0+mnShBk5P31B5pgsjhXXzrFKltYHzpPUoxbp
+        yeIikI20yMxqo8oPibbm3rHuElT17X0+rA2ev5bRv0BRxhXtXkyP46TxGM/PBWBJ99EBdcIblcP
+        Dgbo3rLJHieQ2yXDHpVXv/lV3LYRKY67HRx9U1+261JBsL3thniiLxFpwlgyNKN9e/qFy9fQbfX
+        JR
+X-Received: by 2002:adf:f6cd:: with SMTP id y13mr15452572wrp.363.1605178752562;
+        Thu, 12 Nov 2020 02:59:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy8NqN7MYALoXUCZY6YKU0aWObW5mAt3CIykX41Fc8DE8b074d3YM8QF538aTonDg2bjBTJMQ==
+X-Received: by 2002:adf:f6cd:: with SMTP id y13mr15452551wrp.363.1605178752379;
+        Thu, 12 Nov 2020 02:59:12 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p12sm6204530wrw.28.2020.11.12.02.59.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 02:59:04 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 4/4] tty: serial: pmac_zilog: Remove unused disposable variable 'garbage'
-Date:   Thu, 12 Nov 2020 10:58:57 +0000
-Message-Id: <20201112105857.2078977-5-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112105857.2078977-1-lee.jones@linaro.org>
-References: <20201112105857.2078977-1-lee.jones@linaro.org>
+        Thu, 12 Nov 2020 02:59:11 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 10/11] KVM: VMX: Skip additional Hyper-V TLB EPTP
+ flushes if one fails
+In-Reply-To: <20201027212346.23409-11-sean.j.christopherson@intel.com>
+References: <20201027212346.23409-1-sean.j.christopherson@intel.com>
+ <20201027212346.23409-11-sean.j.christopherson@intel.com>
+Date:   Thu, 12 Nov 2020 11:59:10 +0100
+Message-ID: <87zh3myh6p.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
- drivers/tty/serial/pmac_zilog.h:365:58: warning: variable ‘garbage’ set but not used [-Wunused-but-set-variable]
+> Skip additional EPTP flushes if one fails when processing EPTPs for
+> Hyper-V's paravirt TLB flushing.  If _any_ flush fails, KVM falls back
+> to a full global flush, i.e. additional flushes are unnecessary (and
+> will likely fail anyways).
+>
+> Continue processing the loop unless a mismatch was already detected,
+> e.g. to handle the case where the first flush fails and there is a
+> yet-to-be-detected mismatch.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 5b7c5b2fd2c7..40a67dd45c8c 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -528,7 +528,15 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+>  			if (++nr_unique_valid_eptps == 1)
+>  				kvm_vmx->hv_tlb_eptp = tmp_eptp;
+>  
+> -			ret |= hv_remote_flush_eptp(tmp_eptp, range);
+> +			if (!ret)
+> +				ret = hv_remote_flush_eptp(tmp_eptp, range);
+> +
+> +			/*
+> +			 * Stop processing EPTPs if a failure occurred and
+> +			 * there is already a detected EPTP mismatch.
+> +			 */
+> +			if (ret && nr_unique_valid_eptps > 1)
+> +				break;
+>  		}
+>  
+>  		/*
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linux-serial@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/tty/serial/pmac_zilog.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+This should never happen (famous last words) but why not optimize the
+impossibility :-)
 
-diff --git a/drivers/tty/serial/pmac_zilog.h b/drivers/tty/serial/pmac_zilog.h
-index bb874e76810e0..fa85b0de5c2fd 100644
---- a/drivers/tty/serial/pmac_zilog.h
-+++ b/drivers/tty/serial/pmac_zilog.h
-@@ -362,10 +362,10 @@ static inline void zssync(struct uart_pmac_port *port)
- 
- /* Misc macros */
- #define ZS_CLEARERR(port)    (write_zsreg(port, 0, ERR_RES))
--#define ZS_CLEARFIFO(port)   do { volatile unsigned char garbage; \
--				     garbage = read_zsdata(port); \
--				     garbage = read_zsdata(port); \
--				     garbage = read_zsdata(port); \
-+#define ZS_CLEARFIFO(port)   do {                       \
-+				     read_zsdata(port); \
-+				     read_zsdata(port); \
-+				     read_zsdata(port); \
- 				} while(0)
- 
- #define ZS_IS_CONS(UP)			((UP)->flags & PMACZILOG_FLAG_IS_CONS)
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
 -- 
-2.25.1
+Vitaly
 
