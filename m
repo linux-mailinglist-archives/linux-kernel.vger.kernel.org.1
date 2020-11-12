@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2560E2B0843
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AB72B0841
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbgKLPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        id S1728593AbgKLPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:18:26 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45340 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S1728346AbgKLPS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Nov 2020 10:18:26 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F3FC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:18:26 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id u2so2936176pls.10
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Y6n1j5ieoaPl104h2GHbkpjD3WvJfFbQ2oIyPHNuXic=;
-        b=Nx8yqZwlit6FO5nSvh8TNxM82iABo5jdw7qRSU9d4EpVPv0BeZ9iHrxoOUh7HW75wu
-         MQDbO+Ej3k58ZePcl9BxNm4Fy8uHVFADoN63GxERgNRIRCFeJQ2bcoT7mTk/BMJ+g5DF
-         LOuTR5q9SOSlW3oGv9ZPZf/akdMvqjZtkjunxlnE/bPfHv2wJtzXluPXAkKkPP/Vxlhe
-         QsIky5oLBQEixnKj3Tcf7/Pv9iwhqa5LAvKPh3ssEt6572rsWY7tFO2bE80lZgYcydIm
-         dUsfguVNmb7eC7lhisPRXosEQ0n5NsW4FQE8Nobp1/LSDSfE1owtXOukX/OxtndU579o
-         6y8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Y6n1j5ieoaPl104h2GHbkpjD3WvJfFbQ2oIyPHNuXic=;
-        b=CSocvbLRC25zrdKgwdlR/q1LgQiCtZAmkdVWaq7yrcqxwFoIvHarEuxgd5YJVxIxXq
-         GJdaS8roXb6xT8VqD7R/ZsaETq1GrS+5LL/4UDfp3/hBg4fCObnmciRQk5cYKsQiu8C5
-         uS1amzyWc9GRHzCUlLS3p7u7e/gTCIitp5DlLPMzztEtygqBLjP8vo3ufRWLBKtENOzl
-         GXZcnWyQDWqmLAWm7av6YBub0Z+ypcq28EjZv4TDg3dWQotT4YFI2vmU4sbCoZ3TnPHx
-         aooTP931pOYlozhGrapauu1DYBbQnnFpolIzmM/2IKVKckXvwMLHKld8O8Wa8SWgbrND
-         RDcQ==
-X-Gm-Message-State: AOAM5304iiMy12bHd0+uGFVCxlYsRhTr+RQ5siusZgYtY7K/tsqBK4h6
-        vsvXc0mLWz9qD2lHBCzjrUA=
-X-Google-Smtp-Source: ABdhPJyKXAbdR8Baht6aCMlI8jEeiscwInTTCKAv+gzoRRc2vp7s7SINnKZIwm1ig4tTQJqHTG6l1Q==
-X-Received: by 2002:a17:902:8c82:b029:d6:df6e:54ac with SMTP id t2-20020a1709028c82b02900d6df6e54acmr163084plo.29.1605194305331;
-        Thu, 12 Nov 2020 07:18:25 -0800 (PST)
-Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
-        by smtp.gmail.com with ESMTPSA id q72sm115946pfq.62.2020.11.12.07.18.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 12 Nov 2020 07:18:24 -0800 (PST)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] ring-buffer: Fix a typo in function description
-Date:   Thu, 12 Nov 2020 23:18:00 +0800
-Message-Id: <20201112151800.14382-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605194304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=agGytP2/PxrD6HdXqGAuy03iJZcEBb4+WEPn1OkpUoY=;
+        b=3aM4IilkkU0xEOJEYSQd1hmEqdFkHn8jAsqqH43Gr2WYbPm4EWg8o6PnKPPYpWEUfg5em0
+        CrkMxX0rtOoTBHSqOiS2bIDUN2mfDYu9vQSuX8gdjJJXhGx06iMc2CXPjL9jCv9FjTifxt
+        uVtlDKcPFT/T5uSztIULaMiZqJpldD7SxYssbR15JZcci/S9I16YmRTqpaUUFY5IRXgdd2
+        J3HzX4lP/qOz+GCof+DpjC8ykxuUYg19zcChLVnUKx78WjuuX1A4kqYlgh9T9lobWluOvs
+        GCKNp4wn92XIbkfPX/+eE7Ps0D48mtngYiTtUac5467oBGdXU/fE78Wgq17bHg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605194304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=agGytP2/PxrD6HdXqGAuy03iJZcEBb4+WEPn1OkpUoY=;
+        b=Lv2IqEdi1qkvj7YNIX4gttzR6NFKXNORHb79P1h95gfmxiqgR3L9Asy2Nvhxp41LIcpRna
+        Q0sdEygGMl1vmBCw==
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Ziyad Atiyyeh <ziyadat@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: REGRESSION: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
+In-Reply-To: <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
+References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 12 Nov 2020 16:18:23 +0100
+Message-ID: <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/ring_buffer_commit_discard/ring_buffer_discard_commit/
+On Thu, Nov 12 2020 at 15:15, Thomas Gleixner wrote:
+> On Thu, Nov 12 2020 at 08:55, Jason Gunthorpe wrote:
+>> On Wed, Aug 26, 2020 at 01:16:28PM +0200, Thomas Gleixner wrote:
+>> They were unable to bisect further into the series because some of the
+>> interior commits don't boot :(
+>>
+>> When we try to load the mlx5 driver on a bare metal VF it gets this:
+>>
+>> [Thu Oct 22 08:54:51 2020] DMAR: DRHD: handling fault status reg 2
+>> [Thu Oct 22 08:54:51 2020] DMAR: [INTR-REMAP] Request device [42:00.2] f=
+ault index 1600 [fault reason 37] Blocked a compatibility format interrupt =
+request
+>> [Thu Oct 22 08:55:04 2020] mlx5_core 0000:42:00.1 eth4: Link down
+>> [Thu Oct 22 08:55:11 2020] mlx5_core 0000:42:00.1 eth4: Link up
+>> [Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: mlx5_cmd_eq_recover:2=
+64:(pid 3390): Recovered 1 EQEs on cmd_eq
+>> [Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: wait_func_handle_exec=
+_timeout:1051:(pid 3390): cmd0: CREATE_EQ(0=C3=83=C2=97301) recovered after=
+ timeout
+>> [Thu Oct 22 08:55:54 2020] DMAR: DRHD: handling fault status reg 102
+>> [Thu Oct 22 08:55:54 2020] DMAR: [INTR-REMAP] Request device [42:00.2] f=
+ault index 1600 [fault reason 37] Blocked a compatibility format interrupt =
+request
+>>
+>> If you have any idea Ziyad and Itay can run any debugging you like.
+>>
+>> I suppose it is because this series is handing out compatability
+>> addr/data pairs while the IOMMU is setup to only accept remap ones
+>> from SRIOV VFs?
+>
+> So the issue seems to be that the VF device has the default irq domain
+> assigned and not the remapping domain. Let me stare into the code to see
+> how these VF devices are set up and registered with the IOMMU/remap
+> unit.
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
- kernel/trace/ring_buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Found the reason. Will fix it after walking the dogs. Brain needs some
+fresh air.
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index dc83b3fa9fe7..27a7caf4e203 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3502,7 +3502,7 @@ rb_decrement_entry(struct ring_buffer_per_cpu *cpu_buffer,
- }
- 
- /**
-- * ring_buffer_commit_discard - discard an event that has not been committed
-+ * ring_buffer_discard_commit - discard an event that has not been committed
-  * @buffer: the ring buffer
-  * @event: non committed event to discard
-  *
--- 
-2.17.1
+Thanks,
 
+        tglx
