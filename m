@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9862B0446
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F69F2B0423
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgKLLr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:47:56 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:10250 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728201AbgKLLlw (ORCPT
+        id S1728223AbgKLLoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:44:01 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36149 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728210AbgKLLmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:41:52 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ACBd5pe021048;
-        Thu, 12 Nov 2020 05:41:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=j/1abh6t7YrrzXU1SesVqlhurYOExGuzAxH/2JLe2ws=;
- b=E6gdlPIyElcjoqqMFHiI7N2SUDwd0NEVIJ9pQdaud6Al7tw8inWp8UDSv4irRqaS54Wp
- p1Swh03GraIF3TM9yZH9JbhvdfAI+KhTwS8WeCmPdtU0mjiYrT6YOPNazoedsIDg4pEt
- dhSSHWY7L7bsTujScVFKcgiUFdZwJHIhBcqBIwZZPIgiOH86IE0CwtRcnymRRPuc5xNT
- EcyS7hfqrXJq9WHheHBH1d79iowXh8N7mYEIH2ZdrpWCPoTnQuoY41A56uKoc6lzBYGI
- 8TFlYsAzGSz9fQ9+zUrz0OlChjc5Wrob+tK8g53FiRYTEWH9kArxv3vUHtyoBOpOVijw Ig== 
-Received: from ediex02.ad.cirrus.com ([5.172.152.52])
-        by mx0a-001ae601.pphosted.com with ESMTP id 34rn2yh5q1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 12 Nov 2020 05:41:38 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 12 Nov
- 2020 11:41:36 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 12 Nov 2020 11:41:36 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 88F877C;
-        Thu, 12 Nov 2020 11:41:36 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 11:41:36 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Simon Han <z.han@kunbus.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO
- descriptors
-Message-ID: <20201112114136.GE10899@ediswmail.ad.cirrus.com>
-References: <20201106150706.29089-1-TheSven73@gmail.com>
- <160510968064.12304.14797288117651443603.b4-ty@kernel.org>
- <CAGngYiVAdPSCEQm5pJdFQ+3VpwNH1vGD6rPNK1_SQK3Uvfbt5A@mail.gmail.com>
+        Thu, 12 Nov 2020 06:42:20 -0500
+Received: by mail-wm1-f68.google.com with SMTP id a65so5229484wme.1;
+        Thu, 12 Nov 2020 03:42:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=t3kbGRAQFJSlSlG8qF3eOsDA9aWDrM+TERTtueLgetQ=;
+        b=CM1Kp1bcSHEAjUTrjBwG+F8qibXhkyzMiVAJ/caKSc5CDH+hc5SiB4QPOKU83uhVEi
+         7hBVsMZ5+UUoJUhzceimkpZHFosL5EckbZFc42LfDZI9Rt8PgT/Le9a7U4sT03TgsEEB
+         sKNQU/O/aoqBjUO4d+CNjc+78KaDOvuEX1Sk4GcY0HozfagqjaqP8arhc3dwAEvPehVp
+         6Zpb26xP1iti8fLVDUzqkYu/uyOt5R/95JVOMN7MlGMCf/zRl9aJun8p4FLDwR4mV35h
+         coB0pnaLheev/vtHNz/PC7AiA8yZOOXFctuXjJn8RopD7RuTNtZKFM65ONkrT3SExyKo
+         mJOA==
+X-Gm-Message-State: AOAM532Vq22t/TS23SBwfrV6eZR+P4wa+LDQ6p1fxJTaNQzJCyFar5h7
+        3YVePPWsN48eayrlibj2jMc=
+X-Google-Smtp-Source: ABdhPJxbbKRxB3uWKzFadmb3PvRK8x9b6TbkXNmBRZUGZnXPBh64P0ODhVaf/WMQCWf15oXfkvlXXA==
+X-Received: by 2002:a1c:df04:: with SMTP id w4mr9103204wmg.3.1605181337112;
+        Thu, 12 Nov 2020 03:42:17 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u6sm6123200wmj.40.2020.11.12.03.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 03:42:16 -0800 (PST)
+Date:   Thu, 12 Nov 2020 11:42:15 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        kbuild-all@lists.01.org, virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root
+ partition
+Message-ID: <20201112114215.kytfavkneta6n4qj@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-3-wei.liu@kernel.org>
+ <202011060303.LvuPfl7N-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGngYiVAdPSCEQm5pJdFQ+3VpwNH1vGD6rPNK1_SQK3Uvfbt5A@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 phishscore=0
- malwarescore=0 clxscore=1011 adultscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120069
+In-Reply-To: <202011060303.LvuPfl7N-lkp@intel.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:24:14AM -0500, Sven Van Asbroeck wrote:
-> On Wed, Nov 11, 2020 at 10:48 AM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > Applied to
-> >
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Fri, Nov 06, 2020 at 03:16:07AM +0800, kernel test robot wrote:
+> Hi Wei,
 > 
-> Thank you !
+> I love your patch! Yet something to improve:
 > 
-> Now that our minds are still focused on this subject, should
-> commit 138c9c32f090 ("spi: spidev: Fix CS polarity if GPIO descriptors
-> are used")
-> be reverted?
+> [auto build test ERROR on tip/x86/core]
+> [also build test ERROR on asm-generic/master iommu/next tip/timers/core pci/next linus/master v5.10-rc2 next-20201105]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
-> This fixed spidev to deal with SPI_CS_HIGH on gpiod.
-> But after our fix, its behaviour will probably be broken again.
-> 
-> Another candidate for revert is
-> commit ada9e3fcc175 ("spi: dw: Correct handling of native chipselect")
-> although I don't understand that code well enough to be sure.
-> 
-> Adding Charles Keepax.
 
-Looks like the code has changed a fair amount since my patch. The
-important detail from it was trying to clarify the semantics of the
-controller->set_cs callback. That function is called with a boolean
-argument and that argument could have two possible meanings:
+This report is incorrect.
 
-1) True means apply a high logic level to the chip select line.
-2) True mean apply chip select.
+The bot seems to have only picked up this one patch but not the whole
+series. While the patch can apply cleanly to all those trees, it has a
+dependency on an earlier patch in this series.
 
-Under interpretation 2) the chip select line would be set to a
-different logic level depending on if the device is active high or
-active low.
-
-If I remember correctly at the point of my patch the core had just
-changed between the two a couple of times but now consistently did 1)
-(and looks like it still does), my patch intended to updated the
-spi-dw driver to match that, as my SPI had stopped working. I think
-it then turned out, my patch broke some other use-cases and that
-the bit in the IP basically had 2) semantics in hardware. Which is
-what this patch fixed:
-
-commit 9aea644ca17b ("spi: dw: Fix native CS being unset")
-
-After that patch my patch is mostly replaced so I don't think it
-would make any sense to revert my patch at this point, and I
-don't think your patch will break the spi-dw driver. I don't
-have easy access to the hardware right now to test, but I will
-give it is quick run when that option becomes available to me
-again.
-
-Your fix looks good to me, but I suspect you do need to fix the
-spidev stuff although I have haven't looked at that in detail.
-
-Thanks,
-Charles
+Wei.
