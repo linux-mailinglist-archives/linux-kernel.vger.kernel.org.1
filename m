@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A1F2B01E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F532B01EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727175AbgKLJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:22:58 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:55687 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgKLJW5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:22:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605172977; x=1636708977;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+JTRV2q9tjsQXJcXhR4dxoogVQsm9aXgdlyZQHFOqzo=;
-  b=qj1dZ/BEv5F3YfPzre7BJaNsd08xNJgWUWU7/LPqohinLaOTKX/K5ds4
-   aoQuvER697Z+WFQNzD4y7vQcoSTm1QRDjbMtFxpTUVvFbihyTeMNIBNjM
-   6YQXWCuMdtEsJtfI7WvQw4DITS7m6waG/kQiRIErC8aUO7LJCUq88WYQr
-   3ZnDHNeD/mtuOnt3s+e1byS9qVeedorNrHat418tAr+75aL6j8zlLk/UM
-   I4yE0YtgPL3lWBpqRbDyssF2kN3a2yfkgW3gwEHNE+RNY4UbEIhAMOBw0
-   ILDz/oQvniD190Geym9x9O7yJW387GvE4wexCAMNCssUCecgV/ZIP4IBR
-   w==;
-IronPort-SDR: lz3H42wmJfVNwz4Rzl4/GTf7x/Vj9QmL6nrw3FtZthK4heS2MeRHe2AawmhvGet3lOP/YjAeMa
- cVBfZiMnNJbWbg2Auj4HUrrFL1h+kwcOXHWpWB+ptlIe7k6OEm3tkbeLRDm+u3mqt+wvfFztkR
- 6EuLJnwlxc/zkNSABkj390i5cjcAS1RIUpjg00KZBL+8Gmch2vV9zOWPJemMAnAbzRwpcsVppt
- l65LmKU9V9UXuHO+X6TGywbptokhmATiht2kFLQv4CZvtdXl408X5qToCK0cDC/QLRzDdd/pTd
- TCQ=
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="103195325"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Nov 2020 02:22:56 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 12 Nov 2020 02:22:56 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 12 Nov 2020 02:22:54 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Bryan Whitehead <Bryan.Whitehead@microchip.com>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        John Haechten <John.Haechten@microchip.com>,
-        Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: phy: mscc: Add PTP support for 2 more VSC PHYs
-Date:   Thu, 12 Nov 2020 10:22:50 +0100
-Message-ID: <20201112092250.914079-1-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727241AbgKLJ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:26:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726028AbgKLJ0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:26:05 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 180BF221FE;
+        Thu, 12 Nov 2020 09:26:00 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 09:25:58 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        gshan@redhat.com, Robin Murphy <robin.murphy@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH] arm64: mm: account for hotplug memory when randomizing
+ the linear region
+Message-ID: <20201112092558.GC29613@gaia>
+References: <20201014081857.3288-1-ardb@kernel.org>
+ <160503561804.1015659.16599672230432576934.b4-ty@arm.com>
+ <a330440d-803b-5aa2-0092-a18317819850@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a330440d-803b-5aa2-0092-a18317819850@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add VSC8572 and VSC8574 in the PTP configuration
-as they also support PTP.
+Hi Anshuman,
 
-The relevant datasheets can be found here:
-  - VSC8572: https://www.microchip.com/wwwproducts/en/VSC8572
-  - VSC8574: https://www.microchip.com/wwwproducts/en/VSC8574
+On Wed, Nov 11, 2020 at 09:18:56AM +0530, Anshuman Khandual wrote:
+> On 11/11/20 12:44 AM, Catalin Marinas wrote:
+> > On Wed, 14 Oct 2020 10:18:57 +0200, Ard Biesheuvel wrote:
+> >> As a hardening measure, we currently randomize the placement of
+> >> physical memory inside the linear region when KASLR is in effect.
+> >> Since the random offset at which to place the available physical
+> >> memory inside the linear region is chosen early at boot, it is
+> >> based on the memblock description of memory, which does not cover
+> >> hotplug memory. The consequence of this is that the randomization
+> >> offset may be chosen such that any hotplugged memory located above
+> >> memblock_end_of_DRAM() that appears later is pushed off the end of
+> >> the linear region, where it cannot be accessed.
+> >>
+> >> [...]
+> > 
+> > Applied to arm64 (for-next/mem-hotplug), thanks!
+> > 
+> > [1/1] arm64: mm: account for hotplug memory when randomizing the linear region
+> >       https://git.kernel.org/arm64/c/97d6786e0669
+> 
+> Got delayed and never made here in time, sorry about that. Nonetheless,
+> I have got something working with respect to the generic mechanism that
+> David Hildenbrand had asked for earlier.
+> 
+> https://patchwork.kernel.org/project/linux-arm-kernel/patch/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
 
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- drivers/net/phy/mscc/mscc_ptp.c | 2 ++
- 1 file changed, 2 insertions(+)
+There was a lot of discussion around this patch but I haven't seen any
+new version posted.
 
-diff --git a/drivers/net/phy/mscc/mscc_ptp.c b/drivers/net/phy/mscc/mscc_ptp.c
-index b97ee79f3cdf..f0537299c441 100644
---- a/drivers/net/phy/mscc/mscc_ptp.c
-+++ b/drivers/net/phy/mscc/mscc_ptp.c
-@@ -1510,6 +1510,8 @@ void vsc8584_config_ts_intr(struct phy_device *phydev)
- int vsc8584_ptp_init(struct phy_device *phydev)
- {
- 	switch (phydev->phy_id & phydev->drv->phy_id_mask) {
-+	case PHY_ID_VSC8572:
-+	case PHY_ID_VSC8574:
- 	case PHY_ID_VSC8575:
- 	case PHY_ID_VSC8582:
- 	case PHY_ID_VSC8584:
---
-2.29.2
+> I am wondering if we could instead consider merging the above patch with
+> a small change that Ard had pointed out earlier [1], I will send out a
+> revision if required.
 
+If your patch fixes the randomisation issue that Ard addressed, I'm
+happy to replace that with your patch. But please post a new version and
+get some acks in place from the parties involved in the discussion.
+
+Thanks.
+
+-- 
+Catalin
