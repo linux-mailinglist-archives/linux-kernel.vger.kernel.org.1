@@ -2,110 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3442B0B26
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F108B2B0B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgKLRTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:19:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgKLRTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:19:14 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AA8C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:19:14 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a3so6180912wmb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:19:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6XvDI+wpjgB/udB/U6ZUMsnDIItG6AuNAvWmNdWpIRQ=;
-        b=Ew9Ci5IVEs+gXfeUj+EvmQeFjAbr4dHKtv3Q3ejJ8NSL+09gHjalNqMwvH7jSXUnR9
-         a4Lr0WZFY2l2AdDrYTOYylgMH2JKENkBtXVuo9NUP0YS3kVKM04aiing3JNEWP0pMxLK
-         mnqWCDWbV6bLa8p/t5rs39VQCW0X13zMHlSX8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6XvDI+wpjgB/udB/U6ZUMsnDIItG6AuNAvWmNdWpIRQ=;
-        b=Jd2IVoKnbKWBRmi2NOT3tpZD5P6MThevFsI+99I597oEfcmytJoMfg3utuswf7robD
-         fbCY1zAH1wIBl3TjNgxBxfM+GUclBoCQIKuYxkPQLy9hwI6iLs7W6SelkNs1LsrsZi8H
-         U5taMvtM+tIYLItaScofm6d8DV8IrZbcHosF78AEau96HIsl2d6RRPu2Dv8wvrl4geGc
-         avQbjMRvmSt9Dtpxah94j4zhfda9F8/SfKK2yv0b+NIxfTKWKUL5wYVv+T1nnkRLHr5I
-         OTILFr1yGbhAWF0vChoXeRdhl2LbBuqARM0tll36SNKsOo1LAi6Pii7TsSFzT3sAYc/2
-         THJg==
-X-Gm-Message-State: AOAM531R2XuuswFJ+17T8mFQirUk3/fncHYLV2lPGqplGC84OxdmcY++
-        Sv77le40LLWNXRHtJfQidmRWZU+pq/m7QJ90
-X-Google-Smtp-Source: ABdhPJxtb3xAXucUIwDy00Nbo+QUk5aaTGZn8BH76+rY8KOzU2DRSA6mlwusdQmBAS1+shXhBFTgjw==
-X-Received: by 2002:a7b:c309:: with SMTP id k9mr681965wmj.14.1605201552803;
-        Thu, 12 Nov 2020 09:19:12 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id m18sm5574938wru.37.2020.11.12.09.19.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 09:19:12 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next 2/2] bpf: Expose bpf_d_path helper to sleepable LSM hooks
-Date:   Thu, 12 Nov 2020 17:19:07 +0000
-Message-Id: <20201112171907.373433-2-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-In-Reply-To: <20201112171907.373433-1-kpsingh@chromium.org>
-References: <20201112171907.373433-1-kpsingh@chromium.org>
+        id S1726210AbgKLRUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:20:15 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:18647 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgKLRUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:20:14 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad6ecd0000>; Fri, 13 Nov 2020 01:20:13 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 17:20:12 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 17:20:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YQCIBs6nsFkcqOyA4TyQnnKNhAoQxPsNDkgt3Tacta5ad6UgnU7udyQuQCLueq9KIAGHayhTnjgvtbUXzuRay/Q40IIqWvtCefYrsxo1vNtlLwmqmFRjHByjqtC/nASEjwQolTJcMjjLAOlLEthZXmJ1q9jlu88g9Dg40kIG6TlfLMU9jNE/ApEcoYR800k7fKFe+W/v/nY4YyjaykeUSUzVv42HsmxPmYZlb0SVaFJyY+RGcB2b7RFb2gZN1tKT/B7Y7Jtm8TEPuQwGlFCb1CCpnB47JpphOPx0D4VKuawB6A2xYmCoByeHcf7bUreSnRd1NN6kztYXt/yuvLvUkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2NszQLOkdarnes/OhkUXNEL/ZRSspSme2uHVUqTtH68=;
+ b=Yw/17F4mC33GpmixvBI0Wx7Js5F4ZZrczmvvsyiHzsonAyEp0+HZyo3jSXuNaR73YuRLebXmTYOM3WY30HbsGFyr1GF1tGxD+dm0vS3zQ4tyafE8TnJujLJkWX4XY7DH8vkQl+WgN2plSDlnBaP4EhAyneuiXsuJsj3wCA64u8XPWygpfb4IN0nDGcRjP2XbsMmCGWArEuczkKFhpVHNaqJ79BATW8P6Rk7VyYlZ3NHwwtJ4URdJV/K++gRf25vyaQzW5Hr5F1DlSY/7CchA0Lo7fu1GB5e06dUHUi7ZeGn95/F8HzXIHx71RujQ9mguNL0V4avGVPDM1fMdzBjLqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 17:20:09 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
+ 17:20:09 +0000
+Date:   Thu, 12 Nov 2020 13:20:08 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+CC:     <bvanassche@acm.org>, <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
+Message-ID: <20201112172008.GA944848@nvidia.com>
+References: <20201112145443.17832-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201112145443.17832-1-yuehaibing@huawei.com>
+X-ClientProxiedBy: BL1PR13CA0197.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::22) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0197.namprd13.prod.outlook.com (2603:10b6:208:2be::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Thu, 12 Nov 2020 17:20:09 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdGGW-003xoN-4J; Thu, 12 Nov 2020 13:20:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605201613; bh=2NszQLOkdarnes/OhkUXNEL/ZRSspSme2uHVUqTtH68=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=LuNN6WDqq4V5EXxqOlzozj0ZaRO6DW/I5JebHsknkQWOhSOdXlCu73wG/lxvKFw5Z
+         cUP7fgq/84NxQGACcYTiFvR7vF/LhyGXc7u1C551nC89eEQXZtpE8qqubdmVkYvRRb
+         fcyZf0m7FpXLlqzYZOd0FVgFZAC08KMT0bE4ZNNVV9tDDXLsb9Do2x2ORmB/8gjIKp
+         HbHSlPFhQWDEt+y6qbdZw3jilwdK7BJZJPQINGyMH16nmsKBidNKe7FahnLRrQUaNZ
+         oa83ou4yzwx0/DwmiKvqMuu8nrNGEuOD/R+TEv6S2zK5mhnFW4qGXK9raGcIG2KtE/
+         rkaSVgQkXVwMg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Thu, Nov 12, 2020 at 10:54:43PM +0800, YueHaibing wrote:
+> Fix smatch warning:
+> 
+> drivers/infiniband/ulp/srpt/ib_srpt.c:2341 srpt_cm_req_recv() warn: passing zero to 'PTR_ERR'
+> 
+> Use PTR_ERR_OR_ZERO instead of PTR_ERR
+> 
+> Fixes: 847462de3a0a ("IB/srpt: Fix srpt_cm_req_recv() error path (1/2)")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 6be60aa5ffe2..3ff24b5048ac 100644
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2338,7 +2338,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>  
+>  	if (IS_ERR_OR_NULL(ch->sess)) {
+>  		WARN_ON_ONCE(ch->sess == NULL);
+> -		ret = PTR_ERR(ch->sess);
+> +		ret = PTR_ERR_OR_ZERO(ch->sess);
+>  		ch->sess = NULL;
+>  		pr_info("Rejected login for initiator %s: ret = %d.\n",
+>  			ch->sess_name, ret);
 
-Sleepable hooks are never called from an NMI/interrupt context, so it is
-safe to use the bpf_d_path helper in LSM programs attaching to these
-hooks.
+I think it should be like this, Bart?
 
-The helper is not restricted to sleepable programs and merely uses the
-list of sleeable hooks as the initial subset of LSM hooks where it can
-be used.
-
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- kernel/trace/bpf_trace.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index e4515b0f62a8..eab1af02c90d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -16,6 +16,7 @@
- #include <linux/syscalls.h>
- #include <linux/error-injection.h>
- #include <linux/btf_ids.h>
-+#include <linux/bpf_lsm.h>
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 6017d525084a0c..80f9673956ced2 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
  
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/btf.h>
-@@ -1178,7 +1179,11 @@ BTF_SET_END(btf_allowlist_d_path)
+ 	mutex_lock(&sport->port_guid_id.mutex);
+ 	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
+-		if (!IS_ERR_OR_NULL(ch->sess))
++		if (ch->sess)
+ 			break;
+ 		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+ 						tag_size, TARGET_PROT_NORMAL,
+@@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
  
- static bool bpf_d_path_allowed(const struct bpf_prog *prog)
- {
--	return btf_id_set_contains(&btf_allowlist_d_path, prog->aux->attach_btf_id);
-+	if (prog->type == BPF_PROG_TYPE_LSM)
-+		return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
-+
-+	return btf_id_set_contains(&btf_allowlist_d_path,
-+				   prog->aux->attach_btf_id);
- }
+ 	mutex_lock(&sport->port_gid_id.mutex);
+ 	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
+-		if (!IS_ERR_OR_NULL(ch->sess))
++		if (ch->sess)
+ 			break;
+ 		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+ 					tag_size, TARGET_PROT_NORMAL, i_port_id,
+ 					ch, NULL);
+-		if (!IS_ERR_OR_NULL(ch->sess))
++		if (ch->sess)
+ 			break;
+ 		/* Retry without leading "0x" */
+ 		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+@@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+ 	}
+ 	mutex_unlock(&sport->port_gid_id.mutex);
  
- BTF_ID_LIST_SINGLE(bpf_d_path_btf_ids, struct, path)
--- 
-2.29.2.222.g5d2a92d10f8-goog
-
+-	if (IS_ERR_OR_NULL(ch->sess)) {
++	if (!ch->sess)
++		ch->sess = ERR_PTR(-ENOENT);
++	if (IS_ERR(ch->sess)) {
+ 		WARN_ON_ONCE(ch->sess == NULL);
+ 		ret = PTR_ERR(ch->sess);
+ 		ch->sess = NULL;
