@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA02C2B0D59
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466132B0D44
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgKLTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S1726923AbgKLTB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgKLTBU (ORCPT
+        with ESMTP id S1726861AbgKLTBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:01:20 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C02C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:19 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id j7so7169523wrp.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:19 -0800 (PST)
+        Thu, 12 Nov 2020 14:01:21 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9332C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:20 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s8so7134286wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5obwl2HLa2hJZGgN7+byxbis29C9PE5dIA5hYQvye+A=;
-        b=Ou/EHKHaEikqtJE8cSM3UeFbvQcGsPiJBRWhjq0TuVV/p+7lAQB2pg8b4Kd4VZd3N1
-         /ZIKy/fqiwlHuzVcGicWjs831K9oFyeMNkx15nOMF0ribAwncR+UlsMsN53nJxHpf8N9
-         HXUn3sdCI7FBbNOTOcZj2kanCeY73XcDbJJE9vCsZpZOtsDcws/JJn8heE5TwbNydQyK
-         Z3uZJT4YcJlwukgQusZuPZoA6EJC5YxUtc1/Wr1tCOJBTIn9eMzncQXP0eUye5RR6Z85
-         LuqSc1Olu8pR4ucIVUaWvTlZPOaVBKThOibDWHfCJzrYn2QLuLp6Tgta/aAwympaqPdZ
-         59Og==
+        bh=GSQeWTdjtKHE/snC/M+vXh/C2LESCnHy86BMb0+s4p4=;
+        b=wZ6DK6QT/0jgXl86gYHoNbMa2HFabOJWNjlDe3eubw/4ODuekBAeMhKInFvqDGoeVA
+         9GMpX6S8jUDnsdPAmyqUBDezSM3GZecQrtoX28rTAEB59O4wK8at1IfmwWuHOoDor4M0
+         HMyq4J4Jh4Qi/F2xnEMmUJa1cB5WVuzgp+dIq00AYW3uz03TwSkMqLb/Xu9CY6aTfKHh
+         VJkHxIOKy2+LjQXf+9F35I2U0uPVSRD/8pg33OAk1QvuCLBlk2VxvVp4jBRBk4HNAvGG
+         xMPHmsyRLBbEAQUMNVH6Y2Z/M8LKSkU8wv7uaIrjjFsSYzHNCNtYLxWg+iOViFQkQLEx
+         jnyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5obwl2HLa2hJZGgN7+byxbis29C9PE5dIA5hYQvye+A=;
-        b=r+UlSz+SwKwsm+eOfkvtLTyFJxfCoAafl76wpwOUCKuEI/JUzxoYsthdYMmRZ66S8X
-         p1/Ee9Ie13dS4kQrBssnVOY740hrWuX1oHHkiCppVjmIOWTlQjyzpCz1nS5/WFYrDPHo
-         yu6e/AL/L06MmA5mVC0thENro1eogkAHbjwqtye3Ua6vBnVrqC+FYyrZkMPOdSyv+D/6
-         EeoxqnT3YR/pOROID4QW1IhPu+l8wfYZ+WWNAzYrwrmyQhHw3vrB+liUswbyfBQLIKrl
-         i5REjvak7jrzjJf4+nnWXdGRRgTFcnfyN1W+M6yqRJTXWGjqAfElCIIf1OeHaVteJa9d
-         NTDg==
-X-Gm-Message-State: AOAM533JEsieRRFAVlntlUFOdmqOHJhaNZMD5G9PyIJG8O2FJItVVxas
-        YjYTBKFAsN8VeFRzUCxxUeAp4Q==
-X-Google-Smtp-Source: ABdhPJx07SOqt9KWRMUyfJ1+GAfuKqqM57OQvbqX7ApkBIo/nwqUkubWztVTEBpNnZxx73TJJKtv3w==
-X-Received: by 2002:a5d:5222:: with SMTP id i2mr1116351wra.247.1605207677934;
-        Thu, 12 Nov 2020 11:01:17 -0800 (PST)
+        bh=GSQeWTdjtKHE/snC/M+vXh/C2LESCnHy86BMb0+s4p4=;
+        b=EUEA3ByQx+JnuLrUedv4gBPzKA22PxefDnE4ptQrzKolpn6+86ukIGipIxT6FbMTD5
+         OVcFpj8kuHzzp+MU0r5SOwsbWdsVwkL4NRsJGPn5D7u3Yo2BF4N3DTTt+ffuLeH9YzvM
+         MPlpfDv46RSE8USIliRQDmK+7fvXGYkf4tcD43SLNPmglWmVGEAsJf0b6GuqZol4vFDv
+         az+CF750nRR5h0IyQcJZUzLuYC7kHA+Gs/E3QRCYyzWh/BOkG8CkN1B4N6iqcEAauP2w
+         BHz+Uy5He8Hd456eBQ4u7ZXFzB9+JpTRdh6SYJaKiKmZAwm6bUSBk7YHDJEPPv0x/gTt
+         wfLA==
+X-Gm-Message-State: AOAM533JamCf9gZMmgcZLyF9TAFMJ89d+WtvV10AJBtnkgJnnCuilONj
+        HhzKznQbP3lVPtggSQFq44FthQ==
+X-Google-Smtp-Source: ABdhPJz0SXmRR7WXNORCYuzPoVjb21fRYelsIwYMJmXAYPuhl4rAfkBemy13imRn4RCkwQN9WIwZEw==
+X-Received: by 2002:adf:eeca:: with SMTP id a10mr1095430wrp.186.1605207679555;
+        Thu, 12 Nov 2020 11:01:19 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.16
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:01:17 -0800 (PST)
+        Thu, 12 Nov 2020 11:01:18 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        report to <xorg-driver-ati@lists.x.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 15/30] drm/amd/amdgpu/amdgpu_display: Remove pointless header
-Date:   Thu, 12 Nov 2020 19:00:24 +0000
-Message-Id: <20201112190039.2785914-16-lee.jones@linaro.org>
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 16/30] drm/atmel-hlcdc/atmel_hlcdc_plane: Staticise local function 'atmel_hlcdc_plane_setup_scaler()'
+Date:   Thu, 12 Nov 2020 19:00:25 +0000
+Message-Id: <20201112190039.2785914-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
 References: <20201112190039.2785914-1-lee.jones@linaro.org>
@@ -72,43 +72,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems only to repeat the function name.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:450: warning: Function parameter or member 'amdgpu_connector' not described in 'amdgpu_display_ddc_probe'
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:450: warning: Function parameter or member 'use_aux' not described in 'amdgpu_display_ddc_probe'
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c:283:6: warning: no previous prototype for ‘atmel_hlcdc_plane_setup_scaler’ [-Wmissing-prototypes]
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Boris Brezillon <bbrezillon@kernel.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: report to <xorg-driver-ati@lists.x.org>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-index 0b134598b3a65..f4de4b41adcfd 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-@@ -441,10 +441,6 @@ void amdgpu_display_print_display_setup(struct drm_device *dev)
- 	drm_connector_list_iter_end(&iter);
+diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+index 40800ec5700a8..2d502d23ab12d 100644
+--- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
++++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+@@ -280,8 +280,8 @@ atmel_hlcdc_plane_scaler_set_phicoeff(struct atmel_hlcdc_plane *plane,
+ 					    coeff_tab[i]);
  }
  
--/**
-- * amdgpu_display_ddc_probe
-- *
-- */
- bool amdgpu_display_ddc_probe(struct amdgpu_connector *amdgpu_connector,
- 			      bool use_aux)
+-void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
+-				    struct atmel_hlcdc_plane_state *state)
++static void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
++					   struct atmel_hlcdc_plane_state *state)
  {
+ 	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+ 	u32 xfactor, yfactor;
 -- 
 2.25.1
 
