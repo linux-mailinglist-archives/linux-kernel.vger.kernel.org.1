@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3142B00A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243512B00CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgKLH7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 02:59:15 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8069 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLH7O (ORCPT
+        id S1727732AbgKLICL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:02:11 -0500
+Received: from aclms1.advantech.com.tw ([61.58.41.199]:28698 "EHLO
+        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgKLICC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 02:59:14 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CWvBB1dSxzLx83;
-        Thu, 12 Nov 2020 15:58:58 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 15:59:01 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <aacraid@microsemi.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <Mahesh.Rajashekhara@pmcs.com>,
-        <JBottomley@Odin.com>, <thenzl@redhat.com>,
-        <Karthikeya.Sunkesula@pmcs.com>, <Murthy.Bhat@pmcs.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] scsi: aacraid: Correct goto target in aac_resume()
-Date:   Thu, 12 Nov 2020 16:03:51 +0800
-Message-ID: <20201112080351.174338-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 12 Nov 2020 03:02:02 -0500
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te2c999f292ac14014bfdc@ACLMS1.advantech.com.tw>;
+ Thu, 12 Nov 2020 16:01:58 +0800
+Received: from localhost (172.16.12.104) by taipei09.ADVANTECH.CORP
+ (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 12 Nov
+ 2020 16:01:56 +0800
+From:   Shihlun Lin <shihlun.lin@advantech.com.tw>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Campion Kang <campion.kang@advantech.com.tw>,
+        Shihlun Lin <shihlun.lin@advantech.com.tw>,
+        AceLan Kao <chia-lin.kao@canonical.com>
+Subject: [PATCH v4 1/6] MAINTAINERS: Add Advantech embedded controller entry
+Date:   Thu, 12 Nov 2020 16:01:51 +0800
+Message-ID: <20201112080156.463-1-shihlun.lin@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [172.16.12.104]
+X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
+ taipei09.ADVANTECH.CORP (172.20.0.236)
+X-StopIT: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current code, it jumps to call pci_disable_device() when
-pci_enable_device() failes to initialize device. Add a label
-'fail_enable' to fix it.
+Add Advantech embedded controller entry
 
-Fixes: de665f28f788 ("aacraid: Add Power Management support")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
 ---
- drivers/scsi/aacraid/linit.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-index a3aee146537b..13323aaaa707 100644
---- a/drivers/scsi/aacraid/linit.c
-+++ b/drivers/scsi/aacraid/linit.c
-@@ -1943,7 +1943,7 @@ static int aac_resume(struct pci_dev *pdev)
- 	r = pci_enable_device(pdev);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 94ac10a153c7..c1fe5233b469 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -562,6 +562,17 @@ S:	Maintained
+ F:	Documentation/scsi/advansys.rst
+ F:	drivers/scsi/advansys.c
  
- 	if (r)
--		goto fail_device;
-+		goto fail_enable;
- 
- 	pci_set_master(pdev);
- 	if (aac_acquire_resources(aac))
-@@ -1958,9 +1958,10 @@ static int aac_resume(struct pci_dev *pdev)
- 	return 0;
- 
- fail_device:
-+	pci_disable_device(pdev);
-+fail_enable:
- 	printk(KERN_INFO "%s%d: resume failed.\n", aac->name, aac->id);
- 	scsi_host_put(shost);
--	pci_disable_device(pdev);
- 	return -ENODEV;
- }
- #endif
++ADVANTECH EMBEDDED CONTROLLER DRIVER
++M:	Shihlun Lin <shihlun.lin@advantech.com.tw>
++M:	Campion Kang <campion.kang@advantech.com.tw>
++L:	linux-kernel@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mfd/ahc1ec0.yaml
++F:	drivers/mfd/ahc1ec0-hwmon.c
++F:	drivers/mfd/ahc1ec0-wdt.c
++F:	drivers/mfd/ahc1ec0.c
++F:	include/dt-bindings/mfd/ahc1ec0.h
++
+ ADXL34X THREE-AXIS DIGITAL ACCELEROMETER DRIVER (ADXL345/ADXL346)
+ M:	Michael Hennerich <michael.hennerich@analog.com>
+ S:	Supported
+
+base-commit: 3d5e28bff7ad55aea081c1af516cc1c94a5eca7d
 -- 
 2.17.1
 
