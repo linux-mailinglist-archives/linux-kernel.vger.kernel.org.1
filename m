@@ -2,266 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88BF2B0151
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083802B015E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgKLImk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:42:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725928AbgKLImj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:42:39 -0500
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5BD12220B
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:42:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605170558;
-        bh=3WU6N2ZILepl5b98DXzdtZr+wQt3TxvVpbJ3nAlSlyw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wVujH/uoUzdSad5CLikVIzp7R/CQ2+Q/TXnNgWs2y0iTderijVO3ILbSDcUeD5B9D
-         ttNBPGq8nBVjziG9OxSaentw+Y4z9UBT3NuWMwkZav15jFaPtn1dP/mwd5RkTvBmx3
-         /NIA5M+q7FcDlmFm7G4ZYPhYKV2ZpvOOyg3/K82Q=
-Received: by mail-oi1-f173.google.com with SMTP id c80so5540589oib.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 00:42:37 -0800 (PST)
-X-Gm-Message-State: AOAM532WRyYv10eq0FaTaMSVHFTD2grxZiMFhCj0rx2Bl51IiyLLbF67
-        F2hXU8ipMMq/cREwornEKJE3VPpMDPiWnc6fAsM=
-X-Google-Smtp-Source: ABdhPJzlRrD6SMM9ThaguUMD72AuWIdBmOM2ivE1fF89C7rL+WNmyTykZomlv/EDx8X+kkDpGWtmh3PKhpen4qwvVPs=
-X-Received: by 2002:aca:c60c:: with SMTP id w12mr5177268oif.174.1605170557102;
- Thu, 12 Nov 2020 00:42:37 -0800 (PST)
+        id S1727054AbgKLIvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgKLIvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 03:51:16 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A085DC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 00:51:15 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kd8K2-0001Lp-7D; Thu, 12 Nov 2020 09:51:14 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kd8K1-00030Z-QE; Thu, 12 Nov 2020 09:51:13 +0100
+Date:   Thu, 12 Nov 2020 09:51:12 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v1] drivers: make struct device_driver::remove return void
+Message-ID: <20201112085112.mpp74wcpgs35lhvp@pengutronix.de>
+References: <20201110150723.1592682-1-u.kleine-koenig@pengutronix.de>
+ <X6r4ikS3SBPLqjZ1@kroah.com>
 MIME-Version: 1.0
-References: <20200409232728.231527-1-caij2003@gmail.com> <20201107001056.225807-1-jiancai@google.com>
-In-Reply-To: <20201107001056.225807-1-jiancai@google.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 12 Nov 2020 09:42:24 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEAhyTfFZg4_+wTZ5+obQpAzFknC4vR1bNrRG6GpW4D0Q@mail.gmail.com>
-Message-ID: <CAMj1kXEAhyTfFZg4_+wTZ5+obQpAzFknC4vR1bNrRG6GpW4D0Q@mail.gmail.com>
-Subject: Re: [PATCH v2] Make iwmmxt.S support Clang's integrated assembler
-To:     Jian Cai <jiancai@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="245btghlb76nuk2s"
+Content-Disposition: inline
+In-Reply-To: <X6r4ikS3SBPLqjZ1@kroah.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Nov 2020 at 01:11, Jian Cai <jiancai@google.com> wrote:
->
-> This patch replaces 6 IWMMXT instructions Clang's integrated assembler
-> does not support in iwmmxt.S using macros, while making sure GNU
-> assembler still emit the same instructions. This should be easier than
-> providing full IWMMXT support in Clang.
->
-> "Intel Wireless MMX Technology - Developer Guide - August, 2002" should
-> be referenced for the encoding schemes of these extensions.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/975
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Jian Cai <jiancai@google.com>
 
-For the change itself,
+--245btghlb76nuk2s
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Hello Greg,
 
-Although I must admit I am still on the fence when it comes to the
-policy around rewriting perfectly valid code like this to accommodate
-a toolchain that nobody is likely to use to build the code in
-question.
+On Tue, Nov 10, 2020 at 09:31:06PM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Nov 10, 2020 at 04:07:23PM +0100, Uwe Kleine-K=F6nig wrote:
+> > The driver core doesn't check the return value of the remove callback
+> > because there is only little software can do when hardware disappears.
+> >=20
+> > So change the callback to not return a value at all and adapt all users.
+> > The motivation for this change is that some driver authors have a
+> > misconception about failures in the remove callback. Making it void
+> > makes it pretty obvious that there is no error handling to be expected.
+> >=20
+> > Most drivers were easy to convert as they returned 0 unconditionally, I
+> > added a warning to code paths that returned an error code (that was
+> > ignored already before).
+> >=20
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+> > Hello,
+> >=20
+> > I expect that there are still a few driver that need adaption as I only
+> > build tested allmodconfig on ARM and amd64.
+> >=20
+> > Best regards
+> > Uwe
+> >=20
+> >  drivers/acpi/processor_driver.c         | 10 ++++------
+> >  drivers/amba/bus.c                      |  7 ++++---
+> >  drivers/base/platform.c                 | 13 +++++++------
+> >  drivers/bus/fsl-mc/fsl-mc-bus.c         |  7 ++-----
+> >  drivers/bus/mhi/core/init.c             |  6 ++----
+> >  drivers/char/hw_random/optee-rng.c      |  4 +---
+> >  drivers/char/tpm/tpm_ftpm_tee.c         |  8 ++++----
+> >  drivers/firmware/broadcom/tee_bnxt_fw.c |  4 +---
+> >  drivers/fsi/fsi-master-hub.c            |  4 +---
+> >  drivers/fsi/fsi-sbefifo.c               |  4 +---
+> >  drivers/fsi/fsi-scom.c                  |  4 +---
+> >  drivers/gpu/drm/drm_mipi_dsi.c          |  7 +++++--
+> >  drivers/gpu/host1x/bus.c                | 11 +++++++----
+> >  drivers/greybus/core.c                  |  4 +---
+> >  drivers/hsi/clients/cmt_speech.c        |  4 +---
+> >  drivers/hsi/clients/hsi_char.c          |  4 +---
+> >  drivers/hsi/clients/nokia-modem.c       |  4 +---
+> >  drivers/hsi/clients/ssi_protocol.c      |  4 +---
+> >  drivers/i2c/busses/i2c-fsi.c            |  4 +---
+> >  drivers/input/rmi4/rmi_bus.c            |  4 +---
+> >  drivers/input/rmi4/rmi_driver.c         |  4 +---
+> >  drivers/input/touchscreen/wm97xx-core.c |  7 +++----
+> >  drivers/mfd/ucb1400_core.c              |  3 +--
+> >  drivers/net/ethernet/3com/3c509.c       |  5 ++---
+> >  drivers/net/ethernet/3com/3c59x.c       |  3 +--
+> >  drivers/net/ethernet/dec/tulip/de4x5.c  |  4 +---
+> >  drivers/net/fddi/defxx.c                |  5 ++---
+> >  drivers/net/phy/mdio_device.c           |  4 +---
+> >  drivers/net/phy/phy_device.c            |  4 +---
+> >  drivers/pci/pcie/portdrv_core.c         |  5 ++---
+> >  drivers/scsi/advansys.c                 |  3 +--
+> >  drivers/scsi/aha1740.c                  |  4 +---
+> >  drivers/scsi/aic7xxx/aic7770_osm.c      |  3 +--
+> >  drivers/scsi/ch.c                       |  3 +--
+> >  drivers/scsi/sd.c                       |  6 ++----
+> >  drivers/scsi/ses.c                      |  3 +--
+> >  drivers/scsi/sim710.c                   |  3 +--
+> >  drivers/scsi/sr.c                       |  6 ++----
+> >  drivers/scsi/st.c                       |  5 ++---
+> >  drivers/siox/siox-core.c                |  6 ++++--
+> >  drivers/soundwire/bus_type.c            | 13 +++++++------
+> >  drivers/spi/spi.c                       |  8 +++++---
+> >  drivers/usb/core/driver.c               |  7 ++-----
+> >  drivers/visorbus/visorbus_main.c        |  5 +----
+> >  include/linux/device/driver.h           |  2 +-
+> >  sound/core/seq/oss/seq_oss_synth.c      |  6 ++----
+> >  sound/core/seq/oss/seq_oss_synth.h      |  2 +-
+> >  sound/core/seq/seq_midi.c               |  6 +++---
+> >  sound/drivers/opl3/opl3_seq.c           | 10 ++++++----
+> >  sound/drivers/opl4/opl4_seq.c           |  9 +++++----
+> >  sound/hda/ext/hdac_ext_bus.c            |  9 +++++++--
+> >  sound/isa/sb/emu8000_synth.c            |  5 ++---
+> >  sound/pci/emu10k1/emu10k1_synth.c       |  5 ++---
+> >  sound/pci/hda/hda_bind.c                | 11 +++++++----
+> >  54 files changed, 129 insertions(+), 172 deletions(-)
+>=20
+> First off, that's a lot of drivers with a "raw" remove function, why is
+> anyone doing that?  It should all be wrapped up in the bus that the
+> drivers are on.
+>=20
+> In digging, ugh, looks like there's some sound driver abuse here that
+> should be fixed up first, which will cause you to get these "for free",
+> and some busses should be fixed up as well.
+>=20
+> This type of patch should only have to bus code, if things are right,
+> not individual drivers.  It's not your fault, but fixing that up will
+> make this patch easier as it will be in bisectable pieces :)
 
-Perhaps we should at least add some rationale to the commit log why
-Clang's integrated assembler is something we should care about? I take
-it this is not about diagnostics or CFI but simply about avoiding the
-need to carry cross-binutils in the first place?
+I don't understand how this gets more bisectable. The desired cleanups
+won't look considerably different, will they? Also irrespective of their
+order the intermediate steps will build and run just fine?!
 
-> ---
->  arch/arm/kernel/iwmmxt.S | 89 ++++++++++++++++++++--------------------
->  arch/arm/kernel/iwmmxt.h | 47 +++++++++++++++++++++
->  2 files changed, 92 insertions(+), 44 deletions(-)
->  create mode 100644 arch/arm/kernel/iwmmxt.h
->
-> diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
-> index 0dcae787b004..d2b4ac06e4ed 100644
-> --- a/arch/arm/kernel/iwmmxt.S
-> +++ b/arch/arm/kernel/iwmmxt.S
-> @@ -16,6 +16,7 @@
->  #include <asm/thread_info.h>
->  #include <asm/asm-offsets.h>
->  #include <asm/assembler.h>
-> +#include "iwmmxt.h"
->
->  #if defined(CONFIG_CPU_PJ4) || defined(CONFIG_CPU_PJ4B)
->  #define PJ4(code...)           code
-> @@ -113,33 +114,33 @@ concan_save:
->
->  concan_dump:
->
-> -       wstrw   wCSSF, [r1, #MMX_WCSSF]
-> -       wstrw   wCASF, [r1, #MMX_WCASF]
-> -       wstrw   wCGR0, [r1, #MMX_WCGR0]
-> -       wstrw   wCGR1, [r1, #MMX_WCGR1]
-> -       wstrw   wCGR2, [r1, #MMX_WCGR2]
-> -       wstrw   wCGR3, [r1, #MMX_WCGR3]
-> +       wstrw   wCSSF, r1, MMX_WCSSF
-> +       wstrw   wCASF, r1, MMX_WCASF
-> +       wstrw   wCGR0, r1, MMX_WCGR0
-> +       wstrw   wCGR1, r1, MMX_WCGR1
-> +       wstrw   wCGR2, r1, MMX_WCGR2
-> +       wstrw   wCGR3, r1, MMX_WCGR3
->
->  1:     @ MUP? wRn
->         tst     r2, #0x2
->         beq     2f
->
-> -       wstrd   wR0,  [r1, #MMX_WR0]
-> -       wstrd   wR1,  [r1, #MMX_WR1]
-> -       wstrd   wR2,  [r1, #MMX_WR2]
-> -       wstrd   wR3,  [r1, #MMX_WR3]
-> -       wstrd   wR4,  [r1, #MMX_WR4]
-> -       wstrd   wR5,  [r1, #MMX_WR5]
-> -       wstrd   wR6,  [r1, #MMX_WR6]
-> -       wstrd   wR7,  [r1, #MMX_WR7]
-> -       wstrd   wR8,  [r1, #MMX_WR8]
-> -       wstrd   wR9,  [r1, #MMX_WR9]
-> -       wstrd   wR10, [r1, #MMX_WR10]
-> -       wstrd   wR11, [r1, #MMX_WR11]
-> -       wstrd   wR12, [r1, #MMX_WR12]
-> -       wstrd   wR13, [r1, #MMX_WR13]
-> -       wstrd   wR14, [r1, #MMX_WR14]
-> -       wstrd   wR15, [r1, #MMX_WR15]
-> +       wstrd   wR0,  r1, MMX_WR0
-> +       wstrd   wR1,  r1, MMX_WR1
-> +       wstrd   wR2,  r1, MMX_WR2
-> +       wstrd   wR3,  r1, MMX_WR3
-> +       wstrd   wR4,  r1, MMX_WR4
-> +       wstrd   wR5,  r1, MMX_WR5
-> +       wstrd   wR6,  r1, MMX_WR6
-> +       wstrd   wR7,  r1, MMX_WR7
-> +       wstrd   wR8,  r1, MMX_WR8
-> +       wstrd   wR9,  r1, MMX_WR9
-> +       wstrd   wR10, r1, MMX_WR10
-> +       wstrd   wR11, r1, MMX_WR11
-> +       wstrd   wR12, r1, MMX_WR12
-> +       wstrd   wR13, r1, MMX_WR13
-> +       wstrd   wR14, r1, MMX_WR14
-> +       wstrd   wR15, r1, MMX_WR15
->
->  2:     teq     r0, #0                          @ anything to load?
->         reteq   lr                              @ if not, return
-> @@ -147,30 +148,30 @@ concan_dump:
->  concan_load:
->
->         @ Load wRn
-> -       wldrd   wR0,  [r0, #MMX_WR0]
-> -       wldrd   wR1,  [r0, #MMX_WR1]
-> -       wldrd   wR2,  [r0, #MMX_WR2]
-> -       wldrd   wR3,  [r0, #MMX_WR3]
-> -       wldrd   wR4,  [r0, #MMX_WR4]
-> -       wldrd   wR5,  [r0, #MMX_WR5]
-> -       wldrd   wR6,  [r0, #MMX_WR6]
-> -       wldrd   wR7,  [r0, #MMX_WR7]
-> -       wldrd   wR8,  [r0, #MMX_WR8]
-> -       wldrd   wR9,  [r0, #MMX_WR9]
-> -       wldrd   wR10, [r0, #MMX_WR10]
-> -       wldrd   wR11, [r0, #MMX_WR11]
-> -       wldrd   wR12, [r0, #MMX_WR12]
-> -       wldrd   wR13, [r0, #MMX_WR13]
-> -       wldrd   wR14, [r0, #MMX_WR14]
-> -       wldrd   wR15, [r0, #MMX_WR15]
-> +       wldrd   wR0,  r0, MMX_WR0
-> +       wldrd   wR1,  r0, MMX_WR1
-> +       wldrd   wR2,  r0, MMX_WR2
-> +       wldrd   wR3,  r0, MMX_WR3
-> +       wldrd   wR4,  r0, MMX_WR4
-> +       wldrd   wR5,  r0, MMX_WR5
-> +       wldrd   wR6,  r0, MMX_WR6
-> +       wldrd   wR7,  r0, MMX_WR7
-> +       wldrd   wR8,  r0, MMX_WR8
-> +       wldrd   wR9,  r0, MMX_WR9
-> +       wldrd   wR10, r0, MMX_WR10
-> +       wldrd   wR11, r0, MMX_WR11
-> +       wldrd   wR12, r0, MMX_WR12
-> +       wldrd   wR13, r0, MMX_WR13
-> +       wldrd   wR14, r0, MMX_WR14
-> +       wldrd   wR15, r0, MMX_WR15
->
->         @ Load wCx
-> -       wldrw   wCSSF, [r0, #MMX_WCSSF]
-> -       wldrw   wCASF, [r0, #MMX_WCASF]
-> -       wldrw   wCGR0, [r0, #MMX_WCGR0]
-> -       wldrw   wCGR1, [r0, #MMX_WCGR1]
-> -       wldrw   wCGR2, [r0, #MMX_WCGR2]
-> -       wldrw   wCGR3, [r0, #MMX_WCGR3]
-> +       wldrw   wCSSF, r0, MMX_WCSSF
-> +       wldrw   wCASF, r0, MMX_WCASF
-> +       wldrw   wCGR0, r0, MMX_WCGR0
-> +       wldrw   wCGR1, r0, MMX_WCGR1
-> +       wldrw   wCGR2, r0, MMX_WCGR2
-> +       wldrw   wCGR3, r0, MMX_WCGR3
->
->         @ clear CUP/MUP (only if r1 != 0)
->         teq     r1, #0
-> diff --git a/arch/arm/kernel/iwmmxt.h b/arch/arm/kernel/iwmmxt.h
-> new file mode 100644
-> index 000000000000..fb627286f5bb
-> --- /dev/null
-> +++ b/arch/arm/kernel/iwmmxt.h
-> @@ -0,0 +1,47 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __IWMMXT_H__
-> +#define __IWMMXT_H__
-> +
-> +.irp b, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-> +.set .LwR\b, \b
-> +.set .Lr\b, \b
-> +.endr
-> +
-> +.set .LwCSSF, 0x2
-> +.set .LwCASF, 0x3
-> +.set .LwCGR0, 0x8
-> +.set .LwCGR1, 0x9
-> +.set .LwCGR2, 0xa
-> +.set .LwCGR3, 0xb
-> +
-> +.macro wldrd, reg:req, base:req, offset:req
-> +.inst 0xedd00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +.macro wldrw, reg:req, base:req, offset:req
-> +.inst 0xfd900100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +.macro wstrd, reg:req, base:req, offset:req
-> +.inst 0xedc00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +.macro wstrw, reg:req, base:req, offset:req
-> +.inst 0xfd800100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +#ifdef __clang__
-> +
-> +#define wCon c1
-> +
-> +.macro tmrc, dest:req, control:req
-> +mrc p1, 0, \dest, \control, c0, 0
-> +.endm
-> +
-> +.macro tmcr, control:req, src:req
-> +mcr p1, 0, \src, \control, c0, 0
-> +.endm
-> +#endif
-> +
-> +#endif
-> --
-> 2.29.1.341.ge80a0c044ae-goog
->
+I agree that there are quite some strange drivers, but given my limited
+time to work on this now (and expecting to have to rework this patch if
+I pick it up again for the next or even after-next merge window) I would
+like to see this breed in next already now.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--245btghlb76nuk2s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+s930ACgkQwfwUeK3K
+7Anzewf/QRBLF2K8fO9rdCSo03DKA/v7vWwHf40fgzgeRR46U1hWdogJP5dw+kP/
+CEP6Ct66752CHOOHT5A2fxielrV9ZA+m+n7Pq6o7rjwiATbMo/kw9YCkmYJWLaqp
+MaJwNmWjaGWKmBwwcaqYugd318qFfg2I3e8kmXMQ27ucg/4v/JXewgsGLYbug3fC
+1wt46nbcfO2hpYnYgb213vK3ifUbGvhd5Z8T2RYUlTsbK+8oFvMf+t2GoAVymiR0
+iozj/DpPoUaqRMYskAB7G3MASFaZfyVsJ82LrSzAq6gm1ULdubuJfxnPwMKZTq8T
+hxhofayQMEKCvGSgBziOlX2T5IqnCg==
+=DOaY
+-----END PGP SIGNATURE-----
+
+--245btghlb76nuk2s--
