@@ -2,353 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440692B0E15
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4F12B0E1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgKLTa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:30:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKLTa6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:30:58 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10886C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:30:58 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id i13so5044321pgm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:30:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bYqHpM6AIuFjCSL/QQBim4EdBYJZxV5g7YmL9Sjc9fA=;
-        b=eio7XsSC4Mj7lBnz2+7Sw/c9maHH5Jg9J1Qo1bW46Iq8BKvwLnKIZd9VVogNPUgaDw
-         fGFWJ8FI4xEYxmHqla6NcPa2BFmntXLwJTP8z41uWYLfKx9e5728e80VqirLJjo+dp06
-         ekGFrXnAAOKkMSaPTzkrf2T7pN6rLB5BAVjVeWv1vLjRadrKyiqPxZ3tdw6s3nroKj4F
-         INROR9JIsPxebkKo9KJTlDY5r1zn6HD3zsscWfo6F8JfC5zvuu112b3R6TCAnRVH8Tki
-         7iPsq3J1+Xt685vIzVE88C+3G5eGDfDHqmoEiRNLhyArXEuNMxaGrYSo+NPaseh8i5iP
-         exsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bYqHpM6AIuFjCSL/QQBim4EdBYJZxV5g7YmL9Sjc9fA=;
-        b=j3u36uaA4PktcH0l67qWqeJtadYeShvm1i0odM0CpV1I2qEm2Dbzjait0GzNB0KaJk
-         eawdGJg0ijdlwggDEL4xnoe+W/PRdP6HbfUroCPehclo4W9a4u4FHs4HgbbMNgqNOeP4
-         sVgQ+akDn2HFnju8mBXtqpyYSlxR34onDDXENFM6tYgi8R7mJ9vf8rzZC2AuvSq9IY7G
-         s+eJOT0MhCWGYjHafPzziJJ713/ts3rVlFuws+W9J8zXE3/KP9UYDjge9XsrLEMkNkY9
-         QkJtQeVee94ED/xUa+pgmLeLz7FXUW0iPRphFEmYnOuw4gN1C4TE0maTb8vQnUQ/A+pd
-         agYw==
-X-Gm-Message-State: AOAM5327efe5mmROtQFwNo+9pDxVBycaAtCCgxKpIIg4nCEGaVfwqRGq
-        NZeHc8cNEwBgxW2HTAP0OKzx3kB8uVnraZ87MNXlyg==
-X-Google-Smtp-Source: ABdhPJy76Anx6Wx/lPgUBJpUVx6wL66ZgyVVKz+tSqKj1d8XCMuKDfz2X2D3FpRf0NPoT2GkhndXpzezNVpSYms4+Mc=
-X-Received: by 2002:a17:90b:110b:: with SMTP id gi11mr741001pjb.25.1605209457325;
- Thu, 12 Nov 2020 11:30:57 -0800 (PST)
+        id S1726859AbgKLTbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:31:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:56364 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgKLTbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:31:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FD621042;
+        Thu, 12 Nov 2020 11:31:31 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFCF23F6CF;
+        Thu, 12 Nov 2020 11:31:28 -0800 (PST)
+References: <20201023101158.088940906@infradead.org> <20201023102346.921768277@infradead.org> <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com> <jhjd00ixz9z.mognet@arm.com> <13786aa5a5fc958708ef1182c885d1a574449d99.camel@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
+In-reply-to: <13786aa5a5fc958708ef1182c885d1a574449d99.camel@redhat.com>
+Date:   Thu, 12 Nov 2020 19:31:12 +0000
+Message-ID: <jhja6vmxthb.mognet@arm.com>
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com>
- <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com> <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 12 Nov 2020 11:30:45 -0800
-Message-ID: <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:13 AM Moore, Robert <robert.moore@intel.com> wrot=
-e:
->
->
->
-> -----Original Message-----
-> From: Nick Desaulniers <ndesaulniers@google.com>
-> Sent: Wednesday, November 11, 2020 10:48 AM
-> To: Moore, Robert <robert.moore@intel.com>
-> Cc: Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wys=
-ocki@intel.com>; Gustavo A . R . Silva <gustavoars@kernel.org>; clang-built=
--linux@googlegroups.com; Len Brown <lenb@kernel.org>; linux-acpi@vger.kerne=
-l.org; devel@acpica.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
->
-> On Wed, Nov 11, 2020 at 7:15 AM Moore, Robert <robert.moore@intel.com> wr=
-ote:
-> >
-> > Yes, but: isn't the "fallthrough" keyword compiler-specific? That is th=
-e problem for us.
->
-> It's not a keyword.
->
-> It's a preprocessor macro that expands to
-> __attribute__((__fallthrough__)) for compilers that support it.  For comp=
-ilers that do not, it expands to nothing.  Both GCC 7+ and Clang support th=
-is attribute.  Which other compilers that support -Wimplicit-fallthrough do=
- you care to support?
->
-> We need to support MSVC 2017 -- which apparently does not support this.
 
-In which case, the macro is not expanded to a compiler attribute the
-compiler doesn't support.  Please see also its definition in
-include/linux/compiler_attributes.h.
-
-From what I can tell, MSVC does not warn on implicit fallthrough, so
-there's no corresponding attribute (or comment) to disable the warning
-in MSVC.
-
-That doesn't mean this code is not portable to MSVC; a macro that
-expands to nothing should not be a problem.
-
-Based on
-https://docs.microsoft.com/en-us/cpp/code-quality/c26819?view=3Dmsvc-160
-https://developercommunity.visualstudio.com/idea/423975/issue-compiler-warn=
-ing-when-using-implicit-fallthr.html
-it sounds like MSVC 2019 will be able to warn, for C++ mode, which
-will rely on the C++ style attribute to annotate intentional
-fallthrough.
-
-Can you confirm how this does not work for MSVC 2017?
-
-> > Bob
-> >
-> >
-> > -----Original Message-----
-> > From: ndesaulniers via sendgmr
-> > <ndesaulniers@ndesaulniers1.mtv.corp.google.com> On Behalf Of Nick
-> > Desaulniers
-> > Sent: Tuesday, November 10, 2020 6:12 PM
-> > To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik
-> > <erik.kaneda@intel.com>; Wysocki, Rafael J
-> > <rafael.j.wysocki@intel.com>; Gustavo A . R . Silva
-> > <gustavoars@kernel.org>
-> > Cc: clang-built-linux@googlegroups.com; Nick Desaulniers
-> > <ndesaulniers@google.com>; Len Brown <lenb@kernel.org>;
-> > linux-acpi@vger.kernel.org; devel@acpica.org;
-> > linux-kernel@vger.kernel.org
-> > Subject: [PATCH] ACPICA: fix -Wfallthrough
-> >
-> > The "fallthrough" pseudo-keyword was added as a portable way to denote =
-intentional fallthrough. This code seemed to be using a mix of fallthrough =
-comments that GCC recognizes, and some kind of lint marker.
-> > I'm guessing that linter hasn't been run in a while from the mixed use =
-of the marker vs comments.
-> >
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  drivers/acpi/acpica/dscontrol.c | 3 +--
-> >  drivers/acpi/acpica/dswexec.c   | 4 +---
-> >  drivers/acpi/acpica/dswload.c   | 3 +--
-> >  drivers/acpi/acpica/dswload2.c  | 3 +--
-> >  drivers/acpi/acpica/exfldio.c   | 3 +--
-> >  drivers/acpi/acpica/exresop.c   | 5 ++---
-> >  drivers/acpi/acpica/exstore.c   | 6 ++----
-> >  drivers/acpi/acpica/hwgpe.c     | 3 +--
-> >  drivers/acpi/acpica/utdelete.c  | 3 +--
-> >  drivers/acpi/acpica/utprint.c   | 2 +-
-> >  10 files changed, 12 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/acpi/acpica/dscontrol.c
-> > b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19
-> > 100644
-> > --- a/drivers/acpi/acpica/dscontrol.c
-> > +++ b/drivers/acpi/acpica/dscontrol.c
-> > @@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state =
-*walk_state,
-> >                                 break;
-> >                         }
-> >                 }
-> > -
-> > -               /*lint -fallthrough */
-> > +               fallthrough;
-> >
-> >         case AML_IF_OP:
-> >                 /*
-> > diff --git a/drivers/acpi/acpica/dswexec.c
-> > b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f
-> > 100644
-> > --- a/drivers/acpi/acpica/dswexec.c
-> > +++ b/drivers/acpi/acpica/dswexec.c
-> > @@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_st=
-ate *walk_state)
-> >                                 if (ACPI_FAILURE(status)) {
-> >                                         break;
-> >                                 }
-> > -
-> > -                               /* Fall through */
-> > -                               /*lint -fallthrough */
-> > +                               fallthrough;
-> >
-> >                         case AML_INT_EVAL_SUBTREE_OP:
-> >
-> > diff --git a/drivers/acpi/acpica/dswload.c
-> > b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d
-> > 100644
-> > --- a/drivers/acpi/acpica/dswload.c
-> > +++ b/drivers/acpi/acpica/dswload.c
-> > @@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk=
-_state,
-> >                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
-> >                                 break;
-> >                         }
-> > -
-> > -                       /*lint -fallthrough */
-> > +                       fallthrough;
-> >
-> >                 default:
-> >
-> > diff --git a/drivers/acpi/acpica/dswload2.c
-> > b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072
-> > 100644
-> > --- a/drivers/acpi/acpica/dswload2.c
-> > +++ b/drivers/acpi/acpica/dswload2.c
-> > @@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk=
-_state,
-> >                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
-> >                                 break;
-> >                         }
-> > -
-> > -                       /*lint -fallthrough */
-> > +                       fallthrough;
-> >
-> >                 default:
-> >
-> > diff --git a/drivers/acpi/acpica/exfldio.c
-> > b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9
-> > 100644
-> > --- a/drivers/acpi/acpica/exfldio.c
-> > +++ b/drivers/acpi/acpica/exfldio.c
-> > @@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *o=
-bj_desc,
-> >                  * Now that the Bank has been selected, fall through to=
- the
-> >                  * region_field case and write the datum to the Operati=
-on Region
-> >                  */
-> > -
-> > -               /*lint -fallthrough */
-> > +               fallthrough;
-> >
-> >         case ACPI_TYPE_LOCAL_REGION_FIELD:
-> >                 /*
-> > diff --git a/drivers/acpi/acpica/exresop.c
-> > b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551
-> > 100644
-> > --- a/drivers/acpi/acpica/exresop.c
-> > +++ b/drivers/acpi/acpica/exresop.c
-> > @@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
-> >                                 case ACPI_REFCLASS_DEBUG:
-> >
-> >                                         target_op =3D AML_DEBUG_OP;
-> > -
-> > -                                       /*lint -fallthrough */
-> > +                                       fallthrough;
-> >
-> >                                 case ACPI_REFCLASS_ARG:
-> >                                 case ACPI_REFCLASS_LOCAL:
-> > @@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
-> >                          * Else not a string - fall through to the norm=
-al Reference
-> >                          * case below
-> >                          */
-> > -                       /*lint -fallthrough */
-> > +                       fallthrough;
-> >
-> >                 case ARGI_REFERENCE:    /* References: */
-> >                 case ARGI_INTEGER_REF:
-> > diff --git a/drivers/acpi/acpica/exstore.c
-> > b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120
-> > 100644
-> > --- a/drivers/acpi/acpica/exstore.c
-> > +++ b/drivers/acpi/acpica/exstore.c
-> > @@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
-> >                 if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
-> >                         return_ACPI_STATUS(AE_OK);
-> >                 }
-> > -
-> > -               /*lint -fallthrough */
-> > +               fallthrough;
-> >
-> >         default:
-> >
-> > @@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_obj=
-ect *source_desc,
-> >                                 }
-> >                                 break;
-> >                         }
-> > -
-> > -                       /* Fallthrough */
-> > +                       fallthrough;
-> >
-> >                 case ACPI_TYPE_DEVICE:
-> >                 case ACPI_TYPE_EVENT:
-> > diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
-> > index b13a4ed5bc63..fbfad80c8a53 100644
-> > --- a/drivers/acpi/acpica/hwgpe.c
-> > +++ b/drivers/acpi/acpica/hwgpe.c
-> > @@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe=
-_event_info, u32 action)
-> >                 if (!(register_bit & gpe_register_info->enable_mask)) {
-> >                         return (AE_BAD_PARAMETER);
-> >                 }
-> > -
-> > -               /*lint -fallthrough */
-> > +               fallthrough;
-> >
-> >         case ACPI_GPE_ENABLE:
-> >
-> > diff --git a/drivers/acpi/acpica/utdelete.c
-> > b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585
-> > 100644
-> > --- a/drivers/acpi/acpica/utdelete.c
-> > +++ b/drivers/acpi/acpica/utdelete.c
-> > @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_=
-operand_object *object)
-> >                         (void)acpi_ev_delete_gpe_block(object->device.
-> >                                                        gpe_block);
-> >                 }
-> > -
-> > -               /*lint -fallthrough */
-> > +               fallthrough;
-> >
-> >         case ACPI_TYPE_PROCESSOR:
-> >         case ACPI_TYPE_THERMAL:
-> > diff --git a/drivers/acpi/acpica/utprint.c
-> > b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2
-> > 100644
-> > --- a/drivers/acpi/acpica/utprint.c
-> > +++ b/drivers/acpi/acpica/utprint.c
-> > @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const c=
-har *format, va_list args)
-> >                 case 'X':
-> >
-> >                         type |=3D ACPI_FORMAT_UPPER;
-> > -                       /* FALLTHROUGH */
-> > +                       fallthrough;
-> >
-> >                 case 'x':
-> >
-> > --
-> > 2.29.2.222.g5d2a92d10f8-goog
-> >
+On 12/11/20 18:01, Qian Cai wrote:
+> On Thu, 2020-11-12 at 17:26 +0000, Valentin Schneider wrote:
+>> On 12/11/20 16:38, Qian Cai wrote:
+>> > Some syscall fuzzing from an unprivileged user starts to trigger this below
+>> > since this commit first appeared in the linux-next today. Does it ring any
+>> > bells?
+>> >
+>>
+>> What's the .config? I'm interested in
+>> CONFIG_PREEMPT
+>> CONFIG_PREEMPT_RT
+>> CONFIG_SMP
 >
+> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
 >
-> --
-> Thanks,
-> ~Nick Desaulniers
+> # CONFIG_PREEMPT is not set
+> CONFIG_SMP=y
+>
 
+So that's CONFIG_PREEMPT_NONE=y
 
+> Also, I have been able to reproduce this on powerpc as well just now.
+>
+[...]
+>
+> [12065.101987][ T1310] __switch_to (arch/arm64/kernel/process.c:580)
+> [12065.106227][ T1310] __schedule (kernel/sched/core.c:4272 kernel/sched/core.c:5019)
+> [12065.110505][ T1310] schedule (./arch/arm64/include/asm/current.h:19 (discriminator 1) ./arch/arm64/include/asm/preempt.h:53 (discriminator 1) kernel/sched/core.c:5099 (discriminator 1))
+> [12065.114562][ T1310] schedule_timeout (kernel/time/timer.c:1848)
+> [12065.119275][ T1310] wait_for_completion (kernel/sched/completion.c:85 kernel/sched/completion.c:106 kernel/sched/completion.c:117 kernel/sched/completion.c:138)
+> [12065.124257][ T1310] affine_move_task (./include/linux/instrumented.h:101 ./include/asm-generic/atomic-instrumented.h:220 ./include/linux/refcount.h:272 ./include/linux/refcount.h:315 ./include/linux/refcount.h:333 kernel/sched/core.c:2263)
+> [12065.129013][ T1310] __set_cpus_allowed_ptr (kernel/sched/core.c:2353)
+> [12065.134248][ T1310] sched_setaffinity (kernel/sched/core.c:6460)
+> [12065.139088][ T1310] __arm64_sys_sched_setaffinity (kernel/sched/core.c:6511 kernel/sched/core.c:6500 kernel/sched/core.c:6500)
+> [12065.144972][ T1310] do_el0_svc (arch/arm64/kernel/syscall.c:36 arch/arm64/kernel/syscall.c:48 arch/arm64/kernel/syscall.c:159 arch/arm64/kernel/syscall.c:205)
+> [12065.149165][ T1310] el0_sync_handler (arch/arm64/kernel/entry-common.c:236 arch/arm64/kernel/entry-common.c:254)
+> [12065.153876][ T1310] el0_sync (arch/arm64/kernel/entry.S:741)
+>
 
---=20
-Thanks,
-~Nick Desaulniers
+Thanks!
+
+One thing I don't get: that trace shows refcount_dec_and_test()
+(kernel/sched/core.c:2263) happening before the wait_for_completion(). It's
+not the case in the below trace.
+
+> == powerpc ==
+> [18060.020301][ T676] [c000200014227670] [c000000000a6d1e8] __func__.5350+0x1220e0/0x181338 unreliable
+> [18060.020333][ T676] [c000200014227850] [c00000000001a278] __switch_to (arch/powerpc/kernel/process.c:1273)
+> [18060.020351][ T676] [c0002000142278c0] [c0000000008f3e94] __schedule (kernel/sched/core.c:4269 kernel/sched/core.c:5019)
+> [18060.020377][ T676] [c000200014227990] [c0000000008f4638] schedule (./include/asm-generic/preempt.h:59 (discriminator 1) kernel/sched/core.c:5099 (discriminator 1))
+> [18060.020394][ T676] [c0002000142279c0] [c0000000008fbd34] schedule_timeout (kernel/time/timer.c:1847)
+> [18060.020420][ T676] [c000200014227ac0] [c0000000008f6398] wait_for_completion (kernel/sched/completion.c:85 kernel/sched/completion.c:106 kernel/sched/completion.c:117 kernel/sched/completion.c:138)
+> [18060.020455][ T676] [c000200014227b30] [c000000000100fd4] affine_move_task (kernel/sched/core.c:2261)
+> [18060.020481][ T676] [c000200014227c90] [c000000000101444] __set_cpus_allowed_ptr (kernel/sched/core.c:2353)
+> [18060.020507][ T676] [c000200014227d00] [c000000000106eac] sched_setaffinity (kernel/sched/core.c:6460)
+> [18060.020533][ T676] [c000200014227d70] [c000000000107134] sys_sched_setaffinity (kernel/sched/core.c:6511 kernel/sched/core.c:6500)
+> [18060.020559][ T676] [c000200014227dc0] [c00000000002a6d8] system_call_exception (arch/powerpc/kernel/syscall_64.c:111)
+> [18060.020585][ T676] [c000200014227e20] [c00000000000d0a8] system_call_common (arch/powerpc/kernel/entry_64.S:302)
+
+I take back what I said in that previous email; we could have gone through
+the task_running() stop_one_cpu() and *then* hit the
+
+  wait_for_completion(&pending->done);
+
+and that is actually the only case that makes sense to me here, because the
+!task_running() one will do the completion before waiting (that kernel has
+no way to make a task Migration Disabled).
+
+I think what is happening here is:
+
+  affine_move_task()
+      // task_running() case
+      stop_one_cpu()
+      wait_for_completion(&pending->done);
+
+and this is !PREEMPT, so the stopper can very well hit:
+
+  migration_cpu_stop()
+    // Task moved between unlocks and scheduling the stopper
+    task_rq(p) != rq &&
+    // task_running() case
+    dest_cpu >= 0
+
+    => no complete_all(), ever :(
+
+This is an annoying case because we didn't have to bother about it before;
+a rq mismatch meant the task was fine, because we modified
+->cpus_allowed_mask prior.
+
+With migrate_disable(), we have to chase after the bloody task because
+we have to preempt it to get a stable is_migration_disabled() reading. It
+could have been Migration Disabled, got some pending installed, got out of
+Migration Disabled, moved around, gone Migration Disabled again and got
+some more pending before we get to run the stopper :(
+
+a) Do you also get this on CONFIG_PREEMPT=y?
+b) Could you try the below?
+
+---
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 02076e6d3792..fad0a8e62aca 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1923,7 +1923,7 @@ static int migration_cpu_stop(void *data)
+ 		else
+ 			p->wake_cpu = dest_cpu;
+ 
+-	} else if (dest_cpu < 0) {
++	} else if (dest_cpu < 0 || pending) {
+ 		/*
+ 		 * This happens when we get migrated between migrate_enable()'s
+ 		 * preempt_enable() and scheduling the stopper task. At that
+@@ -1933,6 +1933,17 @@ static int migration_cpu_stop(void *data)
+ 		 * more likely.
+ 		 */
+ 
++		/*
++		 * The task moved before the stopper got to run. We're holding
++		 * ->pi_lock, so the allowed mask is stable - if it got
++		 * somewhere allowed, we're done.
++		 */
++		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
++			p->migration_pending = NULL;
++			complete = true;
++			goto out;
++		}
++
+ 		/*
+ 		 * When this was migrate_enable() but we no longer have an
+ 		 * @pending, a concurrent SCA 'fixed' things and we should be
