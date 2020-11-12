@@ -2,100 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D472B099A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672C22B0996
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgKLQLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:11:35 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2096 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728426AbgKLQLf (ORCPT
+        id S1728782AbgKLQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:10:48 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48422 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728414AbgKLQKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:11:35 -0500
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CX64K1xg2z67Ks4;
-        Fri, 13 Nov 2020 00:09:37 +0800 (CST)
-Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.161)
- by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Thu, 12 Nov 2020 17:11:33 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH] ima: Set and clear FMODE_CAN_READ in ima_calc_file_hash()
-Date:   Thu, 12 Nov 2020 17:10:05 +0100
-Message-ID: <20201112161005.6192-1-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.27.GIT
+        Thu, 12 Nov 2020 11:10:48 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 028F4803017D;
+        Thu, 12 Nov 2020 16:10:45 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gg4bBmqmtuiN; Thu, 12 Nov 2020 19:10:44 +0300 (MSK)
+Date:   Thu, 12 Nov 2020 19:10:43 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201112161043.brhpuo7rykdip3hs@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+ <20201110113827.hl5i27cpl6exo3md@mobilestation>
+ <20201110163556.3e3423f6@xps13>
+ <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+ <20201112092715.7e466405@xps13>
+ <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
+ <20201112152739.r4673zyeixkcwukx@mobilestation>
+ <20201112164301.60032276@xps13>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.65.161]
-X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112164301.60032276@xps13>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a1f9b1c0439db ("integrity/ima: switch to using __kernel_read")
-replaced the __vfs_read() call in integrity_kernel_read() with
-__kernel_read(), a new helper introduced by commit 61a707c543e2a ("fs: add
-a __kernel_read helper").
+On Thu, Nov 12, 2020 at 04:43:01PM +0100, Miquel Raynal wrote:
+> Hi Serge,
+> 
+> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Thu, 12 Nov
+> 2020 18:27:39 +0300:
+> 
+> > Hello Vignesh
+> > 
+> > On Thu, Nov 12, 2020 at 08:30:42PM +0530, Vignesh Raghavendra wrote:
+> > > 
+> > > 
+> > > On 11/12/20 1:57 PM, Miquel Raynal wrote:  
+> > > > Hi Sergey,
+> > > > 
+> > > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
+> > > > 2020 22:22:59 +0300:
+> > > >   
+> > > >> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:  
+> > > >>> Hi Serge,
+> > > >>>
+> > > >>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
+> > > >>> 2020 14:38:27 +0300:
+> > > >>>     
+> > > >>>> Hello Miquel,
+> > > >>>>
+> > > >>>> A situation noted by the warning below won't cause any problem because
+> > > >>>> the casting is done to a non-dereferenced variable. It is utilized
+> > > >>>> as a pointer bias later in that function. Shall we just ignore the
+> > > >>>> warning or still fix it somehow?    
+> > > >>>     
+> > > >>  
+> > > >>> Do you think the cast to a !__iomem value is mandatory here?    
+> > > >>
+> > > >> It's not mandatory to have the casting with no __iomem, but wouldn't
+> > > >> doing like this:
+> > > >> + 	shift = (ssize_t __iomem)src & 0x3;
+> > > >> be looking weird? Really, is there a good way to somehow extract the first
+> > > >> two bits of a __iomem pointer without getting the sparse warning?  
+> > > > 
+> > > > I asked around me, what about trying uintptr_t?
+> > > >   
+> > >   
+> > 
+> > > One more way is to use __force to tell sparse that this casting is
+> > > intentional:
+> > > 
+> > >        shift = (__force ssize_t)src & 0x3;  
+> > 
+> > Oh, great! That solution is actually much better than using some
+> > currently unexplained sparse peculiarity! I was thinking about applying
+> > some other attribute, but __force just didn't come to my mind. Thank
+> > you very much for the suggestion. I'll post the fix with the solution
+> > suggested by you.
+> 
 
-Since the new helper requires that also the FMODE_CAN_READ flag is set in
-file->f_mode, this patch saves the original f_mode and sets the flag if the
-file descriptor has the necessary file operation. Lastly, it restores the
-original f_mode at the end of ima_calc_file_hash().
+> Is the ssize_t cast the right one btw? I would definitely prefer an
+> unsigned type here.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- security/integrity/ima/ima_crypto.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+The reason of me deciding to use the ssize_t type here was to prevent
+the types casting across the "shift", "chunk" and "len" variables
+within this method. It seemed a bit better than having a standard type
+like "unsigned int" here seeing the ssize_t type width won't exceed
+the long type size anyway. Moreover since the "len" variable has got
+the ssize_t type and I couldn't change it (the method is the map_info
+callback), I've decided to stick with what is available and defined
+"shift" and "chunk" as ssize_t-es. Another callback method
+bt1_rom_map_read() in his module has been designed in the same way.
 
-diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-index 21989fa0c107..22ed86a0c964 100644
---- a/security/integrity/ima/ima_crypto.c
-+++ b/security/integrity/ima/ima_crypto.c
-@@ -537,6 +537,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- 	loff_t i_size;
- 	int rc;
- 	struct file *f = file;
-+	fmode_t saved_mode;
- 	bool new_file_instance = false, modified_mode = false;
- 
- 	/*
-@@ -550,7 +551,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- 	}
- 
- 	/* Open a new file instance in O_RDONLY if we cannot read */
--	if (!(file->f_mode & FMODE_READ)) {
-+	if (!(file->f_mode & FMODE_READ) || !(file->f_mode & FMODE_CAN_READ)) {
- 		int flags = file->f_flags & ~(O_WRONLY | O_APPEND |
- 				O_TRUNC | O_CREAT | O_NOCTTY | O_EXCL);
- 		flags |= O_RDONLY;
-@@ -562,7 +563,10 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- 			 */
- 			pr_info_ratelimited("Unable to reopen file for reading.\n");
- 			f = file;
-+			saved_mode = f->f_mode;
- 			f->f_mode |= FMODE_READ;
-+			if (likely(file->f_op->read || file->f_op->read_iter))
-+				f->f_mode |= FMODE_CAN_READ;
- 			modified_mode = true;
- 		} else {
- 			new_file_instance = true;
-@@ -582,7 +586,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- 	if (new_file_instance)
- 		fput(f);
- 	else if (modified_mode)
--		f->f_mode &= ~FMODE_READ;
-+		f->f_mode = saved_mode;
- 	return rc;
- }
- 
--- 
-2.27.GIT
+Do you think it's better to change it in favor of using a different
+type like "unsigned int" here anyway? If so for unification I'd need to
+change bt1_rom_map_read() (though the "shift" variable has been
+defined as "unsigned long" there in the first place because the offs
+argument has got that type).
 
+What to do with the __force attribute here? It does seem appropriate
+even if for some mystical reasons we haven't got the sparse warning
+for the unsigned types.
+
+-Sergey
+
+> 
+> Thanks,
+> Miquèl
