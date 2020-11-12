@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E1F2B068C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950A22B0691
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgKLNez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:34:55 -0500
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:30366 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728322AbgKLNeu (ORCPT
+        id S1728381AbgKLNfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728364AbgKLNey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:34:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605188089; x=1636724089;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mZMYZuBCXD1r2QBjxb/5Nxy7uEFXyX6auS5QNy3Y63g=;
-  b=MnQan7/hpBg5CcC6J95C7S2borftQ+Jw5G8OJdGugW6ybYcbGWttF+5h
-   yBlr7TvLusk05+2qAcVZd8Zvl73G9d7ExbvRfxQNiMj3tUXukOYF1p2nT
-   YrgLV0svUgbDH9k+x3Tw1RXluYltsM0UU4Oj4uy0whPp0WR5Nji+qz4NG
-   MFaCMwuIWfokfeFmv6mbd7ErDBhniHMBwTpDFj/XF/VaIh3yB0K73IjmS
-   LZ8MaHn/1RkGuvnO9DAh/pJMvlKTDhVb1VpASzmt1Jk0p/CiXJu+xYN67
-   U+mISZcCns+EqXc9V2NjFCnBzvthAKRt20UkLpY2WqoIy4R3uQoLtA71/
-   g==;
-IronPort-SDR: EaF931/VbbnvEQ6rG5uaWC6ZlBcibNqP/IWoUJKzErE+vdxihPOavXbA2mDuyBIOEs10a1nMuK
- abh33OTIfmfYQ6HGlD5MUnJ1H6wiGoQw89xH0EH5rO9rv+1mYAePiiyXnf8mGs/x0g3qOLDtr3
- XSJ3xbztu2ikkXIlh0TbZRL4S3JzlVDcCHVQXcDgegXgd1339LqMfy07X0UysgZxKDnBEzN93W
- wikBLSkaEtq1miVcCkJHZpjzvH32Rf8C7rMkCTqbZOr9YcSfiqCs6CLWN515n17TtR/bWlFfir
- 5Cg=
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="96064559"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Nov 2020 06:34:48 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 12 Nov 2020 06:34:48 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 12 Nov 2020 06:34:45 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
-        <sakari.ailus@iki.fi>, <laurent.pinchart@ideasonboard.com>,
-        <jacopo@jmondi.org>
-CC:     Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH v5 3/3] MAINTAINERS: add microchip csi2dc
-Date:   Thu, 12 Nov 2020 15:34:37 +0200
-Message-ID: <20201112133437.372475-3-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112133437.372475-1-eugen.hristev@microchip.com>
-References: <20201112133437.372475-1-eugen.hristev@microchip.com>
+        Thu, 12 Nov 2020 08:34:54 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421EBC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:34:54 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id m13so6351090oih.8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
+        b=rpK1oMoFrOj3vat+2O5dGOAzljLYbjSt1h+iy7PbBC7ClVK89XAwzmHi7x9iQt+79O
+         Ri8wjxOZTa64qarvTWfQXVvVmxGa1WIdXyXQGjcJUyd1V4SYPTtlFWrn7buOnS6jnPJ+
+         zQbmLBlvMrdqNaBQxtQHQ72rgFSbOdWx4bnmyJRq3G7Nt8yPKoJdoMNISE9+RjnDKDCw
+         JnsPPe9uECpJZ38WTXhG14Xq8/+VoUP+CVto4lDCdiWDTkb4Ws34Wbbl1tslkZxpQmnK
+         S1AWP1Mp6geiipp/VfMaUELDsn3aBKdf5zd55KeD7mZom211+rLfa3PnMdCb+HxN0H/S
+         XNpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
+        b=Ga+DvUWDTCQZjmfqYkpSJFl+B63xyl1UomgGrSvJTz7rgd7QEjWqmUxRaRFzvYEKKE
+         i4kmIHLC9hGIlVHB7BaMUs4/o1MrsUQpCPVGPJy0U5c2pvs+E6R6ynq1PIB049IjnTjg
+         Ut9CQfxpae0iUZrIkaB2aNe0eypz8hKFIJMES0eED52V+9Y7dKxHDz1cI/aNJxZCfuZI
+         p/wjk9VDDHyEzVK8HCO7K/Smwwy3JZ0Kev+KXafkwYCU+6cu83UnewVZcUmYfAN7Fi7A
+         SEP5woKt2HZZiCXC3VFJgPAhBS9XCmcWWr3tfDg99keiBWok7+Zekj82Cgdm4hbZhzJ9
+         zosw==
+X-Gm-Message-State: AOAM533qz1sSTaffmTEA0oLGYO3heWgkmMv1Py4BqiXUadvQ6tTYc958
+        3jCt2mSkVCKSga6rzFC07Rsr/jA7RMenwmiZl5Q=
+X-Google-Smtp-Source: ABdhPJzUYvm7PTO1vzA2SD1grDPb/fa5pDcYLqLlfASSp17WEqnYZ77mzNsm851MMjilT/8GR7SleDJdfMrZRUj/TPQ=
+X-Received: by 2002:aca:191a:: with SMTP id l26mr4624744oii.109.1605188093690;
+ Thu, 12 Nov 2020 05:34:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Received: by 2002:aca:da89:0:0:0:0:0 with HTTP; Thu, 12 Nov 2020 05:34:53
+ -0800 (PST)
+Reply-To: tofilbaman1@gmail.com
+From:   Tofil Bama <tomaralif80@gmail.com>
+Date:   Thu, 12 Nov 2020 05:34:53 -0800
+Message-ID: <CAJFNYjX3sEDLVBZg-hV=cBNKkuBRpt4WaxPp2piQmh8MB-Euzw@mail.gmail.com>
+Subject: KINDEST MESSAGE.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Microchip CSI2DC driver in the list.
+Dear,
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+My name is Mr Tofil Bama, I am the Bill and Exchange assistant
+Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
+I discovered an abandoned sum of eighteen million three hundred
+thousand United State of American dollars (18.3MILLION USA DOLLARS)
+in an account that belongs to one of our foreign customer
+(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
+crashed into the Mediterranean Sea on 25th January 2010.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2ec6fda103f8..3392a5803743 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11472,6 +11472,13 @@ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
- F:	sound/soc/atmel
- 
-+MICROCHIP CSI2DC DRIVER
-+M:	Eugen Hristev <eugen.hristev@microchip.com>
-+L:	linux-media@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-+F:	drivers/media/platform/atmel/microchip-csi2dc.c
-+
- MICROCHIP ECC DRIVER
- M:	Tudor Ambarus <tudor.ambarus@microchip.com>
- L:	linux-crypto@vger.kernel.org
--- 
-2.25.1
+Since I got information about his death I have been expecting
+his next of kin to come over and claim his money because we
+cannot release it unless somebody applies for it as the next
+of kin or relation to the deceased as indicated in our banking guidelines,
+unfortunately we learnt that all his supposed next of kin or
+relation died alongside with him in the plane crash leaving
+nobody behind for the claim.
 
+It is therefore upon this discovery that I decided to make this
+business proposal to you and release the money to you as next of kin
+to the deceased for safety and subsequent disbursement since nobody is
+coming for the fund, it is 10 years now the money is lying pending in
+the account of our deceased and I don't want the money to go into the
+bank treasury as unclaimed bill.
+
+You will be entitled with 40% of the total sum while 60% will be for
+me after which I will visit your Country to invest my own share when
+the fund is successfully transferred into your account, Please I would
+like you to keep this transaction confidential and as a top secret
+between me and you until we successfully achieve this golden
+opportunity.
+
+Yours sincerely,
+Mr Tofil Bama.
