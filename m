@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9278A2B07D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484892B07D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgKLOwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:52:43 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34828 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLOwn (ORCPT
+        id S1728522AbgKLOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgKLOx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:52:43 -0500
-Received: by mail-ot1-f68.google.com with SMTP id n11so5823146ota.2;
-        Thu, 12 Nov 2020 06:52:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j+NtsxIWerG3PypKnHGj1vHWDm1dlWfy0K8oMDj6ZN0=;
-        b=uDK1jYflja3a5Khn39GtyMWM+/sXR/M7qDXDClflFS2XPaQVyzAzYKG63+4iMY3Z0S
-         Sq1JYJZvCtKPQ6JfIIp3fIFxMmZ3/jL/OI11NnmVNl0TexkDhrPf7nIcugzZ7ibZ2xm5
-         XkdZeKcQGqEHtzwNczw8SuMjUC6QSyBEG12l9bq4M0yeUfG3drSKIeQzVBfseFfndBIN
-         dMq8/tr5UkRmezA4j7GyCe26kDf/vT0MsT1GdICvLjY4ouQOjB6/6tvHhhllwAFUnoKA
-         oUqls/xA5H+8+1rNvWITj95zxpqr3gRBuXRPjXvyQDvyj8SLXSTpvLIHnt5ELPapcFJq
-         IVmQ==
-X-Gm-Message-State: AOAM531Y9z9ksAeIjAsE9rV0sY/H0uW/I2TlBayZj9Nb8FXxKNLFY3lw
-        aj0zMyrdZ0uR+THlxBc2cWP0qzTYSA==
-X-Google-Smtp-Source: ABdhPJy3LKjufxrHMWCK3kiwWxQViG1miClOrK9sNPsfoNY+EeJrFLlPdDdAnpQ0Mbvw5/pnE6StRQ==
-X-Received: by 2002:a9d:ea9:: with SMTP id 38mr5656420otj.339.1605192761971;
-        Thu, 12 Nov 2020 06:52:41 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i82sm1166693oia.2.2020.11.12.06.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 06:52:41 -0800 (PST)
-Received: (nullmailer pid 3581406 invoked by uid 1000);
-        Thu, 12 Nov 2020 14:52:40 -0000
-Date:   Thu, 12 Nov 2020 08:52:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     yuji2.ishikawa@toshiba.co.jp, punit1.agrawal@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: gpio: Add bindings for Toshiba
- Visconti GPIO Controller
-Message-ID: <20201112145240.GA3566867@bogus>
-References: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201112084057.1399983-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Thu, 12 Nov 2020 09:53:28 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21283C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 06:53:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bYXx/yhniIZz+4OfdLqK3N+IFZ7LdA6KsRXCgxZgdcs=; b=wJR5ritcMGFifgOEJQS79xYv0O
+        7xMJ3qQBkYzcUHIl66LdWLpdxiWqMt1UMGerhGK0l0ERJZ2OwsQijNwngo2g9IagZz6AWwj8Pa/Qd
+        F71QrjMj7thTSCGDnj2ebxZR2cSiLyO7wuq4/HCCee46b4NZ4ZUF7ZUGawLR+iFUqxbV0QpqxPGn+
+        vVWKaop0P+Aq6AcT1qv7YW5aIZTrbLHukLLuTKzEsPMxB/pn8tkxq+RU8Hb0rWIF2XzaP0lf+q2qZ
+        QnLMj0HC+jJE99Z6qAGHyANPN5c7hKWV5aXo1+UA16TyfaIeTKc0H3K7wzWgOxeFpfrgZaUtPfiLD
+        srFS3e1w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdDxz-000824-HL; Thu, 12 Nov 2020 14:52:51 +0000
+Date:   Thu, 12 Nov 2020 14:52:51 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com
+Subject: Re: [RFC] Are you good with Lockdep?
+Message-ID: <20201112145251.GB17076@casper.infradead.org>
+References: <20201111050559.GA24438@X58A-UD3R>
+ <20201111105441.GA78848@gmail.com>
+ <20201111093609.1bd2b637@gandalf.local.home>
+ <87d00jo55p.fsf@nanos.tec.linutronix.de>
+ <20201112081030.GB14554@X58A-UD3R>
+ <20201112092612.00a19239@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112084057.1399983-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <20201112092612.00a19239@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 17:40:54 +0900, Nobuhiro Iwamatsu wrote:
-> Add bindings for the Toshiba Visconti GPIO Controller.
+On Thu, Nov 12, 2020 at 09:26:12AM -0500, Steven Rostedt wrote:
+> > FYI, roughly Lockdep is doing:
+> > 
+> >    1. Dependency check
+> >    2. Lock usage correctness check (including RCU)
+> >    3. IRQ related usage correctness check with IRQFLAGS
+> > 
+> > 2 and 3 should be there forever which is subtle and have gotten matured.
+> > But 1 is not. I've been talking about 1. But again, it's not about
+> > replacing it right away but having both for a while. I'm gonna try my
+> > best to make it better.
 > 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> 
+> And I believe lockdep does handle 1. Perhaps show some tangible use case
+> that you want to cover that you do not believe that lockdep can handle. If
+> lockdep cannot handle it, it will show us where lockdep is lacking. If it
+> can handle it, it will educate you on other ways that lockdep can be
+> helpful in your development ;-)
 
+Something I believe lockdep is missing is a way to annotate "This lock
+will be released by a softirq".  If we had lockdep for lock_page(), this
+would be a great case to show off.  The filesystem locks the page, then
+submits it to a device driver.  On completion, the filesystem's bio
+completion handler will be called in softirq context and unlock the page.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+So if the filesystem has another lock which is acquired by the completion
+handler. we could get an ABBA deadlock that lockdep would be unable to see.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.example.dt.yaml: gpio@28020000: interrupts: [[0, 24, 4], [0, 25, 4], [0, 26, 4], [0, 27, 4], [0, 28, 4], [0, 29, 4], [0, 30, 4], [0, 31, 4], [0, 32, 4], [0, 33, 4], [0, 34, 4], [0, 35, 4], [0, 36, 4], [0, 37, 4], [0, 38, 4], [0, 39, 4]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1398656
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+There are other similar things; if you look at the remaining semaphore
+users in the kernel, you'll see the general pattern is that they're
+acquired in process context and then released in interrupt context.
+If we had a way to transfer ownership of the semaphore to a generic
+"interrupt context", they could become mutexes and lockdep could check
+that nothing else will cause a deadlock.
