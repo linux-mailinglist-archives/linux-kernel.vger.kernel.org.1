@@ -2,113 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4402B0FCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2896B2B0FD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbgKLVJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:09:48 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:45290 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgKLVJr (ORCPT
+        id S1727188AbgKLVMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbgKLVMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:09:47 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACKxMal039461;
-        Thu, 12 Nov 2020 21:09:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=H8qmn33DAOyPUU+UPzakrJmRS2/H4caDjOFFiP09JEg=;
- b=n1B38Z0KhmS0xy/IRr/Mg74SnR3iBCdsCg0NGiBa4pc4ohJhJp5fDtflOPuMLlE3UiuO
- JXwLD64YpU5Mcs/PhUOe3U6y1HVnHHAeUpcOAVWgI7qZdLf6j+dBvPtD9lRXdsHceUNb
- atptN2kMHyXMA/sZf59fHkwjLuANxY5XxGXgU5COD24wB2MJ5VFqmvye34Jd+Vjo1N2F
- FrVL8SA8X7+O/ue1k2AP8v1ZZ1rAGKvMUcBqCZ+SntKN0cC7YEG9S5duHTIBJMfhpTf1
- zYGtqTCiRqfFvHPQfc95AOaSVZMEaYk8coAWTiqr6W1b9JAJCwBEaph07h5TUPv2w5ue 3w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34p72ewuw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 21:09:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACL12w9064044;
-        Thu, 12 Nov 2020 21:09:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34p5g3nv78-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 21:09:34 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ACL9X5c018877;
-        Thu, 12 Nov 2020 21:09:33 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Nov 2020 13:09:33 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20201112210747.GK9243@fieldses.org>
-Date:   Thu, 12 Nov 2020 16:09:32 -0500
-Cc:     David Howells <dhowells@redhat.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-crypto@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-afs@lists.infradead.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <7BD0DE04-7D80-4C0B-AF59-3588762A0EFC@oracle.com>
-References: <22138FE2-9E79-4E24-99FC-74A35651B0C1@oracle.com>
- <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
- <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
- <2380561.1605195776@warthog.procyon.org.uk>
- <2422487.1605200046@warthog.procyon.org.uk>
- <20201112210747.GK9243@fieldses.org>
-To:     Bruce Fields <bfields@fieldses.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=932 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=950 mlxscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120123
+        Thu, 12 Nov 2020 16:12:08 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CB2C0613D1;
+        Thu, 12 Nov 2020 13:12:08 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id d142so6443727wmd.4;
+        Thu, 12 Nov 2020 13:12:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6ICMZkB+8QOwOmwAKS2RzuNwtbR8tWHZ2VJ+IreUKHY=;
+        b=A8pOcjBSzBR35PoWRBwG9QbV2lrZfzhHUGdNR85Rl+5TJE5d+NtCO23lN4yJHl8P1d
+         aGhMukBJJHPXq773nCVnrO6soWnkF4YR8N6LL84vthYMsU4LVO+FpYMpoWHYrbEmg/L6
+         HXnMW/BywFKWrisEZcOWBb9TZeoOQQ3vPSVlA+c4gGq4smBLcS5m0lqBjGyNar+qx4fT
+         3meB3sOMsb+edtOwK3a+Vd9YyzmVH0H+rTpPx/ix16NaEa9mxrXOiPut/U+16nsrEp89
+         qu1htdHQlH2+YX/Eyr63edepK09YKPbrcsP5V/tgnZLuHZ+7WeyTNCSRQX9cF742QRnA
+         JOYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6ICMZkB+8QOwOmwAKS2RzuNwtbR8tWHZ2VJ+IreUKHY=;
+        b=kHXgFRC+FPdkZosQ9QcmFIAjdybnKCWKhK0DD6B21Lo6wep8GRwLXvyO87IQXB345k
+         YysuYiJjFA9ATuholMUwYOgsdSr6Rf7jSTy2ueq5KimsZZuLZeKCaiV5pYWtmdwkzqdX
+         qQzxaFW0YD9tfdP8u8WRVxriRB2eVzyBVgUuLEJSewwGH1mldrRa4pe7l/H3MpbgBWf/
+         r89YJKcSTJ52aNWFCHL0a99rBlUugpPMoZ+tOImGuXvc5VYI+/wHDMMMkPIllitRoJ0p
+         RAN4bxyIa5MDLkLXW1uRlCr51TqVON8A9VB+UHKlEnXyVcRNjJplb/cbQbhbPruMDKVa
+         3AxQ==
+X-Gm-Message-State: AOAM532H4GqzvSX66ClzSw2hj3kWKOllTobXWV5M/Wta4O4vVnVUnoqW
+        x4l5RESHL7WcqIXfVJ9mZjQ+F9KHkwzpL8bhKBo=
+X-Google-Smtp-Source: ABdhPJxPOEYOKE8ALkHNxSVEuwgBfgTMaz9zpMq3Bee1Jcv5zL9lLl3CDWR2QTi4MaHQTM9ggZLKWf0whhsu3dPGHGs=
+X-Received: by 2002:a1c:ddc4:: with SMTP id u187mr1607647wmg.55.1605215527193;
+ Thu, 12 Nov 2020 13:12:07 -0800 (PST)
+MIME-Version: 1.0
+References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-8-lee.jones@linaro.org>
+In-Reply-To: <20201112190039.2785914-8-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 12 Nov 2020 16:11:56 -0500
+Message-ID: <CADnq5_OxARw4mv1E4QaZf4mG-xAfG2HmL9fq+0KTXr2vmoassA@mail.gmail.com>
+Subject: Re: [PATCH 07/30] drm/amd/amdgpu/amdgpu_fence: Fix some issues
+ pertaining to function documentation
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 2:01 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:139: warning: Function paramet=
+er or member 'flags' not described in 'amdgpu_fence_emit'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:197: warning: Function paramet=
+er or member 'timeout' not described in 'amdgpu_fence_emit_polling'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:302: warning: Function paramet=
+er or member 't' not described in 'amdgpu_fence_fallback'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:302: warning: Excess function =
+parameter 'work' description in 'amdgpu_fence_fallback'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:320: warning: Excess function =
+parameter 'adev' description in 'amdgpu_fence_wait_empty'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:649: warning: Function paramet=
+er or member 'f' not described in 'amdgpu_fence_enable_signaling'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:649: warning: Excess function =
+parameter 'fence' description in 'amdgpu_fence_enable_signaling'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:684: warning: Function paramet=
+er or member 'f' not described in 'amdgpu_fence_release'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:684: warning: Excess function =
+parameter 'fence' description in 'amdgpu_fence_release'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:749: warning: Function paramet=
+er or member 'm' not described in 'amdgpu_debugfs_gpu_recover'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:749: warning: Function paramet=
+er or member 'data' not described in 'amdgpu_debugfs_gpu_recover'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Applied.  Thanks!
 
-> On Nov 12, 2020, at 4:07 PM, Bruce Fields <bfields@fieldses.org> wrote:
-> 
-> On Thu, Nov 12, 2020 at 04:54:06PM +0000, David Howells wrote:
->> Chuck Lever <chuck.lever@oracle.com> wrote:
->> 
->>> Really? My understanding of the Linux kernel SUNRPC implementation is
->>> that it uses asynchronous, even for small data items. Maybe I'm using
->>> the terminology incorrectly.
->> 
->> Seems to be synchronous, at least in its use of skcipher:
-> 
-> Yes, it's all synchronous.  The only cases where we defer and revisit a
-> request is when we need to do upcalls to userspace.
-> 
-> (And those upcalls mostly come after we're done with unwrapping and
-> verifying a request, so now I'm sort of curious exactly what Chuck was
-> seeing.)
+Alex
 
-I vaguely recall that setting CRYPTO_TFM_REQ_MAY_SLEEP allows the
-crypto API to sleep and defer completion.
-
-
---
-Chuck Lever
-
-
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_fence.c
+> index fe2d495d08ab0..d56f4023ebb31 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
+> @@ -130,6 +130,7 @@ static u32 amdgpu_fence_read(struct amdgpu_ring *ring=
+)
+>   *
+>   * @ring: ring the fence is associated with
+>   * @f: resulting fence object
+> + * @flags: flags to pass into the subordinate .emit_fence() call
+>   *
+>   * Emits a fence command on the requested ring (all asics).
+>   * Returns 0 on success, -ENOMEM on failure.
+> @@ -187,6 +188,7 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, struc=
+t dma_fence **f,
+>   *
+>   * @ring: ring the fence is associated with
+>   * @s: resulting sequence number
+> + * @timeout: the timeout for waiting in usecs
+>   *
+>   * Emits a fence command on the requested ring (all asics).
+>   * Used For polling fence.
+> @@ -294,7 +296,7 @@ bool amdgpu_fence_process(struct amdgpu_ring *ring)
+>  /**
+>   * amdgpu_fence_fallback - fallback for hardware interrupts
+>   *
+> - * @work: delayed work item
+> + * @t: timer context used to obtain the pointer to ring structure
+>   *
+>   * Checks for fence activity.
+>   */
+> @@ -310,7 +312,6 @@ static void amdgpu_fence_fallback(struct timer_list *=
+t)
+>  /**
+>   * amdgpu_fence_wait_empty - wait for all fences to signal
+>   *
+> - * @adev: amdgpu device pointer
+>   * @ring: ring index the fence is associated with
+>   *
+>   * Wait for all fences on the requested ring to signal (all asics).
+> @@ -639,7 +640,7 @@ static const char *amdgpu_fence_get_timeline_name(str=
+uct dma_fence *f)
+>
+>  /**
+>   * amdgpu_fence_enable_signaling - enable signalling on fence
+> - * @fence: fence
+> + * @f: fence
+>   *
+>   * This function is called with fence_queue lock held, and adds a callba=
+ck
+>   * to fence_queue that checks if this fence is signaled, and if so it
+> @@ -675,7 +676,7 @@ static void amdgpu_fence_free(struct rcu_head *rcu)
+>  /**
+>   * amdgpu_fence_release - callback that fence can be freed
+>   *
+> - * @fence: fence
+> + * @f: fence
+>   *
+>   * This function is called when the reference count becomes zero.
+>   * It just RCU schedules freeing up the fence.
+> @@ -740,7 +741,7 @@ static int amdgpu_debugfs_fence_info(struct seq_file =
+*m, void *data)
+>         return 0;
+>  }
+>
+> -/**
+> +/*
+>   * amdgpu_debugfs_gpu_recover - manually trigger a gpu reset & recover
+>   *
+>   * Manually trigger a gpu reset at the next fence wait.
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
