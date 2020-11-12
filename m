@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9E12AFE83
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423A72AFEC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgKLFil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:38:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729139AbgKLE4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 23:56:18 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF72C0613D1;
-        Wed, 11 Nov 2020 20:56:18 -0800 (PST)
-Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kd4eb-0001hT-HT; Thu, 12 Nov 2020 05:56:13 +0100
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1601541165.git.linux@leemhuis.info>
- <dc293f6d4f71ea827c861c64e88dfa0316f1d934.1601541165.git.linux@leemhuis.info>
- <8f3fce56-fdc4-c248-05ec-4fda1ee6fc54@infradead.org>
- <2b87f58f-ca74-6c73-fb7a-853cca2751bb@leemhuis.info>
- <6a8ffd01-ff1c-284b-42ac-23cd164e0873@leemhuis.info>
- <7eb95400-5ff1-ef14-d03f-b4d0f7482ac5@infradead.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [RFC PATCH v1 02/26] docs: reporting-bugs: Create a TLDR how to
- report issues
-Message-ID: <6f1fcb33-86d6-7573-22b5-8f713a2857e3@leemhuis.info>
-Date:   Thu, 12 Nov 2020 05:56:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729498AbgKLFip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:38:45 -0500
+Received: from namei.org ([65.99.196.166]:52612 "EHLO namei.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729185AbgKLFAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 00:00:07 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 0AC4xj4d005412;
+        Thu, 12 Nov 2020 04:59:45 GMT
+Date:   Thu, 12 Nov 2020 15:59:45 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+cc:     Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v1 0/9] Landlock fixes
+In-Reply-To: <20201111213442.434639-1-mic@digikod.net>
+Message-ID: <alpine.LRH.2.21.2011121559140.5257@namei.org>
+References: <20201111213442.434639-1-mic@digikod.net>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <7eb95400-5ff1-ef14-d03f-b4d0f7482ac5@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605156978;8dfc29d4;
-X-HE-SMSGID: 1kd4eb-0001hT-HT
+Content-Type: multipart/mixed; boundary="1665246916-1592972126-1605157185=:5257"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.11.20 um 04:33 schrieb Randy Dunlap:
-> On 11/11/20 7:24 AM, Thorsten Leemhuis wrote:
->> Am 03.10.20 um 09:27 schrieb Thorsten Leemhuis:
->>> Am 02.10.20 um 04:32 schrieb Randy Dunlap:
->>>> On 10/1/20 1:39 AM, Thorsten Leemhuis wrote: […]
- > […]
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Sorry for the mail with those overly long lines, seems Thunderbird does 
-not behave as it used to (or I did something stupid) :-/
+--1665246916-1592972126-1605157185=:5257
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
->> I'm preparing to send v2 and was a bit unhappy with this and
->> another section when seeing it again after weeks. In the end I
->> reshuffled and rewrote significant parts of it, see below.
->> 
->> […]
->> If you can not reproduce the issue with the mainline kernel,
->> consider sticking with it; if you'd like to use an older version
->> line and want to see it fixed there, first make sure it's still
->> supported. Install its latest release as vanilla kernel. If you
->> cannot reproduce the issue there, try to find the commit that fixed
->> it in mainline or any discussion preceding it: those will often
->> mention if backporting is planed or considered impassable. If
->> backporting was not discussed, ask if it's in the cards. In case
->> you don't find
-> impossible.  ??
+On Wed, 11 Nov 2020, Mickaël Salaün wrote:
 
-Hmmm, I didn't won't to use "impossible" as it often is possible, but 
-considered to hard/to much work. But I guess my dict sent me the wrong way.
+> Hi,
+> 
+> This patch series fixes some issues and makes the Landlock filesystem
+> access-control more consistent and deterministic when stacking multiple
+> rulesets.  This is checked by current and new tests.  I also extended
+> documentation and example to help users.
+> 
+> This series can be applied on top of
+> https://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git/log/?h=landlock_lsm
 
-I'll guess I'll switch to "considered too complex"
+Actually, given the number of fixes here, please respin so we get a 
+cleaner initial PR for Linus.
 
->> any commits or a preceding discussion, see the Linux-stable mailing
->> list archives for existing reports, as it might be a regression
->> specific to the version line. If it is, it round about needs to be
->> reported like a problem in mainline (including the bisection).
-> maybe:  it still needs to be reported like
+> 
+> Regards,
+> 
+> Mickaël Salaün (9):
+>   landlock: Fix memory allocation error handling
+>   landlock: Cosmetic fixes for filesystem management
+>   landlock: Enforce deterministic interleaved path rules
+>   landlock: Always intersect access rights
+>   landlock: Add extra checks when inserting a rule
+>   selftests/landlock: Extend layout1.inherit_superset
+>   landlock: Clean up get_ruleset_from_fd()
+>   landlock: Add help to enable Landlock as a stacked LSM
+>   landlock: Extend documentation about limitations
+> 
+>  Documentation/userspace-api/landlock.rst   |  17 +++
+>  samples/landlock/sandboxer.c               |  21 +++-
+>  security/landlock/Kconfig                  |   4 +-
+>  security/landlock/fs.c                     |  67 +++++-----
+>  security/landlock/object.c                 |   5 +-
+>  security/landlock/ruleset.c                |  34 ++---
+>  security/landlock/syscall.c                |  24 ++--
+>  tools/testing/selftests/landlock/fs_test.c | 140 +++++++++++++++++++--
+>  8 files changed, 239 insertions(+), 73 deletions(-)
+> 
+> 
+> base-commit: 96b3198c4025c11347651700b77e45a686d78553
+> 
 
-Went with:
+-- 
+James Morris
+<jmorris@namei.org>
 
-If it is, report it like you would report a problem in mainline 
-(including the bisection).
-
->> If you reached this point without a solution, ask for advice one
->> the subsystem's mailing list. ```
-> Otherwise it looks good to me.
-
-Many thanks for looking at it, much appreciated!
-
-Ciao, Thorsten
+--1665246916-1592972126-1605157185=:5257--
