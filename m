@@ -2,85 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862752B020F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745342B0210
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbgKLJht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        id S1727682AbgKLJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgKLJhs (ORCPT
+        with ESMTP id S1725928AbgKLJiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:37:48 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D519AC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:37:46 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id d9so4644894qke.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:37:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=/rIDPNZ+fS0XAdtYtJb+WN4xPGo9PpZ/qzDzORSloq0=;
-        b=KejX1Edu+r7ZJGM2Z3GOynxgw4AZawxLJnsuRDPDXkogNJcxkUl6BWFjg0KQhFbBgW
-         53PS6YoMoJc7VaGRlorLsVBtWUe5CTA479qjEWiw9ehMMBYq9R4vDEUOYeUFaYcKyZmE
-         1KHzeZjkmUbVaYs5+F1A/2AIHRb0ygQVmBLTNot9od+RXYTvo91+HzYMyERr9TBXaynL
-         pNq+5WqAKbF212HbpydyZ47xzjf9Eq04PETfMZtqQwWK9J+GBIkRqaUvwwWhAX1zkhnW
-         X6SDB40UC0+cKKsrAipdLrBpxLGmWjjdA6CUqI/zEkckVUhvWhgXAqSCsNyHsTNGu3+o
-         9yaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=/rIDPNZ+fS0XAdtYtJb+WN4xPGo9PpZ/qzDzORSloq0=;
-        b=rlQ5SL/orfFjxioh2TI7Ao8aMn9Shnso6RfWlT5aBGJvDHvSqis3YtARoIIlOhUnki
-         qi7zJLRz/XN9SH9kXIn5zZGlB6AsQCq0CknE7dr9A52vqeydhPXMQRzF+YCgqYzC6SAm
-         c9UaMd8+KWL/8yfNh+Y+ZctGbweYbGlWhANJ86pgHgrRoZPJcoy5XSWOMo1fUmrv67KB
-         2atwYeSOcVFJC9lLhkmUdXGX2MoExRIIy0dAEAEdmKsyOkAnLlf7KVX4QuI8TPSU5UjD
-         qOZJpmQVepVOjOlZrWflsE1Oyf/5HU+ISbomPDujd0p5/PScgcylqknm5ksa/0me/u4o
-         Kvbw==
-X-Gm-Message-State: AOAM531oUjcKlsbyCU3Df6kmHfxB3SEwWAQqQyRPq+ebZdYsUeqv5vOz
-        Meeb/4nAhVIaRl5H3SFxrCWdWpN7EvtKcovKsq1RyowlPd6NdaFK
-X-Google-Smtp-Source: ABdhPJwQRukKnqrE8hc0YvlNQ3IConNb19c2WyGUobA+BAm4HPCJWobck1hquH+Q61CqcCbS6WfjByMG8W999om8BrQ=
-X-Received: by 2002:a37:7b44:: with SMTP id w65mr30488529qkc.350.1605173865872;
- Thu, 12 Nov 2020 01:37:45 -0800 (PST)
+        Thu, 12 Nov 2020 04:38:02 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92295C0613D1;
+        Thu, 12 Nov 2020 01:38:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cnWNfTHVU4AEXtUdky7SzwT/9uPYUSiJsLa4+lGu8a8=; b=TS+osSOLMCGS4fDhHQTgjKOJng
+        BYlhxXc3gLOHA83cYAk937kLntXcC6InGwuROC6f3+DNXtadbsoCtWKcuJq+4QHBcbLIDJXRnhv3O
+        TgwYa19YZrdoay+00fILS+4mXPV1zn86DlTvKunG6818dlenu1z6R3vqxPitwFciMy3bGiQGufPJV
+        f85noQ79w/nqcaXyIVlVKqbi3tUtgKvqyDQXPbTV+4lGzFZl0h/X1Ata7YI/5k7OM45eG+xWULmyy
+        Ae6xOmkLS4xDI8cDZW7qMIiesvh1sXT1IzJFPRfrYe107Ic/sVtMZqYTGKf16h6YLtppwPKFPMdAy
+        wnh82Y0g==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kd93A-0006O5-8p; Thu, 12 Nov 2020 09:37:52 +0000
+Date:   Thu, 12 Nov 2020 09:37:52 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/6] ibmvfc: byte swap login_buf.resp values in attribute
+ show functions
+Message-ID: <20201112093752.GA24235@infradead.org>
+References: <20201112010442.102589-1-tyreld@linux.ibm.com>
 MIME-Version: 1.0
-References: <000000000000e3068105ac405407@google.com> <00000000000005858405b3df4904@google.com>
-In-Reply-To: <00000000000005858405b3df4904@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 12 Nov 2020 10:37:34 +0100
-Message-ID: <CACT4Y+Z3Vqx+1bo1AF1XPvOmy68=foW5KM0W=+sOGfA9nyNAxg@mail.gmail.com>
-Subject: Re: WARNING in irqentry_exit
-To:     syzbot <syzbot+d4336c84ed0099fdbe47@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112010442.102589-1-tyreld@linux.ibm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 3:01 AM syzbot
-<syzbot+d4336c84ed0099fdbe47@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Fri Oct 2 09:04:21 2020 +0000
->
->     lockdep: Fix lockdep recursion
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1202919a500000
-> start commit:   f873db9a Merge tag 'io_uring-5.9-2020-08-21' of git://git...
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d4336c84ed0099fdbe47
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15312a66900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b01641900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: lockdep: Fix lockdep recursion
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On Wed, Nov 11, 2020 at 07:04:37PM -0600, Tyrel Datwyler wrote:
+> Both ibmvfc_show_host_(capabilities|npiv_version) functions retrieve
+> values from vhost->login_buf.resp buffer. This is the MAD response
+> buffer from the VIOS and as such any multi-byte non-string values are in
+> big endian format.
+> 
+> Byte swap these values to host cpu endian format for better human
+> readability.
 
-#syz fix: lockdep: Fix lockdep recursion
+The whole series creates tons of pointlessly over 80 char lines.
+Please do a quick fixup.
