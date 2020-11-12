@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641792B0A8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B402B0A97
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgKLQpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:45:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728440AbgKLQpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:45:19 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 784C621D7F;
-        Thu, 12 Nov 2020 16:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605199518;
-        bh=2jxbukIv9oTWkB8v1+kQrgO6FSfiOBI/y/TSNhomr+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=noFnRSg0bpRyqihLrAl4R85zI5kqEv9ij+IncXg4oeNGcXv9P6BG4MPolNIU164eg
-         8hFcD3tklxof37MuC5Brv9+jW9ybKYzO2J54puZW2fvU1Wo6nyutjvzRd+x04aT3BS
-         xjcX4LHVfji0mcFzO/5Zkn3XzPg5j2qup9SBZ8dk=
-Received: by mail-ot1-f54.google.com with SMTP id k3so6162657otp.12;
-        Thu, 12 Nov 2020 08:45:18 -0800 (PST)
-X-Gm-Message-State: AOAM532yd9D+VusFYpsVd1E6eXkBfVdvMMDDxC2AZZkGMzd/qqC7Hq0M
-        UurQIllowmMekwJamlXUMHZovS83GYD+WlJrhd8=
-X-Google-Smtp-Source: ABdhPJxOQAs3+2CxnKfx4cmt/6UrxUllEL6x6zbppjUQtLQvcJ3uBJwhuqJJEy0i43A6cPwfPo/XJYGvp/PTDDBGJ3M=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr10475oth.251.1605199517681;
- Thu, 12 Nov 2020 08:45:17 -0800 (PST)
+        id S1729244AbgKLQpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:45:38 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37566 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728977AbgKLQpi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:45:38 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACGjWVr030274;
+        Thu, 12 Nov 2020 10:45:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605199532;
+        bh=nEeyGV/g8WhnDhmKwXjMR/xIRfMtEk/NvzJI7KH1IEg=;
+        h=From:To:CC:Subject:Date;
+        b=Npe45z1FSa8F+JxCBhh/LjOhcnJYvBvCpbZYribufbxj3kQd8+7B76xAs2QYK1Si9
+         0mTWvBX28fRfouowO7kkIYUbLJBMJse2FXSL6LOYjiLiAl3Ypdbk76TExVHGESigk9
+         S/S3kzeu5/wzB2fr0GI7Rx2gDB32DwPv/HOAe6AA=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACGjWYP057547
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 10:45:32 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 10:45:31 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 10:45:31 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACGjVJ1098180;
+        Thu, 12 Nov 2020 10:45:31 -0600
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Wang Qing <wangqing@vivo.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH v5] net: ethernet: ti: am65-cpts: update ret when ptp_clock is ERROR
+Date:   Thu, 12 Nov 2020 18:45:41 +0200
+Message-ID: <20201112164541.3223-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201026211311.3887003-1-arnd@kernel.org> <20201112155709.GA894300@nvidia.com>
-In-Reply-To: <20201112155709.GA894300@nvidia.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 12 Nov 2020 17:45:00 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
-Message-ID: <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
-Subject: Re: [PATCH] mthca: work around -Wenum-conversion warning
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 4:57 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Mon, Oct 26, 2020 at 10:12:30PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc points out a suspicious mixing of enum types in a function that
-> > converts from MTHCA_OPCODE_* values to IB_WC_* values:
-> >
-> > drivers/infiniband/hw/mthca/mthca_cq.c: In function 'mthca_poll_one':
-> > drivers/infiniband/hw/mthca/mthca_cq.c:607:21: warning: implicit conversion from 'enum <anonymous>' to 'enum ib_wc_opcode' [-Wenum-conversion]
-> >   607 |    entry->opcode    = MTHCA_OPCODE_INVALID;
-> >
-> > Nothing seems to ever check for MTHCA_OPCODE_INVALID again, no
-> > idea if this is meaningful, but it seems harmless as it deals
-> > with an invalid input.
-> >
-> > Add a cast to suppress the warning.
-> >
-> > Fixes: 2a4443a69934 ("[PATCH] IB/mthca: fill in opcode field for send completions")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >  drivers/infiniband/hw/mthca/mthca_cq.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
-> > index c3cfea243af8..319b8aa63f36 100644
-> > +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
-> > @@ -604,7 +604,7 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
-> >                       entry->byte_len  = MTHCA_ATOMIC_BYTE_LEN;
-> >                       break;
-> >               default:
-> > -                     entry->opcode    = MTHCA_OPCODE_INVALID;
-> > +                     entry->opcode    = (u8)MTHCA_OPCODE_INVALID;
-> >                       break;
->
-> This code is completely bogus, sigh
->
-> Is this OK as far as the warning goes?
+From: Wang Qing <wangqing@vivo.com>
 
-Yes, I'm sure your patch fixes it and it makes more sense than my version.
+We always have to update the value of ret, otherwise the
+ error value may be the previous one.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: f6bd59526ca5 ("net: ethernet: ti: introduce am654 common platform time sync driver")
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+[grygorii.strashko@ti.com: fix build warn, subj add fixes tag]
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+---
+Hi
+
+I've update patch as requested and added Acked-by from Richard from v1.
+
+v4: https://lore.kernel.org/patchwork/patch/1336771/
+v3: https://lore.kernel.org/patchwork/patch/1334871/
+v2: https://lore.kernel.org/patchwork/patch/1334549/
+v1: https://lore.kernel.org/patchwork/patch/1334067/
+
+ drivers/net/ethernet/ti/am65-cpts.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+index 75056c14b161..5dc60ecabe56 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.c
++++ b/drivers/net/ethernet/ti/am65-cpts.c
+@@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+ 	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
+ 		dev_err(dev, "Failed to register ptp clk %ld\n",
+ 			PTR_ERR(cpts->ptp_clock));
+-		if (!cpts->ptp_clock)
+-			ret = -ENODEV;
++		ret = cpts->ptp_clock ? PTR_ERR(cpts->ptp_clock) : -ENODEV;
+ 		goto refclk_disable;
+ 	}
+ 	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
+-- 
+2.17.1
+
