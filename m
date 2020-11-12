@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCEA2B00D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAF12B00E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgKLIEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:04:35 -0500
-Received: from mout.gmx.net ([212.227.15.18]:41657 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725898AbgKLIEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:04:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605168264;
-        bh=gwhiVaxOEIeukBVgU+3WoDcm8giOfCiMV4D3MYQS5Zs=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=U740AVZtq2ABWskhx40zYT5ZXcmMYxYVH1OTdcazEzxZnsp0wyjQdLYvgunJnFUtg
-         fgvEylOexdhUKU0IfMCxgT0w2v2wfeElCx86QO9dVQUeLneZCs1LRDFNhr8kL2C2IX
-         jCwC2nVxGxBpYjAEAo8C7XstgrB4yUgFjuUDFblg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.55] ([95.91.192.147]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MrhQ6-1jyGTc14uS-00ngxn; Thu, 12
- Nov 2020 09:04:24 +0100
-Subject: Re: [PATCH] Input: ads7846 - fix unaligned access on 7845
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     Anatolij Gustschin <agust@denx.de>, linux-kernel@vger.kernel.org,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20201112012742.GA3608551@dtor-ws>
-From:   Oleksij Rempel <linux@rempel-privat.de>
-Message-ID: <de67681c-b392-198c-f73e-4c9073d8f1e3@rempel-privat.de>
-Date:   Thu, 12 Nov 2020 09:04:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1726725AbgKLILy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:11:54 -0500
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:54916 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725884AbgKLILy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 03:11:54 -0500
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.53 with ESMTP; 12 Nov 2020 17:11:52 +0900
+X-Original-SENDERIP: 156.147.1.127
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.127 with ESMTP; 12 Nov 2020 17:11:52 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Thu, 12 Nov 2020 17:10:30 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: Re: [RFC] Are you good with Lockdep?
+Message-ID: <20201112081030.GB14554@X58A-UD3R>
+References: <20201111050559.GA24438@X58A-UD3R>
+ <20201111105441.GA78848@gmail.com>
+ <20201111093609.1bd2b637@gandalf.local.home>
+ <87d00jo55p.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201112012742.GA3608551@dtor-ws>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PiPo1pUv5Ey0Jy+o7aMWxpBMWlvIOOe9bwB4Gyk8pFi0DZGjx2z
- hbnzFN5u/CTCiETc7vZqgmjK6MqK6QG0ZrD9YImfUgQUNbpLB70vq0sxs5+/CfANhrW+eu5
- MgMnw9UfgpP8zvHD3Zs+GPm56/PeiwAzEjZF2Qs+o515oezykNAS2ISrggt1bXk/MxMCPw4
- Liy/QzjugR6+219590CDQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eUiVD8qYYUk=:LXcFSEaKaNX1fdc98Dxqif
- 7yfU9RavMaTUJoW53wDj5eC/GmPhuvuCjPE+xwbeadwrVL3sswT2+Mpl9+8C4zQAMQEuvnZ7U
- y/kdmsixoOIhBBKBOPbh0XTxSel6TwtEw4LwQoWL+kmeWd8mG7NhZqNed3lTRf9UU0DQCeCBf
- NbzTh+OCmM2NjTgOH72CVva/iYf+Dm0gdQhsGWgGSD9lkvjfwADjW1kws8wW5YSkGARC3lt5s
- Dpl7UABjA2CWLvd7C9QwzwlKXKTvTGO6gM229AvHYQmzCn2Wb6vCDB9zzJpqy8BaW/vtrWlH8
- 3DuCi+WYyNbhRxCj29QC8J+nINYIntv5JpXVyVUHFyAte7Lq4ZF94WPPOq3zpdqPK4mZEzZBG
- Naa7p/r8Z/cc9K8vIewrOVeINiTVBCg0wSNfG/buBlKsKnyp+PPWk+BXOtZkp/ctlznDg/m/r
- 6g/hcSdSBvO66konq6b6bMNsbKmIsbaNSoxekjw9Y0inrczQVhFh6k0E5litW6iRRnK1ZNbxB
- IQxLSjenSZ4bGSd10dcWNKi0cJuJkOwomEhgFk0VPyLFfnwQ+TCDkqNWFJ26YeC2/hiVpYuZ2
- /SxQo9zyUZCtmy+R3lu7euZpuq0a5weHt1LorxJAsp0dCWbsT7mfzr65xyRJKS1HeI+CCvhCp
- fPaeOqbw00afx6ih9PF6ZopSIC/lhES4Fardrw4Co96Lp1dhcbrfO72TtHHPWze0RCqFwTpbD
- eFJkt2QLG8/FTjA4m9RM+mCBhoK9aS+Mny8YX/g2BX5rDRo0mpvnIgszC8NlSAG5Q6e1ydbRQ
- hmXNhSQacbAjGPQE3aBoVr2bVnZPXSBOsg0RYTy66mE8eUqMYFEldcSFCIHKsta1g7KjPwV1B
- UrRzel5lAAcfkmXj3ITg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d00jo55p.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry,
+On Thu, Nov 12, 2020 at 12:16:50AM +0100, Thomas Gleixner wrote:
+> Wrappers which make things simpler are always useful, but the lack of
+> wrappers does not justify a wholesale replacement.
 
-Am 12.11.20 um 02:27 schrieb Dmitry Torokhov:
-> req->sample[1] is not naturally aligned at word boundary, and therefore
-> we should use get_unaligned_be16() when accessing it.
->
-> Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 con=
-troller support")
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Totally right. Lack of wrappers doesn't matter at all. That could be
+achieved easily by modifying the original e.i. Lockdep. That's why I
+didn't mention wrapper things in the description. (Sorry if I misled
+you so it looked like I mentioned just wrappers. I should've explained
+it in more detail.)
 
-I do not have ads7845, but i  assume i need to resend my patch with the sa=
-me fix. Correct?
+xxx_wait(), xxx_event() and xxx_event_context_start() are much more than
+wrappers. It was about what deadlock detection tool should work based on.
 
-> ---
->
-> Not tested on hardware, so if somebody has the controller and can verify
-> that would be great.
->
->
->  drivers/input/touchscreen/ads7846.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchsc=
-reen/ads7846.c
-> index 95e89f675ad5..35d14bc44aff 100644
-> --- a/drivers/input/touchscreen/ads7846.c
-> +++ b/drivers/input/touchscreen/ads7846.c
-> @@ -33,6 +33,7 @@
->  #include <linux/regulator/consumer.h>
->  #include <linux/module.h>
->  #include <asm/irq.h>
-> +#include <asm/unaligned.h>
->
->  /*
->   * This code has been heavily tested on a Nokia 770, and lightly
-> @@ -443,7 +444,7 @@ static int ads7845_read12_ser(struct device *dev, un=
-signed command)
->
->  	if (status =3D=3D 0) {
->  		/* BE12 value, then padding */
-> -		status =3D be16_to_cpu(*((u16 *)&req->sample[1]));
-> +		status =3D get_unaligned_be16(&req->sample[1]);
->  		status =3D status >> 3;
->  		status &=3D 0x0fff;
->  	}
->
+> We all know that lockdep has limitations but I yet have to see a proper
+> argument why this can't be solved incrementaly on top of the existing
+> infrastructure.
 
+This is exactly what I'd like to address. As you can see in the first
+mail, the reasons why this can't be solved incrementaly are:
 
-=2D-
-Regards,
-Oleksij
+1. Lockdep's design and implementation are too complicated to be
+   generalized so as to allow multi-reporting. Quite big change onto
+   Lockdep would be required.
+
+   I think allowing multi-reporting is very important for tools like
+   Lockdep. As long as false positive in the single-reporting manner
+   bothers folks, tools like Lockdep cannot be enhanced so as to have
+   stronger capability.
+
+2. Does Lockdep do what a deadlock detection tool should do? From
+   internal engine to APIs, all the internal data structure and
+   algotithm of Lockdep is only looking at lock(?) acquisition order.
+   Fundamentally Lockdep cannot work correctly with all general cases,
+   for example, read/write/trylock and any wait/event.
+
+   This can be done by re-introducing cross-release but still partially.
+   A deadlock detector tool should thoroughly focus on *waits* and
+   *events* to be more perfect at detecting deadlock because the fact is
+   *waits* and their *events* that never reach cause deadlock.
+
+   With the philosophy of Lockdep, we can only handle partial cases
+   fundamently. We have no choice but to do various work-around or adopt
+   tricky ways to cover more cases if we keep using Lockdep.
+
+> That said, I'm not at all interested in a wholesale replacement of
+> lockdep which will take exactly the same amount of time to stabilize and
+> weed out the shortcomings again.
+
+I don't want to bother ones who don't want to be bothered from the tool.
+But I think some day we need a new tool doing exactly what it should do
+for deadlock detection for sure.
+
+I'm willing to make it matured on my own, or with ones who need a
+stronger tool or willing to make it matured together - I wish tho.
+That's why I suggest to make both there until the new tool gets
+considered stable.
+
+FYI, roughly Lockdep is doing:
+
+   1. Dependency check
+   2. Lock usage correctness check (including RCU)
+   3. IRQ related usage correctness check with IRQFLAGS
+
+2 and 3 should be there forever which is subtle and have gotten matured.
+But 1 is not. I've been talking about 1. But again, it's not about
+replacing it right away but having both for a while. I'm gonna try my
+best to make it better.
+
+Thanks,
+Byungchul
