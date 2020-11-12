@@ -2,545 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345592B12E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D05352B12E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgKLX4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 18:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgKLX4T (ORCPT
+        id S1726210AbgKLX4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 18:56:24 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21500 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725894AbgKLX4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:56:19 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7F2C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 15:56:18 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id c71so3994737qkg.21
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 15:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=fefEaKBLbwaoT4XvZCEfnDj0tRbpimXZIYil0Pvzfe8=;
-        b=LvojQ1/rvA/H6lREdR2We30D7F/VF19yP/wEeUVbHGIYB8n8btPXW/CC9YA3RF1+vT
-         OC7lAgCYyiJmswh2tSvc0au3mZMGl/BCy4jrrw82HquMM8qfk0TnaN96L+2rt0vuIx4B
-         svIJgaZtxbryRHhjxm/pDM29JBmVG5zQpQxPPDVBYFcuekrIT+QS//yHhynowbeW6wN/
-         C5nz0jLkI6rDgyvd2w/DmSU/DxiAPPt4GxP6GIv/MEuNtBB8zS2Zreco9DfMgD09YrD1
-         9uQJo6higG4R6sJkGi0+H7rvpaEsi1cJzxEue2wYWeicVQY8/wnV/EIAAr/kfmOADeBT
-         +b+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=fefEaKBLbwaoT4XvZCEfnDj0tRbpimXZIYil0Pvzfe8=;
-        b=YAAfeirfyOsATa0IiyI/5ZDhnDiYT+AJGe3B+4GqXxBZVqxfyfZ5odtoYUuPRx3VwW
-         M/RIVom2fsxNX54PyPsSonFy2+hhpswuHsiTTEctcmij5UbiDvZWyISm/9mLhABU9BOb
-         upF9Xg+nG2JCUgytr3Gl6BYJ3ICvf32gKQ92D1s+zo45c3cpTa1FdxxMcws6kwGMIeCC
-         L3nOXWkJoCZh6Rpb+lAdp0MbwhY85xjWBZiQp3kipVkeQSqZh0T5qwmvL6VKnXZGxkBT
-         rM2kCC4SzAR9hTthcdWj9zh+YkcTDFiQJwGl+/B52/E1BArcpNlx42inTupC4bdGgr2R
-         u6aA==
-X-Gm-Message-State: AOAM532oOvDreB94vfiEGyKHsloRz5rfTmSbq1HklY+6gshSlFZscGaK
-        tvdOfAZLAh5c+bRZki4dP9YdBrFk
-X-Google-Smtp-Source: ABdhPJw9DnJIB6atqWnGQjPt/2nxSyFQDK4XPATnTzjZjHQYU+EnrKEhjauxIQqA3ecOclWQuBi42KI0
-Sender: "rkir via sendgmr" <rkir@rkir.kir.corp.google.com>
-X-Received: from rkir.kir.corp.google.com ([2620:15c:29:200:3e52:82ff:fe5f:f95])
- (user=rkir job=sendgmr) by 2002:ad4:524b:: with SMTP id s11mr2389624qvq.3.1605225377089;
- Thu, 12 Nov 2020 15:56:17 -0800 (PST)
-Date:   Thu, 12 Nov 2020 15:49:07 -0800
-Message-Id: <20201112234907.3761694-1-rkir@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH] drivers: staging: retire drivers/staging/goldfish
-From:   rkir@google.com
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, lfy@google.com,
-        Roman Kiryanov <rkir@google.com>
+        Thu, 12 Nov 2020 18:56:23 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACNVqxn147139;
+        Thu, 12 Nov 2020 18:56:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=gpZ6qu8/NMvzR0Qg5R6sCequwTjXtgPzj/3Pxg/iCRg=;
+ b=bw+3cHjxZkHG/efCIbVjEEktQ+G+1VE2KzVuIedZ2wxdAbXnQmhNufHlAz5S8WrcMQ4D
+ WcYsFCaRtV/JvJ+OS6h8hU6ueLUhL4wG1wj36T+5UgRAqO4ilNWB4+qz3b4GLE4oO9p3
+ SNwSlCLmXNQZJuqX8J77WTp8XpzIh2Zb1rlHnBzKJGwk+rGKSvhzP6ZhiyWGqtExqtOS
+ pd+mLcDetQcj2vmu2ATrx7RpuMaLLYzdUw+eT/0gjir4cp0y+65kZrhihRK/qg/uMEyl
+ cm7mkPwrRxDRsSlP4RnGKdO+t4NZ3fB1qUQ+Hzlr9uZ8YKfFGNvt4L1qrVM49NYD0Sn0 zQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34sdd0tj8j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 18:56:17 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ACNuHkc042971;
+        Thu, 12 Nov 2020 18:56:17 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34sdd0tj7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 18:56:17 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ACNrdN9014028;
+        Thu, 12 Nov 2020 23:56:15 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 34q084296e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 23:56:15 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ACNu5sP8323784
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 23:56:05 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4BDB14204B;
+        Thu, 12 Nov 2020 23:56:05 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E02D042042;
+        Thu, 12 Nov 2020 23:56:01 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.105.204])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Nov 2020 23:56:01 +0000 (GMT)
+Message-ID: <0f25c77c042f3e62405f12966c2358fe8cd82116.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 3/7] IMA: add hook to measure critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Thu, 12 Nov 2020 18:56:01 -0500
+In-Reply-To: <25622ca6-359d-fa97-c5e6-e314cba51306@linux.microsoft.com>
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+         <20201101222626.6111-4-tusharsu@linux.microsoft.com>
+         <1f83ec246cb6356c340b379ab00e43f0b5bba0ae.camel@linux.ibm.com>
+         <25622ca6-359d-fa97-c5e6-e314cba51306@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_14:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Kiryanov <rkir@google.com>
+Hi Tushar,
 
-Android Studio Emulator (goldfish) migrated
-to Intel HDA.
+On Thu, 2020-11-12 at 13:57 -0800, Tushar Sugandhi wrote:
+> >> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> >> index 4485d87c0aa5..6e1b11dcba53 100644
+> >> --- a/security/integrity/ima/ima_main.c
+> >> +++ b/security/integrity/ima/ima_main.c
+> >> @@ -921,6 +921,44 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+> >>   	fdput(f);
+> >>   }
+> >>   
+> >> +/**
+> >> + * ima_measure_critical_data - measure kernel subsystem data
+> >> + * critical to integrity of the kernel
+> > 
+> > Please change this to "measure kernel integrity critical data".
+> > 
+> *Question*
+> Thanks Mimi. Do you want us just to update the description, or do you
+> want us to update the function name too?
 
-Signed-off-by: Roman Kiryanov <rkir@google.com>
----
- arch/mips/configs/generic/board-ranchu.config |   1 -
- drivers/staging/Kconfig                       |   2 -
- drivers/staging/Makefile                      |   1 -
- drivers/staging/goldfish/Kconfig              |   7 -
- drivers/staging/goldfish/Makefile             |   6 -
- drivers/staging/goldfish/README               |   5 -
- drivers/staging/goldfish/goldfish_audio.c     | 383 ------------------
- 7 files changed, 405 deletions(-)
- delete mode 100644 drivers/staging/goldfish/Kconfig
- delete mode 100644 drivers/staging/goldfish/Makefile
- delete mode 100644 drivers/staging/goldfish/README
- delete mode 100644 drivers/staging/goldfish/goldfish_audio.c
+Just the description.
 
-diff --git a/arch/mips/configs/generic/board-ranchu.config b/arch/mips/configs/generic/board-ranchu.config
-index fee9ad4c5598..640aac845ebe 100644
---- a/arch/mips/configs/generic/board-ranchu.config
-+++ b/arch/mips/configs/generic/board-ranchu.config
-@@ -5,7 +5,6 @@ CONFIG_FB=y
- CONFIG_FB_GOLDFISH=y
- CONFIG_GOLDFISH=y
- CONFIG_STAGING=y
--CONFIG_GOLDFISH_AUDIO=y
- CONFIG_GOLDFISH_PIC=y
- CONFIG_GOLDFISH_PIPE=y
- CONFIG_GOLDFISH_TTY=y
-diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-index 2d0310448eba..c4fb7312392a 100644
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@ -68,8 +68,6 @@ source "drivers/staging/gdm724x/Kconfig"
- 
- source "drivers/staging/fwserial/Kconfig"
- 
--source "drivers/staging/goldfish/Kconfig"
--
- source "drivers/staging/netlogic/Kconfig"
- 
- source "drivers/staging/gs_fpgaboot/Kconfig"
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 757a892ab5b9..b72c3a04899b 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -25,7 +25,6 @@ obj-$(CONFIG_ANDROID)		+= android/
- obj-$(CONFIG_STAGING_BOARD)	+= board/
- obj-$(CONFIG_LTE_GDM724X)	+= gdm724x/
- obj-$(CONFIG_FIREWIRE_SERIAL)	+= fwserial/
--obj-$(CONFIG_GOLDFISH)		+= goldfish/
- obj-$(CONFIG_GS_FPGABOOT)	+= gs_fpgaboot/
- obj-$(CONFIG_UNISYSSPAR)	+= unisys/
- obj-$(CONFIG_COMMON_CLK_XLNX_CLKWZRD)	+= clocking-wizard/
-diff --git a/drivers/staging/goldfish/Kconfig b/drivers/staging/goldfish/Kconfig
-deleted file mode 100644
-index 728f4700b98d..000000000000
---- a/drivers/staging/goldfish/Kconfig
-+++ /dev/null
-@@ -1,7 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--config GOLDFISH_AUDIO
--	tristate "Goldfish AVD Audio Device"
--	depends on GOLDFISH
--	help
--	  Emulated audio channel for the Goldfish Android Virtual Device
--
-diff --git a/drivers/staging/goldfish/Makefile b/drivers/staging/goldfish/Makefile
-deleted file mode 100644
-index f7cee15529c3..000000000000
---- a/drivers/staging/goldfish/Makefile
-+++ /dev/null
-@@ -1,6 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--#
--# Makefile for the Goldfish audio driver
--#
--
--obj-$(CONFIG_GOLDFISH_AUDIO) += goldfish_audio.o
-diff --git a/drivers/staging/goldfish/README b/drivers/staging/goldfish/README
-deleted file mode 100644
-index ed08c4d46e75..000000000000
---- a/drivers/staging/goldfish/README
-+++ /dev/null
-@@ -1,5 +0,0 @@
--Audio
-------
--- Move to using the ALSA framework not faking it
--- Fix the wrong user page DMA (moving to ALSA may fix that too)
--
-diff --git a/drivers/staging/goldfish/goldfish_audio.c b/drivers/staging/goldfish/goldfish_audio.c
-deleted file mode 100644
-index 0c65a0121dde..000000000000
---- a/drivers/staging/goldfish/goldfish_audio.c
-+++ /dev/null
-@@ -1,383 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * drivers/misc/goldfish_audio.c
-- *
-- * Copyright (C) 2007 Google, Inc.
-- * Copyright (C) 2012 Intel, Inc.
-- */
--
--#include <linux/module.h>
--#include <linux/miscdevice.h>
--#include <linux/fs.h>
--#include <linux/platform_device.h>
--#include <linux/types.h>
--#include <linux/pci.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/sched.h>
--#include <linux/dma-mapping.h>
--#include <linux/uaccess.h>
--#include <linux/slab.h>
--#include <linux/goldfish.h>
--#include <linux/acpi.h>
--
--MODULE_AUTHOR("Google, Inc.");
--MODULE_DESCRIPTION("Android QEMU Audio Driver");
--MODULE_LICENSE("GPL");
--MODULE_VERSION("1.0");
--
--struct goldfish_audio {
--	char __iomem *reg_base;
--	int irq;
--
--	/* lock protects access to buffer_status and to device registers */
--	spinlock_t lock;
--	wait_queue_head_t wait;
--
--	char *buffer_virt;		/* combined buffer virtual address */
--	unsigned long buffer_phys;	/* combined buffer physical address */
--
--	char *write_buffer1;		/* write buffer 1 virtual address */
--	char *write_buffer2;		/* write buffer 2 virtual address */
--	char *read_buffer;		/* read buffer virtual address */
--	int buffer_status;
--	int read_supported;	/* true if we have audio input support */
--};
--
--/*
-- *  We will allocate two read buffers and two write buffers.
-- *  Having two read buffers facilitate stereo -> mono conversion.
-- *  Having two write buffers facilitate interleaved IO.
-- */
--#define READ_BUFFER_SIZE	16384
--#define WRITE_BUFFER_SIZE	16384
--#define COMBINED_BUFFER_SIZE	((2 * READ_BUFFER_SIZE) + \
--					(2 * WRITE_BUFFER_SIZE))
--
--/*
-- *  temporary variable used between goldfish_audio_probe() and
-- *  goldfish_audio_open()
-- */
--static struct goldfish_audio *audio_data;
--
--enum {
--	/* audio status register */
--	AUDIO_INT_STATUS	= 0x00,
--	/* set this to enable IRQ */
--	AUDIO_INT_ENABLE	= 0x04,
--	/* set these to specify buffer addresses */
--	AUDIO_SET_WRITE_BUFFER_1 = 0x08,
--	AUDIO_SET_WRITE_BUFFER_2 = 0x0C,
--	/* set number of bytes in buffer to write */
--	AUDIO_WRITE_BUFFER_1  = 0x10,
--	AUDIO_WRITE_BUFFER_2  = 0x14,
--	AUDIO_SET_WRITE_BUFFER_1_HIGH = 0x28,
--	AUDIO_SET_WRITE_BUFFER_2_HIGH = 0x30,
--
--	/* true if audio input is supported */
--	AUDIO_READ_SUPPORTED = 0x18,
--	/* buffer to use for audio input */
--	AUDIO_SET_READ_BUFFER = 0x1C,
--	AUDIO_SET_READ_BUFFER_HIGH = 0x34,
--
--	/* driver writes number of bytes to read */
--	AUDIO_START_READ  = 0x20,
--
--	/* number of bytes available in read buffer */
--	AUDIO_READ_BUFFER_AVAILABLE  = 0x24,
--
--	/* AUDIO_INT_STATUS bits */
--
--	/* this bit set when it is safe to write more bytes to the buffer */
--	AUDIO_INT_WRITE_BUFFER_1_EMPTY	= 1U << 0,
--	AUDIO_INT_WRITE_BUFFER_2_EMPTY	= 1U << 1,
--	AUDIO_INT_READ_BUFFER_FULL	= 1U << 2,
--
--	AUDIO_INT_MASK			= AUDIO_INT_WRITE_BUFFER_1_EMPTY |
--					  AUDIO_INT_WRITE_BUFFER_2_EMPTY |
--					  AUDIO_INT_READ_BUFFER_FULL,
--};
--
--static atomic_t open_count = ATOMIC_INIT(0);
--
--static unsigned int audio_read(const struct goldfish_audio *data, int addr)
--{
--	return readl(data->reg_base + addr);
--}
--
--static void audio_write(const struct goldfish_audio *data,
--			int addr, unsigned int x)
--{
--	writel(x, data->reg_base + addr);
--}
--
--static void audio_write64(const struct goldfish_audio *data,
--			  int addr_lo, int addr_hi, unsigned int x)
--{
--	char __iomem *reg_base = data->reg_base;
--
--	gf_write_dma_addr(x, reg_base + addr_lo, reg_base + addr_hi);
--}
--
--static ssize_t goldfish_audio_read(struct file *fp, char __user *buf,
--				   size_t count, loff_t *pos)
--{
--	struct goldfish_audio *data = fp->private_data;
--	unsigned long irq_flags;
--	int length;
--	int result = 0;
--
--	if (!data->read_supported)
--		return -ENODEV;
--
--	while (count > 0) {
--		length = (count > READ_BUFFER_SIZE ? READ_BUFFER_SIZE : count);
--		audio_write(data, AUDIO_START_READ, length);
--
--		wait_event_interruptible(data->wait, data->buffer_status &
--					 AUDIO_INT_READ_BUFFER_FULL);
--
--		spin_lock_irqsave(&data->lock, irq_flags);
--		data->buffer_status &= ~AUDIO_INT_READ_BUFFER_FULL;
--		spin_unlock_irqrestore(&data->lock, irq_flags);
--
--		length = audio_read(data, AUDIO_READ_BUFFER_AVAILABLE);
--
--		/* copy data to user space */
--		if (copy_to_user(buf, data->read_buffer, length))
--			return -EFAULT;
--
--		result += length;
--		buf += length;
--		count -= length;
--	}
--	return result;
--}
--
--static ssize_t goldfish_audio_write(struct file *fp, const char __user *buf,
--				    size_t count, loff_t *pos)
--{
--	struct goldfish_audio *data = fp->private_data;
--	unsigned long irq_flags;
--	ssize_t result = 0;
--	char *kbuf;
--
--	while (count > 0) {
--		ssize_t copy = count;
--
--		if (copy > WRITE_BUFFER_SIZE)
--			copy = WRITE_BUFFER_SIZE;
--		wait_event_interruptible(data->wait, data->buffer_status &
--					(AUDIO_INT_WRITE_BUFFER_1_EMPTY |
--					AUDIO_INT_WRITE_BUFFER_2_EMPTY));
--
--		if ((data->buffer_status & AUDIO_INT_WRITE_BUFFER_1_EMPTY) != 0)
--			kbuf = data->write_buffer1;
--		else
--			kbuf = data->write_buffer2;
--
--		/* copy from user space to the appropriate buffer */
--		if (copy_from_user(kbuf, buf, copy)) {
--			result = -EFAULT;
--			break;
--		}
--
--		spin_lock_irqsave(&data->lock, irq_flags);
--		/*
--		 *  clear the buffer empty flag, and signal the emulator
--		 *  to start writing the buffer
--		 */
--		if (kbuf == data->write_buffer1) {
--			data->buffer_status &= ~AUDIO_INT_WRITE_BUFFER_1_EMPTY;
--			audio_write(data, AUDIO_WRITE_BUFFER_1, copy);
--		} else {
--			data->buffer_status &= ~AUDIO_INT_WRITE_BUFFER_2_EMPTY;
--			audio_write(data, AUDIO_WRITE_BUFFER_2, copy);
--		}
--		spin_unlock_irqrestore(&data->lock, irq_flags);
--
--		buf += copy;
--		result += copy;
--		count -= copy;
--	}
--	return result;
--}
--
--static int goldfish_audio_open(struct inode *ip, struct file *fp)
--{
--	if (!audio_data)
--		return -ENODEV;
--
--	if (atomic_inc_return(&open_count) == 1) {
--		fp->private_data = audio_data;
--		audio_data->buffer_status = (AUDIO_INT_WRITE_BUFFER_1_EMPTY |
--					     AUDIO_INT_WRITE_BUFFER_2_EMPTY);
--		audio_write(audio_data, AUDIO_INT_ENABLE, AUDIO_INT_MASK);
--		return 0;
--	}
--
--	atomic_dec(&open_count);
--	return -EBUSY;
--}
--
--static int goldfish_audio_release(struct inode *ip, struct file *fp)
--{
--	atomic_dec(&open_count);
--	/* FIXME: surely this is wrong for the multi-opened case */
--	audio_write(audio_data, AUDIO_INT_ENABLE, 0);
--	return 0;
--}
--
--static long goldfish_audio_ioctl(struct file *fp, unsigned int cmd,
--				 unsigned long arg)
--{
--	/* temporary workaround, until we switch to the ALSA API */
--	if (cmd == 315)
--		return -1;
--
--	return 0;
--}
--
--static irqreturn_t goldfish_audio_interrupt(int irq, void *dev_id)
--{
--	unsigned long irq_flags;
--	struct goldfish_audio	*data = dev_id;
--	u32 status;
--
--	spin_lock_irqsave(&data->lock, irq_flags);
--
--	/* read buffer status flags */
--	status = audio_read(data, AUDIO_INT_STATUS);
--	status &= AUDIO_INT_MASK;
--	/*
--	 *  if buffers are newly empty, wake up blocked
--	 *  goldfish_audio_write() call
--	 */
--	if (status) {
--		data->buffer_status = status;
--		wake_up(&data->wait);
--	}
--
--	spin_unlock_irqrestore(&data->lock, irq_flags);
--	return status ? IRQ_HANDLED : IRQ_NONE;
--}
--
--/* file operations for /dev/eac */
--static const struct file_operations goldfish_audio_fops = {
--	.owner = THIS_MODULE,
--	.read = goldfish_audio_read,
--	.write = goldfish_audio_write,
--	.open = goldfish_audio_open,
--	.release = goldfish_audio_release,
--	.unlocked_ioctl = goldfish_audio_ioctl,
--};
--
--static struct miscdevice goldfish_audio_device = {
--	.minor = MISC_DYNAMIC_MINOR,
--	.name = "eac",
--	.fops = &goldfish_audio_fops,
--};
--
--static int goldfish_audio_probe(struct platform_device *pdev)
--{
--	int ret;
--	struct resource *r;
--	struct goldfish_audio *data;
--	dma_addr_t buf_addr;
--
--	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--	if (!data)
--		return -ENOMEM;
--	spin_lock_init(&data->lock);
--	init_waitqueue_head(&data->wait);
--	platform_set_drvdata(pdev, data);
--
--	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!r) {
--		dev_err(&pdev->dev, "platform_get_resource failed\n");
--		return -ENODEV;
--	}
--	data->reg_base = devm_ioremap(&pdev->dev, r->start, PAGE_SIZE);
--	if (!data->reg_base)
--		return -ENOMEM;
--
--	data->irq = platform_get_irq(pdev, 0);
--	if (data->irq < 0)
--		return -ENODEV;
--	data->buffer_virt = dmam_alloc_coherent(&pdev->dev,
--						COMBINED_BUFFER_SIZE,
--						&buf_addr, GFP_KERNEL);
--	if (!data->buffer_virt) {
--		dev_err(&pdev->dev, "allocate buffer failed\n");
--		return -ENOMEM;
--	}
--	data->buffer_phys = buf_addr;
--	data->write_buffer1 = data->buffer_virt;
--	data->write_buffer2 = data->buffer_virt + WRITE_BUFFER_SIZE;
--	data->read_buffer = data->buffer_virt + 2 * WRITE_BUFFER_SIZE;
--
--	ret = devm_request_irq(&pdev->dev, data->irq, goldfish_audio_interrupt,
--			       IRQF_SHARED, pdev->name, data);
--	if (ret) {
--		dev_err(&pdev->dev, "request_irq failed\n");
--		return ret;
--	}
--
--	ret = misc_register(&goldfish_audio_device);
--	if (ret) {
--		dev_err(&pdev->dev,
--			"misc_register returned %d in goldfish_audio_init\n",
--								ret);
--		return ret;
--	}
--
--	audio_write64(data, AUDIO_SET_WRITE_BUFFER_1,
--		      AUDIO_SET_WRITE_BUFFER_1_HIGH, buf_addr);
--	buf_addr += WRITE_BUFFER_SIZE;
--
--	audio_write64(data, AUDIO_SET_WRITE_BUFFER_2,
--		      AUDIO_SET_WRITE_BUFFER_2_HIGH, buf_addr);
--
--	buf_addr += WRITE_BUFFER_SIZE;
--
--	data->read_supported = audio_read(data, AUDIO_READ_SUPPORTED);
--	if (data->read_supported)
--		audio_write64(data, AUDIO_SET_READ_BUFFER,
--			      AUDIO_SET_READ_BUFFER_HIGH, buf_addr);
--
--	audio_data = data;
--	return 0;
--}
--
--static int goldfish_audio_remove(struct platform_device *pdev)
--{
--	misc_deregister(&goldfish_audio_device);
--	audio_data = NULL;
--	return 0;
--}
--
--static const struct of_device_id goldfish_audio_of_match[] = {
--	{ .compatible = "google,goldfish-audio", },
--	{},
--};
--MODULE_DEVICE_TABLE(of, goldfish_audio_of_match);
--
--#ifdef CONFIG_ACPI
--static const struct acpi_device_id goldfish_audio_acpi_match[] = {
--	{ "GFSH0005", 0 },
--	{ },
--};
--MODULE_DEVICE_TABLE(acpi, goldfish_audio_acpi_match);
--#endif
--
--static struct platform_driver goldfish_audio_driver = {
--	.probe		= goldfish_audio_probe,
--	.remove		= goldfish_audio_remove,
--	.driver = {
--		.name = "goldfish_audio",
--		.of_match_table = goldfish_audio_of_match,
--		.acpi_match_table = ACPI_PTR(goldfish_audio_acpi_match),
--	}
--};
--
--module_platform_driver(goldfish_audio_driver);
--- 
-2.29.2.222.g5d2a92d10f8-goog
+> 
+> I believe you meant just description, but still want to clarify.
+> 
+> ima_measure_kernel_integrity_critical_data() would be too long.
+> Maybe ima_measure_integrity_critical_data()?
+> 
+> Or do you want us to keep the existing ima_measure_critical_data()?
+> Could you please let us know?
+> 
+> >> + * @event_data_source: name of the data source being measured;
+> >> + * typically it should be the name of the kernel subsystem that is sending
+> >> + * the data for measurement
+> > 
+> > Including "data_source" here isn't quite right.  "data source" should
+> > only be added in the first patch which uses it, not here.   When adding
+> > it please shorten the field description to "kernel data source".   The
+> > longer explanation can be included in the longer function description.
+> > 
+> *Question*
+> Do you mean the parameter @event_data_source should be removed from this
+> patch? And then later added in patch 7/7 – where SeLinux uses it?
+
+Data source support doesn't belong in this patch.  Each patch should do
+one logical thing and only that one thing.  This patch is adding
+support for measuring critical data.  The data source patch will limit
+the critical data being measured.
+
+Other than updating the data source list in the documentation,
+definitely do not add data source support to the SELinux patch.
+
+thanks,
+
+Mimi
 
