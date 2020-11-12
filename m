@@ -2,56 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872132B043F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1A72B0454
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgKLLrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:47:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727790AbgKLLqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:46:51 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B6EE216FD;
-        Thu, 12 Nov 2020 11:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605181611;
-        bh=LyBs53NwKy2mPKk7gJAcahZY7ivoN/ZymUmvWPGCTjQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=04N1AtC5I7O3r+Sd+ShWoaOS6k2cNn1dNWWHlVXmcGysjaTnMMMnjdwpbJM3moMep
-         UCuD44hukrM+HXZiw+uPOt13wGS3Q55RJbl21LyJjRAz2+mD7O9y17N9uGbQX7Zsnr
-         Z+BqXDT2T5TFqmT/5qyL6JpPo7o2xPYtgRj4+EWE=
-Date:   Thu, 12 Nov 2020 13:46:46 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, maorg@mellanox.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] RDMA/core: Fix error return code in _ib_modify_qp()
-Message-ID: <20201112114646.GB3628@unreal>
-References: <20201112090626.184976-1-chenzhou10@huawei.com>
+        id S1728195AbgKLLuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728226AbgKLLtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:49:20 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB5AC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:48:57 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kdB5w-0006Lf-Ft; Thu, 12 Nov 2020 12:48:52 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kdB5v-0001Wn-VL; Thu, 12 Nov 2020 12:48:51 +0100
+Date:   Thu, 12 Nov 2020 12:48:51 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH v2] Input: touchscreen: ads7846.c: Fix race that causes
+ missing releases
+Message-ID: <20201112114851.mlhhxxjonhx5n4sz@pengutronix.de>
+References: <20201027105416.18773-1-o.rempel@pengutronix.de>
+ <20201111190740.GY1003057@dtor-ws>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201112090626.184976-1-chenzhou10@huawei.com>
+In-Reply-To: <20201111190740.GY1003057@dtor-ws>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:48:21 up 363 days,  3:06, 30 users,  load average: 0.03, 0.07,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:06:26PM +0800, Chen Zhou wrote:
-> Fix to return a negative error code from the error handling case
-> instead of 0 in function _ib_modify_qp(), as done elsewhere in this
-> function.
->
-> Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> ---
->  drivers/infiniband/core/verbs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+On Wed, Nov 11, 2020 at 11:07:40AM -0800, Dmitry Torokhov wrote:
+> Hi Oleksij,
+> 
+> On Tue, Oct 27, 2020 at 11:54:16AM +0100, Oleksij Rempel wrote:
+> > From: David Jander <david@protonic.nl>
+> > 
+> > If touchscreen is released while busy reading HWMON device, the release
+> > can be missed. The IRQ thread is not started because no touch is active
+> > and BTN_TOUCH release event is never sent.
+> > 
+> > Fixes: f5a28a7d4858f94a ("Input: ads7846 - avoid pen up/down when reading hwmon")
+> > Co-Developed-by: David Jander <david@protonic.nl>
+> 
+> Since the patch is nominally attributed to David (via the From: tag)
+> I'll be changing Co-developed-by tag to your name, OK?
 
-It is already fixed in the commit
-5333499c6014 ("RDMA/core: Fix error return in _ib_modify_qp()")
-Thanks
+OK.
+
+> 
+> > Signed-off-by: David Jander <david@protonic.nl>
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+Regards,
+Oleksij
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
