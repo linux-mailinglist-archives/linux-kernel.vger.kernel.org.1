@@ -2,584 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E992AFE3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02962AFE38
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgKLFfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:35:51 -0500
-Received: from mail-eopbgr00043.outbound.protection.outlook.com ([40.107.0.43]:9485
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728084AbgKLDLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:11:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YId3zSFwN1qjcnjJQxprL+fzQwOCbrsg3ySWrE9ucpdYBR88qj+ebRnCLw4ZFsY42ORewQ0lOcAREizB52nsQ2JgEbGbVrD//s4Nl0CcFd4YXG7/6gtDHNbO130L7USambCDRB1HeCDsaUoHQ7WrbUDhlz22HOmdRnwhAfKwQo269kVfc5I8Li3slOUzYOVyyOYvjBm9kAezDZLhoaxII5mcMScsdZjAHxppjehbc0CkQMU7pdsHgYwJpGFuAiweS+b5Ynp/8JA94XPFBv0hEjxeqC9o1DM4Smih9JSwoz8c+UMz9bGucL9JorMYIz/US4ksPxG01HaWhWUUHNpNnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOCVnnhRMggIA38hRJjquXagGp5OtUnJYI3IOCZ9iLA=;
- b=ZjWf7cwsKiRfrzf45JKoXSk2rHebSS9D8y2A/YCy+XwE5kTRcr9DwCQgn8hat0/Y7e45PvYXKlHQveM3a+bR/vBvkmkXtoB0aLnExK84bIxEVJGwvp9XueV//GulAQGQkuqoUi0UOps7PPY/FfbWepGFH6fxGRmgEMMMuoKvPpD2cIb1K9bhbd/0ZwdZFmY8B6zvbFggoiHAJv2vOmDZEv7R8Wk4Jio4ba11UlFsZEgDUy3vZ3kWUsLoXefpl39d9drfEz3Xho4d5VAjJnGiKsFgPa8Sm8evF3HhVVtHpU2jyEr39AaNsB2jBueqKKyUSAt5XNXi9CHpmZKy+U6vsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOCVnnhRMggIA38hRJjquXagGp5OtUnJYI3IOCZ9iLA=;
- b=MlBffkiEQomn4lZmlCoR8Rj4Z252rHtEItW0mnlJY6si45OodRaxc4G5GEzrz+BFvblEAoNH79T8TtZn6yOSfQgiE5FAurSvdrirKzSmycoi7fDo7gYFAcLlHDxVyMCWqO/NR/9CHxxCS2GJu/7kep8wgdoKsqmNJp0XL2L0acc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM5PR04MB3137.eurprd04.prod.outlook.com (2603:10a6:206:c::18)
- by AM7PR04MB6997.eurprd04.prod.outlook.com (2603:10a6:20b:10d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
- 2020 03:07:23 +0000
-Received: from AM5PR04MB3137.eurprd04.prod.outlook.com
- ([fe80::2d75:aaf5:5aa6:5de9]) by AM5PR04MB3137.eurprd04.prod.outlook.com
- ([fe80::2d75:aaf5:5aa6:5de9%6]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
- 03:07:23 +0000
-From:   "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, shawnguo@kernel.org,
-        robh+dt@kernel.org, p.zabel@pengutronix.de
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, ezequiel@collabora.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-Subject: [PATCH v5 10/10] media: imx-jpeg: Use v4l2 jpeg helpers in mxc-jpeg
-Date:   Thu, 12 Nov 2020 05:05:57 +0200
-Message-Id: <20201112030557.8540-11-mirela.rabulea@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
-References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [86.124.171.138]
-X-ClientProxiedBy: AM0PR06CA0100.eurprd06.prod.outlook.com
- (2603:10a6:208:fa::41) To AM5PR04MB3137.eurprd04.prod.outlook.com
- (2603:10a6:206:c::18)
+        id S1728939AbgKLFfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:35:30 -0500
+Received: from ns3.fnarfbargle.com ([103.4.19.87]:53710 "EHLO
+        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728063AbgKLDJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 22:09:26 -0500
+Received: from srv.home ([10.8.0.1] ident=heh16335)
+        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <brad@fnarfbargle.com>)
+        id 1kd2yH-0005EB-49; Thu, 12 Nov 2020 11:08:25 +0800
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject; bh=yDWpF+/PotmPSr63teCZVZBkYUVOg1oSDJoZUN3M188=;
+        b=dYWKyGgJ5cIgH00dwL9JxKBWFu7WbRizvXNjkucRtTv62GPeclcCYOji2p+HY99o6U3/0WWos32dfnGfFv0VcyxX/3Xc8O+l6RttIce2FdZEJxyhVd+yUARAu7JynLnN1rIaoeJgDwZ8y+H0dmoC2W+CnAFRxt8jKYv3C/HQtLk=;
+Subject: [PATCH v6 1/1] applesmc: Re-work SMC comms
+From:   Brad Campbell <brad@fnarfbargle.com>
+To:     linux-hwmon@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Guenter Roeck <linux@roeck-us.net>
+References: <20200930105442.3f642f6c@aktux>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+ <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+ <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
+ <4eca09dc-7b32-767c-eab0-b9ad8b41efcc@fnarfbargle.com>
+ <b6345525-c4d0-6949-1231-a47c3053e343@roeck-us.net>
+ <8c525b3b-b4a6-8ee4-8128-a20e0ad408e4@fnarfbargle.com>
+Message-ID: <194a7d71-a781-765a-d177-c962ef296b90@fnarfbargle.com>
+Date:   Thu, 12 Nov 2020 14:08:23 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1664-134.ea.freescale.net (86.124.171.138) by AM0PR06CA0100.eurprd06.prod.outlook.com (2603:10a6:208:fa::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 03:07:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8a2ef134-340f-4fa5-06a4-08d886b8139f
-X-MS-TrafficTypeDiagnostic: AM7PR04MB6997:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB69978E70F9BB934FA054BE08CEE70@AM7PR04MB6997.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mFe6wZMmVGZkZoD5rmhiBHGQCdy0J405gXaGHrsqnvJjre14DfxW5mfxnH6ooWwChryjsMH1TRWQd3fIxIrjzCI/+3TmFGaGMLANjnDThM8qCkRDgGmpfKgBdmiaHtnCdNOcO8QoklApYbLzIA5UWmGN7Q4lFECeas6zishPLdleXPHVXkE+OnFhw6RI3r6dxEGf6/COmWt9b+OZDCINcD3LPSA2AD30rcUvMQf9xG6PYYm4x3uc8iGbY7Y9U6QQnSVq65kBkuzuo6/R10SNjdy2Mqy+gP/1JgLsfhkHpQe7BpEr6Bs+kmwlqh77GYvMtkhLC2Ov9Y4Icg0yTIk6QQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3137.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(366004)(30864003)(6666004)(1076003)(316002)(26005)(478600001)(6506007)(4326008)(6512007)(66946007)(66476007)(186003)(6486002)(2906002)(66556008)(5660300002)(16526019)(8676002)(52116002)(86362001)(7416002)(8936002)(2616005)(956004)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: hUgvTv1hRbx9l9hb90T+gQOWXh/Ku+si7vrNq6QuyoTUSJA+MQLu4RDfm+dIMX4ri0QvNeH/XMUfqv7f17nNAGibaeJhw0W5JuUFKfl5MLr44XV0k1DZjYFSw1wlhKrzNM1oZguxiuunBBG8LLcn1OQZKpWGHARlLW3CxCfppk5JFkYWiFE3Xguc9vL7ngkxn0vYa9d3BmNYpwu/p+LqpdV27GaFVRRen+cJ4fv6Z2sDCARStTDU2XUb6xDjivr+pFs54L2KCcUr8Bl3MibCYN/WMzGOsms608QhZnMbXNQrJ/Qw/S7J5B69HBLG95amXUyZclNvXjZFqXVxCwM3rjMxSCNHtUc3+sSbcyjdvcWmX/6IrIr6naeG8RILscJsqpQRnR9rFr2DB26xI7He43xyduSUcvKUSpihCe3OcBcz1JIMc9psoQlc85Lxniv8nO0YNDU7YhTbqnXU3O91ZeDETMvrzfJedh+u1WPmaGqfR+aQA2/E8TGpEis0G1bmcHhBV4wB2jjX6BSw2/IJ3n4B43/JZpK2OxcZKfZitunGN39pitHOYDdtUoFvzizQAszENnSSZ2RESvo1RVKOTFwGks0zze04KzyDZyWnALUX4hUuYcZiCB6LbacJ+3UlgWLQiNcFdDsbXxf/P7jJNB3ak57NcIDGwfDQ8mA0/Rd9fNYG0RJbzIt4X4yeotBjSu7Ld+42KVhz8HFiSiOBPR4ABFvxgcUBtlICsRvIUwGgp5L6YEpn76sN3vhRXxy0Lo2AHqcR8AQNb5naInEtsxuSR59ZOGKqMuSJR5vKwvtY6xxhZ1ENc0DLtTrwlSBMq5+d8BFJ1yWz0AhqHiC6d/1jchac70/od2Z1+252SpgBfyY7Y7zxGPnRS1M4DeGP4o9JnccBlxxjSONJVr8nng==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a2ef134-340f-4fa5-06a4-08d886b8139f
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3137.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 03:07:23.6087
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JFJiwwa5voJu6wv3ijMXOVzA/YDOgRBi87EHQx/jX0dTk0OMSjOR5wKMSqkIyZjgV0pHiwgJM+Rm0n37LFTNQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6997
+In-Reply-To: <8c525b3b-b4a6-8ee4-8128-a20e0ad408e4@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mirela Rabulea <mirela.rabulea@nxp.com>
+Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+introduced an issue whereby communication with the SMC became
+unreliable with write errors like :
 
-Use v4l2_jpeg_parse_header in mxc_jpeg_parse, remove the old
-parsing way, which was duplicated in other jpeg drivers.
+[  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.378621] applesmc: LKSB: write data fail
+[  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.512787] applesmc: LKSB: write data fail
 
-Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+The original code appeared to be timing sensitive and was not reliable
+with the timing changes in the aforementioned commit.
+
+This patch re-factors the SMC communication to remove the timing
+dependencies and restore function with the changes previously
+committed.
+
+Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
+MacBookAir3,1
+
+Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+Reported-by: Andreas Kemnade <andreas@kemnade.info>
+Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
+Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
+
 ---
-Changes in v5:
-This was patch 11 in previous version
-Change triggered by patch 7 (app14 data change struct -> int)
+Changelog : 
+v1 : Initial attempt
+v2 : Address logic and coding style based on comments received
+v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
+- Significant rework of wait logic by Henrik Rydberg <rydberg@bitmath.org> to
+  make it function at all on the MacBookAir1,1.
 
- drivers/media/platform/imx-jpeg/Kconfig    |   1 +
- drivers/media/platform/imx-jpeg/mxc-jpeg.c | 267 ++++++---------------
- drivers/media/platform/imx-jpeg/mxc-jpeg.h |  26 +-
- 3 files changed, 80 insertions(+), 214 deletions(-)
+v4 : Re-factored logic based on Apple driver. Simplified wait_status loop
+- Re-factored the logic again, this time based on the Apple driver. This
+  functioned without error on all tested Macs. wait_status() contributed
+  by Henrik Rydberg <rydberg@bitmath.org>
 
-diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
-index 7cc89e5eff90..d875f7c88cda 100644
---- a/drivers/media/platform/imx-jpeg/Kconfig
-+++ b/drivers/media/platform/imx-jpeg/Kconfig
-@@ -4,6 +4,7 @@ config VIDEO_IMX8_JPEG
- 	depends on VIDEO_DEV && VIDEO_V4L2
- 	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
-+	select V4L2_JPEG_HELPER
- 	default m
- 	help
- 	  This is a video4linux2 driver for the i.MX8 QXP/QM integrated
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-index 8f297803f2c3..d3b7581ce46e 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-@@ -52,6 +52,7 @@
- #include <linux/pm_domain.h>
- #include <linux/string.h>
+v5 : Re-wrote status loop. Simplified busy check in send_byte()
+- Re-wrote wait_status() based on feedback from Guenter Roeck <linux@roeck-us.net>
+- Added additional comments to explain multiple tests in send_byte()
+- Addressed repeated indentation issues
+
+v6 : Reverted simplification of busy check in send_byte()
+- The logic simplification in v5 send_byte() caused a few read failures in
+  stress testing on a fast SMC (3 in 5.6million). Reverting that change passed 
+  5 million reads with 0 errors.
+
+Index: linux-stable/drivers/hwmon/applesmc.c
+===================================================================
+--- linux-stable.orig/drivers/hwmon/applesmc.c
++++ linux-stable/drivers/hwmon/applesmc.c
+@@ -32,6 +32,7 @@
+ #include <linux/hwmon.h>
+ #include <linux/workqueue.h>
+ #include <linux/err.h>
++#include <linux/bits.h>
  
-+#include <media/v4l2-jpeg.h>
- #include <media/v4l2-mem2mem.h>
- #include <media/v4l2-ioctl.h>
- #include <media/v4l2-common.h>
-@@ -65,12 +66,16 @@ static struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "JPEG",
- 		.fourcc		= V4L2_PIX_FMT_JPEG,
-+		.subsampling	= -1,
-+		.nc		= -1,
- 		.colplanes	= 1,
- 		.flags		= MXC_JPEG_FMT_TYPE_ENC,
- 	},
- 	{
- 		.name		= "RGB", /*RGBRGB packed format*/
- 		.fourcc		= V4L2_PIX_FMT_RGB24,
-+		.subsampling	= V4L2_JPEG_CHROMA_SUBSAMPLING_444,
-+		.nc		= 3,
- 		.depth		= 24,
- 		.colplanes	= 1,
- 		.h_align	= 3,
-@@ -80,6 +85,8 @@ static struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "ARGB", /* ARGBARGB packed format */
- 		.fourcc		= V4L2_PIX_FMT_ARGB32,
-+		.subsampling	= V4L2_JPEG_CHROMA_SUBSAMPLING_444,
-+		.nc		= 4,
- 		.depth		= 32,
- 		.colplanes	= 1,
- 		.h_align	= 3,
-@@ -89,6 +96,8 @@ static struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "YUV420", /* 1st plane = Y, 2nd plane = UV */
- 		.fourcc		= V4L2_PIX_FMT_NV12,
-+		.subsampling	= V4L2_JPEG_CHROMA_SUBSAMPLING_420,
-+		.nc		= 3,
- 		.depth		= 12, /* 6 bytes (4Y + UV) for 4 pixels */
- 		.colplanes	= 2, /* 1 plane Y, 1 plane UV interleaved */
- 		.h_align	= 4,
-@@ -98,6 +107,8 @@ static struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "YUV422", /* YUYV */
- 		.fourcc		= V4L2_PIX_FMT_YUYV,
-+		.subsampling	= V4L2_JPEG_CHROMA_SUBSAMPLING_422,
-+		.nc		= 3,
- 		.depth		= 16,
- 		.colplanes	= 1,
- 		.h_align	= 4,
-@@ -107,6 +118,8 @@ static struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "YUV444", /* YUVYUV */
- 		.fourcc		= V4L2_PIX_FMT_YUV24,
-+		.subsampling	= V4L2_JPEG_CHROMA_SUBSAMPLING_444,
-+		.nc		= 3,
- 		.depth		= 24,
- 		.colplanes	= 1,
- 		.h_align	= 3,
-@@ -116,6 +129,8 @@ static struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "Gray", /* Gray (Y8/Y12) or Single Comp */
- 		.fourcc		= V4L2_PIX_FMT_GREY,
-+		.subsampling	= V4L2_JPEG_CHROMA_SUBSAMPLING_GRAY,
-+		.nc		= 1,
- 		.depth		= 8,
- 		.colplanes	= 1,
- 		.h_align	= 3,
-@@ -419,33 +434,6 @@ static enum mxc_jpeg_image_format mxc_jpeg_fourcc_to_imgfmt(u32 fourcc)
- 	}
- }
+ /* data port used by Apple SMC */
+ #define APPLESMC_DATA_PORT	0x300
+@@ -42,10 +43,13 @@
  
--static int mxc_jpeg_imgfmt_to_fourcc(enum mxc_jpeg_image_format imgfmt,
--				     u32 *fourcc)
--{
--	switch (imgfmt) {
--	case MXC_JPEG_GRAY:
--		*fourcc = V4L2_PIX_FMT_GREY;
--		return 0;
--	case MXC_JPEG_YUV422:
--		*fourcc = V4L2_PIX_FMT_YUYV;
--		return 0;
--	case MXC_JPEG_YUV420:
--		*fourcc =  V4L2_PIX_FMT_NV12;
--		return 0;
--	case MXC_JPEG_YUV444:
--		*fourcc =  V4L2_PIX_FMT_YUV24;
--		return 0;
--	case MXC_JPEG_RGB:
--		*fourcc =  V4L2_PIX_FMT_RGB24;
--		return 0;
--	case MXC_JPEG_ARGB:
--		*fourcc =  V4L2_PIX_FMT_ARGB32;
--		return 0;
--	default:
--		return 1;
--	}
--}
--
- static struct mxc_jpeg_q_data *mxc_jpeg_get_q_data(struct mxc_jpeg_ctx *ctx,
- 						   enum v4l2_buf_type type)
+ #define APPLESMC_MAX_DATA_LENGTH 32
+ 
+-/* wait up to 128 ms for a status change. */
+-#define APPLESMC_MIN_WAIT	0x0010
+-#define APPLESMC_RETRY_WAIT	0x0100
+-#define APPLESMC_MAX_WAIT	0x20000
++/* Apple SMC status bits */
++#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting to be read */
++#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
++#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
++
++/* Initial wait is 8us */
++#define APPLESMC_MIN_WAIT      0x0008
+ 
+ #define APPLESMC_READ_CMD	0x10
+ #define APPLESMC_WRITE_CMD	0x11
+@@ -151,65 +155,84 @@ static unsigned int key_at_index;
+ static struct workqueue_struct *applesmc_led_wq;
+ 
+ /*
+- * wait_read - Wait for a byte to appear on SMC port. Callers must
+- * hold applesmc_lock.
++ * Wait for specific status bits with a mask on the SMC.
++ * Used before all transactions.
++ * This does 10 fast loops of 8us then exponentially backs off for a
++ * minimum total wait of 262ms. Depending on usleep_range this could
++ * run out past 500ms.
+  */
+-static int wait_read(void)
++
++static int wait_status(u8 val, u8 mask)
  {
-@@ -1165,45 +1153,6 @@ static void mxc_jpeg_stop_streaming(struct vb2_queue *q)
- 	release_active_buffers(q, VB2_BUF_STATE_ERROR);
- }
- 
--struct mxc_jpeg_stream {
--	u8 *addr;
--	u32 loc;
--	u32 end;
--};
--
--static int get_byte(struct mxc_jpeg_stream *stream)
--{
--	int ret;
--
--	if (stream->loc >= stream->end)
--		return -1;
--	ret = stream->addr[stream->loc];
--	stream->loc++;
--	return ret;
--}
--
--static int get_sof(struct device *dev,
--		   struct mxc_jpeg_stream *stream,
--		   struct mxc_jpeg_sof *sof)
--{
--	int i;
--
--	if (stream->loc + sizeof(struct mxc_jpeg_sof) >= stream->end)
--		return -1;
--	memcpy(sof, &stream->addr[stream->loc], sizeof(struct mxc_jpeg_sof));
--	_bswap16(&sof->length);
--	_bswap16(&sof->height);
--	_bswap16(&sof->width);
--	dev_dbg(dev, "JPEG SOF: precision=%d\n", sof->precision);
--	dev_dbg(dev, "JPEG SOF: height=%d, width=%d\n",
--		sof->height, sof->width);
--	for (i = 0; i < sof->components_no; i++) {
--		dev_dbg(dev, "JPEG SOF: comp_id=%d, H=0x%x, V=0x%x\n",
--			sof->comp[i].id, sof->comp[i].v, sof->comp[i].h);
--	}
--	return 0;
--}
--
- static int mxc_jpeg_valid_comp_id(struct device *dev,
- 				  struct mxc_jpeg_sof *sof,
- 				  struct mxc_jpeg_sos *sos)
-@@ -1233,45 +1182,18 @@ static int mxc_jpeg_valid_comp_id(struct device *dev,
- 	return valid;
- }
- 
--static enum mxc_jpeg_image_format
--mxc_jpeg_get_image_format(struct device *dev, const struct mxc_jpeg_sof *sof)
-+static u32 mxc_jpeg_get_image_format(struct device *dev,
-+				     const struct v4l2_jpeg_header header)
- {
--	if (sof->components_no == 1) {
--		dev_dbg(dev, "IMAGE_FORMAT is: MXC_JPEG_GRAY\n");
--		return MXC_JPEG_GRAY;
--	}
--	if (sof->components_no == 3) {
--		if (sof->comp[0].h == 2 && sof->comp[0].v == 2 &&
--		    sof->comp[1].h == 1 && sof->comp[1].v == 1 &&
--		    sof->comp[2].h == 1 && sof->comp[2].v == 1){
--			dev_dbg(dev, "IMAGE_FORMAT is: MXC_JPEG_YUV420\n");
--			return MXC_JPEG_YUV420;
--		}
--		if (sof->comp[0].h == 2 && sof->comp[0].v == 1 &&
--		    sof->comp[1].h == 1 && sof->comp[1].v == 1 &&
--		    sof->comp[2].h == 1 && sof->comp[2].v == 1){
--			dev_dbg(dev, "IMAGE_FORMAT is: MXC_JPEG_YUV422\n");
--			return MXC_JPEG_YUV422;
--		}
--		if (sof->comp[0].h == 1 && sof->comp[0].v == 1 &&
--		    sof->comp[1].h == 1 && sof->comp[1].v == 1 &&
--		    sof->comp[2].h == 1 && sof->comp[2].v == 1){
--			dev_dbg(dev, "IMAGE_FORMAT is: MXC_JPEG_YUV444\n");
--			return MXC_JPEG_YUV444;
--		}
--	}
--	if (sof->components_no == 4) {
--		if (sof->comp[0].h == 1 && sof->comp[0].v == 1 &&
--		    sof->comp[1].h == 1 && sof->comp[1].v == 1 &&
--		    sof->comp[2].h == 1 && sof->comp[2].v == 1 &&
--		    sof->comp[3].h == 1 && sof->comp[3].v == 1){
--			/* this is not tested */
--			dev_dbg(dev, "IMAGE_FORMAT is: MXC_JPEG_ARGB\n");
--			return MXC_JPEG_ARGB;
--		}
--	}
+-	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+ 	u8 status;
+ 	int us;
 +	int i;
+ 
+-	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
++	us = APPLESMC_MIN_WAIT;
++	for (i = 0; i < 24 ; i++) {
+ 		status = inb(APPLESMC_CMD_PORT);
+-		/* read: wait for smc to settle */
+-		if (status & 0x01)
++		if ((status & mask) == val)
+ 			return 0;
+-		/* timeout: give up */
+-		if (time_after(jiffies, end))
+-			break;
++		usleep_range(us, us * 2);
++		if (i > 9)
++			us <<= 1;
+ 	}
+-
+-	pr_warn("wait_read() fail: 0x%02x\n", status);
+ 	return -EIO;
+ }
+ 
+-/*
+- * send_byte - Write to SMC port, retrying when necessary. Callers
+- * must hold applesmc_lock.
+- */
++/* send_byte - Write to SMC data port. Callers must hold applesmc_lock. */
 +
-+	for (i = 0; i < MXC_JPEG_NUM_FORMATS; i++)
-+		if (mxc_formats[i].subsampling == header.frame.subsampling &&
-+		    mxc_formats[i].nc == header.frame.num_components)
-+			return mxc_formats[i].fourcc;
-+
- 	dev_err(dev, "Could not identify image format\n");
--	return MXC_JPEG_INVALID;
+ static int send_byte(u8 cmd, u16 port)
+ {
+-	u8 status;
+-	int us;
+-	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
++	int status;
+ 
+-	outb(cmd, port);
+-	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
+-		status = inb(APPLESMC_CMD_PORT);
+-		/* write: wait for smc to settle */
+-		if (status & 0x02)
+-			continue;
+-		/* ready: cmd accepted, return */
+-		if (status & 0x04)
+-			return 0;
+-		/* timeout: give up */
+-		if (time_after(jiffies, end))
+-			break;
+-		/* busy: long wait and resend */
+-		udelay(APPLESMC_RETRY_WAIT);
+-		outb(cmd, port);
+-	}
++	status = wait_status(0, SMC_STATUS_IB_CLOSED);
++	if (status)
++		return status;
++	/*
++	 * This needs to be a separate read looking for bit 0x04
++	 * after bit 0x02 falls. If consolidated with the wait above
++	 * this extra read may not happen if status returns both
++	 * simultaneously and this would appear to be required.
++	 */
++	status = wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY);
++	if (status)
++		return status;
+ 
+-	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
+-	return -EIO;
++	outb(cmd, port);
 +	return 0;
  }
  
- static void mxc_jpeg_bytesperline(struct mxc_jpeg_q_data *q,
-@@ -1325,122 +1247,69 @@ static int mxc_jpeg_parse(struct mxc_jpeg_ctx *ctx,
- 	struct device *dev = ctx->mxc_jpeg->dev;
- 	struct mxc_jpeg_q_data *q_data_out, *q_data_cap;
- 	enum v4l2_buf_type cap_type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
--	struct mxc_jpeg_stream stream;
--	bool notfound = true;
--	bool app14 = false;
- 	bool src_chg = false;
--	u8 app14_transform = 0;
--	struct mxc_jpeg_sof sof, *psof = NULL;
--	struct mxc_jpeg_sos *psos = NULL;
--	int byte;
--	u8 *next = NULL;
--	enum mxc_jpeg_image_format img_fmt;
- 	u32 fourcc;
-+	struct v4l2_jpeg_header header;
-+	struct mxc_jpeg_sof *psof = NULL;
-+	struct mxc_jpeg_sos *psos = NULL;
++/* send_command - Write a command to the SMC. Callers must hold applesmc_lock. */
++
+ static int send_command(u8 cmd)
+ {
+-	return send_byte(cmd, APPLESMC_CMD_PORT);
 +	int ret;
- 
--	memset(&sof, 0, sizeof(struct mxc_jpeg_sof));
--	stream.addr = src_addr;
--	stream.end = size;
--	stream.loc = 0;
--	*dht_needed = true;
-+	memset(&header, 0, sizeof(header));
-+	ret = v4l2_jpeg_parse_header((void *)src_addr, size, &header);
-+	if (ret < 0) {
-+		dev_err(dev, "Error parsing JPEG stream markers\n");
++
++	ret = wait_status(0, SMC_STATUS_IB_CLOSED);
++	if (ret)
 +		return ret;
-+	}
++	outb(cmd, APPLESMC_CMD_PORT);
++	return 0;
++}
++
++/*
++ * Based on logic from the Apple driver. This is issued before any interaction
++ * If busy is stuck high, issue a read command to reset the SMC state machine.
++ * If busy is stuck high after the command then the SMC is jammed.
++ */
++
++static int smc_sane(void)
++{
++	int ret;
++
++	ret = wait_status(0, SMC_STATUS_BUSY);
++	if (!ret)
++		return ret;
++	ret = send_command(APPLESMC_READ_CMD);
++	if (ret)
++		return ret;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
  
--	/* check stream starts with SOI */
--	byte = get_byte(&stream);
--	if (byte == -1 || byte != 0xFF)
--		return -EINVAL;
--	byte = get_byte(&stream);
--	if (byte == -1 || byte != 0xD8)
--		return -EINVAL;
-+	/* if DHT marker present, no need to inject default one */
-+	*dht_needed = (header.num_dht == 0);
+ static int send_argument(const char *key)
+@@ -226,6 +249,11 @@ static int read_smc(u8 cmd, const char *
+ {
+ 	u8 status, data = 0;
+ 	int i;
++	int ret;
++
++	ret = smc_sane();
++	if (ret)
++		return ret;
  
--	while (notfound) {
--		byte = get_byte(&stream);
--		if (byte == -1)
--			return -EINVAL;
--		if (byte != 0xff)
--			continue;
--		do {
--			byte = get_byte(&stream);
--		} while (byte == 0xff);
--		if (byte == -1)
--			return false;
--		if (byte == 0)
--			continue;
--		switch (byte) {
--		case DHT:
--			/* DHT marker present, no need to inject default one */
--			*dht_needed = false;
--			break;
--		case SOF2: /* Progressive DCF frame definition */
--			dev_err(dev,
--				"Progressive JPEG not supported by hardware");
--			return -EINVAL;
--		case SOF1: /* Extended sequential DCF frame definition */
--		case SOF0: /* Baseline sequential DCF frame definition */
--			if (get_sof(dev, &stream, &sof) == -1)
--				break;
--			next = stream.addr + stream.loc;
--			psof = (struct mxc_jpeg_sof *)next;
--			break;
--		case SOS:
--			next = stream.addr + stream.loc;
--			psos = (struct mxc_jpeg_sos *)next;
--			notfound = false;
--			break;
--		case APP14:
--			app14 = true;
--			/*
--			 * Application Data Syntax is:
--			 * 2 bytes(APPn:0xFF,0xEE), 2 bytes(Lp), Ap1...ApLp-2
--			 * The transform flag is in Ap12
--			 * stream.loc is now on APPn-0xEE byte
--			 */
--			app14_transform = *(stream.addr + stream.loc + 12 + 1);
--			break;
--		default:
--			notfound = true;
--		}
--	}
- 	q_data_out = mxc_jpeg_get_q_data(ctx,
- 					 V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
- 	if (q_data_out->w == 0 && q_data_out->h == 0) {
- 		dev_warn(dev, "Invalid user resolution 0x0");
- 		dev_warn(dev, "Keeping resolution from JPEG: %dx%d",
--			 sof.width, sof.height);
--		 q_data_out->w = sof.width;
--		 q_data_out->h = sof.height;
--	} else if (sof.width != q_data_out->w || sof.height != q_data_out->h) {
-+			 header.frame.width, header.frame.height);
-+		 q_data_out->w = header.frame.width;
-+		 q_data_out->h = header.frame.height;
-+	} else if (header.frame.width != q_data_out->w ||
-+		   header.frame.height != q_data_out->h) {
- 		dev_err(dev,
- 			"Resolution mismatch: %dx%d (JPEG) versus %dx%d(user)",
--			sof.width, sof.height, q_data_out->w, q_data_out->h);
-+			header.frame.width, header.frame.height,
-+			q_data_out->w, q_data_out->h);
- 		return -EINVAL;
- 	}
--	if (sof.width % 8 != 0 || sof.height % 8 != 0) {
-+	if (header.frame.width % 8 != 0 || header.frame.height % 8 != 0) {
- 		dev_err(dev, "JPEG width or height not multiple of 8: %dx%d\n",
--			sof.width, sof.height);
-+			header.frame.width, header.frame.height);
- 		return -EINVAL;
- 	}
--	if (sof.width > MXC_JPEG_MAX_WIDTH ||
--	    sof.height > MXC_JPEG_MAX_HEIGHT) {
-+	if (header.frame.width > MXC_JPEG_MAX_WIDTH ||
-+	    header.frame.height > MXC_JPEG_MAX_HEIGHT) {
- 		dev_err(dev, "JPEG width or height should be <= 8192: %dx%d\n",
--			sof.width, sof.height);
-+			header.frame.width, header.frame.height);
- 		return -EINVAL;
- 	}
--	if (sof.width < MXC_JPEG_MIN_WIDTH ||
--	    sof.height < MXC_JPEG_MIN_HEIGHT) {
-+	if (header.frame.width < MXC_JPEG_MIN_WIDTH ||
-+	    header.frame.height < MXC_JPEG_MIN_HEIGHT) {
- 		dev_err(dev, "JPEG width or height should be > 64: %dx%d\n",
--			sof.width, sof.height);
-+			header.frame.width, header.frame.height);
- 		return -EINVAL;
- 	}
--	if (sof.components_no > MXC_JPEG_MAX_COMPONENTS) {
-+	if (header.frame.num_components > V4L2_JPEG_MAX_COMPONENTS) {
- 		dev_err(dev, "JPEG number of components should be <=%d",
--			MXC_JPEG_MAX_COMPONENTS);
-+			V4L2_JPEG_MAX_COMPONENTS);
- 		return -EINVAL;
- 	}
- 	/* check and, if necessary, patch component IDs*/
-+	psof = (struct mxc_jpeg_sof *)header.sof.start;
-+	psos = (struct mxc_jpeg_sos *)header.sos.start;
- 	if (!mxc_jpeg_valid_comp_id(dev, psof, psos))
- 		dev_warn(dev, "JPEG component ids should be 0-3 or 1-4");
- 
--	img_fmt = mxc_jpeg_get_image_format(dev, &sof);
--	if (img_fmt == MXC_JPEG_INVALID)
-+	fourcc = mxc_jpeg_get_image_format(dev, header);
-+	if (fourcc == 0)
- 		return -EINVAL;
- 
- 	/*
-@@ -1448,12 +1317,11 @@ static int mxc_jpeg_parse(struct mxc_jpeg_ctx *ctx,
- 	 * encoded with 3 components have RGB colorspace, see Recommendation
- 	 * ITU-T T.872 chapter 6.5.3 APP14 marker segment for colour encoding
- 	 */
--	if (img_fmt == MXC_JPEG_YUV444 && app14 && app14_transform == 0)
--		img_fmt = MXC_JPEG_RGB;
--
--	if (mxc_jpeg_imgfmt_to_fourcc(img_fmt, &fourcc)) {
--		dev_err(dev, "Fourcc not found for %d", img_fmt);
--		return -EINVAL;
-+	if (fourcc == V4L2_PIX_FMT_YUV24 || fourcc == V4L2_PIX_FMT_RGB24) {
-+		if (header.app14_tf == 0)
-+			fourcc = V4L2_PIX_FMT_RGB24;
-+		else
-+			fourcc = V4L2_PIX_FMT_YUV24;
+ 	if (send_command(cmd) || send_argument(key)) {
+ 		pr_warn("%.4s: read arg fail\n", key);
+@@ -239,7 +267,8 @@ static int read_smc(u8 cmd, const char *
  	}
  
- 	/*
-@@ -1461,10 +1329,11 @@ static int mxc_jpeg_parse(struct mxc_jpeg_ctx *ctx,
- 	 * detected from the jpeg output stream
- 	 */
- 	q_data_cap = mxc_jpeg_get_q_data(ctx, cap_type);
--	if (q_data_cap->w != sof.width || q_data_cap->h != sof.height)
-+	if (q_data_cap->w != header.frame.width ||
-+	    q_data_cap->h != header.frame.height)
- 		src_chg = true;
--	q_data_cap->w = sof.width;
--	q_data_cap->h = sof.height;
-+	q_data_cap->w = header.frame.width;
-+	q_data_cap->h = header.frame.height;
- 	q_data_cap->fmt = mxc_jpeg_find_format(ctx, fourcc);
- 	q_data_cap->w_adjusted = q_data_cap->w;
- 	q_data_cap->h_adjusted = q_data_cap->h;
-@@ -1490,7 +1359,7 @@ static int mxc_jpeg_parse(struct mxc_jpeg_ctx *ctx,
- 		(fourcc >> 24) & 0xff);
+ 	for (i = 0; i < len; i++) {
+-		if (wait_read()) {
++		if (wait_status(SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY,
++				SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY)) {
+ 			pr_warn("%.4s: read data[%d] fail\n", key, i);
+ 			return -EIO;
+ 		}
+@@ -250,19 +279,24 @@ static int read_smc(u8 cmd, const char *
+ 	for (i = 0; i < 16; i++) {
+ 		udelay(APPLESMC_MIN_WAIT);
+ 		status = inb(APPLESMC_CMD_PORT);
+-		if (!(status & 0x01))
++		if (!(status & SMC_STATUS_AWAITING_DATA))
+ 			break;
+ 		data = inb(APPLESMC_DATA_PORT);
+ 	}
+ 	if (i)
+ 		pr_warn("flushed %d bytes, last value is: %d\n", i, data);
  
- 	/* setup bytesperline/sizeimage for capture queue */
--	mxc_jpeg_bytesperline(q_data_cap, sof.precision);
-+	mxc_jpeg_bytesperline(q_data_cap, header.frame.precision);
- 	mxc_jpeg_sizeimage(q_data_cap);
+-	return 0;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
  
- 	/*
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.h b/drivers/media/platform/imx-jpeg/mxc-jpeg.h
-index ef1670dafeb4..313b09f831a4 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.h
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.h
-@@ -42,6 +42,8 @@ enum mxc_jpeg_mode {
-  * struct jpeg_fmt - driver's internal color format data
-  * @name:	format description
-  * @fourcc:	fourcc code, 0 if not applicable
-+ * @subsampling subsampling of jpeg components
-+ * @nc:		number of color components
-  * @depth:	number of bits per pixel
-  * @colplanes:	number of color planes (1 for packed formats)
-  * @h_align:	horizontal alignment order (align to 2^h_align)
-@@ -49,13 +51,15 @@ enum mxc_jpeg_mode {
-  * @flags:	flags describing format applicability
-  */
- struct mxc_jpeg_fmt {
--	char	*name;
--	u32	fourcc;
--	int	depth;
--	int	colplanes;
--	int	h_align;
--	int	v_align;
--	u32	flags;
-+	char					*name;
-+	u32					fourcc;
-+	enum v4l2_jpeg_chroma_subsampling	subsampling;
-+	int					nc;
-+	int					depth;
-+	int					colplanes;
-+	int					h_align;
-+	int					v_align;
-+	u32					flags;
- };
+ static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
+ {
+ 	int i;
++	int ret;
++
++	ret = smc_sane();
++	if (ret)
++		return ret;
  
- struct mxc_jpeg_desc {
-@@ -117,14 +121,6 @@ struct mxc_jpeg_dev {
- 	struct device_link		**pd_link;
- };
+ 	if (send_command(cmd) || send_argument(key)) {
+ 		pr_warn("%s: write arg fail\n", key);
+@@ -281,7 +315,7 @@ static int write_smc(u8 cmd, const char
+ 		}
+ 	}
  
--/* JPEG marker identifiers */
--#define SOF0				0xC0
--#define SOF1				0xC1
--#define SOF2				0xC2
--#define SOS				0xDA
--#define DHT				0xC4
--#define APP14				0xEE
--
- /**
-  * struct mxc_jpeg_sof_comp - JPEG Start Of Frame component fields
-  * @id:				component id
--- 
-2.17.1
+-	return 0;
++	return wait_status(0, SMC_STATUS_BUSY);
+ }
+ 
+ static int read_register_count(unsigned int *count)
 
