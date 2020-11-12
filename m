@@ -2,153 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977192B08DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A07E2B08D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbgKLPtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:49:25 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:49316 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgKLPtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:49:23 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFTOcY091503;
-        Thu, 12 Nov 2020 15:49:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=bD1V5q95i6+ADV+YeAFQt2s8ENYs/W7Au47fsVzm170=;
- b=I+c7hO+bjcs00L2rQ4D9vhfLswmZuCqk8qj2Zy513vtnws9SiGwmfaAz+zOmv0gRqTSo
- Yl2cnvrFzhNjuZychmZGau0YrII9Ro+yhj+BD2XvIQ+khyK+s8kZ+LbbXgL8halL1px4
- Uozki8PMlSG60yqLJDKEeExb45H4jKL8F8e8CVFlIpylUYUQhAAO2n3uUgyiR65IY0Bw
- TpBPXFKJYSvkWq96Y3iegUx8Y9eBA+2p/DtC+CcSWXdUxvEDxhPS00SUB980D+1QtW21
- X6pMiCC78K0BL7hJ9vVX1vWNaN38N0iuyxkfBrnUeVA8evI2IPwpe0JcterNmlbbCs5p uA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34p72ev7f9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 15:49:09 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFVCnl133264;
-        Thu, 12 Nov 2020 15:49:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34rt5686x6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 15:49:08 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0ACFn5ll005827;
-        Thu, 12 Nov 2020 15:49:05 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Nov 2020 07:49:05 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <2380561.1605195776@warthog.procyon.org.uk>
-Date:   Thu, 12 Nov 2020 10:49:03 -0500
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Bruce Fields <bfields@fieldses.org>,
-        linux-crypto@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-afs@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <22138FE2-9E79-4E24-99FC-74A35651B0C1@oracle.com>
-References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
- <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
- <2380561.1605195776@warthog.procyon.org.uk>
-To:     David Howells <dhowells@redhat.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120093
+        id S1728503AbgKLPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:49:16 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:15819 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728416AbgKLPtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:49:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605196154; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=vNs3uxGZ5eCK5kSwG8OJZ00mbV0n4/PmvePlsm2ZrM4=; b=o4tvcrOShYW6Hrge+tayB5LjkSdPqaQTIbB5ZFFiXTuRdDAcQ4JvHCfxxUqH/fhbK1idIlYM
+ AViTidODqJVwsXsDBYVe3ffvPWdywhCxoi2lmztaUn5bSZXG5JWEj6CqQRoyzSWyrxVxenIR
+ Uy97HDjUbrvctXyKh0PY7dtL8zk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fad597a37ede2253b2a8de4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Nov 2020 15:49:14
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2F1E1C433C8; Thu, 12 Nov 2020 15:49:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D42DC433C6;
+        Thu, 12 Nov 2020 15:49:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5D42DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: [PATCH] drm/msm: adreno: Make speed-bin support generic
+Date:   Thu, 12 Nov 2020 21:19:04 +0530
+Message-Id: <1605196144-23516-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+So far a530v2 gpu has support for detecting its supported opps
+based on a fuse value called speed-bin. This patch makes this
+support generic across gpu families. This is in preparation to
+extend speed-bin support to a6x family.
 
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+This patch is rebased on top of msm-next-staging branch in rob's tree.
 
-> On Nov 12, 2020, at 10:42 AM, David Howells <dhowells@redhat.com> =
-wrote:
->=20
-> Chuck Lever <chuck.lever@oracle.com> wrote:
->=20
->>> There are three main interfaces to it:
->>>=20
->>> (*) I/O crypto: encrypt, decrypt, get_mic and verify_mic.
->>>=20
->>>    These all do in-place crypto, using an sglist to define the =
-buffer
->>>    with the data in it.  Is it necessary to make it able to take =
-separate
->>>    input and output buffers?
->>=20
->> Hi David, Wondering if these "I/O" APIs use synchronous or async
->> crypto under the covers. For small data items like MICs, synchronous
->> might be a better choice, especially if asynchronous crypto could
->> result in incoming requests getting re-ordered and falling out of
->> the GSS sequence number window.
->>=20
->> What say ye?
->=20
-> For the moment I'm using synchronous APIs as that's what sunrpc is =
-using (I
-> borrowed the basic code from there).
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 --------------
+ drivers/gpu/drm/msm/adreno/adreno_device.c |  4 ++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 71 ++++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++
+ 4 files changed, 80 insertions(+), 34 deletions(-)
 
-Really? My understanding of the Linux kernel SUNRPC implementation is
-that it uses asynchronous, even for small data items. Maybe I'm using
-the terminology incorrectly.
-
-The problem that arises is on the server. The asynchronous API can
-schedule, and if the server has other work to do, that can delay a
-verify_mic long enough that the request drops out of the GSS sequence
-number window (even a large window).
-
-Whatever the mechanism, we need to have deterministic ordering, at
-least on the server-side.
-
-
-> It would be interesting to consider using async, but there's a =
-potential
-> issue.  For the simplified profile, encryption and integrity checksum
-> generation can be done simultaneously, but decryption and verification =
-can't.
-> For the AES-2 profile, the reverse is true.
->=20
-> For my purposes in rxrpc, async mode isn't actually that useful since =
-I'm only
-> doing the contents of a UDP packet at a time.  Either I'm encrypting =
-with the
-> intention of immediate transmission or decrypting with the intention =
-of
-> immediately using the data, so I'm in a context where I can wait =
-anyway.
->=20
-> What might get me more of a boost would be to encrypt the app data =
-directly
-> into a UDP packet and decrypt the UDP packet directly into the app =
-buffers.
-> This is easier said than done, though, as there's typically security =
-metadata
-> inserted into the packet inside the encrypted region.
-
-
---
-Chuck Lever
-
-
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+index 8fa5c91..7d42321 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+@@ -1531,38 +1531,6 @@ static const struct adreno_gpu_funcs funcs = {
+ 	.get_timestamp = a5xx_get_timestamp,
+ };
+ 
+-static void check_speed_bin(struct device *dev)
+-{
+-	struct nvmem_cell *cell;
+-	u32 val;
+-
+-	/*
+-	 * If the OPP table specifies a opp-supported-hw property then we have
+-	 * to set something with dev_pm_opp_set_supported_hw() or the table
+-	 * doesn't get populated so pick an arbitrary value that should
+-	 * ensure the default frequencies are selected but not conflict with any
+-	 * actual bins
+-	 */
+-	val = 0x80;
+-
+-	cell = nvmem_cell_get(dev, "speed_bin");
+-
+-	if (!IS_ERR(cell)) {
+-		void *buf = nvmem_cell_read(cell, NULL);
+-
+-		if (!IS_ERR(buf)) {
+-			u8 bin = *((u8 *) buf);
+-
+-			val = (1 << bin);
+-			kfree(buf);
+-		}
+-
+-		nvmem_cell_put(cell);
+-	}
+-
+-	dev_pm_opp_set_supported_hw(dev, &val, 1);
+-}
+-
+ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+ {
+ 	struct msm_drm_private *priv = dev->dev_private;
+@@ -1588,8 +1556,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+ 
+ 	a5xx_gpu->lm_leakage = 0x4E001A;
+ 
+-	check_speed_bin(&pdev->dev);
+-
+ 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 4);
+ 	if (ret) {
+ 		a5xx_destroy(&(a5xx_gpu->base.base));
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+index 87c8b03..e0ff16c 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_device.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+@@ -18,6 +18,8 @@ bool snapshot_debugbus = false;
+ MODULE_PARM_DESC(snapshot_debugbus, "Include debugbus sections in GPU devcoredump (if not fused off)");
+ module_param_named(snapshot_debugbus, snapshot_debugbus, bool, 0600);
+ 
++const u32 a530v2_speedbins[] = {0, 1, 2, 3, 4, 5, 6, 7};
++
+ static const struct adreno_info gpulist[] = {
+ 	{
+ 		.rev   = ADRENO_REV(2, 0, 0, 0),
+@@ -163,6 +165,8 @@ static const struct adreno_info gpulist[] = {
+ 			ADRENO_QUIRK_FAULT_DETECT_MASK,
+ 		.init = a5xx_gpu_init,
+ 		.zapfw = "a530_zap.mdt",
++		.speedbins = a530v2_speedbins,
++		.speedbins_count = ARRAY_SIZE(a530v2_speedbins),
+ 	}, {
+ 		.rev = ADRENO_REV(5, 4, 0, 2),
+ 		.revn = 540,
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+index f21561d..cdd0c11 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+@@ -14,6 +14,7 @@
+ #include <linux/pm_opp.h>
+ #include <linux/slab.h>
+ #include <linux/soc/qcom/mdt_loader.h>
++#include <linux/nvmem-consumer.h>
+ #include <soc/qcom/ocmem.h>
+ #include "adreno_gpu.h"
+ #include "msm_gem.h"
+@@ -891,6 +892,69 @@ void adreno_gpu_ocmem_cleanup(struct adreno_ocmem *adreno_ocmem)
+ 			   adreno_ocmem->hdl);
+ }
+ 
++static int adreno_set_supported_hw(struct device *dev,
++		struct adreno_gpu *adreno_gpu)
++{
++	u8 speedbins_count = adreno_gpu->info->speedbins_count;
++	const u32 *speedbins = adreno_gpu->info->speedbins;
++	struct nvmem_cell *cell;
++	u32 bin, i;
++	u32 val = 0;
++	void *buf, *opp_table;
++
++	cell = nvmem_cell_get(dev, "speed_bin");
++	/*
++	 * -ENOENT means that the platform doesn't support speedbin which is
++	 * fine
++	 */
++	if (PTR_ERR(cell) == -ENOENT)
++		return 0;
++	else if (IS_ERR(cell))
++		return PTR_ERR(cell);
++
++	/* A speedbin table is must if the platform supports speedbin */
++	if (!speedbins) {
++		DRM_DEV_ERROR(dev, "speed-bin table is missing\n");
++		return -ENOENT;
++	}
++
++	buf = nvmem_cell_read(cell, NULL);
++	if (IS_ERR(buf)) {
++		nvmem_cell_put(cell);
++		return PTR_ERR(buf);
++	}
++
++	bin = *((u32 *) buf);
++
++	for (i = 0; i < speedbins_count; i++) {
++		if (bin == speedbins[i]) {
++			val = (1 << i);
++			break;
++		}
++	}
++
++	kfree(buf);
++	nvmem_cell_put(cell);
++
++	if (!val) {
++		DRM_DEV_ERROR(dev, "missing support for speed-bin: %u\n", bin);
++		return -ENOENT;
++	}
++
++	opp_table = dev_pm_opp_set_supported_hw(dev, &val, 1);
++	if (IS_ERR(opp_table))
++		return PTR_ERR(opp_table);
++
++	adreno_gpu->opp_table = opp_table;
++	return 0;
++}
++
++static void adreno_put_supported_hw(struct opp_table *opp_table)
++{
++	if (opp_table)
++		dev_pm_opp_put_supported_hw(opp_table);
++}
++
+ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+ 		struct adreno_gpu *adreno_gpu,
+ 		const struct adreno_gpu_funcs *funcs, int nr_rings)
+@@ -899,6 +963,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+ 	struct adreno_platform_config *config = dev->platform_data;
+ 	struct msm_gpu_config adreno_gpu_config  = { 0 };
+ 	struct msm_gpu *gpu = &adreno_gpu->base;
++	int ret;
+ 
+ 	adreno_gpu->funcs = funcs;
+ 	adreno_gpu->info = adreno_info(config->rev);
+@@ -910,6 +975,10 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+ 
+ 	adreno_gpu_config.nr_rings = nr_rings;
+ 
++	ret = adreno_set_supported_hw(dev, adreno_gpu);
++	if (ret)
++		return ret;
++
+ 	adreno_get_pwrlevels(dev, gpu);
+ 
+ 	pm_runtime_set_autosuspend_delay(dev,
+@@ -936,4 +1005,6 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+ 
+ 	icc_put(gpu->icc_path);
+ 	icc_put(gpu->ocmem_icc_path);
++
++	adreno_put_supported_hw(adreno_gpu->opp_table);
+ }
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+index c3775f7..a756ad7 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+@@ -55,6 +55,7 @@ struct adreno_reglist {
+ };
+ 
+ extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
++extern const u32 a618_speedbins[];
+ 
+ struct adreno_info {
+ 	struct adreno_rev rev;
+@@ -67,6 +68,8 @@ struct adreno_info {
+ 	const char *zapfw;
+ 	u32 inactive_period;
+ 	const struct adreno_reglist *hwcg;
++	const u32 *speedbins;
++	const u8 speedbins_count;
+ };
+ 
+ const struct adreno_info *adreno_info(struct adreno_rev rev);
+@@ -112,6 +115,8 @@ struct adreno_gpu {
+ 	 * code (a3xx_gpu.c) and stored in this common location.
+ 	 */
+ 	const unsigned int *reg_offsets;
++
++	struct opp_table *opp_table;
+ };
+ #define to_adreno_gpu(x) container_of(x, struct adreno_gpu, base)
+ 
+-- 
+2.7.4
 
