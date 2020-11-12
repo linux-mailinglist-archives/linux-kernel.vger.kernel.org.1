@@ -2,549 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55F12B00EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D89C2B00E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgKLIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:12:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726903AbgKLIMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:12:03 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39A7620870;
-        Thu, 12 Nov 2020 08:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605168722;
-        bh=nlvOTgJ13QvOAfJ2mptTAONbNWW6mm5DdxP581JT2JM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iiKZhsixspbeM8wWO0UdLIPZsIWC/igMUGnYzmriSpANNegm4Qs/N3X3K08uIKtaH
-         1cGPkkK0nm5t4dH14sSbZqIRJWbvvVe/DwncB0QpA67W+N12HuYbKL1Jx8/GS7vrz4
-         50S+Y0Fyq7wunK4Hl5VFWHhTvuOlNlJWajQ9DK58=
-Date:   Thu, 12 Nov 2020 10:11:52 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dyoung@redhat.com,
-        bhe@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        corbet@lwn.net, John.P.donnelly@oracle.com, bhsharma@redhat.com,
-        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
-        arnd@arndb.de, nsaenzjulienne@suse.de, james.morse@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        xiexiuqi@huawei.com, guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v13 4/8] x86: kdump: move reserve_crashkernel[_low]()
- into crash_core.c
-Message-ID: <20201112081152.GK4758@kernel.org>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
- <20201031074437.168008-5-chenzhou10@huawei.com>
+        id S1726852AbgKLIMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:12:00 -0500
+Received: from mail-db8eur05on2085.outbound.protection.outlook.com ([40.107.20.85]:42369
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725884AbgKLIL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 03:11:58 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LNtQs+vvapkV4rQmoRhKXOu6hCe9cR+xU8FpnzHlrLg543XrHV9pJ30+FrVZdeBFIdLKMoCgzTkgSuUiyIe6MuFfVymcgJ4qtxAm0WH/Aq4t/lichA06fz5bJRAZ6R6xPXMpjxvXTyAbkqswsyip/CmyQW+kihTM6dGgQDa2xv6EjalNrprY8KqsbvEC146pRGoFyOU6qVQBPNhKsOJR+MqwlgVEXiOOzWb2YoNC86G4+JNGr3F7guxOw5CVTVEA4UwQ8SnkrCS/8U3JBiEW4D4DdO7t8i3gsBm1UdAnQarfb7aALxRgz7YRA3T5A03+iOpV2GIHB5dyKZTncbVfCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oYIgd/BQ7h2nM2oYg3F6i6MmE2pDQYjLLmRMyAaausk=;
+ b=C/NkuvydbRiS1y292Z9D/QiR8KUhy44+nHWBy/srTcKs42NNScr2ErLtf81EPw/lwWGdOOJA3LlAc97k4MuRyKmJhOzFUVfWQgmZ/O3aRAK1w0lbQij1jl/mQMNHgf+ZFEmnTjNXharIXwxIzzllJTqpMGcLilu7rZnu4Z+BrMZp0w6tF+6b5HZZrcF9V+wd4h507WnMFbCGpfdlkddxNazpEuxPVrJpjQR+C37RVk3KFWCqrDQQXZFZLhRWE7w0zP5k1xP2RypBTIPf7wdSYqezYy6KGsv1Yof7sUjyUsB8bWSS6M8ghP4uvPEZZMRy9ZcZ6RCJVstIwk+ahRxDbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=siemens.onmicrosoft.com; s=selector1-siemens-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oYIgd/BQ7h2nM2oYg3F6i6MmE2pDQYjLLmRMyAaausk=;
+ b=e+1Nxiaynq9lgSd1haunqjnU5p5Fw/VK3/MrkuVo3p+kKSw+1xleCO5KewC6HmmJiSVHNo+F9k8aWHHngqVfC+DsnnfBYwmVyekR/mUU/Rin22jao1AKP/L4zCH1OSs6FaIWXLWx8pA2ifrmbOl44IyQOR2lVnOgwgtd+j0Cmh4=
+Received: from DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:138::9)
+ by DB6PR10MB1559.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:6:36::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Thu, 12 Nov
+ 2020 08:11:55 +0000
+Received: from DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dd4e:81f8:cb7e:a1eb]) by DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dd4e:81f8:cb7e:a1eb%3]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
+ 08:11:55 +0000
+From:   "Valek, Andrej" <andrej.valek@siemens.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
+Subject: RE: [PATCH v2] Input: st1232 - add support resolution reading
+Thread-Topic: [PATCH v2] Input: st1232 - add support resolution reading
+Thread-Index: AQHWuJausQ675DfOyEKCxRf7capNnKnEJVGA
+Content-Class: 
+Date:   Thu, 12 Nov 2020 08:11:55 +0000
+Message-ID: <DB8PR10MB3977BDD73A260EE7999DD76892E70@DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM>
+References: <202011030200.dKK6cKCM-lkp@intel.com>
+ <20201103073949.12198-1-andrej.valek@siemens.com>
+ <20201112015348.GD1003057@dtor-ws>
+In-Reply-To: <20201112015348.GD1003057@dtor-ws>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Enabled=true;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SetDate=2020-11-12T08:11:53Z;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Method=Standard;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Name=restricted-default;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ActionId=8687f37a-1984-451f-bf2b-f32752f66bf7;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ContentBits=0
+document_confidentiality: Restricted
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=siemens.com;
+x-originating-ip: [165.225.200.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 69d6f610-5e72-48f6-7c0a-08d886e29e94
+x-ms-traffictypediagnostic: DB6PR10MB1559:
+x-microsoft-antispam-prvs: <DB6PR10MB1559EC8EBDB5D3CC084343F892E70@DB6PR10MB1559.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4FgFAe0fS9PQiprAu6XHu/nfaCo9H2XQH7Q/PnhzQ3vuJw7KS7NZ3995wI9vSV73MZRRfV7Pfn6a46OzI0M8vjC+FX5cZZP/+nOZlDC0mrYvhtgntnzbX/rMUSdqAdpLjtdkFyAO+TaY5w1/WP24dMtlWvE4wJZ6BHQMX//1eOI5Q6nf58rMLZ223QF8VrgrgqVKAGDzYSBHseUYQMBgVOv0tgVeIGnfbL+KRxzMJv6ZZH2GgM7GnN7PT/JlItXhqi5KuZXk7k3bg4CXjHcVBPYG2d3g9ZYxvzNXTnBaZWIOjveUS0+lTiivH/lAdB30oaLiL6HKLk9aP+ypPhx25g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(64756008)(2906002)(86362001)(8676002)(66476007)(5660300002)(83380400001)(66946007)(186003)(55236004)(76116006)(316002)(71200400001)(26005)(53546011)(6506007)(33656002)(66556008)(8936002)(6916009)(7696005)(52536014)(66446008)(4326008)(54906003)(478600001)(55016002)(9686003)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 2W0WzavkYSa/9qFgquW8QVbIdmUKlTHt+rG4VZhFkwqYypeeG12PnsP57rupJ5JQAS1TFxaoayRoVdJzuKYwxz+wZf43kAdKTodlwT1fwtQpwS0g87AGaPd6LnvUTweLNxbahNciFr5asmjmjIL6KrbRoBAi0sRWqSZm+pNgn3dsjnSHuncJNm7dMMDlwaJAwlHH+t2fpySsNADI9gGP+MDvPQFPiGwPSClY6k3CkaokCDWqhXpzzWBsXlSVfDZ0gm7bWfsVpKg9gz70UCXkPfxicjmoFZr/X8ske+d46SAWO1e5TaqlgpG64Ceo+wgEZZlW78CXhikZ2heYi/VxnIYfl9PRqgqsYGR3mtL9oWiJqoYItHq7xu2EwNFYVhje454sCsdBgDXW5hmW3OTdZfeYQ1MfqaslFkukm7/sSQH4xWeyTBtdvjAF1F3qYeamZVIPaz5/AIvPsTE4gl3+4luV4iZVvQOCYpuUi0PyWqgRkyjHJJ29ZEL3jz5u+KSBOBLzwUwqBzruah+nB7g4CDgXoH0jHWZvZflqioy1oAZkRKlqkS8vpVUfL6qH3mYLGNi2UQ5dSv+/DlEWUny7zjdpor4D6lzEmFpUyKpRGxBN1WyBgYDPDfQFnJfaQvCimAcnABk9n1eZsHbHJUSSlH8/02A0tQ3LzfCazexN2pd38+313WWc4C4qSg4BsyAYpiU2+fWMyP5HB+KR+l7xrjTr/aeHMn83rbP3fk2Qmdsi6Hg+5Q75O4N6VDioyAuKVDUR2F5bYZDFJXAuipY+8zgAeRO7GimhVw2wkEs1UDwY9xKolRugQhh/cme+uoOCfs1UolG7rx5Ti+KHrYDarnvgGFzGt0Xh3pihfg5qJG2N4fdbvS4+BoEYOOlRJg3j9xH2WrN6D+QZAi5x2dQe7Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201031074437.168008-5-chenzhou10@huawei.com>
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69d6f610-5e72-48f6-7c0a-08d886e29e94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 08:11:55.3131
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KU/5LD1xwZzgJlaURIpbqgxptncP0BTm9zRcOSVDfVz/F0lGF8ePym/z9dHUMZQW+EnHtPYQ+2R86UPuGNvOpCo71ed/6lwBMAx4kgl010Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR10MB1559
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 03:44:33PM +0800, Chen Zhou wrote:
-> Make the functions reserve_crashkernel[_low]() as generic.
-> Arm64 will use these to reimplement crashkernel=X.
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> ---
->  arch/x86/include/asm/kexec.h |  25 ++++++
->  arch/x86/kernel/setup.c      | 151 +-------------------------------
->  include/linux/crash_core.h   |   4 +
->  include/linux/kexec.h        |   2 -
->  kernel/crash_core.c          | 164 +++++++++++++++++++++++++++++++++++
->  kernel/kexec_core.c          |  17 ----
->  6 files changed, 195 insertions(+), 168 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
-> index 8cf9d3fd31c7..34afa7b645f9 100644
-> --- a/arch/x86/include/asm/kexec.h
-> +++ b/arch/x86/include/asm/kexec.h
-> @@ -21,6 +21,27 @@
->  /* 2M alignment for crash kernel regions */
->  #define CRASH_ALIGN		SZ_16M
->  
-> +/*
-> + * Keep the crash kernel below this limit.
-> + *
-> + * Earlier 32-bits kernels would limit the kernel to the low 512 MB range
-> + * due to mapping restrictions.
-> + *
-> + * 64-bit kdump kernels need to be restricted to be under 64 TB, which is
-> + * the upper limit of system RAM in 4-level paging mode. Since the kdump
-> + * jump could be from 5-level paging to 4-level paging, the jump will fail if
-> + * the kernel is put above 64 TB, and during the 1st kernel bootup there's
-> + * no good way to detect the paging mode of the target kernel which will be
-> + * loaded for dumping.
-> + */
-> +#ifdef CONFIG_X86_32
-> +# define CRASH_ADDR_LOW_MAX	SZ_512M
-> +# define CRASH_ADDR_HIGH_MAX	SZ_512M
-> +#else
-> +# define CRASH_ADDR_LOW_MAX	SZ_4G
-> +# define CRASH_ADDR_HIGH_MAX	SZ_64T
-> +#endif
-> +
->  #ifndef __ASSEMBLY__
->  
->  #include <linux/string.h>
-> @@ -200,6 +221,10 @@ typedef void crash_vmclear_fn(void);
->  extern crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
->  extern void kdump_nmi_shootdown_cpus(void);
->  
-> +#ifdef CONFIG_KEXEC_CORE
-> +extern void __init reserve_crashkernel(void);
-> +#endif
-> +
->  #endif /* __ASSEMBLY__ */
->  
->  #endif /* _ASM_X86_KEXEC_H */
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 1289f079ad5f..00b3840d30f9 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -25,8 +25,6 @@
->  
->  #include <uapi/linux/mount.h>
->  
-> -#include <xen/xen.h>
-> -
->  #include <asm/apic.h>
->  #include <asm/numa.h>
->  #include <asm/bios_ebda.h>
-> @@ -38,6 +36,7 @@
->  #include <asm/io_apic.h>
->  #include <asm/kasan.h>
->  #include <asm/kaslr.h>
-> +#include <asm/kexec.h>
->  #include <asm/mce.h>
->  #include <asm/mtrr.h>
->  #include <asm/realmode.h>
-> @@ -389,153 +388,7 @@ static void __init memblock_x86_reserve_range_setup_data(void)
->  	}
->  }
->  
-> -/*
-> - * --------- Crashkernel reservation ------------------------------
-> - */
-> -
-> -#ifdef CONFIG_KEXEC_CORE
-> -
-> -/*
-> - * Keep the crash kernel below this limit.
-> - *
-> - * Earlier 32-bits kernels would limit the kernel to the low 512 MB range
-> - * due to mapping restrictions.
-> - *
-> - * 64-bit kdump kernels need to be restricted to be under 64 TB, which is
-> - * the upper limit of system RAM in 4-level paging mode. Since the kdump
-> - * jump could be from 5-level paging to 4-level paging, the jump will fail if
-> - * the kernel is put above 64 TB, and during the 1st kernel bootup there's
-> - * no good way to detect the paging mode of the target kernel which will be
-> - * loaded for dumping.
-> - */
-> -#ifdef CONFIG_X86_32
-> -# define CRASH_ADDR_LOW_MAX	SZ_512M
-> -# define CRASH_ADDR_HIGH_MAX	SZ_512M
-> -#else
-> -# define CRASH_ADDR_LOW_MAX	SZ_4G
-> -# define CRASH_ADDR_HIGH_MAX	SZ_64T
-> -#endif
-> -
-> -static int __init reserve_crashkernel_low(void)
-> -{
-> -#ifdef CONFIG_X86_64
-> -	unsigned long long base, low_base = 0, low_size = 0;
-> -	unsigned long low_mem_limit;
-> -	int ret;
-> -
-> -	low_mem_limit = min(memblock_phys_mem_size(), CRASH_ADDR_LOW_MAX);
-> -
-> -	/* crashkernel=Y,low */
-> -	ret = parse_crashkernel_low(boot_command_line, low_mem_limit, &low_size, &base);
-> -	if (ret) {
-> -		/*
-> -		 * two parts from kernel/dma/swiotlb.c:
-> -		 * -swiotlb size: user-specified with swiotlb= or default.
-> -		 *
-> -		 * -swiotlb overflow buffer: now hardcoded to 32k. We round it
-> -		 * to 8M for other buffers that may need to stay low too. Also
-> -		 * make sure we allocate enough extra low memory so that we
-> -		 * don't run out of DMA buffers for 32-bit devices.
-> -		 */
-> -		low_size = max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
-> -	} else {
-> -		/* passed with crashkernel=0,low ? */
-> -		if (!low_size)
-> -			return 0;
-> -	}
-> -
-> -	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, CRASH_ALIGN, CRASH_ADDR_LOW_MAX);
-> -	if (!low_base) {
-> -		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
-> -		       (unsigned long)(low_size >> 20));
-> -		return -ENOMEM;
-> -	}
-> -
-> -	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (low RAM limit: %ldMB)\n",
-> -		(unsigned long)(low_size >> 20),
-> -		(unsigned long)(low_base >> 20),
-> -		(unsigned long)(low_mem_limit >> 20));
-> -
-> -	crashk_low_res.start = low_base;
-> -	crashk_low_res.end   = low_base + low_size - 1;
-> -	insert_resource(&iomem_resource, &crashk_low_res);
-> -#endif
-> -	return 0;
-> -}
-> -
-> -static void __init reserve_crashkernel(void)
-> -{
-> -	unsigned long long crash_size, crash_base, total_mem;
-> -	bool high = false;
-> -	int ret;
-> -
-> -	total_mem = memblock_phys_mem_size();
-> -
-> -	/* crashkernel=XM */
-> -	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
-> -	if (ret != 0 || crash_size <= 0) {
-> -		/* crashkernel=X,high */
-> -		ret = parse_crashkernel_high(boot_command_line, total_mem,
-> -					     &crash_size, &crash_base);
-> -		if (ret != 0 || crash_size <= 0)
-> -			return;
-> -		high = true;
-> -	}
-> -
-> -	if (xen_pv_domain()) {
-> -		pr_info("Ignoring crashkernel for a Xen PV domain\n");
-> -		return;
-> -	}
+Hello Dimitry,
 
-This is relevant only to x86, maybe we could move this check to
-setup_arch before calling reserve_crashkernel() to keep it in x86?
+Thank you for that.
+What about the other patches?
 
-> -
-> -	/* 0 means: find the address automatically */
-> -	if (!crash_base) {
-> -		/*
-> -		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
-> -		 * crashkernel=x,high reserves memory over CRASH_ADDR_LOW_MAX,
-> -		 * also allocates 256M extra low memory for DMA buffers
-> -		 * and swiotlb.
-> -		 * But the extra memory is not required for all machines.
-> -		 * So try low memory first and fall back to high memory
-> -		 * unless "crashkernel=size[KMG],high" is specified.
-> -		 */
-> -		if (!high)
-> -			crash_base = memblock_phys_alloc_range(crash_size,
-> -						CRASH_ALIGN, CRASH_ALIGN,
-> -						CRASH_ADDR_LOW_MAX);
-> -		if (!crash_base)
-> -			crash_base = memblock_phys_alloc_range(crash_size,
-> -						CRASH_ALIGN, CRASH_ALIGN,
-> -						CRASH_ADDR_HIGH_MAX);
-> -		if (!crash_base) {
-> -			pr_info("crashkernel reservation failed - No suitable area found.\n");
-> -			return;
-> -		}
-> -	} else {
-> -		unsigned long long start;
-> -
-> -		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
-> -						  crash_base + crash_size);
-> -		if (start != crash_base) {
-> -			pr_info("crashkernel reservation failed - memory is in use.\n");
-> -			return;
-> -		}
-> -	}
-> -
-> -	if (crash_base >= CRASH_ADDR_LOW_MAX && reserve_crashkernel_low()) {
-> -		memblock_free(crash_base, crash_size);
-> -		return;
-> -	}
-> -
-> -	pr_info("Reserving %ldMB of memory at %ldMB for crashkernel (System RAM: %ldMB)\n",
-> -		(unsigned long)(crash_size >> 20),
-> -		(unsigned long)(crash_base >> 20),
-> -		(unsigned long)(total_mem >> 20));
-> -
-> -	crashk_res.start = crash_base;
-> -	crashk_res.end   = crash_base + crash_size - 1;
-> -	insert_resource(&iomem_resource, &crashk_res);
-> -}
-> -#else
-> +#ifndef CONFIG_KEXEC_CORE
->  static void __init reserve_crashkernel(void)
->  {
->  }
-> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-> index 206bde8308b2..5021d7c70aee 100644
-> --- a/include/linux/crash_core.h
-> +++ b/include/linux/crash_core.h
-> @@ -69,6 +69,9 @@ extern unsigned char *vmcoreinfo_data;
->  extern size_t vmcoreinfo_size;
->  extern u32 *vmcoreinfo_note;
->  
-> +extern struct resource crashk_res;
-> +extern struct resource crashk_low_res;
-> +
->  /* raw contents of kernel .notes section */
->  extern const void __start_notes __weak;
->  extern const void __stop_notes __weak;
-> @@ -83,5 +86,6 @@ int parse_crashkernel_high(char *cmdline, unsigned long long system_ram,
->  		unsigned long long *crash_size, unsigned long long *crash_base);
->  int parse_crashkernel_low(char *cmdline, unsigned long long system_ram,
->  		unsigned long long *crash_size, unsigned long long *crash_base);
-> +int __init reserve_crashkernel_low(void);
->  
->  #endif /* LINUX_CRASH_CORE_H */
-> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-> index 9e93bef52968..f301f2f5cfc4 100644
-> --- a/include/linux/kexec.h
-> +++ b/include/linux/kexec.h
-> @@ -337,8 +337,6 @@ extern int kexec_load_disabled;
->  
->  /* Location of a reserved region to hold the crash kernel.
->   */
-> -extern struct resource crashk_res;
-> -extern struct resource crashk_low_res;
->  extern note_buf_t __percpu *crash_notes;
->  
->  /* flag to track if kexec reboot is in progress */
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 106e4500fd53..d39892bdb9ae 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -7,7 +7,12 @@
->  #include <linux/crash_core.h>
->  #include <linux/utsname.h>
->  #include <linux/vmalloc.h>
-> +#include <linux/memblock.h>
-> +#include <linux/swiotlb.h>
->  
-> +#include <xen/xen.h>
-> +
-> +#include <asm/kexec.h>
->  #include <asm/page.h>
->  #include <asm/sections.h>
->  
-> @@ -21,6 +26,22 @@ u32 *vmcoreinfo_note;
->  /* trusted vmcoreinfo, e.g. we can make a copy in the crash memory */
->  static unsigned char *vmcoreinfo_data_safecopy;
->  
-> +/* Location of the reserved area for the crash kernel */
-> +struct resource crashk_res = {
-> +	.name  = "Crash kernel",
-> +	.start = 0,
-> +	.end   = 0,
-> +	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
-> +	.desc  = IORES_DESC_CRASH_KERNEL
-> +};
-> +struct resource crashk_low_res = {
-> +	.name  = "Crash kernel",
-> +	.start = 0,
-> +	.end   = 0,
-> +	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
-> +	.desc  = IORES_DESC_CRASH_KERNEL
-> +};
-> +
->  /*
->   * parsing the "crashkernel" commandline
->   *
-> @@ -294,6 +315,149 @@ int __init parse_crashkernel_low(char *cmdline,
->  				"crashkernel=", suffix_tbl[SUFFIX_LOW]);
->  }
->  
-> +/*
-> + * --------- Crashkernel reservation ------------------------------
-> + */
-> +
-> +int __init reserve_crashkernel_low(void)
+Regards,
+Andrej
 
-static?
-
-> +{
-> +#ifdef CONFIG_X86_64
-> +	unsigned long long base, low_base = 0, low_size = 0;
-> +	unsigned long low_mem_limit;
-> +	int ret;
-> +
-> +	low_mem_limit = min(memblock_phys_mem_size(), CRASH_ADDR_LOW_MAX);
-> +
-> +	/* crashkernel=Y,low */
-> +	ret = parse_crashkernel_low(boot_command_line, low_mem_limit, &low_size, &base);
-> +	if (ret) {
-> +		/*
-> +		 * two parts from kernel/dma/swiotlb.c:
-> +		 * -swiotlb size: user-specified with swiotlb= or default.
-> +		 *
-> +		 * -swiotlb overflow buffer: now hardcoded to 32k. We round it
-> +		 * to 8M for other buffers that may need to stay low too. Also
-> +		 * make sure we allocate enough extra low memory so that we
-> +		 * don't run out of DMA buffers for 32-bit devices.
-> +		 */
-> +		low_size = max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
-> +	} else {
-> +		/* passed with crashkernel=0,low ? */
-> +		if (!low_size)
-> +			return 0;
-> +	}
-> +
-> +	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, CRASH_ALIGN,
-> +			CRASH_ADDR_LOW_MAX);
-> +	if (!low_base) {
-> +		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
-> +		       (unsigned long)(low_size >> 20));
-> +		return -ENOMEM;
-> +	}
-> +
-> +	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (low RAM limit: %ldMB)\n",
-> +		(unsigned long)(low_size >> 20),
-> +		(unsigned long)(low_base >> 20),
-> +		(unsigned long)(low_mem_limit >> 20));
-> +
-> +	crashk_low_res.start = low_base;
-> +	crashk_low_res.end   = low_base + low_size - 1;
-> +	insert_resource(&iomem_resource, &crashk_low_res);
-> +#endif
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_X86
-> +#ifdef CONFIG_KEXEC_CORE
-> +/*
-> + * reserve_crashkernel() - reserves memory for crash kernel
-> + *
-> + * This function reserves memory area given in "crashkernel=" kernel command
-> + * line parameter. The memory reserved is used by dump capture kernel when
-> + * primary kernel is crashing.
-> + */
-> +void __init reserve_crashkernel(void)
-> +{
-> +	unsigned long long crash_size, crash_base, total_mem;
-> +	bool high = false;
-> +	int ret;
-> +
-> +	total_mem = memblock_phys_mem_size();
-> +
-> +	/* crashkernel=XM */
-> +	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
-> +	if (ret != 0 || crash_size <= 0) {
-> +		/* crashkernel=X,high */
-> +		ret = parse_crashkernel_high(boot_command_line, total_mem,
-> +					     &crash_size, &crash_base);
-> +		if (ret != 0 || crash_size <= 0)
-> +			return;
-> +		high = true;
-> +	}
-> +
-> +	if (xen_pv_domain()) {
-> +		pr_info("Ignoring crashkernel for a Xen PV domain\n");
-> +		return;
-> +	}
-> +
-> +	/* 0 means: find the address automatically */
-> +	if (!crash_base) {
-> +		/*
-> +		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
-> +		 * crashkernel=x,high reserves memory over CRASH_ADDR_LOW_MAX,
-> +		 * also allocates 256M extra low memory for DMA buffers
-> +		 * and swiotlb.
-> +		 * But the extra memory is not required for all machines.
-> +		 * So try low memory first and fall back to high memory
-> +		 * unless "crashkernel=size[KMG],high" is specified.
-> +		 */
-> +		if (!high)
-> +			crash_base = memblock_phys_alloc_range(crash_size,
-> +						CRASH_ALIGN, CRASH_ALIGN,
-> +						CRASH_ADDR_LOW_MAX);
-> +		if (!crash_base)
-> +			crash_base = memblock_phys_alloc_range(crash_size,
-> +						CRASH_ALIGN, CRASH_ALIGN,
-> +						CRASH_ADDR_HIGH_MAX);
-> +		if (!crash_base) {
-> +			pr_info("crashkernel reservation failed - No suitable area found.\n");
-> +			return;
-> +		}
-> +	} else {
-> +		/* User specifies base address explicitly. */
-> +		unsigned long long start;
-> +
-> +		if (!IS_ALIGNED(crash_base, CRASH_ALIGN)) {
-> +			pr_warn("cannot reserve crashkernel: base address is not %ldMB aligned\n",
-> +				(unsigned long)CRASH_ALIGN >> 20);
-> +			return;
-> +		}
-> +
-> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
-> +						  crash_base + crash_size);
-> +		if (start != crash_base) {
-> +			pr_info("crashkernel reservation failed - memory is in use.\n");
-> +			return;
-> +		}
-> +	}
-> +
-> +	if (crash_base >= CRASH_ADDR_LOW_MAX && reserve_crashkernel_low()) {
-> +		memblock_free(crash_base, crash_size);
-> +		return;
-> +	}
-> +
-> +	pr_info("Reserving %ldMB of memory at %ldMB for crashkernel (System RAM: %ldMB)\n",
-> +		(unsigned long)(crash_size >> 20),
-> +		(unsigned long)(crash_base >> 20),
-> +		(unsigned long)(total_mem >> 20));
-> +
-> +	crashk_res.start = crash_base;
-> +	crashk_res.end   = crash_base + crash_size - 1;
-> +	insert_resource(&iomem_resource, &crashk_res);
-> +}
-> +#endif /* CONFIG_KEXEC_CORE */
-> +#endif
-> +
->  Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
->  			  void *data, size_t data_len)
->  {
-> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> index 8798a8183974..2ca887514145 100644
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -53,23 +53,6 @@ note_buf_t __percpu *crash_notes;
->  /* Flag to indicate we are going to kexec a new kernel */
->  bool kexec_in_progress = false;
->  
-> -
-> -/* Location of the reserved area for the crash kernel */
-> -struct resource crashk_res = {
-> -	.name  = "Crash kernel",
-> -	.start = 0,
-> -	.end   = 0,
-> -	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
-> -	.desc  = IORES_DESC_CRASH_KERNEL
-> -};
-> -struct resource crashk_low_res = {
-> -	.name  = "Crash kernel",
-> -	.start = 0,
-> -	.end   = 0,
-> -	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
-> -	.desc  = IORES_DESC_CRASH_KERNEL
-> -};
-> -
->  int kexec_should_crash(struct task_struct *p)
->  {
->  	/*
-> -- 
-> 2.20.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+> -----Original Message-----
+> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>=20
+> Sent: Thursday, November 12, 2020 2:54 AM
+> To: Valek, Andrej (ADV D EU SK SI-BP1) <andrej.valek@siemens.com>
+> Cc: linux-input@vger.kernel.org; linux-kernel@vger.kernel.org; kbuild-all=
+@lists.01.org
+> Subject: Re: [PATCH v2] Input: st1232 - add support resolution reading
+>=20
+> On Tue, Nov 03, 2020 at 08:39:49AM +0100, Andrej Valek wrote:
+>> Hard-coding resolution for st1633 device was wrong. Some of LCDs like=20
+>> YTS700TLBC-02-100C has assembled Sitronix st1633 touchcontroller too.=20
+>> But the resolution is not 320x480 as was hard-coded.
+>> Add new function which reads correct resolution directly from register.
+>>=20
+>> Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
+>
+> Applied, thank you.
+>
+> --
+> Dmitry
