@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AB72B0841
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F1D2B084B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbgKLPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:18:26 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45340 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgKLPS0 (ORCPT
+        id S1728627AbgKLPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgKLPUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:18:26 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605194304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=agGytP2/PxrD6HdXqGAuy03iJZcEBb4+WEPn1OkpUoY=;
-        b=3aM4IilkkU0xEOJEYSQd1hmEqdFkHn8jAsqqH43Gr2WYbPm4EWg8o6PnKPPYpWEUfg5em0
-        CrkMxX0rtOoTBHSqOiS2bIDUN2mfDYu9vQSuX8gdjJJXhGx06iMc2CXPjL9jCv9FjTifxt
-        uVtlDKcPFT/T5uSztIULaMiZqJpldD7SxYssbR15JZcci/S9I16YmRTqpaUUFY5IRXgdd2
-        J3HzX4lP/qOz+GCof+DpjC8ykxuUYg19zcChLVnUKx78WjuuX1A4kqYlgh9T9lobWluOvs
-        GCKNp4wn92XIbkfPX/+eE7Ps0D48mtngYiTtUac5467oBGdXU/fE78Wgq17bHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605194304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=agGytP2/PxrD6HdXqGAuy03iJZcEBb4+WEPn1OkpUoY=;
-        b=Lv2IqEdi1qkvj7YNIX4gttzR6NFKXNORHb79P1h95gfmxiqgR3L9Asy2Nvhxp41LIcpRna
-        Q0sdEygGMl1vmBCw==
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: REGRESSION: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
-In-Reply-To: <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
-References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
-Date:   Thu, 12 Nov 2020 16:18:23 +0100
-Message-ID: <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
+        Thu, 12 Nov 2020 10:20:21 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4568C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:20:20 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id y11so2888018qvu.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:20:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lDRYcXH2Tlj+IsIFX0IkGhrvzNzP1X0UM9xeo7JwYWg=;
+        b=qp58B68OPcq6WzCKL4Pxf4Cr2rWBYMhIbERa2fIh0ekx+BVEyeZ1gfxwljBJfv+0i+
+         FDpnQacMYMr6b8ydDk8N6u74cXlmI0bIANHfXGNa8s+7AAkL/IdR1kwaEQWwUMOCz1Wf
+         fVKQFvFLdo+9bJraJJ5FXNKnSdpATqUvDGKoWj6WX1s8f2OlOUd6XEhUxTPdKhbxYwn0
+         Lhag4BnDc6o0IH25tzvxoqMZIBJ1sILoIw/c02tF+vwlIoAAvuXg0H2csYQyn5WOyf6O
+         X7RRl/uK9LOCITHE0XPrpTfyrBonx23oEpvCJGqBsP+EanQVT55ivxKYFLsCcBRCBx2N
+         GS9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lDRYcXH2Tlj+IsIFX0IkGhrvzNzP1X0UM9xeo7JwYWg=;
+        b=oS643Sozo/G/X75bNY/S0J6msn7FoJaSmZHOQ/bpPF3WmULnX1OIpOhU3GeTvVa1cP
+         VLLM4KpNa5mf+Z4snRYz3WjvNU/z61klT5y7RP0QX2uqhzjoD8iIhquReEiZjqWGBzyA
+         clsKsdFJEspBwvkQOIs35+7jTF/j9NJEKo2JDkN/3FUNsDhFmz4ovsi/TpaifQ/xYPcd
+         KOb2qfxTyH4cOGCRtbKrkChCHOmEZEXCvfySAmW+/Y1hQdNFtKuS4LP9LCWXdqK+Lwmc
+         vCW0vhKOYwpTtfuG59Y3WLgsIgzlCC1QyWfrOv/9SxFO053ihxH3WDRuQZyJzKTfF/Pa
+         tdvw==
+X-Gm-Message-State: AOAM531+OU0Hpktz6zZ+lLvl8MUJKAwiNZqjwrwG3HgxTduOV7uK7u0R
+        hpsWtbpcReLHHmwVJl9KDYe24w==
+X-Google-Smtp-Source: ABdhPJypfB00vA2U1wYcu9CcFQg2UwLr3WnG0G63MjEHHhSJSPCac+fmNLrV3dVmsCiQGd6yuXJUIg==
+X-Received: by 2002:ad4:524b:: with SMTP id s11mr223505qvq.3.1605194420152;
+        Thu, 12 Nov 2020 07:20:20 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:7257])
+        by smtp.gmail.com with ESMTPSA id k31sm4693276qtd.40.2020.11.12.07.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 07:20:18 -0800 (PST)
+Date:   Thu, 12 Nov 2020 10:18:28 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 1/2] mm: slub: call account_slab_page() after slab page
+ initialization
+Message-ID: <20201112151828.GA873621@cmpxchg.org>
+References: <20201110195753.530157-1-guro@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110195753.530157-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12 2020 at 15:15, Thomas Gleixner wrote:
-> On Thu, Nov 12 2020 at 08:55, Jason Gunthorpe wrote:
->> On Wed, Aug 26, 2020 at 01:16:28PM +0200, Thomas Gleixner wrote:
->> They were unable to bisect further into the series because some of the
->> interior commits don't boot :(
->>
->> When we try to load the mlx5 driver on a bare metal VF it gets this:
->>
->> [Thu Oct 22 08:54:51 2020] DMAR: DRHD: handling fault status reg 2
->> [Thu Oct 22 08:54:51 2020] DMAR: [INTR-REMAP] Request device [42:00.2] f=
-ault index 1600 [fault reason 37] Blocked a compatibility format interrupt =
-request
->> [Thu Oct 22 08:55:04 2020] mlx5_core 0000:42:00.1 eth4: Link down
->> [Thu Oct 22 08:55:11 2020] mlx5_core 0000:42:00.1 eth4: Link up
->> [Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: mlx5_cmd_eq_recover:2=
-64:(pid 3390): Recovered 1 EQEs on cmd_eq
->> [Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: wait_func_handle_exec=
-_timeout:1051:(pid 3390): cmd0: CREATE_EQ(0=C3=83=C2=97301) recovered after=
- timeout
->> [Thu Oct 22 08:55:54 2020] DMAR: DRHD: handling fault status reg 102
->> [Thu Oct 22 08:55:54 2020] DMAR: [INTR-REMAP] Request device [42:00.2] f=
-ault index 1600 [fault reason 37] Blocked a compatibility format interrupt =
-request
->>
->> If you have any idea Ziyad and Itay can run any debugging you like.
->>
->> I suppose it is because this series is handing out compatability
->> addr/data pairs while the IOMMU is setup to only accept remap ones
->> from SRIOV VFs?
->
-> So the issue seems to be that the VF device has the default irq domain
-> assigned and not the remapping domain. Let me stare into the code to see
-> how these VF devices are set up and registered with the IOMMU/remap
-> unit.
+On Tue, Nov 10, 2020 at 11:57:52AM -0800, Roman Gushchin wrote:
+> It's convenient to have page->objects initialized before calling
+> into account_slab_page(). In particular, this information can be
+> used to pre-alloc the obj_cgroup vector.
+> 
+> Let's call account_slab_page() a bit later, after the initialization
+> of page->objects.
+> 
+> This commit doesn't bring any functional change, but is required for
+> further optimizations.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Found the reason. Will fix it after walking the dogs. Brain needs some
-fresh air.
-
-Thanks,
-
-        tglx
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
