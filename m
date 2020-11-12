@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D436C2AFE2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1485D2AFEFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgKLFel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        id S1728787AbgKLFeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727880AbgKLCgh (ORCPT
+        with ESMTP id S1727919AbgKLCk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:36:37 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4314C0613D1;
-        Wed, 11 Nov 2020 18:36:36 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id r9so6082510lfn.11;
-        Wed, 11 Nov 2020 18:36:36 -0800 (PST)
+        Wed, 11 Nov 2020 21:40:58 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5D4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:40:57 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id z1so2002191plo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:40:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0pkfRKs9jxitkTd7x9shbHG4IOI7k9nwLP4ujmMO868=;
-        b=CsGfb5MunrKY47a3CNrkC6ze0n/imOb/cdyBzdrAY65ohpdEswjbZ/rAwdFZsoNUjd
-         XMK8XjHIF99V9k2GtV7UvpOf7FnwjMVVyJL9kpO0dGG6uJ4K+Nhtaa31T1Ryys6pIZwV
-         WZM/bsNyq8fJEYefeYEbNeyQaLZR6NyCFSpXfmsQq3D/WWG+mUHBVWS28lBFHB1Wo4/5
-         n7jhGMCi5UhU8+uSxq+7xmo2NPl4mjeI+rMhBcfs+oLBeRCUfj9VRFhTCCJwFftLTP0h
-         L4rdjOSx71IMwjbeH4WL+suzUA4sDTSj470idXaiRz8P5XpghDD5D+Lg6FfPqtsJTbK7
-         gMtg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H5NGIoEf3hsr/533rkXfzNM1uwzZh6+4t5AMsSdas3U=;
+        b=HNDSyXQSjnLI2BH0ng04Ri5AGNMEcJ8SAe8af3AYBftgVVSMACxKasHuvX0lVc21Xw
+         km4zxdpsP+ZdBVAua2DcFnDz4i6DlCicowvL1SJ580y4d4r510YJhpQ2ZBtS5gnMMF+g
+         oKYbWa4JIRhphigR+9acouc+4EdOG2w9bkiWk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0pkfRKs9jxitkTd7x9shbHG4IOI7k9nwLP4ujmMO868=;
-        b=WslOvH9HunGDBbZu025bXZfGnd+6C9ypJvbhEZN44p9mGJloGuU3GaDjOAa8etmrqn
-         /YYTFEd5rDupAzj5UiOleQ/L8K0zAQrHgdRWV+WJG36R3cTEgTSdi99aXshLed8Em3dq
-         wqm/7hNZ16YeNNrY68CLGOmE9xM/iE43xlHUQvlbl9c1HHYK4g6g+U+EGo3OSXxU+qGQ
-         BDFn6BSOIoCySlNYwCGYXfBOj+rH/PG8XtwMgC+Ge6HZHtvFMcJQ00YQEfrSYVjjW8av
-         W4LECsHftVDyVRSKbqDygMdmUcHyTIjj2/Kiq08V0x/bx+JpCLblp1DIK1xQgyi5e3Mg
-         yIxA==
-X-Gm-Message-State: AOAM533wQ0plM0HsMyqncqGSqqET7ovdnNBfzMXKbvb+/gy3BjW8sV0n
-        59mMbD7lxhq/l1PJ7ApCOfO3rRQaJFkJLgd44Bo=
-X-Google-Smtp-Source: ABdhPJwzspWD4JbbnDjEp7R7vgpEh9bTH+OghpLvlBfcilRzCgbXj5XHtD2ngplmE6lRXJ2035zUSaOrISY1wXP236s=
-X-Received: by 2002:a05:6512:1186:: with SMTP id g6mr5953790lfr.523.1605148595027;
- Wed, 11 Nov 2020 18:36:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H5NGIoEf3hsr/533rkXfzNM1uwzZh6+4t5AMsSdas3U=;
+        b=PCgGxjV/E3Wla89jTb9u8CU2+dEsVIa9ZZOmVG2aBRmWP6jLvOLwScLjMp0/4zG2ld
+         Ue4yA6ff4M+GYILHWe+RTvlNA5jiIuQtBDzKfRrQtUaTTi63nl29gfexULWJrywGna1M
+         nW5hX1GQpZvpVwZVXqfZjKd706CpRsGwoWFN+WLz9GPzdx1+v7iKQSUs3BU0XKlhZKoN
+         g6CKL0Ekid5VYqzYQfJRgdS1yKLyiAMApl6GFptEzs1skqkNgNesnvX8Cha0qps+5e+Y
+         4N+gY+oi6umZaXASTKmjs9Ne+q2MdrGPyXBJvcJRHvJsii/kmH7Dy3i4YbK06E57f48E
+         IEBw==
+X-Gm-Message-State: AOAM531P1EK09lOq6+ld+/Vo+ez5m8kuNslpgtujD5ObICnsHqz1gaJK
+        Y88avW2qneVKKGC/Vd8niXIjUg==
+X-Google-Smtp-Source: ABdhPJzdV08nbtMToPsz5Uhx8XG6Ame9ZNIHUvsXs12YRd+0sGNYtWcKl3DtwDU8dB9GYu1gNx0HNw==
+X-Received: by 2002:a17:902:76c5:b029:d6:a399:8231 with SMTP id j5-20020a17090276c5b02900d6a3998231mr24464509plt.3.1605148857242;
+        Wed, 11 Nov 2020 18:40:57 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id z7sm4238296pfr.140.2020.11.11.18.40.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 18:40:56 -0800 (PST)
+Date:   Wed, 11 Nov 2020 18:40:55 -0800
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>
+Subject: Re: [PATCH v3 2/2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201112024055.GA1367855@google.com>
+References: <20201023214328.1262883-1-pmalani@chromium.org>
+ <20201023214328.1262883-2-pmalani@chromium.org>
+ <20201110115453.GI1224435@kuha.fi.intel.com>
 MIME-Version: 1.0
-References: <cover.1604930005.git.geliangtang@gmail.com> <ccf004469e02fb5bd7ec822414b9a98b0015f4a3.1604930005.git.geliangtang@gmail.com>
- <009ea5da-8a44-3ea2-1b9f-a658a09f3396@tessares.net> <20201109125703.7d82a34a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <62ab8297-41fc-446b-a09e-0b93118a478c@tessares.net> <20201109142051.39f1cfaa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201109142051.39f1cfaa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Geliang Tang <geliangtang@gmail.com>
-Date:   Thu, 12 Nov 2020 10:36:23 +0800
-Message-ID: <CA+WQbwsAHXoFsO0ow6zasSpW96u8dsLusvJvE1iiAQC3KmQBAQ@mail.gmail.com>
-Subject: Re: [MPTCP][PATCH net 1/2] mptcp: fix static checker warnings in mptcp_pm_add_timer
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        mptcp <mptcp@lists.01.org>,
-        "To: Phillip Lougher <phillip@squashfs.org.uk>, Andrew Morton
-        <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Coly Li
-        <colyli@suse.de>, linux-fsdevel@vger.kernel.org," 
-        <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110115453.GI1224435@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub, Matt,
+Hi Heikki,
 
-Jakub Kicinski <kuba@kernel.org> =E4=BA=8E2020=E5=B9=B411=E6=9C=8810=E6=97=
-=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=886:20=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, 9 Nov 2020 21:23:33 +0000 (UTC) Matthieu Baerts wrote:
-> > 09 Nov 2020 21:57:05 Jakub Kicinski <kuba@kernel.org>:
-> > > On Mon, 9 Nov 2020 17:28:54 +0100 Matthieu Baerts wrote:
-> > >> A small detail (I think): the Signed-off-by of the sender (Geliang)
-> > >> should be the last one in the list if I am not mistaken.
-> > >> But I guess this is not blocking.
-> > >>
-> > >> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> > >
-> > > I take it you'd like me to apply patch 1 directly to net?
-> >
-> > Sorry, I didn't know it was OK to apply only one patch of the series.
-> > Then yes, if you don't mind, please apply this patch :)
->
-> Not really, I was just establishing ownership ;)
->
-> Geliang Tang, please rebase on net and repost just the first patch.
-> It does not apply to net as is.
+On Tue, Nov 10, 2020 at 01:54:53PM +0200, Heikki Krogerus wrote:
+> On Fri, Oct 23, 2020 at 02:43:28PM -0700, Prashant Malani wrote:
+> 
+> I've now come to the conclusion that this is not the correct approach.
+> Instead, the whole identity, all six VDOs, should be supplied
+> separately with a "raw" sysfs attribute file after all.
+> 
+> The three attribute files that we already have - so id_header,
+> cert_stat and product - can always supply the actual VDO as is,
+> regardless of the product type, so they are fine. But these new
+> attribute files, product_type_vdoX, would behave differently as they
+> supply different information depending on the product type. That just
+> does not feel right to me.
 
-v2 of this patch had been sent out.
+OOI: I'd like to understand the reservations around this approach. Can't
+userspace just read these and then interpret them appropriately according
+to the id_header as well as PD revision (and version number) if that's exposed?
+The only thing I see changing is how we name those product_type_vdoX
+sysfs files, i.e product_type_vdo0 == passive_cable_vdo OR active_cable_vdo1
+depending on the product type.
 
-http://patchwork.ozlabs.org/project/netdev/patch/078a2ef5bdc4e3b2c25ef85246=
-1692001f426495.1604976945.git.geliangtang@gmail.com/
+That said, perhaps I'm missing some aspect of this.
 
-This patch should be applied to net-next, not -net. Since commit "mptcp:
-add a new sysctl add_addr_timeout" is not applied to -net yet.
+> 
+> So lets just add the "raw" sysfs attribute file. We can think about
+> extracting some other details from the product type VDOs once the
+> specification has settled down a bit and we can be quite certain that
+> those details will always be available.
+> 
+> Would this be OK to you? I think we should be able to dump the data to
+> the "raw" sysfs attribute file with something like hex_dump_to_buffer().
 
--Geliang
+FWIW, "raw" option SGTM (the product type VDOs can be parsed from the
+buffer since the format is fixed).
+
+> 
+> thanks,
+> 
+> -- 
+> heikki
