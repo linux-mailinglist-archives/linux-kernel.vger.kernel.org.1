@@ -2,184 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB442AFE1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB712AFE20
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgKLFeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728199AbgKLBzh (ORCPT
+        id S1728673AbgKLFeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:16 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:54802 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgKLCAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:55:37 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2407EC0401C2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:54:18 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id h9so4273399ybj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:54:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=P1DeZBXMBKdtEUpa7z1m8DxvFC3ulFf31LohQa26mKY=;
-        b=KHw/IjNnKXINcRHDWgmqRHd0Zj1R0TpCpGkfvcK6YinJS9r0qY95sipaMLev7KDQLY
-         SHvrOKRhjJK/mVp8a2oe/RxC2epBcB4njCqmWfs/WJHD+XSU5QvqOVEHfZc9DzUV2DcX
-         zvqrzF0nu1YXHO7NObYOQnEFk4pdkrB3+mkT3SwMmpSZzlzC9Jvb4efewCRlLMHHReAr
-         y+PEqn1JjuD/WISS3WPqtUOBmtQfpr/LIvNvH62uiqNkMDSkz882tB2/qHaRI5oWZ15r
-         gJ1ll23udno6hVYcfe5GHleYlRSKx9Y3ylFdqS06NbLX0XzLLHFeN8khM45k+brEDzWy
-         bIbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=P1DeZBXMBKdtEUpa7z1m8DxvFC3ulFf31LohQa26mKY=;
-        b=spWtoqBQYn7SqaqYTxUhM201pNIEXM3Sj8KSUQ/2u4u7r3vYMnkV99/1fdfDbhHSwE
-         2MrI4DpxSGuFBRGlQvfwlm8lRRzS7zYay87iUufWgv2eEjFmv9zKxweEAFLpwnEy4tYp
-         y3ONMZKYZLzekZ+NbSfOHjLMfa38BYpJ5hi+NjQSAaTMFffJ3zpNaJwuBnXm6HVq1lX/
-         D63FShUl19EUFn+BR65KROQmqpIQf4t9fui6VjLb0i8XFWNvYGN4ck6Vro1+8xL/6nUE
-         xyupG0W+yEywOdgrh6BxDWrTvxoYhcQ+BpU8phPYYVz31iqGJAXk6b+SDwGaAo+j87h7
-         SN5Q==
-X-Gm-Message-State: AOAM5321NDpgEHn6Jdkmq9NLiWjFGtHihhMEN3w0mj+RKqCVSlGnFuFK
-        kaTv0w1rktenpJs6rExgwEWeP5U6lXyfNyAYHg==
-X-Google-Smtp-Source: ABdhPJzeZK4CgcTcXxnvjBUkLa6KfV72dT9Gdn9uAHIiX/UDZe+AdtYjzlUXrrU731++FmFjMGYes+NLu+clHGl60Q==
-Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
- (user=lokeshgidra job=sendgmr) by 2002:a25:80cd:: with SMTP id
- c13mr42308074ybm.371.1605146057270; Wed, 11 Nov 2020 17:54:17 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:53:59 -0800
-In-Reply-To: <20201112015359.1103333-1-lokeshgidra@google.com>
-Message-Id: <20201112015359.1103333-5-lokeshgidra@google.com>
-Mime-Version: 1.0
-References: <20201112015359.1103333-1-lokeshgidra@google.com>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v13 4/4] userfaultfd: use secure anon inodes for userfaultfd
-From:   Lokesh Gidra <lokeshgidra@google.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        jeffv@google.com, kernel-team@android.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org,
-        Daniel Colascione <dancol@google.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 11 Nov 2020 21:00:23 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="38118510"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 12 Nov 2020 09:58:20 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2862:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Thu, 12 Nov 2020 09:58:19 +0800 (CST)
+Received: from 49.216.112.142
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2475:0:AUTH_LOGIN)
+        (envelope-from <jingle.wu@emc.com.tw>); Thu, 12 Nov 2020 09:58:18 +0800 (CST)
+From:   "jingle.wu" <jingle.wu@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     phoenix@emc.com.tw, dave.wang@emc.com.tw, josh.chen@emc.com.tw,
+        "jingle.wu" <jingle.wu@emc.com.tw>
+Subject: [PATCH] Input: elan_i2c - Modify the correct input of the iap page type command.
+Date:   Thu, 12 Nov 2020 09:58:10 +0800
+Message-Id: <20201112015810.9559-1-jingle.wu@emc.com.tw>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Colascione <dancol@google.com>
+The iap page type command of the parameter is page_size.
 
-This change gives userfaultfd file descriptors a real security
-context, allowing policy to act on them.
-
-Signed-off-by: Daniel Colascione <dancol@google.com>
-
-[Remove owner inode from userfaultfd_ctx]
-[Use anon_inode_getfd_secure() instead of anon_inode_getfile_secure()
- in userfaultfd syscall]
-[Use inode of file in userfaultfd_read() in resolve_userfault_fork()]
-
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
 ---
- fs/userfaultfd.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/input/mouse/elan_i2c.h       |  2 +-
+ drivers/input/mouse/elan_i2c_core.c  |  3 ++-
+ drivers/input/mouse/elan_i2c_i2c.c   | 10 +++++-----
+ drivers/input/mouse/elan_i2c_smbus.c |  2 +-
+ 4 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 000b457ad087..dd78daf06de6 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -972,14 +972,14 @@ static __poll_t userfaultfd_poll(struct file *file, poll_table *wait)
+diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
+index c75b00c45d75..36e3cd908671 100644
+--- a/drivers/input/mouse/elan_i2c.h
++++ b/drivers/input/mouse/elan_i2c.h
+@@ -78,7 +78,7 @@ struct elan_transport_ops {
+ 	int (*iap_reset)(struct i2c_client *client);
  
- static const struct file_operations userfaultfd_fops;
+ 	int (*prepare_fw_update)(struct i2c_client *client, u16 ic_type,
+-				 u8 iap_version);
++				 u8 iap_version, u16 fw_page_size);
+ 	int (*write_fw_block)(struct i2c_client *client, u16 fw_page_size,
+ 			      const u8 *page, u16 checksum, int idx);
+ 	int (*finish_fw_update)(struct i2c_client *client,
+diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+index c599e21a8478..61ed3f5ca219 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -497,7 +497,8 @@ static int __elan_update_firmware(struct elan_tp_data *data,
+ 	u16 sw_checksum = 0, fw_checksum = 0;
  
--static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
--				  struct userfaultfd_ctx *new,
-+static int resolve_userfault_fork(struct userfaultfd_ctx *new,
-+				  struct inode *inode,
- 				  struct uffd_msg *msg)
- {
- 	int fd;
+ 	error = data->ops->prepare_fw_update(client, data->ic_type,
+-					     data->iap_version);
++					     data->iap_version,
++					     data->fw_page_size);
+ 	if (error)
+ 		return error;
  
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, new,
--			      O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, new,
-+			O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
- 	if (fd < 0)
- 		return fd;
- 
-@@ -989,7 +989,7 @@ static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
+diff --git a/drivers/input/mouse/elan_i2c_i2c.c b/drivers/input/mouse/elan_i2c_i2c.c
+index 5a496d4ffa49..13dc097eb6c6 100644
+--- a/drivers/input/mouse/elan_i2c_i2c.c
++++ b/drivers/input/mouse/elan_i2c_i2c.c
+@@ -517,7 +517,7 @@ static int elan_i2c_set_flash_key(struct i2c_client *client)
+ 	return 0;
  }
  
- static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
--				    struct uffd_msg *msg)
-+				    struct uffd_msg *msg, struct inode *inode)
+-static int elan_read_write_iap_type(struct i2c_client *client)
++static int elan_read_write_iap_type(struct i2c_client *client, u16 fw_page_size)
  {
- 	ssize_t ret;
- 	DECLARE_WAITQUEUE(wait, current);
-@@ -1100,7 +1100,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
- 	spin_unlock_irq(&ctx->fd_wqh.lock);
+ 	int error;
+ 	u16 constant;
+@@ -526,7 +526,7 @@ static int elan_read_write_iap_type(struct i2c_client *client)
  
- 	if (!ret && msg->event == UFFD_EVENT_FORK) {
--		ret = resolve_userfault_fork(ctx, fork_nctx, msg);
-+		ret = resolve_userfault_fork(fork_nctx, inode, msg);
- 		spin_lock_irq(&ctx->event_wqh.lock);
- 		if (!list_empty(&fork_event)) {
- 			/*
-@@ -1160,6 +1160,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	ssize_t _ret, ret = 0;
- 	struct uffd_msg msg;
- 	int no_wait = file->f_flags & O_NONBLOCK;
-+	struct inode *inode = file_inode(file);
+ 	do {
+ 		error = elan_i2c_write_cmd(client, ETP_I2C_IAP_TYPE_CMD,
+-					   ETP_I2C_IAP_TYPE_REG);
++					   fw_page_size / 2);
+ 		if (error) {
+ 			dev_err(&client->dev,
+ 				"cannot write iap type: %d\n", error);
+@@ -543,7 +543,7 @@ static int elan_read_write_iap_type(struct i2c_client *client)
+ 		constant = le16_to_cpup((__le16 *)val);
+ 		dev_dbg(&client->dev, "iap type reg: 0x%04x\n", constant);
  
- 	if (ctx->state == UFFD_STATE_WAIT_API)
- 		return -EINVAL;
-@@ -1167,7 +1168,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	for (;;) {
- 		if (count < sizeof(msg))
- 			return ret ? ret : -EINVAL;
--		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg);
-+		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg, inode);
- 		if (_ret < 0)
- 			return ret ? ret : _ret;
- 		if (copy_to_user((__u64 __user *) buf, &msg, sizeof(msg)))
-@@ -1985,8 +1986,8 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	/* prevent the mm struct to be freed */
- 	mmgrab(ctx->mm);
+-		if (constant == ETP_I2C_IAP_TYPE_REG)
++		if (constant == fw_page_size / 2)
+ 			return 0;
  
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, ctx,
--			      O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
-+			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
- 	if (fd < 0) {
- 		mmdrop(ctx->mm);
- 		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
+ 	} while (--retry > 0);
+@@ -553,7 +553,7 @@ static int elan_read_write_iap_type(struct i2c_client *client)
+ }
+ 
+ static int elan_i2c_prepare_fw_update(struct i2c_client *client, u16 ic_type,
+-				      u8 iap_version)
++				      u8 iap_version, u16 fw_page_size)
+ {
+ 	struct device *dev = &client->dev;
+ 	int error;
+@@ -594,7 +594,7 @@ static int elan_i2c_prepare_fw_update(struct i2c_client *client, u16 ic_type,
+ 	}
+ 
+ 	if (ic_type >= 0x0D && iap_version >= 1) {
+-		error = elan_read_write_iap_type(client);
++		error = elan_read_write_iap_type(client, fw_page_size);
+ 		if (error)
+ 			return error;
+ 	}
+diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
+index 8ff823751f3b..1820f1cfc1dc 100644
+--- a/drivers/input/mouse/elan_i2c_smbus.c
++++ b/drivers/input/mouse/elan_i2c_smbus.c
+@@ -340,7 +340,7 @@ static int elan_smbus_set_flash_key(struct i2c_client *client)
+ }
+ 
+ static int elan_smbus_prepare_fw_update(struct i2c_client *client, u16 ic_type,
+-					u8 iap_version)
++					u8 iap_version, u16 fw_page_size)
+ {
+ 	struct device *dev = &client->dev;
+ 	int len;
 -- 
-2.29.2.299.gdc1121823c-goog
+2.17.1
 
