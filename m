@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1485D2AFEFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD94B2AFE2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgKLFeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727919AbgKLCk6 (ORCPT
+        id S1728805AbgKLFev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:51 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:65478 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727932AbgKLClv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:40:58 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5D4C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:40:57 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id z1so2002191plo.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:40:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H5NGIoEf3hsr/533rkXfzNM1uwzZh6+4t5AMsSdas3U=;
-        b=HNDSyXQSjnLI2BH0ng04Ri5AGNMEcJ8SAe8af3AYBftgVVSMACxKasHuvX0lVc21Xw
-         km4zxdpsP+ZdBVAua2DcFnDz4i6DlCicowvL1SJ580y4d4r510YJhpQ2ZBtS5gnMMF+g
-         oKYbWa4JIRhphigR+9acouc+4EdOG2w9bkiWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H5NGIoEf3hsr/533rkXfzNM1uwzZh6+4t5AMsSdas3U=;
-        b=PCgGxjV/E3Wla89jTb9u8CU2+dEsVIa9ZZOmVG2aBRmWP6jLvOLwScLjMp0/4zG2ld
-         Ue4yA6ff4M+GYILHWe+RTvlNA5jiIuQtBDzKfRrQtUaTTi63nl29gfexULWJrywGna1M
-         nW5hX1GQpZvpVwZVXqfZjKd706CpRsGwoWFN+WLz9GPzdx1+v7iKQSUs3BU0XKlhZKoN
-         g6CKL0Ekid5VYqzYQfJRgdS1yKLyiAMApl6GFptEzs1skqkNgNesnvX8Cha0qps+5e+Y
-         4N+gY+oi6umZaXASTKmjs9Ne+q2MdrGPyXBJvcJRHvJsii/kmH7Dy3i4YbK06E57f48E
-         IEBw==
-X-Gm-Message-State: AOAM531P1EK09lOq6+ld+/Vo+ez5m8kuNslpgtujD5ObICnsHqz1gaJK
-        Y88avW2qneVKKGC/Vd8niXIjUg==
-X-Google-Smtp-Source: ABdhPJzdV08nbtMToPsz5Uhx8XG6Ame9ZNIHUvsXs12YRd+0sGNYtWcKl3DtwDU8dB9GYu1gNx0HNw==
-X-Received: by 2002:a17:902:76c5:b029:d6:a399:8231 with SMTP id j5-20020a17090276c5b02900d6a3998231mr24464509plt.3.1605148857242;
-        Wed, 11 Nov 2020 18:40:57 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id z7sm4238296pfr.140.2020.11.11.18.40.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 18:40:56 -0800 (PST)
-Date:   Wed, 11 Nov 2020 18:40:55 -0800
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>
-Subject: Re: [PATCH v3 2/2] usb: typec: Expose Product Type VDOs via sysfs
-Message-ID: <20201112024055.GA1367855@google.com>
-References: <20201023214328.1262883-1-pmalani@chromium.org>
- <20201023214328.1262883-2-pmalani@chromium.org>
- <20201110115453.GI1224435@kuha.fi.intel.com>
+        Wed, 11 Nov 2020 21:41:51 -0500
+X-UUID: 3e322c4d6c014b81adca0a5a36afc2e5-20201112
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Se+dg4+AYHxaxLtO87h0o7d56UKD1EUz3XmAcnOw+/s=;
+        b=oA+Dbf0qPb92/DZF3kFkxWYazzkKvsKg0/1OM5wOp9sggU1MDJbxATKYd0bHSif+NtHFeCDweuX4Xx505Zv1xeRj7V3hvcXe+mEqufaYZVEcfJvez7qhPfj56D9i4g12WU8yAbEq+Bpmpt1UfPVhRSSMTHDBrBUr75eoDoGa2HM=;
+X-UUID: 3e322c4d6c014b81adca0a5a36afc2e5-20201112
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1635741934; Thu, 12 Nov 2020 10:41:44 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32DR.mediatek.inc
+ (172.27.6.104) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 12 Nov
+ 2020 10:41:42 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 12 Nov 2020 10:41:42 +0800
+Message-ID: <1605148902.26323.126.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 05/24] dt-bindings: mediatek: Add binding for mt8192
+ IOMMU
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        <kernel-team@android.com>
+Date:   Thu, 12 Nov 2020 10:41:42 +0800
+In-Reply-To: <20201111213338.GD287176@kozik-lap>
+References: <20201111123838.15682-1-yong.wu@mediatek.com>
+         <20201111123838.15682-6-yong.wu@mediatek.com>
+         <20201111213338.GD287176@kozik-lap>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110115453.GI1224435@kuha.fi.intel.com>
+X-TM-SNTS-SMTP: 1C18FA5020027ADAA5CD122CFFAF794DF7B24B6C49C7403F677C225959A3CB292000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+SGkgS3J6eXN6dG9mLA0KDQpPbiBXZWQsIDIwMjAtMTEtMTEgYXQgMjI6MzMgKzAxMDAsIEtyenlz
+enRvZiBLb3psb3dza2kgd3JvdGU6DQo+IE9uIFdlZCwgTm92IDExLCAyMDIwIGF0IDA4OjM4OjE5
+UE0gKzA4MDAsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gVGhpcyBwYXRjaCBhZGRzIGRlY3JpcHRpb25z
+IGZvciBtdDgxOTIgSU9NTVUgYW5kIFNNSS4NCj4gPiANCj4gPiBtdDgxOTIgYWxzbyBpcyBNVEsg
+SU9NTVUgZ2VuMiB3aGljaCB1c2VzIEFSTSBTaG9ydC1EZXNjcmlwdG9yIHRyYW5zbGF0aW9uDQo+
+ID4gdGFibGUgZm9ybWF0LiBUaGUgTTRVLVNNSSBIVyBkaWFncmFtIGlzIGFzIGJlbG93Og0KPiA+
+IA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgRU1JDQo+ID4gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgTTRVDQo+ID4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAtLS0t
+LS0tLS0tLS0NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgIFNNSSBDb21tb24NCj4gPiAgICAg
+ICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tDQo+ID4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfA0KPiA+ICAgKy0tLS0tLS0rLS0tLS0tKy0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tKy0tLS0tLS0rDQo+ID4gICB8ICAgICAgIHwgICAgICB8ICAgICAgfCAgICAgICAuLi4uLi4g
+ICAgICAgICB8ICAgICAgIHwNCj4gPiAgIHwgICAgICAgfCAgICAgIHwgICAgICB8ICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAgICAgfA0KPiA+IGxhcmIwICAgbGFyYjEgIGxhcmIyICBsYXJiNCAg
+ICAgLi4uLi4uICAgICAgbGFyYjE5ICAgbGFyYjIwDQo+ID4gZGlzcDAgICBkaXNwMSAgIG1kcCAg
+ICB2ZGVjICAgICAgICAgICAgICAgICAgIElQRSAgICAgIElQRQ0KPiA+IA0KPiA+IEFsbCB0aGUg
+Y29ubmVjdGlvbnMgYXJlIEhXIGZpeGVkLCBTVyBjYW4gTk9UIGFkanVzdCBpdC4NCj4gPiANCj4g
+PiBtdDgxOTIgTTRVIHN1cHBvcnQgMH4xNkdCIGlvdmEgcmFuZ2UuIHdlIHByZWFzc2lnbiBkaWZm
+ZXJlbnQgZW5naW5lcw0KPiA+IGludG8gZGlmZmVyZW50IGlvdmEgcmFuZ2VzOg0KPiA+IA0KPiA+
+IGRvbWFpbi1pZCAgbW9kdWxlICAgICBpb3ZhLXJhbmdlICAgICAgICAgICAgICAgICAgbGFyYnMN
+Cj4gPiAgICAwICAgICAgIGRpc3AgICAgICAgIDAgfiA0RyAgICAgICAgICAgICAgICAgICAgICBs
+YXJiMC8xDQo+ID4gICAgMSAgICAgICB2Y29kZWMgICAgICA0RyB+IDhHICAgICAgICAgICAgICAg
+ICAgICAgbGFyYjQvNS83DQo+ID4gICAgMiAgICAgICBjYW0vbWRwICAgICA4RyB+IDEyRyAgICAg
+ICAgICAgICBsYXJiMi85LzExLzEzLzE0LzE2LzE3LzE4LzE5LzIwDQo+ID4gICAgMyAgICAgICBD
+Q1UwICAgIDB4NDAwMF8wMDAwIH4gMHg0M2ZmX2ZmZmYgICAgIGxhcmIxMzogcG9ydCA5LzEwDQo+
+ID4gICAgNCAgICAgICBDQ1UxICAgIDB4NDQwMF8wMDAwIH4gMHg0N2ZmX2ZmZmYgICAgIGxhcmIx
+NDogcG9ydCA0LzUNCj4gPiANCj4gPiBUaGUgaW92YSByYW5nZSBmb3IgQ0NVMC8xKGNhbWVyYSBj
+b250cm9sIHVuaXQpIGlzIEhXIHJlcXVpcmVtZW50Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6
+IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+IFJldmlld2VkLWJ5OiBSb2IgSGVy
+cmluZyA8cm9iaEBrZXJuZWwub3JnPg0KPiA+IC0tLQ0KDQpbLi4uXQ0KDQo+ID4gKyNpZm5kZWYg
+X0RUU19JT01NVV9QT1JUX01UODE5Ml9IXw0KPiA+ICsjZGVmaW5lIF9EVFNfSU9NTVVfUE9SVF9N
+VDgxOTJfSF8NCj4gDQo+IE5vdCBhY2N1cmF0ZSBoZWFkZXIgZ3VhcmQuIFNob3VkIGJlOg0KPiBf
+RFRfQklORElOR1NfTUVNT1JZX01UODE5Ml9MQVJCX1BPUlRfSF8NCj4gDQo+IFByb2JhYmx5IHlv
+dSBjb3BpZWQgaXQgZnJvbSBzb21lIG90aGVyIE1lZGlhdGVrIGhlYWRlcnMgLSBhbGwgb2YgdGhl
+bQ0KPiBoYXZlIGhlYWRlciBndWFyZCBwb2ludGluZyB0byBkaWZmZXJlbnQgZGlyZWN0b3J5Lg0K
+DQpUaGFua3MgdmVyeSBtdWNoIGZvciB5b3VyIHJldmlld2luZyBzbyBtYW55IHBhdGNoZXMuDQoN
+ClRoaXMgbmFtZSBsaWtlIHRoaXMgd2hlbiBpdCB3YXMgaW4gdGhlIGZpcnN0IHZlcnNpb24uIFNp
+bmNlIGl0IGlzIG9ubHkNCnVzZWQgd2hlbiB0aGUgY29uc3VtZXIgZGV2aWNlcyBlbmFibGUgSU9N
+TVUsIHRodXMgY2FsbGVkIGl0DQpfSU9NTVVfUE9SVC4uLg0KDQpJIHdpbGwgdXNlIGEgbmV3IHBh
+dGNoIHRvIHJlbmFtZSBhbGwgb2YgdGhlbS4NCg0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5
+c3p0b2YNCg0K
 
-On Tue, Nov 10, 2020 at 01:54:53PM +0200, Heikki Krogerus wrote:
-> On Fri, Oct 23, 2020 at 02:43:28PM -0700, Prashant Malani wrote:
-> 
-> I've now come to the conclusion that this is not the correct approach.
-> Instead, the whole identity, all six VDOs, should be supplied
-> separately with a "raw" sysfs attribute file after all.
-> 
-> The three attribute files that we already have - so id_header,
-> cert_stat and product - can always supply the actual VDO as is,
-> regardless of the product type, so they are fine. But these new
-> attribute files, product_type_vdoX, would behave differently as they
-> supply different information depending on the product type. That just
-> does not feel right to me.
-
-OOI: I'd like to understand the reservations around this approach. Can't
-userspace just read these and then interpret them appropriately according
-to the id_header as well as PD revision (and version number) if that's exposed?
-The only thing I see changing is how we name those product_type_vdoX
-sysfs files, i.e product_type_vdo0 == passive_cable_vdo OR active_cable_vdo1
-depending on the product type.
-
-That said, perhaps I'm missing some aspect of this.
-
-> 
-> So lets just add the "raw" sysfs attribute file. We can think about
-> extracting some other details from the product type VDOs once the
-> specification has settled down a bit and we can be quite certain that
-> those details will always be available.
-> 
-> Would this be OK to you? I think we should be able to dump the data to
-> the "raw" sysfs attribute file with something like hex_dump_to_buffer().
-
-FWIW, "raw" option SGTM (the product type VDOs can be parsed from the
-buffer since the format is fixed).
-
-> 
-> thanks,
-> 
-> -- 
-> heikki
