@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531AD2B024F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 870482B0248
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgKLJyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:54:37 -0500
-Received: from www381.your-server.de ([78.46.137.84]:36762 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727654AbgKLJyg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:54:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=YMQMwTpaxzI06pmi27VpklODHSICBLhVazxEQ59Cm8o=; b=ajfwKlC6WnRJSBpsno0+0ZcUdk
-        MwV54OGYBNrhvqy8A+wbm+i4aO+zccN+AXQ+Xo7lr//eSYhjzrTBkNhQcYydHUYF6678kUbgwmDiy
-        fcMqTA5ZrIGW1Fh262PpoO/zSbburrxAlggIXJm6SAN3pCONZ+RKaaA1kwTHUhXlzgqHq1TUqJteC
-        6m4tfCS/ToofC1YSfYSFrjZ3Goasj2flj6SpBynA0dVahtdgndiKGfOkcpZvsqhAsOR8HS7ivFdfD
-        ZB1hvZ6CuMazbDvwdmHWHiF9+RFpUFKixs6ymQspwdA9zNv1zE1guap5EGWjq4c2qnWk3tbNpQp2G
-        Fu+BMvfw==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kd9JJ-0003Hw-Ja; Thu, 12 Nov 2020 10:54:33 +0100
-Received: from [62.216.202.98] (helo=[192.168.178.20])
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kd9JJ-000ATN-FP; Thu, 12 Nov 2020 10:54:33 +0100
-Subject: Re: [PATCH] iio: ad_sigma_delta: Don't put SPI transfer buffer on the
- stack
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org
-References: <20201112091050.84991-1-alexandru.ardelean@analog.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <49aea6de-9084-d5a2-a6be-967196570830@metafoo.de>
-Date:   Thu, 12 Nov 2020 10:54:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727796AbgKLJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:52:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:45634 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbgKLJwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:52:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54D9E139F;
+        Thu, 12 Nov 2020 01:52:04 -0800 (PST)
+Received: from [10.37.12.33] (unknown [10.37.12.33])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 47B643F73C;
+        Thu, 12 Nov 2020 01:52:01 -0800 (PST)
+Subject: Re: [PATCH v9 32/44] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1605046192.git.andreyknvl@google.com>
+ <25401c15dc19c7b672771f5b49a208d6e77bfeb5.1605046192.git.andreyknvl@google.com>
+ <20201112093908.GE29613@gaia> <db6e3a5d-290f-d1b5-f130-503d7219b76b@arm.com>
+ <20201112094553.GG29613@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <6aec6a77-f9b0-cf73-6bf3-4f8df8f8cd13@arm.com>
+Date:   Thu, 12 Nov 2020 09:55:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201112091050.84991-1-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201112094553.GG29613@gaia>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 10:10 AM, Alexandru Ardelean wrote:
-> From: Lars-Peter Clausen <lars@metafoo.de>
->
-> Use a heap allocated memory for the SPI transfer buffer. Using stack memory
-> can corrupt stack memory when using DMA on some systems.
->
-> This change adds 4 bytes at the end of the current DMA buffer, which will
-> be used by the trigger handler.
-> This is required because the first 4 bytes are reserved for register data.
->
-> Fixes: af3008485ea03 ("iio:adc: Add common code for ADI Sigma Delta devices")
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->   drivers/iio/adc/ad_sigma_delta.c       | 4 ++--
->   include/linux/iio/adc/ad_sigma_delta.h | 2 +-
->   2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
-> index 86039e9ecaca..33297f26508a 100644
-> --- a/drivers/iio/adc/ad_sigma_delta.c
-> +++ b/drivers/iio/adc/ad_sigma_delta.c
-> @@ -395,11 +395,11 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
->   	struct iio_poll_func *pf = p;
->   	struct iio_dev *indio_dev = pf->indio_dev;
->   	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
-> +	uint8_t *data = &sigma_delta->data[4];
->   	unsigned int reg_size;
->   	unsigned int data_reg;
-> -	uint8_t data[16];
->   
-> -	memset(data, 0x00, 16);
-> +	memset(data, 0x00, 4);
-
-Younger me didn't know what he was doing, this is wrong. We need the 
-extra space for the padding and timestamp.
-
-We also can't put the beginning of the buffer at an 4 byte offset since 
-it needs to be 8 byte aligned for the timestamp.
-
->   
->   	reg_size = indio_dev->channels[0].scan_type.realbits +
->   			indio_dev->channels[0].scan_type.shift;
-> diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
-> index a3a838dcf8e4..ac4ac4752c62 100644
-> --- a/include/linux/iio/adc/ad_sigma_delta.h
-> +++ b/include/linux/iio/adc/ad_sigma_delta.h
-> @@ -80,7 +80,7 @@ struct ad_sigma_delta {
->   	 * DMA (thus cache coherency maintenance) requires the
->   	 * transfer buffers to live in their own cache lines.
->   	 */
-> -	uint8_t				data[4] ____cacheline_aligned;
-> +	uint8_t				data[8] ____cacheline_aligned;
->   };
->   
->   static inline int ad_sigma_delta_set_channel(struct ad_sigma_delta *sd,
 
 
+On 11/12/20 9:45 AM, Catalin Marinas wrote:
+> On Thu, Nov 12, 2020 at 09:45:45AM +0000, Vincenzo Frascino wrote:
+>> On 11/12/20 9:39 AM, Catalin Marinas wrote:
+>>> On Tue, Nov 10, 2020 at 11:10:29PM +0100, Andrey Konovalov wrote:
+>>>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>>>> index 664c968dc43c..dbda6598c19d 100644
+>>>> --- a/arch/arm64/kernel/mte.c
+>>>> +++ b/arch/arm64/kernel/mte.c
+>>>> @@ -129,6 +131,26 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>>>>  	return ptr;
+>>>>  }
+>>>>  
+>>>> +void mte_init_tags(u64 max_tag)
+>>>> +{
+>>>> +	static bool gcr_kernel_excl_initialized = false;
+>>>> +
+>>>> +	if (!gcr_kernel_excl_initialized) {
+>>>> +		/*
+>>>> +		 * The format of the tags in KASAN is 0xFF and in MTE is 0xF.
+>>>> +		 * This conversion extracts an MTE tag from a KASAN tag.
+>>>> +		 */
+>>>> +		u64 incl = GENMASK(FIELD_GET(MTE_TAG_MASK >> MTE_TAG_SHIFT,
+>>>> +					     max_tag), 0);
+>>>> +
+>>>> +		gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+>>>> +		gcr_kernel_excl_initialized = true;
+>>>> +	}
+>>>> +
+>>>> +	/* Enable the kernel exclude mask for random tags generation. */
+>>>> +	write_sysreg_s(SYS_GCR_EL1_RRND | gcr_kernel_excl, SYS_GCR_EL1);
+>>>> +}
+>>>
+>>> I don't think this function belongs to this patch. There is an earlier
+>>> patch that talks about mte_init_tags() but no trace of it until this
+>>> patch.
+>>
+>> Could you please point out to which patch are you referring to?
+> 
+> I replied to it already (or you can search ;)). But this patch is about
+> switching GCR_EL1 on exception entry/exit rather than setting up the
+> initial kernel GCR_EL1 value.
+> 
+
+Temporally after I asked ;) (I give you the benefit of delay of the mail server
+;) ). I think that during the development the logic changed a bit, but I agree
+that the comments are outdated. I am fine to move the code.
+
+-- 
+Regards,
+Vincenzo
