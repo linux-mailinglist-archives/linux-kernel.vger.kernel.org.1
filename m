@@ -2,132 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06662B0CA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF54E2B0CA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgKLSad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:30:33 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:23614 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgKLSab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:30:31 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fad7f450001>; Fri, 13 Nov 2020 02:30:29 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 18:30:28 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 18:30:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jnKvLpjFEnQ/zZ6q9dmaFBpO+RD79wiPUzgxFvGnxWJrtfXy6+D0PvBTD70AX0bPpMbmJY8j8eoTao1bEhPwREvdaJleG+FKItvOeOmuEQSIoFPyvDNGL/7hKoKrWWRyLY3wDB09VCHneENyVrenQCzKp3ZJnw7c9DX7V/l4PTkvgBdbbTT5wY6CDPJwADY5M7P9/Yuwb/yFfSBtLSHyqrCscFvfUpFEQqrmyhZBq4L3ht5bkoAnn6fyKdaOCwHpnXxjLFH01U9Dbeg21C+J9Y+6wLIXjfjyENwwD0Q4ig1TIIhyXBsY2bOzQyFd0BnUMFmMvaMPVeBA4ji4sk+sgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o+lpMfkomTSa0aFeezrHssGhBPCHSZ86NONmAxbWk+k=;
- b=myJf8XQCwh/4KNiLMks5W6+bAoAgUniWOrv1Y3PWNFKqPV74cDrBPEB1EN7xZSeTjkc+X2Kjo2wWFKrZVR04bH3AYyK2Oz6+w38ZLylEGtZ0P3Y5R4J1LpD7jIZHi7/swh2JQzn8VQmYrtNRaVY8L1NlWlw312ZHfdoe2wu/TJXPpLouAXIjNEiFk1fyn39ZED0SM+dC/Z6lHR9Gvv16MZsjs4VElYE0sV+JDrhREqTWfoXOdaruNpxesPYUjC08TVB6okbgZNxwZg6t3nbYqUMv/GbBizIJKXnkEv/bbPGO7UvAJFuDO06pXZIFIUDl1mubZb+bkiyhLH5Rnbxp0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1753.namprd12.prod.outlook.com (2603:10b6:3:10d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
- 2020 18:30:25 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
- 18:30:25 +0000
-Date:   Thu, 12 Nov 2020 14:30:23 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-CC:     YueHaibing <yuehaibing@huawei.com>, <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
-Message-ID: <20201112183023.GB917484@nvidia.com>
-References: <20201112145443.17832-1-yuehaibing@huawei.com>
- <20201112172008.GA944848@nvidia.com>
- <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
-X-ClientProxiedBy: BL1PR13CA0298.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0298.namprd13.prod.outlook.com (2603:10b6:208:2bc::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.24 via Frontend Transport; Thu, 12 Nov 2020 18:30:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdHMV-0042jQ-Ot; Thu, 12 Nov 2020 14:30:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605205829; bh=o+lpMfkomTSa0aFeezrHssGhBPCHSZ86NONmAxbWk+k=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=UBzxnA9Bm40zYg/M00ls6xCMPE0dFEjecLM/7eixNE+Ddi6VlrIPD+zgDHtzYycFY
-         Zlhhu2uDtz6b3PGRV6bwYWkhaMPqW4l62FAELXYNvEAtQTnMmiHjfqA34fov7n8/SP
-         W2aU5g8VhHrV9vYdpAVRtBr3Rg9s8DzaZMDn3u1JJYLLn6oFVqcYRL9nMEwK8ClS9Z
-         lj7tnNAIjWEgs0IS+aNzMcUN02sd1Ugrm/oO4q87KrmVdXnyUvfJeIt6LqaYXlvVcA
-         CpsOv93YSsLNy2RspIV+V7jT9ljAOvMPS0vxVzSb+eyrhfLGl31/1pKzh2fugMN42d
-         wbSl8eMQmYPGQ==
+        id S1726363AbgKLSbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:31:03 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:58286 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726219AbgKLSbB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 13:31:01 -0500
+X-Greylist: delayed 819 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Nov 2020 13:31:01 EST
+Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 99A48B617E957
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:17:20 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id dH9sk3YkWh41ldH9sk9Fde; Thu, 12 Nov 2020 11:17:20 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=Oda28CbY c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
+ a=eM5LCgP2hi1Td70LeUgA:9 a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=Message-Id:Date:Subject:Cc:To:From:Sender:
+        Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8vQ4s+N6+Dudnv7x0dSPVdi7FV6Ybplh5nwXDXQYpQU=; b=ZRtvwywCEg1LKSWc8SsyQs7/sk
+        JcLjarK93wcQ0O4AuVltvb9+sHoHcQKYpHN66Kwo7MRnEqg+nsXtz1MvTczeqMmUugPr+P02nVWsJ
+        UaBMYH+gD5VzTTJy/Lt2g3tw+SswF6fOhUBLCGSIAxjs2oVYdU0jFJAqMTT0oi0NZ9EzHKRj+Avse
+        zBQw2wcE+GKxUzDfjefMfkK0KRFuLx67fbzdRyBjffF6n3UUnG4CmaZgLshQG+rZkengHg3eyMnOP
+        zHyB7xicN4sU5aoIPuZ1+HxvPekuEwkxoHnRuS5FdE79EWudjNyInZbHx2vEKySjCl1wzE6/DACvi
+        nf4k+Wig==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:43894 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kdH9r-002UVC-KT; Thu, 12 Nov 2020 18:17:19 +0000
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] media: uvcvideo: Handle errors from calls to usb_string
+Date:   Thu, 12 Nov 2020 10:17:16 -0800
+Message-Id: <20201112181716.194080-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kdH9r-002UVC-KT
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:43894
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 2
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 10:25:48AM -0800, Bart Van Assche wrote:
-> On 11/12/20 9:20 AM, Jason Gunthorpe wrote:
-> > I think it should be like this, Bart?
-> > 
-> > diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> > index 6017d525084a0c..80f9673956ced2 100644
-> > +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> > @@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
-> >   	mutex_lock(&sport->port_guid_id.mutex);
-> >   	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
-> > -		if (!IS_ERR_OR_NULL(ch->sess))
-> > +		if (ch->sess)
-> >   			break;
-> >   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-> >   						tag_size, TARGET_PROT_NORMAL,
-> > @@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
-> >   	mutex_lock(&sport->port_gid_id.mutex);
-> >   	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
-> > -		if (!IS_ERR_OR_NULL(ch->sess))
-> > +		if (ch->sess)
-> >   			break;
-> >   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-> >   					tag_size, TARGET_PROT_NORMAL, i_port_id,
-> >   					ch, NULL);
-> > -		if (!IS_ERR_OR_NULL(ch->sess))
-> > +		if (ch->sess)
-> >   			break;
-> >   		/* Retry without leading "0x" */
-> >   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-> > @@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
-> >   	}
-> >   	mutex_unlock(&sport->port_gid_id.mutex);
-> > -	if (IS_ERR_OR_NULL(ch->sess)) {
-> > +	if (!ch->sess)
-> > +		ch->sess = ERR_PTR(-ENOENT);
-> > +	if (IS_ERR(ch->sess)) {
-> >   		WARN_ON_ONCE(ch->sess == NULL);
-> >   		ret = PTR_ERR(ch->sess);
-> >   		ch->sess = NULL;
-> > 
-> 
-> Hi Jason,
-> 
-> The ib_srpt driver accepts three different formats for the initiator ACL. Up
-> to two of the three target_setup_session() calls will fail if the fifth
-> argument of target_setup_session() does not use the format of the initiator
-> ID in configfs. If the first or the second target_setup_session() call fails
-> it is essential that later target_setup_session() calls happen. Hence the
-> IS_ERR_OR_NULL(ch->sess) checks in the above loops.
+On a Webcam from Quanta, we see the following error.
 
-IS_ERR_OR_NULL is an abomination, it should not be used.
+usb 3-5: New USB device found, idVendor=0408, idProduct=30d2, bcdDevice= 0.03
+usb 3-5: New USB device strings: Mfr=3, Product=1, SerialNumber=2
+usb 3-5: Product: USB2.0 HD UVC WebCam
+usb 3-5: Manufacturer: Quanta
+usb 3-5: SerialNumber: 0x0001
+...
+uvcvideo: Found UVC 1.10 device USB2.0 HD UVC WebCam (0408:30d2)
+uvcvideo: Failed to initialize entity for entity 5
+uvcvideo: Failed to register entities (-22).
 
-I see I didn't quite get it right, but that is still closer to sane,
-probably target_setup_session() should return NULL not err_ptr
+The Webcam reports an entity of type UVC_VC_EXTENSION_UNIT. It reports a
+string index of '7' associated with that entity. The attempt to read that
+string from the camera fails with error -32 (-EPIPE). usb_string() returns
+that error, but it is ignored. As result, the entity name is empty. This
+later causes v4l2_device_register_subdev() to return -EINVAL, and no
+entities are registered as result.
 
-Jason
+While this appears to be a firmware problem with the camera, the kernel
+should still handle the situation gracefully. To do that, check the return
+value from usb_string(). If it reports an error, assign the entity's
+default name.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/media/usb/uvc/uvc_driver.c | 48 ++++++++++++------------------
+ 1 file changed, 19 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index ddb9eaa11be7..15f5a0673237 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -1118,10 +1118,8 @@ static int uvc_parse_vendor_control(struct uvc_device *dev,
+ 					       + n;
+ 		memcpy(unit->extension.bmControls, &buffer[23+p], 2*n);
+ 
+-		if (buffer[24+p+2*n] != 0)
+-			usb_string(udev, buffer[24+p+2*n], unit->name,
+-				   sizeof(unit->name));
+-		else
++		if (buffer[24+p+2*n] == 0 ||
++		    usb_string(udev, buffer[24+p+2*n], unit->name, sizeof(unit->name)) < 0)
+ 			sprintf(unit->name, "Extension %u", buffer[3]);
+ 
+ 		list_add_tail(&unit->list, &dev->entities);
+@@ -1246,15 +1244,15 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+ 			memcpy(term->media.bmTransportModes, &buffer[10+n], p);
+ 		}
+ 
+-		if (buffer[7] != 0)
+-			usb_string(udev, buffer[7], term->name,
+-				   sizeof(term->name));
+-		else if (UVC_ENTITY_TYPE(term) == UVC_ITT_CAMERA)
+-			sprintf(term->name, "Camera %u", buffer[3]);
+-		else if (UVC_ENTITY_TYPE(term) == UVC_ITT_MEDIA_TRANSPORT_INPUT)
+-			sprintf(term->name, "Media %u", buffer[3]);
+-		else
+-			sprintf(term->name, "Input %u", buffer[3]);
++		if (buffer[7] == 0 ||
++		    usb_string(udev, buffer[7], term->name, sizeof(term->name)) < 0) {
++			if (UVC_ENTITY_TYPE(term) == UVC_ITT_CAMERA)
++				sprintf(term->name, "Camera %u", buffer[3]);
++			if (UVC_ENTITY_TYPE(term) == UVC_ITT_MEDIA_TRANSPORT_INPUT)
++				sprintf(term->name, "Media %u", buffer[3]);
++			else
++				sprintf(term->name, "Input %u", buffer[3]);
++		}
+ 
+ 		list_add_tail(&term->list, &dev->entities);
+ 		break;
+@@ -1286,10 +1284,8 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+ 
+ 		memcpy(term->baSourceID, &buffer[7], 1);
+ 
+-		if (buffer[8] != 0)
+-			usb_string(udev, buffer[8], term->name,
+-				   sizeof(term->name));
+-		else
++		if (buffer[8] == 0 ||
++		    usb_string(udev, buffer[8], term->name, sizeof(term->name)) < 0)
+ 			sprintf(term->name, "Output %u", buffer[3]);
+ 
+ 		list_add_tail(&term->list, &dev->entities);
+@@ -1311,10 +1307,8 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+ 
+ 		memcpy(unit->baSourceID, &buffer[5], p);
+ 
+-		if (buffer[5+p] != 0)
+-			usb_string(udev, buffer[5+p], unit->name,
+-				   sizeof(unit->name));
+-		else
++		if (buffer[5+p] == 0 ||
++		    usb_string(udev, buffer[5+p], unit->name, sizeof(unit->name)) < 0)
+ 			sprintf(unit->name, "Selector %u", buffer[3]);
+ 
+ 		list_add_tail(&unit->list, &dev->entities);
+@@ -1344,10 +1338,8 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+ 		if (dev->uvc_version >= 0x0110)
+ 			unit->processing.bmVideoStandards = buffer[9+n];
+ 
+-		if (buffer[8+n] != 0)
+-			usb_string(udev, buffer[8+n], unit->name,
+-				   sizeof(unit->name));
+-		else
++		if (buffer[8+n] == 0 ||
++		    usb_string(udev, buffer[8+n], unit->name, sizeof(unit->name)) < 0)
+ 			sprintf(unit->name, "Processing %u", buffer[3]);
+ 
+ 		list_add_tail(&unit->list, &dev->entities);
+@@ -1375,10 +1367,8 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+ 		unit->extension.bmControls = (u8 *)unit + sizeof(*unit);
+ 		memcpy(unit->extension.bmControls, &buffer[23+p], n);
+ 
+-		if (buffer[23+p+n] != 0)
+-			usb_string(udev, buffer[23+p+n], unit->name,
+-				   sizeof(unit->name));
+-		else
++		if (buffer[23+p+n] == 0 ||
++		    usb_string(udev, buffer[23+p+n], unit->name, sizeof(unit->name)) < 0)
+ 			sprintf(unit->name, "Extension %u", buffer[3]);
+ 
+ 		list_add_tail(&unit->list, &dev->entities);
+-- 
+2.17.1
+
