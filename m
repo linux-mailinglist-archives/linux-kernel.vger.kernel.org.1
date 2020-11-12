@@ -2,363 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00D52B10EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8681B2B10CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgKLWDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:03:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727778AbgKLWDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:03:30 -0500
-Received: from suppilovahvero.lan (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2B9B22201;
-        Thu, 12 Nov 2020 22:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605218608;
-        bh=PlgrMu8KNE1LK/nbN6CBCeWwn5etw88Ddbrkdd9IBhU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NoP3VzyTxxiLR7xt51UccSPerCXBGrBlFVI9W13zgmVXytLEqd0qmyAUT8Lpy145Y
-         GyctJheitmqwMKFi5H0vMiy00e/fJxJaIXl2/+7W7C2LWJQw5vvCcXNKxUMdzRnC8s
-         /zvN8lTeiM2USoOENKfO/Pbn63pLoLQtIfkemPWY=
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: [PATCH v41 16/24] x86/vdso: Add support for exception fixup in vDSO functions
-Date:   Fri, 13 Nov 2020 00:01:27 +0200
-Message-Id: <20201112220135.165028-17-jarkko@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201112220135.165028-1-jarkko@kernel.org>
-References: <20201112220135.165028-1-jarkko@kernel.org>
+        id S1727398AbgKLWBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:01:32 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9331 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727043AbgKLWBb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 17:01:31 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fadb0b50000>; Thu, 12 Nov 2020 14:01:25 -0800
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 22:01:27 +0000
+Subject: Re: [RFC PATCH 4/6] mm: thp: add support for split huge page to any
+ lower order pages.
+To:     Zi Yan <ziy@nvidia.com>, <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-5-zi.yan@sent.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <9b480b89-6a05-bdb7-c6ff-4518c008595a@nvidia.com>
+Date:   Thu, 12 Nov 2020 14:01:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201111204008.21332-5-zi.yan@sent.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605218485; bh=MMTaC+DcUdwTYUH/7pUYvKJt2P76ewqnDoA1fCSqu7M=;
+        h=Subject:To:CC:References:From:X-Nvconfidentiality:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=DwQJh9X2TZieuWwXnFmr+kemO5EfKi5cefBbp8Hx7VNFU4cSWxXsKARdf1qphJlwM
+         MB3FumDGxnIIeVsoBaO2qcNAvcnmVvl4lazXz8SzxZMs4qzx1W6uGDdoLQic/gvh9M
+         9QSyu3mc2V3FuW/JQCaSEaB/54CEb8zvsjy/VftoR9+59AFDK7+D3PkkY7vSZ7gWG8
+         8tQ3vYjof9gnkd5ahsWoau0f24CJffsJqdHXugPySHXAl+Gc+6/LSqujlziBqefBsD
+         Hf6RCkBXq51JQtrf55nyZ2uM5BHKlRvCJtgHGiXvD2DBmGMzkWRNLntq1eH1Sn0QMG
+         TP9dbiNeYTIQg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Signals are a horrid little mechanism.  They are especially nasty in
-multi-threaded environments because signal state like handlers is global
-across the entire process.  But, signals are basically the only way that
-userspace can “gracefully” handle and recover from exceptions.
+On 11/11/20 12:40 PM, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> To split a THP to any lower order pages, we need to reform THPs on
+> subpages at given order and add page refcount based on the new page
+> order. Also we need to reinitialize page_deferred_list after removing
+> the page from the split_queue, otherwise a subsequent split will see
+> list corruption when checking the page_deferred_list again.
+> 
+> It has many uses, like minimizing the number of pages after
+> truncating a pagecache THP. For anonymous THPs, we can only split them
+> to order-0 like before until we add support for any size anonymous THPs.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   include/linux/huge_mm.h |  8 +++++
+>   mm/huge_memory.c        | 78 +++++++++++++++++++++++++++++------------
+>   mm/swap.c               |  1 -
+>   3 files changed, 63 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index 60a907a19f7d..9819cd9b4619 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -189,6 +189,8 @@ bool is_transparent_hugepage(struct page *page);
+>   
+>   bool can_split_huge_page(struct page *page, int *pextra_pins);
+>   int split_huge_page_to_list(struct page *page, struct list_head *list);
+> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+> +		unsigned int new_order);
+>   static inline int split_huge_page(struct page *page)
+>   {
+>   	return split_huge_page_to_list(page, NULL);
+> @@ -396,6 +398,12 @@ split_huge_page_to_list(struct page *page, struct list_head *list)
+>   {
+>   	return 0;
+>   }
+> +static inline int
+> +split_huge_page_to_order_to_list(struct page *page, struct list_head *list,
+> +		unsigned int new_order)
+> +{
+> +	return 0;
+> +}
+>   static inline int split_huge_page(struct page *page)
+>   {
+>   	return 0;
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 8b7d771ee962..88f50da40c9b 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2327,11 +2327,14 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>   static void unmap_page(struct page *page)
+>   {
+>   	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS |
+> -		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+> +		TTU_RMAP_LOCKED;
+>   	bool unmap_success;
+>   
+>   	VM_BUG_ON_PAGE(!PageHead(page), page);
+>   
+> +	if (thp_order(page) >= HPAGE_PMD_ORDER)
+> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
+> +
+>   	if (PageAnon(page))
+>   		ttu_flags |= TTU_SPLIT_FREEZE;
+>   
+> @@ -2339,21 +2342,22 @@ static void unmap_page(struct page *page)
+>   	VM_BUG_ON_PAGE(!unmap_success, page);
+>   }
+>   
+> -static void remap_page(struct page *page, unsigned int nr)
+> +static void remap_page(struct page *page, unsigned int nr, unsigned int new_nr)
+>   {
+>   	int i;
 
-The kernel generally does not like exceptions to occur during execution.
-But, exceptions are a fact of life and must be handled in some
-circumstances.  The kernel handles them by keeping a list of individual
-instructions which may cause exceptions.  Instead of truly handling the
-exception and returning to the instruction that caused it, the kernel
-instead restarts execution at a *different* instruction.  This makes it
-obvious to that thread of execution that the exception occurred and lets
-*that* code handle the exception instead of the handler.
+Use unsigned int i?
+Maybe a blank line here and the {}'s around if/else aren't needed.
 
-This is not dissimilar to the try/catch exceptions mechanisms that some
-programming languages have, but applied *very* surgically to single
-instructions.  It effectively changes the visible architecture of the
-instruction.
+> -	if (PageTransHuge(page)) {
+> +	if (thp_nr_pages(page) == nr) {
+>   		remove_migration_ptes(page, page, true);
+>   	} else {
+> -		for (i = 0; i < nr; i++)
+> +		for (i = 0; i < nr; i += new_nr)
+>   			remove_migration_ptes(page + i, page + i, true);
+>   	}
+>   }
+>   
+>   static void __split_huge_page_tail(struct page *head, int tail,
+> -		struct lruvec *lruvec, struct list_head *list)
+> +		struct lruvec *lruvec, struct list_head *list, unsigned int new_order)
+>   {
+>   	struct page *page_tail = head + tail;
+> +	unsigned long compound_head_flag = new_order ? (1L << PG_head) : 0;
+>   
+>   	VM_BUG_ON_PAGE(atomic_read(&page_tail->_mapcount) != -1, page_tail);
+>   
+> @@ -2377,6 +2381,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>   #ifdef CONFIG_64BIT
+>   			 (1L << PG_arch_2) |
+>   #endif
+> +			 compound_head_flag |
+>   			 (1L << PG_dirty)));
+>   
+>   	/* ->mapping in first tail page is compound_mapcount */
+> @@ -2395,10 +2400,15 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>   	 * which needs correct compound_head().
+>   	 */
+>   	clear_compound_head(page_tail);
+> +	if (new_order) {
+> +		prep_compound_page(page_tail, new_order);
+> +		thp_prep(page_tail);
+> +	}
+>   
+>   	/* Finally unfreeze refcount. Additional reference from page cache. */
+> -	page_ref_unfreeze(page_tail, 1 + (!PageAnon(head) ||
+> -					  PageSwapCache(head)));
+> +	page_ref_unfreeze(page_tail, 1 + ((!PageAnon(head) ||
+> +					   PageSwapCache(head)) ?
+> +						thp_nr_pages(page_tail) : 0));
+>   
+>   	if (page_is_young(head))
+>   		set_page_young(page_tail);
+> @@ -2416,7 +2426,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>   }
+>   
+>   static void __split_huge_page(struct page *page, struct list_head *list,
+> -		pgoff_t end, unsigned long flags)
+> +		pgoff_t end, unsigned long flags, unsigned int new_order)
+>   {
+>   	struct page *head = compound_head(page);
+>   	pg_data_t *pgdat = page_pgdat(head);
+> @@ -2424,12 +2434,13 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>   	struct address_space *swap_cache = NULL;
+>   	unsigned long offset = 0;
+>   	unsigned int nr = thp_nr_pages(head);
+> +	unsigned int new_nr = 1 << new_order;
+>   	int i;
+>   
+>   	lruvec = mem_cgroup_page_lruvec(head, pgdat);
+>   
+>   	/* complete memcg works before add pages to LRU */
+> -	mem_cgroup_split_huge_fixup(head, 1);
+> +	mem_cgroup_split_huge_fixup(head, new_nr);
+>   
+>   	if (PageAnon(head) && PageSwapCache(head)) {
+>   		swp_entry_t entry = { .val = page_private(head) };
+> @@ -2439,14 +2450,14 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>   		xa_lock(&swap_cache->i_pages);
+>   	}
+>   
+> -	for (i = nr - 1; i >= 1; i--) {
+> -		__split_huge_page_tail(head, i, lruvec, list);
+> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
+> +		__split_huge_page_tail(head, i, lruvec, list, new_order);
+>   		/* Some pages can be beyond i_size: drop them from page cache */
+>   		if (head[i].index >= end) {
+>   			ClearPageDirty(head + i);
+>   			__delete_from_page_cache(head + i, NULL);
+>   			if (IS_ENABLED(CONFIG_SHMEM) && PageSwapBacked(head))
+> -				shmem_uncharge(head->mapping->host, 1);
+> +				shmem_uncharge(head->mapping->host, new_nr);
+>   			put_page(head + i);
+>   		} else if (!PageAnon(page)) {
+>   			__xa_store(&head->mapping->i_pages, head[i].index,
+> @@ -2457,28 +2468,31 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>   		}
+>   	}
+>   
+> -	ClearPageCompound(head);
+> +	if (!new_order)
+> +		ClearPageCompound(head);
+> +	else
+> +		set_compound_order(head, new_order);
+>   
+> -	split_page_owner(head, nr, 1);
+> +	split_page_owner(head, nr, new_nr);
 
-Problem
-=======
+This needs to be "new_order" instead of "new_nr".
 
-SGX generates a lot of signals, and the code to enter and exit enclaves and
-muck with signal handling is truly horrid.  At the same time, an approach
-like kernel exception fixup can not be easily applied to userspace
-instructions because it changes the visible instruction architecture.
+>   	/* See comment in __split_huge_page_tail() */
+>   	if (PageAnon(head)) {
+>   		/* Additional pin to swap cache */
+>   		if (PageSwapCache(head)) {
+> -			page_ref_add(head, 2);
+> +			page_ref_add(head, 1 + new_nr);
+>   			xa_unlock(&swap_cache->i_pages);
+>   		} else {
+>   			page_ref_inc(head);
+>   		}
+>   	} else {
+>   		/* Additional pin to page cache */
+> -		page_ref_add(head, 2);
+> +		page_ref_add(head, 1 + new_nr);
+>   		xa_unlock(&head->mapping->i_pages);
+>   	}
+>   
+>   	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+>   
+> -	remap_page(head, nr);
+> +	remap_page(head, nr, new_nr);
+>   
+>   	if (PageSwapCache(head)) {
+>   		swp_entry_t entry = { .val = page_private(head) };
+> @@ -2486,7 +2500,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>   		split_swap_cluster(entry);
+>   	}
+>   
+> -	for (i = 0; i < nr; i++) {
+> +	for (i = 0; i < nr; i += new_nr) {
+>   		struct page *subpage = head + i;
+>   		if (subpage == page)
+>   			continue;
+> @@ -2620,21 +2634,39 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
+>    * us.
+>    */
+>   int split_huge_page_to_list(struct page *page, struct list_head *list)
+> +{
+> +	return split_huge_page_to_list_to_order(page, list, 0);
+> +}
+> +
+> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+> +				     unsigned int new_order)
+>   {
+>   	struct page *head = compound_head(page);
+>   	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
+>   	struct deferred_split *ds_queue = get_deferred_split_queue(head);
+> -	XA_STATE(xas, &head->mapping->i_pages, head->index);
+> +	/* reset xarray order to new order after split */
+> +	XA_STATE_ORDER(xas, &head->mapping->i_pages, head->index, new_order);
+>   	struct anon_vma *anon_vma = NULL;
+>   	struct address_space *mapping = NULL;
+>   	int count, mapcount, extra_pins, ret;
+>   	unsigned long flags;
+>   	pgoff_t end;
+>   
+> +	VM_BUG_ON(thp_order(head) <= new_order);
+>   	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
+>   	VM_BUG_ON_PAGE(!PageLocked(head), head);
+>   	VM_BUG_ON_PAGE(!PageCompound(head), head);
+>   
+> +	if (new_order == 1) {
+> +		WARN_ONCE(1, "Cannot split THP to order-1 (no order-1 THPs)");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (PageAnon(head) && new_order) {
+> +		WARN_ONCE(1, "Split anonymous THP to non-zero order not support");
+> +		return -EINVAL;
+> +	}
+> +
+>   	if (PageWriteback(head))
+>   		return -EBUSY;
+>   
+> @@ -2720,18 +2752,18 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>   	if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
+>   		if (!list_empty(page_deferred_list(head))) {
+>   			ds_queue->split_queue_len--;
+> -			list_del(page_deferred_list(head));
+> +			list_del_init(page_deferred_list(head));
+>   		}
+>   		spin_unlock(&ds_queue->split_queue_lock);
+>   		if (mapping) {
+>   			if (PageSwapBacked(head))
+>   				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
+> -			else
+> +			else if (!new_order)
+>   				__mod_lruvec_page_state(head, NR_FILE_THPS,
+>   						-thp_nr_pages(head));
+>   		}
+>   
+> -		__split_huge_page(page, list, end, flags);
+> +		__split_huge_page(page, list, end, flags, new_order);
+>   		ret = 0;
+>   	} else {
+>   		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+> @@ -2746,7 +2778,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>   fail:		if (mapping)
+>   			xas_unlock(&xas);
+>   		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
+> -		remap_page(head, thp_nr_pages(head));
+> +		remap_page(head, thp_nr_pages(head), 0);
 
-Solution
-========
+Shouldn't this be "1" instead of zero?
+remap_page() takes new_nr.
 
-The vDSO is a special page of kernel-provided instructions that run in
-userspace.  Any userspace calling into the vDSO knows that it is special.
-This allows the kernel a place to legitimately rewrite the user/kernel
-contract and change instruction behavior.
-
-Add support for fixing up exceptions that occur while executing in the
-vDSO.  This replaces what could traditionally only be done with signal
-handling.
-
-This new mechanism will be used to replace previously direct use of SGX
-instructions by userspace.
-
-Just introduce the vDSO infrastructure.  Later patches will actually
-replace signal generation with vDSO exception fixup.
-
-Suggested-by: Andy Lutomirski <luto@amacapital.net>
-Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
-# Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/entry/vdso/Makefile          |  6 ++--
- arch/x86/entry/vdso/extable.c         | 46 ++++++++++++++++++++++++
- arch/x86/entry/vdso/extable.h         | 28 +++++++++++++++
- arch/x86/entry/vdso/vdso-layout.lds.S |  9 ++++-
- arch/x86/entry/vdso/vdso2c.h          | 50 ++++++++++++++++++++++++++-
- arch/x86/include/asm/vdso.h           |  5 +++
- 6 files changed, 139 insertions(+), 5 deletions(-)
- create mode 100644 arch/x86/entry/vdso/extable.c
- create mode 100644 arch/x86/entry/vdso/extable.h
-
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 21243747965d..2ad757fb3c23 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -29,7 +29,7 @@ vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
- vobjs32-y += vdso32/vclock_gettime.o
- 
- # files to link into kernel
--obj-y				+= vma.o
-+obj-y				+= vma.o extable.o
- KASAN_SANITIZE_vma.o		:= y
- UBSAN_SANITIZE_vma.o		:= y
- KCSAN_SANITIZE_vma.o		:= y
-@@ -128,8 +128,8 @@ $(obj)/%-x32.o: $(obj)/%.o FORCE
- 
- targets += vdsox32.lds $(vobjx32s-y)
- 
--$(obj)/%.so: OBJCOPYFLAGS := -S
--$(obj)/%.so: $(obj)/%.so.dbg FORCE
-+$(obj)/%.so: OBJCOPYFLAGS := -S --remove-section __ex_table
-+$(obj)/%.so: $(obj)/%.so.dbg
- 	$(call if_changed,objcopy)
- 
- $(obj)/vdsox32.so.dbg: $(obj)/vdsox32.lds $(vobjx32s) FORCE
-diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
-new file mode 100644
-index 000000000000..afcf5b65beef
---- /dev/null
-+++ b/arch/x86/entry/vdso/extable.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/err.h>
-+#include <linux/mm.h>
-+#include <asm/current.h>
-+#include <asm/traps.h>
-+#include <asm/vdso.h>
-+
-+struct vdso_exception_table_entry {
-+	int insn, fixup;
-+};
-+
-+bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
-+			  unsigned long error_code, unsigned long fault_addr)
-+{
-+	const struct vdso_image *image = current->mm->context.vdso_image;
-+	const struct vdso_exception_table_entry *extable;
-+	unsigned int nr_entries, i;
-+	unsigned long base;
-+
-+	/*
-+	 * Do not attempt to fixup #DB or #BP.  It's impossible to identify
-+	 * whether or not a #DB/#BP originated from within an SGX enclave and
-+	 * SGX enclaves are currently the only use case for vDSO fixup.
-+	 */
-+	if (trapnr == X86_TRAP_DB || trapnr == X86_TRAP_BP)
-+		return false;
-+
-+	if (!current->mm->context.vdso)
-+		return false;
-+
-+	base =  (unsigned long)current->mm->context.vdso + image->extable_base;
-+	nr_entries = image->extable_len / (sizeof(*extable));
-+	extable = image->extable;
-+
-+	for (i = 0; i < nr_entries; i++) {
-+		if (regs->ip == base + extable[i].insn) {
-+			regs->ip = base + extable[i].fixup;
-+			regs->di = trapnr;
-+			regs->si = error_code;
-+			regs->dx = fault_addr;
-+			return true;
-+		}
-+	}
-+
-+	return false;
-+}
-diff --git a/arch/x86/entry/vdso/extable.h b/arch/x86/entry/vdso/extable.h
-new file mode 100644
-index 000000000000..b56f6b012941
---- /dev/null
-+++ b/arch/x86/entry/vdso/extable.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_EXTABLE_H
-+#define __VDSO_EXTABLE_H
-+
-+/*
-+ * Inject exception fixup for vDSO code.  Unlike normal exception fixup,
-+ * vDSO uses a dedicated handler the addresses are relative to the overall
-+ * exception table, not each individual entry.
-+ */
-+#ifdef __ASSEMBLY__
-+#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
-+	ASM_VDSO_EXTABLE_HANDLE from to
-+
-+.macro ASM_VDSO_EXTABLE_HANDLE from:req to:req
-+	.pushsection __ex_table, "a"
-+	.long (\from) - __ex_table
-+	.long (\to) - __ex_table
-+	.popsection
-+.endm
-+#else
-+#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
-+	".pushsection __ex_table, \"a\"\n"      \
-+	".long (" #from ") - __ex_table\n"      \
-+	".long (" #to ") - __ex_table\n"        \
-+	".popsection\n"
-+#endif
-+
-+#endif /* __VDSO_EXTABLE_H */
-diff --git a/arch/x86/entry/vdso/vdso-layout.lds.S b/arch/x86/entry/vdso/vdso-layout.lds.S
-index 4d152933547d..dc8da7695859 100644
---- a/arch/x86/entry/vdso/vdso-layout.lds.S
-+++ b/arch/x86/entry/vdso/vdso-layout.lds.S
-@@ -75,11 +75,18 @@ SECTIONS
- 	 * stuff that isn't used at runtime in between.
- 	 */
- 
--	.text		: { *(.text*) }			:text	=0x90909090,
-+	.text		: {
-+		*(.text*)
-+		*(.fixup)
-+	}						:text	=0x90909090,
-+
-+
- 
- 	.altinstructions	: { *(.altinstructions) }	:text
- 	.altinstr_replacement	: { *(.altinstr_replacement) }	:text
- 
-+	__ex_table		: { *(__ex_table) }		:text
-+
- 	/DISCARD/ : {
- 		*(.discard)
- 		*(.discard.*)
-diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
-index 6f46e11ce539..1c7cfac7e64a 100644
---- a/arch/x86/entry/vdso/vdso2c.h
-+++ b/arch/x86/entry/vdso/vdso2c.h
-@@ -5,6 +5,41 @@
-  * are built for 32-bit userspace.
-  */
- 
-+static void BITSFUNC(copy)(FILE *outfile, const unsigned char *data, size_t len)
-+{
-+	size_t i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (i % 10 == 0)
-+			fprintf(outfile, "\n\t");
-+		fprintf(outfile, "0x%02X, ", (int)(data)[i]);
-+	}
-+}
-+
-+
-+/*
-+ * Extract a section from the input data into a standalone blob.  Used to
-+ * capture kernel-only data that needs to persist indefinitely, e.g. the
-+ * exception fixup tables, but only in the kernel, i.e. the section can
-+ * be stripped from the final vDSO image.
-+ */
-+static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
-+			      FILE *outfile, ELF(Shdr) *sec, const char *name)
-+{
-+	unsigned long offset;
-+	size_t len;
-+
-+	offset = (unsigned long)GET_LE(&sec->sh_offset);
-+	len = (size_t)GET_LE(&sec->sh_size);
-+
-+	if (offset + len > data_len)
-+		fail("section to extract overruns input data");
-+
-+	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-+	BITSFUNC(copy)(outfile, data + offset, len);
-+	fprintf(outfile, "\n};\n\n");
-+}
-+
- static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 			 void *stripped_addr, size_t stripped_len,
- 			 FILE *outfile, const char *image_name)
-@@ -15,7 +50,7 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 	ELF(Ehdr) *hdr = (ELF(Ehdr) *)raw_addr;
- 	unsigned long i, syms_nr;
- 	ELF(Shdr) *symtab_hdr = NULL, *strtab_hdr, *secstrings_hdr,
--		*alt_sec = NULL;
-+		*alt_sec = NULL, *extable_sec = NULL;
- 	ELF(Dyn) *dyn = 0, *dyn_end = 0;
- 	const char *secstrings;
- 	INT_BITS syms[NSYMS] = {};
-@@ -77,6 +112,8 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 		if (!strcmp(secstrings + GET_LE(&sh->sh_name),
- 			    ".altinstructions"))
- 			alt_sec = sh;
-+		if (!strcmp(secstrings + GET_LE(&sh->sh_name), "__ex_table"))
-+			extable_sec = sh;
- 	}
- 
- 	if (!symtab_hdr)
-@@ -155,6 +192,9 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 			(int)((unsigned char *)stripped_addr)[i]);
- 	}
- 	fprintf(outfile, "\n};\n\n");
-+	if (extable_sec)
-+		BITSFUNC(extract)(raw_addr, raw_len, outfile,
-+				  extable_sec, "extable");
- 
- 	fprintf(outfile, "const struct vdso_image %s = {\n", image_name);
- 	fprintf(outfile, "\t.data = raw_data,\n");
-@@ -165,6 +205,14 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 		fprintf(outfile, "\t.alt_len = %lu,\n",
- 			(unsigned long)GET_LE(&alt_sec->sh_size));
- 	}
-+	if (extable_sec) {
-+		fprintf(outfile, "\t.extable_base = %lu,\n",
-+			(unsigned long)GET_LE(&extable_sec->sh_offset));
-+		fprintf(outfile, "\t.extable_len = %lu,\n",
-+			(unsigned long)GET_LE(&extable_sec->sh_size));
-+		fprintf(outfile, "\t.extable = extable,\n");
-+	}
-+
- 	for (i = 0; i < NSYMS; i++) {
- 		if (required_syms[i].export && syms[i])
- 			fprintf(outfile, "\t.sym_%s = %" PRIi64 ",\n",
-diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
-index bbcdc7b8f963..b5d23470f56b 100644
---- a/arch/x86/include/asm/vdso.h
-+++ b/arch/x86/include/asm/vdso.h
-@@ -15,6 +15,8 @@ struct vdso_image {
- 	unsigned long size;   /* Always a multiple of PAGE_SIZE */
- 
- 	unsigned long alt, alt_len;
-+	unsigned long extable_base, extable_len;
-+	const void *extable;
- 
- 	long sym_vvar_start;  /* Negative offset to the vvar area */
- 
-@@ -45,6 +47,9 @@ extern void __init init_vdso_image(const struct vdso_image *image);
- 
- extern int map_vdso_once(const struct vdso_image *image, unsigned long addr);
- 
-+extern bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
-+				 unsigned long error_code,
-+				 unsigned long fault_addr);
- #endif /* __ASSEMBLER__ */
- 
- #endif /* _ASM_X86_VDSO_H */
--- 
-2.27.0
-
+>   		ret = -EBUSY;
+>   	}
+>   
+> diff --git a/mm/swap.c b/mm/swap.c
+> index 14c3bac607a6..6c33e6165597 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -983,7 +983,6 @@ void lru_add_page_tail(struct page *page, struct page *page_tail,
+>   		       struct lruvec *lruvec, struct list_head *list)
+>   {
+>   	VM_BUG_ON_PAGE(!PageHead(page), page);
+> -	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
+>   	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
+>   	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
+>   
+> 
