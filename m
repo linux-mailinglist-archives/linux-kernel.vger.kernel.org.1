@@ -2,146 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D97D2B027F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F310F2B0280
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbgKLKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:08:12 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:52495 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgKLKIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:08:12 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 8480B240015;
-        Thu, 12 Nov 2020 10:07:32 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 11:07:31 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v2 16/25] arch: arm: mach-at91: pm: Move prototypes to
- mutually included header
-Message-ID: <20201112100731.GC4556@piout.net>
-References: <20200713144930.1034632-1-lee.jones@linaro.org>
- <20200713144930.1034632-17-lee.jones@linaro.org>
- <20201112093918.GV2063125@dell>
+        id S1727739AbgKLKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:08:58 -0500
+Received: from mga01.intel.com ([192.55.52.88]:11241 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbgKLKI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 05:08:57 -0500
+IronPort-SDR: IAMBKbRSoSxSJjr6/MfULhsECWyD7kMvAUsmLFwAUjLQMeCBBKuZHU+zOB1yUl8o12/eeNyE/n
+ j0ttJeZDFUfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="188280422"
+X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
+   d="scan'208";a="188280422"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 02:08:56 -0800
+IronPort-SDR: iaNu2ufkQApzRJXCcNQXqZpQjXf1usdnURhtzI/V9XlUnOMVMDeKnTKfanaAphDO6X/qh95NU0
+ XwqtJ1yBhtSw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
+   d="scan'208";a="328443052"
+Received: from lkp-server02.sh.intel.com (HELO de5c6a867800) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 12 Nov 2020 02:08:55 -0800
+Received: from kbuild by de5c6a867800 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kd9XC-0000DE-JP; Thu, 12 Nov 2020 10:08:54 +0000
+Date:   Thu, 12 Nov 2020 18:08:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/apic] BUILD SUCCESS
+ 2df985f5e44c43f5d29d8cc3aaa8e8ac697e9de6
+Message-ID: <5fad0998.IwiWKRcfNDRRd2r2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112093918.GV2063125@dell>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
+branch HEAD: 2df985f5e44c43f5d29d8cc3aaa8e8ac697e9de6  iommu/amd: Don't register interrupt remapping irqdomain when IR is disabled
 
-On 12/11/2020 09:39:18+0000, Lee Jones wrote:
-> Both the caller and the supplier's source file should have access to
-> the include file containing the prototypes.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
->  1637 | void at91_pinctrl_gpio_suspend(void)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
->  1661 | void at91_pinctrl_gpio_resume(void)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
-> 
-> v2: Moved shared header to: include/soc/at91/pm.h
-> 
->  arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
->  drivers/pinctrl/pinctrl-at91.c |  2 ++
->  include/soc/at91/pm.h          |  9 +++++++++
->  3 files changed, 19 insertions(+), 11 deletions(-)
->  create mode 100644 include/soc/at91/pm.h
-> 
-> diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-> index 120f9aa6fff32..90dcdfe3b3d0d 100644
-> --- a/arch/arm/mach-at91/pm.c
-> +++ b/arch/arm/mach-at91/pm.c
-> @@ -17,6 +17,8 @@
->  #include <linux/clk/at91_pmc.h>
->  #include <linux/platform_data/atmel.h>
->  
-> +#include <soc/at91/pm.h>
-> +
->  #include <asm/cacheflush.h>
->  #include <asm/fncpy.h>
->  #include <asm/system_misc.h>
-> @@ -25,17 +27,6 @@
->  #include "generic.h"
->  #include "pm.h"
->  
-> -/*
-> - * FIXME: this is needed to communicate between the pinctrl driver and
-> - * the PM implementation in the machine. Possibly part of the PM
-> - * implementation should be moved down into the pinctrl driver and get
-> - * called as part of the generic suspend/resume path.
-> - */
-> -#ifdef CONFIG_PINCTRL_AT91
-> -extern void at91_pinctrl_gpio_suspend(void);
-> -extern void at91_pinctrl_gpio_resume(void);
-> -#endif
-> -
->  struct at91_soc_pm {
->  	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
->  	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
-> @@ -326,6 +317,12 @@ static void at91_pm_suspend(suspend_state_t state)
->  static int at91_pm_enter(suspend_state_t state)
->  {
->  #ifdef CONFIG_PINCTRL_AT91
-> +	/*
-> +	 * FIXME: this is needed to communicate between the pinctrl driver and
-> +	 * the PM implementation in the machine. Possibly part of the PM
-> +	 * implementation should be moved down into the pinctrl driver and get
-> +	 * called as part of the generic suspend/resume path.
-> +	 */
->  	at91_pinctrl_gpio_suspend();
->  #endif
->  
-> diff --git a/drivers/pinctrl/pinctrl-at91.c b/drivers/pinctrl/pinctrl-at91.c
-> index 72edc675431ce..0a7e10d39505c 100644
-> --- a/drivers/pinctrl/pinctrl-at91.c
-> +++ b/drivers/pinctrl/pinctrl-at91.c
-> @@ -23,6 +23,8 @@
->  /* Since we request GPIOs from ourself */
->  #include <linux/pinctrl/consumer.h>
->  
-> +#include <soc/at91/pm.h>
-> +
->  #include "pinctrl-at91.h"
->  #include "core.h"
->  
-> diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
-> new file mode 100644
-> index 0000000000000..0fd5093f7f73a
-> --- /dev/null
-> +++ b/include/soc/at91/pm.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * atmel platform data
-> + */
-> +
-> +#ifdef CONFIG_PINCTRL_AT91
+elapsed time: 725m
 
-Shouldn't that be a header guard instead of depending on PINCTRL_AT91 ?
+configs tested: 150
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      obs600_defconfig
+m68k                          atari_defconfig
+arm                             rpc_defconfig
+arm                        realview_defconfig
+arm                           u8500_defconfig
+sh                           se7206_defconfig
+arm                            qcom_defconfig
+sh                            titan_defconfig
+arm                        mini2440_defconfig
+powerpc                     mpc512x_defconfig
+sh                          lboxre2_defconfig
+powerpc                     mpc5200_defconfig
+arm                       aspeed_g4_defconfig
+mips                        workpad_defconfig
+sh                           se7712_defconfig
+um                            kunit_defconfig
+m68k                         apollo_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                   lite5200b_defconfig
+arm                       cns3420vb_defconfig
+arm                        mvebu_v5_defconfig
+csky                             alldefconfig
+powerpc                      tqm8xx_defconfig
+i386                             alldefconfig
+nds32                               defconfig
+ia64                        generic_defconfig
+mips                           ip32_defconfig
+m68k                        m5307c3_defconfig
+c6x                                 defconfig
+sh                   secureedge5410_defconfig
+mips                      pistachio_defconfig
+ia64                      gensparse_defconfig
+powerpc                     tqm8560_defconfig
+arm                       mainstone_defconfig
+xtensa                    xip_kc705_defconfig
+arm                         at91_dt_defconfig
+arc                 nsimosci_hs_smp_defconfig
+c6x                        evmc6474_defconfig
+powerpc                      makalu_defconfig
+arm                            zeus_defconfig
+sh                               alldefconfig
+arm                         s3c6400_defconfig
+arm                        keystone_defconfig
+microblaze                      mmu_defconfig
+sh                             sh03_defconfig
+sh                         microdev_defconfig
+arm                   milbeaut_m10v_defconfig
+riscv                            allmodconfig
+arm                         nhk8815_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                    gamecube_defconfig
+sh                          rsk7201_defconfig
+sh                               j2_defconfig
+riscv                            alldefconfig
+mips                malta_qemu_32r6_defconfig
+mips                   sb1250_swarm_defconfig
+m68k                          hp300_defconfig
+arm                         socfpga_defconfig
+m68k                          sun3x_defconfig
+sh                     magicpanelr2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201112
+x86_64               randconfig-a005-20201112
+x86_64               randconfig-a004-20201112
+x86_64               randconfig-a002-20201112
+x86_64               randconfig-a006-20201112
+x86_64               randconfig-a001-20201112
+i386                 randconfig-a006-20201111
+i386                 randconfig-a005-20201111
+i386                 randconfig-a002-20201111
+i386                 randconfig-a001-20201111
+i386                 randconfig-a003-20201111
+i386                 randconfig-a004-20201111
+x86_64               randconfig-a015-20201111
+x86_64               randconfig-a011-20201111
+x86_64               randconfig-a014-20201111
+x86_64               randconfig-a013-20201111
+x86_64               randconfig-a016-20201111
+x86_64               randconfig-a012-20201111
+i386                 randconfig-a012-20201112
+i386                 randconfig-a014-20201112
+i386                 randconfig-a016-20201112
+i386                 randconfig-a011-20201112
+i386                 randconfig-a015-20201112
+i386                 randconfig-a013-20201112
+i386                 randconfig-a012-20201111
+i386                 randconfig-a014-20201111
+i386                 randconfig-a016-20201111
+i386                 randconfig-a011-20201111
+i386                 randconfig-a015-20201111
+i386                 randconfig-a013-20201111
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20201111
+x86_64               randconfig-a005-20201111
+x86_64               randconfig-a004-20201111
+x86_64               randconfig-a002-20201111
+x86_64               randconfig-a006-20201111
+x86_64               randconfig-a001-20201111
+x86_64               randconfig-a015-20201112
+x86_64               randconfig-a011-20201112
+x86_64               randconfig-a014-20201112
+x86_64               randconfig-a013-20201112
+x86_64               randconfig-a016-20201112
+x86_64               randconfig-a012-20201112
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
