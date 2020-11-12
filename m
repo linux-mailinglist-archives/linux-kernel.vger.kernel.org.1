@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E7B2B0282
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D332B0286
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgKLKJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:09:36 -0500
-Received: from relay3.mymailcheap.com ([217.182.66.161]:49915 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbgKLKJf (ORCPT
+        id S1727865AbgKLKKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727706AbgKLKKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:09:35 -0500
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 3E63B3ECDF;
-        Thu, 12 Nov 2020 11:09:32 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 22C532A7E9;
-        Thu, 12 Nov 2020 11:09:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1605175772;
-        bh=NlIHu2jLAeMCc08fA5CldPEhSWuTo3YbGR98d+676LU=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=TvLxNDXH+yPXYcA8PquO6rIiQnOcsDFHi3p420QeEhQfDBNd/ZYjDBb2jzoCaGINO
-         L2cfz/BT5vnYgCaLTqw/2yP6j1KaAEO2x7hNXgHFNrGuFJjaF7fXhsNorSWmY4Ac69
-         eqNktyJwXzmEtChMfASexPUnR3BaHYYEFeTbcqz0=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Fh95Qr0wFCol; Thu, 12 Nov 2020 11:09:31 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 12 Nov 2020 11:09:31 +0100 (CET)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id A4EA441DB0;
-        Thu, 12 Nov 2020 10:09:30 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="LD4GEss/";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [113.52.132.214])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id DCF9541DB0;
-        Thu, 12 Nov 2020 10:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1605175763;
-        bh=NlIHu2jLAeMCc08fA5CldPEhSWuTo3YbGR98d+676LU=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=LD4GEss/iLp7HkKvA+8OdNvI5FK0c5bHB3V+LYMIGNRO5L6yDQllFAssI/Q1XY93T
-         UEH8tF6S0qfzVxSASRGlGv6+yrWAgjAn93RdrEVZnKMXNE1Hi9D2AR2/yg+8IW9MvK
-         JYHbLoDIWY80YheoNu+Qmgwk1yZDuY60s5xVjZVs=
-Subject: Re: [PATCH] MIPS: Loongson64: Add read_persistent_clock64()
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yinglu Yang <yangyinglu@loongson.cn>
-References: <1605169793-10481-1-git-send-email-yangtiezhu@loongson.cn>
- <8d6ebfe2-e300-3f38-6316-196cba947d36@flygoat.com>
-Message-ID: <b84fe88b-7527-e88c-1efd-739f6d846518@flygoat.com>
-Date:   Thu, 12 Nov 2020 18:09:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        Thu, 12 Nov 2020 05:10:17 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9FBC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:10:17 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id w14so4071603pfd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:10:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZXrDzR3SLORDW5B7BUxvaBnQDDjG2dXfGiE5xVAIxC0=;
+        b=nBow6u9tPZA43FN3nCgtszIoqhqbBJjGt0CmSFIvvOYVwRXDr7SihjVAAtnWPjQdp0
+         dX+sebVqnQfw8LbuxSnfYoDc4g46kXifVQEDtx5fWi9C/6MJcfmSrqN04DOPYU6EYdeR
+         ctU7Eht15V2KESPM+8lqAhTQh4Goj8IhT07k4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZXrDzR3SLORDW5B7BUxvaBnQDDjG2dXfGiE5xVAIxC0=;
+        b=uMVohelpe80ULoAaZhnetfp3j4zJGqeQE87LvH4bLZit8Yp3cjadVVlGwbb24C33ue
+         Z1yT0XnlxA2byR2kANCIDcj+nkmAxlM0d8Rghdy82VKgBEEr+QSIiW6w14h1cwto836N
+         CBpePI1Jjh550+/7t/ubf9DhnImYgXpeyvbSGwCW5u6kSY4erufTfVOwlg4uMKUC9iBO
+         Iz6ERbU+jPjarP2T3RHohn4qTjS5p69xgpyuJ7HU8eCvsGZskBLNjzfceZIrpcCDZNoo
+         GvL/36JNbcssunkt+ZqwuF/jL9RdGiTtFDnZ1DMRK2vDvZLsuqfy9l5ckgwRIM3udAAV
+         ZmyA==
+X-Gm-Message-State: AOAM530XKd/L0RLv1b1zgFeKrsneaeAq4a+G3X9gkIdEhxd44EMkflVQ
+        aslGpLil3XMwZUdDGrxJCZ19Hg==
+X-Google-Smtp-Source: ABdhPJwB7gExvcWWZhLfWtnNMQ/JrrgUkIyGe5YvETA35aU+CCtIA0OUTuMLrMSotsd7uhY9aqguBg==
+X-Received: by 2002:a17:90b:512:: with SMTP id r18mr8949419pjz.149.1605175816341;
+        Thu, 12 Nov 2020 02:10:16 -0800 (PST)
+Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
+        by smtp.gmail.com with ESMTPSA id n1sm5577060pfu.211.2020.11.12.02.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 02:10:15 -0800 (PST)
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>
+Cc:     mauricio@kinvolk.io, Alban Crequy <alban.crequy@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Anderson <kylea@netflix.com>
+Subject: [PATCH v5 0/2] NFS: Fix interaction between fs_context and user namespaces
+Date:   Thu, 12 Nov 2020 02:09:50 -0800
+Message-Id: <20201112100952.3514-1-sargun@sargun.me>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <8d6ebfe2-e300-3f38-6316-196cba947d36@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A4EA441DB0
-X-Spamd-Result: default: False [2.90 / 10.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         RECEIVED_SPAMHAUS_XBL(3.00)[113.52.132.214:received];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Right now, it is possible to mount NFS with an non-matching super block
+user ns, and NFS sunrpc user ns. This (for the user) results in an awkward
+set of interactions if using anything other than auth_null, where the UIDs
+being sent to the server are different than the local UIDs being checked.
+This can cause "breakage", where if you try to communicate with the NFS
+server with any other set of mappings, it breaks.
+
+The reason for this is that you can call fsopen("nfs4") in the unprivileged
+namespace, and that configures fs_context with all the right information
+for that user namespace. In addition, it also keeps a gets a cred object
+associated with the caller -- which should match the user namespace.
+Unfortunately, the mount has to be finished in the init_user_ns because we
+currently require CAP_SYS_ADMIN in the init user namespace to call fsmount.
+This means that the superblock's user namespace is set "correctly" to the
+container, but there's absolutely no way nfs4idmap to consume an
+unprivileged user namespace because the cred / user_ns that's passed down
+to nfs4idmap is the one at fsmount.
+
+How this actually exhibits is let's say that the UID 0 in the user
+namespace is mapped to UID 1000 in the init user ns (and kuid space). What
+will happen is that nfs4idmap will translate the UID 1000 into UID 0 on the
+wire, even if the mount is in entirely in the mount / user namespace of the
+container.
+
+So, it looks something like this
+Client in unprivileged User NS (UID: 0, KUID: 0)
+	->Perform open()
+		...VFS / NFS bits...
+		nfs_map_uid_to_name ->
+			from_kuid_munged(init_user_ns, uid) (returns 0)
+				RPC with UID 0
+
+This behaviour happens "the other way" as well, where the UID in the
+container may be 0, but the corresponding kuid is 1000. When a response
+from an NFS server comes in we decode it according to the idmap userns.
+The way this exhibits is even more odd.
+
+Server responds with file attribute (UID: 0, GID: 0)
+	->nfs_map_name_to_uid(..., 0)
+		->make_kuid(init_user_ns, id) (returns 0)
+			....VFS / NFS Bits...
+			->from_kuid(container_ns, 0) -> invalid uid
+				-> EOVERFLOW
+
+This changes the nfs server to use the cred / userns from fs_context, which
+is how idmap is constructed. This subsequently is used in the above
+described flow of converting uids back-and-forth.
+
+Trond gave the feedback that this behaviour [implemented by this patch] is
+how the legacy sys_mount() behaviour worked[1], and that the intended
+behaviour is for UIDs to be plumbed through entirely, where the user
+namespaces UIDs are what is sent over the wire, and not the init user ns.
+
+[1]: https://lore.kernel.org/linux-nfs/8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com/
+
+Sargun Dhillon (2):
+  NFS: NFSv2/NFSv3: Use cred from fs_context during mount
+  NFSv4: Refactor to use user namespaces for nfs4idmap
+
+ fs/nfs/client.c     | 4 ++--
+ fs/nfs/nfs4client.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 
-在 2020/11/12 18:04, Jiaxun Yang 写道:
-> Hi Tiezhu,
->
-> 在 2020/11/12 16:29, Tiezhu Yang 写道:
->> Add read_persistent_clock64() to read the time from the battery backed
->> persistent clock. With this patch, we can fix the wrong time issue due
->> to the system clock is not consistent with hardware clock after resume
->> from sleep state S3 (suspend to RAM), at the same time, the system time
->> can be right instead of "Thu Jan 1 08:00:00 CST 1970" without rtc 
->> driver.
->>
->> start_kernel()
->>    timekeeping_init()
->>      read_persistent_wall_and_boot_offset()
->>        read_persistent_clock64()
->>
->> timekeeping_resume()
->>    read_persistent_clock64()
->>
->> timekeeping_suspend()
->>    read_persistent_clock64()
->
-> It is highly discoraged to do anything with bridgetype, which isn't 
-> probed via
-> devicetree.
->
-> Please check if you can deal with that inside RTC framework, or make 
-> it as
-> a part of RTC driver (e.g. set up a callback).
->
-> Also you should submit RTC driver at first if you intend to complete 
-> LS7A support.
+base-commit: 8c39076c276be0b31982e44654e2c2357473258a
+-- 
+2.25.1
 
-Oops,
-Just dig it deeper, I guess simply select RTC_HCTOSYS would solve the issue.
-We're trying very hard to decouple all the drivers and conponents,
-DeviceTree for all!
-
->
-> Thanks.
->
-> - Jiaxun
->
->>
->> Signed-off-by: Yinglu Yang <yangyinglu@loongson.cn>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>
