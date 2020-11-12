@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ED92B0674
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AA22B0676
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgKLN3h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:29:37 -0500
-Received: from mga04.intel.com ([192.55.52.120]:64944 "EHLO mga04.intel.com"
+        id S1728249AbgKLNaN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:30:13 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:49862 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727790AbgKLN3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:29:37 -0500
-IronPort-SDR: 0a31ktOjL+zqrac1GfoHpoEQS/XwBhEPylj6UdLX2cWPfLwXFLzNqaAx3zysnyDY+FUD7CBR1n
- amdZvWmv9DZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="167722673"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="167722673"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 05:29:34 -0800
-IronPort-SDR: dqrTRAykzlK2/BBPW5JRG71JJct+F4DPwiFjOExy0eAEsWYVNfXI5SjAKYPTgvlQwV5rcajp34
- OL9D4C9hAAeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="323637625"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga003.jf.intel.com with ESMTP; 12 Nov 2020 05:29:34 -0800
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 05:29:33 -0800
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 21:29:31 +0800
-Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
- SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.1713.004;
- Thu, 12 Nov 2020 21:29:31 +0800
-From:   "Sang, Oliver" <oliver.sang@intel.com>
-To:     Lars Poeschel <poeschel@lemonage.de>
-CC:     Miguel Ojeda <ojeda@kernel.org>, lkp <lkp@intel.com>,
-        Willy Tarreau <w@1wt.eu>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "Sang, Oliver" <oliver.sang@intel.com>
-Subject: RE: [LKP] Re: [auxdisplay]  b26deabb1d:
- BUG:kernel_NULL_pointer_dereference,address
-Thread-Topic: [LKP] Re: [auxdisplay]  b26deabb1d:
- BUG:kernel_NULL_pointer_dereference,address
-Thread-Index: AQHWtpV8lMndfo9euk63Z8UNc8IVGanD/Gsg
-Date:   Thu, 12 Nov 2020 13:29:31 +0000
-Message-ID: <983cc8dc58a24dd1a839e05213fb1ffb@intel.com>
-References: <20201109062934.GA7739@xsang-OptiPlex-9020>
- <20201109124003.ppuzlyyy5blf3ixu@lem-wkst-02.lemonage>
-In-Reply-To: <20201109124003.ppuzlyyy5blf3ixu@lem-wkst-02.lemonage>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727819AbgKLNaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:30:12 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kdCfy-0002GL-Ry; Thu, 12 Nov 2020 14:30:10 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 05/25] soc: rockchip: io-domain: Remove incorrect and incomplete comment header
+Date:   Thu, 12 Nov 2020 14:30:10 +0100
+Message-ID: <5334671.Lg3upMlxu3@diego>
+In-Reply-To: <20201112132828.GK1997862@dell>
+References: <20201103152838.1290217-1-lee.jones@linaro.org> <2215873.HjEmSL4Tfo@diego> <20201112132828.GK1997862@dell>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Donnerstag, 12. November 2020, 14:28:28 CET schrieb Lee Jones:
+> On Thu, 12 Nov 2020, Heiko Stübner wrote:
+> 
+> > Am Donnerstag, 12. November 2020, 14:22:24 CET schrieb Lee Jones:
+> > > On Thu, 12 Nov 2020, Heiko Stübner wrote:
+> > > 
+> > > > Am Donnerstag, 12. November 2020, 11:33:44 CET schrieb Lee Jones:
+> > > > > On Tue, 03 Nov 2020, Lee Jones wrote:
+> > > > > 
+> > > > > > Fixes the following W=1 kernel build warning(s):
+> > > > > > 
+> > > > > >  drivers/soc/rockchip/io-domain.c:57: warning: Cannot understand  * @supplies: voltage settings matching the register bits.
+> > > > > > 
+> > > > > > Cc: Heiko Stuebner <heiko@sntech.de>
+> > > > > > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > > > > > Cc: Mark Brown <broonie@kernel.org>
+> > > > > > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> > > > > > Cc: Doug Anderson <dianders@chromium.org>
+> > > > > > Cc: linux-rockchip@lists.infradead.org
+> > > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > > > ---
+> > > > > >  drivers/soc/rockchip/io-domain.c | 3 ---
+> > > > > >  1 file changed, 3 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+> > > > > > index eece97f97ef8f..d13d2d497720b 100644
+> > > > > > --- a/drivers/soc/rockchip/io-domain.c
+> > > > > > +++ b/drivers/soc/rockchip/io-domain.c
+> > > > > > @@ -53,9 +53,6 @@
+> > > > > >  
+> > > > > >  struct rockchip_iodomain;
+> > > > > >  
+> > > > > > -/**
+> > > > > > - * @supplies: voltage settings matching the register bits.
+> > > > > > - */
+> > > > > >  struct rockchip_iodomain_soc_data {
+> > > > > >  	int grf_offset;
+> > > > > >  	const char *supply_names[MAX_SUPPLIES];
+> > > > > 
+> > > > > Any idea who will pick this up?
+> > > > 
+> > > > me :-)
+> > > 
+> > > Well, that's certainly a start. :)
+> > > 
+> > > What are your plans?
+> > 
+> > the usual, my rockchip-tree -> armsoc driver branch -> torvalds -> 5.11 ;-)
+> 
+> Sorry, the ambiguity was my fault.
+> 
+> When do you plan on hoovering it up?
+
+sorry should've written that directly ... I already did this "morning":
+
+http://lore.kernel.org/r/160517975455.81506.16289432612279089945.b4-ty@sntech.de
 
 
-> -----Original Message-----
-> From: Lars Poeschel <poeschel@lemonage.de>
-> Sent: Monday, November 9, 2020 8:40 PM
-> To: Sang, Oliver <oliver.sang@intel.com>
-> Cc: Miguel Ojeda <ojeda@kernel.org>; lkp <lkp@intel.com>; Willy Tarreau
-> <w@1wt.eu>; LKML <linux-kernel@vger.kernel.org>; Linux Memory
-> Management List <linux-mm@kvack.org>; lkp@lists.01.org
-> Subject: [LKP] Re: [auxdisplay] b26deabb1d:
-> BUG:kernel_NULL_pointer_dereference,address
-> 
-> Hi!
-> 
-> And thanks for your report.
-> 
-> On Mon, Nov 09, 2020 at 02:29:34PM +0800, kernel test robot wrote:
-> 
-> > To reproduce:
-> >
-> >         # build kernel
-> > 	cd linux
-> > 	cp config-5.10.0-rc2-00008-gb26deabb1d91 .config
-> > 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare
-> > modules_prepare bzImage
-> >
-> >         git clone https://github.com/intel/lkp-tests.git
-> >         cd lkp-tests
-> >         bin/lkp qemu -k <bzImage> job-script # job-script is attached
-> > in this email
-> 
-> Trying to reproduce your issue:
-> 
-> LANG=C bin/lkp qemu -k ~/projekte/linux-stable/arch/x86_64/boot/bzImage
-> /tmp/job-script
-> result_root: /home/larsi/.lkp//result/trinity/300s/vm-snb-i386/yocto-i386-
-> minimal-20190520.cgz/i386-randconfig-a002-20201105/gcc-
-> 9/b26deabb1d915fe87d395081bbd3058b938dee89/6
-> downloading initrds ...
-> /usr/bin/wget -q --timeout=1800 --tries=1 --local-encoding=UTF-8
-> https://download.01.org/0day-ci/lkp-qemu/osimage/yocto/yocto-i386-
-> minimal-20190520.cgz -N -P /home/larsi/.lkp/cache/osimage/yocto
-> 17916 blocks
-> /usr/bin/wget -q --timeout=1800 --tries=1 --local-encoding=UTF-8
-> https://download.01.org/0day-ci/lkp-qemu/osimage/pkg/yocto-i386-minimal-
-> 20190520.cgz/trinity-i386.cgz -N -P /home/larsi/.lkp/cache/osimage/pkg/yocto-
-> i386-minimal-20190520.cgz
-> Failed to download osimage/pkg/yocto-i386-minimal-20190520.cgz/trinity-
-> i386.cgz
-> 
-> It seems, that the trinity-i386.cgz file is not downloadable. Using a webbrowser I
-> can see an empty directory.
-> Can you help please ?
+Heiko
 
-sorry for this. just uploaded. https://download.01.org/0day-ci/lkp-qemu/osimage/pkg/yocto-i386-minimal-20190520.cgz/trinity-i386.cgz
-could you try again?
 
-> 
-> Thanks,
-> Lars
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+
