@@ -2,196 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A112B0D6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B822B0D71
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgKLTGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgKLTGy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:06:54 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6F2C0613D1;
-        Thu, 12 Nov 2020 11:06:54 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id k2so7200836wrx.2;
-        Thu, 12 Nov 2020 11:06:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xEBQ+X3j8UVOYbY0ZzGSw1N+DpyyJg/wWh7q1siWRJ4=;
-        b=h33D+mRRRvo6/1txIF4V3Jz/UuKLAJaOqy8ik/N8dTlunkqrn4JyGAQ8GkXQG7Xg7K
-         VKYedpGIlTERFNHTDnq8DKx/hnoo/zVqhxAGgVlP5TlU7R0LmnWRAbLGzfIHBGL4fQ8C
-         EDh5ZV4UMdnQeLnqJaxygnqvmbOlkCNB+U0iHJB3JgfkiVQz5FzZZgwhTYLdOhrTZCcn
-         5sbGvhYzkUh7OV0odRqD2N1T0g93/QWFlRlkuSazpVwvFD9fQh2X+LrO+kYCZ41en1fJ
-         //XCnICraHifQu4S96Icxg6l8XtlgTOndlf66hH/CqGZPpPybDGFHT4BExopTX/NPqcD
-         8m5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xEBQ+X3j8UVOYbY0ZzGSw1N+DpyyJg/wWh7q1siWRJ4=;
-        b=H3OiDC5iI/jEsCUxkwwqdURobYLkZYSqaczgg75Yipo5GFzyuWDFfm1Y3olLc3mgbl
-         fYTj7dl7aDZZ0hkqUZ+ZhOANjuL1PmzwdGqlrWcsKQiHrPW2BDw9jXfUbjBBaZupc91P
-         yWhCjjMUGciGQL6qkpM6DYdduktSIoKeWuccLwF+aZdmKIeUEsqNmEzbwD69pT0r7eF9
-         /jZz4qoAvR0MgcuEKQt5J2KtOdug+wwDj4NzASi/GC3RWPgUs4PXyemn6XOGM44M+Iya
-         KjHsCEt3B/N/dJbnOI79SIVSzAfhZ/liXzkoCPq6v4BI3BDwVyJPtk2D3k424QJqYtJh
-         Zq8w==
-X-Gm-Message-State: AOAM532r+FegXLXoGwwhpyWYD0OFEKA58Kv4uMgg1lELxrgZhjNdOb7g
-        wnj0fP3VgdzhbdmZzg4nIKs=
-X-Google-Smtp-Source: ABdhPJwh5v5jsUINEfAgHo+Yz1dU4BfWu2Vhg3yORml9Zdo4fRJyxoz3JbVnZCE8wfzxzwdlH9aG6Q==
-X-Received: by 2002:adf:f085:: with SMTP id n5mr1086434wro.293.1605208012606;
-        Thu, 12 Nov 2020 11:06:52 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n6sm7959107wrj.60.2020.11.12.11.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:06:51 -0800 (PST)
-Date:   Thu, 12 Nov 2020 20:06:49 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Yangtao Li <tiny.windzz@gmail.com>, claudiu.beznea@microchip.com,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        f.fainelli@gmail.com, nsaenzjulienne@suse.de, shc_work@mail.ru,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, vz@mleia.com,
-        slemieux.tyco@gmail.com, khilman@baylibre.com,
-        matthias.bgg@gmail.com, heiko@sntech.de, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, mripard@kernel.org, wens@csie.org,
-        jonathanh@nvidia.com, linux-arm-kernel@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-tegra@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 01/32] pwm: sun4i: convert to
- devm_platform_ioremap_resource
-Message-ID: <20201112190649.GA908613@ulmo>
-References: <20191229080610.7597-1-tiny.windzz@gmail.com>
- <20201112161346.gp5nenuagx5wmwl2@pengutronix.de>
+        id S1726594AbgKLTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:08:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726096AbgKLTIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:08:44 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8D5220B80;
+        Thu, 12 Nov 2020 19:08:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605208123;
+        bh=xV//yxXQnSWrF+/xUfBz0sg6IFqo/YMvvh+jTSmycog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AJ2VewNYER4w3booQ/KucmJAPZK4Nm1reG5FJeJdC37e1oDo0gYmUR751y+nFk/Fk
+         KTZnkXVxvIaPUC+PE+K9dv1EbVW82mMGVB67vT5tdx3BmBSmhgCrAaqtZp5v8kMCfS
+         p3TcAbQ8jXyADENOO6QdpyUsgBOodjaN9MdE79nU=
+Date:   Thu, 12 Nov 2020 21:08:27 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
+Message-ID: <20201112190827.GP4758@kernel.org>
+References: <20201110151444.20662-1-rppt@kernel.org>
+ <20201110151444.20662-3-rppt@kernel.org>
+ <9e2fafd7-abb0-aa79-fa66-cd8662307446@redhat.com>
+ <20201110180648.GB4758@kernel.org>
+ <3194b507-a85f-965a-e0eb-512a79ede6a9@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qMm9M+Fa2AknHoGS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112161346.gp5nenuagx5wmwl2@pengutronix.de>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <3194b507-a85f-965a-e0eb-512a79ede6a9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 05:22:00PM +0100, David Hildenbrand wrote:
+> On 10.11.20 19:06, Mike Rapoport wrote:
+> > On Tue, Nov 10, 2020 at 06:17:26PM +0100, David Hildenbrand wrote:
+> > > On 10.11.20 16:14, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > It will be used by the upcoming secret memory implementation.
+> > > > 
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > > ---
+> > > >    mm/internal.h | 3 +++
+> > > >    mm/mmap.c     | 5 ++---
+> > > >    2 files changed, 5 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/mm/internal.h b/mm/internal.h
+> > > > index c43ccdddb0f6..ae146a260b14 100644
+> > > > --- a/mm/internal.h
+> > > > +++ b/mm/internal.h
+> > > > @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
+> > > >    extern void mlock_vma_page(struct page *page);
+> > > >    extern unsigned int munlock_vma_page(struct page *page);
+> > > > +extern int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+> > > > +			      unsigned long len);
+> > > > +
+> > > >    /*
+> > > >     * Clear the page's PageMlocked().  This can be useful in a situation where
+> > > >     * we want to unconditionally remove a page from the pagecache -- e.g.,
+> > > > diff --git a/mm/mmap.c b/mm/mmap.c
+> > > > index 61f72b09d990..c481f088bd50 100644
+> > > > --- a/mm/mmap.c
+> > > > +++ b/mm/mmap.c
+> > > > @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
+> > > >    	return hint;
+> > > >    }
+> > > > -static inline int mlock_future_check(struct mm_struct *mm,
+> > > > -				     unsigned long flags,
+> > > > -				     unsigned long len)
+> > > > +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+> > > > +		       unsigned long len)
+> > > >    {
+> > > >    	unsigned long locked, lock_limit;
+> > > > 
+> > > 
+> > > So, an interesting question is if you actually want to charge secretmem
+> > > pages against mlock now, or if you want a dedicated secretmem cgroup
+> > > controller instead?
+> > 
+> > Well, with the current implementation there are three limits an
+> > administrator can use to control secretmem limits: mlock, memcg and
+> > kernel parameter.
+> > 
+> > The kernel parameter puts a global upper limit for secretmem usage,
+> > memcg accounts all secretmem allocations, including the unused memory in
+> > large pages caching and mlock allows per task limit for secretmem
+> > mappings, well, like mlock does.
+> > 
+> > I didn't consider a dedicated cgroup, as it seems we already have enough
+> > existing knobs and a new one would be unnecessary.
+> 
+> To me it feels like the mlock() limit is a wrong fit for secretmem. But
+> maybe there are other cases of using the mlock() limit without actually
+> doing mlock() that I am not aware of (most probably :) )?
 
---qMm9M+Fa2AknHoGS
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Secretmem does not explicitly calls to mlock() but it does what mlock()
+does and a bit more. Citing mlock(2):
 
-On Thu, Nov 12, 2020 at 05:13:46PM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Thierry,
->=20
-> On Sun, Dec 29, 2019 at 08:05:39AM +0000, Yangtao Li wrote:
-> > Use devm_platform_ioremap_resource() to simplify code.
-> >=20
-> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> > ---
-> >  drivers/pwm/pwm-sun4i.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> >=20
-> > diff --git a/drivers/pwm/pwm-sun4i.c b/drivers/pwm/pwm-sun4i.c
-> > index 581d23287333..f2afd312f77c 100644
-> > --- a/drivers/pwm/pwm-sun4i.c
-> > +++ b/drivers/pwm/pwm-sun4i.c
-> > @@ -344,7 +344,6 @@ MODULE_DEVICE_TABLE(of, sun4i_pwm_dt_ids);
-> >  static int sun4i_pwm_probe(struct platform_device *pdev)
-> >  {
-> >  	struct sun4i_pwm_chip *pwm;
-> > -	struct resource *res;
-> >  	int ret;
-> > =20
-> >  	pwm =3D devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
-> > @@ -355,8 +354,7 @@ static int sun4i_pwm_probe(struct platform_device *=
-pdev)
-> >  	if (!pwm->data)
-> >  		return -ENODEV;
-> > =20
-> > -	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > -	pwm->base =3D devm_ioremap_resource(&pdev->dev, res);
-> > +	pwm->base =3D devm_platform_ioremap_resource(pdev, 0);
-> >  	if (IS_ERR(pwm->base))
-> >  		return PTR_ERR(pwm->base);
->=20
-> Can you please comment why you don't apply this series?
+  mlock(),  mlock2(),  and  mlockall()  lock  part  or all of the calling
+  process's virtual address space into RAM, preventing that  memory  from
+  being paged to the swap area.
 
-I did in fact apply this yesterday, but I now see that I didn't reply to
-the thread to report that.
+So, based on that secretmem pages are not swappable, I think that
+RLIMIT_MEMLOCK is appropriate here.
 
-> My point of view is:
->=20
-> devm_platform_ioremap_resource is the designated wrapper to replace
-> platform_get_resource() and devm_ioremap_resource(). So I don't see a
-> good reason to continue open coding it.
->=20
-> The patch series doesn't apply to 5.10-rc1 as is. (pwm-puv3 was removed
-> and a simple conflict in the pwm-rockchip driver.) The overall diffstat
-> (of the fixed series applied on top of 5.10-rc1) is
->=20
-> 	31 files changed, 32 insertions(+), 96 deletions(-)
->=20
-> and it converts all of drivers/pwm but a single instance of
-> platform_get_resource() + devm_ioremap_resource() (for pwm-lpss where
-> platform_get_resource and devm_ioremap_resource are in different
-> functions (different files even)) which isn't trivial to fix.
->=20
-> So in my eyes applying this series is the right thing to do.
+> I mean, my concern is not earth shattering, this can be reworked later. As I
+> said, it just feels wrong.
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
 
-For the record, I personally think this helper is a bit over the top. I
-do agree that it's nice to create helpers for common code sequences, but
-this is a *lot* of churn all across the kernel to save just two lines,
-which I don't think is worth it in this case. Often these helpers allow
-common mistakes to be avoided while at the same time reducing lines of
-code, but devm_ioremap_resource() was already created to address the
-pitfalls (like returning all sorts of weird and inconsistent error
-codes). So this helper doesn't actually add any value other than saving
-a few lines, which I don't think justifies the churn. I would've been
-sold on this if the ratio had been slightly higher, like maybe saving a
-dozen or so lines, but as it is, I just don't think it's worth the churn
-that it's causing.
-
-I also think that it's overly narrow is scope, so you can't actually
-"blindly" use this helper and I've seen quite a few cases where this was
-unknowingly used for cases where it shouldn't have been used and then
-broke things (because some drivers must not do the request_mem_region()
-for example). And then there are cases where the driver needs the
-resource for some other purpose, so you can't use the helper either, or
-at least it looses all of its advantages in those cases.
-
-That said, the helper is there and has been widely accepted, so my
-opinion has been overruled by the majority.
-
-Thierry
-
---qMm9M+Fa2AknHoGS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+th8UACgkQ3SOs138+
-s6EJGw/9H77dbaNDlBX7JuQrZ1yTANFYsknIsNBqiHqxVyeNOvnNiOCwLyMpfyD4
-ZhxeUvz370ZXDuCQoA8kSbANuC36XqIoYJXUX2WbN5WQ6eJF1sRxXmctvY11Fpkc
-mnztEolVT5ygFHRfXvCEeoZ2ucAZMcnKKXOMSMDLcWw4NHl5qLMwZITmtJMBQd/w
-F3nHNtv+e9Za7m162+G4XXLpaMxEpD+mx0/MKKU9OQyWmNolPSQQ0TEhIX31v9gK
-CpR2u5izH0pYJzo7nZahyzWGVi5cLxid93pF8wobHhvcXOGtwXH0ThZB3q7BSles
-EDr//4p1Fx/99llemBrp1LO+koGgl7x7mkFFWMmakmtEueBLzmcR6jKU4A9qKera
-t5AkiFK2MpzpY62o/g9JPpVDRJUFUB7z2xv4Nv6QH7Xc9rXlb5eA36T3RfOUgybi
-MDbiB/6+bjnmzsKvmzmVZTAdRKPQHJh1XVX6l5qZsHU8xW3ZrG4zsZ94/gIE82w9
-Ib1moNdBt7MT2XH4AILfVx+7xJtyRetkhoDMRBfsqBQZvFDbr7zuszXPPKvPQIuo
-jL7uT6OIs6Yc16b0qk1My2XNO/YGufWXUMTnZoixkngZHDd0nQ+Bx49K9AR847dI
-XokkpjXh91solUKZCbEhV0guv43K1HCmU9z3KOCV4RoS93nObXM=
-=kMKR
------END PGP SIGNATURE-----
-
---qMm9M+Fa2AknHoGS--
+-- 
+Sincerely yours,
+Mike.
