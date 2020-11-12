@@ -2,150 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14472B0991
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C9B2B0992
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgKLQJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:09:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43690 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728599AbgKLQJV (ORCPT
+        id S1728849AbgKLQJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:09:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728883AbgKLQJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:09:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605197360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2jKkxUNBVBuz7hz3sv4q6pZ/I/3BwEfzsjfdJ4qFdKk=;
-        b=NwxzmoHEb3ir6gzLaVTZl1B0kT9Q3XQSNCbmaZzJinbZ4Krvy4XR0I6IBjLTBWxGfcE1ST
-        fTzPcmtBYBUFM0L4HWnnT5i6SNLK34qozfLkk2O2snqYol7apdxltMdWgAhD8yzy7lvOSc
-        wrwQA9y3va6Hjtq5kIyEksUVk7RE0Ak=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-yBHZQpSQM8yPvpsCQKSibg-1; Thu, 12 Nov 2020 11:09:16 -0500
-X-MC-Unique: yBHZQpSQM8yPvpsCQKSibg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33151D8EEB;
-        Thu, 12 Nov 2020 16:09:10 +0000 (UTC)
-Received: from [10.36.115.61] (ovpn-115-61.ams2.redhat.com [10.36.115.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A7C755778;
-        Thu, 12 Nov 2020 16:09:07 +0000 (UTC)
-Subject: Re: [PATCH v3 7/7] mm, page_alloc: disable pcplists during memory
- offline
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Michal Hocko <mhocko@suse.com>
-References: <20201111092812.11329-1-vbabka@suse.cz>
- <20201111092812.11329-8-vbabka@suse.cz>
- <6fdaaeeb-154b-5de1-3008-e56a8be53a5a@redhat.com>
- <527480ef-ed72-e1c1-52a0-1c5b0113df45@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <36fbd86a-dd1b-70eb-9372-7523b65d1e72@redhat.com>
-Date:   Thu, 12 Nov 2020 17:09:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 12 Nov 2020 11:09:33 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06684C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:09:33 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id n11so6092556ota.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4E3aNnRy7r7yE8tRTHVuCw1bn/xlTevCdbx03WDIkcU=;
+        b=Y0UBlSyAlEG5wAC+1573r6LeHcNPeOPXBJvlsLmyJl9ZrfDQ3IqdTddHz8R3N7UXoU
+         qmLq5HDGLOKM4IEtPxvDrScYZGgaI+BKDjQJGGjm84TnLbeNgapSHEBTaRZNFCCp5Aap
+         wAL+yrrJ6kFzhvo10NSUHrOLnToMOldT/NHE6XgIV4wDhwIC5FbB9LP4onOM93VBu/uQ
+         bQG4F7wdsCRjFpXGl3Rd5hyVeYO07FKSpe2MlGq6IDMrVkezWHQ9sZCIjn4v8XrS2FkK
+         h7PV5ujjZZoRCcxvQRe4IT3O2pgclMrD8/jHKDW/P7YqMFrA6HX9I+9C7KD3ANd6c0Tv
+         4B+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4E3aNnRy7r7yE8tRTHVuCw1bn/xlTevCdbx03WDIkcU=;
+        b=fz4KXAiP0hVxlfJistqJx8O1BJqBMc2Op73ium9P4mIt0GIoYFAJSgIxn8BPymV10a
+         o61u7BQuMcEaut4dRukPhzJ3MChDnFJkO9ye21MjjiIvskhFWC6PGAQGIAlT5WMxZGS6
+         8qlYPE5ZT9xHj9geod0GM0hjzy0HM7UgsWFMiOXVLeqvdDH1fqG1uIbQOlKj4NekQ3jr
+         5Vj/vBpfw/UFWifHdbZfcH6ISxJh67mTJfdXjN9bTPJfiTiLhvyc44oYKyfSiMNTOULO
+         5214JtXri2QwDdyvaeywTY1VhsMHZEooNSU4ntinkmxkLvPMaMp3zHDdRbfvORkEe4xQ
+         sOlQ==
+X-Gm-Message-State: AOAM532v6pWO/71KyFAhiR1i/9qtwh3rdj+NC3FkKefzCADW/qPMdB6E
+        bDgmGZ/R0Zlv62h4MF6uE3tOH+D4fYIyYM9bxlX25g==
+X-Google-Smtp-Source: ABdhPJwwPDL+OOchIhN43aJaZdWLSzq3g/4c4+pX3LVmYRLcTq9IHuG5sWKShxGDdJOnfOCGmFfEjElZtmXGKjuL+vM=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr20378820oth.251.1605197370706;
+ Thu, 12 Nov 2020 08:09:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <527480ef-ed72-e1c1-52a0-1c5b0113df45@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <cover.1605046192.git.andreyknvl@google.com> <bd6825832c0cb376fc68ad61ffec6d829401ed0e.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=XpB5ZQagAm6bqR1z+6hWdmk_shH0x8ShAx0qpmjMsp5Q@mail.gmail.com>
+In-Reply-To: <CAG_fn=XpB5ZQagAm6bqR1z+6hWdmk_shH0x8ShAx0qpmjMsp5Q@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Nov 2020 17:09:18 +0100
+Message-ID: <CANpmjNMaDkKBtWF8y22rhc6bFNN0CrXgfGNKXBLPvz3c2wd7rA@mail.gmail.com>
+Subject: Re: [PATCH v9 44/44] kselftest/arm64: Check GCR_EL1 after context switch
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.11.20 16:18, Vlastimil Babka wrote:
-> On 11/11/20 6:58 PM, David Hildenbrand wrote:
->> On 11.11.20 10:28, Vlastimil Babka wrote:
->>> -		/*
->>> -		 * per-cpu pages are drained after start_isolate_page_range, but
->>> -		 * if there are still pages that are not free, make sure that we
->>> -		 * drain again, because when we isolated range we might have
->>> -		 * raced with another thread that was adding pages to pcp list.
->>> -		 *
->>> -		 * Forward progress should be still guaranteed because
->>> -		 * pages on the pcp list can only belong to MOVABLE_ZONE
->>> -		 * because has_unmovable_pages explicitly checks for
->>> -		 * PageBuddy on freed pages on other zones.
->>> -		 */
->>>    		ret = test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE);
->>> -		if (ret)
->>> -			drain_all_pages(zone);
->>> +
->>
->> Why two empty lines before the "} while (ret);" ? (unless I'm confused
->> while looking at this diff)
->>
-> 
-> No there's just a single emply line after "ret = test_pages_isolated..."
-> Before there was none, which looked ok with the extra identation of the
-> now-removed "drain_all_pages(zone);"
-> 
->>> +void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
->>> +		unsigned long batch)
->>> +{
->>> +	struct per_cpu_pageset *p;
->>> +	int cpu;
->>> +
->>> +	for_each_possible_cpu(cpu) {
->>> +		p = per_cpu_ptr(zone->pageset, cpu);
->>> +		pageset_update(&p->pcp, high, batch);
->>> +	}
->>> +}
->>> +
->>>    /*
->>>     * Calculate and set new high and batch values for all per-cpu pagesets of a
->>>     * zone, based on the zone's size and the percpu_pagelist_fraction sysctl.
->>> @@ -6315,8 +6338,6 @@ static void pageset_init(struct per_cpu_pageset *p)
->>>    static void zone_set_pageset_high_and_batch(struct zone *zone)
->>>    {
->>>    	unsigned long new_high, new_batch;
->>> -	struct per_cpu_pageset *p;
->>> -	int cpu;
->>>    
->>>    	if (percpu_pagelist_fraction) {
->>>    		new_high = zone_managed_pages(zone) / percpu_pagelist_fraction;
->>> @@ -6336,10 +6357,7 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
->>>    	zone->pageset_high = new_high;
->>>    	zone->pageset_batch = new_batch;
->>>    
->>> -	for_each_possible_cpu(cpu) {
->>> -		p = per_cpu_ptr(zone->pageset, cpu);
->>> -		pageset_update(&p->pcp, new_high, new_batch);
->>> -	}
->>> +	__zone_set_pageset_high_and_batch(zone, new_high, new_batch);
->>>    }
->>
->> These two hunks look like an unrelated cleanup, or am I missing something?
-> 
-> It's extracting part of functionality to __zone_set_pageset_high_and_batch()
-> that's now called also from zone_pcp_enable() and zone_pcp_disable() - to only
-> adjust the per-cpu zone->pageset values without the usual calculation.
-> 
->> Thanks for looking into this!
-> 
-> Thanks for review. Here's updated version that adds more detailed comment about
-> force_all_cpus parameter to __drain_all_pages() header, hopefully that clarifies
-> your concerns.
+On Thu, 12 Nov 2020 at 16:59, Alexander Potapenko <glider@google.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> >
+> > This test is specific to MTE and verifies that the GCR_EL1 register
+> > is context switched correctly.
+> >
+> > It spawn 1024 processes and each process spawns 5 threads. Each thread
+>
+> Nit: "spawns"
+>
+>
+> > +       srand(time(NULL) ^ (pid << 16) ^ (tid << 16));
+> > +
+> > +       prctl_tag_mask = rand() % 0xffff;
+>
+> Nit: if you want values between 0 and 0xffff you probably want to use
+> bitwise AND.
 
-
-LGTM!
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Another question would be, is the max here meant to be 0xffff or
+0xffff-1. Because, as-is now, it's 0xffff-1. Only one of them has a
+trivial conversion to bitwise AND ( x % 2^n == x & (2^n - 1) ).
