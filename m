@@ -2,213 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24D52B02CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531632B02CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgKLKiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
+        id S1727909AbgKLKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbgKLKiE (ORCPT
+        with ESMTP id S1726776AbgKLKkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:38:04 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56129C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:38:04 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id w142so7582939lff.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:38:04 -0800 (PST)
+        Thu, 12 Nov 2020 05:40:06 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CF1C0613D1;
+        Thu, 12 Nov 2020 02:40:05 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id g11so2554657pll.13;
+        Thu, 12 Nov 2020 02:40:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3+A/vQ2vpSPhL2cGD7MVzrNKm83MOBEdHKwC0JmJucQ=;
-        b=QMC4BkXqJqc2FehnhxxYJ+tI5tSBh6b+Sp+PSWOBEO0f23ZHtwb3uVWJg45+Bu3M3M
-         v5GwXcvlTcVUgTEO0oPtp9RDsZniHoyi8UKDj6Snj1a58LkacDGBKdOC5wjm7w+Mvggh
-         xWXaLK9xL7IRgEyKJB8HP7ovcRmPq83pFvj5zQ4E4OOSEBOOctLojk4KkHgsYUbjeH0K
-         +FsTR6oZHseFDreBbHDQskWoSmfjInIcaP5W7XtXQ3Cgpl6yCoVkb6kGVQJLwOSK1a3q
-         kh8Ws1CMExGV1F9+fOwCw5jGKqedQ+jlZnIpstNUimbDr7pC/nwlIuTscAl7Mpc2ovOy
-         dmfg==
+        h=from:to:cc:subject:date:message-id;
+        bh=A1kCd9kxhtGVEoKnBufAkxHSe9byym5wk2cdTksfgzQ=;
+        b=L/lRn3vST0A4TsCZYBx4L94+MANXkREvNi7cTkcKw8nwivywBn0AEUBpwGya/5ADOT
+         PgiTCFJDdr0KiuFAKuGMQIeHXRMf+g8LIvaO/IyEvlPjDJr9TTbzJvBOu9lw6st/W+LO
+         qZlbIvOl8+EbPlXcrIeF2iZZm4jc+ElNufRAX/H1Pf6MQOO9YS59RQyimPoGkvL815Kp
+         J7hbXrbfcqsPfR94DVUUo+glMvdnygKyxx4wSNktxs4fmTU7jxo/McAT8jiK9Pid+S1l
+         sCvam8jL8FWqcvTHzuFTGidZ/55u2VdTEtWtoT0PkCLWWcQb/fVdl0+OmeQ2nE6Dhg4r
+         kM7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3+A/vQ2vpSPhL2cGD7MVzrNKm83MOBEdHKwC0JmJucQ=;
-        b=lB6rAzBAGQms2VW067KoI/zxzLP1FBslweEEoluPZTd/UFlTrXmjSUG2b6HDrk0tw+
-         /BlsL7CpdHFvMnAQq15yVnPxKBb6vhhcJEge8VtAC8g3mAaymufnTFXHMukVp9XKKPT6
-         D3gCxKQhPc3ymMwRDJxWslEJJOwVG07XBgCtSitWUs+XC7czoWCMmDW5MJi8Ppsaovmv
-         hz0XhGOKW5ThjuSN3B/DpNMEJaYw1b8c5wl/Zjs7JfKKkKg+8NIChUO0gR5MiVdup5XF
-         RD6wVRkvK/U/4v67oU+l8cVNyEP8oAFTRhv5kTMHkLTH1WroJyRxqWGKMKgrizLg9Bpm
-         KjeQ==
-X-Gm-Message-State: AOAM531ecHMX+/l9SamGos5xN+AMgaFRBwoeagIy9m3zBGwhDMGdoOHD
-        0Y6g7J8ReCVaFr9rfV69QyBlDZ52W6KDjRK9RPK6nSwVO58=
-X-Google-Smtp-Source: ABdhPJwVUogLbLgWh0H+1t04PcWwoEMWk9Msl9Y2j39LCUMrTYAzG8h8hrNPM3bWsKod/qZ2dNp3JOXgm8pvSPuSuTs=
-X-Received: by 2002:a05:6512:21c:: with SMTP id a28mr4472348lfo.486.1605177482733;
- Thu, 12 Nov 2020 02:38:02 -0800 (PST)
-MIME-Version: 1.0
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <1605012309-24812-3-git-send-email-anshuman.khandual@arm.com> <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
-In-Reply-To: <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
-From:   Linu Cherian <linuc.decode@gmail.com>
-Date:   Thu, 12 Nov 2020 16:07:50 +0530
-Message-ID: <CAAHhmWiWbUTt-BvjeqGm3mfN2L8A8gUOVVDNX0P=WCEDj=Mc4A@mail.gmail.com>
-Subject: Re: [RFC 02/11] coresight: etm-perf: Allow an event to use different sinks
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=A1kCd9kxhtGVEoKnBufAkxHSe9byym5wk2cdTksfgzQ=;
+        b=UoVPgoGZw96ZZJKXSY+9plLZ2/Vub22RmGq7pF4SlcwixfE0H+BoLKsotqFcQ5gIBT
+         5d+DVR3ReKPnm5Bs76hRDyE7qQF0fuJ5KUWWJrEAoCdah1TMa2Qp7lbGhYxaGZLvdMOj
+         EEsrZxueXKMSfVPOflAubw7hJfKzXYv+GM2QvK7TQY60BgL/RFPYV35riIr5FBGuSbAg
+         uRwAgQYv8fYNVqnoMjOyxyKTT7gdnmJjOT2v4jNHwQsh/GhNHSueogH6v1TagsoYavJo
+         Bchs037BFMnuEAcI4gfNoDVk0OVke0UzI0haZFy38J5Rc1s1qc1pw05+pQE9JhG20Hqe
+         cAag==
+X-Gm-Message-State: AOAM530ULP0i2Xw9sZarH70nMow+N6g6nwJpgOTEuf6Ch28zQtAUqNac
+        GElYlFOhBSbldIGX8fUpNlrAYKD+46o=
+X-Google-Smtp-Source: ABdhPJznNX8YVTi2I1uQjTgJCiLAWfcJFHeM4bA36FXxplxx7vsm7XgOnX7IIfTnOOeMxg+0bP7zCQ==
+X-Received: by 2002:a17:902:eaca:b029:d6:807e:95b8 with SMTP id p10-20020a170902eacab02900d6807e95b8mr23007860pld.33.1605177605556;
+        Thu, 12 Nov 2020 02:40:05 -0800 (PST)
+Received: from localhost.localdomain ([2402:7500:47a:a27:cf8e:7817:51df:a883])
+        by smtp.gmail.com with ESMTPSA id mp16sm6414094pjb.13.2020.11.12.02.40.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 12 Nov 2020 02:40:05 -0800 (PST)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     sre@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v7 0/11] mfd: mt6360: Merge different sub-devices I2C read/write
+Date:   Thu, 12 Nov 2020 18:39:47 +0800
+Message-Id: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+This patch series merge different sub-device I2C read/write into one Regmap and
+fix coding style for well-organized.
 
-On Thu, Nov 12, 2020 at 2:51 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> Hi Linu,
->
-> Please could you test this slightly modified version and give us
-> a Tested-by tag if you are happy with the results ?
->
-> Suzuki
->
->
-> On 11/10/20 12:45 PM, Anshuman Khandual wrote:
-> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >
-> > When there are multiple sinks on the system, in the absence
-> > of a specified sink, it is quite possible that a default sink
-> > for an ETM could be different from that of another ETM. However
-> > we do not support having multiple sinks for an event yet. This
-> > patch allows the event to use the default sinks on the ETMs
-> > where they are scheduled as long as the sinks are of the same
-> > type.
-> >
-> > e.g, if we have 1x1 topology with per-CPU ETRs, the event can
-> > use the per-CPU ETR for the session. However, if the sinks
-> > are of different type, e.g TMC-ETR on one and a custom sink
-> > on another, the event will only trace on the first detected
-> > sink.
-> >
-> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > ---
-> >   drivers/hwtracing/coresight/coresight-etm-perf.c | 50 ++++++++++++++++++------
-> >   1 file changed, 39 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > index c2c9b12..ea73cfa 100644
-> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > @@ -204,14 +204,22 @@ static void etm_free_aux(void *data)
-> >       schedule_work(&event_data->work);
-> >   }
-> >
-> > +static bool sinks_match(struct coresight_device *a, struct coresight_device *b)
-> > +{
-> > +     if (!a || !b)
-> > +             return false;
-> > +     return (sink_ops(a) == sink_ops(b));
-> > +}
-> > +
-> >   static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >                          int nr_pages, bool overwrite)
-> >   {
-> >       u32 id;
-> >       int cpu = event->cpu;
-> >       cpumask_t *mask;
-> > -     struct coresight_device *sink;
-> > +     struct coresight_device *sink = NULL;
-> >       struct etm_event_data *event_data = NULL;
-> > +     bool sink_forced = false;
-> >
-> >       event_data = alloc_event_data(cpu);
-> >       if (!event_data)
-> > @@ -222,6 +230,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >       if (event->attr.config2) {
-> >               id = (u32)event->attr.config2;
-> >               sink = coresight_get_sink_by_id(id);
-> > +             sink_forced = true;
-> >       }
-> >
-> >       mask = &event_data->mask;
-> > @@ -235,7 +244,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >        */
-> >       for_each_cpu(cpu, mask) {
-> >               struct list_head *path;
-> > -             struct coresight_device *csdev;
-> > +             struct coresight_device *csdev, *new_sink;
-> >
-> >               csdev = per_cpu(csdev_src, cpu);
-> >               /*
-> > @@ -249,21 +258,35 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >               }
-> >
-> >               /*
-> > -              * No sink provided - look for a default sink for one of the
-> > -              * devices. At present we only support topology where all CPUs
-> > -              * use the same sink [N:1], so only need to find one sink. The
-> > -              * coresight_build_path later will remove any CPU that does not
-> > -              * attach to the sink, or if we have not found a sink.
-> > +              * No sink provided - look for a default sink for all the devices.
-> > +              * We only support multiple sinks, only if all the default sinks
-> > +              * are of the same type, so that the sink buffer can be shared
-> > +              * as the event moves around. We don't trace on a CPU if it can't
-> > +              *
-> >                */
-> > -             if (!sink)
-> > -                     sink = coresight_find_default_sink(csdev);
-> > +             if (!sink_forced) {
-> > +                     new_sink = coresight_find_default_sink(csdev);
-> > +                     if (!new_sink) {
-> > +                             cpumask_clear_cpu(cpu, mask);
-> > +                             continue;
-> > +                     }
-> > +                     /* Skip checks for the first sink */
-> > +                     if (!sink) {
-> > +                             sink = new_sink;
-> > +                     } else if (!sinks_match(new_sink, sink)) {
-> > +                             cpumask_clear_cpu(cpu, mask);
-> > +                             continue;
-> > +                     }
-> > +             } else {
-> > +                     new_sink = sink;
-> > +             }
-> >
-> >               /*
-> >                * Building a path doesn't enable it, it simply builds a
-> >                * list of devices from source to sink that can be
-> >                * referenced later when the path is actually needed.
-> >                */
-> > -             path = coresight_build_path(csdev, sink);
-> > +             path = coresight_build_path(csdev, new_sink);
-> >               if (IS_ERR(path)) {
-> >                       cpumask_clear_cpu(cpu, mask);
-> >                       continue;
-> > @@ -284,7 +307,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >       if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
-> >               goto err;
-> >
-> > -     /* Allocate the sink buffer for this session */
-> > +     /*
-> > +      * Allocate the sink buffer for this session. All the sinks
-> > +      * where this event can be scheduled are ensured to be of the
-> > +      * same type. Thus the same sink configuration is used by the
-> > +      * sinks.
-> > +      */
-> >       event_data->snk_config =
-> >                       sink_ops(sink)->alloc_buffer(sink, event, pages,
-> >                                                    nr_pages, overwrite);
-> >
->
+Gene Chen (11)
+  mfd: mt6360: Rearrange include file
+  mfd: mt6360: Remove redundant brackets around raw numbers
+  mfd: mt6360: Indicate sub-dev compatible name by using
+  mfd: mt6360: Combine mt6360 pmic/ldo resources into mt6360
+  mfd: mt6360: Rename mt6360_pmu_data by mt6360_ddata
+  mfd: mt6360: Rename mt6360_pmu by mt6360
+  mfd: mt6360: Remove handle_post_irq callback function
+  mfd: mt6360: Fix flow which is used to check ic exist
+  mfd: mt6360: Merge header file into driver and remove unuse register define
+  mfd: mt6360: Merge different sub-devices I2C read/write
+  mfd: mt6360: Remove MT6360 regulator of_compatible
 
-Perf record and report worked fine with this as well, with formatting
-related opencsd hacks.
+ b/drivers/mfd/Kconfig       |    1 
+ b/drivers/mfd/mt6360-core.c |  554 +++++++++++++++++++++++++++++---------------
+ include/linux/mfd/mt6360.h  |  240 -------------------
+ 3 files changed, 376 insertions(+), 419 deletions(-)
 
-Tested-by : Linu Cherian <lcherian@marvell.com>
+changelogs between v2 & v3
+- Replace mt6360_data to mt6360_ddata
+- Split I2C read/write to regmap driver
 
-Thanks.
+changelogs between v3 & v4
+- Merge back mt6360 regmap driver to MFD driver
+
+changelogs between v4 & v5
+- use devm_regmap_init
+- define crc calculation magic number
+
+changelogs between v5 & v6
+- Remove unrelated change
+- Remove regulator device of_compatible
+
+changelogs between v6 & v7
+- Replace OF_MFD_CELL by MFD_CELL_RES
+
