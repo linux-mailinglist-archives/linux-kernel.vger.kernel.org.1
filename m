@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F313C2AFCA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD312AFCA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgKLBlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
+        id S1729712AbgKLBl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728227AbgKLBTm (ORCPT
+        with ESMTP id S1728235AbgKLBXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:19:42 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694C5C0613D1;
-        Wed, 11 Nov 2020 17:19:42 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id g19so2017141qvy.2;
-        Wed, 11 Nov 2020 17:19:42 -0800 (PST)
+        Wed, 11 Nov 2020 20:23:54 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF149C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:23:53 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id q5so2965242pfk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:23:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=t6O0sYxJBUgk9V8FqRpsvwNNwz5ipQ+AansIawZja9I=;
-        b=VfLxL9U/SBb06NU26ZQg3mLeQ4YU1vURENNOX5o9q82sPjjgQlOfM1ZNu2MEX8cf13
-         HiYQalcws2knOoe8K/KgYewmysQ8XDLjytyJ8Lj9gBheD0Bkl2D+PJIGAJlHwq3P0Jul
-         LZrPQncH0vQobnEM1JMY88RpxSVE3r7lG47hHG5WmhT2Yiw+NisM+btts8lhN4bJuRk9
-         pgEAtMLaELZYognagwPWUCKr52rDSoRc9Hk/TipywE70ue8nFy0R0/Z+wRYQwX5H1vI7
-         MU5hAswXktl9GHH4aJsXmWx0TRKsirtCqDa7tWPiyikBYgQZj4a0OIMOCvOQ3zHmNcGY
-         9Hfg==
+        bh=N7Lf2zyWERPVdu1htC4rXtjvkvXPb9GfV1THCOYFuzQ=;
+        b=XH00HgnQSvMCsYKU8m1dMFSTUu9rPajGK59TSV5XwegjFuF/OFM80jpJKt9b4w8HtO
+         DAEoq/eI0pSDbHL5YiiGx87azE4m2Kcm+iXSVBeegTQIX3hxH1OdMUpggeVIy1J4BuoC
+         Gns43J9xqLOkFd9XvKJIUMopKQO+xfIkJwLns=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=t6O0sYxJBUgk9V8FqRpsvwNNwz5ipQ+AansIawZja9I=;
-        b=bSoNwVmoh94Qs4uSElACDIQ7p9xiuV5WxLyWS9EVZrlz27LH6L3GCwjccGx1a5I2Zt
-         tBTZyHzllM32C+Q6QaMFOHlsObQZoAieEBaACRHP6NZOXLlI4V6S1hs83cYDBSCAAe3O
-         vinpcuqambpLA8wTbWYDlPoiT7zT5QTrcdIDyYeAfyFxvqlvaMVvzAbpKEhR9u+Msn7h
-         75jdJ+9gQXeuPPPRqzHpd4IqRRMVELFFBFJj8mXBGfX3KWMGUnfsskvT6XGlzY652EIQ
-         xJD6js6EuwiXrzxPzoIsPVVWJM23f0pAYKfkOBViz5TcVHfnGkQMvUQJMTrkBZcWI58g
-         QDgQ==
-X-Gm-Message-State: AOAM532EgPHLh+15bydVIgOzZwSO4HAZV4zXRDV8lPEio+cyy8u1vPNM
-        wQll9JLWeRO+wFojYiZR3P0=
-X-Google-Smtp-Source: ABdhPJyjsvg9C4SUokM73BG6LLbH3Hup8iycj/2InNMean/F6Boq/HwoUQ1KVzkfw4ArHsGv4r+FTA==
-X-Received: by 2002:a0c:a5a2:: with SMTP id z31mr29221656qvz.15.1605143981548;
-        Wed, 11 Nov 2020 17:19:41 -0800 (PST)
-Received: from LeoBras.ibmuc.com (179-125-145-97.dynamic.desktop.com.br. [179.125.145.97])
-        by smtp.gmail.com with ESMTPSA id e10sm4153867qkn.126.2020.11.11.17.17.05
+        bh=N7Lf2zyWERPVdu1htC4rXtjvkvXPb9GfV1THCOYFuzQ=;
+        b=Xu7T4rP0EbE2G16wh+kR3XWPoEpS2o8eYia8TJhml1KZW7WsruWhXmQ0pxE6o+mNuz
+         Ozi6BMF/Q2LwQw2CnB7FShafjdx/UTusAR0HPVUn+GyBfSOSbJKDxI0ZaibE/JEIf6B9
+         QIb7CKIVizl//OGGGKauioVazX2aUaCBIXVio5ZbwnrnZS8nY62wK9+lc8fsJuAF/m2m
+         CzpCBXQWlb/7g/L6bX+SSEDMrHAnoh9/xDsKTzPy6pqrMNdhJWLTEnEE2zT6PMkTDvnp
+         KqQWYdipJvrw9jwyPOZuZ3o0Zui51B2HTX2WTKlpq294vxRvOCx1qN3JsXKh+A6feNTd
+         xZSw==
+X-Gm-Message-State: AOAM5326kZe1N970HE6ziLHrzwBEAC+WgcE6z23Ypb4iS9NrsdZkYWID
+        ZAvyXV0Cnjz0ZIGm7aUjHuZnlTHlYwyxiA==
+X-Google-Smtp-Source: ABdhPJyUs9WS/doQQJOar3CjKqcIF17wYM/oOgMOnZUo3GYSHnoTc1p0MtsJCj1qhMZAS7qduYBywg==
+X-Received: by 2002:a65:508a:: with SMTP id r10mr24784979pgp.307.1605144233091;
+        Wed, 11 Nov 2020 17:23:53 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id k25sm4057227pfi.42.2020.11.11.17.23.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 17:18:17 -0800 (PST)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Leonardo Bras <leobras.c@gmail.com>, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] powerpc/kvm: Fix mask size for emulated msgsndp
-Date:   Wed, 11 Nov 2020 22:16:55 -0300
-Message-Id: <20201112011655.382866-1-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.25.4
+        Wed, 11 Nov 2020 17:23:52 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
+        enric.balletbo@collabora.com
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH 0/3] platform/chrome: cros_ec_typec: Add plug and plug altmodes
+Date:   Wed, 11 Nov 2020 17:23:25 -0800
+Message-Id: <20201112012329.1364975-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to ISAv3.1 and ISAv3.0b, the msgsndp is described to split RB in:
-msgtype <- (RB) 32:36
-payload <- (RB) 37:63
-t       <- (RB) 57:63
+This patch series add plug registration support to the cros-ec-typec
+driver. It also adds support for registering alternate modes for the
+registered plug. These features utilize the API provided by the Type C
+connector class framework.
 
-The current way of getting 'msgtype', and 't' is missing their LSB:
-msgtype: ((arg >> 27) & 0xf) : Gets (RB) 33:36, missing bit 32
-t:       (arg &= 0x3f)       : Gets (RB) 58:63, missing bit 57
+The first patch adds support to the connector class framework for the
+number_of_alternate_modes attribute (along with the relevant ABI
+documentation).
 
-Fixes this by applying the correct mask.
+The next two patches add plug registration, and then altmode
+registration for the plugs. The latter of these two patches utilizes the
+new function for plug number_of_alternate_modes introduced in the first patch.
 
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
----
- arch/powerpc/kvm/book3s_hv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This series is based on top of the following branch and other patch
+series (applied in the order specified):
+- Branch: chrome-platform for-next [1], which is currently set to the
+  "Linux 5.10-rc1" tag.
+- cros-ec-typec: Patch series to register PD identity information + partner altmodes[2]
+- cros-ec-typec: Patch series to register cable[3]
+- cros-ec-typec: Patch series to add partner number_of_altmodes[4]
 
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index e3b1839fc251..5af0a429cee8 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -1241,9 +1241,9 @@ static int kvmppc_emulate_doorbell_instr(struct kvm_vcpu *vcpu)
- 	switch (get_xop(inst)) {
- 	case OP_31_XOP_MSGSNDP:
- 		arg = kvmppc_get_gpr(vcpu, rb);
--		if (((arg >> 27) & 0xf) != PPC_DBELL_SERVER)
-+		if (((arg >> 27) & 0x1f) != PPC_DBELL_SERVER)
- 			break;
--		arg &= 0x3f;
-+		arg &= 0x7f;
- 		if (arg >= kvm->arch.emul_smt_mode)
- 			break;
- 		tvcpu = kvmppc_find_vcpu(kvm, vcpu->vcpu_id - thr + arg);
-@@ -1256,7 +1256,7 @@ static int kvmppc_emulate_doorbell_instr(struct kvm_vcpu *vcpu)
- 		break;
- 	case OP_31_XOP_MSGCLRP:
- 		arg = kvmppc_get_gpr(vcpu, rb);
--		if (((arg >> 27) & 0xf) != PPC_DBELL_SERVER)
-+		if (((arg >> 27) & 0x1f) != PPC_DBELL_SERVER)
- 			break;
- 		vcpu->arch.vcore->dpdes = 0;
- 		vcpu->arch.doorbell_request = 0;
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git/log/?h=for-next
+[2]: https://lore.kernel.org/lkml/20201029222738.482366-1-pmalani@chromium.org/
+[3]: https://lore.kernel.org/lkml/20201106184104.939284-1-pmalani@chromium.org/
+[4]: https://lore.kernel.org/lkml/20201110061535.2163599-1-pmalani@chromium.org/
+
+Prashant Malani (3):
+  usb: typec: Add plug num_altmodes sysfs attr
+  platform/chrome: cros_ec_typec: Register SOP' cable plug
+  platform/chrome: cros_ec_typec: Register plug altmodes
+
+ Documentation/ABI/testing/sysfs-class-typec |  9 +++
+ drivers/platform/chrome/cros_ec_typec.c     | 85 ++++++++++++++++-----
+ drivers/usb/typec/class.c                   | 77 ++++++++++++++++++-
+ include/linux/usb/typec.h                   |  1 +
+ 4 files changed, 151 insertions(+), 21 deletions(-)
+
 -- 
-2.25.4
+2.29.2.222.g5d2a92d10f8-goog
 
