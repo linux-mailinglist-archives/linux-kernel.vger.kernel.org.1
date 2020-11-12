@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D912B10F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658192B1108
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbgKLWF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:05:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727270AbgKLWF0 (ORCPT
+        id S1727395AbgKLWJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:09:02 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6626 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727268AbgKLWJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:05:26 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B8EC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:05:26 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w6so5849802pfu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:05:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+LawQ4KJDTzVq+QOpbpG8odPiP4w40hrHWLf6v+3rmE=;
-        b=htWCDbEmACJ9y+gah7nI9tft5RVJ1CtHVOlcXXga1UkmUIpP9KRR5X9vpAxLidVOJ+
-         sdq/Xg+NeKMAvmba9Gtv6CViADwOh7abi/n1hb4BkHkhcwW1EiPvt/XYcOA4mAFy22Do
-         mltLfXPtS/WR61qc7e1YXL/nmxRzktg/JXPxJGU8sZLF6Dt+ZGk+4w1PoRbPUP8fSlB7
-         5A1/dgpbToPP4R4JXa4X3wZ0rG9+zYR+pR9EBWnVi+HD4lDfgJcZDcO2jmQ/6xTM/k8G
-         +ODdG/qgThRGrXEqzbhbvVX0RAhfKg3sPxwXCos9bmxxNWNUgQd/qoyafic/F1MCBDIm
-         zSlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+LawQ4KJDTzVq+QOpbpG8odPiP4w40hrHWLf6v+3rmE=;
-        b=rGlxcEIGj7/VmchAcQti8Xx9mf5uB/BrbULseSidmjjPRsMYpsZpsll88lZybbRy06
-         VLKzLy4NXQ+s7EnbFAPF6tTdUe1OBPEHrEm1+WCi/34+9na31wDnTnTZPnf0QFv74hfZ
-         gvfAr97A/ZOC14atYyjy+A8ngYg66o9vfPBgXAW7zJjP/wQa3MaCd1KjWv3W2fPnVzqC
-         NdwDo0N+kAnTKs25y1Dm/LfPJiR8+Ju1yqLMgBwPKwMPmTRJC3wSIqU7AinwXYkbPCEu
-         kEH13N3pHoCz3tvD43iYlRusoNI/jnvB/rDkrZ7rg+HvaAtChPMLmHXtzGiHf3sQu7Fz
-         AEag==
-X-Gm-Message-State: AOAM530kS53kJN+cIzenH5VZ4bi7yWcGV+NA1I3pn2qHglj+WYlAQo8c
-        O83zUE5/TKSZ5OwPqEJ9VPoILQOCMvuCPQ==
-X-Google-Smtp-Source: ABdhPJzGwfTtv0eKnetksxwmqcLkLuFLyfkWvoLi4homYAQ4vpAhKHsccreAGTDL0qxC/sv1A2nKeQ==
-X-Received: by 2002:aa7:80c9:0:b029:164:4ca1:fff with SMTP id a9-20020aa780c90000b02901644ca10fffmr1432340pfn.11.1605218725223;
-        Thu, 12 Nov 2020 14:05:25 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id mv5sm7638976pjb.42.2020.11.12.14.05.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 14:05:24 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Subject: [RESEND][PATCH 2/2] iommu: Avoid crash if iommu_group is null
-Date:   Thu, 12 Nov 2020 22:05:20 +0000
-Message-Id: <20201112220520.48159-2-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201112220520.48159-1-john.stultz@linaro.org>
-References: <20201112220520.48159-1-john.stultz@linaro.org>
+        Thu, 12 Nov 2020 17:09:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fadb2850001>; Thu, 12 Nov 2020 14:09:09 -0800
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 22:08:56 +0000
+Subject: Re: [RFC PATCH 5/6] mm: truncate: split thp to a non-zero order if
+ possible.
+To:     Zi Yan <ziy@nvidia.com>, <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-6-zi.yan@sent.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <fb468c74-7da3-8b2c-e98e-ebb12793846e@nvidia.com>
+Date:   Thu, 12 Nov 2020 14:08:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20201111204008.21332-6-zi.yan@sent.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605218949; bh=NDadN03xqNXrvsneHUexyQUsnW4XqQpKoZq/QqGvCrw=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ONeUNh4lG4o9qWXiR88CyF1ZxcdWwee7RTtb/uWeGAnlrf8wXC2ARsJLpNsGVBdxN
+         aEc4mC8Myjj1a9DfqvM8o2404w4c+7crPIpIo5lXWsM5MkgLSjQ1wPWUet0SqC2sFs
+         Dvr8aEbpecCyV9qrXet+AdZHAuLskwjJW+hjxpuL33VtEOZM9drs9dR52IkqGxS+nb
+         z09Pb8R81cxJBpS0KwNr5p1KoTnIYzHU557XdAecMGuerjhwH7uqLn2Fiqp1PuGYt3
+         lgWfsPUWOboleiRMcdJH54EXXOxFCyOxLWzVKYD2oab5cOP4qNsZdaNlCopPgZt36m
+         A025KYcb7B57A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In trying to handle a possible driver probe ordering issue
-brought up by Robin Murphy, I ran across a separate null pointer
-crash in the iommu core in iommu_group_remove_device():
-[    2.732803] dwc3-qcom a6f8800.usb: failed to get usb-ddr path: -517
-[    2.739281] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000c0
-...
-[    2.775619] [00000000000000c0] user address but active_mm is swapper
-[    2.782039] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-[    2.787670] Modules linked in:
-[    2.790769] CPU: 6 PID: 1 Comm: swapper/0 Tainted: G        W         5.10.0-rc1-mainline-00025-g272a618fc36-dirty #3973
-[    2.801719] Hardware name: Thundercomm Dragonboard 845c (DT)
-[    2.807431] pstate: 00c00005 (nzcv daif +PAN +UAO -TCO BTYPE=--)
-[    2.813508] pc : iommu_group_remove_device+0x30/0x1b0
-[    2.818611] lr : iommu_release_device+0x4c/0x78
-[    2.823189] sp : ffffffc01005b950
-...
-[    2.907082] Call trace:
-[    2.909566]  iommu_group_remove_device+0x30/0x1b0
-[    2.914323]  iommu_release_device+0x4c/0x78
-[    2.918559]  iommu_bus_notifier+0xe8/0x108
-[    2.922708]  blocking_notifier_call_chain+0x78/0xb8
-[    2.927641]  device_del+0x2ac/0x3d0
-[    2.931177]  platform_device_del.part.9+0x20/0x98
-[    2.935933]  platform_device_unregister+0x2c/0x40
-[    2.940694]  of_platform_device_destroy+0xd8/0xe0
-[    2.945450]  device_for_each_child_reverse+0x58/0xb0
-[    2.950471]  of_platform_depopulate+0x4c/0x78
-[    2.954886]  dwc3_qcom_probe+0x93c/0xcb8
-[    2.958858]  platform_drv_probe+0x58/0xa8
-[    2.962917]  really_probe+0xec/0x398
-[    2.966531]  driver_probe_device+0x5c/0xb8
-[    2.970677]  device_driver_attach+0x74/0x98
-[    2.974911]  __driver_attach+0x60/0xe8
-[    2.978700]  bus_for_each_dev+0x84/0xd8
-[    2.982581]  driver_attach+0x30/0x40
-[    2.986194]  bus_add_driver+0x160/0x208
-[    2.990076]  driver_register+0x64/0x110
-[    2.993957]  __platform_driver_register+0x58/0x68
-[    2.998716]  dwc3_qcom_driver_init+0x20/0x28
-[    3.003041]  do_one_initcall+0x6c/0x2d0
-[    3.006925]  kernel_init_freeable+0x214/0x268
-[    3.011339]  kernel_init+0x18/0x118
-[    3.014876]  ret_from_fork+0x10/0x18
-[    3.018495] Code: d0006a21 f9417295 91130021 910162b6 (b940c2a2)
 
-In the case above, the arm-smmu driver fails to probe with
-EPROBE_DEFER, and I'm guessing I'm guessing that causes
-iommu_group_add_device() to fail and sets the
-dev->iommu_group = NULL, then somehow we hit
-iommu_group_remove_device() and trip over the null value?
-I'm not really sure...
+On 11/11/20 12:40 PM, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> To minimize the number of pages after a truncation, when truncating a
+> THP, we do not need to split it all the way down to order-0. The THP has
+> at most three parts, the part before offset, the part to be truncated,
+> the part left at the end. Use the non-zero minimum of them to decide
+> what order we split the THP to.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   mm/truncate.c | 22 ++++++++++++++++++++--
+>   1 file changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/truncate.c b/mm/truncate.c
+> index 20bd17538ec2..6d8e3c6115bc 100644
+> --- a/mm/truncate.c
+> +++ b/mm/truncate.c
+> @@ -237,7 +237,7 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
+>   bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
+>   {
+>   	loff_t pos = page_offset(page);
+> -	unsigned int offset, length;
+> +	unsigned int offset, length, left, min_subpage_size = PAGE_SIZE;
 
-Anyway, adding the null check seems to avoid the issue and the
-system boots fine after the arm-smmu driver later reprobed.
+Maybe use "remaining" instead of "left" since I think of the latter as the length of the
+left side (offset).
+  
+>   	if (pos < start)
+>   		offset = start - pos;
+> @@ -248,6 +248,7 @@ bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
+>   		length = length - offset;
+>   	else
+>   		length = end + 1 - pos - offset;
+> +	left = thp_size(page) - offset - length;
+>   
+>   	wait_on_page_writeback(page);
+>   	if (length == thp_size(page)) {
+> @@ -267,7 +268,24 @@ bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
+>   		do_invalidatepage(page, offset, length);
+>   	if (!PageTransHuge(page))
+>   		return true;
+> -	return split_huge_page(page) == 0;
+> +
+> +	/*
+> +	 * find the non-zero minimum of offset, length, and left and use it to
+> +	 * decide the new order of the page after split
+> +	 */
+> +	if (offset && left)
+> +		min_subpage_size = min_t(unsigned int,
+> +					 min_t(unsigned int, offset, length),
+> +					 left);
+> +	else if (!offset)
+> +		min_subpage_size = min_t(unsigned int, length, left);
+> +	else /* !left */
+> +		min_subpage_size = min_t(unsigned int, length, offset);
+> +
+> +	min_subpage_size = max_t(unsigned int, PAGE_SIZE, min_subpage_size);
+> +
+> +	return split_huge_page_to_list_to_order(page, NULL,
+> +				ilog2(min_subpage_size/PAGE_SIZE)) == 0;
+>   }
 
-Feedback or better ideas for a solution would be appreciated!
-
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/iommu/iommu.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index b53446bb8c6b4..28229f7ef7d5a 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -877,6 +877,10 @@ void iommu_group_remove_device(struct device *dev)
- 	struct iommu_group *group = dev->iommu_group;
- 	struct group_device *tmp_device, *device = NULL;
- 
-+	/* Avoid crash if iommu_group value is null */
-+	if (!group)
-+		return;
-+
- 	dev_info(dev, "Removing from iommu group %d\n", group->id);
- 
- 	/* Pre-notify listeners that a device is being removed. */
--- 
-2.17.1
-
+What if "min_subpage_size" is 1/2 the THP but offset isn't aligned to 1/2?
+Splitting the page in half wouldn't result in a page that could be freed
+but maybe splitting to 1/4 would (assuming the THP is at least 8x PAGE_SIZE).
