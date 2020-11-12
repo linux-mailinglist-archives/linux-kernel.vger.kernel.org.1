@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0C32B0AED
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020402B0AEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgKLRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:05:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:54358 "EHLO foss.arm.com"
+        id S1726110AbgKLRE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgKLRFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:05:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DD6F139F;
-        Thu, 12 Nov 2020 09:05:53 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D8543F73C;
-        Thu, 12 Nov 2020 09:05:52 -0800 (PST)
-Date:   Thu, 12 Nov 2020 17:05:46 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
-        baolin.wang7@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jonathan.Cameron@huawei.com
-Subject: Re: [PATCH] arm64: PCI: Validate the node before setting node id for
- root bus
-Message-ID: <20201112170546.GA26282@e121166-lin.cambridge.arm.com>
-References: <1600770804-116365-1-git-send-email-baolin.wang@linux.alibaba.com>
- <20200928140054.GA11500@willie-the-truck>
- <20200928144957.GA90366@VM20190228-100.tbsite.net>
- <20200928152326.GA15640@e121166-lin.cambridge.arm.com>
- <26284ca5-ea05-0496-629d-9951f49dda8f@linux.alibaba.com>
- <20201001085538.GA5142@e121166-lin.cambridge.arm.com>
- <c9afea6a-4026-05ca-cb6b-9ab7cb513140@linux.alibaba.com>
- <fd8b8138-c3f8-59f6-d57f-704ef5d28d46@linux.alibaba.com>
+        id S1725903AbgKLRE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:04:56 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C58621D7F;
+        Thu, 12 Nov 2020 17:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605200696;
+        bh=qEGu5uST4byz8XuJRMjnqZZkRabdlL6gGWmFkpschCo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BHYu2GVHYY7GTOmz8a4uXpdurzwymiO5oR5TaJepK0yXP8/vAgy/bZnVJSJMKOndk
+         rjlSioJxLgU6QdTh9CkDQqtecBYOJRLhVdj2NXpDoA33ovt17OdZeF9+SJXWOj7mX9
+         07jQPCTDECz06JDYesZpuDDdi/vLAakx5/Mbbpxo=
+Date:   Thu, 12 Nov 2020 18:05:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     John Boero <boeroboy@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
+Message-ID: <X61rce8GANHW1ysh@kroah.com>
+References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fd8b8138-c3f8-59f6-d57f-704ef5d28d46@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Jonathan]
+On Thu, Nov 12, 2020 at 03:52:02PM +0000, John Boero wrote:
+> >From 54f9886454e9a28e8d943c1cef15df9c11555df7 Mon Sep 17 00:00:00 2001
+> From: JohnnyB <jboero@users.noreply.github.com>
 
-On Mon, Nov 09, 2020 at 08:27:09PM +0800, Baolin Wang wrote:
+Why all this header here?
 
-[...]
+And the from: line doesn't match your Signed-off-by: line :(
 
-> I did some investigation for this issue. I am sorry I made some
-> misleading description in the commit message. The issue is, when we
-> want to disable the NUMA from firmware, we usually just remove the SRAT
-> table from the BIOS. But the devices' proximity domain information is
-> still remain in the ACPI tables.
-
-I understand and it should not.
-
-> For example, the IORT table still contains the proximity domain
-> information for the SMMU devices, so in this case, the SMMU devices still
-> can get incorrect NUMA nodes if we remove the SRAT table. But
-> the SMMU devices will validate the numa node in
-> arm_smmu_v3_set_proximity() to avoid this issue.
+> Date: Thu, 12 Nov 2020 15:28:29 +0000
+> Subject: [PATCH] usb: core: Null deref in kernel with USB webcams.
 > 
-> static int  __init arm_smmu_v3_set_proximity(struct device *dev,
-> 					      struct acpi_iort_node *node)
+> Fixes: Ubuntu Launchpad bug 1827452
+> 
+> This is my first attempt at a kernel contribution so sorry if sloppy.
+
+No need to put this in the changelog text and have it be in the kernel
+for foever :)
+
+> 
+> There is some kind of race condition affecting Logitech
+> webcams that crash USB with a null dereference.
+> Affects raspberry pi devices as well as x86.
+> No check on dev before dereference.
+> Simple fix for issue experienced for months in
+> both x86 and arm/rpi environments.
+> 
+> Signed-off-by: John Boero <boeroboy@gmail.com>
+> 
+> ---
+> drivers/usb/core/usb.c | 6 +-----
+> 1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> index d8756ffe513a..9b4ac4415f1a 100644
+> --- a/drivers/usb/core/usb.c
+> +++ b/drivers/usb/core/usb.c
+> @@ -272,13 +272,9 @@ EXPORT_SYMBOL_GPL(usb_find_alt_setting);
+> struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev,
+>                                      unsigned ifnum)
 > {
-> 	struct acpi_iort_smmu_v3 *smmu;
+> -       struct usb_host_config *config = NULL;
+> +       struct usb_host_config *config = dev->actconfig;
+>        int i;
 > 
-> 	smmu = (struct acpi_iort_smmu_v3 *)node->node_data;
-> 	if (smmu->flags & ACPI_IORT_SMMU_V3_PXM_VALID) {
-> 		int dev_node = pxm_to_node(smmu->pxm);
-> 
-> 		if (dev_node != NUMA_NO_NODE && !node_online(dev_node))
-> 			return -EINVAL;
-> 
-> 		set_dev_node(dev, dev_node);
-> 		pr_info("SMMU-v3[%llx] Mapped to Proximity domain %d\n",
-> 			smmu->base_address,
-> 			smmu->pxm);
-> 	}
-> 	return 0;
-> }
-> 
-> So similar with SMMU devices, the DSDT table will still contain the PCI
-> root host devices' proximity domain though we already remove the SRAT
-> table. So I think we still need this validation in
-> pcibios_root_bridge_prepare() to avoid this issue like other devices did.
-No. The right thing to do is to fix the PXM handling and that's what
-Jonathan did:
+> -       if (!dev)
+> -               return NULL;
+> -
+> -       config = dev->actconfig;
+>        if (!config)
+>                return NULL;
+>        for (i = 0; i < config->desc.bNumInterfaces; i++)
 
-https://lore.kernel.org/linux-mm/20200818142430.1156547-2-Jonathan.Cameron@huawei.com
+This patch is corrupted and can not be applied, but also, it looks
+backwards, right?
 
-Can you try booting with v5.10-rc* and report back the *full* boot log
-please ?
+And how about we find the race condition and fix that instead of trying
+to paper over it here?
 
-> I can update the commit message in next version if you think this is
-> reasonable. Thanks.
+thanks,
 
-See above.
-
-Thanks,
-Lorenzo
+greg k-h
