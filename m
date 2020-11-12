@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3852B095D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B239B2B094C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgKLQAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:00:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
+        id S1728606AbgKLP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728813AbgKLP6T (ORCPT
+        with ESMTP id S1728834AbgKLP6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:58:19 -0500
+        Thu, 12 Nov 2020 10:58:21 -0500
 Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F962C0613D1;
-        Thu, 12 Nov 2020 07:58:19 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id y4so1024691edy.5;
-        Thu, 12 Nov 2020 07:58:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8025C0613D1;
+        Thu, 12 Nov 2020 07:58:20 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id v4so6876621edi.0;
+        Thu, 12 Nov 2020 07:58:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5eEkZyJuYqDgw3qo/V0uy1CW8YE9RreYkILxojzWYTQ=;
-        b=c2qUOZpv1mSeHE1Ezmz+x7EJn7Cxg6PhpctF3FEnsMkIKNC1XCV6m9mV/ot9/XsPKR
-         ZgtWVVN7YpFDpO8zOsiNDokInSOOOkLaRvkh9in2p3Gq3JIjsQUaQivyjkB83+QnUPHJ
-         cZYVy9M+3iC/0k6HkhcfAeuGnKmdsJFyveY6e8x/7LHDN1iNUvbYitGbmmJhUx2nu1AQ
-         A7+Kq5hU5DaSiyhX4mmOrIY/0GLSNW9J4A8bLvD6b+f/RpetYDflool6v4soHnEh3q5d
-         LLyorezhK9OUOMbOkJ4CId88ZxD3bBIsjt/Zg2r8bgfg3g7kgnP6I6+QlX6h+3fwsZiB
-         +lfA==
+        bh=Jk5b9nB+oqKMHLVq5uhhdOuhJ71EuKFqGbaLsLlT2HU=;
+        b=UH50FOe8hifDLYF9FTbh5I6yaXE+AwV8tq/JpdQSxgi1L+M8NtCNC5wNLlXYdgo2h1
+         jb8UG1PvLWoIxw8y8z2rHA7AWEkvHsKVvGu3l7c3g3nprJ8ap69QDG9CZ+Wm70uDNGQ8
+         KiW0V44PcLYu0Br/K4j/evuPAZvyFF5/KMm2K0ZXvTfubp4xOdP+VhE+F4jlZZmjbK8D
+         bYipeoqFteCTDzum6mTN/if0AAiSSjE0qNjG7kt+nj7cT/23MlKtHWPP3u3s/5wd9UI7
+         oLL9bxpTBpWlva9u7V13n/NkW0QVa+GlW+BhysKfqPUH5YSkjwj5+ejnJ9r33CRsGp8D
+         eisg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5eEkZyJuYqDgw3qo/V0uy1CW8YE9RreYkILxojzWYTQ=;
-        b=dpacLMG+M6w57PIJ3D91stOYn7fB1LJpux77T3sWKfH2AceQ5XrbSCniaF/zIPHOaQ
-         d0T55lnb+knhAK/gOT+BykYndjZ7WwqJ7NKu5gm+iVfP0FX5LIIJWPRCRCr2+qWb/Cuf
-         /0/kC/t3IIuJg3ialHS5hQNibiOSbjXH3FXgIUZtkgoAwfksu6ptpfk5UTeuHxjFPAyS
-         tN/DLZ7EUpRTvzONfvPE9DmxOVa2rcJj0J9K6TqnM1MraXw8l/Uah+KlvksnpC3b06GQ
-         uJL2cXLHSnhfOQk+x4ulSUbYzY35bmT2eYFH2nGaUNfmJMfYJStBT4SDDKV+snPzXuso
-         mq9Q==
-X-Gm-Message-State: AOAM531QQ3YUB6/QqTUwySl4BFDy9Fe4IxOROKL/chsHJ+XH6P8NDrP8
-        Owo6Mnhp0BPjGnAnPJLllrw=
-X-Google-Smtp-Source: ABdhPJw3df+uqCkDTrnHagdbtlV3X9OJKGfd7YDfg0VX5HTAdKhJRkl3yzc3MVxzn2rHM0Hfp9x+tA==
-X-Received: by 2002:a05:6402:44b:: with SMTP id p11mr440411edw.164.1605196697966;
-        Thu, 12 Nov 2020 07:58:17 -0800 (PST)
+        bh=Jk5b9nB+oqKMHLVq5uhhdOuhJ71EuKFqGbaLsLlT2HU=;
+        b=FBvkNE/erTeFZSrxBgbq+7EilSNxozq/+VZoTn7CyPt7JbdNn0v+oyiA4tJiA/PJcC
+         y+n0ZTuO7rkT54KvH//dYUTSHgMdCWyGD/WIo+ZWU2pWMI7vjK2k+64clfGYdAiRZ68J
+         H5O82Nn4gG0Eb6PQiDJOvCafeBAGl/ukV0jNYFbZRfynUvwIKvbBMgeDymvoDBd4EMYn
+         /2qOg8AX4SMrrpXoglXkQk7bLiHB8GhJkBNrMDHmZ/fMflR+T+PAlbwFgHzrFba4WlcY
+         3O9q7dgAfoqDcmcb5ryadwPIPugMeP8W4cecewTDC6F2f4x4Msf3XpNJCuVu4w+EAb0X
+         6zZg==
+X-Gm-Message-State: AOAM532hG1tdAFvUqPQ9RShIgMwQN3Slbi1NmxthAnus/zTjIvXW8sIR
+        ufkcw+wT9NfQadIQ1R6Zydo=
+X-Google-Smtp-Source: ABdhPJzs/8iagcffBUJjN8XXYt08i7NJeBt9zI0ZwW6IQitKkqFB8Q+XqF1YSISFTCyt7uX4YYW2hw==
+X-Received: by 2002:a50:9e86:: with SMTP id a6mr419851edf.238.1605196699524;
+        Thu, 12 Nov 2020 07:58:19 -0800 (PST)
 Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q15sm2546540edt.95.2020.11.12.07.58.16
+        by smtp.gmail.com with ESMTPSA id q15sm2546540edt.95.2020.11.12.07.58.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:58:17 -0800 (PST)
+        Thu, 12 Nov 2020 07:58:19 -0800 (PST)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -56,11 +56,11 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH net-next 02/18] net: phy: vitesse: remove the use of .ack_interrupt()
-Date:   Thu, 12 Nov 2020 17:54:57 +0200
-Message-Id: <20201112155513.411604-3-ciorneiioana@gmail.com>
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: [PATCH net-next 03/18] net: phy: microchip: implement generic .handle_interrupt() callback
+Date:   Thu, 12 Nov 2020 17:54:58 +0200
+Message-Id: <20201112155513.411604-4-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201112155513.411604-1-ciorneiioana@gmail.com>
 References: <20201112155513.411604-1-ciorneiioana@gmail.com>
@@ -72,111 +72,101 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-In preparation of removing the .ack_interrupt() callback, we must replace
-its occurrences (aka phy_clear_interrupt), from the 2 places where it is
-called from (phy_enable_interrupts and phy_disable_interrupts), with
-equivalent functionality.
+In an attempt to actually support shared IRQs in phylib, we now move the
+responsibility of triggering the phylib state machine or just returning
+IRQ_NONE, based on the IRQ status register, to the PHY driver. Having
+3 different IRQ handling callbacks (.handle_interrupt(),
+.did_interrupt() and .ack_interrupt() ) is confusing so let the PHY
+driver implement directly an IRQ handler like any other device driver.
+Make this driver follow the new convention.
 
-This means that clearing interrupts now becomes something that the PHY
-driver is responsible of doing, before enabling interrupts and after
-clearing them. Make this driver follow the new contract.
-
-Cc: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Nisar Sayed <Nisar.Sayed@microchip.com>
+Cc: Yuiko Oshino <yuiko.oshino@microchip.com>
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
- drivers/net/phy/vitesse.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+For the lan87xx_handle_interrupt() implementation, I do not know which
+exact bits denote a link change status (since I do not have access to a
+datasheet), so only in this driver's case, the phy state machine is
+triggered if any bit is asserted in the Interrupt status register.
 
-diff --git a/drivers/net/phy/vitesse.c b/drivers/net/phy/vitesse.c
-index 9f6cd6ec9747..16704e243162 100644
---- a/drivers/net/phy/vitesse.c
-+++ b/drivers/net/phy/vitesse.c
-@@ -275,25 +275,14 @@ static int vsc8601_config_init(struct phy_device *phydev)
- 	return 0;
+ drivers/net/phy/microchip.c    | 19 +++++++++++++++++++
+ drivers/net/phy/microchip_t1.c | 19 +++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/drivers/net/phy/microchip.c b/drivers/net/phy/microchip.c
+index a644e8e5071c..b472a2149f08 100644
+--- a/drivers/net/phy/microchip.c
++++ b/drivers/net/phy/microchip.c
+@@ -56,6 +56,24 @@ static int lan88xx_phy_ack_interrupt(struct phy_device *phydev)
+ 	return rc < 0 ? rc : 0;
  }
  
--static int vsc824x_ack_interrupt(struct phy_device *phydev)
--{
--	int err = 0;
--
--	/* Don't bother to ACK the interrupts if interrupts
--	 * are disabled.  The 824x cannot clear the interrupts
--	 * if they are disabled.
--	 */
--	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
--		err = phy_read(phydev, MII_VSC8244_ISTAT);
--
--	return (err < 0) ? err : 0;
--}
--
- static int vsc82xx_config_intr(struct phy_device *phydev)
++static irqreturn_t lan88xx_handle_interrupt(struct phy_device *phydev)
++{
++	int irq_status;
++
++	irq_status = phy_read(phydev, LAN88XX_INT_STS);
++	if (irq_status < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	if (!(irq_status & LAN88XX_INT_STS_LINK_CHANGE_))
++		return IRQ_NONE;
++
++	phy_trigger_machine(phydev);
++
++	return IRQ_HANDLED;
++}
++
+ static int lan88xx_suspend(struct phy_device *phydev)
  {
- 	int err;
+ 	struct lan88xx_priv *priv = phydev->priv;
+@@ -342,6 +360,7 @@ static struct phy_driver microchip_phy_driver[] = {
  
- 	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
-+		/* Don't bother to ACK the interrupts since the 824x cannot
-+		 * clear the interrupts if they are disabled.
-+		 */
- 		err = phy_write(phydev, MII_VSC8244_IMASK,
- 			(phydev->drv->phy_id == PHY_ID_VSC8234 ||
- 			 phydev->drv->phy_id == PHY_ID_VSC8244 ||
-@@ -420,7 +409,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	/* PHY_GBIT_FEATURES */
- 	.config_init    = &vsc824x_config_init,
- 	.config_aneg    = &vsc82x4_config_aneg,
--	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
-@@ -430,7 +418,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	/* PHY_GBIT_FEATURES */
- 	.config_init	= &vsc824x_config_init,
- 	.config_aneg	= &vsc82x4_config_aneg,
--	.ack_interrupt	= &vsc824x_ack_interrupt,
- 	.config_intr	= &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
-@@ -440,7 +427,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	/* PHY_GBIT_FEATURES */
- 	.config_init    = &vsc824x_config_init,
- 	.config_aneg    = &vsc82x4_config_aneg,
--	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
-@@ -449,7 +435,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.phy_id_mask    = 0x000ffff0,
- 	/* PHY_GBIT_FEATURES */
- 	.config_init    = &vsc8601_config_init,
--	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
-@@ -495,7 +480,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	/* PHY_GBIT_FEATURES */
- 	.config_init    = &vsc824x_config_init,
- 	.config_aneg    = &vsc82x4_config_aneg,
--	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
-@@ -505,7 +489,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.name		= "Vitesse VSC8221",
- 	/* PHY_GBIT_FEATURES */
- 	.config_init	= &vsc8221_config_init,
--	.ack_interrupt	= &vsc824x_ack_interrupt,
- 	.config_intr	= &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
-@@ -515,7 +498,6 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.name		= "Vitesse VSC8211",
- 	/* PHY_GBIT_FEATURES */
- 	.config_init	= &vsc8221_config_init,
--	.ack_interrupt	= &vsc824x_ack_interrupt,
- 	.config_intr	= &vsc82xx_config_intr,
- 	.handle_interrupt = &vsc82xx_handle_interrupt,
- } };
+ 	.ack_interrupt	= lan88xx_phy_ack_interrupt,
+ 	.config_intr	= lan88xx_phy_config_intr,
++	.handle_interrupt = lan88xx_handle_interrupt,
+ 
+ 	.suspend	= lan88xx_suspend,
+ 	.resume		= genphy_resume,
+diff --git a/drivers/net/phy/microchip_t1.c b/drivers/net/phy/microchip_t1.c
+index 1c9900162619..04cda8865deb 100644
+--- a/drivers/net/phy/microchip_t1.c
++++ b/drivers/net/phy/microchip_t1.c
+@@ -203,6 +203,24 @@ static int lan87xx_phy_ack_interrupt(struct phy_device *phydev)
+ 	return rc < 0 ? rc : 0;
+ }
+ 
++static irqreturn_t lan87xx_handle_interrupt(struct phy_device *phydev)
++{
++	int irq_status;
++
++	irq_status = phy_read(phydev, LAN87XX_INTERRUPT_SOURCE);
++	if (irq_status < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	if (irq_status == 0)
++		return IRQ_NONE;
++
++	phy_trigger_machine(phydev);
++
++	return IRQ_HANDLED;
++}
++
+ static int lan87xx_config_init(struct phy_device *phydev)
+ {
+ 	int rc = lan87xx_phy_init(phydev);
+@@ -222,6 +240,7 @@ static struct phy_driver microchip_t1_phy_driver[] = {
+ 
+ 		.ack_interrupt  = lan87xx_phy_ack_interrupt,
+ 		.config_intr    = lan87xx_phy_config_intr,
++		.handle_interrupt = lan87xx_handle_interrupt,
+ 
+ 		.suspend        = genphy_suspend,
+ 		.resume         = genphy_resume,
 -- 
 2.28.0
 
