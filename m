@@ -2,122 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24FC2B085E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 881B62B0862
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgKLP1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:27:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32632 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727932AbgKLP1W (ORCPT
+        id S1728648AbgKLP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:27:43 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48262 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727932AbgKLP1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:27:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605194839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EToCEhKZCbY5qYquKZLEYM9Zxm5PVC8drZdaa3o0iK0=;
-        b=PuQBexc5JbCrk+JoA+JCE26rlSNwjZWYKXfp2JIqlFW2U0Q+t88K8pzkGhK0ymQVlV/tGX
-        guXj3F218sMNcTOKRsrx1mh+KaLBihj3UZTh1BqNRC8pfLV3oX1fsv7nFVCpwN4Qbmje18
-        0roGsJf6NJ9LJngCi4+ySlIWN2/yKyM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-219-B1Cr8ad8PiaViZd8iYbO_Q-1; Thu, 12 Nov 2020 10:27:17 -0500
-X-MC-Unique: B1Cr8ad8PiaViZd8iYbO_Q-1
-Received: by mail-wr1-f71.google.com with SMTP id p16so2095167wrx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:27:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=EToCEhKZCbY5qYquKZLEYM9Zxm5PVC8drZdaa3o0iK0=;
-        b=t+D9FhdJ61Ib1bQ1XbmwrTPtySLoK8GAprrrRzUETWRsbActDrTaae2E+0F+zF5Yre
-         TIyCPiEL9jBimmEqYbs2Q33XYtB8DvQM4+2d7mCUdjopzUR+c7eRnhACrkGhtZFjMC4n
-         KvhcVMBD5nzVFXvKlfOMD4qv2wbXp/sY9OAganlp3c8GUPg23QyTYDy0l0uD6z9c0Lba
-         21wGvbcypY5Z2PS6q0X7+9mheCS+b6ZqgmezaSGOxss7pqsjM8h9chCwrm/GYV1DcYLN
-         Vx7LUwIar9ooGYFEXnYLs/gI/D9xwI1AGNqTOuWETuiMrQngzOrfBCe8uN2eD7nvuJS+
-         YA+w==
-X-Gm-Message-State: AOAM531LKGW+udkR4qEFh7rfcC8MUuq2sYg2B/Oe8A6uNaaUVJKaDMNY
-        nQj++rnE78moJtw9/Td0rLjQ0e2OzZzgmC6c7LEkBZ6B5M3EmhLPy1U8FQBA+2+esE1bUnDP6+Z
-        0MNXyn8jn2lROI/uzCY9X1vpz
-X-Received: by 2002:adf:e44f:: with SMTP id t15mr57351wrm.380.1605194836252;
-        Thu, 12 Nov 2020 07:27:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwAEjBmoTH4/mr7/4f2REbvjuU/hHE1H+2TbgcnFk0M+o34TM33nSDmKd9yjYVLC54SujLB8w==
-X-Received: by 2002:adf:e44f:: with SMTP id t15mr57335wrm.380.1605194836113;
-        Thu, 12 Nov 2020 07:27:16 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id a9sm7378333wrp.21.2020.11.12.07.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:27:15 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-Subject: Re: [PATCH v2 04/17] iommu/hyperv: don't setup IRQ remapping when
- running as root
-In-Reply-To: <20201105165814.29233-5-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-5-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 16:27:14 +0100
-Message-ID: <87ft5ey4rx.fsf@vitty.brq.redhat.com>
+        Thu, 12 Nov 2020 10:27:43 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 417D3803017D;
+        Thu, 12 Nov 2020 15:27:41 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id IeRGtuy7iSgB; Thu, 12 Nov 2020 18:27:40 +0300 (MSK)
+Date:   Thu, 12 Nov 2020 18:27:39 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201112152739.r4673zyeixkcwukx@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+ <20201110113827.hl5i27cpl6exo3md@mobilestation>
+ <20201110163556.3e3423f6@xps13>
+ <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+ <20201112092715.7e466405@xps13>
+ <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+Hello Vignesh
 
-> The IOMMU code needs more work. We're sure for now the IRQ remapping
-> hooks are not applicable when Linux is the root.
+On Thu, Nov 12, 2020 at 08:30:42PM +0530, Vignesh Raghavendra wrote:
+> 
+> 
+> On 11/12/20 1:57 PM, Miquel Raynal wrote:
+> > Hi Sergey,
+> > 
+> > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
+> > 2020 22:22:59 +0300:
+> > 
+> >> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:
+> >>> Hi Serge,
+> >>>
+> >>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
+> >>> 2020 14:38:27 +0300:
+> >>>   
+> >>>> Hello Miquel,
+> >>>>
+> >>>> A situation noted by the warning below won't cause any problem because
+> >>>> the casting is done to a non-dereferenced variable. It is utilized
+> >>>> as a pointer bias later in that function. Shall we just ignore the
+> >>>> warning or still fix it somehow?  
+> >>>   
+> >>
+> >>> Do you think the cast to a !__iomem value is mandatory here?  
+> >>
+> >> It's not mandatory to have the casting with no __iomem, but wouldn't
+> >> doing like this:
+> >> + 	shift = (ssize_t __iomem)src & 0x3;
+> >> be looking weird? Really, is there a good way to somehow extract the first
+> >> two bits of a __iomem pointer without getting the sparse warning?
+> > 
+> > I asked around me, what about trying uintptr_t?
+> > 
+> 
 
-Super-nitpick: I would suggest we always say 'root partition' as 'root'
-has a 'slightly different' meaning in Linux and this commit message may
-sound confusing to an unprepared reader.
+> One more way is to use __force to tell sparse that this casting is
+> intentional:
+> 
+>        shift = (__force ssize_t)src & 0x3;
 
->
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> Acked-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  drivers/iommu/hyperv-iommu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-> index e09e2d734c57..8d3ce3add57d 100644
-> --- a/drivers/iommu/hyperv-iommu.c
-> +++ b/drivers/iommu/hyperv-iommu.c
-> @@ -20,6 +20,7 @@
->  #include <asm/io_apic.h>
->  #include <asm/irq_remapping.h>
->  #include <asm/hypervisor.h>
-> +#include <asm/mshyperv.h>
->  
->  #include "irq_remapping.h"
->  
-> @@ -143,7 +144,7 @@ static int __init hyperv_prepare_irq_remapping(void)
->  	int i;
->  
->  	if (!hypervisor_is_type(X86_HYPER_MS_HYPERV) ||
-> -	    !x2apic_supported())
-> +	    !x2apic_supported() || hv_root_partition)
->  		return -ENODEV;
->  
->  	fn = irq_domain_alloc_named_id_fwnode("HYPERV-IR", 0);
+Oh, great! That solution is actually much better than using some
+currently unexplained sparse peculiarity! I was thinking about applying
+some other attribute, but __force just didn't come to my mind. Thank
+you very much for the suggestion. I'll post the fix with the solution
+suggested by you.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+-Sergey
 
--- 
-Vitaly
-
+> 
+> 
+> > Thanks,
+> > Miquèl
+> > 
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > 
