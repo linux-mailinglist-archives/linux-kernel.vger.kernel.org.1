@@ -2,71 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB8F2B01E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071E32B01E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgKLJS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:18:27 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42017 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726028AbgKLJS0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:18:26 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-158-m1HELxZiPqWeLTpHkzyMew-1; Thu, 12 Nov 2020 09:18:22 +0000
-X-MC-Unique: m1HELxZiPqWeLTpHkzyMew-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 12 Nov 2020 09:18:21 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 12 Nov 2020 09:18:21 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Rostedt' <rostedt@goodmis.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [for-next][PATCH 12/17] fgraph: Make overruns 4 bytes in graph
- stack structure
-Thread-Topic: [for-next][PATCH 12/17] fgraph: Make overruns 4 bytes in graph
- stack structure
-Thread-Index: AQHWuJR2c5B6TfjjKUaXE5SkSnLH0KnEN84Q
-Date:   Thu, 12 Nov 2020 09:18:21 +0000
-Message-ID: <aabe0dd1fd7b46aaaadb2b34912b6718@AcuMS.aculab.com>
-References: <20201112003244.764326960@goodmis.org>
- <20201112003334.906341178@goodmis.org>
-In-Reply-To: <20201112003334.906341178@goodmis.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726671AbgKLJVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:21:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:44954 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbgKLJVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:21:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75FE0139F;
+        Thu, 12 Nov 2020 01:21:49 -0800 (PST)
+Received: from [10.57.23.123] (unknown [10.57.23.123])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACE453F73C;
+        Thu, 12 Nov 2020 01:21:47 -0800 (PST)
+Subject: Re: [RFC 02/11] coresight: etm-perf: Allow an event to use different
+ sinks
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, Linu Cherian <lcherian@marvell.com>,
+        Linu Cherian <linuc.decode@gmail.com>
+References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
+ <1605012309-24812-3-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
+Date:   Thu, 12 Nov 2020 09:21:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <1605012309-24812-3-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU3RldmVuIFJvc3RlZHQNCj4gU2VudDogMTIgTm92ZW1iZXIgMjAyMCAwMDozMw0KPiAN
-Cj4gSW5zcGVjdGluZyB0aGUgZGF0YSBzdHJ1Y3R1cmVzIG9mIHRoZSBmdW5jdGlvbiBncmFwaCB0
-cmFjZXIsIEkgZm91bmQgdGhhdA0KPiB0aGUgb3ZlcnJ1biB2YWx1ZSBpcyB1bnNpZ25lZCBsb25n
-LCB3aGljaCBpcyA4IGJ5dGVzIG9uIGEgNjQgYml0IG1hY2hpbmUsDQo+IGFuZCBub3Qgb25seSB0
-aGF0LCB0aGUgZGVwdGggaXMgYW4gaW50ICg0IGJ5dGVzKS4gVGhlIG92ZXJydW4gY2FuIGJlIHNp
-bXBseQ0KPiBhbiB1bnNpZ25lZCBpbnQgKDQgYnl0ZXMpIGFuZCBwYWNrIHRoZSBmdHJhY2VfZ3Jh
-cGhfcmV0IHN0cnVjdHVyZSBiZXR0ZXIuDQo+IA0KPiBUaGUgZGVwdGggaXMgbW92ZWQgdXAgbmV4
-dCB0byB0aGUgZnVuYywgYXMgaXQgaXMgdXNlZCBtb3JlIG9mdGVuIHdpdGggZnVuYywNCj4gYW5k
-IGltcHJvdmVzIGNhY2hlIGxvY2FsaXR5Lg0KLi4uDQo+ICB9IF9fcGFja2VkOw0KDQpEb2VzIHRo
-aXMgbWFueSBhbnkvbXVjaCBkaWZmZXJlbmNlIGdpdmVuIHRoYXQgdGhlIHN0cnVjdHVyZSBpcw0K
-bWFya2VkIF9fcGFja2VkPw0KDQpPVE9IIHRoZSBfX3BhY2tlZCB3aWxsIChwcm9iYWJseSkga2ls
-bCBwZXJmb3JtYW5jZSBvbiBzeXN0ZW1zDQp0aGF0IGRvbid0IHN1cHBvcnQgbWlzLWFsaWduZWQg
-YWNjZXNzZXMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJy
-YW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lz
-dHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+Hi Linu,
+
+Please could you test this slightly modified version and give us
+a Tested-by tag if you are happy with the results ?
+
+Suzuki
+
+
+On 11/10/20 12:45 PM, Anshuman Khandual wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> When there are multiple sinks on the system, in the absence
+> of a specified sink, it is quite possible that a default sink
+> for an ETM could be different from that of another ETM. However
+> we do not support having multiple sinks for an event yet. This
+> patch allows the event to use the default sinks on the ETMs
+> where they are scheduled as long as the sinks are of the same
+> type.
+> 
+> e.g, if we have 1x1 topology with per-CPU ETRs, the event can
+> use the per-CPU ETR for the session. However, if the sinks
+> are of different type, e.g TMC-ETR on one and a custom sink
+> on another, the event will only trace on the first detected
+> sink.
+> 
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   drivers/hwtracing/coresight/coresight-etm-perf.c | 50 ++++++++++++++++++------
+>   1 file changed, 39 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index c2c9b12..ea73cfa 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -204,14 +204,22 @@ static void etm_free_aux(void *data)
+>   	schedule_work(&event_data->work);
+>   }
+>   
+> +static bool sinks_match(struct coresight_device *a, struct coresight_device *b)
+> +{
+> +	if (!a || !b)
+> +		return false;
+> +	return (sink_ops(a) == sink_ops(b));
+> +}
+> +
+>   static void *etm_setup_aux(struct perf_event *event, void **pages,
+>   			   int nr_pages, bool overwrite)
+>   {
+>   	u32 id;
+>   	int cpu = event->cpu;
+>   	cpumask_t *mask;
+> -	struct coresight_device *sink;
+> +	struct coresight_device *sink = NULL;
+>   	struct etm_event_data *event_data = NULL;
+> +	bool sink_forced = false;
+>   
+>   	event_data = alloc_event_data(cpu);
+>   	if (!event_data)
+> @@ -222,6 +230,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>   	if (event->attr.config2) {
+>   		id = (u32)event->attr.config2;
+>   		sink = coresight_get_sink_by_id(id);
+> +		sink_forced = true;
+>   	}
+>   
+>   	mask = &event_data->mask;
+> @@ -235,7 +244,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>   	 */
+>   	for_each_cpu(cpu, mask) {
+>   		struct list_head *path;
+> -		struct coresight_device *csdev;
+> +		struct coresight_device *csdev, *new_sink;
+>   
+>   		csdev = per_cpu(csdev_src, cpu);
+>   		/*
+> @@ -249,21 +258,35 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>   		}
+>   
+>   		/*
+> -		 * No sink provided - look for a default sink for one of the
+> -		 * devices. At present we only support topology where all CPUs
+> -		 * use the same sink [N:1], so only need to find one sink. The
+> -		 * coresight_build_path later will remove any CPU that does not
+> -		 * attach to the sink, or if we have not found a sink.
+> +		 * No sink provided - look for a default sink for all the devices.
+> +		 * We only support multiple sinks, only if all the default sinks
+> +		 * are of the same type, so that the sink buffer can be shared
+> +		 * as the event moves around. We don't trace on a CPU if it can't
+> +		 *
+>   		 */
+> -		if (!sink)
+> -			sink = coresight_find_default_sink(csdev);
+> +		if (!sink_forced) {
+> +			new_sink = coresight_find_default_sink(csdev);
+> +			if (!new_sink) {
+> +				cpumask_clear_cpu(cpu, mask);
+> +				continue;
+> +			}
+> +			/* Skip checks for the first sink */
+> +			if (!sink) {
+> +				sink = new_sink;
+> +			} else if (!sinks_match(new_sink, sink)) {
+> +				cpumask_clear_cpu(cpu, mask);
+> +				continue;
+> +			}
+> +		} else {
+> +			new_sink = sink;
+> +		}
+>   
+>   		/*
+>   		 * Building a path doesn't enable it, it simply builds a
+>   		 * list of devices from source to sink that can be
+>   		 * referenced later when the path is actually needed.
+>   		 */
+> -		path = coresight_build_path(csdev, sink);
+> +		path = coresight_build_path(csdev, new_sink);
+>   		if (IS_ERR(path)) {
+>   			cpumask_clear_cpu(cpu, mask);
+>   			continue;
+> @@ -284,7 +307,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>   	if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
+>   		goto err;
+>   
+> -	/* Allocate the sink buffer for this session */
+> +	/*
+> +	 * Allocate the sink buffer for this session. All the sinks
+> +	 * where this event can be scheduled are ensured to be of the
+> +	 * same type. Thus the same sink configuration is used by the
+> +	 * sinks.
+> +	 */
+>   	event_data->snk_config =
+>   			sink_ops(sink)->alloc_buffer(sink, event, pages,
+>   						     nr_pages, overwrite);
+> 
 
