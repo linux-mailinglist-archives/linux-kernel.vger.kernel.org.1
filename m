@@ -2,102 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BC92B0766
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E392B0768
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgKLOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLOPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:15:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E67C0613D1;
-        Thu, 12 Nov 2020 06:15:23 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605190521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JDqpKAUrItpHlbE5XWwW32ZAnSVkMvadrlti6qz8qYg=;
-        b=VoYtF8BI7RLcnvT3P0hzVSJo32ng+9NyUF+JXWg9Pn+C/ZBbgYLROeCmx7sFdyFUT46rJ8
-        CMgvz9C2LahmdePRNxCLbS0p64AoaEaNgwcwXHWd1keRONGI8MFHJ3BTtaKmpHo4I0TWZ2
-        vAwHFQ7z9N2nz7aWk4kT7ClUADpdz1eCBBAilOODAeqO0AZvlmYSQAnqlKbuHY09FRhMD2
-        leUg6Jii4k/Ama8r+Y8t9/x03N3KxlA/ZHF/uovVa8YZaKOZmppCgQROOI9hCdwFYpcd5N
-        /gbLBb+JfH8XDmNEGF6gpfuInPulOkmBNtKHQDfQhVyp4CGcjfioiM8ZPO62Vw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605190521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JDqpKAUrItpHlbE5XWwW32ZAnSVkMvadrlti6qz8qYg=;
-        b=rHy7YOjnh3ZoFKx73oTAYHW5ZZpTYL59dAo5H0GGx5XK+D91l/tZPlDTpXltpPSMTfhgqa
-        5GykZaJPuBPhNnCQ==
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: REGRESSION: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
-In-Reply-To: <20201112125531.GA873287@nvidia.com>
-References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com>
-Date:   Thu, 12 Nov 2020 15:15:21 +0100
-Message-ID: <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1728275AbgKLOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:15:34 -0500
+Received: from mga17.intel.com ([192.55.52.151]:14341 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727789AbgKLOP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:15:29 -0500
+IronPort-SDR: Rx28Eve7ZMCNB3YzWwTVwnGkw7PZkyA8QZwB9m4zwZO4vdidgsn1d7oabV+2HTryZJM1UxabA0
+ kIpue2dqmneQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="150163148"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="150163148"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 06:15:25 -0800
+IronPort-SDR: s8rxsRXK1cFn2oZjjvVmsxFBiNYEMV20zFCcSdeFED5g63tPAcy+qKR2qf6xO7ketWpSXkv+6v
+ NaD+VuUB8jDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="366346571"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Nov 2020 06:15:25 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 12 Nov 2020 06:15:24 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 12 Nov 2020 06:15:24 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 12 Nov 2020 06:15:24 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 12 Nov 2020 06:15:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NHdVldrwd9lanYwsmEPxdAPbtf5SWthZgCqGNxvc4m1uSn2HQw+LP9B9F2Wgd4Ynoz4pRolnZEanlVCZl5gjfAqBZt5uTIG9qxGBljTg2kbgyFZWTOp+4mhRW2tFZtHZ/uUeXGdxeDpjpO//FAl4TU/IJD7ZGE3N2M/1I2gMVU8plseqoldyQ3avj4SuPeRIqFohAeWAav7bsvmEPhxRjXU9yhp8p9cF90eTjO1F1tGx1rwbH1xamztvHMoaRgl5Bc/hnQPJhUbnEJ9tpBCWf82Sn2gc4tTPHOJkG344NP5bhYBMmZflkBn6WxGzIZmtfKvNIdV5oGXDUb+bvrOpiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r3OsQCsVDybpD5l4DjLHi+alvCUOqxjYhXU89NheJnk=;
+ b=ITGdUECfCb0w9xau3fq9Gn0o07y7bRLj6mvDERnOaBHwtlzW31AzgLeZ8aHd8GYk3uu3i9bG0KaRjGX/VUC7kmNgc9fwHbvE2n9gY27iBSBwCDaOMYF+peG7ZBo8S3zE2pteIJs5Afnff3iNLl8rf944QxY0wNS/wmmEskj1fiwIgx05deQwEhf3ew9DSCLbU+69LDKVTYsL/zKpx2qpNSZVBu0Iby511hNq7p6iekFDEgMGexP+Uv4ccFy7BmjFNIWJvCf8kUuhEVuz5j+aZcaBlXd1UuvpwfwMwDxWWyqkxVC2nN/lNAP8gC+62fHw216ygOKcNWhN1rRACavyWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r3OsQCsVDybpD5l4DjLHi+alvCUOqxjYhXU89NheJnk=;
+ b=MN36WTm8M9EBxcUab5zVA2ET6GS+cDIziNJ1XcUlqcHrvkpvjkcSKWGJVKaBn7bsyBpoI6So03SHFZHorquh1D4FpMHnj9Z99khXI9TY2ggsrwKaAQj1PuA9aXxOWDitH6RlrKghGx7gtff1jq/jD+b4D2nxG8ylmQ/YIFUYN7c=
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com (2603:10b6:5:c1::16) by
+ DM6PR11MB2683.namprd11.prod.outlook.com (2603:10b6:5:c6::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3541.21; Thu, 12 Nov 2020 14:15:21 +0000
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c]) by DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c%5]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
+ 14:15:21 +0000
+From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+To:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "david.e.box@linux.intel.com" <david.e.box@linux.intel.com>
+Subject: RE: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
+ Bay SOC
+Thread-Topic: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
+ Bay SOC
+Thread-Index: AQHWs/K3a7OdWbCL/0u2ZlSWuFDlTKnEkdJQ
+Date:   Thu, 12 Nov 2020 14:15:21 +0000
+Message-ID: <DM6PR11MB28761F437576935AFC60328FB8E70@DM6PR11MB2876.namprd11.prod.outlook.com>
+References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
+In-Reply-To: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [42.189.188.113]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0192bc22-0410-4660-fa36-08d8871563fe
+x-ms-traffictypediagnostic: DM6PR11MB2683:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB26838AFE73D4293F176B75BAB8E70@DM6PR11MB2683.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vl0fNVyMzaIU+sQiveuSGmmCZADddlXH9/zdC8nTYOQUus0zeZ3aBhMrwk0RUKMlp5q/fmgHcwD7S0eypO4HYDriAkh8ltZ3kzI/43QRq6ujXwM2g9SiFk937RgtbjbNZO9XhKFepWpNJmtC+5htIRICF8CPZODAYp30rEbIw7admJZzlIEchrap4bQK3BVzlzx4CTxh6PrFoDYcOHH85gZMni5XEVXeYccN+9jyEU+mqEZyOJ6Hsi3e9YkUCLo12ZLW21Ga5O7SWgvUOulpudAnDMVMzc3KikKuQW041E1vwXxtPiwis0EEj0U+5/Ka8CSxQya5ROxwXjDSDYrR3PIVCMnaBrKhHlbDaFd5grrP/JrL4IQ0BAe94iPwUztK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2876.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(396003)(346002)(110136005)(55016002)(2906002)(7696005)(76116006)(66556008)(316002)(5660300002)(4326008)(66446008)(4744005)(186003)(6506007)(83380400001)(8676002)(86362001)(9686003)(64756008)(66946007)(478600001)(52536014)(71200400001)(54906003)(8936002)(26005)(33656002)(66476007)(142923001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: HxQYtPUM5frlWkxyiEUmz5KWiMRQpDVtlI1oJeOTKYJeR61ZJsbvDT4DCIdraR2ED4F9I+Xi9JBwCame383fKUk30ADitsI8vhHbgzQUAITS9xM4eRjIE8Mo0vcdwB5mWiOUPx8/V/1VDhewwAe+EnWgnKXWBbas4WsRs9c8ci9apFnyfjKts+x3Ui29cD+/GjE2IN2qClmX+Gsk0d4GhHHowqWqlitKI6/YU7cu5jtifDSzvbAsvwSqn56Mxqt3d1ARdU2xjX5h2mVG4ZCZicnIyhvtMaHx1VgdB5j2D1a81h6qEtkyBZ3EinT+cmvvWTtrvks10oO11g6kt4aYRsgtSmpwjNB/6p/HwqbIZs/8HgWTEd/LbomMApa8cCzVsMdUj3O8S+KAOwYpKUI4UsiacR43U+7p1FokHzfBLyYSjpNOG/Ws0sgLStgLtbSAlX56SfW5NPjxoyu9JwHt8nEwPR/8PKGduZbFutmTWtGd5+WS2dOcY26zxJ65Ns6uUcT/6LCPsK1GHY0h73utJtzT2lZufUlBBRNJtTWV9fkn0tafE4Q7QkiJFMOBNstZ+zwy/wVnWV3fcFcmXOlodextcYExMNH9bLsl1qXbSjQ3myKL8mIdKlTELRfspYo/crWYbNfVGpG+k+zyp90MVl9CI2jlu+BzNKW5U8aoQG+H0nylFr2C/AEMOiPk+Pzc7jZEUGU0eZFZG6+yjQTu5or5CwxW9vEhEXNiOWMWyFDklCl2OALwWpcRvP1ZAzDXDFHbGVbdPUTtrD8KtEVTXWddPQkc5G0H0n13IHngSDr66IKrGVykI0eV6ILCTDh4AB7cb98nyQCv+H2DIrSpj/j4m81za703F4LDsAJp5DbZ1frLnI5Vr3oEe/t5dZwHQusbK3hv/Llp8swmyXoiqg==
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2876.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0192bc22-0410-4660-fa36-08d8871563fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 14:15:21.3693
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DjHRQyCzKjlx+rOBbtIJS8biJ7vqhD7eQPHgLeAvJLs1BEv7DdrNrpFT/IACe6I3SnpMDYUAWQ6icaYD+hVglTkv6gi3L/GzyCwA3C+rf0h2b2b7ZZWZSiu44p0GtV+u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2683
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason,
+Hi,
 
-(trimmed CC list a bit)
+I would appreciate hearing your opinion/review  on this patch.
 
-On Thu, Nov 12 2020 at 08:55, Jason Gunthorpe wrote:
-> On Wed, Aug 26, 2020 at 01:16:28PM +0200, Thomas Gleixner wrote:
-> They were unable to bisect further into the series because some of the
-> interior commits don't boot :(
+Thanks=20
+
+>-----Original Message-----
+>From: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+>Sent: Friday, November 6, 2020 8:10 PM
+>To: linux-mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux=
+-
+>kernel@vger.kernel.org
+>Cc: Hunter, Adrian <adrian.hunter@intel.com>; Raja Subramanian, Lakshmi
+>Bai <lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
+>Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Zulkifli, Muhammad
+>Husaini <muhammad.husaini.zulkifli@intel.com>;
+>david.e.box@linux.intel.com
+>Subject: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem Ba=
+y
+>SOC
 >
-> When we try to load the mlx5 driver on a bare metal VF it gets this:
+>From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 >
-> [Thu Oct 22 08:54:51 2020] DMAR: DRHD: handling fault status reg 2
-> [Thu Oct 22 08:54:51 2020] DMAR: [INTR-REMAP] Request device [42:00.2] fa=
-ult index 1600 [fault reason 37] Blocked a compatibility format interrupt r=
-equest
-> [Thu Oct 22 08:55:04 2020] mlx5_core 0000:42:00.1 eth4: Link down
-> [Thu Oct 22 08:55:11 2020] mlx5_core 0000:42:00.1 eth4: Link up
-> [Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: mlx5_cmd_eq_recover:26=
-4:(pid 3390): Recovered 1 EQEs on cmd_eq
-> [Thu Oct 22 08:55:54 2020] mlx5_core 0000:42:00.2: wait_func_handle_exec_=
-timeout:1051:(pid 3390): cmd0: CREATE_EQ(0=C3=83=C2=97301) recovered after =
-timeout
-> [Thu Oct 22 08:55:54 2020] DMAR: DRHD: handling fault status reg 102
-> [Thu Oct 22 08:55:54 2020] DMAR: [INTR-REMAP] Request device [42:00.2] fa=
-ult index 1600 [fault reason 37] Blocked a compatibility format interrupt r=
-equest
+>Hi.
 >
-> If you have any idea Ziyad and Itay can run any debugging you like.
+>This patch declares the .clk_ops for Keem Bay SOC due to the introduction =
+of
+>new clock operations handling.
 >
-> I suppose it is because this series is handing out compatability
-> addr/data pairs while the IOMMU is setup to only accept remap ones
-> from SRIOV VFs?
-
-So the issue seems to be that the VF device has the default irq domain
-assigned and not the remapping domain. Let me stare into the code to see
-how these VF devices are set up and registered with the IOMMU/remap
-unit.
-
-Thanks,
-
-        tglx
+>This was tested with Keem Bay evaluation module board.
+>
+>Kindly help to review it.
+>
+>Thank you.
+>
+>Muhammad Husaini Zulkifli (1):
+>  mmc: sdhci-of-arasan: Specify .clk_ops for Keem Bay SOC
+>
+> drivers/mmc/host/sdhci-of-arasan.c | 3 +++
+> 1 file changed, 3 insertions(+)
+>
+>--
+>2.17.1
 
