@@ -2,58 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745342B0210
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233CB2B0214
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbgKLJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgKLJiC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:38:02 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92295C0613D1;
-        Thu, 12 Nov 2020 01:38:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cnWNfTHVU4AEXtUdky7SzwT/9uPYUSiJsLa4+lGu8a8=; b=TS+osSOLMCGS4fDhHQTgjKOJng
-        BYlhxXc3gLOHA83cYAk937kLntXcC6InGwuROC6f3+DNXtadbsoCtWKcuJq+4QHBcbLIDJXRnhv3O
-        TgwYa19YZrdoay+00fILS+4mXPV1zn86DlTvKunG6818dlenu1z6R3vqxPitwFciMy3bGiQGufPJV
-        f85noQ79w/nqcaXyIVlVKqbi3tUtgKvqyDQXPbTV+4lGzFZl0h/X1Ata7YI/5k7OM45eG+xWULmyy
-        Ae6xOmkLS4xDI8cDZW7qMIiesvh1sXT1IzJFPRfrYe107Ic/sVtMZqYTGKf16h6YLtppwPKFPMdAy
-        wnh82Y0g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kd93A-0006O5-8p; Thu, 12 Nov 2020 09:37:52 +0000
-Date:   Thu, 12 Nov 2020 09:37:52 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 1/6] ibmvfc: byte swap login_buf.resp values in attribute
- show functions
-Message-ID: <20201112093752.GA24235@infradead.org>
-References: <20201112010442.102589-1-tyreld@linux.ibm.com>
+        id S1727234AbgKLJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:39:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbgKLJjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:39:14 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9041221D40;
+        Thu, 12 Nov 2020 09:39:11 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 09:39:09 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 32/44] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+Message-ID: <20201112093908.GE29613@gaia>
+References: <cover.1605046192.git.andreyknvl@google.com>
+ <25401c15dc19c7b672771f5b49a208d6e77bfeb5.1605046192.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112010442.102589-1-tyreld@linux.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <25401c15dc19c7b672771f5b49a208d6e77bfeb5.1605046192.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 07:04:37PM -0600, Tyrel Datwyler wrote:
-> Both ibmvfc_show_host_(capabilities|npiv_version) functions retrieve
-> values from vhost->login_buf.resp buffer. This is the MAD response
-> buffer from the VIOS and as such any multi-byte non-string values are in
-> big endian format.
-> 
-> Byte swap these values to host cpu endian format for better human
-> readability.
+On Tue, Nov 10, 2020 at 11:10:29PM +0100, Andrey Konovalov wrote:
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 664c968dc43c..dbda6598c19d 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -129,6 +131,26 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>  	return ptr;
+>  }
+>  
+> +void mte_init_tags(u64 max_tag)
+> +{
+> +	static bool gcr_kernel_excl_initialized = false;
+> +
+> +	if (!gcr_kernel_excl_initialized) {
+> +		/*
+> +		 * The format of the tags in KASAN is 0xFF and in MTE is 0xF.
+> +		 * This conversion extracts an MTE tag from a KASAN tag.
+> +		 */
+> +		u64 incl = GENMASK(FIELD_GET(MTE_TAG_MASK >> MTE_TAG_SHIFT,
+> +					     max_tag), 0);
+> +
+> +		gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+> +		gcr_kernel_excl_initialized = true;
+> +	}
+> +
+> +	/* Enable the kernel exclude mask for random tags generation. */
+> +	write_sysreg_s(SYS_GCR_EL1_RRND | gcr_kernel_excl, SYS_GCR_EL1);
+> +}
 
-The whole series creates tons of pointlessly over 80 char lines.
-Please do a quick fixup.
+I don't think this function belongs to this patch. There is an earlier
+patch that talks about mte_init_tags() but no trace of it until this
+patch.
+
+-- 
+Catalin
