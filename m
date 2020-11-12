@@ -2,131 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF0C2B07E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A37A2B07E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgKLOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:55:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:52346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728467AbgKLOzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:55:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0C96139F;
-        Thu, 12 Nov 2020 06:55:17 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5C643F73C;
-        Thu, 12 Nov 2020 06:55:16 -0800 (PST)
-Date:   Thu, 12 Nov 2020 14:55:14 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        LAKML <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/2] arm64: cpufeature: Add GIC CPUIF v4.1 detection
-Message-ID: <20201112145514.GB24454@e121166-lin.cambridge.arm.com>
-References: <20201111162841.3151-1-lorenzo.pieralisi@arm.com>
- <20201111162841.3151-2-lorenzo.pieralisi@arm.com>
- <89291c496e6e868c442f5763db53d22d@kernel.org>
+        id S1728498AbgKLOz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:55:59 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7224 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgKLOz7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:55:59 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX4R30KNVzkgRp;
+        Thu, 12 Nov 2020 22:55:43 +0800 (CST)
+Received: from localhost (10.174.176.180) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 12 Nov 2020
+ 22:55:50 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <olteanv@gmail.com>, <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] net: dsa: sja1105: Fix return value check in sja1105_ptp_clock_register()
+Date:   Thu, 12 Nov 2020 22:55:32 +0800
+Message-ID: <20201112145532.38320-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89291c496e6e868c442f5763db53d22d@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.174.176.180]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:20:08AM +0000, Marc Zyngier wrote:
-> On 2020-11-11 16:28, Lorenzo Pieralisi wrote:
-> > GIC v4.1 introduced changes to the GIC CPU interface; systems that
-> > integrate CPUs that do not support GIC v4.1 features (as reported in
-> > the
-> > ID_AA64PFR0_EL1.GIC bitfield) and a GIC v4.1 controller must disable in
-> > software virtual SGIs support since the CPUIF and GIC controller
-> > version
-> > mismatch results in CONSTRAINED UNPREDICTABLE behaviour at
-> > architectural
-> > level.
-> > 
-> > Add a cpufeature and related capability to detect GIC v4.1 CPUIF
-> > features so that the GIC driver can probe it to detect GIC CPUIF
-> > hardware configuration and take action accordingly.
-> > 
-> > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > ---
-> >  arch/arm64/include/asm/cpucaps.h |  3 ++-
-> >  arch/arm64/kernel/cpufeature.c   | 10 ++++++++++
-> >  2 files changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/cpucaps.h
-> > b/arch/arm64/include/asm/cpucaps.h
-> > index 42868dbd29fd..35ef0319f422 100644
-> > --- a/arch/arm64/include/asm/cpucaps.h
-> > +++ b/arch/arm64/include/asm/cpucaps.h
-> > @@ -65,7 +65,8 @@
-> >  #define ARM64_HAS_ARMv8_4_TTL			55
-> >  #define ARM64_HAS_TLB_RANGE			56
-> >  #define ARM64_MTE				57
-> > +#define ARM64_HAS_GIC_CPUIF_VSGI		58
-> > 
-> > -#define ARM64_NCAPS				58
-> > +#define ARM64_NCAPS				59
-> > 
-> >  #endif /* __ASM_CPUCAPS_H */
-> > diff --git a/arch/arm64/kernel/cpufeature.c
-> > b/arch/arm64/kernel/cpufeature.c
-> > index dcc165b3fc04..9eabbaddfe5e 100644
-> > --- a/arch/arm64/kernel/cpufeature.c
-> > +++ b/arch/arm64/kernel/cpufeature.c
-> > @@ -2136,6 +2136,16 @@ static const struct arm64_cpu_capabilities
-> > arm64_features[] = {
-> >  		.cpu_enable = cpu_enable_mte,
-> >  	},
-> >  #endif /* CONFIG_ARM64_MTE */
-> > +	{
-> > +		.desc = "GIC CPUIF virtual SGI",
-> 
-> nit: that's not really what this feature is. It only means that the
-> sysreg interface complies to v4.1. Which on its own is totally rubbish,
-> because the sysreg don't change behaviour between 3.0/4.0 and 4.1.
+drivers/net/dsa/sja1105/sja1105_ptp.c:869 sja1105_ptp_clock_register() warn: passing zero to 'PTR_ERR'
 
-True.
+ptp_clock_register() returns ERR_PTR() and never returns
+NULL. The NULL test should be removed.
 
-> > +		.capability = ARM64_HAS_GIC_CPUIF_VSGI,
-> > +		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
-> > +		.matches = has_cpuid_feature,
-> > +		.sys_reg = SYS_ID_AA64PFR0_EL1,
-> > +		.field_pos = ID_AA64PFR0_GIC_SHIFT,
-> > +		.sign = FTR_UNSIGNED,
-> > +		.min_field_value = 3,
-> > +	},
-> 
-> Do we really need a new cap for that? Or can we rely on simply looking
-> at the sanitised feature set? I'm not overly keen on advertising a
-> feature
-> at CPU boot time if we discover later on that we cannot use it because
-> all
-> we have in a non-4.1 GIC.
+Fixes: bb77f36ac21d ("net: dsa: sja1105: Add support for the PTP clock")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/dsa/sja1105/sja1105_ptp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes I thought about that, posted exactly to get this feedback.
+diff --git a/drivers/net/dsa/sja1105/sja1105_ptp.c b/drivers/net/dsa/sja1105/sja1105_ptp.c
+index 1b90570b257b..1e41d491c854 100644
+--- a/drivers/net/dsa/sja1105/sja1105_ptp.c
++++ b/drivers/net/dsa/sja1105/sja1105_ptp.c
+@@ -865,7 +865,7 @@ int sja1105_ptp_clock_register(struct dsa_switch *ds)
+ 	spin_lock_init(&tagger_data->meta_lock);
+ 
+ 	ptp_data->clock = ptp_clock_register(&ptp_data->caps, ds->dev);
+-	if (IS_ERR_OR_NULL(ptp_data->clock))
++	if (IS_ERR(ptp_data->clock))
+ 		return PTR_ERR(ptp_data->clock);
+ 
+ 	ptp_data->cmd.corrclk4ts = true;
+-- 
+2.17.1
 
-You have a point. It is also wrong to force secondaries to die if
-they mismatch with the boot CPU without knowing what *actual* GIC
-controller we have in the system.
-
-> Another thing is that we currently assume that *all* CPUs will be the
-> same
-> at the point where we setup the GIC (we only have a single CPU booted at
-> that
-> point).
-
-Yes - we would taint (?) if that's not the case right ? So using a
-sanitised feature looks sane to me, certainly saner than using a new
-cap and I think that's all we can and should do.
-
-Thanks,
-Lorenzo
