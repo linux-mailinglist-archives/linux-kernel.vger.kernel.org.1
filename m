@@ -2,157 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFF92AFE8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE932AFE91
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgKLFjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:39:01 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:32838 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLFZi (ORCPT
+        id S1729578AbgKLFjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:39:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgKLFZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 00:25:38 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AC5PNjX043588;
-        Wed, 11 Nov 2020 23:25:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605158723;
-        bh=8h0Eaw5ISlxz1or35jD3guodViMLx1TX2NvCzewzZUk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=qfe8moNLRxwm38idlzoRFrysOAQ4PIhBPN1ZV0FugsLJwuSHILkZjnIaV3NO39knH
-         uCwgi9vMDVQqmvzmDfN2p3DElZ+o+fyJ/zLMpHaBJy7iZe87AK/q4kbrIrC2o5wQlM
-         25lk5n81XdrWyRG3JKJazQexHtyzetKbqo4KoSuQ=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AC5PNVo031826
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Nov 2020 23:25:23 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
- Nov 2020 23:25:23 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 11 Nov 2020 23:25:23 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AC5PIDm029306;
-        Wed, 11 Nov 2020 23:25:19 -0600
-Subject: Re: [PATCH v2 1/7] dt-bindings: mfd: ti,j721e-system-controller.yaml:
- Document "syscon"
-To:     Rob Herring <robh@kernel.org>
-CC:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201109170409.4498-1-kishon@ti.com>
- <20201109170409.4498-2-kishon@ti.com> <20201111212857.GA2059063@bogus>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <f6d1b886-5c78-842c-c33c-16b5b9325130@ti.com>
-Date:   Thu, 12 Nov 2020 10:55:17 +0530
+        Thu, 12 Nov 2020 00:25:54 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2BEC0613D1;
+        Wed, 11 Nov 2020 21:25:52 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 11so4697046ljf.2;
+        Wed, 11 Nov 2020 21:25:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wTOtMAj/ACdeJE5J+kcN4F6aIVLf3f+x5ICOuaLcXkI=;
+        b=Rl3MgtCnsvtwJUCBZUVrDCaUqowijkvniH4yIj0+UK+KSUAj53EMM8OHXuKVweGa9F
+         CMkMuE/a1arloRIk/BzNMq/mFkxSLPnZdSln0GSS8Ga/dQu70ozGkyzvth08CnDUESz5
+         eJdWDSrn2/B9cJwhtOfbo1AJnIDK0ODX8LiVZKL1WR0BV/nIO7ucLiROjjzwWeayT+Nw
+         EaPMvjtxWxTmBxoMiShTYiPfqT4OFfzeoq3HFzbGTf/ig10DyRfbOz9tXqoCumleJ4+9
+         Pij2W3SQHwsNJPv20MEdAJbX6GLN9YPtTu3E/Lf+Eb1Qrrg2/VH7BCuMrCMRfb8dow0z
+         zP4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wTOtMAj/ACdeJE5J+kcN4F6aIVLf3f+x5ICOuaLcXkI=;
+        b=VH9CsIBO2HXdUJCeZ1RWoF15G8DC2+5n7IaBCzSgQYSYp6ctnNdJ4PrwVk9AuEe9IL
+         oSxLF6ticAO3SdkZRbwI5Z9s6/bVyK05hhEAWt6FFDYKH7zARF6rJeJHYc1dp+0BcFXz
+         k0YtfsNctpmEkEdYH7FJSOWh9st7YsBIUCQt4HDg4ZT5cLMn1cLMtKLz+rhFwQP2yk4I
+         KgYuYznhYYXy2aN5lrQkLnkAFDaya+vh9pyx4LLiiq8x1Vexj+4jFjpGprJtPewC3MRN
+         GvQltmpXdb8Bs1AHc/HYzfYt/jDpi6OfP7g+uNfKHbfLa5t401QWmJbfMhvipsJLxhgt
+         OL3g==
+X-Gm-Message-State: AOAM532egZty9nlgg9OKwOcxt9cscLa1nOwJJErXG+5l6mS4BLK8qN42
+        ZYvEZiUsAZmXET6B7VoR7wo=
+X-Google-Smtp-Source: ABdhPJwkmkv27tsdq9sH1LAdBRDYa99KaCBXqb4kiNqZx1dCv7swPti3B/KpDw8GQ2gLND58xpW/Fg==
+X-Received: by 2002:a2e:b6c6:: with SMTP id m6mr5024134ljo.83.1605158751185;
+        Wed, 11 Nov 2020 21:25:51 -0800 (PST)
+Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id t6sm118187lfe.81.2020.11.11.21.25.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 21:25:50 -0800 (PST)
+Subject: Re: [PATCH v2 04/10] ARM: dts: BCM5301X: Add a default compatible for
+ switch node
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>
+References: <20201112045020.9766-1-f.fainelli@gmail.com>
+ <20201112045020.9766-5-f.fainelli@gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <741289b6-d7ad-a527-81fa-47fd35b5cca6@gmail.com>
+Date:   Thu, 12 Nov 2020 06:25:48 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201111212857.GA2059063@bogus>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201112045020.9766-5-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 12/11/20 2:58 am, Rob Herring wrote:
-> On Mon, Nov 09, 2020 at 10:34:03PM +0530, Kishon Vijay Abraham I wrote:
->> Add binding documentation for "syscon" which should be a subnode of
->> the system controller (scm-conf).
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> ---
->>  .../mfd/ti,j721e-system-controller.yaml       | 40 +++++++++++++++++++
->>  1 file changed, 40 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
->> index 19fcf59fd2fe..0b115b707ab2 100644
->> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
->> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
->> @@ -50,6 +50,38 @@ patternProperties:
->>        specified in
->>        Documentation/devicetree/bindings/mux/reg-mux.txt
->>  
->> +  "^syscon@[0-9a-f]+$":
->> +    type: object
->> +    description: |
+On 12.11.2020 05:50, Florian Fainelli wrote:
+> Provide a default compatible string which is based on the 53011 SRAB
+> compatible by default. The 4709 and 47094 default to the 53012 SRAB
+> compatible.
 > 
-> Don't need '|' if there's no formatting.
-
-Okay, will fix this.
+> (...)
 > 
->> +      This is the system controller configuration required to configure PCIe
->> +      mode, lane width and speed.
->> +
->> +    properties:
->> +      compatible:
->> +        items:
->> +          - enum:
->> +              - ti,j721e-system-controller
->> +          - const: syscon
->> +          - const: simple-mfd
-> 
-> Humm, then what are this node's sub-nodes? And the same compatible as 
-> the parent?
-> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-This node doesn't have sub-nodes.
+Looks good, thanks!
 
-So one is the parent syscon node which has the entire system control
-region and then sub-nodes for each of the modules. In this case the PCIe
-in system control has only one 4 byte register that has to be configured.
-
-Both the parent node and sub-node are syscon, so given the same
-compatible for both.
->> +
->> +      reg:
->> +        maxItems: 1
->> +
->> +      "#address-cells":
->> +        const: 1
->> +
->> +      "#size-cells":
->> +        const: 1
->> +
->> +      ranges: true
->> +
->> +    required:
->> +      - compatible
->> +      - reg
->> +      - "#address-cells"
->> +      - "#size-cells"
->> +      - ranges
->> +
->>  required:
->>    - compatible
->>    - reg
->> @@ -72,5 +104,13 @@ examples:
->>              compatible = "mmio-mux";
->>              reg = <0x00004080 0x50>;
->>          };
->> +
->> +        pcie1_ctrl: syscon@4074 {
->> +            compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
->> +            reg = <0x00004074 0x4>;
->> +            #address-cells = <1>;
->> +            #size-cells = <1>;
->> +            ranges = <0x4074 0x4074 0x4>;
-> 
-> Must be packing a bunch of functions into 4 byte region!
-
-For the PCIe case, it only has a 4 byte register to be configured. The
-other option would be to get phandle to the parent syscon node and then
-hard-code the offset in the driver.
-
-Thank You,
-Kishon
+Acked-by: Rafał Miłecki <rafal@milecki.pl>
