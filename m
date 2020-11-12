@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65562B04D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B1E2B04DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgKLMQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:16:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727223AbgKLMQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:16:44 -0500
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62F2020872;
-        Thu, 12 Nov 2020 12:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605183403;
-        bh=MzqmqBm+Q4+CD7EIy8rwKI/rQpO1mKKeKBteT83Z9Co=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Rz1fAp3XUi9CLcg8uAw/F0tBhkO0dS75y1BjbbmCDvPoB/zsbeO5oMso7kmrCpTMj
-         03unIbqvEkdwU0WTDp24T62zjhzLTH9j2xFM+pLD7MZzaw8fmLlGF1gWxYJtkv+9Ao
-         xMlW9+BRKTujT9R5VEAMF43mSKMB2ceMAaMkyp9g=
-Message-ID: <588e67b89ba277d925b46025658ea3ec452a5ed0.camel@kernel.org>
-Subject: Re: [RFC PATCH] ceph: fix cross quota realms renames with new
- truncated files
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Patrick Donnelly <pdonnell@redhat.com>
-Date:   Thu, 12 Nov 2020 07:16:41 -0500
-In-Reply-To: <87v9eadfif.fsf@suse.de>
-References: <20201111153915.23426-1-lhenriques@suse.de>
-         <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org>
-         <87361feojx.fsf@suse.de>
-         <925dda9b15044c8a19ac2017d4b135209e1f6184.camel@kernel.org>
-         <87v9eadfif.fsf@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S1728101AbgKLMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:17:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727223AbgKLMRb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:17:31 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E157DC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:17:30 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id v144so8024041lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:17:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bNUlpQunA3+8lpdXHUOH+JYlsunfRD+1uj7ARWKY0dE=;
+        b=n0W4VF2c796n+cwQh1D1PjKNqcuPmrIC3yuhlizCD4yJYyKA9+ZKdC8rr3FJIUhT9X
+         cqIRykmWGqZJ2QHi1ZxFrYdvHP/sEUVKwuBiZ4QRQaP98/7kB/Oj3ZRYGVUBgP6R4rZs
+         WLPxhvvalUSsOCsRBlRhdwc+OtzHLYCqPY5jFtzyRFqnHNz78ovNKlTBZbULBEXzYN0V
+         tD8rmPQxjVjjfEqGDCAzFu+QBV7ymwzJtaw9HMS10F0S2Az3FM9mNg37Z/TXxNwPyyA4
+         rWjdSpCWkdqruuUqsd59Eww3Om+asfvphKiS7E1NpznAuWPPzbKZMvL3ypyGVAfMUxys
+         XWqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bNUlpQunA3+8lpdXHUOH+JYlsunfRD+1uj7ARWKY0dE=;
+        b=uAGQSAFinufNYxNga4u2aSznT8ow6T3s9TM8hr7Eyth5OfLOJ3o/dfV3/QUEFJcQeO
+         HoG3OefaJ9fZc0tkr5HTmNnafF1EilCpoM4/kXFWg/0/krSd/q6HxS+DugGxFcLnJ+1L
+         X+b0WxmzEGefTWqbcdr8wi5J1XvrG9XTXGranKRE4w2j69SiMA3eBNUaOrWGs5T2nt3H
+         g9xTFhpUf9yYGkXyOvc+8USRBx0jejFK7mSduHx71rDdikKAPTOaPyE7S8UORzmKYQ33
+         juuzyPDxelq4L3CHN6CdWpCHiG38qV5SKWTJN1oe802HipYV1NGXcE/AdCfs38765RHn
+         +S9w==
+X-Gm-Message-State: AOAM532CC/1qhh7llEJRXWvCzkWg9AuItbedTyIeURvSFJD2uAIptrb7
+        p9OfUZrpIQFweimt7ixgRUM0Vlr85hgbljQLKfua9w==
+X-Google-Smtp-Source: ABdhPJxNIwGcK9c6aEjMHQZsZTgtsjkiI9E/PGHD4mRkIycpqEykkgyZpLyIfUYSUI2mgyUKvOxopI9u0jGBobTKeMA=
+X-Received: by 2002:a19:cc91:: with SMTP id c139mr4626589lfg.31.1605183449335;
+ Thu, 12 Nov 2020 04:17:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201112111201.2081902-1-qperret@google.com>
+In-Reply-To: <20201112111201.2081902-1-qperret@google.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 12 Nov 2020 13:17:18 +0100
+Message-ID: <CAKfTPtB0tYwVKdV47fL_zZ_AqTcfk9ZXg3i7RCTJZ-hczjvMSw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix overutilized update in enqueue_task_fair()
+To:     Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@qperret.net>,
+        "open list:SCHEDULER" <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rick Yiu <rickyiu@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 10:40 +0000, Luis Henriques wrote:
-> Jeff Layton <jlayton@kernel.org> writes:
-> 
-> > On Wed, 2020-11-11 at 18:28 +0000, Luis Henriques wrote:
-> > > Jeff Layton <jlayton@kernel.org> writes:
-> > > 
-> > > > On Wed, 2020-11-11 at 15:39 +0000, Luis Henriques wrote:
-> > > > > When doing a rename across quota realms, there's a corner case that isn't
-> > > > > handled correctly.  Here's a testcase:
-> > > > > 
-> > > > >   mkdir files limit
-> > > > >   truncate files/file -s 10G
-> > > > >   setfattr limit -n ceph.quota.max_bytes -v 1000000
-> > > > >   mv files limit/
-> > > > > 
-> > > > > The above will succeed because ftruncate(2) won't result in an immediate
-> > > > > notification of the MDSs with the new file size, and thus the quota realms
-> > > > > stats won't be updated.
-> > > > > 
-> > > > > This patch forces a sync with the MDS every time there's an ATTR_SIZE that
-> > > > > sets a new i_size, even if we have Fx caps.
-> > > > > 
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Fixes: dffdcd71458e ("ceph: allow rename operation under different quota realms")
-> > > > > URL: https://tracker.ceph.com/issues/36593
-> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > > > > ---
-> > > > >  fs/ceph/inode.c | 11 ++---------
-> > > > >  1 file changed, 2 insertions(+), 9 deletions(-)
-> > > > > 
-> > > > > diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-> > > > > index 526faf4778ce..30e3f240ac96 100644
-> > > > > --- a/fs/ceph/inode.c
-> > > > > +++ b/fs/ceph/inode.c
-> > > > > @@ -2136,15 +2136,8 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr)
-> > > > >  	if (ia_valid & ATTR_SIZE) {
-> > > > >  		dout("setattr %p size %lld -> %lld\n", inode,
-> > > > >  		     inode->i_size, attr->ia_size);
-> > > > > -		if ((issued & CEPH_CAP_FILE_EXCL) &&
-> > > > > -		    attr->ia_size > inode->i_size) {
-> > > > > -			i_size_write(inode, attr->ia_size);
-> > > > > -			inode->i_blocks = calc_inode_blocks(attr->ia_size);
-> > > > > -			ci->i_reported_size = attr->ia_size;
-> > > > > -			dirtied |= CEPH_CAP_FILE_EXCL;
-> > > > > -			ia_valid |= ATTR_MTIME;
-> > > > > -		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
-> > > > > -			   attr->ia_size != inode->i_size) {
-> > > > > +		if ((issued & (CEPH_CAP_FILE_EXCL|CEPH_CAP_FILE_SHARED)) ||
-> > > > > +		    (attr->ia_size != inode->i_size)) {
-> > > > >  			req->r_args.setattr.size = cpu_to_le64(attr->ia_size);
-> > > > >  			req->r_args.setattr.old_size =
-> > > > >  				cpu_to_le64(inode->i_size);
-> > > > 
-> > > > Hmm...this makes truncates more expensive when we have caps. I'd rather
-> > > > not do that if we can help it.
-> > > 
-> > > Yeah, as I mentioned in the tracker, there's indeed a performance impact
-> > > with this fix.  That's what made me add the RFC in the subject ;-)
-> > > 
-> > > > What about instead having the client mimic a fsync when there is a
-> > > > rename across quota realms? If we can't tell that reliably then we could
-> > > > also just do an effective fsync ahead of any cross-directory rename?
-> > > 
-> > > Ok, thanks for the suggestion.  That may actually work, although it will
-> > > make the rename more expensive of course.  I'll test that tomorrow and
-> > > eventually follow-up with a patch.
-> > > 
-> > 
-> > Patrick pointed out to me on IRC that since you're moving the parent
-> > directory of the truncated file, flushing the caps on the directory
-> > won't really help. You'd need to walk the entire subtree and try to
-> > flush every dirty inode, or basically do a syncfs() prior to renaming
-> > the directory across quotarealms.
-> > 
-> > I think we probably will need to revert the change to allow cross-
-> > quotarealm renames of directories and make those return EXDEV again.
-> > Anything else sounds like it's probably going to be too expensive.
-> 
-> Hmm... that sounds a bit drastic and it would make the kernel client
-> behave differently from the fuse client -- from what I could understand
-> the fuse client does the sync ATTR_SIZE and thus doesn't have this issue.
-> 
+On Thu, 12 Nov 2020 at 12:12, Quentin Perret <qperret@google.com> wrote:
+>
+> enqueue_task_fair() attempts to skip the overutilized update for new
+> tasks as their util_avg is not accurate yet. However, the flag we check
+> to do so is overwritten earlier on in the function, which makes the
+> condition pretty much a nop.
+>
+> Fix this by saving the flag early on.
+>
+> Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point
+> indicator")
+> Reported-by: Rick Yiu <rickyiu@google.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
 
-True. I'll note that the fuse client is not exactly built for speed,
-however.
-
-> Obviously, I agree with you that the performance penalty is too high for
-> such a common operation.  But maybe renames across quotarealms aren't that
-> common and paying the penalty of doing a full ceph_flush_dirty_caps() is
-> acceptable for such cases?
-> 
-
-I wouldn't even do that. If someone is renaming a directory across
-quotarealms, just return EXDEV. Saying "sorry, you have to copy/unlink"
-in this situation seems like it should be acceptable. Are you aware of
-any specific use-cases where people are renaming large directories
-across quotarealms?
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>  kernel/sched/fair.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 290f9e38378c..f3ee60b92718 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5477,6 +5477,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>         struct cfs_rq *cfs_rq;
+>         struct sched_entity *se = &p->se;
+>         int idle_h_nr_running = task_has_idle_policy(p);
+> +       int task_new = !(flags & ENQUEUE_WAKEUP);
+>
+>         /*
+>          * The code below (indirectly) updates schedutil which looks at
+> @@ -5549,7 +5550,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>          * into account, but that is not straightforward to implement,
+>          * and the following generally works well enough in practice.
+>          */
+> -       if (flags & ENQUEUE_WAKEUP)
+> +       if (!task_new)
+>                 update_overutilized_status(rq);
+>
+>  enqueue_throttle:
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
