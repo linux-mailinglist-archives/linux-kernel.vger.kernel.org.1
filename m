@@ -2,94 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA3E2B04C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CA52B04C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgKLMMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:12:14 -0500
-Received: from mga12.intel.com ([192.55.52.136]:14178 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728003AbgKLMMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:12:10 -0500
-IronPort-SDR: OPpR/SqyXNCcPjMVGvsrhzXZhJgwS83izM+ZqGVJe73xOgV+pWAqs4MjsAf4v1HcmNgG+ENGGR
- 7sRW5XpOuLDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="149571167"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="149571167"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 04:12:09 -0800
-IronPort-SDR: ZVifTGtvj6pJEdIfU1GbY7kG3uxdgSNjKDLOF0TFGlG58gJbKs7bKM9RcGAW9ZETIt/gl5TbLL
- 2x0PcyHDjmfg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="366315954"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Nov 2020 04:12:02 -0800
-Subject: Re: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        valentin.schneider@arm.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
-        Jiang Biao <benbjiang@gmail.com>
-References: <20201021150335.1103231-1-aubrey.li@linux.intel.com>
- <20201112105713.xz3f52tcvjhk7si5@e107158-lin.cambridge.arm.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <713b4681-3bdb-b25c-9afb-5896ca255309@linux.intel.com>
-Date:   Thu, 12 Nov 2020 20:12:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728126AbgKLMNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:13:20 -0500
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:41487 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727822AbgKLMNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:13:17 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id dBTRkdRAMu8I7dBTUkLfk1; Thu, 12 Nov 2020 13:13:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1605183195; bh=o/AMxI/b/lIrutBz2p97ylrC4jr4VTkZ7/aldxFv7gM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=tfyOMGHw2Hgol3DuUV9+3UZDiNZVkD3or5N9iF4W9TCbQd+41IADFWe8OR3ld4Ddk
+         MnwVR5jrqHcKxm4Uncg4zfiglinud4QVSvhLYGfmVTRXcevj4jmMJT3LVGc2VxteT2
+         D7sM5/uBuKuV7idylzfxXPgaYXmAu/yWoHj2eWefoyoYJaRxcDM/IlhiSlbQQ8/bJg
+         NItTTXFMq17XvS7UTok6mCvKE6kLuhtH1BQ2QhCiHFf3epZCtF6ZYP2Tut+XswxbNj
+         leWiUONVAEqMMVmk2B0cZDU4TDWPi7Cf6nAoXXC0NVZp5LzFwRwMIvhO4/5jLwtrDv
+         uCjRBHN2Z1oBQ==
+Subject: Re: [PATCH 3/5] media: Rename stateful codec control macros
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20201112115714.48081-1-ezequiel@collabora.com>
+ <20201112115714.48081-4-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <ff5e677c-5a62-f35e-b6f8-45e7d061ee9b@xs4all.nl>
+Date:   Thu, 12 Nov 2020 13:13:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201112105713.xz3f52tcvjhk7si5@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20201112115714.48081-4-ezequiel@collabora.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCNEGSMav+OmlICjsFS2VaOLeM2TlfgNR4L+KhtA5w68jVi/p29dnQEgJ8ef0oLr/ahZN6gWgLciRvi/c/ALLdK9OHQuzaoj6NGCwgiur6AsTOuR5Seq
+ qIcaoTw7aU6zI6aT95BrjSJRxvLx2s3Ytc+/oJq2VeSwYapt7nBVJOv7qrST0ZjT5yfTlDbeKbjtFUTlmHUNPcZI7SQnKIfROyXPa4MKDKF/QZsEon1PnAgY
+ TvapZqFWK1TzZIFix7Yxt/Wx6QJoOnsTkSfA+jyH2Pp5lE1Uog2xHxOjFZetnxRWQV1nKHm4/16qoPbXr0xNh/QVakkujUOM0+kfdaxFT0WUO+V+EKcvDIJ3
+ GKTQmWk0S5v286NIraHY3WuLkllQSAH1vJj0YmBh9UXHxSTt0Di1bDSMWzwSMNtkPL9U7eBCo2aCJiWMtizBLMPFrrMg9B7LF3gSYxr+DR4hKs8lHPupCrYz
+ /8bMZsGAuxujNMvvv6BTwZqs9g9uPX8Wemaqhr46F3IUTPE39md9hVAjKWc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/12 18:57, Qais Yousef wrote:
-> On 10/21/20 23:03, Aubrey Li wrote:
->> From: Aubrey Li <aubrey.li@intel.com>
->>
->> Added idle cpumask to track idle cpus in sched domain. When a CPU
->> enters idle, its corresponding bit in the idle cpumask will be set,
->> and when the CPU exits idle, its bit will be cleared.
->>
->> When a task wakes up to select an idle cpu, scanning idle cpumask
->> has low cost than scanning all the cpus in last level cache domain,
->> especially when the system is heavily loaded.
->>
->> v2->v3:
->> - change setting idle cpumask to every idle entry, otherwise schbench
->>   has a regression of 99th percentile latency.
->> - change clearing idle cpumask to nohz_balancer_kick(), so updating
->>   idle cpumask is ratelimited in the idle exiting path.
->> - set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
->>
->> v1->v2:
->> - idle cpumask is updated in the nohz routines, by initializing idle
->>   cpumask with sched_domain_span(sd), nohz=off case remains the original
->>   behavior.
+On 12/11/2020 12:57, Ezequiel Garcia wrote:
+> For historical reasons, stateful codec controls are named
+> as {}_MPEG_{}. While we can't at this point sanely
+> change all control IDs (such as V4L2_CID_MPEG_VIDEO_VP8_FRAME_HEADER),
+> we can least change the more meaningful macros such as classes
+> macros.
 > 
-> Did you intend to put the patch version history in the commit message?
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  .../userspace-api/media/v4l/dev-mem2mem.rst   |   2 +-
+>  .../media/v4l/ext-ctrls-codec.rst             |   4 +-
+>  .../media/v4l/extended-controls.rst           |   8 +-
+>  .../media/v4l/vidioc-g-ext-ctrls.rst          |   6 +-
+>  drivers/media/common/cx2341x.c                |   4 +-
+>  drivers/media/platform/s5p-mfc/s5p_mfc_dec.c  |   2 +-
+>  drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |   2 +-
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |   4 +-
+>  include/media/fwht-ctrls.h                    |   2 +-
+>  include/media/h264-ctrls.h                    |  16 +-
+>  include/media/hevc-ctrls.h                    |  10 +-
+>  include/media/mpeg2-ctrls.h                   |   4 +-
+>  include/media/vp8-ctrls.h                     |   2 +-
+>  include/uapi/linux/v4l2-controls.h            | 354 +++++++++---------
+>  14 files changed, 212 insertions(+), 208 deletions(-)
 > 
-> I started looking at this last week but got distracted. I see you already got
-> enough reviews, so my 2p is that I faced some compilation issues:
-> 
-> 	aarch64-linux-gnu-ld: kernel/sched/idle.o: in function `set_next_task_idle':
-> 	/mnt/data/src/linux/kernel/sched/idle.c:405: undefined reference to `update_idle_cpumask'
-> 	aarch64-linux-gnu-ld: kernel/sched/fair.o: in function `nohz_balancer_kick':
-> 	/mnt/data/src/linux/kernel/sched/fair.c:10150: undefined reference to `update_idle_cpumask'
-> 	aarch64-linux-gnu-ld: /mnt/data/src/linux/kernel/sched/fair.c:10148: undefined reference to `update_idle_cpumask'
-> 
-> Because of the missing CONFIG_SCHED_SMT in my .config. I think
-> update_idle_cpumask() should be defined unconditionally.
 
-Thanks to point this out timely, :), I'll fix it in the next version.
+<snip>
 
--Aubrey
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 7035f4fb182c..53122ee42988 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -54,7 +54,7 @@
+>  
+>  /* Control classes */
+>  #define V4L2_CTRL_CLASS_USER		0x00980000	/* Old-style 'user' controls */
+> -#define V4L2_CTRL_CLASS_MPEG		0x00990000	/* MPEG-compression controls */
+> +#define V4L2_CTRL_CLASS_CODEC		0x00990000	/* Stateful codec controls */
+>  #define V4L2_CTRL_CLASS_CAMERA		0x009a0000	/* Camera class controls */
+>  #define V4L2_CTRL_CLASS_FM_TX		0x009b0000	/* FM Modulator controls */
+>  #define V4L2_CTRL_CLASS_FLASH		0x009c0000	/* Camera flash controls */
+> @@ -66,6 +66,10 @@
+>  #define V4L2_CTRL_CLASS_RF_TUNER	0x00a20000	/* RF tuner controls */
+>  #define V4L2_CTRL_CLASS_DETECT		0x00a30000	/* Detection controls */
+>  
+> +#ifndef __KERNEL__
+> +#define V4L2_CTRL_CLASS_MPEG V4L2_CTRL_CLASS_CODEC	/* MPEG-compression controls (Legacy) */
+> +#endif
+> +
+>  /* User-class control IDs */
+>  
+>  #define V4L2_CID_BASE			(V4L2_CTRL_CLASS_USER | 0x900)
+> @@ -208,11 +212,11 @@ enum v4l2_colorfx {
+>  /* The MPEG controls are applicable to all codec controls
+>   * and the 'MPEG' part of the define is historical */
+>  
+> -#define V4L2_CID_MPEG_BASE			(V4L2_CTRL_CLASS_MPEG | 0x900)
+> -#define V4L2_CID_MPEG_CLASS			(V4L2_CTRL_CLASS_MPEG | 1)
+
+These two old defines should remain as aliases of the new defines for legacy
+purposes under #ifndef __KERNEL__.
+
+> +#define V4L2_CID_CODEC_BASE			(V4L2_CTRL_CLASS_CODEC | 0x900)
+> +#define V4L2_CID_CODEC_CLASS			(V4L2_CTRL_CLASS_CODEC | 1)
+
+<snip>
+
+> @@ -775,7 +779,7 @@ enum v4l2_mpeg_video_frame_skip_mode {
+>  };
+>  
+>  /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
+> -#define V4L2_CID_MPEG_CX2341X_BASE				(V4L2_CTRL_CLASS_MPEG | 0x1000)
+> +#define V4L2_CID_MPEG_CX2341X_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1000)
+
+Rename this as well to V4L2_CID_CODEC_CX2341X_BASE (but still keep the old alias).
+
+>  #define V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE		(V4L2_CID_MPEG_CX2341X_BASE+0)
+>  enum v4l2_mpeg_cx2341x_video_spatial_filter_mode {
+>  	V4L2_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE_MANUAL = 0,
+> @@ -816,7 +820,7 @@ enum v4l2_mpeg_cx2341x_video_median_filter_type {
+>  #define V4L2_CID_MPEG_CX2341X_STREAM_INSERT_NAV_PACKETS		(V4L2_CID_MPEG_CX2341X_BASE+11)
+>  
+>  /*  MPEG-class control IDs specific to the Samsung MFC 5.1 driver as defined by V4L2 */
+> -#define V4L2_CID_MPEG_MFC51_BASE				(V4L2_CTRL_CLASS_MPEG | 0x1100)
+> +#define V4L2_CID_MPEG_MFC51_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1100)
+
+Ditto.
+
+>  
+>  #define V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY		(V4L2_CID_MPEG_MFC51_BASE+0)
+>  #define V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY_ENABLE	(V4L2_CID_MPEG_MFC51_BASE+1)
+> 
+
+I think it is best to add the #ifndef __KERNEL__ part containing the aliases at the
+end of this header.
+
+Regards,
+
+	Hans
