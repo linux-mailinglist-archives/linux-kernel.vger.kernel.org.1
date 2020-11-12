@@ -2,174 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C237F2B0C17
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A4A2B0C0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgKLSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:01:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S1726915AbgKLSBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgKLR7N (ORCPT
+        with ESMTP id S1726560AbgKLR7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:59:13 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21771C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:13 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w4so4793899pgg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=GTbCPHb/tI25QLg9w9U8VpibjRjZjvUKLHiqK7PT+f8=;
-        b=IB2DYO6USntBRaVMi/02ej0Y3Nmzi4ulEVQrqr9jEXug7quy5eJHv8Wl5EvGyKioWw
-         Apy52gwbQEmeXURdFf52heSzK86pDTf9911ihE69cznIfwdhKiKs6nO4ekB5s4Ow1Jdr
-         jYstsf+eXOcntxp31uYJPIlxpk7Pq07GaA92A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=GTbCPHb/tI25QLg9w9U8VpibjRjZjvUKLHiqK7PT+f8=;
-        b=i6/Z7o+jkvaJsLxRTcKdSMCP0U4okbSYCUflLFjAZK2lj1+jl9/Dq2KOI04U0Xfup8
-         hjHVctHESAU68FAkoFlJ216SkKA4vajmZu7+zMPlts6R2BFXeWWzi+4gfQQUyVwRb6Z4
-         yLvNNUY6K8z/XPogTps+5vCUd6sRoOLMY4vTbU3LZv8qvvg1mjYXBbGDgIRBc0dDb6d1
-         meyzluOU3EV9KVCdRvoFAj4ZLP0KaJScR8GfBEY+oThYYlhA7xDyg9cDcTyydwj2meiY
-         G1l8SSKvUVNDoOE0PGhmy7wwYiK87Y2IqC4qzzKNSvqAvbaUlzoyQlSkfcpctDr2dTHB
-         CF8w==
-X-Gm-Message-State: AOAM533AExVMSq/09EDx7uB5SQz/G2gOJemKlekLPICK9woMSlmhtBmD
-        YCHM1A45VBZh4WqnBw0mqjIa4Q==
-X-Google-Smtp-Source: ABdhPJx6e6qTX1p4SvCxoSACcyaECsmm+Op8sR6k+fbs6JZXKGAbZ6VDImRZFtzsWVOj6e1LHIuQUQ==
-X-Received: by 2002:a63:5159:: with SMTP id r25mr567387pgl.43.1605203952543;
-        Thu, 12 Nov 2020 09:59:12 -0800 (PST)
-Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id r6sm7237894pjd.39.2020.11.12.09.59.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 09:59:11 -0800 (PST)
-From:   Vikas Gupta <vikas.gupta@broadcom.com>
-To:     eric.auger@redhat.com, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
+        Thu, 12 Nov 2020 12:59:18 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45890C0613D6;
+        Thu, 12 Nov 2020 09:59:18 -0800 (PST)
+Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=truhe.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1kdGsO-00070q-VI; Thu, 12 Nov 2020 18:59:17 +0100
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
-        Vikas Gupta <vikas.gupta@broadcom.com>
-Subject: [RFC v1 2/3] vfio/platform: change cleanup order
-Date:   Thu, 12 Nov 2020 23:28:51 +0530
-Message-Id: <20201112175852.21572-3-vikas.gupta@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201112175852.21572-1-vikas.gupta@broadcom.com>
-References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
- <20201112175852.21572-1-vikas.gupta@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000068002205b3ecab0b"
+Subject: [RFC PATCH v2 14/26] docs: reporting-bugs: make users write notes, one for each issue
+Date:   Thu, 12 Nov 2020 18:58:51 +0100
+Message-Id: <d6b04b9f03272fdcc947fbab0ea941a237fd612a.1605203187.git.linux@leemhuis.info>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1605203187.git.linux@leemhuis.info>
+References: <cover.1605203187.git.linux@leemhuis.info>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605203958;24c9afe5;
+X-HE-SMSGID: 1kdGsO-00070q-VI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000068002205b3ecab0b
+Tell users to write some rough notes how to reproduce the issue. They
+will need those notes soon once they have to reproduce the issue with a
+fresh kernel later in the process. At the same time the notes can serve
+as basis for the report later.
 
-In the case of msi, vendor specific msi module may require
-region access to handle msi cleanup so we need to cleanup region
-after irq cleanup only.
+While at it point out that each report should focus on one issue, as
+that is a good time for it: it will make the notes more straight forward
+if the reader deal with multiple issues at once.
 
-Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
+Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
 ---
- drivers/vfio/platform/vfio_platform_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/admin-guide/reporting-bugs.rst | 36 +++++++++++++++-----
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
-index 226aa8083751..ca4a01c488b8 100644
---- a/drivers/vfio/platform/vfio_platform_common.c
-+++ b/drivers/vfio/platform/vfio_platform_common.c
-@@ -278,8 +278,8 @@ static void vfio_platform_release(void *device_data)
- 			WARN_ON(1);
- 		}
- 		pm_runtime_put(vdev->device);
--		vfio_platform_regions_cleanup(vdev);
- 		vfio_platform_irq_cleanup(vdev);
-+		vfio_platform_regions_cleanup(vdev);
- 	}
+diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
+index 234731cd0c78..981ddd5a0646 100644
+--- a/Documentation/admin-guide/reporting-bugs.rst
++++ b/Documentation/admin-guide/reporting-bugs.rst
+@@ -659,6 +659,33 @@ should minimize it:
+    like a kernel regression.
  
- 	mutex_unlock(&driver_lock);
+ 
++Document how to reproduce issue
++-------------------------------
++
++    *Write down coarsely how to reproduce the issue. If you deal with multiple
++    issues at once, create separate notes for each of them and make sure they
++    work independently on a freshly booted system. That's needed, as each issue
++    needs to get reported to the kernel developers separately, unless they are
++    strongly entangled.*
++
++If you deal with multiple issues at once, you'll have to report each of them
++separately, as they might be handled by different developers. Describing
++various issues in one report also makes it quite difficult for others to tear
++it apart. Hence, only combine issues in one report if they are very strongly
++entangled.
++
++Additionally, during the reporting process you will have to test if the issue
++happens with other kernel versions. Therefore, it will make your work easier if
++you know exactly how to reproduce an issue quickly on a freshly booted system.
++
++Note: it's often fruitless to report issues that only happened once, as they
++might be caused by a bit flip due to cosmic radiation. That's why you should
++try to rule that out by reproducing the issue before going further. Feel free
++to ignore this advice if you are experienced enough to tell a one-time error
++due to faulty hardware apart from a kernel issue that rarely happens and thus
++is hard to reproduce.
++
++
+ .. ############################################################################
+ .. Temporary marker added while this document is rewritten. Sections above
+ .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
+@@ -681,15 +708,6 @@ How to report Linux kernel bugs
+ ===============================
+ 
+ 
+-Tips for reporting bugs
+------------------------
+-
+-It's REALLY important to report bugs that seem unrelated as separate email
+-threads or separate bugzilla entries.  If you report several unrelated
+-bugs at once, it's difficult for maintainers to tease apart the relevant
+-data.
+-
+-
+ Gather information
+ ------------------
+ 
 -- 
-2.17.1
+2.28.0
 
-
---00000000000068002205b3ecab0b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
-o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
-b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
-bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
-OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
-Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
-BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
-FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
-FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
-yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
-JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
-WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
-Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
-MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
-lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgyVatULgKv7EqMXWE
-K099uwoDIBQUyS5ESy3mzW3v3+kwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjAxMTEyMTc1OTEyWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
-ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAADLGsX8sqJP10pgymcZ725cOzY1HtT1vsBa
-6flgOnEwHIrXQ+Fm5aiS1zll1DMZ7vf3nDAUoHbbIXQQyEOGlytusi+z5Fb3HMWnmv3GUbdgFhP3
-2S+E6KQ6YKugx3ynxa6I0WL9HU2iaMC9O6I4RgQeyjhJBvHTs63FEL+XAuFytn2JTtuALs1zOCbs
-JrCKvnlTzXEtCUO+X+eUaEMrXoo9UI1iz/mwQGo19fgK/8jzjwPz8PLAuwbudy09244DtKBpnyiP
-vAT7Cf2p/WmAXXVC9uVzCC9IW8TKm/Nh2+esuHB959V7TdjEJ7gRgF2EhG3fnk2ae+fDuAkONq7h
-Hys=
---00000000000068002205b3ecab0b--
