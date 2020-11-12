@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FA72B03D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2046D2B03DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgKLL2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:28:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44028 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbgKLL2z (ORCPT
+        id S1728034AbgKLL3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727147AbgKLL3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:28:55 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605180533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x6LYK8bfLBdal9fvnfibNFlmU+KkoFrcpTdIIDLlxIg=;
-        b=W2d7n0NWjwRpCv0IPMgXpWbuRBt4vAX1bqT2VjMF62KEt83feXs5TV6pGdJINKIfhRvVNl
-        xnMPEybcPKWkGfe91WhHT2o1/EtQd9St22p8uE3hdzh57kOhZBSH4LrNHIqpLF075rqYvV
-        zALUczDJPnSitvsH/SENWJHle9vAi1ZQiQhwCksulJJ7WeCAktsXEq3phRYcLEJ41Ym1jP
-        pKQI7R65Za6b9K2okpnlLUKSRvhvk8Gr6YjZXnup0Ly+FheG4ljqvrDVqn51TYdewzg0nD
-        o1d7GqAfjEF6hXGbYBC39hztUWMYkVCVcTWn1B8rEeWqMXluutlQc8mCeV/QQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605180533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x6LYK8bfLBdal9fvnfibNFlmU+KkoFrcpTdIIDLlxIg=;
-        b=IWbrVAPy3SBaexRMh14J0swsStNTHBgzFp1VFYbhgCuM8va8a/sFdzxv8+niZblWE8sqfx
-        LsCW1wynUV3ISzCA==
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Martin Kaiser <martin@kaiser.cx>
-Cc:     Ley Foon Tan <ley.foon.tan@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        rfi@lists.rocketboards.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Toan Le <toan@os.amperecomputing.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH] PCI: altera-msi: Remove irq handler and data in one go
-In-Reply-To: <20201111221639.GA973514@bjorn-Precision-5520>
-References: <20201111221639.GA973514@bjorn-Precision-5520>
-Date:   Thu, 12 Nov 2020 12:28:53 +0100
-Message-ID: <87sg9en79m.fsf@nanos.tec.linutronix.de>
+        Thu, 12 Nov 2020 06:29:22 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4BBC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:29:22 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id r17so5653489wrw.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kEGmo14fLBYd6nSV3jI87mJ9Na1xum6NrqwdS4+IQ9Y=;
+        b=nu/S8C1Yfzo9SHPOKV654ix3Bn7t9atAD7AUykvxjLXtDBitsoIhyQBnn0xD4aS7gx
+         cT/hR+koIINFS5aszapJJqOPFA0xDNRQ9aw1H9aE4HtH8AYnfVnp4zZONs7JhK95tV+b
+         yoTLe/bA1W1GKaoUSP+ygtMYupwIp4iCWgtjZDg0cXh7iaEYsJ8Jg2zpDecd897p8qrG
+         ZmFGkJk3MrTdN3AuPYE3zAZkK5Xm+IaB7T2zVMCxpIY8nMqsLrIq6/8IppPlOjIj70ca
+         j3blFEFrL8WguNYDLTlMgHhu8p+MKEqk4Jkq+u7rG90RfcgOktY4EbTyaSMhxsAfWE5c
+         wuXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kEGmo14fLBYd6nSV3jI87mJ9Na1xum6NrqwdS4+IQ9Y=;
+        b=pJOX7i21Fo7I+Z2ijHTb9pEKd3/KXnNJTLba+PQUegQeTBHHNezTy8Qf/TYUpYFyHH
+         eMyJoJbTFiTX0soW4FjUQ6X391JqbBLW1rNKSRa1WbK35SO3l13Ea0XTYpYprKJm+8gi
+         Cdg4qeiJRUQu11eq4OtbVwPvVAPYONIdmfe2Y7QOtShW6BTU26mI9mWF9RqwbtybvLJa
+         YIex1Po8LYJ8GJShuWKGI5LKi63PSjiCCeDnau+QFhU4gxPGJa5EGNFKwWAzRIeRtn5B
+         jjmVjt9+EqfIeEkESD6ZGHNspXP2Jg5DT5mSGdgoOZ5ystrmTqtCu3I0viFJO4BpudSQ
+         a9qQ==
+X-Gm-Message-State: AOAM531qcMx6YYWNK/UAvfa7av3uAC7PXb+jzedRBejW1WmDhMFJkxTJ
+        AHQyvo0fDPkOuW+AzIdoy7QasCtuJUZavQ==
+X-Google-Smtp-Source: ABdhPJxyFdKh+yZ6q8Rw1tY96SUPbmpWmKbb2vOHAkpwQyJDdNnfM7LsQRWGdffrTxd7Amuh5Mswqw==
+X-Received: by 2002:a5d:4f12:: with SMTP id c18mr16332843wru.304.1605180560855;
+        Thu, 12 Nov 2020 03:29:20 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
+        by smtp.googlemail.com with ESMTPSA id u8sm6233604wmg.6.2020.11.12.03.29.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 03:29:20 -0800 (PST)
+Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
+ PCH.
+To:     Andres Freund <andres@anarazel.de>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Tushar Dave <tushar.n.dave@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200115184415.1726953-1-andres@anarazel.de>
+ <2a5e9df32e2df27297149a577512f6b1557de241.camel@linux.intel.com>
+ <20200116184250.qlvc3ilx2b42czqk@alap3.anarazel.de>
+ <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
+ <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <0a62fbb3-a858-02ca-b89d-5234775da4a4@linaro.org>
+Date:   Thu, 12 Nov 2020 12:29:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11 2020 at 16:16, Bjorn Helgaas wrote:
-> On Wed, Nov 11, 2020 at 10:43:55PM +0100, Martin Kaiser wrote:
->> This function uses the error status from irq_set_handler_data().
->> irq_set_chained_handler_and_data() returns no such error status. Is it
->> ok to drop the error handling?
->
-> I'm not an IRQ expert, but I'd say it's OK to drop it.  Of the 40 or
-> so callers, the only other caller that looks at the error status is
-> ingenic_intc_of_init().
+On 28/10/2020 21:21, Andres Freund wrote:
+> Hi,
+> 
+> On 2020-01-16 11:41:34 -0800, Srinivas Pandruvada wrote:
+>> On Thu, 2020-01-16 at 10:42 -0800, Andres Freund wrote:
+>>> Hi,
+>>>
+>>> On 2020-01-16 05:53:13 -0800, Srinivas Pandruvada wrote:
+>>>> On Wed, 2020-01-15 at 10:44 -0800, Andres Freund wrote:
+>>>>> I noticed that I couldn't read the PCH temperature on my
+>>>>> workstation
+>>>>> (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but
+>>>>> had to
+>>>>> go
+>>>>> through IPMI. Looking at the data sheet, it looks to me like the
+>>>>> existing intel PCH thermal driver should work without changes for
+>>>>> Lewisburg.
+>>>> Does the temperature reading match with what you read via IPMI?
+>>>
+>>> It does:
+>>>
+>>> root@awork3:~# ipmitool sdr|grep ^PCH
+>>> PCH Temp         | 58 degrees C      | ok
+>>>
+>>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/type
+>>> pch_lewisburg
+>>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
+>>> 58000
+>>>
+>>> And if I generate some load, it rises for both:
+>>> root@awork3:~# ipmitool sdr|grep ^PCH
+>>> PCH Temp         | 60 degrees C      | ok
+>>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
+>>> 60000
+>>>
+>> Thanks for the test.
+>>
+>> Rui can add his ACK.
+> 
+> Ping? Looks like this got lost somewhere?
 
-Don't know why irq_set_chained_handler_and_data() does not return an
-error, but the call site must really do something stupid if it fails to
-hand in the proper interrupt number.
+Waiting for Rui's ack :)
 
-> Thomas, it looks like irq_domain_set_info() and msi_domain_ops_init()
-> set the handler itself before setting the handler data:
->
->   irq_domain_set_info
->     irq_set_chip_and_handler_name(virq, chip, handler, ...)
->     irq_set_handler_data(virq, handler_data)
->
->   msi_domain_ops_init
->     __irq_set_handler(virq, info->handler, ...)
->     if (info->handler_data)
->       irq_set_handler_data(virq, info->handler_data)
->
-> That looks at least superficially similar to the race you fixed with
-> 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ
-> handler").
->
-> Should irq_domain_set_info() and msi_domain_ops_init() swap the order,
-> too?
 
-In theory yes. Practically it should not matter because that happens
-during the allocation way before the interrupt can actually fire.  I'll
-have a deeper look nevertheless.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Thanks,
-
-        tglx
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
