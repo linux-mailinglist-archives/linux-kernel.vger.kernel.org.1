@@ -2,116 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FBD2B0686
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F282B0688
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgKLNe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:34:29 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53772 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLNe2 (ORCPT
+        id S1728312AbgKLNeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:34:46 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:41666 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727646AbgKLNep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:34:28 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACDYMsr053425;
-        Thu, 12 Nov 2020 07:34:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605188062;
-        bh=3WJbU5Nkjzk0TgsARggB4KDwhbQol8EeB5NepzS1qm4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=u90yOef5dcxrnQLEBBmP3J2bZPEhFKTKT6HjJrINz8Ipk68GwJjEhto4GhFVu7xt2
-         9RzpRuufiFodPBqqR3ct2QdvPLgr1tZHOXyjKqpfbIlNmdubxvpirQNZRBgpx9iVJM
-         VQv72bTivCdjrKV6BkVlNjGJgHYZT+G5M6tlVg/4=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACDYML0122796
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 07:34:22 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 07:34:22 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 07:34:22 -0600
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACDYIjY117262;
-        Thu, 12 Nov 2020 07:34:19 -0600
-Subject: Re: [PATCH V2 3/5] arm64: dts: ti: am65/j721e: Fix up un-necessary
- status set to "okay" for crypto
-To:     Nishanth Menon <nm@ti.com>, Roger Quadros <rogerq@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201112014929.25227-1-nm@ti.com>
- <20201112014929.25227-4-nm@ti.com>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <774fa259-af70-d08e-605a-c419239e9a1a@ti.com>
-Date:   Thu, 12 Nov 2020 15:34:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 12 Nov 2020 08:34:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605188084; x=1636724084;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zSUyeT6IZWo4ojb3zNIwODIfAyYWUJhMQcPYt47u4lY=;
+  b=YBDQHnMcoWZIn6af0Sz4L/Nrd0LlE8PksK1kfo9aG2b73C7HaNShb9ae
+   lY0y193H9aRLls8sQuPkHdMKwifKrf9F/+mTuIW1Qhd8YmeCL2j5bZjic
+   Wk6+5u0OisUP/wt2aHl4uokggoDpicCoAEEjUBuJJTWB6gFArS5IUhXoP
+   GqdX6zEbf+I9+KXMDa3gaa6Mu/Rd4c/qKJxjozVPD6TOIog8K0I3xEYEU
+   JyftdG5CiqIgKxwIr58yYlXUkcVnOvl8Hv8Xx6SbjUhTxnx/3yuwtN3Ol
+   MWroqqGTuOc4bXw1LWWwiLFIB2E2UP5qTKkQwqYv0pIKdPuHcTMlCdy7/
+   Q==;
+IronPort-SDR: u/D/oeeRhGJM8TNqvR9mpeph5xH+a0q5lM+Z184pnrxZXmBHnD7USGJHgr/M5OxAMHN25axRHu
+ tA8w9y7VuKYe5R9bQp8nvpOeAWD/tHUUZB/hYWuupMGimfNAeTru+jhtN3/3ZNEWlAcHhT+Wqe
+ FHVSXxTQGjmoOr4J+JCv6vLeIYScXQFT6gvV/nzZqtedM9oG4Tgjlrl7YjPp2zyPXHd7NoWiEE
+ jxEWqBMAiTgJt2X9gvBSvh3S8f8HErw18rmEjbgyLl+dsQhs7fm9XGKf+hooq6tJEe/ol4W+Ud
+ s7E=
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="33368544"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Nov 2020 06:34:43 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 12 Nov 2020 06:34:42 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 12 Nov 2020 06:34:40 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <sakari.ailus@iki.fi>, <laurent.pinchart@ideasonboard.com>,
+        <jacopo@jmondi.org>
+CC:     Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH v5 1/3] dt-bindings: media: atmel: csi2dc: add bindings for microchip csi2dc
+Date:   Thu, 12 Nov 2020 15:34:35 +0200
+Message-ID: <20201112133437.372475-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201112014929.25227-4-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/2020 03:49, Nishanth Menon wrote:
-> The default state of a device tree node is "okay". There is no specific
-> use of explicitly adding status = "okay" in the SoC dtsi.
-> 
-> Fixes: 8ebcaaae8017 ("arm64: dts: ti: k3-j721e-main: Add crypto accelerator node")
-> Fixes: b366b2409c97 ("arm64: dts: ti: k3-am6: Add crypto accelarator node")
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> Cc: Keerthy <j-keerthy@ti.com>
+Add bindings documentation for Microchip CSI2 Demultiplexer controller.
 
-Acked-by: Tero Kristo <t-kristo@ti.com>
+CSI2DC is a demultiplexer from Synopsys IDI interface specification to
+parallel interface connection or direct memory access.
 
-> ---
-> Changes since V1:
-> - No change.
-> 
-> V1: https://lore.kernel.org/linux-arm-kernel/20201104224356.18040-4-nm@ti.com/
-> 
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi  | 1 -
->   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 2 --
->   2 files changed, 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index 21e50021dd83..2bd66a9e4b1d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -119,7 +119,6 @@ crypto: crypto@4e00000 {
->   		#address-cells = <2>;
->   		#size-cells = <2>;
->   		ranges = <0x0 0x04e00000 0x00 0x04e00000 0x0 0x30000>;
-> -		status = "okay";
->   
->   		dmas = <&main_udmap 0xc000>, <&main_udmap 0x4000>,
->   				<&main_udmap 0x4001>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index b54332d6fdc5..9747c387385b 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -345,8 +345,6 @@ main_crypto: crypto@4e00000 {
->   		#size-cells = <2>;
->   		ranges = <0x0 0x04e00000 0x00 0x04e00000 0x0 0x30000>;
->   
-> -		status = "okay";
-> -
->   		dmas = <&main_udmap 0xc000>, <&main_udmap 0x4000>,
->   				<&main_udmap 0x4001>;
->   		dma-names = "tx", "rx1", "rx2";
-> 
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+Changes in v5:
+- modified bindings as per Rob Herring review
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Changes in v4:
+- Removed property for inter-line-delay and for clock continuous/non-continuous
+- Removed virtual channel by reg for second endpoint
+
+Changes in v3:
+- Removed some text from description, as it was explained in the schema
+- fixed other things as per Rob's review
+- moved some text inside the schema, like the clock description
+
+Changes in v2:
+- fixed warnings reported by dt_binding_check
+
+ .../bindings/media/microchip,csi2dc.yaml      | 119 ++++++++++++++++++
+ 1 file changed, 119 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+
+diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+new file mode 100644
+index 000000000000..e79f0d6ba9db
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+@@ -0,0 +1,119 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip CSI2 Demux Controller (CSI2DC)
++
++maintainers:
++  - Eugen Hristev <eugen.hristev@microchip.com>
++
++description:
++  CSI2DC - Camera Serial Interface 2 Demux Controller
++
++  CSI2DC is a hardware block that receives incoming data from an IDI interface
++  and filters packets based on their data type and virtual channel identifier,
++  then converts the byte stream into a cross clock domain to a pixel stream
++  to a parallel interface that can be read by a sensor controller.
++
++  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
++  is connected to a sensor controller and the data pipe is accessible
++  as a DMA slave port to a DMA controller.
++
++  CSI2DC supports a single 'port' node as a source pad with Synopsys 32-bit
++  IDI interface. The connected endpoint must be a IDI interface compatible
++  device (like Synopsys CSI2HOST) , that can provide 32-bit IDI interface
++  connection as sink pad.
++  For media entity and endpoints please refer to the bindings defined in
++  Documentation/devicetree/bindings/media/video-interfaces.txt.
++  For Synopsys IDI interface please refer to
++  Documentation/devicetree/bindings/media/snps,dw-csi-plat.txt
++
++  CSI2DC supports one 'port' node as sink pad with parallel interface. This is
++  called video pipe.
++  This port has an 'endpoint' can then be used as a source pad for another
++  controller (next in pipeline).
++  Please refer to the bindings defined in
++  Documentation/devicetree/bindings/media/video-interfaces.txt.
++
++  CSI2DC also supports direct access to the data through AHB, via DMA channel,
++  called data pipe.
++  Because of this, the sink 'port' child node (second) is not mandatory.
++  If the sink 'port' child node is missing, only data pipe is available.
++
++properties:
++  compatible:
++    const: microchip,sama7g5-csi2dc
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    description:
++      CSI2DC must have two clocks to function correctly. One clock is the
++      peripheral clock for the inside functionality of the hardware block.
++      This is named 'pclk'. The second clock must be the cross domain clock,
++      in which CSI2DC will perform clock crossing. This clock must be fed
++      by the next controller in pipeline, which usually is a sensor controller.
++      Normally this clock should be given by this sensor controller who
++      is also a clock source. This clock is named 'scck', sensor controller clock.
++    items:
++      - const: pclk
++      - const: scck
++
++  ports:
++    type: object
++    description:
++      List of ports
++
++    properties:
++      port@0:
++        type: object
++        description:
++          Input port node, single endpoint describing the input pad.
++      port@1:
++        type: object
++        description:
++          Output port node, single endpoint, describing the output pad.
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - ports
++
++examples:
++  - |
++    csi2dc@e1404000 {
++        compatible = "microchip,sama7g5-csi2dc";
++        reg = <0xe1404000 0x500>;
++        clocks = <&pclk>, <&scck>;
++        clock-names = "pclk", "scck";
++
++        ports {
++               #address-cells = <1>;
++               #size-cells = <0>;
++               port@0 {
++                       reg = <0>; /* must be 0, first child port */
++                       csi2dc_in: endpoint { /* input from IDI interface */
++                               remote-endpoint = <&csi2host_out>;
++                       };
++               };
++
++               port@1 {
++                       reg = <1>; /* must be 1, second child port */
++                       csi2dc_out: endpoint {
++                               remote-endpoint = <&xisc_in>; /* output to sensor controller */
++                       };
++               };
++        };
++    };
++
++...
+-- 
+2.25.1
+
