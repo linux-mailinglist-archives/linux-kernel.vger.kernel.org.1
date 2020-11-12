@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737FC2B0C86
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC3D2B0C8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgKLSZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:25:53 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:41614 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgKLSZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:25:52 -0500
-Received: by mail-pl1-f193.google.com with SMTP id w11so3226171pll.8;
-        Thu, 12 Nov 2020 10:25:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QvplDTvTZnay/C4NlrXwy3WiT/KqaqbHVC2O6qZP0hg=;
-        b=BEVpDlTFXLoANApF0cRFqmy6gV0y/SJOBbHU7JX1BducnTiNzPyKnZL6YxAQCFSRML
-         /fX64mGqyrtV1YtRE/vbR3T9/qOhLYT7foyzh7dTZn2YClS5E4Ad69R6udajOs/wgR37
-         twn3NyQPNNTexniJcF6Pc4l/itV3Ffrca3doB+dDR84lCByL5We0Q2lozsA3/yMNo7/d
-         Qg46WQQaYxRpb1kcxJnBfNumGL5QZuIWuCr/M2ZhrvmNm6EMLYbfIK3OJGGZk45TgCZ9
-         +44SAc4W75EgIH/N5q8IH5fzxvQnk8vLPNQ2KEcNLrEMpdjXlS8XqU4CFbe6lr/BADdr
-         5K0A==
-X-Gm-Message-State: AOAM530pGKL1KvLQDwsfFB3sgm+Ola+ShLGXQoaW5WGLifqRAcM2+eD3
-        MyF+zil4hGN1ye1Rbr9OjVCIcdjOb6Y=
-X-Google-Smtp-Source: ABdhPJwmwJ9oyvDBaHX1IV3z0OBdcR8Y0E0H9te5SVdVx2RNM/0cqbEnX6LvSYcE87EuemmXdGKyxw==
-X-Received: by 2002:a17:902:e788:b029:d6:dc69:80a8 with SMTP id cp8-20020a170902e788b02900d6dc6980a8mr881007plb.59.1605205551213;
-        Thu, 12 Nov 2020 10:25:51 -0800 (PST)
-Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k6sm7162512pfd.169.2020.11.12.10.25.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 10:25:50 -0800 (PST)
-Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201112145443.17832-1-yuehaibing@huawei.com>
- <20201112172008.GA944848@nvidia.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
-Date:   Thu, 12 Nov 2020 10:25:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726491AbgKLS0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:26:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726194AbgKLS0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 13:26:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5FB75AB95;
+        Thu, 12 Nov 2020 18:26:20 +0000 (UTC)
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Cc:     Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Doug Smythies <dsmythies@telus.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: [PATCH v4 0/3] Add support for frequency invariance to AMD EPYC Zen2
+Date:   Thu, 12 Nov 2020 19:26:11 +0100
+Message-Id: <20201112182614.10700-1-ggherdovich@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201112172008.GA944848@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 9:20 AM, Jason Gunthorpe wrote:
-> I think it should be like this, Bart?
-> 
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index 6017d525084a0c..80f9673956ced2 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->   
->   	mutex_lock(&sport->port_guid_id.mutex);
->   	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
-> -		if (!IS_ERR_OR_NULL(ch->sess))
-> +		if (ch->sess)
->   			break;
->   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->   						tag_size, TARGET_PROT_NORMAL,
-> @@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->   
->   	mutex_lock(&sport->port_gid_id.mutex);
->   	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
-> -		if (!IS_ERR_OR_NULL(ch->sess))
-> +		if (ch->sess)
->   			break;
->   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->   					tag_size, TARGET_PROT_NORMAL, i_port_id,
->   					ch, NULL);
-> -		if (!IS_ERR_OR_NULL(ch->sess))
-> +		if (ch->sess)
->   			break;
->   		/* Retry without leading "0x" */
->   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-> @@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->   	}
->   	mutex_unlock(&sport->port_gid_id.mutex);
->   
-> -	if (IS_ERR_OR_NULL(ch->sess)) {
-> +	if (!ch->sess)
-> +		ch->sess = ERR_PTR(-ENOENT);
-> +	if (IS_ERR(ch->sess)) {
->   		WARN_ON_ONCE(ch->sess == NULL);
->   		ret = PTR_ERR(ch->sess);
->   		ch->sess = NULL;
-> 
+v3 at https://lore.kernel.org/lkml/20201110200519.18180-1-ggherdovich@suse.cz/
 
-Hi Jason,
+Changes wrt v3:
 
-The ib_srpt driver accepts three different formats for the initiator 
-ACL. Up to two of the three target_setup_session() calls will fail if 
-the fifth argument of target_setup_session() does not use the format of 
-the initiator ID in configfs. If the first or the second 
-target_setup_session() call fails it is essential that later 
-target_setup_session() calls happen. Hence the IS_ERR_OR_NULL(ch->sess) 
-checks in the above loops.
+- Correct the #ifdef guard for cppc_get_perf_caps() from CONFIG_ACPI to
+  CONFIG_ACPI_CPPC_LIB (reported by "kernel test robot <lkp@intel.com>")
 
-In other words, I like YueHaibing's patch better.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cover Letter from v3:
 
-Thanks,
+v2 at https://lore.kernel.org/lkml/20201110183054.15883-1-ggherdovich@suse.cz/
 
-Bart.
+Changes wrt v2:
+
+- "code golf" on the function function init_freq_invariance_cppc().
+  Make better use of the "secondary" argument to init_freq_invariance(),
+  which was introduced at b56e7d45e807 ("x86, sched: Don't enable static key
+  when starting secondary CPUs") to deal with CPU hotplug.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cover Letter from v2:
+
+v1 at https://lore.kernel.org/lkml/20201110083936.31994-1-ggherdovich@suse.cz/
+
+Changes wrt v1:
+
+- made initialization safe under CPU hotplug.
+  The function init_freq_invariance_cppc now lets only the first caller
+  into init_freq_invariance().
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cover Letter from v1:
+
+This series adds support for frequency invariant accounting on AMD EPYC Zen2
+(aka "Rome"). The first patch by Nathan lays out the foundation by querying
+ACPI infrastructure for the max boost frequency of the system. Specifically,
+this value is available via the CPPC machinery; the previous EPYC generation,
+namely Zen aka "Naples", doesn't implement that and frequency invariance won't
+be supported.
+
+The second patch sets the estimate for freq_max to be the midpoint between
+max_boost and max_P, as that works slightly better in practice.
+
+A side effect of this series is to provide, with the invariant schedutil
+governor, a suitable baseline to evaluate a (still work-in-progress)
+CPPC-based cpufreq driver for the AMD platform (see
+https://lore.kernel.org/lkml/cover.1562781484.git.Janakarajan.Natarajan@amd.com
+if/when it will resubmitted.
+
+
+Giovanni Gherdovich (2):
+  x86, sched: Use midpoint of max_boost and max_P for frequency
+    invariance on AMD EPYC
+  x86: Print ratio freq_max/freq_base used in frequency invariance
+    calculations
+
+Nathan Fontenot (1):
+  x86, sched: Calculate frequency invariance for AMD systems
+
+ arch/x86/include/asm/topology.h |  8 ++++
+ arch/x86/kernel/smpboot.c       | 79 ++++++++++++++++++++++++++++++---
+ drivers/acpi/cppc_acpi.c        |  3 ++
+ 3 files changed, 85 insertions(+), 5 deletions(-)
+
+-- 
+2.26.2
+
