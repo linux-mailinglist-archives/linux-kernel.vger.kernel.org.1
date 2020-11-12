@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7042B02C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006A62B02C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgKLKdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S1727932AbgKLKfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKLKds (ORCPT
+        with ESMTP id S1726776AbgKLKfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:33:48 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340FC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:33:48 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p1so5406892wrf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:33:48 -0800 (PST)
+        Thu, 12 Nov 2020 05:35:11 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2992FC0613D1;
+        Thu, 12 Nov 2020 02:35:11 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id w11so2559037pll.8;
+        Thu, 12 Nov 2020 02:35:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=35zt7gixVPMG1KfL9nSOfZvseh8gr5Ny6Pqy+A2ZElg=;
-        b=yz8BpGmykQJd3aJMjbiY1HRFds0VHjDm5pgAfA4tz1+MZSuebUW/P09W/VnvxdzTAx
-         0s75bsDt4SbiH2guN00CswOs8QHgnlS5+ZpgKc9elSBoXxmSqNU3T6l3PJlnX9V0HZ8w
-         SesBttkfCe3ZYkkWmGI9fa1nGWgY1/WGv8FJIHoQvhpdxFQxhEsp9pPA9UhLsorm3Dvu
-         v0MA7j0XjgezGfcNiVjubw0NwIzRT64Mp570UTv09wmXgfcXag1HZF0vVNvwbc23KOKD
-         wTdufj5qUMzn4qD2AveKJPVIjAC9yxS82Xt7ejC0yjjzYbkGhBEQz1w60dz0Tg/ew+tY
-         4iFQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gBKoO0l+krTYZHCpZSloeyBlfr5Et+++JAx3n38Lrro=;
+        b=mqVB3HMNViODmnTRpgcEm5Ec3hRXWO7EETfzUGekhn/qSktkQbXMX0olrCSqtFpgRC
+         f8VlzVjg/2gXI1nBdg3dnWv/cKIHTLVUpWczXRr3s+z/CX2hlMhzY5lQ+04t67teMODF
+         bERmKJnqqhSXcIqACTmbpYEI8Ed48gC2SRtmPWzJlnsAkNr2+l52tiERGB0brT/Ed6vj
+         hLUTtlsG8/TrncXB9EQawAyjIBZMjSbpt2mKe8seZ/RZRxwf7moHRTRPR/NlHyDhH71h
+         w4U6qM/nkys4hNQrNad/ankvFRFBgCmfO5h6wMLm9KM3413rjv+VRO+ru2DJdkWPDbjF
+         1JsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=35zt7gixVPMG1KfL9nSOfZvseh8gr5Ny6Pqy+A2ZElg=;
-        b=eN4xgWvq7jJG3vthn08Ewz3L/0SFtaEGWl+2c25AN5B3I1bQ9CFGBpZjn03tOgycTQ
-         6/75kuAx/r8910nACfvKbM2FlkrMDh8NsylS3u+8Uc1qwJT3kFT0zDiqzoH5o69zvccf
-         vPWCCBUh2gDUzknN2TuLxRa4ENz3Az3672uCMa9VpoTSEcJpCzfxY4fcwFmq5dQHKpYi
-         3P8+sINWBj+l/P+rWzO9Te+hyCU1lbzi3OnlyMgiRKjRxWhj8HZDNze2s9wBKH9cnt96
-         vIRX58D6NIIA79l1mmjrOxJESEUcuqTzxss7J5W4xF1rlLmmMiFI5rkiLHyR0pk1cn+m
-         W7DQ==
-X-Gm-Message-State: AOAM530zg+rXGMmRh8n8C1wuXzGsUl16uoLOMPxoenqe111fBxhNYSbb
-        TMYTavXA+uQvn4/o0reQ9CEwtw==
-X-Google-Smtp-Source: ABdhPJwyH5Ff/ayBEd0hcnLHq00JRNlh00wwExj7KnatYlxTXz2oxk36pVc6Y4zME3xdG+UkiIFcEQ==
-X-Received: by 2002:adf:f20c:: with SMTP id p12mr7423809wro.27.1605177227114;
-        Thu, 12 Nov 2020 02:33:47 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 18sm5717871wmo.3.2020.11.12.02.33.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gBKoO0l+krTYZHCpZSloeyBlfr5Et+++JAx3n38Lrro=;
+        b=BKn7jOZL94CV6aVYYL6QTDDls/ihsK5pLIkO9xAd7cNNinPg+Hp/FnlHBBv9+bh8lY
+         FnaZ7F8vEguuhlxdkJdgtHu9uTGO+WIyWQYl9v3C81Ee3gEPkHUUAzOOl0trlqh7sa/G
+         RXqR5zG0ZV/PLWdxtbBJ80zyw+OshJhqfsa84S49wen26rP4SWx+oFa4JWhkXOfNRsSP
+         mhUVX+8eiAol4Wnv5KQReqOBXtXizXFV+VzEuE4k44EJ+uTQqlCftLfyF0+h5DVk+HTG
+         1I5BjEkdUX7WC1llBmxh4FEuOO1Ocf3zYggPbV2WFRRDvdMofV7+FC9S0yMHlUfSwerH
+         oB8Q==
+X-Gm-Message-State: AOAM530FPudiYe2v8MCgRySBzw4mkKscqCSFMNm2T+1OpUC49yoV4uFd
+        QBv77vCSzIPmIU8jz1kCLd4NNo516eo=
+X-Google-Smtp-Source: ABdhPJwTNmx7Osf/AWo/E8V5brGSWpkSVTmxInq33sTns/D22sVqOCy2WRG5XQpWGqLMpcOKViFRqA==
+X-Received: by 2002:a17:902:a381:b029:d8:bdca:77dc with SMTP id x1-20020a170902a381b02900d8bdca77dcmr6528791pla.14.1605177310653;
+        Thu, 12 Nov 2020 02:35:10 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:50f6:9265:b24d:a776])
+        by smtp.gmail.com with ESMTPSA id 35sm2652383pgp.26.2020.11.12.02.35.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 02:33:46 -0800 (PST)
-Date:   Thu, 12 Nov 2020 10:33:44 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 05/25] soc: rockchip: io-domain: Remove incorrect and
- incomplete comment header
-Message-ID: <20201112103344.GF1997862@dell>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <20201103152838.1290217-6-lee.jones@linaro.org>
+        Thu, 12 Nov 2020 02:35:10 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net v2] net: x25: Increase refcnt of "struct x25_neigh" in x25_rx_call_request
+Date:   Thu, 12 Nov 2020 02:35:06 -0800
+Message-Id: <20201112103506.5875-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201103152838.1290217-6-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Nov 2020, Lee Jones wrote:
+The x25_disconnect function in x25_subr.c would decrease the refcount of
+"x25->neighbour" (struct x25_neigh) and reset this pointer to NULL.
 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/soc/rockchip/io-domain.c:57: warning: Cannot understand  * @supplies: voltage settings matching the register bits.
-> 
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> Cc: Doug Anderson <dianders@chromium.org>
-> Cc: linux-rockchip@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/soc/rockchip/io-domain.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-> index eece97f97ef8f..d13d2d497720b 100644
-> --- a/drivers/soc/rockchip/io-domain.c
-> +++ b/drivers/soc/rockchip/io-domain.c
-> @@ -53,9 +53,6 @@
->  
->  struct rockchip_iodomain;
->  
-> -/**
-> - * @supplies: voltage settings matching the register bits.
-> - */
->  struct rockchip_iodomain_soc_data {
->  	int grf_offset;
->  	const char *supply_names[MAX_SUPPLIES];
+However, the x25_rx_call_request function in af_x25.c, which is called
+when we receive a connection request, does not increase the refcount when
+it assigns the pointer.
 
-Any idea who will pick this up?
+Fix this issue by increasing the refcount of "struct x25_neigh" in
+x25_rx_call_request.
 
+This patch fixes frequent kernel crashes when using AF_X25 sockets.
+
+Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ net/x25/af_x25.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index 046d3fee66a9..a10487e7574c 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -1050,6 +1050,7 @@ int x25_rx_call_request(struct sk_buff *skb, struct x25_neigh *nb,
+ 	makex25->lci           = lci;
+ 	makex25->dest_addr     = dest_addr;
+ 	makex25->source_addr   = source_addr;
++	x25_neigh_hold(nb);
+ 	makex25->neighbour     = nb;
+ 	makex25->facilities    = facilities;
+ 	makex25->dte_facilities= dte_facilities;
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0
+
