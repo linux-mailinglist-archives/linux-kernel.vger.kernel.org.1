@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE3E2B126F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02712B1274
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbgKLXFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 18:05:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKLXFs (ORCPT
+        id S1727293AbgKLXGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 18:06:08 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47774 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726588AbgKLXGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:05:48 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B62C0613D1;
-        Thu, 12 Nov 2020 15:05:48 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id s25so10508565ejy.6;
-        Thu, 12 Nov 2020 15:05:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9INYHTC2YCDlk5WKrasdFSNycJRuAFg38eBMPmO9A9g=;
-        b=JOjHbyXV9MpnYrA72npdXOuY+owbQ4KG/mzWwBPt4t+LnDUBZxykaWQNhjuX7lCKzw
-         jlHvozqYYu1pG1mMFQ1RgHijtCJrsMNu6Ti33HSsRv5ISmkk2VZlEEWKrJzE2C3i2sYq
-         YtymckQ3S4X3Mc8AeUlXotxJEVLHjptJuilFL6to4IWXfUDy16YVFk8CFiCm+vkf/6ef
-         vRnH2UpHT/LtZ3bY2isshcLob87q7lmC9C9PF7p/btxNywOteM+HuFVawhkugp/XPXwn
-         0A+Ty03q1+tUYd31BUe55+9YFW+3BpSk/jCUggP+oh5J8CrvVWL1rcYaNUOYxIhE5CUI
-         NZXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9INYHTC2YCDlk5WKrasdFSNycJRuAFg38eBMPmO9A9g=;
-        b=oWBLWDyyQlOnvcIKBfuQBgfYDlH0z5srsJd0erfCRsPkdEs3yeAMWJ0qxSu/KzddP3
-         4AxaIBJqYtmq3gxBoeDJ9p30kqi87yMqEplDxx6hVxnqnAOhoVZpXi7kjX6+t0s9XUxh
-         fHzXsaPePeNmc0+b6MeJGXlsAnFur34MM9c3vVwHH/kfT+MZfagG10FZ49V90BdP5eLL
-         0NdMso6J8zIp1hHbsWfNzd0wjVtj/uKzHt48LDRExV6Ll67macCyCKd2e09K8nEMWMq+
-         tRARZ0GOr6dsUTtN1TeBpfwh4LpseI0uvJDiUMieAqBVlMyl0ROVYDu5ZinxlZLTz00+
-         XkrA==
-X-Gm-Message-State: AOAM532+a7XJtU6/XVFCyVq7yb4oiOTvgBqHGd3rLi702nyoBtjLgbSE
-        yN/1axrXF+8NZWGk61gBAmU=
-X-Google-Smtp-Source: ABdhPJwu27+hJH90HsawanhiEUQ1bNs36kGCr4y8Xx4ki2Qxk0Fg/1ZvjZA86wApCYu+DAPZX+Zoeg==
-X-Received: by 2002:a17:906:a88:: with SMTP id y8mr1694161ejf.469.1605222347234;
-        Thu, 12 Nov 2020 15:05:47 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id e19sm2674855ejz.35.2020.11.12.15.05.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 15:05:46 -0800 (PST)
-Date:   Fri, 13 Nov 2020 01:05:44 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        Thu, 12 Nov 2020 18:06:08 -0500
+Date:   Thu, 12 Nov 2020 23:06:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605222365;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QTpmNCNqBmw3Yyz+3dNWgY5l4250Y0qHxE6RjNAhzs0=;
+        b=XMjkHyeLiDBowGutTIbPmBpOQWN435u3gplAvtk2hvX4tKloXUC/cINpVguJOOCqwzOaGx
+        8My7+OfL2DsVYd5WAIZdRzv8W+Z5LrsWShE52DYmy2mNzFxgDBziqFuUsUmhF+x77CV/y7
+        AWZAld9atlHt2MjT4stHTk5q8v0J/V+GEE4N5Y60qHIufTWakBfmvp2pldFX4wCHU3stsH
+        bj0ip8AntbIzaUTyrXUUq68CIVo0ftrNSeSlRW7KbBHz0cJS6rv8SVpFRiWe7slzHU098s
+        zeDAzaRFf/axXH5C4fZoMxvgpsAtjLe4evr+rbGI1+gBpX6Rl2/QDXyDIiES1g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605222365;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QTpmNCNqBmw3Yyz+3dNWgY5l4250Y0qHxE6RjNAhzs0=;
+        b=Y8GqIe8KvLRJ91l1kdb4BJWMvXzKMHmFGzYGP5H6SbZCng/1mhFtv3EhUq8UdC0Os7Lde6
+        8gCjzvbD/9BsFUBg==
+From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/platform/uv: Fix copied UV5 output archtype
+Cc:     Mike Travis <mike.travis@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 04/11] net: dsa: microchip: rename ksz9477.c
- to ksz9477_main.o
-Message-ID: <20201112230544.p2jnfzbk3bhdui3p@skbuf>
-References: <20201112153537.22383-1-ceggers@arri.de>
- <20201112153537.22383-5-ceggers@arri.de>
+In-Reply-To: <20201111010418.82133-1-mike.travis@hpe.com>
+References: <20201111010418.82133-1-mike.travis@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112153537.22383-5-ceggers@arri.de>
+Message-ID: <160522236375.11244.9421056354118266795.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:35:30PM +0100, Christian Eggers wrote:
-> PTP functionality will be built into a separate source file
-> (ksz9477_ptp.c).
-> 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> ---
+The following commit has been merged into the x86/urgent branch of tip:
 
-You might consider editing the title. "ksz9477_main.c".
+Commit-ID:     77c7e1bc060deab6430f1dff5922ccd3093d9776
+Gitweb:        https://git.kernel.org/tip/77c7e1bc060deab6430f1dff5922ccd3093d9776
+Author:        Mike Travis <mike.travis@hpe.com>
+AuthorDate:    Tue, 10 Nov 2020 19:04:18 -06:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 13 Nov 2020 00:00:31 +01:00
+
+x86/platform/uv: Fix copied UV5 output archtype
+
+A test shows that the output contains a space:
+    # cat /proc/sgi_uv/archtype
+    NSGI4 U/UVX
+
+Remove that embedded space by copying the "trimmed" buffer instead of the
+untrimmed input character list.  Use sizeof to remove size dependency on
+copy out length.  Increase output buffer size by one character just in case
+BIOS sends an 8 character string for archtype.
+
+Fixes: 1e61f5a95f19 ("Add and decode Arch Type in UVsystab")
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Link: https://lore.kernel.org/r/20201111010418.82133-1-mike.travis@hpe.com
+---
+ arch/x86/kernel/apic/x2apic_uv_x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 3115caa..1b98f8c 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -33,7 +33,7 @@ static union uvh_apicid		uvh_apicid;
+ static int			uv_node_id;
+ 
+ /* Unpack AT/OEM/TABLE ID's to be NULL terminated strings */
+-static u8 uv_archtype[UV_AT_SIZE];
++static u8 uv_archtype[UV_AT_SIZE + 1];
+ static u8 oem_id[ACPI_OEM_ID_SIZE + 1];
+ static u8 oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
+ 
+@@ -320,7 +320,7 @@ static int __init decode_arch_type(unsigned long ptr)
+ 
+ 	if (n > 0 && n < sizeof(uv_ate->archtype)) {
+ 		pr_info("UV: UVarchtype received from BIOS\n");
+-		uv_stringify(UV_AT_SIZE, uv_archtype, uv_ate->archtype);
++		uv_stringify(sizeof(uv_archtype), uv_archtype, uv_ate->archtype);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -378,7 +378,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+ 	if (!early_get_arch_type())
+ 
+ 		/* If not use OEM ID for UVarchtype */
+-		uv_stringify(UV_AT_SIZE, uv_archtype, _oem_id);
++		uv_stringify(sizeof(uv_archtype), uv_archtype, oem_id);
+ 
+ 	/* Check if not hubbed */
+ 	if (strncmp(uv_archtype, "SGI", 3) != 0) {
