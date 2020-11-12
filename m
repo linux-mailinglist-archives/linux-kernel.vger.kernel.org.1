@@ -2,53 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2B12B095B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A244C2B092C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgKLP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:58:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728762AbgKLP6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:58:17 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8607322227;
-        Thu, 12 Nov 2020 15:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605196697;
-        bh=HNane0fTZaNd9zIE50Z8zt6tdzDyBOHDJPVAVJ3rQ9k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UJYzJRFaEBEGrStPLSkfu+i623AfLqzYa6x1s/hooSJZtidG/cdfR4rD/if/odtRL
-         9bk0kl2fKlX0nw15GX19CKAg8A7/QU3ciLSak70MVhAK5hkvCGvxhCSsQj8LYI+kBs
-         Bt0SA4FxxygzR2ooEhMKisPA84lnpOUcSipBsKxI=
-Date:   Thu, 12 Nov 2020 07:58:15 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCHv2 0/2] selftests: pmtu.sh: improve the test result
- processing
-Message-ID: <20201112075815.6f9b8efc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201110020049.6705-1-po-hsu.lin@canonical.com>
-References: <20201110020049.6705-1-po-hsu.lin@canonical.com>
+        id S1728184AbgKLP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:58:38 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53998 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728883AbgKLP6b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:58:31 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACFwP2p010590;
+        Thu, 12 Nov 2020 09:58:25 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605196705;
+        bh=5EME1Y5wxtn8yJOfd69sUQV7FxdOrY9kzzIdVjXXO1M=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=In6V1hrwcRwcNLW/ydQ6LG1p7Cqb58kedqGtYRW7eGhLK+1r2x2fu72dvXyZNVUrb
+         HZVDe8B+d3iuOYQz8UN8BTdgnXmVugk4BwA5OcoXoCiiPQBjUeg7DixnCglgs+Odzg
+         ja4GTOdrpA13ammWra26o+mzedyH9sAzVszVZdq8=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACFwP1i072911
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 09:58:25 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 09:58:25 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 09:58:25 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACFwLbH004118;
+        Thu, 12 Nov 2020 09:58:22 -0600
+Subject: Re: [PATCH v2 6/7] arm64: dts: ti: k3-j7200-common-proc-board: Enable
+ SERDES0
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Roger Quadros <rogerq@ti.com>, Lee Jones <lee.jones@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201109170409.4498-1-kishon@ti.com>
+ <20201109170409.4498-7-kishon@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <e7b2b4e7-fb5e-8504-a1b1-70dc10771264@ti.com>
+Date:   Thu, 12 Nov 2020 21:28:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201109170409.4498-7-kishon@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 10:00:47 +0800 Po-Hsu Lin wrote:
-> The pmtu.sh test script treats all non-zero return code as a failure,
-> thus it will be marked as FAILED when some sub-test got skipped.
-> 
-> This patchset will:
->   1. Use the kselftest framework skip code $ksft_skip to replace the
->      hardcoded SKIP return code.
->   2. Improve the result processing, the test will be marked as PASSED
->      if nothing goes wrong and not all the tests were skipped.
 
-Applied, thank you!
+
+On 11/9/20 10:34 PM, Kishon Vijay Abraham I wrote:
+> Add sub-nodes to SERDES0 DT node to represent SERDES0 is connected
+> to PCIe and QSGMII (multi-link SERDES).
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../dts/ti/k3-j7200-common-proc-board.dts     | 23 +++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index ef03e7636b66..65a2e5aeb050 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -8,6 +8,7 @@
+>  #include "k3-j7200-som-p0.dtsi"
+>  #include <dt-bindings/net/ti-dp83867.h>
+>  #include <dt-bindings/mux/ti-serdes.h>
+> +#include <dt-bindings/phy/phy.h>
+>  
+>  / {
+>  	chosen {
+> @@ -213,3 +214,25 @@
+>  	dr_mode = "otg";
+>  	maximum-speed = "high-speed";
+>  };
+> +
+> +&serdes_refclk {
+> +	clock-frequency = <100000000>;
+> +};
+
+Since this is a reference clk from the board, should the entire node be
+here instead of in k3-j7200-main.dtsi?
+
+> +
+> +&serdes0 {
+> +	serdes0_pcie_link: phy@0 {
+> +		reg = <0>;
+> +		cdns,num-lanes = <2>;
+> +		#phy-cells = <0>;
+> +		cdns,phy-type = <PHY_TYPE_PCIE>;
+> +		resets = <&serdes_wiz0 1>, <&serdes_wiz0 2>;
+> +	};
+> +
+> +	serdes0_qsgmii_link: phy@1 {
+> +		reg = <2>;
+> +		cdns,num-lanes = <1>;
+> +		#phy-cells = <0>;
+> +		cdns,phy-type = <PHY_TYPE_QSGMII>;
+> +		resets = <&serdes_wiz0 3>;
+> +	};
+> +};
+> 
