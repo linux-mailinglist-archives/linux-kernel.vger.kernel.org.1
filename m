@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9089B2B063A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16EE2B0632
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgKLNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
+        id S1728353AbgKLNUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728286AbgKLNUN (ORCPT
+        with ESMTP id S1728290AbgKLNUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Nov 2020 08:20:13 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9F6C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:20:11 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r17so6003271wrw.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:20:11 -0800 (PST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8BCC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:20:12 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b8so5998868wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:20:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W7iFgNzjupYbkhuJ8ppUAnhnD6gEMwq5fnIgnkH5hQg=;
-        b=xraKgwigr/3WOJ5/Z6ypYZXDmivlx16frB+i1AcULwNtfPPaL2QkclE4D9d6xSDk+y
-         KtX84j8cy3C8188Z56CgA2Ec4qtJL/w0pADmaA3TXMIRDJOF2yF1+4XG+X383rojWTeF
-         Pw/SMd+y6waKOyHZ+5xSamHLhCWDAKRO+cKNGC+uREUoNQHAq+1EZnAcD+bO5Ivx65tP
-         pELabNcfICfoyJLlHJHKfWqLa+0bD91R80sjfp104cukICbWR0tgLtD5kmvMwSrhsajC
-         Cgklf98XLad3yOrLH2qTWFBvWW6Z7eLJ8wiJWY/4wrLkh9Y0YB5FJo2MWLcWofw/fHXu
-         D1mQ==
+        bh=8bT6NBr573z4dRmUGzdy7vOSo0LG9hQOBgI7J9L19n0=;
+        b=mgsPSO4Vv1I0HLl+/EpK+bO64s6O30aHTiVXWSNkXtrWiKVu0TONIobdV8BewmbFoU
+         gmKhJSfyHbxWuLsrWBbzord4ktUmXpF/JfK8W7GPrkQpwdmHOCV99d8/+u7G6rslcGi4
+         T7UW3lD2hbNoZmZOzUqmApvnILA+G/TnMnWP9S6Fb06hjZ+dXQJLn9aSiGrAPx5fGakG
+         W8pK1mZW+Frwk+3qur8oKSxcbaZ9gHPuCo6A+OdWIrnZZab8C+2zIpftvjynOTmNKUNw
+         JwbYgaKPc/iqYVbpiSRhuVSUKBDzj1++R3rOQjwnVHgJo4nJXLSIHVdqHdgJiPjH6K/o
+         DZBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=W7iFgNzjupYbkhuJ8ppUAnhnD6gEMwq5fnIgnkH5hQg=;
-        b=sC+ktkWAJuSGiZcBz8wAlB3lNUO2h16X1ESu6sBdbFVv2S7UR9zltH9c7ObNb/9DfI
-         s4NgSTyM4zVDsqJggpMhxGuFpmrVRXAa2SbZI18iP/wgNrS3uJdp6vOa5FgDf7c4yFtu
-         JWNLfXtjbOSnG9qle8kwaSMnu/JG0yXUMR1+dIe9kJPdmlZ0vdDzr0dHA43hvdksAWBj
-         AD1O4otNtFjE0jtOx0TqFqoFholFB3IYvG0jaWAszp7wO25cXjlqriulQoTJ7MAn9SKw
-         QZn/cc671uGlFnHly6hjIwVZlLV5Xk0HhZL6dVd7mJQh76HzlN5/idpdCWXS8/n89E5s
-         uXxw==
-X-Gm-Message-State: AOAM532b/ELUMOY0m8M3vtNTY1lXvgvJ+K4OmirHmGrTbNKuZn2Qbvy/
-        2T/fGab6CFa7SGBeVX819nGhzg==
-X-Google-Smtp-Source: ABdhPJzuIs7PpfSu/WiiGoB50ZqQyuxz+iEHv+8tsyK0usK3trHVokWiSyVgGqFbYbfBWpMw7zyczQ==
-X-Received: by 2002:adf:f347:: with SMTP id e7mr25933848wrp.183.1605187210191;
-        Thu, 12 Nov 2020 05:20:10 -0800 (PST)
+        bh=8bT6NBr573z4dRmUGzdy7vOSo0LG9hQOBgI7J9L19n0=;
+        b=nvZPNzB0d/pPq8VX2IUK/GepgPqNpjXptMzF6p25kWl7ITynx7vvcNZ9qg2FnTJcMy
+         g4s7uyZwTo/IeywHGCZy17c3pG6fFEPs7FB+PXvAly8GAZK1MsV/CcA1/xTS5OmN5BTq
+         55jIuXGR8UVganuOwJaPaKpIPVSh3u5btQZRfMM5knOl9NGNqTyBcKZT6rdA7zqtKnO/
+         WKheUqzJE4cCRLQ/S7Cw3VXzuK3A5DdVxSxZmzZeadtTMd3hNce5HC656z6xCVTRVWHA
+         HAEERiOd1WfpZuZYDU4651tzuvqxbfiWBU1J4AxnwPQZ8thhljiU+8y3nUpXTkKZDynb
+         2VYQ==
+X-Gm-Message-State: AOAM532mW/EE3FiV4n4wLSLpSfdWYFOh+/vxEJsDL26fd9q6N0hqw2DO
+        oikkXBE8sAkMdG2qKgcog/KwMoTHEP7CVNcj
+X-Google-Smtp-Source: ABdhPJyI+2L0X57vYtQloasVb3OMTpYuD6fawy7Bq6HwXGcJSYZ6xpBDXg1Jb9tIfoXKnZ4Ww4pnvw==
+X-Received: by 2002:adf:ebcb:: with SMTP id v11mr35129463wrn.408.1605187211647;
+        Thu, 12 Nov 2020 05:20:11 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t136sm2806326wmt.18.2020.11.12.05.20.08
+        by smtp.gmail.com with ESMTPSA id t136sm2806326wmt.18.2020.11.12.05.20.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 05:20:09 -0800 (PST)
+        Thu, 12 Nov 2020 05:20:11 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Yanir Lubetkin <yanirx.lubetkin@intel.com>,
         netdev@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [PATCH 5/6] staging: net: wimax: i2400m: tx: Fix a few kernel-doc misdemeanours
-Date:   Thu, 12 Nov 2020 13:19:58 +0000
-Message-Id: <20201112131959.2213841-6-lee.jones@linaro.org>
+Subject: [PATCH 6/6] staging: net: wimax: i2400m: fw: Fix incorrectly spelt function parameter in documentation
+Date:   Thu, 12 Nov 2020 13:19:59 +0000
+Message-Id: <20201112131959.2213841-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112131959.2213841-1-lee.jones@linaro.org>
 References: <20201112131959.2213841-1-lee.jones@linaro.org>
@@ -70,9 +70,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wimax/i2400m/tx.c:715: warning: Function parameter or member 'i2400m' not described in 'i2400m_tx'
- drivers/net/wimax/i2400m/tx.c:964: warning: Function parameter or member 'i2400m' not described in 'i2400m_tx_setup'
- drivers/net/wimax/i2400m/tx.c:1005: warning: Function parameter or member 'i2400m' not described in 'i2400m_tx_release'
+ drivers/net/wimax/i2400m/fw.c:647: warning: Function parameter or member '__chunk_len' not described in 'i2400m_download_chunk'
+ drivers/net/wimax/i2400m/fw.c:647: warning: Excess function parameter 'chunk_len' description in 'i2400m_download_chunk'
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>
@@ -84,40 +83,22 @@ Cc: netdev@vger.kernel.org
 Cc: devel@driverdev.osuosl.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/staging/wimax/i2400m/tx.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/staging/wimax/i2400m/fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/wimax/i2400m/tx.c b/drivers/staging/wimax/i2400m/tx.c
-index 1255302e251e4..e9436212fe54d 100644
---- a/drivers/staging/wimax/i2400m/tx.c
-+++ b/drivers/staging/wimax/i2400m/tx.c
-@@ -681,6 +681,8 @@ void i2400m_tx_close(struct i2400m *i2400m)
- /**
-  * i2400m_tx - send the data in a buffer to the device
+diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wimax/i2400m/fw.c
+index 9970857063374..edb5eba0898b0 100644
+--- a/drivers/staging/wimax/i2400m/fw.c
++++ b/drivers/staging/wimax/i2400m/fw.c
+@@ -636,7 +636,7 @@ ssize_t i2400m_bm_cmd(struct i2400m *i2400m,
   *
-+ * @i2400m: device descriptor
-+ *
-  * @buf: pointer to the buffer to transmit
-  *
-  * @buf_len: buffer size
-@@ -955,6 +957,8 @@ EXPORT_SYMBOL_GPL(i2400m_tx_msg_sent);
- /**
-  * i2400m_tx_setup - Initialize the TX queue and infrastructure
-  *
-+ * @i2400m: device descriptor
-+ *
-  * Make sure we reset the TX sequence to zero, as when this function
-  * is called, the firmware has been just restarted. Same rational
-  * for tx_in, tx_out, tx_msg_size and tx_msg. We reset them since
-@@ -998,7 +1002,7 @@ int i2400m_tx_setup(struct i2400m *i2400m)
- }
- 
- 
--/**
-+/*
-  * i2400m_tx_release - Tear down the TX queue and infrastructure
-  */
- void i2400m_tx_release(struct i2400m *i2400m)
+  * @i2400m: device descriptor
+  * @chunk: the buffer to write
+- * @chunk_len: length of the buffer to write
++ * @__chunk_len: length of the buffer to write
+  * @addr: address in the device memory space
+  * @direct: bootrom write mode
+  * @do_csum: should a checksum validation be performed
 -- 
 2.25.1
 
