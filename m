@@ -2,233 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF882B07CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703892B07D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgKLOwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:52:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727035AbgKLOwB (ORCPT
+        id S1728517AbgKLOw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:52:58 -0500
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:65059 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728507AbgKLOw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:52:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605192720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bzV3bwrk9rmrhHk6dkBFubq9MMmfsIRILK60dRXDqHE=;
-        b=HPwS/u/gwmrShyAUuTSBIecSelvMxadUPQszFZPY300kfKrvynZDYARcsq3Ps2cYgigWD/
-        JLmkUAl0rxcYNCVN4nlOCyFt8lC27pSkI7XYMMJBLuwpanNN4YpryJ2480JaTcQx6JpUA9
-        E90NfWUgxSo5Ja3Ys91+DW1vzfyeC9Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-4NEbsf6TPImicgyjjVl8zg-1; Thu, 12 Nov 2020 09:51:55 -0500
-X-MC-Unique: 4NEbsf6TPImicgyjjVl8zg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7530318CB720;
-        Thu, 12 Nov 2020 14:51:53 +0000 (UTC)
-Received: from localhost (ovpn-12-196.pek2.redhat.com [10.72.12.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6DBCC6198D;
-        Thu, 12 Nov 2020 14:51:52 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 22:51:49 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Rahul Gopakumar <gopakumarr@vmware.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Message-ID: <20201112145149.GN8486@MiWiFi-R3L-srv>
-References: <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201013131735.GL25604@MiWiFi-R3L-srv>
- <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201020151814.GU25604@MiWiFi-R3L-srv>
- <DM6PR05MB529293AC2B077B5170FFE625A41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201022040440.GX25604@MiWiFi-R3L-srv>
- <DM6PR05MB5292D8B85FA9DDE263F6147AA41D0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <DM6PR05MB5292DF14DF1C82FFE001AC24A4100@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201102143035.GA3177@MiWiFi-R3L-srv>
- <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
+        Thu, 12 Nov 2020 09:52:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1605192776; x=1636728776;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=vhx5GXwWnQ81dlE72vwXtDevDCrMzniuTRUfS+tvvtY=;
+  b=cdT0eIZXzJGlLkMYjl4CIrGgt8nribmEDvfdQxDr74UOuOIPXXh/X/do
+   IQFd2ORXfvT0EP0pN9z5Zba0uggYIKZD0XCRxIot8IrSARxS3YsyVX5mg
+   8XTbN3Pa6nrLhtoFQUdWU/ccz6Z29kL2fNN5fAk3H+/e9YwXTQ5E9o4fa
+   E=;
+X-IronPort-AV: E=Sophos;i="5.77,472,1596499200"; 
+   d="scan'208";a="94656041"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 12 Nov 2020 14:52:49 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id CE7E3A24A5;
+        Thu, 12 Nov 2020 14:52:45 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 12 Nov 2020 14:52:45 +0000
+Received: from edge-cache-322.e-ind6.amazon.com (10.43.162.146) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 12 Nov 2020 14:52:35 +0000
+Subject: Re: [RFC 1/2] x86/bugs: Disable coresched on hardware that does not
+ need it
+To:     Joel Fernandes <joel@joelfernandes.org>
+CC:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Tim Chen" <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Pawan Gupta" <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, <vineeth@bitbyteword.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        <konrad.wilk@oracle.com>, Dario Faggioli <dfaggioli@suse.com>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
+        "Alexandre Chartre" <alexandre.chartre@oracle.com>,
+        <James.Bottomley@hansenpartnership.com>, <OWeisse@umich.edu>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "Anand K. Mistry" <amistry@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "Ingo Molnar" <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Mike Rapoport <rppt@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+References: <20201111211011.1381848-1-joel@joelfernandes.org>
+ <20201111211011.1381848-2-joel@joelfernandes.org>
+ <CAEXW_YTKTdBC_uD8E90FUNwoUWeyVG5XpFWvu-LO7X_fncnZnw@mail.gmail.com>
+ <b1a1e07d-0df2-72c2-c3da-78e42fa355e8@amazon.com>
+ <CAEXW_YRQ_GDcCxFcLrYjwNTG1nDZwUovczPSyOCvxXHq614DFw@mail.gmail.com>
+ <CAEXW_YSC+qh8a4nhh6EC2jCaUZd1S59_enWT_rJSXSx5YHjFhw@mail.gmail.com>
+ <76aa80c6-b797-f776-90fc-ef4585c41262@amazon.com>
+ <20201112134005.GA1549282@google.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <8d4a522a-4ba7-f9f9-0acd-11b0def561c2@amazon.com>
+Date:   Thu, 12 Nov 2020 15:52:32 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="24zk1gE8NUlDmwG9"
-Content-Disposition: inline
-In-Reply-To: <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20201112134005.GA1549282@google.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.146]
+X-ClientProxiedBy: EX13D25UWC004.ant.amazon.com (10.43.162.201) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---24zk1gE8NUlDmwG9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On 11/03/20 at 12:34pm, Rahul Gopakumar wrote:
-> >> So, you mean with the draft patch applied, the initial performance
-> regression goes away, just many page corruption errors with call trace
-> are seen, right?
-> 
-> Yes, that's right.
-> 
-> >> And the performance regression is about 2sec delay in
-> your system?
-> 
-> The delay due to this new page corruption issue is about
-> 3 secs.
-> 
-> Here is the summary
-> 
-> * Initial problem - 2 secs
-> * Draft patch - Fixes initial problem (recovers 2 secs) but
-> brings in new page corruption issue (3 secs)
-> 
-> >> Could you tell how you setup vmware VM so that I can ask our QA for
-> help to create a vmware VM for me to test?
-> 
-> * Use vSphere ESXi 6.7 or 7.0 GA.
-> * Create VM using vSphere Web Client and specify 1TB VM Memory.
-> * Install RHEL 8.1, that's the guest used in this test.
+On 12.11.20 14:40, Joel Fernandes wrote:
+> =
 
-Can you try the attached draft patch?
+> On Wed, Nov 11, 2020 at 11:29:37PM +0100, Alexander Graf wrote:
+>>
+>>
+>> On 11.11.20 23:15, Joel Fernandes wrote:
+>>>
+>>> On Wed, Nov 11, 2020 at 5:13 PM Joel Fernandes <joel@joelfernandes.org>=
+ wrote:
+>>>>
+>>>> On Wed, Nov 11, 2020 at 5:00 PM Alexander Graf <graf@amazon.com> wrote:
+>>>>> On 11.11.20 22:14, Joel Fernandes wrote:
+>>>>>>> Some hardware such as certain AMD variants don't have cross-HT MDS/=
+L1TF
+>>>>>>> issues. Detect this and don't enable core scheduling as it can
+>>>>>>> needlessly slow the device done.
+>>>>>>>
+>>>>>>> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+>>>>>>> index dece79e4d1e9..0e6e61e49b23 100644
+>>>>>>> --- a/arch/x86/kernel/cpu/bugs.c
+>>>>>>> +++ b/arch/x86/kernel/cpu/bugs.c
+>>>>>>> @@ -152,6 +152,14 @@ void __init check_bugs(void)
+>>>>>>>     #endif
+>>>>>>>     }
+>>>>>>>
+>>>>>>> +/*
+>>>>>>> + * Do not need core scheduling if CPU does not have MDS/L1TF vulne=
+rability.
+>>>>>>> + */
+>>>>>>> +int arch_allow_core_sched(void)
+>>>>>>> +{
+>>>>>>> +       return boot_cpu_has_bug(X86_BUG_MDS) || boot_cpu_has_bug(X8=
+6_BUG_L1TF);
+>>>>>
+>>>>> Can we make this more generic and user settable, similar to the L1 ca=
+che
+>>>>> flushing modes in KVM?
+>>>>>
+>>>>> I am not 100% convinced that there are no other thread sibling attacks
+>>>>> possible without MDS and L1TF. If I'm paranoid, I want to still be ab=
+le
+>>>>> to force enable core scheduling.
+>>>>>
+>>>>> In addition, we are also using core scheduling as a poor man's mechan=
+ism
+>>>>> to give customers consistent performance for virtual machine thread
+>>>>> siblings. This is important irrespective of CPU bugs. In such a
+>>>>> scenario, I want to force enable core scheduling.
+>>>>
+>>>> Ok,  I can make it new kernel command line option with:
+>>>> coresched=3Don
+>>>> coresched=3Dsecure (only if HW has MDS/L1TF)
+>>>> coresched=3Doff
+>>>
+>>> Also, I would keep "secure" as the default.  (And probably, we should
+>>> modify the informational messages in sysfs to reflect this..)
+>>
+>> I agree that "secure" should be the default.
+> =
 
-> 
-> With draft patch, you should be able to reproduce the issue.
-> Let me know if you need more details.
+> Ok.
+> =
 
+>> Can we also integrate into the "mitigations" kernel command line[1] for =
+this?
+> =
 
---24zk1gE8NUlDmwG9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="0001-mm-make-memmap-defer-init-only-take-effect-per-zone.patch"
+> Sure, the integration into [1] sounds conceptually fine to me however it =
+is
+> not super straight forward. Like: What if user wants to force-enable
+> core-scheduling for the usecase you mention, but still wants the cross-HT
+> mitigation because they are only tagging VMs (as in your usecase) and not
+> other tasks. Idk.
 
-From 24d9b1fe55d79892cac3478711af216d898c7159 Mon Sep 17 00:00:00 2001
-From: Baoquan He <bhe@redhat.com>
-Date: Tue, 13 Oct 2020 20:05:30 +0800
-Subject: [PATCH v2] mm: make memmap defer init only take effect per zone
+Can we roll this backwards from what you would expect as a user? How =
 
-Deferred struct page init is designed to work in zone wide. However since
-commit 73a6e474cb376 ("mm: memmap_init: iterate over memblock regions
-rather that check each PFN"), the handling is mistakenly done in all memory
-ranges inside one zone. Especially in those unmovable zones of multiple nodes,
-memblock allocation split them into many memory ranges. This makes initialized
-struct page more than expected in early stage, then increases much boot time.
+about we make this 2-dimensional?
 
-Let's fix it to make the memmap defer init handled in zone wide, but not in
-sub memor range of one zone.
+   coresched=3D[on|off|secure][,force]
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- arch/ia64/mm/init.c | 4 ++--
- include/linux/mm.h  | 5 +++--
- mm/memory_hotplug.c | 2 +-
- mm/page_alloc.c     | 8 +++++---
- 4 files changed, 11 insertions(+), 8 deletions(-)
+where "on" means "core scheduling can be done if colors are set", "off" =
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index ef12e097f318..27ca549ff47e 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -536,7 +536,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 
- 	if (map_start < map_end)
- 		memmap_init_zone((unsigned long)(map_end - map_start),
--				 args->nid, args->zone, page_to_pfn(map_start),
-+				 args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	return 0;
- }
-@@ -546,7 +546,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
- 	     unsigned long start_pfn)
- {
- 	if (!vmem_map) {
--		memmap_init_zone(size, nid, zone, start_pfn,
-+		memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	} else {
- 		struct page *start;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dae8e599f6c1..f82e73fd5d61 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2439,8 +2439,9 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
- #endif
- 
- extern void set_dma_reserve(unsigned long new_dma_reserve);
--extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
--		enum meminit_context, struct vmem_altmap *, int migratetype);
-+extern void memmap_init_zone(unsigned long, int, unsigned long,
-+		unsigned long, unsigned long, enum meminit_context,
-+		struct vmem_altmap *, int migratetype);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
- extern void mem_init(void);
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index b44d4c7ba73b..f9a37e6abc1c 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -732,7 +732,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
- 	 * expects the zone spans the pfn range. All the pages in the range
- 	 * are reserved so nobody should be touching them so we should be safe
- 	 */
--	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
-+	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
- 			 MEMINIT_HOTPLUG, altmap, migratetype);
- 
- 	set_zone_contiguous(zone);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index fa6076e1a840..5e5b74e88d69 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -448,6 +448,8 @@ defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
- 	if (end_pfn < pgdat_end_pfn(NODE_DATA(nid)))
- 		return false;
- 
-+	if (NODE_DATA(nid)->first_deferred_pfn != ULONG_MAX)
-+		return true;
- 	/*
- 	 * We start only with one section of pages, more pages are added as
- 	 * needed until the rest of deferred pages are initialized.
-@@ -6044,7 +6046,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * zone stats (e.g., nr_isolate_pageblock) are touched.
-  */
- void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--		unsigned long start_pfn,
-+		unsigned long start_pfn, unsigned long zone_end_pfn,
- 		enum meminit_context context,
- 		struct vmem_altmap *altmap, int migratetype)
- {
-@@ -6080,7 +6082,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		if (context == MEMINIT_EARLY) {
- 			if (overlap_memmap_init(zone, &pfn))
- 				continue;
--			if (defer_init(nid, pfn, end_pfn))
-+			if (defer_init(nid, pfn, zone_end_pfn))
- 				break;
- 		}
- 
-@@ -6194,7 +6196,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
--			memmap_init_zone(size, nid, zone, start_pfn,
-+			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 	}
--- 
-2.17.2
+means "no core scheduling is done" and "secure" means "core scheduling =
+
+can be done on MDS or L1TF if colors are set".
+
+The "force" option would then mean "apply a color to every new task".
+
+What then happens with mitigations=3D is easy. "auto" means =
+
+"coresched=3Dsecure". "off" means "coresched=3Doff" and if you want to forc=
+e =
+
+core scheduling for everything if necessary, you just do =
+
+mitigations=3Dauto coresched=3Dauto,force.
+
+Am I missing something obvious? :)
+
+> The best thing to do could be to keep the "auto disable HT" controls and
+> logic separate from the "coresched=3Don" logic and let the user choose. T=
+he
+> exception being, coresched=3Dsecure means that on HW that does not have
+> vulnerability, we will not activate the core scheduling.
+
+I'm much more interested in the coresched=3Doff one for mitigations=3D. It'=
+s =
+
+what we have introduced a while back to save people from setting 50 =
+
+different command line options.
 
 
---24zk1gE8NUlDmwG9--
+Alex
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
