@@ -2,155 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E1F2B083C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D87322B0839
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbgKLPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:16:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727796AbgKLPQm (ORCPT
+        id S1728389AbgKLPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:16:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727796AbgKLPQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:16:42 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C82EC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:16:42 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id j31so4171327qtb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:16:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TM7ug66yDX2zb6iHncrZGyoO9ARI1hTYVm8tRUTfYcA=;
-        b=iDTiyouPcBFCJvdym2UzoWLGPR1UVGzGYChq9OHZt15+4jZNmVArIjG+fP1HTRIR0n
-         lx3dgmlEebUKOhBgyk+rYwPlBk4njq6v8uJ+nGUuxHbWlLZCu00zVq6y1wHHiDJSyCHR
-         xtWf7Sj7xiSIUOMr1I7x+PFSwJQQtd9MqVO2QmGJ49fn2AG8J7eNXN9nkzCej3R9Z4t4
-         T3+rNllQbu79MIU6DOZpf2UwsVbj98A58k3CAQIDqZiIQwbBNRJxp8e5Yl8w1lCfumG/
-         GyeWrtxugHjXZQVbMooNVaw1OYNVoKTF4N57Yczf0IiyuNvyz61sssR6FvXQH7GlcrbD
-         h0vw==
+        Thu, 12 Nov 2020 10:16:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605194196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgdXZHtHPywKX/a9hS8LUB6+ABxOjrBQbybE/K2MyA4=;
+        b=cykmF34jlNHNBZVvhoSww9Es23tWUCsSYO6XS0Sq4RE2aoD2IqMZOJHsknTKVPaAzwS/6v
+        BrEuJRhe0JFySqSESnbv/rQ7dz+wJ8Jqwhyr/5aTxV60GJvq+ssLMn0BzHY0DRIjX8W6CG
+        O4zFp0oR74EGGXv+DtCi6vkdWDtBpVI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-rpYu9UVUMN-F_aNSV4HytQ-1; Thu, 12 Nov 2020 10:16:34 -0500
+X-MC-Unique: rpYu9UVUMN-F_aNSV4HytQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 8so1854334wmg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:16:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TM7ug66yDX2zb6iHncrZGyoO9ARI1hTYVm8tRUTfYcA=;
-        b=ZNHjg0mECMZ0jBMx4z5L392j55Qvq7Kfe6/p6TsAu94fzmo0cLoD/z2Rhk8NWDL5Ix
-         bRhfUSHQjJabp+CDXmIPZ9wT5aloP+YlQxXE6rRkmmn2ZyapCtuUDDIgq3yEYNWv5Dwv
-         LBXFQ4c7GoNh/0CKZkCnbnKKHF3rE/wY3PjP76SttZzsE6OC0J/YT+8RRGn9KJWpjVeJ
-         TWqWc/ynKA2jr1yBsxS8tpIeF+Vp3ilL9zBzvWyQ8jNTXTbuhb9/5DGMnAQ/OSp/xzA6
-         9kVs7GOuIM6QUgFTku9lJCD7YuFIwat86jtnoVzoneIdAsfgqnB3FBVC7+isXFnmYUML
-         NCyw==
-X-Gm-Message-State: AOAM532ibJVMerK9d2RhBygUdaUvk+2h0yKqCsnSuffE4IqP1l8mnsQd
-        EimpjJCw8qa+4U17Q2rm+WyJdCuUzaUC54rzBYxRFg==
-X-Google-Smtp-Source: ABdhPJwsxso5pDSVeOq855FGuC4+//eRTgtFe6Ovvsk3SbMJr42aSSZxmbM9kKwfPuebC8Sz79SRt8vEEdevxhd3DY8=
-X-Received: by 2002:ac8:5c85:: with SMTP id r5mr24292471qta.8.1605194200855;
- Thu, 12 Nov 2020 07:16:40 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=mgdXZHtHPywKX/a9hS8LUB6+ABxOjrBQbybE/K2MyA4=;
+        b=Imi5cmjOn4+co+lieMWXqD0AV+l8/SMjMThQCzXTAzkx+2iTq6r//yfTBfsFwmqh/N
+         zpRIa5LQHQYWsY6yV3lHZRzjgUWijgOCujFRmFqrhAiZqekFyb62yx4wavLG1b1gskF6
+         +3gIi/UZd7VbkEomp+9P1aWgZghMOgTUJOdlLDnULr5vUPIu+VA+LCF1g6Wds6wBmOJ8
+         isGINQQS5/p4thku4s0mjDHlLQKr2AhXjDzANqn9Z/jWlHJskCJmfxhAGungf8SQDBJR
+         AprSBHW5jaNN15mlruESxpmSbqdD1NJS+GkqslLgK2t7mCAMkMHGxxT15huD0pmTyDts
+         ti9Q==
+X-Gm-Message-State: AOAM533eooDzICoY5wVCx34nWh3P0nFLzmSWRZblodj9mrvVwLuaspz9
+        +J1+WkWxrI7zYfrLC8yOkFVIjq0W8EdyHmKege0aBrHFlvfuAKEC6Tea8EPatmAbJdtqQZB6vNr
+        RgfXI108Chm7JiOPmGBcxGXGG
+X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr3765131wrx.137.1605194193098;
+        Thu, 12 Nov 2020 07:16:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzBsGbFGQNrYQltDNU47DH7z1aKIl9Jf7c3fN1KWHUXH5NhMqtMHL3KuLKLxVmtzHwryqqqqQ==
+X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr3765087wrx.137.1605194192885;
+        Thu, 12 Nov 2020 07:16:32 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id y11sm6415716wmj.36.2020.11.12.07.16.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 07:16:32 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root partition
+In-Reply-To: <20201105165814.29233-3-wei.liu@kernel.org>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-3-wei.liu@kernel.org>
+Date:   Thu, 12 Nov 2020 16:16:30 +0100
+Message-ID: <87lff6y59t.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <49f7f2c12b0d5805f9a7b7092b986bbc2dd077a1.1605046192.git.andreyknvl@google.com>
- <CAG_fn=VXhK0d__FkNdhdquy9F4VmB64_6eJQOQBRecy2oL6huQ@mail.gmail.com> <CAAeHK+wX+JPyZm2A5mDdGFCqnH6kdSBLyOZ2TnWfZnZuq_V0Bw@mail.gmail.com>
-In-Reply-To: <CAAeHK+wX+JPyZm2A5mDdGFCqnH6kdSBLyOZ2TnWfZnZuq_V0Bw@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 12 Nov 2020 16:16:29 +0100
-Message-ID: <CAG_fn=VPEC4Lk+zaN25M8fygFKpvqLVzwYg-WHB9iXdY5JK1sg@mail.gmail.com>
-Subject: Re: [PATCH v9 21/44] kasan: kasan_non_canonical_hook only for
- software modes
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 7:52 PM 'Andrey Konovalov' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
+Wei Liu <wei.liu@kernel.org> writes:
+
+> For now we can use the privilege flag to check. Stash the value to be
+> used later.
 >
-> On Wed, Nov 11, 2020 at 4:09 PM Alexander Potapenko <glider@google.com> w=
-rote:
-> >
-> > On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.co=
-m> wrote:
-> > >
-> > > This is a preparatory commit for the upcoming addition of a new hardw=
-are
-> > > tag-based (MTE-based) KASAN mode.
-> > >
-> > > kasan_non_canonical_hook() is only applicable to KASAN modes that use
-> > > shadow memory, and won't be needed for hardware tag-based KASAN.
-> > >
-> > > No functional changes for software modes.
-> > >
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > Reviewed-by: Marco Elver <elver@google.com>
-> > > ---
-> > > Change-Id: Icc9f5ef100a2e86f3a4214a0c3131a68266181b2
-> > > ---
-> > >  mm/kasan/report.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> > > index 5d5733831ad7..594bad2a3a5e 100644
-> > > --- a/mm/kasan/report.c
-> > > +++ b/mm/kasan/report.c
-> > > @@ -403,7 +403,8 @@ bool kasan_report(unsigned long addr, size_t size=
-, bool is_write,
-> > >         return ret;
-> > >  }
-> > >
-> > > -#ifdef CONFIG_KASAN_INLINE
-> > > +#if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS))=
- && \
-> > > +       defined(CONFIG_KASAN_INLINE)
-> > >  /*
-> > >   * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the=
- high
-> > >   * canonical half of the address space) cause out-of-bounds shadow m=
-emory reads
-> >
-> > Perhaps this comment also needs to be updated.
+> Put in a bunch of defines for future use when we want to have more
+> fine-grained detection.
 >
-> In what way?
-
-Ok, maybe not. I thought you were restricting the set of configs under
-which this hook is used, so this should've been explained.
-But as far as I understand, CONFIG_KASAN_INLINE already implies
-"defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)",
-doesn't it?
-Maybe this change is not needed at all then?
-
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+>  arch/x86/hyperv/hv_init.c          |  4 ++++
+>  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
+>  arch/x86/include/asm/mshyperv.h    |  2 ++
+>  arch/x86/kernel/cpu/mshyperv.c     | 16 ++++++++++++++++
+>  4 files changed, 32 insertions(+)
 >
-> --
-> You received this message because you are subscribed to the Google Groups=
- "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/kasan-dev/CAAeHK%2BwX%2BJPyZm2A5mDdGFCqnH6kdSBLyOZ2TnWfZnZuq_V0Bw%40mail.=
-gmail.com.
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index e04d90af4c27..533fe9e887f2 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -26,6 +26,10 @@
+>  #include <linux/syscore_ops.h>
+>  #include <clocksource/hyperv_timer.h>
+>  
+> +/* Is Linux running as the root partition? */
+> +bool hv_root_partition;
+> +EXPORT_SYMBOL_GPL(hv_root_partition);
 
+(Nitpick and rather a personal preference): I'd prefer
+'hv_partition_is_root' for a boolean.
 
+> +
+>  void *hv_hypercall_pg;
+>  EXPORT_SYMBOL_GPL(hv_hypercall_pg);
+>  
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> index 0ed20e8bba9e..41b628b9fb15 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -21,6 +21,7 @@
+>  #define HYPERV_CPUID_FEATURES			0x40000003
+>  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
+>  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
+> +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES	0x40000007
+>  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
+>  
+>  #define HYPERV_HYPERVISOR_PRESENT_BIT		0x80000000
+> @@ -103,6 +104,15 @@
+>  /* Recommend using enlightened VMCS */
+>  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED		BIT(14)
+>  
+> +/*
+> + * CPU management features identification.
+> + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
+> + */
+> +#define HV_X64_START_LOGICAL_PROCESSOR			BIT(0)
+> +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR		BIT(1)
+> +#define HV_X64_PERFORMANCE_COUNTER_SYNC			BIT(2)
+> +#define HV_X64_RESERVED_IDENTITY_BIT			BIT(31)
+> +
+>  /*
+>   * Virtual processor will never share a physical core with another virtual
+>   * processor, except for virtual processors that are reported as sibling SMT
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index ffc289992d1b..ac2b0d110f03 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
+>  		struct hv_guest_mapping_flush_list *flush,
+>  		u64 start_gfn, u64 end_gfn);
+>  
+> +extern bool hv_root_partition;
 
---=20
-Alexander Potapenko
-Software Engineer
+Eventually this is not going to be an x86 only thing I believe?
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+> +
+>  #ifdef CONFIG_X86_64
+>  void hv_apic_init(void);
+>  void __init hv_init_spinlocks(void);
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 05ef1f4550cb..f7633e1e4c82 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -237,6 +237,22 @@ static void __init ms_hyperv_init_platform(void)
+>  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
+>  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
+>  
+> +	/*
+> +	 * Check CPU management privilege.
+> +	 *
+> +	 * To mirror what Windows does we should extract CPU management
+> +	 * features and use the ReservedIdentityBit to detect if Linux is the
+> +	 * root partition. But that requires negotiating CPU management
+> +	 * interface (a process to be finalized).
+> +	 *
+> +	 * For now, use the privilege flag as the indicator for running as
+> +	 * root.
+> +	 */
+> +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+We may want to cache cpuid_ebx(HYPERV_CPUID_FEATURES) somewhere but we
+already had a discussion regading naming for these caches and decided to
+wait until TLFS for ARM is out so we don't need to rename again.
+
+> +		hv_root_partition = true;
+> +		pr_info("Hyper-V: running as root partition\n");
+> +	}
+> +
+>  	/*
+>  	 * Extract host information.
+>  	 */
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
