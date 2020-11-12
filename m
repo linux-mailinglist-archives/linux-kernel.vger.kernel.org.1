@@ -2,214 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F310F2B0280
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E7B2B0282
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727739AbgKLKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:08:58 -0500
-Received: from mga01.intel.com ([192.55.52.88]:11241 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgKLKI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:08:57 -0500
-IronPort-SDR: IAMBKbRSoSxSJjr6/MfULhsECWyD7kMvAUsmLFwAUjLQMeCBBKuZHU+zOB1yUl8o12/eeNyE/n
- j0ttJeZDFUfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="188280422"
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="188280422"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 02:08:56 -0800
-IronPort-SDR: iaNu2ufkQApzRJXCcNQXqZpQjXf1usdnURhtzI/V9XlUnOMVMDeKnTKfanaAphDO6X/qh95NU0
- XwqtJ1yBhtSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="328443052"
-Received: from lkp-server02.sh.intel.com (HELO de5c6a867800) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 12 Nov 2020 02:08:55 -0800
-Received: from kbuild by de5c6a867800 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kd9XC-0000DE-JP; Thu, 12 Nov 2020 10:08:54 +0000
-Date:   Thu, 12 Nov 2020 18:08:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- 2df985f5e44c43f5d29d8cc3aaa8e8ac697e9de6
-Message-ID: <5fad0998.IwiWKRcfNDRRd2r2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727832AbgKLKJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:09:36 -0500
+Received: from relay3.mymailcheap.com ([217.182.66.161]:49915 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbgKLKJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 05:09:35 -0500
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 3E63B3ECDF;
+        Thu, 12 Nov 2020 11:09:32 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 22C532A7E9;
+        Thu, 12 Nov 2020 11:09:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1605175772;
+        bh=NlIHu2jLAeMCc08fA5CldPEhSWuTo3YbGR98d+676LU=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=TvLxNDXH+yPXYcA8PquO6rIiQnOcsDFHi3p420QeEhQfDBNd/ZYjDBb2jzoCaGINO
+         L2cfz/BT5vnYgCaLTqw/2yP6j1KaAEO2x7hNXgHFNrGuFJjaF7fXhsNorSWmY4Ac69
+         eqNktyJwXzmEtChMfASexPUnR3BaHYYEFeTbcqz0=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Fh95Qr0wFCol; Thu, 12 Nov 2020 11:09:31 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 12 Nov 2020 11:09:31 +0100 (CET)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id A4EA441DB0;
+        Thu, 12 Nov 2020 10:09:30 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="LD4GEss/";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (unknown [113.52.132.214])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id DCF9541DB0;
+        Thu, 12 Nov 2020 10:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1605175763;
+        bh=NlIHu2jLAeMCc08fA5CldPEhSWuTo3YbGR98d+676LU=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=LD4GEss/iLp7HkKvA+8OdNvI5FK0c5bHB3V+LYMIGNRO5L6yDQllFAssI/Q1XY93T
+         UEH8tF6S0qfzVxSASRGlGv6+yrWAgjAn93RdrEVZnKMXNE1Hi9D2AR2/yg+8IW9MvK
+         JYHbLoDIWY80YheoNu+Qmgwk1yZDuY60s5xVjZVs=
+Subject: Re: [PATCH] MIPS: Loongson64: Add read_persistent_clock64()
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yinglu Yang <yangyinglu@loongson.cn>
+References: <1605169793-10481-1-git-send-email-yangtiezhu@loongson.cn>
+ <8d6ebfe2-e300-3f38-6316-196cba947d36@flygoat.com>
+Message-ID: <b84fe88b-7527-e88c-1efd-739f6d846518@flygoat.com>
+Date:   Thu, 12 Nov 2020 18:09:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8d6ebfe2-e300-3f38-6316-196cba947d36@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: A4EA441DB0
+X-Spamd-Result: default: False [2.90 / 10.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         RECEIVED_SPAMHAUS_XBL(3.00)[113.52.132.214:received];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
-branch HEAD: 2df985f5e44c43f5d29d8cc3aaa8e8ac697e9de6  iommu/amd: Don't register interrupt remapping irqdomain when IR is disabled
 
-elapsed time: 725m
 
-configs tested: 150
-configs skipped: 2
+在 2020/11/12 18:04, Jiaxun Yang 写道:
+> Hi Tiezhu,
+>
+> 在 2020/11/12 16:29, Tiezhu Yang 写道:
+>> Add read_persistent_clock64() to read the time from the battery backed
+>> persistent clock. With this patch, we can fix the wrong time issue due
+>> to the system clock is not consistent with hardware clock after resume
+>> from sleep state S3 (suspend to RAM), at the same time, the system time
+>> can be right instead of "Thu Jan 1 08:00:00 CST 1970" without rtc 
+>> driver.
+>>
+>> start_kernel()
+>>    timekeeping_init()
+>>      read_persistent_wall_and_boot_offset()
+>>        read_persistent_clock64()
+>>
+>> timekeeping_resume()
+>>    read_persistent_clock64()
+>>
+>> timekeeping_suspend()
+>>    read_persistent_clock64()
+>
+> It is highly discoraged to do anything with bridgetype, which isn't 
+> probed via
+> devicetree.
+>
+> Please check if you can deal with that inside RTC framework, or make 
+> it as
+> a part of RTC driver (e.g. set up a callback).
+>
+> Also you should submit RTC driver at first if you intend to complete 
+> LS7A support.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Oops,
+Just dig it deeper, I guess simply select RTC_HCTOSYS would solve the issue.
+We're trying very hard to decouple all the drivers and conponents,
+DeviceTree for all!
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      obs600_defconfig
-m68k                          atari_defconfig
-arm                             rpc_defconfig
-arm                        realview_defconfig
-arm                           u8500_defconfig
-sh                           se7206_defconfig
-arm                            qcom_defconfig
-sh                            titan_defconfig
-arm                        mini2440_defconfig
-powerpc                     mpc512x_defconfig
-sh                          lboxre2_defconfig
-powerpc                     mpc5200_defconfig
-arm                       aspeed_g4_defconfig
-mips                        workpad_defconfig
-sh                           se7712_defconfig
-um                            kunit_defconfig
-m68k                         apollo_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                   lite5200b_defconfig
-arm                       cns3420vb_defconfig
-arm                        mvebu_v5_defconfig
-csky                             alldefconfig
-powerpc                      tqm8xx_defconfig
-i386                             alldefconfig
-nds32                               defconfig
-ia64                        generic_defconfig
-mips                           ip32_defconfig
-m68k                        m5307c3_defconfig
-c6x                                 defconfig
-sh                   secureedge5410_defconfig
-mips                      pistachio_defconfig
-ia64                      gensparse_defconfig
-powerpc                     tqm8560_defconfig
-arm                       mainstone_defconfig
-xtensa                    xip_kc705_defconfig
-arm                         at91_dt_defconfig
-arc                 nsimosci_hs_smp_defconfig
-c6x                        evmc6474_defconfig
-powerpc                      makalu_defconfig
-arm                            zeus_defconfig
-sh                               alldefconfig
-arm                         s3c6400_defconfig
-arm                        keystone_defconfig
-microblaze                      mmu_defconfig
-sh                             sh03_defconfig
-sh                         microdev_defconfig
-arm                   milbeaut_m10v_defconfig
-riscv                            allmodconfig
-arm                         nhk8815_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                    gamecube_defconfig
-sh                          rsk7201_defconfig
-sh                               j2_defconfig
-riscv                            alldefconfig
-mips                malta_qemu_32r6_defconfig
-mips                   sb1250_swarm_defconfig
-m68k                          hp300_defconfig
-arm                         socfpga_defconfig
-m68k                          sun3x_defconfig
-sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201112
-x86_64               randconfig-a005-20201112
-x86_64               randconfig-a004-20201112
-x86_64               randconfig-a002-20201112
-x86_64               randconfig-a006-20201112
-x86_64               randconfig-a001-20201112
-i386                 randconfig-a006-20201111
-i386                 randconfig-a005-20201111
-i386                 randconfig-a002-20201111
-i386                 randconfig-a001-20201111
-i386                 randconfig-a003-20201111
-i386                 randconfig-a004-20201111
-x86_64               randconfig-a015-20201111
-x86_64               randconfig-a011-20201111
-x86_64               randconfig-a014-20201111
-x86_64               randconfig-a013-20201111
-x86_64               randconfig-a016-20201111
-x86_64               randconfig-a012-20201111
-i386                 randconfig-a012-20201112
-i386                 randconfig-a014-20201112
-i386                 randconfig-a016-20201112
-i386                 randconfig-a011-20201112
-i386                 randconfig-a015-20201112
-i386                 randconfig-a013-20201112
-i386                 randconfig-a012-20201111
-i386                 randconfig-a014-20201111
-i386                 randconfig-a016-20201111
-i386                 randconfig-a011-20201111
-i386                 randconfig-a015-20201111
-i386                 randconfig-a013-20201111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201111
-x86_64               randconfig-a005-20201111
-x86_64               randconfig-a004-20201111
-x86_64               randconfig-a002-20201111
-x86_64               randconfig-a006-20201111
-x86_64               randconfig-a001-20201111
-x86_64               randconfig-a015-20201112
-x86_64               randconfig-a011-20201112
-x86_64               randconfig-a014-20201112
-x86_64               randconfig-a013-20201112
-x86_64               randconfig-a016-20201112
-x86_64               randconfig-a012-20201112
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Thanks.
+>
+> - Jiaxun
+>
+>>
+>> Signed-off-by: Yinglu Yang <yangyinglu@loongson.cn>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
