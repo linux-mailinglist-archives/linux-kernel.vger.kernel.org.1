@@ -2,157 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050E12AFCAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF5A2AFCAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729730AbgKLBma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:42:30 -0500
-Received: from mail-mw2nam10on2052.outbound.protection.outlook.com ([40.107.94.52]:50656
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728253AbgKLB14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:27:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=br1MW68h4MKNqvwsq90TCrvq+uUe+MWJb8pBEcSPNzW48Ji8AKO0+3f0qS8ypm6vbicbzq4gDAjFZzwrxCnL5Wjxv3VLYB9/6N9ZJBVIVOC1/wuADI0wGDEfLduHPitc0RmaqNOLEtpUI6SSM3S041Yk23Ji7/mTJ7tF+KnC+FO362XQ2vnUmL7R4+pF9xmvQp2ZMoJkiCNICxYIQ5hG49snhoSgoUIszKVYKYnHKsbGZE8P2lnYNK1XBWu17DTCJgNvdiByPgG0dO5LtKUIXDTYwkoP8YsOOlmfGl+3pQ3AZXyuul64Co9BAnXIpu8sCb5hWAslojl50Q9Uza6xSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/6MtVlYWl5Y+NGiGapJva11AJxWpQWcFTMW0UnEKToI=;
- b=mlgK8JeqfndWIsUuon0gxQzTk/VQFPpvQJ1hjDipBdYlM2eIWjmoI52vA2Wx5yjHG0sMnrw5uT96Iilp6MVSP7zF2pd7xbpmywfmQeJI2/ldg6FVQUBbLXIjN/S4sCKAfgkt9grfvau1V/B66zAevFYwfOD0cb5/Ox1dFw7oLUAVigxLFgnXbY7Qm1Ruk42N644GcTSpkNgr6tFgdgZhmllbv49CBAL/cShvLmoLxurRKJvdbx+NupYzlx1oWdcIkKAaHzx0GMD129LUrA1+wzpWbaO0N8rBHi5MdfN1eSstOGUHYGkb2EMzHkD99YLJZ5S+1MxjxcPpRSaSfE0y4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S1728900AbgKLBmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:42:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728251AbgKLB1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 20:27:48 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08E0C0613D6;
+        Wed, 11 Nov 2020 17:27:46 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m13so2750053pgl.7;
+        Wed, 11 Nov 2020 17:27:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/6MtVlYWl5Y+NGiGapJva11AJxWpQWcFTMW0UnEKToI=;
- b=fhjI7souQPZK3spH2/NpVYfVB2HlBuv1jbfWM4aEv83vI6GntB4ptZW2VTvoxAKMShcuR65si3uHt3FQ3liMJftzZRcKfPVL3p5XmLDrqmMGDPLdNEB4ayNUtxU7ugIfRhHPORnMJr4FrU5AWC6WwD0ZU42ZwaTbk0MkTPm7FY8=
-Authentication-Results: st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=none action=none header.from=synaptics.com;
-Received: from SN2PR03MB2383.namprd03.prod.outlook.com (2603:10b6:804:d::23)
- by SN2PR03MB2240.namprd03.prod.outlook.com (2603:10b6:804:b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Thu, 12 Nov
- 2020 01:27:53 +0000
-Received: from SN2PR03MB2383.namprd03.prod.outlook.com
- ([fe80::49be:5ea3:8961:a22]) by SN2PR03MB2383.namprd03.prod.outlook.com
- ([fe80::49be:5ea3:8961:a22%6]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
- 01:27:53 +0000
-Date:   Thu, 12 Nov 2020 09:27:37 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next] net: stmmac: platform: use optional clk/reset
- get APIs
-Message-ID: <20201112092606.5173aa6f@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR01CA0006.prod.exchangelabs.com (2603:10b6:a02:80::19)
- To SN2PR03MB2383.namprd03.prod.outlook.com (2603:10b6:804:d::23)
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=lAFsArA7fE4is9x6CJ3p1673X0PbVTAs5Dj2zRg5Pm4=;
+        b=eto9zKDwyga3/h2Txgxeooyil+/9etbAU6Ynpn74oWO8s2SqlkQ+pAVnlZ1k3yTPOv
+         X3JxIVsS7XMWUHJOatBVJc70J71YTplofTMP6HLAqAZ2s55f3d5JilQK7/EVWrwd2BgM
+         MBcPYQYO0gCS7Hc/ZFUDE1hKuPnSevZ2szz74CHxnXgXsLw40k2zTf2iO90Eq1j69sQD
+         CXHGGA/V9i4lZabVwchE8U0AalmqI3+hFpIegg+AaTjEnkrwTOnPw1xjGv7cpMMY85rS
+         8fHb6GsqCy7KIiD2nbIyuOSGVgWn/TLNvD+dmQj+XbyK4urC4pHCNfmgWKf/bQt0IjAd
+         XBNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=lAFsArA7fE4is9x6CJ3p1673X0PbVTAs5Dj2zRg5Pm4=;
+        b=dnVAVmK6D1Uyb/jIbDCTx+sM5FuI3WtxsS/BgS2/hNKAASBrfUMwJ4gkzFgvNfv/an
+         h3BVrieyC+W/Lqzx2J6q4r4aL9xpy5reKKTrZ7a7pil1BqgS1nlYfxTei0CI5IpwQ/61
+         Bh2dDeust+wVBP3dp0PUDj8nE7vcEq/oIe0XbVwLeQl5L2wUjO1VMJ7RcFTm0IMQdK+F
+         VB4B8/aTUWbkCa0ZzfTk+xcmLsPccRF1raVtj0F1fdvaOwdA/Buj/oDpyIQJmF2G+n1z
+         MhMBEJQcjMIo/aqVhdKNQoqWa55nTpZIq3krIJVjYFwz7y3iKe5V4ECgp2pG1JlqaZ6o
+         SQkw==
+X-Gm-Message-State: AOAM531FqaxJrYGXM04+aK1ghhyn9c7syldKaBNcJY4eMGFja6ulCrrl
+        qKCOpzoGxb7p4Z8P3wjnhlvmjtwXAKc=
+X-Google-Smtp-Source: ABdhPJz7aTCOGTeqSG5vlpQfA+LDp6YM615OAMbuqOLp1J8N4w03FFJCRdPj/JGkqmJGZG+0JX/uUw==
+X-Received: by 2002:aa7:824d:0:b029:18b:ad77:1a2b with SMTP id e13-20020aa7824d0000b029018bad771a2bmr25914111pfn.25.1605144465981;
+        Wed, 11 Nov 2020 17:27:45 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id h16sm3697694pjz.10.2020.11.11.17.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 17:27:45 -0800 (PST)
+Date:   Wed, 11 Nov 2020 17:27:42 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Anatolij Gustschin <agust@denx.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: ads7846 - fix unaligned access on 7845
+Message-ID: <20201112012742.GA3608551@dtor-ws>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR01CA0006.prod.exchangelabs.com (2603:10b6:a02:80::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 01:27:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 65191673-06ba-46c3-2c32-08d886aa2cdb
-X-MS-TrafficTypeDiagnostic: SN2PR03MB2240:
-X-Microsoft-Antispam-PRVS: <SN2PR03MB22401E87C877901CC2DBA77BEDE70@SN2PR03MB2240.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:288;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sMzDtCuM2eMgH7QLQWxaalzxX6w23yrjg8jjFlM7dHy3Evoto5FTgO6bNuxU9tqQVPZWlQZd2+yFjWMS01CJ7JLs836uENaGlAH8XfeovB4q3Uywq9tIGg+m0vasOm+SfwA2yDtUpd5UmZnIRQQyO7b8Pr7QzUuo5xWxl1l7nZ7gIQ1XSnssepVSYuufaQh8/j95c0lAVQZj4/OySw3ZqkLaH+osz6NtNs3fkepsBXsCLAqbDmHmKk+KKAalVcwhFnFqmwj057N9WY67TvT1uYm+ZXmi5+rGGCcU1kJ5ZRTVHmNxTXkviVuUAttVeLAEDfIV3s/Sovstq7qd6PFECQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR03MB2383.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(136003)(376002)(346002)(83380400001)(8936002)(7696005)(26005)(186003)(86362001)(66946007)(66476007)(66556008)(55016002)(1076003)(956004)(5660300002)(8676002)(2906002)(4326008)(9686003)(7416002)(16526019)(52116002)(6506007)(6666004)(478600001)(110136005)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: tIHJBZVs5tX1bsC3eetj2f7VtRR7ia5iW2+SqbckTlPOOSMKGEQDghj5NnwWaTEGo+zCuzviSVc4YgmoJVCu0ClvtccQ79RsXT2fFGk5HvYTO8C5WseA3E5uyyXXmLfTVKc5k7e4U9r5mpxHX4Vk3x9s0ClaqAjVVdcgoY2vwIWuKvCYsJHvMLsAKfDXWYkcZsCcsYay5ktz2uVQrsJUfb5Amb1nRpihsEd8M2Sfkq2jhDolRQRavKjICZaxN7DmN1MmWFi8HcMAhdoowP+1FxW2x5kvPcQHBAWdxBBvExesQ0X4M4MR88eVnWd5bKkLR2o1QB8QhMdWehI8T/NaZtZN4b3IAbYp/vAgLxz0uW9p+d3QyM9T+nfcgJqBvYatM26puQ3lufgNsjYxkM+c3WRGO2KcqnlrPiSbGwnTDzd0X3m3FEDnzx9zNzE7B5RKMAHHvYc4tPePU+qf/tnApktvJ32HfwbYEbuhiCR+Ocmb5aclamNsOouF5dqyTo/D5l9D4kIn0FkCGBoyWAKNLECSVw40CFLm/U29lBW8Og6MmN9zY1MIQ9FSjUr51s8s86wDAo1WRvhWndQBiZL4vdnQdOdEgIN7aDUG5D6EsALjENeutO2DHAy+dUQiXg1iTNhssOaCvishBoyy6lLdDA==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65191673-06ba-46c3-2c32-08d886aa2cdb
-X-MS-Exchange-CrossTenant-AuthSource: SN2PR03MB2383.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 01:27:52.9627
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XbLgTa/bFhwMDKJmkpnkf+jjx5v+Kl1TVwQiG4CnWiwubegyTTGuUb+zUetWMEe3Aim+S3XJDono//y2guh3yQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR03MB2240
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_reset_control_get_optional() and devm_clk_get_optional()
-rather than open coding them.
+req->sample[1] is not naturally aligned at word boundary, and therefore
+we should use get_unaligned_be16() when accessing it.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 controller support")
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
-Since v1:
- - keep wrapped as suggested by Jakub
 
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 22 ++++++++-----------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+Not tested on hardware, so if somebody has the controller and can verify
+that would be great.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index af34a4cadbb0..6dc9f10414e4 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -399,6 +399,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct plat_stmmacenet_data *plat;
- 	struct stmmac_dma_cfg *dma_cfg;
-+	void *ret;
- 	int rc;
+
+ drivers/input/touchscreen/ads7846.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 95e89f675ad5..35d14bc44aff 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -33,6 +33,7 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/module.h>
+ #include <asm/irq.h>
++#include <asm/unaligned.h>
  
- 	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
-@@ -576,12 +577,10 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 		clk_prepare_enable(plat->stmmac_clk);
+ /*
+  * This code has been heavily tested on a Nokia 770, and lightly
+@@ -443,7 +444,7 @@ static int ads7845_read12_ser(struct device *dev, unsigned command)
+ 
+ 	if (status == 0) {
+ 		/* BE12 value, then padding */
+-		status = be16_to_cpu(*((u16 *)&req->sample[1]));
++		status = get_unaligned_be16(&req->sample[1]);
+ 		status = status >> 3;
+ 		status &= 0x0fff;
  	}
- 
--	plat->pclk = devm_clk_get(&pdev->dev, "pclk");
-+	plat->pclk = devm_clk_get_optional(&pdev->dev, "pclk");
- 	if (IS_ERR(plat->pclk)) {
--		if (PTR_ERR(plat->pclk) == -EPROBE_DEFER)
--			goto error_pclk_get;
--
--		plat->pclk = NULL;
-+		ret = plat->pclk;
-+		goto error_pclk_get;
- 	}
- 	clk_prepare_enable(plat->pclk);
- 
-@@ -596,14 +595,11 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 		dev_dbg(&pdev->dev, "PTP rate %d\n", plat->clk_ptp_rate);
- 	}
- 
--	plat->stmmac_rst = devm_reset_control_get(&pdev->dev,
--						  STMMAC_RESOURCE_NAME);
-+	plat->stmmac_rst = devm_reset_control_get_optional(&pdev->dev,
-+							   STMMAC_RESOURCE_NAME);
- 	if (IS_ERR(plat->stmmac_rst)) {
--		if (PTR_ERR(plat->stmmac_rst) == -EPROBE_DEFER)
--			goto error_hw_init;
--
--		dev_info(&pdev->dev, "no reset control found\n");
--		plat->stmmac_rst = NULL;
-+		ret = plat->stmmac_rst;
-+		goto error_hw_init;
- 	}
- 
- 	return plat;
-@@ -613,7 +609,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- error_pclk_get:
- 	clk_disable_unprepare(plat->stmmac_clk);
- 
--	return ERR_PTR(-EPROBE_DEFER);
-+	return ret;
- }
- 
- /**
 -- 
-2.29.2
+2.29.2.222.g5d2a92d10f8-goog
 
+
+-- 
+Dmitry
