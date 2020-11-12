@@ -2,164 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79A2B1045
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D77E2B105D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgKLV1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        id S1727679AbgKLV1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727448AbgKLV0x (ORCPT
+        with ESMTP id S1727676AbgKLV1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:26:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E28AC0613D1;
-        Thu, 12 Nov 2020 13:26:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=qbzmVFagUCXYcU5rqtSiOvPsAwsTj6kZyDh1iXpm+g8=; b=crwQX+ofqsb4dwJIDejthD3rlI
-        DfM1w6S4JFiJhDoILV7BLJ8eA/dmU2eThfVU39XCsCt23dHYcQlwEWw1EIKOnK6lp1fDK9mQaElvX
-        A9/hA1zBksSTeN0qL4XJIdgBUSS/CMxV6eqidkNLja4FT+ciQzk38m622FhtcyOc8Uoo/YguzCf4w
-        +z1pPgjU0XhG/Zq5hcbrE3oQa7CkaK5hPqRk1gMLI3XldOygpSoHx/6diRSxUhNxWMuRd/7mdTdjZ
-        ZndubeNT/0NmVYgvpWR1LSOzUS5QiIoySacMtm8rz+Yaepr/jS4xKWHfCs0d17D9qV6wj1dlZLwlC
-        jFrOHkXg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdK7H-0007Hx-A1; Thu, 12 Nov 2020 21:26:51 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org, hughd@google.com, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCH v4 16/16] mm/filemap: Return only head pages from find_get_entries
-Date:   Thu, 12 Nov 2020 21:26:41 +0000
-Message-Id: <20201112212641.27837-17-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201112212641.27837-1-willy@infradead.org>
-References: <20201112212641.27837-1-willy@infradead.org>
+        Thu, 12 Nov 2020 16:27:52 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B14C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:27:52 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id y9so6660688ilb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pe7knPPM6RlQRiyKkqHKowghuuy1LIXCQskVBXm8l/4=;
+        b=a4nIvoFdd07r8vUOoQfGfMWVPK1O+s3ylwqh1FSBwKi2gBJxL5iI84Bw5zkNhxJo8E
+         T4Jrb7aWCnL5uxBa9duWfo71MKj5BAxPTy5Q8BQ+32pTQ6T1TenQNbH+Fh9FjL5m60PJ
+         wC2dzl66KcrD9IwOc3RwQZnssW2HnC1AhmnSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pe7knPPM6RlQRiyKkqHKowghuuy1LIXCQskVBXm8l/4=;
+        b=BBTDeVMsnO/BPc9+aj8FxvrVvLfjUjCUEwb5drmkTy2qWEw7/yZ+mzIEnuf+PJuK26
+         MeeUht6x7gmus25i+g7Kd+dY2pciRxrujYjB28th1iSCGBm5vjTLcoAbCbTKUXD1OAGa
+         CXWuWpJOGqZ2FKLUaIJBA/+l+lExbnlY/5e3A/efloV4rX0COpCQp4jcvfEPikuiaN8q
+         oquD1bC9peYfAZHXFNub5DGdqWubL0p9rLP2NQR/zM1hDgt3hqqQZb+dnZOr7vrQElQj
+         3KR0Kb1IX7dVpZriRAxSlX4WVkQzKGhv/5KqjUgi9PxGVf06g9E4fOdVc5A4mxsjEi2D
+         g7ew==
+X-Gm-Message-State: AOAM5315j7Vl79eueqm2T5OGlyUhJh88KnzQ/BkQylTWTXpU13S7g3lL
+        sUnRXBd3+l02SZETVwbd3yO/fQ==
+X-Google-Smtp-Source: ABdhPJwrPDF8nlrvD3hxuIrtrSQDWQIdi9vBTbEo2An0oCHD8zWfGIs/vBLQ26UesmiscVzXPhKAPw==
+X-Received: by 2002:a92:ba8c:: with SMTP id t12mr1184674ill.243.1605216471357;
+        Thu, 12 Nov 2020 13:27:51 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id d14sm3525098ila.42.2020.11.12.13.27.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 13:27:50 -0800 (PST)
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+To:     Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     corbet@lwn.net, peterz@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <X6r7BIG8JTUOLcY0@kroah.com> <X6r7Vl45bgGQiAD2@kroah.com>
+ <202011101614.E7D880689@keescook>
+ <3075a4fd-8615-1459-2b20-b7d9d2be34ff@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f2b3ae49-bc41-0061-e811-1a7e41040366@linuxfoundation.org>
+Date:   Thu, 12 Nov 2020 14:27:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
+In-Reply-To: <3075a4fd-8615-1459-2b20-b7d9d2be34ff@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All callers now expect head (and base) pages, and can handle multiple
-head pages in a single batch, so make find_get_entries() behave that way.
-Also take the opportunity to make it use the pagevec infrastructure
-instead of open-coding how pvecs behave.  This has the side-effect of
-being able to append to a pagevec with existing contents, although we
-don't make use of that functionality anywhere yet.
+On 11/11/20 12:23 PM, Shuah Khan wrote:
+> On 11/10/20 5:18 PM, Kees Cook wrote:
+>> On Tue, Nov 10, 2020 at 09:43:02PM +0100, Greg KH wrote:
+>>> On Tue, Nov 10, 2020 at 09:41:40PM +0100, Greg KH wrote:
+>>>> On Tue, Nov 10, 2020 at 12:53:27PM -0700, Shuah Khan wrote:
+>>>>> +Decrement interface
+>>>>> +-------------------
+>>>>> +
+>>>>> +Decrements sequence number and doesn't return the new value. ::
+>>>>> +
+>>>>> +        seqnum32_dec() --> atomic_dec()
+>>>>> +        seqnum64_dec() --> atomic64_dec()
+>>>>
+>>>> Why would you need to decrement a sequence number?  Shouldn't they just
+>>>> always go up?
+>>>>
+>>>> I see you use them in your patch 12/13, but I don't think that 
+>>>> really is
+>>>> a sequence number there, but rather just some other odd value :)
+>>
+>> To that end, they should likely be internally cast to u32 and u64 (and
+>> why is seqnum64 ifdef on CONFIG_64BIT?).
+>>
+> 
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
----
- include/linux/pagemap.h |  2 --
- mm/filemap.c            | 36 ++++++++----------------------------
- mm/internal.h           |  2 ++
- 3 files changed, 10 insertions(+), 30 deletions(-)
+atomic64_t depends on CONFIG_64BIT
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 46d4b1704770..65ef8db8eaab 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -448,8 +448,6 @@ static inline struct page *find_subpage(struct page *head, pgoff_t index)
- 	return head + (index & (thp_nr_pages(head) - 1));
- }
- 
--unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
--		pgoff_t end, struct pagevec *pvec, pgoff_t *indices);
- unsigned find_get_pages_range(struct address_space *mapping, pgoff_t *start,
- 			pgoff_t end, unsigned int nr_pages,
- 			struct page **pages);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 479cbbadd93b..f8c294905e8d 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1878,49 +1878,29 @@ static inline struct page *find_get_entry(struct xa_state *xas, pgoff_t max,
-  * the mapping.  The entries are placed in @pvec.  find_get_entries()
-  * takes a reference on any actual pages it returns.
-  *
-- * The search returns a group of mapping-contiguous page cache entries
-- * with ascending indexes.  There may be holes in the indices due to
-- * not-present pages.
-+ * The entries have ascending indexes.  The indices may not be consecutive
-+ * due to not-present entries or THPs.
-  *
-  * Any shadow entries of evicted pages, or swap entries from
-  * shmem/tmpfs, are included in the returned array.
-  *
-- * If it finds a Transparent Huge Page, head or tail, find_get_entries()
-- * stops at that page: the caller is likely to have a better way to handle
-- * the compound page as a whole, and then skip its extent, than repeatedly
-- * calling find_get_entries() to return all its tails.
-- *
-- * Return: the number of pages and shadow entries which were found.
-+ * Return: The number of entries which were found.
-  */
- unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
- 		pgoff_t end, struct pagevec *pvec, pgoff_t *indices)
- {
- 	XA_STATE(xas, &mapping->i_pages, start);
- 	struct page *page;
--	unsigned int ret = 0;
--	unsigned nr_entries = PAGEVEC_SIZE;
- 
- 	rcu_read_lock();
- 	while ((page = find_get_entry(&xas, end, XA_PRESENT))) {
--		/*
--		 * Terminate early on finding a THP, to allow the caller to
--		 * handle it all at once; but continue if this is hugetlbfs.
--		 */
--		if (!xa_is_value(page) && PageTransHuge(page) &&
--				!PageHuge(page)) {
--			page = find_subpage(page, xas.xa_index);
--			nr_entries = ret + 1;
--		}
--
--		indices[ret] = xas.xa_index;
--		pvec->pages[ret] = page;
--		if (++ret == nr_entries)
-+		indices[pvec->nr] = xas.xa_index;
-+		if (!pagevec_add(pvec, page))
- 			break;
- 	}
- 	rcu_read_unlock();
- 
--	pvec->nr = ret;
--	return ret;
-+	return pagevec_count(pvec);
- }
- 
- /**
-@@ -1939,8 +1919,8 @@ unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
-  * not returned.
-  *
-  * The entries have ascending indexes.  The indices may not be consecutive
-- * due to not-present entries, THP pages, pages which could not be locked
-- * or pages under writeback.
-+ * due to not-present entries, THPs, pages which could not be locked or
-+ * pages under writeback.
-  *
-  * Return: The number of entries which were found.
-  */
-diff --git a/mm/internal.h b/mm/internal.h
-index cb7487efa856..1f137a5d66bb 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -60,6 +60,8 @@ static inline void force_page_cache_readahead(struct address_space *mapping,
- 	force_page_cache_ra(&ractl, &file->f_ra, nr_to_read);
- }
- 
-+unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
-+		pgoff_t end, struct pagevec *pvec, pgoff_t *indices);
- unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
- 		pgoff_t end, struct pagevec *pvec, pgoff_t *indices);
- 
--- 
-2.28.0
+include/linux/types.h
+
+#ifdef CONFIG_64BIT
+typedef struct {
+         s64 counter;
+} atomic64_t;
+#endif
+
+thanks,
+-- Shuah
 
