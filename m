@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D64B2B032A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3F52B032D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbgKLKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:52:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26879 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727946AbgKLKwo (ORCPT
+        id S1728022AbgKLKws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:52:48 -0500
+Received: from www381.your-server.de ([78.46.137.84]:45130 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727964AbgKLKwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:52:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605178363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KWLkvdYu5qBPyXknUznFKfkiFcfGzsGeIMaYr3uaes8=;
-        b=BP/Yi1UUv5Evb/8B8RDgt4h7doGd35+Et7kJMXl9uZmF7+Zvj/uaywTIeAVnVmxeZwsD+2
-        TOli5wDqfg/wBBsydXPMTvjiNn5Ozo2g8nA/fxEe3U+zI1UFN+yr6obrwM842z+hDWh/hJ
-        E7J1qtbmC2FVkUblHeO8Zdvk616F7IY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-135-jPbg_UYeO0SN6ENBW4KvbA-1; Thu, 12 Nov 2020 05:52:41 -0500
-X-MC-Unique: jPbg_UYeO0SN6ENBW4KvbA-1
-Received: by mail-wm1-f70.google.com with SMTP id u9so1610381wmb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:52:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=KWLkvdYu5qBPyXknUznFKfkiFcfGzsGeIMaYr3uaes8=;
-        b=Y8qWt52V9Jo6n17UPRzvcV7XgYihixaWixvwhkNLwVg/8XH6d3pP5sq8+/nuqhXNtL
-         ng09XD9Onk15JGKOauTWUwwhOhGNjvAVG7s2PZrOdrCDWZdNt+ja5kFQD7LMhUbt/mdl
-         Pffp6vpfDMGXUQNmac3NgH7W4FARIBSo0a2BLDdBfAxuV764r8VwxbyEG4PLAsGuig3q
-         rHL+deuGBG/YsF9oagW3ZbZmvJYqUdBof4vuYLdc94LdM/aVY8Sq8ZUubzUuKnqe9U6G
-         7eScDg/JQBnopH+PBhFxgVFC3KVxPjMCssIW7wXUTDZVbTQSzC6c1YjP1JKa3ip/FSiE
-         waOA==
-X-Gm-Message-State: AOAM533lSRJsDY44HKqKCfo9cqYveKjr8CknyCpOgmywRVKtmXMvL2Ss
-        YxQ91wf1F8+4HQ2imrQi9+1qwvpcGKPm6O741l6YxeT6ugRk9wXfGw2T2eeI+djwVRwDylxeoew
-        HBDZFxNaXUix4ldM4GYjiC+CqNyt80M6fe2zTbtWTKch+gy72Ma8UXZTdpD8vIsJ/L8Z3UseWcy
-        HK
-X-Received: by 2002:a5d:4349:: with SMTP id u9mr34344563wrr.319.1605178360398;
-        Thu, 12 Nov 2020 02:52:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzFgS97tYQwTnuGzSyRyMkZ0TyJUtfa1aypyxDzT65eiZXRkYMnTO/oNXj1+XuclbpZpU22Gg==
-X-Received: by 2002:a5d:4349:: with SMTP id u9mr34344537wrr.319.1605178360165;
-        Thu, 12 Nov 2020 02:52:40 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o10sm6281915wma.47.2020.11.12.02.52.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 02:52:39 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/11] KVM: VMX: Define Hyper-V paravirt TLB flush
- fields iff Hyper-V is enabled
-In-Reply-To: <20201027212346.23409-10-sean.j.christopherson@intel.com>
-References: <20201027212346.23409-1-sean.j.christopherson@intel.com>
- <20201027212346.23409-10-sean.j.christopherson@intel.com>
-Date:   Thu, 12 Nov 2020 11:52:38 +0100
-Message-ID: <87361ezw21.fsf@vitty.brq.redhat.com>
+        Thu, 12 Nov 2020 05:52:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=Dj0UIajfNcw0NQMvLWehBqz2Xz3+UYSsLYW1UM0YfUQ=; b=lr3nEHBHd4Ms7BV9JhgPngkAoQ
+        DXaTRM2nvfgX5VxYd7HGuj8bI8Sqb2iq1r6GzUdBAfLxbw2UbicA+oapgfDYdmIxyeyRlvmXdvcVE
+        lBZKUdiJx2YQ2zziWI+sUXKSZX7CDAhrmCSD70BecPyTj9I3ecKvlItQ2qlvLujVlHeXKqObMlVV+
+        4P+mJJBVBgYirLeFJVHqJWGLmUrz606UctXvBOx/lnFNUIyw7UCAP5ZEeY3BcWDmuR7Ah3Z+/Z0GA
+        hKDcacwYoCCjMss7CYB4S6xB1HWNqxAkAExd3Kx08SlBlPkMN6YbS1nAPFSDFmGEci5vzBDvtDcfZ
+        oVjeO3Pg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1kdADa-0004gh-Lt; Thu, 12 Nov 2020 11:52:42 +0100
+Received: from [62.216.202.98] (helo=[192.168.178.20])
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1kdADa-000WRQ-HA; Thu, 12 Nov 2020 11:52:42 +0100
+Subject: Re: [PATCH] iio: ad_sigma_delta: Don't put SPI transfer buffer on the
+ stack
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20201112091050.84991-1-alexandru.ardelean@analog.com>
+ <49aea6de-9084-d5a2-a6be-967196570830@metafoo.de>
+ <CA+U=DspP1NfHm2XyOc-Vqq=bzVea30K5pDoARUjw9H1zvst=Zw@mail.gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <0063409a-317f-56c0-6123-b23804ab45d9@metafoo.de>
+Date:   Thu, 12 Nov 2020 11:52:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CA+U=DspP1NfHm2XyOc-Vqq=bzVea30K5pDoARUjw9H1zvst=Zw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
-
-> Ifdef away the Hyper-V specific fields in structs kvm_vmx and vcpu_vmx
-> as each field has only a single reference outside of the struct itself
-> that isn't already wrapped in ifdeffery (and both are initialization).
+On 11/12/20 11:14 AM, Alexandru Ardelean wrote:
+> On Thu, Nov 12, 2020 at 11:55 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
+>> On 11/12/20 10:10 AM, Alexandru Ardelean wrote:
+>>> From: Lars-Peter Clausen <lars@metafoo.de>
+>>>
+>>> Use a heap allocated memory for the SPI transfer buffer. Using stack memory
+>>> can corrupt stack memory when using DMA on some systems.
+>>>
+>>> This change adds 4 bytes at the end of the current DMA buffer, which will
+>>> be used by the trigger handler.
+>>> This is required because the first 4 bytes are reserved for register data.
+>>>
+>>> Fixes: af3008485ea03 ("iio:adc: Add common code for ADI Sigma Delta devices")
+>>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>>> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>>> ---
+>>>    drivers/iio/adc/ad_sigma_delta.c       | 4 ++--
+>>>    include/linux/iio/adc/ad_sigma_delta.h | 2 +-
+>>>    2 files changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+>>> index 86039e9ecaca..33297f26508a 100644
+>>> --- a/drivers/iio/adc/ad_sigma_delta.c
+>>> +++ b/drivers/iio/adc/ad_sigma_delta.c
+>>> @@ -395,11 +395,11 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
+>>>        struct iio_poll_func *pf = p;
+>>>        struct iio_dev *indio_dev = pf->indio_dev;
+>>>        struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+>>> +     uint8_t *data = &sigma_delta->data[4];
+>>>        unsigned int reg_size;
+>>>        unsigned int data_reg;
+>>> -     uint8_t data[16];
+>>>
+>>> -     memset(data, 0x00, 16);
+>>> +     memset(data, 0x00, 4);
+>> Younger me didn't know what he was doing, this is wrong. We need the
+>> extra space for the padding and timestamp.
+>>
+>> We also can't put the beginning of the buffer at an 4 byte offset since
+>> it needs to be 8 byte aligned for the timestamp.
+> I'll correct this.
+> I was re-spinning this out of some old patches and discussions on this
+> that I have.
+> So, then this becomes 24 bytes? Or 16?
 >
-> vcpu_vmx.ept_pointer in particular should be wrapped as it is valid if
-> and only if Hyper-v is active, i.e. non-Hyper-V code cannot rely on it
-> to actually track the current EPTP (without additional code changes).
+> Something like:
+> uint8_t                         data[24] ____cacheline_aligned;
 >
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 5 ++++-
->  arch/x86/kvm/vmx/vmx.h | 4 ++++
->  2 files changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index b684f45d6a78..5b7c5b2fd2c7 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6955,8 +6955,9 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
->  	vmx->pi_desc.sn = 1;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  	vmx->ept_pointer = INVALID_PAGE;
-> -
-> +#endif
->  	return 0;
->  
->  free_vmcs:
-> @@ -6973,7 +6974,9 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  
->  static int vmx_vm_init(struct kvm *kvm)
->  {
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
-> +#endif
->  
->  	if (!ple_gap)
->  		kvm->arch.pause_in_guest = true;
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index cecc2a641e19..2bd86d8b2f4b 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -276,7 +276,9 @@ struct vcpu_vmx {
->  	 */
->  	u64 msr_ia32_feature_control;
->  	u64 msr_ia32_feature_control_valid_bits;
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  	u64 ept_pointer;
-> +#endif
->  
->  	struct pt_desc pt_desc;
->  
-> @@ -295,8 +297,10 @@ struct kvm_vmx {
->  	bool ept_identity_pagetable_done;
->  	gpa_t ept_identity_map_addr;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  	hpa_t hv_tlb_eptp;
->  	spinlock_t ept_pointer_lock;
-> +#endif
->  };
->  
->  bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
+> uint8_t *data = &sigma_delta->data[8];
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
+Yes.
 
