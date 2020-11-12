@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FBA2B06FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 986EE2B06FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgKLNuP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:50:15 -0500
-Received: from smtp.asem.it ([151.1.184.197]:52541 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728398AbgKLNuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:50:13 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000603503.MSG 
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:50:07 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 14:50:05 +0100
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.1979.003; Thu, 12 Nov 2020 14:50:05 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4] Documentation: ACPI: explain how to use
- gpio-line-names
-Thread-Topic: [PATCH v4] Documentation: ACPI: explain how to use
- gpio-line-names
-Thread-Index: AQHWuPXuI/5ytptgx0ikZ9J5iah8/qnEcCQAgAATJfA=
-Date:   Thu, 12 Nov 2020 13:50:05 +0000
-Message-ID: <0ffeff9c510c40198ea0384a6d34323b@asem.it>
-References: <20201112131545.62628-1-f.suligoi@asem.it>
- <20201112134042.GB4077@smile.fi.intel.com>
-In-Reply-To: <20201112134042.GB4077@smile.fi.intel.com>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728462AbgKLNuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:50:46 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44728 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728196AbgKLNup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:50:45 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605189043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FExFbMkw7YXGcGUqIJagY/5g6Z8xr25fzIJwMw/oA+8=;
+        b=MeoVpkDz1oVajjmu0mVooQrH2IXUoUNSno/pUj5tQHdXTvLGERYdTJZrwcX2tSKBfexHbe
+        sWXuKqJ99lFSlWOdkJxPdcTfRoZsada82WL5lYzpkgKq4K1B7WUvfIHm8DOvM21lQ+ixMS
+        H63EWFAY2o6zTIxNEjXueBYBgundGlXdfMs2iumWaXdWoc3gEI7P5MpK2c1Uv6BCHPpHVC
+        OeQ5Gh6/y7JaH0PdVmgdVW0GVaujoZLI5ZwO1HJGYI1nJwPly4PtwJiyn8XeAq1U70CBYI
+        A5Ud2V44ZKF1AcXtO8awnUD0HujZAyfR3z4FRNguQEoBsimZcImscZ8oGrJazw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605189043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FExFbMkw7YXGcGUqIJagY/5g6Z8xr25fzIJwMw/oA+8=;
+        b=XsCo8U08uItnjSKD1IJmacqK42qPF59gfAAfMv9/OFwqCn6QPt/dvhQNEMWuw2SrmkayFD
+        p5ei960Oll/e/TCA==
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Martin Kaiser <martin@kaiser.cx>
+Cc:     Ley Foon Tan <ley.foon.tan@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        rfi@lists.rocketboards.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Toan Le <toan@os.amperecomputing.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH] PCI: altera-msi: Remove irq handler and data in one go
+In-Reply-To: <87sg9en79m.fsf@nanos.tec.linutronix.de>
+References: <20201111221639.GA973514@bjorn-Precision-5520> <87sg9en79m.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 12 Nov 2020 14:50:42 +0100
+Message-ID: <87pn4in0p9.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A09020F.5FAD3D8E.00F9,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Andy,
+On Thu, Nov 12 2020 at 12:28, Thomas Gleixner wrote:
+> On Wed, Nov 11 2020 at 16:16, Bjorn Helgaas wrote:
+>> On Wed, Nov 11, 2020 at 10:43:55PM +0100, Martin Kaiser wrote:
+>> Thomas, it looks like irq_domain_set_info() and msi_domain_ops_init()
+>> set the handler itself before setting the handler data:
+>>
+>>   irq_domain_set_info
+>>     irq_set_chip_and_handler_name(virq, chip, handler, ...)
+>>     irq_set_handler_data(virq, handler_data)
+>>
+>>   msi_domain_ops_init
+>>     __irq_set_handler(virq, info->handler, ...)
+>>     if (info->handler_data)
+>>       irq_set_handler_data(virq, info->handler_data)
+>>
+>> That looks at least superficially similar to the race you fixed with
+>> 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ
+>> handler").
+>>
+>> Should irq_domain_set_info() and msi_domain_ops_init() swap the order,
+>> too?
+>
+> In theory yes. Practically it should not matter because that happens
+> during the allocation way before the interrupt can actually fire.  I'll
+> have a deeper look nevertheless.
 
-> On Thu, Nov 12, 2020 at 02:15:45PM +0100, Flavio Suligoi wrote:
-> > The "gpio-line-names" declaration is not fully
-> > documented, so can be useful to add some important
-> > information and one more example.
-> >
-> > This commit also fixes a trivial spelling mistake.
-> 
-> For the future contributions:
-> 
-> No need to resend each time you got a tag. Maintainers usually take them
-> all at
-> once when applying (esp. taking into account plenty of scripts which help
-> to do
-> this automatically).
+So I had a closer look and the reason why it only matters for the
+chained handler case is that
 
-ok
+   __irq_set_handler(..., is_chained = true, ...)
 
-> 
-> Also, no need to resend so often. Give a chance to others to review
-> (minimum
-> resend time is 24h)
+starts up the interrupt immediately. So the order for this _must_ be:
 
-ok, right!
+    set_handler_data() -> set_handler()
 
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
-> 
+For regular interrupts it's really the mapping and allocation code which
+does this long before the interrupt is started up. So the ordering does
+not matter because the handler can't be reached before the full
+setup is finished and the interrupt is actually started up.
 
-Regards,
-Flavio
+Thanks,
+
+        tglx
