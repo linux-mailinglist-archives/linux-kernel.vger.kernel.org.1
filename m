@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B86E2B03B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295C12B03B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgKLLUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:20:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727865AbgKLLUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:20:11 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D8DC21D40;
-        Thu, 12 Nov 2020 11:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605180010;
-        bh=K8snTlzRrBmCFb3kcN8jLGjUTIdHXOt33Jd0fecxr4g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eZ+vrSimKFesca0wJwgzMJ8ZkL/HxvQN5r3Cen8yfqrxZlfrAwmEcmDo2TKcJZE9+
-         7kgR/DVURdNy2KRbVFtbrK+nV+XFGksDkpdo5YLxVvx7xj8L1VWE6rndL6M+7v2uYg
-         lfZdQWkZJN9TLtm7FbCbfu/eHqp3cKe8nLkyqy/U=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kdAe8-00A17J-CY; Thu, 12 Nov 2020 11:20:08 +0000
+        id S1727976AbgKLLUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:20:35 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:47066 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727920AbgKLLUd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:20:33 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id C7FCC8030809;
+        Thu, 12 Nov 2020 11:20:31 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id trmXiEVXTYu8; Thu, 12 Nov 2020 14:20:31 +0300 (MSK)
+Date:   Thu, 12 Nov 2020 14:20:30 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        kernel test robot <lkp@intel.com>, <kbuild-all@lists.01.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201112112030.qrlrc5tabbldphjl@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+ <20201110113827.hl5i27cpl6exo3md@mobilestation>
+ <20201110163556.3e3423f6@xps13>
+ <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+ <20201112092715.7e466405@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 12 Nov 2020 11:20:08 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        LAKML <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/2] arm64: cpufeature: Add GIC CPUIF v4.1 detection
-In-Reply-To: <20201111162841.3151-2-lorenzo.pieralisi@arm.com>
-References: <20201111162841.3151-1-lorenzo.pieralisi@arm.com>
- <20201111162841.3151-2-lorenzo.pieralisi@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <89291c496e6e868c442f5763db53d22d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112092715.7e466405@xps13>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-11 16:28, Lorenzo Pieralisi wrote:
-> GIC v4.1 introduced changes to the GIC CPU interface; systems that
-> integrate CPUs that do not support GIC v4.1 features (as reported in 
-> the
-> ID_AA64PFR0_EL1.GIC bitfield) and a GIC v4.1 controller must disable in
-> software virtual SGIs support since the CPUIF and GIC controller 
-> version
-> mismatch results in CONSTRAINED UNPREDICTABLE behaviour at 
-> architectural
-> level.
+On Thu, Nov 12, 2020 at 09:27:15AM +0100, Miquel Raynal wrote:
+> Hi Sergey,
 > 
-> Add a cpufeature and related capability to detect GIC v4.1 CPUIF
-> features so that the GIC driver can probe it to detect GIC CPUIF
-> hardware configuration and take action accordingly.
+> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
+> 2020 22:22:59 +0300:
 > 
-> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/include/asm/cpucaps.h |  3 ++-
->  arch/arm64/kernel/cpufeature.c   | 10 ++++++++++
->  2 files changed, 12 insertions(+), 1 deletion(-)
+> > On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:
+> > > Hi Serge,
+> > > 
+> > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
+> > > 2020 14:38:27 +0300:
+> > >   
+> > > > Hello Miquel,
+> > > > 
+> > > > A situation noted by the warning below won't cause any problem because
+> > > > the casting is done to a non-dereferenced variable. It is utilized
+> > > > as a pointer bias later in that function. Shall we just ignore the
+> > > > warning or still fix it somehow?  
+> > >   
+> > 
+
+> > > Do you think the cast to a !__iomem value is mandatory here?  
+> > 
+> > It's not mandatory to have the casting with no __iomem, but wouldn't
+> > doing like this:
+> > + 	shift = (ssize_t __iomem)src & 0x3;
+> > be looking weird? Really, is there a good way to somehow extract the first
+> > two bits of a __iomem pointer without getting the sparse warning?
 > 
-> diff --git a/arch/arm64/include/asm/cpucaps.h 
-> b/arch/arm64/include/asm/cpucaps.h
-> index 42868dbd29fd..35ef0319f422 100644
-> --- a/arch/arm64/include/asm/cpucaps.h
-> +++ b/arch/arm64/include/asm/cpucaps.h
-> @@ -65,7 +65,8 @@
->  #define ARM64_HAS_ARMv8_4_TTL			55
->  #define ARM64_HAS_TLB_RANGE			56
->  #define ARM64_MTE				57
-> +#define ARM64_HAS_GIC_CPUIF_VSGI		58
+> I asked around me, what about trying uintptr_t?
+
+Hm, that's weird. sparse gets happy if a casting to an unsigned type
+is used here. That's why the similar statement defined in
+bt1_rom_map_read() doesn't cause the sparse warning, while the
+statement with ssize_t does.
+
+Can people around explain whether that is just an internal sparse
+feature or there is a particular reason of having the unsigned types
+casting ignored by sparse in this case? I don't really understand why
+removing the __iomem attribute with casting to a signed type cause the
+warning, while casting to an unsigned type doesn't...
+
+Anyway I'll send a patch with the fix of using the uintptr_t casting
+here. Thanks for suggesting the solution.
+
+-Sergey
+
 > 
-> -#define ARM64_NCAPS				58
-> +#define ARM64_NCAPS				59
-> 
->  #endif /* __ASM_CPUCAPS_H */
-> diff --git a/arch/arm64/kernel/cpufeature.c 
-> b/arch/arm64/kernel/cpufeature.c
-> index dcc165b3fc04..9eabbaddfe5e 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -2136,6 +2136,16 @@ static const struct arm64_cpu_capabilities
-> arm64_features[] = {
->  		.cpu_enable = cpu_enable_mte,
->  	},
->  #endif /* CONFIG_ARM64_MTE */
-> +	{
-> +		.desc = "GIC CPUIF virtual SGI",
-
-nit: that's not really what this feature is. It only means that the
-sysreg interface complies to v4.1. Which on its own is totally rubbish,
-because the sysreg don't change behaviour between 3.0/4.0 and 4.1.
-
-> +		.capability = ARM64_HAS_GIC_CPUIF_VSGI,
-> +		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
-> +		.matches = has_cpuid_feature,
-> +		.sys_reg = SYS_ID_AA64PFR0_EL1,
-> +		.field_pos = ID_AA64PFR0_GIC_SHIFT,
-> +		.sign = FTR_UNSIGNED,
-> +		.min_field_value = 3,
-> +	},
-
-Do we really need a new cap for that? Or can we rely on simply looking
-at the sanitised feature set? I'm not overly keen on advertising a 
-feature
-at CPU boot time if we discover later on that we cannot use it because 
-all
-we have in a non-4.1 GIC.
-
-Another thing is that we currently assume that *all* CPUs will be the 
-same
-at the point where we setup the GIC (we only have a single CPU booted at 
-that
-point).
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> Thanks,
+> Miquèl
