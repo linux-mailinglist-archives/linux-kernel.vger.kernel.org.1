@@ -2,146 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CF22B0208
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DAE2B020C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727147AbgKLJgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:36:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726776AbgKLJgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:36:13 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E609D21D40;
-        Thu, 12 Nov 2020 09:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605173773;
-        bh=IWrr3gWzH4Y+LNmpog/FIqpytYgijVvbwS9XC3NUZYM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=08bxS8kEId0/cxycTo3GayW37MOv7t1RXFUTmF+5bR3BQHLE4Mhqw0GQ8/pQOtwoW
-         ZT16e+GkrJ7CNSk0ARQZKT6r0x468qHx3F6l/T21OGy9G94oX1yVYwwLRkqWnxNXUv
-         kwrsf0Aj2XcmASzfyGqyCLJ2b8owiidyDnQWeVeA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kd91W-009zpH-Mv; Thu, 12 Nov 2020 09:36:10 +0000
+        id S1727413AbgKLJgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:36:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgKLJgd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:36:33 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E0CC0613D1;
+        Thu, 12 Nov 2020 01:36:33 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id v92so4726143ybi.4;
+        Thu, 12 Nov 2020 01:36:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sTS5WgslFCC2reGOH2FyGvABtQkS4qb5R30Fuulj5m8=;
+        b=cwM47uyOFGAIz3TUSqUCwRt/vNtGWcwvTqq4zBDmSgSMpSkLdOsZ+mZ10Nx60VFE/7
+         GENk2IdkTw2OQgeor8LXrH2bgWBC3CLe5NGxD9Y33YTNcJwedWPd7VMuraQN2vsTjJvc
+         U4wmlovFlNKoAlaMUPTUQHuIuu9zf6thn9m6i2YNYr8tFdBn42kCerj3TQdToVPJ8JvC
+         NpSBewleknloYUEQHe+sIetwiL+WQasePGRjbhokK/Ywivq+IQ3t2jliW4UcqdSBdY4d
+         ed3tP3GMXwS39jnxpCYG3g7Jn10pOXasZ2S2/LpR4ojff8wUl/a2wP62wqBHQwxVGFrU
+         s+gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sTS5WgslFCC2reGOH2FyGvABtQkS4qb5R30Fuulj5m8=;
+        b=nvUzoJbGvqHKE35SXJrGPg4W9YMXVXh0WEGsiumoRt6LPD5cpENKPiIHcqfaO8hDxj
+         Nbh2kDcTPtIl7i2GuCX8LUo3a57ICr7yN5UXCtzC7qmvwPKuKNgy4XjA86l/zy4dgCA0
+         jal0PhM1ygFWQ+injLrgb0nUVYuVOOxm5NkX6rtgyI01hysCHczVULeuqAPqKyteUQow
+         UBKbaw2xM49jdCIRJCL9WIaq2du8PJBNxnM2LEtnZRhxtlH6jzEa90ZSq/QOdkFqAk83
+         MElBHv6n/dVftowGRJuIcbnTQJLlfW4W7CePN4rEl7YSFoB1ytIUeQWRWuW1mPZqsqzU
+         411w==
+X-Gm-Message-State: AOAM530IDqInPaqz5Yi1XTs09HojMbdcjlMJyCdg9fyFVqSNgFWMlGRu
+        Pkc5ekuwuxIo3OIuQjbsBL7vTOdvdLwy8Bs51Bs=
+X-Google-Smtp-Source: ABdhPJw+DSBsjOzzy6fUdz00vxTSW1vYI1rXcO6XgtQgLKtgyEK76EAKOWdWYqXlPG9i9d5sRjN0rAFnbbhHMcnLXIM=
+X-Received: by 2002:a25:61c5:: with SMTP id v188mr34927594ybb.422.1605173792160;
+ Thu, 12 Nov 2020 01:36:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 12 Nov 2020 09:36:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        LAKML <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/2] irqchip/gic-v3-its: Disable vSGI upon (CPUIF < v4.1)
- detection
-In-Reply-To: <20201111162841.3151-3-lorenzo.pieralisi@arm.com>
-References: <20201111162841.3151-1-lorenzo.pieralisi@arm.com>
- <20201111162841.3151-3-lorenzo.pieralisi@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <ebaa2698ac2bbb90ab46f18221617c43@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
+ <20201022073307.GP2628@hirez.programming.kicks-ass.net> <133aa0c8c5e2cbc862df109200b982e89046dbc0.camel@perches.com>
+ <CAMj1kXF_0_bu0nbJyUU-yBDCOAirRvGkX-V8kQPVh_GHO2WM-g@mail.gmail.com>
+In-Reply-To: <CAMj1kXF_0_bu0nbJyUU-yBDCOAirRvGkX-V8kQPVh_GHO2WM-g@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 12 Nov 2020 10:36:21 +0100
+Message-ID: <CANiq72k9y-sh1fUyxdvXgYEfZOS_CSwRK+LyR6nVtRaOjYJbwQ@mail.gmail.com>
+Subject: Re: [PATCH -next] treewide: Remove stringification from __alias macro definition
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On Wed, Nov 11, 2020 at 8:19 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> I am still not convinced we need this change, as I don't see how the
+> concerns regarding __section apply to __alias. But if we do, can we
+> please use the same approach, i.e., revert the current patch, and
+> queue it again after v5.11-rc1 with all new occurrences covered as
+> well?
 
-On 2020-11-11 16:28, Lorenzo Pieralisi wrote:
-> GIC CPU interfaces versions predating GIC v4.1 were not built to
-> accommodate vINTID within the vSGI range; as reported in the GIC
-> specifications (8.2 "Changes to the CPU interface"), it is
-> CONSTRAINED UNPREDICTABLE to deliver a vSGI to a PE with
-> ID_AA64PFR0_EL1.GIC == b0001.
+In general, it would be nice to move all compiler attributes to use
+the `__` syntax, which is independent of compiler vendor, gives us a
+level of indirection to modify behavior between compilers and is
+shorter/nicer for users.
 
-Hmmm. This goes against the very reason v4.1 was designed the way
-it is, which was that all existing implementation supporting GICv4.0
-would seamlessly let virtual SGIs in, and it would "just work".
+But it is low priority, so it should go in whenever it causes the
+least amount of trouble.
 
-If we start enforcing this, I question the very design of the 
-architecture,
-because we could have done so much better by changing the CPU interface.
-
-What has changed in two years? Have you spotted a fundamental problem?
-My concern is that if we prevent it, we're going to end-up with quirks
-allowing it anyway, because people will realise that it actually works.
-
-In the meantime, to the meat of the change:
-
-> 
-> Check the GIC CPUIF version through the arm64 capabilities
-> infrastructure and disable vSGIs if a CPUIF version < 4.1 is
-> detected to prevent using vSGIs on systems where they may
-> misbehave.
-> 
-> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
-> b/drivers/irqchip/irq-gic-v3-its.c
-> index 0fec31931e11..6ed4ba60ba7e 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -39,6 +39,20 @@
-> 
->  #include "irq-gic-common.h"
-> 
-> +#ifdef CONFIG_ARM64
-> +#include <asm/cpufeature.h>
-> +
-> +static inline bool gic_cpuif_has_vsgi(void)
-> +{
-> +	return cpus_have_const_cap(ARM64_HAS_GIC_CPUIF_VSGI);
-> +}
-> +#else
-> +static inline bool gic_cpuif_has_vsgi(void)
-> +{
-> +	return false;
-> +}
-> +#endif
-> +
->  #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
->  #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
->  #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
-> @@ -5415,7 +5429,11 @@ int __init its_init(struct fwnode_handle
-> *handle, struct rdists *rdists,
->  	if (has_v4 & rdists->has_vlpis) {
->  		const struct irq_domain_ops *sgi_ops;
-> 
-> -		if (has_v4_1)
-> +		/*
-> +		 * Enable vSGIs only if the ITS and the
-> +		 * GIC CPUIF support them.
-> +		 */
-> +		if (has_v4_1 && gic_cpuif_has_vsgi())
->  			sgi_ops = &its_sgi_domain_ops;
->  		else
->  			sgi_ops = NULL;
-
-Is that enough?
-
-KVM is still going to expose GICD_TYPER2.nASSGIcap, making things even
-more confusing for the guest: it will be able to select active-less SGIs
-via GICD_CTLR.nASSGIreq, and if I'm not mistaken, we'd still try to 
-switch
-to HW-backed SGIs, leading to some *very* unpleasant things in
-gic_v4_enable_vsgis().
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Cheers,
+Miguel
