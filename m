@@ -2,250 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B7E2B0D1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADC62B0D21
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgKLTAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:00:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
+        id S1726625AbgKLTAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgKLTAp (ORCPT
+        with ESMTP id S1726591AbgKLTAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:00:45 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0E5C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:45 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id c17so7118590wrc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:45 -0800 (PST)
+        Thu, 12 Nov 2020 14:00:47 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B05C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:46 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id s8so7132426wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2EhywyPLrzVauOxW6hoSN8BeHIP9/SoKOh3x4hIA4nE=;
-        b=mDMN9CSv2W4PIXw03bPQQ8E6n/F1hxOhd7U5xYg0CKNVoFSNx4vt6N6nJEUd+d0NVf
-         2f6ET1hpvzbE9dTYE3+AEzEL+oXMm+dQYcFG7X5DeJlH39RK3B36bhjv0Kmfgd6IjRu7
-         DK6YHE4NxqI4RcOgx4vmMjk9l0jBxi6xWPEUOmu/6CIwnL3vxLJFaFpRKcG8r7qv3xgD
-         dyjxn3R0n7C+dorPtETtr3Ojp3vP39NWvjuLVdBQignca7AielkWQC3zPNd4ftwjEApD
-         tELbFwItnMMYVNZnKGN9qFLn5xqZXBJqd3P05jK3vJI0wJT80G2YuD83Borh2wfI9qov
-         uFUQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zw4/3H58DclPUryUYajc25e3NyANX/uApXUC9a6irt8=;
+        b=bgWa0+Br46K2f9cJcIoWiHatx+XZjXt4+HVAL0qFLplwDys63qQgg/LK5a21NfQA9L
+         8EAXKlgh7nQTW1R6FD75ZYHnq+8lTfi4DGRZOb5hdMaVAYkTaJjlHCq0BLmMKRR7TpNi
+         bMnmV9WWrZ5QkUV2JGlo2bCMHfEKU2jQbtRCQwzwkBh1Czg55uoMo3Wtf03L8QeFwL6u
+         Hy8qH5DZrhrRvRC24d68W5iNxZYnREggOEp30K/dHyOd1CHMrsR999bt1rHU5mPMNqJY
+         SSH69rINO6PADc5ZiszGLW5qNqlHrE+8zjyzXAEVUHz479E1gjQtFaQqlYkxy3lNI6Xx
+         SXUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2EhywyPLrzVauOxW6hoSN8BeHIP9/SoKOh3x4hIA4nE=;
-        b=BEeGIauubPTp0/f5ZvEzYGh0ZFveN/7Kw2om1rfcSUnp8I6SpQAFTz7wKUYKI0hll2
-         bIurpfqpXi/h00GZvfcZ9XsuInOmU+w940ekzL03IG11LcA9aG3V8TFLJBeWiJKDZ0WN
-         vTyWfSXihFe3OBcP8LBBxU9mK6Fm38pztp+7V7UdxJ+2B3i4dT6Myn1SuSJnUExFgUJ1
-         i/891yRjh/qugJ4hQsrJfoEsqeGCZYMVC8O8iAaQcDrS0oaAYDg978EUWzX9yVaED/yR
-         jq4Ljx+b4CVvVOieqvcjSc0T9nijQw5LKUYZHGgG6ALmxs8W1VP/BZGOSTSvroI1eqgo
-         Cl0Q==
-X-Gm-Message-State: AOAM533upgbwSmW/+6X5tmfHzwQcuzxnCRbMvoBKRhXIDIJKQkyxrL02
-        WrXwKuCqdzOPrVyAbNZ2EAEeBw==
-X-Google-Smtp-Source: ABdhPJyKUIdqT6yOWd6udawSWHTScPhDrEAlvpxAeKCcoYi8gRAZSrSI6RVWTEAP7uNql9pNr7za4A==
-X-Received: by 2002:adf:fc01:: with SMTP id i1mr1129122wrr.250.1605207644013;
-        Thu, 12 Nov 2020 11:00:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zw4/3H58DclPUryUYajc25e3NyANX/uApXUC9a6irt8=;
+        b=ZoQk+b88S5N6ZP+r5Ux6hof+ktQ206iDFQ4toV5zY/PwAETNHSWZ0gJD5MN7xIDP7t
+         6nC03CLVIxfY1AWsddOzi4RbLs2NTZIFAMIoV+WB+5N+60xQxRe3xjyC/0XVYys6NaxX
+         hndrPSLZvVEpfZNkFhuDkNozfw6rfFFTs8s06hSKliP/tU4pb8VoP449DSJlXTWaMs0H
+         vAeXABF7nCrg9TuEBSpol1jTKfnOOgY8gNO/Ly5Hia5h4LgO42EfLewEGtJqRuihAYzC
+         qq/zx1XEBdZrNa4cfqPLhOgyE4zUhH8h+Ljm+fY+4hbkF4ZJUr7KLTGlrCJdoVDkJC/p
+         hOvw==
+X-Gm-Message-State: AOAM533fV1PDgqE5nza40DkNeUwE8K3F+3M3pRhXfDSjF+PMEgtnbCEJ
+        NYkW/ClW0pT3Zh+Jviqd13kglA==
+X-Google-Smtp-Source: ABdhPJxxwFYZtMQX5DH7hJKIUrjEBbmXGyRjjXYs/MLIPQVaWJDaZogWWz8Cc5Qz/4L83VgvX/sopg==
+X-Received: by 2002:adf:f90f:: with SMTP id b15mr1062991wrr.343.1605207645290;
+        Thu, 12 Nov 2020 11:00:45 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.00.41
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.00.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:00:43 -0800 (PST)
+        Thu, 12 Nov 2020 11:00:44 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ajay Kumar <ajaykumar.rs@samsung.com>,
-        Akshu Agarwal <akshua@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Chris Zhong <zyw@rock-chips.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
-        Eunchul Kim <chulspro.kim@samsung.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Jinyoung Jeon <jy0.jeon@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Mark Yao <mark.yao@rock-chips.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nickey Yang <nickey.yang@rock-chips.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        nouveau@lists.freedesktop.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        report to <xorg-driver-ati@lists.x.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Sangmin Lee <lsmin.lee@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Vincent Abriou <vincent.abriou@st.com>
-Subject: [PATCH 00/30] [Set 6] Rid W=1 warnings from GPU
-Date:   Thu, 12 Nov 2020 19:00:09 +0000
-Message-Id: <20201112190039.2785914-1-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 01/30] drm/savage/savage_bci: Remove set but never used 'aper_rsrc' and 'fb_rsrc'
+Date:   Thu, 12 Nov 2020 19:00:10 +0000
+Message-Id: <20201112190039.2785914-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
+References: <20201112190039.2785914-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+The comment about them (also removed) says:
 
-NB: Hopefully the other sets turn up in -next soon, so they can
-be rebased and any stragglers re-submitted.
+ /* fb_rsrc and aper_rsrc aren't really used currently, but still exist
+  * in case we decide we need information on the BAR for BSD in the
+  * future.
+  */
 
-Lee Jones (30):
-  drm/savage/savage_bci: Remove set but never used 'aper_rsrc' and
-    'fb_rsrc'
-  include: drm: drm_atomic: Artificially use 'crtc' to avoid 'not used'
-    warning
-  drm/v3d/v3d_gem: Provide descriptions for 'v3d_lookup_bos's params
-  drm/via/via_dma: Remove set but unused variable 'agp_base'
-  drm/v3d/v3d_sched: Demote non-conformant kernel-doc header
-  drm/amd/amdgpu/amdgpu_kms: Fix misnaming of parameter 'dev'
-  drm/amd/amdgpu/amdgpu_fence: Fix some issues pertaining to function
-    documentation
-  drm/exynos/exynos7_drm_decon: Supply missing description for  param
-    'ctx'
-  drm/exynos/exynos_drm_fimd: Add missing description for param 'ctx'
-  drm/vc4/vc4_hdmi_regs: Mark some data sets as __maybe_unused
-  drm/vc4/vc4_hdmi: Remove set but unused variable 'ret'
-  drm/amd/amdgpu/amdgpu_ttm: Demote non-conformant kernel-doc headers,
-    fix slightly lacking ones
-  drm/atmel-hlcdc/atmel_hlcdc_crtc: Apply correct formatting to struct
-    docs
-  drm/amd/amdgpu/amdgpu_ring: Fix a bunch of function misdocumentation
-  drm/amd/amdgpu/amdgpu_display: Remove pointless header
-  drm/atmel-hlcdc/atmel_hlcdc_plane: Staticise local function
-    'atmel_hlcdc_plane_setup_scaler()'
-  drm/atmel-hlcdc/atmel_hlcdc_plane: Fix documentation formatting and
-    add missing description
-  drm/vc4/vc4_v3d: Demote non-conformant kernel-doc headers
-  drm/amd/amdgpu/amdgpu_cs: Add a couple of missing function param
-    descriptions
-  drm/armada/armada_overlay: Staticify local function
-    'armada_overlay_duplicate_state'
-  drm/vc4/vc4_debugfs: Demote non-conformant kernel-doc headers
-  drm/rockchip/dw-mipi-dsi-rockchip: Demote non-conformant kernel-doc
-    headers
-  drm/rockchip/rockchip_rgb: Consume our own header
-  drm/nouveau/nvkm/core/firmware: Fix formatting, provide missing param
-    description
-  drm/rockchip/rockchip_lvds: Fix struct document formatting
-  drm/exynos/exynos_drm_gsc: Supply missing description for 'num_limits'
-  drm/sti/sti_hdmi: Move 'colorspace_mode_names' array to where its used
-  drm/mediatek/mtk_disp_color: Fix formatting and provide missing member
-    description
-  drm/amd/amdgpu/atombios_encoders: Remove set but unused variable
-    'backlight_level'
-  drm/mediatek/mtk_disp_ovl: Fix formatting and provide missing member
-    description
+Well that was written 12 years ago in 2008.  We are now in the future
+and they are still superfluous.  We can always add them again at a
+later date if they are ever required.
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |  2 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   |  4 --
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c     | 11 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c      | 12 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       | 60 ++++++++++---------
- .../gpu/drm/amd/amdgpu/atombios_encoders.c    |  3 +-
- drivers/gpu/drm/armada/armada_overlay.c       |  2 +-
- .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    |  6 +-
- .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   |  7 ++-
- drivers/gpu/drm/exynos/exynos7_drm_decon.c    |  1 +
- drivers/gpu/drm/exynos/exynos_drm_fimd.c      |  1 +
- drivers/gpu/drm/exynos/exynos_drm_gsc.c       |  1 +
- drivers/gpu/drm/mediatek/mtk_disp_color.c     |  5 +-
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  5 +-
- drivers/gpu/drm/nouveau/nvkm/core/firmware.c  |  9 +--
- .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |  4 +-
- drivers/gpu/drm/rockchip/rockchip_lvds.c      |  2 +-
- drivers/gpu/drm/rockchip/rockchip_rgb.c       |  1 +
- drivers/gpu/drm/savage/savage_bci.c           | 11 ----
- drivers/gpu/drm/sti/sti_hdmi.c                |  6 ++
- drivers/gpu/drm/sti/sti_hdmi.h                |  6 --
- drivers/gpu/drm/v3d/v3d_gem.c                 |  2 +
- drivers/gpu/drm/v3d/v3d_sched.c               |  2 +-
- drivers/gpu/drm/vc4/vc4_debugfs.c             |  4 +-
- drivers/gpu/drm/vc4/vc4_hdmi.c                |  3 +-
- drivers/gpu/drm/vc4/vc4_hdmi_regs.h           |  6 +-
- drivers/gpu/drm/vc4/vc4_v3d.c                 |  4 +-
- drivers/gpu/drm/via/via_dma.c                 |  2 -
- include/drm/drm_atomic.h                      |  1 +
- 30 files changed, 91 insertions(+), 94 deletions(-)
+Fixes the following W=1 kernel build warning(s):
 
-Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
-Cc: Akshu Agarwal <akshua@gmail.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Chris Zhong <zyw@rock-chips.com>
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Daniel Vetter <daniel@ffwll.ch>
+ drivers/gpu/drm/savage/savage_bci.c: In function ‘savage_driver_firstopen’:
+ drivers/gpu/drm/savage/savage_bci.c:580:24: warning: variable ‘aper_rsrc’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/savage/savage_bci.c:580:15: warning: variable ‘fb_rsrc’ set but not used [-Wunused-but-set-variable]
+
 Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Eunchul Kim <chulspro.kim@samsung.com>
-Cc: "Heiko Stübner" <heiko@sntech.de>
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-Cc: Jerome Glisse <glisse@freedesktop.org>
-Cc: Jinyoung Jeon <jy0.jeon@samsung.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-media@vger.kernel.org
-Cc: linux-rockchip@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: Luben Tuikov <luben.tuikov@amd.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Mark Yao <mark.yao@rock-chips.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Nickey Yang <nickey.yang@rock-chips.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: nouveau@lists.freedesktop.org
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: report to <xorg-driver-ati@lists.x.org>
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Sandy Huang <hjc@rock-chips.com>
-Cc: Sangmin Lee <lsmin.lee@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Vincent Abriou <vincent.abriou@st.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/gpu/drm/savage/savage_bci.c | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/drivers/gpu/drm/savage/savage_bci.c b/drivers/gpu/drm/savage/savage_bci.c
+index 6889d6534ebab..606e5b807a6e7 100644
+--- a/drivers/gpu/drm/savage/savage_bci.c
++++ b/drivers/gpu/drm/savage/savage_bci.c
+@@ -573,19 +573,12 @@ int savage_driver_firstopen(struct drm_device *dev)
+ {
+ 	drm_savage_private_t *dev_priv = dev->dev_private;
+ 	unsigned long mmio_base, fb_base, fb_size, aperture_base;
+-	/* fb_rsrc and aper_rsrc aren't really used currently, but still exist
+-	 * in case we decide we need information on the BAR for BSD in the
+-	 * future.
+-	 */
+-	unsigned int fb_rsrc, aper_rsrc;
+ 	int ret = 0;
+ 
+ 	if (S3_SAVAGE3D_SERIES(dev_priv->chipset)) {
+-		fb_rsrc = 0;
+ 		fb_base = pci_resource_start(dev->pdev, 0);
+ 		fb_size = SAVAGE_FB_SIZE_S3;
+ 		mmio_base = fb_base + SAVAGE_FB_SIZE_S3;
+-		aper_rsrc = 0;
+ 		aperture_base = fb_base + SAVAGE_APERTURE_OFFSET;
+ 		/* this should always be true */
+ 		if (pci_resource_len(dev->pdev, 0) == 0x08000000) {
+@@ -607,10 +600,8 @@ int savage_driver_firstopen(struct drm_device *dev)
+ 	} else if (dev_priv->chipset != S3_SUPERSAVAGE &&
+ 		   dev_priv->chipset != S3_SAVAGE2000) {
+ 		mmio_base = pci_resource_start(dev->pdev, 0);
+-		fb_rsrc = 1;
+ 		fb_base = pci_resource_start(dev->pdev, 1);
+ 		fb_size = SAVAGE_FB_SIZE_S4;
+-		aper_rsrc = 1;
+ 		aperture_base = fb_base + SAVAGE_APERTURE_OFFSET;
+ 		/* this should always be true */
+ 		if (pci_resource_len(dev->pdev, 1) == 0x08000000) {
+@@ -626,10 +617,8 @@ int savage_driver_firstopen(struct drm_device *dev)
+ 		}
+ 	} else {
+ 		mmio_base = pci_resource_start(dev->pdev, 0);
+-		fb_rsrc = 1;
+ 		fb_base = pci_resource_start(dev->pdev, 1);
+ 		fb_size = pci_resource_len(dev->pdev, 1);
+-		aper_rsrc = 2;
+ 		aperture_base = pci_resource_start(dev->pdev, 2);
+ 		/* Automatic MTRR setup will do the right thing. */
+ 	}
 -- 
 2.25.1
 
