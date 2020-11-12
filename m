@@ -2,273 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C7D2B0EB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 505E32B0EBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgKLUDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S1727079AbgKLUDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgKLUDW (ORCPT
+        with ESMTP id S1726702AbgKLUDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:03:22 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1A8C0613D1;
-        Thu, 12 Nov 2020 12:03:22 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id z2so6393893ilh.11;
-        Thu, 12 Nov 2020 12:03:22 -0800 (PST)
+        Thu, 12 Nov 2020 15:03:50 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F25AC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:03:50 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id c17so7292111wrc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:03:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CvRBkFjB61TpD/PrK8UELlhzlQvkJ9wAUe4KMJS37gk=;
-        b=Q2Au6/xPP0zfMtDQmC3BqKiFnjKM+g65v8J+ae/MVGPCXYjHrV3UIHuyB1Tqllj0hR
-         DyiT1yR8UtJOxPqbgCnn2YNwwWERzHeTlMOHm4Mt9e276ghKpLX4GsPduam0aFuTe1CN
-         W0dNrdw9Nxw0KOqO26idzVcjJEBbjAa/CEnjV1LFwra70s/BTyhiZGUf7EyNT8CO4y9L
-         HVFsQHeJye+T0jneNfuTKPbWG2CgTb3WR3JIfkFns9F+9M5eadLpvqQPSKNZ5xLKd5tf
-         2LxRtoo/l7RwWgpeeje9ZqPiM+GgWa8CXCTCwl6wzwk7hbtSUf/8tBp49P8mDkMe4PBp
-         ukQQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fDF5l0n3msRGgGGH1jpdrBrGSoTCWyYhlZaMIFoRHNY=;
+        b=PxCDajPYS+KMhHly7PQAn7plJ/zYAleZ+YiSv2SUa754kwXS/aJGSZwC+TDW/rdQCv
+         q05aiakbtJAtUYBPNycY+A3kwd12STIpUnbMkxkd610OR0mCJ1l6idQrSXY6s2PhrXN5
+         fsux1Ln24Wq+x9r5mJm65U+rSJc8QKcVLJNGM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CvRBkFjB61TpD/PrK8UELlhzlQvkJ9wAUe4KMJS37gk=;
-        b=Z5WQZEH5C2g6luMUsd65RsGi+HtbmGqAydK5p9D0HpUPLtHT5Ml4XZSDF0vJZBAupb
-         AflC/u8uhtLSASb103cbxAG9dyb8hyGWdQaX34s2pibhYTIKASS/m5iZm5LMgUhjtwB/
-         CVfsilHSoGr85kp8TKFtm3e6YEa/0FoRRQJciG3SPd8P35TfISYHwDWvmuxKNCb6oo2Y
-         yBJ2rnkYx5uJWY7I243ZUN9bUEoxJDFsKX1euC5OTDBjSEB21f8Fie4g3NYQVq8cwDIz
-         emrzFci29Df4GDutysmWIzQc89P91JdolSocVVnOCThjmIU1gc4DuLFB1URvxKy7YVIg
-         oJgQ==
-X-Gm-Message-State: AOAM532MijD2MNC+iNQOkm8nFzF3TMtHC7RoIuhh5sVQuiIg1eSNAzYW
-        kEIsRHdB8HE7SX6kZI9wix78CsvQ7UKGIzbj/8A+XzOgnYM=
-X-Google-Smtp-Source: ABdhPJzS5cJZ5mfArNRSyRNUhX8FeZEzQ2fENrlxGk6oSmsVsuLbT//IXK/VD0DBJzXjblVlDdYGQUolwLqP5TiIdWg=
-X-Received: by 2002:a92:ca86:: with SMTP id t6mr945597ilo.95.1605211401813;
- Thu, 12 Nov 2020 12:03:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fDF5l0n3msRGgGGH1jpdrBrGSoTCWyYhlZaMIFoRHNY=;
+        b=KZugocXq4pRxSxcHTyx8hlVgQ/n/eqhvg/0Iypwvler1ee7tCxBIxho1FIhwcnpNzC
+         reR3RSOymxsfpsv0suUGbpwst8urZDTmsp2G1HmB+Nq63jmyBcdwEWNRRVkrw4f+b8H+
+         b+RzELB897pGy2I9wsFZIBD+5gSFzC8dvnSbwheFEtRsQXjz+MPapm7eCa/OJ/4KQ5An
+         sQ0pF2yyr4EXhACW/I2m/xkTwixKh2ra+6n6/4Uh5IEWdqP5w2Oz07P16JZZMfxMOptb
+         g0hotN7pW6cDk65xggQ6joN9eIN/FApk2/4Etn+L5+FoC+kLymhC86gZNrPsDa2QWy0J
+         pGGA==
+X-Gm-Message-State: AOAM533U/0tt4GjTGIKW5UUimRdjQp6jOK5oe0OQJLV0pYHpOnYAiKCN
+        zyD+vvO8QeNopXJ5fEyBkeoHDBoBQHQKint6
+X-Google-Smtp-Source: ABdhPJwVb+LsMJ0DjHqzXuECZpfn2+MFgdWWTcckzcS+fCFdEmaOUz+OteWD+70e25ksjgaZahkqBw==
+X-Received: by 2002:adf:de85:: with SMTP id w5mr1476604wrl.90.1605211428534;
+        Thu, 12 Nov 2020 12:03:48 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id f5sm8488472wrg.32.2020.11.12.12.03.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 12:03:48 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next v2 0/2] Sleepable LSM Hooks
+Date:   Thu, 12 Nov 2020 20:03:44 +0000
+Message-Id: <20201112200346.404864-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
-References: <20201111071404.29620-1-naveenm@marvell.com> <20201111071404.29620-3-naveenm@marvell.com>
-In-Reply-To: <20201111071404.29620-3-naveenm@marvell.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 12 Nov 2020 12:03:10 -0800
-Message-ID: <CAKgT0UdAQvcAtzorSEkqKvd4kgS625hwKG=X9JB57Z48Vh=RDg@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 02/13] octeontx2-af: Verify MCAM entry channel
- and PF_FUNC
-To:     Naveen Mamindlapalli <naveenm@marvell.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, saeed@kernel.org,
-        sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:18 PM Naveen Mamindlapalli
-<naveenm@marvell.com> wrote:
->
-> From: Subbaraya Sundeep <sbhatta@marvell.com>
->
-> This patch adds support to verify the channel number sent by
-> mailbox requester before writing MCAM entry for Ingress packets.
-> Similarly for Egress packets, verifying the PF_FUNC sent by the
-> mailbox user.
->
-> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-> Signed-off-by: Kiran Kumar K <kirankumark@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
+From: KP Singh <kpsingh@google.com>
 
-One minor nit below. Otherwise looks good to me.
+# v1 -> v2
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+  * Fixed typos and formatting errors.
+  * Added Andrii's ack.
 
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |  4 +-
->  drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |  2 +
->  .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    | 78 ++++++++++++++++++++++
->  3 files changed, 82 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-> index a28a518c0eae..e8b5aaf73201 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-> @@ -2642,7 +2642,7 @@ static void rvu_enable_afvf_intr(struct rvu *rvu)
->
->  #define PCI_DEVID_OCTEONTX2_LBK 0xA061
->
-> -static int lbk_get_num_chans(void)
-> +int rvu_get_num_lbk_chans(void)
->  {
->         struct pci_dev *pdev;
->         void __iomem *base;
-> @@ -2677,7 +2677,7 @@ static int rvu_enable_sriov(struct rvu *rvu)
->                 return 0;
->         }
->
-> -       chans = lbk_get_num_chans();
-> +       chans = rvu_get_num_lbk_chans();
->         if (chans < 0)
->                 return chans;
->
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-> index 5ac9bb12415f..1724dbd18847 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-> @@ -445,6 +445,7 @@ int rvu_get_lf(struct rvu *rvu, struct rvu_block *block, u16 pcifunc, u16 slot);
->  int rvu_lf_reset(struct rvu *rvu, struct rvu_block *block, int lf);
->  int rvu_get_blkaddr(struct rvu *rvu, int blktype, u16 pcifunc);
->  int rvu_poll_reg(struct rvu *rvu, u64 block, u64 offset, u64 mask, bool zero);
-> +int rvu_get_num_lbk_chans(void);
->
->  /* RVU HW reg validation */
->  enum regmap_block {
-> @@ -535,6 +536,7 @@ bool is_npc_intf_tx(u8 intf);
->  bool is_npc_intf_rx(u8 intf);
->  bool is_npc_interface_valid(struct rvu *rvu, u8 intf);
->  int rvu_npc_get_tx_nibble_cfg(struct rvu *rvu, u64 nibble_ena);
-> +int npc_mcam_verify_channel(struct rvu *rvu, u16 pcifunc, u8 intf, u16 channel);
->
->  #ifdef CONFIG_DEBUG_FS
->  void rvu_dbg_init(struct rvu *rvu);
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-> index 989533a3d2ce..3666159bb6b6 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-> @@ -28,6 +28,8 @@
->
->  #define NPC_PARSE_RESULT_DMAC_OFFSET   8
->  #define NPC_HW_TSTAMP_OFFSET           8
-> +#define NPC_KEX_CHAN_MASK              0xFFFULL
-> +#define NPC_KEX_PF_FUNC_MASK           0xFFFFULL
->
->  static const char def_pfl_name[] = "default";
->
-> @@ -63,6 +65,54 @@ int rvu_npc_get_tx_nibble_cfg(struct rvu *rvu, u64 nibble_ena)
->         return 0;
->  }
->
-> +static int npc_mcam_verify_pf_func(struct rvu *rvu,
-> +                                  struct mcam_entry *entry_data, u8 intf,
-> +                                  u16 pcifunc)
-> +{
-> +       u16 pf_func, pf_func_mask;
-> +
-> +       if (is_npc_intf_rx(intf))
-> +               return 0;
-> +
-> +       pf_func_mask = (entry_data->kw_mask[0] >> 32) &
-> +               NPC_KEX_PF_FUNC_MASK;
-> +       pf_func = (entry_data->kw[0] >> 32) & NPC_KEX_PF_FUNC_MASK;
-> +
-> +       pf_func = be16_to_cpu((__force __be16)pf_func);
-> +       if (pf_func_mask != NPC_KEX_PF_FUNC_MASK ||
-> +           ((pf_func & ~RVU_PFVF_FUNC_MASK) !=
-> +            (pcifunc & ~RVU_PFVF_FUNC_MASK)))
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +
-> +int npc_mcam_verify_channel(struct rvu *rvu, u16 pcifunc, u8 intf, u16 channel)
-> +{
-> +       int pf = rvu_get_pf(pcifunc);
-> +       u8 cgx_id, lmac_id;
-> +       int base = 0, end;
-> +
-> +       if (is_npc_intf_tx(intf))
-> +               return 0;
-> +
-> +       if (is_afvf(pcifunc)) {
-> +               end = rvu_get_num_lbk_chans();
-> +               if (end < 0)
-> +                       return -EINVAL;
-> +       } else {
-> +               rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
-> +               base = NIX_CHAN_CGX_LMAC_CHX(cgx_id, lmac_id, 0x0);
-> +               /* CGX mapped functions has maximum of 16 channels */
-> +               end = NIX_CHAN_CGX_LMAC_CHX(cgx_id, lmac_id, 0xF);
-> +       }
-> +
-> +       if (channel < base || channel > end)
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +
->  void rvu_npc_set_pkind(struct rvu *rvu, int pkind, struct rvu_pfvf *pfvf)
->  {
->         int blkaddr;
-> @@ -1935,6 +1985,7 @@ int rvu_mbox_handler_npc_mcam_write_entry(struct rvu *rvu,
->         struct rvu_pfvf *pfvf = rvu_get_pfvf(rvu, req->hdr.pcifunc);
->         struct npc_mcam *mcam = &rvu->hw->mcam;
->         u16 pcifunc = req->hdr.pcifunc;
-> +       u16 channel, chan_mask;
->         int blkaddr, rc;
->         u8 nix_intf;
->
-> @@ -1942,6 +1993,10 @@ int rvu_mbox_handler_npc_mcam_write_entry(struct rvu *rvu,
->         if (blkaddr < 0)
->                 return NPC_MCAM_INVALID_REQ;
->
-> +       chan_mask = req->entry_data.kw_mask[0] & NPC_KEX_CHAN_MASK;
-> +       channel = req->entry_data.kw[0] & NPC_KEX_CHAN_MASK;
-> +       channel &= chan_mask;
-> +
->         mutex_lock(&mcam->lock);
->         rc = npc_mcam_verify_entry(mcam, pcifunc, req->entry);
->         if (rc)
-> @@ -1963,6 +2018,17 @@ int rvu_mbox_handler_npc_mcam_write_entry(struct rvu *rvu,
->         else
->                 nix_intf = pfvf->nix_rx_intf;
->
-> +       if (npc_mcam_verify_channel(rvu, pcifunc, req->intf, channel)) {
-> +               rc = NPC_MCAM_INVALID_REQ;
-> +               goto exit;
-> +       }
-> +
-> +       if (npc_mcam_verify_pf_func(rvu, &req->entry_data, req->intf,
-> +                                   pcifunc)) {
-> +               rc = NPC_MCAM_INVALID_REQ;
-> +               goto exit;
-> +       }
-> +
->         npc_config_mcam_entry(rvu, mcam, blkaddr, req->entry, nix_intf,
->                               &req->entry_data, req->enable_entry);
->
-> @@ -2299,6 +2365,7 @@ int rvu_mbox_handler_npc_mcam_alloc_and_write_entry(struct rvu *rvu,
->         struct npc_mcam *mcam = &rvu->hw->mcam;
->         u16 entry = NPC_MCAM_ENTRY_INVALID;
->         u16 cntr = NPC_MCAM_ENTRY_INVALID;
-> +       u16 channel, chan_mask;
->         int blkaddr, rc;
->         u8 nix_intf;
->
-> @@ -2309,6 +2376,17 @@ int rvu_mbox_handler_npc_mcam_alloc_and_write_entry(struct rvu *rvu,
->         if (!is_npc_interface_valid(rvu, req->intf))
->                 return NPC_MCAM_INVALID_REQ;
->
-> +       chan_mask = req->entry_data.kw_mask[0] & NPC_KEX_CHAN_MASK;
-> +       channel = req->entry_data.kw[0] & NPC_KEX_CHAN_MASK;
-> +       channel &= chan_mask;
-> +
-> +       if (npc_mcam_verify_channel(rvu, req->hdr.pcifunc, req->intf, channel))
-> +               return NPC_MCAM_INVALID_REQ;
-> +
+KP Singh (2):
+  bpf: Augment the set of sleepable LSM hooks
+  bpf: Expose bpf_d_path helper to sleepable LSM hooks
 
-Why not just move the code for pulling the channel into the
-npc_mcam_verify_channel function like you did with the pf_func? Then
-you can avoid declaring variables here that won't be used anywhere
-else in the function.
+ include/linux/bpf_lsm.h  |   7 +++
+ kernel/bpf/bpf_lsm.c     | 121 +++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c    |  16 +-----
+ kernel/trace/bpf_trace.c |   7 ++-
+ 4 files changed, 135 insertions(+), 16 deletions(-)
 
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
-> +       if (npc_mcam_verify_pf_func(rvu, &req->entry_data, req->intf,
-> +                                   req->hdr.pcifunc))
-> +               return NPC_MCAM_INVALID_REQ;
-> +
->         /* Try to allocate a MCAM entry */
->         entry_req.hdr.pcifunc = req->hdr.pcifunc;
->         entry_req.contig = true;
-> --
-> 2.16.5
->
