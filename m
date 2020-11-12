@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C8B2B0325
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D64B2B032A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgKLKvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgKLKvp (ORCPT
+        id S1727997AbgKLKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:52:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26879 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727946AbgKLKwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:51:45 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CEDC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:51:44 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id l1so5476227wrb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:51:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FaiSQA15MIbTKd3si8WMQOsXJC1onbTCZ7T3J5Q6PJs=;
-        b=Ic6zmTPhniTaWPReO7ebSJWMMO0L4x8eQOL6qyt5hP9WU/FWqa1zmaqHNS6qX9aucP
-         QxHnwgbok6KJGXlsNqmEc3vWrdowfwty5PePcXpJPwhRYP4cr19QtEON5HEY4wk2qrTq
-         IG3+1l7FysyatmxP2XgL/Z8TkjgWOXne2MtHPKJiOT7q3GuWwa0TovUBKDd6Jrg/Jyng
-         ouUh4dS4m4YZMXdDyZrE1Dg5J99GkgHCDfgpjoimVXxOS5DXIDxm1chLALR9F/V4R29U
-         VFroffSIpqYKirGP4YOL4NzWqcN7cZJfcYgNs2ZeSCtn5P6fvl26B06VvqOEHoxEJKMb
-         elow==
+        Thu, 12 Nov 2020 05:52:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605178363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KWLkvdYu5qBPyXknUznFKfkiFcfGzsGeIMaYr3uaes8=;
+        b=BP/Yi1UUv5Evb/8B8RDgt4h7doGd35+Et7kJMXl9uZmF7+Zvj/uaywTIeAVnVmxeZwsD+2
+        TOli5wDqfg/wBBsydXPMTvjiNn5Ozo2g8nA/fxEe3U+zI1UFN+yr6obrwM842z+hDWh/hJ
+        E7J1qtbmC2FVkUblHeO8Zdvk616F7IY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-jPbg_UYeO0SN6ENBW4KvbA-1; Thu, 12 Nov 2020 05:52:41 -0500
+X-MC-Unique: jPbg_UYeO0SN6ENBW4KvbA-1
+Received: by mail-wm1-f70.google.com with SMTP id u9so1610381wmb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:52:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FaiSQA15MIbTKd3si8WMQOsXJC1onbTCZ7T3J5Q6PJs=;
-        b=qlHqom6Ap39lc7TSEeYxg/qJgZJVFiUICVxykwkkOl8H7GKdD9LZjmySANcaslE9QO
-         02R2VjYklJQbondSG1tltE4xwBnordFk0wthkeL02hrbX5wwQG6xXLHxS4sIWlKcUb61
-         YVFGQ1tF4/zrdq/eSAb4EaIK3qFsmANN6oguMj7lidu8A958v3HAEo310+IG6fGUZRJz
-         Tfv0nM7bRUaPyVr6ycXKS6/yZHROIiNGhkxT88w0UKKObI4dwpPeMJM80E65haWtohWB
-         9gM01SGS/1E8IrRHPaQfN0YJhqXjDDCtKCIIzkC8OY19m3sboLypmRHCUyOTDEDkYoBj
-         mAjA==
-X-Gm-Message-State: AOAM530kGVHnTlcTOiypZrqkzEpErjljIwljSDiW06qTev1FfQ4N2vxV
-        afNIt4GJewCw6rwnWgqdobwjdA==
-X-Google-Smtp-Source: ABdhPJzg2aecgEIDff1fkmEawvO8E4/QfU+FF4fWsC+k5rXFYlVwtXnCs4sTiXcuJwkOZev2clZ0xA==
-X-Received: by 2002:adf:b7c8:: with SMTP id t8mr36300917wre.143.1605178303423;
-        Thu, 12 Nov 2020 02:51:43 -0800 (PST)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id m20sm7264401wrg.81.2020.11.12.02.51.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Nov 2020 02:51:42 -0800 (PST)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org, mdtipton@codeaurora.org
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, georgi.djakov@linaro.org
-Subject: [PATCH] interconnect: qcom: msm8916: Remove rpm-ids from non-RPM nodes
-Date:   Thu, 12 Nov 2020 12:51:40 +0200
-Message-Id: <20201112105140.10092-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=KWLkvdYu5qBPyXknUznFKfkiFcfGzsGeIMaYr3uaes8=;
+        b=Y8qWt52V9Jo6n17UPRzvcV7XgYihixaWixvwhkNLwVg/8XH6d3pP5sq8+/nuqhXNtL
+         ng09XD9Onk15JGKOauTWUwwhOhGNjvAVG7s2PZrOdrCDWZdNt+ja5kFQD7LMhUbt/mdl
+         Pffp6vpfDMGXUQNmac3NgH7W4FARIBSo0a2BLDdBfAxuV764r8VwxbyEG4PLAsGuig3q
+         rHL+deuGBG/YsF9oagW3ZbZmvJYqUdBof4vuYLdc94LdM/aVY8Sq8ZUubzUuKnqe9U6G
+         7eScDg/JQBnopH+PBhFxgVFC3KVxPjMCssIW7wXUTDZVbTQSzC6c1YjP1JKa3ip/FSiE
+         waOA==
+X-Gm-Message-State: AOAM533lSRJsDY44HKqKCfo9cqYveKjr8CknyCpOgmywRVKtmXMvL2Ss
+        YxQ91wf1F8+4HQ2imrQi9+1qwvpcGKPm6O741l6YxeT6ugRk9wXfGw2T2eeI+djwVRwDylxeoew
+        HBDZFxNaXUix4ldM4GYjiC+CqNyt80M6fe2zTbtWTKch+gy72Ma8UXZTdpD8vIsJ/L8Z3UseWcy
+        HK
+X-Received: by 2002:a5d:4349:: with SMTP id u9mr34344563wrr.319.1605178360398;
+        Thu, 12 Nov 2020 02:52:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzFgS97tYQwTnuGzSyRyMkZ0TyJUtfa1aypyxDzT65eiZXRkYMnTO/oNXj1+XuclbpZpU22Gg==
+X-Received: by 2002:a5d:4349:: with SMTP id u9mr34344537wrr.319.1605178360165;
+        Thu, 12 Nov 2020 02:52:40 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id o10sm6281915wma.47.2020.11.12.02.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 02:52:39 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/11] KVM: VMX: Define Hyper-V paravirt TLB flush
+ fields iff Hyper-V is enabled
+In-Reply-To: <20201027212346.23409-10-sean.j.christopherson@intel.com>
+References: <20201027212346.23409-1-sean.j.christopherson@intel.com>
+ <20201027212346.23409-10-sean.j.christopherson@intel.com>
+Date:   Thu, 12 Nov 2020 11:52:38 +0100
+Message-ID: <87361ezw21.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some nodes are incorrectly marked as RPM-controlled (they have RPM
-master and slave ids assigned), but are actually controlled by the
-application CPU instead. The RPM complains when we send requests for
-resources that it can't control. Let's fix this by replacing the IDs,
-with the default "-1" in which case no requests are sent.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/interconnect/qcom/msm8916.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> Ifdef away the Hyper-V specific fields in structs kvm_vmx and vcpu_vmx
+> as each field has only a single reference outside of the struct itself
+> that isn't already wrapped in ifdeffery (and both are initialization).
+>
+> vcpu_vmx.ept_pointer in particular should be wrapped as it is valid if
+> and only if Hyper-v is active, i.e. non-Hyper-V code cannot rely on it
+> to actually track the current EPTP (without additional code changes).
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 5 ++++-
+>  arch/x86/kvm/vmx/vmx.h | 4 ++++
+>  2 files changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index b684f45d6a78..5b7c5b2fd2c7 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6955,8 +6955,9 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
+>  	vmx->pi_desc.sn = 1;
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+>  	vmx->ept_pointer = INVALID_PAGE;
+> -
+> +#endif
+>  	return 0;
+>  
+>  free_vmcs:
+> @@ -6973,7 +6974,9 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  
+>  static int vmx_vm_init(struct kvm *kvm)
+>  {
+> +#if IS_ENABLED(CONFIG_HYPERV)
+>  	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> +#endif
+>  
+>  	if (!ple_gap)
+>  		kvm->arch.pause_in_guest = true;
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index cecc2a641e19..2bd86d8b2f4b 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -276,7 +276,9 @@ struct vcpu_vmx {
+>  	 */
+>  	u64 msr_ia32_feature_control;
+>  	u64 msr_ia32_feature_control_valid_bits;
+> +#if IS_ENABLED(CONFIG_HYPERV)
+>  	u64 ept_pointer;
+> +#endif
+>  
+>  	struct pt_desc pt_desc;
+>  
+> @@ -295,8 +297,10 @@ struct kvm_vmx {
+>  	bool ept_identity_pagetable_done;
+>  	gpa_t ept_identity_map_addr;
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+>  	hpa_t hv_tlb_eptp;
+>  	spinlock_t ept_pointer_lock;
+> +#endif
+>  };
+>  
+>  bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
 
-diff --git a/drivers/interconnect/qcom/msm8916.c b/drivers/interconnect/qcom/msm8916.c
-index 93cb675e5806..5d4ac364be8c 100644
---- a/drivers/interconnect/qcom/msm8916.c
-+++ b/drivers/interconnect/qcom/msm8916.c
-@@ -182,7 +182,7 @@ DEFINE_QNODE(mas_pcnoc_sdcc_1, MSM8916_MASTER_SDCC_1, 8, -1, -1, MSM8916_PNOC_IN
- DEFINE_QNODE(mas_pcnoc_sdcc_2, MSM8916_MASTER_SDCC_2, 8, -1, -1, MSM8916_PNOC_INT_1);
- DEFINE_QNODE(mas_qdss_bam, MSM8916_MASTER_QDSS_BAM, 8, -1, -1, MSM8916_SNOC_QDSS_INT);
- DEFINE_QNODE(mas_qdss_etr, MSM8916_MASTER_QDSS_ETR, 8, -1, -1, MSM8916_SNOC_QDSS_INT);
--DEFINE_QNODE(mas_snoc_cfg, MSM8916_MASTER_SNOC_CFG, 4, 20, -1, MSM8916_SNOC_QDSS_INT);
-+DEFINE_QNODE(mas_snoc_cfg, MSM8916_MASTER_SNOC_CFG, 4, -1, -1, MSM8916_SNOC_QDSS_INT);
- DEFINE_QNODE(mas_spdm, MSM8916_MASTER_SPDM, 4, -1, -1, MSM8916_PNOC_MAS_0);
- DEFINE_QNODE(mas_tcu0, MSM8916_MASTER_TCU0, 8, -1, -1, MSM8916_SLAVE_EBI_CH0, MSM8916_BIMC_SNOC_MAS, MSM8916_SLAVE_AMPSS_L2);
- DEFINE_QNODE(mas_tcu1, MSM8916_MASTER_TCU1, 8, -1, -1, MSM8916_SLAVE_EBI_CH0, MSM8916_BIMC_SNOC_MAS, MSM8916_SLAVE_AMPSS_L2);
-@@ -208,14 +208,14 @@ DEFINE_QNODE(pcnoc_snoc_mas, MSM8916_PNOC_SNOC_MAS, 8, 29, -1, MSM8916_PNOC_SNOC
- DEFINE_QNODE(pcnoc_snoc_slv, MSM8916_PNOC_SNOC_SLV, 8, -1, 45, MSM8916_SNOC_INT_0, MSM8916_SNOC_INT_BIMC, MSM8916_SNOC_INT_1);
- DEFINE_QNODE(qdss_int, MSM8916_SNOC_QDSS_INT, 8, -1, -1, MSM8916_SNOC_INT_0, MSM8916_SNOC_INT_BIMC);
- DEFINE_QNODE(slv_apps_l2, MSM8916_SLAVE_AMPSS_L2, 8, -1, -1, 0);
--DEFINE_QNODE(slv_apss, MSM8916_SLAVE_APSS, 4, -1, 20, 0);
-+DEFINE_QNODE(slv_apss, MSM8916_SLAVE_APSS, 4, -1, -1, 0);
- DEFINE_QNODE(slv_audio, MSM8916_SLAVE_LPASS, 4, -1, -1, 0);
- DEFINE_QNODE(slv_bimc_cfg, MSM8916_SLAVE_BIMC_CFG, 4, -1, -1, 0);
- DEFINE_QNODE(slv_blsp_1, MSM8916_SLAVE_BLSP_1, 4, -1, -1, 0);
- DEFINE_QNODE(slv_boot_rom, MSM8916_SLAVE_BOOT_ROM, 4, -1, -1, 0);
- DEFINE_QNODE(slv_camera_cfg, MSM8916_SLAVE_CAMERA_CFG, 4, -1, -1, 0);
--DEFINE_QNODE(slv_cats_0, MSM8916_SLAVE_CATS_128, 16, -1, 106, 0);
--DEFINE_QNODE(slv_cats_1, MSM8916_SLAVE_OCMEM_64, 8, -1, 107, 0);
-+DEFINE_QNODE(slv_cats_0, MSM8916_SLAVE_CATS_128, 16, -1, -1, 0);
-+DEFINE_QNODE(slv_cats_1, MSM8916_SLAVE_OCMEM_64, 8, -1, -1, 0);
- DEFINE_QNODE(slv_clk_ctl, MSM8916_SLAVE_CLK_CTL, 4, -1, -1, 0);
- DEFINE_QNODE(slv_crypto_0_cfg, MSM8916_SLAVE_CRYPTO_0_CFG, 4, -1, -1, 0);
- DEFINE_QNODE(slv_dehr_cfg, MSM8916_SLAVE_DEHR_CFG, 4, -1, -1, 0);
-@@ -239,7 +239,7 @@ DEFINE_QNODE(slv_sdcc_2, MSM8916_SLAVE_SDCC_2, 4, -1, -1, 0);
- DEFINE_QNODE(slv_security, MSM8916_SLAVE_SECURITY, 4, -1, -1, 0);
- DEFINE_QNODE(slv_snoc_cfg, MSM8916_SLAVE_SNOC_CFG, 4, -1, -1, 0);
- DEFINE_QNODE(slv_spdm, MSM8916_SLAVE_SPDM, 4, -1, -1, 0);
--DEFINE_QNODE(slv_srvc_snoc, MSM8916_SLAVE_SRVC_SNOC, 8, -1, 29, 0);
-+DEFINE_QNODE(slv_srvc_snoc, MSM8916_SLAVE_SRVC_SNOC, 8, -1, -1, 0);
- DEFINE_QNODE(slv_tcsr, MSM8916_SLAVE_TCSR, 4, -1, -1, 0);
- DEFINE_QNODE(slv_tlmm, MSM8916_SLAVE_TLMM, 4, -1, -1, 0);
- DEFINE_QNODE(slv_usb_hs, MSM8916_SLAVE_USB_HS, 4, -1, -1, 0);
-@@ -249,7 +249,7 @@ DEFINE_QNODE(snoc_bimc_0_slv, MSM8916_SNOC_BIMC_0_SLV, 8, -1, 24, MSM8916_SLAVE_
- DEFINE_QNODE(snoc_bimc_1_mas, MSM8916_SNOC_BIMC_1_MAS, 16, -1, -1, MSM8916_SNOC_BIMC_1_SLV);
- DEFINE_QNODE(snoc_bimc_1_slv, MSM8916_SNOC_BIMC_1_SLV, 8, -1, -1, MSM8916_SLAVE_EBI_CH0);
- DEFINE_QNODE(snoc_int_0, MSM8916_SNOC_INT_0, 8, 99, 130, MSM8916_SLAVE_QDSS_STM, MSM8916_SLAVE_IMEM, MSM8916_SNOC_PNOC_MAS);
--DEFINE_QNODE(snoc_int_1, MSM8916_SNOC_INT_1, 8, 100, 131, MSM8916_SLAVE_APSS, MSM8916_SLAVE_CATS_128, MSM8916_SLAVE_OCMEM_64);
-+DEFINE_QNODE(snoc_int_1, MSM8916_SNOC_INT_1, 8, -1, -1, MSM8916_SLAVE_APSS, MSM8916_SLAVE_CATS_128, MSM8916_SLAVE_OCMEM_64);
- DEFINE_QNODE(snoc_int_bimc, MSM8916_SNOC_INT_BIMC, 8, 101, 132, MSM8916_SNOC_BIMC_0_MAS);
- DEFINE_QNODE(snoc_pcnoc_mas, MSM8916_SNOC_PNOC_MAS, 8, -1, -1, MSM8916_SNOC_PNOC_SLV);
- DEFINE_QNODE(snoc_pcnoc_slv, MSM8916_SNOC_PNOC_SLV, 8, -1, -1, MSM8916_PNOC_INT_0);
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
