@@ -2,156 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213F22B0949
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCCA2B0952
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgKLP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:59:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728389AbgKLP7s (ORCPT
+        id S1728743AbgKLQAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:00:20 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:36724 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728501AbgKLQAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:59:48 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF27C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:59:48 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id d28so5658256qka.11
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:59:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4jCOmZMfeGT0TXCdgSotnEbRECtZNT/yP78oj9y32ro=;
-        b=adOBV9vUMW+wa1UMSZKmUYiV+rRIraVU+W5WWTyE15tii2COEt5s1IccjYh1mY68A1
-         Ek2ViBTLYQtP26NJ6VsCw1klYQV31enkWJKN+c/YfingjG6AUCv96mPFnOGeox1ZHAmW
-         MHwH0JThb7lG2U+iN0lNrZm8MDr2F38wRUtYQspHYauZi2+z8X4JdZF8XZsfMtUgKK7p
-         DA72bQhzJ7w3OqFOeob7Djpkdrnte3cjSrTLKfEZrInICmbqH29lckCpdFBPdEyR6ODX
-         B5QEZWZRwqNh0h24KKbrONYuBL0Kv2knueSS6yhaQIvh0g/O5EUef/EUJascFIZhHWGN
-         QG3Q==
+        Thu, 12 Nov 2020 11:00:17 -0500
+Received: by mail-ot1-f51.google.com with SMTP id n89so6043520otn.3;
+        Thu, 12 Nov 2020 08:00:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4jCOmZMfeGT0TXCdgSotnEbRECtZNT/yP78oj9y32ro=;
-        b=MFjgclCod0ByOewVevS8qP3AOk7c666KOHnyMec2NqZ5z6MzXy3K/AACdGAdfq7b61
-         jRjdrVwhEMAeE9S22UE4k226/gXc4mFP+kxBs/7TJwrZHdUmiEQm+eUft7DARpFZ0Cya
-         8kBk5aCTEZ338PhnSErG7rc0x+pQds3Y+cpCa06GGmdlYMgkt6FyonbzcZb5wPk7NFlW
-         XoK7Qg2C3092CTAq/gLURP6H8lskuTstRsRwEyHGAXdJMRm+dRhyMaxPQqIk+VRPl0AI
-         zM714a6lP/lNvS6RK+A5hoQXfZQVmyHDZOFFlP6gHVsQdI8udl63EYZi0WxOIJ6P8CHn
-         VXGg==
-X-Gm-Message-State: AOAM533a7RMo+wI4oqASXYoSJxcCOLS8SEHrISJbFdnjPoDcZvsshrA4
-        a5ZzrtZ2ijIbEuQoCSkAKEAOt/AfIyAmDgbkWydZxQ==
-X-Google-Smtp-Source: ABdhPJxFf5p6ggFclyyqMlQ1hU/zZuctmzK10pHxDVC/fJWkQ5dzeaoAwVmoVkHpC44DejNUOBKtMelXFEBJbwtznj4=
-X-Received: by 2002:a05:620a:211b:: with SMTP id l27mr441705qkl.352.1605196786695;
- Thu, 12 Nov 2020 07:59:46 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=uSvbXH4CyeVHmYh9u1L91dcNlQQ8ypiS3s4LMmYrlaY=;
+        b=UvwIWEVL9ZHGV0Qx92ml/3JTn+hbhJ6UyScKmbVwIBAc8V2CxQ4QSvS907+96cz98L
+         eK6mL1eokhFhA73WA6J17k/01uHJzQtvT+pI0y0fjiYNUIXMAsFXeybqAYWfsvN/e1zR
+         kilx/DH7x6mZTnfCDR03q3vRZWUPfLmHKU/osU3w9hd2vCAGE/H5C1vC4uPAo7uyCyhs
+         6q6rjLhzPxVgmFA26EVhaVSVJkzkTfR37tWE7q7F+81TrYUXYAiotb5esXZZMoyX7stm
+         EYEWmhoBjI7B5CTKU/5sJd+4AP8jGsVmQWiJDcvXlzvzmCJXuML0zn3ymiZGs7tf9MA4
+         BHmg==
+X-Gm-Message-State: AOAM531CObqQ7HAU0uOGhOFhSr3o9yLbkmcweoiJ0qW3xhhnM4E7Wq77
+        tADO2wgu2kYApBl7orOmdNjiRAUtf0VFtZeV+J0zMuc9r/s=
+X-Google-Smtp-Source: ABdhPJy20Psdcu+jBPDIbLC8rCOwltWSLfoYyZQ8GYS92dblTRH3atiBA0Fw4oDCD6xkVQ3txe2lClxmLtFiMaY0RT0=
+X-Received: by 2002:a9d:16f:: with SMTP id 102mr23123590otu.206.1605196816463;
+ Thu, 12 Nov 2020 08:00:16 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <bd6825832c0cb376fc68ad61ffec6d829401ed0e.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <bd6825832c0cb376fc68ad61ffec6d829401ed0e.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 12 Nov 2020 16:59:35 +0100
-Message-ID: <CAG_fn=XpB5ZQagAm6bqR1z+6hWdmk_shH0x8ShAx0qpmjMsp5Q@mail.gmail.com>
-Subject: Re: [PATCH v9 44/44] kselftest/arm64: Check GCR_EL1 after context switch
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 12 Nov 2020 17:00:05 +0100
+Message-ID: <CAJZ5v0gNPL6kbg9f5JgZOvH7k-GLC8yrvvidwj_VCq09ie9NYg@mail.gmail.com>
+Subject: [GIT PULL] ACPI updates for v5.10-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
->
-> This test is specific to MTE and verifies that the GCR_EL1 register
-> is context switched correctly.
->
-> It spawn 1024 processes and each process spawns 5 threads. Each thread
+Hi Linus,
 
-Nit: "spawns"
+Please pull from the tag
 
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.10-rc4
 
-> +       srand(time(NULL) ^ (pid << 16) ^ (tid << 16));
-> +
-> +       prctl_tag_mask =3D rand() % 0xffff;
+with top-most commit 7222a8a52c9ec59affc4d6c4e2632b3e4a44cd27
 
-Nit: if you want values between 0 and 0xffff you probably want to use
-bitwise AND.
+ Merge branches 'acpi-scan', 'acpi-misc', 'acpi-button' and 'acpi-dptf'
 
+on top of commit f8394f232b1eab649ce2df5c5f15b0e528c92091
 
-> +
-> +int execute_test(pid_t pid)
-> +{
-> +       pthread_t thread_id[MAX_THREADS];
-> +       int thread_data[MAX_THREADS];
-> +
-> +       for (int i =3D 0; i < MAX_THREADS; i++)
-> +               pthread_create(&thread_id[i], NULL,
-> +                              execute_thread, (void *)&pid);
+ Linux 5.10-rc3
 
-It might be simpler to call getpid() in execute_thread() instead.
+to receive ACPI updates for 5.10-rc4.
 
-> +int mte_gcr_fork_test()
-> +{
-> +       pid_t pid[NUM_ITERATIONS];
-> +       int results[NUM_ITERATIONS];
-> +       pid_t cpid;
-> +       int res;
-> +
-> +       for (int i =3D 0; i < NUM_ITERATIONS; i++) {
-> +               pid[i] =3D fork();
-> +
-> +               if (pid[i] =3D=3D 0) {
+These are mostly docmentation fixes and janitorial changes plus some
+new device IDs and a new quirk.
 
-pid[i] isn't used anywhere else. Did you want to keep the pids to
-ensure that all children finished the work?
-If not, we can probably go with a scalar here.
+Specifics:
+
+ - Fix documentation regarding GPIO properties (Andy Shevchenko).
+
+ - Fix spelling mistakes in ACPI documentation (Flavio Suligoi).
+
+ - Fix white space inconsistencies in ACPI code (Maximilian Luz).
+
+ - Fix string formatting in the ACPI Generic Event Device (GED)
+   driver (Nick Desaulniers).
+
+ - Add Intel Alder Lake device IDs to the ACPI drivers used by the
+   Dynamic Platform and Thermal Framework (Srinivas Pandruvada).
+
+ - Add lid-related DMI quirk for Medion Akoya E2228T to the ACPI
+   button driver (Hans de Goede).
+
+Thanks!
 
 
-> +       for (int i =3D 0; i < NUM_ITERATIONS; i++) {
-> +               wait(&res);
-> +
-> +               if(WIFEXITED(res))
-> +                       results[i] =3D WEXITSTATUS(res);
-> +               else
-> +                       --i;
+---------------
 
-Won't we get stuck in this loop if fork() returns -1 for one of the process=
-es?
+Andy Shevchenko (3):
+      Documentation: firmware-guide: gpio-properties: Fix factual mistakes
+      Documentation: firmware-guide: gpio-properties: active_low only
+for GpioIo()
+      Documentation: firmware-guide: gpio-properties: Clarify initial
+output state
 
-> +       }
-> +
-> +       for (int i =3D 0; i < NUM_ITERATIONS; i++)
-> +               if (results[i] =3D=3D KSFT_FAIL)
-> +                       return KSFT_FAIL;
-> +
-> +       return KSFT_PASS;
-> +}
-> +
+Flavio Suligoi (1):
+      Documentation: ACPI: fix spelling mistakes
 
+Hans de Goede (1):
+      ACPI: button: Add DMI quirk for Medion Akoya E2228T
 
---=20
-Alexander Potapenko
-Software Engineer
+John Garry (1):
+      ACPI: scan: Fix acpi_dma_configure_id() kerneldoc name
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+Maximilian Luz (1):
+      ACPI: Fix whitespace inconsistencies
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Nick Desaulniers (1):
+      ACPI: GED: fix -Wformat
+
+Srinivas Pandruvada (1):
+      ACPI: DPTF: Support Alder Lake
+
+---------------
+
+ Documentation/firmware-guide/acpi/acpi-lid.rst     |  8 ++--
+ .../firmware-guide/acpi/gpio-properties.rst        | 55 ++++++++++++++++------
+ .../firmware-guide/acpi/method-tracing.rst         |  2 +-
+ drivers/acpi/acpi_video.c                          |  6 +--
+ drivers/acpi/battery.c                             |  2 +-
+ drivers/acpi/button.c                              | 13 ++++-
+ drivers/acpi/dptf/dptf_pch_fivr.c                  |  1 +
+ drivers/acpi/dptf/dptf_power.c                     |  2 +
+ drivers/acpi/dptf/int340x_thermal.c                |  6 +++
+ drivers/acpi/event.c                               |  2 +-
+ drivers/acpi/evged.c                               |  2 +-
+ drivers/acpi/fan.c                                 |  1 +
+ drivers/acpi/internal.h                            |  2 +-
+ drivers/acpi/nfit/core.c                           | 10 ++--
+ drivers/acpi/pci_irq.c                             |  2 +-
+ drivers/acpi/pci_link.c                            | 12 ++---
+ drivers/acpi/pci_mcfg.c                            |  2 +-
+ drivers/acpi/power.c                               |  6 +--
+ drivers/acpi/processor_perflib.c                   |  6 +--
+ drivers/acpi/sbs.c                                 |  2 +-
+ drivers/acpi/sbshc.c                               |  2 +-
+ drivers/acpi/sbshc.h                               |  6 +--
+ drivers/acpi/scan.c                                |  2 +-
+ drivers/acpi/video_detect.c                        | 16 +++----
+ drivers/acpi/wakeup.c                              |  4 +-
+ 25 files changed, 110 insertions(+), 62 deletions(-)
