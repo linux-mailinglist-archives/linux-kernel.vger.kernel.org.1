@@ -2,90 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C032B07DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF0C2B07E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgKLOyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:54:53 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45700 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLOyw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:54:52 -0500
-Received: by mail-oi1-f195.google.com with SMTP id j7so6620147oie.12;
-        Thu, 12 Nov 2020 06:54:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PifCDWqhNMNufANMuIhdJC/Zqdbe8ffbOkNB2UHoQ4U=;
-        b=LddzSjD7PUqUeeJKT7V2fV73f1YyLCni2o6/ms19BCYJgT7Yb5T/glRN1jtOKw/3Yj
-         TaNH/zvt0Eg9jSfn2Yk5FqucOqH5+x2cu2SNzO0J8ndM5Gi4vYYd1z9WMfBHlOQwvxMa
-         hh9nHDaFKWPCrdh3RvVoshleZpVkY//4OpxzakluQPyQxsth5FGinWeK/rIBF8QPaeZU
-         gTIffWwm7IEbz3X0BjQXtknI6FM40mAyEXM2bPV1gBDqqir2MW5sOzk8cwSarKk7iuYL
-         VPT7KZtgi7YpYvLCLadWs3ZqrFvKUp2/X0QE/lf3JhgAOFsuzBkcgjGJPZ/UvA1gzWHq
-         0rFQ==
-X-Gm-Message-State: AOAM530DcB+hS9FATtw4khoHcaqSyNvKtP73j4u1omI6BXOZ8Lu0EA/X
-        y1q3s/3k4yrYWszdmeWR7Q==
-X-Google-Smtp-Source: ABdhPJyQHxSGB0EXd/LcUQ6+dNsg36cN26JPUbAbsQVvHRAvvoB0nutCFKFlM+ng4I4xYvEFmJOEFA==
-X-Received: by 2002:aca:f0c5:: with SMTP id o188mr5384348oih.95.1605192891798;
-        Thu, 12 Nov 2020 06:54:51 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t65sm1143640oib.50.2020.11.12.06.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 06:54:50 -0800 (PST)
-Received: (nullmailer pid 3584258 invoked by uid 1000);
-        Thu, 12 Nov 2020 14:54:49 -0000
-Date:   Thu, 12 Nov 2020 08:54:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sia Jee Heng <jee.heng.sia@intel.com>
-Cc:     vkoul@kernel.org, robh+dt@kernel.org,
-        andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        Eugeniy.Paltsev@synopsys.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 10/15] dt-binding: dma: dw-axi-dmac: Add support for
- Intel KeemBay AxiDMA
-Message-ID: <20201112145449.GA3583607@bogus>
-References: <20201112084953.21629-1-jee.heng.sia@intel.com>
- <20201112084953.21629-11-jee.heng.sia@intel.com>
+        id S1728579AbgKLOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:55:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:52346 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728467AbgKLOzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:55:18 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0C96139F;
+        Thu, 12 Nov 2020 06:55:17 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5C643F73C;
+        Thu, 12 Nov 2020 06:55:16 -0800 (PST)
+Date:   Thu, 12 Nov 2020 14:55:14 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        LAKML <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/2] arm64: cpufeature: Add GIC CPUIF v4.1 detection
+Message-ID: <20201112145514.GB24454@e121166-lin.cambridge.arm.com>
+References: <20201111162841.3151-1-lorenzo.pieralisi@arm.com>
+ <20201111162841.3151-2-lorenzo.pieralisi@arm.com>
+ <89291c496e6e868c442f5763db53d22d@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112084953.21629-11-jee.heng.sia@intel.com>
+In-Reply-To: <89291c496e6e868c442f5763db53d22d@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 16:49:48 +0800, Sia Jee Heng wrote:
-> Add support for Intel KeemBay AxiDMA to the dw-axi-dmac
-> Schemas DT binding.
+On Thu, Nov 12, 2020 at 11:20:08AM +0000, Marc Zyngier wrote:
+> On 2020-11-11 16:28, Lorenzo Pieralisi wrote:
+> > GIC v4.1 introduced changes to the GIC CPU interface; systems that
+> > integrate CPUs that do not support GIC v4.1 features (as reported in
+> > the
+> > ID_AA64PFR0_EL1.GIC bitfield) and a GIC v4.1 controller must disable in
+> > software virtual SGIs support since the CPUIF and GIC controller
+> > version
+> > mismatch results in CONSTRAINED UNPREDICTABLE behaviour at
+> > architectural
+> > level.
+> > 
+> > Add a cpufeature and related capability to detect GIC v4.1 CPUIF
+> > features so that the GIC driver can probe it to detect GIC CPUIF
+> > hardware configuration and take action accordingly.
+> > 
+> > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/include/asm/cpucaps.h |  3 ++-
+> >  arch/arm64/kernel/cpufeature.c   | 10 ++++++++++
+> >  2 files changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/cpucaps.h
+> > b/arch/arm64/include/asm/cpucaps.h
+> > index 42868dbd29fd..35ef0319f422 100644
+> > --- a/arch/arm64/include/asm/cpucaps.h
+> > +++ b/arch/arm64/include/asm/cpucaps.h
+> > @@ -65,7 +65,8 @@
+> >  #define ARM64_HAS_ARMv8_4_TTL			55
+> >  #define ARM64_HAS_TLB_RANGE			56
+> >  #define ARM64_MTE				57
+> > +#define ARM64_HAS_GIC_CPUIF_VSGI		58
+> > 
+> > -#define ARM64_NCAPS				58
+> > +#define ARM64_NCAPS				59
+> > 
+> >  #endif /* __ASM_CPUCAPS_H */
+> > diff --git a/arch/arm64/kernel/cpufeature.c
+> > b/arch/arm64/kernel/cpufeature.c
+> > index dcc165b3fc04..9eabbaddfe5e 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -2136,6 +2136,16 @@ static const struct arm64_cpu_capabilities
+> > arm64_features[] = {
+> >  		.cpu_enable = cpu_enable_mte,
+> >  	},
+> >  #endif /* CONFIG_ARM64_MTE */
+> > +	{
+> > +		.desc = "GIC CPUIF virtual SGI",
 > 
-> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-> ---
->  .../bindings/dma/snps,dw-axi-dmac.yaml        | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
+> nit: that's not really what this feature is. It only means that the
+> sysreg interface complies to v4.1. Which on its own is totally rubbish,
+> because the sysreg don't change behaviour between 3.0/4.0 and 4.1.
+
+True.
+
+> > +		.capability = ARM64_HAS_GIC_CPUIF_VSGI,
+> > +		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
+> > +		.matches = has_cpuid_feature,
+> > +		.sys_reg = SYS_ID_AA64PFR0_EL1,
+> > +		.field_pos = ID_AA64PFR0_GIC_SHIFT,
+> > +		.sign = FTR_UNSIGNED,
+> > +		.min_field_value = 3,
+> > +	},
 > 
+> Do we really need a new cap for that? Or can we rely on simply looking
+> at the sanitised feature set? I'm not overly keen on advertising a
+> feature
+> at CPU boot time if we discover later on that we cannot use it because
+> all
+> we have in a non-4.1 GIC.
 
+Yes I thought about that, posted exactly to get this feedback.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+You have a point. It is also wrong to force secondaries to die if
+they mismatch with the boot CPU without knowing what *actual* GIC
+controller we have in the system.
 
-yamllint warnings/errors:
+> Another thing is that we currently assume that *all* CPUs will be the
+> same
+> at the point where we setup the GIC (we only have a single CPU booted at
+> that
+> point).
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.example.dt.yaml: example-1: dma@28000000:reg:0: [671088640, 4096, 539295744, 36] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Yes - we would taint (?) if that's not the case right ? So using a
+sanitised feature looks sane to me, certainly saner than using a new
+cap and I think that's all we can and should do.
 
-
-See https://patchwork.ozlabs.org/patch/1398782
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Thanks,
+Lorenzo
