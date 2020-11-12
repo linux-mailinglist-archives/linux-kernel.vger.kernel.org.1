@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85372B0413
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BE72B0405
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgKLLlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728168AbgKLLjz (ORCPT
+        id S1728046AbgKLLiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:38:13 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7178 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727234AbgKLLiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:39:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BB1C0617A7;
-        Thu, 12 Nov 2020 03:39:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b6ATZfVWGAVrJTHLYJ8q8DfRh8F5q774OL7MDaycL9E=; b=lDnDxzUPrpug4qGWJPiQ1cFY+2
-        S3j2YMIm055tPZFqM9J1KwtwdUkCv0Yt5hm4gGBNHDYJ5OVC4R+RVaIt2VRTbMldKZwSnLXHqUNti
-        Fcjil6yScd/4sYyehst1nWnP4rDtZCp3nxXWUb2h/IhgrkXEG/HZl2gA8suUAdzdPATsfbTcVgkAb
-        B7tnG1S3wp4/bJLnl53X2M/oGIY0UojGKj+4+2a9Qc5EsKHpHoimB/r5hZjER3qbZioBn44J6edXj
-        7qV8yQ1aR/w6XSfKWoZVio1IU+ot3r0DG+6zqpPAdoeUF2rynRuRbKzm/3t3Ff2hns7oDmmU8MeU8
-        QEGwcl/w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdAx4-00052B-Kw; Thu, 12 Nov 2020 11:39:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39D83305C16;
-        Thu, 12 Nov 2020 12:39:40 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EB14A2C71BAB2; Thu, 12 Nov 2020 12:39:39 +0100 (CET)
-Date:   Thu, 12 Nov 2020 12:39:39 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, live-patching@vger.kernel.org
-Subject: Re: [PATCH 3/3 v5] livepatch: Use the default ftrace_ops instead of
- REGS when ARGS is available
-Message-ID: <20201112113939.GU2651@hirez.programming.kicks-ass.net>
-References: <20201112011516.589846126@goodmis.org>
- <20201112011815.755256598@goodmis.org>
- <20201112082144.GS2628@hirez.programming.kicks-ass.net>
+        Thu, 12 Nov 2020 06:38:13 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX02x1xRTz15TLn;
+        Thu, 12 Nov 2020 19:38:01 +0800 (CST)
+Received: from compute.localdomain (10.175.112.70) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Thu, 12 Nov 2020 19:38:08 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <jakub.pawlak@intel.com>,
+        <jeffrey.t.kirsher@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] iavf: fix error return code in iavf_init_get_resources()
+Date:   Thu, 12 Nov 2020 19:39:54 +0800
+Message-ID: <1605181194-3093-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112082144.GS2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:21:44AM +0100, Peter Zijlstra wrote:
-> Also, do you want something like:
-> 
-> unsigned long ftrace_regs_get_register(struct ftrace_regs *regs, unsigned int offset)
-> {
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-I forgot the full regs case:
+Fixes: b66c7bc1cd4d ("iavf: Refactor init state machine")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-	if (regs->regs.cs)
-		return regs_get_register(regs->regs, offset);
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 95543df..ff1102d 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1776,7 +1776,8 @@ static int iavf_init_get_resources(struct iavf_adapter *adapter)
+ 		goto err_alloc;
+ 	}
+ 
+-	if (iavf_process_config(adapter))
++	err = iavf_process_config(adapter);
++	if (err)
+ 		goto err_alloc;
+ 	adapter->current_op = VIRTCHNL_OP_UNKNOWN;
+ 
+-- 
+2.9.5
 
-> 	switch (offset / sizeof(long)) {
-> 	case  4: /* RBP */
-> 
-> 	case  8: /* R9  */
-> 	case  9: /* R8  */
-> 	case 10: /* RAX */
-> 	case 11: /* RCX */
-> 	case 12: /* RDX */
-> 	case 13: /* RSI */
-> 	case 14: /* RDI */
-> 	case 15: /* ORIG_RAX */
-> 	case 16: /* RIP */
-> 		return *(unsigned long *)regs->regs + offset;
-> 
-> 	default:
-> 		WARN_ON_ONCE(1);
-> 	}
-> 	return 0;
-> }
