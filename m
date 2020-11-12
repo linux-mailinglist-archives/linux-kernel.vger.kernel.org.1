@@ -2,53 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0132AFE4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC692AFE48
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgKLFgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:36:52 -0500
-Received: from mail-proxy101.phy.heteml.jp ([157.7.189.101]:38188 "EHLO
-        mail-proxy101.phy.heteml.jp" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728344AbgKLDkS (ORCPT
+        id S1729164AbgKLFga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:36:30 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7490 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728321AbgKLDfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:40:18 -0500
-X-Greylist: delayed 888 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Nov 2020 22:40:14 EST
-Received: from mail-proxy101.phy.heteml.jp (localhost [127.0.0.1])
-        by mail-proxy101.phy.heteml.jp (Postfix) with ESMTP id 5D4F41661124;
-        Thu, 12 Nov 2020 12:25:22 +0900 (JST)
-Received: from 127.0.0.1 (127.0.0.1)
- by mail-proxy101.phy.heteml.jp (HETEML-Fsecure);
- Thu, 12 Nov 2020 12:25:22 +0900 (JST)
-X-Virus-Status: clean(HETEML-Fsecure)
-Received: from User (unknown [52.231.203.57])
-        (Authenticated sender: form@healingart-n.jp)
-        by mail-proxy101.phy.heteml.jp (Postfix) with ESMTPA;
-        Thu, 12 Nov 2020 12:25:22 +0900 (JST)
-Reply-To: <reemhashimymail@gmail.com>
-From:   "Reem" <form@healingart-n.jp>
-Subject: Hello Friend  12/11/2020
-Date:   Thu, 12 Nov 2020 03:25:24 -0000
+        Wed, 11 Nov 2020 22:35:15 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CWnHN4H1szhjjM;
+        Thu, 12 Nov 2020 11:33:04 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 12 Nov 2020 11:33:00 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH V3 net-next 00/10] net: hns3: updates for -next
+Date:   Thu, 12 Nov 2020 11:33:08 +0800
+Message-ID: <1605151998-12633-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20201112032522.5D4F41661124@mail-proxy101.phy.heteml.jp>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My name is Reem Hashimy, the Emirates Minister of State and Managing Director of the United Arab Emirates (Dubai) World Expo 2020 Committee which has been postponed to October 2021 to March 2022 because of the Covid-19 pandemic.
- 
-I am writing to you to manage the funds I received as financial gratification from various foreign companies I assisted to receive a participation approval to the coming event. The amount is $44,762,906.00 United States dollars. But I can not personally manage the fund in my country because of the sensitive nature of my office and the certain restriction on married Muslim women.
+There are several updates relating to the interrupt coalesce for
+the HNS3 ethernet driver.
 
-For this reason, an agreement was reached with a consulting firm to direct the various financial gifts into an open beneficiary account in my name with a bank where it will be possible for me to instruct the transfer of ownership right to a third party for investment purpose; which is the reason I am contacting you to receive the fund and manage it as my investment partner. Note that the fund is NOT connected to any criminal or terrorist activity.
- 
-On your indication of interest with your information to include your name, your phone number and contact mailing address; I will instruct the consulting firm to process the fund from the bank to your country for investment purposes.
+#1 adds support for QL(quantity limiting, interrupt coalesce
+   based on the frame quantity).
+#2 queries the maximum value of GL from the firmware instead of
+   a fixed value in code.
+#3 adds support for 1us unit GL(gap limiting, interrupt coalesce
+   based on the gap time).
+#4 renames gl_adapt_enable in struct hns3_enet_coalesce to fit
+   its new usage.
+#5 & #6 adds support for the dynamic interrupt moderation,
+   and adds a control private flag in ethtool.
+#7 adds wrapper function for state initialization.
+#8 adds a check for the read-only private flag.
+#9 & #10 adds support for EQ/CQ configuration, and adds a control
+   private flag in ethtool.
 
-Regards.
-Reem Hashimy.
+change log:
+V3 - fix a typo error in #1 reported by Jakub Kicinski.
+     rewrite #9 commit log.
+     remove #11 from this series.
+V2 - reorder #2 & #3 to fix compiler error.
+     fix some checkpatch warnings in #10 & #11.
+
+previous version:
+V2: https://patchwork.ozlabs.org/project/netdev/cover/1604892159-19990-1-git-send-email-tanhuazhong@huawei.com/
+V1: https://patchwork.ozlabs.org/project/netdev/cover/1604730681-32559-1-git-send-email-tanhuazhong@huawei.com/
+
+Huazhong Tan (10):
+  net: hns3: add support for configuring interrupt quantity limiting
+  net: hns3: add support for querying maximum value of GL
+  net: hns3: add support for 1us unit GL configuration
+  net: hns3: rename gl_adapt_enable in struct hns3_enet_coalesce
+  net: hns3: add support for dynamic interrupt moderation
+  net: hns3: add ethtool priv-flag for DIM
+  net: hns3: add hns3_state_init() to do state initialization
+  net: hns3: add a check for ethtool priv-flag interface
+  net: hns3: add support for EQ/CQ mode configuration
+  net: hns3: add ethtool priv-flag for EQ/CQ
+
+ drivers/net/ethernet/hisilicon/Kconfig             |   1 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  12 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |   1 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 258 ++++++++++++++++++---
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  31 ++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 185 ++++++++++++++-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |   8 +
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |   8 +
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h   |   8 +
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  |   8 +
+ 10 files changed, 481 insertions(+), 39 deletions(-)
+
+-- 
+2.7.4
+
