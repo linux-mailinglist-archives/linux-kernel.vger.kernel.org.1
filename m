@@ -2,152 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7F72AFC7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE702AFC7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgKLBhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbgKLAbA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:31:00 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A47FC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:31:00 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id a20so3649228ilk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=8l0j+cAspJw3PKNvEwGXKQZgH357sPK1IXSg0Dm5rWM=;
-        b=LNGJWwVJv/+IA3kzIbW9fZVxxRU3l/QIh+VULZZbgiI0DBdOi/8sRaA3pP1V6rSXl4
-         x7epCo6q0RIQza7V/yhUR37RzB+Z0Jtj8mF+Mgw3foZIc29WoH4RyrBlX46WajyP/ptQ
-         pUDCbrrL6sPgMZeAN/TQqnhO2c0+Ar/MjfGls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=8l0j+cAspJw3PKNvEwGXKQZgH357sPK1IXSg0Dm5rWM=;
-        b=dx19CK+ksP9qyMJ+q4kQwsQ3gMzAELazqvFz3XWlACKEDDyBfGsOQ5JKMG83DC0HfV
-         glY9NWQWBSZmtVVwkQjjrMEN3CHM8cG0kxiWI/c9dBno/PwGs8KRxFOlX8+cQIl79zPQ
-         L+BuM2NChqYyOI8BGECUspKbmAPQJYWYCetv70i+extz2fUZJ9FLSzTZtnvj7Mu+i8Vx
-         JuuG+z1RzT3wM1Z1nTzpsfeaFc/VpwCA3+z76GSXx/bWnlEg+0115dotALnKUfVFuN8B
-         5l4DTLgv9WWVVSglGCJxMT/Sm4PDftU5QZdOY4kMID8WSUzkm8xGsacBojWzdo9pa2HH
-         nHHg==
-X-Gm-Message-State: AOAM533ld4f84m74JpgM5wGvCEg6+iEgFJ+x0hrmCBbamS9uyVEq8C9/
-        CmUtisKj6IfLaWp8MkF8vVNGBw==
-X-Google-Smtp-Source: ABdhPJx1a97kaxKxxIObDOxrDXMR9vrr9lZfPgLuYHRngybHUM+LAZuPz2yhltqA1jFrW78j7RVysA==
-X-Received: by 2002:a92:3312:: with SMTP id a18mr21071286ilf.165.1605141059275;
-        Wed, 11 Nov 2020 16:30:59 -0800 (PST)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id m9sm1831941ioc.15.2020.11.11.16.30.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Nov 2020 16:30:58 -0800 (PST)
-Date:   Thu, 12 Nov 2020 00:30:57 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "smayhew@redhat.com" <smayhew@redhat.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
-        "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
-        "bfields@fieldses.org" <bfields@fieldses.org>
-Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
- namespaces
-Message-ID: <20201112003056.GA351@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20201102174737.2740-1-sargun@sargun.me>
- <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
- <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
- <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
- <8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com>
- <20201111185727.GA27945@ircssh-2.c.rugged-nimbus-611.internal>
- <17d0e6c2e30d5b28cc1cb0313822e5ca39a2245c.camel@hammerspace.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <17d0e6c2e30d5b28cc1cb0313822e5ca39a2245c.camel@hammerspace.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1729191AbgKLBhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:37:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728076AbgKLAdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 19:33:35 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3EA4205CB;
+        Thu, 12 Nov 2020 00:33:34 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kd0YP-00026J-9t; Wed, 11 Nov 2020 19:33:33 -0500
+Message-ID: <20201112003244.764326960@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 11 Nov 2020 19:32:44 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 00/17] tracing: Updates for 5.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 08:03:18PM +0000, Trond Myklebust wrote:
-> On Wed, 2020-11-11 at 18:57 +0000, Sargun Dhillon wrote:
-> > On Wed, Nov 11, 2020 at 02:38:11PM +0000, Trond Myklebust wrote:
-> > > On Wed, 2020-11-11 at 11:12 +0000, Sargun Dhillon wrote:
-> > > 
-> > > The current code for setting server->cred was developed
-> > > independently
-> > > of fsopen() (and predates it actually). I'm fine with the change to
-> > > have server->cred be the cred of the user that called fsopen().
-> > > That's
-> > > in line with what we used to do for sys_mount().
-> > > 
-> > Just curious, without FS_USERNS, how were you mounting NFSv4 in an
-> > unprivileged user ns?
-> 
-> The code was originally developed on a 5.1 kernel. So all my testing
-> has been with ordinary sys_mount() calls in a container that had
-> CAP_SYS_ADMIN privileges.
-> 
-> > > However all the other stuff to throw errors when the user namespace
-> > > is
-> > > not init_user_ns introduces massive regressions.
-> > > 
-> > 
-> > I can remove that and respin the patch. How do you feel about that? 
-> > I would 
-> > still like to keep the log lines though because it is a uapi change.
-> > I am 
-> > worried that someone might exercise this path with GSS and allow for
-> > upcalls 
-> > into the main namespaces by accident -- or be confused of why they're
-> > seeing 
-> > upcalls "in a different namespace".
-> > 
-> > Are you okay with picking up ("NFS: NFSv2/NFSv3: Use cred from
-> > fs_context during 
-> > mount") without any changes?
-> 
-> Why do we need the dprintk()s? It seems to me that either they should
-> be reporting something that the user needs to know (in which case they
-> should be real printk()s) or they are telling us something that we
-> should already know. To me they seem to fit more in the latter
-> category.
-> 
-> > 
-> > I can respin ("NFSv4: Refactor NFS to use user namespaces") without:
-> > /*
-> >  * nfs4idmap is not fully isolated by user namespaces. It is
-> > currently
-> >  * only network namespace aware. If upcalls never happen, we do not
-> >  * need to worry as nfs_client instances aren't shared between
-> >  * user namespaces.
-> >  */
-> > if (idmap_userns(server->nfs_client->cl_idmap) != &init_user_ns && 
-> >         !(server->caps & NFS_CAP_UIDGID_NOMAP)) {
-> >         error = -EINVAL;
-> >         errorf(fc, "Mount credentials are from non init user
-> > namespace and ID mapping is enabled. This is not allowed.");
-> >         goto error;
-> > }
-> > 
-> > (and making it so we can call idmap_userns)
-> > 
-> 
-> Yes. That would be acceptable. Again, though, I'd like to see the
-> dprintk()s gone.
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-I can drop the dprintks, but given this is a uapi change, does it make sense to 
-pr_info_once? Especially, because this can have security impact?
+Head SHA1: 58954b3be8b7a8a0ebf1ced6fbbab808e8ccc4b6
+
+
+Alex Shi (1):
+      ftrace: Remove unused varible 'ret'
+
+Lukas Bulwahn (1):
+      MAINTAINERS: assign ./fs/tracefs to TRACING
+
+Qiujun Huang (1):
+      tracing: Fix some typos in comments
+
+Steven Rostedt (VMware) (14):
+      ftrace: Move the recursion testing into global headers
+      ftrace: Add ftrace_test_recursion_trylock() helper function
+      ftrace: Optimize testing what context current is in
+      pstore/ftrace: Add recursion protection to the ftrace callback
+      kprobes/ftrace: Add recursion protection to the ftrace callback
+      livepatch/ftrace: Add recursion protection to the ftrace callback
+      livepatch: Trigger WARNING if livepatch function fails due to recursion
+      perf/ftrace: Add recursion protection to the ftrace callback
+      perf/ftrace: Check for rcu_is_watching() in callback function
+      ftrace: Reverse what the RECURSION flag means in the ftrace_ops
+      ftrace: Add recording of functions that caused recursion
+      fgraph: Make overruns 4 bytes in graph stack structure
+      ftrace: Clean up the recursion code a bit
+      ring-buffer: Add recording of ring buffer recursion into recursed_functions
+
+----
+ Documentation/trace/ftrace-uses.rst   |  84 ++++++++----
+ MAINTAINERS                           |   1 +
+ arch/csky/kernel/probes/ftrace.c      |  12 +-
+ arch/parisc/kernel/ftrace.c           |  16 ++-
+ arch/powerpc/kernel/kprobes-ftrace.c  |  11 +-
+ arch/s390/kernel/ftrace.c             |  16 ++-
+ arch/x86/kernel/kprobes/ftrace.c      |  12 +-
+ fs/pstore/ftrace.c                    |   6 +
+ include/linux/ftrace.h                |  17 +--
+ include/linux/trace_recursion.h       | 232 +++++++++++++++++++++++++++++++++
+ kernel/livepatch/patch.c              |   5 +
+ kernel/trace/Kconfig                  |  39 ++++++
+ kernel/trace/Makefile                 |   1 +
+ kernel/trace/blktrace.c               |   4 +-
+ kernel/trace/bpf_trace.c              |   2 +-
+ kernel/trace/fgraph.c                 |   3 +-
+ kernel/trace/ftrace.c                 |  30 ++---
+ kernel/trace/ring_buffer.c            |  12 +-
+ kernel/trace/trace.c                  |   2 +-
+ kernel/trace/trace.h                  | 177 -------------------------
+ kernel/trace/trace_benchmark.c        |   6 +-
+ kernel/trace/trace_dynevent.c         |   2 +-
+ kernel/trace/trace_dynevent.h         |   6 +-
+ kernel/trace/trace_entries.h          |   6 +-
+ kernel/trace/trace_event_perf.c       |  13 +-
+ kernel/trace/trace_events.c           |   5 +-
+ kernel/trace/trace_events_filter.c    |   2 +-
+ kernel/trace/trace_events_hist.c      |   2 +-
+ kernel/trace/trace_events_synth.c     |   4 +-
+ kernel/trace/trace_export.c           |   2 +-
+ kernel/trace/trace_functions.c        |  14 +-
+ kernel/trace/trace_functions_graph.c  |   2 +-
+ kernel/trace/trace_hwlat.c            |   4 +-
+ kernel/trace/trace_output.c           |   6 +-
+ kernel/trace/trace_output.h           |   1 +
+ kernel/trace/trace_recursion_record.c | 236 ++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_selftest.c         |   7 +-
+ kernel/trace/trace_stack.c            |   1 -
+ kernel/trace/tracing_map.c            |   6 +-
+ kernel/trace/tracing_map.h            |   2 +-
+ 40 files changed, 723 insertions(+), 286 deletions(-)
+ create mode 100644 include/linux/trace_recursion.h
+ create mode 100644 kernel/trace/trace_recursion_record.c
