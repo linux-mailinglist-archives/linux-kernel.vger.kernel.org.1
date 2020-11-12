@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF5A2AFCAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED602AFC68
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgKLBmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728251AbgKLB1s (ORCPT
+        id S1729014AbgKLBg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:36:27 -0500
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:56862 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727954AbgKKXmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:27:48 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08E0C0613D6;
-        Wed, 11 Nov 2020 17:27:46 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id m13so2750053pgl.7;
-        Wed, 11 Nov 2020 17:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=lAFsArA7fE4is9x6CJ3p1673X0PbVTAs5Dj2zRg5Pm4=;
-        b=eto9zKDwyga3/h2Txgxeooyil+/9etbAU6Ynpn74oWO8s2SqlkQ+pAVnlZ1k3yTPOv
-         X3JxIVsS7XMWUHJOatBVJc70J71YTplofTMP6HLAqAZ2s55f3d5JilQK7/EVWrwd2BgM
-         MBcPYQYO0gCS7Hc/ZFUDE1hKuPnSevZ2szz74CHxnXgXsLw40k2zTf2iO90Eq1j69sQD
-         CXHGGA/V9i4lZabVwchE8U0AalmqI3+hFpIegg+AaTjEnkrwTOnPw1xjGv7cpMMY85rS
-         8fHb6GsqCy7KIiD2nbIyuOSGVgWn/TLNvD+dmQj+XbyK4urC4pHCNfmgWKf/bQt0IjAd
-         XBNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=lAFsArA7fE4is9x6CJ3p1673X0PbVTAs5Dj2zRg5Pm4=;
-        b=dnVAVmK6D1Uyb/jIbDCTx+sM5FuI3WtxsS/BgS2/hNKAASBrfUMwJ4gkzFgvNfv/an
-         h3BVrieyC+W/Lqzx2J6q4r4aL9xpy5reKKTrZ7a7pil1BqgS1nlYfxTei0CI5IpwQ/61
-         Bh2dDeust+wVBP3dp0PUDj8nE7vcEq/oIe0XbVwLeQl5L2wUjO1VMJ7RcFTm0IMQdK+F
-         VB4B8/aTUWbkCa0ZzfTk+xcmLsPccRF1raVtj0F1fdvaOwdA/Buj/oDpyIQJmF2G+n1z
-         MhMBEJQcjMIo/aqVhdKNQoqWa55nTpZIq3krIJVjYFwz7y3iKe5V4ECgp2pG1JlqaZ6o
-         SQkw==
-X-Gm-Message-State: AOAM531FqaxJrYGXM04+aK1ghhyn9c7syldKaBNcJY4eMGFja6ulCrrl
-        qKCOpzoGxb7p4Z8P3wjnhlvmjtwXAKc=
-X-Google-Smtp-Source: ABdhPJz7aTCOGTeqSG5vlpQfA+LDp6YM615OAMbuqOLp1J8N4w03FFJCRdPj/JGkqmJGZG+0JX/uUw==
-X-Received: by 2002:aa7:824d:0:b029:18b:ad77:1a2b with SMTP id e13-20020aa7824d0000b029018bad771a2bmr25914111pfn.25.1605144465981;
-        Wed, 11 Nov 2020 17:27:45 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id h16sm3697694pjz.10.2020.11.11.17.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 17:27:45 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:27:42 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Anatolij Gustschin <agust@denx.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: ads7846 - fix unaligned access on 7845
-Message-ID: <20201112012742.GA3608551@dtor-ws>
+        Wed, 11 Nov 2020 18:42:19 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 0ABNg6XI010993; Thu, 12 Nov 2020 08:42:06 +0900
+X-Iguazu-Qid: 34treOZZE3LXD5VUw6
+X-Iguazu-QSIG: v=2; s=0; t=1605138126; q=34treOZZE3LXD5VUw6; m=8iSl3CzsGk7z8gybTMgzP7sPlqhzerHJH3xjuyEO0Po=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1512) id 0ABNg5RC009502;
+        Thu, 12 Nov 2020 08:42:05 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 0ABNg5Dw002645;
+        Thu, 12 Nov 2020 08:42:05 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 0ABNg48Q007923;
+        Thu, 12 Nov 2020 08:42:04 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v2 0/4] gpio: visoconti: Add Toshiba Visconti GPIO support
+Date:   Thu, 12 Nov 2020 17:40:53 +0900
+X-TSB-HOP: ON
+Message-Id: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-req->sample[1] is not naturally aligned at word boundary, and therefore
-we should use get_unaligned_be16() when accessing it.
+Hi,
 
-Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 controller support")
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
+This series is the GPIO driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files, and updates to DT files.
 
-Not tested on hardware, so if somebody has the controller and can verify
-that would be great.
+Best regards,
+  Nobuhiro
 
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
 
- drivers/input/touchscreen/ads7846.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller:
+  v1 -> v2: Fix typo.
 
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index 95e89f675ad5..35d14bc44aff 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -33,6 +33,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/module.h>
- #include <asm/irq.h>
-+#include <asm/unaligned.h>
- 
- /*
-  * This code has been heavily tested on a Nokia 770, and lightly
-@@ -443,7 +444,7 @@ static int ads7845_read12_ser(struct device *dev, unsigned command)
- 
- 	if (status == 0) {
- 		/* BE12 value, then padding */
--		status = be16_to_cpu(*((u16 *)&req->sample[1]));
-+		status = get_unaligned_be16(&req->sample[1]);
- 		status = status >> 3;
- 		status &= 0x0fff;
- 	}
+gpio: visoconti: Add Toshiba Visconti GPIO support:
+  v1 -> v2: No update.
+
+MAINTAINERS: Add entries for Toshiba Visconti GPIO controller:
+  v1 -> v2: No update.
+
+arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver:
+  v1 -> v2: No update.
+
+Nobuhiro Iwamatsu (4):
+  dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller
+  gpio: visoconti: Add Toshiba Visconti GPIO support
+  MAINTAINERS: Add entries for Toshiba Visconti GPIO controller
+  arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver
+
+ .../bindings/gpio/toshiba,gpio-visconti.yaml  |  85 ++++++
+ MAINTAINERS                                   |   2 +
+ .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     |   4 +
+ arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     |  27 ++
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-visconti.c                  | 287 ++++++++++++++++++
+ drivers/pinctrl/visconti/pinctrl-common.c     |  23 ++
+ 8 files changed, 437 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+ create mode 100644 drivers/gpio/gpio-visconti.c
+
 -- 
-2.29.2.222.g5d2a92d10f8-goog
+2.29.2
 
-
--- 
-Dmitry
