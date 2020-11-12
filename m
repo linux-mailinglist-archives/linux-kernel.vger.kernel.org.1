@@ -2,120 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EF52B06F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FBA2B06FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgKLNte convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:49:34 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54452 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727264AbgKLNtc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:49:32 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-160-14xZjbThOIiOpSvgo6sl3w-1; Thu, 12 Nov 2020 13:49:27 +0000
-X-MC-Unique: 14xZjbThOIiOpSvgo6sl3w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 12 Nov 2020 13:49:27 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 12 Nov 2020 13:49:27 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Rob Landley' <rob@landley.net>,
-        kernel test robot <oliver.sang@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        0day robot <lkp@intel.com>,
-        "lkp@lists.01.org" <lkp@lists.01.org>
-Subject: RE: ac0e958a00:
- Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:run_init_process
-Thread-Topic: ac0e958a00:
- Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:run_init_process
-Thread-Index: AQHWuPBHLSpk3pJOe0+t4d8Pl80aaanEgitA
-Date:   Thu, 12 Nov 2020 13:49:27 +0000
-Message-ID: <2bd72a2f0af948d29eb201e3072e514e@AcuMS.aculab.com>
-References: <20201112071145.GC17067@xsang-OptiPlex-9020>
- <87765a0e-3a49-d437-4010-4848b8ece199@landley.net>
-In-Reply-To: <87765a0e-3a49-d437-4010-4848b8ece199@landley.net>
-Accept-Language: en-GB, en-US
+        id S1727899AbgKLNuP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:50:15 -0500
+Received: from smtp.asem.it ([151.1.184.197]:52541 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728398AbgKLNuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:50:13 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000603503.MSG 
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:50:07 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 14:50:05 +0100
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Thu, 12 Nov 2020 14:50:05 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4] Documentation: ACPI: explain how to use
+ gpio-line-names
+Thread-Topic: [PATCH v4] Documentation: ACPI: explain how to use
+ gpio-line-names
+Thread-Index: AQHWuPXuI/5ytptgx0ikZ9J5iah8/qnEcCQAgAATJfA=
+Date:   Thu, 12 Nov 2020 13:50:05 +0000
+Message-ID: <0ffeff9c510c40198ea0384a6d34323b@asem.it>
+References: <20201112131545.62628-1-f.suligoi@asem.it>
+ <20201112134042.GB4077@smile.fi.intel.com>
+In-Reply-To: <20201112134042.GB4077@smile.fi.intel.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+x-originating-ip: [172.16.17.208]
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020F.5FAD3D8E.00F9,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Landley
-> Sent: 12 November 2020 12:46
-> 
-> On 11/12/20 1:11 AM, kernel test robot wrote:
+HI Andy,
+
+> On Thu, Nov 12, 2020 at 02:15:45PM +0100, Flavio Suligoi wrote:
+> > The "gpio-line-names" declaration is not fully
+> > documented, so can be useful to add some important
+> > information and one more example.
 > >
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
+> > This commit also fixes a trivial spelling mistake.
 > 
-> Blah, switched from strlcpy to sprintf due to the lack of spaces and didn't
-> adjust the size.
+> For the future contributions:
 > 
-> (And yes, the compiler's lifetime analysis should free the stack space before
-> the tail call, and I'd assume exec restarts the stack anyway.)
+> No need to resend each time you got a tag. Maintainers usually take them
+> all at
+> once when applying (esp. taking into account plenty of scripts which help
+> to do
+> this automatically).
+
+ok
+
 > 
-> Second-attempt-by: Rob Landley <rob@landley.net>
-> ---
+> Also, no need to resend so often. Give a chance to others to review
+> (minimum
+> resend time is 24h)
+
+ok, right!
+
 > 
->  init/main.c |   15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+> --
+> With Best Regards,
+> Andy Shevchenko
 > 
-> diff --git a/init/main.c b/init/main.c
-> index 130376ec10ba..e92320816ef8 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1328,15 +1328,16 @@ static void __init do_pre_smp_initcalls(void)
->  static int run_init_process(const char *init_filename)
->  {
->  	const char *const *p;
-> +	char buf[512], *s = buf;
-> 
->  	argv_init[0] = init_filename;
-> -	pr_info("Run %s as init process\n", init_filename);
-> -	pr_debug("  with arguments:\n");
-> -	for (p = argv_init; *p; p++)
-> -		pr_debug("    %s\n", *p);
-> -	pr_debug("  with environment:\n");
-> -	for (p = envp_init; *p; p++)
-> -		pr_debug("    %s\n", *p);
-> +
-> +	for (p = (void *)envp_init; *p; p++)
-> +		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
-> +	for (p = (void *)argv_init; *p; p++)
-> +		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
-> +	pr_info("Run init: %s\n", buf);
-> +
 
-Why not use scnprintf() as:
-	len += scnprintf(buf + len, 256 - len, " %s", *p);
-
-or even:
-	s = buf + sizeof buf;
-	len = sizeof buf;
-	...
-		len -= scnprintf(s - len, len, " %s", *p);
-
-and remove the " " before the %s in the final pr_info().
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Regards,
+Flavio
