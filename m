@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA972B10AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EEE2B10A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgKLVur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        id S1727304AbgKLVui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727175AbgKLVuq (ORCPT
+        with ESMTP id S1727175AbgKLVuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:50:46 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083E7C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:50:28 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id 63so3624785qva.7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:50:27 -0800 (PST)
+        Thu, 12 Nov 2020 16:50:37 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4540AC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:50:37 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id q5so6966545qkc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:50:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=t9uXZCibzviLXlkgFY4GlBUcWyC+ILxJ08Y+bCgohJU=;
-        b=VyGxocSmPg4RrrGNwXgWztdjbpB73rGxNVKmW+2IY6Egk1yzOg40htvWXAB4naQnu/
-         l2n0HX7ghW6xjkoVRopg/KjX69zGaoEDNm5eY+7Ma6iZ+D3vkL17ZcTECxqcZoZxp+Uz
-         iE0631W6P6SaIbr7TNMPqRlhGaAAT96lLMXJifjjHbw0WhP2wx7QhuBT/YPfL0XSN1LV
-         RasrnAFj54wOXI7wTaxrs7CMU9/KyrMO4CGnJWlcywhxFUZo0RwTSxVt+HL45SiyM0P2
-         dwb79kAqyef1KwfAhOGkDC9i2ZhL9Ca6sX3WBr5pEp0cpmYgp1arsy1yvLpnftjEOIX5
-         7CvA==
+        bh=z3CD5S2CALksgVm8ns6TDId0Or2oDJ7UUxweYeXuETU=;
+        b=U390PW+SMYc2n3VhGqRdsw6ONn1j5/PFCvEM+sQVMn87P/jOlwMimILpr8rOajdlyi
+         8ZHLfqbRDeyFh6wvw+1TeVFDhfH2xbTfvCtZLSIIR5MnX//LoWO3SShkhTCUoBDKAXhN
+         0v2Jdppw/64njlOh9pBLHiIpRQEWmT7nsTQlJ7trrTh43WqRbpWjJZOAxQbv51b6G8nw
+         sDMGA3HWPsVEMphn7HzKe25+RJfep7tnTQehFspm0Jv44wIP9rPdq/Zd7Ua+lIiYFPbt
+         6NQNtxAHfbzZ2imANyZP1v3HOmKbb9OQfImCYvoi4V12Wd8TziesokuvAn5GbLw4pm2g
+         c7yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t9uXZCibzviLXlkgFY4GlBUcWyC+ILxJ08Y+bCgohJU=;
-        b=X4urTyBoYAcZa4Jk5hif7F57xmsU4HMLPHUMyb6IRD+eERNIDgsdUeZEOMR6dMWRer
-         GSpoCh9BeM8vKVmsWF/e7r8DnRyxUVjauHDZg2Zi0rM5DgeTR2zI1MDrkPZ7vEns+LO7
-         I+b4ljIPCajYK5yYCj0j4tC/1V30wCLZaE7IYwb7IMDrwiy5naoNAP+4va1jKIqZhk1M
-         Dx18ekFNjHr9QyGA1iFzuCerGPnef2dHBoghVesrNaJSM21SPa8D/HA22+JWQOKzc/hL
-         6+sy/KWT1INFwUD++GTPEGYqZglCKXnDLdncBL8khAwwRTHwbpfDymeb4lJDDlQtKiXA
-         8UuQ==
-X-Gm-Message-State: AOAM533hreDwd0A2QpCWi2KsaHaFFlqEhWUUA4M4vVAoqYxISvENoYCG
-        jOpl8dXm/CeePWG0NoLwxfY=
-X-Google-Smtp-Source: ABdhPJwwjeIGSpEqK0ybnz7jrBCdWnJ4NhCVGZAglGDWhPcSFc0w3wl6TadNymaYztLPsibE5s/bSQ==
-X-Received: by 2002:a0c:b65b:: with SMTP id q27mr1836700qvf.8.1605217827183;
-        Thu, 12 Nov 2020 13:50:27 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id l3sm6045092qkj.114.2020.11.12.13.50.26
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=z3CD5S2CALksgVm8ns6TDId0Or2oDJ7UUxweYeXuETU=;
+        b=IzErNDyWUCWxLmGIEOHKpjqr7mNjRVmN/l3fOHNUvnz2RT4oJrLYX4L4jUSkhgDWtH
+         p8XFLBGDWdR/VhG0aNSQzJs5rQt+VSyuHzq6QRC7fyp0yOSyJjQpD3CgwXDcIizk6bF9
+         iThoqBfcJIb3ePEIFmAK7D3Ip7ox4W2WFOdO39qtyMJ1X4B2X7qLPJGUAvLeG/37AKdE
+         W608B+HSlZ5gN/6oi5RXYWzefy6cdZSAJhJSV3HGNmmYP08cGdUU/rEbL0bGITHKy/Md
+         Y5+c1xIWus6mcB88Ct/rY1cUUvy+CkR0Q+Nf5GVfns9g3NDFmNueynS8G24YOu4W9E8H
+         /kCQ==
+X-Gm-Message-State: AOAM533aDXEGRqBQUzRqKMxG4rqjmXkfP92IJqXbvnTlj4C81PT7mQtJ
+        Vp0g8b/Gg5gR9c0bGVCVHfI=
+X-Google-Smtp-Source: ABdhPJzndxGbL4rY+Uq8CS5dGOM9/e02yEyMIYyApn15onZ5PbPo/rpJ/ocftWBNZi52TI1ukQ4VNQ==
+X-Received: by 2002:a37:8c43:: with SMTP id o64mr2049159qkd.176.1605217836431;
+        Thu, 12 Nov 2020 13:50:36 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c79sm5529081qke.69.2020.11.12.13.50.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 13:50:26 -0800 (PST)
-Date:   Thu, 12 Nov 2020 14:50:25 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
+        Thu, 12 Nov 2020 13:50:35 -0800 (PST)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 12 Nov 2020 16:50:33 -0500
 To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>, kernel@collabora.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] arm: lib: xor-neon: move pragma options to
- makefile
-Message-ID: <20201112215025.GA55620@ubuntu-m3-large-x86>
-References: <20201112212457.2042105-1-adrian.ratiu@collabora.com>
- <20201112212457.2042105-3-adrian.ratiu@collabora.com>
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+Message-ID: <20201112215033.GA438824@rani.riverdale.lan>
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com>
+ <20201106101419.GB3811063@ubuntu-m3-large-x86>
+ <87wnyyvh56.fsf@collabora.com>
+ <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+ <871rh2i9xg.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+ <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
+ <87sg9ghil5.fsf@collabora.com>
+ <CAKwvOd=QrU6rCQ4_Ji=XsskPovOSXpk0NkjTqVjLijw1-CZ17Q@mail.gmail.com>
+ <87lff8gesg.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201112212457.2042105-3-adrian.ratiu@collabora.com>
+In-Reply-To: <87lff8gesg.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:24:57PM +0200, Adrian Ratiu wrote:
-> Using a pragma like GCC optimize is a bad idea because it tags
-> all functions with an __attribute__((optimize)) which replaces
-> optimization options rather than appending so could result in
-> dropping important flags. Not recommended for production use.
+On Wed, Nov 11, 2020 at 04:15:59PM +0200, Adrian Ratiu wrote:
+> On Tue, 10 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
+> wrote:
+> > 
+> > Yes, though additionally Arvind points out that this code is 
+> > kind of curious if there was overlap; maybe the parameters 
+> > should just be restrict-qualified. 
+> >
 > 
-> Because these options should always be enabled for this file,
-> it's better to set them via command line. tree-vectorize is on
-> by default in Clang, but it doesn't hurt to make it explicit.
+> For now I think I'll just re-send the GCC changes and leave the 
+> Clang optimization as is, until we better understand what's 
+> happening and what's the best way to enable it.
 > 
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-
-> ---
->  arch/arm/lib/Makefile   |  2 +-
->  arch/arm/lib/xor-neon.c | 10 ----------
->  2 files changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-> index 6d2ba454f25b..12d31d1a7630 100644
-> --- a/arch/arm/lib/Makefile
-> +++ b/arch/arm/lib/Makefile
-> @@ -45,6 +45,6 @@ $(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
->  
->  ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
->    NEON_FLAGS			:= -march=armv7-a -mfloat-abi=softfp -mfpu=neon
-> -  CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
-> +  CFLAGS_xor-neon.o		+= $(NEON_FLAGS) -ftree-vectorize -Wno-unused-variable
->    obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
->  endif
-> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-> index e1e76186ec23..62b493e386c4 100644
-> --- a/arch/arm/lib/xor-neon.c
-> +++ b/arch/arm/lib/xor-neon.c
-> @@ -14,16 +14,6 @@ MODULE_LICENSE("GPL");
->  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
->  #endif
->  
-> -/*
-> - * Pull in the reference implementations while instructing GCC (through
-> - * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
-> - * NEON instructions.
-> - */
-> -#ifdef CONFIG_CC_IS_GCC
-> -#pragma GCC optimize "tree-vectorize"
-> -#endif
-> -
-> -#pragma GCC diagnostic ignored "-Wunused-variable"
->  #include <asm-generic/xor.h>
->  
->  struct xor_block_template const xor_block_neon_inner = {
-> -- 
-> 2.29.2
-> 
+Note that the __restrict__ keywords also help GCC -- it saves it from
+having to emit the non-vectorized version and switch between the two at
+runtime. If we can verify it's safe, it's a good thing to add all
+around.
