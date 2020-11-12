@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28792AFF0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC50D2AFF08
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgKLFde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:33:34 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36022 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728766AbgKLBtt (ORCPT
+        id S1728493AbgKLFdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:33:47 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57356 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728877AbgKLBtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:49:49 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AC1ndXb058971;
+        Wed, 11 Nov 2020 20:49:53 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AC1nddO087198;
         Wed, 11 Nov 2020 19:49:39 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1605145779;
-        bh=bia3k49as6I8p93U5wZIBsi1zltS0lnhC5Rl7qRFt+w=;
+        bh=kzZUD0v8POHeVdqHJO6ZQf/TtjgIfWTQcVpUSFpITao=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=K0nJerbld4yAOB/wZ81vRkpSptM65FmqKiOXyttz7OnOnWnGUyJw666/i5RevGqyh
-         qg7FFk2JviNfvFIu20nAC38D5bstzyHgCWWXCMMlKYNe4GqlMbHbWWDJmmBCH4xMER
-         nnBWFglutmCAvXhmLXx/nlaCfJpHy7o5/VT+CcVI=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AC1ndNO095836
+        b=MqJf54BL8GtbBOE4aU+eGiQq4vr5aotY3l5cpMwYhmQwhyf2EFC+CD/sJt9Ni9Qvy
+         FMyuMMtIJmqw9WihIJBJHQNEu2ySAp+Wq7y579vkENyun+MIyYl9hLHND0cuvHRr3R
+         HO4YDeQrXubM6i2K5RXlRm6vaLsYG7luTgw619+Y=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AC1ndfP033101
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
         Wed, 11 Nov 2020 19:49:39 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
  Nov 2020 19:49:39 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
  Frontend Transport; Wed, 11 Nov 2020 19:49:39 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AC1ndrV120371;
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AC1ndbi114800;
         Wed, 11 Nov 2020 19:49:39 -0600
 From:   Nishanth Menon <nm@ti.com>
 To:     Roger Quadros <rogerq@ti.com>, Keerthy <j-keerthy@ti.com>,
@@ -48,9 +48,9 @@ To:     Roger Quadros <rogerq@ti.com>, Keerthy <j-keerthy@ti.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Nishanth Menon <nm@ti.com>
-Subject: [PATCH V2 4/5] arm64: dts: ti: k3-am654-base-board: Fix up un-necessary status set to "okay" for USB
-Date:   Wed, 11 Nov 2020 19:49:28 -0600
-Message-ID: <20201112014929.25227-5-nm@ti.com>
+Subject: [PATCH V2 5/5] arm64: dts: ti: am65/j721e/j7200: Mark firmware used uart as "reserved"
+Date:   Wed, 11 Nov 2020 19:49:29 -0600
+Message-ID: <20201112014929.25227-6-nm@ti.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201112014929.25227-1-nm@ti.com>
 References: <20201112014929.25227-1-nm@ti.com>
@@ -62,40 +62,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default state of a device tree node is "okay". There is no specific
-use of explicitly adding status = "okay" in the board dts.
+Follow the device tree standards that states to set the
+status="reserved" if an device is operational, but used by a non-linux
+firmware in the system.
 
-Fixes: 7e7e7dd51d06 ("arm64: dts: ti: k3-am654-base-board: enable USB1")
 Signed-off-by: Nishanth Menon <nm@ti.com>
-Cc: Roger Quadros <rogerq@ti.com>
 ---
-Changes since v1:
-- no change.
+- New patch introduced with V2 based on feedback on v1
 
-v1: https://lore.kernel.org/linux-arm-kernel/20201104224356.18040-5-nm@ti.com/
-
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts        | 2 +-
+ arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 4 ++--
+ arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-index 199c4d4e7539..744efcbb4f7f 100644
+index 744efcbb4f7f..b5dba13556f8 100644
 --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
 +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-@@ -325,14 +325,6 @@ &sdhci1 {
- 	disable-wp;
+@@ -211,7 +211,7 @@ AM65X_IOPAD(0x0010, PIN_INPUT, 0) /* (D21) ECAP0_IN_APWM_OUT */
+ 
+ &wkup_uart0 {
+ 	/* Wakeup UART is used by System firmware */
+-	status = "disabled";
++	status = "reserved";
  };
  
--&dwc3_1 {
--	status = "okay";
--};
--
--&usb1_phy {
--	status = "okay";
--};
--
- &usb1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&usb1_pins_default>;
+ &main_uart0 {
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+index ef03e7636b66..1d08434229c7 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+@@ -79,7 +79,7 @@ J721E_IOPAD(0x120, PIN_OUTPUT, 0) /* (T4) USB0_DRVVBUS */
+ 
+ &wkup_uart0 {
+ 	/* Wakeup UART is used by System firmware */
+-	status = "disabled";
++	status = "reserved";
+ };
+ 
+ &main_uart0 {
+@@ -89,7 +89,7 @@ &main_uart0 {
+ 
+ &main_uart2 {
+ 	/* MAIN UART 2 is used by R5F firmware */
+-	status = "disabled";
++	status = "reserved";
+ };
+ 
+ &main_uart3 {
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+index 9416528caa8a..5754892f8501 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+@@ -221,7 +221,7 @@ J721E_WKUP_IOPAD(0x0088, PIN_INPUT, 0) /* MCU_MDIO0_MDIO */
+ 
+ &wkup_uart0 {
+ 	/* Wakeup UART is used by System firmware */
+-	status = "disabled";
++	status = "reserved";
+ };
+ 
+ &main_uart0 {
 -- 
 2.29.2
 
