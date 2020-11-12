@@ -2,358 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CBF2AFF72
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9F32AFF47
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgKLFrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:47:23 -0500
-Received: from mga14.intel.com ([192.55.52.115]:12599 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727227AbgKLFrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 00:47:08 -0500
-IronPort-SDR: 0QL1Ii9TnYi91jypwF8bXCOl/F2BtdrNvBFawYdF5L1yNaFedr25bIJw7TtPXBS1PbRhaEqbWf
- vQec3nuMi8VA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="169477703"
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="169477703"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 21:47:08 -0800
-IronPort-SDR: optdodROWtw9s4/AyVTNVp5CV1oxuwptbhmIGZJ+dK8QbzJTFUrkAlkeYVmZHJ22N4Z/YkoJ2W
- TuHPBq3nJWeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="328368037"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by orsmga006.jf.intel.com with ESMTP; 11 Nov 2020 21:47:05 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v13 6/6] memory: dfl-emif: add the DFL EMIF private feature driver
-Date:   Thu, 12 Nov 2020 13:42:39 +0800
-Message-Id: <1605159759-3439-7-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605159759-3439-1-git-send-email-yilun.xu@intel.com>
-References: <1605159759-3439-1-git-send-email-yilun.xu@intel.com>
+        id S1726020AbgKLFp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgKLFoy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 00:44:54 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 21:44:53 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id q10so3508396pfn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 21:44:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Wrc8fiOuZuXNhL9f/svgjNc/c8x+1+TBbfywF036g8=;
+        b=MQQqnLvBftHCd1FuGxyTbfHb860FMPoBMVR7ahUHQ6DoMzCZaEHvpZeN9naV/pNTPH
+         CFTIynWOxYXM/u33qSJktyfSyXPW5Oa1YazC9X8trfncnfskLZWO0UTTHUFTYBsgsUdb
+         5f5Cf9NyKGSgrLWHNSA7Vikldysgyna9lMTZR87mRxbQrqir9F5aIDJI/Ot5wcJ5bIQI
+         Q3gkLhhKech6ErlAwks6gS7xMG2r/EHQdGCzFIvOx4CHqy1uViG71r7LGc+L1klxxLdf
+         lc/u4616rx+YQawZro2amrTZkOEk+1l819822V/cCMtiESNNpcKofhwEY+nL8wkgVXSd
+         1VqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Wrc8fiOuZuXNhL9f/svgjNc/c8x+1+TBbfywF036g8=;
+        b=kldrrd7lKBQsocHGQm/VT5t6R58FomPeM4Hkg1zpSQBD9h6nxiS6/1hs6qRiHVqEfL
+         hk1YfsMEbf4VsPVgH24CK1JOZ6Vfk1JD26mASf4x2RJAIB8OAOfiNmiXsmYfG2RtGqyg
+         WTeh/qCNEKhhklknJtkOiBGEtdYcULvN4nucDk1jtkuCcGlRin2YbDhADx7xN/GLiHV/
+         cm2N04cUyCd1hJu5sh0qGT/Uxk3YUM77egSDbtfqhwxSEHcRBWi+qT1nYoZtrkCERMGL
+         Ge9pBWM1R9QscEfe0rvu1g3UoF5J26s+qlyXPIxIz8YSYpvvZcoN+hYNIkIVd3bQkOYh
+         GTew==
+X-Gm-Message-State: AOAM531d94q9AbfV1Uu6ZOQxutBEWZnZvJ/IEQl0ELkiVIrdqoUCuQfQ
+        AZ5YYd4lbmKiUl/Gir6/XX0=
+X-Google-Smtp-Source: ABdhPJxa9te4lf7Pd/y3s50Z5+lm5obDt0AnqwGi0wBM52hGt6QYBLxTvwH/7tx4/0dK9DO+9Uh36g==
+X-Received: by 2002:a62:19c6:0:b029:18b:5c6a:2ae6 with SMTP id 189-20020a6219c60000b029018b5c6a2ae6mr26055115pfz.14.1605159893469;
+        Wed, 11 Nov 2020 21:44:53 -0800 (PST)
+Received: from ubuntu (42-73-56-209.emome-ip.hinet.net. [42.73.56.209])
+        by smtp.gmail.com with ESMTPSA id e8sm4622027pjr.30.2020.11.11.21.44.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 21:44:52 -0800 (PST)
+Date:   Thu, 12 Nov 2020 13:44:45 +0800
+From:   Yun Hsiang <hsiang023167@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, qais.yousef@arm.com,
+        patrick.bellasi@matbug.net, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201112054445.GA1257287@ubuntu>
+References: <20201103023756.1012088-1-hsiang023167@gmail.com>
+ <20201110122108.GG2594@hirez.programming.kicks-ass.net>
+ <f3b59aad-3d5d-039b-205d-024308b609a1@arm.com>
+ <20201111180441.GJ2628@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111180441.GJ2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is for the EMIF private feature implemented under FPGA
-Device Feature List (DFL) framework. It is used to expose memory
-interface status information as well as memory clearing control.
+On Wed, Nov 11, 2020 at 07:04:41PM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 11, 2020 at 06:41:07PM +0100, Dietmar Eggemann wrote:
+> > diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/types.h
+> > index c852153ddb0d..b9165f17dddc 100644
+> > --- a/include/uapi/linux/sched/types.h
+> > +++ b/include/uapi/linux/sched/types.h
+> > @@ -115,8 +115,8 @@ struct sched_attr {
+> >  	__u64 sched_period;
+> >  
+> >  	/* Utilization hints */
+> > -	__u32 sched_util_min;
+> > -	__u32 sched_util_max;
+> > +	__s32 sched_util_min;
+> > +	__s32 sched_util_max;
+> 
+> So that's UAPI, not sure we can change the type here.
 
-The purpose of memory clearing block is to zero out all private memory
-when FPGA is to be reprogrammed. This gives users a reliable method to
-prevent potential data leakage.
++1
+I am also concerned about changing UAPI.
+But if we can chage sched_util_{min/max} to __s32, use -1 to reset is better than
+adding flags.
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
----
-v2: Adjust the position of this driver in Kconfig.
-    Improves the name of the Kconfig option.
-    Change the include dfl-bus.h to dfl.h, cause the previous patchset
-     renames the file.
-    Some minor fixes and comment improvement.
-v3: Adjust the position of the driver in Makefile.
-v9: Add static prefix for emif attributes macro.
-    Update the kernel version of the sysfs interfaces in Doc.
-v10: Rebase due to the dfl head file moves to include/linux.
-v11: Use sysfs_emit instead of sprintf.
-     Rebase to rebase to 5.10-rc1.
-v12: no change.
-v13: no change.
----
- .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
- drivers/memory/Kconfig                             |   9 +
- drivers/memory/Makefile                            |   2 +
- drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
- 4 files changed, 243 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
- create mode 100644 drivers/memory/dfl-emif.c
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-new file mode 100644
-index 0000000..1ae8ebd
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-@@ -0,0 +1,25 @@
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
-+Date:		Oct 2020
-+KernelVersion:	5.11
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Read-only. It indicates if the calibration failed on this
-+		memory interface. "1" for calibration failure, "0" for OK.
-+		Format: %u
-+
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_init_done
-+Date:		Oct 2020
-+KernelVersion:	5.11
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Read-only. It indicates if the initialization completed on
-+		this memory interface. "1" for initialization complete, "0"
-+		for not yet.
-+		Format: %u
-+
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_clear
-+Date:		Oct 2020
-+KernelVersion:	5.11
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Write-only. Writing "1" to this file will zero out all memory
-+		data in this memory interface. Writing of other values is
-+		invalid.
-+		Format: %u
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 00e013b..2495bc4 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -137,6 +137,15 @@ config TI_EMIF_SRAM
- 	  sequence so this driver provides several relocatable PM functions
- 	  for the SoC PM code to use.
- 
-+config FPGA_DFL_EMIF
-+	tristate "FPGA DFL EMIF Driver"
-+	depends on FPGA_DFL && HAS_IOMEM
-+	help
-+	  This driver is for the EMIF private feature implemented under
-+	  FPGA Device Feature List (DFL) framework. It is used to expose
-+	  memory interface status information as well as memory clearing
-+	  control.
-+
- config MVEBU_DEVBUS
- 	bool "Marvell EBU Device Bus Controller"
- 	default y if PLAT_ORION
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index e71cf7b..bc7663e 100644
---- a/drivers/memory/Makefile
-+++ b/drivers/memory/Makefile
-@@ -28,6 +28,8 @@ obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
- obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
- obj-$(CONFIG_TEGRA_MC)		+= tegra/
- obj-$(CONFIG_TI_EMIF_SRAM)	+= ti-emif-sram.o
-+obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
-+
- ti-emif-sram-objs		:= ti-emif-pm.o ti-emif-sram-pm.o
- 
- AFLAGS_ti-emif-sram-pm.o	:=-Wa,-march=armv7-a
-diff --git a/drivers/memory/dfl-emif.c b/drivers/memory/dfl-emif.c
-new file mode 100644
-index 0000000..3f71981
---- /dev/null
-+++ b/drivers/memory/dfl-emif.c
-@@ -0,0 +1,207 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * DFL device driver for EMIF private feature
-+ *
-+ * Copyright (C) 2020 Intel Corporation, Inc.
-+ *
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/dfl.h>
-+#include <linux/errno.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+#define FME_FEATURE_ID_EMIF		0x9
-+
-+#define EMIF_STAT			0x8
-+#define EMIF_STAT_INIT_DONE_SFT		0
-+#define EMIF_STAT_CALC_FAIL_SFT		8
-+#define EMIF_STAT_CLEAR_BUSY_SFT	16
-+#define EMIF_CTRL			0x10
-+#define EMIF_CTRL_CLEAR_EN_SFT		0
-+#define EMIF_CTRL_CLEAR_EN_MSK		GENMASK_ULL(3, 0)
-+
-+#define EMIF_POLL_INVL			10000 /* us */
-+#define EMIF_POLL_TIMEOUT		5000000 /* us */
-+
-+struct dfl_emif {
-+	struct device *dev;
-+	void __iomem *base;
-+	spinlock_t lock;	/* Serialises access to EMIF_CTRL reg */
-+};
-+
-+struct emif_attr {
-+	struct device_attribute attr;
-+	u32 shift;
-+	u32 index;
-+};
-+
-+#define to_emif_attr(dev_attr) \
-+	container_of(dev_attr, struct emif_attr, attr)
-+
-+static ssize_t emif_state_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	struct emif_attr *eattr = to_emif_attr(attr);
-+	struct dfl_emif *de = dev_get_drvdata(dev);
-+	u64 val;
-+
-+	val = readq(de->base + EMIF_STAT);
-+
-+	return sysfs_emit(buf, "%u\n",
-+			  !!(val & BIT_ULL(eattr->shift + eattr->index)));
-+}
-+
-+static ssize_t emif_clear_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
-+{
-+	struct emif_attr *eattr = to_emif_attr(attr);
-+	struct dfl_emif *de = dev_get_drvdata(dev);
-+	u64 clear_busy_msk, clear_en_msk, val;
-+	void __iomem *base = de->base;
-+
-+	if (!sysfs_streq(buf, "1"))
-+		return -EINVAL;
-+
-+	clear_busy_msk = BIT_ULL(EMIF_STAT_CLEAR_BUSY_SFT + eattr->index);
-+	clear_en_msk = BIT_ULL(EMIF_CTRL_CLEAR_EN_SFT + eattr->index);
-+
-+	spin_lock(&de->lock);
-+	/* The CLEAR_EN field is WO, but other fields are RW */
-+	val = readq(base + EMIF_CTRL);
-+	val &= ~EMIF_CTRL_CLEAR_EN_MSK;
-+	val |= clear_en_msk;
-+	writeq(val, base + EMIF_CTRL);
-+	spin_unlock(&de->lock);
-+
-+	if (readq_poll_timeout(base + EMIF_STAT, val,
-+			       !(val & clear_busy_msk),
-+			       EMIF_POLL_INVL, EMIF_POLL_TIMEOUT)) {
-+		dev_err(de->dev, "timeout, fail to clear\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return count;
-+}
-+
-+#define emif_state_attr(_name, _shift, _index)				\
-+	static struct emif_attr emif_attr_##inf##_index##_##_name =	\
-+		{ .attr = __ATTR(inf##_index##_##_name, 0444,		\
-+				 emif_state_show, NULL),		\
-+		  .shift = (_shift), .index = (_index) }
-+
-+#define emif_clear_attr(_index)						\
-+	static struct emif_attr emif_attr_##inf##_index##_clear =	\
-+		{ .attr = __ATTR(inf##_index##_clear, 0200,		\
-+				 NULL, emif_clear_store),		\
-+		  .index = (_index) }
-+
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 0);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 1);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 2);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 3);
-+
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 0);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 1);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 2);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 3);
-+
-+emif_clear_attr(0);
-+emif_clear_attr(1);
-+emif_clear_attr(2);
-+emif_clear_attr(3);
-+
-+static struct attribute *dfl_emif_attrs[] = {
-+	&emif_attr_inf0_init_done.attr.attr,
-+	&emif_attr_inf0_cal_fail.attr.attr,
-+	&emif_attr_inf0_clear.attr.attr,
-+
-+	&emif_attr_inf1_init_done.attr.attr,
-+	&emif_attr_inf1_cal_fail.attr.attr,
-+	&emif_attr_inf1_clear.attr.attr,
-+
-+	&emif_attr_inf2_init_done.attr.attr,
-+	&emif_attr_inf2_cal_fail.attr.attr,
-+	&emif_attr_inf2_clear.attr.attr,
-+
-+	&emif_attr_inf3_init_done.attr.attr,
-+	&emif_attr_inf3_cal_fail.attr.attr,
-+	&emif_attr_inf3_clear.attr.attr,
-+
-+	NULL,
-+};
-+
-+static umode_t dfl_emif_visible(struct kobject *kobj,
-+				struct attribute *attr, int n)
-+{
-+	struct dfl_emif *de = dev_get_drvdata(kobj_to_dev(kobj));
-+	struct emif_attr *eattr = container_of(attr, struct emif_attr,
-+					       attr.attr);
-+	u64 val;
-+
-+	/*
-+	 * This device supports upto 4 memory interfaces, but not all
-+	 * interfaces are used on different platforms. The read out value of
-+	 * CLEAN_EN field (which is a bitmap) could tell how many interfaces
-+	 * are available.
-+	 */
-+	val = FIELD_GET(EMIF_CTRL_CLEAR_EN_MSK, readq(de->base + EMIF_CTRL));
-+
-+	return (val & BIT_ULL(eattr->index)) ? attr->mode : 0;
-+}
-+
-+static const struct attribute_group dfl_emif_group = {
-+	.is_visible = dfl_emif_visible,
-+	.attrs = dfl_emif_attrs,
-+};
-+
-+static const struct attribute_group *dfl_emif_groups[] = {
-+	&dfl_emif_group,
-+	NULL,
-+};
-+
-+static int dfl_emif_probe(struct dfl_device *ddev)
-+{
-+	struct device *dev = &ddev->dev;
-+	struct dfl_emif *de;
-+
-+	de = devm_kzalloc(dev, sizeof(*de), GFP_KERNEL);
-+	if (!de)
-+		return -ENOMEM;
-+
-+	de->base = devm_ioremap_resource(dev, &ddev->mmio_res);
-+	if (IS_ERR(de->base))
-+		return PTR_ERR(de->base);
-+
-+	de->dev = dev;
-+	spin_lock_init(&de->lock);
-+	dev_set_drvdata(dev, de);
-+
-+	return 0;
-+}
-+
-+static const struct dfl_device_id dfl_emif_ids[] = {
-+	{ FME_ID, FME_FEATURE_ID_EMIF },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(dfl, dfl_emif_ids);
-+
-+static struct dfl_driver dfl_emif_driver = {
-+	.drv	= {
-+		.name       = "dfl-emif",
-+		.dev_groups = dfl_emif_groups,
-+	},
-+	.id_table = dfl_emif_ids,
-+	.probe   = dfl_emif_probe,
-+};
-+module_dfl_driver(dfl_emif_driver);
-+
-+MODULE_DESCRIPTION("DFL EMIF driver");
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
-
+> 
+> >  };
+> >  
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 3dc415f58bd7..caaa2a8434b9 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -1413,17 +1413,24 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+> >  static int uclamp_validate(struct task_struct *p,
+> >  			   const struct sched_attr *attr)
+> >  {
+> > -	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
+> > -	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
+> > +	int util_min = p->uclamp_req[UCLAMP_MIN].value;
+> > +	int util_max = p->uclamp_req[UCLAMP_MAX].value;
+> >  
+> > -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
+> > -		lower_bound = attr->sched_util_min;
+> > -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
+> > -		upper_bound = attr->sched_util_max;
+> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> > +		util_min = attr->sched_util_min;
+> >  
+> > -	if (lower_bound > upper_bound)
+> > -		return -EINVAL;
+> > -	if (upper_bound > SCHED_CAPACITY_SCALE)
+> > +		if (util_min < -1 || util_min > SCHED_CAPACITY_SCALE)
+> > +			return -EINVAL;
+> > +	}
+> > +
+> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+> > +		util_max = attr->sched_util_max;
+> > +
+> > +		if (util_max < -1 || util_max > SCHED_CAPACITY_SCALE)
+> > +			return -EINVAL;
+> > +	}
+> 
+> Luckily we can write that range as a single branch like:
+> 
+> 	if (util_{min,max} + 1 > SCHED_CAPACITY_SCALE+1)
+> 
+> which assumes u32 :-)
+> 
+> > +
+> > +	if (util_min != -1 && util_max != -1 && util_min > util_max)
+> >  		return -EINVAL;
+> 
+> I think that will compile as is, otherwise write it like ~0u, which is
+> the same bit pattern.
+> 
