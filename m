@@ -2,81 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA7C2B0A11
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D905D2B0A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728886AbgKLQej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727739AbgKLQei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:34:38 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45884C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:34:38 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id i12so4405943qtj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:34:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tta6+LviygyONzH3K33DQhKUnQL5Cid6phvS37hMgnc=;
-        b=fv8KOJHmSVjHkmEqC6RVTwmIeO5fDrzc4Jlb1o9d5LPazF4SMd6nn+N+hMzU/CAor+
-         DIcRplp7LwvjHrCL+Zd88sxQY2zezrPcij8Xdelhg1BNOaMtTC3fMPV9RbnQX4yFd5TM
-         TGRJrNHcRRj0mLk1WE3slN1jFa6WE9hJquAGPmLy30dW2rVNxa+cB5W8Yx+uzsuFBG5p
-         W0/Q+8CjPB4rKbZXTGuRbLhHl62Buxu66L1VJlZ4N4+gHyy6+NI8P+yyyHi+mpVAOlvW
-         WVOUQPK9YAE9p4+t1g4Ob55ondRvTcyzi/hCj2YoAptlwFJx0puC7f0ZwtJU3GZqSjE+
-         xmHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tta6+LviygyONzH3K33DQhKUnQL5Cid6phvS37hMgnc=;
-        b=erHVdygTqL5WLxF0y2FKjcVKEjUdp5YGQqynTqksJLgi4IDi1LWhdeIviazQYJbTCb
-         eDTzwj7Qbuzke82NH9maEh+8I5WwaJK7cwOif1VEbLo55n7ksVyD6qqLQuxLvFu21pdH
-         9q8aWxBcpmPUyrCRUyqDsL9F8HE6Wbchp9QKeRS0JZxZlok06kI03SW7PQ30BB4hle1Q
-         5F1IfJCnXI9L+A+P/2UXnAAGGd29bKff725fpVxUNcOP1bOxzUTNnDs+6qwurkatCv9H
-         y6cnObnIpP1cstWEYZD2YhQVJf77ayqbcmlNrN3+Un2JcJfDoGwjPisD7fxS4sm1bq0K
-         1i/g==
-X-Gm-Message-State: AOAM532C/5BcZn2tSK0JxxNi5K/q9T/KUQuTqpLIup9qQ6VPvzgEYh4e
-        GFa4MyFR7g7xovODf/q3BLXcDA==
-X-Google-Smtp-Source: ABdhPJzPADCn0IsEY9NTEdhyY+gaHnht4dudoTAdWwVJ+jhch7XWN/7ZV/6bPrO4Pjv6wmtYlyQmEg==
-X-Received: by 2002:ac8:5a04:: with SMTP id n4mr20585340qta.21.1605198877612;
-        Thu, 12 Nov 2020 08:34:37 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:7257])
-        by smtp.gmail.com with ESMTPSA id q189sm5181971qkd.41.2020.11.12.08.34.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 08:34:36 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:32:48 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>, kernel-team@fb.com
-Subject: Re: [PATCH v1 3/3] cgroup: remove obsoleted broken_hierarchy and
- warned_broken_hierarchy
-Message-ID: <20201112163248.GE873621@cmpxchg.org>
-References: <20201110220800.929549-1-guro@fb.com>
- <20201110220800.929549-4-guro@fb.com>
+        id S1728844AbgKLQeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:34:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728782AbgKLQeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:34:11 -0500
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94A512100A;
+        Thu, 12 Nov 2020 16:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605198850;
+        bh=BWH/5RK3bhbqeyFgF9B8m4fJtj/VbbeDUvPgso3PLhQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZZTj7IdcUtPHh3u8Ki1PzJrK2/mHJbjGyuu3UEEkrp7JDCPTtitiJBWgL3JNJHu6j
+         AwhYRFzszwTj/YrSK86hLO5/FIIqE/DrTHsQSpcKr1eeocyPh9ufAjtU2bVn13IbD3
+         6pmcu0VlgeFgwLB3TPP6AZyopNi9qU/hP/CptyJU=
+Message-ID: <fd770ab57aeabc60d42690272aa0e15b3e6b4e43.camel@kernel.org>
+Subject: Re: [PATCH] Revert "ceph: allow rename operation under different
+ quota realms"
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 12 Nov 2020 11:34:08 -0500
+In-Reply-To: <20201112152321.32491-1-lhenriques@suse.de>
+References: <87ft5ed3gj.fsf@suse.de>
+         <20201112152321.32491-1-lhenriques@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110220800.929549-4-guro@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 02:08:00PM -0800, Roman Gushchin wrote:
-> With the deprecation of the non-hierarchical mode of the memory
-> controller there are no more examples of broken hierarchies left.
+On Thu, 2020-11-12 at 15:23 +0000, Luis Henriques wrote:
+> This reverts commit dffdcd71458e699e839f0bf47c3d42d64210b939.
 > 
-> Let's remove the cgroup core code which was supposed to print
-> warnings about creating of broken hierarchies.
+> When doing a rename across quota realms, there's a corner case that isn't
+> handled correctly.  Here's a testcase:
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: David Rientjes <rientjes@google.com>
+>   mkdir files limit
+>   truncate files/file -s 10G
+>   setfattr limit -n ceph.quota.max_bytes -v 1000000
+>   mv files limit/
+> 
+> The above will succeed because ftruncate(2) won't immediately notify the
+> MDSs with the new file size, and thus the quota realms stats won't be
+> updated.
+> 
+> Since the possible fixes for this issue would have a huge performance impact,
+> the solution for now is to simply revert to returning -EXDEV when doing a cross
+> quota realms rename.
+> 
+> URL: https://tracker.ceph.com/issues/48203
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+>  fs/ceph/dir.c   |  9 ++++----
+>  fs/ceph/quota.c | 58 +------------------------------------------------
+>  fs/ceph/super.h |  3 +--
+>  3 files changed, 6 insertions(+), 64 deletions(-)
+> 
+> diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
+> index a4d48370b2b3..858ee7362ff5 100644
+> --- a/fs/ceph/dir.c
+> +++ b/fs/ceph/dir.c
+> @@ -1202,12 +1202,11 @@ static int ceph_rename(struct inode *old_dir, struct dentry *old_dentry,
+>  			op = CEPH_MDS_OP_RENAMESNAP;
+>  		else
+>  			return -EROFS;
+> -	} else if (old_dir != new_dir) {
+> -		err = ceph_quota_check_rename(mdsc, d_inode(old_dentry),
+> -					      new_dir);
+> -		if (err)
+> -			return err;
+>  	}
+> +	/* don't allow cross-quota renames */
+> +	if ((old_dir != new_dir) &&
+> +	    (!ceph_quota_is_same_realm(old_dir, new_dir)))
+> +		return -EXDEV;
+>  
+> 
+>  	dout("rename dir %p dentry %p to dir %p dentry %p\n",
+>  	     old_dir, old_dentry, new_dir, new_dentry);
+> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+> index 9b785f11e95a..4e32c9600ecc 100644
+> --- a/fs/ceph/quota.c
+> +++ b/fs/ceph/quota.c
+> @@ -264,7 +264,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
+>  	return NULL;
+>  }
+>  
+> 
+> -static bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
+> +bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
+>  {
+>  	struct ceph_mds_client *mdsc = ceph_sb_to_mdsc(old->i_sb);
+>  	struct ceph_snap_realm *old_realm, *new_realm;
+> @@ -516,59 +516,3 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
+>  	return is_updated;
+>  }
+>  
+> 
+> -/*
+> - * ceph_quota_check_rename - check if a rename can be executed
+> - * @mdsc:	MDS client instance
+> - * @old:	inode to be copied
+> - * @new:	destination inode (directory)
+> - *
+> - * This function verifies if a rename (e.g. moving a file or directory) can be
+> - * executed.  It forces an rstat update in the @new target directory (and in the
+> - * source @old as well, if it's a directory).  The actual check is done both for
+> - * max_files and max_bytes.
+> - *
+> - * This function returns 0 if it's OK to do the rename, or, if quotas are
+> - * exceeded, -EXDEV (if @old is a directory) or -EDQUOT.
+> - */
+> -int ceph_quota_check_rename(struct ceph_mds_client *mdsc,
+> -			    struct inode *old, struct inode *new)
+> -{
+> -	struct ceph_inode_info *ci_old = ceph_inode(old);
+> -	int ret = 0;
+> -
+> -	if (ceph_quota_is_same_realm(old, new))
+> -		return 0;
+> -
+> -	/*
+> -	 * Get the latest rstat for target directory (and for source, if a
+> -	 * directory)
+> -	 */
+> -	ret = ceph_do_getattr(new, CEPH_STAT_RSTAT, false);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (S_ISDIR(old->i_mode)) {
+> -		ret = ceph_do_getattr(old, CEPH_STAT_RSTAT, false);
+> -		if (ret)
+> -			return ret;
+> -		ret = check_quota_exceeded(new, QUOTA_CHECK_MAX_BYTES_OP,
+> -					   ci_old->i_rbytes);
+> -		if (!ret)
+> -			ret = check_quota_exceeded(new,
+> -						   QUOTA_CHECK_MAX_FILES_OP,
+> -						   ci_old->i_rfiles +
+> -						   ci_old->i_rsubdirs);
+> -		if (ret)
+> -			ret = -EXDEV;
+> -	} else {
+> -		ret = check_quota_exceeded(new, QUOTA_CHECK_MAX_BYTES_OP,
+> -					   i_size_read(old));
+> -		if (!ret)
+> -			ret = check_quota_exceeded(new,
+> -						   QUOTA_CHECK_MAX_FILES_OP, 1);
+> -		if (ret)
+> -			ret = -EDQUOT;
+> -	}
+> -
+> -	return ret;
+> -}
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 482473e4cce1..8dbb0babddea 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -1222,14 +1222,13 @@ extern void ceph_handle_quota(struct ceph_mds_client *mdsc,
+>  			      struct ceph_mds_session *session,
+>  			      struct ceph_msg *msg);
+>  extern bool ceph_quota_is_max_files_exceeded(struct inode *inode);
+> +extern bool ceph_quota_is_same_realm(struct inode *old, struct inode *new);
+>  extern bool ceph_quota_is_max_bytes_exceeded(struct inode *inode,
+>  					     loff_t newlen);
+>  extern bool ceph_quota_is_max_bytes_approaching(struct inode *inode,
+>  						loff_t newlen);
+>  extern bool ceph_quota_update_statfs(struct ceph_fs_client *fsc,
+>  				     struct kstatfs *buf);
+> -extern int ceph_quota_check_rename(struct ceph_mds_client *mdsc,
+> -				   struct inode *old, struct inode *new);
+>  extern void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc);
+>  
+> 
+>  #endif /* _FS_CEPH_SUPER_H */
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Ok, looks reasonable for now. I'll note that we probably _could_ allow
+for cross-quota renames of regular files since we know that we're only
+dealing with a single inode.
+
+That said, it might be weird to see EXDEV on a directory but not a
+regular file in the same parent dir.
+-- 
+Jeff Layton <jlayton@kernel.org>
+
