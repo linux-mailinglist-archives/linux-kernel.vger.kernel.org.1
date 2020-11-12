@@ -2,292 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5B62B030A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6436B2B0306
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgKLKsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:48:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726107AbgKLKsl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:48:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605178118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uvJqsLix0FAAyFANAo+QJp7fuXI1chlloF8HPvKaqi0=;
-        b=J1RS5MbxSk6t/GZTTgzsoQ8c9rB0BRJSG8MiY51PJHtX0pMZ3PaJc0AtGcCyroDks5uWeQ
-        Yd0a/H74FRTEnGs08KlblXosO9ROZ6fJ69l4Mt7fxt6KLjRKTIcJJJ1bQoduYfWOoVJDl7
-        2xWyK9oHxzdlpbFXhdnCAGwlWKnFiKI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-gE52x8i6Mj2qAtXutCLHkA-1; Thu, 12 Nov 2020 05:48:34 -0500
-X-MC-Unique: gE52x8i6Mj2qAtXutCLHkA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727865AbgKLKsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:48:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727836AbgKLKsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 05:48:14 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3F6E803F4D;
-        Thu, 12 Nov 2020 10:48:32 +0000 (UTC)
-Received: from [10.36.115.61] (ovpn-115-61.ams2.redhat.com [10.36.115.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B05DE1002C1A;
-        Thu, 12 Nov 2020 10:48:30 +0000 (UTC)
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, ath11k@lists.infradead.org
-References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
- <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
- <87eekz4s04.fsf@codeaurora.org>
- <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com>
-Date:   Thu, 12 Nov 2020 11:48:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        by mail.kernel.org (Postfix) with ESMTPSA id A6B1A2068D;
+        Thu, 12 Nov 2020 10:48:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605178092;
+        bh=ShG+wm8d1JPKuVmYO3I+ksi7Z+FgBHSVFUtNFUQc39c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GRNoViLK7AcP1OFJiipCtcOfaiBjjPs4Hl2b+kKoWh3AETGWKj1k5XRqnTgvmb27d
+         c+v/LmIRIVc2MlxMPRORxX3D9d0olkeJUghgXE7Qvt4bPH9zASTyL+5qsJtUeGMBUN
+         6WUbbQa+T55INey66shi9TR/qJ0+79a0Hz3JNVt8=
+Date:   Thu, 12 Nov 2020 11:49:11 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Brice Goglin <brice.goglin@gmail.com>
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+Message-ID: <X60TJ2u47WK3yY/y@kroah.com>
+References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+ <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+ <20201003085345.GA114893@kroah.com>
+ <20201006005736.GD6041@ranerica-svr.sc.intel.com>
+ <20201006073744.GA6753@kroah.com>
+ <20201007031447.GB27938@ranerica-svr.sc.intel.com>
+ <20201007051546.GA47583@kroah.com>
+ <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com>
+ <X6zZaKt57Xl9NnuN@kroah.com>
+ <d7ac96f2-10e8-209d-2903-1bbe8fc552f4@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d7ac96f2-10e8-209d-2903-1bbe8fc552f4@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.11.20 21:41, Pavel Procopiuc wrote:
-> Op 11.11.2020 om 20:23 schreef Kalle Valo:
->> Pavel, can you test with that patch on v5.10-rc2 and provide the ath11k
->> log messages? Preferably both before and after reverting commit
->> 7fef431be9c9. Do note that I'm not expecting the debug patch to fix
->> anything, in your case it's just for providing more debug info.
->>
->> With vt-d disabled on v5.10-rc2 before the revert I see:
->>
->> ath11k_pci 0000:06:00.0: WARNING: ath11k PCI support is experimental!
->> ath11k_pci 0000:06:00.0: BAR 0: assigned [mem 0xdb000000-0xdbffffff 64bit]
->> ath11k_pci 0000:06:00.0: enabling device (0000 -> 0002)
->> ath11k_pci 0000:06:00.0: MSI vectors: 1
->> NET: Registered protocol family 42
->> mhi 0000:06:00.0: Requested to power ON
->> mhi 0000:06:00.0: Power on setup success
->> ath11k_pci 0000:06:00.0: Respond mem req failed, result: 1, err: 0
->> ath11k_pci 0000:06:00.0: qmi failed to respond fw mem req:-22
->> ath11k_pci 0000:06:00.0: req mem_seg[0] 0x1580000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[1] 0x1600000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[2] 0x1680000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[3] 0x1700000 294912 1
->> ath11k_pci 0000:06:00.0: req mem_seg[4] 0x1780000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[5] 0x1800000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[6] 0x1880000 458752 1
->> ath11k_pci 0000:06:00.0: req mem_seg[7] 0x1520000 131072 1
->> ath11k_pci 0000:06:00.0: req mem_seg[8] 0x1900000 524288 4
->> ath11k_pci 0000:06:00.0: req mem_seg[9] 0x1980000 360448 4
->> ath11k_pci 0000:06:00.0: req mem_seg[10] 0x1540000 16384 1
->> ath11k_pci 0000:06:00.0: qmi failed memory request, err = -110
->> ath11k_pci 0000:06:00.0: qmi failed to respond fw mem req:-110
->>
->> With vt-d disabled on v5.10-rc2 and reverting commit 7fef431be9c9 I see:
->>
->> ath11k_pci 0000:06:00.0: WARNING: ath11k PCI support is experimental!
->> ath11k_pci 0000:06:00.0: BAR 0: assigned [mem 0xdb000000-0xdbffffff 64bit]
->> ath11k_pci 0000:06:00.0: MSI vectors: 1
->> mhi 0000:06:00.0: Requested to power ON
->> mhi 0000:06:00.0: Power on setup success
->> ath11k_pci 0000:06:00.0: Respond mem req failed, result: 1, err: 0
->> ath11k_pci 0000:06:00.0: qmi failed to respond fw mem req:-22
->> ath11k_pci 0000:06:00.0: req mem_seg[0] 0x76300000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[1] 0x76380000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[2] 0x76a00000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[3] 0x76a80000 294912 1
->> ath11k_pci 0000:06:00.0: req mem_seg[4] 0x76b00000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[5] 0x76b80000 524288 1
->> ath11k_pci 0000:06:00.0: req mem_seg[6] 0x76400000 458752 1
->> ath11k_pci 0000:06:00.0: req mem_seg[7] 0x761a0000 131072 1
->> ath11k_pci 0000:06:00.0: req mem_seg[8] 0x76480000 524288 4
->> ath11k_pci 0000:06:00.0: req mem_seg[9] 0x76500000 360448 4
->> ath11k_pci 0000:06:00.0: req mem_seg[10] 0x76580000 16384 1
->> ath11k_pci 0000:06:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
->> ath11k_pci 0000:06:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-24 19:50 fw_build_id
+On Thu, Nov 12, 2020 at 10:10:57AM +0100, Brice Goglin wrote:
 > 
-> I have had VT-d turned on the whole time in my previous tests. I have tried turning it off for some of this tests and it
-> doesn't seem to affect my main bug. Here are the results:
+> Le 12/11/2020 à 07:42, Greg Kroah-Hartman a écrit :
+> > On Thu, Nov 12, 2020 at 07:19:48AM +0100, Brice Goglin wrote:
+> >> Le 07/10/2020 à 07:15, Greg Kroah-Hartman a écrit :
+> >>> On Tue, Oct 06, 2020 at 08:14:47PM -0700, Ricardo Neri wrote:
+> >>>> On Tue, Oct 06, 2020 at 09:37:44AM +0200, Greg Kroah-Hartman wrote:
+> >>>>> On Mon, Oct 05, 2020 at 05:57:36PM -0700, Ricardo Neri wrote:
+> >>>>>> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
+> >>>>>>> On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
+> >>>>>>>> Hybrid CPU topologies combine CPUs of different microarchitectures in the
+> >>>>>>>> same die. Thus, even though the instruction set is compatible among all
+> >>>>>>>> CPUs, there may still be differences in features (e.g., some CPUs may
+> >>>>>>>> have counters that others CPU do not). There may be applications
+> >>>>>>>> interested in knowing the type of micro-architecture topology of the
+> >>>>>>>> system to make decisions about process affinity.
+> >>>>>>>>
+> >>>>>>>> While the existing sysfs for capacity (/sys/devices/system/cpu/cpuX/
+> >>>>>>>> cpu_capacity) may be used to infer the types of micro-architecture of the
+> >>>>>>>> CPUs in the platform, it may not be entirely accurate. For instance, two
+> >>>>>>>> subsets of CPUs with different types of micro-architecture may have the
+> >>>>>>>> same capacity due to power or thermal constraints.
+> >>>>>>>>
+> >>>>>>>> Create the new directory /sys/devices/system/cpu/types. Under such
+> >>>>>>>> directory, create individual subdirectories for each type of CPU micro-
+> >>>>>>>> architecture. Each subdirectory will have cpulist and cpumap files. This
+> >>>>>>>> makes it convenient for user space to read all the CPUs of the same type
+> >>>>>>>> at once without having to inspect each CPU individually.
+> >>>>>>>>
+> >>>>>>>> Implement a generic interface using weak functions that architectures can
+> >>>>>>>> override to indicate a) support for CPU types, b) the CPU type number, and
+> >>>>>>>> c) a string to identify the CPU vendor and type.
+> >>>>>>>>
+> >>>>>>>> For example, an x86 system with one Intel Core and four Intel Atom CPUs
+> >>>>>>>> would look like this (other architectures have the hooks to use whatever
+> >>>>>>>> directory naming convention below "types" that meets their needs):
+> >>>>>>>>
+> >>>>>>>> user@host:~$: ls /sys/devices/system/cpu/types
+> >>>>>>>> intel_atom_0  intel_core_0
+> >>>>>>>>
+> >>>>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
+> >>>>>>>> cpulist cpumap
+> >>>>>>>>
+> >>>>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
+> >>>>>>>> cpulist cpumap
+> >>>>>>>>
+> >>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpumap
+> >>>>>>>> 0f
+> >>>>>>>>
+> >>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpulist
+> >>>>>>>> 0-3
+> >>>>>>>>
+> >>>>>>>> user@ihost:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpumap
+> >>>>>>>> 10
+> >>>>>>>>
+> >>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpulist
+> >>>>>>>> 4
+> >>>>>> Thank you for the quick and detailed Greg!
+> >>>>>>
+> >>>>>>> The output of 'tree' sometimes makes it easier to see here, or:
+> >>>>>>> 	grep -R . *
+> >>>>>>> also works well.
+> >>>>>> Indeed, this would definitely make it more readable.
+> >>>>>>
+> >>>>>>>> On non-hybrid systems, the /sys/devices/system/cpu/types directory is not
+> >>>>>>>> created. Add a hook for this purpose.
+> >>>>>>> Why should these not show up if the system is not "hybrid"?
+> >>>>>> My thinking was that on a non-hybrid system, it does not make sense to
+> >>>>>> create this interface, as all the CPUs will be of the same type.
+> >>>>> Why not just have this an attribute type in the existing cpuX directory?
+> >>>>> Why do this have to be a totally separate directory and userspace has to
+> >>>>> figure out to look in two different spots for the same cpu to determine
+> >>>>> what it is?
+> >>>> But if the type is located under cpuX, usespace would need to traverse
+> >>>> all the CPUs and create its own cpu masks. Under the types directory it
+> >>>> would only need to look once for each type of CPU, IMHO.
+> >>> What does a "mask" do?  What does userspace care about this?  You would
+> >>> have to create it by traversing the directories you are creating anyway,
+> >>> so it's not much different, right?
+> >>
+> >> Hello
+> >>
+> >> Sorry for the late reply. As the first userspace consumer of this
+> >> interface [1], I can confirm that reading a single file to get the mask
+> >> would be better, at least for performance reason. On large platforms, we
+> >> already have to read thousands of sysfs files to get CPU topology and
+> >> cache information, I'd be happy not to read one more file per cpu.
+> >>
+> >> Reading these sysfs files is slow, and it does not scale well when
+> >> multiple processes read them in parallel.
+> > Really?  Where is the slowdown?  Would something like readfile() work
+> > better for you for that?
+> > 	https://lore.kernel.org/linux-api/20200704140250.423345-1-gregkh@linuxfoundation.org/
 > 
-> 1. Without reverting the 7fef431be9c9, VT-d on (wifi doesn't work):
-> Nov 11 21:19:20 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #1 SMP Wed Nov 11 21:12:24 CET 2020
-> Nov 11 21:19:20 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 11 21:19:20 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:19:20 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 11 21:19:20 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 11 21:19:20 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 32
-> Nov 11 21:19:21 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 11 21:19:21 razor kernel: mhi 0000:05:00.0: Power on setup success
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x1500000 524288 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x1580000 524288 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x1600000 524288 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x1680000 294912 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x1700000 524288 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x1780000 524288 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x1800000 458752 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x11e0000 131072 1
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x1880000 524288 4
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x1900000 360448 4
-> Nov 11 21:19:21 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x1980000 16384 1
-> Nov 11 21:19:26 razor kernel: ath11k_pci 0000:05:00.0: qmi failed memory request, err = -110
-> Nov 11 21:19:26 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-110
 > 
-> 2. With reverting 7fef431be9c9, VT-d on (wifi does work):
-> Nov 11 21:21:50 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #2 SMP Wed Nov 11 21:20:51 CET 2020
-> Nov 11 21:21:50 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 11 21:21:50 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:21:50 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 11 21:21:50 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 11 21:21:50 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 32
-> Nov 11 21:21:51 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 11 21:21:51 razor kernel: mhi 0000:05:00.0: Power on setup success
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x3f100000 524288 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x3f180000 524288 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x3f200000 524288 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x3f280000 294912 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x3f300000 524288 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x3f380000 524288 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x3fc00000 458752 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x3f0c0000 131072 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x3fc80000 524288 4
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x3fd00000 360448 4
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x3f0a4000 16384 1
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
-> Nov 11 21:21:51 razor kernel: ath11k_pci 0000:05:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-24 19:50
-> fw_build_id
-> Nov 11 21:21:53 razor NetworkManager[786]: <info>  [1605126113.1294] rfkill1: found Wi-Fi radio killswitch (at
-> /sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0/ieee80211/phy0/rfkill1) (driver ath11k_pci)
-> Nov 11 21:21:55 razor ModemManager[724]: <info>  Couldn't check support for device
-> '/sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0': not supported by any plugin
+> I guess readfile would improve the sequential case by avoiding syscalls
+> but it would not improve the parallel case since syscalls shouldn't have
+> any parallel issue?
+
+syscalls should not have parallel issues at all.
+
+> We've been watching the status of readfile() since it was posted on LKML
+> 6 months ago, but we were actually wondering if it would end up being
+> included at some point.
+
+It needs a solid reason to be merged.  My "test" benchmarks are fun to
+run, but I have yet to find a real need for it anywhere as the
+open/read/close syscall overhead seems to be lost in the noise on any
+real application workload that I can find.
+
+If you have a real need, and it reduces overhead and cpu usage, I'm more
+than willing to update the patchset and resubmit it.
+
+> > How does multiple processes slow anything down, there shouldn't be any
+> > shared locks here.
 > 
-> 3. Without reverting the 7fef431be9c9, VT-d off (wifi doesn't work):
-> Nov 11 21:32:41 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #3 SMP Wed Nov 11 21:31:35 CET 2020
-> Nov 11 21:32:41 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 11 21:32:41 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:32:41 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 11 21:32:41 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 1
-> Nov 11 21:32:42 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 11 21:32:42 razor kernel: mhi 0000:05:00.0: Power on setup success
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x1480000 524288 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x1500000 524288 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x1580000 524288 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x1600000 294912 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x1680000 524288 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x1700000 524288 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x1780000 458752 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x1800000 131072 1
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x1880000 524288 4
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x1900000 360448 4
-> Nov 11 21:32:42 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x10e4000 16384 1
-> Nov 11 21:32:47 razor kernel: ath11k_pci 0000:05:00.0: qmi failed memory request, err = -110
-> Nov 11 21:32:47 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-110
 > 
-> 4. With reverting 7fef431be9c9, VT-d off (not sure if wifi works, system hung shortly thereafter):
-> Nov 11 21:28:16 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #2 SMP Wed Nov 11 21:20:51 CET 2020
-> Nov 11 21:28:16 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 11 21:28:16 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:28:16 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 11 21:28:16 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 1
-> Nov 11 21:28:17 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 11 21:28:17 razor kernel: mhi 0000:05:00.0: Power on setup success
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x3f900000 524288 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x3f980000 524288 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x3fa00000 524288 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x3fa80000 294912 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x3fb00000 524288 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x3fb80000 524288 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x40800000 458752 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x3f8c0000 131072 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x40880000 524288 4
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x40900000 360448 4
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x3f8a4000 16384 1
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
-> Nov 11 21:28:17 razor kernel: ath11k_pci 0000:05:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-24 19:50
-> fw_build_id
-> Nov 11 21:28:19 razor NetworkManager[782]: <info>  [1605126499.2535] rfkill1: found Wi-Fi radio killswitch (at
-> /sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0/ieee80211/phy0/rfkill1) (driver ath11k_pci)
-> Nov 11 21:28:21 razor ModemManager[717]: <info>  Couldn't check support for device
-> '/sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0': not supported by any plugin
-> Nov 11 21:28:58 razor kernel: ath11k_pci 0000:05:00.0: failed to receive scan abort comple: timed out
-> Nov 11 21:28:58 razor kernel: ath11k_pci 0000:05:00.0: failed to abort scan: -110
-> Nov 11 21:29:01 razor kernel: ath11k_pci 0000:05:00.0: wmi command 12289 timeout
-> Nov 11 21:29:01 razor kernel: ath11k_pci 0000:05:00.0: failed to send WMI_START_SCAN_CMDID
-> Nov 11 21:29:01 razor kernel: ath11k_pci 0000:05:00.0: failed to start hw scan: -11
+> When I benchmarked this in 2016, reading a single (small) sysfs file was
+> 41x slower when running 64 processes simultaneously on a 64-core Knights
+> Landing than reading from a single process. On a SGI Altix UV with 12x
+> 8-core CPUs, reading from one process per CPU (12 total) was 60x slower
+> (which could mean NUMA affinity matters), and reading from one process
+> per core (96 total) was 491x slower.
 > 
+> I will try to find some time to dig further on recent kernels with perf
+> and readfile (both machines were running RHEL7).
 
-Trying to understand the code, it looks like there are always two rounds 
-of reqests. The first one always fails ("requesting one big chunk of DMA 
-memory"), the second one (providing multiple chunks of DMA memory) is 
-supposed to work - and we do allocate memory.
+2016 was a long time ago in kernel-land, please retest on a kernel.org
+release, not a RHEL monstrosity.
 
+> >> There are ways to avoid this
+> >> multiple discoveries by sharing hwloc info through XML or shmem, but it
+> >> will take years before all developers of different runtimes all
+> >> implement this :)
+> > I don't understand, what exactly are you suggesting we do here instead?
+> 
+> 
+> I was just saying userspace has ways to mitigate the issue but it will
+> take time because many different projects are involved.
 
-In the *working* cases we have
+I still don't understand, what issue are you referring to?
 
-Respond mem req failed, result: 1, err: 0
-qmi failed to respond fw mem req:-22
-...
-chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
+thanks,
 
-We don't fail in qmi_txn_wait() - second request w
-
-
-In the *non-working* cases we have
-
-Respond mem req failed, result: 1, err: 0
-qmi failed to respond fw mem req:-22
-...
-qmi failed memory request, err = -110
-qmi failed to respond fw mem req:-110
-
-We fail in qmi_txn_wait(). We run into a timeout (ETIMEDOUT).
-
-Can we bump up the timeout limit and see if things change? Maybe FW 
-needs more time with other addresses.
-
--- 
-Thanks,
-
-David / dhildenb
-
+greg k-h
