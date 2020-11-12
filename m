@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735C92B0125
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E72B0129
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgKLIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:21:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgKLIV6 (ORCPT
+        id S1726834AbgKLIXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:23:44 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41004 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgKLIXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:21:58 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E77C0613D1;
-        Thu, 12 Nov 2020 00:21:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bDhGCoNCH4JKfnFAw99KraNMb+ggnOriYZE/KLPpuXY=; b=HnA2HdLR7qhmdpHPgKtaTFyRYV
-        JykJrDLWCWqw3jJrHgGUy8ViT3YnZJG4HrE32volI9oE2msYuD0gre5drZxgRTYvf0gseVVMMMD0m
-        vHojUijaNpJjnmnDXkuj6GFMBTjlrTrFkgdzDb8J3qptzAdItWV8NNRQ7x35sV++fqpG6MZmgHFs3
-        lrW4bs1TIixvY83iECdVT8czTUE/f2CnLOixR+zPHQgfQTjCcG0sFNXujmDtvhiI1llo60hlnZQLH
-        U5wR8vqKWX2Bp+Xjwx59BSWaI2OwzeuwcSb9wbun0fT4Wyseffmy76MCd4blJx1IM5Rkx6XWGt3LD
-        qotqfJnQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kd7rV-00028z-Sk; Thu, 12 Nov 2020 08:21:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9D4B8301324;
-        Thu, 12 Nov 2020 09:21:44 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5EAE22BDE7EF8; Thu, 12 Nov 2020 09:21:44 +0100 (CET)
-Date:   Thu, 12 Nov 2020 09:21:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, live-patching@vger.kernel.org
-Subject: Re: [PATCH 3/3 v5] livepatch: Use the default ftrace_ops instead of
- REGS when ARGS is available
-Message-ID: <20201112082144.GS2628@hirez.programming.kicks-ass.net>
-References: <20201112011516.589846126@goodmis.org>
- <20201112011815.755256598@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112011815.755256598@goodmis.org>
+        Thu, 12 Nov 2020 03:23:43 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AC8293x177316;
+        Thu, 12 Nov 2020 03:23:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=BOefgtfDxCCP0iW0ZFVr08Iqc8h0WhLGvV4gIHw/bnE=;
+ b=j6apinlh6HdiB8g7dXA88jZXc0wYwu7ttKzgle62yd5sR5eke5MFB1H+6HuW/Z0zyG90
+ 1kS1yvEyrAsIb/sRhlxF/NZgyf9KjMBSoh9ihcvZvqDxa7xQdLGRx46NLe6B+5gw0i9t
+ G4eSi3Ipk7MEwr6Ppw6QVSbFpQp0/d7ePOoIsYkdyhA/BG+fc84wScp93W5MKpY8lm8g
+ 5DjO4ZMD4zJUOK+RaTaBuoYydlbpPl0EwlgtNvxF2pZQAQqnOJrJOVE1Qey+SiPJlcKy
+ HjEZhrKbE5g0iHYowRQ3Smy/MRYVQjZStIawEgOO8AtnYaujKkgZ3yaOyF8azKxFqpN9 QA== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34rg32dpyp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 03:23:07 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AC8M0Ea006062;
+        Thu, 12 Nov 2020 08:23:05 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 34nk782rxs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 08:23:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AC8N2oo51380632
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 08:23:02 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B83735204F;
+        Thu, 12 Nov 2020 08:23:02 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6D91C52051;
+        Thu, 12 Nov 2020 08:23:02 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: [PATCH 0/2] nvme-pic: improve max I/O queue handling
+Date:   Thu, 12 Nov 2020 09:23:00 +0100
+Message-Id: <20201112082302.82441-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_02:2020-11-10,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ bulkscore=0 priorityscore=1501 phishscore=0 clxscore=1015 adultscore=0
+ suspectscore=1 mlxscore=0 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 08:15:19PM -0500, Steven Rostedt wrote:
+Hi,
 
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index e00fe88146e0..235385a38bd9 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -54,6 +54,9 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
->  		return NULL;
->  	return &fregs->regs;
->  }
-> +
-> +#define ftrace_regs_set_ip(fregs, _ip)		\
-> +	do { (fregs)->regs.ip = (_ip); } while (0)
->  #endif
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE
-> diff --git a/arch/x86/include/asm/livepatch.h b/arch/x86/include/asm/livepatch.h
-> index 1fde1ab6559e..59a08d5c6f1d 100644
-> --- a/arch/x86/include/asm/livepatch.h
-> +++ b/arch/x86/include/asm/livepatch.h
-> @@ -12,9 +12,9 @@
->  #include <asm/setup.h>
->  #include <linux/ftrace.h>
->  
-> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  {
-> -	regs->ip = ip;
-> +	ftrace_regs_set_ip(fregs, ip);
->  }
->  
+while searching for a bug around zPCI + NVMe IRQ handling on a distro
+kernel, I got confused around handling of the maximum number
+of I/O queues in the NVMe driver.
+I think I groked it in the end but would like to propose the following
+improvements, that said I'm quite new to this code.
+I tested both patches on s390x (with a debug config) and x86_64 so
+with both data center and consumer NVMes.
+For the second patch, since I don't own a device with the quirk, I tried
+always returning 1 from nvme_max_io_queues() and confirmed that on my
+Evo 970 Pro this resulted in about half the performance in a fio test
+but did not otherwise break things. I couldn't find a reason why
+allocating only the I/O queues we actually use would be problematic in
+the code either but I might have missed something of course.
 
-The normal variant is called instruction_pointer_set(), should this be
-called ftrace_instruction_pointer_set() ?
+Best regards,
+Niklas Schnelle
 
-(and yes, I hate the long name too).
+Niklas Schnelle (2):
+  nvme-pci: drop min() from nr_io_queues assignment
+  nvme-pci: don't allocate unused I/O queues
 
-Also, do you want something like:
+ drivers/nvme/host/pci.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-unsigned long ftrace_regs_get_register(struct ftrace_regs *regs, unsigned int offset)
-{
-	switch (offset / sizeof(long)) {
-	case  4: /* RBP */
+-- 
+2.17.1
 
-	case  8: /* R9  */
-	case  9: /* R8  */
-	case 10: /* RAX */
-	case 11: /* RCX */
-	case 12: /* RDX */
-	case 13: /* RSI */
-	case 14: /* RDI */
-	case 15: /* ORIG_RAX */
-	case 16: /* RIP */
-		return *(unsigned long *)regs->regs + offset;
-
-	default:
-		WARN_ON_ONCE(1);
-	}
-	return 0;
-}
