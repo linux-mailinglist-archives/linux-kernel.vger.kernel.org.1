@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFB82AFC6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862FD2AFC70
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729064AbgKLBgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
+        id S1729074AbgKLBgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728013AbgKLAFm (ORCPT
+        with ESMTP id S1728015AbgKLAHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:05:42 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A26C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:05:42 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w4so2571136pgg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:05:42 -0800 (PST)
+        Wed, 11 Nov 2020 19:07:01 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF26C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:07:00 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id a9so4726331lfh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:07:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eIXncWLvf3BJhcwIlL7/HzTlh6QP9c7KA+O5cQg6G3M=;
-        b=a9rslGNNyF79v94Kg4Q/UmR2Xmf/bZEGFLn4vd48EBDq+CC8G2JRrpsbNUuHeJVehx
-         jimGRp6ErXtI6zqp9GXe7tHGi9GbMzq89KQauoNglSskzAWUuW0MHt7AZ2WpSxbsPl5+
-         tPBtVTY42Zt8DxyLlBMdyLvzOFzQeTwzQ6oNMmxkqbn7L8eFqBIE0bUYz7iKYJBiWvOk
-         Z52DcVu3U2Z/Dh5yup94zky1g85mDQrh4l67WRMiR0tfsddDwMcWkXs6zgH+SCbZmBxb
-         z/IGM+O7cakfJmeAUYqCtMRlbKe90jDKBPM4MV3qNmypw1mXVRuFAOTgWLUGtCgpICq7
-         Q57w==
+         :cc:content-transfer-encoding;
+        bh=b5+3c0cB/SNlhOoBLVTOeycqTJnQtYQ+Gz41CVSnI4A=;
+        b=kI8Q/TtNpemHOgCzxgdmdiqyDeaP1lqzQ58biRx3W0Jvk8YmrwOAmyT1z1qfD2FJzu
+         SUYn/qr5EyJ5pXsS8h9GJp6Az9VQLYUWqBh7aTs8W8PFS/FOiJwEfYe47SyQIzq85SDq
+         A/ojdk2FEIY6yc5KdpovoY0JvsDF6+PAIZH0kwp2dTpZQhgThA6vzXh9M+nr2fJ2wnvh
+         NVsEKhd1ZaXJa7mfl0GmB/SPbSFg2XOgCwz1nlWrdONQGOoNzFroToSprB/kDru2z4nd
+         nr9sI+ektQzrj3My/Z+8UonERdT4ZE83cKP2PBQGlQDGpSXJtDH4mayLvvVVEzpgCOR8
+         H5DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eIXncWLvf3BJhcwIlL7/HzTlh6QP9c7KA+O5cQg6G3M=;
-        b=bPphCqpwjoyj9KSIoBE3iM8Vz80JLfPnT0upTVPWxm0vzH4q8IwjFU8Z+oOYAn2khr
-         IZl+kswT3nm2B0IXAlLG7CW0z450dX6mi5s662K31blWjzk2dimmNd3s2dMCRCGwmtlQ
-         XKVM5uHWo7XCiP4oAzxf+yrSrxtNq3mtAe0nSXm6t1gueKQEQ2Lm96YgPw1bkPR+u3GG
-         RjO/i4/f9htfNCF1V4oOcDVsLd0qJ9StDnvcE8Tw66lWDOIwiwwEZkrUR6R3zXfFDk07
-         N8UCHP7YesiYPFkKW4CNc3LcWEZG82y20Msp0VHopnLguj0uwUSuaOpa+DHxLOpxQZI2
-         otmw==
-X-Gm-Message-State: AOAM531nHJB30ei0NRzCSNlyxeno3wYLOIcWZzpXuJX8dmKm5qmjMPEN
-        yP87SEHTQSu4k76ono7LJjkA6XmZab4M1McmkOcvrw==
-X-Google-Smtp-Source: ABdhPJyY5iBbncGSNeuN2E9vNBsMMt4g0qABGf83cqeejP9fYxXQvlFAsZV4kqoi6HIJ0aXz6AHkP0LkyCe9oKXhBFI=
-X-Received: by 2002:a63:1f53:: with SMTP id q19mr24237607pgm.286.1605139541442;
- Wed, 11 Nov 2020 16:05:41 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=b5+3c0cB/SNlhOoBLVTOeycqTJnQtYQ+Gz41CVSnI4A=;
+        b=YQxSRVAXgmpOITKtGnvAHgjj9zLWCIdwIFLH4qElsVM4ylOSIH8oE3m+JMtabbNgrr
+         roh42trlrQqQSKppc4o66D4nbh0cRqKh0reLS5PfFXHMJTQJ7fpNQDUjWjG+ZSw8VEbn
+         dTbvwZ1IOdeh9EwrfwfhNlv+FWaxuURRfYxWn8u1oIP8GaA3o14MKGSwdRQVU5yw0Tuo
+         MVLnJihKuENnBVY0dBVhHKPbSBSiUSeVuDIKsx04m79KsfxiZF529EpC3JjpsfOSXwW8
+         9gFg3W9DT3+E2SiDiJJV56lR+qYCPpVwTztszspu/zhWZGEY435TDyEri/5uWQcNtRoY
+         RcVA==
+X-Gm-Message-State: AOAM530rPdU0iSDLWyTYspT1f4/VCnd//gTdCHKQJp2akB4WfNLsUl4m
+        c/+ZxCX2vbCfS7yfZXn8QSxAjZyT8nBI0FLY2zfidA==
+X-Google-Smtp-Source: ABdhPJxLUwzQg+4puz6IXIXVIJDaCLsNykZEHy3XRoeRDBcT8S0yIQcax7ZPrlX3T98rcJfBswkiGdi4TsdMJUQtuK4=
+X-Received: by 2002:a05:6512:200e:: with SMTP id a14mr9439357lfb.573.1605139618856;
+ Wed, 11 Nov 2020 16:06:58 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <85aba371903b749412fac34e44e54c89e5ddae30.1605046192.git.andreyknvl@google.com>
- <CAG_fn=VuM=4axS6ex7_MgCeZ47o+Scon1WuFGStF78T36sHayw@mail.gmail.com>
- <CAAeHK+xq2tuVYGOPx=_uj08Xwa_1o9Wv-ODrgN3yWXxAgEGV3w@mail.gmail.com> <CANpmjNPkUJreN0YRSWB743L-nrJvMObdKXdL_b9pBAK7AaLGVQ@mail.gmail.com>
-In-Reply-To: <CANpmjNPkUJreN0YRSWB743L-nrJvMObdKXdL_b9pBAK7AaLGVQ@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 12 Nov 2020 01:05:30 +0100
-Message-ID: <CAAeHK+yf11KvZWkL1HCrxFT0R4VWH+Bz8YtnOYW7k6vm5c_h=A@mail.gmail.com>
-Subject: Re: [PATCH v9 10/44] kasan: define KASAN_GRANULE_PAGE
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201109191601.14053-1-zengzhaoxiu@163.com> <20201109192508.14186-1-zengzhaoxiu@163.com>
+ <CAG48ez3OyH61+hJ+Azyoae0fA6=8tnVOw3VqKebCcH=dTvh2dg@mail.gmail.com> <2442c8fb-ff36-41ce-9349-d162639d5c3b@163.com>
+In-Reply-To: <2442c8fb-ff36-41ce-9349-d162639d5c3b@163.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 12 Nov 2020 01:06:32 +0100
+Message-ID: <CAG48ez1O-mVnkFdbt5To7XucyFSVtJO0prv6DLjQuwfZDzGz3A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] lib: zlib_inflate: improves decompression performance
+To:     Zhaoxiu Zeng <zengzhaoxiu@163.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 8:05 PM Marco Elver <elver@google.com> wrote:
+On Wed, Nov 11, 2020 at 5:06 PM Zhaoxiu Zeng <zengzhaoxiu@163.com> wrote:
+> =E5=9C=A8 2020/11/11 11:46, Jann Horn =E5=86=99=E9=81=93:
+> > On Mon, Nov 9, 2020 at 8:27 PM <zengzhaoxiu@163.com> wrote:
+> >> This patch does:
+> >> 1. Cleanup code and reduce branches
+> >> 2. Use copy_from_back to copy the matched bytes from the back output b=
+uffer
+> >
+> > What exactly is copy_from_back()? Is it like memmove()? If yes, have
+> > you tried using memmove() instead of the code added in patch 1/3?
+> >
 >
-> On Wed, 11 Nov 2020 at 19:48, Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > On Wed, Nov 11, 2020 at 3:13 PM Alexander Potapenko <glider@google.com> wrote:
-> > >
-> > > On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> > > >
-> > > > Define KASAN_GRANULE_PAGE as (KASAN_GRANULE_SIZE << PAGE_SHIFT), which is
-> > > > the same as (KASAN_GRANULE_SIZE * PAGE_SIZE), and use it across KASAN code
-> > > > to simplify it.
-> > >
-> > > What's the physical sense behind KASAN_GRANULE_PAGE? Is it something
-> > > more than just a product of two constants?
-> >
-> > No, just a product.
-> >
-> > > The name suggests it might be something page-sized, but in reality it is not.
-> >
-> > What name would you prefer?
->
-> Is it actually KASAN_GRANULES_PER_SHADOW_PAGE ?   AFAIK we're trying
-> to calculate the granules that we can fit into a page of shadow
-> memory.
+> If use memcpy(or memmove), the code will be like this:
+>         while (dist < len) {
+>                 memcpy(out, out - dist, dist);
+>                 out +=3D dist;
+>                 len -=3D dist;
+>         }
+>         memcpy(out, out - dist, len);
 
-Not exactly, it's the amount of memory, not the number of granules.
-
-Will name it KASAN_MEMORY_PER_SHADOW_PAGE in v10.
+Ah, thanks. So basically it means: "repeatedly copy a pattern of
+length `dist` from `out-dist` to `out` until `len` bytes have been
+written"
