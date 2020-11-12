@@ -2,157 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050E12AFC96
+	by mail.lfdr.de (Postfix) with ESMTP id 71D362AFC97
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729423AbgKLBjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgKLAoj (ORCPT
+        id S1729434AbgKLBjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:39:53 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7175 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728148AbgKLAsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:44:39 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71392C061A53
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:42:31 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id o11so4210242ioo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=hVMls448WtiCHmEYYiwgm9q9rutrUQBdLNWKWdqqFcU=;
-        b=Zi58cWkSVR+SHmfNL35r+95ic21DnWOrCIrUzgP8XqgEbrE8/SsMjAHoNYLanGHwpf
-         dh0HZ06DEUcM/BBFwfvqMTRTvMd4sRZ4YvZqqao3Rmm/QbqPSJjAAPR8pxkfAJ/f6FXq
-         XMfXVbLuP6z/C4mPfYvUIOlzehmw7vpmWEB7w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=hVMls448WtiCHmEYYiwgm9q9rutrUQBdLNWKWdqqFcU=;
-        b=cgVxyPeu7AKz4ep0NWfLdSg+yi+3OOZuovPEMXdinm0t3HuZF5tfcb25PFQYYXUsF4
-         YRfCU8yzD16/Xxp3bHxb3iMuwbg3jd+g3PqusXWVc1uuIcxbBBsGYy77D+qWyEtTQnTk
-         uCibD6agy4KXZKCUGlK3tzdPgA2ShgtsWmzrHGUPzqqr+Kxjg6okis0+JZn+mnUxlPiO
-         CtePH7KzoonqGCvPrTD+ZZpirREvfU3WiiiXWxRuehaQIqH5dsxv+aoOTYRMQkHyLy74
-         90UqSipALsRFzMpYPFfF8JF6bsqFoioj7FvFDRvPEOv6ds4UG9OwStjwuLk0IwcXF2Hi
-         TPnQ==
-X-Gm-Message-State: AOAM532mayhoALxGZryDNnQ0qCqY8sYRHF5IF/P6VmQC7KgR/hOcWhBP
-        aPOzITfU0AEwc02uoW+ukzA/cA==
-X-Google-Smtp-Source: ABdhPJyu4kzjNlE/3+zoxJPDn7rR6SX7QbtDmZGQHGsO4qttKjaX5ffav4Yal9zr/bH8X3ruhnY0MQ==
-X-Received: by 2002:a5e:8206:: with SMTP id l6mr20266636iom.126.1605141750643;
-        Wed, 11 Nov 2020 16:42:30 -0800 (PST)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id z18sm1829584iol.32.2020.11.11.16.42.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Nov 2020 16:42:29 -0800 (PST)
-Date:   Thu, 12 Nov 2020 00:42:28 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "smayhew@redhat.com" <smayhew@redhat.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
-        "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
-        "bfields@fieldses.org" <bfields@fieldses.org>
-Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
- namespaces
-Message-ID: <20201112004227.GB351@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20201102174737.2740-1-sargun@sargun.me>
- <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
- <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
- <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
- <8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com>
- <20201111185727.GA27945@ircssh-2.c.rugged-nimbus-611.internal>
- <17d0e6c2e30d5b28cc1cb0313822e5ca39a2245c.camel@hammerspace.com>
- <20201112003056.GA351@ircssh-2.c.rugged-nimbus-611.internal>
+        Wed, 11 Nov 2020 19:48:45 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWjdY3zSkz15TWY;
+        Thu, 12 Nov 2020 08:48:33 +0800 (CST)
+Received: from [127.0.0.1] (10.74.149.191) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 12 Nov 2020
+ 08:48:32 +0800
+Subject: Re: [PATCH V2 net-next 11/11] net: hns3: add debugfs support for
+ interrupt coalesce
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>
+References: <1604892159-19990-1-git-send-email-tanhuazhong@huawei.com>
+ <1604892159-19990-12-git-send-email-tanhuazhong@huawei.com>
+ <20201110172858.5eddc276@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <faf8854a-329d-8064-a832-02b08d3f5bad@huawei.com>
+ <20201111081520.670fc37f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   tanhuazhong <tanhuazhong@huawei.com>
+Message-ID: <d5ec4fa1-6e49-7554-a4fd-26ce56f5737f@huawei.com>
+Date:   Thu, 12 Nov 2020 08:48:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112003056.GA351@ircssh-2.c.rugged-nimbus-611.internal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201111081520.670fc37f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.149.191]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:30:56AM +0000, Sargun Dhillon wrote:
-> On Wed, Nov 11, 2020 at 08:03:18PM +0000, Trond Myklebust wrote:
-> > On Wed, 2020-11-11 at 18:57 +0000, Sargun Dhillon wrote:
-> > > On Wed, Nov 11, 2020 at 02:38:11PM +0000, Trond Myklebust wrote:
-> > > > On Wed, 2020-11-11 at 11:12 +0000, Sargun Dhillon wrote:
-> > > > 
-> > > > The current code for setting server->cred was developed
-> > > > independently
-> > > > of fsopen() (and predates it actually). I'm fine with the change to
-> > > > have server->cred be the cred of the user that called fsopen().
-> > > > That's
-> > > > in line with what we used to do for sys_mount().
-> > > > 
-> > > Just curious, without FS_USERNS, how were you mounting NFSv4 in an
-> > > unprivileged user ns?
-> > 
-> > The code was originally developed on a 5.1 kernel. So all my testing
-> > has been with ordinary sys_mount() calls in a container that had
-> > CAP_SYS_ADMIN privileges.
-> > 
-> > > > However all the other stuff to throw errors when the user namespace
-> > > > is
-> > > > not init_user_ns introduces massive regressions.
-> > > > 
-> > > 
-> > > I can remove that and respin the patch. How do you feel about that? 
-> > > I would 
-> > > still like to keep the log lines though because it is a uapi change.
-> > > I am 
-> > > worried that someone might exercise this path with GSS and allow for
-> > > upcalls 
-> > > into the main namespaces by accident -- or be confused of why they're
-> > > seeing 
-> > > upcalls "in a different namespace".
-> > > 
-> > > Are you okay with picking up ("NFS: NFSv2/NFSv3: Use cred from
-> > > fs_context during 
-> > > mount") without any changes?
-> > 
-> > Why do we need the dprintk()s? It seems to me that either they should
-> > be reporting something that the user needs to know (in which case they
-> > should be real printk()s) or they are telling us something that we
-> > should already know. To me they seem to fit more in the latter
-> > category.
-> > 
-> > > 
-> > > I can respin ("NFSv4: Refactor NFS to use user namespaces") without:
-> > > /*
-> > >  * nfs4idmap is not fully isolated by user namespaces. It is
-> > > currently
-> > >  * only network namespace aware. If upcalls never happen, we do not
-> > >  * need to worry as nfs_client instances aren't shared between
-> > >  * user namespaces.
-> > >  */
-> > > if (idmap_userns(server->nfs_client->cl_idmap) != &init_user_ns && 
-> > >         !(server->caps & NFS_CAP_UIDGID_NOMAP)) {
-> > >         error = -EINVAL;
-> > >         errorf(fc, "Mount credentials are from non init user
-> > > namespace and ID mapping is enabled. This is not allowed.");
-> > >         goto error;
-> > > }
-> > > 
-> > > (and making it so we can call idmap_userns)
-> > > 
-> > 
-> > Yes. That would be acceptable. Again, though, I'd like to see the
-> > dprintk()s gone.
-> > 
-> 
-> I can drop the dprintks, but given this is a uapi change, does it make sense to 
-> pr_info_once? Especially, because this can have security impact?
 
-Spending 5 minutes thinking about this, I think that best go out in another patch
-that I can spin, and we can discuss there.
+
+On 2020/11/12 0:15, Jakub Kicinski wrote:
+> On Wed, 11 Nov 2020 11:16:37 +0800 tanhuazhong wrote:
+>> On 2020/11/11 9:28, Jakub Kicinski wrote:
+>>> On Mon, 9 Nov 2020 11:22:39 +0800 Huazhong Tan wrote:
+>>>> Since user may need to check the current configuration of the
+>>>> interrupt coalesce, so add debugfs support for query this info,
+>>>> which includes DIM profile, coalesce configuration of both software
+>>>> and hardware.
+>>>>
+>>>> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+>>>
+>>> Please create a file per vector so that users can just read it instead
+>>> of dumping the info into the logs.
+>>>    
+>>
+>> This patch should be removed from this series right now. Since this new
+>> read method needs some adaptations and verifications, and there maybe
+>> another better ways to dump this info.
+>>
+>>> Even better we should put as much of this information as possible into
+>>> the ethtool API. dim state is hardly hardware-specific.
+>>>    
+>>
+>> Should the ethtool API used to dump the hardware info? Could you provide
+>> some hints to do it?
+> 
+> Not necessarily hardware info but if there is a use case for inspecting
+> DIM state we can extend
+> 
+> coalesce_fill_reply() in net/ethtool/coalesce.c
+> 
+> to report it.
+> 
+
+ok, thanks.
+
+> .
+> 
+
