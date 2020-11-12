@@ -2,729 +2,695 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D662B11B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4052B118A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgKLWhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:37:05 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25690 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727798AbgKLWgi (ORCPT
+        id S1726293AbgKLWbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgKLWbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:36:38 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACMJg0V027580
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:36:36 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=Rh8cpzWpdjZTuIQH8NbumX3aWUH68wE7HwnmIzOoXOg=;
- b=ecBfW1RulLQcznB47azW7sr3XYaaIGa+uh7QYw8kbTROn7r8uRN1yofxobLb3HmP+m++
- nMY8sbC6gwAcPXH8nZFwLoP05NkYkCZqYiIEy5qCVqpKPmKuLqvrLDXSJ2cqAc0QXs/7
- CUdR23kzfclNoCGa+wcjuuE1fn/hNrW+9HY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34s7crjqbm-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:36:36 -0800
-Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 12 Nov 2020 14:36:28 -0800
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 76B07A7D24D; Thu, 12 Nov 2020 14:16:01 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v5 34/34] bpf: samples: do not touch RLIMIT_MEMLOCK
-Date:   Thu, 12 Nov 2020 14:15:43 -0800
-Message-ID: <20201112221543.3621014-35-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201112221543.3621014-1-guro@fb.com>
-References: <20201112221543.3621014-1-guro@fb.com>
+        Thu, 12 Nov 2020 17:31:12 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001A1C0613D1;
+        Thu, 12 Nov 2020 14:31:11 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4BA65A2A;
+        Thu, 12 Nov 2020 23:31:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1605220268;
+        bh=Ad7EYmzW3ua0TE4+oT17UI138MMKSYYnG/mNMlcM9Ds=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZaXapWY7I64qmitEKvRErisoRx3pE9vJP/EXIAwBUC2oMXtVlQa8NfBWxceXdue+G
+         QvAyKpWVNfhzUW/94p6eT1ZezsGlmSmNSIxjpqzij5eXVm8VnB30bcSynMSKPl7Qn9
+         0UsPemnMpbXI+hHDsWq67IJGKZ8IezfTKlfy/0m4=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v4 1/8] media: i2c: Add driver for RDACM21 camera module
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+References: <20201112162729.101384-1-jacopo+renesas@jmondi.org>
+ <20201112162729.101384-2-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <95e2e968-d77f-0838-641a-d81a6df6f0b5@ideasonboard.com>
+Date:   Thu, 12 Nov 2020 22:31:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-12_14:2020-11-12,2020-11-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 priorityscore=1501
- malwarescore=0 adultscore=0 suspectscore=13 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011120127
-X-FB-Internal: deliver
+In-Reply-To: <20201112162729.101384-2-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since bpf is not using rlimit memlock for the memory accounting
-and control, do not change the limit in sample applications.
+Hi Jacopo,
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- samples/bpf/map_perf_test_user.c    | 6 ------
- samples/bpf/offwaketime_user.c      | 6 ------
- samples/bpf/sockex2_user.c          | 2 --
- samples/bpf/sockex3_user.c          | 2 --
- samples/bpf/spintest_user.c         | 6 ------
- samples/bpf/syscall_tp_user.c       | 2 --
- samples/bpf/task_fd_query_user.c    | 5 -----
- samples/bpf/test_lru_dist.c         | 3 ---
- samples/bpf/test_map_in_map_user.c  | 6 ------
- samples/bpf/test_overhead_user.c    | 2 --
- samples/bpf/trace_event_user.c      | 2 --
- samples/bpf/tracex2_user.c          | 6 ------
- samples/bpf/tracex3_user.c          | 6 ------
- samples/bpf/tracex4_user.c          | 6 ------
- samples/bpf/tracex5_user.c          | 3 ---
- samples/bpf/tracex6_user.c          | 3 ---
- samples/bpf/xdp1_user.c             | 6 ------
- samples/bpf/xdp_adjust_tail_user.c  | 6 ------
- samples/bpf/xdp_monitor_user.c      | 5 -----
- samples/bpf/xdp_redirect_cpu_user.c | 6 ------
- samples/bpf/xdp_redirect_map_user.c | 6 ------
- samples/bpf/xdp_redirect_user.c     | 6 ------
- samples/bpf/xdp_router_ipv4_user.c  | 6 ------
- samples/bpf/xdp_rxq_info_user.c     | 6 ------
- samples/bpf/xdp_sample_pkts_user.c  | 6 ------
- samples/bpf/xdp_tx_iptunnel_user.c  | 6 ------
- samples/bpf/xdpsock_user.c          | 7 -------
- 27 files changed, 132 deletions(-)
+On 12/11/2020 16:27, Jacopo Mondi wrote:
+> The RDACM21 is a GMSL camera supporting 1280x1080 resolution images
+> developed by IMI based on an Omnivision OV10640 sensor, an Omnivision
+> OV490 ISP and a Maxim MAX9271 GMSL serializer.
+> 
+> The driver uses the max9271 library module, to maximize code reuse with
+> other camera module drivers using the same serializer, such as rdacm20.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  MAINTAINERS                 |  12 +
+>  drivers/media/i2c/Kconfig   |  13 +
+>  drivers/media/i2c/Makefile  |   2 +
+>  drivers/media/i2c/rdacm21.c | 539 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 566 insertions(+)
+>  create mode 100644 drivers/media/i2c/rdacm21.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index cef6b6090d76..9a5026fd6788 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14750,6 +14750,18 @@ F:	drivers/media/i2c/max9271.c
+>  F:	drivers/media/i2c/max9271.h
+>  F:	drivers/media/i2c/rdacm20.c
+>  
+> +RDACM21 Camera Sensor
+> +M:	Jacopo Mondi <jacopo+renesas@jmondi.org>
+> +M:	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> +M:	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> +M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> +L:	linux-media@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
+> +F:	drivers/media/i2c/max9271.c
+> +F:	drivers/media/i2c/max9271.h
+> +F:	drivers/media/i2c/rdacm21.c
+> +
+>  RDC R-321X SoC
+>  M:	Florian Fainelli <florian@openwrt.org>
+>  S:	Maintained
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index c64326ca331c..64f4316d11ad 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -1185,6 +1185,19 @@ config VIDEO_RDACM20
+>  	  This camera should be used in conjunction with a GMSL
+>  	  deserialiser such as the MAX9286.
+>  
+> +config VIDEO_RDACM21
+> +	tristate "IMI RDACM21 camera support"
+> +	depends on I2C
+> +	select V4L2_FWNODE
+> +	select VIDEO_V4L2_SUBDEV_API
+> +	select MEDIA_CONTROLLER
+> +	help
+> +	  This driver supports the IMI RDACM21 GMSL camera, used in
+> +	  ADAS systems.
+> +
+> +	  This camera should be used in conjunction with a GMSL
+> +	  deserialiser such as the MAX9286.
+> +
+>  config VIDEO_RJ54N1
+>  	tristate "Sharp RJ54N1CB0C sensor support"
+>  	depends on I2C && VIDEO_V4L2
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index f0a77473979d..f3641b58929d 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -122,6 +122,8 @@ obj-$(CONFIG_VIDEO_IMX355)	+= imx355.o
+>  obj-$(CONFIG_VIDEO_MAX9286)	+= max9286.o
+>  rdacm20-camera_module-objs	:= rdacm20.o max9271.o
+>  obj-$(CONFIG_VIDEO_RDACM20)	+= rdacm20-camera_module.o
+> +rdacm21-camera_module-objs	:= rdacm21.o max9271.o
+> +obj-$(CONFIG_VIDEO_RDACM21)	+= rdacm21-camera_module.o
+>  obj-$(CONFIG_VIDEO_ST_MIPID02) += st-mipid02.o
+>  
+>  obj-$(CONFIG_SDR_MAX2175) += max2175.o
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> new file mode 100644
+> index 000000000000..81529f17b562
+> --- /dev/null
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -0,0 +1,539 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * IMI RDACM21 GMSL Camera Driver
+> + *
+> + * Copyright (C) 2017-2020 Jacopo Mondi
+> + * Copyright (C) 2017-2019 Kieran Bingham
+> + * Copyright (C) 2017-2019 Laurent Pinchart
+> + * Copyright (C) 2017-2019 Niklas Söderlund
+> + * Copyright (C) 2016 Renesas Electronics Corporation
+> + * Copyright (C) 2015 Cogent Embedded, Inc.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/fwnode.h>
+> +#include <linux/init.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/videodev2.h>
+> +
+> +#include <media/v4l2-async.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-subdev.h>
+> +#include "max9271.h"
+> +
+> +#define OV10640_I2C_ADDRESS		0x30
+> +#define OV10640_ID_LOW			0xa6
+> +
+> +#define OV490_I2C_ADDRESS		0x24
+> +
+> +#define OV490_ISP_HSIZE_LOW		0x60
+> +#define OV490_ISP_HSIZE_HIGH		0x61
+> +#define OV490_ISP_VSIZE_LOW		0x62
+> +#define OV490_ISP_VSIZE_HIGH		0x63
+> +
+> +#define OV490_PID			0x300a
+> +#define OV490_VER			0x300b
+> +#define OV490_ID_VAL			0x0490
+> +#define OV490_ID(_p, _v)		((((_p) & 0xff) << 8) | ((_v) & 0xff))
+> +
+> +#define OV10640_PIXEL_RATE		(55000000)
+> +
+> +struct rdacm21_device {
+> +	struct device			*dev;
+> +	struct max9271_device		*serializer;
+> +	struct i2c_client		*isp;
+> +	struct v4l2_subdev		sd;
+> +	struct media_pad		pad;
+> +	struct v4l2_mbus_framefmt	fmt;
+> +	struct v4l2_ctrl_handler	ctrls;
+> +	u32				addrs[32];
+> +};
+> +
+> +static inline struct rdacm21_device *sd_to_rdacm21(struct v4l2_subdev *sd)
+> +{
+> +	return container_of(sd, struct rdacm21_device, sd);
+> +}
+> +
+> +static inline struct rdacm21_device *i2c_to_rdacm21(struct i2c_client *client)
+> +{
+> +	return sd_to_rdacm21(i2c_get_clientdata(client));
+> +}
+> +
+> +static const struct ov490_reg {
+> +	u16 reg;
+> +	u8 val;
+> +} ov490_regs_wizard[] = {
+> +	{0xfffd, 0x80},
+> +	{0xfffe, 0x82},
+> +	{0x0071, 0x11},
+> +	{0x0075, 0x11},
+> +	{0xfffe, 0x29},
+> +	{0x6010, 0x01},
+> +	/*
+> +	 * OV490 EMB line disable in YUV and RAW data,
+> +	 * NOTE: EMB line is still used in ISP and sensor
+> +	 */
+> +	{0xe000, 0x14},
+> +	{0xfffe, 0x28},
+> +	{0x6000, 0x04},
+> +	{0x6004, 0x00},
+> +	/*
+> +	 * PCLK polarity - useless due to silicon bug.
+> +	 * Use 0x808000bb register instead.
+> +	 */
+> +	{0x6008, 0x00},
+> +	{0xfffe, 0x80},
+> +	{0x0091, 0x00},
+> +	/* bit[3]=0 - PCLK polarity workaround. */
+> +	{0x00bb, 0x1d},
+> +	/* Ov490 FSIN: app_fsin_from_fsync */
+> +	{0xfffe, 0x85},
+> +	{0x0008, 0x00},
+> +	{0x0009, 0x01},
+> +	/* FSIN0 source. */
+> +	{0x000A, 0x05},
+> +	{0x000B, 0x00},
+> +	/* FSIN0 delay. */
+> +	{0x0030, 0x02},
+> +	{0x0031, 0x00},
+> +	{0x0032, 0x00},
+> +	{0x0033, 0x00},
+> +	/* FSIN1 delay. */
+> +	{0x0038, 0x02},
+> +	{0x0039, 0x00},
+> +	{0x003A, 0x00},
+> +	{0x003B, 0x00},
+> +	/* FSIN0 length. */
+> +	{0x0070, 0x2C},
+> +	{0x0071, 0x01},
+> +	{0x0072, 0x00},
+> +	{0x0073, 0x00},
+> +	/* FSIN1 length. */
+> +	{0x0074, 0x64},
+> +	{0x0075, 0x00},
+> +	{0x0076, 0x00},
+> +	{0x0077, 0x00},
+> +	{0x0000, 0x14},
+> +	{0x0001, 0x00},
+> +	{0x0002, 0x00},
+> +	{0x0003, 0x00},
+> +	/*
+> +	 * Load fsin0,load fsin1,load other,
+> +	 * It will be cleared automatically.
+> +	 */
+> +	{0x0004, 0x32},
+> +	{0x0005, 0x00},
+> +	{0x0006, 0x00},
+> +	{0x0007, 0x00},
+> +	{0xfffe, 0x80},
+> +	/* Sensor FSIN. */
+> +	{0x0081, 0x00},
+> +	/* ov10640 FSIN enable */
+> +	{0xfffe, 0x19},
+> +	{0x5000, 0x00},
+> +	{0x5001, 0x30},
+> +	{0x5002, 0x8c},
+> +	{0x5003, 0xb2},
+> +	{0xfffe, 0x80},
+> +	{0x00c0, 0xc1},
+> +	/* ov10640 HFLIP=1 by default */
+> +	{0xfffe, 0x19},
+> +	{0x5000, 0x01},
+> +	{0x5001, 0x00},
+> +	{0xfffe, 0x80},
+> +	{0x00c0, 0xdc},
+> +};
+> +
+> +static int ov490_read(struct rdacm21_device *dev, u16 reg, u8 *val)
+> +{
+> +	u8 buf[2] = { reg >> 8, reg & 0xff };
+> +	int ret;
+> +
+> +	ret = i2c_master_send(dev->isp, buf, 2);
+> +	if (ret == 2)
+> +		ret = i2c_master_recv(dev->isp, val, 1);
+> +
+> +	if (ret < 0) {
+> +		dev_dbg(dev->dev, "%s: register 0x%04x read failed (%d)\n",
+> +			__func__, reg, ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ov490_write(struct rdacm21_device *dev, u16 reg, u8 val)
+> +{
+> +	u8 buf[3] = { reg >> 8, reg & 0xff, val };
+> +	int ret;
+> +
+> +	dev_dbg(dev->dev, "%s: 0x%04x = 0x%02x\n", __func__, reg, val);
+> +
+> +	ret = i2c_master_send(dev->isp, buf, 3);
+> +	if (ret < 0) {
+> +		dev_err(dev->dev, "%s: register 0x%04x write failed (%d)\n",
+> +			__func__, reg, ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rdacm21_s_stream(struct v4l2_subdev *sd, int enable)
+> +{
+> +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
+> +
+> +	/*
+> +	 * Enable serial link now that the ISP provides a valid pixel clock
+> +	 * to start serializing video data on the GMSL link.
+> +	 */
+> +	return max9271_set_serial_link(dev->serializer, enable);
+> +}
+> +
+> +static int rdacm21_enum_mbus_code(struct v4l2_subdev *sd,
+> +				  struct v4l2_subdev_pad_config *cfg,
+> +				  struct v4l2_subdev_mbus_code_enum *code)
+> +{
+> +	if (code->pad || code->index > 0)
+> +		return -EINVAL;
+> +
+> +	code->code = MEDIA_BUS_FMT_YUYV8_1X16;
+> +
+> +	return 0;
+> +}
+> +
+> +static int rdacm21_get_fmt(struct v4l2_subdev *sd,
+> +			   struct v4l2_subdev_pad_config *cfg,
+> +			   struct v4l2_subdev_format *format)
+> +{
+> +	struct v4l2_mbus_framefmt *mf = &format->format;
+> +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
+> +
+> +	if (format->pad)
+> +		return -EINVAL;
+> +
+> +	mf->width		= dev->fmt.width;
+> +	mf->height		= dev->fmt.height;
+> +	mf->code		= MEDIA_BUS_FMT_YUYV8_1X16;
+> +	mf->colorspace		= V4L2_COLORSPACE_SRGB;
+> +	mf->field		= V4L2_FIELD_NONE;
+> +	mf->ycbcr_enc		= V4L2_YCBCR_ENC_601;
+> +	mf->quantization	= V4L2_QUANTIZATION_FULL_RANGE;
+> +	mf->xfer_func		= V4L2_XFER_FUNC_NONE;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct v4l2_subdev_video_ops rdacm21_video_ops = {
+> +	.s_stream	= rdacm21_s_stream,
+> +};
+> +
+> +static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
+> +	.enum_mbus_code = rdacm21_enum_mbus_code,
+> +	.get_fmt	= rdacm21_get_fmt,
+> +	.set_fmt	= rdacm21_get_fmt,
+> +};
+> +
+> +static struct v4l2_subdev_ops rdacm21_subdev_ops = {
+> +	.video		= &rdacm21_video_ops,
+> +	.pad		= &rdacm21_subdev_pad_ops,
+> +};
+> +
+> +static int ov490_initialize(struct rdacm21_device *dev)
+> +{
+> +	unsigned int ov490_pid_retry = 20;
+> +	unsigned int timeout;
+> +	u8 pid, ver, val;
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	/* Read OV490 Id to test communications. */
+> +pid_retry:
+> +	ret = ov490_write(dev, 0xfffd, 0x80);
+> +	ret = ov490_write(dev, 0xfffe, 0x80);
+> +	usleep_range(100, 150);
+> +
+> +	ret = ov490_read(dev, OV490_PID, &pid);
+> +	if (ret < 0) {
+> +		/* Give OV490 a few more cycles to exit from reset. */
+> +		if (ov490_pid_retry--) {
+> +			usleep_range(1000, 2000);
+> +			goto pid_retry;
+> +		}
+> +
+> +		dev_err(dev->dev, "OV490 PID read failed (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = ov490_read(dev, OV490_VER, &ver);
+> +	if (ret < 0) {
+> +		dev_err(dev->dev, "OV490 VERSION read failed (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	if (OV490_ID(pid, ver) != OV490_ID_VAL) {
+> +		dev_err(dev->dev, "OV490 ID mismatch: (0x%04x)\n",
+> +			OV490_ID(pid, ver));
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Wait for firmware boot by reading streamon status. */
+> +	ov490_write(dev, 0xfffd, 0x80);
+> +	ov490_write(dev, 0xfffe, 0x29);
+> +	usleep_range(100, 150);
+> +	for (timeout = 300; timeout > 0; timeout--) {
+> +		ov490_read(dev, 0xd000, &val);
+> +		if (val == 0x0c)
 
-diff --git a/samples/bpf/map_perf_test_user.c b/samples/bpf/map_perf_test=
-_user.c
-index 8b13230b4c46..9db949290a78 100644
---- a/samples/bpf/map_perf_test_user.c
-+++ b/samples/bpf/map_perf_test_user.c
-@@ -421,7 +421,6 @@ static void fixup_map(struct bpf_object *obj)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	int nr_cpus =3D sysconf(_SC_NPROCESSORS_ONLN);
- 	struct bpf_link *links[8];
- 	struct bpf_program *prog;
-@@ -430,11 +429,6 @@ int main(int argc, char **argv)
- 	char filename[256];
- 	int i =3D 0;
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	if (argc > 1)
- 		test_flags =3D atoi(argv[1]) ? : test_flags;
-=20
-diff --git a/samples/bpf/offwaketime_user.c b/samples/bpf/offwaketime_use=
-r.c
-index 5734cfdaaacb..73a986876c1a 100644
---- a/samples/bpf/offwaketime_user.c
-+++ b/samples/bpf/offwaketime_user.c
-@@ -95,18 +95,12 @@ static void int_exit(int sig)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_object *obj =3D NULL;
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
- 	int delay =3D 1, i =3D 0;
- 	char filename[256];
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	if (load_kallsyms()) {
- 		printf("failed to process /proc/kallsyms\n");
- 		return 2;
-diff --git a/samples/bpf/sockex2_user.c b/samples/bpf/sockex2_user.c
-index af925a5afd1d..bafa567b840c 100644
---- a/samples/bpf/sockex2_user.c
-+++ b/samples/bpf/sockex2_user.c
-@@ -16,7 +16,6 @@ struct pair {
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_object *obj;
- 	int map_fd, prog_fd;
- 	char filename[256];
-@@ -24,7 +23,6 @@ int main(int ac, char **argv)
- 	FILE *f;
-=20
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
--	setrlimit(RLIMIT_MEMLOCK, &r);
-=20
- 	if (bpf_prog_load(filename, BPF_PROG_TYPE_SOCKET_FILTER,
- 			  &obj, &prog_fd))
-diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
-index 7793f6a6ae7e..6ae99ecc766c 100644
---- a/samples/bpf/sockex3_user.c
-+++ b/samples/bpf/sockex3_user.c
-@@ -26,7 +26,6 @@ struct pair {
- int main(int argc, char **argv)
- {
- 	int i, sock, key, fd, main_prog_fd, jmp_table_fd, hash_map_fd;
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	const char *section;
-@@ -34,7 +33,6 @@ int main(int argc, char **argv)
- 	FILE *f;
-=20
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
--	setrlimit(RLIMIT_MEMLOCK, &r);
-=20
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/spintest_user.c b/samples/bpf/spintest_user.c
-index f090d0dc60d6..0d7e1e5a8658 100644
---- a/samples/bpf/spintest_user.c
-+++ b/samples/bpf/spintest_user.c
-@@ -10,7 +10,6 @@
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	char filename[256], symbol[256];
- 	struct bpf_object *obj =3D NULL;
- 	struct bpf_link *links[20];
-@@ -20,11 +19,6 @@ int main(int ac, char **argv)
- 	const char *section;
- 	struct ksym *sym;
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	if (load_kallsyms()) {
- 		printf("failed to process /proc/kallsyms\n");
- 		return 2;
-diff --git a/samples/bpf/syscall_tp_user.c b/samples/bpf/syscall_tp_user.=
-c
-index 76a1d00128fb..a0ebf1833ed3 100644
---- a/samples/bpf/syscall_tp_user.c
-+++ b/samples/bpf/syscall_tp_user.c
-@@ -115,7 +115,6 @@ static int test(char *filename, int num_progs)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	int opt, num_progs =3D 1;
- 	char filename[256];
-=20
-@@ -131,7 +130,6 @@ int main(int argc, char **argv)
- 		}
- 	}
-=20
--	setrlimit(RLIMIT_MEMLOCK, &r);
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-=20
- 	return test(filename, num_progs);
-diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query=
-_user.c
-index 4a74531dc403..0f2050ff54f9 100644
---- a/samples/bpf/task_fd_query_user.c
-+++ b/samples/bpf/task_fd_query_user.c
-@@ -290,16 +290,11 @@ static int test_debug_fs_uprobe(char *binary_path, =
-long offset, bool is_return)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {1024*1024, RLIM_INFINITY};
- 	extern char __executable_start;
- 	char filename[256], buf[256];
- 	__u64 uprobe_file_offset;
-=20
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
-=20
- 	if (load_kallsyms()) {
- 		printf("failed to process /proc/kallsyms\n");
-diff --git a/samples/bpf/test_lru_dist.c b/samples/bpf/test_lru_dist.c
-index b313dba4111b..c92c5c06b965 100644
---- a/samples/bpf/test_lru_dist.c
-+++ b/samples/bpf/test_lru_dist.c
-@@ -489,7 +489,6 @@ static void test_parallel_lru_loss(int map_type, int =
-map_flags, int nr_tasks)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	int map_flags[] =3D {0, BPF_F_NO_COMMON_LRU};
- 	const char *dist_file;
- 	int nr_tasks =3D 1;
-@@ -508,8 +507,6 @@ int main(int argc, char **argv)
-=20
- 	setbuf(stdout, NULL);
-=20
--	assert(!setrlimit(RLIMIT_MEMLOCK, &r));
--
- 	srand(time(NULL));
-=20
- 	nr_cpus =3D bpf_num_possible_cpus();
-diff --git a/samples/bpf/test_map_in_map_user.c b/samples/bpf/test_map_in=
-_map_user.c
-index 98656de56b83..472d65c70354 100644
---- a/samples/bpf/test_map_in_map_user.c
-+++ b/samples/bpf/test_map_in_map_user.c
-@@ -114,17 +114,11 @@ static void test_map_in_map(void)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_link *link =3D NULL;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	char filename[256];
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/test_overhead_user.c b/samples/bpf/test_overhead=
-_user.c
-index 94f74112a20e..c100fd46cd8a 100644
---- a/samples/bpf/test_overhead_user.c
-+++ b/samples/bpf/test_overhead_user.c
-@@ -125,12 +125,10 @@ static void unload_progs(void)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	char filename[256];
- 	int num_cpu =3D 8;
- 	int test_flags =3D ~0;
-=20
--	setrlimit(RLIMIT_MEMLOCK, &r);
-=20
- 	if (argc > 1)
- 		test_flags =3D atoi(argv[1]) ? : test_flags;
-diff --git a/samples/bpf/trace_event_user.c b/samples/bpf/trace_event_use=
-r.c
-index ac1ba368195c..9664749bf618 100644
---- a/samples/bpf/trace_event_user.c
-+++ b/samples/bpf/trace_event_user.c
-@@ -294,13 +294,11 @@ static void test_bpf_perf_event(void)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_object *obj =3D NULL;
- 	char filename[256];
- 	int error =3D 1;
-=20
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
--	setrlimit(RLIMIT_MEMLOCK, &r);
-=20
- 	signal(SIGINT, err_exit);
- 	signal(SIGTERM, err_exit);
-diff --git a/samples/bpf/tracex2_user.c b/samples/bpf/tracex2_user.c
-index 3e36b3e4e3ef..1626d51dfffd 100644
---- a/samples/bpf/tracex2_user.c
-+++ b/samples/bpf/tracex2_user.c
-@@ -116,7 +116,6 @@ static void int_exit(int sig)
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {1024*1024, RLIM_INFINITY};
- 	long key, next_key, value;
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
-@@ -125,11 +124,6 @@ int main(int ac, char **argv)
- 	int i, j =3D 0;
- 	FILE *f;
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/tracex3_user.c b/samples/bpf/tracex3_user.c
-index 70e987775c15..33e16ba39f25 100644
---- a/samples/bpf/tracex3_user.c
-+++ b/samples/bpf/tracex3_user.c
-@@ -107,7 +107,6 @@ static void print_hist(int fd)
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {1024*1024, RLIM_INFINITY};
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-@@ -127,11 +126,6 @@ int main(int ac, char **argv)
- 		}
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/tracex4_user.c b/samples/bpf/tracex4_user.c
-index e8faf8f184ae..cea399424bca 100644
---- a/samples/bpf/tracex4_user.c
-+++ b/samples/bpf/tracex4_user.c
-@@ -48,18 +48,12 @@ static void print_old_objects(int fd)
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	char filename[256];
- 	int map_fd, i, j =3D 0;
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK, RLIM_INFINITY)");
--		return 1;
--	}
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/tracex5_user.c b/samples/bpf/tracex5_user.c
-index c17d3fb5fd64..08dfdc77ad2a 100644
---- a/samples/bpf/tracex5_user.c
-+++ b/samples/bpf/tracex5_user.c
-@@ -34,7 +34,6 @@ static void install_accept_all_seccomp(void)
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_link *link =3D NULL;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-@@ -43,8 +42,6 @@ int main(int ac, char **argv)
- 	char filename[256];
- 	FILE *f;
-=20
--	setrlimit(RLIMIT_MEMLOCK, &r);
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/tracex6_user.c b/samples/bpf/tracex6_user.c
-index 33df9784775d..28296f40c133 100644
---- a/samples/bpf/tracex6_user.c
-+++ b/samples/bpf/tracex6_user.c
-@@ -175,15 +175,12 @@ static void test_bpf_perf_event(void)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	char filename[256];
- 	int i =3D 0;
-=20
--	setrlimit(RLIMIT_MEMLOCK, &r);
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	obj =3D bpf_object__open_file(filename, NULL);
- 	if (libbpf_get_error(obj)) {
-diff --git a/samples/bpf/xdp1_user.c b/samples/bpf/xdp1_user.c
-index c447ad9e3a1d..116e39f6b666 100644
---- a/samples/bpf/xdp1_user.c
-+++ b/samples/bpf/xdp1_user.c
-@@ -79,7 +79,6 @@ static void usage(const char *prog)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -117,11 +116,6 @@ int main(int argc, char **argv)
- 		return 1;
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	ifindex =3D if_nametoindex(argv[optind]);
- 	if (!ifindex) {
- 		perror("if_nametoindex");
-diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_=
-tail_user.c
-index ba482dc3da33..a70b094c8ec5 100644
---- a/samples/bpf/xdp_adjust_tail_user.c
-+++ b/samples/bpf/xdp_adjust_tail_user.c
-@@ -82,7 +82,6 @@ static void usage(const char *cmd)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -143,11 +142,6 @@ int main(int argc, char **argv)
- 		}
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK, RLIM_INFINITY)");
--		return 1;
--	}
--
- 	if (!ifindex) {
- 		fprintf(stderr, "Invalid ifname\n");
- 		return 1;
-diff --git a/samples/bpf/xdp_monitor_user.c b/samples/bpf/xdp_monitor_use=
-r.c
-index 03d0a182913f..49ebc49aefc3 100644
---- a/samples/bpf/xdp_monitor_user.c
-+++ b/samples/bpf/xdp_monitor_user.c
-@@ -687,7 +687,6 @@ static void print_bpf_prog_info(void)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_program *prog;
- 	int longindex =3D 0, opt;
- 	int ret =3D EXIT_FAILURE;
-@@ -719,10 +718,6 @@ int main(int argc, char **argv)
- 	}
-=20
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return ret;
--	}
-=20
- 	/* Remove tracepoint program when program is interrupted or killed */
- 	signal(SIGINT, int_exit);
-diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redire=
-ct_cpu_user.c
-index 6fb8dbde62c5..576411612523 100644
---- a/samples/bpf/xdp_redirect_cpu_user.c
-+++ b/samples/bpf/xdp_redirect_cpu_user.c
-@@ -765,7 +765,6 @@ static int load_cpumap_prog(char *file_name, char *pr=
-og_name,
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {10 * 1024 * 1024, RLIM_INFINITY};
- 	char *prog_name =3D "xdp_cpu_map5_lb_hash_ip_pairs";
- 	char *mprog_filename =3D "xdp_redirect_kern.o";
- 	char *redir_interface =3D NULL, *redir_map =3D NULL;
-@@ -804,11 +803,6 @@ int main(int argc, char **argv)
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	prog_load_attr.file =3D filename;
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
- 		return err;
-=20
-diff --git a/samples/bpf/xdp_redirect_map_user.c b/samples/bpf/xdp_redire=
-ct_map_user.c
-index 35e16dee613e..31131b6e7782 100644
---- a/samples/bpf/xdp_redirect_map_user.c
-+++ b/samples/bpf/xdp_redirect_map_user.c
-@@ -96,7 +96,6 @@ static void usage(const char *prog)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -135,11 +134,6 @@ int main(int argc, char **argv)
- 		return 1;
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	ifindex_in =3D if_nametoindex(argv[optind]);
- 	if (!ifindex_in)
- 		ifindex_in =3D strtoul(argv[optind], NULL, 0);
-diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_u=
-ser.c
-index 9ca2bf457cda..41d705c3a1f7 100644
---- a/samples/bpf/xdp_redirect_user.c
-+++ b/samples/bpf/xdp_redirect_user.c
-@@ -97,7 +97,6 @@ static void usage(const char *prog)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -136,11 +135,6 @@ int main(int argc, char **argv)
- 		return 1;
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	ifindex_in =3D if_nametoindex(argv[optind]);
- 	if (!ifindex_in)
- 		ifindex_in =3D strtoul(argv[optind], NULL, 0);
-diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_=
-ipv4_user.c
-index c2da1b51ff95..b5f03cb17a3c 100644
---- a/samples/bpf/xdp_router_ipv4_user.c
-+++ b/samples/bpf/xdp_router_ipv4_user.c
-@@ -625,7 +625,6 @@ static void usage(const char *prog)
-=20
- int main(int ac, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -670,11 +669,6 @@ int main(int ac, char **argv)
- 		return 1;
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
- 		return 1;
-=20
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_u=
-ser.c
-index caa4e7ffcfc7..74a2926eba08 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -450,7 +450,6 @@ static void stats_poll(int interval, int action, __u3=
-2 cfg_opt)
- int main(int argc, char **argv)
- {
- 	__u32 cfg_options=3D NO_TOUCH ; /* Default: Don't touch packet memory *=
-/
--	struct rlimit r =3D {10 * 1024 * 1024, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -474,11 +473,6 @@ int main(int argc, char **argv)
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	prog_load_attr.file =3D filename;
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
- 		return EXIT_FAIL;
-=20
-diff --git a/samples/bpf/xdp_sample_pkts_user.c b/samples/bpf/xdp_sample_=
-pkts_user.c
-index 4b2a300c750c..706475e004cb 100644
---- a/samples/bpf/xdp_sample_pkts_user.c
-+++ b/samples/bpf/xdp_sample_pkts_user.c
-@@ -109,7 +109,6 @@ static void usage(const char *prog)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
-@@ -143,11 +142,6 @@ int main(int argc, char **argv)
- 		return 1;
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK)");
--		return 1;
--	}
--
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 	prog_load_attr.file =3D filename;
-=20
-diff --git a/samples/bpf/xdp_tx_iptunnel_user.c b/samples/bpf/xdp_tx_iptu=
-nnel_user.c
-index a419bee151a8..1d4f305d02aa 100644
---- a/samples/bpf/xdp_tx_iptunnel_user.c
-+++ b/samples/bpf/xdp_tx_iptunnel_user.c
-@@ -155,7 +155,6 @@ int main(int argc, char **argv)
- 	struct bpf_prog_load_attr prog_load_attr =3D {
- 		.prog_type	=3D BPF_PROG_TYPE_XDP,
- 	};
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	int min_port =3D 0, max_port =3D 0, vip2tnl_map_fd;
- 	const char *optstr =3D "i:a:p:s:d:m:T:P:FSNh";
- 	unsigned char opt_flags[256] =3D {};
-@@ -254,11 +253,6 @@ int main(int argc, char **argv)
- 		}
- 	}
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		perror("setrlimit(RLIMIT_MEMLOCK, RLIM_INFINITY)");
--		return 1;
--	}
--
- 	if (!ifindex) {
- 		fprintf(stderr, "Invalid ifname\n");
- 		return 1;
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 1149e94ca32f..2fb5393c6388 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -1463,7 +1463,6 @@ static void enter_xsks_into_map(struct bpf_object *=
-obj)
-=20
- int main(int argc, char **argv)
- {
--	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
- 	bool rx =3D false, tx =3D false;
- 	struct xsk_umem_info *umem;
- 	struct bpf_object *obj;
-@@ -1473,12 +1472,6 @@ int main(int argc, char **argv)
-=20
- 	parse_command_line(argc, argv);
-=20
--	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
--		fprintf(stderr, "ERROR: setrlimit(RLIMIT_MEMLOCK) \"%s\"\n",
--			strerror(errno));
--		exit(EXIT_FAILURE);
--	}
--
- 	if (opt_num_xsks > 1)
- 		load_xdp_program(argv, &obj);
-=20
---=20
-2.26.2
+What is 0x0c here? Is it something we can better describe in a #define?
+
+> +			break;
+> +		mdelay(1);
+> +	}
+> +	if (!timeout) {
+> +		dev_err(dev->dev, "Timeout firmware boot wait\n");
+> +		return -ENODEV;
+> +	}
+> +	dev_dbg(dev->dev, "Firmware booted in %u msec\n", 300 - timeout);
+> +
+> +	/* Read OV10640 Id to test communications. */
+> +	ov490_write(dev, 0xfffd, 0x80);
+> +	ov490_write(dev, 0xfffe, 0x19);
+> +	usleep_range(100, 150);
+> +
+> +	ov490_write(dev, 0x5000, 0x01);
+> +	ov490_write(dev, 0x5001, 0x30);
+> +	ov490_write(dev, 0x5002, 0x0a);
+> +
+> +	ov490_write(dev, 0xfffe, 0x80);
+> +	usleep_range(100, 150);
+> +	ov490_write(dev, 0xc0, 0xc1);
+> +	ov490_write(dev, 0xfffe, 0x19);
+> +	usleep_range(1000, 1500);
+> +	ov490_read(dev, 0x5000, &val);
+> +	if (val != OV10640_ID_LOW) {
+> +		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
+> +		return -ENODEV;
+> +	}
+> +
+> +	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(ov490_regs_wizard); ++i) {
+> +		ret = ov490_write(dev, ov490_regs_wizard[i].reg,
+> +				  ov490_regs_wizard[i].val);
+> +		if (ret < 0) {
+> +			dev_err(dev->dev,
+> +				"%s: register %u (0x%04x) write failed (%d)\n",
+> +				__func__, i, ov490_regs_wizard[i].reg, ret);
+> +
+> +			return -EIO;
+> +		}
+> +
+> +		usleep_range(100, 150);
+> +	}
+> +
+> +	/*
+> +	 * The ISP is programmed with the content of a serial flash memory.
+> +	 * Read the firmware configuration to reflect it through the V4L2 APIs.
+> +	 */
+> +	ov490_write(dev, 0xfffd, 0x80);
+> +	ov490_write(dev, 0xfffe, 0x82);
+> +	usleep_range(100, 150);
+> +	ov490_read(dev, OV490_ISP_HSIZE_HIGH, &val);
+> +	dev->fmt.width = (val & 0xf) << 8;
+> +	ov490_read(dev, OV490_ISP_HSIZE_LOW, &val);
+> +	dev->fmt.width |= (val & 0xff);
+> +
+> +	ov490_read(dev, OV490_ISP_VSIZE_HIGH, &val);
+> +	dev->fmt.height = (val & 0xf) << 8;
+> +	ov490_read(dev, OV490_ISP_VSIZE_LOW, &val);
+> +	dev->fmt.height |= val & 0xff;
+> +
+> +	/* Set bus width to 12 bits [0:11] */
+> +	ov490_write(dev, 0xfffd, 0x80);
+> +	ov490_write(dev, 0xfffe, 0x28);
+> +	usleep_range(100, 150);
+> +	ov490_write(dev, 0x6009, 0x10);
+> +
+> +	dev_info(dev->dev, "Identified RDACM21 camera module\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static int rdacm21_initialize(struct rdacm21_device *dev)
+> +{
+> +	int ret;
+> +
+> +	/* Verify communication with the MAX9271: ping to wakeup. */
+> +	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
+> +	i2c_smbus_read_byte(dev->serializer->client);
+> +
+> +	/* Serial link disabled during config as it needs a valid pixel clock. */
+> +	ret = max9271_set_serial_link(dev->serializer, false);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Set GPO high to hold OV490 in reset during max9271 configuration. */
+> +	ret = max9271_set_gpios(dev->serializer, MAX9271_GPO);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Configure I2C bus at 105Kbps speed and configure GMSL link. */
+> +	ret = max9271_configure_i2c(dev->serializer,
+> +				    MAX9271_I2CSLVSH_469NS_234NS |
+> +				    MAX9271_I2CSLVTO_1024US |
+> +				    MAX9271_I2CMSTBT_105KBPS);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = max9271_configure_gmsl_link(dev->serializer);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
+> +	if (ret)
+> +		return ret;
+> +	dev->serializer->client->addr = dev->addrs[0];
+> +
+> +	/*
+> +	 * Release OV490 from reset and program address translation
+> +	 * before performing OV490 configuration.
+> +	 */
+> +	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPO);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = max9271_set_translation(dev->serializer, dev->addrs[1],
+> +				      OV490_I2C_ADDRESS);
+> +	if (ret)
+> +		return ret;
+> +	dev->isp->addr = dev->addrs[1];
+> +
+> +	ret = ov490_initialize(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Set reverse channel high threshold to increase noise immunity.
+> +	 *
+> +	 * This should be compensated by increasing the reverse channel
+> +	 * amplitude on the remote deserializer side.
+> +	 */
+> +	ret = max9271_set_high_threshold(dev->serializer, true);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int rdacm21_probe(struct i2c_client *client)
+> +{
+> +	struct rdacm21_device *dev;
+> +	struct fwnode_handle *ep;
+> +	int ret;
+> +
+> +	dev = devm_kzalloc(&client->dev, sizeof(*dev), GFP_KERNEL);
+> +	if (!dev)
+> +		return -ENOMEM;
+> +	dev->dev = &client->dev;
+> +
+> +	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
+> +				       GFP_KERNEL);
+> +	if (!dev->serializer)
+> +		return -ENOMEM;
+> +
+> +	dev->serializer->client = client;
+> +
+> +	ret = of_property_read_u32_array(client->dev.of_node, "reg",
+> +					 dev->addrs, 2);
+> +	if (ret < 0) {
+> +		dev_err(dev->dev, "Invalid DT reg property: %d\n", ret);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Create the dummy I2C client for the sensor. */
+> +	dev->isp = i2c_new_dummy_device(client->adapter, OV490_I2C_ADDRESS);
+> +	if (IS_ERR(dev->isp))
+> +		return PTR_ERR(dev->isp);
+> +
+> +	ret = rdacm21_initialize(dev);
+> +	if (ret < 0)
+> +		goto error;
+> +
+> +	/* Initialize and register the subdevice. */
+> +	v4l2_i2c_subdev_init(&dev->sd, client, &rdacm21_subdev_ops);
+> +	dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +
+> +	v4l2_ctrl_handler_init(&dev->ctrls, 1);
+> +	v4l2_ctrl_new_std(&dev->ctrls, NULL, V4L2_CID_PIXEL_RATE,
+> +			  OV10640_PIXEL_RATE, OV10640_PIXEL_RATE, 1,
+> +			  OV10640_PIXEL_RATE);
+> +	dev->sd.ctrl_handler = &dev->ctrls;
+> +
+> +	ret = dev->ctrls.error;
+> +	if (ret)
+> +		goto error_free_ctrls;
+> +
+> +	dev->pad.flags = MEDIA_PAD_FL_SOURCE;
+> +	dev->sd.entity.flags |= MEDIA_ENT_F_CAM_SENSOR;
+> +	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
+> +	if (ret < 0)
+> +		goto error_free_ctrls;
+> +
+> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev), NULL);
+> +	if (!ep) {
+> +		dev_err(&client->dev,
+> +			"Unable to get endpoint in node %pOF\n",
+> +			client->dev.of_node);
+> +		ret = -ENOENT;
+> +		goto error_free_ctrls;
+> +	}
+> +	dev->sd.fwnode = ep;
+> +
+> +	ret = v4l2_async_register_subdev(&dev->sd);
+> +	if (ret)
+> +		goto error_put_node;
+> +
+> +	return 0;
+> +
+> +error_put_node:
+> +	fwnode_handle_put(dev->sd.fwnode);
+> +error_free_ctrls:
+> +	v4l2_ctrl_handler_free(&dev->ctrls);
+> +error:
+> +	i2c_unregister_device(dev->isp);
+> +
+> +	return ret;
+> +}
+> +
+> +static int rdacm21_remove(struct i2c_client *client)
+> +{
+> +	struct rdacm21_device *dev = i2c_to_rdacm21(client);
+> +
+> +	fwnode_handle_put(dev->sd.fwnode);
+> +	v4l2_async_unregister_subdev(&dev->sd);
+> +	v4l2_ctrl_handler_free(&dev->ctrls);
+> +	i2c_unregister_device(dev->isp);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id rdacm21_of_ids[] = {
+> +	{ .compatible = "imi,rdacm21" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, rdacm21_of_ids);
+> +
+> +static struct i2c_driver rdacm21_i2c_driver = {
+> +	.driver	= {
+> +		.name	= "rdacm21",
+> +		.of_match_table = rdacm21_of_ids,
+> +	},
+> +	.probe_new	= rdacm21_probe,
+> +	.remove		= rdacm21_remove,
+> +};
+> +
+> +module_i2c_driver(rdacm21_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("GMSL Camera driver for RDACM21");
+> +MODULE_AUTHOR("Jacopo Mondi, Kieran Bingham, Laurent Pinchart, Niklas Söderlund, Vladimir Barinov");
+
+I think by this point you could chop MODULE_AUTHOR for this one down to
+just you ;-)
+
+
+A fairly arbitrary, and cursory
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+I'll be aiming to test this (series) as soon as I can too.
+
+--
+Kieran
+
+
+> +MODULE_LICENSE("GPL v2");
+> 
 
