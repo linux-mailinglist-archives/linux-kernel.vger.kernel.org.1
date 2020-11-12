@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6522B0456
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642CC2B03E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbgKLLum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:50:42 -0500
-Received: from smtp-outgoing.laposte.net ([160.92.124.99]:41927 "EHLO
-        smtp-outgoing.laposte.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728150AbgKLLlU (ORCPT
+        id S1728129AbgKLLce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:32:34 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7217 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727762AbgKLLc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:41:20 -0500
-X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Nov 2020 06:41:18 EST
-X-mail-filterd: {"version":"1.1.4","queueID":"4CX0042YDYz10MQ4","contextId":"ebf0f8af-98db-4cff-8680-f1f8c0471f72"}
-Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
-        by mlpnf0120.laposte.net (SMTP Server) with ESMTP id 4CX0042YDYz10MQ4;
-        Thu, 12 Nov 2020 12:35:32 +0100 (CET)
-X-mail-filterd: {"version":"1.1.4","queueID":"4CX0014104z10MQT","contextId":"0e7ca37c-c656-48c2-9d8a-64fa72269c86"}
-X-lpn-mailing: LEGIT
-X-lpn-spamrating: 36
-X-lpn-spamlevel: not-spam
-X-lpn-spamcause: OK, (-100)(0000)gggruggvucftvghtrhhoucdtuddrgedujedruddvfedgtdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecunfetrffquffvgfdpqfgfvfdpggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffogggtgfesthekredtredtjeenucfhrhhomhepgghinhgtvghnthcuufhtvghhlhoruceovhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtqeenucggtffrrghtthgvrhhnpeetiedvheeijedtgfelvdfghfevtdevjeehffdtueekueeiudduteejkedtueffteenucfkphepkeekrdduvddurddugeelrdegleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehrohhmuhgrlhgurdgsvghrghgvrhhivgdpihhnvghtpeekkedruddvuddrudegledrgeelpdhmrghilhhfrhhomhepvhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtpdhrtghpthhtohepsghgohhlrghsiigvfihskhhisegsrgihlhhisghrvgdrtghomhdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepvhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtpdhrtghpthhtoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpt
- hhtoheplhhinhhugidqmhgvughirghtvghksehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-Received: from romuald.bergerie (unknown [88.121.149.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mlpnf0120.laposte.net (SMTP Server) with ESMTPSA id 4CX0014104z10MQT;
-        Thu, 12 Nov 2020 12:35:29 +0100 (CET)
-Received: from radicelle.bergerie (radicelle.bergerie [192.168.124.12])
-        by romuald.bergerie (Postfix) with ESMTPS id 6D2913D20EA2;
-        Thu, 12 Nov 2020 09:48:56 +0100 (CET)
-Received: from vincent by radicelle.bergerie with local (Exim 4.94)
-        (envelope-from <vincent@radicelle.bergerie>)
-        id 1kd8Ho-0005k4-55; Thu, 12 Nov 2020 09:48:56 +0100
-From:   =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>
-To:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] net: ethernet: mtk-star-emac: return ok when xmit drops
-Date:   Thu, 12 Nov 2020 09:48:33 +0100
-Message-Id: <20201112084833.21842-1-vincent.stehle@laposte.net>
-X-Mailer: git-send-email 2.28.0
+        Thu, 12 Nov 2020 06:32:28 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWzwC4HsLzkjhh;
+        Thu, 12 Nov 2020 19:32:11 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 12 Nov 2020 19:32:13 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <robin.murphy@arm.com>, <joro@8bytes.org>
+CC:     <xiyou.wangcong@gmail.com>, <linuxarm@huawei.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <chenxiang66@hisilicon.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
+Date:   Thu, 12 Nov 2020 19:28:25 +0800
+Message-ID: <1605180509-9183-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=lpn-wlmd; t=1605181262; bh=ZqIXuytQtqNakK+uXCSUANljRRTY4GRLTUpiu+kdDGU=; h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding; b=TNdbcnQq5WonWKMYhSdC44fXdikMZVeTmScp4iQPA4v4oOPwRbOrJKQKYuSDtEyWZrz0Z9QKltkSjl0I/kc0c+459xMl1hOB3LY4XeVFqK5NjI/72zjaTQFxrvjdUH2V+OtdBl0G+tO6w85LmyFnmffRrrRv+lkg0Z9FJAAs+LbkZ8O+wrsYgBvh/LEFqaFxphTp/t3lKlSwPINLsCrpz5vfGNOEZ1gDa+w2jm9MBropTQV1APKGtd1N4pTgrWQNWKh15xkl2NwzyJNp/1ZNOu4Ade9LZ6BjJNnHy0Hq0x+XWzmTeRCWL7I6HMPDO8rK9RXuSQYdDIp4r5TmyyhPtw==;
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ndo_start_xmit() method must return NETDEV_TX_OK if the DMA mapping
-fails, after freeing the socket buffer.
-Fix the mtk_star_netdev_start_xmit() function accordingly.
+This series contains a patch to solve the longterm IOVA issue which
+leizhen originally tried to address at [0].
 
-Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
-Signed-off-by: Vincent Stehl=C3=A9 <vincent.stehle@laposte.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+A sieved kernel log is at the following, showing periodic dumps of IOVA
+sizes, per CPU and per depot bin, per IOVA size granule:
+https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/=
-ethernet/mediatek/mtk_star_emac.c
-index 13250553263b5..e56a26f797f28 100644
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -1053,7 +1053,7 @@ static int mtk_star_netdev_start_xmit(struct sk_buf=
-f *skb,
- err_drop_packet:
- 	dev_kfree_skb(skb);
- 	ndev->stats.tx_dropped++;
--	return NETDEV_TX_BUSY;
-+	return NETDEV_TX_OK;
- }
-=20
- /* Returns the number of bytes sent or a negative number on the first
---=20
-2.28.0
+Notice, for example, the following logs:
+[13175.355584] print_iova1 cpu_total=40135 depot_total=3866 total=44001
+[83483.457858] print_iova1 cpu_total=62532 depot_total=24476 total=87008
+
+Where total IOVA rcache size has grown from 44K->87K over a long time.
+
+Along with this patch, I included the following:
+- A smaller helper to clear all IOVAs for a domain
+- Change polarity of the IOVA magazine helpers
+- Small optimisation from Cong Wang included, which was never applied [1].
+  There was some debate of the other patches in that series, but this one
+  is quite straightforward.
+
+Differnces to v2:
+- Update commit message for patch 3/4
+
+Differences to v1:
+- Add IOVA clearing helper
+- Add patch to change polarity of mag helpers
+- Avoid logically-redundant extra variable in __iova_rcache_insert()
+
+[0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+[1] https://lore.kernel.org/linux-iommu/4b74d40a-22d1-af53-fcb6-5d70183705a8@huawei.com/
+
+Cong Wang (1):
+  iommu: avoid taking iova_rbtree_lock twice
+
+John Garry (3):
+  iommu/iova: Add free_all_cpu_cached_iovas()
+  iommu/iova: Avoid double-negatives in magazine helpers
+  iommu/iova: Flush CPU rcache for when a depot fills
+
+ drivers/iommu/iova.c | 66 +++++++++++++++++++++++++-------------------
+ 1 file changed, 38 insertions(+), 28 deletions(-)
+
+-- 
+2.26.2
 
