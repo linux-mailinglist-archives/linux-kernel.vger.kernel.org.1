@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8B92AFE49
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CCD2AFE46
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbgKLFgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:36:36 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7485 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728302AbgKLDfP (ORCPT
+        id S1728593AbgKLFgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728296AbgKLDeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:35:15 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CWnHN4bXnzhjlw;
-        Thu, 12 Nov 2020 11:33:04 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 11:33:03 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH V3 net-next 10/10] net: hns3: add ethtool priv-flag for EQ/CQ
-Date:   Thu, 12 Nov 2020 11:33:18 +0800
-Message-ID: <1605151998-12633-11-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605151998-12633-1-git-send-email-tanhuazhong@huawei.com>
-References: <1605151998-12633-1-git-send-email-tanhuazhong@huawei.com>
+        Wed, 11 Nov 2020 22:34:05 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43A1C0613D1;
+        Wed, 11 Nov 2020 19:34:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=qNzJGu3xdVaK6XYAoGRv6/dUvX+61VnpRBKnhJMD9cU=; b=L5XvDnfghP5wURZ11Fnax/Bi51
+        oQ8L5wWClvwFx4ljSp9uDd5yIpu0XYYFiq/iwy8+57OJDQj1cD2MQNzZ4wFFRvNaV1hZ7aF9t5Z6v
+        ZGnzmSwyNpPbTzkSoZD7hfGkZojWkizQ6083483I+jnOQl24dHR47vEiYVDa3GEEIk87vC/tcpm6a
+        C8u0McM7YdFXGkzCgQAb03z5bFg54mSsakAXov3Vmm8zprtVU2kkYxqUGWZwiY67CAH7A91T4Jh1l
+        vwDFn5hLVAaq0anysEOyr2scBYgyNtp5C3H30+KA/JXCO3GSqBqEQXRbhl0g4590ZDSdiWMI8JzHr
+        iaDogVqg==;
+Received: from [2601:1c0:6280:3f0::662d]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kd3N4-0003BZ-CB; Thu, 12 Nov 2020 03:34:02 +0000
+Subject: Re: [RFC PATCH v1 02/26] docs: reporting-bugs: Create a TLDR how to
+ report issues
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1601541165.git.linux@leemhuis.info>
+ <dc293f6d4f71ea827c861c64e88dfa0316f1d934.1601541165.git.linux@leemhuis.info>
+ <8f3fce56-fdc4-c248-05ec-4fda1ee6fc54@infradead.org>
+ <2b87f58f-ca74-6c73-fb7a-853cca2751bb@leemhuis.info>
+ <6a8ffd01-ff1c-284b-42ac-23cd164e0873@leemhuis.info>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7eb95400-5ff1-ef14-d03f-b4d0f7482ac5@infradead.org>
+Date:   Wed, 11 Nov 2020 19:33:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <6a8ffd01-ff1c-284b-42ac-23cd164e0873@leemhuis.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a control private flag in ethtool for switching EQ/CQ mode.
+On 11/11/20 7:24 AM, Thorsten Leemhuis wrote:
+> Am 03.10.20 um 09:27 schrieb Thorsten Leemhuis:
+>> Randy, many thanks for looking through this, you feedback is much
+>> appreciated! Consider all the obvious spelling and grammatical mistakes
+>> you pointed out fixed, I won't mention all of them in this reply to keep
+>> things easier to follow.
+>>
+>> Am 02.10.20 um 04:32 schrieb Randy Dunlap:
+>>> On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
+>>> […]
+>>>> +<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/MAINTAINERS>`_
+>>>> +how developers of that particular area expect to be told about issues; note,
+>>>     for how
+>>> ?
+>> Not sure myself, but I guess you're right and thus followed your advice :-D
+> 
+> I'm preparing to send v2 and was a bit unhappy with this and another section when seeing it again after weeks. In the end I reshuffled and rewrote significant parts of it, see below.
+> 
+> Randy, would be great if you could take another look, but no pressure: just ignore it, if you lack the time or energy.
+> 
+> ```
+> The short guide (aka TL;DR)
+> ===========================
+> 
+> If you're facing multiple issues with the Linux kernel at once, report each separately to its developers. Try your best guess which kernel part might be causing the issue. Check the :ref:`MAINTAINERS <maintainers>` file for how its developers expect to be told about issues. Note, it's rarely `bugzilla.kernel.org <https://bugzilla.kernel.org/>`_, as in almost all cases the report needs to be sent by email!
+> 
+> Check the destination thoroughly for existing reports; also search the LKML archives and the web. Join existing discussion if you find matches. If you don't find any, install `the latest Linux mainline kernel <https://kernel.org/>`_. Make sure it's vanilla, thus is not patched or using add-on kernel modules. Also ensure the kernel is running in a healthy environment and is not already tainted before the issue occurs.
+> 
+> If you can reproduce your issue with the mainline kernel, send a report to the destination you determined earlier. Make sure it includes all relevant information, which in case of a regression should mention the change that's causing it which can often can be found with a bisection. Also ensure the report reaches all people that need to know about it, for example the security team, the stable maintainers or the developers of the patch that causes a regression. Once the report it out, answer any questions that might be raised and help where you can. That includes keeping the ball rolling: every time a new rc1 mainline kernel is released, check if the issue is still happening there and attach a status update to your initial report.
+> 
+> If you can not reproduce the issue with the mainline kernel, consider sticking with it; if you'd like to use an older version line and want to see it fixed there, first make sure it's still supported. Install its latest release as vanilla kernel. If you cannot reproduce the issue there, try to find the commit that fixed it in mainline or any discussion preceding it: those will often mention if backporting is planed or considered impassable. If backporting was not discussed, ask if it's in the cards. In case you don't find
 
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  2 ++
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 19 +++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  2 ++
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 24 ++++++++++++++++++++++
- 4 files changed, 45 insertions(+), 2 deletions(-)
+                                       impossible.  ??
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index 345e8a4..a452874 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -719,6 +719,8 @@ struct hnae3_roce_private_info {
- 
- enum hnae3_pflag {
- 	HNAE3_PFLAG_DIM_ENABLE,
-+	HNAE3_PFLAG_TX_CQE_MODE,
-+	HNAE3_PFLAG_RX_CQE_MODE,
- 	HNAE3_PFLAG_MAX
- };
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index d1243ea..93f7731 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -4144,6 +4144,7 @@ static void hns3_info_show(struct hns3_nic_priv *priv)
- 
- static void hns3_state_init(struct hnae3_handle *handle)
- {
-+	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(handle->pdev);
- 	struct net_device *netdev = handle->kinfo.netdev;
- 	struct hns3_nic_priv *priv = netdev_priv(netdev);
- 
-@@ -4151,10 +4152,24 @@ static void hns3_state_init(struct hnae3_handle *handle)
- 	set_bit(HNS3_NIC_STATE_DIM_ENABLE, &priv->state);
- 	handle->priv_flags |= BIT(HNAE3_PFLAG_DIM_ENABLE);
- 	set_bit(HNAE3_PFLAG_DIM_ENABLE, &handle->supported_pflags);
-+
-+	/* device version above V3(include V3), GL can switch CQ/EQ period
-+	 * mode.
-+	 */
-+	if (ae_dev->dev_version >= HNAE3_DEVICE_VERSION_V3) {
-+		set_bit(HNAE3_PFLAG_TX_CQE_MODE, &handle->supported_pflags);
-+		set_bit(HNAE3_PFLAG_RX_CQE_MODE, &handle->supported_pflags);
-+	}
-+
-+	if (priv->tx_cqe_mode == DIM_CQ_PERIOD_MODE_START_FROM_CQE)
-+		handle->priv_flags |= BIT(HNAE3_PFLAG_TX_CQE_MODE);
-+
-+	if (priv->rx_cqe_mode == DIM_CQ_PERIOD_MODE_START_FROM_CQE)
-+		handle->priv_flags |= BIT(HNAE3_PFLAG_RX_CQE_MODE);
- }
- 
--static void hns3_set_cq_period_mode(struct hns3_nic_priv *priv,
--				    enum dim_cq_period_mode mode, bool is_tx)
-+void hns3_set_cq_period_mode(struct hns3_nic_priv *priv,
-+			     enum dim_cq_period_mode mode, bool is_tx)
- {
- 	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(priv->ae_handle->pdev);
- 	struct hnae3_handle *handle = priv->ae_handle;
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index c6c082a..ecdb544 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -635,4 +635,6 @@ void hns3_dbg_uninit(struct hnae3_handle *handle);
- void hns3_dbg_register_debugfs(const char *debugfs_dir_name);
- void hns3_dbg_unregister_debugfs(void);
- void hns3_shinfo_pack(struct skb_shared_info *shinfo, __u32 *size);
-+void hns3_set_cq_period_mode(struct hns3_nic_priv *priv,
-+			     enum dim_cq_period_mode mode, bool is_tx);
- #endif
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 7462d43..ba9c0fe 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -417,8 +417,32 @@ static void hns3_update_dim_state(struct net_device *netdev, bool enable)
- 	hns3_update_state(netdev, HNS3_NIC_STATE_DIM_ENABLE, enable);
- }
- 
-+static void hns3_update_cqe_mode(struct net_device *netdev, bool enable,
-+				 bool is_tx)
-+{
-+	struct hns3_nic_priv *priv = netdev_priv(netdev);
-+	enum dim_cq_period_mode mode;
-+
-+	mode = enable ? DIM_CQ_PERIOD_MODE_START_FROM_CQE :
-+		DIM_CQ_PERIOD_MODE_START_FROM_EQE;
-+
-+	hns3_set_cq_period_mode(priv, mode, is_tx);
-+}
-+
-+static void hns3_update_tx_cqe_mode(struct net_device *netdev, bool enable)
-+{
-+	hns3_update_cqe_mode(netdev, enable, true);
-+}
-+
-+static void hns3_update_rx_cqe_mode(struct net_device *netdev, bool enable)
-+{
-+	hns3_update_cqe_mode(netdev, enable, false);
-+}
-+
- static const struct hns3_pflag_desc hns3_priv_flags[HNAE3_PFLAG_MAX] = {
- 	{ "dim_enable",		hns3_update_dim_state },
-+	{ "tx_cqe_mode",	hns3_update_tx_cqe_mode },
-+	{ "rx_cqe_mode",	hns3_update_rx_cqe_mode },
- };
- 
- static int hns3_get_sset_count(struct net_device *netdev, int stringset)
+ any commits or a preceding discussion, see the Linux-stable mailing list archives for existing reports, as it might be a regression specific to the version line. If it is, it round about needs to be reported like a problem in mainline (including the bisection).
+
+                                 maybe:  it still needs to be reported like
+
+> 
+> If you reached this point without a solution, ask for advice one the subsystem's mailing list.
+> ```
+
+Otherwise it looks good to me.
+
+thanks.
 -- 
-2.7.4
+~Randy
 
