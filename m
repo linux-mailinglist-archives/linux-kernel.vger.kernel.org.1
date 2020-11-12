@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8872B0B9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AC32B0B9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgKLRuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:50:17 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:47308 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgKLRuR (ORCPT
+        id S1726311AbgKLRvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:51:17 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51890 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgKLRvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:50:17 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACHhxkE131016;
-        Thu, 12 Nov 2020 17:50:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Z2reEuCkpstqaBBNhX/2PTpH6NqHIAapVSGlkSl0flQ=;
- b=nmkeP4O/EvGBhXJy+2JDWqIn5K4gj4EXveDX+8SmHiGVpNUO+L3z3m1Q49AOnt5ZAc4w
- HGESyNGIupvu3Jth/Vc9HKfM3wVaHXIxgiUXvSWHzx/Fn/+8PuXfdwsCGnnx/+XkNiav
- Zs22psb7bAca/IdZs5F2XC6CjtyS5ZIqaPR3iI5BnZ3cjYUw963r9K2Ysecdbhb3fn9w
- RgvDluQiBn6ny3TzpvNwiTzAevPYkaVkMSdlGs12OZCeYpSYaTa9q6LH9FFgP9ydw6rL
- qwW+Leef1+on4EGqWBEQxvTAKQwesV/OHASl3obeH3Wro28/W+/X5Rz3JBRg3C5HZNQY Xg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34nh3b6ya5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 17:50:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACHj0q2010693;
-        Thu, 12 Nov 2020 17:50:08 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34p5g3dpcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 17:50:08 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ACHo6CE031040;
-        Thu, 12 Nov 2020 17:50:06 GMT
-Received: from [10.74.105.253] (/10.74.105.253)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Nov 2020 09:50:05 -0800
-Subject: Re: [PATCH 06/25] soc: ti: knav_qmss_queue: Remove set but unchecked
- variable 'ret'
-To:     Lee Jones <lee.jones@linaro.org>, Tero Kristo <t-kristo@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <ssantosh@kernel.org>, tomi.valkeinen@ti.com,
-        kishon@ti.com, dmurphy@ti.com, s-anna@ti.com
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <20201103152838.1290217-7-lee.jones@linaro.org>
- <20201112103130.GD1997862@dell> <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
- <20201112132145.GI1997862@dell>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
-Date:   Thu, 12 Nov 2020 09:50:03 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        Thu, 12 Nov 2020 12:51:17 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACHpBfn054950;
+        Thu, 12 Nov 2020 11:51:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605203471;
+        bh=m0KtljefQbWNsOKhLw8VLEpYtJ1dCRYsl/oIixMChdE=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=VZaXx665vQ65GG1RS31qSkxW1vdmukyipkiJQJSc/PHSaqNysXOTQ/oNUDfAwUHuK
+         +w/5KPsZobFIuFvCxCIzFnJPqXD2XLEjUfnaSBqsIraAJYlpISQiarJfcF419tROqX
+         QiQeRPmIIXClozOdSrgGmbpPnLITR8rr2wkVyLyU=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACHpBjC022555
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 11:51:11 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 11:51:11 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 11:51:11 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACHpBTo045694;
+        Thu, 12 Nov 2020 11:51:11 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Faiz Abbas <faiz_abbas@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, <catalin.marinas@arm.com>,
+        <t-kristo@ti.com>, <will@kernel.org>
+Subject: Re: [PATCH v3] arm64: defconfig: Enable GPIO and I2C configs for TI's J721e platform
+Date:   Thu, 12 Nov 2020 11:51:10 -0600
+Message-ID: <160520343230.32498.5408335003969545426.b4-ty@ti.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201103190821.30937-1-faiz_abbas@ti.com>
+References: <20201103190821.30937-1-faiz_abbas@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112132145.GI1997862@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1011 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120105
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 5:21 AM, Lee Jones wrote:
-> On Thu, 12 Nov 2020, Tero Kristo wrote:
+On Wed, 4 Nov 2020 00:38:21 +0530, Faiz Abbas wrote:
+> Add configs to enable regulators that supply power to the SD card
+> on TI's J721e platform. These regulators are controlled by either
+> SoC gpios or gpios over i2c expander.
 > 
->> On 12/11/2020 12:31, Lee Jones wrote:
->>> Cc:ing a few people I know.
->>>
->>> On Tue, 03 Nov 2020, Lee Jones wrote:
->>>
->>>> Fixes the following W=1 kernel build warning(s):
->>>>
->>>>    drivers/soc/ti/knav_qmss_queue.c: In function ‘knav_setup_queue_pools’:
->>>>    drivers/soc/ti/knav_qmss_queue.c:1310:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
->>>>
->>>> Cc: Santosh Shilimkar <ssantosh@kernel.org>
->>>> Cc: Sandeep Nair <sandeep_n@ti.com>
->>>> Cc: Cyril Chemparathy <cyril@ti.com>
->>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
->>>> ---
->>>>    drivers/soc/ti/knav_qmss_queue.c | 3 +--
->>>>    1 file changed, 1 insertion(+), 2 deletions(-)
->>>
->>> Any idea who will take these TI patches?
->>>
->>> https://urldefense.com/v3/__https://lore.kernel.org/linux-arm-kernel/20201111052540.GH173948@builder.lan/__;!!GqivPVa7Brio!KEeMCT-GwmLNnDFCOqxnunXXiCrCpj3ZFXpiMzj55VmlOJ-FVhKmom-O7sq-CkL8s0sjAg$
->>>
->>
->> (Dropped a few inactive emails from delivery.)
->>
->> Santosh is the maintainer for the subsystem, so my vote would go for him.
+> Changes to vmlinux size:
+> Before:
+>    text	    data     bss       dec       hex	  filename
+> 20219067  10875634  523924   31618625   1e27641	  vmlinux
 > 
-> Thanks for your prompt reply Tero.
-> 
-> It looks as though Santosh has been on Cc since the start.  He must
-> just be busy.  I'll give him a little while longer before submitting a
-> [RESEND].
-> 
-Go ahead and re-post. These seems to be trivial so will pick
-it up.
+> [...]
 
+Hi Faiz Abbas,
+
+I have applied the following to branch ti-k3-config-next on [1].
+Thank you!
+
+[1/1] arm64: defconfig: Enable GPIO and I2C configs for TI's J721e platform
+      commit: 6b133f475a97a0839f02e3c0b937886b9adc2933
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
 Regards,
-Santosh
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
