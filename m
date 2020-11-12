@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D492B064F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F7E2B0652
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgKLNVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLNVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:21:49 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 319A8C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:21:49 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a65so5510917wme.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:21:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=t9OC41HUdp70sOva3B5Vc7/7aPmDJPqNV434fyKFWd8=;
-        b=ChYlv/qgnWkGwE4gX1d9DmQt6LtEp0m6NV8y03tQDfbaQqzh4kPhBJ36iK0zIABNs/
-         GrgZFdcJ6+LMqBqUK4Mn3NcWSi9Mpsa5apDJzuHmT+dFLVi4LawGT9DkjLcC3lu6k2Ah
-         OEAuBZ1qCpotgOqL0kBlV41VUzUBesC3j1Jr+8BASn1bGwrTMY82iV2xrgoEnY2FK735
-         14qrCGNH9020dbVa2cMzCy+bQZUOU3dhQBKKJSlF9da5hLLZ1Wed68SfC/oCYNLX/k0t
-         cV/+x21+8O5GZ3IstzC6rITx1cHmOcol9ZSMZSoHrFhdI9TXEuyKmzoDiCrdJyjkFfqo
-         a7gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=t9OC41HUdp70sOva3B5Vc7/7aPmDJPqNV434fyKFWd8=;
-        b=kTKhEB8DTTh253XyWZqrlKgahQ8iCUFR9Fi67pVhoYOCWeW0C8WcDzyOeAhOt6B83o
-         ZH+vNNJe1XUvnFZkAAxrtHZxz/V8EDA8JugWmYTIobjeUbSwj+SkqBCU8Nn9V5EGUdHP
-         P6BqjtL1e5ydsB8IYhd2V+fSX/Wdb4g/h8XZA+gj3ZA7rFzhr0CF0MBLzbkS75SPOKyk
-         pSCTsMiV5V7JFGsj7zw/BrGunw6n8+qQfl4dPcWxxau+1+z7SYQ1bzZb1DRDy0cI6hyk
-         4313lcx01jt6WVuJH+gD7vU8JYc+cYXwomIB94LFV1VslnFPVyvgZpPP4t9tI+dIUbXJ
-         xd6w==
-X-Gm-Message-State: AOAM530SQdB1axEqDwWLW+IdZd4HuXvoo5JQGQ8AiDddijcN5y3mPNMU
-        /6vOqVWMeD6l+0SNVSbqtOY2Cw==
-X-Google-Smtp-Source: ABdhPJx+wFwlN4lWlCgL8nnuzrTwqxxyou9TYpunw0FdVf+yGZpzZZ69I4ffNfwwUzhYAludRve/OQ==
-X-Received: by 2002:a1c:3d4:: with SMTP id 203mr9441354wmd.52.1605187307871;
-        Thu, 12 Nov 2020 05:21:47 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id g66sm6496468wmg.37.2020.11.12.05.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 05:21:47 -0800 (PST)
-Date:   Thu, 12 Nov 2020 13:21:45 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tero Kristo <t-kristo@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <ssantosh@kernel.org>, tomi.valkeinen@ti.com,
-        kishon@ti.com, dmurphy@ti.com, s-anna@ti.com
-Subject: Re: [PATCH 06/25] soc: ti: knav_qmss_queue: Remove set but unchecked
- variable 'ret'
-Message-ID: <20201112132145.GI1997862@dell>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <20201103152838.1290217-7-lee.jones@linaro.org>
- <20201112103130.GD1997862@dell>
- <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
+        id S1728365AbgKLNWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:22:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727646AbgKLNWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:22:05 -0500
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3097D22201;
+        Thu, 12 Nov 2020 13:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605187324;
+        bh=E03FFk10N59RLyLQTqGfmVdga98+suTAIqgHYMBC3Mo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=TWJa+JBdlE7HgqNQbOvPjNK2xscH2t3RGe207eeU8sPLUUhkrR1FsvOR1/fOsGC4y
+         BFJO9+b7zN90OEXAPfmvu3S/fWd7D9mdh1GPhg35k0BCrwYxOgxhjWHXE/sECLH+c5
+         2bbXclKRGWIxrpZ+taFYcUfHtv4yTMNMrBhbyGiU=
+Message-ID: <2e81958e92563a568f2b9b5b4d23c4c7bab52f1c.camel@kernel.org>
+Subject: Re: [PATCH] ceph: fix race in concurrent __ceph_remove_cap
+ invocations
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "Yan, Zheng" <ukernel@gmail.com>,
+        Luis Henriques <lhenriques@suse.de>
+Cc:     Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 12 Nov 2020 08:22:02 -0500
+In-Reply-To: <CAAM7YA=eO-1AdgPJk6-3=FbDFtHJ9e_Rydo+7LDHqVwxtk1-jA@mail.gmail.com>
+References: <20201112104512.17472-1-lhenriques@suse.de>
+         <CAAM7YA=eO-1AdgPJk6-3=FbDFtHJ9e_Rydo+7LDHqVwxtk1-jA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020, Tero Kristo wrote:
-
-> On 12/11/2020 12:31, Lee Jones wrote:
-> > Cc:ing a few people I know.
+On Thu, 2020-11-12 at 20:43 +0800, Yan, Zheng wrote:
+> On Thu, Nov 12, 2020 at 6:48 PM Luis Henriques <lhenriques@suse.de> wrote:
 > > 
-> > On Tue, 03 Nov 2020, Lee Jones wrote:
-> > 
-> > > Fixes the following W=1 kernel build warning(s):
-> > > 
-> > >   drivers/soc/ti/knav_qmss_queue.c: In function ‘knav_setup_queue_pools’:
-> > >   drivers/soc/ti/knav_qmss_queue.c:1310:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-> > > 
-> > > Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> > > Cc: Sandeep Nair <sandeep_n@ti.com>
-> > > Cc: Cyril Chemparathy <cyril@ti.com>
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >   drivers/soc/ti/knav_qmss_queue.c | 3 +--
-> > >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > Any idea who will take these TI patches?
-> > 
-> > https://lore.kernel.org/linux-arm-kernel/20201111052540.GH173948@builder.lan/
+> > A NULL pointer dereference may occur in __ceph_remove_cap with some of the
+> > callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
+> > remove_session_caps_cb.  These aren't protected against the concurrent
+> > execution of __ceph_remove_cap.
 > > 
 > 
-> (Dropped a few inactive emails from delivery.)
+> they are protected by session mutex, never get executed concurrently
 > 
-> Santosh is the maintainer for the subsystem, so my vote would go for him.
 
-Thanks for your prompt reply Tero.
+Maybe not concurrently with one another, but the s_mutex is _not_ held
+when __ceph_remove_caps is called from ceph_evict_inode. We can't rely
+on it to protect this.
 
-It looks as though Santosh has been on Cc since the start.  He must
-just be busy.  I'll give him a little while longer before submitting a
-[RESEND].
+> > Since the callers of this function hold the i_ceph_lock, the fix is simply
+> > a matter of returning immediately if caps->ci is NULL.
+> > 
+> > Based on a patch from Jeff Layton.
+> > 
+> > Cc: stable@vger.kernel.org
+> > URL: https://tracker.ceph.com/issues/43272
+> > Link: https://www.spinics.net/lists/ceph-devel/msg47064.html
+> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > ---
+> >  fs/ceph/caps.c | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> > index ded4229c314a..443f164760d5 100644
+> > --- a/fs/ceph/caps.c
+> > +++ b/fs/ceph/caps.c
+> > @@ -1140,12 +1140,19 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
+> >  {
+> >         struct ceph_mds_session *session = cap->session;
+> >         struct ceph_inode_info *ci = cap->ci;
+> > -       struct ceph_mds_client *mdsc =
+> > -               ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
+> > +       struct ceph_mds_client *mdsc;
+> >         int removed = 0;
+> > 
+> > +       /* 'ci' being NULL means he remove have already occurred */
+> > +       if (!ci) {
+> > +               dout("%s: cap inode is NULL\n", __func__);
+> > +               return;
+> > +       }
+> > +
+> >         dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
+> > 
+> > +       mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
+> > +
+> >         /* remove from inode's cap rbtree, and clear auth cap */
+> >         rb_erase(&cap->ci_node, &ci->i_caps);
+> >         if (ci->i_auth_cap == cap) {
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jeff Layton <jlayton@kernel.org>
+
