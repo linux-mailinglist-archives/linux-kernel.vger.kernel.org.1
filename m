@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8F22B07F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C0D2B07FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgKLO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:58:06 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43845 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLO6D (ORCPT
+        id S1728606AbgKLO7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:59:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728586AbgKLO71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:58:03 -0500
-Received: by mail-ot1-f67.google.com with SMTP id y22so5805403oti.10;
-        Thu, 12 Nov 2020 06:58:02 -0800 (PST)
+        Thu, 12 Nov 2020 09:59:27 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750D8C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 06:59:27 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id c129so5593101yba.8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 06:59:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0aq79DpetUFuuK65Uh9fN+Pnrdo4oqkEr2aH1RwjOWw=;
+        b=BfHScOOkZw5r7fB4Az1/LlAJ8NbGXZyG6LY4rzveZG7wfFqzY+9gS/tPysDo3UCk+8
+         KYQLbSReMdpguY3xMJRtDHNodNDTSfh2sPO3104eTjj482sZlt3f2MP2XVA0NxBMVQjn
+         awbmnTOUou3xxTjLvdkk3/pk06mjNuoIZdQCVpRwL3muNt12C06Ps34V+AKA0VTssvYu
+         PTPJ6JdOzQ96TToUUaOgMNmMBXbJObBTR9w0fH1qZcY83J9RCkf5C17muol91EXtXieW
+         sUFfoBbvI1zhTx2Y7tYc1H2nxG5FT7Rc+oP2nzCk/WppjdgdaFbz6hH9CFWhtYeF03oX
+         6YHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rzomR2457JzNPEkc4wmRbKkcWEmWqpBD7KuvF89fibM=;
-        b=ghUraP7ZnIkdJ9sMtw6WqCmDu6dJ35enRfDS6nUzFILgfxCx3N+Q9Q0j4vw5NXUAor
-         87HjHIAxIqTx0oPyWgi5jEJTg+Pfqb9OGH1RaYefJAVWek2UZMSGLGxoqi2wvFeGNiLV
-         12En1GE19MmoEF0uGShZTi0AsFqYai2vR6/8GAZyDZN+Anv/dZILqt1Jt4Wbt+DjbC67
-         5GPZJIVr/wfuzSR7lxNtDg74HtlfZ2+VGwGtatQWDc1+QHntysy+8+4LA19oMN5IXi9T
-         z7WH2/h9I5ycUKCaOQnyXjFShVbV5aTO9pIFhbCVNre1WOGNL+KbCGMBSufmTUCu63ER
-         xI4A==
-X-Gm-Message-State: AOAM532xuDhMbAX5p7NfUPZU/dksUEhGPF0siCa29eIPsqyGphKK0KRD
-        RtFZQbqBZIvAI04zBwpZGg==
-X-Google-Smtp-Source: ABdhPJwOQcHhxxUSsWnv6Up3CyU+P27HKK5b9fj5uBkIeRDqGet7+h5NEOmvn6JB6olwKWbXu2Ek1g==
-X-Received: by 2002:a9d:ea9:: with SMTP id 38mr5672482otj.339.1605193082053;
-        Thu, 12 Nov 2020 06:58:02 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s185sm1210421oia.18.2020.11.12.06.58.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 06:58:01 -0800 (PST)
-Received: (nullmailer pid 3588430 invoked by uid 1000);
-        Thu, 12 Nov 2020 14:58:00 -0000
-Date:   Thu, 12 Nov 2020 08:58:00 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sia Jee Heng <jee.heng.sia@intel.com>
-Cc:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com,
-        andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 10/15] dt-binding: dma: dw-axi-dmac: Add support for
- Intel KeemBay AxiDMA
-Message-ID: <20201112145800.GB3583607@bogus>
-References: <20201112084953.21629-1-jee.heng.sia@intel.com>
- <20201112084953.21629-11-jee.heng.sia@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0aq79DpetUFuuK65Uh9fN+Pnrdo4oqkEr2aH1RwjOWw=;
+        b=V09/q/nh8ajTN+r9q79MMgSAzLG1oT2J+JIKQ11tgsuarNlh2eupXHD/qmBYUr2Tc2
+         BgCRv4G/mZ/7UNvHnUdE4Tg9hAo5aqQuXrCwi5c8IOwOS6rGnUfmCpQA5NCik8jvE8Ag
+         HuiG/8JDCNpFiMqLo6ufyPsC/UQLL/jmbxPalLtCnXP5WE2Pcx4a6rT62j4axvPSXDMc
+         zsbrl7asBb6NMLD1r9srzw7fbvxmEDP6iNlgthDrYbROG14J2UFZ/Etzh9f0a+kXLfVn
+         BAn5QQL581Xvzak+4N96QwbZVsop/8dcIZ24xoJ5eNx5li8ALjGR79v+RgGCvqh4WIAf
+         e0lA==
+X-Gm-Message-State: AOAM532FbFheqBYVMFf0mcoodPAs6wQV6tybpAKh5JbT11zd3Pna6oJP
+        L1nmj2a4j7TxnRlUfQroEPmbm8bbi19sfimb0BY=
+X-Google-Smtp-Source: ABdhPJweIaWEl6XP6QiDqPCtipou67R/lwxsPMGbRtiMJ9ugkTM51IT+eQw81x6rSIC+9785iHkqdiPsiHsMdL7D4zE=
+X-Received: by 2002:a25:7e82:: with SMTP id z124mr42621241ybc.388.1605193166392;
+ Thu, 12 Nov 2020 06:59:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112084953.21629-11-jee.heng.sia@intel.com>
+References: <20201111050559.GA24438@X58A-UD3R> <20201111105441.GA78848@gmail.com>
+ <20201111093609.1bd2b637@gandalf.local.home> <87d00jo55p.fsf@nanos.tec.linutronix.de>
+ <20201112081030.GB14554@X58A-UD3R> <20201112092612.00a19239@gandalf.local.home>
+In-Reply-To: <20201112092612.00a19239@gandalf.local.home>
+From:   Byungchul Park <max.byungchul.park@gmail.com>
+Date:   Thu, 12 Nov 2020 23:58:44 +0900
+Message-ID: <CANrsvRNr=JG=-oyYZxn+AXTMX9Ly4OJB0xY5F2Lmqo+1Q_S4fA@mail.gmail.com>
+Subject: Re: [RFC] Are you good with Lockdep?
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        will@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        alexander.levin@microsoft.com,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>, duyuyang@gmail.com,
+        johannes.berg@intel.com, Tejun Heo <tj@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, willy@infradead.org,
+        david@fromorbit.com, Amir Goldstein <amir73il@gmail.com>,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team <kernel-team@lge.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:49:48PM +0800, Sia Jee Heng wrote:
-> Add support for Intel KeemBay AxiDMA to the dw-axi-dmac
-> Schemas DT binding.
-> 
-> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-> ---
->  .../bindings/dma/snps,dw-axi-dmac.yaml        | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> index 481ef0dacf5f..18e9422095bb 100644
-> --- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> +++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> @@ -8,6 +8,7 @@ title: Synopsys DesignWare AXI DMA Controller
->  
->  maintainers:
->    - Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com
-> +  - Jee Heng Sia <jee.heng.sia@intel.com>
->  
->  description: |
->   Synopsys DesignWare AXI DMA Controller DT Binding
-> @@ -16,6 +17,7 @@ properties:
->    compatible:
->      enum:
->        - snps,axi-dma-1.01a
-> +      - intel,kmb-axi-dma
->  
->    reg:
->      items:
-> @@ -24,6 +26,7 @@ properties:
->    reg-names:
->      items:
->        - const: axidma_ctrl_regs
-> +      - const: axidma_apb_regs
+On Thu, Nov 12, 2020 at 11:28 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 12 Nov 2020 17:10:30 +0900
+> Byungchul Park <byungchul.park@lge.com> wrote:
+>
+> > 2. Does Lockdep do what a deadlock detection tool should do? From
+> >    internal engine to APIs, all the internal data structure and
+> >    algotithm of Lockdep is only looking at lock(?) acquisition order.
+> >    Fundamentally Lockdep cannot work correctly with all general cases,
+> >    for example, read/write/trylock and any wait/event.
+>
+> But lockdep does handle read/write/trylock and can handle wait/event (just
+> needs better wrappers to annotate this). Perhaps part of the confusion here
+> is that we believe that lockdep already does what you are asking for.
+>
+> >
+> >    This can be done by re-introducing cross-release but still partially.
+> >    A deadlock detector tool should thoroughly focus on *waits* and
+> >    *events* to be more perfect at detecting deadlock because the fact is
+> >    *waits* and their *events* that never reach cause deadlock.
+> >
+> >    With the philosophy of Lockdep, we can only handle partial cases
+> >    fundamently. We have no choice but to do various work-around or adopt
+> >    tricky ways to cover more cases if we keep using Lockdep.
+> >
+> > > That said, I'm not at all interested in a wholesale replacement of
+> > > lockdep which will take exactly the same amount of time to stabilize and
+> > > weed out the shortcomings again.
+> >
+> > I don't want to bother ones who don't want to be bothered from the tool.
+> > But I think some day we need a new tool doing exactly what it should do
+> > for deadlock detection for sure.
+> >
+> > I'm willing to make it matured on my own, or with ones who need a
+> > stronger tool or willing to make it matured together - I wish tho.
+> > That's why I suggest to make both there until the new tool gets
+> > considered stable.
+> >
+> > FYI, roughly Lockdep is doing:
+> >
+> >    1. Dependency check
+> >    2. Lock usage correctness check (including RCU)
+> >    3. IRQ related usage correctness check with IRQFLAGS
+> >
+> > 2 and 3 should be there forever which is subtle and have gotten matured.
+> > But 1 is not. I've been talking about 1. But again, it's not about
+> > replacing it right away but having both for a while. I'm gonna try my
+> > best to make it better.
+>
+> And I believe lockdep does handle 1. Perhaps show some tangible use case
+> that you want to cover that you do not believe that lockdep can handle. If
+> lockdep cannot handle it, it will show us where lockdep is lacking. If it
+> can handle it, it will educate you on other ways that lockdep can be
+> helpful in your development ;-)
 
-You need 'minItems: 1' here or everyone has to have 2 entries.
+Yes. That's the best thing I can do for all of us. I will.
 
-Also, doesn't 'reg' need updating?
+I already did exactly the same thing while I was developing cross-release.
+But I'm willing to do it again with the current Lockdep code.
 
->  
->    interrupts:
->      maxItems: 1
-> @@ -124,3 +127,25 @@ examples:
->           snps,priority = <0 1 2 3>;
->           snps,axi-max-burst-len = <16>;
->       };
-> +
-> +  - |
-> +     #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +     #include <dt-bindings/interrupt-controller/irq.h>
-> +     /* example with intel,kmb-axi-dma */
-> +     #define KEEM_BAY_PSS_AXI_DMA
-> +     #define KEEM_BAY_PSS_APB_AXI_DMA
-> +     axi_dma: dma@28000000 {
-> +         compatible = "intel,kmb-axi-dma";
-> +         reg = <0x28000000 0x1000 0x20250000 0x24>;
+But not today. It's over mid-night. Good night~
 
-reg = <0x28000000 0x1000>, <0x20250000 0x24>;
-
-> +         reg-names = "axidma_ctrl_regs", "axidma_apb_regs";
-> +         interrupts = <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>;
-> +         clock-names = "core-clk", "cfgr-clk";
-> +         clocks = <&scmi_clk KEEM_BAY_PSS_AXI_DMA>, <&scmi_clk KEEM_BAY_PSS_APB_AXI_DMA>;
-> +         #dma-cells = <1>;
-> +         dma-channels = <8>;
-> +         snps,dma-masters = <1>;
-> +         snps,data-width = <4>;
-> +         snps,priority = <0 0 0 0 0 0 0 0>;
-> +         snps,block-size = <1024 1024 1024 1024 1024 1024 1024 1024>;
-> +         snps,axi-max-burst-len = <16>;
-> +     };
-> -- 
-> 2.18.0
-> 
+-- 
+Thanks,
+Byungchul
