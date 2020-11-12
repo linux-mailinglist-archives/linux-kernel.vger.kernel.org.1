@@ -2,113 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B1E2B04DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C012B04E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgKLMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:17:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727223AbgKLMRb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:17:31 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E157DC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:17:30 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v144so8024041lfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bNUlpQunA3+8lpdXHUOH+JYlsunfRD+1uj7ARWKY0dE=;
-        b=n0W4VF2c796n+cwQh1D1PjKNqcuPmrIC3yuhlizCD4yJYyKA9+ZKdC8rr3FJIUhT9X
-         cqIRykmWGqZJ2QHi1ZxFrYdvHP/sEUVKwuBiZ4QRQaP98/7kB/Oj3ZRYGVUBgP6R4rZs
-         WLPxhvvalUSsOCsRBlRhdwc+OtzHLYCqPY5jFtzyRFqnHNz78ovNKlTBZbULBEXzYN0V
-         tD8rmPQxjVjjfEqGDCAzFu+QBV7ymwzJtaw9HMS10F0S2Az3FM9mNg37Z/TXxNwPyyA4
-         rWjdSpCWkdqruuUqsd59Eww3Om+asfvphKiS7E1NpznAuWPPzbKZMvL3ypyGVAfMUxys
-         XWqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bNUlpQunA3+8lpdXHUOH+JYlsunfRD+1uj7ARWKY0dE=;
-        b=uAGQSAFinufNYxNga4u2aSznT8ow6T3s9TM8hr7Eyth5OfLOJ3o/dfV3/QUEFJcQeO
-         HoG3OefaJ9fZc0tkr5HTmNnafF1EilCpoM4/kXFWg/0/krSd/q6HxS+DugGxFcLnJ+1L
-         X+b0WxmzEGefTWqbcdr8wi5J1XvrG9XTXGranKRE4w2j69SiMA3eBNUaOrWGs5T2nt3H
-         g9xTFhpUf9yYGkXyOvc+8USRBx0jejFK7mSduHx71rDdikKAPTOaPyE7S8UORzmKYQ33
-         juuzyPDxelq4L3CHN6CdWpCHiG38qV5SKWTJN1oe802HipYV1NGXcE/AdCfs38765RHn
-         +S9w==
-X-Gm-Message-State: AOAM532CC/1qhh7llEJRXWvCzkWg9AuItbedTyIeURvSFJD2uAIptrb7
-        p9OfUZrpIQFweimt7ixgRUM0Vlr85hgbljQLKfua9w==
-X-Google-Smtp-Source: ABdhPJxNIwGcK9c6aEjMHQZsZTgtsjkiI9E/PGHD4mRkIycpqEykkgyZpLyIfUYSUI2mgyUKvOxopI9u0jGBobTKeMA=
-X-Received: by 2002:a19:cc91:: with SMTP id c139mr4626589lfg.31.1605183449335;
- Thu, 12 Nov 2020 04:17:29 -0800 (PST)
+        id S1727993AbgKLMTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:19:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41946 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727035AbgKLMTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:19:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AA4D2AB95;
+        Thu, 12 Nov 2020 12:19:19 +0000 (UTC)
+To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-18-git-send-email-alex.shi@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v21 17/19] mm/lru: replace pgdat lru_lock with lruvec lock
+Message-ID: <f9cfab13-fae2-c384-90b2-9e3107273734@suse.cz>
+Date:   Thu, 12 Nov 2020 13:19:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201112111201.2081902-1-qperret@google.com>
-In-Reply-To: <20201112111201.2081902-1-qperret@google.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 12 Nov 2020 13:17:18 +0100
-Message-ID: <CAKfTPtB0tYwVKdV47fL_zZ_AqTcfk9ZXg3i7RCTJZ-hczjvMSw@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Fix overutilized update in enqueue_task_fair()
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@qperret.net>,
-        "open list:SCHEDULER" <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rick Yiu <rickyiu@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1604566549-62481-18-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 at 12:12, Quentin Perret <qperret@google.com> wrote:
->
-> enqueue_task_fair() attempts to skip the overutilized update for new
-> tasks as their util_avg is not accurate yet. However, the flag we check
-> to do so is overwritten earlier on in the function, which makes the
-> condition pretty much a nop.
->
-> Fix this by saving the flag early on.
->
-> Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point
-> indicator")
-> Reported-by: Rick Yiu <rickyiu@google.com>
-> Signed-off-by: Quentin Perret <qperret@google.com>
+On 11/5/20 9:55 AM, Alex Shi wrote:
+> This patch moves per node lru_lock into lruvec, thus bring a lru_lock for
+> each of memcg per node. So on a large machine, each of memcg don't
+> have to suffer from per node pgdat->lru_lock competition. They could go
+> fast with their self lru_lock.
+> 
+> After move memcg charge before lru inserting, page isolation could
+> serialize page's memcg, then per memcg lruvec lock is stable and could
+> replace per node lru lock.
+> 
+> In func isolate_migratepages_block, compact_unlock_should_abort and
+> lock_page_lruvec_irqsave are open coded to work with compact_control.
+> Also add a debug func in locking which may give some clues if there are
+> sth out of hands.
+> 
+> Daniel Jordan's testing show 62% improvement on modified readtwice case
+> on his 2P * 10 core * 2 HT broadwell box.
+> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
+> 
+> On a large machine with memcg enabled but not used, the page's lruvec
+> seeking pass a few pointers, that may lead to lru_lock holding time
+> increase and a bit regression.
+> 
+> Hugh Dickins helped on the patch polish, thanks!
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Rong Chen <rong.a.chen@intel.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: cgroups@vger.kernel.org
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 290f9e38378c..f3ee60b92718 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5477,6 +5477,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->         struct cfs_rq *cfs_rq;
->         struct sched_entity *se = &p->se;
->         int idle_h_nr_running = task_has_idle_policy(p);
-> +       int task_new = !(flags & ENQUEUE_WAKEUP);
->
->         /*
->          * The code below (indirectly) updates schedutil which looks at
-> @@ -5549,7 +5550,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->          * into account, but that is not straightforward to implement,
->          * and the following generally works well enough in practice.
->          */
-> -       if (flags & ENQUEUE_WAKEUP)
-> +       if (!task_new)
->                 update_overutilized_status(rq);
->
->  enqueue_throttle:
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+I think I need some explanation about the rcu_read_lock() usage in 
+lock_page_lruvec*() (and places effectively opencoding it).
+Preferably in form of some code comment, but that can be also added as a 
+additional patch later, I don't want to block the series.
+
+mem_cgroup_page_lruvec() comment says
+
+  * This function relies on page->mem_cgroup being stable - see the
+  * access rules in commit_charge().
+
+commit_charge() comment:
+
+          * Any of the following ensures page->mem_cgroup stability:
+          *
+          * - the page lock
+          * - LRU isolation
+          * - lock_page_memcg()
+          * - exclusive reference
+
+"LRU isolation" used to be quite clear, but now is it after 
+TestClearPageLRU(page) or after deleting from the lru list as well?
+Also it doesn't mention rcu_read_lock(), should it?
+
+So what exactly are we protecting by rcu_read_lock() in e.g. lock_page_lruvec()?
+
+         rcu_read_lock();
+         lruvec = mem_cgroup_page_lruvec(page, pgdat);
+         spin_lock(&lruvec->lru_lock);
+         rcu_read_unlock();
+
+Looks like we are protecting the lruvec from going away and it can't go away 
+anymore after we take the lru_lock?
+
+But then e.g. in __munlock_pagevec() we are doing this without an rcu_read_lock():
+
+	new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+
+where new_lruvec is potentionally not the one that we have locked
+
+And the last thing mem_cgroup_page_lruvec() is doing is:
+
+         if (unlikely(lruvec->pgdat != pgdat))
+                 lruvec->pgdat = pgdat;
+         return lruvec;
+
+So without the rcu_read_lock() is this potentionally accessing the pgdat field 
+of lruvec that might have just gone away?
+
+Thanks,
+Vlastimil
