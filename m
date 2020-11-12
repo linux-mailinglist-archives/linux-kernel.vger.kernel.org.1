@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E64C2B0980
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638132B0983
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728863AbgKLQHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:07:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728233AbgKLQHT (ORCPT
+        id S1728872AbgKLQHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:07:49 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:42085 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728770AbgKLQHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:07:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605197237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IRZEx8RGEYLRngswzLvwuQM5eiFnRZ2mPobY/fc2J1k=;
-        b=A/XN408drkQXEjk4WF7lggvW3asexONT6Ywr8irY4p3fczCQqY8WqRMctFdoEgMnIhQdKu
-        B9TTa4DTr+iJvX09JUVeNQ2yugroxdhvTJ2iZVYWLqPTaxiYrwK1Y3VMkGwCnpW5VuTkvd
-        Gf96NZJ6tUHK91Mtpj8owysUOTC75hg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-89aUGZthPEaUpKAeX8ZkJA-1; Thu, 12 Nov 2020 11:07:15 -0500
-X-MC-Unique: 89aUGZthPEaUpKAeX8ZkJA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46CC680474C;
-        Thu, 12 Nov 2020 16:07:07 +0000 (UTC)
-Received: from [10.36.115.61] (ovpn-115-61.ams2.redhat.com [10.36.115.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A0655D9CA;
-        Thu, 12 Nov 2020 16:07:03 +0000 (UTC)
-Subject: Re: [PATCH v2 3/5] kernel/power: allow hibernation with page_poison
- sanity checking
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Laura Abbott <labbott@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org
-References: <20201103152237.9853-1-vbabka@suse.cz>
- <20201103152237.9853-4-vbabka@suse.cz>
- <eba10537-98c0-5363-8ff6-c0e71b823e50@redhat.com>
- <7811e5ec-c7ae-09a9-7f90-45e14956c4c4@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <44ab29d4-4ad2-3142-0fcf-78897cf68c71@redhat.com>
-Date:   Thu, 12 Nov 2020 17:07:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 12 Nov 2020 11:07:48 -0500
+Received: by mail-oo1-f65.google.com with SMTP id g4so1428583oom.9;
+        Thu, 12 Nov 2020 08:07:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u+fc+jZoo4rryAb6EXgFaAApuHJmifAKwrkVc68Jfnc=;
+        b=Z1uuRBY6IB/XAZSiwCylW8Kx5GiJRey+PBr4HjGtEKx4naHSdVKyUHrIi0DKFCk/zW
+         nixW21DBFMPizTlsAAR8HRr32T01OOuaIoJXZV3K6oIBhYAhP6Vo1K580KERmaITEZSu
+         OwV9cgPH0JmL9B7p/o0afMldUIMDBbQB0aw2eFujkykK4L6KcgLO7gi5eVXDcxoWEeve
+         yE5n3Hs5anr4NNZ8wea/FmRzUFIEVsmgVNfOglYkd6Ywv3ev8caFFKPl4Qq5fjmTEjKm
+         f7CYskcECxlGLjosqenKYNk74OPOru/ZYei0pcDdFeAGPa4jJSwiqUa/pXDnVF67pjFh
+         4yNQ==
+X-Gm-Message-State: AOAM530c444ahbQ+om5NFAULRZgoND1LbXwEIbVHTmaIeyZVVxUN9W9A
+        phWTyZY8raQdWZgqZEugRkg9XmboLw==
+X-Google-Smtp-Source: ABdhPJwIgA6W6Kn5XcmLSnjP3jXT6JXWKJfF+QPpkH57f9faLQ3g9lYAoE12cGCNrp8Ih5IU7Kq4zA==
+X-Received: by 2002:a4a:6b1a:: with SMTP id g26mr21465516ooc.13.1605197267992;
+        Thu, 12 Nov 2020 08:07:47 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j16sm1360618oot.24.2020.11.12.08.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 08:07:47 -0800 (PST)
+Received: (nullmailer pid 3683064 invoked by uid 1000);
+        Thu, 12 Nov 2020 16:07:46 -0000
+Date:   Thu, 12 Nov 2020 10:07:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     broonie@kernel.org, kuninori.morimoto.gx@renesas.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: renesas,rsnd: Update audio graph references
+Message-ID: <20201112160746.GA3681609@bogus>
+References: <1605097613-25301-1-git-send-email-spujar@nvidia.com>
+ <1605097613-25301-3-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <7811e5ec-c7ae-09a9-7f90-45e14956c4c4@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605097613-25301-3-git-send-email-spujar@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.11.20 15:39, Vlastimil Babka wrote:
-> On 11/11/20 4:42 PM, David Hildenbrand wrote:
-> ...
->>> @@ -1152,12 +1152,18 @@ void clear_free_pages(void)
->>>    	if (WARN_ON(!(free_pages_map)))
->>>    		return;
->>>    
->>> -	if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
->>> +	if (page_poisoning_enabled() || want_init_on_free()) {
->>>    		memory_bm_position_reset(bm);
->>>    		pfn = memory_bm_next_pfn(bm);
->>>    		while (pfn != BM_END_OF_MAP) {
->>> -			if (pfn_valid(pfn))
->>> -				clear_highpage(pfn_to_page(pfn));
->>> +			if (pfn_valid(pfn)) {
->>> +				struct page *page = pfn_to_page(pfn);
->>
->> ^ empty line missing. And at least I prefer to declare all variables in
->> the function header.
->>
->> I'd even suggest to move this into a separate function like
->>
->> clear_or_poison_free_page(struct page *page)
->>
->>
+On Wed, Nov 11, 2020 at 05:56:53PM +0530, Sameer Pujar wrote:
+> Since audio graph schema is refactored now update the related
+> references here.
 > 
-> Ok, fixup below.
-> 
-> ----8<----
->   From cae1e8ccfa57c28ed1b2f5f8a47319b86cbdcfbf Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Thu, 12 Nov 2020 15:33:07 +0100
-> Subject: [PATCH] kernel/power: allow hibernation with page_poison sanity
->    checking-fix
-> 
-> Adapt to __kernel_unpoison_pages fixup. Split out clear_or_poison_free_page()
-> per David Hildenbrand.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->    include/linux/mm.h      |  1 +
->    kernel/power/snapshot.c | 18 ++++++++++--------
->    2 files changed, 11 insertions(+), 8 deletions(-)
+>  Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+
+This should be part of the first patch. Things break in between.
+
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 861b9392b5dc..d4cfb06a611e 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2896,6 +2896,7 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages)
->    #else
->    static inline bool page_poisoning_enabled(void) { return false; }
->    static inline bool page_poisoning_enabled_static(void) { return false; }
-> +static inline void __kernel_poison_pages(struct page *page, int nunmpages) { }
->    static inline void kernel_poison_pages(struct page *page, int numpages) { }
->    static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
->    #endif
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index 6b1c84afa891..a3491b29c5cc 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -1144,6 +1144,14 @@ void free_basic_memory_bitmaps(void)
->    	pr_debug("Basic memory bitmaps freed\n");
->    }
->    
-> +static void clear_or_poison_free_page(struct page *page)
-> +{
-> +	if (page_poisoning_enabled_static())
-> +		__kernel_poison_pages(page, 1);
-> +	else if (want_init_on_free())
-> +		clear_highpage(page);
-> +}
-> +
->    void clear_or_poison_free_pages(void)
->    {
->    	struct memory_bitmap *bm = free_pages_map;
-> @@ -1156,14 +1164,8 @@ void clear_or_poison_free_pages(void)
->    		memory_bm_position_reset(bm);
->    		pfn = memory_bm_next_pfn(bm);
->    		while (pfn != BM_END_OF_MAP) {
-> -			if (pfn_valid(pfn)) {
-> -				struct page *page = pfn_to_page(pfn);
-> -				if (page_poisoning_enabled_static())
-> -					kernel_poison_pages(page, 1);
-> -				else if (want_init_on_free())
-> -					clear_highpage(page);
-> -
-> -			}
-> +			if (pfn_valid(pfn))
-> +				clear_or_poison_free_page(pfn_to_page(pfn));
->    
->    			pfn = memory_bm_next_pfn(bm);
->    		}
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> index 51f4dca..fc2ae22 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> @@ -112,12 +112,10 @@ properties:
+>          - pattern: '^clk_(a|b|c|i)$'
+>  
+>    port:
+> -    description: OF-Graph subnode
+> -    $ref: "audio-graph-card.yaml#/properties/port"
+> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
+>  
+>    ports:
+> -    description: multi OF-Graph subnode
+> -    $ref: "audio-graph-card.yaml#/properties/ports"
+> +    $ref: /schemas/graph.yaml#/properties/ports
+>  
+>  # use patternProperties to avoid naming "xxx,yyy" issue
+>  patternProperties:
+> -- 
+> 2.7.4
 > 
-
-LGTM, thanks!
-
--- 
-Thanks,
-
-David / dhildenb
-
