@@ -2,63 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942A22B0A4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC48A2B0A59
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgKLQmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:42:17 -0500
-Received: from verein.lst.de ([213.95.11.211]:44266 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728426AbgKLQmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:42:17 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 581A567373; Thu, 12 Nov 2020 17:42:13 +0100 (CET)
-Date:   Thu, 12 Nov 2020 17:42:13 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        =?utf-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-Message-ID: <20201112164213.GA16591@lst.de>
-References: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn> <CAPDyKFrnkF3mU5PJsy0VtEjPSToktSsRRtyMvQF97vymc+rY5A@mail.gmail.com> <dd210290eef6467cbffca8cbaddb8b84@realsil.com.cn> <CAPDyKFqwsJaYrXMVabR7qui6yqr4FAHfYq1ghfsf0HtRSZpGGw@mail.gmail.com> <20201023091408.GA5201@lst.de> <CAPDyKFpgEcEv8FH59ntmeQADEyCs6aiS8P0tEaru858DRQup=A@mail.gmail.com>
+        id S1729022AbgKLQmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:42:53 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37190 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727739AbgKLQmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:42:51 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACGgjIe029624;
+        Thu, 12 Nov 2020 10:42:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605199365;
+        bh=2DGsLmpm70ck0G0m7wcSLhSHPrIa0aoiLqRCKAIbVp0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=MsSIo2ksmW7EIM3Jqlco/7L9jl/dRstSDGgT8w3b3ehBblu3EZMPQV9GkGEReFM2g
+         w+JDu+lRgDh84ndOHOgcBpsDJkV9ovYWvSsxE/6zw2DjEuk/h90XTlHtvxBEUYwsoi
+         Gbysehl0jydGiWcnIEhHgTiyBN1FvBOfy29PAnbo=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACGgjTa014006
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 10:42:45 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 10:42:45 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 10:42:45 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACGgj3N052392;
+        Thu, 12 Nov 2020 10:42:45 -0600
+Date:   Thu, 12 Nov 2020 10:42:45 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Faiz Abbas <faiz_abbas@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <t-kristo@ti.com>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH 0/3] Add gpio support for TI's J7200 platform
+Message-ID: <20201112164245.d6rdmsl4aomplqku@kahuna>
+References: <20201102191120.20380-1-faiz_abbas@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPDyKFpgEcEv8FH59ntmeQADEyCs6aiS8P0tEaru858DRQup=A@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201102191120.20380-1-faiz_abbas@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 02:12:19PM +0200, Ulf Hansson wrote:
-> SD spec mentions the write-protect switch on SD cards, while uSD cards
-> doesn't have one. In general, host drivers implement support for it
-> via a dedicated GPIO line routed to one of the pins in the SD slot.
+On 00:41-20201103, Faiz Abbas wrote:
+> The following patches add gpio support for TI's J7200 platform.
 > 
-> In this SD controller case, which is based upon PCI, it works a bit
-> differently, as the state of the write protect pin is managed through
-> the PCI interface.
+> These patches were posted as a part of an older series but have now
+> been split into three parts. The 3 parts add configs, gpios and MMC/SD
+> related dts patches respectively.
 > 
-> If I understand you correctly, you are saying that the controller
-> should be able to communicate (upwards to the block layer) its known
-> write protect state for the corresponding NVMe device, during
-> initialization?
+> Older series is here:
+> https://lore.kernel.org/linux-arm-kernel/20201001190541.6364-1-faiz_abbas@ti.com/
+> 
+> Series adding configs to arm64 defconfig is here:
+> https://lore.kernel.org/linux-arm-kernel/20201102183005.14174-1-faiz_abbas@ti.com/
+> 
+> Faiz Abbas (3):
+>   arm64: dts: ti: k3-j7200-main: Add gpio nodes in main domain
+>   arm64: dts: ti: k3-j7200: Add gpio nodes in wakeup domain
 
-I got an answer form a member of the SD commitee, and the answer is:
+I am not sure why we are splitting patches per domain here. We
+should just have a single patch that introduces the nodes, I dont see a
+specific benefit. In addition, series also introduces additional
+ Missing #address-cells in interrupt provider
 
-"The SD specification define that case very clearly as following.
-If card’s access is restricted through one of the SD unique features – PSWD
-Lock/Unlock,  Temporary or Permanent WP (TWP or PWP) or CPRM  then if access
-attempt is done through its NVMe interface the card will restrict the access
-and respond with Access denied.    The access restriction shall be removed
-through the SD protocol/interface before being able to access the card through
-the NVMe.
-That is defined as following in the section 8.1.6  of the SD7.0 onward."
+Which we need a conclusion for and the comments already provided.
 
-Note that if you look at the spec this means only rejecting NVMe commands
-that write dta for the write protect pin.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
