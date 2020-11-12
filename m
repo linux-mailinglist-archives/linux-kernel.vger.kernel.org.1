@@ -2,108 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9932B02FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DF52B0300
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgKLKo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727936AbgKLKoZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:44:25 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FE6C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:44:24 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h2so4862845wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:44:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ygXEyC17mmqkLuT+LSwnv8yANRbLqR9DFVnrEPXtZ4M=;
-        b=I6ogObdQP+1zd9NhSXGSnPGJAG4gcJxrpgTyuCCN5IYGW5plCifjhj9ca2dMhtwJBj
-         +jAJIokPCuZDcPcoK16EIoxoHBrIJcm5KCT1lZwZfpyso0Cr0bQqsB/PbW+chwaIIN7Q
-         RIwBigEbiHi8+MKGZwG4/OfPhr5JXtoTtf4CE+AYu4I9Ae7J9/Y8FnL481pzNwSw4pWj
-         iQCws3HhM81hlBYKDbsuiZZ5xEDoXR1TUo2SghQx9hNtGb6eDUaMjD5cbffC888x6Le+
-         f7CEDPIPfSVSLFTAXpgXbi2/jAYDOlXH3AthoEzNKrCI/VO4t4DkhcO6vjbsCkRK0+SO
-         /Drw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ygXEyC17mmqkLuT+LSwnv8yANRbLqR9DFVnrEPXtZ4M=;
-        b=QyUkhJIU4G7CrKHdzCD2jE2EOKzGjajJIn0YNHokQaikS5IKZWvuj/hb20OQ2ajJVI
-         GAq6Uq0vHBl407alLXs+AmCbMZNFT1yuzUF14sfDrRNkmGZIiuE3SL/9dFQBkX+IiHZ2
-         RneffdePEpGatC/D8/VWa9Y5Bwiqe63wh8mRfVTC9mucXaPpN64EHVfqcz5FrxUvj/xc
-         fc/Jk8n1bTvbh0TKYlFjpy2Lq/yks1lf/cq/9fbBgEKkcNFemC3Opg71z4GnrLVjQUHN
-         ee7NszxUdKpB+ZQWc2bocVl0eVZTd1cV0Gy9nzLfpu+wc85NTvteeRvnRotPnslSXpCk
-         CH5Q==
-X-Gm-Message-State: AOAM5314pektBQG5y6+Cb1RUs8LX4WEqqcrch7cyV/tzxb4YZcitQflR
-        2xh/eOf2lmsHXyh/EjsV36uxfqTXrWISCrb9
-X-Google-Smtp-Source: ABdhPJxxSp68T0y9TRXVHc8JIto9ZdMg6AEEVOoiRgdoeOZ7uP+qT6GcEu2n8vbhXI9PC5geDUUPmA==
-X-Received: by 2002:a1c:7d12:: with SMTP id y18mr8856951wmc.103.1605177862562;
-        Thu, 12 Nov 2020 02:44:22 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id h62sm6060487wrh.82.2020.11.12.02.44.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 02:44:21 -0800 (PST)
-Date:   Thu, 12 Nov 2020 10:44:20 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        dusonlin@emc.com.tw, KT Liao <kt.liao@emc.com.tw>,
-        linux-input@vger.kernel.org
-Subject: [PATCH] input: mouse: elan_i2c_core: Move header inclusion inside
-Message-ID: <20201112104420.GG1997862@dell>
-References: <20201104162427.2984742-1-lee.jones@linaro.org>
- <20201104162427.2984742-7-lee.jones@linaro.org>
+        id S1727984AbgKLKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:45:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49932 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727796AbgKLKpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 05:45:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BEE5BABCC;
+        Thu, 12 Nov 2020 10:45:00 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 753283bd;
+        Thu, 12 Nov 2020 10:45:13 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>, Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>
+Subject: [PATCH] ceph: fix race in concurrent __ceph_remove_cap invocations
+Date:   Thu, 12 Nov 2020 10:45:12 +0000
+Message-Id: <20201112104512.17472-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104162427.2984742-7-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same clause as its use.
+A NULL pointer dereference may occur in __ceph_remove_cap with some of the
+callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
+remove_session_caps_cb.  These aren't protected against the concurrent
+execution of __ceph_remove_cap.
 
-Fixes the following W=1 kernel build warning(s):
+Since the callers of this function hold the i_ceph_lock, the fix is simply
+a matter of returning immediately if caps->ci is NULL.
 
- include/linux/input/elan-i2c-ids.h:26:36: warning: ‘elan_acpi_id’ defined but not used [-Wunused-const-variable=]
+Based on a patch from Jeff Layton.
 
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Henrik Rydberg <rydberg@bitmath.org>
-Cc: Jingle Wu <jingle.wu@emc.com.tw>
-Cc: dusonlin@emc.com.tw
-Cc: KT Liao <kt.liao@emc.com.tw>
-Cc: linux-input@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Cc: stable@vger.kernel.org
+URL: https://tracker.ceph.com/issues/43272
+Link: https://www.spinics.net/lists/ceph-devel/msg47064.html
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
 ---
- drivers/input/mouse/elan_i2c_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ceph/caps.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
-index c599e21a84784..65d21a050cea0 100644
---- a/drivers/input/mouse/elan_i2c_core.c
-+++ b/drivers/input/mouse/elan_i2c_core.c
-@@ -34,7 +34,6 @@
- #include <linux/completion.h>
- #include <linux/of.h>
- #include <linux/property.h>
--#include <linux/input/elan-i2c-ids.h>
- #include <linux/regulator/consumer.h>
- #include <asm/unaligned.h>
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index ded4229c314a..443f164760d5 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1140,12 +1140,19 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
+ {
+ 	struct ceph_mds_session *session = cap->session;
+ 	struct ceph_inode_info *ci = cap->ci;
+-	struct ceph_mds_client *mdsc =
+-		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
++	struct ceph_mds_client *mdsc;
+ 	int removed = 0;
  
-@@ -1413,6 +1412,7 @@ static const struct i2c_device_id elan_id[] = {
- MODULE_DEVICE_TABLE(i2c, elan_id);
++	/* 'ci' being NULL means he remove have already occurred */
++	if (!ci) {
++		dout("%s: cap inode is NULL\n", __func__);
++		return;
++	}
++
+ 	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
  
- #ifdef CONFIG_ACPI
-+#include <linux/input/elan-i2c-ids.h>
- MODULE_DEVICE_TABLE(acpi, elan_acpi_id);
- #endif
- 
--- 
-2.25.1
++	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
++
+ 	/* remove from inode's cap rbtree, and clear auth cap */
+ 	rb_erase(&cap->ci_node, &ci->i_caps);
+ 	if (ci->i_auth_cap == cap) {
