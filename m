@@ -2,130 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED35A2B03F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ADB2B03F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgKLLeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:34:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgKLLeM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:34:12 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9415C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:34:11 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id b6so5641156wrt.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8IcQ5dN+qIoB/87zjJ/veTyRM/TV9n4JzhwtTPqINgE=;
-        b=n9pN8t2keRJdmcvRv8toZQGLOstc8D7l3KgaXn/I8iFBtpvIYtJvTNsrkGZB0kiJHg
-         cQnZaWx7Ztnzl21hfTTcnMN8c3sdYHayOrcYvVvi8fnfTBfhrqXnrIgi5zNbJDc7d6s6
-         TbGubdq1jt4LFKEI2guY2pOYKHVkPPusFhwJQ7YVhaNfu48QWsV8ATCTVS5bhVnBYvKy
-         6wiKq12U2x79IugRiJlFhcEC6McsZpK5GFQwKKbDnPTsBSL3/HNEfsEsUHP7vh+NeddU
-         UR/AE46uc5F1ydps2WYRqGiwpKgcHYT0dgEwQpmnA+flosQaRE6xLwiXL0pCl2onZC9W
-         Cnvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8IcQ5dN+qIoB/87zjJ/veTyRM/TV9n4JzhwtTPqINgE=;
-        b=Kz/twbq5PBLT44KwHGZ28OER32HKMUd+JVVyjw7kSlVIrjnnujrSQs2w/T7NP1tFAm
-         gxpt5RjfVUuAV+ic2cWBWvmcLzbjoP9nYwwTo48FI7SxEmTbZ3UllvwfaYGSZ09JSLdS
-         KrOdF7l1Gi2qaGIpCD4sIckgFC4mIR0RGB7IJoApebsbM8Oi2kRttfQObpvgxL/7FCeW
-         +wuqBataiOg3mRMjs8tS+k2Jlo6sX6xmqSjpVqh3/6I0/y4ZsQRHhS1KwQHIIx4ML8Jl
-         LPw0U9kztAm3ymZPvCFcFHIc39bGd/KTVjIVBUnruA85Y5eB+dQVJUVtYEujWy7a7fjc
-         Xrpg==
-X-Gm-Message-State: AOAM531ySyu4SOi5hEyiFbMmH2TCYnShjy7pbr1pI+4Oqu8PijUR0Ka1
-        qrP9myOEiz9HJ/0PDL12RqzGNJPCqgHYQg==
-X-Google-Smtp-Source: ABdhPJwvs9o1xVMaj5BU81F+aQVl3mHIuJ3FT1+tXsmFoITlPauRve/uqEGAu8PlqS55wuAUihVQ5w==
-X-Received: by 2002:adf:e6cf:: with SMTP id y15mr25558395wrm.403.1605180850011;
-        Thu, 12 Nov 2020 03:34:10 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
-        by smtp.googlemail.com with ESMTPSA id g4sm5043800wrp.0.2020.11.12.03.34.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 03:34:09 -0800 (PST)
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-To:     Andres Freund <andres@anarazel.de>,
+        id S1728172AbgKLLda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:33:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728170AbgKLLdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:33:24 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1B782220B;
+        Thu, 12 Nov 2020 11:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605180801;
+        bh=/FH7TCo6+O0/udmjeFflZsUVtWi4Q6V5R0zuSt8YjzU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ldkWJEAbEpQ/kZXIZ/Qjgf93uiijQ1/hZRaRbO4Rn3FuZNU+w3xoIdBBAmrGp+PYj
+         z5sGH3XJQeKRc6TnHeHhFFs8nSfuje3g0tmfmsQaDMXPw5O598usuAGWFwyEfqORn1
+         nxTFenSeb0ffFzHJkps2L1zTunW7T+8VUIhvKyPA=
+Date:   Thu, 12 Nov 2020 12:34:20 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Brice Goglin <brice.goglin@gmail.com>
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200115184415.1726953-1-andres@anarazel.de>
- <2a5e9df32e2df27297149a577512f6b1557de241.camel@linux.intel.com>
- <20200116184250.qlvc3ilx2b42czqk@alap3.anarazel.de>
- <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
- <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
-Date:   Thu, 12 Nov 2020 12:34:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+Message-ID: <X60dvJoT4fURcnsF@kroah.com>
+References: <20201003085345.GA114893@kroah.com>
+ <20201006005736.GD6041@ranerica-svr.sc.intel.com>
+ <20201006073744.GA6753@kroah.com>
+ <20201007031447.GB27938@ranerica-svr.sc.intel.com>
+ <20201007051546.GA47583@kroah.com>
+ <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com>
+ <X6zZaKt57Xl9NnuN@kroah.com>
+ <d7ac96f2-10e8-209d-2903-1bbe8fc552f4@gmail.com>
+ <X60TJ2u47WK3yY/y@kroah.com>
+ <38f290d2-4c3a-d1b0-f3cc-a0897ea10abd@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <38f290d2-4c3a-d1b0-f3cc-a0897ea10abd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 21:21, Andres Freund wrote:
-> Hi,
+On Thu, Nov 12, 2020 at 12:21:43PM +0100, Brice Goglin wrote:
 > 
-> On 2020-01-16 11:41:34 -0800, Srinivas Pandruvada wrote:
->> On Thu, 2020-01-16 at 10:42 -0800, Andres Freund wrote:
->>> Hi,
->>>
->>> On 2020-01-16 05:53:13 -0800, Srinivas Pandruvada wrote:
->>>> On Wed, 2020-01-15 at 10:44 -0800, Andres Freund wrote:
->>>>> I noticed that I couldn't read the PCH temperature on my
->>>>> workstation
->>>>> (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but
->>>>> had to
->>>>> go
->>>>> through IPMI. Looking at the data sheet, it looks to me like the
->>>>> existing intel PCH thermal driver should work without changes for
->>>>> Lewisburg.
->>>> Does the temperature reading match with what you read via IPMI?
->>>
->>> It does:
->>>
->>> root@awork3:~# ipmitool sdr|grep ^PCH
->>> PCH Temp         | 58 degrees C      | ok
->>>
->>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/type
->>> pch_lewisburg
->>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
->>> 58000
->>>
->>> And if I generate some load, it rises for both:
->>> root@awork3:~# ipmitool sdr|grep ^PCH
->>> PCH Temp         | 60 degrees C      | ok
->>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
->>> 60000
->>>
->> Thanks for the test.
->>
->> Rui can add his ACK.
+> Le 12/11/2020 à 11:49, Greg Kroah-Hartman a écrit :
+> > On Thu, Nov 12, 2020 at 10:10:57AM +0100, Brice Goglin wrote:
+> >> Le 12/11/2020 à 07:42, Greg Kroah-Hartman a écrit :
+> >>> On Thu, Nov 12, 2020 at 07:19:48AM +0100, Brice Goglin wrote:
+> >>>> Le 07/10/2020 à 07:15, Greg Kroah-Hartman a écrit :
+> >>>>> On Tue, Oct 06, 2020 at 08:14:47PM -0700, Ricardo Neri wrote:
+> >>>>>> On Tue, Oct 06, 2020 at 09:37:44AM +0200, Greg Kroah-Hartman wrote:
+> >>>>>>> On Mon, Oct 05, 2020 at 05:57:36PM -0700, Ricardo Neri wrote:
+> >>>>>>>> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
+> >>>>>>>>> On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
+> >>>>>>>>>> Hybrid CPU topologies combine CPUs of different microarchitectures in the
+> >>>>>>>>>> same die. Thus, even though the instruction set is compatible among all
+> >>>>>>>>>> CPUs, there may still be differences in features (e.g., some CPUs may
+> >>>>>>>>>> have counters that others CPU do not). There may be applications
+> >>>>>>>>>> interested in knowing the type of micro-architecture topology of the
+> >>>>>>>>>> system to make decisions about process affinity.
+> >>>>>>>>>>
+> >>>>>>>>>> While the existing sysfs for capacity (/sys/devices/system/cpu/cpuX/
+> >>>>>>>>>> cpu_capacity) may be used to infer the types of micro-architecture of the
+> >>>>>>>>>> CPUs in the platform, it may not be entirely accurate. For instance, two
+> >>>>>>>>>> subsets of CPUs with different types of micro-architecture may have the
+> >>>>>>>>>> same capacity due to power or thermal constraints.
+> >>>>>>>>>>
+> >>>>>>>>>> Create the new directory /sys/devices/system/cpu/types. Under such
+> >>>>>>>>>> directory, create individual subdirectories for each type of CPU micro-
+> >>>>>>>>>> architecture. Each subdirectory will have cpulist and cpumap files. This
+> >>>>>>>>>> makes it convenient for user space to read all the CPUs of the same type
+> >>>>>>>>>> at once without having to inspect each CPU individually.
+> >>>>>>>>>>
+> >>>>>>>>>> Implement a generic interface using weak functions that architectures can
+> >>>>>>>>>> override to indicate a) support for CPU types, b) the CPU type number, and
+> >>>>>>>>>> c) a string to identify the CPU vendor and type.
+> >>>>>>>>>>
+> >>>>>>>>>> For example, an x86 system with one Intel Core and four Intel Atom CPUs
+> >>>>>>>>>> would look like this (other architectures have the hooks to use whatever
+> >>>>>>>>>> directory naming convention below "types" that meets their needs):
+> >>>>>>>>>>
+> >>>>>>>>>> user@host:~$: ls /sys/devices/system/cpu/types
+> >>>>>>>>>> intel_atom_0  intel_core_0
+> >>>>>>>>>>
+> >>>>>>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
+> >>>>>>>>>> cpulist cpumap
+> >>>>>>>>>>
+> >>>>>>>>>> user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
+> >>>>>>>>>> cpulist cpumap
+> >>>>>>>>>>
+> >>>>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpumap
+> >>>>>>>>>> 0f
+> >>>>>>>>>>
+> >>>>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpulist
+> >>>>>>>>>> 0-3
+> >>>>>>>>>>
+> >>>>>>>>>> user@ihost:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpumap
+> >>>>>>>>>> 10
+> >>>>>>>>>>
+> >>>>>>>>>> user@host:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpulist
+> >>>>>>>>>> 4
+> >>>>>>>> Thank you for the quick and detailed Greg!
+> >>>>>>>>
+> >>>>>>>>> The output of 'tree' sometimes makes it easier to see here, or:
+> >>>>>>>>> 	grep -R . *
+> >>>>>>>>> also works well.
+> >>>>>>>> Indeed, this would definitely make it more readable.
+> >>>>>>>>
+> >>>>>>>>>> On non-hybrid systems, the /sys/devices/system/cpu/types directory is not
+> >>>>>>>>>> created. Add a hook for this purpose.
+> >>>>>>>>> Why should these not show up if the system is not "hybrid"?
+> >>>>>>>> My thinking was that on a non-hybrid system, it does not make sense to
+> >>>>>>>> create this interface, as all the CPUs will be of the same type.
+> >>>>>>> Why not just have this an attribute type in the existing cpuX directory?
+> >>>>>>> Why do this have to be a totally separate directory and userspace has to
+> >>>>>>> figure out to look in two different spots for the same cpu to determine
+> >>>>>>> what it is?
+> >>>>>> But if the type is located under cpuX, usespace would need to traverse
+> >>>>>> all the CPUs and create its own cpu masks. Under the types directory it
+> >>>>>> would only need to look once for each type of CPU, IMHO.
+> >>>>> What does a "mask" do?  What does userspace care about this?  You would
+> >>>>> have to create it by traversing the directories you are creating anyway,
+> >>>>> so it's not much different, right?
+> >>>> Hello
+> >>>>
+> >>>> Sorry for the late reply. As the first userspace consumer of this
+> >>>> interface [1], I can confirm that reading a single file to get the mask
+> >>>> would be better, at least for performance reason. On large platforms, we
+> >>>> already have to read thousands of sysfs files to get CPU topology and
+> >>>> cache information, I'd be happy not to read one more file per cpu.
+> >>>>
+> >>>> Reading these sysfs files is slow, and it does not scale well when
+> >>>> multiple processes read them in parallel.
+> >>> Really?  Where is the slowdown?  Would something like readfile() work
+> >>> better for you for that?
+> >>> 	https://lore.kernel.org/linux-api/20200704140250.423345-1-gregkh@linuxfoundation.org/
+> >>
+> >> I guess readfile would improve the sequential case by avoiding syscalls
+> >> but it would not improve the parallel case since syscalls shouldn't have
+> >> any parallel issue?
+> > syscalls should not have parallel issues at all.
+> >
+> >> We've been watching the status of readfile() since it was posted on LKML
+> >> 6 months ago, but we were actually wondering if it would end up being
+> >> included at some point.
+> > It needs a solid reason to be merged.  My "test" benchmarks are fun to
+> > run, but I have yet to find a real need for it anywhere as the
+> > open/read/close syscall overhead seems to be lost in the noise on any
+> > real application workload that I can find.
+> >
+> > If you have a real need, and it reduces overhead and cpu usage, I'm more
+> > than willing to update the patchset and resubmit it.
 > 
-> Ping? Looks like this got lost somewhere?
+> 
+> Good, I'll give it at try.
+> 
+> 
+> >>> How does multiple processes slow anything down, there shouldn't be any
+> >>> shared locks here.
+> >>
+> >> When I benchmarked this in 2016, reading a single (small) sysfs file was
+> >> 41x slower when running 64 processes simultaneously on a 64-core Knights
+> >> Landing than reading from a single process. On a SGI Altix UV with 12x
+> >> 8-core CPUs, reading from one process per CPU (12 total) was 60x slower
+> >> (which could mean NUMA affinity matters), and reading from one process
+> >> per core (96 total) was 491x slower.
+> >>
+> >> I will try to find some time to dig further on recent kernels with perf
+> >> and readfile (both machines were running RHEL7).
+> > 2016 was a long time ago in kernel-land, please retest on a kernel.org
+> > release, not a RHEL monstrosity.
+> 
+> 
+> Quick test on 5.8.14 from Debian (fairly close to mainline) on a server
+> with 2x20 cores.
+> 
+> I am measuring the time to do open+read+close of
+> /sys/devices/system/cpu/cpu15/topology/die_id 1000 times
+> 
+> With a single process, it takes 2ms (2us per open+read+close, looks OK).
+> 
+> With one process per core (with careful binding, etc), it jumps from 2ms
+> to 190ms (without much variation).
+> 
+> It looks like locks in kernfs_iop_permission and kernfs_dop_revalidate
+> are causing the issue.
+> 
+> I am attaching the perf report callgraph output below.
 
-It does no longer apply, is it possible to do a respin ?
+Ouch, yes, we are hitting the single kernfs mutex for all of this, not
+nice.  I'll add this to my list of things to look at in the near future,
+thanks for the report!
 
-Thanks
-
-  -- Daniel
-
-
--- 
-<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+greg k-h
