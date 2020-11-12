@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770542B06F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EF52B06F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbgKLNtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgKLNtO (ORCPT
+        id S1728394AbgKLNte convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 08:49:34 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54452 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727264AbgKLNtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:49:14 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F35C0613D1;
-        Thu, 12 Nov 2020 05:49:14 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id cq7so6234197edb.4;
-        Thu, 12 Nov 2020 05:49:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MPV3yW2odt+zjcLvgi5foXaZefhlaoNMN5fVUhCTo60=;
-        b=H6L/LZ9nJYkQH4482zy8zeDCX1wapP0XU54WgAmX7CthhqbXBfkJ17XH6VjF7vt1px
-         kBLj9N0E9rIbY5YCVmsESFCIw1/ywXYaw83GL8fzFACttQBizerwrTuwGOIPHuIjyMYX
-         +7yl1IKwNRCPOda9PldsS4yDnCd620WneDur4zumNdII/7VWQZsfu/aWdJCEJo719DVI
-         Oer9dt13PfLWHNfs0fhJQGXpdX1P6K3adkYyi9IXus8w0e9MZKtSGbMItrY3mtvO3VNp
-         51FTOCULRf2M9BkcXnP6B8YSooyELt0yYwc2QxV19q9W/Se7/jJ7YjDIoLrygJ4CD3Kl
-         ktYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MPV3yW2odt+zjcLvgi5foXaZefhlaoNMN5fVUhCTo60=;
-        b=pWVCzlzhJL09ulZIwCMl+vNw5gPj+VKAQ5TIR7wtY9W57Zlnvyvtza10Cw1qEhVLus
-         DwN7OMPkdu+5px7WkAwUrmZlW2st+RMO01M9rCPHz+c1AHBAMixHp6DacQFBJ/X6ynxH
-         EMf3TUszLaJ6e1n7J09CcHFOWNHMmj62m8skRDDhpdC0haNSo156p7+qr+vvcd7SJPVR
-         66RPU/hlJlqKYZ7a45GAuN5/911NmuPhGkiXmA7DioxCyqtTtDiQXnWWoE1DO+dj/2OO
-         7FgVBzawphuSTl1ng6I2itwFZwm89acyVVlowaP8yo8fK/Lp//ig2h3qMLQ4c8vgnOu7
-         UQOw==
-X-Gm-Message-State: AOAM532Y/za4n3RmhiXB1ZUhZryxX5kSjXfK7l01fdEKGp5UbhMVBZ22
-        KP2sn1JNKqeHUlQIIjPcUB8=
-X-Google-Smtp-Source: ABdhPJxHUT+D32ZuT+OmWB5Ksu/4xQOrJJD2gMujrBENGUJ8FLxCmqD0vL5t0JHESnEoy5paf7TX0Q==
-X-Received: by 2002:a05:6402:17ac:: with SMTP id j12mr5158071edy.31.1605188952971;
-        Thu, 12 Nov 2020 05:49:12 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id pg24sm2174593ejb.72.2020.11.12.05.49.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 05:49:11 -0800 (PST)
-Date:   Thu, 12 Nov 2020 15:49:10 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Alexandra Winter <wintera@linux.ibm.com>
-Cc:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Subject: Re: [RFC PATCH net-next 3/3] net: dsa: listen for
- SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign bridge neighbors
-Message-ID: <20201112134910.jpbfrjfwlb3734im@skbuf>
-References: <20201108131953.2462644-1-olteanv@gmail.com>
- <20201108131953.2462644-4-olteanv@gmail.com>
- <CALW65jb+Njb3WkY-TUhsHh1YWEzfMcXoRAXshnT8ke02wc10Uw@mail.gmail.com>
- <20201108172355.5nwsw3ek5qg6z7yx@skbuf>
- <c35d48cd-a1ea-7867-a125-0f900e1e8808@linux.ibm.com>
- <20201111103601.67kqkaphgztoifzl@skbuf>
- <dd9c1f37-a049-ef69-b915-214c869edb51@linux.ibm.com>
+        Thu, 12 Nov 2020 08:49:32 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-160-14xZjbThOIiOpSvgo6sl3w-1; Thu, 12 Nov 2020 13:49:27 +0000
+X-MC-Unique: 14xZjbThOIiOpSvgo6sl3w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 12 Nov 2020 13:49:27 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 12 Nov 2020 13:49:27 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Rob Landley' <rob@landley.net>,
+        kernel test robot <oliver.sang@intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        0day robot <lkp@intel.com>,
+        "lkp@lists.01.org" <lkp@lists.01.org>
+Subject: RE: ac0e958a00:
+ Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:run_init_process
+Thread-Topic: ac0e958a00:
+ Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:run_init_process
+Thread-Index: AQHWuPBHLSpk3pJOe0+t4d8Pl80aaanEgitA
+Date:   Thu, 12 Nov 2020 13:49:27 +0000
+Message-ID: <2bd72a2f0af948d29eb201e3072e514e@AcuMS.aculab.com>
+References: <20201112071145.GC17067@xsang-OptiPlex-9020>
+ <87765a0e-3a49-d437-4010-4848b8ece199@landley.net>
+In-Reply-To: <87765a0e-3a49-d437-4010-4848b8ece199@landley.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd9c1f37-a049-ef69-b915-214c869edb51@linux.ibm.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 03:14:26PM +0100, Alexandra Winter wrote:
-> On 11.11.20 11:36, Vladimir Oltean wrote:
-> > Hi Alexandra,
-> > 
-> > On Wed, Nov 11, 2020 at 11:13:03AM +0100, Alexandra Winter wrote:
-> >> On 08.11.20 18:23, Vladimir Oltean wrote:
-> >>> On Sun, Nov 08, 2020 at 10:09:25PM +0800, DENG Qingfang wrote:
-> >>>> Can it be turned off for switches that support SA learning from CPU?
-> >>>
-> >>> Is there a good reason I would add another property per switch and not
-> >>> just do it unconditionally?
-> >>>
-> >> I have a similar concern for a future patch, where I want to turn on or off, whether the
-> >> device driver listens to SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE for a certain interface.
-> >> (Options will be: static MACs only, learning in the device or learning in bridge and notifications to device)
-> >> What about 'bridge link set dev $netdev learning_sync on self' respectively the corresponding netlink message?
-> > 
-> > My understanding is that "learning_sync" is for pushing learnt addresses
-> > from device to bridge, not from bridge to device.
-> > 
-> uh, sorry copy-paste error. I meant:
-> 'bridge link set dev $netdev learning on self'
+From: Rob Landley
+> Sent: 12 November 2020 12:46
+> 
+> On 11/12/20 1:11 AM, kernel test robot wrote:
+> >
+> > Greeting,
+> >
+> > FYI, we noticed the following commit (built with gcc-9):
+> 
+> Blah, switched from strlcpy to sprintf due to the lack of spaces and didn't
+> adjust the size.
+> 
+> (And yes, the compiler's lifetime analysis should free the stack space before
+> the tail call, and I'd assume exec restarts the stack anyway.)
+> 
+> Second-attempt-by: Rob Landley <rob@landley.net>
+> ---
+> 
+>  init/main.c |   15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index 130376ec10ba..e92320816ef8 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -1328,15 +1328,16 @@ static void __init do_pre_smp_initcalls(void)
+>  static int run_init_process(const char *init_filename)
+>  {
+>  	const char *const *p;
+> +	char buf[512], *s = buf;
+> 
+>  	argv_init[0] = init_filename;
+> -	pr_info("Run %s as init process\n", init_filename);
+> -	pr_debug("  with arguments:\n");
+> -	for (p = argv_init; *p; p++)
+> -		pr_debug("    %s\n", *p);
+> -	pr_debug("  with environment:\n");
+> -	for (p = envp_init; *p; p++)
+> -		pr_debug("    %s\n", *p);
+> +
+> +	for (p = (void *)envp_init; *p; p++)
+> +		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
+> +	for (p = (void *)argv_init; *p; p++)
+> +		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
+> +	pr_info("Run init: %s\n", buf);
+> +
 
-Even with "learning" instead of "learning_sync", I don't understand what
-the "self" modifier would mean and how it would help, sorry.
+Why not use scnprintf() as:
+	len += scnprintf(buf + len, 256 - len, " %s", *p);
+
+or even:
+	s = buf + sizeof buf;
+	len = sizeof buf;
+	...
+		len -= scnprintf(s - len, len, " %s", *p);
+
+and remove the " " before the %s in the final pr_info().
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
