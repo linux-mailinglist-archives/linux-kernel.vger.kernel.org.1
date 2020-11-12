@@ -2,119 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A244C2B092C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400472B093C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgKLP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:58:38 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53998 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728883AbgKLP6b (ORCPT
+        id S1729023AbgKLP7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:59:11 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:37188 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729001AbgKLP7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:58:31 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACFwP2p010590;
-        Thu, 12 Nov 2020 09:58:25 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605196705;
-        bh=5EME1Y5wxtn8yJOfd69sUQV7FxdOrY9kzzIdVjXXO1M=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=In6V1hrwcRwcNLW/ydQ6LG1p7Cqb58kedqGtYRW7eGhLK+1r2x2fu72dvXyZNVUrb
-         HZVDe8B+d3iuOYQz8UN8BTdgnXmVugk4BwA5OcoXoCiiPQBjUeg7DixnCglgs+Odzg
-         ja4GTOdrpA13ammWra26o+mzedyH9sAzVszVZdq8=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACFwP1i072911
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 09:58:25 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 09:58:25 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 09:58:25 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACFwLbH004118;
-        Thu, 12 Nov 2020 09:58:22 -0600
-Subject: Re: [PATCH v2 6/7] arm64: dts: ti: k3-j7200-common-proc-board: Enable
- SERDES0
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, Lee Jones <lee.jones@linaro.org>
-CC:     <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201109170409.4498-1-kishon@ti.com>
- <20201109170409.4498-7-kishon@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <e7b2b4e7-fb5e-8504-a1b1-70dc10771264@ti.com>
-Date:   Thu, 12 Nov 2020 21:28:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 12 Nov 2020 10:59:07 -0500
+Received: by mail-oo1-f68.google.com with SMTP id t10so1421142oon.4;
+        Thu, 12 Nov 2020 07:59:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=DNxWM/BVH5fGeTzA5yC/21tIQu3wig2OXKcKsexOcPM=;
+        b=LX9RGWSrjOnvA2vieWb8n1O3lSqFf8rTD8lQtImO/ZMynrChlrH65lqsGepQJi0MYR
+         5kDoOZBteagFCgs5TAd0bMovBqGVOllGm3LH2rRIUF8k2yYuFFPLrEfAxtkFjtWqOujx
+         SwZQqi0JWQwIsPbxKo5beh1fETRYUTz+TRWY4BWdYyjdxJN1juwfkx1aagYDg0BZZIQJ
+         bHRFXZCQ/ArNFljy0T03zl/bAQlwjGmIzx1zpjVgrkRsiAc5Foe/T0UdcCSLluhIvgbh
+         DCJ8aSuQ2eWCP+05UbUWmXtGJKAVE4ar+/RTiW5CyaSKyWiHTh6kXLrB0ZjRhJRYZ5jm
+         4g7Q==
+X-Gm-Message-State: AOAM531kclOu600uj1mKpflTctna4NBHFmHIvwr3mxdoC4my2myoaBbK
+        vMMLhcdQI4zQTOOYjIg2M1VYgQvCIBisC9VWyx5HV+c7WSI=
+X-Google-Smtp-Source: ABdhPJxXTS9+lCz5yjnp66fQrgsPqCQgz2dEWI6XQF/I71Pth/I75Etbkbiprv1EnxABrXDlmqvWeYLSWd7jmwNf48o=
+X-Received: by 2002:a4a:e80b:: with SMTP id b11mr21288472oob.1.1605196746342;
+ Thu, 12 Nov 2020 07:59:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201109170409.4498-7-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 12 Nov 2020 16:58:55 +0100
+Message-ID: <CAJZ5v0iypErbx8R-0wOnBOK=BNsY0HCNK13BEkdUoxsXJQ1K3g@mail.gmail.com>
+Subject: [GIT PULL] Power management fixes for v5.10-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.10-rc4
+
+with top-most commit fcb3a1ab79904d54499db77017793ccca665eb7e
+
+ cpufreq: intel_pstate: Take CPUFREQ_GOV_STRICT_TARGET into account
+
+on top of commit f8394f232b1eab649ce2df5c5f15b0e528c92091
+
+ Linux 5.10-rc3
+
+to receive power management fixes for 5.10-rc4.
+
+These make the intel_pstate driver behave as expected when it
+operates in the passive mode with HWP enabled and the "powersave"
+governor on top of it.
+
+Thanks!
 
 
-On 11/9/20 10:34 PM, Kishon Vijay Abraham I wrote:
-> Add sub-nodes to SERDES0 DT node to represent SERDES0 is connected
-> to PCIe and QSGMII (multi-link SERDES).
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../dts/ti/k3-j7200-common-proc-board.dts     | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> index ef03e7636b66..65a2e5aeb050 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> @@ -8,6 +8,7 @@
->  #include "k3-j7200-som-p0.dtsi"
->  #include <dt-bindings/net/ti-dp83867.h>
->  #include <dt-bindings/mux/ti-serdes.h>
-> +#include <dt-bindings/phy/phy.h>
->  
->  / {
->  	chosen {
-> @@ -213,3 +214,25 @@
->  	dr_mode = "otg";
->  	maximum-speed = "high-speed";
->  };
-> +
-> +&serdes_refclk {
-> +	clock-frequency = <100000000>;
-> +};
+---------------
 
-Since this is a reference clk from the board, should the entire node be
-here instead of in k3-j7200-main.dtsi?
+Rafael J. Wysocki (4):
+      cpufreq: Introduce governor flags
+      cpufreq: Introduce CPUFREQ_GOV_STRICT_TARGET
+      cpufreq: Add strict_target to struct cpufreq_policy
+      cpufreq: intel_pstate: Take CPUFREQ_GOV_STRICT_TARGET into account
 
-> +
-> +&serdes0 {
-> +	serdes0_pcie_link: phy@0 {
-> +		reg = <0>;
-> +		cdns,num-lanes = <2>;
-> +		#phy-cells = <0>;
-> +		cdns,phy-type = <PHY_TYPE_PCIE>;
-> +		resets = <&serdes_wiz0 1>, <&serdes_wiz0 2>;
-> +	};
-> +
-> +	serdes0_qsgmii_link: phy@1 {
-> +		reg = <2>;
-> +		cdns,num-lanes = <1>;
-> +		#phy-cells = <0>;
-> +		cdns,phy-type = <PHY_TYPE_QSGMII>;
-> +		resets = <&serdes_wiz0 3>;
-> +	};
-> +};
-> 
+---------------
+
+ drivers/cpufreq/cpufreq.c             |  4 +++-
+ drivers/cpufreq/cpufreq_governor.h    |  2 +-
+ drivers/cpufreq/cpufreq_performance.c |  1 +
+ drivers/cpufreq/cpufreq_powersave.c   |  1 +
+ drivers/cpufreq/intel_pstate.c        | 16 +++++++++-------
+ include/linux/cpufreq.h               | 18 ++++++++++++++++--
+ kernel/sched/cpufreq_schedutil.c      |  2 +-
+ 7 files changed, 32 insertions(+), 12 deletions(-)
