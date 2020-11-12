@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E502B116F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CFE2B114E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727352AbgKLW0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:26:20 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27780 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726437AbgKLW0Q (ORCPT
+        id S1726766AbgKLWUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgKLWUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:26:16 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACMLeel075494;
-        Thu, 12 Nov 2020 17:26:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=V284/SocAd83xMJk7GKqJiUIAHSyaGCIqb0XsIpVZMg=;
- b=Ky4SZBdbgNC0oQHAsczYHBJ/4HfZ4egs+oCNww2q25sQialC8x7rVqoFNvP/JtdWYeXl
- J2n6+Ah5vjDT2msLwAasfhct6LgBXHrLkkE5BfS/pAPVXLwk81wrCJ0yg84afIwc6OR5
- cbQNsFOzY2YMYs4ZXZssnQGrI23m73YW8QCEd+3513bz4vo4QWjvfYgulzoB3Qb+eQQa
- qiczm2TzGbo83MMbR1zrgO6nJWHyhW2FEUQp4j3kRouMXfFj80AZN2pOlwDi51nrnbpN
- CkjqVhB9B6K362TQ78bcsJZFvarcRrsO+D33SbIMoCFdHicyfbkEjRCf+Mh4oWD5fYhq fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sc39tkxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 17:26:10 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ACMLfUj075596;
-        Thu, 12 Nov 2020 17:26:10 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sc39tkx5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 17:26:10 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ACMEMM8027040;
-        Thu, 12 Nov 2020 22:19:36 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 34njuh63rg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 22:19:35 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ACMJX1V57540880
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 22:19:33 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1C8B11C04C;
-        Thu, 12 Nov 2020 22:19:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 862A411C050;
-        Thu, 12 Nov 2020 22:19:30 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.105.204])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Nov 2020 22:19:30 +0000 (GMT)
-Message-ID: <0fa1a12388681b49167b58e349cb7c9e996dcd05.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 2/7] IMA: update process_buffer_measurement to
- measure buffer hash
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Thu, 12 Nov 2020 17:19:29 -0500
-In-Reply-To: <7034a775-cde6-1eae-132a-4cb84f310bca@linux.microsoft.com>
-References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
-         <20201101222626.6111-3-tusharsu@linux.microsoft.com>
-         <d0e96ccc49590c5ff11675661592b70b0f021636.camel@linux.ibm.com>
-         <7034a775-cde6-1eae-132a-4cb84f310bca@linux.microsoft.com>
+        Thu, 12 Nov 2020 17:20:40 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A899C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:20:40 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id j14so7199567ots.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qTAA2mjTH1s5gJvXfoqFOnb2RIhffz7/HPf/PMilg1s=;
+        b=dFN+5nhP2JgNsIO+pN31g3PQMctzBg5Wp/ncFqisaXZKXLFc1gjnImkp1mqP4HzxON
+         /6vtZoMbWfQBequoH+jOBoXPCJkahX7hmHKD5aCZNUSIVyUWnm1HzYhnxssg0THcn2kl
+         YI8ecBu65VO7pscM9wkv1zVNMwoUkGC9rPEY9TUXiOsvH/YC+GwQxEqve3H00ZgdThWH
+         DGILd7UgTmn2cTjSHq8lqRpZyINt3ffKMXVqA56W5EYUV3K8Y1wULP94qqdAM2dO9wm8
+         sw5W0GmZTrRf1vtd82BIDHftPFaLSvE7gAsG4aEJSHcR+dvf1FcfCHOUeT7xh7t3X2F6
+         ZrFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qTAA2mjTH1s5gJvXfoqFOnb2RIhffz7/HPf/PMilg1s=;
+        b=NEE/jKddvldIMk7FkWK0/KISQzAD909LwLNcaihEVg1gtXK6R/jwCP70NtyA+jrSF8
+         ZDOPpVCxPJcfxrh/1OaeiEOJToJDKvCDFusotCD5V7EqX8Na4pFJr37ydcRVIou27/fM
+         T/YhjqpBa4O0LgwulpWrEyZQtJDkc89e/pAWkth8eK9HPl1AArxaJn7Zp8//nycfQOS2
+         RmxBibe1yiz61nP0H6St9bQWi3IORcaNeN/r5rYb6kK1aWFVBn7W57ID0Cx1s6nXl9vU
+         R7xgxRrF01YE7L2XEAOfA8ofdlXPOSC5L6Wz1mQXe0brE97QETkXNFGnt53fs5K/Q+26
+         vR1Q==
+X-Gm-Message-State: AOAM531L/yc7QK+0xoPNZ2dKCI2oxa5EkN9DuomKaVmfG+AnGq+4+NfE
+        ymyJs+plYO9FJiIJs0al4E2L3FgyNwK069+C+pgueg==
+X-Google-Smtp-Source: ABdhPJyMi4CuFKcE9FueG6D29GwD/cp6+XfVewyzA+L+8OXF8guN8DtLpuh/GzPAxMez1YVU5QiGgBLiUbCvu5CTvns=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr1045852otn.233.1605219638578;
+ Thu, 12 Nov 2020 14:20:38 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605046662.git.andreyknvl@google.com> <0a9b63bff116734ab63d99ebd09c244332d71958.1605046662.git.andreyknvl@google.com>
+ <20201111174902.GK517454@elver.google.com> <CAAeHK+wvvkYko=tM=NHODkKas13h5Jvsswvg05jhv9LqE0jSjQ@mail.gmail.com>
+ <CANpmjNOboPh97HdMGAESSEYdeyd9+9MVy6E3QsvVAYuWVReRew@mail.gmail.com> <CAAeHK+xhjUQAtJThUHcaGmd3muBZHiJPfTqj59CMxo44hbDniw@mail.gmail.com>
+In-Reply-To: <CAAeHK+xhjUQAtJThUHcaGmd3muBZHiJPfTqj59CMxo44hbDniw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Nov 2020 23:20:27 +0100
+Message-ID: <CANpmjNPxqOi8QCJ4VY6vfVkktEWO1=S5hcOBvTQcWhhL0L9B-w@mail.gmail.com>
+Subject: Re: [PATCH v2 10/20] kasan: inline and rename kasan_unpoison_memory
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-12_13:2020-11-12,2020-11-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- suspectscore=0 bulkscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011120124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 13:47 -0800, Tushar Sugandhi wrote:
-> > On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
-> >> process_buffer_measurement() currently only measures the input buffer.
-> >> In case of SeLinux policy measurement, the policy being measured could
-> >> be large (several MB). This may result in a large entry in IMA
-> >> measurement log.
-> > 
-> > SELinux is an example of measuring large buffer data.  Please rewrite
-> > this patch description (and the other patch descriptions in this patch
-> > set) without using the example to describe its purpose [1].
-> > 
-> > In this case, you might say,
-> > 
-> > The original IMA buffer data measurement sizes were small (e.g. boot
-> > command line), but new buffer data measurement use cases are a lot
-> > larger.  Just as IMA measures the file data hash, not the file data,
-> > IMA should similarly support measuring the buffer data hash.
-> > 
-> Sure. Thanks a lot for giving an example wording for us. Will update.
-> >>
-> >> Introduce a boolean parameter measure_buf_hash to support measuring
-> >> hash of a buffer, which would be much smaller, instead of the buffer
-> >> itself.
-> > 
-> >> To use the functionality introduced in this patch, the attestation
-> >> client and the server changes need to go hand in hand. The
-> >> client/kernel would know what data is being measured as-is
-> >> (e.g. KEXEC_CMDLINE), and what data has it’s hash measured (e.g. SeLinux
-> >> Policy). And the attestation server should verify data/hash accordingly.
-> >>
-> >> Just like the data being measured in other cases, the attestation server
-> >> will know what are possible values of the large buffers being measured.
-> >> e.g. the possible valid SeLinux policy values that are being pushed to
-> >> the client. The attestation server will have to maintain the hash of
-> >> those buffer values.
-> > 
-> > Each patch in the patch set builds upon the previous one.   (Think of
-> > it as a story, where each chapter builds upon the previous ones.)
-> > With rare exceptions, should patches reference subsequent patches. [2]
-> > 
-> > [1] Refer to Documentation/process/submitting-patches.rst
-> > [2] Refer to the section "8) Commenting" in
-> > Documentation/process/coding-style.rst
-> > 
-> I am not sure if you have any concerns about the last two paragraphs.
-> The description about the attestation client and server (the last two
-> paragraphs) was added for information/clarification purpose only, as per
-> your feedback on previous iterations. The subsequent patches don’t have
-> any code pertaining to attestation client/server.
-> 
-> *Question*
-> Maybe the last two paragraphs are confusing/redundant. Could you please
-> let me know if I should remove the above two paragraphs altogether? 
-> (starting with “To use the functionality introduced in this patch ...”)
-> 
-> If we decide to keep the paragraphs, I will remove the specific examples
-> (KEXEC_CMDLINE, SeLinux etc.) as you mentioned elsewhere.
+On Thu, 12 Nov 2020 at 21:54, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Thu, Nov 12, 2020 at 8:52 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Thu, 12 Nov 2020 at 20:45, Andrey Konovalov <andreyknvl@google.com> wrote:
+> > >
+> > > On Wed, Nov 11, 2020 at 6:49 PM Marco Elver <elver@google.com> wrote:
+> > > >
+> > > > On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> > > > > Currently kasan_unpoison_memory() is used as both an external annotation
+> > > > > and as an internal memory poisoning helper. Rename external annotation to
+> > > > > kasan_unpoison_data() and inline the internal helper for hardware
+> > > > > tag-based mode to avoid undeeded function calls.
+> > > >
+> > > > I don't understand why this needs to be renamed again. The users of
+> > > > kasan_unpoison_memory() outweigh those of kasan_unpoison_slab(), of
+> > > > which there seems to be only 1!
+> > >
+> > > The idea is to make kasan_(un)poison_memory() functions inlinable for
+> > > internal use. It doesn't have anything to do with the number of times
+> > > they are used.
+> > >
+> > > Perhaps we can drop the kasan_ prefix for the internal implementations
+> > > though, and keep using kasan_unpoison_memory() externally.
+> >
+> > Whatever avoids changing the external interface, because it seems
+> > really pointless. I can see why it's done, but it's a side-effect of
+> > the various wrappers being added.
+>
+> It looks like unposion_memory() is already taken. Any suggestions for
+> internal KASAN poisoning function names?
 
-Instead of the above two paragraphs, perhaps explain how measuring the
-file data hash differs from measuring the buffer data hash.  Keep the
-explanation generic, short and simple.
+I still don't like that one of these functions just forwards to the
+other, but we could use it to also give the external function a more
+descriptive name.
 
-Mimi
+I propose 2 options:
 
+1. Name the internal helpers *poison_range().
+2. Name the external function kasan_unpoison_range() instead of
+kasan_unpoison_data().
+
+Anything "memory" (or "data") in the allocators might not be too
+helpful w.r.t. descriptive function names (i.e. stripping "memory"
+from function names won't lessen descriptiveness given our context).
+Perhaps kasan_poison_range() for the external function might in fact
+improve the external interface (without looking at its arguments).
+
+If we need to keep the internal helpers, I'd probably go so far as to
+suggest renaming them to simply kasan_{poison,unpoison}(), and then
+building the external kasan_{poison,unpoison}_foo() on top. But maybe
+that's too much for now if it doesn't fit here. :-)
+
+Thanks,
+-- Marco
