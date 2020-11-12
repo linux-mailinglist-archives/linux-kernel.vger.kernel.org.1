@@ -2,86 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862FD2AFC70
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 017F52AFC71
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgKLBgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728015AbgKLAHB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:07:01 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF26C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:07:00 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id a9so4726331lfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 16:07:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b5+3c0cB/SNlhOoBLVTOeycqTJnQtYQ+Gz41CVSnI4A=;
-        b=kI8Q/TtNpemHOgCzxgdmdiqyDeaP1lqzQ58biRx3W0Jvk8YmrwOAmyT1z1qfD2FJzu
-         SUYn/qr5EyJ5pXsS8h9GJp6Az9VQLYUWqBh7aTs8W8PFS/FOiJwEfYe47SyQIzq85SDq
-         A/ojdk2FEIY6yc5KdpovoY0JvsDF6+PAIZH0kwp2dTpZQhgThA6vzXh9M+nr2fJ2wnvh
-         NVsEKhd1ZaXJa7mfl0GmB/SPbSFg2XOgCwz1nlWrdONQGOoNzFroToSprB/kDru2z4nd
-         nr9sI+ektQzrj3My/Z+8UonERdT4ZE83cKP2PBQGlQDGpSXJtDH4mayLvvVVEzpgCOR8
-         H5DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b5+3c0cB/SNlhOoBLVTOeycqTJnQtYQ+Gz41CVSnI4A=;
-        b=YQxSRVAXgmpOITKtGnvAHgjj9zLWCIdwIFLH4qElsVM4ylOSIH8oE3m+JMtabbNgrr
-         roh42trlrQqQSKppc4o66D4nbh0cRqKh0reLS5PfFXHMJTQJ7fpNQDUjWjG+ZSw8VEbn
-         dTbvwZ1IOdeh9EwrfwfhNlv+FWaxuURRfYxWn8u1oIP8GaA3o14MKGSwdRQVU5yw0Tuo
-         MVLnJihKuENnBVY0dBVhHKPbSBSiUSeVuDIKsx04m79KsfxiZF529EpC3JjpsfOSXwW8
-         9gFg3W9DT3+E2SiDiJJV56lR+qYCPpVwTztszspu/zhWZGEY435TDyEri/5uWQcNtRoY
-         RcVA==
-X-Gm-Message-State: AOAM530rPdU0iSDLWyTYspT1f4/VCnd//gTdCHKQJp2akB4WfNLsUl4m
-        c/+ZxCX2vbCfS7yfZXn8QSxAjZyT8nBI0FLY2zfidA==
-X-Google-Smtp-Source: ABdhPJxLUwzQg+4puz6IXIXVIJDaCLsNykZEHy3XRoeRDBcT8S0yIQcax7ZPrlX3T98rcJfBswkiGdi4TsdMJUQtuK4=
-X-Received: by 2002:a05:6512:200e:: with SMTP id a14mr9439357lfb.573.1605139618856;
- Wed, 11 Nov 2020 16:06:58 -0800 (PST)
+        id S1729086AbgKLBg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:36:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728026AbgKLALb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 19:11:31 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61F942072C;
+        Thu, 12 Nov 2020 00:11:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605139890;
+        bh=UUizPUi+5E2gGhUXhujEXQx6cSOfSopZTLC533nokJc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=yuHOwueLPRh7XYhg7N1PKfNbkkla0wA87gc4bZSptoORGlluEdo8F9NTTrSZWIzMo
+         fHJ3yLY04gmvNPf6eJmTpLkx2nSegrutBXIErzzSaaC/0mcw/APa0Ex+jXitD37e7N
+         IaCO7rVaSLzEPVRe268SIRGIEi5tJ14Tj4E2Nfuw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id F0BFF352287B; Wed, 11 Nov 2020 16:11:29 -0800 (PST)
+Date:   Wed, 11 Nov 2020 16:11:29 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        peterz@infradead.org
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201112001129.GD3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201110135320.3309507-1-elver@google.com>
+ <CADYN=9+=-ApMi_eEdAeHU6TyuQ7ZJSTQ8F-FCSD33kZH8HR+xg@mail.gmail.com>
+ <CANpmjNM8MZphvkTSo=KgCBXQ6fNY4qo6NZD5SBHjNse_L9i5FQ@mail.gmail.com>
+ <20201111133813.GA81547@elver.google.com>
+ <20201111130543.27d29462@gandalf.local.home>
+ <20201111182333.GA3249@paulmck-ThinkPad-P72>
+ <20201111183430.GN517454@elver.google.com>
+ <20201111192123.GB3249@paulmck-ThinkPad-P72>
+ <20201111202153.GT517454@elver.google.com>
 MIME-Version: 1.0
-References: <20201109191601.14053-1-zengzhaoxiu@163.com> <20201109192508.14186-1-zengzhaoxiu@163.com>
- <CAG48ez3OyH61+hJ+Azyoae0fA6=8tnVOw3VqKebCcH=dTvh2dg@mail.gmail.com> <2442c8fb-ff36-41ce-9349-d162639d5c3b@163.com>
-In-Reply-To: <2442c8fb-ff36-41ce-9349-d162639d5c3b@163.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 12 Nov 2020 01:06:32 +0100
-Message-ID: <CAG48ez1O-mVnkFdbt5To7XucyFSVtJO0prv6DLjQuwfZDzGz3A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] lib: zlib_inflate: improves decompression performance
-To:     Zhaoxiu Zeng <zengzhaoxiu@163.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111202153.GT517454@elver.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 5:06 PM Zhaoxiu Zeng <zengzhaoxiu@163.com> wrote:
-> =E5=9C=A8 2020/11/11 11:46, Jann Horn =E5=86=99=E9=81=93:
-> > On Mon, Nov 9, 2020 at 8:27 PM <zengzhaoxiu@163.com> wrote:
-> >> This patch does:
-> >> 1. Cleanup code and reduce branches
-> >> 2. Use copy_from_back to copy the matched bytes from the back output b=
-uffer
-> >
-> > What exactly is copy_from_back()? Is it like memmove()? If yes, have
-> > you tried using memmove() instead of the code added in patch 1/3?
-> >
->
-> If use memcpy(or memmove), the code will be like this:
->         while (dist < len) {
->                 memcpy(out, out - dist, dist);
->                 out +=3D dist;
->                 len -=3D dist;
->         }
->         memcpy(out, out - dist, len);
+On Wed, Nov 11, 2020 at 09:21:53PM +0100, Marco Elver wrote:
+> On Wed, Nov 11, 2020 at 11:21AM -0800, Paul E. McKenney wrote:
+> [...]
+> > > >     rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+> > > 
+> > > Sadly, no, next-20201110 already included that one, and that's what I
+> > > tested and got me all those warnings above.
+> > 
+> > Hey, I had to ask!  The only uncertainty I seee is the acquisition of
+> > the lock in rcu_iw_handler(), for which I add a lockdep check in the
+> > (untested) patch below.  The other thing I could do is sprinkle such
+> > checks through the stall-warning code on the assumption that something
+> > RCU is calling is enabling interrupts.
+> > 
+> > Other thoughts?
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index 70d48c5..3d67650 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -189,6 +189,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
+> >  
+> >  	rdp = container_of(iwp, struct rcu_data, rcu_iw);
+> >  	rnp = rdp->mynode;
+> > +	lockdep_assert_irqs_disabled();
+> >  	raw_spin_lock_rcu_node(rnp);
+> >  	if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
+> >  		rdp->rcu_iw_gp_seq = rnp->gp_seq;
+> 
+> This assert didn't fire yet, I just get more of the below. I'll keep
+> rerunning, but am not too hopeful...
 
-Ah, thanks. So basically it means: "repeatedly copy a pattern of
-length `dist` from `out-dist` to `out` until `len` bytes have been
-written"
+Is bisection a possibility?
+
+Failing that, please see the updated patch below.  This adds a few more
+calls to lockdep_assert_irqs_disabled(), but perhaps more helpfully dumps
+the current stack of the CPU that the RCU grace-period kthread wants to
+run on in the case where this kthread has been starved of CPU.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 70d48c5..d203ea0 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -189,6 +189,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
+ 
+ 	rdp = container_of(iwp, struct rcu_data, rcu_iw);
+ 	rnp = rdp->mynode;
++	lockdep_assert_irqs_disabled();
+ 	raw_spin_lock_rcu_node(rnp);
+ 	if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
+ 		rdp->rcu_iw_gp_seq = rnp->gp_seq;
+@@ -449,21 +450,32 @@ static void print_cpu_stall_info(int cpu)
+ /* Complain about starvation of grace-period kthread.  */
+ static void rcu_check_gp_kthread_starvation(void)
+ {
++	int cpu;
+ 	struct task_struct *gpk = rcu_state.gp_kthread;
+ 	unsigned long j;
+ 
+ 	if (rcu_is_gp_kthread_starving(&j)) {
++		cpu = gpk ? task_cpu(gpk) : -1;
+ 		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx ->cpu=%d\n",
+ 		       rcu_state.name, j,
+ 		       (long)rcu_seq_current(&rcu_state.gp_seq),
+ 		       data_race(rcu_state.gp_flags),
+ 		       gp_state_getname(rcu_state.gp_state), rcu_state.gp_state,
+-		       gpk ? gpk->state : ~0, gpk ? task_cpu(gpk) : -1);
++		       gpk ? gpk->state : ~0, cpu);
+ 		if (gpk) {
+ 			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
+ 			pr_err("RCU grace-period kthread stack dump:\n");
++			lockdep_assert_irqs_disabled();
+ 			sched_show_task(gpk);
++			lockdep_assert_irqs_disabled();
++			if (cpu >= 0) {
++				pr_err("Stack dump where RCU grace-period kthread last ran:\n");
++				if (!trigger_single_cpu_backtrace(cpu))
++					dump_cpu_task(cpu);
++			}
++			lockdep_assert_irqs_disabled();
+ 			wake_up_process(gpk);
++			lockdep_assert_irqs_disabled();
+ 		}
+ 	}
+ }
