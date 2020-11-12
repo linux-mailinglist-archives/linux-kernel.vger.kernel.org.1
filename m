@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C592B0437
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2F22B0440
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgKLLp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:45:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728246AbgKLLpF (ORCPT
+        id S1728210AbgKLLrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:47:13 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:47024 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728203AbgKLLqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:45:05 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825D2C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:45:05 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id d142so4984956wmd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W4rTVHjbd+mpguywWNkSROq0hOpiSxqsmTDa7iGbWzE=;
-        b=DNCauhmrLLDTzPZ+mQbVBE0eqe/PQovUWayd6SBm7RrhfibTuoWKWG0EWv3oHEhUwE
-         FVgr/6Rrg3Y+NcpsqF5u0zlvXOlJ0VnIB6hCciiAebVa1zVaG9TenreCe0QjoQ3R0xRc
-         IyACffreqtASl9MdO4+nLmgZbhDvXWrSZkkpOn8PHOU/uT6PUZEUJYQjr9WC/xzoku4z
-         FxTjaOEnhNR08GW0xyrZY+uyTfDDOazCtoMMjR7a37auwVi9r6K1ySWeaOVQXQp/BRd3
-         IzraqvYlBkxo+tGSBgxGDaAGnqm2Lfc/D6IIwxasUBraNQqG/YYxpJuXXwDB9ONdvMl2
-         9/+w==
+        Thu, 12 Nov 2020 06:46:45 -0500
+Received: by mail-wr1-f65.google.com with SMTP id d12so5629855wrr.13;
+        Thu, 12 Nov 2020 03:46:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W4rTVHjbd+mpguywWNkSROq0hOpiSxqsmTDa7iGbWzE=;
-        b=Z5qgenoYlqqqq250cwWMkHmz+38psGOJAIuYIrhPaJTuBMIlwzwJkr/xrCDTfwKz1Y
-         3gYBHwKlfG78QNB8YAwIfFCFDO3J9n5mPDA/25BuTJik/ec+W0/RK/28Xq6mOO+iha0b
-         /k7l8RRrqZbJF98sCE4e5Y0Q/EnIJM5R26cMBzCPIZCx4xUlIzikISbyw781AGXGZxI5
-         WyolfB6Q0XFHaM/4ze+tudBNMAZkL8qfEiGJ8yvfTKLGyKnwkI/ZbZy+4XaviY80PhcV
-         0wjfXVxW3CYtPnPwg9ripWAePP1AuPKzIR8wv4yb8OQX+d7jNjdI02pHRyhWbVuIVSGD
-         GmvA==
-X-Gm-Message-State: AOAM532hinqhtZjA9mnW66E2UyFPsQ8ydcEcts/XbWiiBVxXKJugLcDP
-        d5s+gm7unEDDuM64L/d2xyD4DVpTrmT/Jg==
-X-Google-Smtp-Source: ABdhPJx6GWoJgz5qXJzSTiQQAr2TDZDRCT0AUD+HPdj5y/7wWse8oZFJ5ZN/sD6m25n3mlGvcJg0Ig==
-X-Received: by 2002:a05:600c:2204:: with SMTP id z4mr8822414wml.57.1605181503138;
-        Thu, 12 Nov 2020 03:45:03 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
-        by smtp.googlemail.com with ESMTPSA id o184sm6215357wmo.37.2020.11.12.03.45.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 03:45:02 -0800 (PST)
-Subject: Re: [PATCH v5 0/2] dt-bindings: timer: renesas: tmu: Document
- r8a774e1 and
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201110162014.3290109-1-geert+renesas@glider.be>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <a70ced89-3e47-9211-e914-84e3fbae0583@linaro.org>
-Date:   Thu, 12 Nov 2020 12:45:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9jL9FUqxLDIX1r+bLqA4BxTMQd6KKBsm8f4f5MhHfBo=;
+        b=r79Bd+dhAVO9cPqvIcR+jSaTnZDb7o0eYb66U8V1I7dzvwOpsIFnbnINwWWKwFVreP
+         cE8WOmsr5H6+hlo/Vwr9YMsp+n4dolkuqTFl2QqbXgqOrjPEPDNH/FmgIhY5ipwkagNQ
+         aWzFZr2a7/6F/bi/X+NLZSxZlKngi2aqau1cV2drQ5zN0ES9w5pK+7pAyFU6+cBXLgZi
+         XAm/haJYhqLPC3Qkd/E1RfJN3vllWg3nfhTUjETAITaGOpTgjNqfmgI2IAET0nvHBRS7
+         BikVwAycEmTv9IG/WV1Tdx626UuFfylWJ8o5oVve8mtwxIBX/6HZlOlZP4EgCF9rCCq/
+         hfaA==
+X-Gm-Message-State: AOAM531A6YRKh+BtFnmDGGTnQdeiedLSfEorf6pp8OUGBTGEEfb8nDXh
+        hLgNA059JPR5XuocewjMFdieaAIRHr4=
+X-Google-Smtp-Source: ABdhPJzwcVtzji8/dSn8xXDo7eMvY9+n/MPB9taxXXmbXA8Fk4exE+jlCHts3xuDQMcVvE5V0SXwCw==
+X-Received: by 2002:adf:e541:: with SMTP id z1mr7057091wrm.389.1605181603454;
+        Thu, 12 Nov 2020 03:46:43 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id 34sm6405320wrq.27.2020.11.12.03.46.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 03:46:42 -0800 (PST)
+Date:   Thu, 12 Nov 2020 11:46:41 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        kbuild-all@lists.01.org, virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root
+ partition
+Message-ID: <20201112114641.fstyteqqsic7h6xh@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-3-wei.liu@kernel.org>
+ <202011060303.LvuPfl7N-lkp@intel.com>
+ <20201112114215.kytfavkneta6n4qj@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-In-Reply-To: <20201110162014.3290109-1-geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112114215.kytfavkneta6n4qj@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2020 17:20, Geert Uytterhoeven wrote:
-> 	Hi Daniel, Thomas,
+On Thu, Nov 12, 2020 at 11:42:15AM +0000, Wei Liu wrote:
+> On Fri, Nov 06, 2020 at 03:16:07AM +0800, kernel test robot wrote:
+> > Hi Wei,
+> > 
+> > I love your patch! Yet something to improve:
+> > 
+> > [auto build test ERROR on tip/x86/core]
+> > [also build test ERROR on asm-generic/master iommu/next tip/timers/core pci/next linus/master v5.10-rc2 next-20201105]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> > 
 > 
-> This patch series picks up missing Device Tree binding updates for the
-> Renesas Timer Unit (TMU), and converts the bindings to json-schema.
+> This report is incorrect.
 > 
-> Thanks for applying!
-> 
-> Geert Uytterhoeven (1):
->   dt-bindings: timer: renesas: tmu: Convert to json-schema
-> 
-> Marian-Cristian Rotariu (1):
->   dt-bindings: timer: renesas: tmu: Document r8a774e1 bindings
-> 
->  .../devicetree/bindings/timer/renesas,tmu.txt | 49 ---------
->  .../bindings/timer/renesas,tmu.yaml           | 99 +++++++++++++++++++
->  2 files changed, 99 insertions(+), 49 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
->  create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+> The bot seems to have only picked up this one patch but not the whole
+> series. While the patch can apply cleanly to all those trees, it has a
+> dependency on an earlier patch in this series.
 
-Applied, thanks
+I misread this report and I'm confused now. Let me fetch the config and
+try locally first.
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Wei.
