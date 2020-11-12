@@ -2,122 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910562B0E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC982B0E22
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgKLTbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:31:39 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:54418 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgKLTbh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:31:37 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACJTxsW195978;
-        Thu, 12 Nov 2020 19:31:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=6HfsrYNb/JRE/UvOeFIYpxo+SvqK22p+Km4eenCvPr4=;
- b=uxMIK1Usqh7aUQz30tp7nWpc2Df2kIhwT6CH01ooi0owmXtFuM419A28JHkhnkawOpb3
- M86rB+R6j6XE6yeVvuElY4GY+IfRXqqFNXVLLIVtpUaZ8mbbjTfSH/hVEQKHjvsv7wX2
- KW5DhuoDDPmalq17JZIyKOD9raSI/GFdVIoHwgXJFjbdFSm4MeE/CfXX9eBju9TE3v6r
- Rer2yCpF5nwqJhKP5YM3iyDqAKpX92BNjl4GAqq/LJ2nJF7yMs1dYJb5diFVOp2ckyPN
- ElS/gTW4RK0lRYvfy8403K6rSxWgO7WxB2QcZT1xZ1zxKS1kBiyb3OFpZ6rkUpW/tVmz 5Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34nh3b7epn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 19:31:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACJUHVZ021580;
-        Thu, 12 Nov 2020 19:31:08 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34rtks9ybc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 19:31:07 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ACJV4Vp029843;
-        Thu, 12 Nov 2020 19:31:04 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Nov 2020 11:31:04 -0800
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id E12FC6A0109; Thu, 12 Nov 2020 14:32:53 -0500 (EST)
-Date:   Thu, 12 Nov 2020 14:32:53 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201112193253.GG19638@char.us.oracle.com>
-References: <20201107001207.GA2620339@nvidia.com>
- <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
- <20201108235852.GC32074@araj-mobl1.jf.intel.com>
- <874klykc7h.fsf@nanos.tec.linutronix.de>
- <20201109173034.GG2620339@nvidia.com>
- <87pn4mi23u.fsf@nanos.tec.linutronix.de>
- <20201110051412.GA20147@otc-nc-03>
- <875z6dik1a.fsf@nanos.tec.linutronix.de>
- <20201110141323.GB22336@otc-nc-03>
- <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+        id S1726778AbgKLTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:33:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgKLTd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:33:29 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E5C920A8B;
+        Thu, 12 Nov 2020 19:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605209608;
+        bh=LrGiLo81+yWfEwhJ7Mb3DWrox8fOrg53K1x/vrmEPgg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aBCskPSgCcdUNs59Pgegia+K1BoykcH7JuJpGJi3ROox1Ncp+cBEOERlbHxbqRhKk
+         B31sBd895pSnQuCKIs5niBy81nuqI5i+4cugmyu0ZRjz2kXw4SC69cNl2nCWLSYGE8
+         Qw/TWzeB0cI31hUNIf5AJ9PPhbGvhYYhMj/8n1HE=
+Date:   Thu, 12 Nov 2020 19:33:12 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Guru Das Srinagesh <gurus@codeaurora.org>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] regmap-irq: Add support for peripheral offsets
+Message-ID: <20201112193312.GE4742@sirena.org.uk>
+References: <cover.1603402280.git.gurus@codeaurora.org>
+ <40581a58bd16442f03db1abea014ca1eedc94d3c.1603402280.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="phCU5ROyZO6kBE05"
 Content-Disposition: inline
-In-Reply-To: <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1011 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120116
+In-Reply-To: <40581a58bd16442f03db1abea014ca1eedc94d3c.1603402280.git.gurus@codeaurora.org>
+X-Cookie: Danger: do not shake.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.monster snip..
 
-> 4. Using CPUID to detect running as guest. But as Thomas pointed out, this
-> approach is less reliable as not all hypervisors do this way.
+--phCU5ROyZO6kBE05
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Is that truly true? It is the first time I see the argument that extra
-steps are needed and that checking for X86_FEATURE_HYPERVISOR is not enough.
+On Thu, Oct 22, 2020 at 02:35:40PM -0700, Guru Das Srinagesh wrote:
 
-Or is it more "Some hypervisor probably forgot about it, so lets make sure we patch
-over that possible hole?"
+> Some MFD chips do not have the register space for their peripherals
+> mapped out with a fixed stride. Add peripheral address offsets to the
+> framework to support such address spaces.
 
+> In this new scheme, the regmap-irq client registering with the framework
+> shall have to define the *_base registers (e.g. status_base, mask_base,
+> type_base, etc.) as those of the very first peripheral in the chip, and
+> then specify address offsets of each subsequent peripheral so that their
+> corresponding *_base registers may be calculated by the framework. The
+> first element of the periph_offs array must be zero so that the first
+> peripherals' addresses may be accessed.
 
-Also is there anything in this spec that precludes this from working
-on non-X86 architectures, say ARM systems?
+> Some MFD chips define two registers in addition to the IRQ type
+> registers: POLARITY_HI and POLARITY_LO, so add support to manage their
+> data as well as write to them.
+
+It is difficult to follow what this change is supposed to do, in part
+because it looks like this is in fact two separate changes, one adding
+the _base feature and another adding the polarity feature.  These should
+each be in a separate patch if that is the case, and I think each needs
+a clearer changelog - I'm not entirely sure what the polarity feature is
+supposed to do.  Nothing here says what POLARITY_HI and POLARITY_LO are,
+how they interact or anything.
+
+For the address offsets I'm not sure that this is the best way to
+represent things.  It looks like the hardware this is trying to describe
+is essentially a bunch of separate interrupt controllers that happen to
+share an upstream interrupt and I think that the code would be a lot
+clearer if at least the implementation looked like this.  Instead of
+having to check for this array of offsets at every use point (which is
+going to be rarely used and hence prone to bugs) we'd have a set of
+separate regmap-irqs and then we'd mostly only have to loop through them
+on handling, the bulk of the implementation wouldn't have to worry about
+this special case.
+
+Historically genirq didn't support sharing threaded interrupts, if
+that's not changed we'd need to open code everything inside regmap-irq
+but it would be doable, or ideally genirq could grow this feature.  If
+it's done inside regmap you'd have a separate API that took an array of
+regmap-irq configurations instead of just one and then when an interrupt
+is delivered just loops through all of them handling it.  A quick scan
+through the interrupt code suggests it might be able to cope with shared
+IRQs now though which would make life easier.
+
+--phCU5ROyZO6kBE05
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+tjfcACgkQJNaLcl1U
+h9D4Mwf9GAvnTM5lPHUXGy32dT+1bJ8OVOtn3F7SO7JDh4AlJFKR5bHpc9GJzgMH
+7MW3gGLdP9s/5nuCl+jfwGNJLDZMM6Yiuj+4vmnL0CXjWGtmHBArHXUewIYQ8x4H
+id5KQ+MW9t0BjQg13z6Q7xwNaWFMyZEGdif7/wJV2JVOMVqSn92EdRm3OaXXhK3V
+Ewdkv54z/IbOJLlbTmP8EVJo8FikDZoCDAvfWeRfZDmj97EqykbPSr8I0yiJi1Pm
+uyKK8D02j987od7Q4tTP5N7ODMp3265o9rpM7KqQyn22GCC6IcyzCD2hJSzZcvks
+eLhpkTAvjEdzU5OnMA9W2dITG2cF9g==
+=HvZ7
+-----END PGP SIGNATURE-----
+
+--phCU5ROyZO6kBE05--
