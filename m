@@ -2,152 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B7A2AFC8E
+	by mail.lfdr.de (Postfix) with ESMTP id 732B72AFC8F
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgKLBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:39:06 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45575 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728098AbgKLAhi (ORCPT
+        id S1729337AbgKLBjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728107AbgKLAhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:37:38 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UF10qhn_1605141454;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UF10qhn_1605141454)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Nov 2020 08:37:35 +0800
-Subject: Re: [PATCH] audit: remove unused macros
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <1604651482-9780-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201110152310.GB55411@madcap2.tricolour.ca>
- <CAHC9VhQiQoZh8in+zoYa5hbTN_yL-=mt7nTQFN9GAyQZ+tz-Ww@mail.gmail.com>
- <20201111030359.GB55072@madcap2.tricolour.ca>
- <bae6d2fa-64d9-623b-6729-3827d745ed7a@linux.alibaba.com>
- <20201111131759.GD55072@madcap2.tricolour.ca>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <9784a39e-c39f-b3f9-3d05-68d63e560c75@linux.alibaba.com>
-Date:   Thu, 12 Nov 2020 08:36:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 11 Nov 2020 19:37:43 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA34DC0613D4;
+        Wed, 11 Nov 2020 16:37:42 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so2904879pfu.1;
+        Wed, 11 Nov 2020 16:37:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mM9QG86V38tLRA60VPmwtkAR+Znxn+9PIF+rI2nOlIY=;
+        b=jGX4gTpi4pVihMOdKX/6tH9in1Jo9ery0yzFMEOf9KQeAMg4w0zuUmGry5KNXGY+DS
+         04SEIGtu3FHUVZ6Q3i2LH5+qYvg6ngXGkw8/n/0444hh8Tds2uQuWuHC+etuLeqx4Rqo
+         Gx1hocfoBTGU3MppVZsrOilc/9ivXc0ebxNzbooY4b23l/e9bjE2Jgqfd05zepO3CFUp
+         bmbGpHI9DllMRTvm1gQtiCnvExv9REVyLB/jylkxMW30fQDP2JasZrbFWBOavW8YdT/t
+         uxFOuwEoK49xH2cdhfAb0F/dK7zbOXo48nid9QZqIzXhaI1UcdW7/I2+xZGQHVsqOQYN
+         m96Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mM9QG86V38tLRA60VPmwtkAR+Znxn+9PIF+rI2nOlIY=;
+        b=i6zlC1S/grXKbxKO1q10qlD0UWMx+j+8QPsGFNfNnHfpK3n7+txYwBxHodZwHDVOiX
+         It+/rltAqtab1gJtwOskuzOWjb0DfW17gipgCl9TF7+rTMaCcFP2iay5LFXaAoUb7FLk
+         cHgGSYcAWvd5dOhHvemis/OwoNenJLePZbV8BFhoXFdLnNKIbbf2JVTMBy6qwcxpJCCH
+         8EZhetObrB1WcUqYAoJ33XZzq/0UW57sEN+qWZeDZjtsAtcfljcLUpt+HcUKobvWzyte
+         uPi078YUSq46gAUhJogp4OTR6dM02l9D7Zd0jn17Dnoc9/cf+ItK11fhMqujyZUm/BVv
+         s9rQ==
+X-Gm-Message-State: AOAM532iMSgnIef3+4PXPq8Nu/wyLwnwUYVK1iqFKIDJLco1ERuZo/Wp
+        qVdYFOk73b7fNm4HU/C/W+A=
+X-Google-Smtp-Source: ABdhPJwwUP/3YiRKPA/36oGI5gQoClu23rc118P24HOIH+2zQqSYwKLzEPkhy2rbrWyHL4lTpKzL2w==
+X-Received: by 2002:aa7:8518:0:b029:18b:cc9c:efab with SMTP id v24-20020aa785180000b029018bcc9cefabmr21951853pfn.39.1605141462317;
+        Wed, 11 Nov 2020 16:37:42 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id b80sm4047441pfb.40.2020.11.11.16.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 16:37:41 -0800 (PST)
+Date:   Wed, 11 Nov 2020 16:37:38 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] Input: adp5589: use a single variable for error in
+ probe
+Message-ID: <20201112003738.GZ1003057@dtor-ws>
+References: <20201111084833.40995-1-alexandru.ardelean@analog.com>
+ <20201111084833.40995-2-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111131759.GD55072@madcap2.tricolour.ca>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111084833.40995-2-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alexandru,
 
+On Wed, Nov 11, 2020 at 10:48:28AM +0200, Alexandru Ardelean wrote:
+> The 'error' & 'ret' variables are used. This is a bit of duplication.
+> This change replaces the use of error with the 'ret' variable since the
+> name is a bit more generic.
 
-ÔÚ 2020/11/11 ÏÂÎç9:17, Richard Guy Briggs Ð´µÀ:
->>  
->>  		audit_filter_syscall(tsk, context,
-> This all looks good, but I don't see the initialization of
-> context->return_valid in audit_alloc_context() that was mentioned for
-> completeness.
-> 
+I really prefer variables that carry error codes/success and are used in
+error paths to be called "error", and "ret" or "retval" to be used in
+cases where we may return actual data.
 
-Sorry for missing that. Here they are.
+Thanks.
 
-From 5fef5f1b7b745b52bedc9c7eec9fc163202ad421 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Fri, 6 Nov 2020 16:31:22 +0800
-Subject: [PATCH v3] audit: fix macros warnings
-
-Some unused macros could cause gcc warning:
-kernel/audit.c:68:0: warning: macro "AUDIT_UNINITIALIZED" is not used
-[-Wunused-macros]
-kernel/auditsc.c:104:0: warning: macro "AUDIT_AUX_IPCPERM" is not used
-[-Wunused-macros]
-kernel/auditsc.c:82:0: warning: macro "AUDITSC_INVALID" is not used
-[-Wunused-macros]
-
-AUDIT_UNINITIALIZED and AUDITSC_INVALID are still meaningful and should
-be in incorporated.
-
-Just remove AUDIT_AUX_IPCPERM.
-
-Thanks comments from Richard Guy Briggs and Paul Moore.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: Richard Guy Briggs <rgb@redhat.com>
-Cc: Eric Paris <eparis@redhat.com>
-Cc: linux-audit@redhat.com
-Cc: linux-kernel@vger.kernel.org
----
- kernel/audit.c   |  2 +-
- kernel/auditsc.c | 11 +++++------
- 2 files changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/audit.c b/kernel/audit.c
-index ac0aeaa99937..e22f22bdc000 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -67,7 +67,7 @@
- #define AUDIT_DISABLED		-1
- #define AUDIT_UNINITIALIZED	0
- #define AUDIT_INITIALIZED	1
--static int	audit_initialized;
-+static int	audit_initialized = AUDIT_UNINITIALIZED;
- 
- u32		audit_enabled = AUDIT_OFF;
- bool		audit_ever_enabled = !!AUDIT_OFF;
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 183d79cc2e12..9cbe6d5437be 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -102,8 +102,6 @@ struct audit_aux_data {
- 	int			type;
- };
- 
--#define AUDIT_AUX_IPCPERM	0
--
- /* Number of target pids per aux struct. */
- #define AUDIT_AUX_PIDS	16
- 
-@@ -552,11 +550,11 @@ static int audit_filter_rules(struct task_struct *tsk,
- 			break;
- 
- 		case AUDIT_EXIT:
--			if (ctx && ctx->return_valid)
-+			if (ctx && ctx->return_valid != AUDITSC_INVALID)
- 				result = audit_comparator(ctx->return_code, f->op, f->val);
- 			break;
- 		case AUDIT_SUCCESS:
--			if (ctx && ctx->return_valid) {
-+			if (ctx && ctx->return_valid != AUDITSC_INVALID) {
- 				if (f->val)
- 					result = audit_comparator(ctx->return_valid, f->op, AUDITSC_SUCCESS);
- 				else
-@@ -930,6 +928,7 @@ static inline struct audit_context *audit_alloc_context(enum audit_state state)
- 	INIT_LIST_HEAD(&context->killed_trees);
- 	INIT_LIST_HEAD(&context->names_list);
- 	context->fds[0] = -1;
-+	context->return_valid = AUDITSC_INVALID;
- 	return context;
- }
- 
-@@ -1488,7 +1487,7 @@ static void audit_log_exit(void)
- 			 context->arch, context->major);
- 	if (context->personality != PER_LINUX)
- 		audit_log_format(ab, " per=%lx", context->personality);
--	if (context->return_valid)
-+	if (context->return_valid != AUDITSC_INVALID)
- 		audit_log_format(ab, " success=%s exit=%ld",
- 				 (context->return_valid==AUDITSC_SUCCESS)?"yes":"no",
- 				 context->return_code);
-@@ -1625,7 +1624,7 @@ void __audit_free(struct task_struct *tsk)
- 	 * need to log via audit_log_exit().
- 	 */
- 	if (tsk == current && !context->dummy && context->in_syscall) {
--		context->return_valid = 0;
-+		context->return_valid = AUDITSC_INVALID;
- 		context->return_code = 0;
- 
- 		audit_filter_syscall(tsk, context,
 -- 
-1.8.3.1
-
+Dmitry
