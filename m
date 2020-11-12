@@ -2,219 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3742B0EC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D902D2B0EC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgKLUH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:07:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        id S1726998AbgKLUHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgKLUH0 (ORCPT
+        with ESMTP id S1726738AbgKLUHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:07:26 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B275AC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:07:24 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id g129so7588229ybf.20
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:07:24 -0800 (PST)
+        Thu, 12 Nov 2020 15:07:48 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC3EC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:07:47 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c16so6573995wmd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:07:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=FGYxJIAG4esRLwE4g6/6d2GqFghqrj8MPyr2L5/Ef4g=;
-        b=shLV0fQ1YwPMGvF0367B9kqS5L9pXtTRomLOzoLI5J4XgS6RDJO8T2atvIWz8hZJbl
-         Yn/oM4RPubP2xZAfSVqOrncx/AUrvEDNPg3/7YxEXpJpfXRUmv6ynrGcOxZpaw6FmsPI
-         hRT2m78O5VWKJjJGft5il10gIjAwl9EXhq48+PI3WO9iSfC05I3CgmMcD4yx5jjuBg0G
-         mPTf43YhunEp4pYb1b9q/2PfZyImXQvPqdBbUcKmiJCe7uXt+XZannbGo5uBV+kUzEYs
-         68M5iJ6V296D/peDsjh/lTM5KZWkS+5JwBedPC+gq2IuVY0w1YtN+p34D7pFBpuFC/Cc
-         WrSQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mcvh+x9eP3MHV+XcX2JuuU2Aql775TyuS0/HjA6eBdc=;
+        b=Y4yJgVCPWSUCpUqzFWW/WEUWmL7/iA/KvXcVd9Ni+RmWC//cFjcsLciJMQjyXwmbBE
+         ep70vhwgZjIMNQWdXuJcyGWJ2xPsn/HM9TIGMJ8nEczmBhLHaepdC/HxioTceHU5Q9TR
+         LKLMXaOqL7pJakQNMQCZXd6b7dzfqcJlUmbsDyKnH10SyDfbFq1gfYT8hjpAzqfgor95
+         OZIeMbnMpOgkly6CKhtt87yHbWGNpBL1vj66XmyQTuMnOrkd+JEflpAkIA40/LLlJjrV
+         A4r6zFr7JndJl8/o3zhlqlPmzVUHw1q0EeZh27URvTqTag49JZt5TF4w7U/Ry1UpSoe7
+         /avw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=FGYxJIAG4esRLwE4g6/6d2GqFghqrj8MPyr2L5/Ef4g=;
-        b=FOv5rdry+GeA9ig4yGcb5IYED/UFqGdWcSBj6I33rCQ4x5Udar+UMbE+PTZdGQnZ6Q
-         8Nx0Ze5k6Qr043qQmxvLkXibRGp8JrkJqnbnet/guAqMCyLepKxPcJTeAXGc24grShiG
-         GPTEJQzLytyR5O9JnJNBXK1L+g1tCv1b7E26WSut3QbJpf3MluFRcuPmjLCXKH3lgAC+
-         TX1EAckw32EBz+ioyxXqYSNPrTrK8qeeQltnJ6+eNyXyXVkeX0VKloSC4rfzsAnHJt/0
-         CQu6bQOKXYou4wnNR7+YSuT3tzckK3E6GNc63OuMdoOsbdQWkgvfuJBBQ5AZiVap/sDH
-         SPSA==
-X-Gm-Message-State: AOAM5328dRdXnC0q+L6rXMrGWoqHKiqzptmiACo1Z7VWBdLjqYamBIp1
-        NRQZb1tujW9qpZ11HZH+z31wtaTDTCvb
-X-Google-Smtp-Source: ABdhPJxrLG2RvIx7RM980gDzzUYKOoc9drnIdf2i/5pTxlRPVsi//LH4lWnDgnfaV9TAPG3/hSC5wlE+XTlf
-Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
- (user=jiancai job=sendgmr) by 2002:a25:5806:: with SMTP id
- m6mr1930447ybb.449.1605211643746; Thu, 12 Nov 2020 12:07:23 -0800 (PST)
-Date:   Thu, 12 Nov 2020 12:07:17 -0800
-In-Reply-To: <20201107001056.225807-1-jiancai@google.com>
-Message-Id: <20201112200718.2747316-1-jiancai@google.com>
-Mime-Version: 1.0
-References: <20201107001056.225807-1-jiancai@google.com>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v3] Make iwmmxt.S support Clang's integrated assembler
-From:   Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, ardb@kernel.org, manojgupta@google.com,
-        llozano@google.com, clang-built-linux@googlegroups.com,
-        Jian Cai <jiancai@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mcvh+x9eP3MHV+XcX2JuuU2Aql775TyuS0/HjA6eBdc=;
+        b=uAKjaFWXLAmtTDNSdwFsJXSVSmq346BWBqvzvSyquMf/4Bx10EFATM6J0rksEoWW4K
+         tyPji1kVeoXhJcaI2jC1uroqpDYvrAd4czKHE3J1Hj2twM9YnkOKReuyinTHm2LxtbeB
+         mve7abpeeM4Uubj5iZWsB56EQInFKTPVrSOCICFptAAg5I37uhI6cnrv6SUpiIzM4Fo5
+         94jILZ5wdPaRbDtia8jx//TF/VOorWWG1B0wqUV0pbCaxSqyQpvtkaW2muq9y0s9s1qH
+         RauJ8fFpHj2Lw208ZsxeSTHtl9WM7gbL0650vm5HgAou4VATmXsPygY8CH4b5Mh/s1WJ
+         C5Sg==
+X-Gm-Message-State: AOAM531YhcM/fTPa8GLlEQDvm1/qHk+5xI3S2y1uAUKpn/ibt6UeISdl
+        Ymv6tY+kSdVoGdaBT51W3f+7iQ==
+X-Google-Smtp-Source: ABdhPJyPFqyvJ6jDQgqqd9ZTbKc5vN7yyib/hMkoqEJqq0tijdeGWTSUGNzPGzS+ELJtilLQmv1mkg==
+X-Received: by 2002:a05:600c:2949:: with SMTP id n9mr1270855wmd.29.1605211666499;
+        Thu, 12 Nov 2020 12:07:46 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id m3sm3770298wrv.6.2020.11.12.12.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 12:07:45 -0800 (PST)
+Date:   Thu, 12 Nov 2020 20:07:44 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     santosh.shilimkar@oracle.com
+Cc:     Tero Kristo <t-kristo@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <ssantosh@kernel.org>, tomi.valkeinen@ti.com,
+        kishon@ti.com, dmurphy@ti.com, s-anna@ti.com
+Subject: Re: [PATCH 06/25] soc: ti: knav_qmss_queue: Remove set but unchecked
+ variable 'ret'
+Message-ID: <20201112200744.GA2787115@dell>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-7-lee.jones@linaro.org>
+ <20201112103130.GD1997862@dell>
+ <30ad256b-07f0-f01e-ec4f-c12cf9dbe426@ti.com>
+ <20201112132145.GI1997862@dell>
+ <28b506c0-df0d-c100-8d92-f3051f61cd98@oracle.com>
+ <20201112190202.GN1997862@dell>
+ <764d71c8-447b-80dd-c46f-bdaf729b5a7a@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <764d71c8-447b-80dd-c46f-bdaf729b5a7a@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch replaces 6 IWMMXT instructions Clang's integrated assembler
-does not support in iwmmxt.S using macros, while making sure GNU
-assembler still emit the same instructions. This should be easier than
-providing full IWMMXT support in Clang.  This is one of the last bits of
-kernel code that could be compiled but not assembled with clang. Once
-all of it works with IAS, we no longer need to special-case 32-bit Arm
-in Kbuild, or turn off CONFIG_IWMMXT when build-testing.
+On Thu, 12 Nov 2020, santosh.shilimkar@oracle.com wrote:
 
-"Intel Wireless MMX Technology - Developer Guide - August, 2002" should
-be referenced for the encoding schemes of these extensions.
+> On 11/12/20 11:02 AM, Lee Jones wrote:
+> > On Thu, 12 Nov 2020, santosh.shilimkar@oracle.com wrote:
+> > 
+> > > On 11/12/20 5:21 AM, Lee Jones wrote:
+> > > > On Thu, 12 Nov 2020, Tero Kristo wrote:
+> > > > 
+> > > > > On 12/11/2020 12:31, Lee Jones wrote:
+> > > > > > Cc:ing a few people I know.
+> > > > > > 
+> > > > > > On Tue, 03 Nov 2020, Lee Jones wrote:
+> > > > > > 
+> > > > > > > Fixes the following W=1 kernel build warning(s):
+> > > > > > > 
+> > > > > > >     drivers/soc/ti/knav_qmss_queue.c: In function ‘knav_setup_queue_pools’:
+> > > > > > >     drivers/soc/ti/knav_qmss_queue.c:1310:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+> > > > > > > 
+> > > > > > > Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> > > > > > > Cc: Sandeep Nair <sandeep_n@ti.com>
+> > > > > > > Cc: Cyril Chemparathy <cyril@ti.com>
+> > > > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > > > > ---
+> > > > > > >     drivers/soc/ti/knav_qmss_queue.c | 3 +--
+> > > > > > >     1 file changed, 1 insertion(+), 2 deletions(-)
+> > > > > > 
+> > > > > > Any idea who will take these TI patches?
+> > > > > > 
+> > > > > > https://urldefense.com/v3/__https://lore.kernel.org/linux-arm-kernel/20201111052540.GH173948@builder.lan/__;!!GqivPVa7Brio!KEeMCT-GwmLNnDFCOqxnunXXiCrCpj3ZFXpiMzj55VmlOJ-FVhKmom-O7sq-CkL8s0sjAg$
+> > > > > > 
+> > > > > 
+> > > > > (Dropped a few inactive emails from delivery.)
+> > > > > 
+> > > > > Santosh is the maintainer for the subsystem, so my vote would go for him.
+> > > > 
+> > > > Thanks for your prompt reply Tero.
+> > > > 
+> > > > It looks as though Santosh has been on Cc since the start.  He must
+> > > > just be busy.  I'll give him a little while longer before submitting a
+> > > > [RESEND].
+> > > > 
+> > > Go ahead and re-post. These seems to be trivial so will pick
+> > > it up.
+> > 
+> > If you are in receipt of the first iteration, there shouldn't be any
+> > requirement for a [RESEND].  Unless you deleted them from your inbox?
+> > 
+> I haven't deleted anything. I thought you are going to repost based
+> on "I'll give him a little while longer before submitting a [RESEND]"
+> :-)
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/975
+A [RESEND] is a tactic employed due to lack of response.
 
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Jian Cai <jiancai@google.com>
----
+Usually because the original set has slipped through the gaps.
 
-Thanks Ard for the writeup.
+If you find the patches adequate and you still have them in your
+possession, please feel free to merge them. :)
 
-Changes v2 -> v3:
-Add rationale in the commit log to further highlight the necessity of
-this change based on ardb@kernel.org's suggestion.
 
- arch/arm/kernel/iwmmxt.S | 89 ++++++++++++++++++++--------------------
- 1 file changed, 45 insertions(+), 44 deletions(-)
-
-diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
-index 0dcae787b004..d2b4ac06e4ed 100644
---- a/arch/arm/kernel/iwmmxt.S
-+++ b/arch/arm/kernel/iwmmxt.S
-@@ -16,6 +16,7 @@
- #include <asm/thread_info.h>
- #include <asm/asm-offsets.h>
- #include <asm/assembler.h>
-+#include "iwmmxt.h"
- 
- #if defined(CONFIG_CPU_PJ4) || defined(CONFIG_CPU_PJ4B)
- #define PJ4(code...)		code
-@@ -113,33 +114,33 @@ concan_save:
- 
- concan_dump:
- 
--	wstrw	wCSSF, [r1, #MMX_WCSSF]
--	wstrw	wCASF, [r1, #MMX_WCASF]
--	wstrw	wCGR0, [r1, #MMX_WCGR0]
--	wstrw	wCGR1, [r1, #MMX_WCGR1]
--	wstrw	wCGR2, [r1, #MMX_WCGR2]
--	wstrw	wCGR3, [r1, #MMX_WCGR3]
-+	wstrw	wCSSF, r1, MMX_WCSSF
-+	wstrw	wCASF, r1, MMX_WCASF
-+	wstrw	wCGR0, r1, MMX_WCGR0
-+	wstrw	wCGR1, r1, MMX_WCGR1
-+	wstrw	wCGR2, r1, MMX_WCGR2
-+	wstrw	wCGR3, r1, MMX_WCGR3
- 
- 1:	@ MUP? wRn
- 	tst	r2, #0x2
- 	beq	2f
- 
--	wstrd	wR0,  [r1, #MMX_WR0]
--	wstrd	wR1,  [r1, #MMX_WR1]
--	wstrd	wR2,  [r1, #MMX_WR2]
--	wstrd	wR3,  [r1, #MMX_WR3]
--	wstrd	wR4,  [r1, #MMX_WR4]
--	wstrd	wR5,  [r1, #MMX_WR5]
--	wstrd	wR6,  [r1, #MMX_WR6]
--	wstrd	wR7,  [r1, #MMX_WR7]
--	wstrd	wR8,  [r1, #MMX_WR8]
--	wstrd	wR9,  [r1, #MMX_WR9]
--	wstrd	wR10, [r1, #MMX_WR10]
--	wstrd	wR11, [r1, #MMX_WR11]
--	wstrd	wR12, [r1, #MMX_WR12]
--	wstrd	wR13, [r1, #MMX_WR13]
--	wstrd	wR14, [r1, #MMX_WR14]
--	wstrd	wR15, [r1, #MMX_WR15]
-+	wstrd	wR0,  r1, MMX_WR0
-+	wstrd	wR1,  r1, MMX_WR1
-+	wstrd	wR2,  r1, MMX_WR2
-+	wstrd	wR3,  r1, MMX_WR3
-+	wstrd	wR4,  r1, MMX_WR4
-+	wstrd	wR5,  r1, MMX_WR5
-+	wstrd	wR6,  r1, MMX_WR6
-+	wstrd	wR7,  r1, MMX_WR7
-+	wstrd	wR8,  r1, MMX_WR8
-+	wstrd	wR9,  r1, MMX_WR9
-+	wstrd	wR10, r1, MMX_WR10
-+	wstrd	wR11, r1, MMX_WR11
-+	wstrd	wR12, r1, MMX_WR12
-+	wstrd	wR13, r1, MMX_WR13
-+	wstrd	wR14, r1, MMX_WR14
-+	wstrd	wR15, r1, MMX_WR15
- 
- 2:	teq	r0, #0				@ anything to load?
- 	reteq	lr				@ if not, return
-@@ -147,30 +148,30 @@ concan_dump:
- concan_load:
- 
- 	@ Load wRn
--	wldrd	wR0,  [r0, #MMX_WR0]
--	wldrd	wR1,  [r0, #MMX_WR1]
--	wldrd	wR2,  [r0, #MMX_WR2]
--	wldrd	wR3,  [r0, #MMX_WR3]
--	wldrd	wR4,  [r0, #MMX_WR4]
--	wldrd	wR5,  [r0, #MMX_WR5]
--	wldrd	wR6,  [r0, #MMX_WR6]
--	wldrd	wR7,  [r0, #MMX_WR7]
--	wldrd	wR8,  [r0, #MMX_WR8]
--	wldrd	wR9,  [r0, #MMX_WR9]
--	wldrd	wR10, [r0, #MMX_WR10]
--	wldrd	wR11, [r0, #MMX_WR11]
--	wldrd	wR12, [r0, #MMX_WR12]
--	wldrd	wR13, [r0, #MMX_WR13]
--	wldrd	wR14, [r0, #MMX_WR14]
--	wldrd	wR15, [r0, #MMX_WR15]
-+	wldrd	wR0,  r0, MMX_WR0
-+	wldrd	wR1,  r0, MMX_WR1
-+	wldrd	wR2,  r0, MMX_WR2
-+	wldrd	wR3,  r0, MMX_WR3
-+	wldrd	wR4,  r0, MMX_WR4
-+	wldrd	wR5,  r0, MMX_WR5
-+	wldrd	wR6,  r0, MMX_WR6
-+	wldrd	wR7,  r0, MMX_WR7
-+	wldrd	wR8,  r0, MMX_WR8
-+	wldrd	wR9,  r0, MMX_WR9
-+	wldrd	wR10, r0, MMX_WR10
-+	wldrd	wR11, r0, MMX_WR11
-+	wldrd	wR12, r0, MMX_WR12
-+	wldrd	wR13, r0, MMX_WR13
-+	wldrd	wR14, r0, MMX_WR14
-+	wldrd	wR15, r0, MMX_WR15
- 
- 	@ Load wCx
--	wldrw	wCSSF, [r0, #MMX_WCSSF]
--	wldrw	wCASF, [r0, #MMX_WCASF]
--	wldrw	wCGR0, [r0, #MMX_WCGR0]
--	wldrw	wCGR1, [r0, #MMX_WCGR1]
--	wldrw	wCGR2, [r0, #MMX_WCGR2]
--	wldrw	wCGR3, [r0, #MMX_WCGR3]
-+	wldrw	wCSSF, r0, MMX_WCSSF
-+	wldrw	wCASF, r0, MMX_WCASF
-+	wldrw	wCGR0, r0, MMX_WCGR0
-+	wldrw	wCGR1, r0, MMX_WCGR1
-+	wldrw	wCGR2, r0, MMX_WCGR2
-+	wldrw	wCGR3, r0, MMX_WCGR3
- 
- 	@ clear CUP/MUP (only if r1 != 0)
- 	teq	r1, #0
 -- 
-2.29.2.299.gdc1121823c-goog
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
