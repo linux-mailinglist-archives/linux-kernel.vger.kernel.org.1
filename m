@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889A32B0D24
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0487C2B0D25
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgKLTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:00:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
+        id S1726690AbgKLTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgKLTAt (ORCPT
+        with ESMTP id S1726636AbgKLTAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:00:49 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A739C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:49 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r17so7191068wrw.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:49 -0800 (PST)
+        Thu, 12 Nov 2020 14:00:52 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763BDC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:50 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id s8so7132642wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GWKMq1DqVP98QcoNoXmklvrAILj+KoFN9Nw2d/Tqn0c=;
-        b=XQ8aimgR1HOHqJ2EoM1hF1fe6bOlASD4cH6EaZzEzLElHkGP0nIeMXYy3UmjbOO0QO
-         lZtt2yakhfBPc/rnh+qCiNyTMP6Nfyk1sESI1z81+HRE88i1PC2XvmL13rioypDBsjtu
-         L7MnFhT07OyuWQI7jeyGOclyWrH5+nWo6BK/XX8WeEjWw4CcxDQt6qG2M5Rkwh20ZbNM
-         2s4s/JydD02pWOrDjpGemlFW7UEenR1SS9v5dcqwmLRGPempPP4HLsA0baBy5i1rV9on
-         ccRf9OiI1ntTuy+b0QqUb1vxTPnSHhOetJ9FJ8UL1gpUWA9TyUkReWUooC2/a51aidOr
-         TNXg==
+        bh=gVcDG3IiNQEq4rpTJUM8b3mZR6jA74yvr8OWtv64epQ=;
+        b=Y1OLNk/UJGCriJrFzTJyz/7mEB43UxZLzJz8hPJJs02oFqzKBJE0899W3d0AtzsB43
+         GMkA5SjnvYXBpOkdpVgOqsywYS3E41ROtpGzJP3Lhtda/31ycYXjg/AvNc8eCFD+o8xn
+         02aiZoaSxAOHPpz+uw3fQ7TpG0KwYt68Xj2IXLd1lBmEtMKeTpxzgdZHgy3idhQbe7x/
+         Br/Wm4m7eyvRH3mh+xGUw+J3EjfSL36y2O1H26GQ6x2F1WtrGEjUe3or6rJZGYL4Wd6W
+         3EfdycZCcsWf7uQwp2tA72EQUq6o8/bw+dgq4RoEeHmmEyJpnJE6elo797Oa9WJTgogr
+         Wxog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GWKMq1DqVP98QcoNoXmklvrAILj+KoFN9Nw2d/Tqn0c=;
-        b=UKveLxSKGVjV4LBDMB8x1wzvDQotVfy7D7wXW1xKzUU2BAGGY+sHgJUwVAnO0y23KO
-         yABFy+7YvBn1JSSQm+PO9HK5PhhfWf5pdUu/hAf3W2Kp0R0mgjXJvjnd8QZDxNGIQx8s
-         z5XdMM5+6vss1i+h0TicyVUshMq6z6IGEI+15NwLKzEM+A+sQ1ABa2vwzB4WU/cnWPsX
-         eBx2bLoO9d4EZnbzpoEqd3F05Y7atYx5UueXgPeqZTPDH5r92VC6Z1djOWaFPdwsHrpN
-         xw76p/+V0YKILvJdgiV1EtQ0aUMYvZBZJwhxDOk2nGFSoR90kASTD3Rf85jhNu3HttHT
-         5oFA==
-X-Gm-Message-State: AOAM530OU/JtWa2HZttraQj+u0ZbVg+UMO4FYpG1A2XOUx+ySQXOg8S2
-        dTcswILzlbT+fEU5E7eDaba5SA==
-X-Google-Smtp-Source: ABdhPJwhzsVgAVaWzBvQEaXjElZKyqFVzX5Lr8qYHX0wE6B0MmSg0w8DqfbbSAyHCSTeiO0rfz/J5A==
-X-Received: by 2002:adf:e787:: with SMTP id n7mr1161747wrm.153.1605207647964;
-        Thu, 12 Nov 2020 11:00:47 -0800 (PST)
+        bh=gVcDG3IiNQEq4rpTJUM8b3mZR6jA74yvr8OWtv64epQ=;
+        b=VZjAPW0lV1NV2HviLUq329m4B5urJGJ/XMGW3Ry7Pgg8oVB1W50MABTsL2NQjHNydZ
+         e6cN7SweHNFghjkkg/ZfORiWc9jwjhw8oDcLp1Xb4fvJx0Ya4jK3YTLPLSceeS9T2EAr
+         OzmJ7ZBD8N3NE4tt+x/oNNifNuT7LXZO2DrmgqGqr1e5GK57A2gjkzBLMTrKffqiayWu
+         QRzcWv09l/kglgaBu0j5v6Vp5hCocPeYPQM4SNfS5STsiIR8znNXYxx7JNxA9LwTtO94
+         SC3R7Ek/JaCmk3ilm9+7NZ0YlM7Vm0z2yBFUZYRx1/OzYWyUUmsSm3b77YTwzSC4W+gT
+         dSIg==
+X-Gm-Message-State: AOAM530hrBGP+B63LvIesQZRGXl2PocAb2YxnYr/1qTP2yUfjnb/LA7g
+        80rskXvc5T5yB8XEZMetOF5Rww==
+X-Google-Smtp-Source: ABdhPJxFv4jWUIh1wd651ZYopF50nq1JdswFNn22NA1B9EBp1HaArdAU1PnW00YXU3OzKtTCcHEQSQ==
+X-Received: by 2002:a5d:514a:: with SMTP id u10mr1108099wrt.312.1605207649222;
+        Thu, 12 Nov 2020 11:00:49 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.00.46
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.00.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:00:47 -0800 (PST)
+        Thu, 12 Nov 2020 11:00:48 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
-        David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 03/30] drm/v3d/v3d_gem: Provide descriptions for 'v3d_lookup_bos's params
-Date:   Thu, 12 Nov 2020 19:00:12 +0000
-Message-Id: <20201112190039.2785914-4-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 04/30] drm/via/via_dma: Remove set but unused variable 'agp_base'
+Date:   Thu, 12 Nov 2020 19:00:13 +0000
+Message-Id: <20201112190039.2785914-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
 References: <20201112190039.2785914-1-lee.jones@linaro.org>
@@ -73,36 +68,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/v3d/v3d_gem.c:292: warning: Function parameter or member 'bo_handles' not described in 'v3d_lookup_bos'
- drivers/gpu/drm/v3d/v3d_gem.c:292: warning: Function parameter or member 'bo_count' not described in 'v3d_lookup_bos'
+ drivers/gpu/drm/via/via_dma.c: In function ‘via_cmdbuf_jump’:
+ drivers/gpu/drm/via/via_dma.c:596:11: warning: variable ‘agp_base’ set but not used [-Wunused-but-set-variable]
 
-Cc: Eric Anholt <eric@anholt.net>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/v3d/v3d_gem.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/via/via_dma.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
-index 182c586525eb8..4eb3542269725 100644
---- a/drivers/gpu/drm/v3d/v3d_gem.c
-+++ b/drivers/gpu/drm/v3d/v3d_gem.c
-@@ -275,6 +275,8 @@ v3d_lock_bo_reservations(struct v3d_job *job,
-  * @dev: DRM device
-  * @file_priv: DRM file for this fd
-  * @job: V3D job being set up
-+ * @bo_handles: GEM handles
-+ * @bo_count: Number of GEM handles passed in
-  *
-  * The command validator needs to reference BOs by their index within
-  * the submitted job's BO list.  This does the validation of the job's
+diff --git a/drivers/gpu/drm/via/via_dma.c b/drivers/gpu/drm/via/via_dma.c
+index 1208445e341de..cd56ffa3df589 100644
+--- a/drivers/gpu/drm/via/via_dma.c
++++ b/drivers/gpu/drm/via/via_dma.c
+@@ -593,13 +593,11 @@ static inline void via_dummy_bitblt(drm_via_private_t *dev_priv)
+ 
+ static void via_cmdbuf_jump(drm_via_private_t *dev_priv)
+ {
+-	uint32_t agp_base;
+ 	uint32_t pause_addr_lo, pause_addr_hi;
+ 	uint32_t jump_addr_lo, jump_addr_hi;
+ 	volatile uint32_t *last_pause_ptr;
+ 	uint32_t dma_low_save1, dma_low_save2;
+ 
+-	agp_base = dev_priv->dma_offset + (uint32_t) dev_priv->agpAddr;
+ 	via_align_cmd(dev_priv, HC_HAGPBpID_JUMP, 0, &jump_addr_hi,
+ 		      &jump_addr_lo, 0);
+ 
 -- 
 2.25.1
 
