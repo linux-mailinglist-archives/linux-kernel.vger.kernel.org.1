@@ -2,141 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E222B07B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEB22B07A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgKLOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:42:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47662 "EHLO mx2.suse.de"
+        id S1728450AbgKLOjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:39:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLOm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:42:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6BE8AB95;
-        Thu, 12 Nov 2020 14:42:54 +0000 (UTC)
-Subject: Re: [PATCH v2 3/5] kernel/power: allow hibernation with page_poison
- sanity checking
-To:     David Hildenbrand <david@redhat.com>,
+        id S1727035AbgKLOjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:39:17 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABC2322240;
+        Thu, 12 Nov 2020 14:39:16 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 09:39:15 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Laura Abbott <labbott@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org
-References: <20201103152237.9853-1-vbabka@suse.cz>
- <20201103152237.9853-4-vbabka@suse.cz>
- <eba10537-98c0-5363-8ff6-c0e71b823e50@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <7811e5ec-c7ae-09a9-7f90-45e14956c4c4@suse.cz>
-Date:   Thu, 12 Nov 2020 15:39:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+Subject: Re: [for-next][PATCH 12/17] fgraph: Make overruns 4 bytes in graph
+ stack structure
+Message-ID: <20201112093915.16a42644@gandalf.local.home>
+In-Reply-To: <aabe0dd1fd7b46aaaadb2b34912b6718@AcuMS.aculab.com>
+References: <20201112003244.764326960@goodmis.org>
+        <20201112003334.906341178@goodmis.org>
+        <aabe0dd1fd7b46aaaadb2b34912b6718@AcuMS.aculab.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <eba10537-98c0-5363-8ff6-c0e71b823e50@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 4:42 PM, David Hildenbrand wrote:
-...
->> @@ -1152,12 +1152,18 @@ void clear_free_pages(void)
->>   	if (WARN_ON(!(free_pages_map)))
->>   		return;
->>   
->> -	if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
->> +	if (page_poisoning_enabled() || want_init_on_free()) {
->>   		memory_bm_position_reset(bm);
->>   		pfn = memory_bm_next_pfn(bm);
->>   		while (pfn != BM_END_OF_MAP) {
->> -			if (pfn_valid(pfn))
->> -				clear_highpage(pfn_to_page(pfn));
->> +			if (pfn_valid(pfn)) {
->> +				struct page *page = pfn_to_page(pfn);
+On Thu, 12 Nov 2020 09:18:21 +0000
+David Laight <David.Laight@ACULAB.COM> wrote:
+
+> From: Steven Rostedt
+> > Sent: 12 November 2020 00:33
+> > 
+> > Inspecting the data structures of the function graph tracer, I found that
+> > the overrun value is unsigned long, which is 8 bytes on a 64 bit machine,
+> > and not only that, the depth is an int (4 bytes). The overrun can be simply
+> > an unsigned int (4 bytes) and pack the ftrace_graph_ret structure better.
+> > 
+> > The depth is moved up next to the func, as it is used more often with func,
+> > and improves cache locality.  
+> ...
+> >  } __packed;  
 > 
-> ^ empty line missing. And at least I prefer to declare all variables in
-> the function header.
+> Does this many any/much difference given that the structure is
+> marked __packed?
 > 
-> I'd even suggest to move this into a separate function like
-> 
-> clear_or_poison_free_page(struct page *page)
-> 
+> OTOH the __packed will (probably) kill performance on systems
+> that don't support mis-aligned accesses.
 > 
 
-Ok, fixup below.
+I think you answered your own question ;-)
 
-----8<----
- From cae1e8ccfa57c28ed1b2f5f8a47319b86cbdcfbf Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 12 Nov 2020 15:33:07 +0100
-Subject: [PATCH] kernel/power: allow hibernation with page_poison sanity
-  checking-fix
+That was why I try to keep 4 byte items together. But the point here was
+that overrun is hardly ever used (probably could just be a single byte),
+and there was no reason for it to be a long.
 
-Adapt to __kernel_unpoison_pages fixup. Split out clear_or_poison_free_page()
-per David Hildenbrand.
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
-  include/linux/mm.h      |  1 +
-  kernel/power/snapshot.c | 18 ++++++++++--------
-  2 files changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 861b9392b5dc..d4cfb06a611e 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2896,6 +2896,7 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages)
-  #else
-  static inline bool page_poisoning_enabled(void) { return false; }
-  static inline bool page_poisoning_enabled_static(void) { return false; }
-+static inline void __kernel_poison_pages(struct page *page, int nunmpages) { }
-  static inline void kernel_poison_pages(struct page *page, int numpages) { }
-  static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
-  #endif
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index 6b1c84afa891..a3491b29c5cc 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -1144,6 +1144,14 @@ void free_basic_memory_bitmaps(void)
-  	pr_debug("Basic memory bitmaps freed\n");
-  }
-  
-+static void clear_or_poison_free_page(struct page *page)
-+{
-+	if (page_poisoning_enabled_static())
-+		__kernel_poison_pages(page, 1);
-+	else if (want_init_on_free())
-+		clear_highpage(page);
-+}
-+
-  void clear_or_poison_free_pages(void)
-  {
-  	struct memory_bitmap *bm = free_pages_map;
-@@ -1156,14 +1164,8 @@ void clear_or_poison_free_pages(void)
-  		memory_bm_position_reset(bm);
-  		pfn = memory_bm_next_pfn(bm);
-  		while (pfn != BM_END_OF_MAP) {
--			if (pfn_valid(pfn)) {
--				struct page *page = pfn_to_page(pfn);
--				if (page_poisoning_enabled_static())
--					kernel_poison_pages(page, 1);
--				else if (want_init_on_free())
--					clear_highpage(page);
--
--			}
-+			if (pfn_valid(pfn))
-+				clear_or_poison_free_page(pfn_to_page(pfn));
-  
-  			pfn = memory_bm_next_pfn(bm);
-  		}
--- 
-2.29.1
-
-
+-- Steve
