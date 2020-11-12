@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870482B0248
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3892B0254
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbgKLJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:52:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:45634 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgKLJwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:52:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54D9E139F;
-        Thu, 12 Nov 2020 01:52:04 -0800 (PST)
-Received: from [10.37.12.33] (unknown [10.37.12.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 47B643F73C;
-        Thu, 12 Nov 2020 01:52:01 -0800 (PST)
-Subject: Re: [PATCH v9 32/44] arm64: mte: Switch GCR_EL1 in kernel entry and
- exit
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1605046192.git.andreyknvl@google.com>
- <25401c15dc19c7b672771f5b49a208d6e77bfeb5.1605046192.git.andreyknvl@google.com>
- <20201112093908.GE29613@gaia> <db6e3a5d-290f-d1b5-f130-503d7219b76b@arm.com>
- <20201112094553.GG29613@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <6aec6a77-f9b0-cf73-6bf3-4f8df8f8cd13@arm.com>
-Date:   Thu, 12 Nov 2020 09:55:05 +0000
+        id S1727241AbgKLJ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:56:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgKLJ4U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:56:20 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE23C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:56:20 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id d12so5269190wrr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:56:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cxDZR78f1uAjoaTSqfFbkuzSwbFVGDkZXidPHX71G9c=;
+        b=YJ0+2ZMBF11Z542eqUsAqitgHb1xPMZ9lech+gtY3w1F7OShr8zrOCrXG/V2z/Vf9D
+         HvJMT0pS3sKdFvG56bx1LvN6uF/lhDOzA1YfuOcJrkfOS77zNBxHMGj8IusEA8/Evn9n
+         vEUDFgaNl0eXFe71Zx5ivyXt/FVmjekvELTABnl8IThNTg4mQZES6Ls1Sj+/CCnAaW8s
+         D/poUG+CS3XKDKNfiUrnWUKSQX2FNYipld7UOIAeSpgaQ152qnUGHktwJPgARaTmEEWL
+         eZN+kAZ3YTV4KiBAUS62tIvHl3nYE2Ii0u3zoEFmkOd5nNkEQTgKsjtihGwlp/GcxvrL
+         G9xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cxDZR78f1uAjoaTSqfFbkuzSwbFVGDkZXidPHX71G9c=;
+        b=INkH6qOoymt/J7McErf1KsCRS7TucaPt3JMeMTOGYFxanHxyRsjEfbJxfKSqAwajPz
+         p/D/ee5vc6Gtb4oXlOMeDv22mD2q3uBHV3oAmF6Z5gGZgLBbnUX/djaqrT74qRentHVr
+         4f4S7Jx/x4cXuQFEbQKaazx0t3ZDt1AXM422YfWkVsBoYodJ3ar7ntwDOGD48Cw6KYW7
+         5wCuUkPAb6T5/+xQD/k4bnVp8J72lPxQ3OJ6O5s21pGDYHMnBCLWGtTxmEwSGaLOsG+Y
+         m3mxZrofbjT6GFheGxsEa89b76vg7vxVaSqZOsH2NBV72rOJAmktS5hsj+bnql2CNzXw
+         UYYA==
+X-Gm-Message-State: AOAM533N16sDSjGCWHQ06npCkkuniG1q8vNMEirBvhQ+UZMhOijNFdiw
+        CZoisY1oePLhi7cJ41cGPn7FetYVlGSw4Q==
+X-Google-Smtp-Source: ABdhPJwZ8/k2DYgb9fv+4YPP3KOxKbE1pra7CozavXciwAz8421GIRgYfLL5qZ+6yrj+dSeMgUX0Pw==
+X-Received: by 2002:adf:9d44:: with SMTP id o4mr36796016wre.229.1605174979204;
+        Thu, 12 Nov 2020 01:56:19 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
+        by smtp.googlemail.com with ESMTPSA id m126sm5866401wmm.0.2020.11.12.01.56.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 01:56:18 -0800 (PST)
+Subject: Re: [PATCH v2 05/17] clocksource/hyperv: use MSR-based access if
+ running as root
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-6-wei.liu@kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <3527e98a-faab-2360-f521-aa04bbe92edf@linaro.org>
+Date:   Thu, 12 Nov 2020 10:56:17 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201112094553.GG29613@gaia>
+In-Reply-To: <20201105165814.29233-6-wei.liu@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/11/2020 17:58, Wei Liu wrote:
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
 
+I would like to apply this patch but the changelog is too short (one line).
 
-On 11/12/20 9:45 AM, Catalin Marinas wrote:
-> On Thu, Nov 12, 2020 at 09:45:45AM +0000, Vincenzo Frascino wrote:
->> On 11/12/20 9:39 AM, Catalin Marinas wrote:
->>> On Tue, Nov 10, 2020 at 11:10:29PM +0100, Andrey Konovalov wrote:
->>>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->>>> index 664c968dc43c..dbda6598c19d 100644
->>>> --- a/arch/arm64/kernel/mte.c
->>>> +++ b/arch/arm64/kernel/mte.c
->>>> @@ -129,6 +131,26 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
->>>>  	return ptr;
->>>>  }
->>>>  
->>>> +void mte_init_tags(u64 max_tag)
->>>> +{
->>>> +	static bool gcr_kernel_excl_initialized = false;
->>>> +
->>>> +	if (!gcr_kernel_excl_initialized) {
->>>> +		/*
->>>> +		 * The format of the tags in KASAN is 0xFF and in MTE is 0xF.
->>>> +		 * This conversion extracts an MTE tag from a KASAN tag.
->>>> +		 */
->>>> +		u64 incl = GENMASK(FIELD_GET(MTE_TAG_MASK >> MTE_TAG_SHIFT,
->>>> +					     max_tag), 0);
->>>> +
->>>> +		gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
->>>> +		gcr_kernel_excl_initialized = true;
->>>> +	}
->>>> +
->>>> +	/* Enable the kernel exclude mask for random tags generation. */
->>>> +	write_sysreg_s(SYS_GCR_EL1_RRND | gcr_kernel_excl, SYS_GCR_EL1);
->>>> +}
->>>
->>> I don't think this function belongs to this patch. There is an earlier
->>> patch that talks about mte_init_tags() but no trace of it until this
->>> patch.
->>
->> Could you please point out to which patch are you referring to?
+Please add a small paragraph (no need to resend just answer here, I will
+amend the log myself.
+
+>  drivers/clocksource/hyperv_timer.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> I replied to it already (or you can search ;)). But this patch is about
-> switching GCR_EL1 on exception entry/exit rather than setting up the
-> initial kernel GCR_EL1 value.
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> index ba04cb381cd3..269a691bd2c4 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -426,6 +426,9 @@ static bool __init hv_init_tsc_clocksource(void)
+>  	if (!(ms_hyperv.features & HV_MSR_REFERENCE_TSC_AVAILABLE))
+>  		return false;
+>  
+> +	if (hv_root_partition)
+> +		return false;
+> +
+>  	hv_read_reference_counter = read_hv_clock_tsc;
+>  	phys_addr = virt_to_phys(hv_get_tsc_page());
+>  
 > 
 
-Temporally after I asked ;) (I give you the benefit of delay of the mail server
-;) ). I think that during the development the logic changed a bit, but I agree
-that the comments are outdated. I am fine to move the code.
 
 -- 
-Regards,
-Vincenzo
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
