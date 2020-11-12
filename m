@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B292E2B0C72
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 737FC2B0C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgKLST6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgKLST6 (ORCPT
+        id S1726375AbgKLSZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:25:53 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41614 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgKLSZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:19:58 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4362FC0613D1;
-        Thu, 12 Nov 2020 10:19:58 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 34so1610661pgp.10;
-        Thu, 12 Nov 2020 10:19:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=n7g1gNiWNUoiOnTmGN2ApE9IfRXIw3myaShl47KJKcQ=;
-        b=kJnc+FEG/l4y8Napsm/X9/qjqvCMpN4vmUqqRFGL0KIjULmi6J5JWxQ7fJd2a/F1pu
-         35Jn3Wd5EMd2KfRBPB7Tni7AYnhQqSXZpECGgNn2pZL9CKDn6drTTpb+lvKyHzpfdgBs
-         e21MDX98i4B4ufrH+M3JcOBxx01BdL6bdIYAfEGlp87Y5uMRRNEshp6W2byJ12X+ibQt
-         QRb4O1dSR2vDj/wNu9xFAjT4mIHtWp66DRJyJI9GOZtEWOpMQEzXkO9W+7J0gh+ZI8wT
-         qEka8Jz2/E2cfnlAvDkdlDaLeEIa5hBcBUbsjksFGH1NxZ2eKdgB0FFKEQcrc9TxNBtg
-         77Ng==
+        Thu, 12 Nov 2020 13:25:52 -0500
+Received: by mail-pl1-f193.google.com with SMTP id w11so3226171pll.8;
+        Thu, 12 Nov 2020 10:25:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=n7g1gNiWNUoiOnTmGN2ApE9IfRXIw3myaShl47KJKcQ=;
-        b=FT2BY1iAUc9OG6s/oI5CufRhwPChf7bcGe3H7huf0s35tb6CWwsSzKRReh78SpDVUH
-         YLFnUOdXTqdaoOUkw5B2Dr43gyzqk3D954hb0gl/VBa1E62NNELuALS49cSe2ksL6/5k
-         C7wTwgxIecuK0AVccUm9TL0Er0jziFHhXfbuuIs8DpanJk4UkH+jpKMPWGYQfxB16DiH
-         dlOCB90SNTXekunu/98sFE2eyDz85fKOY4yEOfoiSRhwLaNj86RUa2X5v9wn5PQZ1MPi
-         f1jRkNJx9EcrOu2gVkSlwCQ1ZXuyA73xpr8EycnKvr8D/NB5wLVuPs1bueGRP3+UBh6W
-         kqMA==
-X-Gm-Message-State: AOAM533zpWQrXWTbhxFziHEzweZ1JOK8+5QWO43t7x+DSkOENZqmbOVZ
-        DQ9uHru6Yii1IUstRETjOJM=
-X-Google-Smtp-Source: ABdhPJwMTfvFMTxs0p4jnKJl/SOqqPdhZH2Jzh4/mv0luqjTZxAlap+i91fJvmHNNH/jUUhG7WQEUQ==
-X-Received: by 2002:a62:7ccd:0:b029:18b:9083:ae1b with SMTP id x196-20020a627ccd0000b029018b9083ae1bmr658078pfc.27.1605205197831;
-        Thu, 12 Nov 2020 10:19:57 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id 144sm7236849pfb.71.2020.11.12.10.19.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 10:19:57 -0800 (PST)
-Date:   Thu, 12 Nov 2020 10:19:54 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     =?utf-8?B?546L5pOO?= <wangqing@vivo.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH V4 net-bugfixs] net/ethernet: Update ret when
- ptp_clock is ERROR
-Message-ID: <20201112181954.GD21010@hoboy.vegasvil.org>
-References: <20201111080027.7830f756@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <AFoANwC7DUvmHhxeg4sBAapD.3.1605143705212.Hmail.wangqing@vivo.com>
- <CAK8P3a3=eOxE-K25754+fB_-i_0BZzf9a9RfPTX3ppSwu9WZXw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QvplDTvTZnay/C4NlrXwy3WiT/KqaqbHVC2O6qZP0hg=;
+        b=BEVpDlTFXLoANApF0cRFqmy6gV0y/SJOBbHU7JX1BducnTiNzPyKnZL6YxAQCFSRML
+         /fX64mGqyrtV1YtRE/vbR3T9/qOhLYT7foyzh7dTZn2YClS5E4Ad69R6udajOs/wgR37
+         twn3NyQPNNTexniJcF6Pc4l/itV3Ffrca3doB+dDR84lCByL5We0Q2lozsA3/yMNo7/d
+         Qg46WQQaYxRpb1kcxJnBfNumGL5QZuIWuCr/M2ZhrvmNm6EMLYbfIK3OJGGZk45TgCZ9
+         +44SAc4W75EgIH/N5q8IH5fzxvQnk8vLPNQ2KEcNLrEMpdjXlS8XqU4CFbe6lr/BADdr
+         5K0A==
+X-Gm-Message-State: AOAM530pGKL1KvLQDwsfFB3sgm+Ola+ShLGXQoaW5WGLifqRAcM2+eD3
+        MyF+zil4hGN1ye1Rbr9OjVCIcdjOb6Y=
+X-Google-Smtp-Source: ABdhPJwmwJ9oyvDBaHX1IV3z0OBdcR8Y0E0H9te5SVdVx2RNM/0cqbEnX6LvSYcE87EuemmXdGKyxw==
+X-Received: by 2002:a17:902:e788:b029:d6:dc69:80a8 with SMTP id cp8-20020a170902e788b02900d6dc6980a8mr881007plb.59.1605205551213;
+        Thu, 12 Nov 2020 10:25:51 -0800 (PST)
+Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id k6sm7162512pfd.169.2020.11.12.10.25.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 10:25:50 -0800 (PST)
+Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        YueHaibing <yuehaibing@huawei.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201112145443.17832-1-yuehaibing@huawei.com>
+ <20201112172008.GA944848@nvidia.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
+Date:   Thu, 12 Nov 2020 10:25:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3=eOxE-K25754+fB_-i_0BZzf9a9RfPTX3ppSwu9WZXw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201112172008.GA944848@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:25:12AM +0100, Arnd Bergmann wrote:
-> This is not really getting any better. If Richard is worried about
-> Kconfig getting changed here, I would suggest handling the
-> case of PTP being disabled by returning an error early on in the
-> function, like
+On 11/12/20 9:20 AM, Jason Gunthorpe wrote:
+> I think it should be like this, Bart?
 > 
-> struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
->                                    struct device_node *node)
-> {
->         struct am65_cpts *cpts;
->         int ret, i;
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 6017d525084a0c..80f9673956ced2 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   
+>   	mutex_lock(&sport->port_guid_id.mutex);
+>   	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
+> -		if (!IS_ERR_OR_NULL(ch->sess))
+> +		if (ch->sess)
+>   			break;
+>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+>   						tag_size, TARGET_PROT_NORMAL,
+> @@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   
+>   	mutex_lock(&sport->port_gid_id.mutex);
+>   	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
+> -		if (!IS_ERR_OR_NULL(ch->sess))
+> +		if (ch->sess)
+>   			break;
+>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+>   					tag_size, TARGET_PROT_NORMAL, i_port_id,
+>   					ch, NULL);
+> -		if (!IS_ERR_OR_NULL(ch->sess))
+> +		if (ch->sess)
+>   			break;
+>   		/* Retry without leading "0x" */
+>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+> @@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   	}
+>   	mutex_unlock(&sport->port_gid_id.mutex);
+>   
+> -	if (IS_ERR_OR_NULL(ch->sess)) {
+> +	if (!ch->sess)
+> +		ch->sess = ERR_PTR(-ENOENT);
+> +	if (IS_ERR(ch->sess)) {
+>   		WARN_ON_ONCE(ch->sess == NULL);
+>   		ret = PTR_ERR(ch->sess);
+>   		ch->sess = NULL;
 > 
->         if (!IS_ENABLED(CONFIG_PTP_1588_CLOCK))
->                  return -ENODEV;
 
-No, please, no.  That only adds confusion.  The NULL return value
-already signals that the compile time support was missing.  That was
-the entire point of this...
+Hi Jason,
 
- * ptp_clock_register() - register a PTP hardware clock driver
- *
- * @info:   Structure describing the new clock.
- * @parent: Pointer to the parent device of the new clock.
- *
- * Returns a valid pointer on success or PTR_ERR on failure.  If PHC
- * support is missing at the configuration level, this function
- * returns NULL, and drivers are expected to gracefully handle that
- * case separately.
+The ib_srpt driver accepts three different formats for the initiator 
+ACL. Up to two of the three target_setup_session() calls will fail if 
+the fifth argument of target_setup_session() does not use the format of 
+the initiator ID in configfs. If the first or the second 
+target_setup_session() call fails it is essential that later 
+target_setup_session() calls happen. Hence the IS_ERR_OR_NULL(ch->sess) 
+checks in the above loops.
+
+In other words, I like YueHaibing's patch better.
 
 Thanks,
-Richard
+
+Bart.
