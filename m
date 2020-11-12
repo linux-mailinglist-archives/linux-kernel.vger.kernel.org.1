@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E342B04B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208BB2B04BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgKLMLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
+        id S1728001AbgKLMMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:12:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbgKLMLd (ORCPT
+        with ESMTP id S1727223AbgKLMMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:11:33 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01916C0613D1;
-        Thu, 12 Nov 2020 04:11:33 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id l2so8086143lfk.0;
-        Thu, 12 Nov 2020 04:11:32 -0800 (PST)
+        Thu, 12 Nov 2020 07:12:01 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3A9C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:12:01 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id k1so5020356ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:12:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qDQm3rNb54SkhUlNL8RpgRXOxU1huiUJ9bj0ejS8kCk=;
-        b=AkrS6kZLgOxeYWXwGqpnfRdxsFJC8kUVrNHqC+x66hKRlbQKyI02IkvnEQXgS+Mpqv
-         wfUomJ2OUUNHkIOUnFqPihpisPDQBLBk8peJrFHfZlz59JxQ69BJ7N4Uf77rkP5Xf82t
-         qsFNugShHOgnDKzU1zIymdgWbVHdOhoRwVt5aKbx7AxfBiAWNqtDaBdlNFKl5bo/Efot
-         z8wGvsipy2d3YYrx09ALDYA55yCpyVnehUR5SnF+mvX3oXH6JhznejwjEz4jNHJoqQEe
-         9am6xJ4Cj4V0a2eXaE68zLYHUIwOKgKVofDGlctulPFTKSJo4a8/iKz+pm0pAuZykR9m
-         0DTg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fnoYpz56ibAMj1qjJjzVWCKsrD3fu7HOMcpzb6SFLQw=;
+        b=gUqQZ2VPC1SYq3DSRL1Mev6Svu2VXswDHMQzJuxychcL/EmpCIhoGuqKjdrTNuqrc0
+         WGCR55j22sMxj5TMPMUd60RWUdQU0Adj/y9zr0UPeXqjfNMPdqIyOjsi/UItyZ+Wx/cq
+         K4gD5n8UTDH899lmjb1/szWtkPfdHM6Q6TSnr0ZP1ur3/isg7HfirvGJX8f/80qMre4g
+         9EqQtn8asZON+70qSiL3xweNiVDbAMfzIYqA1VM7tX3egAkQWDqXmNJiAN3Tql84ORYD
+         A+CxHlVTgkVuH3ZgOWgJpk6r9ghosV/DeKjn3ARF64qrNBIqTP03E0ICU7uaCO+PygMy
+         rtZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qDQm3rNb54SkhUlNL8RpgRXOxU1huiUJ9bj0ejS8kCk=;
-        b=UQS7AZzEFRRXQrmw9XH4wAOgtB+deU2ilPHNrh8XNKQshvPxYsrhZoRxtd/hRyovS0
-         zPSiT8e5FKQFapRBL5fYOdNF4zTxmNerA06xdDION3XHS1criGoW1UBDDU7uwq59a1gy
-         FKpBNJDcxz3C+F1Bq5Gd4zUcxH983/qciu4pKbaKUafrGpmRMSAVKqF2fgAXU2XnK50W
-         zlrqqHCU0mF0kymnHdQlv3lwVElxsqHKLL++/1nAlJVdUL0tyMO8ZGYBKXLFniucNpMj
-         ffGXDI/Lb6HTKvgPQbdm76WiWHgjKYnYGkjFE8fdtQSgokXu/PV5huVqn2GYhNpD1k8r
-         e3GQ==
-X-Gm-Message-State: AOAM5332WS37cnyxvIRW2Q/ddDPlBmUfXif5jNEY5/9JLsEtmf5lTrEd
-        zyZW7/9TbEMs/iqHt+BGfC7jms5jbv0=
-X-Google-Smtp-Source: ABdhPJy+/o28hDjr4pTZgv+xJ0krk9L41w8CiLD43sF8UIQDD5r7aDtBz54XuH9pd5SDQlDjxUTdmA==
-X-Received: by 2002:a19:794:: with SMTP id 142mr4117210lfh.232.1605183091360;
-        Thu, 12 Nov 2020 04:11:31 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id t9sm20051lfe.274.2020.11.12.04.11.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 04:11:30 -0800 (PST)
-Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20201111103847.152721-1-jonathanh@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ea73403a-a248-cd2e-b0af-aeb246801054@gmail.com>
-Date:   Thu, 12 Nov 2020 15:11:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        bh=fnoYpz56ibAMj1qjJjzVWCKsrD3fu7HOMcpzb6SFLQw=;
+        b=Gefn+e8WtD+cDANSRiv/BroTEMODGLBegZR1FtAdWDCLBIxxNcnjZ8ww0rmfnwN//i
+         XTaEEqiZQduuwNaHG4pvNBBQLKGzUi89RnzS6oqwHCezx6j8oGF0Gk8xrHKEaoxnXyD7
+         5MaB4UFE9AzWnw6F8JawUW8Q6ljJCQ6U8Hfuka2D0lrSn6Y2+QcSSMnmI/B2qF8Y9Ym/
+         miTGUlLwmpQpXHVCj6/+zIPvY8sr4TP4aY06dUroz0o5sh7nbu7w62lmuEEPAQ4fJDXG
+         l7uR26MyIx+Fca5rdUDV+5q7byJr+ey9iDx0LaWd3CbCLe3pzJABwboMQLkxUdZfBvcE
+         Jopg==
+X-Gm-Message-State: AOAM533GN3ZLqSkdGebtMUBY1EDCju+o0kvBBpaPmwDzhLZlQsrJUcqC
+        XXKRvta+ztVParZRzDQDH7VGBA==
+X-Google-Smtp-Source: ABdhPJwz9MFnm9EG7SSCZl1dWGVR12C9FHy/qqxm+kVm/Gg8RdjcALez3W2uf4wQg8xL5h5fgTSIbQ==
+X-Received: by 2002:a05:6e02:926:: with SMTP id o6mr23467158ilt.287.1605183120861;
+        Thu, 12 Nov 2020 04:12:00 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id i14sm2609563iow.13.2020.11.12.04.11.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 04:12:00 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/2] net: ipa: two fixes
+Date:   Thu, 12 Nov 2020 06:11:55 -0600
+Message-Id: <20201112121157.19784-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201111103847.152721-1-jonathanh@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.11.2020 13:38, Jon Hunter пишет:
-> Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
-> (Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
-> generic CPUFREQ device-tree driver. Since this change CPUFREQ support
-> on the Tegra20 Ventana platform has been broken because the necessary
-> device-tree nodes with the operating point information are not populated
-> for this platform. Fix this by updating device-tree for Venata to
-> include the operating point informration for Tegra20.
-> 
-> Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegra30 supported now)")
-> Cc: stable@vger.kernel.org
-> 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
-> index b158771ac0b7..055334ae3d28 100644
-> --- a/arch/arm/boot/dts/tegra20-ventana.dts
-> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
-> @@ -3,6 +3,7 @@
->  
->  #include <dt-bindings/input/input.h>
->  #include "tegra20.dtsi"
-> +#include "tegra20-cpu-opp.dtsi"
->  
->  / {
->  	model = "NVIDIA Tegra20 Ventana evaluation board";
-> @@ -592,6 +593,16 @@ clk32k_in: clock@0 {
->  		#clock-cells = <0>;
->  	};
->  
-> +	cpus {
-> +		cpu0: cpu@0 {
+This small series makes two fixes to the IPA code:
+  - While reviewing something else I found that one of the resource
+    limits on the SDM845 used the wrong value.  The first patch
+    fixes this.  The correct value allocates more resources of this
+    type for IPA to use, and otherwise does not change behavior.
+  - When the IPA-resident microcontroller starts up it generates an
+    event, which triggers an AP interrupt.  The event merely
+    provides some information for logging, which we don't support.
+    We already ignore the event, and that's harmless.  So this
+    patch explicitly ignores it rather than issuing a warning when
+    it occurs.
+     
+    					-Alex
 
-I assume you're going to use this cpu0 handle later on.
+Alex Elder (2):
+  net: ipa: fix source packet contexts limit
+  net: ipa: ignore the microcontroller log event
 
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +
-> +		cpu@1 {
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +	};
-> +
->  	gpio-keys {
->  		compatible = "gpio-keys";
->  
-> 
+ drivers/net/ipa/ipa_data-sdm845.c | 4 ++--
+ drivers/net/ipa/ipa_uc.c          | 3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+-- 
+2.20.1
+
