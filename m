@@ -2,146 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B902B0135
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBB12B013C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgKLIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:30:16 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:58324 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725898AbgKLIaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:30:16 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxStCK8qxf7noMAA--.18155S2;
-        Thu, 12 Nov 2020 16:30:03 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yinglu Yang <yangyinglu@loongson.cn>
-Subject: [PATCH] MIPS: Loongson64: Add read_persistent_clock64()
-Date:   Thu, 12 Nov 2020 16:29:53 +0800
-Message-Id: <1605169793-10481-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxStCK8qxf7noMAA--.18155S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxurWkXF1ftrW7XFyDJw1rXrb_yoWrGr4kp3
-        y3Aas8tw4Y9r1xZrWSya4kWw13Gr95Gry2qFWSqa4Yy3Z5Jw1UJrs7KryUtr4UJF1vqayq
-        gFyrW3y3uanrAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU0yxRDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726204AbgKLIcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:32:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgKLIcq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 03:32:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605169965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=up1lOrEugzLW07KRiPo8mFDChEY+WGuuuWj0cewxi6M=;
+        b=RbjbV8Sjv2WqzR/iTz5xm2vO9WfJ6rIeYHIcXzNuj8Uld77GVnD96NhaWyl/uwlftp1cZv
+        egqWWj/+CUg+P5PvaZFGbS6TfDPRM1af/Lp6YYXyGVJZ7/My5taBOoNYmTtel5Gaw5P/Di
+        vsvzMS2PIhU5INwDncYivTh6sSMTLtg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-yOAe-C5eMiiEdt41LzpNxA-1; Thu, 12 Nov 2020 03:32:42 -0500
+X-MC-Unique: yOAe-C5eMiiEdt41LzpNxA-1
+Received: by mail-wr1-f72.google.com with SMTP id f4so1605503wru.21
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 00:32:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=up1lOrEugzLW07KRiPo8mFDChEY+WGuuuWj0cewxi6M=;
+        b=X/wX9qutYfC+pl+qwVAwob1ZwIVlkjIOBSlGKkx7R++SrTL/L6D2Fu52vmpFnLOzXq
+         FaFfi9rNB/1kh8aya3y/BvXAJ8luWB6cqCcYQj+3FjPbiumDnQQB15CHV0VTauvCcrT9
+         iEdkzRSlErfM7ocsNpesp1QKMVynsGGtiTSaSuTophieC7vwHCdQ1UuzOKbB47aJOPz2
+         bURCc2OmQV7Og5WU7pO1orclq9D811VuJ3Fnzpc7BuciyS55MVvu4OInGCXhffZNQh2i
+         QKu9oQNDfouQKXaOw3ymyZTrCD0JaRanO7nSQgZGJcgrKNw9M2HhS0aGelZvpfv+5aRB
+         D2Uw==
+X-Gm-Message-State: AOAM531nfSOuop3+ENG7z+K1NGxUF2rjoXkaSGI95BP8AOGMlL/iPyUj
+        NlGNQkL+T1Ob1QXuNzNZKykW3MK0VFiCzBekrSB/rPvfW8RypHk3Ytt4CP32ww9IOSMOfBGKioe
+        7S+YOhkQ1QQUAdUa7uUQ4JVO8
+X-Received: by 2002:a7b:cb09:: with SMTP id u9mr8351251wmj.109.1605169961516;
+        Thu, 12 Nov 2020 00:32:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzzWU8fZ9HRoVIS5lwVjtIkmc2UzdjOOXNZfQk70jewC7qS3zZSD9YvBvQ7DGMOuoPTMNDM2g==
+X-Received: by 2002:a7b:cb09:: with SMTP id u9mr8351219wmj.109.1605169961257;
+        Thu, 12 Nov 2020 00:32:41 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id k1sm1937588wrp.23.2020.11.12.00.32.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 00:32:40 -0800 (PST)
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     junaids@google.com, wanpengli@tencent.com, kvm@vger.kernel.org,
+        joro@8bytes.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, tglx@linutronix.de, vkuznets@redhat.com,
+        jmattson@google.com
+References: <160514082171.31583.9995411273370528911.stgit@bmoger-ubuntu>
+ <160514090654.31583.12433653224184517852.stgit@bmoger-ubuntu>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 2/2] KVM:SVM: Mask SEV encryption bit from CR3 reserved
+ bits
+Message-ID: <09c5a083-a841-7d0e-f315-1d480e929957@redhat.com>
+Date:   Thu, 12 Nov 2020 09:32:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <160514090654.31583.12433653224184517852.stgit@bmoger-ubuntu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add read_persistent_clock64() to read the time from the battery backed
-persistent clock. With this patch, we can fix the wrong time issue due
-to the system clock is not consistent with hardware clock after resume
-from sleep state S3 (suspend to RAM), at the same time, the system time
-can be right instead of "Thu Jan 1 08:00:00 CST 1970" without rtc driver.
+On 12/11/20 01:28, Babu Moger wrote:
+> Add support to the mask_cr3_rsvd_bits() callback to mask the
+> encryption bit from the CR3 value when SEV is enabled.
+> 
+> Additionally, cache the encryption mask for quick access during
+> the check.
+> 
+> Fixes: a780a3ea628268b2 ("KVM: X86: Fix reserved bits check for MOV to CR3")
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>   arch/x86/kvm/svm/svm.c |   11 ++++++++++-
+>   arch/x86/kvm/svm/svm.h |    3 +++
+>   2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index a491a47d7f5c..c2b1e52810c6 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3741,6 +3741,7 @@ static u64 svm_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>   static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>   {
+>   	struct vcpu_svm *svm = to_svm(vcpu);
+> +	struct kvm_cpuid_entry2 *best;
+>   
+>   	vcpu->arch.xsaves_enabled = guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
+>   				    boot_cpu_has(X86_FEATURE_XSAVE) &&
+> @@ -3771,6 +3772,12 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>   	if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
+>   		kvm_request_apicv_update(vcpu->kvm, false,
+>   					 APICV_INHIBIT_REASON_NESTED);
+> +
+> +	best = kvm_find_cpuid_entry(vcpu, 0x8000001F, 0);
+> +	if (best)
+> +		svm->sev_enc_mask = ~(1UL << (best->ebx & 0x3f));
+> +	else
+> +		svm->sev_enc_mask = ~0UL;
+>   }
+>   
+>   static bool svm_has_wbinvd_exit(void)
+> @@ -4072,7 +4079,9 @@ static void enable_smi_window(struct kvm_vcpu *vcpu)
+>   
+>   static unsigned long svm_mask_cr3_rsvd_bits(struct kvm_vcpu *vcpu, unsigned long cr3)
+>   {
+> -	return cr3;
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +
+> +	return sev_guest(vcpu->kvm) ? (cr3 & svm->sev_enc_mask) : cr3;
+>   }
+>   
+>   static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, void *insn, int insn_len)
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 1d853fe4c778..57a36645a0e4 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -152,6 +152,9 @@ struct vcpu_svm {
+>   	u64 *avic_physical_id_cache;
+>   	bool avic_is_running;
+>   
+> +	/* SEV Memory encryption mask */
+> +	unsigned long sev_enc_mask;
+> +
+>   	/*
+>   	 * Per-vcpu list of struct amd_svm_iommu_ir:
+>   	 * This is used mainly to store interrupt remapping information used
+> 
 
-start_kernel()
-  timekeeping_init()
-    read_persistent_wall_and_boot_offset()
-      read_persistent_clock64()
+Instead of adding a new callback, you can add a field to struct 
+kvm_vcpu_arch:
 
-timekeeping_resume()
-  read_persistent_clock64()
+  	if (is_long_mode(vcpu) &&
+-	    (cr3 & rsvd_bits(cpuid_maxphyaddr(vcpu), 63)))
++	    (cr3 & vcpu->arch.cr3_lm_rsvd_bits))
 
-timekeeping_suspend()
-  read_persistent_clock64()
+Set it in kvm_vcpu_after_set_cpuid, and clear the memory encryption bit 
+in kvm_x86_ops.vcpu_after_set_cpuid.
 
-Signed-off-by: Yinglu Yang <yangyinglu@loongson.cn>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/mach-loongson64/loongson.h | 20 +++++++++++++++++
- arch/mips/loongson64/time.c                      | 28 +++++++++++++++++++++++-
- 2 files changed, 47 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
-index fde1b75..448289e 100644
---- a/arch/mips/include/asm/mach-loongson64/loongson.h
-+++ b/arch/mips/include/asm/mach-loongson64/loongson.h
-@@ -238,4 +238,24 @@ extern u64 loongson_freqctrl[MAX_PACKAGES];
- #define LOONGSON_PCIMAP_WIN(WIN, ADDR)	\
- 	((((ADDR)>>26) & LOONGSON_PCIMAP_PCIMAP_LO0) << ((WIN)*6))
- 
-+/* LS7A RTC */
-+#define LS7A_MISC_REG_BASE		0x10080000
-+#define LS7A_RTC_ADDR_OFFSET		0x50100
-+#define LS7A_RTC_SYS_TOYREAD0_OFFSET	0x2c
-+#define LS7A_RTC_SYS_TOYREAD1_OFFSET	0x30
-+#define LS7A_RTC_REG_BASE		(LS7A_MISC_REG_BASE + LS7A_RTC_ADDR_OFFSET)
-+#define LS7A_RTC_SYS_TOYREAD0_ADDR	(LS7A_RTC_REG_BASE + LS7A_RTC_SYS_TOYREAD0_OFFSET)
-+#define LS7A_RTC_SYS_TOYREAD1_ADDR	(LS7A_RTC_REG_BASE + LS7A_RTC_SYS_TOYREAD1_OFFSET)
-+#define LS7A_RTC_TOY_MON_MASK		GENMASK(31, 26)
-+#define LS7A_RTC_TOY_MON_SHIFT		26
-+#define LS7A_RTC_TOY_DAY_MASK		GENMASK(25, 21)
-+#define LS7A_RTC_TOY_DAY_SHIFT		21
-+#define LS7A_RTC_TOY_HOUR_MASK		GENMASK(20, 16)
-+#define LS7A_RTC_TOY_HOUR_SHIFT		16
-+#define LS7A_RTC_TOY_MIN_MASK		GENMASK(15, 10)
-+#define LS7A_RTC_TOY_MIN_SHIFT		10
-+#define LS7A_RTC_TOY_SEC_MASK		GENMASK(9, 4)
-+#define LS7A_RTC_TOY_SEC_SHIFT		4
-+#define LS7A_RTC_YEAR_BASE		1900
-+
- #endif /* __ASM_MACH_LOONGSON64_LOONGSON_H */
-diff --git a/arch/mips/loongson64/time.c b/arch/mips/loongson64/time.c
-index 91e842b..7f3095546 100644
---- a/arch/mips/loongson64/time.c
-+++ b/arch/mips/loongson64/time.c
-@@ -9,7 +9,7 @@
- 
- #include <asm/time.h>
- #include <asm/hpet.h>
--
-+#include <asm/mc146818-time.h>
- #include <loongson.h>
- 
- void __init plat_time_init(void)
-@@ -21,3 +21,29 @@ void __init plat_time_init(void)
- 	setup_hpet_timer();
- #endif
- }
-+
-+static time64_t ls7a_get_rtc_time(void)
-+{
-+	unsigned int year, mon, day, hour, min, sec;
-+	unsigned int value;
-+
-+	value = readl((void __iomem *)TO_UNCAC(LS7A_RTC_SYS_TOYREAD0_ADDR));
-+	sec = (value & LS7A_RTC_TOY_SEC_MASK) >> LS7A_RTC_TOY_SEC_SHIFT;
-+	min = (value & LS7A_RTC_TOY_MIN_MASK) >> LS7A_RTC_TOY_MIN_SHIFT;
-+	hour = (value & LS7A_RTC_TOY_HOUR_MASK) >> LS7A_RTC_TOY_HOUR_SHIFT;
-+	day = (value & LS7A_RTC_TOY_DAY_MASK) >> LS7A_RTC_TOY_DAY_SHIFT;
-+	mon = (value & LS7A_RTC_TOY_MON_MASK) >> LS7A_RTC_TOY_MON_SHIFT;
-+	year = readl((void __iomem *)TO_UNCAC(LS7A_RTC_SYS_TOYREAD1_ADDR));
-+
-+	return mktime64(year + LS7A_RTC_YEAR_BASE, mon, day, hour, min, sec);
-+}
-+
-+void read_persistent_clock64(struct timespec64 *ts)
-+{
-+	if (loongson_sysconf.bridgetype == LS7A)
-+		ts->tv_sec = ls7a_get_rtc_time();
-+	else
-+		ts->tv_sec = mc146818_get_cmos_time();
-+
-+	ts->tv_nsec = 0;
-+}
--- 
-2.1.0
+Paolo
 
