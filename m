@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C330C2B0851
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBFE2B0855
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbgKLPYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:24:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27698 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727796AbgKLPYo (ORCPT
+        id S1728586AbgKLPZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727822AbgKLPZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:24:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605194683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C4WuEqCsb5/AFeS4zkEh2onYBE7lmXmnSMoxFYjN3ig=;
-        b=hMIJI9aym5yni2izh+hbLXqhyhtVnz7r/Mh6NGGYzcfRQRC7+9mXraJ6ov5xSCxTepqLCl
-        Bbq9sIcPC66jgnwK1HqmHl5P/HB1bYf+ldZ6XlAh/agGDteS2vjd9P1eER/mShHJyWhOgX
-        j2+mJHd3xyX8USyyIP2lJ7oVCeeS8ZM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-v87lIjcNMLiES-DWYpZrdA-1; Thu, 12 Nov 2020 10:24:41 -0500
-X-MC-Unique: v87lIjcNMLiES-DWYpZrdA-1
-Received: by mail-wr1-f69.google.com with SMTP id z13so2077583wrm.19
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:24:41 -0800 (PST)
+        Thu, 12 Nov 2020 10:25:19 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F450C0613D1;
+        Thu, 12 Nov 2020 07:25:19 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id y197so5541790qkb.7;
+        Thu, 12 Nov 2020 07:25:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=oF5Wh7P+oRrquR6KUXu2p6XiVm+Wzsg2M5qKrcerhsg=;
+        b=W22ZYKa5nMtAfWIMYxtyvCPp6xl8VWzGp75P8Dql+2AEM8Pl9lKbcFCACooQNpi/rM
+         IPpfSj4REpmeAN8WLpbLWKLENLnSHzmrY2NRYgtuR8aks5JxkBw/AlEbMAo8eS1TStON
+         xMaqfyKWlOksNflTBADnjRxIpl8T0P+Vkbm9kIfuijmx4E35BMZZfUciIVA/VsJ3IrNN
+         3sQUNtq7HkAa0m4QuxUFqc4crgGbxcQE8WpP5l7ej4C5AehnSYpLxndocZT7ZEAm9cY1
+         s6MCvKlWWuZhXEsIdopjXVGDBIPouV5l6rRyAwtIs6ASRCQaEOUvB/J7pA4EnWBEw1LF
+         6Nog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=C4WuEqCsb5/AFeS4zkEh2onYBE7lmXmnSMoxFYjN3ig=;
-        b=WdLA95+MiFbz4bmY51WYcdbs0YX7Fm9A9zl1OXCet/7ioEDaMwONEZ+BnsCDYmoHoV
-         RIxFhXZfaNiXHVMtvjL88W8bhX0ICyVvFIyXKUH8UGHJk+MaaRr0NQwelVtjwcsUiK6w
-         oggC4GX6iiJy9TzAtxibrZ2rGPMGsDOtf91XRtnO2Vm34PE3FLdfqwpj+zQGyeoBxeoJ
-         szd/YLMBWFHwaVS3iS4fu9VqsM7FBg/SCmZDGMMqMY/ChfZMjH/otUIuOeDzxK1pYP3Y
-         EVg3hBIieLOw5F/Ewu0/1QQ6E5PJ1tcUXknEnakSjMUf0QfGArbYV8wDLAbZ+e2xxX8d
-         0+bA==
-X-Gm-Message-State: AOAM532bu2IwDklDAlSeerRmBZ08Ot4dz7yZLb+JSQzsmq8dKfUE96SI
-        yyPJJz1ciX8gqpFAgL753RBbu47Ppr83+NePJGL+gEdFlWwBf1n505+f6Mff1hbNc8HORMHs4fd
-        2KZ+HttEaKD7OQ1gM4ZvOMaqJ
-X-Received: by 2002:a1c:c302:: with SMTP id t2mr117235wmf.189.1605194680191;
-        Thu, 12 Nov 2020 07:24:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxX21sudMRdY26dySOmO/to1hNdt6R88HOOtUfizeNAVKSfSVnCXeomIzbUIzj2x9YbFyGcVQ==
-X-Received: by 2002:a1c:c302:: with SMTP id t2mr117208wmf.189.1605194680020;
-        Thu, 12 Nov 2020 07:24:40 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id h62sm7096528wrh.82.2020.11.12.07.24.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oF5Wh7P+oRrquR6KUXu2p6XiVm+Wzsg2M5qKrcerhsg=;
+        b=XM1XQvxyH7hezZHvEe+rorLejwTFZ5zPywdBWpuLU7vfD8dDd6RhwpCXqhaLHt43tS
+         TSf4YjTIr/6Y7VVgvYrfEd63SitTtsKZqnDfzhm6+tWC+5UuaJonAiTr8KwqAAEDIXDL
+         VPeFyQ5Xg1oT3hFRO1AB7SrVKsQSaUSTAL0F7d8irx2Y1yZNaeJG0ni7/zzaEa/FLucN
+         nM2yedxtOAwby/McIjKpgCh2CXUglqmSknYVcck+n78m9SZJGfu/ehASvErm6wAE3c97
+         5ksY//pMesM29Gi7M0kzSeWhkXhCR8hwubYS2zPT32mG4hF1YkAeAZMN9rRx6VbE0koU
+         envQ==
+X-Gm-Message-State: AOAM5329y3KwBgIEJj3YSVAUoCOwP6oMQKiLBfDdQwuDj32i7qOq8dpp
+        gSkdlvygmlKodIoNxqq6O5Q=
+X-Google-Smtp-Source: ABdhPJyr2e/npL9QyKK+HcbhXebOEHj/YQj4xW726y5VbBJp5wlj01dho4YN50jezVx1/XO6INPENA==
+X-Received: by 2002:a37:6fc5:: with SMTP id k188mr223183qkc.317.1605194718178;
+        Thu, 12 Nov 2020 07:25:18 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id h6sm4578150qtm.68.2020.11.12.07.25.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:24:39 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Subject: Re: [PATCH v2 03/17] Drivers: hv: vmbus: skip VMBus initialization
- if Linux is root
-In-Reply-To: <20201105165814.29233-4-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-4-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 16:24:38 +0100
-Message-ID: <87imaay4w9.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 12 Nov 2020 07:25:17 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v1] lan743x: fix use of uninitialized variable
+Date:   Thu, 12 Nov 2020 10:25:13 -0500
+Message-Id: <20201112152513.1941-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-> There is no VMBus and the other infrastructures initialized in
-> hv_acpi_init when Linux is running as the root partition.
->
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
->  drivers/hv/vmbus_drv.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> index 4fad3e6745e5..37c4d3a28309 100644
-> --- a/drivers/hv/vmbus_drv.c
-> +++ b/drivers/hv/vmbus_drv.c
-> @@ -2612,6 +2612,9 @@ static int __init hv_acpi_init(void)
->  	if (!hv_is_hyperv_initialized())
->  		return -ENODEV;
->  
-> +	if (hv_root_partition)
-> +		return -ENODEV;
-> +
+When no devicetree is present, the driver will use an
+uninitialized variable.
 
-Nit: any particular reason why we need to return an error from here? I'd
-suggest we 'return 0;' if it doesn't break anything (we're still running
-on Hyper-V, it's just a coincedence that there's nothing to do here,
-eventually we may get some devices/handlers I guess. Also, there's going
-to be server-side Vmbus eventually, we may as well initialize it here.
+Fix by initializing this variable.
 
->  	init_completion(&probe_event);
->  
->  	/*
+Fixes: 902a66e08cea ("lan743x: correctly handle chips with internal PHY")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+---
+Tree: git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git # 52755b66ddce
 
+To: Jakub Kicinski <kuba@kernel.org>
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: "David S. Miller" <davem@davemloft.net>
+Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+ drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 54d721ef3084..0c9b938ee0ea 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1014,8 +1014,8 @@ static void lan743x_phy_close(struct lan743x_adapter *adapter)
+ static int lan743x_phy_open(struct lan743x_adapter *adapter)
+ {
+ 	struct lan743x_phy *phy = &adapter->phy;
++	struct phy_device *phydev = NULL;
+ 	struct device_node *phynode;
+-	struct phy_device *phydev;
+ 	struct net_device *netdev;
+ 	int ret = -EIO;
+ 
 -- 
-Vitaly
+2.17.1
 
