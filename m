@@ -2,164 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C172B0A8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641792B0A8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgKLQo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:44:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52901 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728086AbgKLQoz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:44:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605199493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oBaJhrVAS26Rm76b8qfX/jPZQo0xctgs1+BzsCLEDzc=;
-        b=iz/k5B0xNQWja3Ml7pVT02uN8jbb0++Vtf14EtConmEyPZEsxrcLYXzMu6h7ILD0BMD79M
-        gdoGVC3ZrkTkQDl4BoPVgVUzrx7UjWowNwHWJc6s33zlfBN9pUlERoBzNsZKJmwfaNYQaP
-        Tkyc8H0RsjC147frFdqBsvxK//Ux70A=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-4hw8cJhKOmCO0AJ4cEkv4Q-1; Thu, 12 Nov 2020 11:44:52 -0500
-X-MC-Unique: 4hw8cJhKOmCO0AJ4cEkv4Q-1
-Received: by mail-wm1-f71.google.com with SMTP id z62so3993949wmb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:44:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=oBaJhrVAS26Rm76b8qfX/jPZQo0xctgs1+BzsCLEDzc=;
-        b=E3zs61blK6Hnb8y/TMY6pYM26MkDxkRAkXSeAHNcyr67/0zNnIMSLn5wt0EfZltEoN
-         SARkpewdm8rK0FS3Tjtoo9kyiD4UoOKzZZTgidJo54lFRIJYGFzIaB1Vb7Mfbw7HvXtI
-         TE1ELPBfL840XmPmyjv86kLwmcTctCTwvzJVadJ4Ny3yXeHxfuBOPKnglknu4bt6FNoG
-         FdwhUX+YJOugth/tEHxur5Vhz3YeJiXZ+YTH++B/cYmLwJ9OQlo7+Mc0fTbOB3LcWDSG
-         LLa+JWPyOXMCIKwzwToQDCMNXMZYnGW+zm0qzJDGFu/X95i4C3SV1qdfO8xlPOo4Fm2/
-         F9yw==
-X-Gm-Message-State: AOAM533FvoAXijf/59cdVBSCkhaTfU+zSzYE1dDVDdy9DS+yKbPUot/5
-        L9O609rsLL5C7QWUB0NPhLdIWNG+C18EcC9k7qAESQduPb22Vr8oxwX6wzxZO+Irs+5sPYk0xvn
-        XHPd8xTERu1oJlVXpiwZHBPpy
-X-Received: by 2002:a1c:ddd7:: with SMTP id u206mr509459wmg.27.1605199490666;
-        Thu, 12 Nov 2020 08:44:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwejZcKtx6F+o5hHeSMVHcvBzx8/ntsqvQ7ohWy6THyGvnfCHkeEWFtHXBT1nj5ZKtcZTpVUA==
-X-Received: by 2002:a1c:ddd7:: with SMTP id u206mr509445wmg.27.1605199490460;
-        Thu, 12 Nov 2020 08:44:50 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m3sm3190396wrv.6.2020.11.12.08.44.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 08:44:49 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 10/17] x86/hyperv: implement and use hv_smp_prepare_cpus
-In-Reply-To: <20201105165814.29233-11-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-11-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 17:44:48 +0100
-Message-ID: <87y2j6wmm7.fsf@vitty.brq.redhat.com>
+        id S1729090AbgKLQpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:45:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728440AbgKLQpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:45:19 -0500
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 784C621D7F;
+        Thu, 12 Nov 2020 16:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605199518;
+        bh=2jxbukIv9oTWkB8v1+kQrgO6FSfiOBI/y/TSNhomr+E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=noFnRSg0bpRyqihLrAl4R85zI5kqEv9ij+IncXg4oeNGcXv9P6BG4MPolNIU164eg
+         8hFcD3tklxof37MuC5Brv9+jW9ybKYzO2J54puZW2fvU1Wo6nyutjvzRd+x04aT3BS
+         xjcX4LHVfji0mcFzO/5Zkn3XzPg5j2qup9SBZ8dk=
+Received: by mail-ot1-f54.google.com with SMTP id k3so6162657otp.12;
+        Thu, 12 Nov 2020 08:45:18 -0800 (PST)
+X-Gm-Message-State: AOAM532yd9D+VusFYpsVd1E6eXkBfVdvMMDDxC2AZZkGMzd/qqC7Hq0M
+        UurQIllowmMekwJamlXUMHZovS83GYD+WlJrhd8=
+X-Google-Smtp-Source: ABdhPJxOQAs3+2CxnKfx4cmt/6UrxUllEL6x6zbppjUQtLQvcJ3uBJwhuqJJEy0i43A6cPwfPo/XJYGvp/PTDDBGJ3M=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr10475oth.251.1605199517681;
+ Thu, 12 Nov 2020 08:45:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201026211311.3887003-1-arnd@kernel.org> <20201112155709.GA894300@nvidia.com>
+In-Reply-To: <20201112155709.GA894300@nvidia.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 12 Nov 2020 17:45:00 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
+Message-ID: <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
+Subject: Re: [PATCH] mthca: work around -Wenum-conversion warning
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
-
-> Microsoft Hypervisor requires the root partition to make a few
-> hypercalls to setup application processors before they can be used.
+On Thu, Nov 12, 2020 at 4:57 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
-> CPU hotplug and unplug is not yet supported in this setup, so those
-> paths remain untouched.
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+> On Mon, Oct 26, 2020 at 10:12:30PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > gcc points out a suspicious mixing of enum types in a function that
+> > converts from MTHCA_OPCODE_* values to IB_WC_* values:
+> >
+> > drivers/infiniband/hw/mthca/mthca_cq.c: In function 'mthca_poll_one':
+> > drivers/infiniband/hw/mthca/mthca_cq.c:607:21: warning: implicit conversion from 'enum <anonymous>' to 'enum ib_wc_opcode' [-Wenum-conversion]
+> >   607 |    entry->opcode    = MTHCA_OPCODE_INVALID;
+> >
+> > Nothing seems to ever check for MTHCA_OPCODE_INVALID again, no
+> > idea if this is meaningful, but it seems harmless as it deals
+> > with an invalid input.
+> >
+> > Add a cast to suppress the warning.
+> >
+> > Fixes: 2a4443a69934 ("[PATCH] IB/mthca: fill in opcode field for send completions")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >  drivers/infiniband/hw/mthca/mthca_cq.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
+> > index c3cfea243af8..319b8aa63f36 100644
+> > +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
+> > @@ -604,7 +604,7 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
+> >                       entry->byte_len  = MTHCA_ATOMIC_BYTE_LEN;
+> >                       break;
+> >               default:
+> > -                     entry->opcode    = MTHCA_OPCODE_INVALID;
+> > +                     entry->opcode    = (u8)MTHCA_OPCODE_INVALID;
+> >                       break;
 >
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index f7633e1e4c82..4795e54550e6 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -31,6 +31,7 @@
->  #include <asm/reboot.h>
->  #include <asm/nmi.h>
->  #include <clocksource/hyperv_timer.h>
-> +#include <asm/numa.h>
->  
->  struct ms_hyperv_info ms_hyperv;
->  EXPORT_SYMBOL_GPL(ms_hyperv);
-> @@ -208,6 +209,30 @@ static void __init hv_smp_prepare_boot_cpu(void)
->  	hv_init_spinlocks();
->  #endif
->  }
-> +
-> +static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
-> +{
-> +#if defined(CONFIG_X86_64)
+> This code is completely bogus, sigh
+>
+> Is this OK as far as the warning goes?
 
-'#ifdef CONFIG_X86_64' is equally good as you can't compile x86_64
-support as a module :-)
+Yes, I'm sure your patch fixes it and it makes more sense than my version.
 
-> +	int i;
-> +	int ret;
-> +
-> +	native_smp_prepare_cpus(max_cpus);
-> +
-
-So hypotetically, if hv_root_partition is true but 'ifdef CONFIG_X86_64'
-is false, we won't even be doing native_smp_prepare_cpus()? This doesn't
-sound right. Either move it outside of #ifdef or put the #ifdef around
-'smp_ops.smp_prepare_cpus' assignment too.
-
-> +	for_each_present_cpu(i) {
-> +		if (i == 0)
-> +			continue;
-> +		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(i));
-> +		BUG_ON(ret);
-> +	}
-> +
-> +	for_each_present_cpu(i) {
-> +		if (i == 0)
-> +			continue;
-> +		ret = hv_call_create_vp(numa_cpu_node(i), hv_current_partition_id, i, i);
-> +		BUG_ON(ret);
-> +	}
-> +#endif
-> +}
->  #endif
->  
->  static void __init ms_hyperv_init_platform(void)
-> @@ -364,6 +389,8 @@ static void __init ms_hyperv_init_platform(void)
->  
->  # ifdef CONFIG_SMP
->  	smp_ops.smp_prepare_boot_cpu = hv_smp_prepare_boot_cpu;
-> +	if (hv_root_partition)
-> +		smp_ops.smp_prepare_cpus = hv_smp_prepare_cpus;
->  # endif
->  
->  	/*
-
--- 
-Vitaly
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
