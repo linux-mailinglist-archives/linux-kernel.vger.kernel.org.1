@@ -2,184 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAC42AFE39
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 244F72AFE3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgKLFfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:35:36 -0500
-Received: from mga14.intel.com ([192.55.52.115]:64728 "EHLO mga14.intel.com"
+        id S1729016AbgKLFfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:35:48 -0500
+Received: from mga14.intel.com ([192.55.52.115]:64804 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728058AbgKLDJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:09:28 -0500
-IronPort-SDR: 8+U7I84nBee6i0C2mi3uiDN0Jg1g6NdWPAmhQqSwgCIPD18c3HKBa9RvmsMNSwxBMATglWOa27
- 06QVdSccoQug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="169466800"
+        id S1728077AbgKLDKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 22:10:50 -0500
+IronPort-SDR: 1k3yZSAgx8wDSBG3ixYhprpK1pfholSv5DF5xYDiLs3dDScewLnd+kyArY480XE8+yOpM74Ll6
+ b90FbaOoSTaA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="169466893"
 X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="169466800"
+   d="scan'208";a="169466893"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 19:09:28 -0800
-IronPort-SDR: YQ0fl6eD8xzAlX5XyQoASRTeAWj6hbJWPziPg5YG+qeRgpDsmQIOTA6wnkA/nSx6jlUMHzP9FP
- yW3u+JGYTkOw==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 19:10:50 -0800
+IronPort-SDR: ySLy92gE3wt8hNwNv2LtetHe90kni71vOFbTQppUChWUA71XVVy6nTqY36gbAQ2uHC8v1qSOOQ
+ 4KZyc9c1s6fA==
 X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
-   d="scan'208";a="356938853"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Nov 2020 19:09:27 -0800
-Received: from [10.215.242.65] (mreddy3x-MOBL.gar.corp.intel.com [10.215.242.65])
-        by linux.intel.com (Postfix) with ESMTP id 5279D580B99;
-        Wed, 11 Nov 2020 19:09:24 -0800 (PST)
-Subject: Re: [PATCH v7 1/2] dt-bindings: dma: Add bindings for intel LGM SOC
-To:     Thomas Langer <tlanger@maxlinear.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "chuanhua.lei@linux.intel.com" <chuanhua.lei@linux.intel.com>,
-        "Kim, Cheol Yong" <Cheol.Yong.Kim@intel.com>,
-        "Wu, Qiming" <qi-ming.wu@intel.com>,
-        "malliamireddy009@gmail.com" <malliamireddy009@gmail.com>,
-        "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>,
-        "Langer, Thomas" <thomas.langer@intel.com>
-References: <cover.1600827061.git.mallikarjunax.reddy@linux.intel.com>
- <f298715ab197ae72ab9b33caee2a19cc3e8be3f5.1600827061.git.mallikarjunax.reddy@linux.intel.com>
- <DM6PR19MB3594E466A1B76229EC1395BABB160@DM6PR19MB3594.namprd19.prod.outlook.com>
- <9882db7a-755b-84c9-b132-1839dea5e6b8@linux.intel.com>
- <DM6PR19MB397705C898DE2FBA755B2D80BBE90@DM6PR19MB3977.namprd19.prod.outlook.com>
-From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Message-ID: <31bc9cd9-c1aa-b816-b632-e0433d0ad8cc@linux.intel.com>
-Date:   Thu, 12 Nov 2020 11:09:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+   d="scan'208";a="542068920"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 19:10:50 -0800
+Date:   Wed, 11 Nov 2020 19:10:49 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>
+Subject: Re: [RFC PATCH 00/12] Topdown parser
+Message-ID: <20201112031049.GC894261@tassilo.jf.intel.com>
+References: <20201110100346.2527031-1-irogers@google.com>
+ <20201111214635.GA894261@tassilo.jf.intel.com>
+ <CAP-5=fXedJEZcYhxmPAzRVx5kdW2YA71Ks3BycqurAHydtXh8A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR19MB397705C898DE2FBA755B2D80BBE90@DM6PR19MB3977.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fXedJEZcYhxmPAzRVx5kdW2YA71Ks3BycqurAHydtXh8A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi Ian,
 
-On 11/11/2020 1:39 AM, Thomas Langer wrote:
->
->> -----Original Message-----
->> From: Reddy, MallikarjunaX <mallikarjunax.reddy@linux.intel.com>
->> Sent: Montag, 2. November 2020 15:42
->> To: Thomas Langer <tlanger@maxlinear.com>; dmaengine@vger.kernel.org;
->> vkoul@kernel.org; devicetree@vger.kernel.org; robh+dt@kernel.org
->> Cc: linux-kernel@vger.kernel.org; Shevchenko, Andriy
->> <andriy.shevchenko@intel.com>; chuanhua.lei@linux.intel.com; Kim,
->> Cheol Yong <Cheol.Yong.Kim@intel.com>; Wu, Qiming <qi-
->> ming.wu@intel.com>; malliamireddy009@gmail.com; peter.ujfalusi@ti.com;
->> Langer, Thomas <thomas.langer@intel.com>
->> Subject: Re: [PATCH v7 1/2] dt-bindings: dma: Add bindings for intel
->> LGM SOC
->>
->> This email was sent from outside of MaxLinear.
->>
->>
->> Hi Thomas,
->> Thanks for the review, my comments inline.
->>
->> On 10/28/2020 3:24 AM, Thomas Langer wrote:
->>> Hello Reddy,
->>>
->>> I think "Intel" should always be written with a capital "I" (like in
->> the Subject, but except in the binding below)
->> OK.
->>>> + compatible:
->>>> +  oneOf:
->>>> +   - const: intel,lgm-cdma
->>>> +   - const: intel,lgm-dma2tx
->>>> +   - const: intel,lgm-dma1rx
->>>> +   - const: intel,lgm-dma1tx
->>>> +   - const: intel,lgm-dma0tx
->>>> +   - const: intel,lgm-dma3
->>>> +   - const: intel,lgm-toe-dma30
->>>> +   - const: intel,lgm-toe-dma31
->>> Bindings are normally not per instance.
->>> What if next generation chip gets more DMA modules but has no other
->> changes in the HW block?
->>> What is wrong with
->>>     - const: intel,lgm-cdma
->>>     - const: intel,lgm-hdma
->>> and extra attributes to define the rx/tx restriction (or what do it
->> mean?)?
->>>   From the driver code I saw that "toe" is also just of type "hdma"
->> and no further differences in code are done.
->> We had a discussion on the same in the previous patches and Rob
->> Herring
->> said Okay using Different compatibles.
->> below the snippet.
->> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->> +
->>   >>> + compatible:
->>   >>> +  anyOf:
->>   >>> +   - const: intel,lgm-cdma
->>   >>> +   - const: intel,lgm-dma2tx
->>   >>> +   - const: intel,lgm-dma1rx
->>   >>> +   - const: intel,lgm-dma1tx
->>   >>> +   - const: intel,lgm-dma0tx
->>   >>> +   - const: intel,lgm-dma3
->>   >>> +   - const: intel,lgm-toe-dma30
->>   >>> +   - const: intel,lgm-toe-dma31
->>   >> Please explain why you need so many different compatible strings.
->>   > This hw dma has 7 DMA instances.
->>   > Some for datapath, some for memcpy  and some for TOE.
->>   > Some for TX only, some for RX only, and some for TX/RX(memcpy and
->> ToE).
->>   >
->>   > dma TX/RX type we considered as driver specific data of each
->> instance and
->>   > used different compatible strings for each instance.
->>   > And also idea is in future if any driver specific data of any
->> particular
->>   > instance we can handle.
->>   >
->>   > Here if dma name and type(tx or rx) will be accepted as devicetree
->>   > attributes then we can move .name = "toe_dma31", & .type =
->> DMA_TYPE_MCPY
->>   > to devicetree. So that the compatible strings can be limited to
->> two.
->>   > intel,lgm-cdma & intel,lgm-hdma .
->>
->> [Rob]
->> Different compatibles are okay if the instances are different and we
->> don't have properties to describe the differences.
-> Okay, but then explain what the differences are, that cannot be described
-> by other properties/attributes. In the driver code I cannot see anything,
-> except the "name". But for printouts in driver, "drv_dbg" or similar will
-> just use the node path for the instance.
-On patch4 series we had the same discussion.
-i will brief it here again.
+On Wed, Nov 11, 2020 at 03:49:10PM -0800, Ian Rogers wrote:
+>      FWIW I did something similar in python (that's how the current metrics
+>      json files were generated from the spreadsheet) and it was a lot
+>      simpler and shorter in a higher level language.
+> 
+>    The use of C++ here was intended to be a high-level language usage :-)
 
-This hw dma has 7 DMA instances, and each Some for TX only, some for RX 
-only, and some for TX/RX.
+FWIW this is our script for the metrics.
 
-dma TX/RX type we considered as driver specific data and it cant be used 
-as dt property as per the previous reviewers.
+https://github.com/intel/event-converter-for-linux-perf/blob/master/extract-tmam-metrics.py
 
-So i moved it to driver specific data.
+It has a few hacks, but overall isn't too bad.
 
-If type(tx or rx) will be accepted as devicetree attributes then we can 
-move it to devicetree.
+>     
+> 
+>      One problem I see with putting the full TopDown model into perf is
+>      that to do a full job it requires a lot more infrastructure that is
+>      currently not implemented in metrics: like an event scheduler,
+>      hierarchical thresholding over different nodes, SMT mode support etc.
+> 
+>      I implemented it all in toplev, but it was a lot of work to get it all
+>      right.
+>      I'm not saying it's not doable, but it will be a lot of additional work
+>      to work out all the quirks using the metrics infrastructure.
+> 
+>      I think adding one or two more levels is probably ok, but doing all
+>      levels
+>      without these mechanisms might be difficult to use in the end.
+> 
+>    Thanks Andi, I'm working from the optimization manual and trying to
+>    understand this. With this contribution we have both metrics and
+>    groups that correspond to the levels in the tree. Following a similar flow
+>    to the optimization manual the group Topdown_Group_TopDownL1 provides the
+>    metrics Topdown_Metric_Frontend_Bound, Topdown_Metric_Backend_Bound, Topdown_Metric_Bad_Speculation
+>    and Topdown_Metric_Retiring. The hope is the events here will all be
+>    scheduled without multiplexing.
 
-So as you said we can limit compatible strings can be limited to two. 
-intel,lgm-cdma & intel,lgm-hdma .
+That's not necessarily true. Some of the newer expressions are quite
+complex (e.g .due to workarounds or because the events are complex, like
+the FLOPS events) There's also some problems with the
+scheduling of the fixed metrics on Icelake+, that need special handling.
 
-One more advantage i see with this model is in future if any driver 
-specific data of any particular instance we can handle easily.
->
->> For some of what you have in this binding, I think it should be part
->> of
->> the consumer cells.
->> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->> ++
->>> Best regards,
->>> Thomas
->>>
+> Let's say Topdown_Metric_Backend_Bound is
+>    an outlier and so then you re-run perf to drill into the group
+>    Topdown_Group_Backend which will provide the
+>    metrics Topdown_Metric_Memory_Bound and Topdown_Metric_Core_Bound. If the
+>    metric Topdown_Metric_Memory_Bound is the outlier then you can use the
+>    group Topdown_Group_Memory_Bound to drill into DRAM, L1, L2, L3, PMM and
+
+I think at a minimum you would need a threshold concept for this, otherwise
+the users don't know what passed or what didn't, and where to drill
+down.
+
+Also in modern TMAM some events thresholds are not only based on their
+parents but based on triggers cross true (e.g. $issue). Doing this
+by hand is somewhat tricky.
+
+BTW toplev has an auto drilldown mode now to automate this (--drilldown)
+
+Also in other cases it's probably better to not drilldown, but collect
+everything upfront, e.g. when someone else is doing the collection
+for you. In this case the thresholding has to be figured out from
+existing data.
+
+The other biggie which is currently not in metrics is per core mode,
+which is needed for many metrics on CPUs older than Icelake. This really
+has to be supported in some way, otherwise the results on pre Icelake SMT 
+are not good (Icelake fixes this problem)
+
+>    like SMT_on that may appear in the spreadsheet in expressions like:
+>    ( CPU_CLK_UNHALTED.THREAD_ANY / 2 ) if #SMT_on else CLKS
+>    These are passed through and then the perf expression parser will at
+>    runtime compute the SMT_ON value using smt_on() that reads
+>    from devices/system/cpu/cpu%d/topology/thread_siblings. Here is a
+>    generated example for Skylakex:
+
+Yes I implemented that. But that's not enough for the full TMAM, you also need per core
+mode for these (but not for others).
+
+At the level 1 we get away by either being in per core mode or not, but 
+that doesn't work deeper in the hierarchy.
+
+>    SMT_ON needs evaluating early. This is a latent perf metric issue that
+>    would benefit everyone if fixed, so I'll try to address it in a separate
+>    change.
+>    Event scheduling is missing and as discussed there are some naive
+>    heuristics currently in perf. It seems we can improve this, for example a
+>    group with events {A,B,C} and another with {B,C,D} could be merged to
+>    create {A,B,C,D} but we'd need to know the number of counters. We could
+
+It's more complicated with OCR and similar special events, which
+can fit only a limited number into a group.
+
+Also on Icelake you need to know about the 4 vs 8 counter constraints,
+so it requires some knowledge of the event list.
+
+With the fixed metrics there are also special rules, like slots needs
+to be first and be followed by the metrics.
+
+Also if you don't do some deduping you end up with a lot of redundant
+events being scheduled. Also when there are multiple levels of expressions
+usually there is a need for sub grouping by levels etc.
+
+It's not a simple algorithm.
+
+>    provide this information to the tool here and it could create phony
+>    metrics for the relevant architecture just to achieve the better grouping
+>    - currently {A,B,C} and {B,C,D} will likely multiplex with each other,
+>    which is functional but suboptimal.
+>    Hierarchical thresholding I'm unclear upon, but maybe this is part of what
+>    the user is expected to manually perform.
+
+The spreadsheet has a threshold for each node.  Often it includes & P which means
+parent crossed threshold. But in some cases it also includes a cross tree node
+(this actually requires some simple dependency based computation of the metric, 
+kind of a spreadsheet)
+
+In general if the parent didn't cross then you don't need to display the node
+because it's not contributing to the performance bottleneck.
+
+That's a very important property in TopDown (as the name implies) and one of the
+basic ways how the whole thing helps automatically determining the bottleneck.
+
+Again I think it's probably not that bad if you stay in the higher levels.
+For example in the upcoming Sapphire Rapids support which has Level 2 fixed
+metrics we just added more fixed metrics. A thresholding concept would
+probably be still a good idea though.
+
+But it's a bit scary to think what naive users will do when presented with
+level 4 or deeper without any hiding of irrelevant results.
+
+-Andi
