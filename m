@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020402B0AEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DD12B0AF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgKLRE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:04:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44456 "EHLO mail.kernel.org"
+        id S1726083AbgKLRHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:07:00 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:60403 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgKLRE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:04:56 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C58621D7F;
-        Thu, 12 Nov 2020 17:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605200696;
-        bh=qEGu5uST4byz8XuJRMjnqZZkRabdlL6gGWmFkpschCo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BHYu2GVHYY7GTOmz8a4uXpdurzwymiO5oR5TaJepK0yXP8/vAgy/bZnVJSJMKOndk
-         rjlSioJxLgU6QdTh9CkDQqtecBYOJRLhVdj2NXpDoA33ovt17OdZeF9+SJXWOj7mX9
-         07jQPCTDECz06JDYesZpuDDdi/vLAakx5/Mbbpxo=
-Date:   Thu, 12 Nov 2020 18:05:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     John Boero <boeroboy@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
-Message-ID: <X61rce8GANHW1ysh@kroah.com>
-References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1725999AbgKLRHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:07:00 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad6bb20000>; Fri, 13 Nov 2020 01:06:58 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 17:06:54 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 17:06:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YpsZu3418zlw9JBC1pID0s3eUtLVHnCuObfvnoK0qNLJtbarX6K5kTjp1bXLn8EmFNnUPJy4kuvkEXyR1r05s+uPfIfjouRlabXH0zf/98OVhQy93RFqkgBIClZ209OaFKm/ZJm1RifUszRUJ1bScWBboZwkoNx/h7jmrJMhq59c0hUK+9xdiSmRt++6hJKJuxfV2DPBI2qlv6KB7S2uFXSkLxj9y1IU/7tfojDass4g3z5w5ElNGvr2A6xs3hPzomLotUd3URSdJlgbmr85aYQ5iG4MU1k1yOxyLA6drM0MLgW9JWDbqpUl8zyVELSi1eBFmhiXUK2iNPstf4osLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5z7dMl7KkvuVL88iW/SxI6CsAU8go0L4m0fbFgGNIjo=;
+ b=lFxl45eSzDSdrGzenFeR6jnmRqHB4Z5fGdlBF9wb1+yzrC3CRFbtur1vH8BJcrqoMijNdm2DMPLfw6MedQWxQkidxvBMiGJNLJMjIyyIMPuhpgN9IktoJsBp96h+zXKf6SbFgg25b1dwxdcTPWVX45ofd9iNne9SweQ6R0kjJX+/ZNeFUxUjlHAx847zpL1EJ2DZqlC9w+L7BlhRp5yHJTaqVl0tvGD+Zq9ePN0oC5tSk6EC05nXyTCb2d/1UZm+6+sfV69fiek+6Y7Q+pN6XNdFIEMVy4KBlbXexIKgX1fM/5PeyJfLuNnhNtDLCAGK+zZ6vPzvqHX77eXGB3ro8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4483.namprd12.prod.outlook.com (2603:10b6:5:2a2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 17:06:52 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
+ 17:06:52 +0000
+Date:   Thu, 12 Nov 2020 13:06:50 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+CC:     Adit Ranadive <aditr@vmware.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/pvrdma: fix missing kfree in pvrdma_register_device
+Message-ID: <20201112170650.GA937057@nvidia.com>
+References: <20201111032202.17925-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
+In-Reply-To: <20201111032202.17925-1-miaoqinglang@huawei.com>
+X-ClientProxiedBy: BL1PR13CA0129.namprd13.prod.outlook.com
+ (2603:10b6:208:2bb::14) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0129.namprd13.prod.outlook.com (2603:10b6:208:2bb::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Thu, 12 Nov 2020 17:06:51 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdG3e-003vme-Eg; Thu, 12 Nov 2020 13:06:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605200818; bh=5z7dMl7KkvuVL88iW/SxI6CsAU8go0L4m0fbFgGNIjo=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=bPlRU19dwddTvR2WZMkVFVM0IbnOWN2EzRyrzTC8QsKyvaMEUZU6tzqeiTizXNdKP
+         8epmURAtFsjEZJMGNv1ZxYVA8rJhWKLeaT0f/Ry8eyNTiISikdEceoNKOviN95oj8Z
+         HcXfzOhgLCHw71knCE4NnzDtBCvC9wWH5MSbz4FqIrOKeJb2dXIoVlU2h4AAARPf1W
+         KrYlIwXdPCiah6KCRGKao/tV9NLAN/DYlD5NwdkDhwlkFWzKtrE+jEhcjGz1m64b5d
+         e1b3ZdPXqcYjxCYEFfw10YdTs0Nupb6NDEdfk1pMdnWyzK15cMzgTm9J1XAmdR2FlL
+         TrMJ1cOfaMEuw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 03:52:02PM +0000, John Boero wrote:
-> >From 54f9886454e9a28e8d943c1cef15df9c11555df7 Mon Sep 17 00:00:00 2001
-> From: JohnnyB <jboero@users.noreply.github.com>
-
-Why all this header here?
-
-And the from: line doesn't match your Signed-off-by: line :(
-
-> Date: Thu, 12 Nov 2020 15:28:29 +0000
-> Subject: [PATCH] usb: core: Null deref in kernel with USB webcams.
+On Wed, Nov 11, 2020 at 11:22:02AM +0800, Qinglang Miao wrote:
+> Fix missing kfree in pvrdma_register_device() when fails
+> to do ib_device_set_netdev.
 > 
-> Fixes: Ubuntu Launchpad bug 1827452
-> 
-> This is my first attempt at a kernel contribution so sorry if sloppy.
-
-No need to put this in the changelog text and have it be in the kernel
-for foever :)
-
-> 
-> There is some kind of race condition affecting Logitech
-> webcams that crash USB with a null dereference.
-> Affects raspberry pi devices as well as x86.
-> No check on dev before dereference.
-> Simple fix for issue experienced for months in
-> both x86 and arm/rpi environments.
-> 
-> Signed-off-by: John Boero <boeroboy@gmail.com>
-> 
+> Fixes: 4b38da75e089 ("RDMA/drivers: Convert easy drivers to use ib_device_set_netdev()")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 > ---
-> drivers/usb/core/usb.c | 6 +-----
-> 1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> index d8756ffe513a..9b4ac4415f1a 100644
-> --- a/drivers/usb/core/usb.c
-> +++ b/drivers/usb/core/usb.c
-> @@ -272,13 +272,9 @@ EXPORT_SYMBOL_GPL(usb_find_alt_setting);
-> struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev,
->                                      unsigned ifnum)
-> {
-> -       struct usb_host_config *config = NULL;
-> +       struct usb_host_config *config = dev->actconfig;
->        int i;
-> 
-> -       if (!dev)
-> -               return NULL;
-> -
-> -       config = dev->actconfig;
->        if (!config)
->                return NULL;
->        for (i = 0; i < config->desc.bNumInterfaces; i++)
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This patch is corrupted and can not be applied, but also, it looks
-backwards, right?
+Applied to for-rc with the 'goto err_srq_free' from Adit
 
-And how about we find the race condition and fix that instead of trying
-to paper over it here?
-
-thanks,
-
-greg k-h
+Thanks,
+Jason
