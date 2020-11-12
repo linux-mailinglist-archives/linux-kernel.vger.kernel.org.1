@@ -2,187 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B0A2B07A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E222B07B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgKLOjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:39:00 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45258 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLOi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:38:58 -0500
-Received: by mail-oi1-f195.google.com with SMTP id j7so6562760oie.12;
-        Thu, 12 Nov 2020 06:38:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g2feB/PWURbtrnJtItFz1VQ5PPwL6e/I9KTZ0Uw/R1A=;
-        b=Cfpqck5LVC3fFJpbZTQfiDNgnHhu3R0CpSDeQlme4w83ufrbxFuQ/b967YA3P+R1P6
-         /6M5GSN0+iA+ZfMbLe/SmqwwEwZrITFeuXsSeImgaDwqf3ZbZB7vfieUmCn6qiwA0/ce
-         LL6B6bhbhAiiUkEvEN70TzamREz+VOCf7c5rmLN+ukksFZUTEhhYuT/QGxzk4yMIcSmc
-         xfsH1YFp0UAym/hKI4IMRQ6ryOPSUr0U56Jv9lSLoHpmwAVFgj/RQgA4SO6wyOHzZuPI
-         qE49b0HLh9/rZOjXdctk8Y3eXD+WWN3itEXVd7B+dlSHPfzli/Za7p5zAi1UR1scXPKY
-         8EUA==
-X-Gm-Message-State: AOAM533nr6wb4bKlCNwre1JwrRxWIXorXutpdSWE8J5fxzCbeg8rTU1p
-        rpBqvw4vChqCMOGNUeqTrQ==
-X-Google-Smtp-Source: ABdhPJzb4C6749pnyPFAAzZjnZI0T9oOb7W++bv3cxZb4oci7pI8qdSdXH9njzY5O/62MMrjZaaLCA==
-X-Received: by 2002:aca:ed0a:: with SMTP id l10mr5908800oih.56.1605191937418;
-        Thu, 12 Nov 2020 06:38:57 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p128sm1292890ooa.14.2020.11.12.06.38.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 06:38:56 -0800 (PST)
-Received: (nullmailer pid 3562944 invoked by uid 1000);
-        Thu, 12 Nov 2020 14:38:55 -0000
-Date:   Thu, 12 Nov 2020 08:38:55 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     broonie@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com
-Subject: Re: [PATCH v5 1/6] ASoC: dt-bindings: tegra: Add graph bindings
-Message-ID: <20201112143855.GA3553055@bogus>
-References: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
- <1605119676-32273-2-git-send-email-spujar@nvidia.com>
+        id S1728360AbgKLOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:42:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727035AbgKLOm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 09:42:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D6BE8AB95;
+        Thu, 12 Nov 2020 14:42:54 +0000 (UTC)
+Subject: Re: [PATCH v2 3/5] kernel/power: allow hibernation with page_poison
+ sanity checking
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Laura Abbott <labbott@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-pm@vger.kernel.org
+References: <20201103152237.9853-1-vbabka@suse.cz>
+ <20201103152237.9853-4-vbabka@suse.cz>
+ <eba10537-98c0-5363-8ff6-c0e71b823e50@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <7811e5ec-c7ae-09a9-7f90-45e14956c4c4@suse.cz>
+Date:   Thu, 12 Nov 2020 15:39:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605119676-32273-2-git-send-email-spujar@nvidia.com>
+In-Reply-To: <eba10537-98c0-5363-8ff6-c0e71b823e50@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:04:31AM +0530, Sameer Pujar wrote:
-> Add device tree binding properties of generic graph to ASoC component
-> devices. This allows to define audio ports out of these components or
-> DAIs and audio graph based sound card can be realised with this.
-
-This is all dependent on graph.yaml being applied which hasn't happened 
-yet. I guess I'll need to provide a branch as there's multiple 
-subsystems needing it.
-
+On 11/11/20 4:42 PM, David Hildenbrand wrote:
+...
+>> @@ -1152,12 +1152,18 @@ void clear_free_pages(void)
+>>   	if (WARN_ON(!(free_pages_map)))
+>>   		return;
+>>   
+>> -	if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
+>> +	if (page_poisoning_enabled() || want_init_on_free()) {
+>>   		memory_bm_position_reset(bm);
+>>   		pfn = memory_bm_next_pfn(bm);
+>>   		while (pfn != BM_END_OF_MAP) {
+>> -			if (pfn_valid(pfn))
+>> -				clear_highpage(pfn_to_page(pfn));
+>> +			if (pfn_valid(pfn)) {
+>> +				struct page *page = pfn_to_page(pfn);
 > 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  .../devicetree/bindings/sound/nvidia,tegra186-dspk.yaml     |  6 ++++++
->  .../devicetree/bindings/sound/nvidia,tegra210-admaif.yaml   |  6 ++++++
->  .../devicetree/bindings/sound/nvidia,tegra210-ahub.yaml     | 13 +++++++++++--
->  .../devicetree/bindings/sound/nvidia,tegra210-dmic.yaml     |  6 ++++++
->  .../devicetree/bindings/sound/nvidia,tegra210-i2s.yaml      |  6 ++++++
->  5 files changed, 35 insertions(+), 2 deletions(-)
+> ^ empty line missing. And at least I prefer to declare all variables in
+> the function header.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
-> index ed2fb32..3c9364d 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
-> @@ -55,6 +55,12 @@ properties:
->        The name can be "DSPK1" or "DSPKx", where x depends on the maximum
->        available instances on a Tegra SoC.
->  
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-
-If you have 'ports', then that means you have multiple ports and you 
-have to enumerate what each port is.
-
-> +
-> +  port:
-> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-
-If you only have 1 port then, you can use 'port'.
-
-
-So listing both is an error.
-
-> +
->  required:
->    - compatible
->    - reg
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
-> index c028b25..162823d 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
-> @@ -37,6 +37,12 @@ properties:
->  
->    dma-names: true
->  
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +  port:
-> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-> +
->  if:
->    properties:
->      compatible:
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> index d772197..59cd1f1 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> @@ -56,6 +56,16 @@ properties:
->  
->    ranges: true
->  
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +  port:
-> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-> +
-> +patternProperties:
-> +  "@[0-9a-f]+$":
-> +    type: object
-> +
->  required:
->    - compatible
->    - reg
-> @@ -67,8 +77,7 @@ required:
->    - "#size-cells"
->    - ranges
->  
-> -additionalProperties:
-> -  type: object
-> +additionalProperties: false
->  
->  examples:
->    - |
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
-> index 2a3207b..b16bf5e 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
-> @@ -56,6 +56,12 @@ properties:
->        The name can be "DMIC1" or "DMIC2" ... "DMICx", where x depends
->        on the maximum available instances on a Tegra SoC.
->  
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +  port:
-> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-> +
->  required:
->    - compatible
->    - reg
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
-> index dfc1bf7..598f763 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
-> @@ -74,6 +74,12 @@ properties:
->        The name can be "I2S1" or "I2S2" ... "I2Sx", where x depends
->        on the maximum available instances on a Tegra SoC.
->  
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +  port:
-> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-> +
->  required:
->    - compatible
->    - reg
-> -- 
-> 2.7.4
+> I'd even suggest to move this into a separate function like
 > 
+> clear_or_poison_free_page(struct page *page)
+> 
+> 
+
+Ok, fixup below.
+
+----8<----
+ From cae1e8ccfa57c28ed1b2f5f8a47319b86cbdcfbf Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Thu, 12 Nov 2020 15:33:07 +0100
+Subject: [PATCH] kernel/power: allow hibernation with page_poison sanity
+  checking-fix
+
+Adapt to __kernel_unpoison_pages fixup. Split out clear_or_poison_free_page()
+per David Hildenbrand.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+  include/linux/mm.h      |  1 +
+  kernel/power/snapshot.c | 18 ++++++++++--------
+  2 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 861b9392b5dc..d4cfb06a611e 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2896,6 +2896,7 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages)
+  #else
+  static inline bool page_poisoning_enabled(void) { return false; }
+  static inline bool page_poisoning_enabled_static(void) { return false; }
++static inline void __kernel_poison_pages(struct page *page, int nunmpages) { }
+  static inline void kernel_poison_pages(struct page *page, int numpages) { }
+  static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
+  #endif
+diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+index 6b1c84afa891..a3491b29c5cc 100644
+--- a/kernel/power/snapshot.c
++++ b/kernel/power/snapshot.c
+@@ -1144,6 +1144,14 @@ void free_basic_memory_bitmaps(void)
+  	pr_debug("Basic memory bitmaps freed\n");
+  }
+  
++static void clear_or_poison_free_page(struct page *page)
++{
++	if (page_poisoning_enabled_static())
++		__kernel_poison_pages(page, 1);
++	else if (want_init_on_free())
++		clear_highpage(page);
++}
++
+  void clear_or_poison_free_pages(void)
+  {
+  	struct memory_bitmap *bm = free_pages_map;
+@@ -1156,14 +1164,8 @@ void clear_or_poison_free_pages(void)
+  		memory_bm_position_reset(bm);
+  		pfn = memory_bm_next_pfn(bm);
+  		while (pfn != BM_END_OF_MAP) {
+-			if (pfn_valid(pfn)) {
+-				struct page *page = pfn_to_page(pfn);
+-				if (page_poisoning_enabled_static())
+-					kernel_poison_pages(page, 1);
+-				else if (want_init_on_free())
+-					clear_highpage(page);
+-
+-			}
++			if (pfn_valid(pfn))
++				clear_or_poison_free_page(pfn_to_page(pfn));
+  
+  			pfn = memory_bm_next_pfn(bm);
+  		}
+-- 
+2.29.1
+
+
