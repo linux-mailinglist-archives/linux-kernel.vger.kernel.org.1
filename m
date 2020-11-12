@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB5E2B10BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2A62B10BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgKLVzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:55:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727249AbgKLVzt (ORCPT
+        id S1727392AbgKLV4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:56:06 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49492 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727249AbgKLV4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:55:49 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC61C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:55:49 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q10so5827387pfn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:55:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zZdzQMnylo5i+1X6F6BJquvAy5ORPsCe3ydlZZ54zqU=;
-        b=cVFvPLpg/zQRZofpaZ10wTEkfw6Z1RTWB/DIOiCGLL86ijkiP7xBoDk32u5jvD0/lq
-         ZT7fie65V62+GkE8nHfKQPfofM44KgUn8a8VQkfXev6HX6lf6w5Z0wi2gEEi0IXxbpbP
-         snf7/8+T2MqWC+MM/QyIco2oniQI9zQpkGDDKXmjs28hhAKDHZy/wa2mUxLvu8T9chih
-         i/Gk7m6m1rHLNCzBl9wiBEDPeBxNaKMueYkSXCt/Bkl5VrhoWOG51tYq5SRGB2VIVOAy
-         0dm9n9TryUwkumV3KeqibsGyne6UUm1qR+Ap8JApT7sdDTMCphQjirhoHeV5R5MhK9BP
-         Td0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zZdzQMnylo5i+1X6F6BJquvAy5ORPsCe3ydlZZ54zqU=;
-        b=gqBPtqsp7FzUwgJ9yEmWHe+AlFrqidFIkbWNXuuERRGp5D11m1s9eODEByra/OBDhk
-         ltwwAly62gLquH+IfdZUPmxv8tbQaF9d/ZGerI9SpFxio3VQCDxEagz08550WkOnhpEX
-         l0/waGoCvmRImFqRYVMu/SHssmnA0pCa8YzNrrXUoZ2m3m7FRAFRf2KAHI4IbGiU+8F6
-         8xKR51zWoKcnJib4LjKmb3dXNzd102HL2h6aYrwG6LHihfmQ8tvRcnSqgxRqmbmmP8En
-         1dztZ/1C3/h4hs6Be9UDz2bs4h/wOo442QiuDKWLNlwylQoLj/VVZ26t31AAxQsEXExo
-         kTlg==
-X-Gm-Message-State: AOAM533ud1MmGQCStTp+msvi3YbiBOv2vY2Rmpw79oGj4nEW+ZHjemua
-        QmtahJuu+TiH+/AixRgfEzNGzXmaBUafWwb3Jn7vQg==
-X-Google-Smtp-Source: ABdhPJw/dzcU/R4J/NC0Ca8BEkhiIQYc+G3dtoFsKvoOMUoYnbl8GJ+yssbZ6VGehdp8NRRx2Xunmt784tRQp5RV2PQ=
-X-Received: by 2002:a62:ed0d:0:b029:18b:78d:626 with SMTP id
- u13-20020a62ed0d0000b029018b078d0626mr1362687pfh.15.1605218148644; Thu, 12
- Nov 2020 13:55:48 -0800 (PST)
+        Thu, 12 Nov 2020 16:56:05 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACLu0EY010957;
+        Thu, 12 Nov 2020 15:56:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605218160;
+        bh=vZeuvlVCxBHj41lGZcfVpWofJ2yUXkbd5bHCA2deX1k=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=jVNCypw4Fvue8pTZQgVBHHe51fWMGqciGKTEKcAEFH+RMBOg2wk/DuMxKWJt74OHK
+         00/QmEBavmh30NfkSJQTsYEfy9FdQvZMvn2IA7lX1GkBbGMLxOf08asRdjJZuZJ3Lm
+         etSo2UJwy9yaHs5HYUhWH1hsxsyG1MbybQb2jNzg=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACLu0Re024449
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 15:56:00 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 15:56:00 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 15:56:00 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACLu0Fl096988;
+        Thu, 12 Nov 2020 15:56:00 -0600
+Date:   Thu, 12 Nov 2020 15:56:00 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        Jyri Sarha <jsarha@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
+Message-ID: <20201112215600.npr4g24gt4tvc5tm@kahuna>
+References: <20201026170624.24241-1-nm@ti.com>
+ <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
+ <20201026190808.im4nb32jn4rd3xhu@crayon>
 MIME-Version: 1.0
-References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
- <20201106051436.2384842-3-adrian.ratiu@collabora.com> <20201106101419.GB3811063@ubuntu-m3-large-x86>
- <87wnyyvh56.fsf@collabora.com> <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
- <871rh2i9xg.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
- <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
- <87sg9ghil5.fsf@collabora.com> <CAKwvOd=QrU6rCQ4_Ji=XsskPovOSXpk0NkjTqVjLijw1-CZ17Q@mail.gmail.com>
- <87lff8gesg.fsf@collabora.com> <20201112215033.GA438824@rani.riverdale.lan>
-In-Reply-To: <20201112215033.GA438824@rani.riverdale.lan>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 12 Nov 2020 13:55:36 -0800
-Message-ID: <CAKwvOdmCgWFgHof8fqep1hymeNc368Fn8rLDwzzCU58tV5wyXg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026190808.im4nb32jn4rd3xhu@crayon>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 1:50 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Wed, Nov 11, 2020 at 04:15:59PM +0200, Adrian Ratiu wrote:
-> > On Tue, 10 Nov 2020, Nick Desaulniers <ndesaulniers@google.com>
-> > wrote:
-> > >
-> > > Yes, though additionally Arvind points out that this code is
-> > > kind of curious if there was overlap; maybe the parameters
-> > > should just be restrict-qualified.
-> > >
-> >
-> > For now I think I'll just re-send the GCC changes and leave the
-> > Clang optimization as is, until we better understand what's
-> > happening and what's the best way to enable it.
-> >
->
-> Note that the __restrict__ keywords also help GCC -- it saves it from
-> having to emit the non-vectorized version and switch between the two at
-> runtime. If we can verify it's safe, it's a good thing to add all
-> around.
+On 14:08-20201026, Nishanth Menon wrote:
+> On 23:30-20201026, Lokesh Vutla wrote:
+> [..]
+> > ➜  linux git:(master) git grep -in ARCH_K3_AM6_SOC
+> > arch/arm64/configs/defconfig:961:CONFIG_ARCH_K3_AM6_SOC=y
+> > drivers/soc/ti/Kconfig:7:config ARCH_K3_AM6_SOC
+> > ➜  linux git:(master) git grep -in ARCH_K3_J721E_SOC
+> > arch/arm64/configs/defconfig:962:CONFIG_ARCH_K3_J721E_SOC=y
+> > drivers/gpu/drm/bridge/cadence/Kconfig:16:  depends on ARCH_K3_J721E_SOC ||
+> > COMPILE_TEST
+> > drivers/soc/ti/Kconfig:12:config ARCH_K3_J721E_SOC
+> > 
+> > 
+> > I see drm bridge Kconfig is cleaned[0]. Please clean the defconfig as well.
+> > 
+> > [0]
+> > https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
+> > 
+> 
+> Yes, the defconfig patches have to be queued up in a different queue,
+> Lets see where the two patches fall and will post the defconfig
+> updates as well.
 
-100% agree.  Even a BUILD_BUG_ON or WARN_ON in callers to validate
-such an invariant might be nice.
+
+Santosh,
+
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
+looks available in next now.
+
+Can we queue this patch[1] up for 5.11 window?
+
+Depending on your preference, I can carry the defconfig patch[2] (to
+prevent merge dependencies, might be good to get an immutable tag) OR
+you can pick the defconfig patch up that cleans after removing the
+symbol.
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026170624.24241-1-nm@ti.com/
+[2] https://lore.kernel.org/lkml/20201112215438.31432-1-nm@ti.com/
+
 -- 
-Thanks,
-~Nick Desaulniers
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
