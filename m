@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B012B0530
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5BF2B0533
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgKLMwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:52:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727997AbgKLMwl (ORCPT
+        id S1728224AbgKLMwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:52:50 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7638 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728178AbgKLMwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:52:41 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14113C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:52:41 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id v4so6045507edi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 04:52:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VO5buX3O3865XeSNAiYdkmHwudPvyFuKPpXIgcQuiQo=;
-        b=B6KAVAL2EmeGP3N+DEht9mufwYAaCbCfkacyMFL0brBEYT9mD0dCKeFFTplJf2Xvpb
-         ZjDj/GJutnYrfwHF4Nfi0WfG8SjhVPLDlnWRD0l+Qch6xKkbgxECp+jsSqP9J49DuE41
-         4fdoc6Pafv5lHMcf2Qs3RDODPOCTkuZ20mFXs9eTU+Oikpy3jiddtOqv2HyKMvZvLohN
-         w5akI2+/HrvAiK9P8CxLnGD8Cwfm8WLUApIaTRr0vymEcZHTbkcMSiYDKI3NvyCMvRtY
-         niFVY/pWUaUZ4oNPqMYMyqU/+d9+0yvxRoiRtFUnTIBugeV5SYOL9dbIGCvrwdXJH/7m
-         wgUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=VO5buX3O3865XeSNAiYdkmHwudPvyFuKPpXIgcQuiQo=;
-        b=iIS90BiMo2fWeE4DZZiPR19qX/+5xbsSLZccHSrr+hkZ5QHxSRQ77gbKiC7unRyqYK
-         AUS0lDCyd0YYxdqTpYAYGGJ4FzHwPl8n3iJNv1ZutTvSatKavBNSr2WR0vLS4BFK/HCE
-         COp6s5+69w4e4uOhemiLAbvTovP/5mO770iQHG9CgzeihNBx6pGRUZhyWnOz+KMzvihn
-         RFWT1oWVqEBVqhBr3pn1NeiI5/7fedNVvtTf7TCOF/RjlWU7cIq4rBYzGYYLvaU/vyro
-         8GCLdo+0Lm8WFWKpqN5MXA5q7u1dnCd7EkbwrF1SDWuoymlevZ2ZMsC9o2+fpTroa5uW
-         cB/w==
-X-Gm-Message-State: AOAM5336cwxuyU1Q4bMLIBBSFSkTwfrH3LsmBlXbZBjfSJpr5u+2Ldec
-        mSWtQwHmNnFbz96thBr88qcZPZjy3mal6cxL
-X-Google-Smtp-Source: ABdhPJx2CKi0jnU8tN9TzrbbmKHvJWYTcuNCg5vCINCVEJ0w7herYQ+R+s/dwi6a680loLwitZyRNQ==
-X-Received: by 2002:a05:6402:1352:: with SMTP id y18mr4921489edw.378.1605185559553;
-        Thu, 12 Nov 2020 04:52:39 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id n22sm2366989edr.11.2020.11.12.04.52.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 12 Nov 2020 04:52:38 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] arm64: dts: zynqmp: Wire mailbox with zynqmp-power driver
-Date:   Thu, 12 Nov 2020 13:52:34 +0100
-Message-Id: <5d3523150890e494df308ee69523d0f0e7b33b22.1605185549.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 12 Nov 2020 07:52:44 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad301f0002>; Thu, 12 Nov 2020 04:52:47 -0800
+Received: from [10.26.72.124] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 12:52:41 +0000
+Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20201111103847.152721-1-jonathanh@nvidia.com>
+ <ea73403a-a248-cd2e-b0af-aeb246801054@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <9adf5175-d77b-5a50-8cb3-18305582a57b@nvidia.com>
+Date:   Thu, 12 Nov 2020 12:52:39 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ea73403a-a248-cd2e-b0af-aeb246801054@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605185567; bh=8DfHoZREZ/l0HtR64GiqLrX+xk3X9RCijo+BL6PuSZk=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Gs/gWqN11KclIRM9X4ObMAlFz3tDXrxihkTR3fzZWiaANV0S8BQcs91k3yVZGSDli
+         NTuR3paPm6MifiqdrSlZlawcrjZkkhtNkxrY4/9kUE+iuGhZcDUq7OYmGaTt7Kw+Z8
+         /5TjAZCuwujpWAPvsP7kSOXsaEtc76BDS3e+LVM8ZQl3QDLoOlbkTKgs7Oq6M5Jj1v
+         RHybgVu7qi0V7YqU6f45Xclz4aVPyl9vGvIEp7WFr4WAF3fdEbfiOqeTYvnPYOj1BK
+         WOAr3tpdpIEfZTxI+pzpiM4yBZZsOa445G5FWQ/6imyUgqwO9n+L6UoeJ3K4aRj7na
+         z4JzPahp6q96A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The support to driver was added by commit ffdbae28d9d1 ("drivers: soc:
-xilinx: Use mailbox IPI callback") that's why also enable it via DT by
-default. It setups communication with firmware via IPI interface.
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+On 12/11/2020 12:11, Dmitry Osipenko wrote:
+> 11.11.2020 13:38, Jon Hunter =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
+>> (Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
+>> generic CPUFREQ device-tree driver. Since this change CPUFREQ support
+>> on the Tegra20 Ventana platform has been broken because the necessary
+>> device-tree nodes with the operating point information are not populated
+>> for this platform. Fix this by updating device-tree for Venata to
+>> include the operating point informration for Tegra20.
+>>
+>> Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (T=
+egra30 supported now)")
+>> Cc: stable@vger.kernel.org
+>>
+>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+>> ---
+>>  arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/t=
+egra20-ventana.dts
+>> index b158771ac0b7..055334ae3d28 100644
+>> --- a/arch/arm/boot/dts/tegra20-ventana.dts
+>> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
+>> @@ -3,6 +3,7 @@
+>> =20
+>>  #include <dt-bindings/input/input.h>
+>>  #include "tegra20.dtsi"
+>> +#include "tegra20-cpu-opp.dtsi"
+>> =20
+>>  / {
+>>  	model =3D "NVIDIA Tegra20 Ventana evaluation board";
+>> @@ -592,6 +593,16 @@ clk32k_in: clock@0 {
+>>  		#clock-cells =3D <0>;
+>>  	};
+>> =20
+>> +	cpus {
+>> +		cpu0: cpu@0 {
+>=20
+> I assume you're going to use this cpu0 handle later on.
 
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Opps, I will remove that.
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 66dad22b8a76..68923fbd0e89 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -99,6 +99,29 @@ opp03 {
- 		};
- 	};
- 
-+	zynqmp_ipi {
-+		compatible = "xlnx,zynqmp-ipi-mailbox";
-+		interrupt-parent = <&gic>;
-+		interrupts = <0 35 4>;
-+		xlnx,ipi-id = <0>;
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		ipi_mailbox_pmu1: mailbox@ff990400 {
-+			reg = <0x0 0xff9905c0 0x0 0x20>,
-+			      <0x0 0xff9905e0 0x0 0x20>,
-+			      <0x0 0xff990e80 0x0 0x20>,
-+			      <0x0 0xff990ea0 0x0 0x20>;
-+			reg-names = "local_request_region",
-+				    "local_response_region",
-+				    "remote_request_region",
-+				    "remote_response_region";
-+			#mbox-cells = <1>;
-+			xlnx,ipi-id = <4>;
-+		};
-+	};
-+
- 	dcc: dcc {
- 		compatible = "arm,dcc";
- 		status = "disabled";
-@@ -128,6 +151,8 @@ zynqmp_power: zynqmp-power {
- 				compatible = "xlnx,zynqmp-power";
- 				interrupt-parent = <&gic>;
- 				interrupts = <0 35 4>;
-+				mboxes = <&ipi_mailbox_pmu1 0>, <&ipi_mailbox_pmu1 1>;
-+				mbox-names = "tx", "rx";
- 			};
- 
- 			zynqmp_clk: clock-controller {
--- 
-2.29.2
+>=20
+>> +			operating-points-v2 =3D <&cpu0_opp_table>;
+>> +		};
+>> +
+>> +		cpu@1 {
+>> +			operating-points-v2 =3D <&cpu0_opp_table>;
+>> +		};
+>> +	};
+>> +
+>>  	gpio-keys {
+>>  		compatible =3D "gpio-keys";
+>> =20
+>>
+>=20
+> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+>=20
 
+Thanks!
+Jon
+
+--=20
+nvpublic
