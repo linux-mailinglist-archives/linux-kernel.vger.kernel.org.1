@@ -2,204 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E392B0EE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C13E2B0EED
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgKLUP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:15:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42963 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726960AbgKLUP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:15:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605212125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vHPfrB8xVjlPFSCqejvi+QTUrEERRY3Dc+wUeNVcoBQ=;
-        b=WxnrNxW+S49kON7vI/fQPo/MmoTNtH7f/oKF87jYNH7PgSmpFWeptZ5hhzU5pRDhj0fyka
-        khmVLLV6rSxIHbZYzSUCJuE9+DHCie1NVJ2R8HLUoIsEUpv0Enrf+geAbnCVxwluFlpKAw
-        CdBoaD42NLlByxPuUla+RIP+sxTOYBM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-oEA0-wAoOwuf6GxfpwxgRw-1; Thu, 12 Nov 2020 15:15:22 -0500
-X-MC-Unique: oEA0-wAoOwuf6GxfpwxgRw-1
-Received: by mail-wr1-f70.google.com with SMTP id 91so2298439wrk.17
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:15:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=vHPfrB8xVjlPFSCqejvi+QTUrEERRY3Dc+wUeNVcoBQ=;
-        b=I0XH6+Bkq/IIAFu6dyBb1CHSIoU5DWmzSMmKjccvSRimpQbHS2y5Ss16f5aHvHVAuy
-         1t9GZpD4vkFmyktMGUE9cv18Z9R7ewRahCF30j5BU9W6lkAV1ck45lOK2iEALSDnnr2Q
-         92UuEcTRvrg664I8X81FnXX1CgBrP7g98idle+VR0iHd3P/tMhhs2N4T/xtO+dVLuTzg
-         /TO4JOYG9yfIHMGtFtli5qB2pe9lZc3Zm4ftJSNvwKJdyRpgo2/M3c6azCkP8Azp7W+p
-         nE05IRyxt57KjVwNwFuefIgOShCuM7H1axZ8YxXitX6C6DqdOdmV9UrZAckFITm+zzxd
-         8FCA==
-X-Gm-Message-State: AOAM531AeLCEDM5etBQlShphCHVh/qnLxLRC4EatSgbDmugX9nHrYMh8
-        6b2YWa8PZAD5alEUwIQIS6btzpuW1roJ2GBDo5C6CAdwb+NgZ09RqPAurhr9rhu0LjNcylJ/4MP
-        pGqyXE9LZBYEZdXJVwqcMFFuH
-X-Received: by 2002:adf:e350:: with SMTP id n16mr1455263wrj.419.1605212120788;
-        Thu, 12 Nov 2020 12:15:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxji2+rXiblNfD29iXHuiDwrhuPVpa0KNLoEK9tHEW4ondrhf0pVB9gNYs6gWjo3tNv0xhLcA==
-X-Received: by 2002:adf:e350:: with SMTP id n16mr1455211wrj.419.1605212120462;
-        Thu, 12 Nov 2020 12:15:20 -0800 (PST)
-Received: from [192.168.3.114] (p5b0c631d.dip0.t-ipconnect.de. [91.12.99.29])
-        by smtp.gmail.com with ESMTPSA id 35sm8578483wro.71.2020.11.12.12.15.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 12:15:19 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
-Date:   Thu, 12 Nov 2020 21:15:18 +0100
-Message-Id: <7A16CA44-782D-4ABA-8D93-76BDD0A90F94@redhat.com>
-References: <20201112190827.GP4758@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-In-Reply-To: <20201112190827.GP4758@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-X-Mailer: iPhone Mail (18A8395)
+        id S1727080AbgKLUQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:16:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726963AbgKLUQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 15:16:45 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDD3520A8B;
+        Thu, 12 Nov 2020 20:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605212204;
+        bh=EHyeO0MPE0SxSjAa03kCUgKzknAdmQkHHmJPJH295oM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GUvWOnJ0bMa4wuvbDzTC9q1lyH4T+mXV5NiTRFM1FdWoIRvf9LymzSgt53eJK2KyZ
+         /v/eXj3nSPOPXo4uw22YqnKCGOjkzvNlB/2iktBBH1g3BXNPg0+c7W/Xq0ILz7vctH
+         oruCZYjSkCgV24KVTFMSpW13+80GZL83MOO3J4lw=
+Message-ID: <0b91885ea6395a139f5d8a317f6a897af9d76cc6.camel@kernel.org>
+Subject: Re: [PATCH v3 net-next 00/13] Add ethtool ntuple filters support
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Naveen Mamindlapalli <naveenm@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        sbhatta@marvell.com, hkelam@marvell.com
+Date:   Thu, 12 Nov 2020 12:16:40 -0800
+In-Reply-To: <20201111071404.29620-1-naveenm@marvell.com>
+References: <20201111071404.29620-1-naveenm@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-11-11 at 12:43 +0530, Naveen Mamindlapalli wrote:
+> This patch series adds support for ethtool ntuple filters, unicast
+> address filtering, VLAN offload and SR-IOV ndo handlers. All of the
+> above features are based on the Admin Function(AF) driver support to
+> install and delete the low level MCAM entries. Each MCAM entry is
+> programmed with the packet fields to match and what actions to take
+> if the match succeeds. The PF driver requests AF driver to allocate
+> set of MCAM entries to be used to install the flows by that PF. The
+> entries will be freed when the PF driver is unloaded.
+> 
+> * The patches 1 to 4 adds AF driver infrastructure to install and
+>   delete the low level MCAM flow entries.
+> * Patch 5 adds ethtool ntuple filter support.
+> * Patch 6 adds unicast MAC address filtering.
+> * Patch 7 adds support for dumping the MCAM entries via debugfs.
+> * Patches 8 to 10 adds support for VLAN offload.
+> * Patch 10 to 11 adds support for SR-IOV ndo handlers.
+> * Patch 12 adds support to read the MCAM entries.
+> 
+> Misc:
+> * Removed redundant mailbox NIX_RXVLAN_ALLOC.
+> 
+> Change-log:
+> v3:
+> - Fixed Saeed's review comments on v2.
+> 	- Fixed modifying the netdev->flags from driver.
+> 	- Fixed modifying the netdev features and hw_features after
+> register_netdev.
+> 	- Removed unwanted ndo_features_check callback.
+> v2:
+> - Fixed the sparse issues reported by Jakub.
+> 
 
-> Am 12.11.2020 um 20:08 schrieb Mike Rapoport <rppt@kernel.org>:
->=20
-> =EF=BB=BFOn Thu, Nov 12, 2020 at 05:22:00PM +0100, David Hildenbrand wrote=
-:
->>> On 10.11.20 19:06, Mike Rapoport wrote:
->>> On Tue, Nov 10, 2020 at 06:17:26PM +0100, David Hildenbrand wrote:
->>>> On 10.11.20 16:14, Mike Rapoport wrote:
->>>>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>>>=20
->>>>> It will be used by the upcoming secret memory implementation.
->>>>>=20
->>>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>>>> ---
->>>>>   mm/internal.h | 3 +++
->>>>>   mm/mmap.c     | 5 ++---
->>>>>   2 files changed, 5 insertions(+), 3 deletions(-)
->>>>>=20
->>>>> diff --git a/mm/internal.h b/mm/internal.h
->>>>> index c43ccdddb0f6..ae146a260b14 100644
->>>>> --- a/mm/internal.h
->>>>> +++ b/mm/internal.h
->>>>> @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm=
-_area_struct *vma)
->>>>>   extern void mlock_vma_page(struct page *page);
->>>>>   extern unsigned int munlock_vma_page(struct page *page);
->>>>> +extern int mlock_future_check(struct mm_struct *mm, unsigned long fla=
-gs,
->>>>> +                  unsigned long len);
->>>>> +
->>>>>   /*
->>>>>    * Clear the page's PageMlocked().  This can be useful in a situatio=
-n where
->>>>>    * we want to unconditionally remove a page from the pagecache -- e.=
-g.,
->>>>> diff --git a/mm/mmap.c b/mm/mmap.c
->>>>> index 61f72b09d990..c481f088bd50 100644
->>>>> --- a/mm/mmap.c
->>>>> +++ b/mm/mmap.c
->>>>> @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(un=
-signed long hint)
->>>>>       return hint;
->>>>>   }
->>>>> -static inline int mlock_future_check(struct mm_struct *mm,
->>>>> -                     unsigned long flags,
->>>>> -                     unsigned long len)
->>>>> +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
->>>>> +               unsigned long len)
->>>>>   {
->>>>>       unsigned long locked, lock_limit;
->>>>>=20
->>>>=20
->>>> So, an interesting question is if you actually want to charge secretmem=
-
->>>> pages against mlock now, or if you want a dedicated secretmem cgroup
->>>> controller instead?
->>>=20
->>> Well, with the current implementation there are three limits an
->>> administrator can use to control secretmem limits: mlock, memcg and
->>> kernel parameter.
->>>=20
->>> The kernel parameter puts a global upper limit for secretmem usage,
->>> memcg accounts all secretmem allocations, including the unused memory in=
-
->>> large pages caching and mlock allows per task limit for secretmem
->>> mappings, well, like mlock does.
->>>=20
->>> I didn't consider a dedicated cgroup, as it seems we already have enough=
-
->>> existing knobs and a new one would be unnecessary.
->>=20
->> To me it feels like the mlock() limit is a wrong fit for secretmem. But
->> maybe there are other cases of using the mlock() limit without actually
->> doing mlock() that I am not aware of (most probably :) )?
->=20
-> Secretmem does not explicitly calls to mlock() but it does what mlock()
-> does and a bit more. Citing mlock(2):
->=20
->  mlock(),  mlock2(),  and  mlockall()  lock  part  or all of the calling
->  process's virtual address space into RAM, preventing that  memory  from
->  being paged to the swap area.
->=20
-> So, based on that secretmem pages are not swappable, I think that
-> RLIMIT_MEMLOCK is appropriate here.
->=20
-
-The page explicitly lists mlock() system calls. E.g., we also don=E2=80=98t a=
-ccount for gigantic pages - which might be allocated from CMA and are not sw=
-appable.
-
-
-
->> I mean, my concern is not earth shattering, this can be reworked later. A=
-s I
->> said, it just feels wrong.
->>=20
->> --=20
->> Thanks,
->>=20
->> David / dhildenb
->>=20
->=20
-> --=20
-> Sincerely yours,
-> Mike.
->=20
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
 
