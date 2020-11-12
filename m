@@ -2,176 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75092B08ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAC82B095F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728657AbgKLPvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
+        id S1728793AbgKLP6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728395AbgKLPvm (ORCPT
+        with ESMTP id S1728758AbgKLP6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:51:42 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3167C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:51:40 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w4so4479942pgg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:51:40 -0800 (PST)
+        Thu, 12 Nov 2020 10:58:17 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEB3C0613D1;
+        Thu, 12 Nov 2020 07:58:16 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id t11so6806798edj.13;
+        Thu, 12 Nov 2020 07:58:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R63elO6azLmdFhexBWQ7vR6miEsYpAf0xG4oKKmf0Xc=;
-        b=s+cxOOsWOMeyYdWMTOwpqZ0+551FdX+Fjyu55bHhAXHtctcSeRZ9CR/RcmLwWd/g3f
-         OpVdKLJWIWr8cMj5AQq68AQr3da3T5viH3JaZFNLsifHDNhBjd/QP+Ae4EU1RyJLKFV5
-         UdPDnD7xeVu6+rXR+YK30hU2lg9YigtCnC2iYE5BKLgrIXhj8W8HruoF06OZX9umAGOR
-         xNiXHuD5Az6OpSwDHHZkJwwNvuJFvSUrhkYoRIG4YHHAouhf1cUUO9BrZvei+zMQziJq
-         b2sfdM2PcvyrF+OtVxdEs5TJ6xACxD6IE3z+hCj44bpKVxzbaASinsgUsrnngblDf6ah
-         oDvA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IKZ0bJ9wrwGZuyOlCMns8U747V5thrsJagTuvXdjRs0=;
+        b=Gs8ocfeIX5ONLTW9ozPMdd5HxbyWWOMRw0clObL+hMWt9zjgrj+mqHC3l0hDF/ihpR
+         DJUWlmAB55Um9PVdhFg6BxBQwLnccJ6gvQCEvmmc7rwXDC9yBI7Rw16wZFFL5crH7axI
+         td1JPfk8bXScK0WJiOapCmD654WwYW/B0rwOC66G4hlHN1KeIboP+ly9kS4gu6hqaZYr
+         h+3EsBMudz0I8+DXsbmN9zakoT4Uc457QjDZmdGGftqsknUGE9hj2pPkKVK3wAqnhPE9
+         7cCgqVjah66y8F3wsvSrDbZq6Jbmq6u4mwna8NROEOYrXyONvZvfsU1plBBlKxZCpmot
+         4nsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=R63elO6azLmdFhexBWQ7vR6miEsYpAf0xG4oKKmf0Xc=;
-        b=K67Nv4lMx1gRsMX9Td8p2SlRv6IMGZXfCGMqZNFnukIeUbSvlgYYggv/6YLYZnIvm0
-         G2JZyo8bNUEOFk2fYBXQLRXjKsU632WZI2y+oRyFFQLQERdmiZ5aaKhUB5vjJP9hw3tm
-         34WJPAOUPzrgrzLtMjdWZm1ZZUzATRrWANfDQldtue5dpV4zricrS/2givR7InbfI3t7
-         X9jgb1xKfatWMEB65yqcGZs/Jgy+VN40G+xOvM6oWwWELjzd2eHDmYjAYiIXS0e7MRnx
-         jx2AIz92yAH6+yzhvzFHaUtip/oVdqkYD9r4eVYJD9h9DrHDcNI1DFJgSWFc9roZ2PVe
-         VK1Q==
-X-Gm-Message-State: AOAM530OhGfHsTpUYbrsmrbLyR5+aOMR784JwzN5YTEEs/jkP+0jKJao
-        OIbUPTlQZxT8Kz9b+rVZh72qnQ==
-X-Google-Smtp-Source: ABdhPJxnlZ1iNwusya9sKmPk+F3FZ0n19kbDxf5aj1R1pRS8fMP3NOIl96u8ubvCDardNy2kejvl1g==
-X-Received: by 2002:a17:90b:2343:: with SMTP id ms3mr10237511pjb.130.1605196300218;
-        Thu, 12 Nov 2020 07:51:40 -0800 (PST)
-Received: from [192.168.11.16] (softbank126112255110.biz.bbtec.net. [126.112.255.110])
-        by smtp.gmail.com with ESMTPSA id s11sm6578972pfh.128.2020.11.12.07.51.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 07:51:39 -0800 (PST)
-Subject: Re: ac0e958a00:
- Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:run_init_process
-To:     David Laight <David.Laight@ACULAB.COM>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        0day robot <lkp@intel.com>,
-        "lkp@lists.01.org" <lkp@lists.01.org>
-References: <20201112071145.GC17067@xsang-OptiPlex-9020>
- <87765a0e-3a49-d437-4010-4848b8ece199@landley.net>
- <2bd72a2f0af948d29eb201e3072e514e@AcuMS.aculab.com>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <c214546d-e678-2ef3-4b4d-54df3f264cbd@landley.net>
-Date:   Thu, 12 Nov 2020 10:02:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        bh=IKZ0bJ9wrwGZuyOlCMns8U747V5thrsJagTuvXdjRs0=;
+        b=bkLFeJwutvx6rbiCzT9eHMDknjyTul94x6z+iSTwYkB+6LLwYheUH+D/A0570VImTU
+         U5f02IKxPPtFFLDDg5uWoqJZGCwag/fq0Y7NwxXkxxF3aStPZCkMRF4unttob0PtN/pA
+         ycMckC3NIHu/OFf6Y4VbWWeJ7t35wlevLvyTEwxv/dYyFd2LOKhUvlXX3rLA8BqUXj3F
+         cpu/wj0/U0csqZn32trW/1btrXoyjsxxNgu7u1XXLy9u+rGIoKM9Iq8baH2lOFya6YWl
+         io2NfqidpiO6nKgTyEJv2Md/WLnZcBEtNNIyobWflLhv+5FeHjNMW3mKE7UajxH/Nj6D
+         UBAA==
+X-Gm-Message-State: AOAM530JTnYQvZGXSx0cREF5NED8ZA3AntPJ3VkIz3EMj1yrd7VCcMY7
+        ugZlzwAAZQ9BcqxOwpPCx4I=
+X-Google-Smtp-Source: ABdhPJy2UZAtvuJnRjXYWNnt+bVbjdvt647JwfqbQixYhwXBCSp3DqML+BXBoswntePYKr4UYLkqDA==
+X-Received: by 2002:a50:d784:: with SMTP id w4mr391175edi.201.1605196695371;
+        Thu, 12 Nov 2020 07:58:15 -0800 (PST)
+Received: from yoga-910.localhost ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id q15sm2546540edt.95.2020.11.12.07.58.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 07:58:14 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robert Hancock <robert.hancock@calian.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: [PATCH net-next 00/18] net: phy: add support for shared interrupts (part 2)
+Date:   Thu, 12 Nov 2020 17:54:55 +0200
+Message-Id: <20201112155513.411604-1-ciorneiioana@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <2bd72a2f0af948d29eb201e3072e514e@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 7:49 AM, David Laight wrote:
-> From: Rob Landley
->> Sent: 12 November 2020 12:46
->>
->> On 11/12/20 1:11 AM, kernel test robot wrote:
->>>
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>
->> Blah, switched from strlcpy to sprintf due to the lack of spaces and didn't
->> adjust the size.
->>
->> (And yes, the compiler's lifetime analysis should free the stack space before
->> the tail call, and I'd assume exec restarts the stack anyway.)
+From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-This is why I didn't put anything like that in the first submission. (I knew
-better, and did it anyway...)
+This patch set aims to actually add support for shared interrupts in
+phylib and not only for multi-PHY devices. While we are at it,
+streamline the interrupt handling in phylib.
 
->> Second-attempt-by: Rob Landley <rob@landley.net>
->> ---
->>
->>  init/main.c |   15 ++++++++-------
->>  1 file changed, 8 insertions(+), 7 deletions(-)
->>
->> diff --git a/init/main.c b/init/main.c
->> index 130376ec10ba..e92320816ef8 100644
->> --- a/init/main.c
->> +++ b/init/main.c
->> @@ -1328,15 +1328,16 @@ static void __init do_pre_smp_initcalls(void)
->>  static int run_init_process(const char *init_filename)
->>  {
->>  	const char *const *p;
->> +	char buf[512], *s = buf;
->>
->>  	argv_init[0] = init_filename;
->> -	pr_info("Run %s as init process\n", init_filename);
->> -	pr_debug("  with arguments:\n");
->> -	for (p = argv_init; *p; p++)
->> -		pr_debug("    %s\n", *p);
->> -	pr_debug("  with environment:\n");
->> -	for (p = envp_init; *p; p++)
->> -		pr_debug("    %s\n", *p);
->> +
->> +	for (p = (void *)envp_init; *p; p++)
->> +		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
->> +	for (p = (void *)argv_init; *p; p++)
->> +		s += sprintf(s, "%.*s ", (int)(sizeof(buf)-(s-buf)-2), *p);
->> +	pr_info("Run init: %s\n", buf);
->> +
-> 
-> Why not use scnprintf() as:
-> 	len += scnprintf(buf + len, 256 - len, " %s", *p);
+For a bit of context, at the moment, there are multiple phy_driver ops
+that deal with this subject:
 
-Because what I did worked for me?
+- .config_intr() - Enable/disable the interrupt line.
 
-The buffer size isn't 256, sizeof() means if the buffer size changes the code
-automatically adjusts and the -2 gets constant folded at compile time anyway,
-you've proposed switching from a posix function to a kernel-specific function
-for no obvious benefit, it's the same number of arguments and other than 2 bytes
-in a string constant you've just swapped s-buf for buf+len, I didn't want to dig
-into whether passing rdinit= could have an empty environment so the "skip a
-space" has no space to skip and thus you skip the null terminator so I just left
-one harmlessly trailing on the end, if I wanted to get FANCY I'd measure and
-allocate space then free it after printing...
+- .ack_interrupt() - Should quiesce any interrupts that may have been
+  fired.  It's also used by phylib in conjunction with .config_intr() to
+  clear any pending interrupts after the line was disabled, and before
+  it is going to be enabled.
 
-I could go on, but that's about as much bikeshedding as I have the stomach for
-right now on two for loops calling print statements, thanks.
+- .did_interrupt() - Intended for multi-PHY devices with a shared IRQ
+  line and used by phylib to discern which PHY from the package was the
+  one that actually fired the interrupt.
 
-> or even:
-> 	s = buf + sizeof buf;
-> 	len = sizeof buf;
-> 	...
-> 		len -= scnprintf(s - len, len, " %s", *p);
-> 
-> and remove the " " before the %s in the final pr_info().
+- .handle_interrupt() - Completely overrides the default interrupt
+  handling logic from phylib. The PHY driver is responsible for checking
+  if any interrupt was fired by the respective PHY and choose
+  accordingly if it's the one that should trigger the link state machine.
 
-Feel free to submit your own patch...?
+From my point of view, the interrupt handling in phylib has become
+somewhat confusing with all these callbacks that actually read the same
+PHY register - the interrupt status.  A more streamlined approach would
+be to just move the responsibility to write an interrupt handler to the
+driver (as any other device driver does) and make .handle_interrupt()
+the only way to deal with interrupts.
 
-I don't really expect this to get merged. It's not like I cc'd any humans. My
-latest thingied-by tag is not an approved entry in
-Documentation/process/submitting-patches.rst and I didn't go through all 27
-steps in Documentation/process/submit-checklist.rst because I'm not part of the
-fulltime kernel political clique and I don't bother to fight them anymore. It's
-just a small thing that annoyed me and I mostly posted it here so when some
-clown sues us for shipping a modified kernel I can cost them more money by
-pointing their lawyers at the patch on the list's web archive. (I could do so on
-a website I maintain, but then I'd have to track it and dowanna.)
+Another advantage with this approach would be that phylib would gain
+support for shared IRQs between different PHY (not just multi-PHY
+devices), something which at the moment would require extending every
+PHY driver anyway in order to implement their .did_interrupt() callback
+and duplicate the same logic as in .ack_interrupt(). The disadvantage
+of making .did_interrupt() mandatory would be that we are slightly
+changing the semantics of the phylib API and that would increase
+confusion instead of reducing it.
 
-I was only ever involved here as a hobbyist. The Linux Foundation is currently
-holding a "conference dedicated to driving collaboration and innovation in
-financial services" with "featured speakers" including the Managing Director of
-Goldman Sachs, the Founder of the Alliance for Innovative Regulation, the former
-CIO of Deutsche Bank, Red Hat's Director of Financial Services Strategy, and
-whatever "Open Source Wonk, Azure Office of the CTO, Microsoft" means.
+What I am proposing is the following:
 
-No, I did not make that up, they spammed me about it as part of their perpetual
-fundraising strategy to sell for-profit conference tickets:
+- As a first step, make the .ack_interrupt() callback optional so that
+  we do not break any PHY driver amid the transition.
 
-  https://events.linuxfoundation.org/open-source-strategy-forum/
+- Every PHY driver gains a .handle_interrupt() implementation that, for
+  the most part, would look like below:
 
-Rob
+	irq_status = phy_read(phydev, INTR_STATUS);
+	if (irq_status < 0) {
+		phy_error(phydev);
+		return IRQ_NONE;
+	}
+
+	if (!(irq_status & irq_mask))
+		return IRQ_NONE;
+
+	phy_trigger_machine(phydev);
+
+	return IRQ_HANDLED;
+
+- Remove each PHY driver's implementation of the .ack_interrupt() by
+  actually taking care of quiescing any pending interrupts before
+  enabling/after disabling the interrupt line.
+
+- Finally, after all drivers have been ported, remove the
+  .ack_interrupt() and .did_interrupt() callbacks from phy_driver.
+
+This patch set is part 2 of the entire change set and it addresses the
+changes needed in 9 PHY drivers. The rest can be found on my Github
+branch here:
+https://github.com/IoanaCiornei/linux/commits/phylib-shared-irq
+
+I do not have access to most of these PHY's, therefore I Cc-ed the
+latest contributors to the individual PHY drivers in order to have
+access, hopefully, to more regression testing.
+
+Ioana Ciornei (18):
+  net: phy: vitesse: implement generic .handle_interrupt() callback
+  net: phy: vitesse: remove the use of .ack_interrupt()
+  net: phy: microchip: implement generic .handle_interrupt() callback
+  net: phy: microchip: remove the use of .ack_interrupt()
+  net: phy: marvell: implement generic .handle_interrupt() callback
+  net: phy: marvell: remove the use of .ack_interrupt()
+  net: phy: lxt: implement generic .handle_interrupt() callback
+  net: phy: lxt: remove the use of .ack_interrupt()
+  net: phy: nxp-tja11xx: implement generic .handle_interrupt() callback
+  net: phy: nxp-tja11xx: remove the use of .ack_interrupt()
+  net: phy: amd: implement generic .handle_interrupt() callback
+  net: phy: amd: remove the use of .ack_interrupt()
+  net: phy: smsc: implement generic .handle_interrupt() callback
+  net: phy: smsc: remove the use of .ack_interrupt()
+  net: phy: ste10Xp: implement generic .handle_interrupt() callback
+  net: phy: ste10Xp: remove the use of .ack_interrupt()
+  net: phy: adin: implement generic .handle_interrupt() callback
+  net: phy: adin: remove the use of the .ack_interrupt()
+
+ drivers/net/phy/adin.c         | 45 +++++++++++++---
+ drivers/net/phy/amd.c          | 37 +++++++++++--
+ drivers/net/phy/lxt.c          | 94 ++++++++++++++++++++++++++++++----
+ drivers/net/phy/marvell.c      | 88 ++++++++++++++++---------------
+ drivers/net/phy/microchip.c    | 24 +++++++--
+ drivers/net/phy/microchip_t1.c | 28 +++++++---
+ drivers/net/phy/nxp-tja11xx.c  | 42 +++++++++++++--
+ drivers/net/phy/smsc.c         | 55 ++++++++++++++++----
+ drivers/net/phy/ste10Xp.c      | 53 +++++++++++++------
+ drivers/net/phy/vitesse.c      | 61 ++++++++++++++--------
+ 10 files changed, 405 insertions(+), 122 deletions(-)
+
+Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Andre Edich <andre.edich@microchip.com>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Maxim Kochetkov <fido_max@inbox.ru>
+Cc: Nisar Sayed <Nisar.Sayed@microchip.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Robert Hancock <robert.hancock@calian.com>
+Cc: Yuiko Oshino <yuiko.oshino@microchip.com>
+
+-- 
+2.28.0
+
