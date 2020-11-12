@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1502B0408
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F1B2B03FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728065AbgKLLi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:38:58 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7218 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbgKLLi5 (ORCPT
+        id S1728179AbgKLLfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728063AbgKLLfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:38:57 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX03g65J6zkhQT;
-        Thu, 12 Nov 2020 19:38:39 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.200.148) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 19:38:42 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Adrian Freund <adrian@freund.io>
-Subject: [PATCH] Documentation: scheduler: fix outdated information on arch SD flags and sched_domain
-Date:   Fri, 13 Nov 2020 00:34:41 +1300
-Message-ID: <20201112113441.27008-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Thu, 12 Nov 2020 06:35:02 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5780C0613D1;
+        Thu, 12 Nov 2020 03:35:01 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id z2so4905068ilh.11;
+        Thu, 12 Nov 2020 03:35:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yOYDw60h8YDhAuQ4Mgnq0YISTzdOklI+rEHu8VITyMw=;
+        b=BMDeApb0RDaOMI305+KWmFhB3osA1OXcZbWAPvRoDU7FRATKp85331vEQ1dQk5ygAx
+         mmJAfCQON3S9kgiN83fuhVQho5r8QGq3+FIQ2mvYIS+3F+F1bJpjB3po7SrJlpEUjE5d
+         4EZOdAQfNgtUVVY9cjPEmxbtecZLsL+JlqKAuGM+6sIeAuvSMqIxznp9y55cNtxTc1At
+         oT43x1UTFfg4dFt2bHRiQFtJ5reu+Tqy2MoVV6nRkeAe885VesTAFs5Vxmt3lxgC2dhC
+         0XzO/w7SSWEy4qoRb3Ylc9RDGDdTt5lqMz3JvGksHf2ycZIspTfUsW2TMQWqeMYP5NwN
+         j5RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yOYDw60h8YDhAuQ4Mgnq0YISTzdOklI+rEHu8VITyMw=;
+        b=j5UIBWARDrNQXi0Q4sXqcBCpUjCBis9C7gB05whm6P8skUkGEFNVtE3jvrpL5pGfJl
+         otLNohpZSCVGt1DX9ilWZzLAcOsN0nzUxzfi+4U+1oL2oxOQDD+fG3uksGVpKwT1d2pk
+         /+Mimbp3JwcCTL11AYrDCTsqLB4YbFKaYQkdVqgtw6kNaaVsFBQ8h7zTuOHtgRReL4Dn
+         Zs9l9jTKUe2veiYZLTtnWS2CY3V2Wa2zB2uX57TO0PeB3tj2eI5H7uwpmlElcYrFhmkZ
+         CO+KW9dNIfhUiwktEAuOZQEotlTNyBlnru2BRjmV1c4JYTlfhjx/3yv30jwOfSyzOOsg
+         opAg==
+X-Gm-Message-State: AOAM533mY+ccYnXbz/VCLTAV+huQYpg28x1x7PW5teQNVP2eMGBfEP3z
+        ZTRwNimkUhf1ahLoSb80CVOBkEZWKlG1zohy7R4a2uQq
+X-Google-Smtp-Source: ABdhPJwQ5Cyt5HHFJRfHNM4P2RneLcXgsFaaKV79h5Jb9WnQUEaQ11PTRxpMasSiUGWbK5kPn6FZcsy7Z76CpMaorkY=
+X-Received: by 2002:a92:290b:: with SMTP id l11mr24025993ilg.46.1605180900344;
+ Thu, 12 Nov 2020 03:35:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.200.148]
-X-CFilter-Loop: Reflected
+References: <20200911123157.759379-1-aford173@gmail.com> <20200911123157.759379-2-aford173@gmail.com>
+ <CAHCN7x+NxWbpaZ7j3=CTeVcvtLm5iMVymgTV=LWokZAx=wJA1w@mail.gmail.com>
+In-Reply-To: <CAHCN7x+NxWbpaZ7j3=CTeVcvtLm5iMVymgTV=LWokZAx=wJA1w@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 12 Nov 2020 06:34:48 -0500
+Message-ID: <CAHCN7xJOszyiCniUa8hKM-h8vsQ=jfWPvyrZR5Kx5RPoBof1sA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: omap2plus_defconfig: Enable OMAP3_THERMAL
+To:     linux-pm@vger.kernel.org, Linux-OMAP <linux-omap@vger.kernel.org>
+Cc:     Adam Ford-BE <aford@beaconembedded.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This document seems to be out of date for many, many years. Even it has
-misspelled from the first day.
-ARCH_HASH_SCHED_TUNE should be ARCH_HAS_SCHED_TUNE
-ARCH_HASH_SCHED_DOMAIN should be ARCH_HAS_SCHED_DOMAIN
+On Fri, Oct 16, 2020 at 11:19 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Fri, Sep 11, 2020 at 7:32 AM Adam Ford <aford173@gmail.com> wrote:
+> >
+> > With the additional power management options enabled,
+> > this patch enables OMAP3_THERMAL by default.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> > V3:  No change
+> > V2:  No change
+>
+> Tony,
+>
+> Can you apply [2/2] to the OMAP branch?
+>
+> It looks like 1/2 was applied to the linux-pm [1]
 
-But since v2.6.14, kernel completely deleted the relevant code and even
-arch_init_sched_domains() was deleted.
+Tony,
 
-Right now, kernel is asking architectures to call set_sched_topology() to
-override the default sched domains.
+The defconfig update doesn't show in your branch.  Is there someone
+else I should ping about this?
 
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Adrian Freund <adrian@freund.io>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Documentation/scheduler/sched-domains.rst | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+thanks
 
-diff --git a/Documentation/scheduler/sched-domains.rst b/Documentation/scheduler/sched-domains.rst
-index 5c4b7f4f0062..434d4e7e86c5 100644
---- a/Documentation/scheduler/sched-domains.rst
-+++ b/Documentation/scheduler/sched-domains.rst
-@@ -69,15 +69,9 @@ The implementor should read comments in include/linux/sched.h:
- struct sched_domain fields, SD_FLAG_*, SD_*_INIT to get an idea of
- the specifics and what to tune.
- 
--Architectures may retain the regular override the default SD_*_INIT flags
--while using the generic domain builder in kernel/sched/core.c if they wish to
--retain the traditional SMT->SMP->NUMA topology (or some subset of that). This
--can be done by #define'ing ARCH_HASH_SCHED_TUNE.
--
--Alternatively, the architecture may completely override the generic domain
--builder by #define'ing ARCH_HASH_SCHED_DOMAIN, and exporting your
--arch_init_sched_domains function. This function will attach domains to all
--CPUs using cpu_attach_domain.
-+Architectures may override the generic domain builder and the default
-+SD_*_INIT flags by define'ing an array of sched_domain_topology_level and
-+calling set_sched_topology() with this array as the parameter.
- 
- The sched-domains debugging infrastructure can be enabled by enabling
- CONFIG_SCHED_DEBUG. This enables an error checking parse of the sched domains
--- 
-2.25.1
-
+>
+> thanks,
+>
+> adam
+> [1] - https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/commit/?h=thermal/linux-next&id=5093402e5b449b64f7bbaa09057ce40a8f3c1484
+>
+>
+>
+> >
+> > diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+> > index fe383f5a92fb..efcc46305a47 100644
+> > --- a/arch/arm/configs/omap2plus_defconfig
+> > +++ b/arch/arm/configs/omap2plus_defconfig
+> > @@ -303,6 +303,7 @@ CONFIG_THERMAL_GOV_FAIR_SHARE=y
+> >  CONFIG_THERMAL_GOV_USER_SPACE=y
+> >  CONFIG_CPU_THERMAL=y
+> >  CONFIG_TI_THERMAL=y
+> > +CONFIG_OMAP3_THERMAL=y
+> >  CONFIG_OMAP4_THERMAL=y
+> >  CONFIG_OMAP5_THERMAL=y
+> >  CONFIG_DRA752_THERMAL=y
+> > --
+> > 2.25.1
+> >
