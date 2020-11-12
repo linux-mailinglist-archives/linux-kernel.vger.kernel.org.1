@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D28A2B0400
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479292B0402
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgKLLfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:35:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727234AbgKLLfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:35:48 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 194D5206FB;
-        Thu, 12 Nov 2020 11:35:44 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 11:35:42 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/20] kasan: add and integrate kasan boot parameters
-Message-ID: <20201112113541.GK29613@gaia>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <fdf9e3aec8f57ebb2795710195f8aaf79e3b45bd.1605046662.git.andreyknvl@google.com>
+        id S1728196AbgKLLf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728131AbgKLLfv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:35:51 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F8BC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:35:51 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id l1so5623385wrb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:35:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6kX+loQUX2nlBfS+5buxfWq+Q+8uXyy+I1jyDWpC3e4=;
+        b=PmNtJ3wXgpASXov6BJvrQbnsWhusZLxlN6oclll6uTVQS5ITKM200U2nch/Sy3ktgf
+         sdnPPoGK8Xtbbiz+QWmopjcppCX2CZHV/EZdvjFxIHupmbnF8SiRknQyNinBzD2DetWx
+         jynbVCdm6kERPz9dL27eUMGxtm89Z3cG9fqARp4WObqNWnypEl0y2fKBdhxJ6ULOQ7ud
+         b2KHBkSv/1Ho/QtO5YEIKcz3m76N9mSw2ENVzZwQ+sKjM0kFn/+M9d4QACupt0WTL2VB
+         N4m/CdmouIXE+1zZNNZNYcqC2e+4E+qrBwlz5hzKo2KYr+ozqaL+uj2bSS50E/K0UlSs
+         I1Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6kX+loQUX2nlBfS+5buxfWq+Q+8uXyy+I1jyDWpC3e4=;
+        b=FURq2L9wjI3OpXqkynT9p6rEhmR6oKPAcVMLWyOobyXafqQMjXCtPywdXCJQo9Jhso
+         R+V5Bsz6Weeg6WuYQX7Te0kW0t830JKEBlZnc2AxcuAn5D8YpxPeGsx448xhUW0v+V97
+         PwdUoY9Aq/amVvmoeMN4DurDVExmTR0ROt62ftzVY05Dr+/uI+tcBBNGM20wUpdM+Sak
+         K/5Jy5vXcUcwwnLZtinBaeVjYu3jY0v0M2hzksgXkkUJSSYALcSFHdtlIIfAJjjmPyld
+         3XvaEgcphOx7U3rECXL9F9V5EOiXSJ54Edxuszo5e4qQizCbiFm/MRzp5NGWfB/YYCFf
+         oeHA==
+X-Gm-Message-State: AOAM533pkqxDnRc0/Q6qUnySg91BRztRDW/Jrx4qWfh3dCree+4IF90q
+        2HAd0he2nXH/dIuVhHKbw0RN2QkAli/spg==
+X-Google-Smtp-Source: ABdhPJwrrALrGgUNEDGn9ukK2Qm36it0tJOKswSURNCPWMICi+HDaTCBo+nX2wwG7CuTmsJdcZUf2Q==
+X-Received: by 2002:adf:f808:: with SMTP id s8mr20534516wrp.257.1605180949580;
+        Thu, 12 Nov 2020 03:35:49 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
+        by smtp.googlemail.com with ESMTPSA id n14sm6132181wrt.8.2020.11.12.03.35.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 03:35:48 -0800 (PST)
+Subject: Re: [PATCH] docs: thermal: time_in_state is displayed in msec and not
+ usertime
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <d5461bdf9ab6b6fee7f28f538582edbb426aa077.1605004905.git.viresh.kumar@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <cb6880c6-6729-e232-e4f3-28c165294e7a@linaro.org>
+Date:   Thu, 12 Nov 2020 12:35:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fdf9e3aec8f57ebb2795710195f8aaf79e3b45bd.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <d5461bdf9ab6b6fee7f28f538582edbb426aa077.1605004905.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20:15PM +0100, Andrey Konovalov wrote:
-> Hardware tag-based KASAN mode is intended to eventually be used in
-> production as a security mitigation. Therefore there's a need for finer
-> control over KASAN features and for an existence of a kill switch.
+On 10/11/2020 11:43, Viresh Kumar wrote:
+> The sysfs stats for cooling devices shows the time_in_state in msec,
+> remove the unwanted usertime comment.
 > 
-> This change adds a few boot parameters for hardware tag-based KASAN that
-> allow to disable or otherwise control particular KASAN features.
-> 
-> The features that can be controlled are:
-> 
-> 1. Whether KASAN is enabled at all.
-> 2. Whether KASAN collects and saves alloc/free stacks.
-> 3. Whether KASAN panics on a detected bug or not.
-> 
-> With this change a new boot parameter kasan.mode allows to choose one of
-> three main modes:
-> 
-> - kasan.mode=off - KASAN is disabled, no tag checks are performed
-> - kasan.mode=prod - only essential production features are enabled
-> - kasan.mode=full - all KASAN features are enabled
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
 
-Alternative naming if we want to avoid "production" (in case someone
-considers MTE to be expensive in a production system):
+Applied, thanks
 
-- kasan.mode=off
-- kasan.mode=on
-- kasan.mode=debug
 
-Anyway, whatever you prefer is fine by me:
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
