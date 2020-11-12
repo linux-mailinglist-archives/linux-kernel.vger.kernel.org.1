@@ -2,191 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFCE2B0349
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3482B037A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgKLLCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:02:14 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2431 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgKLK7p (ORCPT
+        id S1728105AbgKLLG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:06:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727973AbgKLK7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:59:45 -0500
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CWzBM6vyvz53wv;
-        Thu, 12 Nov 2020 18:59:23 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 12 Nov 2020 18:59:33 +0800
-Subject: Re: [PATCH V3] clk: hisilicon: refine hi3620_mmc_clk_init() and fix
- memory leak issues
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <Markus.Elfring@web.de>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201112192214.48926-1-gengdongjiu@huawei.com>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <2f85025e-f072-e01c-cb57-6a0a65a3cb0d@huawei.com>
-Date:   Thu, 12 Nov 2020 18:59:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        Thu, 12 Nov 2020 05:59:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85094C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 02:59:37 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605178772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZJnfN4cEcmAybNcReCL20ykTWT83n5GELAdx9PmafPs=;
+        b=rnSUJLuoocKyE3IDBUNRdgzKwaVLju/BGPUrfVUlfIbvGPmteIVN5IEnlidHYPxKXUUD0k
+        ONjJyYQOkU2u/zgp7VXQ+wyXOcSzx25hy2j5+lCoVHit4068+msluljQu3b6n7sFHEiHZg
+        Wn2jhZv+QKX+NHCP3YF2WNRpRZYmKDUrhaPjHpEO4rL9LxGE+jwM/fIOsG0nv2LsRUcqq+
+        TIa61czX8+eWglWPpf7mnnhGWC5pwl+Gn5X7rP8OYHT0UJmNjL9WtRdMwvftw6xRz6CUiD
+        yhqD/Yaf0x520k5WccmvSlO6Uu5hEtIZrdiutzjVKj1wcEQWcP0/K2z0/A7v8g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605178772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZJnfN4cEcmAybNcReCL20ykTWT83n5GELAdx9PmafPs=;
+        b=K9BJVwmATy5vvdIAs0scj4+Fy0vmxBSLcSu8W3avSFTXYvMna4xCpd/OUiNC3f+eWZQKf9
+        Vq7hMMe9o+BSQ9Dw==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     vtolkm@googlemail.com, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] mm/highmem: Take kmap_high_get() properly into account
+Date:   Thu, 12 Nov 2020 11:59:32 +0100
+Message-ID: <87y2j6n8mj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201112192214.48926-1-gengdongjiu@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add Markus
+kunmap_local() warns when the virtual address to unmap is below
+PAGE_OFFSET. This is correct except for the case that the mapping was
+obtained via kmap_high_get() because the PKMAP addresses are right below
+PAGE_OFFSET.
 
-On 2020/11/13 3:22, Dongjiu Geng wrote:
-> Refine hi3620_mmc_clk_init() to use of_clk_add_hw_provider()
-> instead of of_clk_add_provider(), the called function hisi_register_clk_mmc()
-> returns 'clk_hw *' to adapt to this change.  Also free memory mapping and
-> free hw_data if clock initialization is failed.
-> 
-> Fix the memory leak issues in hisi_clk_init().
-> 
-> Fixes: 75af25f581b1 ("clk: hisi: remove static variable")
-> Fixes: 62ac983b6141 ("clk: hisilicon: add hi3620_mmc_clks")
-> Cc: Markus Elfring <Markus.Elfring@web.de>
-> Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
-> ---
-> v2->v3:
-> 1. Refind hi3620_mmc_clk_init() and hisi_register_clk_mmc() in order to use
->    of_clk_add_hw_provider().
-> 2. Fix the issue that incorrectly free data even clock is initialized
->    successfully.
-> ---
->  drivers/clk/hisilicon/clk-hi3620.c | 44 ++++++++++++++++++------------
->  drivers/clk/hisilicon/clk.c        | 11 ++++----
->  2 files changed, 33 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/clk/hisilicon/clk-hi3620.c b/drivers/clk/hisilicon/clk-hi3620.c
-> index a3d04c7c3da8..3dec48174560 100644
-> --- a/drivers/clk/hisilicon/clk-hi3620.c
-> +++ b/drivers/clk/hisilicon/clk-hi3620.c
-> @@ -408,12 +408,13 @@ static const struct clk_ops clk_mmc_ops = {
->  	.recalc_rate = mmc_clk_recalc_rate,
->  };
->  
-> -static struct clk *hisi_register_clk_mmc(struct hisi_mmc_clock *mmc_clk,
-> +static struct clk_hw *hisi_register_clk_mmc(struct hisi_mmc_clock *mmc_clk,
->  			void __iomem *base, struct device_node *np)
->  {
->  	struct clk_mmc *mclk;
-> -	struct clk *clk;
-> +	struct clk_hw *hw;
->  	struct clk_init_data init;
-> +	int err;
->  
->  	mclk = kzalloc(sizeof(*mclk), GFP_KERNEL);
->  	if (!mclk)
-> @@ -439,17 +440,22 @@ static struct clk *hisi_register_clk_mmc(struct hisi_mmc_clock *mmc_clk,
->  	mclk->sam_off = mmc_clk->sam_off;
->  	mclk->sam_bits = mmc_clk->sam_bits;
->  
-> -	clk = clk_register(NULL, &mclk->hw);
-> -	if (WARN_ON(IS_ERR(clk)))
-> +	hw = &mclk->hw;
-> +	err = clk_hw_register(NULL, hw);
-> +
-> +	if (err) {
->  		kfree(mclk);
-> -	return clk;
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	return hw;
->  }
->  
->  static void __init hi3620_mmc_clk_init(struct device_node *node)
->  {
->  	void __iomem *base;
-> -	int i, num = ARRAY_SIZE(hi3620_mmc_clks);
-> -	struct clk_onecell_data *clk_data;
-> +	int i, ret, num = ARRAY_SIZE(hi3620_mmc_clks);
-> +	struct clk_hw_onecell_data *hw_data;
->  
->  	if (!node) {
->  		pr_err("failed to find pctrl node in DTS\n");
-> @@ -462,22 +468,26 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
->  		return;
->  	}
->  
-> -	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
-> -	if (WARN_ON(!clk_data))
-> -		return;
-> -
-> -	clk_data->clks = kcalloc(num, sizeof(*clk_data->clks), GFP_KERNEL);
-> -	if (!clk_data->clks)
-> -		return;
-> +	hw_data = kzalloc(struct_size(hw_data, hws, num), GFP_KERNEL);
-> +	if (WARN_ON(!hw_data))
-> +		goto unmap_io;
->  
->  	for (i = 0; i < num; i++) {
->  		struct hisi_mmc_clock *mmc_clk = &hi3620_mmc_clks[i];
-> -		clk_data->clks[mmc_clk->id] =
-> +		hw_data->hws[mmc_clk->id] =
->  			hisi_register_clk_mmc(mmc_clk, base, node);
->  	}
->  
-> -	clk_data->clk_num = num;
-> -	of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +	hw_data->num = num;
-> +	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, hw_data);
-> +	if (ret < 0)
-> +		goto free_hw_data;
-> +	return;
-> +
-> +free_hw_data:
-> +	kfree(hw_data);
-> +unmap_io:
-> +	iounmap(base);
->  }
->  
->  CLK_OF_DECLARE(hi3620_mmc_clk, "hisilicon,hi3620-mmc-clock", hi3620_mmc_clk_init);
-> diff --git a/drivers/clk/hisilicon/clk.c b/drivers/clk/hisilicon/clk.c
-> index 54d9fdc93599..da655683710f 100644
-> --- a/drivers/clk/hisilicon/clk.c
-> +++ b/drivers/clk/hisilicon/clk.c
-> @@ -65,25 +65,26 @@ struct hisi_clock_data *hisi_clk_init(struct device_node *np,
->  	base = of_iomap(np, 0);
->  	if (!base) {
->  		pr_err("%s: failed to map clock registers\n", __func__);
-> -		goto err;
-> +		return NULL;
->  	}
->  
->  	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
->  	if (!clk_data)
-> -		goto err;
-> +		goto unmap_io;
->  
->  	clk_data->base = base;
->  	clk_table = kcalloc(nr_clks, sizeof(*clk_table), GFP_KERNEL);
->  	if (!clk_table)
-> -		goto err_data;
-> +		goto free_clk_data;
->  
->  	clk_data->clk_data.clks = clk_table;
->  	clk_data->clk_data.clk_num = nr_clks;
->  	of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data->clk_data);
->  	return clk_data;
-> -err_data:
-> +free_clk_data:
->  	kfree(clk_data);
-> -err:
-> +unmap_io:
-> +	iounmap(base);
->  	return NULL;
->  }
->  EXPORT_SYMBOL_GPL(hisi_clk_init);
-> 
+Cure it by skipping the WARN_ON() when the unmap was handled by
+kunmap_high().
+
+Fixes: 298fa1ad5571 ("highmem: Provide generic variant of kmap_atomic*")
+Reported-by: vtolkm@googlemail.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ mm/highmem.c |   19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -426,12 +426,15 @@ static inline void *arch_kmap_local_high
+ #endif
+ 
+ /* Unmap a local mapping which was obtained by kmap_high_get() */
+-static inline void kmap_high_unmap_local(unsigned long vaddr)
++static inline bool kmap_high_unmap_local(unsigned long vaddr)
+ {
+ #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+-	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP))
++	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
+ 		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
++		return true;
++	}
+ #endif
++	return false;
+ }
+ 
+ static inline int kmap_local_calc_idx(int idx)
+@@ -491,10 +494,14 @@ void kunmap_local_indexed(void *vaddr)
+ 
+ 	if (addr < __fix_to_virt(FIX_KMAP_END) ||
+ 	    addr > __fix_to_virt(FIX_KMAP_BEGIN)) {
+-		WARN_ON_ONCE(addr < PAGE_OFFSET);
+-
+-		/* Handle mappings which were obtained by kmap_high_get() */
+-		kmap_high_unmap_local(addr);
++		/*
++		 * Handle mappings which were obtained by kmap_high_get()
++		 * first as the virtual address of such mappings is below
++		 * PAGE_OFFSET. Warn for all other addresses which are in
++		 * the user space part of the virtual address space.
++		 */
++		if (!kmap_high_unmap_local(addr))
++			WARN_ON_ONCE(addr < PAGE_OFFSET);
+ 		return;
+ 	}
+ 
