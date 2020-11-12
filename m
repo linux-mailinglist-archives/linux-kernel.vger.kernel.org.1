@@ -2,87 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401872B08F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A350C2B08F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgKLPwn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 10:52:43 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:41067 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgKLPwm (ORCPT
+        id S1728662AbgKLPwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:52:55 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:38298 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728218AbgKLPwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:52:42 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 340D81BF207;
-        Thu, 12 Nov 2020 15:52:38 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 16:52:36 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Kamal Dasu <kdasu.kdev@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v2 13/23] mtd: nand: raw: brcmnand: brcmnand: Demote
- non-conformant kernel-doc headers
-Message-ID: <20201112165236.08decc40@xps13>
-In-Reply-To: <CAC=U0a24oQasGEPGHeJfG7J4U-F-a8Q54oEPKGQfhrsd0iPhfw@mail.gmail.com>
-References: <20201106213655.1838861-1-lee.jones@linaro.org>
-        <20201106213655.1838861-14-lee.jones@linaro.org>
-        <CAC=U0a24oQasGEPGHeJfG7J4U-F-a8Q54oEPKGQfhrsd0iPhfw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 12 Nov 2020 10:52:54 -0500
+Received: by mail-ot1-f67.google.com with SMTP id a15so6027579otf.5;
+        Thu, 12 Nov 2020 07:52:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RcCNXEA6BLGo7Sfakes4HmCFZE5lkBnWWORJD7JsOa4=;
+        b=BlNfPVRtonmjj7WBWnyt2PzWzsA88tW60VXHSckQt4tHno/iBMF9SiGyCIO8xyiZiS
+         1EqiQomyhs0PnOzvXrTRBvX3S8Gqsxk0eU3NKr7+lte7kOKQmwwXiSggBQnLoei5YKrz
+         mBeWBU6L8kifbRITQnZVsbRZpgWou1WqeKfld7e0GFZpVPLnXpgzk23XeKjizfAuuCcI
+         I1CjlXQUFawEDdc8TruRzc5Qn9jD847zTXE/KKfjm2tziCmPq+1YmVpqycLybS8L85Bi
+         7D9Z/SPI2hP+Xlp25PlJIu4RJcO9gp4iRSVF1xZNMHwBrghxt+TkSaQP6/QRL/8ZzoVk
+         eFZw==
+X-Gm-Message-State: AOAM530zeGdiXi82tBzz2JANfok0zO1MVIvXqV7tjjAMGYxM9wXP8N8h
+        2GkESNNBajWctvKMudCLm+AztsgAtz6RlW5SkNc=
+X-Google-Smtp-Source: ABdhPJyL11rg82abF0YTUDzf73L5kXq6DOaUFQOy3VVDE+vlRCqjzkSv6bGydjQ3d9dHfXHSemoUTEF8BdSAUDBG+o8=
+X-Received: by 2002:a9d:16f:: with SMTP id 102mr23099589otu.206.1605196373666;
+ Thu, 12 Nov 2020 07:52:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201103152237.9853-1-vbabka@suse.cz> <20201103152237.9853-4-vbabka@suse.cz>
+ <eba10537-98c0-5363-8ff6-c0e71b823e50@redhat.com> <7811e5ec-c7ae-09a9-7f90-45e14956c4c4@suse.cz>
+In-Reply-To: <7811e5ec-c7ae-09a9-7f90-45e14956c4c4@suse.cz>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 12 Nov 2020 16:52:42 +0100
+Message-ID: <CAJZ5v0inNr=h7PsSdGgiWZO6t9nGLWagNtM=C_AnoVyw6f3m8g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] kernel/power: allow hibernation with page_poison
+ sanity checking
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Laura Abbott <labbott@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kamal,
-
-Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 12 Nov 2020 10:46:13
--0500:
-
-> On Fri, Nov 6, 2020 at 4:37 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Thu, Nov 12, 2020 at 3:42 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 11/11/20 4:42 PM, David Hildenbrand wrote:
+> ...
+> >> @@ -1152,12 +1152,18 @@ void clear_free_pages(void)
+> >>      if (WARN_ON(!(free_pages_map)))
+> >>              return;
+> >>
+> >> -    if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
+> >> +    if (page_poisoning_enabled() || want_init_on_free()) {
+> >>              memory_bm_position_reset(bm);
+> >>              pfn = memory_bm_next_pfn(bm);
+> >>              while (pfn != BM_END_OF_MAP) {
+> >> -                    if (pfn_valid(pfn))
+> >> -                            clear_highpage(pfn_to_page(pfn));
+> >> +                    if (pfn_valid(pfn)) {
+> >> +                            struct page *page = pfn_to_page(pfn);
 > >
-> > Fixes the following W=1 kernel build warning(s):
+> > ^ empty line missing. And at least I prefer to declare all variables in
+> > the function header.
 > >
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'host' not described in 'brcmnand_edu_trans'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'addr' not described in 'brcmnand_edu_trans'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'buf' not described in 'brcmnand_edu_trans'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'len' not described in 'brcmnand_edu_trans'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'cmd' not described in 'brcmnand_edu_trans'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'host' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'desc' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'addr' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'buf' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'len' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'dma_cmd' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'begin' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'end' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'next_desc' not described in 'brcmnand_fill_dma_desc'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1977: warning: Function parameter or member 'host' not described in 'brcmnand_dma_run'
-> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c:1977: warning: Function parameter or member 'desc' not described in 'brcmnand_dma_run'
+> > I'd even suggest to move this into a separate function like
 > >
-> > Cc: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Cc: Richard Weinberger <richard@nod.at>
-> > Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: bcm-kernel-feedback-list@broadcom.com
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > Acked-by: Florian Fainelli <f.fainelli@gmail.com>  
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> > clear_or_poison_free_page(struct page *page)
+> >
+> >
+>
+> Ok, fixup below.
+>
+> ----8<----
+>  From cae1e8ccfa57c28ed1b2f5f8a47319b86cbdcfbf Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Thu, 12 Nov 2020 15:33:07 +0100
+> Subject: [PATCH] kernel/power: allow hibernation with page_poison sanity
+>   checking-fix
+>
+> Adapt to __kernel_unpoison_pages fixup. Split out clear_or_poison_free_page()
+> per David Hildenbrand.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-I guess you meant to share your Reviewed or Acked-by?
+Still
 
-Thanks,
-Miquèl
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+> ---
+>   include/linux/mm.h      |  1 +
+>   kernel/power/snapshot.c | 18 ++++++++++--------
+>   2 files changed, 11 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 861b9392b5dc..d4cfb06a611e 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2896,6 +2896,7 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages)
+>   #else
+>   static inline bool page_poisoning_enabled(void) { return false; }
+>   static inline bool page_poisoning_enabled_static(void) { return false; }
+> +static inline void __kernel_poison_pages(struct page *page, int nunmpages) { }
+>   static inline void kernel_poison_pages(struct page *page, int numpages) { }
+>   static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
+>   #endif
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 6b1c84afa891..a3491b29c5cc 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -1144,6 +1144,14 @@ void free_basic_memory_bitmaps(void)
+>         pr_debug("Basic memory bitmaps freed\n");
+>   }
+>
+> +static void clear_or_poison_free_page(struct page *page)
+> +{
+> +       if (page_poisoning_enabled_static())
+> +               __kernel_poison_pages(page, 1);
+> +       else if (want_init_on_free())
+> +               clear_highpage(page);
+> +}
+> +
+>   void clear_or_poison_free_pages(void)
+>   {
+>         struct memory_bitmap *bm = free_pages_map;
+> @@ -1156,14 +1164,8 @@ void clear_or_poison_free_pages(void)
+>                 memory_bm_position_reset(bm);
+>                 pfn = memory_bm_next_pfn(bm);
+>                 while (pfn != BM_END_OF_MAP) {
+> -                       if (pfn_valid(pfn)) {
+> -                               struct page *page = pfn_to_page(pfn);
+> -                               if (page_poisoning_enabled_static())
+> -                                       kernel_poison_pages(page, 1);
+> -                               else if (want_init_on_free())
+> -                                       clear_highpage(page);
+> -
+> -                       }
+> +                       if (pfn_valid(pfn))
+> +                               clear_or_poison_free_page(pfn_to_page(pfn));
+>
+>                         pfn = memory_bm_next_pfn(bm);
+>                 }
+> --
+> 2.29.1
+>
+>
