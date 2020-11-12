@@ -2,164 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BD2B0EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E392B0EE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbgKLUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgKLUNB (ORCPT
+        id S1727034AbgKLUP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:15:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42963 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726960AbgKLUP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:13:01 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78A2C0613D1;
-        Thu, 12 Nov 2020 12:13:00 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id p12so5031945qtp.7;
-        Thu, 12 Nov 2020 12:13:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jSLiwf45DctnZlDAuzdiBpZq++0HKZoLZ6SkMPPn0Lc=;
-        b=T0m21NbnuzVFIlMwyubECMfP9v2p6loVrpJFqHZnT9DLrqu99Qddv9vw4pgOyrXD5x
-         2P8Kgh6qTZ4akl7IKVAXVTVnZtNpjD8v8eSapzD+wwXWhX+bF4bKPu86XOYM1HeyoS3I
-         ABG39Klv2C3qmEG6YMQYcIJcODxqT7+eZvGXRMFQQS94e94HuRoaEwC+9wgygVhO93OW
-         NGiOjtdJ1Tb1ID9UK1NsjXyGzibOVvqbhI4mu0q+k7/w/8iFi+ioW3Nxht1kw7ZbuBqH
-         loKv5LTYSJlTxwWEVYpibJO0LbJYLF1yjOdGokCcRpKihGlUYFvnABQdjd4Nyi11djmQ
-         WWFg==
+        Thu, 12 Nov 2020 15:15:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605212125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vHPfrB8xVjlPFSCqejvi+QTUrEERRY3Dc+wUeNVcoBQ=;
+        b=WxnrNxW+S49kON7vI/fQPo/MmoTNtH7f/oKF87jYNH7PgSmpFWeptZ5hhzU5pRDhj0fyka
+        khmVLLV6rSxIHbZYzSUCJuE9+DHCie1NVJ2R8HLUoIsEUpv0Enrf+geAbnCVxwluFlpKAw
+        CdBoaD42NLlByxPuUla+RIP+sxTOYBM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-oEA0-wAoOwuf6GxfpwxgRw-1; Thu, 12 Nov 2020 15:15:22 -0500
+X-MC-Unique: oEA0-wAoOwuf6GxfpwxgRw-1
+Received: by mail-wr1-f70.google.com with SMTP id 91so2298439wrk.17
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 12:15:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jSLiwf45DctnZlDAuzdiBpZq++0HKZoLZ6SkMPPn0Lc=;
-        b=Q9FNrNd+f9zuU2yI8Xc2jL+I/m1/zJe3DXYRElGQvm1HAMCo8rE6e3bsJVmRADlEJQ
-         Kk54nsglo/xif6by/evw3oQpKSyUtF74oRfwTzK4ovLXbx258TreWQS8WE72ris0T4tv
-         6Gwz/yXxSWLOTsywz+ysQKQtvrNdY4o5T/1HxYVMb/Y35xpdRNX1FBfWmBzfJxr8sgY4
-         ZqZrg+/thDVeAyk0vcGIGxGW+6C7MGNtc/sneNWnYh1quVFerYPAlLNvRkoxJX0DaFLC
-         WniNlkLnpWbfwAjeYuqRJV5sNOg+VyndlL7YbmA3laKyjHSAIDEZ0T1GPYXF56yD0q+0
-         bUMQ==
-X-Gm-Message-State: AOAM532mGOxRiy3xBugjt6dmqzBgxhvVyeknyikWBPSJsNS+4I/je510
-        HuPR8NF2OdFynaaVg/XGOgk=
-X-Google-Smtp-Source: ABdhPJyww+5zAVmXn72kJFjtR3QIx2kTV6PHDyJEmNwoMrp7p2o5iZ4kKYJgx3pPMDma1yO7B7hWEA==
-X-Received: by 2002:ac8:6898:: with SMTP id m24mr901388qtq.157.1605211980076;
-        Thu, 12 Nov 2020 12:13:00 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id z26sm5147041qki.40.2020.11.12.12.12.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 12:12:58 -0800 (PST)
-Date:   Thu, 12 Nov 2020 13:12:57 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        Tom Rix <trix@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: storage: avoid use of uninitialized values in error
- path
-Message-ID: <20201112201257.GA1665022@ubuntu-m3-large-x86>
-References: <20201112191255.13372-1-lukas.bulwahn@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112191255.13372-1-lukas.bulwahn@gmail.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=vHPfrB8xVjlPFSCqejvi+QTUrEERRY3Dc+wUeNVcoBQ=;
+        b=I0XH6+Bkq/IIAFu6dyBb1CHSIoU5DWmzSMmKjccvSRimpQbHS2y5Ss16f5aHvHVAuy
+         1t9GZpD4vkFmyktMGUE9cv18Z9R7ewRahCF30j5BU9W6lkAV1ck45lOK2iEALSDnnr2Q
+         92UuEcTRvrg664I8X81FnXX1CgBrP7g98idle+VR0iHd3P/tMhhs2N4T/xtO+dVLuTzg
+         /TO4JOYG9yfIHMGtFtli5qB2pe9lZc3Zm4ftJSNvwKJdyRpgo2/M3c6azCkP8Azp7W+p
+         nE05IRyxt57KjVwNwFuefIgOShCuM7H1axZ8YxXitX6C6DqdOdmV9UrZAckFITm+zzxd
+         8FCA==
+X-Gm-Message-State: AOAM531AeLCEDM5etBQlShphCHVh/qnLxLRC4EatSgbDmugX9nHrYMh8
+        6b2YWa8PZAD5alEUwIQIS6btzpuW1roJ2GBDo5C6CAdwb+NgZ09RqPAurhr9rhu0LjNcylJ/4MP
+        pGqyXE9LZBYEZdXJVwqcMFFuH
+X-Received: by 2002:adf:e350:: with SMTP id n16mr1455263wrj.419.1605212120788;
+        Thu, 12 Nov 2020 12:15:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxji2+rXiblNfD29iXHuiDwrhuPVpa0KNLoEK9tHEW4ondrhf0pVB9gNYs6gWjo3tNv0xhLcA==
+X-Received: by 2002:adf:e350:: with SMTP id n16mr1455211wrj.419.1605212120462;
+        Thu, 12 Nov 2020 12:15:20 -0800 (PST)
+Received: from [192.168.3.114] (p5b0c631d.dip0.t-ipconnect.de. [91.12.99.29])
+        by smtp.gmail.com with ESMTPSA id 35sm8578483wro.71.2020.11.12.12.15.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 12:15:19 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
+Date:   Thu, 12 Nov 2020 21:15:18 +0100
+Message-Id: <7A16CA44-782D-4ABA-8D93-76BDD0A90F94@redhat.com>
+References: <20201112190827.GP4758@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+In-Reply-To: <20201112190827.GP4758@kernel.org>
+To:     Mike Rapoport <rppt@kernel.org>
+X-Mailer: iPhone Mail (18A8395)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 08:12:55PM +0100, Lukas Bulwahn wrote:
-> When usb_stor_bulk_transfer_sglist() returns with USB_STOR_XFER_ERROR, it
-> returns without writing to its parameter *act_len.
-> 
-> Further, the two callers of usb_stor_bulk_transfer_sglist():
-> 
->     usb_stor_bulk_srb() and
->     usb_stor_bulk_transfer_sg(),
-> 
-> use the passed variable partial without checking the return value. Hence,
-> the uninitialized value of partial is then used in the further execution
-> of those two functions.
-> 
-> Clang-analyzer detects this potential control and data flow and warns:
-> 
->   drivers/usb/storage/transport.c:469:40:
->     warning: The right operand of '-' is a garbage value
->     [clang-analyzer-core.UndefinedBinaryOperatorResult]
->           scsi_set_resid(srb, scsi_bufflen(srb) - partial);
->                                                 ^
-> 
->   drivers/usb/storage/transport.c:495:15:
->     warning: Assigned value is garbage or undefined
->     [clang-analyzer-core.uninitialized.Assign]
->                   length_left -= partial;
->                               ^
-> 
-> When a transfer error occurs, the *act_len value is probably ignored by the
-> higher layers. But it won't hurt to set it to a valid number, just in case.
-> 
-> For the two early-return paths in usb_stor_bulk_transfer_sglist(), the
-> amount of data transferred is 0.  So if act_len is not NULL, set *act_len
-> to 0 in those paths. That makes clang-analyzer happy.
-> 
-> Proposal was discussed in this mail thread:
-> 
-> Link: https://lore.kernel.org/linux-usb/alpine.DEB.2.21.2011112146110.13119@felia/
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Assuming that setting it to zero is okay (sounds like it is based on the
-other thread), this is a reasonable fix.
+> Am 12.11.2020 um 20:08 schrieb Mike Rapoport <rppt@kernel.org>:
+>=20
+> =EF=BB=BFOn Thu, Nov 12, 2020 at 05:22:00PM +0100, David Hildenbrand wrote=
+:
+>>> On 10.11.20 19:06, Mike Rapoport wrote:
+>>> On Tue, Nov 10, 2020 at 06:17:26PM +0100, David Hildenbrand wrote:
+>>>> On 10.11.20 16:14, Mike Rapoport wrote:
+>>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>>=20
+>>>>> It will be used by the upcoming secret memory implementation.
+>>>>>=20
+>>>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>>>> ---
+>>>>>   mm/internal.h | 3 +++
+>>>>>   mm/mmap.c     | 5 ++---
+>>>>>   2 files changed, 5 insertions(+), 3 deletions(-)
+>>>>>=20
+>>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>>> index c43ccdddb0f6..ae146a260b14 100644
+>>>>> --- a/mm/internal.h
+>>>>> +++ b/mm/internal.h
+>>>>> @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm=
+_area_struct *vma)
+>>>>>   extern void mlock_vma_page(struct page *page);
+>>>>>   extern unsigned int munlock_vma_page(struct page *page);
+>>>>> +extern int mlock_future_check(struct mm_struct *mm, unsigned long fla=
+gs,
+>>>>> +                  unsigned long len);
+>>>>> +
+>>>>>   /*
+>>>>>    * Clear the page's PageMlocked().  This can be useful in a situatio=
+n where
+>>>>>    * we want to unconditionally remove a page from the pagecache -- e.=
+g.,
+>>>>> diff --git a/mm/mmap.c b/mm/mmap.c
+>>>>> index 61f72b09d990..c481f088bd50 100644
+>>>>> --- a/mm/mmap.c
+>>>>> +++ b/mm/mmap.c
+>>>>> @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(un=
+signed long hint)
+>>>>>       return hint;
+>>>>>   }
+>>>>> -static inline int mlock_future_check(struct mm_struct *mm,
+>>>>> -                     unsigned long flags,
+>>>>> -                     unsigned long len)
+>>>>> +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+>>>>> +               unsigned long len)
+>>>>>   {
+>>>>>       unsigned long locked, lock_limit;
+>>>>>=20
+>>>>=20
+>>>> So, an interesting question is if you actually want to charge secretmem=
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>>>> pages against mlock now, or if you want a dedicated secretmem cgroup
+>>>> controller instead?
+>>>=20
+>>> Well, with the current implementation there are three limits an
+>>> administrator can use to control secretmem limits: mlock, memcg and
+>>> kernel parameter.
+>>>=20
+>>> The kernel parameter puts a global upper limit for secretmem usage,
+>>> memcg accounts all secretmem allocations, including the unused memory in=
 
-> ---
-> applies cleanly on current master and next-20201112
-> 
-> I did some basic compile testing...
-> 
-> Alan, Greg, please pick this minor non-urgent clean-up patch.
-> 
->  drivers/usb/storage/transport.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/storage/transport.c b/drivers/usb/storage/transport.c
-> index 238a8088e17f..5eb895b19c55 100644
-> --- a/drivers/usb/storage/transport.c
-> +++ b/drivers/usb/storage/transport.c
-> @@ -416,7 +416,7 @@ static int usb_stor_bulk_transfer_sglist(struct us_data *us, unsigned int pipe,
->  
->  	/* don't submit s-g requests during abort processing */
->  	if (test_bit(US_FLIDX_ABORTING, &us->dflags))
-> -		return USB_STOR_XFER_ERROR;
-> +		goto usb_stor_xfer_error;
->  
->  	/* initialize the scatter-gather request block */
->  	usb_stor_dbg(us, "xfer %u bytes, %d entries\n", length, num_sg);
-> @@ -424,7 +424,7 @@ static int usb_stor_bulk_transfer_sglist(struct us_data *us, unsigned int pipe,
->  			sg, num_sg, length, GFP_NOIO);
->  	if (result) {
->  		usb_stor_dbg(us, "usb_sg_init returned %d\n", result);
-> -		return USB_STOR_XFER_ERROR;
-> +		goto usb_stor_xfer_error;
->  	}
->  
->  	/*
-> @@ -452,6 +452,11 @@ static int usb_stor_bulk_transfer_sglist(struct us_data *us, unsigned int pipe,
->  		*act_len = us->current_sg.bytes;
->  	return interpret_urb_result(us, pipe, length, result,
->  			us->current_sg.bytes);
-> +
-> +usb_stor_xfer_error:
-> +	if (act_len)
-> +		*act_len = 0;
-> +	return USB_STOR_XFER_ERROR;
->  }
->  
->  /*
-> -- 
-> 2.17.1
-> 
+>>> large pages caching and mlock allows per task limit for secretmem
+>>> mappings, well, like mlock does.
+>>>=20
+>>> I didn't consider a dedicated cgroup, as it seems we already have enough=
+
+>>> existing knobs and a new one would be unnecessary.
+>>=20
+>> To me it feels like the mlock() limit is a wrong fit for secretmem. But
+>> maybe there are other cases of using the mlock() limit without actually
+>> doing mlock() that I am not aware of (most probably :) )?
+>=20
+> Secretmem does not explicitly calls to mlock() but it does what mlock()
+> does and a bit more. Citing mlock(2):
+>=20
+>  mlock(),  mlock2(),  and  mlockall()  lock  part  or all of the calling
+>  process's virtual address space into RAM, preventing that  memory  from
+>  being paged to the swap area.
+>=20
+> So, based on that secretmem pages are not swappable, I think that
+> RLIMIT_MEMLOCK is appropriate here.
+>=20
+
+The page explicitly lists mlock() system calls. E.g., we also don=E2=80=98t a=
+ccount for gigantic pages - which might be allocated from CMA and are not sw=
+appable.
+
+
+
+>> I mean, my concern is not earth shattering, this can be reworked later. A=
+s I
+>> said, it just feels wrong.
+>>=20
+>> --=20
+>> Thanks,
+>>=20
+>> David / dhildenb
+>>=20
+>=20
+> --=20
+> Sincerely yours,
+> Mike.
+>=20
+
