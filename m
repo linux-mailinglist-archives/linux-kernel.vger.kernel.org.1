@@ -2,126 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2046D2B03DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6522B0456
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgKLL3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbgKLL3W (ORCPT
+        id S1728205AbgKLLum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:50:42 -0500
+Received: from smtp-outgoing.laposte.net ([160.92.124.99]:41927 "EHLO
+        smtp-outgoing.laposte.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728150AbgKLLlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:29:22 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4BBC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:29:22 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id r17so5653489wrw.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:29:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kEGmo14fLBYd6nSV3jI87mJ9Na1xum6NrqwdS4+IQ9Y=;
-        b=nu/S8C1Yfzo9SHPOKV654ix3Bn7t9atAD7AUykvxjLXtDBitsoIhyQBnn0xD4aS7gx
-         cT/hR+koIINFS5aszapJJqOPFA0xDNRQ9aw1H9aE4HtH8AYnfVnp4zZONs7JhK95tV+b
-         yoTLe/bA1W1GKaoUSP+ygtMYupwIp4iCWgtjZDg0cXh7iaEYsJ8Jg2zpDecd897p8qrG
-         ZmFGkJk3MrTdN3AuPYE3zAZkK5Xm+IaB7T2zVMCxpIY8nMqsLrIq6/8IppPlOjIj70ca
-         j3blFEFrL8WguNYDLTlMgHhu8p+MKEqk4Jkq+u7rG90RfcgOktY4EbTyaSMhxsAfWE5c
-         wuXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kEGmo14fLBYd6nSV3jI87mJ9Na1xum6NrqwdS4+IQ9Y=;
-        b=pJOX7i21Fo7I+Z2ijHTb9pEKd3/KXnNJTLba+PQUegQeTBHHNezTy8Qf/TYUpYFyHH
-         eMyJoJbTFiTX0soW4FjUQ6X391JqbBLW1rNKSRa1WbK35SO3l13Ea0XTYpYprKJm+8gi
-         Cdg4qeiJRUQu11eq4OtbVwPvVAPYONIdmfe2Y7QOtShW6BTU26mI9mWF9RqwbtybvLJa
-         YIex1Po8LYJ8GJShuWKGI5LKi63PSjiCCeDnau+QFhU4gxPGJa5EGNFKwWAzRIeRtn5B
-         jjmVjt9+EqfIeEkESD6ZGHNspXP2Jg5DT5mSGdgoOZ5ystrmTqtCu3I0viFJO4BpudSQ
-         a9qQ==
-X-Gm-Message-State: AOAM531qcMx6YYWNK/UAvfa7av3uAC7PXb+jzedRBejW1WmDhMFJkxTJ
-        AHQyvo0fDPkOuW+AzIdoy7QasCtuJUZavQ==
-X-Google-Smtp-Source: ABdhPJxyFdKh+yZ6q8Rw1tY96SUPbmpWmKbb2vOHAkpwQyJDdNnfM7LsQRWGdffrTxd7Amuh5Mswqw==
-X-Received: by 2002:a5d:4f12:: with SMTP id c18mr16332843wru.304.1605180560855;
-        Thu, 12 Nov 2020 03:29:20 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
-        by smtp.googlemail.com with ESMTPSA id u8sm6233604wmg.6.2020.11.12.03.29.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 03:29:20 -0800 (PST)
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-To:     Andres Freund <andres@anarazel.de>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200115184415.1726953-1-andres@anarazel.de>
- <2a5e9df32e2df27297149a577512f6b1557de241.camel@linux.intel.com>
- <20200116184250.qlvc3ilx2b42czqk@alap3.anarazel.de>
- <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
- <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <0a62fbb3-a858-02ca-b89d-5234775da4a4@linaro.org>
-Date:   Thu, 12 Nov 2020 12:29:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 12 Nov 2020 06:41:20 -0500
+X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Nov 2020 06:41:18 EST
+X-mail-filterd: {"version":"1.1.4","queueID":"4CX0042YDYz10MQ4","contextId":"ebf0f8af-98db-4cff-8680-f1f8c0471f72"}
+Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
+        by mlpnf0120.laposte.net (SMTP Server) with ESMTP id 4CX0042YDYz10MQ4;
+        Thu, 12 Nov 2020 12:35:32 +0100 (CET)
+X-mail-filterd: {"version":"1.1.4","queueID":"4CX0014104z10MQT","contextId":"0e7ca37c-c656-48c2-9d8a-64fa72269c86"}
+X-lpn-mailing: LEGIT
+X-lpn-spamrating: 36
+X-lpn-spamlevel: not-spam
+X-lpn-spamcause: OK, (-100)(0000)gggruggvucftvghtrhhoucdtuddrgedujedruddvfedgtdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecunfetrffquffvgfdpqfgfvfdpggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffogggtgfesthekredtredtjeenucfhrhhomhepgghinhgtvghnthcuufhtvghhlhoruceovhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtqeenucggtffrrghtthgvrhhnpeetiedvheeijedtgfelvdfghfevtdevjeehffdtueekueeiudduteejkedtueffteenucfkphepkeekrdduvddurddugeelrdegleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehrohhmuhgrlhgurdgsvghrghgvrhhivgdpihhnvghtpeekkedruddvuddrudegledrgeelpdhmrghilhhfrhhomhepvhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtpdhrtghpthhtohepsghgohhlrghsiigvfihskhhisegsrgihlhhisghrvgdrtghomhdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepvhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtpdhrtghpthhtoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpt
+ hhtoheplhhinhhugidqmhgvughirghtvghksehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Received: from romuald.bergerie (unknown [88.121.149.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mlpnf0120.laposte.net (SMTP Server) with ESMTPSA id 4CX0014104z10MQT;
+        Thu, 12 Nov 2020 12:35:29 +0100 (CET)
+Received: from radicelle.bergerie (radicelle.bergerie [192.168.124.12])
+        by romuald.bergerie (Postfix) with ESMTPS id 6D2913D20EA2;
+        Thu, 12 Nov 2020 09:48:56 +0100 (CET)
+Received: from vincent by radicelle.bergerie with local (Exim 4.94)
+        (envelope-from <vincent@radicelle.bergerie>)
+        id 1kd8Ho-0005k4-55; Thu, 12 Nov 2020 09:48:56 +0100
+From:   =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>
+To:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] net: ethernet: mtk-star-emac: return ok when xmit drops
+Date:   Thu, 12 Nov 2020 09:48:33 +0100
+Message-Id: <20201112084833.21842-1-vincent.stehle@laposte.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=lpn-wlmd; t=1605181262; bh=ZqIXuytQtqNakK+uXCSUANljRRTY4GRLTUpiu+kdDGU=; h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding; b=TNdbcnQq5WonWKMYhSdC44fXdikMZVeTmScp4iQPA4v4oOPwRbOrJKQKYuSDtEyWZrz0Z9QKltkSjl0I/kc0c+459xMl1hOB3LY4XeVFqK5NjI/72zjaTQFxrvjdUH2V+OtdBl0G+tO6w85LmyFnmffRrrRv+lkg0Z9FJAAs+LbkZ8O+wrsYgBvh/LEFqaFxphTp/t3lKlSwPINLsCrpz5vfGNOEZ1gDa+w2jm9MBropTQV1APKGtd1N4pTgrWQNWKh15xkl2NwzyJNp/1ZNOu4Ade9LZ6BjJNnHy0Hq0x+XWzmTeRCWL7I6HMPDO8rK9RXuSQYdDIp4r5TmyyhPtw==;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 21:21, Andres Freund wrote:
-> Hi,
-> 
-> On 2020-01-16 11:41:34 -0800, Srinivas Pandruvada wrote:
->> On Thu, 2020-01-16 at 10:42 -0800, Andres Freund wrote:
->>> Hi,
->>>
->>> On 2020-01-16 05:53:13 -0800, Srinivas Pandruvada wrote:
->>>> On Wed, 2020-01-15 at 10:44 -0800, Andres Freund wrote:
->>>>> I noticed that I couldn't read the PCH temperature on my
->>>>> workstation
->>>>> (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but
->>>>> had to
->>>>> go
->>>>> through IPMI. Looking at the data sheet, it looks to me like the
->>>>> existing intel PCH thermal driver should work without changes for
->>>>> Lewisburg.
->>>> Does the temperature reading match with what you read via IPMI?
->>>
->>> It does:
->>>
->>> root@awork3:~# ipmitool sdr|grep ^PCH
->>> PCH Temp         | 58 degrees C      | ok
->>>
->>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/type
->>> pch_lewisburg
->>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
->>> 58000
->>>
->>> And if I generate some load, it rises for both:
->>> root@awork3:~# ipmitool sdr|grep ^PCH
->>> PCH Temp         | 60 degrees C      | ok
->>> andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
->>> 60000
->>>
->> Thanks for the test.
->>
->> Rui can add his ACK.
-> 
-> Ping? Looks like this got lost somewhere?
+The ndo_start_xmit() method must return NETDEV_TX_OK if the DMA mapping
+fails, after freeing the socket buffer.
+Fix the mtk_star_netdev_start_xmit() function accordingly.
 
-Waiting for Rui's ack :)
+Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
+Signed-off-by: Vincent Stehl=C3=A9 <vincent.stehle@laposte.net>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/net/ethernet/mediatek/mtk_star_emac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/=
+ethernet/mediatek/mtk_star_emac.c
+index 13250553263b5..e56a26f797f28 100644
+--- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
++++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+@@ -1053,7 +1053,7 @@ static int mtk_star_netdev_start_xmit(struct sk_buf=
+f *skb,
+ err_drop_packet:
+ 	dev_kfree_skb(skb);
+ 	ndev->stats.tx_dropped++;
+-	return NETDEV_TX_BUSY;
++	return NETDEV_TX_OK;
+ }
+=20
+ /* Returns the number of bytes sent or a negative number on the first
+--=20
+2.28.0
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
