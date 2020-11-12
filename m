@@ -2,70 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7492F2B0AE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0C32B0AED
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgKLREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44220 "EHLO mail.kernel.org"
+        id S1726163AbgKLRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:05:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:54358 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgKLREa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:04:30 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39C1821D7F;
-        Thu, 12 Nov 2020 17:04:29 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 12:04:27 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] lib: vsprintf: Avoid 32-bit truncation in vsscanf
- number parsing
-Message-ID: <20201112120427.72c0a237@gandalf.local.home>
-In-Reply-To: <b200a554-be81-f8b0-28a4-39c6f3c6900f@opensource.cirrus.com>
-References: <20201112111759.16377-1-rf@opensource.cirrus.com>
-        <20201112103546.5981815b@gandalf.local.home>
-        <b200a554-be81-f8b0-28a4-39c6f3c6900f@opensource.cirrus.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725903AbgKLRFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:05:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DD6F139F;
+        Thu, 12 Nov 2020 09:05:53 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D8543F73C;
+        Thu, 12 Nov 2020 09:05:52 -0800 (PST)
+Date:   Thu, 12 Nov 2020 17:05:46 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
+        baolin.wang7@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jonathan.Cameron@huawei.com
+Subject: Re: [PATCH] arm64: PCI: Validate the node before setting node id for
+ root bus
+Message-ID: <20201112170546.GA26282@e121166-lin.cambridge.arm.com>
+References: <1600770804-116365-1-git-send-email-baolin.wang@linux.alibaba.com>
+ <20200928140054.GA11500@willie-the-truck>
+ <20200928144957.GA90366@VM20190228-100.tbsite.net>
+ <20200928152326.GA15640@e121166-lin.cambridge.arm.com>
+ <26284ca5-ea05-0496-629d-9951f49dda8f@linux.alibaba.com>
+ <20201001085538.GA5142@e121166-lin.cambridge.arm.com>
+ <c9afea6a-4026-05ca-cb6b-9ab7cb513140@linux.alibaba.com>
+ <fd8b8138-c3f8-59f6-d57f-704ef5d28d46@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd8b8138-c3f8-59f6-d57f-704ef5d28d46@linux.alibaba.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 15:46:46 +0000
-Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
+[+Jonathan]
 
-> See this thread from 2014 where the field width problem was raised and
-> explained:
-> http://lkml.iu.edu/hypermail/linux/kernel/1401.1/03443.html
+On Mon, Nov 09, 2020 at 08:27:09PM +0800, Baolin Wang wrote:
+
+[...]
+
+> I did some investigation for this issue. I am sorry I made some
+> misleading description in the commit message. The issue is, when we
+> want to disable the NUMA from firmware, we usually just remove the SRAT
+> table from the BIOS. But the devices' proximity domain information is
+> still remain in the ACPI tables.
+
+I understand and it should not.
+
+> For example, the IORT table still contains the proximity domain
+> information for the SMMU devices, so in this case, the SMMU devices still
+> can get incorrect NUMA nodes if we remove the SRAT table. But
+> the SMMU devices will validate the numa node in
+> arm_smmu_v3_set_proximity() to avoid this issue.
 > 
-> and the reply from Linus Torvalds that was against fixing field width
-> handling:
-> http://lkml.iu.edu/hypermail/linux/kernel/1401.1/03488.html
-
-Thanks for the pointers, but note, that references to older emails should
-use https://lore.kernel.org/ as these links format the output really
-horribly.
-
+> static int  __init arm_smmu_v3_set_proximity(struct device *dev,
+> 					      struct acpi_iort_node *node)
+> {
+> 	struct acpi_iort_smmu_v3 *smmu;
 > 
-> which I assume is why the field handling wasn't unoptimized to be
-> strictly correct.
+> 	smmu = (struct acpi_iort_smmu_v3 *)node->node_data;
+> 	if (smmu->flags & ACPI_IORT_SMMU_V3_PXM_VALID) {
+> 		int dev_node = pxm_to_node(smmu->pxm);
 > 
-> Nevertheless, I see no reason not to remove avoidable inconsistencies
-> from the current design.
+> 		if (dev_node != NUMA_NO_NODE && !node_online(dev_node))
+> 			return -EINVAL;
+> 
+> 		set_dev_node(dev, dev_node);
+> 		pr_info("SMMU-v3[%llx] Mapped to Proximity domain %d\n",
+> 			smmu->base_address,
+> 			smmu->pxm);
+> 	}
+> 	return 0;
+> }
+> 
+> So similar with SMMU devices, the DSDT table will still contain the PCI
+> root host devices' proximity domain though we already remove the SRAT
+> table. So I think we still need this validation in
+> pcibios_root_bridge_prepare() to avoid this issue like other devices did.
+No. The right thing to do is to fix the PXM handling and that's what
+Jonathan did:
 
-Yes, but perhaps its time to fix the real problem and not just add
-band-aids. That thread is over 6 years old (the email was from Jan 14, 2014)
+https://lore.kernel.org/linux-mm/20200818142430.1156547-2-Jonathan.Cameron@huawei.com
 
-$ git diff `git rev-list --before 'Jan 14 2014' HEAD --max-count=1` |
-  grep '^+' | grep sscanf | wc -l
-622
+Can you try booting with v5.10-rc* and report back the *full* boot log
+please ?
 
-There's been over 600 new additions of sscanf(). Now is the time to just
-fix it correctly.
+> I can update the commit message in next version if you think this is
+> reasonable. Thanks.
 
--- Steve
+See above.
+
+Thanks,
+Lorenzo
