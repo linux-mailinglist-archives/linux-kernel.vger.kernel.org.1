@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D02B0803
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D952B0867
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgKLPBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:01:13 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39310 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728467AbgKLPBM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:01:12 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACF0jmv116692;
-        Thu, 12 Nov 2020 09:00:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605193245;
-        bh=+tTVYURRzxOUGW+xP6M4A5fIquJPbhAwZ7hMh22bcRU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=blBCd5cCC/9YhzHjQIaiE+jMy19WaNeFk2+g75XroXjK+yAzo8RUSyueHGjBD/yo4
-         PDVwYai+e4lrEs2v7W1LmNM4aVl3fgoB0uIkXVL3aFHdUQY1YvpwZWUX0xFISLFBoh
-         kTBkQyPMXEt2eroird2DtBKjiSAx/W6EvXpnfvfI=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACF0jWv130951
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 09:00:45 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 09:00:45 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 09:00:45 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACF0gmG023890;
-        Thu, 12 Nov 2020 09:00:43 -0600
-Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
- removes address space '__iomem' of expression
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-CC:     <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
-        kernel test robot <lkp@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        <linux-kernel@vger.kernel.org>
-References: <202011021254.XC70BaQT-lkp@intel.com>
- <20201110113827.hl5i27cpl6exo3md@mobilestation>
- <20201110163556.3e3423f6@xps13>
- <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
- <20201112092715.7e466405@xps13>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
-Date:   Thu, 12 Nov 2020 20:30:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728653AbgKLP3u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 10:29:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728198AbgKLP3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:29:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 14204AB95;
+        Thu, 12 Nov 2020 15:29:48 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id a47c95ff;
+        Thu, 12 Nov 2020 15:01:16 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Patrick Donnelly <pdonnell@redhat.com>
+Subject: Re: [RFC PATCH] ceph: fix cross quota realms renames with new
+ truncated files
+References: <20201111153915.23426-1-lhenriques@suse.de>
+        <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org>
+        <87361feojx.fsf@suse.de>
+        <925dda9b15044c8a19ac2017d4b135209e1f6184.camel@kernel.org>
+        <87v9eadfif.fsf@suse.de>
+        <588e67b89ba277d925b46025658ea3ec452a5ed0.camel@kernel.org>
+Date:   Thu, 12 Nov 2020 15:01:16 +0000
+In-Reply-To: <588e67b89ba277d925b46025658ea3ec452a5ed0.camel@kernel.org> (Jeff
+        Layton's message of "Thu, 12 Nov 2020 07:16:41 -0500")
+Message-ID: <87ft5ed3gj.fsf@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20201112092715.7e466405@xps13>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jeff Layton <jlayton@kernel.org> writes:
 
+> On Thu, 2020-11-12 at 10:40 +0000, Luis Henriques wrote:
+>> Jeff Layton <jlayton@kernel.org> writes:
+>> 
+>> > On Wed, 2020-11-11 at 18:28 +0000, Luis Henriques wrote:
+>> > > Jeff Layton <jlayton@kernel.org> writes:
+>> > > 
+>> > > > On Wed, 2020-11-11 at 15:39 +0000, Luis Henriques wrote:
+>> > > > > When doing a rename across quota realms, there's a corner case that isn't
+>> > > > > handled correctly.  Here's a testcase:
+>> > > > > 
+>> > > > >   mkdir files limit
+>> > > > >   truncate files/file -s 10G
+>> > > > >   setfattr limit -n ceph.quota.max_bytes -v 1000000
+>> > > > >   mv files limit/
+>> > > > > 
+>> > > > > The above will succeed because ftruncate(2) won't result in an immediate
+>> > > > > notification of the MDSs with the new file size, and thus the quota realms
+>> > > > > stats won't be updated.
+>> > > > > 
+>> > > > > This patch forces a sync with the MDS every time there's an ATTR_SIZE that
+>> > > > > sets a new i_size, even if we have Fx caps.
+>> > > > > 
+>> > > > > Cc: stable@vger.kernel.org
+>> > > > > Fixes: dffdcd71458e ("ceph: allow rename operation under different quota realms")
+>> > > > > URL: https://tracker.ceph.com/issues/36593
+>> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> > > > > ---
+>> > > > >  fs/ceph/inode.c | 11 ++---------
+>> > > > >  1 file changed, 2 insertions(+), 9 deletions(-)
+>> > > > > 
+>> > > > > diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+>> > > > > index 526faf4778ce..30e3f240ac96 100644
+>> > > > > --- a/fs/ceph/inode.c
+>> > > > > +++ b/fs/ceph/inode.c
+>> > > > > @@ -2136,15 +2136,8 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr)
+>> > > > >  	if (ia_valid & ATTR_SIZE) {
+>> > > > >  		dout("setattr %p size %lld -> %lld\n", inode,
+>> > > > >  		     inode->i_size, attr->ia_size);
+>> > > > > -		if ((issued & CEPH_CAP_FILE_EXCL) &&
+>> > > > > -		    attr->ia_size > inode->i_size) {
+>> > > > > -			i_size_write(inode, attr->ia_size);
+>> > > > > -			inode->i_blocks = calc_inode_blocks(attr->ia_size);
+>> > > > > -			ci->i_reported_size = attr->ia_size;
+>> > > > > -			dirtied |= CEPH_CAP_FILE_EXCL;
+>> > > > > -			ia_valid |= ATTR_MTIME;
+>> > > > > -		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
+>> > > > > -			   attr->ia_size != inode->i_size) {
+>> > > > > +		if ((issued & (CEPH_CAP_FILE_EXCL|CEPH_CAP_FILE_SHARED)) ||
+>> > > > > +		    (attr->ia_size != inode->i_size)) {
+>> > > > >  			req->r_args.setattr.size = cpu_to_le64(attr->ia_size);
+>> > > > >  			req->r_args.setattr.old_size =
+>> > > > >  				cpu_to_le64(inode->i_size);
+>> > > > 
+>> > > > Hmm...this makes truncates more expensive when we have caps. I'd rather
+>> > > > not do that if we can help it.
+>> > > 
+>> > > Yeah, as I mentioned in the tracker, there's indeed a performance impact
+>> > > with this fix.  That's what made me add the RFC in the subject ;-)
+>> > > 
+>> > > > What about instead having the client mimic a fsync when there is a
+>> > > > rename across quota realms? If we can't tell that reliably then we could
+>> > > > also just do an effective fsync ahead of any cross-directory rename?
+>> > > 
+>> > > Ok, thanks for the suggestion.  That may actually work, although it will
+>> > > make the rename more expensive of course.  I'll test that tomorrow and
+>> > > eventually follow-up with a patch.
+>> > > 
+>> > 
+>> > Patrick pointed out to me on IRC that since you're moving the parent
+>> > directory of the truncated file, flushing the caps on the directory
+>> > won't really help. You'd need to walk the entire subtree and try to
+>> > flush every dirty inode, or basically do a syncfs() prior to renaming
+>> > the directory across quotarealms.
+>> > 
+>> > I think we probably will need to revert the change to allow cross-
+>> > quotarealm renames of directories and make those return EXDEV again.
+>> > Anything else sounds like it's probably going to be too expensive.
+>> 
+>> Hmm... that sounds a bit drastic and it would make the kernel client
+>> behave differently from the fuse client -- from what I could understand
+>> the fuse client does the sync ATTR_SIZE and thus doesn't have this issue.
+>> 
+>
+> True. I'll note that the fuse client is not exactly built for speed,
+> however.
+>
+>> Obviously, I agree with you that the performance penalty is too high for
+>> such a common operation.  But maybe renames across quotarealms aren't that
+>> common and paying the penalty of doing a full ceph_flush_dirty_caps() is
+>> acceptable for such cases?
+>> 
+>
+> I wouldn't even do that. If someone is renaming a directory across
+> quotarealms, just return EXDEV. Saying "sorry, you have to copy/unlink"
+> in this situation seems like it should be acceptable. Are you aware of
+> any specific use-cases where people are renaming large directories
+> across quotarealms?
 
-On 11/12/20 1:57 PM, Miquel Raynal wrote:
-> Hi Sergey,
-> 
-> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
-> 2020 22:22:59 +0300:
-> 
->> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:
->>> Hi Serge,
->>>
->>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
->>> 2020 14:38:27 +0300:
->>>   
->>>> Hello Miquel,
->>>>
->>>> A situation noted by the warning below won't cause any problem because
->>>> the casting is done to a non-dereferenced variable. It is utilized
->>>> as a pointer bias later in that function. Shall we just ignore the
->>>> warning or still fix it somehow?  
->>>   
->>
->>> Do you think the cast to a !__iomem value is mandatory here?  
->>
->> It's not mandatory to have the casting with no __iomem, but wouldn't
->> doing like this:
->> + 	shift = (ssize_t __iomem)src & 0x3;
->> be looking weird? Really, is there a good way to somehow extract the first
->> two bits of a __iomem pointer without getting the sparse warning?
-> 
-> I asked around me, what about trying uintptr_t?
-> 
+No, no specific user-cases I'm aware of.  The reasoning was simply an
+issue[1] in the tracker created by Greg.  Basically fuse client commit
+b8954e5734b3 ("client: optimize rename operation under different quota
+root"), which has it's own issues[2][3] associated, triggered the
+implementation of the same behaviour on the kernel client.
 
-One more way is to use __force to tell sparse that this casting is
-intentional:
+Anyway, I'm send the revert of dffdcd71458e ("ceph: allow rename operation
+under different quota realms") in a second.
 
-       shift = (__force ssize_t)src & 0x3;
+[1] https://tracker.ceph.com/issues/44791
+[2] https://tracker.ceph.com/issues/39715
+[3] https://tracker.ceph.com/issues/16884
 
-
-> Thanks,
-> Miquèl
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Cheers,
+-- 
+Luis
