@@ -2,197 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395922B087C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94D72B087E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbgKLPf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:35:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34348 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728186AbgKLPf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:35:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605195354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kY0AiU5FU6oVbA1XAM3cZ9/C4ZQ8vxNIxYPcv88wzRE=;
-        b=Oroe8ImBD3hkine5eJJdhlFnAf1huWVIfoPEc4QfO10kCptIY4quo5CFpd0PjlJq+R7EMn
-        Mmx1ez3mgcfvRCXmZbZMk4ALLYvcJW1RHu6ObVGk9XeYzCxVJ8uSFf3fLfqLrh27ubhMvr
-        S8orhWVlNrB9g3t83BrCU9vyYlwbg9Y=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-47-oP9_ShvENbiNErrPTynYjg-1; Thu, 12 Nov 2020 10:35:52 -0500
-X-MC-Unique: oP9_ShvENbiNErrPTynYjg-1
-Received: by mail-wr1-f71.google.com with SMTP id l5so2086358wrn.18
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:35:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=kY0AiU5FU6oVbA1XAM3cZ9/C4ZQ8vxNIxYPcv88wzRE=;
-        b=UqNXaRJ+vuwIYX/k9EafZS40FKHaSObMcW7JoysOaqma7DEBiENkWzHDonl5byXrqp
-         EosxL2W1UtqrVPsMSxWbHJbQPC9I2CLnr9/Ow/VLq3cYGyiaK8Q92uif/99Vz1fYW4UR
-         uBKr6pCeg5WvqrjrhWuuHLIqMPmCRshp/8NVUb/mQ3mlI64MF/pwdjiCKLhvcIJ4/vbj
-         VGvC5BdlqV/twMCsfM4G7yxvCh5F086OgBMGcNqtPqnnTsja9tXiHWsQxF1cgkP5JhKf
-         SgFwsvDzTpA4zlMK9h6R57ehyy1+M2NzZgL17An5285cG/2pLpEhmsgJmNgAAjV7VVvN
-         xFuA==
-X-Gm-Message-State: AOAM5303z6XsSjZOaDIJGGXlA6b+nB82xY9ouyqooGy3GAu/IRCehyTO
-        POKVgiEIVECYHceJqrP0UvHSuPFzwYIKafxG+GSTBlJEmdUBNKs/tNIoiBkXoh/x7XEM0pV5Et9
-        gSEj44wkIZ8+E7KdQQ7OHoPU6
-X-Received: by 2002:a5d:5308:: with SMTP id e8mr60523wrv.299.1605195350613;
-        Thu, 12 Nov 2020 07:35:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyX+g1Xxy4OaSz6R8CmLM779s2IPaL2uIDtQKDL0WAaJDiYdwAr+Qec54DwIygNSmyCPc/rjA==
-X-Received: by 2002:a5d:5308:: with SMTP id e8mr60496wrv.299.1605195350447;
-        Thu, 12 Nov 2020 07:35:50 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id 60sm4066744wrs.69.2020.11.12.07.35.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:35:49 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 06/17] x86/hyperv: allocate output arg pages if required
-In-Reply-To: <20201105165814.29233-7-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-7-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 16:35:48 +0100
-Message-ID: <87a6vmy4dn.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1728617AbgKLPgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:36:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727796AbgKLPgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 10:36:37 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E516820A8B;
+        Thu, 12 Nov 2020 15:36:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605195396;
+        bh=pxxT4+uXdO6sR11nvF6tksd+2wzZ2183bhj3EqQGVrM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dWDE/o5+E+q1sB8AS1M6130Dtmx+4af/ID41/hNiFb5OylYdpWDtVunspb7XmdUJB
+         egZgwXPakqCMfN6MLHFIKhd/iSMUnDbd6ARW1hyjGtL5PJRF3IlNJpCOxyowfQOnPl
+         0CMvOhdxUn9qJmVRiudkI3PKry8DVrkTkwtlp1Gc=
+Date:   Fri, 13 Nov 2020 00:36:33 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Chen Yu <yu.chen.surf@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: bootconfig length parse error in kernel
+Message-Id: <20201113003633.8db2b4e4c5fecf8de0adfa65@kernel.org>
+In-Reply-To: <CADjb_WQQ+fJ7rMGzBw7KK-BVjB0nuVMZf-DR3izErLMzzAC_=w@mail.gmail.com>
+References: <CADjb_WSwW4jrNvLp91YHu-qimU1P1itPU_gZ5juQRWER_vGWAA@mail.gmail.com>
+        <20201111183742.e7c90597216343d9d2ffcb4e@kernel.org>
+        <CADjb_WQ2uueSuSAQJrbOLyms7zEvq9qqmoFA5Zkg9sD1P2C+zQ@mail.gmail.com>
+        <20201112145055.0029e5ca5973618a6cf2d887@kernel.org>
+        <CADjb_WQQ+fJ7rMGzBw7KK-BVjB0nuVMZf-DR3izErLMzzAC_=w@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+On Thu, 12 Nov 2020 14:49:16 +0800
+Chen Yu <yu.chen.surf@gmail.com> wrote:
 
-> When Linux runs as the root partition, it will need to make hypercalls
-> which return data from the hypervisor.
->
-> Allocate pages for storing results when Linux runs as the root
-> partition.
->
-> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
-> v2: Address Vitaly's comments
-> ---
->  arch/x86/hyperv/hv_init.c       | 35 ++++++++++++++++++++++++++++-----
->  arch/x86/include/asm/mshyperv.h |  1 +
->  2 files changed, 31 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 533fe9e887f2..7a2e37f025b0 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -45,6 +45,9 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
->  void  __percpu **hyperv_pcpu_input_arg;
->  EXPORT_SYMBOL_GPL(hyperv_pcpu_input_arg);
->  
-> +void  __percpu **hyperv_pcpu_output_arg;
-> +EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
-> +
->  u32 hv_max_vp_index;
->  EXPORT_SYMBOL_GPL(hv_max_vp_index);
->  
-> @@ -77,12 +80,19 @@ static int hv_cpu_init(unsigned int cpu)
->  	void **input_arg;
->  	struct page *pg;
->  
-> -	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
->  	/* hv_cpu_init() can be called with IRQs disabled from hv_resume() */
-> -	pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
-> +	pg = alloc_pages(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL, hv_root_partition ? 1 : 0);
->  	if (unlikely(!pg))
->  		return -ENOMEM;
-> +
-> +	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
->  	*input_arg = page_address(pg);
-> +	if (hv_root_partition) {
-> +		void **output_arg;
-> +
-> +		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
-> +		*output_arg = page_address(pg + 1);
-> +	}
->  
->  	hv_get_vp_index(msr_vp_index);
->  
-> @@ -209,14 +219,23 @@ static int hv_cpu_die(unsigned int cpu)
->  	unsigned int new_cpu;
->  	unsigned long flags;
->  	void **input_arg;
-> -	void *input_pg = NULL;
-> +	void *pg;
->  
->  	local_irq_save(flags);
->  	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
-> -	input_pg = *input_arg;
-> +	pg = *input_arg;
->  	*input_arg = NULL;
-> +
-> +	if (hv_root_partition) {
-> +		void **output_arg;
-> +
-> +		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
-> +		*output_arg = NULL;
-> +	}
-> +
->  	local_irq_restore(flags);
-> -	free_page((unsigned long)input_pg);
-> +
-> +	free_page((unsigned long)pg);
->  
+> On Thu, Nov 12, 2020 at 1:50 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > Hi Chen,
+> >
+> > On Thu, 12 Nov 2020 12:34:36 +0800
+> > Chen Yu <yu.chen.surf@gmail.com> wrote:
+> >
+> > > Hi Masami,
+> > >
+> > > On Wed, Nov 11, 2020 at 5:37 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > Hi Chen,
+> > > >
+> > > > On Tue, 10 Nov 2020 23:39:53 +0800
+> > > > Chen Yu <yu.chen.surf@gmail.com> wrote:
+> > > >
+> > > > > Hi Masami,
+> > > > > Thanks for writing bootconfig and it is useful for boot up trace event
+> > > > > debugging.
+> > > >
+> > > > Thanks for testing!
+> > > >
+> > > > > However it was found that on 5.10-rc2 the bootconfig does not work and it shows
+> > > > > "'bootconfig' found on command line, but no bootconfig found"
+> > > > > And the reason for this is the kernel found the magic number to be incorrect.
+> > > > > I've added some hack in kernel to dump the first 12 bytes, it shows:
+> > > > > "OTCONFIG". So printed more content ahead we can find
+> > > > > "#BOOTCONFIG" ahead. So it looks that there is some alignment during
+> > > > > initrd load, and get_boot_config_from_initrd() might also deal with it. That is
+> > > > > to say:
+> > > > > data = (char *)initrd_end - BOOTCONFIG_MAGIC_LEN;
+> > > > > might do some alignment?
+> > > >
+> > > > Hrm, interesting. So initrd_end might be aligned. Could you print out the
+> > > > actuall address of initrd_end?
+> > > I've done some investigation, it looks like this issue is not related
+> > > to alignment, but related to
+> > > the bootloader that has provided an inaccurate ramdisk size via
+> > > boot_params.hdr.ramdisk_size.
+> >
+> > Yeah, it seems to happen. bootloader can pass wrong (bigger) size
+> > to kernel. BTW, what bootloader would you use?
+> >
+> It is
+> $ grub-install --version
+> grub-install (GRUB) 2.04-1ubuntu26.2
+> > > The actual size of initrd is:
+> > > ls /boot/initrd.img-5.10.0-rc3-e1000e-hw+ -l
+> > > -rw-r--r-- 1 root root 48689230 11月 12 00:08
+> > > /boot/initrd.img-5.10.0-rc3-e1000e-hw+
+> > > while the ramdisk size provided by bootloader via
+> > > boot_params.hdr.ramdisk_size is
+> > > 48689232, which is 2 bytes bigger than the actual size, and this is
+> > > why the initrd_end
+> > > is bigger than expected and causing the missmatch of magic number.
+> >
+> > OK. It seems that the bootloader might cut it up to 16 bytes
+> > aligned. (But I think that's wrong behavior, there is no reason
+> > to do it)
+> Agree.
+> >
+> > > Since there is no guarantee that bootloader provides the accurate
+> > > ramdisk size, an compromised
+> > > proposal might be that to search for the magic number a little ahead.
+> >
+> > If the bootloader does such wrong behavior, there is no guarantee
+> > that the size is "a little" bigger. IOW, it can be aligned to the
+> > page size (4KB-)
+> >
+> Right. How about inserting the bootconfig at initrd_start if
+> initrd_end could not be trusted?
+> > > For example, the
+> > > following patch works for me:
+> > > diff --git a/init/main.c b/init/main.c
+> > > index 130376ec10ba..60fb125d44f4 100644
+> > > --- a/init/main.c
+> > > +++ b/init/main.c
+> > > @@ -273,7 +273,10 @@ static void * __init
+> > > get_boot_config_from_initrd(u32 *_size, u32 *_csum)
+> > >         if (!initrd_end)
+> > >                 return NULL;
+> > >
+> > > -       data = (char *)initrd_end - BOOTCONFIG_MAGIC_LEN;
+> > > +       data = memchr((char *)initrd_end - 2 * BOOTCONFIG_MAGIC_LEN,
+> > > +                      '#', BOOTCONFIG_MAGIC_LEN);
+> > > +       if (!data)
+> > > +               return NULL;
+> >
+> > So this also does not guarantee that we can find "#" in BOOTCONFIG_MAGIC_LEN.
+> > We need to find actual code in the bootloader, what it does.
+> >
+> Indeed.
+> > >         if (memcmp(data, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN))
+> > >                 return NULL;
+> > >
+> > >
+> > > > And could you tell me which platform are you tested?
+> > > >
+> > > It is HP ZHAN 99 Mobile Workstation G1 with i5-8300H, Ubuntu 20.04.
+> >
+> > Hmm, this means x86 Grub2 does this change. Let me check it.
+> >
 
-Hm, but in case we've allocated output_arg, don't we need to do
-	free_pages((unsigned long)pg, 1);
+I found the 4 byte alignment code in the grub 
+(grub_initrd_init()grub-core/loader/linux.c), but that seems to happen
+only when load a file with newc:/PACKAGE/FILE format. (And this is not
+documented.) At a glance, u-boot may not do that (but of course user
+can pass different size directly by command), EDK2 doesn't too.
+So, we should check at least 3 byte back for grub. 
 
-instead?
+BTW, just out of curious, what is your "initrd" command line in grub.conf? :)
 
->  	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
->  		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-> @@ -350,6 +369,12 @@ void __init hyperv_init(void)
->  
->  	BUG_ON(hyperv_pcpu_input_arg == NULL);
->  
-> +	/* Allocate the per-CPU state for output arg for root */
-> +	if (hv_root_partition) {
-> +		hyperv_pcpu_output_arg = alloc_percpu(void *);
-> +		BUG_ON(hyperv_pcpu_output_arg == NULL);
-> +	}
-> +
->  	/* Allocate percpu VP index */
->  	hv_vp_index = kmalloc_array(num_possible_cpus(), sizeof(*hv_vp_index),
->  				    GFP_KERNEL);
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index ac2b0d110f03..62d9390f1ddf 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -76,6 +76,7 @@ static inline void hv_disable_stimer0_percpu_irq(int irq) {}
->  #if IS_ENABLED(CONFIG_HYPERV)
->  extern void *hv_hypercall_pg;
->  extern void  __percpu  **hyperv_pcpu_input_arg;
-> +extern void  __percpu  **hyperv_pcpu_output_arg;
->  
->  static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
->  {
+Thank you,
 
 -- 
-Vitaly
-
+Masami Hiramatsu <mhiramat@kernel.org>
