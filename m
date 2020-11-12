@@ -2,202 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6E32B0D11
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B7E2B0D1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgKLS75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S1726586AbgKLTAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKLS7z (ORCPT
+        with ESMTP id S1726148AbgKLTAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:59:55 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB26C0613D1;
-        Thu, 12 Nov 2020 10:59:54 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id l2so6380250qkf.0;
-        Thu, 12 Nov 2020 10:59:54 -0800 (PST)
+        Thu, 12 Nov 2020 14:00:45 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0E5C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:45 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id c17so7118590wrc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:00:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IDS5Oufash5YwJYyq/CZbnqZxwavmq4JVvZ9D8fSXfI=;
-        b=WqdwiYj7UK0daVrfpTcgvYX1w3ciXnhHTmQPRf6rN9hmaSOGUbeqOi7g/ry7+ZYJoW
-         9uUms5XZkvXZrULPCVfii8vzqTqqXUXt0cCQUSQGstokUexSKpbIO2Ini1MYzdiIGsVF
-         CeHsTETP2esEwXGDJONxGJUbsDOSkQb+5cxyiKZRdrDo7vuFwe+QimjHv3SqPMMaxw4Q
-         nxqfldUPU+H2TtCJKcJnvlY92B3zu6n1U2HNAbsSvUL4kdAiYwUDI33PZimwfbRVnrpc
-         MEY7oNYdlphYRYVBkY1M1KzNKVcGB0wuWYolSAdfhO09Cz2nEtQzY/42ebA8J/awhNwg
-         lQEA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2EhywyPLrzVauOxW6hoSN8BeHIP9/SoKOh3x4hIA4nE=;
+        b=mDMN9CSv2W4PIXw03bPQQ8E6n/F1hxOhd7U5xYg0CKNVoFSNx4vt6N6nJEUd+d0NVf
+         2f6ET1hpvzbE9dTYE3+AEzEL+oXMm+dQYcFG7X5DeJlH39RK3B36bhjv0Kmfgd6IjRu7
+         DK6YHE4NxqI4RcOgx4vmMjk9l0jBxi6xWPEUOmu/6CIwnL3vxLJFaFpRKcG8r7qv3xgD
+         dyjxn3R0n7C+dorPtETtr3Ojp3vP39NWvjuLVdBQignca7AielkWQC3zPNd4ftwjEApD
+         tELbFwItnMMYVNZnKGN9qFLn5xqZXBJqd3P05jK3vJI0wJT80G2YuD83Borh2wfI9qov
+         uFUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IDS5Oufash5YwJYyq/CZbnqZxwavmq4JVvZ9D8fSXfI=;
-        b=Kvq39EiHG05FYN08wIfMuairfhRAPvNv4l+fdrYp8pvRi+/ZAAbv23cfn5MF5S4Po/
-         M57l/HRgZcxGX1VsnVVRiPq7tXJ7u7nc0/RSj50iiSliqg7lTEirNtY3PcXDHFlQ7nZp
-         1HbIlTa3w+RJG1sXtUUNnYW6/C44J3DVvy8nST7rAhM2jODKi0rfQ9UBgCZuDUIYIpco
-         tWz8hmDNGkeFZaDIcpWrV3c6B3XCo3tiF1ULP0kn/XCRqnEur0Wx9npbpuZaM+3Hyvg+
-         PbLEO+86HQuc/ROJNv0gcZLcu0pdT6kzi2a+pNPpgd7HV6V2g4xIW/qQsZiEp0llyTfy
-         R4XA==
-X-Gm-Message-State: AOAM531VUMou6pYfPe1pI8hLcRazhHWvxThux/DahYHYbCKT+pPB9ovQ
-        azr6MIll1X0qG0m717yHvyD3hWMaDx4=
-X-Google-Smtp-Source: ABdhPJzlLARUdjxIvGUsB5LecaHA+FHCisE+Ffg9rzImiYJDT3jd8hTCPLGDmJitWpaPXWcJmhAAaA==
-X-Received: by 2002:a37:d16:: with SMTP id 22mr1188669qkn.335.1605207593310;
-        Thu, 12 Nov 2020 10:59:53 -0800 (PST)
-Received: from localhost.localdomain ([198.52.185.246])
-        by smtp.gmail.com with ESMTPSA id g70sm5055192qke.8.2020.11.12.10.59.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2EhywyPLrzVauOxW6hoSN8BeHIP9/SoKOh3x4hIA4nE=;
+        b=BEeGIauubPTp0/f5ZvEzYGh0ZFveN/7Kw2om1rfcSUnp8I6SpQAFTz7wKUYKI0hll2
+         bIurpfqpXi/h00GZvfcZ9XsuInOmU+w940ekzL03IG11LcA9aG3V8TFLJBeWiJKDZ0WN
+         vTyWfSXihFe3OBcP8LBBxU9mK6Fm38pztp+7V7UdxJ+2B3i4dT6Myn1SuSJnUExFgUJ1
+         i/891yRjh/qugJ4hQsrJfoEsqeGCZYMVC8O8iAaQcDrS0oaAYDg978EUWzX9yVaED/yR
+         jq4Ljx+b4CVvVOieqvcjSc0T9nijQw5LKUYZHGgG6ALmxs8W1VP/BZGOSTSvroI1eqgo
+         Cl0Q==
+X-Gm-Message-State: AOAM533upgbwSmW/+6X5tmfHzwQcuzxnCRbMvoBKRhXIDIJKQkyxrL02
+        WrXwKuCqdzOPrVyAbNZ2EAEeBw==
+X-Google-Smtp-Source: ABdhPJyKUIdqT6yOWd6udawSWHTScPhDrEAlvpxAeKCcoYi8gRAZSrSI6RVWTEAP7uNql9pNr7za4A==
+X-Received: by 2002:adf:fc01:: with SMTP id i1mr1129122wrr.250.1605207644013;
+        Thu, 12 Nov 2020 11:00:44 -0800 (PST)
+Received: from dell.default ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.00.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 10:59:52 -0800 (PST)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v1] lan743x: fix issue causing intermittent kernel log warnings
-Date:   Thu, 12 Nov 2020 13:59:49 -0500
-Message-Id: <20201112185949.11315-1-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 12 Nov 2020 11:00:43 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Chris Zhong <zyw@rock-chips.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
+        Eunchul Kim <chulspro.kim@samsung.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Jinyoung Jeon <jy0.jeon@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mark Yao <mark.yao@rock-chips.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Nickey Yang <nickey.yang@rock-chips.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        nouveau@lists.freedesktop.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        report to <xorg-driver-ati@lists.x.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Sangmin Lee <lsmin.lee@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vincent Abriou <vincent.abriou@st.com>
+Subject: [PATCH 00/30] [Set 6] Rid W=1 warnings from GPU
+Date:   Thu, 12 Nov 2020 19:00:09 +0000
+Message-Id: <20201112190039.2785914-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-When running this chip on arm imx6, we intermittently observe
-the following kernel warning in the log, especially when the
-system is under high load:
+NB: Hopefully the other sets turn up in -next soon, so they can
+be rebased and any stragglers re-submitted.
 
-[   50.119484] ------------[ cut here ]------------
-[   50.124377] WARNING: CPU: 0 PID: 303 at kernel/softirq.c:169 __local_bh_enable_ip+0x100/0x184
-[   50.132925] IRQs not enabled as expected
-[   50.159250] CPU: 0 PID: 303 Comm: rngd Not tainted 5.7.8 #1
-[   50.164837] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[   50.171395] [<c0111a38>] (unwind_backtrace) from [<c010be28>] (show_stack+0x10/0x14)
-[   50.179162] [<c010be28>] (show_stack) from [<c05b9dec>] (dump_stack+0xac/0xd8)
-[   50.186408] [<c05b9dec>] (dump_stack) from [<c0122e40>] (__warn+0xd0/0x10c)
-[   50.193391] [<c0122e40>] (__warn) from [<c0123238>] (warn_slowpath_fmt+0x98/0xc4)
-[   50.200892] [<c0123238>] (warn_slowpath_fmt) from [<c012b010>] (__local_bh_enable_ip+0x100/0x184)
-[   50.209860] [<c012b010>] (__local_bh_enable_ip) from [<bf09ecbc>] (destroy_conntrack+0x48/0xd8 [nf_conntrack])
-[   50.220038] [<bf09ecbc>] (destroy_conntrack [nf_conntrack]) from [<c0ac9b58>] (nf_conntrack_destroy+0x94/0x168)
-[   50.230160] [<c0ac9b58>] (nf_conntrack_destroy) from [<c0a4aaa0>] (skb_release_head_state+0xa0/0xd0)
-[   50.239314] [<c0a4aaa0>] (skb_release_head_state) from [<c0a4aadc>] (skb_release_all+0xc/0x24)
-[   50.247946] [<c0a4aadc>] (skb_release_all) from [<c0a4b4cc>] (consume_skb+0x74/0x17c)
-[   50.255796] [<c0a4b4cc>] (consume_skb) from [<c081a2dc>] (lan743x_tx_release_desc+0x120/0x124)
-[   50.264428] [<c081a2dc>] (lan743x_tx_release_desc) from [<c081a98c>] (lan743x_tx_napi_poll+0x5c/0x18c)
-[   50.273755] [<c081a98c>] (lan743x_tx_napi_poll) from [<c0a6b050>] (net_rx_action+0x118/0x4a4)
-[   50.282306] [<c0a6b050>] (net_rx_action) from [<c0101364>] (__do_softirq+0x13c/0x53c)
-[   50.290157] [<c0101364>] (__do_softirq) from [<c012b29c>] (irq_exit+0x150/0x17c)
-[   50.297575] [<c012b29c>] (irq_exit) from [<c0196a08>] (__handle_domain_irq+0x60/0xb0)
-[   50.305423] [<c0196a08>] (__handle_domain_irq) from [<c05d44fc>] (gic_handle_irq+0x4c/0x90)
-[   50.313790] [<c05d44fc>] (gic_handle_irq) from [<c0100ed4>] (__irq_usr+0x54/0x80)
-[   50.321287] Exception stack(0xecd99fb0 to 0xecd99ff8)
-[   50.326355] 9fa0:                                     1cf1aa74 00000001 00000001 00000000
-[   50.334547] 9fc0: 00000001 00000000 00000000 00000000 00000000 00000000 00004097 b6d17d14
-[   50.342738] 9fe0: 00000001 b6d17c60 00000000 b6e71f94 800b0010 ffffffff
-[   50.349364] irq event stamp: 2525027
-[   50.352955] hardirqs last  enabled at (2525026): [<c0a6afec>] net_rx_action+0xb4/0x4a4
-[   50.360892] hardirqs last disabled at (2525027): [<c0d6d2fc>] _raw_spin_lock_irqsave+0x1c/0x50
-[   50.369517] softirqs last  enabled at (2524660): [<c01015b4>] __do_softirq+0x38c/0x53c
-[   50.377446] softirqs last disabled at (2524693): [<c012b29c>] irq_exit+0x150/0x17c
-[   50.385027] ---[ end trace c0b571db4bc8087d ]---
+Lee Jones (30):
+  drm/savage/savage_bci: Remove set but never used 'aper_rsrc' and
+    'fb_rsrc'
+  include: drm: drm_atomic: Artificially use 'crtc' to avoid 'not used'
+    warning
+  drm/v3d/v3d_gem: Provide descriptions for 'v3d_lookup_bos's params
+  drm/via/via_dma: Remove set but unused variable 'agp_base'
+  drm/v3d/v3d_sched: Demote non-conformant kernel-doc header
+  drm/amd/amdgpu/amdgpu_kms: Fix misnaming of parameter 'dev'
+  drm/amd/amdgpu/amdgpu_fence: Fix some issues pertaining to function
+    documentation
+  drm/exynos/exynos7_drm_decon: Supply missing description for  param
+    'ctx'
+  drm/exynos/exynos_drm_fimd: Add missing description for param 'ctx'
+  drm/vc4/vc4_hdmi_regs: Mark some data sets as __maybe_unused
+  drm/vc4/vc4_hdmi: Remove set but unused variable 'ret'
+  drm/amd/amdgpu/amdgpu_ttm: Demote non-conformant kernel-doc headers,
+    fix slightly lacking ones
+  drm/atmel-hlcdc/atmel_hlcdc_crtc: Apply correct formatting to struct
+    docs
+  drm/amd/amdgpu/amdgpu_ring: Fix a bunch of function misdocumentation
+  drm/amd/amdgpu/amdgpu_display: Remove pointless header
+  drm/atmel-hlcdc/atmel_hlcdc_plane: Staticise local function
+    'atmel_hlcdc_plane_setup_scaler()'
+  drm/atmel-hlcdc/atmel_hlcdc_plane: Fix documentation formatting and
+    add missing description
+  drm/vc4/vc4_v3d: Demote non-conformant kernel-doc headers
+  drm/amd/amdgpu/amdgpu_cs: Add a couple of missing function param
+    descriptions
+  drm/armada/armada_overlay: Staticify local function
+    'armada_overlay_duplicate_state'
+  drm/vc4/vc4_debugfs: Demote non-conformant kernel-doc headers
+  drm/rockchip/dw-mipi-dsi-rockchip: Demote non-conformant kernel-doc
+    headers
+  drm/rockchip/rockchip_rgb: Consume our own header
+  drm/nouveau/nvkm/core/firmware: Fix formatting, provide missing param
+    description
+  drm/rockchip/rockchip_lvds: Fix struct document formatting
+  drm/exynos/exynos_drm_gsc: Supply missing description for 'num_limits'
+  drm/sti/sti_hdmi: Move 'colorspace_mode_names' array to where its used
+  drm/mediatek/mtk_disp_color: Fix formatting and provide missing member
+    description
+  drm/amd/amdgpu/atombios_encoders: Remove set but unused variable
+    'backlight_level'
+  drm/mediatek/mtk_disp_ovl: Fix formatting and provide missing member
+    description
 
-The driver is calling dev_kfree_skb() from code inside a spinlock,
-where h/w interrupts are disabled. This is forbidden, as documented
-in include/linux/netdevice.h. The correct function to use
-dev_kfree_skb_irq(), or dev_kfree_skb_any().
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |  2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   |  4 --
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c     | 11 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c      | 12 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       | 60 ++++++++++---------
+ .../gpu/drm/amd/amdgpu/atombios_encoders.c    |  3 +-
+ drivers/gpu/drm/armada/armada_overlay.c       |  2 +-
+ .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    |  6 +-
+ .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   |  7 ++-
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c    |  1 +
+ drivers/gpu/drm/exynos/exynos_drm_fimd.c      |  1 +
+ drivers/gpu/drm/exynos/exynos_drm_gsc.c       |  1 +
+ drivers/gpu/drm/mediatek/mtk_disp_color.c     |  5 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  5 +-
+ drivers/gpu/drm/nouveau/nvkm/core/firmware.c  |  9 +--
+ .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |  4 +-
+ drivers/gpu/drm/rockchip/rockchip_lvds.c      |  2 +-
+ drivers/gpu/drm/rockchip/rockchip_rgb.c       |  1 +
+ drivers/gpu/drm/savage/savage_bci.c           | 11 ----
+ drivers/gpu/drm/sti/sti_hdmi.c                |  6 ++
+ drivers/gpu/drm/sti/sti_hdmi.h                |  6 --
+ drivers/gpu/drm/v3d/v3d_gem.c                 |  2 +
+ drivers/gpu/drm/v3d/v3d_sched.c               |  2 +-
+ drivers/gpu/drm/vc4/vc4_debugfs.c             |  4 +-
+ drivers/gpu/drm/vc4/vc4_hdmi.c                |  3 +-
+ drivers/gpu/drm/vc4/vc4_hdmi_regs.h           |  6 +-
+ drivers/gpu/drm/vc4/vc4_v3d.c                 |  4 +-
+ drivers/gpu/drm/via/via_dma.c                 |  2 -
+ include/drm/drm_atomic.h                      |  1 +
+ 30 files changed, 91 insertions(+), 94 deletions(-)
 
-Fix by using the correct dev_kfree_skb_xxx() functions:
-
-in lan743x_tx_release_desc():
-  called by lan743x_tx_release_completed_descriptors()
-    called by in lan743x_tx_napi_poll()
-    which holds a spinlock
-  called by lan743x_tx_release_all_descriptors()
-    called by lan743x_tx_close()
-    which can-sleep
-conclusion: use dev_kfree_skb_any()
-
-in lan743x_tx_xmit_frame():
-  which holds a spinlock
-conclusion: use dev_kfree_skb_irq()
-
-in lan743x_tx_close():
-  which can-sleep
-conclusion: use dev_kfree_skb()
-
-in lan743x_rx_release_ring_element():
-  called by lan743x_rx_close()
-    which can-sleep
-  called by lan743x_rx_open()
-    which can-sleep
-conclusion: use dev_kfree_skb()
-
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
----
-
-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # edbc21113bde
-
-To: Jakub Kicinski <kuba@kernel.org>
-To: Bryan Whitehead <bryan.whitehead@microchip.com>
-To: "David S. Miller" <davem@davemloft.net>
-Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
- drivers/net/ethernet/microchip/lan743x_main.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index 9de970ec2056..a9fda2e6e715 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1291,13 +1291,13 @@ static void lan743x_tx_release_desc(struct lan743x_tx *tx,
- 		goto clear_active;
- 
- 	if (!(buffer_info->flags & TX_BUFFER_INFO_FLAG_TIMESTAMP_REQUESTED)) {
--		dev_kfree_skb(buffer_info->skb);
-+		dev_kfree_skb_any(buffer_info->skb);
- 		goto clear_skb;
- 	}
- 
- 	if (cleanup) {
- 		lan743x_ptp_unrequest_tx_timestamp(tx->adapter);
--		dev_kfree_skb(buffer_info->skb);
-+		dev_kfree_skb_any(buffer_info->skb);
- 	} else {
- 		ignore_sync = (buffer_info->flags &
- 			       TX_BUFFER_INFO_FLAG_IGNORE_SYNC) != 0;
-@@ -1607,7 +1607,7 @@ static netdev_tx_t lan743x_tx_xmit_frame(struct lan743x_tx *tx,
- 	if (required_number_of_descriptors >
- 		lan743x_tx_get_avail_desc(tx)) {
- 		if (required_number_of_descriptors > (tx->ring_size - 1)) {
--			dev_kfree_skb(skb);
-+			dev_kfree_skb_irq(skb);
- 		} else {
- 			/* save to overflow buffer */
- 			tx->overflow_skb = skb;
-@@ -1640,7 +1640,7 @@ static netdev_tx_t lan743x_tx_xmit_frame(struct lan743x_tx *tx,
- 				   start_frame_length,
- 				   do_timestamp,
- 				   skb->ip_summed == CHECKSUM_PARTIAL)) {
--		dev_kfree_skb(skb);
-+		dev_kfree_skb_irq(skb);
- 		goto unlock;
- 	}
- 
-@@ -1659,7 +1659,7 @@ static netdev_tx_t lan743x_tx_xmit_frame(struct lan743x_tx *tx,
- 			 * frame assembler clean up was performed inside
- 			 *	lan743x_tx_frame_add_fragment
- 			 */
--			dev_kfree_skb(skb);
-+			dev_kfree_skb_irq(skb);
- 			goto unlock;
- 		}
- 	}
+Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
+Cc: Akshu Agarwal <akshua@gmail.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Chris Zhong <zyw@rock-chips.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Eric Anholt <eric@anholt.net>
+Cc: Eunchul Kim <chulspro.kim@samsung.com>
+Cc: "Heiko Stübner" <heiko@sntech.de>
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Cc: Jerome Glisse <glisse@freedesktop.org>
+Cc: Jinyoung Jeon <jy0.jeon@samsung.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-rockchip@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: Luben Tuikov <luben.tuikov@amd.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Mark Yao <mark.yao@rock-chips.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Nickey Yang <nickey.yang@rock-chips.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: nouveau@lists.freedesktop.org
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: report to <xorg-driver-ati@lists.x.org>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Sandy Huang <hjc@rock-chips.com>
+Cc: Sangmin Lee <lsmin.lee@samsung.com>
+Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Vincent Abriou <vincent.abriou@st.com>
 -- 
-2.17.1
+2.25.1
 
