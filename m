@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E052B0396
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FE42B0398
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgKLLML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        id S1728069AbgKLLMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgKLLMJ (ORCPT
+        with ESMTP id S1727932AbgKLLMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:12:09 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908C0C0613D1;
-        Thu, 12 Nov 2020 03:12:09 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 33so5558941wrl.7;
-        Thu, 12 Nov 2020 03:12:09 -0800 (PST)
+        Thu, 12 Nov 2020 06:12:16 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BCAC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:12:15 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id y2so1784517wrl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t1pdCeyp/Dvzku3Y54x16meEdju3+1zInH0bmOMDDL0=;
-        b=XtJAfKg8cmV/weC4CRM0DfyVs6/MmiX/gtIGuFegWgMaPHAg/Sm2ZMgBs6NAlDSxG3
-         Dk2Wx50IcCLt+PF2mn3CfEaoKMHX+WrMB4oTfihQeXZejwZW9qAsbv/SBJe2dpDPT6vu
-         rnUJcp9+MwooScc7SjIR7+pEWrY63qgM4dRjZcynqwGqHU1FfuEvC9WcsSD6hM2Snxa1
-         T8Z0HcpLo/mFl0rcT/Qu3j6W/v7Mmujy5ep7ckxehw+2AUHRo7PrA2k+e2h/U/flduSO
-         f5EO9GD+f/EyvK3pfYJZer8yfpzliQKOp77D8ei241UcvngqiCcYdC20Qyp/wzlHobUz
-         YCCA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=q/nenNf4nIbtsKSlhvoAb4csMxuxA4idUEw49EasD7I=;
+        b=MOCT1ILqBQEKTPHafpla72KMkNuvHCUIPpjXDvDOaJ0JmM7oeA94LDW9UIdVVhDLq1
+         WVyCk+kV1lPw4xmSTyHuj3phmREgETzKpvSpjTgL/ttYSQVRHww43v1qtmK/g6kGLUYI
+         s94zC3DVa6z7x+TGqqH67gXgyQHwa8HhOMmV+YlhQBpfyNSM6i2xAjk1ADh2ppyPWzJl
+         ap4wcaFe+2l3X4Lb+ih9vKUQ2pehzm1l3Bo+5bJXQUySQ/eiwJlS5Iv3d0Hpuf1tEgqL
+         Xm6ueBBzzzwq9OGU/pTCBowv2PqyofyFH4II9BtOMJG2GFm07p6rwBg6n3ufSEeeJ2u1
+         K1Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t1pdCeyp/Dvzku3Y54x16meEdju3+1zInH0bmOMDDL0=;
-        b=t9nBzLoPh1SdwWv6jFQ1IINbjCckmdpL9mK6QKAgpdS1ijVOPjakHUqINiJ5K3Gn+P
-         IQrqXipBXwvpiABssTNpn6lpW36abUQM9/tEBUiAacrTtdrABkpnxO1CUiX77u43IepQ
-         bejO7q5JkAo9LgaWVv1nMU3Q+yTPZQqWR3std6FZjwHnR/o7np/pB7zte0Wx2pKBvmdK
-         nKOe7TR6zGVoo4zIPmKnzdPBTVYOyLKs1HNr5sd/8uuxlMrjd2AW5I3vEv/pFpdMIWQ2
-         tSPQL+QrTXkYK78fXL5YWPQAZkCM8Ru9n/ZXjbPuMjMgiWZ0kM2MOIf0uXRA4g3d7pZA
-         E0zg==
-X-Gm-Message-State: AOAM532p/0wQFe6+xWMUO7p1OVDv2R+43bwg9qoo7WlwSMZenJNJwM8j
-        k5QQ34aAshdPJRWFHFWDDIk=
-X-Google-Smtp-Source: ABdhPJzJDOVpqsF4ZiSXu2YN5wygEyo1lKeDDy737wWNYVM3m1V1uU+4CpHeLusXvUQ0WYX5LKy7Ng==
-X-Received: by 2002:adf:ea03:: with SMTP id q3mr5462838wrm.141.1605179528311;
-        Thu, 12 Nov 2020 03:12:08 -0800 (PST)
-Received: from ubux1.panoulu.local ([2a00:1d50:3:0:1cd1:d2e:7b13:dc30])
-        by smtp.gmail.com with ESMTPSA id g11sm6456484wrq.7.2020.11.12.03.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 03:12:07 -0800 (PST)
-From:   Lev Stipakov <lstipakov@gmail.com>
-X-Google-Original-From: Lev Stipakov <lev@openvpn.net>
-To:     Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org
-Cc:     Lev Stipakov <lev@openvpn.net>
-Subject: [PATCH 2/3] net: openvswitch: use core API for updating TX stats
-Date:   Thu, 12 Nov 2020 13:11:50 +0200
-Message-Id: <20201112111150.34361-1-lev@openvpn.net>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=q/nenNf4nIbtsKSlhvoAb4csMxuxA4idUEw49EasD7I=;
+        b=O2/pojTPXGlFJXwk+Yky6oMxcN/avZPC5/HBHVwXAORGLxq02QjB1pvtwwFTzvQGAb
+         lZejG+64TZg2FMvYoGcq8UpHdqjNq/mZ7LSx3zeFQOlGG8QLhDyJiqY7hgQ8lquulvGz
+         Em7pb6L+4IeAgr12loGmWsvm3sbl+sIGiNThzDLJyT0wdElGfs/29SeEUbaoKfc5F3qn
+         9HBwZx0oLFjhWSiTJf4RI/tzn73sM69rmsGGNY87vjRNpbjGJQ+tqo5G/ybFqPg1WOgG
+         jPDSN9BErJIF45GehguhUFo1I1yzpMhNstlpikpq7GzYKsWCSpJi2BoPG0lYRQaC/n07
+         3tSA==
+X-Gm-Message-State: AOAM532jZricCx68S3IIXlMcPXiSulB/0EJ95451ZklbgdWticumrIX2
+        a3FUUcznBvEfZJpvN5bfWjF8wBZQubIh
+X-Google-Smtp-Source: ABdhPJzJTbhADq/z9W9E16eGuMJcl+eUA52BL16cczl3H4FscWPsiyBTZlg+fQfnMEtABV13kfmR32re6HX4
+Sender: "qperret via sendgmr" <qperret@luke.lon.corp.google.com>
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+ (user=qperret job=sendgmr) by 2002:adf:a39e:: with SMTP id
+ l30mr26164988wrb.195.1605179534546; Thu, 12 Nov 2020 03:12:14 -0800 (PST)
+Date:   Thu, 12 Nov 2020 11:12:01 +0000
+Message-Id: <20201112111201.2081902-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] sched/fair: Fix overutilized update in enqueue_task_fair()
+From:   Quentin Perret <qperret@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@qperret.net>,
+        "open list:SCHEDULER" <linux-kernel@vger.kernel.org>
+Cc:     kernel-team@android.com, Quentin Perret <qperret@google.com>,
+        Rick Yiu <rickyiu@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add") has added
-function "dev_sw_netstats_tx_add()" to update net device per-cpu TX
-stats.
+enqueue_task_fair() attempts to skip the overutilized update for new
+tasks as their util_avg is not accurate yet. However, the flag we check
+to do so is overwritten earlier on in the function, which makes the
+condition pretty much a nop.
 
-Use this function instead of own code. While on it, replace
-"len" variable with "skb->len".
+Fix this by saving the flag early on.
 
-Signed-off-by: Lev Stipakov <lev@openvpn.net>
+Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point
+indicator")
+Reported-by: Rick Yiu <rickyiu@google.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- net/openvswitch/vport-internal_dev.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/openvswitch/vport-internal_dev.c b/net/openvswitch/vport-internal_dev.c
-index 1e30d8df3ba5..116738d36e02 100644
---- a/net/openvswitch/vport-internal_dev.c
-+++ b/net/openvswitch/vport-internal_dev.c
-@@ -33,23 +33,17 @@ static struct internal_dev *internal_dev_priv(struct net_device *netdev)
- static netdev_tx_t
- internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
- {
--	int len, err;
-+	int err;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 290f9e38378c..f3ee60b92718 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5477,6 +5477,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 	struct cfs_rq *cfs_rq;
+ 	struct sched_entity *se = &p->se;
+ 	int idle_h_nr_running = task_has_idle_policy(p);
++	int task_new = !(flags & ENQUEUE_WAKEUP);
  
--	len = skb->len;
- 	rcu_read_lock();
- 	err = ovs_vport_receive(internal_dev_priv(netdev)->vport, skb, NULL);
- 	rcu_read_unlock();
+ 	/*
+ 	 * The code below (indirectly) updates schedutil which looks at
+@@ -5549,7 +5550,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 	 * into account, but that is not straightforward to implement,
+ 	 * and the following generally works well enough in practice.
+ 	 */
+-	if (flags & ENQUEUE_WAKEUP)
++	if (!task_new)
+ 		update_overutilized_status(rq);
  
--	if (likely(!err)) {
--		struct pcpu_sw_netstats *tstats = this_cpu_ptr(netdev->tstats);
--
--		u64_stats_update_begin(&tstats->syncp);
--		tstats->tx_bytes += len;
--		tstats->tx_packets++;
--		u64_stats_update_end(&tstats->syncp);
--	} else {
-+	if (likely(!err))
-+		dev_sw_netstats_tx_add(netdev, 1, skb->len);
-+	else
- 		netdev->stats.tx_errors++;
--	}
-+
- 	return NETDEV_TX_OK;
- }
- 
+ enqueue_throttle:
 -- 
-2.25.1
+2.29.2.222.g5d2a92d10f8-goog
 
