@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AABE2B1196
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F2D2B119B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgKLWel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:34:41 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:55164 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgKLWek (ORCPT
+        id S1727126AbgKLWfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgKLWfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:34:40 -0500
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5AA64A2A;
-        Thu, 12 Nov 2020 23:34:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1605220477;
-        bh=/xmzU/irgXh12TulnO5uKcqAr2D0hL+bwc1Y2+lrHkw=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=rqVBnfSIJKbWxIdIpDC1J6vNcaeEtm9EohTM4HVblOPlOoWgiyqGvSH5BUg5S6AcI
-         VBhEnZuflNAOOAhvZGe7YRXtLg9By8pTrL93Mqv6as2BXBkAc3fLwd8cgBLa+eBxJQ
-         ABzigXKUz2FCP9SzncCq1TLUGVJd+qFl9P6O1WcI=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH v4 2/8] dt-bindings: media: max9286: Document
- 'maxim,,initial-reverse-channel-mV"
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-References: <20201112162729.101384-1-jacopo+renesas@jmondi.org>
- <20201112162729.101384-3-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <3307f226-9dd1-8460-f4a3-56992a0ae191@ideasonboard.com>
-Date:   Thu, 12 Nov 2020 22:34:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 12 Nov 2020 17:35:15 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857F9C0613D1;
+        Thu, 12 Nov 2020 14:35:15 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id f20so10438903ejz.4;
+        Thu, 12 Nov 2020 14:35:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p57BL1UoJnRDA8LQQBCOb1AWL61sYpqhOcXl2s2Ktmo=;
+        b=QGeT47vbxx1u+X8AVugaKGDgMjeIGjP3nroq6qHJYc4hHBT7RrAQu5F1RNHqOxW+Ph
+         t9GeGsMzalx44u+Q/lISz/mgFTv29drub/WRetCfj8svZ865OZB42+3Jvebt8WQfqQ/a
+         WMYnz+gA92yYyFsBA9Yc7Y7Bpxt4nd/WOU5CXICc8odukDbrHeAVr0ieajz2pi6j7RTp
+         n+NaIW9Yx4fSufYqVYhbzdnbNwJlzbEmIeDwJMPfH2sBDxZ09hIjOsnE9M5t/HLJ0kfl
+         necRCubK5FCjxz0CAnBIR04wBXOvazPf0WFDMneI6SwF845XOcii8aJ0D+oyAZhcwymh
+         HM0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p57BL1UoJnRDA8LQQBCOb1AWL61sYpqhOcXl2s2Ktmo=;
+        b=MRJsfk5wh0wkcbLk7c0uDP72rhkKvSrUFyBn52kYuro0L6R52/nsc/+LmGQU0T57kk
+         EAYFQ3k30n9bB9cvujDS8J9gy8H8Oifm+xOICCiopgR8nq9FF6Fot85UdQiaBi7hJ9xr
+         /w72D0VpvapyVaL16klrIjcn7vtBpr+gAK/Sq3PeHEr2PMhwGy/RdbW7ZqLShTuyWB6Y
+         sjTQf2qP7OnzArkfSJQ14qmPfCY9TI/ZX6gh3xqr9DUPXOAL1FkBojfrR+Ulabfebatp
+         guHA0gtgiJT1FegfPsQUBx3qvKiug6675LZWoUBGRpbXgieIRlannAdnVFMPmQ2lR0/4
+         PJaA==
+X-Gm-Message-State: AOAM530NvVgNhgv6xntoLTZANPaXAx9jBI5lkbDa0Ge5nrmuLMNy+7HZ
+        RdJkFjuaa7gyBB6lQ7KumHk=
+X-Google-Smtp-Source: ABdhPJxSbE3Jwqg8xMBq220twIqtrWBS6+9ZlX9IX162gQ1ALtJ2lVuifaNmfGfuocLV9VyC1u5dNA==
+X-Received: by 2002:a17:906:5017:: with SMTP id s23mr1581466ejj.359.1605220514250;
+        Thu, 12 Nov 2020 14:35:14 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id g25sm2606855ejh.61.2020.11.12.14.35.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 14:35:13 -0800 (PST)
+Date:   Fri, 13 Nov 2020 00:35:12 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 01/11] dt-bindings: net: dsa: convert ksz
+ bindings document to yaml
+Message-ID: <20201112223512.g77usyxfmsisklgp@skbuf>
+References: <20201112153537.22383-1-ceggers@arri.de>
+ <20201112153537.22383-2-ceggers@arri.de>
 MIME-Version: 1.0
-In-Reply-To: <20201112162729.101384-3-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112153537.22383-2-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Thu, Nov 12, 2020 at 04:35:27PM +0100, Christian Eggers wrote:
+> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> new file mode 100644
+> index 000000000000..431ca5c498a8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> @@ -0,0 +1,150 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 
-in $SUBJECT, there's a double ',' between maxim,,initial and it swaps
-from a single quote to a double quote which you might want to fix too.
-
-
-On 12/11/2020 16:27, Jacopo Mondi wrote:
-> Document the 'initial-reverse-channel-mV' vendor property in the
-> bindings document of the max9286 driver.
-> 
-> The newly introduced property allows to specify the initial
-
-s/to specify/specifying/
-
-> configuration of the GMSL reverse control channel to accommodate
-> remote serializers pre-programmed with the high threshold power
-> supply noise immunity enabled.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  .../bindings/media/i2c/maxim,max9286.yaml     | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> index 9ea827092fdd..c506a0261325 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> @@ -51,6 +51,26 @@ properties:
->    '#gpio-cells':
->      const: 2
->  
-> +  maxim,initial-reverse-channel-mV:
-> +    $ref: '/schemas/types.yaml#/definitions/uint32'
-> +    minimum: 30
-> +    maximum: 200
-> +    default: 170
-> +    description: |
-> +      Initial amplitude of the reverse control channel, in millivolts.
-> +
-> +      The initial amplitude shall be adjusted to a value compatible with the
-> +      configuration of the connected remote serializer.
-> +
-> +      Some camera modules (in example RDACM20) include an on-board MCU that
-
-s/in example/for example/
-
-> +      pre-programs the embedded serializer with power supply noise immunity
-> +      (high-threshold) enabled. A typical value of the deserializer's reverse
-> +      channel amplitude to communicate with pre-programmed serializers is 170mV.
-> +
-> +      A typical value for the reverse channel amplitude to communicate with
-> +      a remote serializer whose high-threshold noise immunity is not enabled
-> +      is 100mV.
-> +
->    ports:
->      type: object
->      description: |
-> @@ -221,6 +241,7 @@ required:
->    - ports
->    - i2c-mux
->    - gpio-controller
-> +  - maxim,initial-reverse-channel-mV
->  
->  additionalProperties: false
->  
-> @@ -243,6 +264,8 @@ examples:
->          gpio-controller;
->          #gpio-cells = <2>;
->  
-> +        maxim,initial-reverse-channel-mV = <170>;
-> +
-
-Sounds good to me.
-
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-
->          ports {
->            #address-cells = <1>;
->            #size-cells = <0>;
-> 
-
+Where is the "GPL-2.0-only OR BSD-2-Clause" license coming from? I see
+that the Microchip KSZ driver is GPL-2.0, and the previous bindings
+document had no license, which would also make it implicitly GPL I
+believe.
