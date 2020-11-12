@@ -2,138 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234AE2B109D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539282B10A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727404AbgKLVs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:48:56 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:53680 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727362AbgKLVsz (ORCPT
+        id S1727421AbgKLVtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:49:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727293AbgKLVtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:48:55 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4CDCA20C2872;
-        Thu, 12 Nov 2020 13:48:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4CDCA20C2872
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605217734;
-        bh=gj7I7H7R+K+HUdjzOSyTXtGvFpPPfgwXVjL9OcdcHEo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=RBiN6mtpwxcu9Z+PR5cU/KcnnExclGovD66+hhEb4gPSium3dfPvzhtaGPdEUjbzY
-         2JO6951UPvYg7t/EaqmVMnYF8N3jfjC5/eumKdaTxoyUhw96E2kxbbH2yVIXDr1XPZ
-         tvV2Bs9ArFN0/wjQ9AKGSGKFMCiqdW10LeVV9ipo=
-Subject: Re: [PATCH v5 2/7] IMA: update process_buffer_measurement to measure
- buffer hash
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
- <20201101222626.6111-3-tusharsu@linux.microsoft.com>
- <811fbc4a6f4bd02c77518bd4196d354071145f3e.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <702e7d17-27f0-30e7-b5ce-affecb0c8de7@linux.microsoft.com>
-Date:   Thu, 12 Nov 2020 13:48:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 12 Nov 2020 16:49:07 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF74C0613D1;
+        Thu, 12 Nov 2020 13:49:07 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id ec16so3637978qvb.0;
+        Thu, 12 Nov 2020 13:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GTBxlYQh5nK7nuyz9GGz2QSLc5KQMNKbZAAgKPoEC3k=;
+        b=fKK9rsj4CvaN2DPz1cBj7XsP+v5XxbmJo8FHWUSJ0NYBrRhR/M/p9ZgB4w/0kCRu0b
+         I9f05fYfq3Nv4XujegwmomNA74izSISXA0f7qWNM9WyLQK0LF0fGRQ8bwydXeg94zCbF
+         rIoc4N6NKq9NGfkKO9MAbq5IaEXGrL/rktHCqIlAqQ3X+QcyImmsIFaW7d/8zrl51C+t
+         vVOftIDacF5je0Gr5zFrd6wf+PkHWiq7xOd5RUiisDgDFZAt490w3HVOEEjgQJu40OiO
+         FjumuZtDFX962ngsT8tX3mRR/b11dRCfYKieDYEd96tUWbGteDeh6WhqU9RPSh3gdh3C
+         tJXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GTBxlYQh5nK7nuyz9GGz2QSLc5KQMNKbZAAgKPoEC3k=;
+        b=EWrLw7Hz/PApCSgECmUqY0iL4J/1J91tE0OfnjpJC5Y1qAuoSAhq/veC4djt6Ittcc
+         bf+Swg7dA6gcf0KTQOCT2fMzyH7hv6ooV/BFnOY6hrOh/0yFFfF5NnDLv5nzatbOZOFF
+         oFiSGM8Ctkduz62Fu6PvFXJQ4enH9v/QoBQvOSp0TlSzCCucqjgBUkQRI/WyuBNzY0/m
+         mhCvci4WxQ4VJniYPXYF8ezCAy+zJ2ZR1Q5wwqmuc0AJYM0zzO6uaWFdMj7EJLBMUGEi
+         G5ZJwAGQOGgEsOwlzg3OXQ4ui5I8Gpod+AlXveZG3butrgC7Rbqf9XtaxhOjpsfoUdeR
+         ki7Q==
+X-Gm-Message-State: AOAM5320mCu0v5OJmuRWTC+zmCi95AnpniuYayB0XlPUv67yG/D123hZ
+        moZVl7UlsGvP+G+dWYWxMew=
+X-Google-Smtp-Source: ABdhPJxcOg2KLEYNQ1bBChObUM230IiBCufytpEN2hLidCmfBNtvWiRPtPR6uz6w/oLWahM0vunObg==
+X-Received: by 2002:a0c:99e1:: with SMTP id y33mr1838033qve.62.1605217746580;
+        Thu, 12 Nov 2020 13:49:06 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id 5sm5479575qtp.55.2020.11.12.13.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 13:49:05 -0800 (PST)
+Date:   Thu, 12 Nov 2020 14:49:04 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Christian Lamparter <chunkeey@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR
+ in crypto4xx_build_pd
+Message-ID: <20201112214904.GA3194701@ubuntu-m3-large-x86>
+References: <20201112200702.1664905-1-natechancellor@gmail.com>
+ <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <811fbc4a6f4bd02c77518bd4196d354071145f3e.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 10:21:35PM +0100, Christian Lamparter wrote:
+> Hello,
+> 
+> On 12/11/2020 21:07, Nathan Chancellor wrote:
+> > Clang warns:
+> > 
+> > drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
+> > lower precedence than '|'; '|' will be evaluated first
+> > [-Wbitwise-conditional-parentheses]
+> >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> >                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+> > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+> > around the '|' expression to silence this warning
+> >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> >                                                                           ^
+> >                                                                          )
+> > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+> > around the '?:' expression to evaluate it first
+> >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> >                                                                           ^
+> >                   (
+> > 1 warning generated.
+> > 
+> > It looks like this should have been a logical OR so that
+> > PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
+> > is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD.
+> Yes. This probably wasn't spotted earlier since the driver doesn't make
+> use of CRYPTO_ALG_TYPE_AHASH (yet). This is because the hash accelerator
+> setup cost was never worth it.
+> 
+> > Change the operator so that everything works properly.
+> I'm curious if this is true. Is there a way to break this somehow on purpose?
 
+I do not really have a way to validate that statement, I just figured
+that the operator being wrong meant that something could go wrong that
+was not intended.
 
-On 2020-11-06 4:11 a.m., Mimi Zohar wrote:
-> Hi Tushar,
+> I've extracted the code from line 921 and added the defines
+> (the CRYPTO_ALG_... from the current 5.10-rc3 crypto.h and the PD_CTL_
+> from crypto4xx_reg_def.h) and replaced the u32 with uint32_t
+> so it runs in userspace too:
 > 
-> Below inline are a few additional comments.
+> --- crypto4xx_test.c ---
+> /* test study - is it possible to break the | vs || in crypto4xx's code */
 > 
->> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
->> index ae5da9f3339d..4485d87c0aa5 100644
->> --- a/security/integrity/ima/ima_main.c
->> +++ b/security/integrity/ima/ima_main.c
->> @@ -787,12 +787,15 @@ int ima_post_load_data(char *buf, loff_t size,
->>    * @func: IMA hook
->>    * @pcr: pcr to extend the measurement
->>    * @func_data: private data specific to @func, can be NULL.
->> + * @measure_buf_hash: if set to true - will measure hash of the buf,
->> + *                    instead of buf
->>    *
->>    * Based on policy, the buffer is measured into the ima log.
+> #include <stdio.h>
+> #include <stdint.h>
 > 
-> Both the brief and longer function descriptions need to be updated, as
-> well as the last argument description.  The last argument should be
-> limited to "measure buffer hash".  How it is used could be included in
-> the longer function description.  The longer function description would
-> include adding the buffer data or the buffer data hash to the IMA
-> measurement list and extending the PCR.
+> #define CRYPTO_ALG_TYPE_AEAD 	0x00000003
+> #define CRYPTO_ALG_TYPE_AHASH	0x0000000f
+> #define PD_CTL_HASH_FINAL	(1<<4) /* Stand-in for BIT(4) */
+> #define PD_CTL_HOST_READY	(1<<0) /* BIT(0) */
 > 
-> For example,
-> process_buffer_measurement - measure the buffer data or the buffer data
-> hash
-> 
-Thanks Mimi. Will update the brief and longer descriptions accordingly.
-> 
->>    */
->>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   				const char *eventname, enum ima_hooks func,
->> -				int pcr, const char *func_data)
->> +				int pcr, const char *func_data,
->> +				bool measure_buf_hash)
->>   {
->>   	int ret = 0;
->>   	const char *audit_cause = "ENOMEM";
->> @@ -807,6 +810,8 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   		struct ima_digest_data hdr;
->>   		char digest[IMA_MAX_DIGEST_SIZE];
->>   	} hash = {};
->> +	char digest_hash[IMA_MAX_DIGEST_SIZE];
->> +	int hash_len = hash_digest_size[ima_hash_algo];
->>   	int violation = 0;
->>   	int action = 0;
->>   	u32 secid;
->> @@ -855,6 +860,21 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   		goto out;
->>   	}
->>   
->> +	if (measure_buf_hash) {
->> +		memcpy(digest_hash, hash.hdr.digest, hash_len);
-> 
-> Instead of digest_hash and hash_len, consider naming the variables
-> buf_hash and buf_hashlen.
-> 
-Thanks. Will do.
->> +
->> +		ret = ima_calc_buffer_hash(digest_hash,
->> +					   hash_len,
->> +					   iint.ima_hash);
-> 
-> There's no need for each variable to be on a separate line.
-> 
-Thanks, will fix.
-~Tushar
+> uint32_t func_with_bitwise_or(uint32_t alg_type)
+> {
+> 	return PD_CTL_HOST_READY |
+> 		((alg_type == CRYPTO_ALG_TYPE_AHASH) |
+> 		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
+> 			PD_CTL_HASH_FINAL : 0);
+> }
 
-> thanks,
+Looking at this more, I think the only reason that the code works as is
+is because PD_CTL_HOST_READY is 1 AND CRYPTO_ALG_TYPE_AHASH is not used.
+
+(alg_type == CRYPTO_ALG_TYPE_AEAD) ? PD_CTL_HASH_FINAL : 0 is evaluated
+first, which results in either PD_CTL_HASH_FINAL or 0.
+
+Then (alg_type == CRYPTO_ALG_TYPE_AHASH) is evaluated, which is
+evaluated to either 0 or 1.
+
+Then we mask everything together:
+
+PD_CTL_HOST_READY | (0 || 1) | (PD_CTL_HOST_READY || 0)
+
+If PD_CTL_HOST_READY was anything other than BIT(0), we would have an
+extra 0x1 in the mask. That realistically might not matter, I did not
+have a full look over the code to see what this might mean. If
+CRYPTO_ALG_TYPE_AHASH was used, it could be used over
+CRYPTO_ALG_TYPE_AEAD and PD_CTL_HASH_FINAL would never get added to the
+mask, which certainly sounds like a bug.
+
+> uint32_t func_with_logical_or(uint32_t alg_type)
+> {
+> 	return PD_CTL_HOST_READY |
+> 		((alg_type == CRYPTO_ALG_TYPE_AHASH) ||
+> 		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
+> 			PD_CTL_HASH_FINAL : 0);
+> }
 > 
-> Mimi
+> int main(int arg, char **args)
+> {
+> 	uint32_t alg;
 > 
->> +		if (ret < 0) {
->> +			audit_cause = "measure_buf_hash_error";
->> +			goto out;
->> +		}
->> +
->> +		event_data.buf = digest_hash;
->> +		event_data.buf_len = hash_len;
->> +	}
->> +
->>   	ret = ima_alloc_init_template(&event_data, &entry, template);
->>   	if (ret < 0) {
->>   		audit_cause = "alloc_entry";
+> 	for (alg = 0; alg < 0x10; alg++) { /* this is because CRYPTO_ALG_TYPE_MASK is 0xf */
+> 		if (func_with_bitwise_or(alg) != func_with_logical_or(alg)) {
+> 			printf("for alg_type:%d, the bitwise result=%d doesn't match the logical result=%d\n",
+> 				alg, func_with_bitwise_or(alg), func_with_logical_or(alg));
+> 			return 1;
+> 		}
+> 	}
+> 	printf("logical and bitwise always agreed.\n");
+> 
+> 	return 0;
+> }
+> --- EOF ---
+> 
+> Both gcc (gcc version 10.2.0 (Debian 10.2.0-17)) or clang (clang version 9.0.1-15)
+> version always gave the "logical and bitwise always agreed.". which means there wasn't
+> anything wrong and this patch just makes clang happy? Or can you get it to break?
+> 
+> Also, can you please give this patch a try:
+> --- extra-bracket.patch
+> 
+> --- a/drivers/crypto/amcc/crypto4xx_core.c
+> +++ b/drivers/crypto/amcc/crypto4xx_core.c
+> @@ -932,8 +932,8 @@ int crypto4xx_build_pd(struct crypto_async_request *req,
+>  	}
+> 
+>  	pd->pd_ctl.w = PD_CTL_HOST_READY |
+> -		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
+> -		 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> +		(((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
+> +		  (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD)) ?
+>  			PD_CTL_HASH_FINAL : 0);
+>  	pd->pd_ctl_len.w = 0x00400000 | (assoclen + datalen);
+>  	pd_uinfo->state = PD_ENTRY_INUSE | (is_busy ? PD_ENTRY_BUSY : 0);
+> 
+> ---
+> I'm mostly curious if clang will warn about it too.
+
+It does not with that diff. I guess it is entirely up to you which one
+we go with.
+
+> That said:
+> Reviewed-by: Christian Lamparter <chunkeey@gmail.com>
+
+Thank you for all the analysis and taking a look over the patch, I
+appreciate it!
+
+Cheers,
+Nathan
