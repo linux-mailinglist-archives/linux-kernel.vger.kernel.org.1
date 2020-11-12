@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C822B0AA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A832B0AA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgKLQqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:46:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41160 "EHLO mail.kernel.org"
+        id S1729228AbgKLQql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:46:41 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:48220 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728757AbgKLQqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:46:36 -0500
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEAC922201;
-        Thu, 12 Nov 2020 16:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605199595;
-        bh=LLx0akF5qtEiY5VMQSlszIbWAgpb7UXLGfsyXCRK7Dk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jfNQTQ0hZkzr+YiJs7bsZrYRl7397sjcqsp9yCooKZ2UJqzJHhIozdq1Fg5EsJZ/n
-         9UksIUQQKLeTPp/Ugn927wly+H3VPFz3bkcKo6vheC3y4RlOXk5vP7VwtMWyukkVNw
-         RUttv7U/0u6I8GHmbbOg4v/PkVLNnT8q6GuxSEPw=
-Received: by mail-qt1-f175.google.com with SMTP id z3so824217qtw.9;
-        Thu, 12 Nov 2020 08:46:34 -0800 (PST)
-X-Gm-Message-State: AOAM531T37UqKnwaGl07ueuWgHSeAMtq2G2DrNZHzg74PnZlu0Q7F22Z
-        XGM8O7hX7BSPqCe1CuisDnzLPDQQvRkv3jSaJg==
-X-Google-Smtp-Source: ABdhPJxNTJyWMf6+brsvjbuORMB9At5nr5f9ABeu/u5b5DtZBs4UEdwvX6ofCVpyFPU2RsM96RURemzIhbtaljLRQts=
-X-Received: by 2002:aed:2aa5:: with SMTP id t34mr13728qtd.31.1605199593992;
- Thu, 12 Nov 2020 08:46:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20201109170409.4498-1-kishon@ti.com> <20201109170409.4498-2-kishon@ti.com>
- <20201111212857.GA2059063@bogus> <f6d1b886-5c78-842c-c33c-16b5b9325130@ti.com>
-In-Reply-To: <f6d1b886-5c78-842c-c33c-16b5b9325130@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 12 Nov 2020 10:46:21 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com>
-Message-ID: <CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] dt-bindings: mfd: ti,j721e-system-controller.yaml:
- Document "syscon"
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
+        id S1728757AbgKLQqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:46:39 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad66ee0000>; Fri, 13 Nov 2020 00:46:38 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 16:46:38 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 16:46:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pz0cyj8bYFOYF85qIEsY+Yh55bLLUpfBmqKf8TJULhFu+Mk6HsPR0DTtPg3oJA+O74qGNgavbJfjcQFMhM5uVabYLot01GpL0BRPeJk5CdmKAYSM54/czElw45cfQ+8yIKZyckD8ekCYmP2YTzLgLSGg3PyR0hwSutEXwpKWmmc0E0h/SN0YnDUTeEFEU1qH8w+6ThefiMUcfM2ANlsD6sCdjmeefZBajv8ojqhpYp7HxRM6phpPzsZBEdcZ34uxo0KZt9lGz1NHmqjCvQB/olZ92SH9cLaojMHYmMGWXFzveqVYJl/scf+yf+ExE7IiHaJc2j2+4AkJLRtk/td5RA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0sfAr+xkv7/SVXYVYVUFOI4Z9rzMq3BLsPV7CykTexU=;
+ b=YshhgmkquBNvs+AICuxnKpu6EV6Qyf09pNa+npeqv2+t0wpeCvS6GThDgWfcp9XahDT/NztGYN1GHczh8WM4RS/IpBa3XuaqU2CS185Y7/MHCeydwUwuemOx6j9xb6YB1tdXDiudlmq+v9hQn+ocnRHWy1uULs8kPOjY13sAGGede5Y8+qCYhVGKn0LslPFO5URp5EgTkVeI58VEQZwSNLFFJacSYsUQB2e5BVJmq3MwVBN+hnJmYI5g9CsP49isdcAasVTd7YFExV88gi8UDlbyElmSX35e5IyZ18WeW//RKNfPLwJd1kzeIt7fGfIuugxRqwt0a821i9NW4Spa6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2940.namprd12.prod.outlook.com (2603:10b6:5:15f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 12 Nov
+ 2020 16:46:23 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
+ 16:46:23 +0000
+Date:   Thu, 12 Nov 2020 12:46:21 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mthca: work around -Wenum-conversion warning
+Message-ID: <20201112164621.GA917484@nvidia.com>
+References: <20201026211311.3887003-1-arnd@kernel.org>
+ <20201112155709.GA894300@nvidia.com>
+ <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
+X-ClientProxiedBy: BL1PR13CA0180.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::35) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0180.namprd13.prod.outlook.com (2603:10b6:208:2bd::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Thu, 12 Nov 2020 16:46:23 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdFjp-003qzb-N5; Thu, 12 Nov 2020 12:46:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605199598; bh=0sfAr+xkv7/SVXYVYVUFOI4Z9rzMq3BLsPV7CykTexU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=B34V/UAPA3/tPUbhVXNVrRA7bwYta/PSoM8hrJLGXrs2VCJ+wQS3s/KkrHjD4HdIw
+         IhKpn8AQeCC1oEzlxHo/IBrUi/osboKCOnD0Yaapbx4V+AC7WHUU9jFNod+uneDdZV
+         z0Zc7UkdqH1+AXPE3qVb++XUrC20DLkyoKbLqKfMcrhSaxPdrNnr/ELNVyb+C1s4yO
+         rsg2FF/C9UVimXPzvI1pN7qGNnnETSA1K6cHXLvxmAytFigHo+qepD9qZCNLhKwO0/
+         hOKqTXhIpSemzVNyteNJz+s9VLQiJgXGkK1PRz3gmrJAySn5Q50PmzTBV9cV4DjsWX
+         82T6SzNvQwJIQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:25 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->
-> Hi Rob,
->
-> On 12/11/20 2:58 am, Rob Herring wrote:
-> > On Mon, Nov 09, 2020 at 10:34:03PM +0530, Kishon Vijay Abraham I wrote:
-> >> Add binding documentation for "syscon" which should be a subnode of
-> >> the system controller (scm-conf).
-> >>
-> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> >> ---
-> >>  .../mfd/ti,j721e-system-controller.yaml       | 40 +++++++++++++++++++
-> >>  1 file changed, 40 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> >> index 19fcf59fd2fe..0b115b707ab2 100644
-> >> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> >> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> >> @@ -50,6 +50,38 @@ patternProperties:
-> >>        specified in
-> >>        Documentation/devicetree/bindings/mux/reg-mux.txt
-> >>
-> >> +  "^syscon@[0-9a-f]+$":
-> >> +    type: object
-> >> +    description: |
+On Thu, Nov 12, 2020 at 05:45:00PM +0100, Arnd Bergmann wrote:
+> On Thu, Nov 12, 2020 at 4:57 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 > >
-> > Don't need '|' if there's no formatting.
->
-> Okay, will fix this.
+> > On Mon, Oct 26, 2020 at 10:12:30PM +0100, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > gcc points out a suspicious mixing of enum types in a function that
+> > > converts from MTHCA_OPCODE_* values to IB_WC_* values:
+> > >
+> > > drivers/infiniband/hw/mthca/mthca_cq.c: In function 'mthca_poll_one':
+> > > drivers/infiniband/hw/mthca/mthca_cq.c:607:21: warning: implicit conversion from 'enum <anonymous>' to 'enum ib_wc_opcode' [-Wenum-conversion]
+> > >   607 |    entry->opcode    = MTHCA_OPCODE_INVALID;
+> > >
+> > > Nothing seems to ever check for MTHCA_OPCODE_INVALID again, no
+> > > idea if this is meaningful, but it seems harmless as it deals
+> > > with an invalid input.
+> > >
+> > > Add a cast to suppress the warning.
+> > >
+> > > Fixes: 2a4443a69934 ("[PATCH] IB/mthca: fill in opcode field for send completions")
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > >  drivers/infiniband/hw/mthca/mthca_cq.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
+> > > index c3cfea243af8..319b8aa63f36 100644
+> > > +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
+> > > @@ -604,7 +604,7 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
+> > >                       entry->byte_len  = MTHCA_ATOMIC_BYTE_LEN;
+> > >                       break;
+> > >               default:
+> > > -                     entry->opcode    = MTHCA_OPCODE_INVALID;
+> > > +                     entry->opcode    = (u8)MTHCA_OPCODE_INVALID;
+> > >                       break;
 > >
-> >> +      This is the system controller configuration required to configure PCIe
-> >> +      mode, lane width and speed.
-> >> +
-> >> +    properties:
-> >> +      compatible:
-> >> +        items:
-> >> +          - enum:
-> >> +              - ti,j721e-system-controller
-> >> +          - const: syscon
-> >> +          - const: simple-mfd
+> > This code is completely bogus, sigh
 > >
-> > Humm, then what are this node's sub-nodes? And the same compatible as
-> > the parent?
-> >
->
-> This node doesn't have sub-nodes.
->
-> So one is the parent syscon node which has the entire system control
-> region and then sub-nodes for each of the modules. In this case the PCIe
-> in system control has only one 4 byte register that has to be configured.
->
-> Both the parent node and sub-node are syscon, so given the same
-> compatible for both.
+> > Is this OK as far as the warning goes?
+> 
+> Yes, I'm sure your patch fixes it and it makes more sense than my version.
+> 
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-'syscon' is just a hint. It doesn't define what any h/w is. IMO, we
-never should have added it.
+Okay, I'll revise it, thanks
 
-A compatible defines what the programming interface is for the node.
-This one should only ever appear more than once if you have multiple
-instances of the same block. So different registers, different
-compatible. What you have here is just completely broken.
-
-I don't think you even need a child node here. Just have PCIe node
-point to the parent with an offset arg.
-
-Rob
+Jason
