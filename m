@@ -2,170 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71CD2B0541
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAB82B0546
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgKLM4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:56:52 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:57704 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLM4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:56:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605185811; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=YGbiqQVX0zn5ulohah4Bb/Xz8yjVkbbJmLwpnFLalJE=; b=O7+njpy5fkPwU4k3Xa1US9K/nfV7pX8KWVZ6oyy01xtdodKJx/qzMorPXfPVxj7K0376bzsj
- t+XudiqRQBdlg2C7uGXPxux4HANFe33X+E0psTKWShrTq7RuVtmix8p3rVm3wfXrbyrL9bzf
- iA84nYtqcp6A0cWhfoyUMK748KM=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fad310c25da3a0fa9e83c72 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Nov 2020 12:56:44
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0918C433C8; Thu, 12 Nov 2020 12:56:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.104] (unknown [182.18.191.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728198AbgKLM5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:57:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28376 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727035AbgKLM5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:57:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605185872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KApSY4n0QrJwiU60IUmc5BIOxVfBJ4BfZCyb2aGAlK4=;
+        b=c0pLs/LbzvaoZPYbrRv6XFD8tDboXjhxMmogFgCC2xKKZzwwFi15VDJ/zAyV5i4DHY/j9H
+        e5MkOcvOJ/lwpqsvbUOqp2n+SD9Gk9OMjrTVjupLXKnnSW770ljvxGHCgVZvalLD3gD6TF
+        tDmn7t8kBXXwlihLT7v5KbDABmELrK4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-LTVl2aaZOp-mAJ7msfQEwQ-1; Thu, 12 Nov 2020 07:57:50 -0500
+X-MC-Unique: LTVl2aaZOp-mAJ7msfQEwQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81A28C433C8;
-        Thu, 12 Nov 2020 12:56:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 81A28C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-To:     Minchan Kim <minchan@kernel.org>, linux-mm <linux-mm@kvack.org>
-Cc:     glider@google.com, Dan Williams <dan.j.williams@intel.com>,
-        broonie@kernel.org, mhiramat@kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>
-References: <1603372546-27118-1-git-send-email-vjitta@codeaurora.org>
- <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
- <282d7028-498d-50b3-37d4-2381571f9f9e@codeaurora.org>
-Message-ID: <ed4a1e75-3e3a-4950-7bb5-3d83db7bf054@codeaurora.org>
-Date:   Thu, 12 Nov 2020 18:26:24 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BAE51882FAB;
+        Thu, 12 Nov 2020 12:57:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4335A5D9E4;
+        Thu, 12 Nov 2020 12:57:46 +0000 (UTC)
+Subject: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
+From:   David Howells <dhowells@redhat.com>
+To:     herbert@gondor.apana.org.au, bfields@fieldses.org
+Cc:     dhowells@redhat.com, trond.myklebust@hammerspace.com,
+        linux-crypto@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 12 Nov 2020 12:57:45 +0000
+Message-ID: <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <282d7028-498d-50b3-37d4-2381571f9f9e@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi Herbert, Bruce,
 
-On 11/4/2020 3:59 PM, Vijayanand Jitta wrote:
-> 
-> 
-> On 11/4/2020 4:57 AM, Minchan Kim wrote:
->> Sorry if this mail corrupts the mail thread or had heavy mangling
->> since I lost this mail from my mailbox so I am sending this mail by
->> web gmail.
->>
->> On Thu, Oct 22, 2020 at 10:18 AM <vjitta@codeaurora.org> wrote:
->>>
->>> From: Yogesh Lal <ylal@codeaurora.org>
->>>
->>> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
->>>
->>> Aim is to have configurable value for  STACK_HASH_SIZE,
->>> so depend on use case one can configure it.
->>>
->>> One example is of Page Owner, default value of
->>> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
->>> Making it configurable and use lower value helps to enable features like
->>> CONFIG_PAGE_OWNER without any significant overhead.
->>>
->>> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
->>> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
->>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->>> ---
->>>  lib/Kconfig      | 9 +++++++++
->>>  lib/stackdepot.c | 3 +--
->>>  2 files changed, 10 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/lib/Kconfig b/lib/Kconfig
->>> index 18d76b6..b3f8259 100644
->>> --- a/lib/Kconfig
->>> +++ b/lib/Kconfig
->>> @@ -651,6 +651,15 @@ config STACKDEPOT
->>>         bool
->>>         select STACKTRACE
->>>
->>> +config STACK_HASH_ORDER_SHIFT
->>> +       int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
->>> +       range 12 20
->>> +       default 20
->>> +       depends on STACKDEPOT
->>> +       help
->>> +        Select the hash size as a power of 2 for the stackdepot hash table.
->>> +        Choose a lower value to reduce the memory impact.
->>> +
->>>  config SBITMAP
->>>         bool
->>>
->>> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
->>> index 2caffc6..413c20b 100644
->>> --- a/lib/stackdepot.c
->>> +++ b/lib/stackdepot.c
->>> @@ -142,8 +142,7 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
->>>         return stack;
->>>  }
->>>
->>> -#define STACK_HASH_ORDER 20
->>> -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
->>> +#define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
->>>  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
->>>  #define STACK_HASH_SEED 0x9747b28c
->>>
->>> --
->>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
->>> 2.7.4
->>>
->>
->> 1. When we don't use page_owner, we don't want to waste any memory for
->> stackdepot hash array.
->> 2. When we use page_owner, we want to have reasonable stackdeport hash array
->>
->> With this configuration, it couldn't meet since we always need to
->> reserve a reasonable size for the array.
->> Can't we make the hash size as a kernel parameter?
->> With it, we could use it like this.
->>
->> 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
->> when we don't use page_owner
->> 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
->> when we use page_owner.
->>
->>
-> 
-> This idea looks fine to me. Andrew and others would like to hear your
-> comments as well on this before implementing.
-> 
-> Thanks,
-> Vijay
-> 
+Here's my first cut at a generic Kerberos crypto library in the kernel so
+that I can share code between rxrpc and sunrpc (and cifs?).
 
-Awaiting for comments from Andrew and others.
+I derived some of the parts from the sunrpc gss library and added more
+advanced AES and Camellia crypto.  I haven't ported across the DES-based
+crypto yet - I figure that can wait a bit till the interface is sorted.
 
-Thanks,
-Vijay
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+Whilst I have put it into a directory under crypto/, I haven't made an
+interface that goes and loads it (analogous to crypto_alloc_skcipher,
+say).  Instead, you call:
+
+        const struct krb5_enctype *crypto_krb5_find_enctype(u32 enctype);
+
+to go and get a handler table and then use a bunch of accessor functions to
+jump through the hoops.  This is basically the way the sunrpc gsslib does
+things.  It might be worth making it so you do something like:
+
+	struct crypto_mech *ctx = crypto_mech_alloc("krb5(18)");
+
+to get enctype 18, but I'm not sure if it's worth the effort.  Also, I'm
+not sure if there are any alternatives to kerberos we will need to support.
+
+There are three main interfaces to it:
+
+ (*) I/O crypto: encrypt, decrypt, get_mic and verify_mic.
+
+     These all do in-place crypto, using an sglist to define the buffer
+     with the data in it.  Is it necessary to make it able to take separate
+     input and output buffers?
+
+ (*) PRF+ calculation for key derivation.
+ (*) Kc, Ke, Ki derivation.
+
+     These use krb5_buffer structs to pass objects around.  This is akin to
+     the xdr_netobj, but has a void* instead of a u8* data pointer.
+
+In terms of rxrpc's rxgk, there's another step in key derivation that isn't
+part of the kerberos standard, but uses the PRF+ function to generate a key
+that is then used to generate Kc, Ke and Ki.  Is it worth putting this into
+the directory or maybe having a callout to insert an intermediate step in
+key derivation?
+
+Note that, for purposes of illustration, I've included some rxrpc patches
+that use this interface to implement the rxgk Rx security class.  The
+branch also is based on some rxrpc patches that are a prerequisite for
+this, but the crypto patches don't need it.
+
+---
+The patches can be found here also:
+
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=crypto-krb5
+
+David
+---
+David Howells (18):
+      crypto/krb5: Implement Kerberos crypto core
+      crypto/krb5: Add some constants out of sunrpc headers
+      crypto/krb5: Provide infrastructure and key derivation
+      crypto/krb5: Implement the Kerberos5 rfc3961 key derivation
+      crypto/krb5: Implement the Kerberos5 rfc3961 encrypt and decrypt functions
+      crypto/krb5: Implement the Kerberos5 rfc3961 get_mic and verify_mic
+      crypto/krb5: Implement the AES enctypes from rfc3962
+      crypto/krb5: Implement crypto self-testing
+      crypto/krb5: Implement the AES enctypes from rfc8009
+      crypto/krb5: Implement the AES encrypt/decrypt from rfc8009
+      crypto/krb5: Add the AES self-testing data from rfc8009
+      crypto/krb5: Implement the Camellia enctypes from rfc6803
+      rxrpc: Add the security index for yfs-rxgk
+      rxrpc: Add YFS RxGK (GSSAPI) security class
+      rxrpc: rxgk: Provide infrastructure and key derivation
+      rxrpc: rxgk: Implement the yfs-rxgk security class (GSSAPI)
+      rxrpc: rxgk: Implement connection rekeying
+      rxgk: Support OpenAFS's rxgk implementation
+
+
+ crypto/krb5/Kconfig              |    9 +
+ crypto/krb5/Makefile             |   11 +-
+ crypto/krb5/internal.h           |  101 +++
+ crypto/krb5/kdf.c                |  223 ++++++
+ crypto/krb5/main.c               |  190 +++++
+ crypto/krb5/rfc3961_simplified.c |  732 ++++++++++++++++++
+ crypto/krb5/rfc3962_aes.c        |  140 ++++
+ crypto/krb5/rfc6803_camellia.c   |  249 ++++++
+ crypto/krb5/rfc8009_aes2.c       |  440 +++++++++++
+ crypto/krb5/selftest.c           |  543 +++++++++++++
+ crypto/krb5/selftest_data.c      |  289 +++++++
+ fs/afs/misc.c                    |   13 +
+ include/crypto/krb5.h            |  100 +++
+ include/keys/rxrpc-type.h        |   17 +
+ include/trace/events/rxrpc.h     |    4 +
+ include/uapi/linux/rxrpc.h       |   17 +
+ net/rxrpc/Kconfig                |   10 +
+ net/rxrpc/Makefile               |    5 +
+ net/rxrpc/ar-internal.h          |   20 +
+ net/rxrpc/conn_object.c          |    2 +
+ net/rxrpc/key.c                  |  319 ++++++++
+ net/rxrpc/rxgk.c                 | 1232 ++++++++++++++++++++++++++++++
+ net/rxrpc/rxgk_app.c             |  424 ++++++++++
+ net/rxrpc/rxgk_common.h          |  164 ++++
+ net/rxrpc/rxgk_kdf.c             |  271 +++++++
+ net/rxrpc/security.c             |    6 +
+ 26 files changed, 5530 insertions(+), 1 deletion(-)
+ create mode 100644 crypto/krb5/kdf.c
+ create mode 100644 crypto/krb5/rfc3961_simplified.c
+ create mode 100644 crypto/krb5/rfc3962_aes.c
+ create mode 100644 crypto/krb5/rfc6803_camellia.c
+ create mode 100644 crypto/krb5/rfc8009_aes2.c
+ create mode 100644 crypto/krb5/selftest.c
+ create mode 100644 crypto/krb5/selftest_data.c
+ create mode 100644 net/rxrpc/rxgk.c
+ create mode 100644 net/rxrpc/rxgk_app.c
+ create mode 100644 net/rxrpc/rxgk_common.h
+ create mode 100644 net/rxrpc/rxgk_kdf.c
+
+
