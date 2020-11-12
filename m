@@ -2,232 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662DF2B0201
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596582B0220
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgKLJco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:32:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLJcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:32:43 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A602C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:32:42 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h2so4665133wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 01:32:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yi1OMf/gd5HyvbzJ7IKPIRAKF/of2XlvAeMy3R2I3KU=;
-        b=ClGwd9PImy4lshiA+U9TgHm3wMtpgX29mRHTW1PJ2Z/B04KEA5sYxSwmqwHFInajPL
-         bBgGwHoANnPrek4f/2fTZmkNXn4ZXMfy6/P/wzzDLZ0D+o59/USQC5sh8s8BLMNMRT23
-         2JQ2SimoqOAPzXBp9UgIXN67enji1ANRDCQMA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=yi1OMf/gd5HyvbzJ7IKPIRAKF/of2XlvAeMy3R2I3KU=;
-        b=VNTPCBSxrUG7Fp+5BvMhVjN4xTls0y8fGk6XgFFbD55rnKBmhIFVS5fj748LdKZPVP
-         ksuknryoouKNYCwh+bPzOrSEFxKoj2tL/psyEWbll08DUKs5SQBBUeh/ZpUkQQ7GQbAZ
-         ivuQtUB1chaa1hFJ592VvlqaZbSBNc4Ku/A9NQpqi5KPRXrsBN0dd9I+BENkHRonkzR7
-         v2avkxCwoSaoiVSLSFVt5qjBghNcc0aqpi0DYfeLTN+PvjHaw4YurWRef+v3Pp4fKsWK
-         vJVT4gOj5fANSEZT9CYDH6j8bD0wm+SLQWRaE9bZJI0AcPhyHaAdE1UTEKH9Aq1KZ2fc
-         Jm7w==
-X-Gm-Message-State: AOAM531k2XW6qwVxdxMD9SfZwwg4mrwE5qGdlsnlmuTc7ls6gGq9qaET
-        c7zgr3w0Q7oy8sLQiOPPS4Wx8Q==
-X-Google-Smtp-Source: ABdhPJyCyDhy97NTajt/L+ZmaByBkxvp9KnxOaVEKwIx5lRydWZdS/DGH3dvRWY0NjD8L6XIb4eELw==
-X-Received: by 2002:a1c:2d5:: with SMTP id 204mr8871662wmc.181.1605173560677;
-        Thu, 12 Nov 2020 01:32:40 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g20sm5717032wmh.20.2020.11.12.01.32.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 01:32:39 -0800 (PST)
-Date:   Thu, 12 Nov 2020 10:32:37 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH v5 0/7] dma-buf: Performance improvements for system heap
- & a system-uncached implementation
-Message-ID: <20201112093237.GS401619@phenom.ffwll.local>
-Mail-Followup-To: Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>, Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>, James Jones <jajones@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
-References: <20201110034934.70898-1-john.stultz@linaro.org>
- <CAO_48GHNE6AyKv4k=3=2EVjfSZsgz4pjuMJ1xJojbuFU9a90EQ@mail.gmail.com>
+        id S1727489AbgKLJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:41:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57820 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbgKLJlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:41:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C7982ABCC;
+        Thu, 12 Nov 2020 09:41:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A4A4F1E130B; Thu, 12 Nov 2020 10:34:54 +0100 (CET)
+Date:   Thu, 12 Nov 2020 10:34:54 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/ext2: Use ext2_put_page
+Message-ID: <20201112093454.GA27697@quack2.suse.cz>
+References: <20201111205530.436692-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAO_48GHNE6AyKv4k=3=2EVjfSZsgz4pjuMJ1xJojbuFU9a90EQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20201111205530.436692-1-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:09:04AM +0530, Sumit Semwal wrote:
-> Hi John,
+On Wed 11-11-20 12:55:30, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> On Tue, 10 Nov 2020 at 09:19, John Stultz <john.stultz@linaro.org> wrote:
-> >
-> > Hey All,
-> >   So just wanted to send my last revision of my patch series
-> > of performance optimizations to the dma-buf system heap.
+> There are 3 places in namei.c where the equivalent of ext2_put_page() is
+> open coded on a page which was returned from the ext2_get_page() call
+> [through the use of ext2_find_entry() and ext2_dotdot()].
 > 
-> Thanks very much for your patches - I think the first 5 patches look good to me.
+> Move ext2_get_page() and ext2_put_page() to ext2.h in order to help
+> clarify the use of the get/put and then use ext2_put_page() in namei.c
 > 
-> I know there was a bit of discussion over adding a new system-uncached
-> heap v/s using a flag to identify that; I think I prefer the separate
-> heap idea, but lets ask one last time if any one else has any real
-> objections to it.
+> Also add a comment regarding the proper way to release the page returned
+> from ext2_find_entry() and ext2_dotdot().
 > 
-> Daniel, Christian: any comments from your side on this?
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-I do wonder a bit where the userspace stack for this all is, since tuning
-allocators without a full stack is fairly pointless. dma-buf heaps is a
-bit in a limbo situation here it feels like.
+Thanks. Good cleanup. I've added it to my tree.
 
-Plus I'm vary of anything related to leaking this kind of stuff beyond the
-dma-api because dma api maintainers don't like us doing that. But
-personally no concern on that front really, gpus need this. It's just that
-we do need solid justification I think if we land this. Hence back to
-first point.
-
-Ideally first point comes in the form of benchmarking on android together
-with a mesa driver (or mesa + some v4l driver or whatever it takes to
-actually show the benefits, I have no idea).
--Daniel
+								Honza
 
 > 
-> I am planning to merge this series to drm-misc this week if I hear no
-> objections.
-> >
-> > This series reworks the system heap to use sgtables, and then
-> > consolidates the pagelist method from the heap-helpers into the
-> > CMA heap. After which the heap-helpers logic is removed (as it
-> > is unused). I'd still like to find a better way to avoid some of
-> > the logic duplication in implementing the entire dma_buf_ops
-> > handlers per heap. But unfortunately that code is tied somewhat
-> > to how the buffer's memory is tracked. As more heaps show up I
-> > think we'll have a better idea how to best share code, so for
-> > now I think this is ok.
-> >
-> > After this, the series introduces an optimization that
-> > Ørjan Eide implemented for ION that avoids calling sync on
-> > attachments that don't have a mapping.
-> >
-> > Next, an optimization to use larger order pages for the system
-> > heap. This change brings us closer to the current performance
-> > of the ION allocation code (though there still is a gap due
-> > to ION using a mix of deferred-freeing and page pools, I'll be
-> > looking at integrating those eventually).
-> >
-> > Finally, a reworked version of my uncached system heap
-> > implementation I was submitting a few weeks back. Since it
-> > duplicated a lot of the now reworked system heap code, I
-> > realized it would be much simpler to add the functionality to
-> > the system_heap implementation itself.
-> >
-> > While not improving the core allocation performance, the
-> > uncached heap allocations do result in *much* improved
-> > performance on HiKey960 as it avoids a lot of flushing and
-> > invalidating buffers that the cpu doesn't touch often.
-> >
-> > Feedback on these would be great!
-> >
-> > thanks
-> > -john
-> >
-> > New in v5:
-> > * Added a comment explaining why the order sizes are
-> >   chosen as they are
-> >
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: Liam Mark <lmark@codeaurora.org>
-> > Cc: Laura Abbott <labbott@kernel.org>
-> > Cc: Brian Starkey <Brian.Starkey@arm.com>
-> > Cc: Hridya Valsaraju <hridya@google.com>
-> > Cc: Suren Baghdasaryan <surenb@google.com>
-> > Cc: Sandeep Patil <sspatil@google.com>
-> > Cc: Daniel Mentz <danielmentz@google.com>
-> > Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> > Cc: Ørjan Eide <orjan.eide@arm.com>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> > Cc: Simon Ser <contact@emersion.fr>
-> > Cc: James Jones <jajones@nvidia.com>
-> > Cc: linux-media@vger.kernel.org
-> > Cc: dri-devel@lists.freedesktop.org
-> >
-> > John Stultz (7):
-> >   dma-buf: system_heap: Rework system heap to use sgtables instead of
-> >     pagelists
-> >   dma-buf: heaps: Move heap-helper logic into the cma_heap
-> >     implementation
-> >   dma-buf: heaps: Remove heap-helpers code
-> >   dma-buf: heaps: Skip sync if not mapped
-> >   dma-buf: system_heap: Allocate higher order pages if available
-> >   dma-buf: dma-heap: Keep track of the heap device struct
-> >   dma-buf: system_heap: Add a system-uncached heap re-using the system
-> >     heap
-> >
-> >  drivers/dma-buf/dma-heap.c           |  33 +-
-> >  drivers/dma-buf/heaps/Makefile       |   1 -
-> >  drivers/dma-buf/heaps/cma_heap.c     | 324 +++++++++++++++---
-> >  drivers/dma-buf/heaps/heap-helpers.c | 270 ---------------
-> >  drivers/dma-buf/heaps/heap-helpers.h |  53 ---
-> >  drivers/dma-buf/heaps/system_heap.c  | 494 ++++++++++++++++++++++++---
-> >  include/linux/dma-heap.h             |   9 +
-> >  7 files changed, 753 insertions(+), 431 deletions(-)
-> >  delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
-> >  delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
-> >
-> > --
-> > 2.17.1
-> >
-> Thanks much,
+> ---
 > 
-> Best,
-> Sumit.
-
+> This was originally part of the kmap_thread() series here:
+> 
+> https://lore.kernel.org/lkml/20201009195033.3208459-37-ira.weiny@intel.com/
+> 
+> But this is really a valid clean up regardless of the
+> kmap_thread[local]() changes.
+> ---
+>  fs/ext2/dir.c   | 33 ++++++++-------------------------
+>  fs/ext2/ext2.h  | 27 +++++++++++++++++++++++++++
+>  fs/ext2/namei.c | 15 +++++----------
+>  3 files changed, 40 insertions(+), 35 deletions(-)
+> 
+> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+> index 70355ab6740e..8acd77a66ff4 100644
+> --- a/fs/ext2/dir.c
+> +++ b/fs/ext2/dir.c
+> @@ -66,12 +66,6 @@ static inline unsigned ext2_chunk_size(struct inode *inode)
+>  	return inode->i_sb->s_blocksize;
+>  }
+>  
+> -static inline void ext2_put_page(struct page *page)
+> -{
+> -	kunmap(page);
+> -	put_page(page);
+> -}
+> -
+>  /*
+>   * Return the offset into page `page_nr' of the last valid
+>   * byte in that page, plus one.
+> @@ -196,25 +190,6 @@ static bool ext2_check_page(struct page *page, int quiet)
+>  	return false;
+>  }
+>  
+> -static struct page * ext2_get_page(struct inode *dir, unsigned long n,
+> -				   int quiet)
+> -{
+> -	struct address_space *mapping = dir->i_mapping;
+> -	struct page *page = read_mapping_page(mapping, n, NULL);
+> -	if (!IS_ERR(page)) {
+> -		kmap(page);
+> -		if (unlikely(!PageChecked(page))) {
+> -			if (PageError(page) || !ext2_check_page(page, quiet))
+> -				goto fail;
+> -		}
+> -	}
+> -	return page;
+> -
+> -fail:
+> -	ext2_put_page(page);
+> -	return ERR_PTR(-EIO);
+> -}
+> -
+>  /*
+>   * NOTE! unlike strncmp, ext2_match returns 1 for success, 0 for failure.
+>   *
+> @@ -336,6 +311,8 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
+>   * returns the page in which the entry was found (as a parameter - res_page),
+>   * and the entry itself. Page is returned mapped and unlocked.
+>   * Entry is guaranteed to be valid.
+> + *
+> + * On Success ext2_put_page() should be called on *res_page.
+>   */
+>  struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+>  			const struct qstr *child, struct page **res_page)
+> @@ -401,6 +378,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+>  	return de;
+>  }
+>  
+> +/**
+> + * Return the '..' directory entry and the page in which the entry was found
+> + * (as a parameter - p).
+> + *
+> + * On Success ext2_put_page() should be called on *p.
+> + */
+>  struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
+>  {
+>  	struct page *page = ext2_get_page(dir, 0, 0);
+> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+> index 5136b7289e8d..b4403f96858b 100644
+> --- a/fs/ext2/ext2.h
+> +++ b/fs/ext2/ext2.h
+> @@ -16,6 +16,8 @@
+>  #include <linux/blockgroup_lock.h>
+>  #include <linux/percpu_counter.h>
+>  #include <linux/rbtree.h>
+> +#include <linux/mm.h>
+> +#include <linux/highmem.h>
+>  
+>  /* XXX Here for now... not interested in restructing headers JUST now */
+>  
+> @@ -745,6 +747,31 @@ extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
+>  extern int ext2_empty_dir (struct inode *);
+>  extern struct ext2_dir_entry_2 * ext2_dotdot (struct inode *, struct page **);
+>  extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, struct inode *, int);
+> +static inline void ext2_put_page(struct page *page)
+> +{
+> +	kunmap(page);
+> +	put_page(page);
+> +}
+> +
+> +static inline struct page * ext2_get_page(struct inode *dir, unsigned long n,
+> +				   int quiet)
+> +{
+> +	struct address_space *mapping = dir->i_mapping;
+> +	struct page *page = read_mapping_page(mapping, n, NULL);
+> +	if (!IS_ERR(page)) {
+> +		kmap(page);
+> +		if (unlikely(!PageChecked(page))) {
+> +			if (PageError(page) || !ext2_check_page(page, quiet))
+> +				goto fail;
+> +		}
+> +	}
+> +	return page;
+> +
+> +fail:
+> +	ext2_put_page(page);
+> +	return ERR_PTR(-EIO);
+> +}
+> +
+>  
+>  /* ialloc.c */
+>  extern struct inode * ext2_new_inode (struct inode *, umode_t, const struct qstr *);
+> diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+> index 5bf2c145643b..ea980f1e2e99 100644
+> --- a/fs/ext2/namei.c
+> +++ b/fs/ext2/namei.c
+> @@ -389,23 +389,18 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
+>  	if (dir_de) {
+>  		if (old_dir != new_dir)
+>  			ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
+> -		else {
+> -			kunmap(dir_page);
+> -			put_page(dir_page);
+> -		}
+> +		else
+> +			ext2_put_page(dir_page);
+>  		inode_dec_link_count(old_dir);
+>  	}
+>  	return 0;
+>  
+>  
+>  out_dir:
+> -	if (dir_de) {
+> -		kunmap(dir_page);
+> -		put_page(dir_page);
+> -	}
+> +	if (dir_de)
+> +		ext2_put_page(dir_page);
+>  out_old:
+> -	kunmap(old_page);
+> -	put_page(old_page);
+> +	ext2_put_page(old_page);
+>  out:
+>  	return err;
+>  }
+> -- 
+> 2.28.0.rc0.12.gb6a658bd00c9
+> 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
