@@ -2,114 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35192B1240
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE142B1243
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgKLW4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:56:41 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:54803 "EHLO ozlabs.org"
+        id S1727013AbgKLW5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:57:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbgKLW4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:56:40 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726611AbgKLW5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 17:57:10 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CXH5v1Fwnz9sTK;
-        Fri, 13 Nov 2020 09:56:35 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605221797;
-        bh=0pX8nIOtoAq1+7rtL+5P/hevnEzjcuHkAft2GGDIhU4=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 80B1C20872;
+        Thu, 12 Nov 2020 22:56:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605221811;
+        bh=qyrksHKsDkON9A2dFh/FzxMGbEbdaxKiptmd9uwhFpQ=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TtZxDNxU3z13HHyrf9s7gIXP64XILbwfku2j6lu9Yz/+0RStgSOOkuE5zLVnLd7//
-         osYHC21sPr93DlxYd+KSQxcprkxpUEFDaBW2At2SnyQOrwER4ADZO/u16Z2r+/n4pq
-         rDAISKtek7yPOFQHROyBMC1j0YixDhldNvZnRRmpS8CwPjxNo6vC4TLmKeTXD88gJb
-         083c7iWAf+hN3/+5QuP6FkPAbAvwS9KKkBo5Jqw3HjbiCq4JrYF5Mu1PEUv6VTFGD6
-         025fGiGXUMJgSfWTdAQgQ1Y4gmY4yFz+dyyMQ/LfrX2GE7/v9USxiL52emb+RgtFQ5
-         xRovR5gFq//0Q==
-Date:   Fri, 13 Nov 2020 09:56:32 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH bpf-next v5 01/34] mm: memcontrol: use helpers to read
- page's memcg data
-Message-ID: <20201113095632.489e66e2@canb.auug.org.au>
-In-Reply-To: <20201112221543.3621014-2-guro@fb.com>
-References: <20201112221543.3621014-1-guro@fb.com>
-        <20201112221543.3621014-2-guro@fb.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=IuuajhLUc48=qI8wDqPnmd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        b=ydfDKZRoTdcGhT8pZExOdxMueL888zbl3NizoJH4yLQf9340UTy2ShCMV74dYist9
+         sGvAYW5RMq+nyQ3d9Pzt/YdChvaHcctBj7WmE6B3KpLmNJNMQVhf9UZvrjq3jfMnJR
+         +KX0QnTPyihu5GQt30d5bLOUuVCDIZIPgr59H/g0=
+Date:   Thu, 12 Nov 2020 14:56:49 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vijayanand Jitta <vjitta@codeaurora.org>
+Cc:     Minchan Kim <minchan@kernel.org>, linux-mm <linux-mm@kvack.org>,
+        glider@google.com, Dan Williams <dan.j.williams@intel.com>,
+        broonie@kernel.org, mhiramat@kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yogesh Lal <ylal@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>
+Subject: Re: [PATCH] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+Message-Id: <20201112145649.3fcd9dc4d6d3db4bd26245bb@linux-foundation.org>
+In-Reply-To: <ed4a1e75-3e3a-4950-7bb5-3d83db7bf054@codeaurora.org>
+References: <1603372546-27118-1-git-send-email-vjitta@codeaurora.org>
+        <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
+        <282d7028-498d-50b3-37d4-2381571f9f9e@codeaurora.org>
+        <ed4a1e75-3e3a-4950-7bb5-3d83db7bf054@codeaurora.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=IuuajhLUc48=qI8wDqPnmd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 12 Nov 2020 18:26:24 +0530 Vijayanand Jitta <vjitta@codeaurora.org> wrote:
 
-Hi Roman,
+> >> 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
+> >> when we don't use page_owner
+> >> 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
+> >> when we use page_owner.
+> >>
+> >>
+> > 
+> > This idea looks fine to me. Andrew and others would like to hear your
+> > comments as well on this before implementing.
+> > 
+> > Thanks,
+> > Vijay
+> > 
+> 
+> Awaiting for comments from Andrew and others.
 
-On Thu, 12 Nov 2020 14:15:10 -0800 Roman Gushchin <guro@fb.com> wrote:
->
-> Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
->=20
-> Currently a non-slab kernel page which has been charged to a memory cgroup
-> can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
-> flag is defined as a page type (like buddy, offline, etc), so it takes a
-> bit from a page->mapped counter.  Pages with a type set can't be mapped to
-> userspace.
->
-.....
->=20
-> To make sure nobody uses a direct access, struct page's
-> mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
->=20
-> Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
-> Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+I don't actually understand the problem.
 
-What is going on here?  You are taking patches from linux-next and
-submitting them to another maintainer?  Why?
+What is it about page-owner that causes stackdepot to consume
+additional memory?  As far as I can tell, sizeof(struct stack_record)
+isn't affected by page-owner?
 
-You should not do that from Andrew's tree as it changes/rebases every
-so often ... and you should not have my SOB on there as it is only
-there because that patch is in linux-next i.e. I in the submission
-chain to linux-next - if the patch is to go via some other tree, then
-my SOB should not be there.  (The same may be true for Andrew's SOB.)
-In general you cannot add someone else's SOB to one of your patch
-submissions.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=IuuajhLUc48=qI8wDqPnmd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+tvaAACgkQAVBC80lX
-0GyiWwf+OVKz0JM8eCLNsSIf5uoCARVabzFp0O+8xY8jd7RPiDORD97UcrS0d7TE
-XHjO6q1llUGgw7KB+aZCr09pPIIvgF949tWY9yheehC7F/QhJkOFCMRHsxpJ77gT
-43aaHmTKSGMmd53qmu0+Ycz3htyhVRHcgYVp5ely2e761NKf6l89A6HsnkGdRn8v
-uJ61wv/o3pZeLxeXydX8k+ouOkG2M9zvkSRNYiz/JPb8PnrGqJReWdV5Gxq2nsCP
-pzrDBGtFGk+pMMa+t0pu0ml22WaMf7e2WHUmzKAng8DIApAsl/sbSDtpuv80Lpgf
-R/rwGpiYVyy1IIXB+CTXEjBOJsKpFg==
-=C+xA
------END PGP SIGNATURE-----
-
---Sig_/=IuuajhLUc48=qI8wDqPnmd--
