@@ -2,98 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621BE2B1208
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6AC2B1215
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgKLWte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:49:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgKLWte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:49:34 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61FCA2085B;
-        Thu, 12 Nov 2020 22:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605221360;
-        bh=N2fT6BovsDy9Ao7zSSbwkfqL4sixyk1hOcDkGMQ4iuY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gBGKEhePfVob0pPdepdYdfcFpZ71O1UuGLdwuEphsS6uLXqnub4VW9HGPgeaMVrcJ
-         RB5hum3NYpfQaSCzYWbkC2uEBCwjZnX/0BpWFtRDOsSQg8scFebwFeRTiPkCyKBxjy
-         wcYYCNbTUAR6xawMwyumo4CLQ9h6ZiI3/mcwSdGo=
-Date:   Thu, 12 Nov 2020 14:49:19 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert
- "mm/vunmap: add cond_resched() in vunmap_pmd_range"
-Message-Id: <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
-In-Reply-To: <20201112200101.GC123036@google.com>
-References: <20201105170249.387069-1-minchan@kernel.org>
-        <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
-        <20201107083939.GA1633068@google.com>
-        <20201112200101.GC123036@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727122AbgKLWti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:49:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726759AbgKLWth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 17:49:37 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A382C0613D1;
+        Thu, 12 Nov 2020 14:49:37 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id u19so4714909lfr.7;
+        Thu, 12 Nov 2020 14:49:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JRRndN9/UEYEu3XOF4YS3nhu9zqLn65PBOWVgCTZnIE=;
+        b=JsLA4C9Vc4ei9b7IMzUQkm97p+fdH8lzlCwNFNdB8JW6I/k1o4PJaprSUTuR22Dj/L
+         tV26fqARhKHX8M86SxqR2wWfet0lZaKj59VPs+aqeGzvhoWCfcWUtwA+KZu84T6L0Gs+
+         B9QX8oSzx4RK6LPogfy0RjH9E/jCqgBNVXTHK3kScLmEcHu61cWB0AmdzlLJ/ag2xzb7
+         4yOuW6CrVg/qQKh3CqTHuL9/kYsL38jnynMSVkVTvdLTISM+o6H2oYKO85kZMlCwZTHZ
+         /RBrfrfd5fRSKLJhwopiYigIGxsKF4S8ITHQ9X8zm1v2wQxWax/B4CvHbzFQzLIZeYOx
+         l+SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JRRndN9/UEYEu3XOF4YS3nhu9zqLn65PBOWVgCTZnIE=;
+        b=pDXVFC4yUPWwp2trdKAZTSQ7CLhATUHXg41k9NRGfWt7vDjl5p2bB4sOUU+y1yrB5l
+         yEF4I0jyWITjm91WspGuKltP1mq7K8w3Rak4qYcvdf8jfvQICX3xyE7OPDMMZeb4iJ6l
+         L2G/3aa3+iKEv1KjFk//n7Hr622VfpP+QvmY2Nme7dLuiSgYDRahBenUr8JDQW1PTRaX
+         y/P2hqjX3NGISu8WaUc5dsoEMIdio6ERYBN7yS6BZYx/CQ549ROsw6U+GFNwjmGPBTp5
+         Vk6dqft3bJYpOMJXDj4OBS7uO9NpnnfEeNemyy2D1F+Low078zMiYtn413kcl+LB8STy
+         9jzA==
+X-Gm-Message-State: AOAM5324DTWFSqNykjK7rr9bq+TpPav88QU4Q/dMkhAp8Nm+saV8cgGM
+        R/fDa3Iumdqo5B9SymZP5Ug=
+X-Google-Smtp-Source: ABdhPJzqMHciZtLA09dlBKKcc8/W6mwRKVJimZ7efGgp43lQlr3Z1CkeXygF1oL9zW64dwTQyzUagA==
+X-Received: by 2002:a19:e08:: with SMTP id 8mr581771lfo.441.1605221375534;
+        Thu, 12 Nov 2020 14:49:35 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.gmail.com with ESMTPSA id z187sm1006536lfc.126.2020.11.12.14.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 14:49:34 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/4] Introduce Embedded Controller driver for Acer A500
+Date:   Fri, 13 Nov 2020 01:49:19 +0300
+Message-Id: <20201112224923.4028-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 12:01:01 -0800 Minchan Kim <minchan@kernel.org> wrote:
+This series adds support for the Embedded Controller which is found on
+Acer Iconia Tab A500 (Android tablet device).
 
-> 
-> On Sat, Nov 07, 2020 at 12:39:39AM -0800, Minchan Kim wrote:
-> > Hi Andrew,
-> > 
-> > On Fri, Nov 06, 2020 at 05:59:33PM -0800, Andrew Morton wrote:
-> > > On Thu,  5 Nov 2020 09:02:49 -0800 Minchan Kim <minchan@kernel.org> wrote:
-> > > 
-> > > > This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
-> > > > 
-> > > > While I was doing zram testing, I found sometimes decompression failed
-> > > > since the compression buffer was corrupted. With investigation,
-> > > > I found below commit calls cond_resched unconditionally so it could
-> > > > make a problem in atomic context if the task is reschedule.
-> > > > 
-> > > > Revert the original commit for now.
->
-> How should we proceed this problem?
->
+The Embedded Controller is ENE KB930 and it's running firmware customized
+for the A500. The firmware interface may be reused by some other sibling
+Acer tablets, although none of those tablets are supported in upstream yet.
 
-(top-posting repaired - please don't).
+Changelog:
 
-Well, we don't want to reintroduce the softlockup reports which
-e47110e90584a2 fixed, and we certainly don't want to do that on behalf
-of code which is using the unmap_kernel_range() interface incorrectly.
+v6: - Fixed dtschema-checker warning about a wrong indentation, reported
+      by kernel bot for v5.
 
-So I suggest either
+v5: - No changes. Re-sending again in order to check whether dtschema-bot
+      warning is resolved now, which didn't happen in v4 because bot used
+      older 5.9 kernel code base instead of 5.10.
 
-a) make zs_unmap_object() stop doing the unmapping from atomic context or
+v4: - No code changes. Added r-b from Rob Herring and Sebastian Reichel.
+      Re-sending for 5.11.
 
-b) figure out whether the vmalloc unmap code is *truly* unsafe from
-   atomic context - perhaps it is only unsafe from interrupt context,
-   in which case we can rework the vmalloc.c checks to reflect this, or
+    - The v3 of LED driver was applied by Pavel Machek and already presents
+      in v5.10 kernel.
 
-c) make the vfree code callable from all contexts.  Which is by far
-   the preferred solution, but may be tough.
+v3: - Rebased on a recent linux-next. Fixed new merge conflict and dropped
+      "regmap: Use flexible sleep" patch because it's already applied.
+
+v2: - Factored out KB930 device-tree binding into a separate file, like it
+      was suggested by Lubomir Rintel.
+
+    - Switched to use regmap API like it was suggested by Lubomir Rintel.
+
+    - Added patch "regmap: Use flexible sleep" which allows not to hog
+      CPU while LED is switching state.
+
+    - Corrected MODULE_LICENSE to use "GPL" in all patches.
+
+    - Corrected MFD driver Kconfig entry like it was suggested by
+      Lubomir Rintel, it now depends on I2C.
+
+    - Switched to use I2C probe_new() in the MFD driver.
+
+    - Renamed the global pm_off variable, like it was suggested by
+      Lubomir Rintel and Lee Jones.
+
+    - Dropped serial number from the battery driver because I realized
+      that it's not a battery serial, but a device serial.
+
+    - Battery driver now uses dev_err_probe(), like it was suggested by
+      Sebastian Reichel.
+
+    - Dropped legacy LED_ON usage from the LED driver and renamed the
+      LEDs, like it was suggested by Pavel Machek. I also checked whether
+      LED-name customization via device-tree could be needed by other
+      potentially compatible devices and it shouldn't be needed, anyways it
+      won't be difficult to extend the code even if I'm wrong.
 
 
-Or maybe not so tough - if the only problem in the vmalloc code is the
-use of mutex_trylock() from irqs then it may be as simple as switching
-to old-style semaphores and using down_trylock(), which I think is
-irq-safe.
+Dmitry Osipenko (4):
+  dt-bindings: mfd: Add ENE KB930 Embedded Controller binding
+  mfd: Add driver for Embedded Controller found on Acer Iconia Tab A500
+  power: supply: Add battery gauge driver for Acer Iconia Tab A500
+  ARM: tegra: acer-a500: Add Embedded Controller
 
-However old-style semaphores are deprecated.  A hackyish approach might
-be to use an rwsem always in down_write mode and use
-down_write_trylock(), which I think is also callable from interrrupt
-context.
+ .../devicetree/bindings/mfd/ene-kb930.yaml    |  65 ++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |  17 +
+ drivers/mfd/Kconfig                           |  12 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/acer-ec-a500.c                    | 203 ++++++++++++
+ drivers/power/supply/Kconfig                  |   6 +
+ drivers/power/supply/Makefile                 |   1 +
+ drivers/power/supply/acer_a500_battery.c      | 297 ++++++++++++++++++
+ 8 files changed, 602 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
+ create mode 100644 drivers/mfd/acer-ec-a500.c
+ create mode 100644 drivers/power/supply/acer_a500_battery.c
 
-But I have a feeling that there are other reasons why vfree shouldn't
-be called from atomic context, apart from the mutex_trylock-in-irq
-issue.
+-- 
+2.29.2
+
