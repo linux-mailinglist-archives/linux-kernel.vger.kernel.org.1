@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74032B0463
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235D92B046A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgKLLx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:53:26 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:41346 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728181AbgKLLwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:52:36 -0500
-Received: by mail-lj1-f194.google.com with SMTP id v20so5767686ljk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:52:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xeIxKSXAFIucEStiMPJy2kOgKe0FiyFd2v0/6ZVQ1QU=;
-        b=gCs8p34Zg2L2/Q22YscbElq0Al7CQEqleoS3yZ5JmT1evQA0HKJC0JQj6tcq7uP/5W
-         Q9hkbcnp1g9OyTU5SG2rfDCYGHGLxdlGXcs3/ZsiV8R1zE1T4iMnMAoHfZ38fKMK5GJp
-         +vAAzp0P4jbjKFejTRsysIbqg2WOP8oHZ/5FKpnnw4n98f93dJ6vG79P9vtSoird6LOt
-         MQMD+TrXsVh7pt1PO/qCcRTcq2mdjXtweOjUBdFHGUfaFwFsLBwZbW9J38qlfoh5Gwpw
-         8NJhAT8ITHkvtBDgKOKiWgWTzyk6SBUJUsJaDGzHaVD9hi/ApUe1CjiCJTysbNmlzfsq
-         alXg==
-X-Gm-Message-State: AOAM531jnhAw1gjWm4E2wxcpMI65AkTsNKlZuPJDI9a0D2VVsIL73rGo
-        i9plnb16I41AIvsxkvwbyWLEOqSDoOVGfg==
-X-Google-Smtp-Source: ABdhPJynjI0b+cH0LHiuqd8tpqrm2F+imoYiwcGKp5xC5Ge9K66sNzsc9E520c2MUNN1NT5qPXdG8Q==
-X-Received: by 2002:a2e:b605:: with SMTP id r5mr9396654ljn.346.1605181948518;
-        Thu, 12 Nov 2020 03:52:28 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id y6sm534939lfh.99.2020.11.12.03.52.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 03:52:27 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id j205so7958450lfj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:52:27 -0800 (PST)
-X-Received: by 2002:a19:e04:: with SMTP id 4mr2783488lfo.193.1605181947272;
- Thu, 12 Nov 2020 03:52:27 -0800 (PST)
+        id S1728142AbgKLLx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:53:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728247AbgKLLxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:53:32 -0500
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 670A922228;
+        Thu, 12 Nov 2020 11:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605182011;
+        bh=StUZENy+EqpA+v5bMTo8klXuvmlElJqapUnjCI4L0FI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=amtd+lbLS9WC8iApliLmMWZ1Qf1MuZA52rP/yrEjsWbrvzVAiQ/o2Wq7PCHBGHlCL
+         3E7bZDuicVbOmgutSHqisGc7Nn+eIEqp3ahyFCw2B13/QGi0go1tHSSQNfe500wMnF
+         9bn90zCIl4DiKp/RRas8eIXrUk6q+KxmhztKyH7Q=
+Received: by mail-ej1-f45.google.com with SMTP id cw8so7271519ejb.8;
+        Thu, 12 Nov 2020 03:53:31 -0800 (PST)
+X-Gm-Message-State: AOAM531v9fFC/5nBgvvRwlA7ase6zMnf1aXp4oV+R816vYqrdEE41/7n
+        a34ssAa6yijs1dHCIhioz2vjH0nw/SvJ9XEdWPA=
+X-Google-Smtp-Source: ABdhPJwpu3Qzv0aVpWz0TpMkSYylnZML4PSBTVDNybtAlg8bUufujwuSXvcMDt8/roomQlOeRRweOPWtpYSkoXboybg=
+X-Received: by 2002:a17:907:d1e:: with SMTP id gn30mr31142306ejc.148.1605182009793;
+ Thu, 12 Nov 2020 03:53:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106213655.1838861-1-lee.jones@linaro.org> <20201106213655.1838861-21-lee.jones@linaro.org>
-In-Reply-To: <20201106213655.1838861-21-lee.jones@linaro.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Thu, 12 Nov 2020 19:52:14 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66qjLmQEAQdNqpx6HZ2A6O=BqygAn2uepFXUYM0ArZV8A@mail.gmail.com>
-Message-ID: <CAGb2v66qjLmQEAQdNqpx6HZ2A6O=BqygAn2uepFXUYM0ArZV8A@mail.gmail.com>
-Subject: Re: [PATCH v2 20/23] mtd: nand: raw: sunxi_nand: Document
- 'sunxi_nfc's 'caps' member
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Boris BREZILLON <b.brezillon.dev@gmail.com>,
-        Qiang Yu <yuq825@gmail.com>, Dmitriy B <rzk333@gmail.com>,
-        Sergey Lapin <slapin@ossfans.org>,
-        linux-mtd@lists.infradead.org
+References: <CGME20201112115107eucas1p1abe7589e6caffc579c22d39395f1efa0@eucas1p1.samsung.com>
+ <20201112115106.16224-1-l.stelmach@samsung.com>
+In-Reply-To: <20201112115106.16224-1-l.stelmach@samsung.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 12 Nov 2020 12:53:17 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPeAwUG4fRxb5KANg90SLAmJ27dj9fO5e2nWrbVGqpzRFg@mail.gmail.com>
+Message-ID: <CAJKOXPeAwUG4fRxb5KANg90SLAmJ27dj9fO5e2nWrbVGqpzRFg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/5] AX88796C SPI Ethernet Adapter
+To:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        =?UTF-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 7, 2020 at 5:37 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Thu, 12 Nov 2020 at 12:51, =C5=81ukasz Stelmach <l.stelmach@samsung.com>=
+ wrote:
 >
-> Fixes the following W=1 kernel build warning(s):
+> This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+> found on ARTIK5 evaluation board. The driver has been ported from a
+> v3.10.9 vendor kernel for ARTIK5 board.
 >
->  drivers/mtd/nand/raw/sunxi_nand.c:250: warning: Function parameter or member 'caps' not described in 'sunxi_nfc'
+> Changes in v6:
+>   - fixed typos in Kconfig
+>   - checked argument value in ax88796c_set_tunable
+>   - updated tags in commit messages
 >
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>
-> Cc: Qiang Yu <yuq825@gmail.com>
-> Cc: Dmitriy B <rzk333@gmail.com>
-> Cc: Sergey Lapin <slapin@ossfans.org>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Changes in v5:
+>   - coding style (local variable declarations)
+>   - added spi0 node in the DT binding example and removed
+>     interrupt-parent
+>   - removed comp module parameter
+>   - added CONFIG_SPI_AX88796C_COMPRESSION option to set the initial
+>     state of SPI compression
+>   - introduced new ethtool tunable "spi-compression" to controll SPI
+>     transfer compression
+>   - removed unused fields in struct ax88796c_device
+>   - switched from using buffers allocated on stack for SPI transfers
+>     to DMA safe ones embedded in struct ax_spi and allocated with
+>     kmalloc()
+>
+> Changes in v4:
+>   - fixed compilation problems in asix,ax88796c.yaml and in
+>   ax88796c_main.c introduced in v3
+>
+> Changes in v3:
+>   - modify vendor-prefixes.yaml in a separate patch
+>   - fix several problems in the dt binding
+>     - removed unnecessary descriptions and properties
+>     - changed the order of entries
+>     - fixed problems with missing defines in the example
+>   - change (1 << N) to BIT(N), left a few (0 << N)
+>   - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
+>     ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
+>     ax88796c_set_mac_address() with appropriate kernel functions.
+>   - disable PHY auto-polling in MAC and use PHYLIB to track the state
+>     of PHY and configure MAC
+>   - propagate return values instead of returning constants in several
+>     places
+>   - add WARN_ON() for unlocked mutex
+>   - remove local work queue and use the system_wq
+>   - replace phy_connect_direct() with phy_connect() and move
+>     devm_register_netdev() to the end of ax88796c_probe()
+>     (Unlike phy_connect_direct() phy_connect() does not crash if the
+>     network device isn't registered yet.)
+>   - remove error messages on ENOMEM
+>   - move free_irq() to the end of ax88796c_close() to avoid race
+>     condition
+>   - implement flow-control
+>
+> Changes in v2:
+>   - use phylib
+>   - added DT bindings
+>   - moved #includes to *.c files
+>   - used mutex instead of a semaphore for locking
+>   - renamed some constants
+>   - added error propagation for several functions
+>   - used ethtool for dumping registers
+>   - added control over checksum offloading
+>   - remove vendor specific PM
+>   - removed macaddr module parameter and added support for reading a MAC
+>     address from platform data (e.g. DT)
+>   - removed dependency on SPI from NET_VENDOR_ASIX
+>   - added an entry in the MAINTAINERS file
+>   - simplified logging with appropriate netif_* and netdev_* helpers
+>   - lots of style fixes
+>
+> =C5=81ukasz Stelmach (5):
+>   dt-bindings: vendor-prefixes: Add asix prefix
+>   dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
+>   net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
+>   ARM: dts: exynos: Add Ethernet to Artik 5 board
+>   ARM: defconfig: Enable ax88796c driver
 
-FWIW,
+Please don't send patches which were applied. It confuses everyone and
+could cause double-applying through different tree.
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Best regards,
+Krzysztof
