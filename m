@@ -2,158 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86032B11E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601752B1221
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgKLWlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:41:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45380 "EHLO mail.kernel.org"
+        id S1727935AbgKLWuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:50:23 -0500
+Received: from elvis.franken.de ([193.175.24.41]:57131 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgKLWlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:41:16 -0500
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A22022227
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 22:41:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605220875;
-        bh=TIUppCALNwaHlE5rK5c0ydSZxnQCuBpff8wpCFgyPXE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MxkYQWOQvddFXoAbsK9WzGvltIHvSYyAImBjx/iqjmq5JPqQIJM5kJcT7E0gchjJ/
-         I40Tg/FhF8332GtfozRItHgnMgFWowQZksocAsig3rm3NnrlFHFwCI71t9jV6GSGPF
-         lY2hTk2fOwnWmbP/NsAVZ9YR+jwNrhnKMZNeTRg4=
-Received: by mail-wm1-f50.google.com with SMTP id c9so6573840wml.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 14:41:15 -0800 (PST)
-X-Gm-Message-State: AOAM5337BxjBpIz3XzzyB8zFZ+9vtWH+5o+ypiq0SYkMeAV/1YxW5Sqj
-        u1q0q2YnZwtQPFWXrAqquTRPuyI6vr+TTPmoEBCPRA==
-X-Google-Smtp-Source: ABdhPJwjDJ5n6cZYqwYLuSjOEw1F3mMY5MAOPzOD3AxIPaeWfMnaswzLgqo3yGilV0Z1PSDHO7VmDptEJa3o6gGkW78=
-X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr44938wmg.21.1605220872356;
- Thu, 12 Nov 2020 14:41:12 -0800 (PST)
+        id S1727216AbgKLWuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 17:50:20 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kdLQ2-0005gc-02; Thu, 12 Nov 2020 23:50:18 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9DFAEC4DE1; Thu, 12 Nov 2020 23:41:05 +0100 (CET)
+Date:   Thu, 12 Nov 2020 23:41:05 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/18] mips: dts: jz47x: Harmonize EHCI/OHCI DT nodes
+ name
+Message-ID: <20201112224105.GC19695@alpha.franken.de>
+References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
+ <20201111091552.15593-8-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
- <20201106174359.GA24109@wind.enjellic.com> <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com>
- <20201107150930.GA29530@wind.enjellic.com> <c7157bc6-8a65-11f4-e961-17163730df5d@intel.com>
- <20201112205819.GA9172@wind.enjellic.com> <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com>
-In-Reply-To: <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 12 Nov 2020 14:41:00 -0800
-X-Gmail-Original-Message-ID: <CALCETrWaUDO1eG7PE_bpA2C_OVeNZ7VbEVaznkg2U7Qx=X=oEw@mail.gmail.com>
-Message-ID: <CALCETrWaUDO1eG7PE_bpA2C_OVeNZ7VbEVaznkg2U7Qx=X=oEw@mail.gmail.com>
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Dr. Greg" <greg@enjellic.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Mikko Ylinen <mikko.ylinen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111091552.15593-8-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 1:31 PM Dave Hansen <dave.hansen@intel.com> wrote:
->
-> On 11/12/20 12:58 PM, Dr. Greg wrote:
-> > @@ -270,11 +270,10 @@ static int sgx_vma_mprotect(struct vm_area_struct *vma,
-> >                           struct vm_area_struct **pprev, unsigned long start,
-> >                           unsigned long end, unsigned long newflags)
-> >  {
-> > -     int ret;
-> > +     struct sgx_encl *encl = vma->vm_private_data;
-> >
-> > -     ret = sgx_encl_may_map(vma->vm_private_data, start, end, newflags);
-> > -     if (ret)
-> > -             return ret;
-> > +     if ( test_bit(SGX_ENCL_INITIALIZED, &encl->flags) )
-> > +             return -EACCES;
-> >
-> >       return mprotect_fixup(vma, pprev, start, end, newflags);
-> >  }
->
-> This rules out mprotect() on running enclaves.  Does that break any
-> expectations from enclave authors, or take away capabilities that folks
-> need?
+On Wed, Nov 11, 2020 at 12:15:41PM +0300, Serge Semin wrote:
+> In accordance with the Generic EHCI/OHCI bindings the corresponding node
+> name is suppose to comply with the Generic USB HCD DT schema, which
+> requires the USB nodes to have the name acceptable by the regexp:
+> "^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
+> nodes are correctly named.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Acked-by: Paul Cercueil <paul@crapouillou.net>
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/mips/boot/dts/ingenic/jz4740.dtsi | 2 +-
+>  arch/mips/boot/dts/ingenic/jz4770.dtsi | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-It certainly prevents any scheme in which an enclave coordinates with
-the outside world to do W-and-then-X JIT inside.  I'm also not
-convinced it has any real effect at all unless there's some magic I
-missed to prevent someone from using mmap(2) to effectively change
-permissions.
+applied to mips-next.
 
-Everyone, IMO this SGX1 - vs - SGX2 - vs - EDMM discussion is entirely
-missing the point and is a waste of everyone's time.  Let's pretend
-we're building a system that has nothing to do with SGX and requires
-no special hardware support at all.  It works like this:
+Thomas.
 
-A user program opens /dev/xyz and gets back an fd that represents 16
-MB of memory.  The user program copies some data from disk (or network
-or whatever) into fd (using write(2) or ioctl(2) or mmap(2) and
-memcpy) and then mmaps some of the fd as R and some as RW and some as
-RX, and then the user program jumps into the RX mapping.
-
-If we replace /dev/xyz with /dev/zero, then this simply does not work
-under a reasonably strict W^X policy -- a lot of people think it's
-quite reasonable for an OS to prevent a user program from obtaining an
-X mapping containing anything other than a mapping from a file on
-disk.  To solve this, we can do one of at least three things:
-
-a) You can't use /dev/xyz unless you have permission to create WX
-memory or to at least create W memory and then change it to X.
-
-b) You can do whatever you want with /dev/xyz, and LSM policies are
-blatantly violated as a result.
-
-c) The /dev/xyz API is clever and tracks, page-by-page, whether the
-user intends to ever write and/or execute that page, and behaves
-accordingly.
-
-This patchset takes the approach (c).  The actual clever policy isn't
-here yet, and we don't really know whether it will ever appear, but
-the API is set up to enable such a policy to be written.  This appears
-to be a win for everyone, since the code is pretty clean and the API
-is straightforward.
-
-
-Now, back to SGX.  There are only two things that are remotely
-SGX-specific here.  First, SGX requires this unusual memory model in
-which there is an executable mapping of (part of) a device node. [0]
-Second, early SGX hardware had this oddity that the kernel could set a
-per-backing-page (as opposed to per-PTE) bit to permanently disable X
-on a given /dev/sgx page.  Building a security model around that would
-have been a hack, and it DOES NOT WORK on new hardware.  So can we
-please stop discussing it?  None of the actual interesting parts of
-this have much to do with SGX per se and have nothing whatsoever to do
-with EDMM or any other Intel buzzword.
-
-Heck, if anyone actually cared to do so, something with essentially
-the same semantics could probably be built using SEV hardware instead
-of SGX, and it would have exactly the same issue if we wanted it to
-work for tasks that didn't have access to /dev/kvm.
-
-
-[0] SGX doesn't *really* require this.  We could set things up so that
-you do mmap(..., MAP_ANONYMOUS, fd, ...) and then somehow introduce
-that mapping to SGX.  I think the result would be too disgusting to
-seriously consider.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
