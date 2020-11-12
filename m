@@ -2,194 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5411A2B09DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C802B09E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728843AbgKLQYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:24:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728653AbgKLQYy (ORCPT
+        id S1728908AbgKLQ01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:26:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41961 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728426AbgKLQ01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:24:54 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C057C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:24:54 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id t191so5791091qka.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 08:24:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bIYmdruPemXDJ3Xp68i09oRAPpoygt4oEDIIpGtbWd4=;
-        b=MfnOv52Sl2tr/+7U7bOXFlHJxRPRo2cVdp6cQyGR+2XWM1DldIwDbCEM1pG3CbXsIL
-         is2vKvZcrHfsFwGoloEtwzdd6SyJPna5sxFpUKhifDVcVWPVZU1RxZ09Vs0B70qianHh
-         MM7h7TwsDn6k2UkoFXoSCw+wI88f1D33RVdmycmTmvrIAlFmpsM0P5YFOC1cyidHgBk4
-         Sivhh16GAKQF+E8iornHQtqPtpT+Hpi9v4cFiAqA+D0ZlM0Ewenr2wK8IIhXjAJIdpE/
-         6P5Sz7pJtctxGc4JAj+gmUNnN/Br0Ra4exOxH4xUdxx/XKVJCj9J5yOt7X/xOdpAU89T
-         xrvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bIYmdruPemXDJ3Xp68i09oRAPpoygt4oEDIIpGtbWd4=;
-        b=K5JZaaXaU3UBUI1NwnXpDCbX11kLg9YcdQed/WwxGld03/PaKJqq+QuYpcs2pAi8I0
-         sOfgNWYbUJVXmApVyJaXLAZdms27JG429fUfvRDf2sDjli7+X5ysLyF7bFm6mx/fFxdQ
-         KEyKFboM/YiJdMGDfo4LIiBOcffCiksvvMuQ8h+sKUHOh9O+2LnQNV1LlHCy6XFq5PXF
-         RCNo+fAjojL4/qH6kz8ZlVrBJdVPx6OG4lJ7cZzv0Oni26AmTtFACu7s6iOVi2NXjhvB
-         Tywy5QVY2T2O0XD0U2y0PoE4dLb5VPLZDX3+9Vnu3bozXaBFIMgKN69rZ2LrCc56MrZS
-         on3A==
-X-Gm-Message-State: AOAM530WxtjGd7OTJtvMplta399uZG9sFDrPTY5vCc+F6O2hXsnOE4xB
-        jTY8MJePH+yzMq63+mN/7AtRE3MLUCmisQ==
-X-Google-Smtp-Source: ABdhPJz3bBHwHr7iBtOgV9aSEUhCSmoPjhng/xQ6gvFywTHE5XT7O9LRuZOOs/APZv07THoTT8w+zw==
-X-Received: by 2002:ae9:c211:: with SMTP id j17mr556311qkg.458.1605198293350;
-        Thu, 12 Nov 2020 08:24:53 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:7257])
-        by smtp.gmail.com with ESMTPSA id c203sm893673qkg.60.2020.11.12.08.24.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 08:24:52 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:23:03 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
+        Thu, 12 Nov 2020 11:26:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605198384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6gADRODkz7b7+htThGHhl7MJRqc4Axl7JtPNCwFSxMo=;
+        b=L3+F2btLuVFoUvLP/niAIoP3+Wf8u4ELcs+NNh8JoMzhy+hB6XVl/27Sqk03fXvY1E2kEB
+        wpG0K4bkPvpzO/0rhzcvirR+WoVl5uzggVxZ+f/21VSNxw0sNhkfnzYUtcdMqXe2hdL8Ll
+        48ztaHLwzUayKEkVjOOhckMRPn2Skto=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-PJNcsBbxNXqtP0PHvk9--g-1; Thu, 12 Nov 2020 11:26:19 -0500
+X-MC-Unique: PJNcsBbxNXqtP0PHvk9--g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B194E18B9ED2;
+        Thu, 12 Nov 2020 16:26:17 +0000 (UTC)
+Received: from [10.36.115.61] (ovpn-115-61.ams2.redhat.com [10.36.115.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A468E55776;
+        Thu, 12 Nov 2020 16:26:15 +0000 (UTC)
+Subject: Re: [PATCH v3 5/7] mm, page_alloc: cache pageset high and batch in
+ struct zone
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Michal Hocko <mhocko@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/2] mm: memcg/slab: pre-allocate obj_cgroups for slab
- caches with SLAB_ACCOUNT
-Message-ID: <20201112162303.GB873621@cmpxchg.org>
-References: <20201110195753.530157-1-guro@fb.com>
- <20201110195753.530157-2-guro@fb.com>
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <20201111092812.11329-1-vbabka@suse.cz>
+ <20201111092812.11329-6-vbabka@suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <34b9c883-8b77-435f-73b9-ccaa1677fc52@redhat.com>
+Date:   Thu, 12 Nov 2020 17:26:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110195753.530157-2-guro@fb.com>
+In-Reply-To: <20201111092812.11329-6-vbabka@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:57:53AM -0800, Roman Gushchin wrote:
-> In general it's unknown in advance if a slab page will contain
-> accounted objects or not. In order to avoid memory waste, an
-> obj_cgroup vector is allocated dynamically when a need to account
-> of a new object arises. Such approach is memory efficient, but
-> requires an expensive cmpxchg() to set up the memcg/objcgs pointer,
-> because an allocation can race with a different allocation on another
-> cpu.
+On 11.11.20 10:28, Vlastimil Babka wrote:
+> All per-cpu pagesets for a zone use the same high and batch values, that are
+> duplicated there just for performance (locality) reasons. This patch adds the
+> same variables also to struct zone as a shared copy.
 > 
-> But in some common cases it's known for sure that a slab page will
-> contain accounted objects: if the page belongs to a slab cache with a
-> SLAB_ACCOUNT flag set. It includes such popular objects like
-> vm_area_struct, anon_vma, task_struct, etc.
+> This will be useful later for making possible to disable pcplists temporarily
+> by setting high value to 0, while remembering the values for restoring them
+> later. But we can also immediately benefit from not updating pagesets of all
+> possible cpus in case the newly recalculated values (after sysctl change or
+> memory online/offline) are actually unchanged from the previous ones.
 > 
-> In such cases we can pre-allocate the objcgs vector and simple assign
-> it to the page without any atomic operations, because at this early
-> stage the page is not visible to anyone else.
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+>   include/linux/mmzone.h |  6 ++++++
+>   mm/page_alloc.c        | 16 ++++++++++++++--
+>   2 files changed, 20 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-
-That's a nice optimization!
-
-Some comments inline:
-
-> @@ -485,14 +485,20 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->   * set_page_objcgs - associate a page with a object cgroups vector
->   * @page: a pointer to the page struct
->   * @objcgs: a pointer to the object cgroups vector
-> + * @atomic: save the value atomically
->   *
->   * Atomically associates a page with a vector of object cgroups.
->   */
->  static inline bool set_page_objcgs(struct page *page,
-> -					struct obj_cgroup **objcgs)
-> +				   struct obj_cgroup **objcgs, bool atomic)
-
-bool parameters make callsites pretty hard to understand - unless the
-function interface obviously has two modes (read vs write etc.), which
-isn't the case here.
-
-> -	return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs |
-> -			MEMCG_DATA_OBJCGS);
-> +	unsigned long memcg_data = (unsigned long) objcgs | MEMCG_DATA_OBJCGS;
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 7385871768d4..bb9188de2718 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -470,6 +470,12 @@ struct zone {
+>   #endif
+>   	struct pglist_data	*zone_pgdat;
+>   	struct per_cpu_pageset __percpu *pageset;
+> +	/*
+> +	 * the high and batch values are copied to individual pagesets for
+> +	 * faster access
+> +	 */
+> +	int pageset_high;
+> +	int pageset_batch;
+>   
+>   #ifndef CONFIG_SPARSEMEM
+>   	/*
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 8b43d6d1a288..25bc9bb77696 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5912,6 +5912,9 @@ static void build_zonelists(pg_data_t *pgdat)
+>    * Other parts of the kernel may not check if the zone is available.
+>    */
+>   static void pageset_init(struct per_cpu_pageset *p);
+> +/* These effectively disable the pcplists in the boot pageset completely */
+> +#define BOOT_PAGESET_HIGH	0
+> +#define BOOT_PAGESET_BATCH	1
+>   static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
+>   static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
+>   
+> @@ -6301,8 +6304,8 @@ static void pageset_init(struct per_cpu_pageset *p)
+>   	 * need to be as careful as pageset_update() as nobody can access the
+>   	 * pageset yet.
+>   	 */
+> -	pcp->high = 0;
+> -	pcp->batch = 1;
+> +	pcp->high = BOOT_PAGESET_HIGH;
+> +	pcp->batch = BOOT_PAGESET_BATCH;
+>   }
+>   
+>   /*
+> @@ -6326,6 +6329,13 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
+>   		new_batch = max(1UL, 1 * new_batch);
+>   	}
+>   
+> +	if (zone->pageset_high == new_high &&
+> +	    zone->pageset_batch == new_batch)
+> +		return;
 > +
-> +	if (atomic)
-> +		return !cmpxchg(&page->memcg_data, 0, memcg_data);
+> +	zone->pageset_high = new_high;
+> +	zone->pageset_batch = new_batch;
 > +
-> +	page->memcg_data = memcg_data;
-> +	return true;
->  }
->  #else
->  static inline struct obj_cgroup **page_objcgs(struct page *page)
-> @@ -506,7 +512,7 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->  }
->  
->  static inline bool set_page_objcgs(struct page *page,
-> -					struct obj_cgroup **objcgs)
-> +				   struct obj_cgroup **objcgs, bool atomic)
->  {
->  	return true;
->  }
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 69a2893a6455..37bffd336235 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2874,7 +2874,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
->  
->  #ifdef CONFIG_MEMCG_KMEM
->  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
-> -				 gfp_t gfp)
-> +				 gfp_t gfp, bool atomic)
->  {
->  	unsigned int objects = objs_per_slab_page(s, page);
->  	void *vec;
-> @@ -2884,7 +2884,7 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
->  	if (!vec)
->  		return -ENOMEM;
->  
-> -	if (!set_page_objcgs(page, vec))
-> +	if (!set_page_objcgs(page, vec, atomic))
->  		kfree(vec);
->  	else
->  		kmemleak_not_leak(vec);
+>   	for_each_possible_cpu(cpu) {
+>   		p = per_cpu_ptr(zone->pageset, cpu);
+>   		pageset_update(&p->pcp, new_high, new_batch);
+> @@ -6386,6 +6396,8 @@ static __meminit void zone_pcp_init(struct zone *zone)
+>   	 * offset of a (static) per cpu variable into the per cpu area.
+>   	 */
+>   	zone->pageset = &boot_pageset;
+> +	zone->pageset_high = BOOT_PAGESET_HIGH;
+> +	zone->pageset_batch = BOOT_PAGESET_BATCH;
+>   
+>   	if (populated_zone(zone))
+>   		printk(KERN_DEBUG "  %s zone: %lu pages, LIFO batch:%u\n",
+> 
 
-The life of page->memcg_data and this optimization could use a central
-comment somewhere, because it's hard to understand what's going on
-from the code alone. This function here seems like a good place?
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I don't see a way to eliminate the bool on the allocation function,
-but maybe it could be more descriptive. Maybe bool slab_account?
+-- 
+Thanks,
 
-set_page_objcgs() can be inlined at this point. It made some sense to
-abstract away the atomics with setter and matching getter, but with a
-non-atomic mode, inlining makes things clearer and allows for better
-in-place documentation in the sole callsite.
+David / dhildenb
 
-How about something like this?
-
-	vec = kcalloc(...);
-
-	memcg_data = (unsigned long)vec | MEMCG_DATA_OBJCGS;
-	/*
-	 * Set up the objcg vector for the page.
-	 *
-	 * When only some objects in a slab are tracked (think GFP_ACCOUNT
-	 * kmalloc allocations), the objcg vector is set up when the first
-	 * tracked object in the slab page is allocated. Multiple concurrent
-	 * slab allocations can race to this, so synchronization is required.
-	 *
-	 * When SLAB_ACCOUNT is set on the cache, however, all objects in the
-	 * slab page will be tracked, and the vector is allocated along with
-	 * the page itself, while it's still exclusive; no atomics necessary.
-	 */
-	if (slab_account) {
-		page->memcg_data = memcg_data;
-	} else {
-		if (cmpxchg(&page->memcg_data, 0, memcg_data)) {
-			/* Somebody else beat us, use their vec */
-			kfree(vec);
-			return 0;
-		}
-	}
-	kmemleak_not_leak(vec);
-	return 0;
