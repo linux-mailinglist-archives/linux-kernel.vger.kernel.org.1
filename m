@@ -2,207 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB402B009F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7DE2B0098
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgKLH41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 02:56:27 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40878 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKLH40 (ORCPT
+        id S1726140AbgKLHym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 02:54:42 -0500
+Received: from host.euro-space.net ([87.117.239.2]:35780 "EHLO
+        host.euro-space.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgKLHym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 02:56:26 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B2A7731A;
-        Thu, 12 Nov 2020 08:56:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1605167782;
-        bh=Qe8kT4bm4JlV6cWE128AGEkHVPOCYZBGKXDDcH7839M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EJDKItYI706zF2Vn5pH6Be7sepNfWDp1ZT96GHfBmncBYP5RvSxBr0ciGpxcaPJEA
-         MDMwj1ErX2+ZQ1vYcAaDTtEqkIBbqxMbXKra653RC9ux+jew98qR/y0zap+gJGTxL+
-         7i3YdmYdgZi32JkOyOYCEhrbZC/i1l2mwQTW3Spk=
-Date:   Thu, 12 Nov 2020 09:56:19 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thu, 12 Nov 2020 02:54:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com;
+         s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version
+        :Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=GpN8kimtxF17rhBpICQp/uxAHoYqLvRMRuaxxImEljs=; b=Uh/J9LncKMtZS6P7ef3a+3fYnF
+        1e0xO1iKhx0KznImMO278RdojlfGso3Caakujt4jzYm9moudoYMriEhoZguCydaGXM6nGVV1sJ7W0
+        c7MpojxFNHAH+Jw1LrYDkgQtMNiAN/KMTyqTxMloQFMRZMozkw3NY/xhMzfyH/QOxqlvUFN9OO75J
+        inCaAHHNg+PXb1djSLA549udh6ZybT4uqMCkWWgDy8SPO1Dg+t8O2SEMgMAtCzKrcEBmpXNO46Knz
+        PUaLQ1cshaG1+EOenwcva0y/Fqt9Z9XXEKTIH7naNpW+/x8NfzH+5KB43Q5pmphMnFRz0JFZR8p4V
+        BUKwIziQ==;
+Received: from dynamic-089-012-218-078.89.12.pool.telefonica.de ([89.12.218.78]:60988 helo=[192.168.1.2])
+        by host.euro-space.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <kmarinushkin@birdec.com>)
+        id 1kd7RF-000342-D2; Thu, 12 Nov 2020 07:54:37 +0000
+Subject: Re: [PATCH] ASoC: pcm512x: Add support for data formats RJ and LJ
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Matthias Reichl <hias@horus.com>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
-Message-ID: <20201112075619.GA7931@pendragon.ideasonboard.com>
-References: <20201102203656.220187-1-robh@kernel.org>
- <20201102203656.220187-2-robh@kernel.org>
- <20201111140009.GD4115@pendragon.ideasonboard.com>
- <CAL_Jsq+A6Ga+h4qK0nzyL87M1DvrRSnzxtjwUNpq--L7MDHxfA@mail.gmail.com>
- <20201111142735.GG4115@pendragon.ideasonboard.com>
- <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20201109212133.25869-1-kmarinushkin@birdec.com>
+ <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
+ <a3df4fb0-35cd-4757-2037-d4ff80e9f74c@birdec.com>
+ <d0f76607-c3a5-9b87-dc0e-eddbce585558@ti.com>
+From:   Kirill Marinushkin <kmarinushkin@birdec.com>
+Message-ID: <6e14cdc3-2d45-d7bc-14eb-30c6ea568078@birdec.com>
+Date:   Thu, 12 Nov 2020 08:57:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:52.0) Gecko/20100101
+ Thunderbird/52.4.0
 MIME-Version: 1.0
+In-Reply-To: <d0f76607-c3a5-9b87-dc0e-eddbce585558@ti.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - host.euro-space.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - birdec.com
+X-Get-Message-Sender-Via: host.euro-space.net: authenticated_id: kmarinushkin@birdec.com
+X-Authenticated-Sender: host.euro-space.net: kmarinushkin@birdec.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello Peter,
 
-On Wed, Nov 11, 2020 at 05:03:26PM -0600, Rob Herring wrote:
-> On Wed, Nov 11, 2020 at 8:27 AM Laurent Pinchart wrote:
-> > On Wed, Nov 11, 2020 at 08:25:40AM -0600, Rob Herring wrote:
-> > > On Wed, Nov 11, 2020 at 8:00 AM Laurent Pinchart wrote:
-> > > > On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
-> > > > > From: Sameer Pujar <spujar@nvidia.com>
-> > > > >
-> > > > > Convert device tree bindings of graph to YAML format. Currently graph.txt
-> > > > > doc is referenced in multiple files and all of these need to use schema
-> > > > > references. For now graph.txt is updated to refer to graph.yaml.
-> > > > >
-> > > > > For users of the graph binding, they should reference to the graph
-> > > > > schema from either 'ports' or 'port' property:
-> > > > >
-> > > > > properties:
-> > > > >   ports:
-> > > > >     type: object
-> > > > >     $ref: graph.yaml#/properties/ports
-> > > > >
-> > > > >     properties:
-> > > > >       port@0:
-> > > > >         description: What data this port has
-> > > > >
-> > > > >       ...
-> > > > >
-> > > > > Or:
-> > > > >
-> > > > > properties:
-> > > > >   port:
-> > > > >     description: What data this port has
-> > > > >     type: object
-> > > > >     $ref: graph.yaml#/properties/port
-> > > >
-> > > > Sounds like a good approach.
-> > > >
-> > > > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> > > > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > > > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > > > ---
-> > > > > v3:
-> > > > >  - Move port 'reg' to port@* and make required
-> > > > >  - Make remote-endpoint required
-> > > > >  - Add 'additionalProperties: true' now required
-> > > > >  - Fix yamllint warnings
-> > > > >
-> > > > >  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
-> > > > >  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
-> > > > >  2 files changed, 200 insertions(+), 128 deletions(-)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/graph.yaml
-> > >
-> > > [...]
-> > >
-> > > > > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..b56720c5a13e
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/graph.yaml
-> > > > > @@ -0,0 +1,199 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/graph.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: Common bindings for device graphs
-> > > > > +
-> > > > > +description: |
-> > > > > +  The hierarchical organisation of the device tree is well suited to describe
-> > > > > +  control flow to devices, but there can be more complex connections between
-> > > > > +  devices that work together to form a logical compound device, following an
-> > > > > +  arbitrarily complex graph.
-> > > > > +  There already is a simple directed graph between devices tree nodes using
-> > > > > +  phandle properties pointing to other nodes to describe connections that
-> > > > > +  can not be inferred from device tree parent-child relationships. The device
-> > > > > +  tree graph bindings described herein abstract more complex devices that can
-> > > > > +  have multiple specifiable ports, each of which can be linked to one or more
-> > > > > +  ports of other devices.
-> > > > > +
-> > > > > +  These common bindings do not contain any information about the direction or
-> > > > > +  type of the connections, they just map their existence. Specific properties
-> > > > > +  may be described by specialized bindings depending on the type of connection.
-> > > > > +
-> > > > > +  To see how this binding applies to video pipelines, for example, see
-> > > > > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > > > > +  Here the ports describe data interfaces, and the links between them are
-> > > > > +  the connecting data buses. A single port with multiple connections can
-> > > > > +  correspond to multiple devices being connected to the same physical bus.
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Philipp Zabel <p.zabel@pengutronix.de>
-> > > > > +
-> > > > > +select: false
-> > > > > +
-> > > > > +properties:
-> > > > > +  port:
-> > > > > +    type: object
-> > > > > +    description:
-> > > > > +      If there is more than one endpoint node or 'reg' property present in
-> > > > > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
-> > > > > +      required.
-> > > > > +
-> > > > > +    properties:
-> > > > > +      "#address-cells":
-> > > > > +        const: 1
-> > > > > +
-> > > > > +      "#size-cells":
-> > > > > +        const: 0
-> > > > > +
-> > > > > +    patternProperties:
-> > > > > +      "^endpoint(@[0-9a-f]+)?$":
-> > > > > +        type: object
-> > > > > +        properties:
-> > > > > +          reg:
-> > > > > +            maxItems: 1
-> > > > > +
-> > > > > +          remote-endpoint:
-> > > > > +            description: |
-> > > > > +              phandle to an 'endpoint' subnode of a remote device node.
-> > > > > +            $ref: /schemas/types.yaml#/definitions/phandle
-> > > > > +
-> > > > > +        required:
-> > > > > +          - remote-endpoint
-> > > >
-> > > > As noted elsewhere, this shouldn't be required.
-> > > >
-> > > > Should we set additionalProperties: false here ?
-> > >
-> > > No, we've got a bunch of properties that get added to endpoint nodes.
-> > > There's a few cases where 'port' nodes have properties too.
-> >
-> > I meant the port node, which I wasn't aware needed additional
-> > properties. Do you have any example ? (I wonder if you will point me to
-> > bindings that I have written ;-))
+On 11/12/2020 08:41 AM, Peter Ujfalusi wrote:
+> Hi Kirill,
 > 
-> Not you, but Renesas. dual-lvds-{odd,even}-pixels was the only one I
-> think. But really, I think we could actually drop those if the port
-> numbering defines even/odd instead. There's a patch I just reviewed
-> for common dual lane panels. See
-> 1604993797-14240-1-git-send-email-victor.liu@nxp.com
+> On 11/11/2020 9.54, Kirill Marinushkin wrote:
+>> Hello Peter,
+>>
+>> than you for your review!
+>>
+>>> The bus format and
+>>>
+>>>>  	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>>>
+>>>>  	case SND_SOC_DAIFMT_CBS_CFS:
+>>>>  		ret = regmap_update_bits(pcm512x->regmap,
+>>>
+>>> the clock generation role should be set in pcm512x_set_fmt(), in that
+>>> way you can deny specific setups earlier.
+>>
+>> I think we could move both checks for`SND_SOC_DAIFMT_FORMAT_MASK` and
+>> `SND_SOC_DAIFMT_MASTER_MASK` into `pcm512x_set_fmt()`. But it would be a
+>> different scope, and I didn't intend to do that level of refactoring.
+> 
+> Right, I was just saying what would make sense.
+> 
+>> Looking at other codecs in kernel, I would say, that doing those checks in
+>> `pcm512x_hw_params()`, as they are done currently, is an equally valid approach.
+> 
+> The exception proves the rule
+> 
+>> As technically keeping checs where they are now doesn't break anything
+> 
+> They are just in a wrong place.
+> 
+>> and is
+>> aligned with ASoC codecs design, I suggest to keep the checks where they are.
+> 
+> The set_fmt callback is there to set the bus format, it has nothing to
+> do (in most cases) with the sample format (hw_params). Bus coding, clock
+> source has nothing to do with hw_params.
+> 
+> When you bind a link you will use set_fmt for the two sides to see if
+> they can agree, that both can support what has been asked.
+> 
+> The pcm512x driver just saves the fmt and say back to that card:
+> whatever, I'm fine with it. But runtime during hw_params it can fail due
+> to unsupported bus format, which it actually acked to be ok.
+> 
+> This is the difference.
+> 
+> Sure, some device have constraint based on the fmt towards the hw_params
+> and it is perfectly OK to do such a checks and rejections or build
+> rules/constraints based on fmt, but failing hw_params just because
+> set_fmt did not checked that the bus format is not even supported is not
+> a nice thing to do.
 
-We've discussed this before, see
+Those are good arguments
 
-Subject: Re: [PATCH v2 7/9] drm: rcar-du: lvds: Add dual-LVDS panels support
-Message-ID: <20190815130834.GM5011@pendragon.ideasonboard.com>
+>> Would you agree?
+> 
+> I don't have a device to test, I'm just trying to point out what is the
+> right thing to do.
 
-"But what will then happen if you panel has more than two ports (for
-audio for instance, or for other types of video links) ? It may not be
-possible to always use port 0 and 1 for the LVDS even and odd pixels in
-DT bindings of a particular panel or bridge."
+I have a device to test. I will move format checks into `pcm512x_set_fmt()`,
+ensure that it works properly, and submit as patch v3.
 
--- 
-Regards,
-
-Laurent Pinchart
+> I don't buy the argument that the sequencing is important here for the
+> register writes. The fmt is set only once and those registers will be
+> only written once.
+> 
+>>> I would also add DSP_A and DSP_B modes at the same time, DSP_A would
+>>> need a write of 1 to register 41 (PCM512x_I2S_2, offset = 1), other
+>>> formats should set the offset to 0.
+>>
+>> That's a good idea, than you for technical details! I just didn't know how to
+>> use DSP_A and DSP_B. I will add them, and submit as patch v2
+> 
+> Great!
+> Thanks
+> - Péter
+> 
+>> Best regards,
+>> Kirill
+>>
+>> On 11/10/2020 07:59 AM, Peter Ujfalusi wrote:
+>>>
+>>>
+>>> On 09/11/2020 23.21, Kirill Marinushkin wrote:
+>>>> Currently, pcm512x driver supports only I2S data format.
+>>>> This commit adds RJ and LJ as well.
+>>>>
+>>>> I don't expect regression WRT existing sound cards, because:
+>>>>
+>>>> * default value in corresponding register of pcm512x codec is 0 ==  I2S
+>>>> * existing in-tree sound cards with pcm512x codec are configured for I2S
+>>>> * i don't see how existing off-tree sound cards with pcm512x codec could be
+>>>>   configured differently - it would not work
+>>>> * tested explicitly, that there is no regression with Raspberry Pi +
+>>>>   sound card `sound/soc/bcm/hifiberry_dacplus.c`
+>>>>
+>>>> Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
+>>>> Cc: Mark Brown <broonie@kernel.org>
+>>>> Cc: Takashi Iwai <tiwai@suse.com>
+>>>> Cc: Liam Girdwood <lgirdwood@gmail.com>
+>>>> Cc: Matthias Reichl <hias@horus.com>
+>>>> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>>>> Cc: alsa-devel@alsa-project.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> ---
+>>>>  sound/soc/codecs/pcm512x.c | 24 ++++++++++++++++++++++++
+>>>>  1 file changed, 24 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+>>>> index 8153d3d01654..c6e975fb4a43 100644
+>>>> --- a/sound/soc/codecs/pcm512x.c
+>>>> +++ b/sound/soc/codecs/pcm512x.c
+>>>> @@ -1167,6 +1167,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+>>>>  	struct snd_soc_component *component = dai->component;
+>>>>  	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+>>>>  	int alen;
+>>>> +	int afmt;
+>>>>  	int gpio;
+>>>>  	int clock_output;
+>>>>  	int master_mode;
+>>>> @@ -1195,6 +1196,22 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+>>>>  		return -EINVAL;
+>>>>  	}
+>>>>  
+>>>> +	switch (pcm512x->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+>>>> +	case SND_SOC_DAIFMT_I2S:
+>>>> +		afmt = PCM512x_AFMT_I2S;
+>>>> +		break;
+>>>> +	case SND_SOC_DAIFMT_RIGHT_J:
+>>>> +		afmt = PCM512x_AFMT_RTJ;
+>>>> +		break;
+>>>> +	case SND_SOC_DAIFMT_LEFT_J:
+>>>> +		afmt = PCM512x_AFMT_LTJ;
+>>>> +		break;
+>>>> +	default:
+>>>> +		dev_err(component->dev, "unsupported DAI format: 0x%x\n",
+>>>> +			pcm512x->fmt);
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +
+>>>
+>>> The bus format and
+>>>
+>>>>  	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>>>
+>>>>  	case SND_SOC_DAIFMT_CBS_CFS:
+>>>>  		ret = regmap_update_bits(pcm512x->regmap,
+>>>
+>>> the clock generation role should be set in pcm512x_set_fmt(), in that
+>>> way you can deny specific setups earlier.
+>>>
+>>> I would also add DSP_A and DSP_B modes at the same time, DSP_A would
+>>> need a write of 1 to register 41 (PCM512x_I2S_2, offset = 1), other
+>>> formats should set the offset to 0.
+>>>
+>>>> @@ -1236,6 +1253,13 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+>>>>  		return ret;
+>>>>  	}
+>>>>  
+>>>> +	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
+>>>> +				 PCM512x_AFMT, afmt);
+>>>> +	if (ret != 0) {
+>>>> +		dev_err(component->dev, "Failed to set data format: %d\n", ret);
+>>>> +		return ret;
+>>>> +	}
+>>>> +
+>>>>  	if (pcm512x->pll_out) {
+>>>>  		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
+>>>>  		if (ret != 0) {
+>>>>
+>>>
+>>> - Péter
+>>>
+>>> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+>>> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>>>
+> 
+> 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
