@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06BF2B0378
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112C82B0377
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgKLLGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
+        id S1728032AbgKLLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727986AbgKLLCM (ORCPT
+        with ESMTP id S1727993AbgKLLCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Nov 2020 06:02:12 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3FBC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:02:10 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h2so4912262wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:02:10 -0800 (PST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD12C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:02:11 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s8so5503194wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:02:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iidsrVG04+5OGr655Fc8AmVNociMTMEvIzPILgRtw34=;
-        b=E+asLefU30g7IYG4PNqJ8WU7ULw0KGKd3Nvvtu5XudTRmWOs6n4eTJWI2sC8OUzJp/
-         r7IaUlq23l7mKA5kbznzkvEYjNaiPAZ80v1JEmtiRXDHAQqErWeWqenoe3i2cwzG75XZ
-         QsODJG8B7hlzonxu6fSrDoPbNuZvcgO+xAYXzlNdaLiBsQKK+od82u3WYx7AqKLzDumg
-         b+Ptb+TJL0kBvKqaSU3ieFtlaDx706S2pKe1+VQrsLEBsC16svAj+BHtd4gtTXzfPAm6
-         lhrE0pCir21AHHe5x9kpw0PcLgGNTNH2CCXr9iSd5l5c6mCbEUqHqA9hVLQGQgzEfmuB
-         fWkA==
+        bh=nMKE4IlOr6evhy/Ie8gXbBmQpqdbJ7dvrI7Z+uES9YU=;
+        b=oVniKyKUgho7jnPFtk0I6A3ULuPQSFCnRTuKY4hKAiDWM7bzWwqQlEqO39PpFQArz7
+         7Kqy9ACSUzCdM08TmqUwgI5w+JT0w7sgLA8EGVf1Tmqgg03brLsa6UKebtFQTTzOu6+V
+         X0ViJv6AQyvIim12RFf3D25MXR3vfJseB3sqLXF+fdKRmzMtR6VUkq+dkIRonoT25SLI
+         MYhBAUJkOfqdrw0KEeY4997CdiVGlLVoSn+6d/AOSU9Krlhm6c4eqxJtgjFepJz3Y64A
+         iIU9Asz2/ElC2Un237l1Z9IlsQxOKXdiSi1DXskNYPJ8XSNt++pTPN5TYw1XqeklloiP
+         6DpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iidsrVG04+5OGr655Fc8AmVNociMTMEvIzPILgRtw34=;
-        b=FERJl/dtUEUGrmKtwW+kEOT3cTZC9+rNNjUZLkyB8e6rxWoBurSvnvagBlfbillelR
-         SOXcxxVZA4r7wHwXZIM3GDbyvZhykp/Kemuqpnb/4p/wyz4DHQrsF49jW8gwZ4LKb4O4
-         ZsNnCqQ8BMi1DH4qZfPJDAqiZPmyb6Z4zSiEgLAFLzJTIsluJazmK6F15pUDjrfgw0rc
-         ionp4lOXbrEF6rPzSJF/zSOwTzonDZD/0eydFML+3H10SKxG/bYRsmOMk/7yx9U06dAi
-         +IVADIyqHT5YCmBBP42gf4VVzBo4YMCFU6bWVbOrXqtqQbCqm5mRVhRwC0XaZ9CHqbPb
-         GfPQ==
-X-Gm-Message-State: AOAM533AQcmxH78jsV+U9WFqVNOD+PuMHc7pWwmoiad2vbUCuMlAKSFK
-        wTHbBcYXNRyQ7ZxArwNg6yEVG3KmDGQbEox6
-X-Google-Smtp-Source: ABdhPJyFdXj837v2Sh4ImKatYRrWp+MMXle8DcPiD4par8LADB9Lp4CuXqbHSw8Jw3EHCeetVMvO0w==
-X-Received: by 2002:a1c:1f05:: with SMTP id f5mr8763569wmf.98.1605178929098;
-        Thu, 12 Nov 2020 03:02:09 -0800 (PST)
+        bh=nMKE4IlOr6evhy/Ie8gXbBmQpqdbJ7dvrI7Z+uES9YU=;
+        b=o3qoRHzjFBZ3Nl/QyLyNnaJ4q7h0qtVFLT2LBVLU2lRYoSYwNqr66pKG8iIRBND11Y
+         tT9NW98RGzVspp8QuqP9BzKmYGYrDSsXEQEhLbikChIaXqpESWQ32LJZhWXrkc50b++T
+         NGQq1CV6wC+8xZewUsZmiFEHmS4lzeXwUDm+ZLEDull7BQRHflC0c0eikd3bMfOWWlR8
+         1Sbnr6H6Ceqgc83S3YtL0Wuybn/D6xgH1NQcGdQgryBwcZgV0CwYxSQM+ME4YzUap/Sd
+         gwMifEQmPlSrVkflyMHeGZe6lcCI4ErtixOzKXxK7UHg4aRjgYm6mpNXW0LIb2T7CM56
+         7qUA==
+X-Gm-Message-State: AOAM532Nbc9u+SbLtpBsCHDW4OCCzzlja7SMMhU1DjGwDEMGRCSvVw4V
+        zXOWWPPpDGODOZHz1JB+3TVWGQ==
+X-Google-Smtp-Source: ABdhPJxF7qJ/C1URUnUKpfIrnKc9ev2GZap1FEfEiAR06eLwFKpSNee+i1z21hmzKDMgd//sCFww5w==
+X-Received: by 2002:a05:6000:364:: with SMTP id f4mr7221199wrf.290.1605178930645;
+        Thu, 12 Nov 2020 03:02:10 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id x81sm6515329wmg.5.2020.11.12.03.02.07
+        by smtp.gmail.com with ESMTPSA id x81sm6515329wmg.5.2020.11.12.03.02.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 03:02:08 -0800 (PST)
+        Thu, 12 Nov 2020 03:02:10 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        =?UTF-8?q?=C5=81ukasz=20Patron?= <priv.luk@gmail.com>,
-        Cameron Gutman <aicommander@gmail.com>,
-        Marko Friedemann <mfr@bmx-chemnitz.de>,
-        Oliver Schwartz <Oliver.Schwartz@gmx.de>,
-        Steven Toth <steve@toth.demon.co.uk>,
-        Franz Lehner <franz@caos.at>,
-        Ivan Hawkes <blackhawk@ivanhawkes.com>,
-        Dominic Cerquetti <binary1230@yahoo.com>,
-        Adam Buchbinder <adam.buchbinder@gmail.com>,
-        Jan Kratochvil <honza@jikos.cz>,
-        Christoph Fritz <chf.fritz@googlemail.com>,
-        linux-input@vger.kernel.org
-Subject: [PATCH 01/15] input: joystick: xpad: Demote non-conformant kernel-doc header
-Date:   Thu, 12 Nov 2020 11:01:50 +0000
-Message-Id: <20201112110204.2083435-2-lee.jones@linaro.org>
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Donghwa Lee <dh09.lee@samsung.com>, linux-input@vger.kernel.org
+Subject: [PATCH 02/15] input: keyboard: samsung-keypad: Remove set but unused variable 'var'
+Date:   Thu, 12 Nov 2020 11:01:51 +0000
+Message-Id: <20201112110204.2083435-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112110204.2083435-1-lee.jones@linaro.org>
 References: <20201112110204.2083435-1-lee.jones@linaro.org>
@@ -79,40 +69,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/input/joystick/xpad.c:1361: warning: Function parameter or member 'xpad' not described in 'xpad_send_led_command'
- drivers/input/joystick/xpad.c:1361: warning: Function parameter or member 'command' not described in 'xpad_send_led_command'
+ drivers/input/keyboard/samsung-keypad.c: In function ‘samsung_keypad_irq’:
+ drivers/input/keyboard/samsung-keypad.c:149:15: warning: variable ‘val’ set but not used [-Wunused-but-set-variable]
 
 Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: "Łukasz Patron" <priv.luk@gmail.com>
-Cc: Cameron Gutman <aicommander@gmail.com>
-Cc: Marko Friedemann <mfr@bmx-chemnitz.de>
-Cc: Oliver Schwartz <Oliver.Schwartz@gmx.de>
-Cc: Steven Toth <steve@toth.demon.co.uk>
-Cc: Franz Lehner <franz@caos.at>
-Cc: Ivan Hawkes <blackhawk@ivanhawkes.com>
-Cc: Dominic Cerquetti <binary1230@yahoo.com>
-Cc: Adam Buchbinder <adam.buchbinder@gmail.com>
-Cc: Jan Kratochvil <honza@jikos.cz>
-Cc: Christoph Fritz <chf.fritz@googlemail.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Donghwa Lee <dh09.lee@samsung.com>
 Cc: linux-input@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/input/joystick/xpad.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/keyboard/samsung-keypad.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index c77cdb3b62b5b..2cd4296c2d082 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -1337,7 +1337,7 @@ struct xpad_led {
- 	struct usb_xpad *xpad;
- };
+diff --git a/drivers/input/keyboard/samsung-keypad.c b/drivers/input/keyboard/samsung-keypad.c
+index 70c1d086bdd2a..1ed939d9798cf 100644
+--- a/drivers/input/keyboard/samsung-keypad.c
++++ b/drivers/input/keyboard/samsung-keypad.c
+@@ -146,13 +146,12 @@ static irqreturn_t samsung_keypad_irq(int irq, void *dev_id)
+ {
+ 	struct samsung_keypad *keypad = dev_id;
+ 	unsigned int row_state[SAMSUNG_MAX_COLS];
+-	unsigned int val;
+ 	bool key_down;
  
--/**
-+/*
-  * set the LEDs on Xbox360 / Wireless Controllers
-  * @param command
-  *  0: off
+ 	pm_runtime_get_sync(&keypad->pdev->dev);
+ 
+ 	do {
+-		val = readl(keypad->base + SAMSUNG_KEYIFSTSCLR);
++		readl(keypad->base + SAMSUNG_KEYIFSTSCLR);
+ 		/* Clear interrupt. */
+ 		writel(~0x0, keypad->base + SAMSUNG_KEYIFSTSCLR);
+ 
 -- 
 2.25.1
 
