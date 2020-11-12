@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1F52B09FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4E12B09B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbgKLQaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:30:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35550 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727863AbgKLQaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:30:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605198620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XGoWo3n3zk5k19rM9cJv5sj/xj8kV7Kg66evSU/VnGk=;
-        b=lmbpOK3oXQuZ0qkEeNhmzCkN8HSH7kwq69EJPrPpSZMDPbrnLLLJYtpadw0NXjfQoJXLaX
-        RF/vqwiFahlO+rct3dnwuuVX+ZCG6244MHcFG5rntuN3H80RK9axhI/XvYyQXFFGrgmyra
-        ixgiuqS+YLb9ucJ5kjIfcBbnjaE18Oo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC6A8AFD0;
-        Thu, 12 Nov 2020 16:30:20 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 17:17:46 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH] lib: vsprintf: Avoid 32-bit truncation in vsscanf number
- parsing
-Message-ID: <20201112161746.GH20201@alley>
-References: <20201112111759.16377-1-rf@opensource.cirrus.com>
+        id S1728800AbgKLQSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:18:24 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:34106 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728414AbgKLQSY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:18:24 -0500
+Received: by mail-ed1-f66.google.com with SMTP id a15so6967277edy.1;
+        Thu, 12 Nov 2020 08:18:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Oi3gnOCxcrOs0+khI8hhtUkNotcrmrGmIvdN+HAPrVQ=;
+        b=S0A4nC0SjYSrGr1Egd2aP9IyG0qIy8m+KvUOtRuhrpMl9AKoBttFC69iCntDq9dk4X
+         cg9p5H3Sh36AgLnZbm2kuPHJDLsoxFiiV8vgJOCNE6UegqXYOmPEhjcNM4LR9bYFj4JH
+         W26pqQ2l4OOW1OEImqyKhqEk3KGMm2L9XK8Mn04+jgZ5J3faibP8EuNjVmv7mFlcpzBj
+         JK4Zkf0PaEmtqwgxDfvzDkqn6y4NFa6jkZNdGv2J4hTZ5hSo3J5ZMxziebIe0fClATZv
+         XnC1vZLwMr8MUap/vfCsLQ2NMIuNIWlAl8peI5DYwND6AkodWiggkoRCKebaTXBVvVKx
+         eJNA==
+X-Gm-Message-State: AOAM533AdP2JBps3jUKCLKNiOHrNq+dWPHmRf6bpTtslSmXfN0xtB+GU
+        Ow9J6p18Cz7aFSmz0b51wK0=
+X-Google-Smtp-Source: ABdhPJxU8A/Q2g0DP+feOmxvU1fP6FCS006FvMp1NfPEruaqw24Y5rJB7Z8fBGQrpkoQw1M8rMTrhw==
+X-Received: by 2002:a50:ec10:: with SMTP id g16mr544202edr.63.1605197902687;
+        Thu, 12 Nov 2020 08:18:22 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z13sm2330880ejp.30.2020.11.12.08.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 08:18:21 -0800 (PST)
+Date:   Thu, 12 Nov 2020 17:18:20 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <snawrocki@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] clk: samsung: allow building the clkout driver as module
+Message-ID: <20201112161820.GA17700@kozik-lap>
+References: <20201110193749.261367-1-krzk@kernel.org>
+ <92ccc476-6afd-4be9-7c72-40c9a9218b03@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201112111759.16377-1-rf@opensource.cirrus.com>
+In-Reply-To: <92ccc476-6afd-4be9-7c72-40c9a9218b03@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding other vsprintf maintainers and reviewes into CC.
-
-On Thu 2020-11-12 11:17:59, Richard Fitzgerald wrote:
-> Number conversion in vsscanf converts a whole string of digits and then
-> extracts the field width part from the converted value. The maximum run
-> of digits is limited by overflow. Conversion was using either
-> simple_strto[u]l or simple_strto[u]ll based on the 'L' qualifier. This
-> created a difference in truncation between builds where long is 32-bit
-> and builds where it is 64-bit. This especially affects parsing a run of
-> contiguous digits into separate fields - the maximum length of the run
-> is 16 digits if long is 64-bit but only 8 digits if long is 32-bits.
-> For example a conversion "%6x%6x" would convert both fields correctly if
-> long is 64-bit but not if long is 32-bit.
-
-I might be just slow today. But it took me really long time to
-understand what exactly is the problem and how it is caused.
-The description is nicely detailed but somehow cryptic.
-
-My understanding is that there is a bug when parsing numbers
-with a limited width like the above mentioned "%6x%6x".
-
-The problem is how the width is handled:
-
- 1. The width is ignored in the 1st step. The entire number
-    is read using simple_strto[u]l[l] functions.
-
- 2. The width limit is achieved by dividing the result from
-    the first step until it fits the width.
-
-It gives wrong result when there was an overflow in the 1st step.
-The high bits were lost even when the limited number would
-not overflow.
-
-
-This patch improves the situation on 32-bit system because
-it reduces the chance of overflow there. It also makes
-it work the same on 32-bit and 64-bit systems.
-
-But the problem is still there when the 64-bit number
-overflows!
-
-IMHO, the right solution is to copy only the limited number
-of characters into a buffer and call simple_strto[u]l[l]
-on this buffer. Then we do not need to divide the result
-at all.
-
-
-That said, I agree that simple_strto[u]ll() might always get called.
-It is used internally by simple_strto[u]l() anyway. The value
-is always stored into a local 64-bit variable. It is properly
-casted later when the value is copied into the caller's variable.
-But I do not consider this a proper fix of the width handling.
-
-Best Regards,
-Petr
-
-
-> It is undesirable for vsscanf to parse numbers differently depending on
-> the size of long on the target build.
+On Thu, Nov 12, 2020 at 03:36:35PM +0100, Sylwester Nawrocki wrote:
+> On 11/10/20 20:37, Krzysztof Kozlowski wrote:
+> > The Exynos clock output driver can be built as module (it does not have
+> > to be part of core init process) for better customization.  Adding a
+> > KConfig entry allows also compile testing for build coverage.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> As simple_strto[u]l just calls simple_strto[u]ll anyway the conversion
-> is always 64-bit, and the result is manipulated as a u64, so this is an
-> avoidable behaviour difference between 32-bit and 64-bit builds. The
-> conversion can call simple_strto[u]ll directly and preserve the full
-> 64-bits that were parsed out of the string.
+> This needs to go through your tree due to dependencies on your previous
+> patches, so
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
->  lib/vsprintf.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+> Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+
+Yes, thanks.
+
 > 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 14c9a6af1b23..63b6cddfa7f7 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -3444,13 +3444,9 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
->  			break;
->  
->  		if (is_sign)
-> -			val.s = qualifier != 'L' ?
-> -				simple_strtol(str, &next, base) :
-> -				simple_strtoll(str, &next, base);
-> +			val.s = simple_strtoll(str, &next, base);
->  		else
-> -			val.u = qualifier != 'L' ?
-> -				simple_strtoul(str, &next, base) :
-> -				simple_strtoull(str, &next, base);
-> +			val.u = simple_strtoull(str, &next, base);
->  
->  		if (field_width > 0 && next - str > field_width) {
->  			if (base == 0)
-> -- 
-> 2.20.1
+> > ---
+> >   drivers/clk/samsung/Kconfig             | 10 ++++++++++
+> >   drivers/clk/samsung/Makefile            |  2 +-
+> >   drivers/clk/samsung/clk-exynos-clkout.c |  1 +
+> >   3 files changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/clk/samsung/Kconfig b/drivers/clk/samsung/Kconfig
+> > index 57d4b3f20417..b6b2cb209543 100644
+> > --- a/drivers/clk/samsung/Kconfig
+> > +++ b/drivers/clk/samsung/Kconfig
+> > @@ -19,6 +19,16 @@ config EXYNOS_AUDSS_CLK_CON
+> >   	  on some Exynos SoC variants. Choose M or Y here if you want to
+> >   	  use audio devices such as I2S, PCM, etc.
+> >   
+> > +config EXYNOS_CLK_OUT
+> 
+> Perhaps change it EXYNOS_CLKOUT for a better match with the SoC documentation? 
+
+Sure, I applied it with name fixup.
+
+Best regards,
+Krzysztof
