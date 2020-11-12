@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77A02AFE28
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFDD2AFE2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728747AbgKLFee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727672AbgKLC2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:28:44 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0244C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:28:42 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id n89so4189168otn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=AvwRUTHJ9jTp1FV7SvxjXPTpodIViw+Olzzn0cdboYg=;
-        b=lMyQa3HoSGrWwK8T9kKUMIlmfO5rgLpJnycM2uiTklWJC1raq7dGrWwm2m9/O/if2P
-         3n7ga50tjyyPXWvWHiYwKwgL71HOGc0UsHfCamf5Lb/v6jwKiGtkZaV+P/Wht/+eQ0gk
-         72CTbdBOF5eQeyXTRetfdXuu3yjIbyVQER+3mo8NswaNnZCCSwUw3+GXKNdL+WpEJPsc
-         ZiloYfx5zK7I6BMUOJdaXePB/dRGYPw1vVDN88kE+Fh7udX6Jzsp3ynwIwSGo4T8Wq8k
-         XyE0c8ANci/qxhmbZ7uB9liD3aqNmaCP5Ne/bJd5re/Pi7/eHeAqVlF05mv7yH2RRQyu
-         ZXKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=AvwRUTHJ9jTp1FV7SvxjXPTpodIViw+Olzzn0cdboYg=;
-        b=pNsYdV4YE29XpkfcxPfXEXIFhj0ktLtsnqVZOInIbmNVSA+QVzff3GU9b9gXmbtfS0
-         QSsabkNnj4rUFDpZJPCtBvnCvTvlPtsyzBzCK+shE1a8TiJEt38/PDVBNhXlY8207ofI
-         eHCz8Fng6ajExBQ9BJVEnxf+VIg3eII2S1JpClb6jrOYkrIZzBvdK6FR9HZwX9ayBBWe
-         zUNd048G9lsKEWUrnZyjyb2RBYX+3c3wmJTPMcYy5bpmThAPUWjeifXtwQKnsnyBebyH
-         EOi7of5fOXkbesMj7HwuFyPZEB/iZf1XJutTgUIZK0pitli53xlzzlUjW/BKlbOVuxA3
-         dTfQ==
-X-Gm-Message-State: AOAM531BYcJmxA+TcZUQ210scCbYPYxjE/hsqASfSE0/5IRUcC/FJjxo
-        xWkSADjKdQac9opSVHFI2gYJvg==
-X-Google-Smtp-Source: ABdhPJyzQWbqz38yLAmtNxgQ/7L8jQxu79O3IRdahxiukEm5uaBC3UhwBHYm+Dr9JmbN+3xGvHDZGw==
-X-Received: by 2002:a9d:6a96:: with SMTP id l22mr4298651otq.156.1605148121715;
-        Wed, 11 Nov 2020 18:28:41 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id s14sm851761oij.4.2020.11.11.18.28.39
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 11 Nov 2020 18:28:40 -0800 (PST)
-Date:   Wed, 11 Nov 2020 18:28:38 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v21 15/19] mm/compaction: do page isolation first in
- compaction
-In-Reply-To: <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
-Message-ID: <alpine.LSU.2.11.2011111803580.2174@eggly.anvils>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com> <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com> <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1728779AbgKLFen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:43 -0500
+Received: from mga03.intel.com ([134.134.136.65]:48560 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727903AbgKLCjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 21:39:01 -0500
+IronPort-SDR: 41Di5mB5lHjAF/vDgvwh+S7SwYqm9mHrD5p3Qxa+iUFY82ZG6e19HH9n9oXbeu5w4V0IdN7Drr
+ fsOEPBrUeUpQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170357126"
+X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
+   d="scan'208";a="170357126"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 18:39:00 -0800
+IronPort-SDR: IbJu6Mxa28D/xM8Gx7YHlTSRoO1y+91oYe/IZz2ssd97oZiyQdAE1UilANnI/ausM3Llsqao6d
+ xIWRTvK+ivQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,471,1596524400"; 
+   d="scan'208";a="366170532"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Nov 2020 18:38:56 -0800
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v6 5/5] vfio/type1: Use mdev bus iommu_ops for IOMMU
+ callbacks
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+References: <20201030045809.957927-1-baolu.lu@linux.intel.com>
+ <20201030045809.957927-6-baolu.lu@linux.intel.com>
+ <MWHPR11MB1645DEBE7C0E7A61D22081DD8C150@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201030150625.2dc5fb9b@w520.home>
+ <5802fc4a-7dc0-eda7-4e7c-809bcec6bd90@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <d171ae28-a99a-a47b-aeb1-3231391e8c82@linux.intel.com>
+Date:   Thu, 12 Nov 2020 10:31:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <5802fc4a-7dc0-eda7-4e7c-809bcec6bd90@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020, Vlastimil Babka wrote:
-> On 11/5/20 9:55 AM, Alex Shi wrote:
+Hi Alex,
+
+On 11/3/20 1:22 PM, Lu Baolu wrote:
+> Hi Alex,
 > 
-> > @@ -979,10 +995,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
-> >   					goto isolate_abort;
-> >   			}
-> >   -			/* Recheck PageLRU and PageCompound under lock */
-> > -			if (!PageLRU(page))
-> > -				goto isolate_fail;
-> > -
-> >   			/*
-> >   			 * Page become compound since the non-locked check,
-> >   			 * and it's on LRU. It can only be a THP so the order
-> > @@ -990,16 +1002,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
-
-Completely off-topic, and won't matter at all when Andrew rediffs into
-mmotm: but isn't it weird that this is showing "too_many_isolated(",
-when actually the function is isolate_migratepages_block()?
-
-> >   			 */
-> >   			if (unlikely(PageCompound(page) &&
-> > !cc->alloc_contig)) {
-> >   				low_pfn += compound_nr(page) - 1;
-> > -				goto isolate_fail;
-> > +				SetPageLRU(page);
-> > +				goto isolate_fail_put;
-> >   			}
+> On 10/31/20 5:06 AM, Alex Williamson wrote:
+>> On Fri, 30 Oct 2020 06:16:28 +0000
+>> "Tian, Kevin" <kevin.tian@intel.com> wrote:
+>>
+>>>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> Sent: Friday, October 30, 2020 12:58 PM
+>>>>
+>>>> With the IOMMU driver registering iommu_ops for the mdev_bus, the
+>>>> IOMMU
+>>>> operations on an mdev could be done in the same way as any normal 
+>>>> device
+>>>> (for example, PCI/PCIe). There's no need to distinguish an mdev from
+>>>> others for iommu operations. Remove the unnecessary code.
+>>>
+>>> This is really a nice cleanup as the output of this change! :)
+>>
+>> It's easy to remove a bunch of code when the result is breaking
+>> everyone else.  Please share with me how SR-IOV backed mdevs continue
+>> to work on AMD platforms, or how they might work on ARM platforms, when
+>> siov_iommu_ops (VT-d only) becomes the one and only provider of
+>> iommu_ops on the mdev bus.  Hard NAK on this series.  Thanks,
 > 
-> IIUC the danger here is khugepaged will collapse a THP. For that,
-> __collapse_huge_page_isolate() has to succeed isolate_lru_page(). Under the
-> new scheme, it shouldn't be possible, right? If that's correct, we can remove
-> this part?
+> I focused too much on a feature and forgot about university. I should
+> apologize for this. Sorry about it!
+> 
+> Back to the original intention of this series. The aux domain was
+> allocated in vfio/mdev, but it's also needed by the vDCM component of a
+> device driver for mediated callbacks. Currently vfio/mdev or iommu core
+> has no support for this.
+> 
+> We had a proposal when we first did aux-domain support. But was not
+> discussed since there was no consumer at that time.
+> 
+> https://lore.kernel.org/linux-iommu/20181105073408.21815-7-baolu.lu@linux.intel.com/ 
 
-I don't think so.  A preliminary check for PageCompound was made much
-higher up, before taking a reference on the page, but it can easily have
-become PageCompound since then (when racing prep_new_page() calls
-prep_compound_page()).
+Exposing iommu_domain outside of the vfio/iommu abstract seems not a
+secure idea. I have posted a new proposal. Can you please help to
+review?
 
-And __collapse_huge_page_isolate() does not turn a non-compound page
-into a compound page: it isolates small pages before copying them into
-the compound page (in the usual case: I can see there's also allowance
-for PageCompound there too, which will do something different).
+https://lore.kernel.org/linux-iommu/20201112022407.2063896-1-baolu.lu@linux.intel.com/
 
-Hugh
+Best regards.
+baolu
+
+> 
+> 
+> Does it look good to you? I can send patches of such solution for
+> discussion if you think it's a right way.
+> 
+> Extending the iommu core for subdevice passthrough support sounds an
+> interesting topic, but it will take much time before we reach a
+> consensus. It sounds a good topic for the next year's LPC/MC :-).
+> 
+> Best regards,
+> baolu
