@@ -2,61 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F052AFE4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F2D2AFE4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgKLFgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:36:47 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:57356 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728329AbgKLDgP (ORCPT
+        id S1729248AbgKLFgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728345AbgKLDkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:36:15 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UF1vPTE_1605152168;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UF1vPTE_1605152168)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Nov 2020 11:36:09 +0800
-Subject: Re: [PATCH v21 15/19] mm/compaction: do page isolation first in
- compaction
-To:     Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
- <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
- <alpine.LSU.2.11.2011111803580.2174@eggly.anvils>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <6d2d215e-fd72-b8cc-331f-189ea04a361d@linux.alibaba.com>
-Date:   Thu, 12 Nov 2020 11:35:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 11 Nov 2020 22:40:46 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94270C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 19:40:46 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id dk16so5666531ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 19:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=To4HRRrNmKhGAD42q3JjCijVTRpTZsZMj/gYSYhTv8o=;
+        b=JOnC/AKQeiecbErbspMBd5TG4gY5qlzQbvgkFQaqwVtsBzSUgyWtA/zie2s8WC9r4X
+         LTQeq4CJLWpvUm3fmBLfcweLZhpmgCOVFJDvtOW0ci3ul7mXtb2dHMAJv+Nlfch71AQ4
+         C2mFphfFZ6e5+IQg80zo+5UzhtQReyUrV6MY6gf3bTBnksOovxmOsf/KAdXhVamEj2nW
+         wUlhjXR9RVI5G0j+kWAvztSjDSVs0OAF0QZIJLz+8/wgwm5BesWlTuDCO6RxNq4w5QJJ
+         gdTrYc3KncRdkDziH43LSMMwfLb7hgzwGf/uHrD+1bsjn6tSU/a7nobdkR2eJJqPX3nq
+         3pAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=To4HRRrNmKhGAD42q3JjCijVTRpTZsZMj/gYSYhTv8o=;
+        b=nV94SAurEhyVjb2URFxnDc04DijNgPvQY2vrc+q0ui44tUEShLKeGr+YgRJ7V3ngOU
+         dpeeliXG0zC39PdeUTr075j32pYyzhnqcQyG8VAw+nFcfpps55Y7Fi5l6lcMh3t9b2Ff
+         8l9wOpGtIKguSv713uhKfULI6eQmUYQn7lHuiRpbS7Q4K7iI5k+pueX+9j2O3Rufs73h
+         WbcLomjghoxsWE3PFnD2kBUwERM4KgvrKjtS1Hd+E10aFVrY3en8SHOlRHbkSuIZHbBr
+         6rJbsLK3gWvLeLBfZpVptFGJYXmn4OVw6HVapArKDDIR+qT0NfdxXffyC6YWlggZwoVe
+         pLxA==
+X-Gm-Message-State: AOAM533K5zcHslH8ULOMNHqLIByyIdg4nagvpArEqOEkmguC6acghAKY
+        cJz1ApjppMa+JACj3Czm+IVCZd5DinEPlYnSxRM94g==
+X-Google-Smtp-Source: ABdhPJxH578IOP98WEnA2WvJ0R9/4iiLYmyXLLUa5uv9EZPYNBJtM8ji4hq5Tlg2kUHwjL3VCysE5lECyDS3M52vZ0E=
+X-Received: by 2002:a17:906:1a14:: with SMTP id i20mr29711499ejf.422.1605152444843;
+ Wed, 11 Nov 2020 19:40:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2011111803580.2174@eggly.anvils>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+References: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
+ <20201111150115.v9.5.I9231b35b0be815c32c3a3ec48dcd1d68fa65daf4@changeid> <A5A4227D-58B7-4C08-AFC9-BC8A8D469179@holtmann.org>
+In-Reply-To: <A5A4227D-58B7-4C08-AFC9-BC8A8D469179@holtmann.org>
+From:   Yun-hao Chung <howardchung@google.com>
+Date:   Thu, 12 Nov 2020 11:40:33 +0800
+Message-ID: <CAPHZWUdoo_hh=8edYoHdFL8cn-Khz0JMi5QcF4QJjrP9c_zVnA@mail.gmail.com>
+Subject: Re: [PATCH v9 5/6] Bluetooth: Refactor read default sys config for
+ various types
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 7:20 PM Marcel Holtmann <marcel@holtmann.org> wrote:
+>
+> Hi Howard,
+>
+> > Refactor read default system configuration function so that it's capable
+> > of returning different types than u16
+> >
+> > Signed-off-by: Howard Chung <howardchung@google.com>
+> > ---
+> >
+> > (no changes since v8)
+> >
+> > Changes in v8:
+> > - Update the commit title and message
+> >
+> > net/bluetooth/mgmt_config.c | 140 +++++++++++++++++++++---------------
+> > 1 file changed, 84 insertions(+), 56 deletions(-)
+> >
+> > diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
+> > index 2d3ad288c78ac..282fbf82f3192 100644
+> > --- a/net/bluetooth/mgmt_config.c
+> > +++ b/net/bluetooth/mgmt_config.c
+> > @@ -11,72 +11,100 @@
+> > #include "mgmt_util.h"
+> > #include "mgmt_config.h"
+> >
+> > -#define HDEV_PARAM_U16(_param_code_, _param_name_) \
+> > -{ \
+> > -     { cpu_to_le16(_param_code_), sizeof(__u16) }, \
+> > -     { cpu_to_le16(hdev->_param_name_) } \
+> > -}
+> > +#define HDEV_PARAM_U16(_param_name_) \
+> > +     struct {\
+> > +             struct mgmt_tlv entry; \
+> > +             __le16 value; \
+> > +     } __packed _param_name_
+> >
+> > -#define HDEV_PARAM_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
+> > -{ \
+> > -     { cpu_to_le16(_param_code_), sizeof(__u16) }, \
+> > -     { cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) } \
+> > -}
+> > +#define TLV_SET_U16(_param_code_, _param_name_) \
+> > +     { \
+> > +             { cpu_to_le16(_param_code_), sizeof(__u16) }, \
+> > +             cpu_to_le16(hdev->_param_name_) \
+> > +     }
+> > +
+> > +#define TLV_SET_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
+> > +     { \
+> > +             { cpu_to_le16(_param_code_), sizeof(__u16) }, \
+> > +             cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) \
+> > +     }
+> >
+> > int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
+> >                          u16 data_len)
+> > {
+> > -     struct {
+> > -             struct mgmt_tlv entry;
+> > -             union {
+> > -                     /* This is a simplification for now since all values
+> > -                      * are 16 bits.  In the future, this code may need
+> > -                      * refactoring to account for variable length values
+> > -                      * and properly calculate the required buffer size.
+> > -                      */
+> > -                     __le16 value;
+> > -             };
+> > -     } __packed params[] = {
+> > +     int ret;
+> > +     struct mgmt_rp_read_def_system_config {
+> >               /* Please see mgmt-api.txt for documentation of these values */
+> > -             HDEV_PARAM_U16(0x0000, def_page_scan_type),
+> > -             HDEV_PARAM_U16(0x0001, def_page_scan_int),
+> > -             HDEV_PARAM_U16(0x0002, def_page_scan_window),
+> > -             HDEV_PARAM_U16(0x0003, def_inq_scan_type),
+> > -             HDEV_PARAM_U16(0x0004, def_inq_scan_int),
+> > -             HDEV_PARAM_U16(0x0005, def_inq_scan_window),
+> > -             HDEV_PARAM_U16(0x0006, def_br_lsto),
+> > -             HDEV_PARAM_U16(0x0007, def_page_timeout),
+> > -             HDEV_PARAM_U16(0x0008, sniff_min_interval),
+> > -             HDEV_PARAM_U16(0x0009, sniff_max_interval),
+> > -             HDEV_PARAM_U16(0x000a, le_adv_min_interval),
+> > -             HDEV_PARAM_U16(0x000b, le_adv_max_interval),
+> > -             HDEV_PARAM_U16(0x000c, def_multi_adv_rotation_duration),
+> > -             HDEV_PARAM_U16(0x000d, le_scan_interval),
+> > -             HDEV_PARAM_U16(0x000e, le_scan_window),
+> > -             HDEV_PARAM_U16(0x000f, le_scan_int_suspend),
+> > -             HDEV_PARAM_U16(0x0010, le_scan_window_suspend),
+> > -             HDEV_PARAM_U16(0x0011, le_scan_int_discovery),
+> > -             HDEV_PARAM_U16(0x0012, le_scan_window_discovery),
+> > -             HDEV_PARAM_U16(0x0013, le_scan_int_adv_monitor),
+> > -             HDEV_PARAM_U16(0x0014, le_scan_window_adv_monitor),
+> > -             HDEV_PARAM_U16(0x0015, le_scan_int_connect),
+> > -             HDEV_PARAM_U16(0x0016, le_scan_window_connect),
+> > -             HDEV_PARAM_U16(0x0017, le_conn_min_interval),
+> > -             HDEV_PARAM_U16(0x0018, le_conn_max_interval),
+> > -             HDEV_PARAM_U16(0x0019, le_conn_latency),
+> > -             HDEV_PARAM_U16(0x001a, le_supv_timeout),
+> > -             HDEV_PARAM_U16_JIFFIES_TO_MSECS(0x001b,
+> > -                                             def_le_autoconnect_timeout),
+> > -             HDEV_PARAM_U16(0x001d, advmon_allowlist_duration),
+> > -             HDEV_PARAM_U16(0x001e, advmon_no_filter_duration),
+> > +             HDEV_PARAM_U16(def_page_scan_type);
+> > +             HDEV_PARAM_U16(def_page_scan_int);
+> > +             HDEV_PARAM_U16(def_page_scan_window);
+> > +             HDEV_PARAM_U16(def_inq_scan_type);
+> > +             HDEV_PARAM_U16(def_inq_scan_int);
+> > +             HDEV_PARAM_U16(def_inq_scan_window);
+> > +             HDEV_PARAM_U16(def_br_lsto);
+> > +             HDEV_PARAM_U16(def_page_timeout);
+> > +             HDEV_PARAM_U16(sniff_min_interval);
+> > +             HDEV_PARAM_U16(sniff_max_interval);
+> > +             HDEV_PARAM_U16(le_adv_min_interval);
+> > +             HDEV_PARAM_U16(le_adv_max_interval);
+> > +             HDEV_PARAM_U16(def_multi_adv_rotation_duration);
+> > +             HDEV_PARAM_U16(le_scan_interval);
+> > +             HDEV_PARAM_U16(le_scan_window);
+> > +             HDEV_PARAM_U16(le_scan_int_suspend);
+> > +             HDEV_PARAM_U16(le_scan_window_suspend);
+> > +             HDEV_PARAM_U16(le_scan_int_discovery);
+> > +             HDEV_PARAM_U16(le_scan_window_discovery);
+> > +             HDEV_PARAM_U16(le_scan_int_adv_monitor);
+> > +             HDEV_PARAM_U16(le_scan_window_adv_monitor);
+> > +             HDEV_PARAM_U16(le_scan_int_connect);
+> > +             HDEV_PARAM_U16(le_scan_window_connect);
+> > +             HDEV_PARAM_U16(le_conn_min_interval);
+> > +             HDEV_PARAM_U16(le_conn_max_interval);
+> > +             HDEV_PARAM_U16(le_conn_latency);
+> > +             HDEV_PARAM_U16(le_supv_timeout);
+> > +             HDEV_PARAM_U16(def_le_autoconnect_timeout);
+> > +             HDEV_PARAM_U16(advmon_allowlist_duration);
+> > +             HDEV_PARAM_U16(advmon_no_filter_duration);
+> > +     } __packed rp = {
+> > +             TLV_SET_U16(0x0000, def_page_scan_type),
+> > +             TLV_SET_U16(0x0001, def_page_scan_int),
+> > +             TLV_SET_U16(0x0002, def_page_scan_window),
+> > +             TLV_SET_U16(0x0003, def_inq_scan_type),
+> > +             TLV_SET_U16(0x0004, def_inq_scan_int),
+> > +             TLV_SET_U16(0x0005, def_inq_scan_window),
+> > +             TLV_SET_U16(0x0006, def_br_lsto),
+> > +             TLV_SET_U16(0x0007, def_page_timeout),
+> > +             TLV_SET_U16(0x0008, sniff_min_interval),
+> > +             TLV_SET_U16(0x0009, sniff_max_interval),
+> > +             TLV_SET_U16(0x000a, le_adv_min_interval),
+> > +             TLV_SET_U16(0x000b, le_adv_max_interval),
+> > +             TLV_SET_U16(0x000c, def_multi_adv_rotation_duration),
+> > +             TLV_SET_U16(0x000d, le_scan_interval),
+> > +             TLV_SET_U16(0x000e, le_scan_window),
+> > +             TLV_SET_U16(0x000f, le_scan_int_suspend),
+> > +             TLV_SET_U16(0x0010, le_scan_window_suspend),
+> > +             TLV_SET_U16(0x0011, le_scan_int_discovery),
+> > +             TLV_SET_U16(0x0012, le_scan_window_discovery),
+> > +             TLV_SET_U16(0x0013, le_scan_int_adv_monitor),
+> > +             TLV_SET_U16(0x0014, le_scan_window_adv_monitor),
+> > +             TLV_SET_U16(0x0015, le_scan_int_connect),
+> > +             TLV_SET_U16(0x0016, le_scan_window_connect),
+> > +             TLV_SET_U16(0x0017, le_conn_min_interval),
+> > +             TLV_SET_U16(0x0018, le_conn_max_interval),
+> > +             TLV_SET_U16(0x0019, le_conn_latency),
+> > +             TLV_SET_U16(0x001a, le_supv_timeout),
+> > +             TLV_SET_U16_JIFFIES_TO_MSECS(0x001b,
+> > +                                          def_le_autoconnect_timeout),
+> > +             TLV_SET_U16(0x001d, advmon_allowlist_duration),
+> > +             TLV_SET_U16(0x001e, advmon_no_filter_duration),
+> >       };
+> > -     struct mgmt_rp_read_def_system_config *rp = (void *)params;
+> >
+> >       bt_dev_dbg(hdev, "sock %p", sk);
+> >
+> > -     return mgmt_cmd_complete(sk, hdev->id,
+> > -                              MGMT_OP_READ_DEF_SYSTEM_CONFIG,
+> > -                              0, rp, sizeof(params));
+> > +     ret = mgmt_cmd_complete(sk, hdev->id,
+> > +                             MGMT_OP_READ_DEF_SYSTEM_CONFIG,
+> > +                             0, &rp, sizeof(rp));
+> > +     return ret;
+> > }
+> >
+>
+> frankly I would prefer if we do the re-factoring first and only then add new
+> parameters.
 
+Yes. This patch only does the refactor stuff and the next patch is the one that
+adds the new parameter.
 
-ÔÚ 2020/11/12 ÉÏÎç10:28, Hugh Dickins Ð´µÀ:
->>>   			 * Page become compound since the non-locked check,
->>>   			 * and it's on LRU. It can only be a THP so the order
->>> @@ -990,16 +1002,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
-> Completely off-topic, and won't matter at all when Andrew rediffs into
-> mmotm: but isn't it weird that this is showing "too_many_isolated(",
-> when actually the function is isolate_migratepages_block()?
-> 
+>
+> While I am looking at this, I am also really confused about this
+> JIFFIES_TO_MSEC business. We should actually not store anything in jiffies
+> or use it in an API. Is there a good reason to keep storing things in
+> jiffies internally?
+>
 
-My git version is too low for this. Thanks for reminder. the latest git
-work fine on correct function name.
+I don't know about this, but it looks like it should be in a different
+patch right?
 
-Thanks
+> Regards
+>
+> Marcel
+>
