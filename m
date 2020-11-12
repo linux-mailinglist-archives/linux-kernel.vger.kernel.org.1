@@ -2,69 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCCC2AFE21
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A742AFEFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgKLFeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:34:17 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:34281 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgKLCBH (ORCPT
+        id S1728693AbgKLFeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbgKLCDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 21:01:07 -0500
-Received: by mail-il1-f198.google.com with SMTP id e14so2813974ilr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:01:08 -0800 (PST)
+        Wed, 11 Nov 2020 21:03:38 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27397C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:03:39 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id d9so4605737oib.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 18:03:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=KyT2mlBYlT2kAm/JHbWqMsOuBJM1d87BrqaaRaUfl50=;
+        b=iqee5mg0JMbddEDyf2/xuBU1NZWnAWQDmcxpGfelMd2nKAPy/CPLgkG4iApYTGebQh
+         yUBfhOvZXGiwgsEDXQxTtAr7ihzRkOkBe33dvPe2T9i4nrIsRa+nmWvkU6ri/CmLLHU+
+         0k7mh1HRa+kWhDkkT1SWLyhPJ9t5KGqxKeLrVvIWgRoXmaWgvAMRjhxLbn1VpzsA+OFG
+         EmxMxMa3aKoHuvgHtwDhMqy1TKQyoxAReTZAM95dC7u16k4wnNgEvA0A6tssToLXQzvq
+         uWgRdxzDYElGfeIiIVf3cDvAOaYb+231CM6UI0zHdEqLILTIpfXcYLfiMfX75UJ9zujd
+         kciw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=fPIpTU7XObV/aYDTsKckMsY4XN1O/uddxk60AMVHEAQ=;
-        b=AmvF/1Aaaugr6aI2B0deW028yonGsaG2cp7prtAXON8t6V/aJMxREqpQ48xp6E+06y
-         DyiL3dC+5SQYGxBGdpuAmwmUU6s2LMN8lBvMn8CKrUvokPxpE3WATSpA8M82zE3RbSm2
-         wxq/0nBibBwll5eI06scvCYePZVciI4j7bqxLelSanrfUUskMO8naGR1kzlYQLIJ9FHn
-         k+UvBxcNgzTQwtE86VO/7QHHBAGlxBRMTY5WX4/A27IxDqiYSS0tpM/vT+EdVRuM0moD
-         ua2aKNVhsR/ARVu1Vv328Mm0COeTF9SVgFna2i0Cd+eXTtsvfPr8hd696msnNPMXZxRS
-         /8fA==
-X-Gm-Message-State: AOAM533HNZ8deSdKNUgKjIoLvHtDx7ksks/CUkhzWDTStlk55fFFd7MD
-        ODO6oKBmgZmGqQgp/WOh9oM0SmvprPJ3cV22n24hmF2ixJZu
-X-Google-Smtp-Source: ABdhPJxRq6op6jH+XFV81MEo+Uqj06/yeOnZF4JHAkF7bFjxQuUOeRHmwI4tVPwVw0sB95Foed8WGs0//pHSCSRZbem9r7DODjE/
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=KyT2mlBYlT2kAm/JHbWqMsOuBJM1d87BrqaaRaUfl50=;
+        b=FA7VEY7Qpf+jyxLnw7fUPHJqksSZkArmQiBEzJTWsygsnTCYgEXW38hQ71kaIkhYgK
+         HhwBdsD2SqG9eF0zjsENMcxhBadG8YKNR8cXe/t4SZXx6iuZFjdK4KSMVaXYTGTfMviy
+         TEXmnWbAa0iHYP8h3BauQ0jxbGySqZhu9idGb5cq4V/ewxAdj8lHnaeu13glxHt+C9WP
+         jWGBx1/BzsIcHrXUnvALI47SJGa5S2lU6EaVF8KvaNpIPAvJmYC9eWIvs3T3v9xf9npc
+         wXNmtv70L48JojalcLYYuOPqWnC5XdCNVM7oZKzn0t0HxPBr2qKJTbQdjRpuVaS+wisD
+         MvoA==
+X-Gm-Message-State: AOAM531Yoyz76XNZRu7IjabjnY3v8amb0qklRWkBzUqQdIcRVMswQwL9
+        9TT0i7mjqbM5gPHp5+Syn5+3RXdqv9l/gQ==
+X-Google-Smtp-Source: ABdhPJx+VVz+pvUawrMnkgTlv6UoYdI6b3G5zOvDXUE/xLJ+9e8Kjh1DckUSTAeZd8F3PDjyrVp08w==
+X-Received: by 2002:aca:6004:: with SMTP id u4mr4357158oib.8.1605146618042;
+        Wed, 11 Nov 2020 18:03:38 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id m10sm982866oon.27.2020.11.11.18.03.35
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 11 Nov 2020 18:03:37 -0800 (PST)
+Date:   Wed, 11 Nov 2020 18:03:22 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Vlastimil Babka <vbabka@suse.cz>
+cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v21 14/19] mm/lru: introduce TestClearPageLRU
+In-Reply-To: <b4c08619-d365-bbaf-de08-9b2495a0a8d8@suse.cz>
+Message-ID: <alpine.LSU.2.11.2011111729350.2174@eggly.anvils>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com> <1604566549-62481-15-git-send-email-alex.shi@linux.alibaba.com> <b4c08619-d365-bbaf-de08-9b2495a0a8d8@suse.cz>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5f05:: with SMTP id t5mr20978286iob.67.1605146467728;
- Wed, 11 Nov 2020 18:01:07 -0800 (PST)
-Date:   Wed, 11 Nov 2020 18:01:07 -0800
-In-Reply-To: <000000000000e3068105ac405407@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005858405b3df4904@google.com>
-Subject: Re: WARNING in irqentry_exit
-From:   syzbot <syzbot+d4336c84ed0099fdbe47@syzkaller.appspotmail.com>
-To:     keescook@chromium.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, 11 Nov 2020, Vlastimil Babka wrote:
+> On 11/5/20 9:55 AM, Alex Shi wrote:
+> 
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -1542,7 +1542,7 @@ unsigned int reclaim_clean_pages_from_list(struct
+> > zone *zone,
+> >    */
+> >   int __isolate_lru_page(struct page *page, isolate_mode_t mode)
+> >   {
+> > -	int ret = -EINVAL;
+> > +	int ret = -EBUSY;
+> >     	/* Only take pages on the LRU. */
+> >   	if (!PageLRU(page))
+> > @@ -1552,8 +1552,6 @@ int __isolate_lru_page(struct page *page,
+> > isolate_mode_t mode)
+> >   	if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
+> >   		return ret;
+> >   -	ret = -EBUSY;
+> 
+> I'm not sure why this change is here, looks unrelated to the patch?
+> 
+> Oh I see, you want to prevent the BUG() in isolate_lru_pages().
 
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
+Yes, I suggested this part of the patch to Alex, when I hit that BUG().
 
-    lockdep: Fix lockdep recursion
+> 
+> But due to that, the PageUnevictable check was also affected unintentionally.
+> But I don't think it's that important to BUG() when we run into
+> PageUnevictable unexpectedly, so that's probably ok.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1202919a500000
-start commit:   f873db9a Merge tag 'io_uring-5.9-2020-08-21' of git://git...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4336c84ed0099fdbe47
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15312a66900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b01641900000
+Not unintentional.  __isolate_lru_page(), or __isolate_lru_page_prepare(),
+is a silly function, used by two callers whose requirements are almost
+entirely disjoint.  The ISOLATE_UNEVICTABLE case is only for compaction.c,
+which takes no interest in -EINVAL versus -EBUSY, and has no such BUG().
 
-If the result looks correct, please mark the issue as fixed by replying with:
+I think it dates back to lumpy reclaim days, and it probably made more
+sense back then.
 
-#syz fix: lockdep: Fix lockdep recursion
+> 
+> But with that, we can just make __isolate_lru_page() a bool function and
+> remove the ugly switch in  isolate_lru_pages()?
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I agree that the switch statement in isolate_lru_pages() seems pointless
+now, and can be turned into an if{}else{}.  But that cleanup is a
+diversion from this particular TestClearPageLRU patch, and I think from
+the whole series (checking final state of the patchset, yes, the switch
+is still there - though I think there have been variant series which
+removed it).
+
+Can we please leave that cleanup until after the series has gone in?
+
+I think several of us have cleanups or optimization that we want to
+follow (I had one that inlines what isolate_migratepages_block() wanted
+of __isolate_lru_page() into that function, so simplifying what vmscan.c
+needs; perhaps that can now eliminate it completely, I've not tried
+recently).  But there was a point at which the series was growing
+ten patches per release as we all added our bits and pieces on top,
+it got harder and harder to review the whole, and further from
+getting the basics in: I do push back against that tendency.
+
+Hugh
