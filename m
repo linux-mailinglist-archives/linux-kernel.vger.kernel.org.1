@@ -2,121 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A009D2B08CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977192B08DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgKLPsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:48:41 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:51828 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727789AbgKLPsk (ORCPT
+        id S1728564AbgKLPtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:49:25 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:49316 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728032AbgKLPtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:48:40 -0500
-Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFSRrb011455;
-        Thu, 12 Nov 2020 15:48:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=am/hQTORqGTgFSiAPw/esERQ1tn2MlSFXRWxoiKNb8Y=;
- b=pV6oRrQ5lk8fOKI26YSvMmFTLnRu6ijkFHsAi2Lcct4s6gV+FkG1Qkmjz8Ln9eWF/dyW
- p7QygLU5GmidYZpmczwFu1z5THYPIIz/r2jI8W0W6xSUr0qCYF+kKfLuP2PDLUO+9qgZ
- hLBmBpcbAfxtukiHRDtgiq9sWciQF5JI01eR19LY+VwblpfSaYb/8b0cwd5HcZd8Bikm
- 0aUewLvK9+WxzARiiOa4NYUMpWPByUDZUEYajRv7spfD+H6dUs0IGfhqZqZFEDjz2C+4
- xCPM5P1t2OOnwKwKOm+wUDS0TitJK8fTQn9oWoOgQSsmt7FzcLrfONxQcxmrwdhhUV0+ wA== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 34ressba78-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 15:48:18 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 1304074;
-        Thu, 12 Nov 2020 15:48:17 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.214.129.62])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 980BF57;
-        Thu, 12 Nov 2020 15:48:16 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 09:48:16 -0600
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Mike Travis <mike.travis@hpe.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/platform/uv: UV5 Fix copied output archtype
-Message-ID: <20201112154816.GI1468175@swahl-home.5wahls.com>
-References: <20201111010418.82133-1-mike.travis@hpe.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111010418.82133-1-mike.travis@hpe.com>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-12_06:2020-11-12,2020-11-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 malwarescore=0 suspectscore=1
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011120093
+        Thu, 12 Nov 2020 10:49:23 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFTOcY091503;
+        Thu, 12 Nov 2020 15:49:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=bD1V5q95i6+ADV+YeAFQt2s8ENYs/W7Au47fsVzm170=;
+ b=I+c7hO+bjcs00L2rQ4D9vhfLswmZuCqk8qj2Zy513vtnws9SiGwmfaAz+zOmv0gRqTSo
+ Yl2cnvrFzhNjuZychmZGau0YrII9Ro+yhj+BD2XvIQ+khyK+s8kZ+LbbXgL8halL1px4
+ Uozki8PMlSG60yqLJDKEeExb45H4jKL8F8e8CVFlIpylUYUQhAAO2n3uUgyiR65IY0Bw
+ TpBPXFKJYSvkWq96Y3iegUx8Y9eBA+2p/DtC+CcSWXdUxvEDxhPS00SUB980D+1QtW21
+ X6pMiCC78K0BL7hJ9vVX1vWNaN38N0iuyxkfBrnUeVA8evI2IPwpe0JcterNmlbbCs5p uA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34p72ev7f9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 15:49:09 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFVCnl133264;
+        Thu, 12 Nov 2020 15:49:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34rt5686x6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 15:49:08 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0ACFn5ll005827;
+        Thu, 12 Nov 2020 15:49:05 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 12 Nov 2020 07:49:05 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <2380561.1605195776@warthog.procyon.org.uk>
+Date:   Thu, 12 Nov 2020 10:49:03 -0500
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Bruce Fields <bfields@fieldses.org>,
+        linux-crypto@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-afs@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <22138FE2-9E79-4E24-99FC-74A35651B0C1@oracle.com>
+References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
+ <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+ <2380561.1605195776@warthog.procyon.org.uk>
+To:     David Howells <dhowells@redhat.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 07:04:18PM -0600, Mike Travis wrote:
-> A test shows that the output contains a space:
->     # cat /proc/sgi_uv/archtype
->     NSGI4 U/UVX
-> Remove that embedded space by copying the "trimmed" buffer instead of the
-> untrimmed input character list.  Use sizeof to remove size dependency
-> on copy out length.  Increase output buffer size by one character just
-> in case BIOS sends an 8 character string for archtype.
-> 
-> Fixes: 1e61f5a95f191 (Add and decode Arch Type in UVsystab)
-> 
-> Signed-off-by: Mike Travis <mike.travis@hpe.com>
-
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 
 
-> ---
->  arch/x86/kernel/apic/x2apic_uv_x.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-> index 3115caa7d7d0..1b98f8c12b96 100644
-> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
-> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-> @@ -33,7 +33,7 @@ static union uvh_apicid		uvh_apicid;
->  static int			uv_node_id;
->  
->  /* Unpack AT/OEM/TABLE ID's to be NULL terminated strings */
-> -static u8 uv_archtype[UV_AT_SIZE];
-> +static u8 uv_archtype[UV_AT_SIZE + 1];
->  static u8 oem_id[ACPI_OEM_ID_SIZE + 1];
->  static u8 oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
->  
-> @@ -320,7 +320,7 @@ static int __init decode_arch_type(unsigned long ptr)
->  
->  	if (n > 0 && n < sizeof(uv_ate->archtype)) {
->  		pr_info("UV: UVarchtype received from BIOS\n");
-> -		uv_stringify(UV_AT_SIZE, uv_archtype, uv_ate->archtype);
-> +		uv_stringify(sizeof(uv_archtype), uv_archtype, uv_ate->archtype);
->  		return 1;
->  	}
->  	return 0;
-> @@ -378,7 +378,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
->  	if (!early_get_arch_type())
->  
->  		/* If not use OEM ID for UVarchtype */
-> -		uv_stringify(UV_AT_SIZE, uv_archtype, _oem_id);
-> +		uv_stringify(sizeof(uv_archtype), uv_archtype, oem_id);
->  
->  	/* Check if not hubbed */
->  	if (strncmp(uv_archtype, "SGI", 3) != 0) {
-> -- 
-> 2.21.0
-> 
+> On Nov 12, 2020, at 10:42 AM, David Howells <dhowells@redhat.com> =
+wrote:
+>=20
+> Chuck Lever <chuck.lever@oracle.com> wrote:
+>=20
+>>> There are three main interfaces to it:
+>>>=20
+>>> (*) I/O crypto: encrypt, decrypt, get_mic and verify_mic.
+>>>=20
+>>>    These all do in-place crypto, using an sglist to define the =
+buffer
+>>>    with the data in it.  Is it necessary to make it able to take =
+separate
+>>>    input and output buffers?
+>>=20
+>> Hi David, Wondering if these "I/O" APIs use synchronous or async
+>> crypto under the covers. For small data items like MICs, synchronous
+>> might be a better choice, especially if asynchronous crypto could
+>> result in incoming requests getting re-ordered and falling out of
+>> the GSS sequence number window.
+>>=20
+>> What say ye?
+>=20
+> For the moment I'm using synchronous APIs as that's what sunrpc is =
+using (I
+> borrowed the basic code from there).
 
--- 
-Steve Wahl, Hewlett Packard Enterprise
+Really? My understanding of the Linux kernel SUNRPC implementation is
+that it uses asynchronous, even for small data items. Maybe I'm using
+the terminology incorrectly.
+
+The problem that arises is on the server. The asynchronous API can
+schedule, and if the server has other work to do, that can delay a
+verify_mic long enough that the request drops out of the GSS sequence
+number window (even a large window).
+
+Whatever the mechanism, we need to have deterministic ordering, at
+least on the server-side.
+
+
+> It would be interesting to consider using async, but there's a =
+potential
+> issue.  For the simplified profile, encryption and integrity checksum
+> generation can be done simultaneously, but decryption and verification =
+can't.
+> For the AES-2 profile, the reverse is true.
+>=20
+> For my purposes in rxrpc, async mode isn't actually that useful since =
+I'm only
+> doing the contents of a UDP packet at a time.  Either I'm encrypting =
+with the
+> intention of immediate transmission or decrypting with the intention =
+of
+> immediately using the data, so I'm in a context where I can wait =
+anyway.
+>=20
+> What might get me more of a boost would be to encrypt the app data =
+directly
+> into a UDP packet and decrypt the UDP packet directly into the app =
+buffers.
+> This is easier said than done, though, as there's typically security =
+metadata
+> inserted into the packet inside the encrypted region.
+
+
+--
+Chuck Lever
+
+
+
