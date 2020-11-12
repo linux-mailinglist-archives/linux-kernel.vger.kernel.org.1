@@ -2,181 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8917C2B12DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70EE2B12DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 00:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgKLXqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 18:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        id S1726156AbgKLXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 18:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgKLXqf (ORCPT
+        with ESMTP id S1725894AbgKLXrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:46:35 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4442EC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 15:46:35 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w6so6052697pfu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 15:46:35 -0800 (PST)
+        Thu, 12 Nov 2020 18:47:20 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D473EC0613D1;
+        Thu, 12 Nov 2020 15:47:19 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id v22so8514365edt.9;
+        Thu, 12 Nov 2020 15:47:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fa/E3DW7b0urDfoi0YeY9KEHtV3uRQoZVbElwk5dEcM=;
-        b=rKvgZH2YUHEYSLWvB8VQw9wZxW0yKjSzLvbQi3plyzSEeCU4oHP+HKDSV1lCGqpaF0
-         ggs44CIOQv/nBALxdhzKNN/mnJLD0jyVH7V/zkxADpCGlRpG1knv9IkMjqcP8x+TntGK
-         QoPx9Ysb52YQJRhZ4cQ8gQprI8hRWQ7lmQiT4zbHYsYk+DV7PT0iK03+w6sNtYEPFQkV
-         iYnEKIt26KKf7YCNFdfF3OcRV6bfyowu5olxggw+2mKCbgyr1f6sNQGEUfUFu5MZmo75
-         BvMY6Ta4TOBo94AVCvTfzR4sZUU89YP/kXTq2hyxDgmwiuAoNTHsTURE6BRIMmaDw0ZQ
-         TMwQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lXeqN+RZgC4rnxXa5kUVVHNRIgkH8/pb6L8dmX3V+/Q=;
+        b=VaMPVaEbldmBOCPJTurlQEPT3vna24cjZUp5o/ZT7kYzVi6LENldNP3wEEhKWuqy/F
+         Qyk51bUnBAtFGWx67tn9oMKAOgxOKA5MnCaBomPZUr0vZHesYnzCZsM4ZDDrWgLLavPJ
+         IsMuDsj8yeUQByabsPcvgu8rGM7wUJF/H7Rs9xILc3fAizDF13Et7FfKPuzWstM3np2g
+         v5Nc9Rw/gqZPh/RH62JIv1jk2cWUeg/9ZbaYv+EMdUTQwUWEGWXpLau1bQUhEsnALx0h
+         dAiZc5SjeREEC3b95NdehiPlwWd6m+i5R+JjNhiaJt+38+/SA6wfJIQdshMvTwxTe86J
+         B9Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fa/E3DW7b0urDfoi0YeY9KEHtV3uRQoZVbElwk5dEcM=;
-        b=VMvI+xjke+qpMZmeia/nGiDjlHYt3Xa7aTmG1MyVoynsSh3SqPAXusip65E/SEVAeF
-         V+M0bJbcnT1CgyPHgVsX0Sri0p2jQHE+xLHsqCqrWBmjXBIXdlVyXmI75iesnOGFrtXJ
-         KsJkuQBlhm/hzMJ0gwDK28Knwk9m+iQz3e+TEPpC8oPqnsd1fxo72szEewHYzl+hQfsS
-         ssWTbhjH+T+TL8ltC7rguDp0uHsp2NNByCPopTNem74kytXaI6A/Ygk15mjek5PlcLwo
-         lFr1/+yj82RGNWc9tNchy7JsDklO7WY/YE7XuCq/b4mi9AQejp0N2J1YP17Z+0u3hSew
-         YqFw==
-X-Gm-Message-State: AOAM530BDXOk7y0lelwmZF0JOdwzqgh2+kKUdMjT8YFHnGc3PfUAcJo8
-        CUb2EoTPGCu2UfNFE8Fu5KHbbKZO49w=
-X-Google-Smtp-Source: ABdhPJyikdfvuAzHc+Q0Js+XU/Lqd5NlDAsaK6uTGqwWHzpS2JCRsjFCbYiRu+LVCx/vilzfparRXQ==
-X-Received: by 2002:a17:90b:1c0e:: with SMTP id oc14mr238664pjb.142.1605224794234;
-        Thu, 12 Nov 2020 15:46:34 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id r205sm7828607pfr.25.2020.11.12.15.46.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 15:46:33 -0800 (PST)
-Subject: Re: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
-To:     Stefan Agner <stefan@agner.ch>, minchan@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com
-Cc:     akpm@linux-foundation.org, sjenning@linux.vnet.ibm.com,
-        gregkh@linuxfoundation.org, arnd@arndb.de, linux-mm@kvack.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lXeqN+RZgC4rnxXa5kUVVHNRIgkH8/pb6L8dmX3V+/Q=;
+        b=MturKqZplnhmWK8wv10hHlS5b31gupkV0Qm1XWKxF0wl0CyuCmxTyHRCkKuuGXNBfc
+         5XANHGWBGjPSdyvrOR7YpHOvZCZjj2tGd65nVsc5+F2Ba65eAcz+VpdtBAXlklvWkGZf
+         JgGyAU7VbzbwSknJSoytgkVXhapAeFBEWH1BA5/5EANqOpmpFQW9V25Pze4Bb+h5oMsv
+         Y0ZsWSAMKC2ifqpHRLYFZlI/j9Sc/CxGKNz1UPdQ8/xuEXhVVUqU5yoYsKdGn9JId1Rb
+         NkuXFhAOOF1ltm47eg8FCdQexEk+JXjZPSOset2NXsHw1SWXuPGhk+DeHvRuKCe4RZoe
+         uowQ==
+X-Gm-Message-State: AOAM5302zDSgg8+RaYQsGLmMFDwAiPMX5t75SM0vyx/+tNK6Hb/YZJHU
+        ZSMKNJHjGVySST+gjfibxwU=
+X-Google-Smtp-Source: ABdhPJwmcy6UwRW8cP+c1Yji0H8uYXiwly9AMrgIDs+rWcjtEXMiQRKGoDIYkEcXanCh7RNGWQYw4g==
+X-Received: by 2002:a50:a105:: with SMTP id 5mr2484562edj.165.1605224838478;
+        Thu, 12 Nov 2020 15:47:18 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id w18sm3033458edq.43.2020.11.12.15.47.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 15:47:17 -0800 (PST)
+Date:   Fri, 13 Nov 2020 01:47:16 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <a08ce295-30c9-524f-53d7-612222c382eb@gmail.com>
-Date:   Thu, 12 Nov 2020 15:46:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH net-next v2 07/11] net: dsa: microchip: ksz9477: add
+ Posix clock support for chip PTP clock
+Message-ID: <20201112234716.tkvjnkgxo236e6gv@skbuf>
+References: <20201112153537.22383-1-ceggers@arri.de>
+ <20201112153537.22383-8-ceggers@arri.de>
 MIME-Version: 1.0
-In-Reply-To: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112153537.22383-8-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/20 7:22 AM, Stefan Agner wrote:
-> Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
-> include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
-> the MAX_PHYSMEM_BITS define on all architectures.
-> 
-> This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
-> more than 4GB of memory:
->   Unable to handle kernel NULL pointer dereference at virtual address 00000000
->   pgd = a27bd01c
->   [00000000] *pgd=236a0003, *pmd=1ffa64003
->   Internal error: Oops: 207 [#1] SMP ARM
->   Modules linked in: mdio_bcm_unimac(+) brcmfmac cfg80211 brcmutil raspberrypi_hwmon hci_uart crc32_arm_ce bcm2711_thermal phy_generic genet
->   CPU: 0 PID: 123 Comm: mkfs.ext4 Not tainted 5.9.6 #1
->   Hardware name: BCM2711
->   PC is at zs_map_object+0x94/0x338
->   LR is at zram_bvec_rw.constprop.0+0x330/0xa64
->   pc : [<c0602b38>]    lr : [<c0bda6a0>]    psr: 60000013
->   sp : e376bbe0  ip : 00000000  fp : c1e2921c
->   r10: 00000002  r9 : c1dda730  r8 : 00000000
->   r7 : e8ff7a00  r6 : 00000000  r5 : 02f9ffa0  r4 : e3710000
->   r3 : 000fdffe  r2 : c1e0ce80  r1 : ebf979a0  r0 : 00000000
->   Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
->   Control: 30c5383d  Table: 235c2a80  DAC: fffffffd
->   Process mkfs.ext4 (pid: 123, stack limit = 0x495a22e6)
->   Stack: (0xe376bbe0 to 0xe376c000)
->   ...
->   [<c0602b38>] (zs_map_object) from [<c0bda6a0>] (zram_bvec_rw.constprop.0+0x330/0xa64)
->   [<c0bda6a0>] (zram_bvec_rw.constprop.0) from [<c0bdaf78>] (zram_submit_bio+0x1a4/0x40c)
->   [<c0bdaf78>] (zram_submit_bio) from [<c085806c>] (submit_bio_noacct+0xd0/0x3c8)
->   [<c085806c>] (submit_bio_noacct) from [<c08583b0>] (submit_bio+0x4c/0x190)
->   [<c08583b0>] (submit_bio) from [<c06496b4>] (submit_bh_wbc+0x188/0x1b8)
->   [<c06496b4>] (submit_bh_wbc) from [<c064ce98>] (__block_write_full_page+0x340/0x5e4)
->   [<c064ce98>] (__block_write_full_page) from [<c064d3ec>] (block_write_full_page+0x128/0x170)
->   [<c064d3ec>] (block_write_full_page) from [<c0591ae8>] (__writepage+0x14/0x68)
->   [<c0591ae8>] (__writepage) from [<c0593efc>] (write_cache_pages+0x1bc/0x494)
->   [<c0593efc>] (write_cache_pages) from [<c059422c>] (generic_writepages+0x58/0x8c)
->   [<c059422c>] (generic_writepages) from [<c0594c24>] (do_writepages+0x48/0xec)
->   [<c0594c24>] (do_writepages) from [<c0589330>] (__filemap_fdatawrite_range+0xf0/0x128)
->   [<c0589330>] (__filemap_fdatawrite_range) from [<c05894bc>] (file_write_and_wait_range+0x48/0x98)
->   [<c05894bc>] (file_write_and_wait_range) from [<c064f3f8>] (blkdev_fsync+0x1c/0x44)
->   [<c064f3f8>] (blkdev_fsync) from [<c064408c>] (do_fsync+0x3c/0x70)
->   [<c064408c>] (do_fsync) from [<c0400374>] (__sys_trace_return+0x0/0x2c)
->   Exception stack(0xe376bfa8 to 0xe376bff0)
->   bfa0:                   0003d2e0 b6f7b6f0 00000003 00046e40 00001000 00000000
->   bfc0: 0003d2e0 b6f7b6f0 00000000 00000076 00000000 00000000 befcbb20 befcbb28
->   bfe0: b6f4e060 befcbad8 b6f23e0c b6dc4a80
->   Code: e5927000 e0050391 e0871005 e5918018 (e5983000)
-> 
-> Fixes: 61989a80fb3a ("staging: zsmalloc: zsmalloc memory allocation library")
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
+On Thu, Nov 12, 2020 at 04:35:33PM +0100, Christian Eggers wrote:
+> diff --git a/drivers/net/dsa/microchip/Kconfig b/drivers/net/dsa/microchip/Kconfig
+> index 4ec6a47b7f72..71cc910e5941 100644
+> --- a/drivers/net/dsa/microchip/Kconfig
+> +++ b/drivers/net/dsa/microchip/Kconfig
+> @@ -24,6 +24,15 @@ config NET_DSA_MICROCHIP_KSZ9477_SPI
+>  	help
+>  	  Select to enable support for registering switches configured through SPI.
+>  
+> +config NET_DSA_MICROCHIP_KSZ9477_PTP
+> +	bool "PTP support for Microchip KSZ9477 series"
+> +	default n
 
-BTW, I can confirm on behalf of a colleague here that this patch fixes
-zsmalloc on a 32-bit platform with 4GB of DRAM and with a 3GB user/1GB
-kernel split. Thanks!
--- 
-Florian
+"default n" is implicit, please remove this
+
+> +	depends on NET_DSA_MICROCHIP_KSZ9477
+> +	depends on PTP_1588_CLOCK
+> +	help
+> +	  Say Y to enable PTP hardware timestamping on Microchip KSZ switch
+> +	  chips that support it.
+> +
+>  menuconfig NET_DSA_MICROCHIP_KSZ8795
+>  	tristate "Microchip KSZ8795 series switch support"
+>  	depends on NET_DSA
+> diff --git a/drivers/net/dsa/microchip/Makefile b/drivers/net/dsa/microchip/Makefile
+> index c5cc1d5dea06..35c4356bad65 100644
+> --- a/drivers/net/dsa/microchip/Makefile
+> +++ b/drivers/net/dsa/microchip/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_NET_DSA_MICROCHIP_KSZ_COMMON)	+= ksz_common.o
+>  obj-$(CONFIG_NET_DSA_MICROCHIP_KSZ9477)		+= ksz9477.o
+>  ksz9477-objs := ksz9477_main.o
+> +ksz9477-$(CONFIG_NET_DSA_MICROCHIP_KSZ9477_PTP)	+= ksz9477_ptp.o
+>  obj-$(CONFIG_NET_DSA_MICROCHIP_KSZ9477_I2C)	+= ksz9477_i2c.o
+>  obj-$(CONFIG_NET_DSA_MICROCHIP_KSZ9477_SPI)	+= ksz9477_spi.o
+>  obj-$(CONFIG_NET_DSA_MICROCHIP_KSZ8795)		+= ksz8795.o
+> diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
+> index 4ed1f503044a..315eb24c444d 100644
+> --- a/drivers/net/dsa/microchip/ksz9477_i2c.c
+> +++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
+> @@ -58,7 +58,7 @@ static int ksz9477_i2c_remove(struct i2c_client *i2c)
+>  {
+>  	struct ksz_device *dev = i2c_get_clientdata(i2c);
+>  
+> -	ksz_switch_remove(dev);
+> +	ksz9477_switch_remove(dev);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/net/dsa/microchip/ksz9477_main.c b/drivers/net/dsa/microchip/ksz9477_main.c
+> index 6b5a981fb21f..7d623400139f 100644
+> --- a/drivers/net/dsa/microchip/ksz9477_main.c
+> +++ b/drivers/net/dsa/microchip/ksz9477_main.c
+> @@ -18,6 +18,7 @@
+>  
+>  #include "ksz9477_reg.h"
+>  #include "ksz_common.h"
+> +#include "ksz9477_ptp.h"
+>  
+>  /* Used with variable features to indicate capabilities. */
+>  #define GBIT_SUPPORT			BIT(0)
+> @@ -1719,10 +1720,26 @@ int ksz9477_switch_register(struct ksz_device *dev)
+>  			phy_remove_link_mode(phydev,
+>  					     ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
+>  	}
+> +
+> +	ret = ksz9477_ptp_init(dev);
+> +	if (ret)
+> +		goto error_switch_unregister;
+> +
+> +	return 0;
+> +
+> +error_switch_unregister:
+> +	ksz_switch_remove(dev);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(ksz9477_switch_register);
+>  
+> +void ksz9477_switch_remove(struct ksz_device *dev)
+> +{
+> +	ksz9477_ptp_deinit(dev);
+> +	ksz_switch_remove(dev);
+> +}
+> +EXPORT_SYMBOL(ksz9477_switch_remove);
+> +
+>  MODULE_AUTHOR("Woojung Huh <Woojung.Huh@microchip.com>");
+>  MODULE_DESCRIPTION("Microchip KSZ9477 Series Switch DSA Driver");
+>  MODULE_LICENSE("GPL");
+> diff --git a/drivers/net/dsa/microchip/ksz9477_ptp.c b/drivers/net/dsa/microchip/ksz9477_ptp.c
+> new file mode 100644
+> index 000000000000..44d7bbdea518
+> --- /dev/null
+> +++ b/drivers/net/dsa/microchip/ksz9477_ptp.c
+> @@ -0,0 +1,301 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Microchip KSZ9477 switch driver PTP routines
+> + *
+> + * Author: Christian Eggers <ceggers@arri.de>
+> + *
+> + * Copyright (c) 2020 ARRI Lighting
+> + */
+> +
+> +#include <linux/ptp_clock_kernel.h>
+> +
+> +#include "ksz_common.h"
+> +#include "ksz9477_reg.h"
+> +
+> +#include "ksz9477_ptp.h"
+> +
+> +#define KSZ_PTP_INC_NS 40  /* HW clock is incremented every 40 ns (by 40) */
+> +#define KSZ_PTP_SUBNS_BITS 32  /* Number of bits in sub-nanoseconds counter */
+> +
+> +/* Posix clock support */
+> +
+> +static int ksz9477_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+> +{
+> +	struct ksz_device *dev = container_of(ptp, struct ksz_device, ptp_caps);
+> +	u16 data16;
+> +	int ret;
+> +
+> +	if (scaled_ppm) {
+> +		/* basic calculation:
+> +		 * s32 ppb = scaled_ppm_to_ppb(scaled_ppm);
+> +		 * s64 adj = div_s64(((s64)ppb * KSZ_PTP_INC_NS) << KSZ_PTP_SUBNS_BITS,
+> +		 *                   NSEC_PER_SEC);
+> +		 */
+> +
+> +		/* more precise calculation (avoids shifting out precision) */
+> +		s64 ppb, adj;
+> +		u32 data32;
+
+Don't you want to move these declarations right beneath the "if" line?
+
+> +
+> +		/* see scaled_ppm_to_ppb() in ptp_clock.c for details */
+> +		ppb = 1 + scaled_ppm;
+> +		ppb *= 125;
+> +		ppb *= KSZ_PTP_INC_NS;
+> +		ppb <<= KSZ_PTP_SUBNS_BITS - 13;
+> +		adj = div_s64(ppb, NSEC_PER_SEC);
+> +
+> +		data32 = abs(adj);
+> +		data32 &= BIT_MASK(30) - 1;
+> +		if (adj >= 0)
+> +			data32 |= PTP_RATE_DIR;
+> +
+> +		ret = ksz_write32(dev, REG_PTP_SUBNANOSEC_RATE, data32);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = ksz_read16(dev, REG_PTP_CLK_CTRL, &data16);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (scaled_ppm)
+> +		data16 |= PTP_CLK_ADJ_ENABLE;
+> +	else
+> +		data16 &= ~PTP_CLK_ADJ_ENABLE;
+> +
+> +	ret = ksz_write16(dev, REG_PTP_CLK_CTRL, data16);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ksz9477_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
+> +{
+> +	struct ksz_device *dev = container_of(ptp, struct ksz_device, ptp_caps);
+> +	s32 sec, nsec;
+> +	u16 data16;
+> +	int ret;
+> +
+> +	mutex_lock(&dev->ptp_mutex);
+
+You're skipping the mutex in ksz9477_ptp_adjfine, is that intentional or
+just a proof that it's useless? You should add a comment at its
+declaration site about what it's meant to protect.
+
+> +
+> +	/* do not use ns_to_timespec64(), both sec and nsec are subtracted by hw */
+> +	sec = div_s64_rem(delta, NSEC_PER_SEC, &nsec);
+> +
+> +	ret = ksz_write32(dev, REG_PTP_RTC_NANOSEC, abs(nsec));
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	/* contradictory to the data sheet, seconds are also considered */
+> +	ret = ksz_write32(dev, REG_PTP_RTC_SEC, abs(sec));
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	ret = ksz_read16(dev, REG_PTP_CLK_CTRL, &data16);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	data16 |= PTP_STEP_ADJ;
+> +	if (delta < 0)
+> +		data16 &= ~PTP_STEP_DIR;  /* 0: subtract */
+> +	else
+> +		data16 |= PTP_STEP_DIR;   /* 1: add */
+> +
+> +	ret = ksz_write16(dev, REG_PTP_CLK_CTRL, data16);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +error_return:
+> +	mutex_unlock(&dev->ptp_mutex);
+> +	return ret;
+> +}
+> +
+> +static int _ksz9477_ptp_gettime(struct ksz_device *dev, struct timespec64 *ts)
+> +{
+> +	u32 nanoseconds;
+> +	u32 seconds;
+> +	u16 data16;
+> +	u8 phase;
+> +	int ret;
+> +
+> +	/* Copy current PTP clock into shadow registers */
+> +	ret = ksz_read16(dev, REG_PTP_CLK_CTRL, &data16);
+> +	if (ret)
+> +		return ret;
+> +
+> +	data16 |= PTP_READ_TIME;
+> +
+> +	ret = ksz_write16(dev, REG_PTP_CLK_CTRL, data16);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Read from shadow registers */
+> +	ret = ksz_read8(dev, REG_PTP_RTC_SUB_NANOSEC__2, &phase);
+> +	if (ret)
+> +		return ret;
+> +	ret = ksz_read32(dev, REG_PTP_RTC_NANOSEC, &nanoseconds);
+> +	if (ret)
+> +		return ret;
+> +	ret = ksz_read32(dev, REG_PTP_RTC_SEC, &seconds);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ts->tv_sec = seconds;
+> +	ts->tv_nsec = nanoseconds + phase * 8;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ksz9477_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+> +{
+> +	struct ksz_device *dev = container_of(ptp, struct ksz_device, ptp_caps);
+> +	int ret;
+> +
+> +	mutex_lock(&dev->ptp_mutex);
+> +	ret = _ksz9477_ptp_gettime(dev, ts);
+> +	mutex_unlock(&dev->ptp_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ksz9477_ptp_settime(struct ptp_clock_info *ptp, struct timespec64 const *ts)
+> +{
+> +	struct ksz_device *dev = container_of(ptp, struct ksz_device, ptp_caps);
+> +	u16 data16;
+> +	int ret;
+> +
+> +	mutex_lock(&dev->ptp_mutex);
+> +
+> +	/* Write to shadow registers */
+> +
+> +	/* clock phase */
+> +	ret = ksz_read16(dev, REG_PTP_RTC_SUB_NANOSEC__2, &data16);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	data16 &= ~PTP_RTC_SUB_NANOSEC_M;
+> +
+> +	ret = ksz_write16(dev, REG_PTP_RTC_SUB_NANOSEC__2, data16);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	/* nanoseconds */
+> +	ret = ksz_write32(dev, REG_PTP_RTC_NANOSEC, ts->tv_nsec);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	/* seconds */
+> +	ret = ksz_write32(dev, REG_PTP_RTC_SEC, ts->tv_sec);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	/* Load PTP clock from shadow registers */
+> +	ret = ksz_read16(dev, REG_PTP_CLK_CTRL, &data16);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +	data16 |= PTP_LOAD_TIME;
+> +
+> +	ret = ksz_write16(dev, REG_PTP_CLK_CTRL, data16);
+> +	if (ret)
+> +		goto error_return;
+> +
+> +error_return:
+> +	mutex_unlock(&dev->ptp_mutex);
+> +	return ret;
+> +}
+> +
+> +static int ksz9477_ptp_enable(struct ptp_clock_info *ptp, struct ptp_clock_request *req, int on)
+> +{
+> +	return -ENOTTY;
+> +}
+
+How about -EOPNOTSUPP? I think -ENOTTY is reserved for "invalid ioctl on
+the PTP clock", you wouldn't want to confuse a user into thinking that
+they got the ioctls wrong (such as with the recent introduction of
+PTP_PEROUT_REQUEST2 etc) when in fact the error comes from the driver.
