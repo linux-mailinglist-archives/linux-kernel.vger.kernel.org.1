@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E7B2B0386
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB262B038D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgKLLIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:08:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgKLLHe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:07:34 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B564AC0613D1;
-        Thu, 12 Nov 2020 03:07:33 -0800 (PST)
-Date:   Thu, 12 Nov 2020 12:07:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605179252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GScfsa8nOXUlNCCC/0bnPZszGImDlkAqoVu5Twbqets=;
-        b=zZ3ortjpGyVdT6l5Epo+oXEihOo3YsbgeWmCO4SNBn297T52hhepV9lm5suD/944+Sz1gu
-        BkYylnk8pMKlYkb4csofMkEGSrhcQcyIn5AL1i1pw3/utYozF/zdo6+bRfmnph5PP7xve1
-        PpOVvXxebOQE5U3JtIzNhA0Fc1104xhNai+afx4A4y2O3Fs5x58WbqWTdn5gkAWgcM/duh
-        sMgxr+wPIZY9f8FrD3RrbmLqGk62lK9VfUOJuVBmyG+rJup0NYxJRRrKBRd/enHEx2zhIx
-        UfbLWY8NE5CqXAlPHU3T/T5B/66csi1W6K2Uz4Y5UeWB8lzg0bfoVIlYejlz5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605179252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GScfsa8nOXUlNCCC/0bnPZszGImDlkAqoVu5Twbqets=;
-        b=IHlNPa7GPp5Ilh/x3NSZBuxoBCag1CyU3lSY94fXEHyvLJqz7JXMYGP0aqsiN8HGB3WFr5
-        ZFMQ/3qvo+nJiyAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, linux-aio@kvack.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        Huang Rui <ray.huang@amd.com>, sparclinux@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Paul McKenney <paulmck@kernel.org>, x86@kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-csky@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Mel Gorman <mgorman@suse.de>, nouveau@lists.freedesktop.org,
-        Dave Airlie <airlied@redhat.com>,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        spice-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-mips@vger.kernel.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-btrfs@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [patch V3 10/37] ARM: highmem: Switch to generic kmap atomic
-Message-ID: <20201112110729.vx4xebavy6gpzuef@linutronix.de>
-References: <20201103092712.714480842@linutronix.de>
- <20201103095857.582196476@linutronix.de>
- <CGME20201112081036eucas1p14e135a370d3bccab311727fd2e89f4df@eucas1p1.samsung.com>
- <c07bae0c-68dd-2693-948f-00e8a50f3053@samsung.com>
+        id S1728015AbgKLLKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:10:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:47404 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727611AbgKLLJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:09:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CB4A139F;
+        Thu, 12 Nov 2020 03:09:57 -0800 (PST)
+Received: from [10.57.23.123] (unknown [10.57.23.123])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0F943F73C;
+        Thu, 12 Nov 2020 03:09:55 -0800 (PST)
+Subject: Re: [RFC 02/11] coresight: etm-perf: Allow an event to use different
+ sinks
+To:     Linu Cherian <linuc.decode@gmail.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>
+References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
+ <1605012309-24812-3-git-send-email-anshuman.khandual@arm.com>
+ <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
+ <CAAHhmWiWbUTt-BvjeqGm3mfN2L8A8gUOVVDNX0P=WCEDj=Mc4A@mail.gmail.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <2e51db24-5d37-7f3f-c306-adde5fbe0dff@arm.com>
+Date:   Thu, 12 Nov 2020 11:09:49 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c07bae0c-68dd-2693-948f-00e8a50f3053@samsung.com>
+In-Reply-To: <CAAHhmWiWbUTt-BvjeqGm3mfN2L8A8gUOVVDNX0P=WCEDj=Mc4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-12 09:10:34 [+0100], Marek Szyprowski wrote:
-> I can do more tests to help fixing this issue. Just let me know what to do.
+On 11/12/20 10:37 AM, Linu Cherian wrote:
+> Hi Suzuki,
+> 
+> On Thu, Nov 12, 2020 at 2:51 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>>
+>> Hi Linu,
+>>
+>> Please could you test this slightly modified version and give us
+>> a Tested-by tag if you are happy with the results ?
+>>
+>> Suzuki
+>>
+>>
+>> On 11/10/20 12:45 PM, Anshuman Khandual wrote:
+>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>
+>>> When there are multiple sinks on the system, in the absence
+>>> of a specified sink, it is quite possible that a default sink
+>>> for an ETM could be different from that of another ETM. However
+>>> we do not support having multiple sinks for an event yet. This
+>>> patch allows the event to use the default sinks on the ETMs
+>>> where they are scheduled as long as the sinks are of the same
+>>> type.
+>>>
+>>> e.g, if we have 1x1 topology with per-CPU ETRs, the event can
+>>> use the per-CPU ETR for the session. However, if the sinks
+>>> are of different type, e.g TMC-ETR on one and a custom sink
+>>> on another, the event will only trace on the first detected
+>>> sink.
+>>>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
 
--> https://lkml.kernel.org/r/87y2j6n8mj.fsf@nanos.tec.linutronix.de
 
-Sebastian
+>>> @@ -284,7 +307,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>>>        if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
+>>>                goto err;
+>>>
+>>> -     /* Allocate the sink buffer for this session */
+>>> +     /*
+>>> +      * Allocate the sink buffer for this session. All the sinks
+>>> +      * where this event can be scheduled are ensured to be of the
+>>> +      * same type. Thus the same sink configuration is used by the
+>>> +      * sinks.
+>>> +      */
+>>>        event_data->snk_config =
+>>>                        sink_ops(sink)->alloc_buffer(sink, event, pages,
+>>>                                                     nr_pages, overwrite);
+>>>
+>>
+> 
+> Perf record and report worked fine with this as well, with formatting
+> related opencsd hacks.
+> 
+> Tested-by : Linu Cherian <lcherian@marvell.com>
+
+Thanks Linu, much appreciated.
+
+Suzuki
