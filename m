@@ -2,111 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3D62B0BD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32632B0BDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgKLR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        id S1726587AbgKLR7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:59:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLR7G (ORCPT
+        with ESMTP id S1726531AbgKLR7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:59:06 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C601C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:06 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c20so5242936pfr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:06 -0800 (PST)
+        Thu, 12 Nov 2020 12:59:16 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53477C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:16 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id x15so3203752pll.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:59:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7Iwq81/ZizVGm2kC+pKo9T7IH4Mak+r/1h3RzCF8CAk=;
-        b=fcoh7GhapQuHRUIWvUMunt4/brC/tIO5iVyPBjO1iF5dPgadvPqBsLAdE0flpgnMzX
-         LhfeGvECQIKaJu0z/Xt7rHJ6e+gVTj111ewLETM+TxCuOpUiccFYCEzii/F98+nWzPng
-         +QcKideToA3FUvOCdKk8ZYWy9r12vjDO3QdxQ=
+        bh=TUgaHVgKjdKb+xfFZq5rZpOq05veAZuvlXrxkLeOBTE=;
+        b=TEBDeU6WA5mMERC4WzJKgqXyIlVoqmynJJIf7j0elEZpODGWT0Zb2Xw9NkuKA4dBWj
+         VdKts2UoLUsslXXGeAp1Cn0E24zCNQKBmDAHrc5btADdUOvAEtpnzV7z19MyV/g3ve46
+         Y5jiCKUHWZN4RVwevJGd8FefeacyeWF1znK94=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=7Iwq81/ZizVGm2kC+pKo9T7IH4Mak+r/1h3RzCF8CAk=;
-        b=MTqrmNWvaBrec1/dFX/oLD36Sbw+cG5roYE0WxteCSZb7NfRs3evQsymtaoElX+u/q
-         pTnHK7qI7rCt3sz4TfIfJk6b7R1H7i5af3R+6ycP5lkvhXkW43hC1VLYjVlPmWNQkhLB
-         CdSAmIto1GseaezIhMob0w+dtHDeX/6lvewrSvntx5uVa4l3fMLY67VYo+4MLWx65oVq
-         VfBPAwhUU4R1U+CQgLfMwrx8Sspn0NCCzzTKEzPLn33XDPNlmgxmUgWEwXnhYlEnvz4L
-         GBPAgT/7i9oYzvl0NZI9eJBJYHzTEkEnSrXsFR9T+CE6AFO+l+wfXVoHO59IpgSYgeYH
-         riNg==
-X-Gm-Message-State: AOAM531VDdEoV7hGMiFrcHWSAXa8LJsEs20yFROsmW0Xmbqfw63RpmRS
-        BfaAf8zAgwb8kQcTGoVAIii5gg==
-X-Google-Smtp-Source: ABdhPJzMcfsWlwV+Yl+Ju6UrSqt7j5dSMFXgh+3u4AQBf/P0A0F+06wx72FnY/z55UZ2PBMWLBWJyA==
-X-Received: by 2002:a65:4483:: with SMTP id l3mr575455pgq.96.1605203945461;
-        Thu, 12 Nov 2020 09:59:05 -0800 (PST)
+        bh=TUgaHVgKjdKb+xfFZq5rZpOq05veAZuvlXrxkLeOBTE=;
+        b=Wk/+JYVnIq7ODM2eyU83p1795eKZFui50SprzKbX0mqaHq5pcS0KLLLAG711B86bLb
+         eLuSQcNc0/BV5vPIgPzjEZGCx5pdtLSMHob3S3AWzulgNT2Jwcw843rPtWyNKpkA4jEc
+         lLGfTSUMTIuoVhAuvx7zxee27ZiLeM3Y5eqSazERwzhLwperNp6WDcMMxQ8KW0ra2OQ6
+         0FMwGgiN7c1V6ek0Gn5H+wq6BM3IQBc+whnN58BrG4II91o0EaqU7uKsS0BFgnLINst+
+         U4P0tFS2Ei0PfCzEffBlCdSB8bNNnU06BdLk9STBcDS4gjqiyJwSmWz3r4UCB2E8vCLe
+         uFNw==
+X-Gm-Message-State: AOAM532E8rXLSm5hloFsp/v2+sYBBk1b0v3yiW2JoNH9lA1zC5fWND/j
+        1bajCEt+x65sk7+BNw99LzsX7A==
+X-Google-Smtp-Source: ABdhPJz+gu5zf5HyLECfUNwTCTiyTQEeeU4UhsPMYECZ7Nh+H4xbEhqG9jst4d/d27y2Oj/DU3b0+A==
+X-Received: by 2002:a17:902:c10c:b029:d8:c028:5ceb with SMTP id 12-20020a170902c10cb02900d8c0285cebmr532571pli.36.1605203955729;
+        Thu, 12 Nov 2020 09:59:15 -0800 (PST)
 Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id r6sm7237894pjd.39.2020.11.12.09.59.02
+        by smtp.gmail.com with ESMTPSA id r6sm7237894pjd.39.2020.11.12.09.59.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 09:59:04 -0800 (PST)
+        Thu, 12 Nov 2020 09:59:15 -0800 (PST)
 From:   Vikas Gupta <vikas.gupta@broadcom.com>
 To:     eric.auger@redhat.com, alex.williamson@redhat.com,
         cohuck@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
         Vikas Gupta <vikas.gupta@broadcom.com>
-Subject: [RFC, v1 0/3] msi support for platform devices
-Date:   Thu, 12 Nov 2020 23:28:49 +0530
-Message-Id: <20201112175852.21572-1-vikas.gupta@broadcom.com>
+Subject: [RFC v1 3/3] vfio/platform: add Broadcom msi module
+Date:   Thu, 12 Nov 2020 23:28:52 +0530
+Message-Id: <20201112175852.21572-4-vikas.gupta@broadcom.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201105060257.35269-1-vikas.gupta@broadcom.com>
+In-Reply-To: <20201112175852.21572-1-vikas.gupta@broadcom.com>
 References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
+ <20201112175852.21572-1-vikas.gupta@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fe76cb05b3ecaa43"
+        boundary="00000000000098ca3105b3ecabba"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000fe76cb05b3ecaa43
+--00000000000098ca3105b3ecabba
 
-This RFC adds support for MSI for platform devices.
-a) MSI(s) is/are added in addition to the normal interrupts.
-b) The vendor specific MSI configuration can be done using
-   callbacks which is implemented as msi module.
-c) Adds a msi handling module for the Broadcom platform devices.
+Add Broadcom msi module for platform devices.
 
-Changes from:
--------------
- v0 to v1:
-   i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
-   ii) Add MSI(s) at the end of the irq list of platform IRQs.
-       MSI(s) with first entry of MSI block has count and flag
-       information.
-       IRQ list: Allocation for IRQs + MSIs are allocated as below
-       Example: if there are 'n' IRQs and 'k' MSIs
-       -------------------------------------------------------
-       |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
-       -------------------------------------------------------
-       MSI-0 will have count=k set and flags set accordingly.
-
-Vikas Gupta (3):
-  vfio/platform: add support for msi
-  vfio/platform: change cleanup order
-  vfio/platform: add Broadcom msi module
-
- drivers/vfio/platform/Kconfig                 |   1 +
- drivers/vfio/platform/Makefile                |   1 +
- drivers/vfio/platform/msi/Kconfig             |   9 +
- drivers/vfio/platform/msi/Makefile            |   2 +
- .../vfio/platform/msi/vfio_platform_bcmplt.c  |  74 ++++++
- drivers/vfio/platform/vfio_platform_common.c  |  86 ++++++-
- drivers/vfio/platform/vfio_platform_irq.c     | 238 +++++++++++++++++-
- drivers/vfio/platform/vfio_platform_private.h |  23 ++
- 8 files changed, 419 insertions(+), 15 deletions(-)
+Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
+---
+ drivers/vfio/platform/Kconfig                 |  1 +
+ drivers/vfio/platform/Makefile                |  1 +
+ drivers/vfio/platform/msi/Kconfig             |  9 +++
+ drivers/vfio/platform/msi/Makefile            |  2 +
+ .../vfio/platform/msi/vfio_platform_bcmplt.c  | 74 +++++++++++++++++++
+ 5 files changed, 87 insertions(+)
  create mode 100644 drivers/vfio/platform/msi/Kconfig
  create mode 100644 drivers/vfio/platform/msi/Makefile
  create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
 
+diff --git a/drivers/vfio/platform/Kconfig b/drivers/vfio/platform/Kconfig
+index dc1a3c44f2c6..7b8696febe61 100644
+--- a/drivers/vfio/platform/Kconfig
++++ b/drivers/vfio/platform/Kconfig
+@@ -21,3 +21,4 @@ config VFIO_AMBA
+ 	  If you don't know what to do here, say N.
+ 
+ source "drivers/vfio/platform/reset/Kconfig"
++source "drivers/vfio/platform/msi/Kconfig"
+diff --git a/drivers/vfio/platform/Makefile b/drivers/vfio/platform/Makefile
+index 3f3a24e7c4ef..9ccdcdbf0e7e 100644
+--- a/drivers/vfio/platform/Makefile
++++ b/drivers/vfio/platform/Makefile
+@@ -5,6 +5,7 @@ vfio-platform-y := vfio_platform.o
+ obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform.o
+ obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform-base.o
+ obj-$(CONFIG_VFIO_PLATFORM) += reset/
++obj-$(CONFIG_VFIO_PLATFORM) += msi/
+ 
+ vfio-amba-y := vfio_amba.o
+ 
+diff --git a/drivers/vfio/platform/msi/Kconfig b/drivers/vfio/platform/msi/Kconfig
+new file mode 100644
+index 000000000000..54d6b70e1e32
+--- /dev/null
++++ b/drivers/vfio/platform/msi/Kconfig
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config VFIO_PLATFORM_BCMPLT_MSI
++	tristate "MSI support for Broadcom platform devices"
++	depends on VFIO_PLATFORM && (ARCH_BCM_IPROC || COMPILE_TEST)
++	default ARCH_BCM_IPROC
++	help
++	  Enables the VFIO platform driver to handle msi for Broadcom devices
++
++	  If you don't know what to do here, say N.
+diff --git a/drivers/vfio/platform/msi/Makefile b/drivers/vfio/platform/msi/Makefile
+new file mode 100644
+index 000000000000..27422d45cecb
+--- /dev/null
++++ b/drivers/vfio/platform/msi/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_VFIO_PLATFORM_BCMPLT_MSI) += vfio_platform_bcmplt.o
+diff --git a/drivers/vfio/platform/msi/vfio_platform_bcmplt.c b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
+new file mode 100644
+index 000000000000..7f44d7d0c95d
+--- /dev/null
++++ b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright 2020 Broadcom.
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/msi.h>
++#include <linux/vfio.h>
++
++#include "../vfio_platform_private.h"
++
++#define RING_SIZE		(64 << 10)
++
++#define RING_MSI_ADDR_LS	0x03c
++#define RING_MSI_ADDR_MS	0x040
++#define RING_MSI_DATA_VALUE	0x064
++
++static u32 bcm_num_msi(struct vfio_platform_device *vdev)
++{
++	struct vfio_platform_region *reg = &vdev->regions[0];
++
++	return (reg->size / RING_SIZE);
++}
++
++static int bcm_write_msi(struct vfio_platform_device *vdev,
++			 struct msi_desc *desc,
++			 struct msi_msg *msg)
++{
++	void __iomem *ring;
++	int msi_off = vdev->num_irqs - 1;
++	int ring_num = desc->irq - vdev->irqs[msi_off].hwirq;
++	struct vfio_platform_region *reg = &vdev->regions[0];
++
++	if (!reg->ioaddr) {
++		reg->ioaddr = ioremap(reg->addr, reg->size);
++		if (!reg->ioaddr)
++			return -ENOMEM;
++	}
++
++	ring = reg->ioaddr + ring_num * RING_SIZE;
++
++	writel_relaxed(msg->address_lo, ring + RING_MSI_ADDR_LS);
++	writel_relaxed(msg->address_hi, ring + RING_MSI_ADDR_MS);
++	writel_relaxed(msg->data, ring + RING_MSI_DATA_VALUE);
++
++	return 0;
++}
++
++static struct vfio_platform_msi_node vfio_platform_bcmflexrm_msi_node = {
++	.owner = THIS_MODULE,
++	.compat = "brcm,iproc-flexrm-mbox",
++	.of_get_msi = bcm_num_msi,
++	.of_msi_write = bcm_write_msi
++};
++
++static int __init vfio_platform_bcmflexrm_msi_module_init(void)
++{
++	__vfio_platform_register_msi(&vfio_platform_bcmflexrm_msi_node);
++
++	return 0;
++}
++
++static void __exit vfio_platform_bcmflexrm_msi_module_exit(void)
++{
++	vfio_platform_unregister_msi("brcm,iproc-flexrm-mbox");
++}
++
++module_init(vfio_platform_bcmflexrm_msi_module_init);
++module_exit(vfio_platform_bcmflexrm_msi_module_exit);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Broadcom");
 -- 
 2.17.1
 
 
---000000000000fe76cb05b3ecaa43
+--00000000000098ca3105b3ecabba
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -176,14 +277,14 @@ JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
 WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
 Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
 MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
-lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgefd5Rm/9D0XwkLVN
-3l3ra+rBXSkr601WKuK52CGbJbQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjAxMTEyMTc1OTA2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgmHWIJHv95Wl6tAcm
+YKTRFawhiNuDVgrpgORPjbLhEJswGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjAxMTEyMTc1OTE2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
 ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABzGTCkqK29Hf8g4J6BvDhoAxWwNwjXN/OiB
-xkNiPlNRo2a42i8HoHrFYg/81tKlOB9k4ls3UiJC+AKMj6fl49PFcS5Isvxe6aG7LPqiu3Vq1nhc
-q++aCnLmOvGM8gItgRQQSs+j5WimBxcI7kPre2cQJTdy9hrvPfiEjhEbsl5/FCMM4IPfQS5Xn/H1
-q6VsgdOf0cxxTZYb0F8s6qhWEiVaGz8UePD78gRJvyGtnBWeTl5X2ad1+Wb1z0qZSNCSTkbSZc4r
-cFedlcpQzSBqv9QpPvfIzmEJhW2+3s6Ht+rcSzTv/tOEWi9epxiQuXZeOsmEVZBu4NkcOjF6iaTm
-T/E=
---000000000000fe76cb05b3ecaa43--
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAGUlnOUY9AfPMO8lmV6sk0b4Ig8Aeq/cVOsf
+RhO8JjIydXkMMpoiu43n8JkihQQy8wp5AVOAvAXVqi3Dzu9rHYXJ4cT7AoAHeZQ7RVJeLMXja5NI
+/TdWs3bnunzOWoeE4LODWKKw5+nNvD3PgIZSfmtCqmYBwVKJtFcI7SgG8wVc7klpRInhHtIFuQSc
+N2OhtSpHHuwSvZvynyRfcrjE9XmnRAtPdoXUR3LHdux3mD5lc26uE7zUzRhueilx0BX6FJ0b6F3w
+E/Z0nekjY0m/mkPGiGcUHSUY2L0ThsvOSOvazc2JL+umujUwJnweNpwkPjjroMoQOjzRTjq5ycrN
+Oew=
+--00000000000098ca3105b3ecabba--
