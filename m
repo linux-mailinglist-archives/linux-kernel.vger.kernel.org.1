@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC922B03BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C42E2B03C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgKLLWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLLW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:22:26 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C8CC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:22:25 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id s13so5145292wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:22:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TBhNsZQdgwb8L9O2fB8roWDMxhxwp24jJn01jx9v16I=;
-        b=fLq5eB6xzW9c5XCZ9Dg4JnnRSMdtdI+CZBnL2CzEAEuKEuS39D6ZFcEek4RjXyOFit
-         FDsjiHViAwjEIIO8c+1TwFxg0hlixayoQxpJbx43404PHsw+cZhwl2+JrkuDpeyZ/q6L
-         RuVwDShqzMYZh7BcQFtFj4U/kcqZQPp1ICr/OYZ08q8eF5JJeMecAn72mD6sPifocbmH
-         12yTSJQ22RPaY6ToOa4u+rIMJHLU8q/+wl0DVsc8wVpZO9YOviis1H9apNn8c5nV1WqM
-         DiRwbxDT39NY06+BSaKjC+L5g56SmFVxOKJKH/yAs43bDCztvdoEdJjUdR2PCQeJWwoS
-         1S9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TBhNsZQdgwb8L9O2fB8roWDMxhxwp24jJn01jx9v16I=;
-        b=IdxlqHeanx+PVjIhYwiZXxnZntJlPGtiVjv98Iv9qGMYS7V0WIk9jKVbXAU/jurm5H
-         1Zf5QV4a2/uQZhA10bIPu/uZ84xB1FXS7EyqnVqhNeLPP/FIS1du0/V9Y8QEoE2vHrH5
-         cdr1YgPMwXy7vrVAKiBzwIuWQ3ZsbMFZnpkzhgC8d0wZXnBSIBhLCTieT3DQ6Cz8xijJ
-         qN/3oSi+OZZ+dCxO/jn7BmImX9wfoW+ldEhfRY7Tn8JrzCa20DdAEdWWuFfCvFHo2uXl
-         /IUsnkSuzsWZVjualg0jWRHj//DFoSPdFhWgGJV9N2t8WSWYeeY+62brO8Hprt2sLkG3
-         kVzg==
-X-Gm-Message-State: AOAM532IU9YDcghaZpwQ+/jhhFFAQL7+fYl/rAArWJWA6H1uOvLpZgSL
-        LGOXFuahZyNSWugDrLFp6N5pzQ==
-X-Google-Smtp-Source: ABdhPJwTMc42ZSo5QtIlCWsJfNkBbfVitTMYGPJhgclF1n2ZOjp9XjJdfrQd7R638dyC6QUROHA+pA==
-X-Received: by 2002:a1c:b70b:: with SMTP id h11mr9650589wmf.185.1605180144219;
-        Thu, 12 Nov 2020 03:22:24 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
-        by smtp.googlemail.com with ESMTPSA id m22sm6500180wrb.97.2020.11.12.03.22.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 03:22:23 -0800 (PST)
-Subject: Re: [Resend][PATCH] drivers/thermal: fix potential memleak in error
- branch
-To:     Bernard <bernard@vivo.com>, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <AOUAJQBgDcHjy8iGeDq3e4rT.1.1604995817639.Hmail.bernard@vivo.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <b40dc34b-85b2-4d7a-e28e-7beea4bb29f6@linaro.org>
-Date:   Thu, 12 Nov 2020 12:22:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727819AbgKLLWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:22:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54042 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728107AbgKLLWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:22:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605180164;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X95cPMSStTZzNZ4CNsxGYNYPK8NnGZvfuwbtqitjKVA=;
+        b=LWFNYjaAVRlaazrlO8jJtyv5stNspdTNsojXR33Q+m3Fi0Eymuku5jyFut52blH6j5Wlc7
+        Recui6/EBM5gsMJg2SfkCv5aTVGs9Pj34HQoSk85GyDj76EyDRczkC0oKQSNd1ZtQqZM3B
+        LrCYofJl/oI1vyYM23bK8tLGIOubqPc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5E245AF16;
+        Thu, 12 Nov 2020 11:22:44 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 12:22:42 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [PATCH 2/2] mm,thp,shm: limit gfp mask to no more than specified
+Message-ID: <20201112112242.GA12240@dhcp22.suse.cz>
+References: <20201105191508.1961686-1-riel@surriel.com>
+ <20201105191508.1961686-3-riel@surriel.com>
 MIME-Version: 1.0
-In-Reply-To: <AOUAJQBgDcHjy8iGeDq3e4rT.1.1604995817639.Hmail.bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105191508.1961686-3-riel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2020 09:10, Bernard wrote:
-> Function __thermal_cooling_device_register, when device_register
-> failed, cdev is not free after error value return, this may
-> bring in potential memleak.
+[Cc Chris for i915 and Andray]
+
+On Thu 05-11-20 14:15:08, Rik van Riel wrote:
+> Matthew Wilcox pointed out that the i915 driver opportunistically
+> allocates tmpfs memory, but will happily reclaim some of its
+> pool if no memory is available.
+
+It would be good to explicitly mention the requested gfp flags for those
+allocations. i915 uses __GFP_NORETRY | __GFP_NOWARN, or GFP_KERNEL. Is
+__shmem_rw really meant to not allocate from highmeme/movable zones? Can
+it be ever backed by THPs?
+
+ttm might want __GFP_RETRY_MAYFAIL while shmem_read_mapping_page use
+the mapping gfp mask which can be NOFS or something else. This is quite
+messy already and I suspect that they are more targeting regular order-0
+requests. E.g. have a look at cb5f1a52caf23.
+
+I am worried that this games with gfp flags will lead to unmaintainable
+code later on. There is a clear disconnect betwen the core THP
+allocation strategy and what drivers are asking for and those
+requirements might be really conflicting. Not to mention that flags
+might be different between regular and THP pages.
+
+> Make sure the gfp mask used to opportunistically allocate a THP
+> is always at least as restrictive as the original gfp mask.
 > 
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
 > ---
->  drivers/thermal/thermal_core.c | 1 +
->  1 file changed, 1 insertion(+)
+>  mm/shmem.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 3d1e0033bf3e..e4bee15dfa1f 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1125,6 +1125,7 @@ __thermal_cooling_device_register(struct device_node *np,
->  	if (result) {
->  		ida_simple_remove(&thermal_cdev_ida, cdev->id);
->  		put_device(&cdev->device);
-> +		kfree(cdev);
->  		return ERR_PTR(result);
->  	}
-
-Please fix the function with the proper error path and the labels.
-
-Thanks
-
-  -- Daniel
-
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 6c3cb192a88d..ee3cea10c2a4 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1531,6 +1531,26 @@ static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
+>  	return page;
+>  }
+>  
+> +/*
+> + * Make sure huge_gfp is always more limited than limit_gfp.
+> + * Some of the flags set permissions, while others set limitations.
+> + */
+> +static gfp_t limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
+> +{
+> +	gfp_t allowflags = __GFP_IO | __GFP_FS | __GFP_RECLAIM;
+> +	gfp_t denyflags = __GFP_NOWARN | __GFP_NORETRY;
+> +	gfp_t result = huge_gfp & ~allowflags;
+> +
+> +	/*
+> +	 * Minimize the result gfp by taking the union with the deny flags,
+> +	 * and the intersection of the allow flags.
+> +	 */
+> +	result |= (limit_gfp & denyflags);
+> +	result |= (huge_gfp & limit_gfp) & allowflags;
+> +
+> +	return result;
+> +}
+> +
+>  static struct page *shmem_alloc_hugepage(gfp_t gfp,
+>  		struct shmem_inode_info *info, pgoff_t index)
+>  {
+> @@ -1889,6 +1909,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>  
+>  alloc_huge:
+>  	huge_gfp = vma_thp_gfp_mask(vma);
+> +	huge_gfp = limit_gfp_mask(huge_gfp, gfp);
+>  	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
+>  	if (IS_ERR(page)) {
+>  alloc_nohuge:
+> -- 
+> 2.25.4
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Michal Hocko
+SUSE Labs
