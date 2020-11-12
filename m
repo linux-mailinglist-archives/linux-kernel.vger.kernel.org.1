@@ -2,140 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3242B0513
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9012B051A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgKLMlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:41:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
+        id S1728010AbgKLMnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:43:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLMlP (ORCPT
+        with ESMTP id S1727646AbgKLMnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:41:15 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DB4C0613D1;
-        Thu, 12 Nov 2020 04:41:13 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id e18so5996082edy.6;
-        Thu, 12 Nov 2020 04:41:13 -0800 (PST)
+        Thu, 12 Nov 2020 07:43:20 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B507C0613D1;
+        Thu, 12 Nov 2020 04:43:20 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id l12so5131823ilo.1;
+        Thu, 12 Nov 2020 04:43:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HJB5SmUjhC5jU+2XmV720+ocrmw+lqXKj7zPIVAudI0=;
-        b=gNa9aFZw2HycGZz0f9C1gY1o/BEAt0a4Np2P9+ZwpWR7nlXOEw/vi0bRRRQa84EstF
-         AtZcUgtTHymUa6/TUxUyJsfnYUGUD6+K7QDuNdq0PwxK379xa9AV3lXtL/Ec2Tm5rZyF
-         7cGxYazXpcGKN683f9BvRti1rhq5wWYYw6YdKQegr56EvCbXkb2fmlYKGtNC44iv5b0J
-         QmqBepPOCmhad3+yzhNfwJiQYevnGRcGxE3Bt1I/B7MUDB29GaOpEA5jM9SZfivLWlKQ
-         nOOs+TK85WIZfTpq9+RHqdKFEYWNiY+8/dWh3Wx4rw7hLt7IwkpdqojRaOMEtG6lzZcr
-         RPsQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MlAb6y3L6B0gxC6J89zHhiEG7zWhwPlcRccdjczsJQM=;
+        b=BeQ3u9i5t4j3EBMrMQ568M97r+HOLRmBcawXlcoPLGjkaPcV2U5sR3UfeZOPfvMmUT
+         WRpJqeiDJuq1QWqgqqMxDqOBZwYK/Tz/zQO2BSEd5FKx+FFXf/zbeML8rqLFhD+fSJZQ
+         0HVQrcwjSsaNHTtz6gq2ImGd3xM8uX181oRiERikIxs0GVv4whWJLZehTh3LA5HYDeOk
+         2KXMqGgZxvaGSRZsakidh43HktnA9MRpsD+DHqWsZDj00/MEcS+t7Sf779UecPA+uhRi
+         3vhB9UH1zVMMsoTRVpHEzhm4wSQa3//4s+M80deRGtUi6xUji+via2ezAmfqLrNsoCVD
+         3dpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HJB5SmUjhC5jU+2XmV720+ocrmw+lqXKj7zPIVAudI0=;
-        b=fSYROIWX8+UC9IGiQqA+daUNEylqgh6xtdmSE/zjnKBsok2eULngrbmYciKpg8ag+1
-         Sb6uGoSb49r3wrDN8wRmYJ/jXpmZ8ZrdnQSKfDyYUvPG6qozEkVZJ5c3m8ssJpslaCbd
-         PSTNmhwoFBEYJna4jJPKoxJcJJnGKy9LGy49Im85s+R3B5KDFbcHKchKZ+ByS9l5pzPW
-         HeaxtL2WHYyn51GBzeWwJIagJKEmdk/5W72IYrGAcQGh7NarTcCHkIbz/m/f/tPJmVj2
-         XhDtIEuELvSTpnlinoyeZHwh9zLWESrp+wZpW7/KYk9jkYkFWfp8KkjXBvt26i+FR/9v
-         XxDg==
-X-Gm-Message-State: AOAM531xfboLM0jON9OT08HajOJYNU4rMlIbIJfeOMLmaaedXT8Inwf7
-        ZeZhmxtOP9mu7EW2yTfJupk=
-X-Google-Smtp-Source: ABdhPJyzX8xu8vaMssKReTg+hH/4WZ79lqx4sgAS1AKpFz+X6jBnSH1nuQ6dSNVbfI++zxYnkOjKhw==
-X-Received: by 2002:a50:9b01:: with SMTP id o1mr4757758edi.364.1605184871837;
-        Thu, 12 Nov 2020 04:41:11 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id l20sm2098248eja.40.2020.11.12.04.41.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 04:41:11 -0800 (PST)
-Date:   Thu, 12 Nov 2020 14:41:10 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: lantiq_gswip: add missed
- clk_disable_unprepare() in gswip_gphy_fw_load()
-Message-ID: <20201112124110.yhquvw2cptvh2oii@skbuf>
-References: <1605179495-818-1-git-send-email-zhangchangzhong@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MlAb6y3L6B0gxC6J89zHhiEG7zWhwPlcRccdjczsJQM=;
+        b=TMRiXJ2OXDCBE6n8D7Yt9/goy2Bd1yxHTygJBERPXsOvT5zSNSH9StJDJrtFXDNJLq
+         /Yfr5dPPcJm9lbK1H9IkmMbLU8uHs8lcnbzr1pKeIe/T1zN9uMwHK7YtvT7IZswEs+N1
+         jJmPtFvOHf0nfD+0E0KeGjj73xxAq1y57XPBhH21Bxpp2TK4LKWjjLGQ6CqIT2P9B3yW
+         XcqOdsRxtXQZ0SsOLFK83cLomh1lZ/p0yN0588nq/NqbgOmjBInquRqanF8mZr+surPS
+         KvdflWEOMOuixMhs6k8sv1uqhgavX9Vh6Bl5cf0ZeLsgzh3j1sTFR05NYjC4iO0PtvX7
+         wRbQ==
+X-Gm-Message-State: AOAM532wKmX6jrIZ2kWd0B9Mcch6kMXfjecOpRL//BZjA7pHNOpF9p0A
+        KdKI0RIci/vXegjqFjZ59mdZ+9wwJdhh9yl47Yk=
+X-Google-Smtp-Source: ABdhPJwAwbdiOCs/u+Tl9UCmTvdqxWJDeGCgkBq1ryhxZY6Brx/+eB+NKznGziTJea8lSdYcR6nnGgPxpILwtixBYAg=
+X-Received: by 2002:a92:c7c6:: with SMTP id g6mr24377195ilk.230.1605185000074;
+ Thu, 12 Nov 2020 04:43:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605179495-818-1-git-send-email-zhangchangzhong@huawei.com>
+References: <20201112104512.17472-1-lhenriques@suse.de>
+In-Reply-To: <20201112104512.17472-1-lhenriques@suse.de>
+From:   "Yan, Zheng" <ukernel@gmail.com>
+Date:   Thu, 12 Nov 2020 20:43:08 +0800
+Message-ID: <CAAM7YA=eO-1AdgPJk6-3=FbDFtHJ9e_Rydo+7LDHqVwxtk1-jA@mail.gmail.com>
+Subject: Re: [PATCH] ceph: fix race in concurrent __ceph_remove_cap invocations
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 07:11:35PM +0800, Zhang Changzhong wrote:
-> Fix missing clk_disable_unprepare() before return from
-> gswip_gphy_fw_load() in the error handling case.
-> 
-> Fixes: 14fceff4771e ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+On Thu, Nov 12, 2020 at 6:48 PM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> A NULL pointer dereference may occur in __ceph_remove_cap with some of the
+> callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
+> remove_session_caps_cb.  These aren't protected against the concurrent
+> execution of __ceph_remove_cap.
+>
+
+they are protected by session mutex, never get executed concurrently
+
+> Since the callers of this function hold the i_ceph_lock, the fix is simply
+> a matter of returning immediately if caps->ci is NULL.
+>
+> Based on a patch from Jeff Layton.
+>
+> Cc: stable@vger.kernel.org
+> URL: https://tracker.ceph.com/issues/43272
+> Link: https://www.spinics.net/lists/ceph-devel/msg47064.html
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 > ---
->  drivers/net/dsa/lantiq_gswip.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-> index 74db81d..8936d65 100644
-> --- a/drivers/net/dsa/lantiq_gswip.c
-> +++ b/drivers/net/dsa/lantiq_gswip.c
-> @@ -1682,6 +1682,7 @@ static int gswip_gphy_fw_load(struct gswip_priv *priv, struct gswip_gphy_fw *gph
->  	if (ret) {
->  		dev_err(dev, "failed to load firmware: %s, error: %i\n",
->  			gphy_fw->fw_name, ret);
-> +		clk_disable_unprepare(gphy_fw->clk_gate);
->  		return ret;
->  	}
->  
-> @@ -1698,14 +1699,17 @@ static int gswip_gphy_fw_load(struct gswip_priv *priv, struct gswip_gphy_fw *gph
->  	} else {
->  		dev_err(dev, "failed to alloc firmware memory\n");
->  		release_firmware(fw);
-> +		clk_disable_unprepare(gphy_fw->clk_gate);
->  		return -ENOMEM;
->  	}
->  
->  	release_firmware(fw);
->  
->  	ret = regmap_write(priv->rcu_regmap, gphy_fw->fw_addr_offset, dev_addr);
-> -	if (ret)
-> +	if (ret) {
-> +		clk_disable_unprepare(gphy_fw->clk_gate);
->  		return ret;
-> +	}
->  
->  	reset_control_deassert(gphy_fw->reset);
->  
-> -- 
-> 2.9.5
-> 
-
-gswip_gphy_fw_list
--> gswip_gphy_fw_probe
-   -> gswip_gphy_fw_load
-      -> clk_prepare_enable
-      -> then fails
-
-Then gswip_gphy_fw_list does this:
-	for_each_available_child_of_node(gphy_fw_list_np, gphy_fw_np) {
-		err = gswip_gphy_fw_probe(priv, &priv->gphy_fw[i],
-					  gphy_fw_np, i);
-		if (err)
-			goto remove_gphy;
-		i++;
-	}
-
-	return 0;
-
-remove_gphy:
-	for (i = 0; i < priv->num_gphy_fw; i++)
-		gswip_gphy_fw_remove(priv, &priv->gphy_fw[i]);
-
-
-Then gswip_gphy_fw_remove does this:
-gswip_gphy_fw_remove
--> clk_disable_unprepare
-
-What's wrong with this?
+>  fs/ceph/caps.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> index ded4229c314a..443f164760d5 100644
+> --- a/fs/ceph/caps.c
+> +++ b/fs/ceph/caps.c
+> @@ -1140,12 +1140,19 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
+>  {
+>         struct ceph_mds_session *session = cap->session;
+>         struct ceph_inode_info *ci = cap->ci;
+> -       struct ceph_mds_client *mdsc =
+> -               ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
+> +       struct ceph_mds_client *mdsc;
+>         int removed = 0;
+>
+> +       /* 'ci' being NULL means he remove have already occurred */
+> +       if (!ci) {
+> +               dout("%s: cap inode is NULL\n", __func__);
+> +               return;
+> +       }
+> +
+>         dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
+>
+> +       mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
+> +
+>         /* remove from inode's cap rbtree, and clear auth cap */
+>         rb_erase(&cap->ci_node, &ci->i_caps);
+>         if (ci->i_auth_cap == cap) {
