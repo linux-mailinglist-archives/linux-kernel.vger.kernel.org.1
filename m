@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27C82B11A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94192B11C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKLWf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:35:56 -0500
-Received: from www62.your-server.de ([213.133.104.62]:38464 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgKLWf4 (ORCPT
+        id S1727952AbgKLWhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727798AbgKLWhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:35:56 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kdLC5-0004Xd-Hw; Thu, 12 Nov 2020 23:35:53 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kdLC5-0008M8-AO; Thu, 12 Nov 2020 23:35:53 +0100
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Augment the set of sleepable LSM
- hooks
-To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-References: <20201112200346.404864-1-kpsingh@chromium.org>
- <20201112200346.404864-2-kpsingh@chromium.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5d22e146-0dd1-2054-c718-fa76f8dfa7b9@iogearbox.net>
-Date:   Thu, 12 Nov 2020 23:35:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 12 Nov 2020 17:37:06 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F348C0613D1;
+        Thu, 12 Nov 2020 14:37:05 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id i6so10952069lfd.1;
+        Thu, 12 Nov 2020 14:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0qni2M87D+g89wV73PaUfeJOYq05vtoVkWdsLrYHeyg=;
+        b=kdYppoKFHiS9XKa3FhxlKioia9DpxhoAMnLvX3xxwUDyqIiDJ3HHl3IBW6p/6Hppgr
+         R1rrlU57Zy6cPF2EoCyeH+Vj7DtGbdUur/qeOJ5iivsuZWhBfoFYLANqy8A0ZN/hIbOC
+         hzMjgk+HOAKRJgwRKfqTFbsQQCm6O1j9Mk2vhjV5UCip2XhLqD1SR0a/iBKgVIIdZ89E
+         BYwaMCRnu8T3dfsnrarFGvnrKog6t/XXpNu/IZPXfANecW0enI19tvf+dIatOgQDZ7OK
+         TcsqlEJ0qKXLVGEQoZ/auOTRSu/cyJMRmB++w+tQm6Fjk+QGvmxT/rVGMvqP4kLUagKK
+         crgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0qni2M87D+g89wV73PaUfeJOYq05vtoVkWdsLrYHeyg=;
+        b=i9XT3DeEn66paWC21p/Q3Gn6OaYwiUeZDLeDkq4gp80c+OiqiSH1x8apchsO36co4V
+         YrUBWleQKWu6XRXSQJVELSkrXgiSb/mfK7L7+HF/XGGd2KK9Da/OOmEs82FuZiaaZOGm
+         R7WPsNhYUP1HHt836BXp/e2lbNN96jwWuLeUtWr7JLoUQHrCf5Qb48h0hXumwumRqoiF
+         sPwfBykQbRi6gKUCxnt+KIY/kg2hlJkF0Ujnwh1FcTISE1yT32e0YfeMnf1EIkOWo50W
+         g0TzPHnNKR7jITX6kUQK3782Ab5YNoGleZ1d9dlNd14iArN8W54zJm9F7nFqVB9vwSdS
+         mi+A==
+X-Gm-Message-State: AOAM532BgxESa2gbLJlSoya9/baP8ZMcnk8nAdOil512Y8H3nYBGtSRI
+        Av8f1zNOupkXjPx7wKecXIBeQd4XOtk=
+X-Google-Smtp-Source: ABdhPJz14sMvD+lHcp3Whn12ApfHxx9o6IGlXRIpcfSRQR0C4MBfRBbzrGgqZKxBnQTJLRiZ9wpHOA==
+X-Received: by 2002:a05:6512:3312:: with SMTP id k18mr654537lfe.403.1605220623351;
+        Thu, 12 Nov 2020 14:37:03 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id 1sm981505lfi.263.2020.11.12.14.37.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 14:37:02 -0800 (PST)
+Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
+ scaling
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-12-digetx@gmail.com> <20201110202945.GF2375022@ulmo>
+ <20201110203257.GC5957@sirena.org.uk>
+ <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
+ <20201111115534.GA4847@sirena.org.uk>
+ <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
+ <20201112171600.GD4742@sirena.org.uk>
+ <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
+ <20201112200123.GF4742@sirena.org.uk>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ce9e2d9f-917e-fb8a-7323-f3bf1a367e9d@gmail.com>
+Date:   Fri, 13 Nov 2020 01:37:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20201112200346.404864-2-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201112200123.GF4742@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25986/Thu Nov 12 14:18:25 2020)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 9:03 PM, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
+12.11.2020 23:01, Mark Brown пишет:
+>> But it's not allowed to change voltage of a dummy regulator, is it
+>> intentional?
+> Of course not, we can't know if the requested new voltage is valid - the
+> driver would have to have explict support for handling situations where
+> it's not possible to change the voltage (which it can detect through
+> enumerating the values it wants to set at startup).
 > 
-> Update the set of sleepable hooks with the ones that do not trigger
-> a warning with might_fault() when exercised with the correct kernel
-> config options enabled, i.e.
-> 
-> 	DEBUG_ATOMIC_SLEEP=y
-> 	LOCKDEP=y
-> 	PROVE_LOCKING=y
-> 
-> This means that a sleepable LSM eBPF program can be attached to these
-> LSM hooks. A new helper method bpf_lsm_is_sleepable_hook is added and
-> the set is maintained locally in bpf_lsm.c
-> 
-> A comment is added about the list of LSM hooks that have been observed
-> to be called from softirqs, atomic contexts, or the ones that can
-> trigger pagefaults and thus should not be added to this list.
-> 
-[...]
->   
-> +/* The set of hooks which are called without pagefaults disabled and are allowed
-> + * to "sleep" and thus can be used for sleeable BPF programs.
-> + *
-> + * There are some hooks which have been observed to be called from a
-> + * non-sleepable context and should not be added to this set:
-> + *
-> + *  bpf_lsm_bpf_prog_free_security
-> + *  bpf_lsm_capable
-> + *  bpf_lsm_cred_free
-> + *  bpf_lsm_d_instantiate
-> + *  bpf_lsm_file_alloc_security
-> + *  bpf_lsm_file_mprotect
-> + *  bpf_lsm_file_send_sigiotask
-> + *  bpf_lsm_inet_conn_request
-> + *  bpf_lsm_inet_csk_clone
-> + *  bpf_lsm_inode_alloc_security
-> + *  bpf_lsm_inode_follow_link
-> + *  bpf_lsm_inode_permission
-> + *  bpf_lsm_key_permission
-> + *  bpf_lsm_locked_down
-> + *  bpf_lsm_mmap_addr
-> + *  bpf_lsm_perf_event_read
-> + *  bpf_lsm_ptrace_access_check
-> + *  bpf_lsm_req_classify_flow
-> + *  bpf_lsm_sb_free_security
-> + *  bpf_lsm_sk_alloc_security
-> + *  bpf_lsm_sk_clone_security
-> + *  bpf_lsm_sk_free_security
-> + *  bpf_lsm_sk_getsecid
-> + *  bpf_lsm_socket_sock_rcv_skb
-> + *  bpf_lsm_sock_graft
-> + *  bpf_lsm_task_free
-> + *  bpf_lsm_task_getioprio
-> + *  bpf_lsm_task_getscheduler
-> + *  bpf_lsm_task_kill
-> + *  bpf_lsm_task_setioprio
-> + *  bpf_lsm_task_setnice
-> + *  bpf_lsm_task_setpgid
-> + *  bpf_lsm_task_setrlimit
-> + *  bpf_lsm_unix_may_send
-> + *  bpf_lsm_unix_stream_connect
-> + *  bpf_lsm_vm_enough_memory
-> + */
+> [Requesting the same supply multiple times]
 
-I think this is very useful info. I was wondering whether it would make sense
-to annotate these more closely to the code so there's less chance this info
-becomes stale? Maybe something like below, not sure ... issue is if you would
-just place a cant_sleep() in there it might be wrong since this should just
-document that it can be invoked from non-sleepable context but it might not
-have to.
-
-diff --git a/security/security.c b/security/security.c
-index a28045dc9e7f..7899bf32cdaa 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -94,6 +94,11 @@ static __initdata bool debug;
-                         pr_info(__VA_ARGS__);                   \
-         } while (0)
-
-+/*
-+ * Placeholder for now to document that hook implementation cannot sleep
-+ * since it could potentially be called from non-sleepable context, too.
-+ */
-+#define hook_cant_sleep()              do { } while (0)
-+
-  static bool __init is_enabled(struct lsm_info *lsm)
-  {
-         if (!lsm->enabled)
-@@ -2522,6 +2527,7 @@ void security_bpf_map_free(struct bpf_map *map)
-  }
-  void security_bpf_prog_free(struct bpf_prog_aux *aux)
-  {
-+       hook_cant_sleep();
-         call_void_hook(bpf_prog_free_security, aux);
-  }
-  #endif /* CONFIG_BPF_SYSCALL */
+But how driver is supposed to recognize that it's a dummy or buggy
+regulator if it rejects all voltages?
