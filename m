@@ -2,135 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85E32B0F2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED432B0F36
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 21:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbgKLUrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 15:47:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgKLUrq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:47:46 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B00C0613D1;
-        Thu, 12 Nov 2020 12:47:46 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id v143so6809682qkb.2;
-        Thu, 12 Nov 2020 12:47:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=36FLese2veI3iWY1QIV+jskXlXxefI3GQpE+1eH4p2M=;
-        b=N242L88XsM3GRxlJ2PrswON7oLbOaXDRPkFkUypxgYjX70C2zM4TZ4z24sFdgzA5wO
-         AGb9xNXSszor6MsYuSNJDjb5UZbLxVDyNYmvpqHyIXF8jkwegXAW+Chhn/nyIxtCb3oU
-         H+EXURpITkmZlqTUEBwnNrgANQE1shcem8X9KTHmNIJEBmSlW/zYHzq8xl44thxor6IU
-         sb/C91xxIwysSeTGnith13BHsiyF2THFRKtg4pn1R3shTmpX0kY4V6xuM6EhN9dX0UeO
-         oRUNk7rR4kBHi4VudSvjH1yRt3n/E8rGLJWguEH0kEdXoB/VEQmS98RdPH8/mgbPKfcX
-         M+7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=36FLese2veI3iWY1QIV+jskXlXxefI3GQpE+1eH4p2M=;
-        b=Mq3h1bDmwyfPuCzMGIPLjuFRgY98qTmVF9fTjO9wAM4ziwUzizNsW/dPRXh2tNT680
-         5mc/zDmFbsQfDXJ2c+u9D2T1QJ9mCdk+Jh58uOBpotPy8/Ht3hhfJd7NFEbFjgHd+nRJ
-         zGQeNez+Mfvht1xDDcIFJya14EXYmJkqse3XfBoezIaq8RpMLl3QgoI1aOvqCK304ymS
-         KEKK/7bLzhtwQRFoCpBKlLRjCH2MVF72B0MsAGOwK2NuovB/xPxzoG92b78mhIyXr2nt
-         0rvHku8uURijhe35LAJQkCkuzePwmkFPa3EXznjIKyo071TtzrisnUeLuWUUGqQp1sEG
-         uCEg==
-X-Gm-Message-State: AOAM53042bnP7pMkI0VonKa8xCGoYuES1MeCG7vew2r+IrekKapeP/ks
-        +ePfIe6UlQtVp6p53OQ3GgM=
-X-Google-Smtp-Source: ABdhPJywpb2aGtJbMUBTz7dHBirLYndXq9uNXazWC4ByK4FHtHoZyXJNI3QQNh4eAvU69x7oIlMddQ==
-X-Received: by 2002:ae9:ef02:: with SMTP id d2mr1760318qkg.68.1605214065166;
-        Thu, 12 Nov 2020 12:47:45 -0800 (PST)
-Received: from localhost.localdomain ([198.52.185.246])
-        by smtp.gmail.com with ESMTPSA id f61sm5369419qtb.75.2020.11.12.12.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 12:47:44 -0800 (PST)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v1] lan743x: prevent entire kernel HANG on open, for some platforms
-Date:   Thu, 12 Nov 2020 15:47:41 -0500
-Message-Id: <20201112204741.12375-1-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727162AbgKLUtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 15:49:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727138AbgKLUtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 15:49:18 -0500
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB12B22227;
+        Thu, 12 Nov 2020 20:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605214158;
+        bh=wrKaWD3LoEi3Ttr+MBj6uJxawKgQ0puebVWPB/EXaKA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OAXMhXziASJ9REsiyRT2peJV1Eni+CQ+BxxB7kFyOWOmPL0t7MXJJHVZXZ8Vw9wYa
+         k/tm6+ld1H/u1bxUqtTYnLLSfhxxnpPyrLSRB8mzNhOpIsX6bB96xdDpr4/puUVDa0
+         RpPBwJYmQxFkGA4jWWgz8sxf5zuszFvylq35kQkw=
+Received: by mail-oi1-f179.google.com with SMTP id w188so7950249oib.1;
+        Thu, 12 Nov 2020 12:49:17 -0800 (PST)
+X-Gm-Message-State: AOAM532WuUerCXQrBY4VzECSBUeXJ2kXfs/YcRv9sgYCow4GHfxcgsiW
+        BaVJfqlo6q2S0fj8RMUzZ8XxLg3yO+6FNBRTTA==
+X-Google-Smtp-Source: ABdhPJxcMk1WB5wVFqixYLOd/a/1Gfq63/2/MzkP3fgZwh7SStQ67/N9bG8B4VYXQBSpsfyYuH7oJ2H2gy6M000/fXU=
+X-Received: by 2002:aca:5dc2:: with SMTP id r185mr1100963oib.106.1605214157168;
+ Thu, 12 Nov 2020 12:49:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20201102203656.220187-1-robh@kernel.org> <20201102203656.220187-2-robh@kernel.org>
+In-Reply-To: <20201102203656.220187-2-robh@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 12 Nov 2020 14:49:06 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKYA+8VgVNsoU4O1taYzJACntjm-i+Jm0GDS7KEf08F9A@mail.gmail.com>
+Message-ID: <CAL_JsqKYA+8VgVNsoU4O1taYzJACntjm-i+Jm0GDS7KEf08F9A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
+To:     Sameer Pujar <spujar@nvidia.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+On Mon, Nov 2, 2020 at 2:36 PM Rob Herring <robh@kernel.org> wrote:
+>
+> From: Sameer Pujar <spujar@nvidia.com>
+>
+> Convert device tree bindings of graph to YAML format. Currently graph.txt
+> doc is referenced in multiple files and all of these need to use schema
+> references. For now graph.txt is updated to refer to graph.yaml.
+>
+> For users of the graph binding, they should reference to the graph
+> schema from either 'ports' or 'port' property:
+>
+> properties:
+>   ports:
+>     type: object
+>     $ref: graph.yaml#/properties/ports
+>
+>     properties:
+>       port@0:
+>         description: What data this port has
+>
+>       ...
+>
+> Or:
+>
+> properties:
+>   port:
+>     description: What data this port has
+>     type: object
+>     $ref: graph.yaml#/properties/port
+>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v3:
+>  - Move port 'reg' to port@* and make required
+>  - Make remote-endpoint required
+>  - Add 'additionalProperties: true' now required
+>  - Fix yamllint warnings
+>
+>  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
+>  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
+>  2 files changed, 200 insertions(+), 128 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/graph.yaml
 
-On arm imx6, when opening the chip's netdev, the whole Linux
-kernel intermittently hangs/freezes.
+I've decided to move this to the dt-schema repo instead[1]. I think
+that will be easier to manage dependencies (audio-graph.yaml plus
+anything else landing this cycle) than subsystems pulling a shared
+branch. I haven't merged it yet, so let me know if any
+comments/objections. Note that the meta-schema will have to come a bit
+later once existing users are updated (which I have patches for).
 
-This is caused by a bug in the driver code which tests if pcie
-interrupts are working correctly, using the software interrupt:
+Rob
 
-1. open: enable the software interrupt
-2. open: tell the chip to assert the software interrupt
-3. open: wait for flag
-4. ISR: acknowledge s/w interrupt, set flag
-5. open: notice flag, disable the s/w interrupt, continue
-
-Unfortunately the ISR only acknowledges the s/w interrupt, but
-does not disable it. This will re-trigger the ISR in a tight
-loop.
-
-On some (lucky) platforms, open proceeds to disable the s/w
-interrupt even while the ISR is 'spinning'. On arm imx6,
-the spinning ISR does not allow open to proceed, resulting
-in a hung Linux kernel.
-
-Fix minimally by disabling the s/w interrupt in the ISR, which
-will prevent it from spinning. This won't break anything because
-the s/w interrupt is used as a one-shot interrupt.
-
-Note that this is a minimal fix, overlooking many possible
-cleanups, e.g.:
-- lan743x_intr_software_isr() is completely redundant and reads
-  INT_STS twice for no apparent reason
-- disabling the s/w interrupt in lan743x_intr_test_isr() is now
-  redundant, but harmless
-- waiting on software_isr_flag can be converted from a sleeping
-  poll loop to wait_event_timeout()
-
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # arm imx6 lan7430
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
----
-
-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # edbc21113bde
-
-To: Jakub Kicinski <kuba@kernel.org>
-To: Bryan Whitehead <bryan.whitehead@microchip.com>
-To: "David S. Miller" <davem@davemloft.net>
-Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
- drivers/net/ethernet/microchip/lan743x_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index 065e10bc98f2..f4a09e0f3ec5 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -148,7 +148,8 @@ static void lan743x_intr_software_isr(void *context)
- 
- 	int_sts = lan743x_csr_read(adapter, INT_STS);
- 	if (int_sts & INT_BIT_SW_GP_) {
--		lan743x_csr_write(adapter, INT_STS, INT_BIT_SW_GP_);
-+		/* disable the interrupt to prevent repeated re-triggering */
-+		lan743x_csr_write(adapter, INT_EN_CLR, INT_BIT_SW_GP_);
- 		intr->software_isr_flag = 1;
- 	}
- }
--- 
-2.17.1
-
+[1] https://github.com/devicetree-org/dt-schema/tree/of-graph
