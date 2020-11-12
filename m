@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E142B00A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF882B00BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgKLH60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 02:58:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgKLH6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 02:58:24 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8D8620709;
-        Thu, 12 Nov 2020 07:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605167903;
-        bh=geex83WHWE8HBNVfk7Eod1F5QhIUgKE/LhhHyh/o4i8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i2EJa2G8SqC1E/irAV/jdjoRlBIoPjZ3rCQmrGZhmndxjS6XM5xe7wslTrO4UeTRw
-         322RVDuVg03A/JiZBtEOeJDNSdM9/gz0+CP9MERsl9TMatk1dzCG8N3aqtKhB3KIqy
-         ItglbMK3ggzGHAbF7WoSZJns7Vh/JODHcZL+o8p0=
-Date:   Thu, 12 Nov 2020 09:58:10 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dyoung@redhat.com,
-        bhe@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        corbet@lwn.net, John.P.donnelly@oracle.com, bhsharma@redhat.com,
-        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
-        arnd@arndb.de, nsaenzjulienne@suse.de, james.morse@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        xiexiuqi@huawei.com, guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v13 1/8] x86: kdump: replace the hard-coded alignment
- with macro CRASH_ALIGN
-Message-ID: <20201112075810.GJ4758@kernel.org>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
- <20201031074437.168008-2-chenzhou10@huawei.com>
+        id S1726777AbgKLH7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 02:59:50 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:15375 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726140AbgKLH7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 02:59:49 -0500
+X-UUID: 3a1dcb1ef92a4d07be7a57d623318ee8-20201112
+X-UUID: 3a1dcb1ef92a4d07be7a57d623318ee8-20201112
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 353635932; Thu, 12 Nov 2020 15:59:39 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS31DR.mediatek.inc (172.27.6.102) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Nov 2020 15:59:36 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 12 Nov 2020 15:59:35 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Al Cooper <alcooperx@gmail.com>, <linux-usb@vger.kernel.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v4 01/11] usb: gadget: bdc: fix improper SPDX comment style for header file
+Date:   Thu, 12 Nov 2020 15:59:24 +0800
+Message-ID: <1605167974-28502-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201031074437.168008-2-chenzhou10@huawei.com>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 9012CB0DEAAA3E5EACE7125E6B932DBF39650BB9E64F7ED589AEE4881631ED232000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+For C header files Documentation/process/license-rules.rst
+mandates C-like comments (opposed to C source files where
+C++ style should be used).
 
-On Sat, Oct 31, 2020 at 03:44:30PM +0800, Chen Zhou wrote:
-> Move CRASH_ALIGN to header asm/kexec.h and replace the hard-coded
-> alignment with macro CRASH_ALIGN in function reserve_crashkernel().
-> 
-> Suggested-by: Dave Young <dyoung@redhat.com>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> ---
->  arch/x86/include/asm/kexec.h | 3 +++
->  arch/x86/kernel/setup.c      | 5 +----
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
-> index 6802c59e8252..8cf9d3fd31c7 100644
-> --- a/arch/x86/include/asm/kexec.h
-> +++ b/arch/x86/include/asm/kexec.h
-> @@ -18,6 +18,9 @@
->  
->  # define KEXEC_CONTROL_CODE_MAX_SIZE	2048
->  
-> +/* 2M alignment for crash kernel regions */
-> +#define CRASH_ALIGN		SZ_16M
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+v4: no changes, but rebase on kernel 5.10-rc1
+v3: add acked-by Florian
+v2: add Cc Florian
+---
+ drivers/usb/gadget/udc/bdc/bdc.h     | 2 +-
+ drivers/usb/gadget/udc/bdc/bdc_cmd.h | 2 +-
+ drivers/usb/gadget/udc/bdc/bdc_dbg.h | 2 +-
+ drivers/usb/gadget/udc/bdc/bdc_ep.h  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-Please update the comment to match the code.
-
-> +
->  #ifndef __ASSEMBLY__
->  
->  #include <linux/string.h>
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 84f581c91db4..bf373422dc8a 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -395,9 +395,6 @@ static void __init memblock_x86_reserve_range_setup_data(void)
->  
->  #ifdef CONFIG_KEXEC_CORE
->  
-> -/* 16M alignment for crash kernel regions */
-> -#define CRASH_ALIGN		SZ_16M
-> -
->  /*
->   * Keep the crash kernel below this limit.
->   *
-> @@ -515,7 +512,7 @@ static void __init reserve_crashkernel(void)
->  	} else {
->  		unsigned long long start;
->  
-> -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
-> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
->  						  crash_base + crash_size);
->  		if (start != crash_base) {
->  			pr_info("crashkernel reservation failed - memory is in use.\n");
-> -- 
-> 2.20.1
-> 
-
+diff --git a/drivers/usb/gadget/udc/bdc/bdc.h b/drivers/usb/gadget/udc/bdc/bdc.h
+index ac75e25c3b6a..fcba77e42fd1 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc.h
++++ b/drivers/usb/gadget/udc/bdc/bdc.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc.h - header for the BRCM BDC USB3.0 device controller
+  *
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_cmd.h b/drivers/usb/gadget/udc/bdc/bdc_cmd.h
+index 29cc988a671a..373e674809e9 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_cmd.h
++++ b/drivers/usb/gadget/udc/bdc/bdc_cmd.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc_cmd.h - header for the BDC debug functions
+  *
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_dbg.h b/drivers/usb/gadget/udc/bdc/bdc_dbg.h
+index 373d5abffbb8..859d588e209d 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_dbg.h
++++ b/drivers/usb/gadget/udc/bdc/bdc_dbg.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc_dbg.h - header for the BDC debug functions
+  *
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_ep.h b/drivers/usb/gadget/udc/bdc/bdc_ep.h
+index a37ff8033b4f..5bbd73f99c6f 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_ep.h
++++ b/drivers/usb/gadget/udc/bdc/bdc_ep.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc_ep.h - header for the BDC debug functions
+  *
 -- 
-Sincerely yours,
-Mike.
+2.18.0
+
