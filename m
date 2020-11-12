@@ -2,197 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87322B0839
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2560E2B0843
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgKLPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:16:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46501 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727796AbgKLPQh (ORCPT
+        id S1728612AbgKLPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728346AbgKLPS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:16:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605194196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mgdXZHtHPywKX/a9hS8LUB6+ABxOjrBQbybE/K2MyA4=;
-        b=cykmF34jlNHNBZVvhoSww9Es23tWUCsSYO6XS0Sq4RE2aoD2IqMZOJHsknTKVPaAzwS/6v
-        BrEuJRhe0JFySqSESnbv/rQ7dz+wJ8Jqwhyr/5aTxV60GJvq+ssLMn0BzHY0DRIjX8W6CG
-        O4zFp0oR74EGGXv+DtCi6vkdWDtBpVI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-rpYu9UVUMN-F_aNSV4HytQ-1; Thu, 12 Nov 2020 10:16:34 -0500
-X-MC-Unique: rpYu9UVUMN-F_aNSV4HytQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 8so1854334wmg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:16:34 -0800 (PST)
+        Thu, 12 Nov 2020 10:18:26 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F3FC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:18:26 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id u2so2936176pls.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Y6n1j5ieoaPl104h2GHbkpjD3WvJfFbQ2oIyPHNuXic=;
+        b=Nx8yqZwlit6FO5nSvh8TNxM82iABo5jdw7qRSU9d4EpVPv0BeZ9iHrxoOUh7HW75wu
+         MQDbO+Ej3k58ZePcl9BxNm4Fy8uHVFADoN63GxERgNRIRCFeJQ2bcoT7mTk/BMJ+g5DF
+         LOuTR5q9SOSlW3oGv9ZPZf/akdMvqjZtkjunxlnE/bPfHv2wJtzXluPXAkKkPP/Vxlhe
+         QsIky5oLBQEixnKj3Tcf7/Pv9iwhqa5LAvKPh3ssEt6572rsWY7tFO2bE80lZgYcydIm
+         dUsfguVNmb7eC7lhisPRXosEQ0n5NsW4FQE8Nobp1/LSDSfE1owtXOukX/OxtndU579o
+         6y8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mgdXZHtHPywKX/a9hS8LUB6+ABxOjrBQbybE/K2MyA4=;
-        b=Imi5cmjOn4+co+lieMWXqD0AV+l8/SMjMThQCzXTAzkx+2iTq6r//yfTBfsFwmqh/N
-         zpRIa5LQHQYWsY6yV3lHZRzjgUWijgOCujFRmFqrhAiZqekFyb62yx4wavLG1b1gskF6
-         +3gIi/UZd7VbkEomp+9P1aWgZghMOgTUJOdlLDnULr5vUPIu+VA+LCF1g6Wds6wBmOJ8
-         isGINQQS5/p4thku4s0mjDHlLQKr2AhXjDzANqn9Z/jWlHJskCJmfxhAGungf8SQDBJR
-         AprSBHW5jaNN15mlruESxpmSbqdD1NJS+GkqslLgK2t7mCAMkMHGxxT15huD0pmTyDts
-         ti9Q==
-X-Gm-Message-State: AOAM533eooDzICoY5wVCx34nWh3P0nFLzmSWRZblodj9mrvVwLuaspz9
-        +J1+WkWxrI7zYfrLC8yOkFVIjq0W8EdyHmKege0aBrHFlvfuAKEC6Tea8EPatmAbJdtqQZB6vNr
-        RgfXI108Chm7JiOPmGBcxGXGG
-X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr3765131wrx.137.1605194193098;
-        Thu, 12 Nov 2020 07:16:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzBsGbFGQNrYQltDNU47DH7z1aKIl9Jf7c3fN1KWHUXH5NhMqtMHL3KuLKLxVmtzHwryqqqqQ==
-X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr3765087wrx.137.1605194192885;
-        Thu, 12 Nov 2020 07:16:32 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id y11sm6415716wmj.36.2020.11.12.07.16.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:16:32 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 02/17] x86/hyperv: detect if Linux is the root partition
-In-Reply-To: <20201105165814.29233-3-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-3-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 16:16:30 +0100
-Message-ID: <87lff6y59t.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Y6n1j5ieoaPl104h2GHbkpjD3WvJfFbQ2oIyPHNuXic=;
+        b=CSocvbLRC25zrdKgwdlR/q1LgQiCtZAmkdVWaq7yrcqxwFoIvHarEuxgd5YJVxIxXq
+         GJdaS8roXb6xT8VqD7R/ZsaETq1GrS+5LL/4UDfp3/hBg4fCObnmciRQk5cYKsQiu8C5
+         uS1amzyWc9GRHzCUlLS3p7u7e/gTCIitp5DlLPMzztEtygqBLjP8vo3ufRWLBKtENOzl
+         GXZcnWyQDWqmLAWm7av6YBub0Z+ypcq28EjZv4TDg3dWQotT4YFI2vmU4sbCoZ3TnPHx
+         aooTP931pOYlozhGrapauu1DYBbQnnFpolIzmM/2IKVKckXvwMLHKld8O8Wa8SWgbrND
+         RDcQ==
+X-Gm-Message-State: AOAM5304iiMy12bHd0+uGFVCxlYsRhTr+RQ5siusZgYtY7K/tsqBK4h6
+        vsvXc0mLWz9qD2lHBCzjrUA=
+X-Google-Smtp-Source: ABdhPJyKXAbdR8Baht6aCMlI8jEeiscwInTTCKAv+gzoRRc2vp7s7SINnKZIwm1ig4tTQJqHTG6l1Q==
+X-Received: by 2002:a17:902:8c82:b029:d6:df6e:54ac with SMTP id t2-20020a1709028c82b02900d6df6e54acmr163084plo.29.1605194305331;
+        Thu, 12 Nov 2020 07:18:25 -0800 (PST)
+Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
+        by smtp.gmail.com with ESMTPSA id q72sm115946pfq.62.2020.11.12.07.18.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 12 Nov 2020 07:18:24 -0800 (PST)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH] ring-buffer: Fix a typo in function description
+Date:   Thu, 12 Nov 2020 23:18:00 +0800
+Message-Id: <20201112151800.14382-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+s/ring_buffer_commit_discard/ring_buffer_discard_commit/
 
-> For now we can use the privilege flag to check. Stash the value to be
-> used later.
->
-> Put in a bunch of defines for future use when we want to have more
-> fine-grained detection.
->
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
->  arch/x86/hyperv/hv_init.c          |  4 ++++
->  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
->  arch/x86/include/asm/mshyperv.h    |  2 ++
->  arch/x86/kernel/cpu/mshyperv.c     | 16 ++++++++++++++++
->  4 files changed, 32 insertions(+)
->
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index e04d90af4c27..533fe9e887f2 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -26,6 +26,10 @@
->  #include <linux/syscore_ops.h>
->  #include <clocksource/hyperv_timer.h>
->  
-> +/* Is Linux running as the root partition? */
-> +bool hv_root_partition;
-> +EXPORT_SYMBOL_GPL(hv_root_partition);
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+ kernel/trace/ring_buffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(Nitpick and rather a personal preference): I'd prefer
-'hv_partition_is_root' for a boolean.
-
-> +
->  void *hv_hypercall_pg;
->  EXPORT_SYMBOL_GPL(hv_hypercall_pg);
->  
-> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> index 0ed20e8bba9e..41b628b9fb15 100644
-> --- a/arch/x86/include/asm/hyperv-tlfs.h
-> +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> @@ -21,6 +21,7 @@
->  #define HYPERV_CPUID_FEATURES			0x40000003
->  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
->  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
-> +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES	0x40000007
->  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
->  
->  #define HYPERV_HYPERVISOR_PRESENT_BIT		0x80000000
-> @@ -103,6 +104,15 @@
->  /* Recommend using enlightened VMCS */
->  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED		BIT(14)
->  
-> +/*
-> + * CPU management features identification.
-> + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
-> + */
-> +#define HV_X64_START_LOGICAL_PROCESSOR			BIT(0)
-> +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR		BIT(1)
-> +#define HV_X64_PERFORMANCE_COUNTER_SYNC			BIT(2)
-> +#define HV_X64_RESERVED_IDENTITY_BIT			BIT(31)
-> +
->  /*
->   * Virtual processor will never share a physical core with another virtual
->   * processor, except for virtual processors that are reported as sibling SMT
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index ffc289992d1b..ac2b0d110f03 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
->  		struct hv_guest_mapping_flush_list *flush,
->  		u64 start_gfn, u64 end_gfn);
->  
-> +extern bool hv_root_partition;
-
-Eventually this is not going to be an x86 only thing I believe?
-
-> +
->  #ifdef CONFIG_X86_64
->  void hv_apic_init(void);
->  void __init hv_init_spinlocks(void);
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 05ef1f4550cb..f7633e1e4c82 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -237,6 +237,22 @@ static void __init ms_hyperv_init_platform(void)
->  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
->  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
->  
-> +	/*
-> +	 * Check CPU management privilege.
-> +	 *
-> +	 * To mirror what Windows does we should extract CPU management
-> +	 * features and use the ReservedIdentityBit to detect if Linux is the
-> +	 * root partition. But that requires negotiating CPU management
-> +	 * interface (a process to be finalized).
-> +	 *
-> +	 * For now, use the privilege flag as the indicator for running as
-> +	 * root.
-> +	 */
-> +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
-
-We may want to cache cpuid_ebx(HYPERV_CPUID_FEATURES) somewhere but we
-already had a discussion regading naming for these caches and decided to
-wait until TLFS for ARM is out so we don't need to rename again.
-
-> +		hv_root_partition = true;
-> +		pr_info("Hyper-V: running as root partition\n");
-> +	}
-> +
->  	/*
->  	 * Extract host information.
->  	 */
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index dc83b3fa9fe7..27a7caf4e203 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3502,7 +3502,7 @@ rb_decrement_entry(struct ring_buffer_per_cpu *cpu_buffer,
+ }
+ 
+ /**
+- * ring_buffer_commit_discard - discard an event that has not been committed
++ * ring_buffer_discard_commit - discard an event that has not been committed
+  * @buffer: the ring buffer
+  * @event: non committed event to discard
+  *
 -- 
-Vitaly
+2.17.1
 
