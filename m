@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F54C2B0926
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3852B095D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728839AbgKLP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
+        id S1729140AbgKLQAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728792AbgKLP6S (ORCPT
+        with ESMTP id S1728813AbgKLP6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:58:18 -0500
+        Thu, 12 Nov 2020 10:58:19 -0500
 Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E60FC0613D1;
-        Thu, 12 Nov 2020 07:58:18 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id v22so6839817edt.9;
-        Thu, 12 Nov 2020 07:58:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F962C0613D1;
+        Thu, 12 Nov 2020 07:58:19 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id y4so1024691edy.5;
+        Thu, 12 Nov 2020 07:58:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Y8LXIYYpPzP9HNW+uSjQkTA7aSXHrHU/5a1QvbrK6pU=;
-        b=Mf8jMYwx3MccylRZVpZjJKNS5ZylfgEGGfPOj5DjKvYtf2p5gw2bpUVDQ8nrPlA8/a
-         64cGwf9pKyxMHAzlpz084caVQsL/gfw/R8EeVWkJw9XR8SnDwT0pY1eTHeRlEG7nH7PV
-         my9OGNkh1djkhZMsnmCvTRkg+IBDPw7pNtw8IV3rSRgkwIaH1vQwGQSpxV4ZUUiXw2zN
-         NRH6QK4E2yNl7mSn/pYhKYOm6ghO+68h/Kr8CbiIEwqtSIW3QIRqp1him+7t9KGZlYs+
-         31TtEfd/u3Xs0NNy7Boe8MbQg0VJ+ju7v35CoAr4f0HVweeaKSJmJwk0cZFHffXi/Jgt
-         1C9g==
+        bh=5eEkZyJuYqDgw3qo/V0uy1CW8YE9RreYkILxojzWYTQ=;
+        b=c2qUOZpv1mSeHE1Ezmz+x7EJn7Cxg6PhpctF3FEnsMkIKNC1XCV6m9mV/ot9/XsPKR
+         ZgtWVVN7YpFDpO8zOsiNDokInSOOOkLaRvkh9in2p3Gq3JIjsQUaQivyjkB83+QnUPHJ
+         cZYVy9M+3iC/0k6HkhcfAeuGnKmdsJFyveY6e8x/7LHDN1iNUvbYitGbmmJhUx2nu1AQ
+         A7+Kq5hU5DaSiyhX4mmOrIY/0GLSNW9J4A8bLvD6b+f/RpetYDflool6v4soHnEh3q5d
+         LLyorezhK9OUOMbOkJ4CId88ZxD3bBIsjt/Zg2r8bgfg3g7kgnP6I6+QlX6h+3fwsZiB
+         +lfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Y8LXIYYpPzP9HNW+uSjQkTA7aSXHrHU/5a1QvbrK6pU=;
-        b=gaibUjvkQe6tpmlv5BXu7Z6M4tndLMM46UMmdYTPePtcBBrCugySP/V0x0H+zyBQFd
-         X42CvRLDAW4xqQCag4gVpxRdqSo/Y9aC/cBLHXLeDMyGiDWpAzZXWGiv3f7kH1vtuhgE
-         oCtwIj+kdfwqC4RwNfEErgZ6O07xBhsWu5VZE4jrfHDDPyop2EPp43IFVRWjEMxwAexY
-         ricS8k4D8BfMDfo2NZOqD6Qbdq5sJsDe6gKbC1x/aEkOddhdtV5mQcLIoSs2q42GX1Ae
-         NaADkqtpZkAx4TyTkj0z9ZvzsXSRItjmhDjRVd0uyz3DP55gnkmlCHiLMBNwpwmdsTL5
-         wInA==
-X-Gm-Message-State: AOAM5303OTYXy+L6qHWsiBazH8xVFkouC5M5pXdLdwBRGnCXqZPyA42N
-        GhsPUQjI9834fqRpfOhK95sGWTnzgkBHuw==
-X-Google-Smtp-Source: ABdhPJxyE0ct2CAg13yTcbpTMkESWQCLYtx5NFwd+sffgRCxJNuxcyBQU7Km0SQhC8J8yX6/FDwl8Q==
-X-Received: by 2002:a05:6402:1456:: with SMTP id d22mr395126edx.77.1605196696690;
-        Thu, 12 Nov 2020 07:58:16 -0800 (PST)
+        bh=5eEkZyJuYqDgw3qo/V0uy1CW8YE9RreYkILxojzWYTQ=;
+        b=dpacLMG+M6w57PIJ3D91stOYn7fB1LJpux77T3sWKfH2AceQ5XrbSCniaF/zIPHOaQ
+         d0T55lnb+knhAK/gOT+BykYndjZ7WwqJ7NKu5gm+iVfP0FX5LIIJWPRCRCr2+qWb/Cuf
+         /0/kC/t3IIuJg3ialHS5hQNibiOSbjXH3FXgIUZtkgoAwfksu6ptpfk5UTeuHxjFPAyS
+         tN/DLZ7EUpRTvzONfvPE9DmxOVa2rcJj0J9K6TqnM1MraXw8l/Uah+KlvksnpC3b06GQ
+         uJL2cXLHSnhfOQk+x4ulSUbYzY35bmT2eYFH2nGaUNfmJMfYJStBT4SDDKV+snPzXuso
+         mq9Q==
+X-Gm-Message-State: AOAM531QQ3YUB6/QqTUwySl4BFDy9Fe4IxOROKL/chsHJ+XH6P8NDrP8
+        Owo6Mnhp0BPjGnAnPJLllrw=
+X-Google-Smtp-Source: ABdhPJw3df+uqCkDTrnHagdbtlV3X9OJKGfd7YDfg0VX5HTAdKhJRkl3yzc3MVxzn2rHM0Hfp9x+tA==
+X-Received: by 2002:a05:6402:44b:: with SMTP id p11mr440411edw.164.1605196697966;
+        Thu, 12 Nov 2020 07:58:17 -0800 (PST)
 Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q15sm2546540edt.95.2020.11.12.07.58.15
+        by smtp.gmail.com with ESMTPSA id q15sm2546540edt.95.2020.11.12.07.58.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:58:16 -0800 (PST)
+        Thu, 12 Nov 2020 07:58:17 -0800 (PST)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -58,9 +58,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
 Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
         Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH net-next 01/18] net: phy: vitesse: implement generic .handle_interrupt() callback
-Date:   Thu, 12 Nov 2020 17:54:56 +0200
-Message-Id: <20201112155513.411604-2-ciorneiioana@gmail.com>
+Subject: [PATCH net-next 02/18] net: phy: vitesse: remove the use of .ack_interrupt()
+Date:   Thu, 12 Nov 2020 17:54:57 +0200
+Message-Id: <20201112155513.411604-3-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201112155513.411604-1-ciorneiioana@gmail.com>
 References: <20201112155513.411604-1-ciorneiioana@gmail.com>
@@ -72,125 +72,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-In an attempt to actually support shared IRQs in phylib, we now move the
-responsibility of triggering the phylib state machine or just returning
-IRQ_NONE, based on the IRQ status register, to the PHY driver. Having
-3 different IRQ handling callbacks (.handle_interrupt(),
-.did_interrupt() and .ack_interrupt() ) is confusing so let the PHY
-driver implement directly an IRQ handler like any other device driver.
-Make this driver follow the new convention.
+In preparation of removing the .ack_interrupt() callback, we must replace
+its occurrences (aka phy_clear_interrupt), from the 2 places where it is
+called from (phy_enable_interrupts and phy_disable_interrupts), with
+equivalent functionality.
+
+This means that clearing interrupts now becomes something that the PHY
+driver is responsible of doing, before enabling interrupts and after
+clearing them. Make this driver follow the new contract.
 
 Cc: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
 Cc: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
- drivers/net/phy/vitesse.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ drivers/net/phy/vitesse.c | 24 +++---------------------
+ 1 file changed, 3 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/net/phy/vitesse.c b/drivers/net/phy/vitesse.c
-index bb680352708a..9f6cd6ec9747 100644
+index 9f6cd6ec9747..16704e243162 100644
 --- a/drivers/net/phy/vitesse.c
 +++ b/drivers/net/phy/vitesse.c
-@@ -40,6 +40,11 @@
- #define MII_VSC8244_ISTAT_SPEED		0x4000
- #define MII_VSC8244_ISTAT_LINK		0x2000
- #define MII_VSC8244_ISTAT_DUPLEX	0x1000
-+#define MII_VSC8244_ISTAT_MASK		(MII_VSC8244_ISTAT_SPEED | \
-+					 MII_VSC8244_ISTAT_LINK | \
-+					 MII_VSC8244_ISTAT_DUPLEX)
-+
-+#define MII_VSC8221_ISTAT_MASK		MII_VSC8244_ISTAT_LINK
- 
- /* Vitesse Auxiliary Control/Status Register */
- #define MII_VSC8244_AUX_CONSTAT		0x1c
-@@ -311,6 +316,31 @@ static int vsc82xx_config_intr(struct phy_device *phydev)
- 	return err;
+@@ -275,25 +275,14 @@ static int vsc8601_config_init(struct phy_device *phydev)
+ 	return 0;
  }
  
-+static irqreturn_t vsc82xx_handle_interrupt(struct phy_device *phydev)
-+{
-+	int irq_status, irq_mask;
-+
-+	if (phydev->drv->phy_id == PHY_ID_VSC8244 ||
-+	    phydev->drv->phy_id == PHY_ID_VSC8572 ||
-+	    phydev->drv->phy_id == PHY_ID_VSC8601)
-+		irq_mask = MII_VSC8244_ISTAT_MASK;
-+	else
-+		irq_mask = MII_VSC8221_ISTAT_MASK;
-+
-+	irq_status = phy_read(phydev, MII_VSC8244_ISTAT);
-+	if (irq_status < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
-+
-+	if (!(irq_status & irq_mask))
-+		return IRQ_NONE;
-+
-+	phy_trigger_machine(phydev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int vsc8221_config_init(struct phy_device *phydev)
+-static int vsc824x_ack_interrupt(struct phy_device *phydev)
+-{
+-	int err = 0;
+-
+-	/* Don't bother to ACK the interrupts if interrupts
+-	 * are disabled.  The 824x cannot clear the interrupts
+-	 * if they are disabled.
+-	 */
+-	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
+-		err = phy_read(phydev, MII_VSC8244_ISTAT);
+-
+-	return (err < 0) ? err : 0;
+-}
+-
+ static int vsc82xx_config_intr(struct phy_device *phydev)
  {
  	int err;
-@@ -392,6 +422,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_aneg    = &vsc82x4_config_aneg,
- 	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
- 	.phy_id		= PHY_ID_VSC8244,
- 	.name		= "Vitesse VSC8244",
-@@ -401,6 +432,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_aneg	= &vsc82x4_config_aneg,
- 	.ack_interrupt	= &vsc824x_ack_interrupt,
- 	.config_intr	= &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
- 	.phy_id         = PHY_ID_VSC8572,
- 	.name           = "Vitesse VSC8572",
-@@ -410,6 +442,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_aneg    = &vsc82x4_config_aneg,
- 	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
- 	.phy_id         = PHY_ID_VSC8601,
- 	.name           = "Vitesse VSC8601",
-@@ -418,6 +451,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_init    = &vsc8601_config_init,
- 	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
- 	.phy_id         = PHY_ID_VSC7385,
- 	.name           = "Vitesse VSC7385",
-@@ -463,6 +497,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_aneg    = &vsc82x4_config_aneg,
- 	.ack_interrupt  = &vsc824x_ack_interrupt,
- 	.config_intr    = &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
- 	/* Vitesse 8221 */
- 	.phy_id		= PHY_ID_VSC8221,
-@@ -472,6 +507,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_init	= &vsc8221_config_init,
- 	.ack_interrupt	= &vsc824x_ack_interrupt,
- 	.config_intr	= &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- }, {
- 	/* Vitesse 8211 */
- 	.phy_id		= PHY_ID_VSC8211,
-@@ -481,6 +517,7 @@ static struct phy_driver vsc82xx_driver[] = {
- 	.config_init	= &vsc8221_config_init,
- 	.ack_interrupt	= &vsc824x_ack_interrupt,
- 	.config_intr	= &vsc82xx_config_intr,
-+	.handle_interrupt = &vsc82xx_handle_interrupt,
- } };
  
- module_phy_driver(vsc82xx_driver);
+ 	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
++		/* Don't bother to ACK the interrupts since the 824x cannot
++		 * clear the interrupts if they are disabled.
++		 */
+ 		err = phy_write(phydev, MII_VSC8244_IMASK,
+ 			(phydev->drv->phy_id == PHY_ID_VSC8234 ||
+ 			 phydev->drv->phy_id == PHY_ID_VSC8244 ||
+@@ -420,7 +409,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init    = &vsc824x_config_init,
+ 	.config_aneg    = &vsc82x4_config_aneg,
+-	.ack_interrupt  = &vsc824x_ack_interrupt,
+ 	.config_intr    = &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ }, {
+@@ -430,7 +418,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init	= &vsc824x_config_init,
+ 	.config_aneg	= &vsc82x4_config_aneg,
+-	.ack_interrupt	= &vsc824x_ack_interrupt,
+ 	.config_intr	= &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ }, {
+@@ -440,7 +427,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init    = &vsc824x_config_init,
+ 	.config_aneg    = &vsc82x4_config_aneg,
+-	.ack_interrupt  = &vsc824x_ack_interrupt,
+ 	.config_intr    = &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ }, {
+@@ -449,7 +435,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	.phy_id_mask    = 0x000ffff0,
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init    = &vsc8601_config_init,
+-	.ack_interrupt  = &vsc824x_ack_interrupt,
+ 	.config_intr    = &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ }, {
+@@ -495,7 +480,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init    = &vsc824x_config_init,
+ 	.config_aneg    = &vsc82x4_config_aneg,
+-	.ack_interrupt  = &vsc824x_ack_interrupt,
+ 	.config_intr    = &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ }, {
+@@ -505,7 +489,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	.name		= "Vitesse VSC8221",
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init	= &vsc8221_config_init,
+-	.ack_interrupt	= &vsc824x_ack_interrupt,
+ 	.config_intr	= &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ }, {
+@@ -515,7 +498,6 @@ static struct phy_driver vsc82xx_driver[] = {
+ 	.name		= "Vitesse VSC8211",
+ 	/* PHY_GBIT_FEATURES */
+ 	.config_init	= &vsc8221_config_init,
+-	.ack_interrupt	= &vsc824x_ack_interrupt,
+ 	.config_intr	= &vsc82xx_config_intr,
+ 	.handle_interrupt = &vsc82xx_handle_interrupt,
+ } };
 -- 
 2.28.0
 
