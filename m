@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3F52B032D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC12E2B032E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 11:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgKLKws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 05:52:48 -0500
-Received: from www381.your-server.de ([78.46.137.84]:45130 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727964AbgKLKwq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 05:52:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=Dj0UIajfNcw0NQMvLWehBqz2Xz3+UYSsLYW1UM0YfUQ=; b=lr3nEHBHd4Ms7BV9JhgPngkAoQ
-        DXaTRM2nvfgX5VxYd7HGuj8bI8Sqb2iq1r6GzUdBAfLxbw2UbicA+oapgfDYdmIxyeyRlvmXdvcVE
-        lBZKUdiJx2YQ2zziWI+sUXKSZX7CDAhrmCSD70BecPyTj9I3ecKvlItQ2qlvLujVlHeXKqObMlVV+
-        4P+mJJBVBgYirLeFJVHqJWGLmUrz606UctXvBOx/lnFNUIyw7UCAP5ZEeY3BcWDmuR7Ah3Z+/Z0GA
-        hKDcacwYoCCjMss7CYB4S6xB1HWNqxAkAExd3Kx08SlBlPkMN6YbS1nAPFSDFmGEci5vzBDvtDcfZ
-        oVjeO3Pg==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kdADa-0004gh-Lt; Thu, 12 Nov 2020 11:52:42 +0100
-Received: from [62.216.202.98] (helo=[192.168.178.20])
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kdADa-000WRQ-HA; Thu, 12 Nov 2020 11:52:42 +0100
-Subject: Re: [PATCH] iio: ad_sigma_delta: Don't put SPI transfer buffer on the
- stack
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-References: <20201112091050.84991-1-alexandru.ardelean@analog.com>
- <49aea6de-9084-d5a2-a6be-967196570830@metafoo.de>
- <CA+U=DspP1NfHm2XyOc-Vqq=bzVea30K5pDoARUjw9H1zvst=Zw@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <0063409a-317f-56c0-6123-b23804ab45d9@metafoo.de>
-Date:   Thu, 12 Nov 2020 11:52:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728011AbgKLKxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 05:53:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgKLKxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 05:53:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605178380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q92i3jNFlDey2zfzOmaWmIpJgWWQB2STitndo/BWuxQ=;
+        b=rHTa/6kuqazJebjOzKki+k8mtd8HRIuwA5B+WZy0sAyq74Ed5hTyfGkAuPT4xhnHZkYN3u
+        O1MIePLOj8AicNhgmrF5ufCHzV2gmDwWt5WaNmjipXGsiCeLlBiNvsHmxKgcP/8heR2Io7
+        qOm9xya+v5yrOEs+z/YsUGlmWejMy4M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC631AF21;
+        Thu, 12 Nov 2020 10:52:59 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 11:52:58 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
+Subject: Re: [PATCH 1/2] mm,thp,shmem: limit shmem THP alloc gfp_mask
+Message-ID: <20201112105258.GZ12240@dhcp22.suse.cz>
+References: <20201105191508.1961686-1-riel@surriel.com>
+ <20201105191508.1961686-2-riel@surriel.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+U=DspP1NfHm2XyOc-Vqq=bzVea30K5pDoARUjw9H1zvst=Zw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105191508.1961686-2-riel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 11:14 AM, Alexandru Ardelean wrote:
-> On Thu, Nov 12, 2020 at 11:55 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 11/12/20 10:10 AM, Alexandru Ardelean wrote:
->>> From: Lars-Peter Clausen <lars@metafoo.de>
->>>
->>> Use a heap allocated memory for the SPI transfer buffer. Using stack memory
->>> can corrupt stack memory when using DMA on some systems.
->>>
->>> This change adds 4 bytes at the end of the current DMA buffer, which will
->>> be used by the trigger handler.
->>> This is required because the first 4 bytes are reserved for register data.
->>>
->>> Fixes: af3008485ea03 ("iio:adc: Add common code for ADI Sigma Delta devices")
->>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->>> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->>> ---
->>>    drivers/iio/adc/ad_sigma_delta.c       | 4 ++--
->>>    include/linux/iio/adc/ad_sigma_delta.h | 2 +-
->>>    2 files changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
->>> index 86039e9ecaca..33297f26508a 100644
->>> --- a/drivers/iio/adc/ad_sigma_delta.c
->>> +++ b/drivers/iio/adc/ad_sigma_delta.c
->>> @@ -395,11 +395,11 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
->>>        struct iio_poll_func *pf = p;
->>>        struct iio_dev *indio_dev = pf->indio_dev;
->>>        struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
->>> +     uint8_t *data = &sigma_delta->data[4];
->>>        unsigned int reg_size;
->>>        unsigned int data_reg;
->>> -     uint8_t data[16];
->>>
->>> -     memset(data, 0x00, 16);
->>> +     memset(data, 0x00, 4);
->> Younger me didn't know what he was doing, this is wrong. We need the
->> extra space for the padding and timestamp.
->>
->> We also can't put the beginning of the buffer at an 4 byte offset since
->> it needs to be 8 byte aligned for the timestamp.
-> I'll correct this.
-> I was re-spinning this out of some old patches and discussions on this
-> that I have.
-> So, then this becomes 24 bytes? Or 16?
->
-> Something like:
-> uint8_t                         data[24] ____cacheline_aligned;
->
-> uint8_t *data = &sigma_delta->data[8];
+On Thu 05-11-20 14:15:07, Rik van Riel wrote:
+> The allocation flags of anonymous transparent huge pages can be controlled
+> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
+> help the system from getting bogged down in the page reclaim and compaction
+> code when many THPs are getting allocated simultaneously.
+> 
+> However, the gfp_mask for shmem THP allocations were not limited by those
+> configuration settings, and some workloads ended up with all CPUs stuck
+> on the LRU lock in the page reclaim code, trying to allocate dozens of
+> THPs simultaneously.
+> 
+> This patch applies the same configurated limitation of THPs to shmem
+> hugepage allocations, to prevent that from happening.
 
-Yes.
+I believe you should also exaplain why we want to control defrag by the
+global knob while the enable logic is per mount.
 
+> This way a THP defrag setting of "never" or "defer+madvise" will result
+> in quick allocation failures without direct reclaim when no 2MB free
+> pages are available.
+> 
+> With this patch applied, THP allocations for tmpfs will be a little
+> more aggressive than today for files mmapped with MADV_HUGEPAGE,
+> and a little less aggressive for files that are not mmapped or
+> mapped without that flag.
+
+This begs some numbers. A little is rather bad unit of performance. I do
+agree that unifying those makes sense in general though.
+
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> ---
+>  include/linux/gfp.h | 2 ++
+>  mm/huge_memory.c    | 6 +++---
+>  mm/shmem.c          | 8 +++++---
+>  3 files changed, 10 insertions(+), 6 deletions(-)
+-- 
+Michal Hocko
+SUSE Labs
