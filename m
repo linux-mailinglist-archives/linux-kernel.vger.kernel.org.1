@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485F72B0820
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F902B0829
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgKLPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:07:26 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:52084 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728227AbgKLPHU (ORCPT
+        id S1728497AbgKLPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:09:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728073AbgKLPJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:07:20 -0500
-Received: by mail-il1-f197.google.com with SMTP id f8so4137914ilj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:07:18 -0800 (PST)
+        Thu, 12 Nov 2020 10:09:38 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E29C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:09:38 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id 199so5487634qkg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CoGYL/qpX4DTdicVvMAnSSNFSp8J2Bcqtm1uW4R8eNw=;
+        b=gnR8Ce66rzxuhfKbOZw6yNQHhGoSSDN1NJC+WZJoHdZBKxgZVJWg48QvKpsf/ZxcgQ
+         njRphhUsypMHg597vVPRfY5FoMuM7BJ0yZMIycYXJ2ne8mhVsQWnTtr+tLDO11YTcDsd
+         KRKTH2wxQhz1ondJZZY7PasdcvcO3bvOu3crpiD6xzPtKrojBbZ8Csfryh63M7WksKkg
+         jUsa2sjJIoqinl3AYVaMZUpqVg1GqyFp6LyqPthkD/q+zaAME5Li0PuvWLcgT06eb3IP
+         ID+qGpkICMB0ymlNd4tuTOXgDwtBooZqotNURoVQfHJKtb/jRYNDf3FNUPyOZZmB2ZBc
+         rWgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ew8i7DHZkJq4r7+XIn3KNVeqj+PTLmKItdFJHhS81fo=;
-        b=PMRg6Lmabt9GcgpNHR/SL+jDDtMSVN8iOaHM/FJzEjwxw67MXkClmwPozthJVHisXj
-         0BiBaUSQs9BViQ2qpFSC0Ez41GaKmfsOkGB0x27JSHnDHFOJc+ziZF5sqy5wNHat3ReM
-         83IkVMsZyDzv1IktYYwn+KLOAf/qmDZTR4OGQmFSNLmyWcAitRCxOWME76m2p8GHZWDl
-         SM58IGfXS28s9pfUg3ddVhuPwh0KNCT83kR+809RBvwzPqOs2iDt9xzOuQCm7yl75/Hn
-         2CVpKhr5OUSptcxLypqS9eGZ/PhLmbp5cbMP8wexKC2FrVV1yLGw2zZ8JFQl6+mzFCLi
-         lNiQ==
-X-Gm-Message-State: AOAM533xC1Qb584GRv/IEHN/PqlxvlUwtIJ4mp7SoTkbjhmh8tTImUFj
-        HuAZOMB7Myg6ndS2trSMCV9ndiKlkhuAls7fJYPtvSFV1yGb
-X-Google-Smtp-Source: ABdhPJxZlubhyCppxONkZcKLgQi4LyWgIwWO9oEt90oyt+Pb7gzWC59p0v+UX8n21lrax7i/EWBYOr2Rs/mu6Y7M25rO1kK1hXzt
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CoGYL/qpX4DTdicVvMAnSSNFSp8J2Bcqtm1uW4R8eNw=;
+        b=Rtih3reqGyjxKLabMRBRYmZ0+Qv1VUMJBeK5HP/SzSUY9KfvGd9vEeW20dNcBtcKbl
+         pWYslil7dVOQtfHWIBSt/uWde6jFjlMmbINjX4KkxVTQyfFtskG2A7I4e6clT6M+sKhP
+         rf+15QtboO1hrhyLex+7Qau04JvvG/aBjqjrTtF3rMxLPVhma3nC+bpAGtOPZZoct1Uh
+         8NfXPiV8WITh/S7UwUFRtnprHdbkWqhQ7VCOKgykGy/h4a+mMdj3sbPvH4t6eCe02Xp8
+         lGGNvXoCjI9frnQUudO3ofD7aKlAclflYsoPkqYF1O+3nzE7jzbvw4mxF/N9gnxvm+3Q
+         AwTA==
+X-Gm-Message-State: AOAM531lie9wLHStpjLfwC6yW4jvoiSzheKZS38hbTuIiwPzESKyi3Iu
+        lzuh79yrGwTfO9WNz9jqW1XBJx8UvUPKOSmba14F9Q==
+X-Google-Smtp-Source: ABdhPJyoRTmzJUSMlMiQQcxVEqJ/8FJ/nWh57GUiA27VdMzgblETurxtH9pp4CGtm5ZNBg+WajX37g8EsWwWVOK70TI=
+X-Received: by 2002:a37:b545:: with SMTP id e66mr183119qkf.392.1605193777579;
+ Thu, 12 Nov 2020 07:09:37 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:cbde:: with SMTP id u30mr35198jaq.69.1605193638417;
- Thu, 12 Nov 2020 07:07:18 -0800 (PST)
-Date:   Thu, 12 Nov 2020 07:07:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d17f405b3ea44ab@google.com>
-Subject: memory leak in cinergyt2_fe_attach
-From:   syzbot <syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
+References: <cover.1605046192.git.andreyknvl@google.com> <619cb0edad35d946c4796976c25bddb5b3eb0c56.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=UKSp8shtYujRbM=8ndhLg_Ccdpk9eSfOeb=KpwNi7HBg@mail.gmail.com> <CAAeHK+zh6tOh91Dg4n4NrJwdPWRaDEtz_Btitg8viQQk7Zm_JQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+zh6tOh91Dg4n4NrJwdPWRaDEtz_Btitg8viQQk7Zm_JQ@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 12 Nov 2020 16:09:25 +0100
+Message-ID: <CAG_fn=Vs35BOdyg1BUmLWEK3SzMT7z9_otMtu_BJbz4dTXVyag@mail.gmail.com>
+Subject: Re: [PATCH v9 17/44] kasan, arm64: move initialization message
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Nov 11, 2020 at 7:50 PM Andrey Konovalov <andreyknvl@google.com> wr=
+ote:
+>
+> On Wed, Nov 11, 2020 at 4:04 PM Alexander Potapenko <glider@google.com> w=
+rote:
+> >
+> > On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.co=
+m> wrote:
+> > >
+> > > Software tag-based KASAN mode is fully initialized with kasan_init_ta=
+gs(),
+> > > while the generic mode only requires kasan_init(). Move the
+> > > initialization message for tag-based mode into kasan_init_tags().
+> > >
+> > > Also fix pr_fmt() usage for KASAN code: generic.c doesn't need it as =
+it
+> > > doesn't use any printing functions; tag-based mode should use "kasan:=
+"
+> > > instead of KBUILD_MODNAME (which stands for file name).
+> > >
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 
-syzbot found the following issue on:
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-HEAD commit:    3d5e28bf Merge branch 'stable/for-linus-5.10-rc2' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10bae3aa500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
-dashboard link: https://syzkaller.appspot.com/bug?extid=e1de8986786b3722050e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1781dd4e500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1636b181500000
+> > Cannot we have a single kasan_init() function that will call
+> > tool-specific initialization functions and print the message at the
+> > end?
+>
+> Unfortunately no. For different modes we need different functions that
+> are called in different places in the kernel. E.g. for generic KASAN
+> we only need kasan_init() to setup shadow pages; for SW tags we also
+> need kasan_init_sw_tags() which initializes per-cpu state and
+> finilizes initialization process.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
+Ok, got it.
 
-BUG: memory leak
-unreferenced object 0xffff88810d626800 (size 2048):
-  comm "kworker/0:1", pid 7, jiffies 4294946031 (age 8.260s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 54 65 72 72 61 54 65 63  ........TerraTec
-    2f 71 61 6e 75 20 55 53 42 32 2e 30 20 48 69 67  /qanu USB2.0 Hig
-  backtrace:
-    [<000000001868ec69>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000001868ec69>] kzalloc include/linux/slab.h:664 [inline]
-    [<000000001868ec69>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
-    [<0000000069d80651>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
-    [<00000000c12d6c47>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
-    [<0000000012dc4d47>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
-    [<0000000012dc4d47>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
-    [<0000000012dc4d47>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
-    [<000000009a40ba79>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<0000000092664fce>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000ac3ae41f>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<000000008558e2d5>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<00000000562cb0b9>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<0000000056762cde>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<00000000412c6765>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<000000000a5960bb>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<000000009ab6c3b2>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
-    [<00000000f4ffc3df>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<00000000b38e25bd>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<0000000092664fce>] really_probe+0x159/0x480 drivers/base/dd.c:554
+--=20
+Alexander Potapenko
+Software Engineer
 
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
