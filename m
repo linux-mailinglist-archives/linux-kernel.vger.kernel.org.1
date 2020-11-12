@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3D62B0D69
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AF82B0D2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 20:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgKLTDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 14:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S1726789AbgKLTBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 14:01:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgKLTBE (ORCPT
+        with ESMTP id S1726751AbgKLTBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:01:04 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56268C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:03 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a3so6419471wmb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:03 -0800 (PST)
+        Thu, 12 Nov 2020 14:01:06 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B20BC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:04 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id c16so6436930wmd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 11:01:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mzTBD6bXnToow7y30j0wcO7cLIFklFZSxhnu2Adjze8=;
-        b=R5t7wb0QJwlNzlSddPQ32LAfqqewHgBSYPv56bsw5qfjGDpNqJXAat91m8ZBaDWnzU
-         z7qLGrUP+h/Gg/YDb6dObuaLLdYddhhni2yPpZQj55OpxnRzyOsgNzJG8dEH8zhJLSks
-         xVNqGy7nRmLEfLGxYxbuOuoP8xA7fg9zh/sVjgPAiVryTR332MRwRsLyllFWNNuoJPoX
-         Z4EsbpQhUOTY6CE/1lJVahnVCddCTkEmn0nbx4EqomedksR7JEJ6EqXudECIu/5vUJsQ
-         5ev5kB6ttgvJSvlNW5nT52+VPMePRlJIs3ZdEH3rG9y2S2SM9CXNoelER4mNKSDE3JD8
-         1ZwA==
+        bh=OKxekprTcNWz9+T5s0dM8zcd4eG/OHSFQB40CDP13bg=;
+        b=rHR1M/HdLeknkhdU29h/wSKR0Z784FWvAxygS4TEan/fVybAGYjXtGeA1aoM9wZq2h
+         hJiib9TAK6qzqOPC5rHAFJjNejPFMssv1+/K4OmOnGa39NogI/tywrL6omtcFmPdI9kh
+         C34/RfRcMWoBB6S714oSu0qmqNLzJw7RkXY/Fsnjb26TfPCMxXIDHMl/v30JtcEsf9tu
+         dsgMJA948Gy057X021/jxsOOlK1glllrMFEO7OYqEGlqBxdhBo9SsRAKwdKzinJoIjty
+         yqKbeI9U7sNRB58SxGKWahgWA7HSvwb0Epayp4Q3QswTqC5iMrtjr0dviGfcPuyQqaef
+         5LWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mzTBD6bXnToow7y30j0wcO7cLIFklFZSxhnu2Adjze8=;
-        b=JvJXuf/QkkMAXkcJqYCnqNIhs/o2sfBNji/Fo/Pc3pQm/u71C6pVsQ7si4eWGzs9Wb
-         t5XIONjg6u/WZWpVKWsT7+XIUi55nSRQSR95hdmdhe85gvLKrGZbW7IMXa0sF2z3HTd7
-         LmxfSCPiGQivr1EvEwf5tVxbqoeyXP9azSDDJseLjY0gZ0DXX835XVf9jeEEzFnXXReX
-         oEAPAIivsTJPlyxz/smG8GZa7be17T2yqoUqehYAnAV96bf1qxw7hQzeH2BINVw4X4fz
-         pUuq7CdXmy8HcZxi68erPpjUCQxWeO/Aww9PPTaKpgMnWOYHoW+hFWgWcgHPSZqSjP8a
-         1nKg==
-X-Gm-Message-State: AOAM530YF00obSxaH7DutUgz905/WhNs17o3knSNkrQZN7LzN65GESxj
-        seOfgkh7kWrSgTQUZtQEx98OhA==
-X-Google-Smtp-Source: ABdhPJz8r2wxy6OF4yojGOw2K3wDi0wT1gEJzasqwacViLS533DzYX6Piz/RKx/1Earq7FPRGEW8Dg==
-X-Received: by 2002:a7b:c8d3:: with SMTP id f19mr1042992wml.17.1605207661941;
-        Thu, 12 Nov 2020 11:01:01 -0800 (PST)
+        bh=OKxekprTcNWz9+T5s0dM8zcd4eG/OHSFQB40CDP13bg=;
+        b=aWnBCGb2eeCVaMoWeWvZZb38SgvdDSPhNSxik1s279XiYlCvn0+y3col5EHl6CKFiH
+         5ft6n7dhYBpeXeACfVypKznAKSg2NLFenXP8zYMGfV/aVi5QjM3RQmINbw1tgPR+2b2W
+         ooLISKXzvSTw0G5pgf45XyEaU0DEujCP92m6ad7pZ9xqySq7WiA+c0dg0nhfX83v3MH3
+         /krSOUAeOikFySdd1NHYD08hEjHw6nbMTKEEylf2Ut/ROjwzyn0FWpWa3DWQPNjYStWQ
+         gjNHphoP/aAMVF5IDa55GcBPx9UMOZub5EktgEzESNfy0w+WUXNqGmN978dPDtl4XmG6
+         NX1Q==
+X-Gm-Message-State: AOAM533IDGSRS3vmZ8RJEpKoinmBjJHmXxtjvSHNnbGjNKv67rKYWQk/
+        OtINOFtSmgFJYxP3vMxAN2+rQ38OM++qnXEN
+X-Google-Smtp-Source: ABdhPJwyuT8LCe/shjgpHpT+VZjAVT+yMOF/6Q780jWrw9yW9KSyX2R93GMP41cG3s604agpMz7/fA==
+X-Received: by 2002:a05:600c:2285:: with SMTP id 5mr1045327wmf.149.1605207663296;
+        Thu, 12 Nov 2020 11:01:03 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.00
+        by smtp.gmail.com with ESMTPSA id p4sm8105214wrm.51.2020.11.12.11.01.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:01:01 -0800 (PST)
+        Thu, 12 Nov 2020 11:01:02 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 07/30] drm/amd/amdgpu/amdgpu_fence: Fix some issues pertaining to function documentation
-Date:   Thu, 12 Nov 2020 19:00:16 +0000
-Message-Id: <20201112190039.2785914-8-lee.jones@linaro.org>
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 08/30] drm/exynos/exynos7_drm_decon: Supply missing description for  param 'ctx'
+Date:   Thu, 12 Nov 2020 19:00:17 +0000
+Message-Id: <20201112190039.2785914-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112190039.2785914-1-lee.jones@linaro.org>
 References: <20201112190039.2785914-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,97 +76,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:139: warning: Function parameter or member 'flags' not described in 'amdgpu_fence_emit'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:197: warning: Function parameter or member 'timeout' not described in 'amdgpu_fence_emit_polling'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:302: warning: Function parameter or member 't' not described in 'amdgpu_fence_fallback'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:302: warning: Excess function parameter 'work' description in 'amdgpu_fence_fallback'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:320: warning: Excess function parameter 'adev' description in 'amdgpu_fence_wait_empty'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:649: warning: Function parameter or member 'f' not described in 'amdgpu_fence_enable_signaling'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:649: warning: Excess function parameter 'fence' description in 'amdgpu_fence_enable_signaling'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:684: warning: Function parameter or member 'f' not described in 'amdgpu_fence_release'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:684: warning: Excess function parameter 'fence' description in 'amdgpu_fence_release'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:749: warning: Function parameter or member 'm' not described in 'amdgpu_debugfs_gpu_recover'
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:749: warning: Function parameter or member 'data' not described in 'amdgpu_debugfs_gpu_recover'
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c:354: warning: Function parameter or member 'ctx' not described in 'decon_shadow_protect_win'
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Jerome Glisse <glisse@freedesktop.org>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Akshu Agarwal <akshua@gmail.com>
+Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-index fe2d495d08ab0..d56f4023ebb31 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-@@ -130,6 +130,7 @@ static u32 amdgpu_fence_read(struct amdgpu_ring *ring)
-  *
-  * @ring: ring the fence is associated with
-  * @f: resulting fence object
-+ * @flags: flags to pass into the subordinate .emit_fence() call
-  *
-  * Emits a fence command on the requested ring (all asics).
-  * Returns 0 on success, -ENOMEM on failure.
-@@ -187,6 +188,7 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, struct dma_fence **f,
-  *
-  * @ring: ring the fence is associated with
-  * @s: resulting sequence number
-+ * @timeout: the timeout for waiting in usecs
-  *
-  * Emits a fence command on the requested ring (all asics).
-  * Used For polling fence.
-@@ -294,7 +296,7 @@ bool amdgpu_fence_process(struct amdgpu_ring *ring)
+diff --git a/drivers/gpu/drm/exynos/exynos7_drm_decon.c b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
+index f2d87a7445c73..431c5d32f9a47 100644
+--- a/drivers/gpu/drm/exynos/exynos7_drm_decon.c
++++ b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
+@@ -346,6 +346,7 @@ static void decon_win_set_colkey(struct decon_context *ctx, unsigned int win)
  /**
-  * amdgpu_fence_fallback - fallback for hardware interrupts
+  * shadow_protect_win() - disable updating values from shadow registers at vsync
   *
-- * @work: delayed work item
-+ * @t: timer context used to obtain the pointer to ring structure
-  *
-  * Checks for fence activity.
++ * @ctx: display and enhancement controller context
+  * @win: window to protect registers for
+  * @protect: 1 to protect (disable updates)
   */
-@@ -310,7 +312,6 @@ static void amdgpu_fence_fallback(struct timer_list *t)
- /**
-  * amdgpu_fence_wait_empty - wait for all fences to signal
-  *
-- * @adev: amdgpu device pointer
-  * @ring: ring index the fence is associated with
-  *
-  * Wait for all fences on the requested ring to signal (all asics).
-@@ -639,7 +640,7 @@ static const char *amdgpu_fence_get_timeline_name(struct dma_fence *f)
- 
- /**
-  * amdgpu_fence_enable_signaling - enable signalling on fence
-- * @fence: fence
-+ * @f: fence
-  *
-  * This function is called with fence_queue lock held, and adds a callback
-  * to fence_queue that checks if this fence is signaled, and if so it
-@@ -675,7 +676,7 @@ static void amdgpu_fence_free(struct rcu_head *rcu)
- /**
-  * amdgpu_fence_release - callback that fence can be freed
-  *
-- * @fence: fence
-+ * @f: fence
-  *
-  * This function is called when the reference count becomes zero.
-  * It just RCU schedules freeing up the fence.
-@@ -740,7 +741,7 @@ static int amdgpu_debugfs_fence_info(struct seq_file *m, void *data)
- 	return 0;
- }
- 
--/**
-+/*
-  * amdgpu_debugfs_gpu_recover - manually trigger a gpu reset & recover
-  *
-  * Manually trigger a gpu reset at the next fence wait.
 -- 
 2.25.1
 
