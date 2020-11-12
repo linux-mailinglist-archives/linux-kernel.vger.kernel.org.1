@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB262B038D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8CF2B0390
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgKLLKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:10:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:47404 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727611AbgKLLJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:09:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CB4A139F;
-        Thu, 12 Nov 2020 03:09:57 -0800 (PST)
-Received: from [10.57.23.123] (unknown [10.57.23.123])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0F943F73C;
-        Thu, 12 Nov 2020 03:09:55 -0800 (PST)
-Subject: Re: [RFC 02/11] coresight: etm-perf: Allow an event to use different
- sinks
-To:     Linu Cherian <linuc.decode@gmail.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <1605012309-24812-3-git-send-email-anshuman.khandual@arm.com>
- <67e0864f-e025-aa08-d1b7-36cf19629197@arm.com>
- <CAAHhmWiWbUTt-BvjeqGm3mfN2L8A8gUOVVDNX0P=WCEDj=Mc4A@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <2e51db24-5d37-7f3f-c306-adde5fbe0dff@arm.com>
-Date:   Thu, 12 Nov 2020 11:09:49 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1728042AbgKLLKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728041AbgKLLKd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:10:33 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABC4C0613D1;
+        Thu, 12 Nov 2020 03:10:23 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id j7so5575736wrp.3;
+        Thu, 12 Nov 2020 03:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tv2bEm0sLbKGDjq3ZdSLJlA91Mcgn0WBp+SI+MmrFWo=;
+        b=qP+ccKushbGl1w9gFlfW/TFVWTruI1fOPPvl5CstaEEpOrfSJzvTbTEZFEfXnKKkcR
+         Xmu4Y282dYXykJ7v8WmgPZ51FXcvoq5/da22NmtfmTvjbdhs0P7z/HQHt7ZVuJjZRKql
+         HMtGjRk6g6LItj/7tZiEFYm0p9XofEAZbqKMwf5Nu7k5PobzYGbPpGdrUA6hXNEYlp9O
+         0KJIFwx2ygIYC98SPkHuFZU6UU0VLkKv8Xz3nzcZZF18ljSs9V7kQNHFJ2I9+4uWlfR6
+         JykDCe667HtNgblqB9UPdLtXkdR0YaKFrja5gvihKBGFL8X+8AjZr8K7QEIgcj4gopEN
+         Nwvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tv2bEm0sLbKGDjq3ZdSLJlA91Mcgn0WBp+SI+MmrFWo=;
+        b=pLcoynh8fxS1ZKvFYgv18x25iS/lF0y8XSMgsL24KQlld8FWP9kHQSHZBP3vGDP2H9
+         ichlo60Sar1XafeJjNHyA0U7m2TAjl+J9gy9vD4Txir8iigANvPe1orpgsLRMCfkekCX
+         eZ1ysfVtyiZFK92GBKIhxxr2fXKmq5zkH2FkGncGSUlWxwCVPp86ghCHH3/9Os8oYC6R
+         iv+9IkVFR66MRpAObkWaKyvcW/iJ+ukfU6a1323wTJx/mNbd54/+OjSqWqlIQxVRItn0
+         xUFtmZ8LY4I2vU6RfjalC3e5Xx1Mjtj2jpqZ4CwNUvsbVdeYvQPsVbWeJ0mp/0ob6RVL
+         8F5A==
+X-Gm-Message-State: AOAM533ikHhu9hExoOeun9+Gb7e0E2px4rUtDJqOVTxS5vVhw8HnArvg
+        l7q61dBXQonBmpOTzNRYdqg=
+X-Google-Smtp-Source: ABdhPJxGN6E9FoAvVu/8ZH/CM2S5uZc0sFap77Uit1MN2Yku34dNzb315nGIhPSRi4bW8XbI25hQSw==
+X-Received: by 2002:a5d:514a:: with SMTP id u10mr13153774wrt.312.1605179422360;
+        Thu, 12 Nov 2020 03:10:22 -0800 (PST)
+Received: from ubux1.panoulu.local ([2a00:1d50:3:0:1cd1:d2e:7b13:dc30])
+        by smtp.gmail.com with ESMTPSA id v67sm6505315wma.17.2020.11.12.03.10.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 03:10:21 -0800 (PST)
+From:   Lev Stipakov <lstipakov@gmail.com>
+X-Google-Original-From: Lev Stipakov <lev@openvpn.net>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lev Stipakov <lev@openvpn.net>
+Subject: [PATCH 1/3] net: mac80211: use core API for updating TX stats
+Date:   Thu, 12 Nov 2020 13:09:53 +0200
+Message-Id: <20201112110953.34055-1-lev@openvpn.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAAHhmWiWbUTt-BvjeqGm3mfN2L8A8gUOVVDNX0P=WCEDj=Mc4A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 10:37 AM, Linu Cherian wrote:
-> Hi Suzuki,
-> 
-> On Thu, Nov 12, 2020 at 2:51 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>
->> Hi Linu,
->>
->> Please could you test this slightly modified version and give us
->> a Tested-by tag if you are happy with the results ?
->>
->> Suzuki
->>
->>
->> On 11/10/20 12:45 PM, Anshuman Khandual wrote:
->>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>
->>> When there are multiple sinks on the system, in the absence
->>> of a specified sink, it is quite possible that a default sink
->>> for an ETM could be different from that of another ETM. However
->>> we do not support having multiple sinks for an event yet. This
->>> patch allows the event to use the default sinks on the ETMs
->>> where they are scheduled as long as the sinks are of the same
->>> type.
->>>
->>> e.g, if we have 1x1 topology with per-CPU ETRs, the event can
->>> use the per-CPU ETR for the session. However, if the sinks
->>> are of different type, e.g TMC-ETR on one and a custom sink
->>> on another, the event will only trace on the first detected
->>> sink.
->>>
->>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
+Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add")
+has added function "dev_sw_netstats_tx_add()" to update
+net device per-cpu TX stats.
 
+Use this function instead of ieee80211_tx_stats().
 
->>> @@ -284,7 +307,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->>>        if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
->>>                goto err;
->>>
->>> -     /* Allocate the sink buffer for this session */
->>> +     /*
->>> +      * Allocate the sink buffer for this session. All the sinks
->>> +      * where this event can be scheduled are ensured to be of the
->>> +      * same type. Thus the same sink configuration is used by the
->>> +      * sinks.
->>> +      */
->>>        event_data->snk_config =
->>>                        sink_ops(sink)->alloc_buffer(sink, event, pages,
->>>                                                     nr_pages, overwrite);
->>>
->>
-> 
-> Perf record and report worked fine with this as well, with formatting
-> related opencsd hacks.
-> 
-> Tested-by : Linu Cherian <lcherian@marvell.com>
+Signed-off-by: Lev Stipakov <lev@openvpn.net>
+---
+ net/mac80211/tx.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-Thanks Linu, much appreciated.
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 5f05f4651dd7..7807f8178527 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -38,16 +38,6 @@
+ 
+ /* misc utils */
+ 
+-static inline void ieee80211_tx_stats(struct net_device *dev, u32 len)
+-{
+-	struct pcpu_sw_netstats *tstats = this_cpu_ptr(dev->tstats);
+-
+-	u64_stats_update_begin(&tstats->syncp);
+-	tstats->tx_packets++;
+-	tstats->tx_bytes += len;
+-	u64_stats_update_end(&tstats->syncp);
+-}
+-
+ static __le16 ieee80211_duration(struct ieee80211_tx_data *tx,
+ 				 struct sk_buff *skb, int group_addr,
+ 				 int next_frag_len)
+@@ -3403,7 +3393,7 @@ static void ieee80211_xmit_fast_finish(struct ieee80211_sub_if_data *sdata,
+ 	if (key)
+ 		info->control.hw_key = &key->conf;
+ 
+-	ieee80211_tx_stats(skb->dev, skb->len);
++	dev_sw_netstats_tx_add(skb->dev, 1, skb->len);
+ 
+ 	if (hdr->frame_control & cpu_to_le16(IEEE80211_STYPE_QOS_DATA)) {
+ 		tid = skb->priority & IEEE80211_QOS_CTL_TAG1D_MASK;
+@@ -4021,7 +4011,7 @@ void __ieee80211_subif_start_xmit(struct sk_buff *skb,
+ 			goto out;
+ 		}
+ 
+-		ieee80211_tx_stats(dev, skb->len);
++		dev_sw_netstats_tx_add(dev, 1, skb->len);
+ 
+ 		ieee80211_xmit(sdata, sta, skb);
+ 	}
+@@ -4248,7 +4238,7 @@ static void ieee80211_8023_xmit(struct ieee80211_sub_if_data *sdata,
+ 
+ 	info->hw_queue = sdata->vif.hw_queue[skb_get_queue_mapping(skb)];
+ 
+-	ieee80211_tx_stats(dev, skb->len);
++	dev_sw_netstats_tx_add(dev, 1, skb->len);
+ 
+ 	sta->tx_stats.bytes[skb_get_queue_mapping(skb)] += skb->len;
+ 	sta->tx_stats.packets[skb_get_queue_mapping(skb)]++;
+-- 
+2.25.1
 
-Suzuki
