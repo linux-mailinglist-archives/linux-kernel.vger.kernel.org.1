@@ -2,211 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539282B10A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA972B10AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgKLVtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        id S1727407AbgKLVur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727293AbgKLVtH (ORCPT
+        with ESMTP id S1727175AbgKLVuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:49:07 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF74C0613D1;
-        Thu, 12 Nov 2020 13:49:07 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id ec16so3637978qvb.0;
-        Thu, 12 Nov 2020 13:49:07 -0800 (PST)
+        Thu, 12 Nov 2020 16:50:46 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083E7C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:50:28 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id 63so3624785qva.7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:50:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=GTBxlYQh5nK7nuyz9GGz2QSLc5KQMNKbZAAgKPoEC3k=;
-        b=fKK9rsj4CvaN2DPz1cBj7XsP+v5XxbmJo8FHWUSJ0NYBrRhR/M/p9ZgB4w/0kCRu0b
-         I9f05fYfq3Nv4XujegwmomNA74izSISXA0f7qWNM9WyLQK0LF0fGRQ8bwydXeg94zCbF
-         rIoc4N6NKq9NGfkKO9MAbq5IaEXGrL/rktHCqIlAqQ3X+QcyImmsIFaW7d/8zrl51C+t
-         vVOftIDacF5je0Gr5zFrd6wf+PkHWiq7xOd5RUiisDgDFZAt490w3HVOEEjgQJu40OiO
-         FjumuZtDFX962ngsT8tX3mRR/b11dRCfYKieDYEd96tUWbGteDeh6WhqU9RPSh3gdh3C
-         tJXw==
+        bh=t9uXZCibzviLXlkgFY4GlBUcWyC+ILxJ08Y+bCgohJU=;
+        b=VyGxocSmPg4RrrGNwXgWztdjbpB73rGxNVKmW+2IY6Egk1yzOg40htvWXAB4naQnu/
+         l2n0HX7ghW6xjkoVRopg/KjX69zGaoEDNm5eY+7Ma6iZ+D3vkL17ZcTECxqcZoZxp+Uz
+         iE0631W6P6SaIbr7TNMPqRlhGaAAT96lLMXJifjjHbw0WhP2wx7QhuBT/YPfL0XSN1LV
+         RasrnAFj54wOXI7wTaxrs7CMU9/KyrMO4CGnJWlcywhxFUZo0RwTSxVt+HL45SiyM0P2
+         dwb79kAqyef1KwfAhOGkDC9i2ZhL9Ca6sX3WBr5pEp0cpmYgp1arsy1yvLpnftjEOIX5
+         7CvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GTBxlYQh5nK7nuyz9GGz2QSLc5KQMNKbZAAgKPoEC3k=;
-        b=EWrLw7Hz/PApCSgECmUqY0iL4J/1J91tE0OfnjpJC5Y1qAuoSAhq/veC4djt6Ittcc
-         bf+Swg7dA6gcf0KTQOCT2fMzyH7hv6ooV/BFnOY6hrOh/0yFFfF5NnDLv5nzatbOZOFF
-         oFiSGM8Ctkduz62Fu6PvFXJQ4enH9v/QoBQvOSp0TlSzCCucqjgBUkQRI/WyuBNzY0/m
-         mhCvci4WxQ4VJniYPXYF8ezCAy+zJ2ZR1Q5wwqmuc0AJYM0zzO6uaWFdMj7EJLBMUGEi
-         G5ZJwAGQOGgEsOwlzg3OXQ4ui5I8Gpod+AlXveZG3butrgC7Rbqf9XtaxhOjpsfoUdeR
-         ki7Q==
-X-Gm-Message-State: AOAM5320mCu0v5OJmuRWTC+zmCi95AnpniuYayB0XlPUv67yG/D123hZ
-        moZVl7UlsGvP+G+dWYWxMew=
-X-Google-Smtp-Source: ABdhPJxcOg2KLEYNQ1bBChObUM230IiBCufytpEN2hLidCmfBNtvWiRPtPR6uz6w/oLWahM0vunObg==
-X-Received: by 2002:a0c:99e1:: with SMTP id y33mr1838033qve.62.1605217746580;
-        Thu, 12 Nov 2020 13:49:06 -0800 (PST)
+        bh=t9uXZCibzviLXlkgFY4GlBUcWyC+ILxJ08Y+bCgohJU=;
+        b=X4urTyBoYAcZa4Jk5hif7F57xmsU4HMLPHUMyb6IRD+eERNIDgsdUeZEOMR6dMWRer
+         GSpoCh9BeM8vKVmsWF/e7r8DnRyxUVjauHDZg2Zi0rM5DgeTR2zI1MDrkPZ7vEns+LO7
+         I+b4ljIPCajYK5yYCj0j4tC/1V30wCLZaE7IYwb7IMDrwiy5naoNAP+4va1jKIqZhk1M
+         Dx18ekFNjHr9QyGA1iFzuCerGPnef2dHBoghVesrNaJSM21SPa8D/HA22+JWQOKzc/hL
+         6+sy/KWT1INFwUD++GTPEGYqZglCKXnDLdncBL8khAwwRTHwbpfDymeb4lJDDlQtKiXA
+         8UuQ==
+X-Gm-Message-State: AOAM533hreDwd0A2QpCWi2KsaHaFFlqEhWUUA4M4vVAoqYxISvENoYCG
+        jOpl8dXm/CeePWG0NoLwxfY=
+X-Google-Smtp-Source: ABdhPJwwjeIGSpEqK0ybnz7jrBCdWnJ4NhCVGZAglGDWhPcSFc0w3wl6TadNymaYztLPsibE5s/bSQ==
+X-Received: by 2002:a0c:b65b:: with SMTP id q27mr1836700qvf.8.1605217827183;
+        Thu, 12 Nov 2020 13:50:27 -0800 (PST)
 Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 5sm5479575qtp.55.2020.11.12.13.49.05
+        by smtp.gmail.com with ESMTPSA id l3sm6045092qkj.114.2020.11.12.13.50.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 13:49:05 -0800 (PST)
-Date:   Thu, 12 Nov 2020 14:49:04 -0700
+        Thu, 12 Nov 2020 13:50:26 -0800 (PST)
+Date:   Thu, 12 Nov 2020 14:50:25 -0700
 From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Christian Lamparter <chunkeey@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
         Nick Desaulniers <ndesaulniers@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR
- in crypto4xx_build_pd
-Message-ID: <20201112214904.GA3194701@ubuntu-m3-large-x86>
-References: <20201112200702.1664905-1-natechancellor@gmail.com>
- <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>, kernel@collabora.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] arm: lib: xor-neon: move pragma options to
+ makefile
+Message-ID: <20201112215025.GA55620@ubuntu-m3-large-x86>
+References: <20201112212457.2042105-1-adrian.ratiu@collabora.com>
+ <20201112212457.2042105-3-adrian.ratiu@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
+In-Reply-To: <20201112212457.2042105-3-adrian.ratiu@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 10:21:35PM +0100, Christian Lamparter wrote:
-> Hello,
+On Thu, Nov 12, 2020 at 11:24:57PM +0200, Adrian Ratiu wrote:
+> Using a pragma like GCC optimize is a bad idea because it tags
+> all functions with an __attribute__((optimize)) which replaces
+> optimization options rather than appending so could result in
+> dropping important flags. Not recommended for production use.
 > 
-> On 12/11/2020 21:07, Nathan Chancellor wrote:
-> > Clang warns:
-> > 
-> > drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
-> > lower precedence than '|'; '|' will be evaluated first
-> > [-Wbitwise-conditional-parentheses]
-> >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> >                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
-> > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
-> > around the '|' expression to silence this warning
-> >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> >                                                                           ^
-> >                                                                          )
-> > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
-> > around the '?:' expression to evaluate it first
-> >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> >                                                                           ^
-> >                   (
-> > 1 warning generated.
-> > 
-> > It looks like this should have been a logical OR so that
-> > PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
-> > is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD.
-> Yes. This probably wasn't spotted earlier since the driver doesn't make
-> use of CRYPTO_ALG_TYPE_AHASH (yet). This is because the hash accelerator
-> setup cost was never worth it.
+> Because these options should always be enabled for this file,
+> it's better to set them via command line. tree-vectorize is on
+> by default in Clang, but it doesn't hurt to make it explicit.
 > 
-> > Change the operator so that everything works properly.
-> I'm curious if this is true. Is there a way to break this somehow on purpose?
+> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 
-I do not really have a way to validate that statement, I just figured
-that the operator being wrong meant that something could go wrong that
-was not intended.
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-> I've extracted the code from line 921 and added the defines
-> (the CRYPTO_ALG_... from the current 5.10-rc3 crypto.h and the PD_CTL_
-> from crypto4xx_reg_def.h) and replaced the u32 with uint32_t
-> so it runs in userspace too:
-> 
-> --- crypto4xx_test.c ---
-> /* test study - is it possible to break the | vs || in crypto4xx's code */
-> 
-> #include <stdio.h>
-> #include <stdint.h>
-> 
-> #define CRYPTO_ALG_TYPE_AEAD 	0x00000003
-> #define CRYPTO_ALG_TYPE_AHASH	0x0000000f
-> #define PD_CTL_HASH_FINAL	(1<<4) /* Stand-in for BIT(4) */
-> #define PD_CTL_HOST_READY	(1<<0) /* BIT(0) */
-> 
-> uint32_t func_with_bitwise_or(uint32_t alg_type)
-> {
-> 	return PD_CTL_HOST_READY |
-> 		((alg_type == CRYPTO_ALG_TYPE_AHASH) |
-> 		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
-> 			PD_CTL_HASH_FINAL : 0);
-> }
-
-Looking at this more, I think the only reason that the code works as is
-is because PD_CTL_HOST_READY is 1 AND CRYPTO_ALG_TYPE_AHASH is not used.
-
-(alg_type == CRYPTO_ALG_TYPE_AEAD) ? PD_CTL_HASH_FINAL : 0 is evaluated
-first, which results in either PD_CTL_HASH_FINAL or 0.
-
-Then (alg_type == CRYPTO_ALG_TYPE_AHASH) is evaluated, which is
-evaluated to either 0 or 1.
-
-Then we mask everything together:
-
-PD_CTL_HOST_READY | (0 || 1) | (PD_CTL_HOST_READY || 0)
-
-If PD_CTL_HOST_READY was anything other than BIT(0), we would have an
-extra 0x1 in the mask. That realistically might not matter, I did not
-have a full look over the code to see what this might mean. If
-CRYPTO_ALG_TYPE_AHASH was used, it could be used over
-CRYPTO_ALG_TYPE_AEAD and PD_CTL_HASH_FINAL would never get added to the
-mask, which certainly sounds like a bug.
-
-> uint32_t func_with_logical_or(uint32_t alg_type)
-> {
-> 	return PD_CTL_HOST_READY |
-> 		((alg_type == CRYPTO_ALG_TYPE_AHASH) ||
-> 		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
-> 			PD_CTL_HASH_FINAL : 0);
-> }
-> 
-> int main(int arg, char **args)
-> {
-> 	uint32_t alg;
-> 
-> 	for (alg = 0; alg < 0x10; alg++) { /* this is because CRYPTO_ALG_TYPE_MASK is 0xf */
-> 		if (func_with_bitwise_or(alg) != func_with_logical_or(alg)) {
-> 			printf("for alg_type:%d, the bitwise result=%d doesn't match the logical result=%d\n",
-> 				alg, func_with_bitwise_or(alg), func_with_logical_or(alg));
-> 			return 1;
-> 		}
-> 	}
-> 	printf("logical and bitwise always agreed.\n");
-> 
-> 	return 0;
-> }
-> --- EOF ---
-> 
-> Both gcc (gcc version 10.2.0 (Debian 10.2.0-17)) or clang (clang version 9.0.1-15)
-> version always gave the "logical and bitwise always agreed.". which means there wasn't
-> anything wrong and this patch just makes clang happy? Or can you get it to break?
-> 
-> Also, can you please give this patch a try:
-> --- extra-bracket.patch
-> 
-> --- a/drivers/crypto/amcc/crypto4xx_core.c
-> +++ b/drivers/crypto/amcc/crypto4xx_core.c
-> @@ -932,8 +932,8 @@ int crypto4xx_build_pd(struct crypto_async_request *req,
->  	}
-> 
->  	pd->pd_ctl.w = PD_CTL_HOST_READY |
-> -		((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
-> -		 (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> +		(((crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AHASH) |
-> +		  (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD)) ?
->  			PD_CTL_HASH_FINAL : 0);
->  	pd->pd_ctl_len.w = 0x00400000 | (assoclen + datalen);
->  	pd_uinfo->state = PD_ENTRY_INUSE | (is_busy ? PD_ENTRY_BUSY : 0);
-> 
 > ---
-> I'm mostly curious if clang will warn about it too.
-
-It does not with that diff. I guess it is entirely up to you which one
-we go with.
-
-> That said:
-> Reviewed-by: Christian Lamparter <chunkeey@gmail.com>
-
-Thank you for all the analysis and taking a look over the patch, I
-appreciate it!
-
-Cheers,
-Nathan
+>  arch/arm/lib/Makefile   |  2 +-
+>  arch/arm/lib/xor-neon.c | 10 ----------
+>  2 files changed, 1 insertion(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
+> index 6d2ba454f25b..12d31d1a7630 100644
+> --- a/arch/arm/lib/Makefile
+> +++ b/arch/arm/lib/Makefile
+> @@ -45,6 +45,6 @@ $(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
+>  
+>  ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
+>    NEON_FLAGS			:= -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+> -  CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
+> +  CFLAGS_xor-neon.o		+= $(NEON_FLAGS) -ftree-vectorize -Wno-unused-variable
+>    obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
+>  endif
+> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> index e1e76186ec23..62b493e386c4 100644
+> --- a/arch/arm/lib/xor-neon.c
+> +++ b/arch/arm/lib/xor-neon.c
+> @@ -14,16 +14,6 @@ MODULE_LICENSE("GPL");
+>  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
+>  #endif
+>  
+> -/*
+> - * Pull in the reference implementations while instructing GCC (through
+> - * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+> - * NEON instructions.
+> - */
+> -#ifdef CONFIG_CC_IS_GCC
+> -#pragma GCC optimize "tree-vectorize"
+> -#endif
+> -
+> -#pragma GCC diagnostic ignored "-Wunused-variable"
+>  #include <asm-generic/xor.h>
+>  
+>  struct xor_block_template const xor_block_neon_inner = {
+> -- 
+> 2.29.2
+> 
