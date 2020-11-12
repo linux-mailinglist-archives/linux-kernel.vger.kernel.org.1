@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F2F2AFE62
+	by mail.lfdr.de (Postfix) with ESMTP id E5BF12AFE64
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 06:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgKLFhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 00:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S1728084AbgKLFhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 00:37:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728882AbgKLEet (ORCPT
+        with ESMTP id S1729055AbgKLEuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 23:34:49 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233AEC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 20:34:48 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id z13so229662qvs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 20:34:48 -0800 (PST)
+        Wed, 11 Nov 2020 23:50:39 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D57C0613D4;
+        Wed, 11 Nov 2020 20:50:37 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id q10so3397801pfn.0;
+        Wed, 11 Nov 2020 20:50:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FvKmtLsodAJiwGkHclSFzMGG45Y0oGWPQUWCaMlMxJY=;
-        b=apCiDsHVWk0DV63kvw2JJVFhsEUeVdJu0oBfz/LwmHBwDhniHmchUjL92U7r27/hjH
-         IIMQqnVgu+KDxnCt4XgL5KdNtze9OiDg5dG0LTVDjKmcHG74zroM9O4MbnPG10G35cvm
-         hmkLpaPtvSUrk2ftgxuDsN+1+Yg6mSwXZPikx5vDYBaMF+DPcBTrqy4r2CkF0CwQqD8+
-         nz0qYVNcrs9GAGB4SYA/mzj14y58J+K6LcLocLTl3hergpfsC2POdc8ERfXrF3voO/bi
-         0q69ucgYIzaRUJzo0wiz/P2/7vXurSnGEyv3lZZ2gBTkkfsiDV5MAFcQ1H9w9chz026g
-         adMw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QaAqu0iD/ITRgAwPfVsE1pSqb2BxI9IroYfzGrBYfg=;
+        b=pQTBSw/XiTlCMELaE5nhlB6kyS1HikEDQCbHJelJySV//EjamxyG1L10iftyChPmwM
+         7xersPOHekaAVeCb6ClAGrHkllilqS3s9M58nEwV0jS1/1U3fdtIsRorYCiO9MuhsNwc
+         Zbk0D6pHknOPiWiFM/NyTKqRRXBOYQbogwmCL81A7/eng9oZmxbP/XbymfvjX9cJwsSj
+         LjcD/T6W6h10c6fbJe7vMBP/UtYF+mXwfNKEl4+AzGOlPh/kyrqqO/8DRl1nu0QkXB6m
+         nx0lXmHLMwYB3uvCRE1umYMxGgl3+pSfWdKCXpM73cylNYeDkqSBCfV9ekSN5hwhb3eo
+         P/QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FvKmtLsodAJiwGkHclSFzMGG45Y0oGWPQUWCaMlMxJY=;
-        b=rybXu+GqdytD/iTYajqQNdQyuyRjMhK7QrTAP8WxUVt3XWVV5CNhGjObzyulzqWnqz
-         5gQREcnzS7U+ypDWD5YbCQDAHKKxDbqMdlX2259+EL2Kidjw/Yo1+CjedOK0glBTFdo8
-         3O3wVvqsmlyY9oTZSkuq0r5SWZJRTUKJllp9LjPIiutH4lN8dXYl2kYfAxJ8pl8i35xR
-         QrMg8/nnAQsJZ7aZQO54xM68Ay5IUoofhgMAQnMg+c8KX+Q8A9Za8zxV4+za88ApcVLO
-         AuXTVr6pbrkos9FGlwzfPxi6IjHvtc3C5FqOmpxW6eGFu49bgnqefKBGuVFtcHezFDRE
-         MbJw==
-X-Gm-Message-State: AOAM53031abjbgojxW4bWcCEmjBtJ4jU97SrTlSEsj3uolybbOoJFcpv
-        VRLAGTi/8sgExxqqWEuuoiS00Kp9CQkyVQ/JtDM=
-X-Google-Smtp-Source: ABdhPJyrXpi63m7MXkQZQGZ/xT7V1j7PdARJU+uEFHpBMhaysQ1QTRu++tTqti9yx07yry5vE/o51eAERkM1Wv1ViI0=
-X-Received: by 2002:a0c:b603:: with SMTP id f3mr21809054qve.42.1605155687283;
- Wed, 11 Nov 2020 20:34:47 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QaAqu0iD/ITRgAwPfVsE1pSqb2BxI9IroYfzGrBYfg=;
+        b=nBfw0r3F9zAEo9zWetZRSvCPQpbbXr/QNYtu0k2b2sUPPKKyaAeC4WW+rC+sw0QLO0
+         yJcIhZwkeVBWvAOHQmOk8GieSxgzXDpVJ2UWqTgSULv8/CSTIzs43Oiuoxs4Y+U+QyJv
+         hVQ15mduCX5EP4n92Zlsmm1wu1SnNwP1VE5eJAsizjHD1MnxQSOkKoP+iMOriwt7NBcp
+         JU+SgRKEDsMcqiEWjpXxJuKQ4IT7518Z9rfi6EUjcV1R7JFxz+6ziMFMOVOXxiw5JalK
+         ZCGQEhO8LUu5tWM6noIMPpTYblMogsf03UjfufACDWMCi16iZMgytOd9nWZYNlbjygcv
+         IGVA==
+X-Gm-Message-State: AOAM532HeOxsBNuyTP4wozTP6RSqAmVKG4Uur26BpPIUT9gz1HKphHnN
+        9ySVhxqLWtvdUEvq6I6dFunLH6oluZ4=
+X-Google-Smtp-Source: ABdhPJymJNKtvXWnPs9a9e096PJ7akpTqgKeXqyTCYb1D0htvcaRXKryP6ZyNA/yfl0gPBP4zcay/g==
+X-Received: by 2002:a17:90a:3989:: with SMTP id z9mr2041171pjb.236.1605156636475;
+        Wed, 11 Nov 2020 20:50:36 -0800 (PST)
+Received: from 1G5JKC2.Broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gk22sm4189087pjb.39.2020.11.11.20.50.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 20:50:35 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM IPROC ARM
+        ARCHITECTURE), Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list),
+        Kurt Kanzenbach <kurt@kmk-computers.de>
+Subject: [PATCH v2 00/10] Broadcom b53 YAML bindings
+Date:   Wed, 11 Nov 2020 20:50:10 -0800
+Message-Id: <20201112045020.9766-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CADjb_WSwW4jrNvLp91YHu-qimU1P1itPU_gZ5juQRWER_vGWAA@mail.gmail.com>
- <20201111183742.e7c90597216343d9d2ffcb4e@kernel.org>
-In-Reply-To: <20201111183742.e7c90597216343d9d2ffcb4e@kernel.org>
-From:   Chen Yu <yu.chen.surf@gmail.com>
-Date:   Thu, 12 Nov 2020 12:34:36 +0800
-Message-ID: <CADjb_WQ2uueSuSAQJrbOLyms7zEvq9qqmoFA5Zkg9sD1P2C+zQ@mail.gmail.com>
-Subject: Re: bootconfig length parse error in kernel
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chen Yu <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+Hi,
 
-On Wed, Nov 11, 2020 at 5:37 PM Masami Hiramatsu <mhiramat@kernel.org> wrot=
-e:
->
-> Hi Chen,
->
-> On Tue, 10 Nov 2020 23:39:53 +0800
-> Chen Yu <yu.chen.surf@gmail.com> wrote:
->
-> > Hi Masami,
-> > Thanks for writing bootconfig and it is useful for boot up trace event
-> > debugging.
->
-> Thanks for testing!
->
-> > However it was found that on 5.10-rc2 the bootconfig does not work and =
-it shows
-> > "'bootconfig' found on command line, but no bootconfig found"
-> > And the reason for this is the kernel found the magic number to be inco=
-rrect.
-> > I've added some hack in kernel to dump the first 12 bytes, it shows:
-> > "OTCONFIG". So printed more content ahead we can find
-> > "#BOOTCONFIG" ahead. So it looks that there is some alignment during
-> > initrd load, and get_boot_config_from_initrd() might also deal with it.=
- That is
-> > to say:
-> > data =3D (char *)initrd_end - BOOTCONFIG_MAGIC_LEN;
-> > might do some alignment?
->
-> Hrm, interesting. So initrd_end might be aligned. Could you print out the
-> actuall address of initrd_end?
-I've done some investigation, it looks like this issue is not related
-to alignment, but related to
-the bootloader that has provided an inaccurate ramdisk size via
-boot_params.hdr.ramdisk_size.
-The actual size of initrd is:
-ls /boot/initrd.img-5.10.0-rc3-e1000e-hw+ -l
--rw-r--r-- 1 root root 48689230 11=E6=9C=88 12 00:08
-/boot/initrd.img-5.10.0-rc3-e1000e-hw+
-while the ramdisk size provided by bootloader via
-boot_params.hdr.ramdisk_size is
-48689232, which is 2 bytes bigger than the actual size, and this is
-why the initrd_end
-is bigger than expected and causing the missmatch of magic number.
-Since there is no guarantee that bootloader provides the accurate
-ramdisk size, an compromised
-proposal might be that to search for the magic number a little ahead.
-For example, the
-following patch works for me:
-diff --git a/init/main.c b/init/main.c
-index 130376ec10ba..60fb125d44f4 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -273,7 +273,10 @@ static void * __init
-get_boot_config_from_initrd(u32 *_size, u32 *_csum)
-        if (!initrd_end)
-                return NULL;
+This patch series fixes the various Broadcom SoCs DTS files and the
+existing YAML binding for missing properties before adding a proper b53
+switch YAML binding from Kurt.
 
--       data =3D (char *)initrd_end - BOOTCONFIG_MAGIC_LEN;
-+       data =3D memchr((char *)initrd_end - 2 * BOOTCONFIG_MAGIC_LEN,
-+                      '#', BOOTCONFIG_MAGIC_LEN);
-+       if (!data)
-+               return NULL;
-        if (memcmp(data, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN))
-                return NULL;
+If this all looks good, given that there are quite a few changes to the
+DTS files, it might be best if I take them through the upcoming Broadcom
+ARM SoC pull requests. Let me know if you would like those patches to be
+applied differently.
 
+Thanks!
 
-> And could you tell me which platform are you tested?
->
-It is HP ZHAN 99 Mobile Workstation G1 with i5-8300H, Ubuntu 20.04.
+Changes in v2:
 
-Thanks,
-Chenyu
+- collected Reviewed-by and Acked-by tags from Vladimir and Rob
+- corrected BCM5301X default compatibles based on data provided by Rafal
+  on his different devices
+- updated strategy for NSP to tackle each board separately
+- provide both a ports {} container node and its #address-cells and
+  #size-cells properties
+- renamed binding from b53.yaml to brcm,b53.yaml
 
-> Thank you,
->
-> --
-> Masami Hiramatsu <mhiramat@kernel.org>
+Florian Fainelli (9):
+  dt-bindings: net: dsa: Extend switch nodes pattern
+  dt-bindings: net: dsa: Document sfp and managed properties
+  ARM: dts: BCM5301X: Update Ethernet switch node name
+  ARM: dts: BCM5301X: Add a default compatible for switch node
+  ARM: dts: BCM5301X: Provide defaults ports container node
+  ARM: dts: NSP: Update ethernet switch node name
+  ARM: dts: NSP: Fix Ethernet switch SGMII register name
+  ARM: dts: NSP: Add a SRAB compatible string for each board
+  ARM: dts: NSP: Provide defaults ports container node
+
+Kurt Kanzenbach (1):
+  dt-bindings: net: dsa: b53: Add YAML bindings
+
+ .../devicetree/bindings/net/dsa/b53.txt       | 149 -----------
+ .../devicetree/bindings/net/dsa/brcm,b53.yaml | 249 ++++++++++++++++++
+ .../devicetree/bindings/net/dsa/dsa.yaml      |   6 +-
+ MAINTAINERS                                   |   2 +-
+ arch/arm/boot/dts/bcm-nsp.dtsi                |   8 +-
+ arch/arm/boot/dts/bcm4708-luxul-xap-1510.dts  |   3 -
+ arch/arm/boot/dts/bcm4708-luxul-xwc-1000.dts  |   3 -
+ arch/arm/boot/dts/bcm4708-smartrg-sr400ac.dts |   3 -
+ arch/arm/boot/dts/bcm47081-luxul-xap-1410.dts |   3 -
+ arch/arm/boot/dts/bcm47081-luxul-xwr-1200.dts |   3 -
+ arch/arm/boot/dts/bcm4709.dtsi                |   4 +
+ .../boot/dts/bcm47094-linksys-panamera.dts    |   3 -
+ arch/arm/boot/dts/bcm47094-luxul-xap-1610.dts |   3 -
+ arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts |   3 -
+ arch/arm/boot/dts/bcm47094-luxul-xwr-3100.dts |   3 -
+ .../boot/dts/bcm47094-luxul-xwr-3150-v1.dts   |   3 -
+ arch/arm/boot/dts/bcm47094.dtsi               |   4 +
+ arch/arm/boot/dts/bcm5301x.dtsi               |   8 +-
+ arch/arm/boot/dts/bcm953012er.dts             |   3 -
+ arch/arm/boot/dts/bcm958522er.dts             |   4 +
+ arch/arm/boot/dts/bcm958525er.dts             |   4 +
+ arch/arm/boot/dts/bcm958525xmc.dts            |   4 +
+ arch/arm/boot/dts/bcm958622hr.dts             |   3 -
+ arch/arm/boot/dts/bcm958623hr.dts             |   3 -
+ arch/arm/boot/dts/bcm958625hr.dts             |   3 -
+ arch/arm/boot/dts/bcm958625k.dts              |   3 -
+ arch/arm/boot/dts/bcm988312hr.dts             |   3 -
+ 27 files changed, 287 insertions(+), 203 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/dsa/b53.txt
+ create mode 100644 Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml
+
+-- 
+2.25.1
+
