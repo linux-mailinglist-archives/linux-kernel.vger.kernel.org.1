@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8FD2B0C91
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A409A2B0C9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 19:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgKLS0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 13:26:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726194AbgKLS0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:26:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A086B05D;
-        Thu, 12 Nov 2020 18:26:22 +0000 (UTC)
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Doug Smythies <dsmythies@telus.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [PATCH v4 3/3] x86: Print ratio freq_max/freq_base used in frequency invariance calculations
-Date:   Thu, 12 Nov 2020 19:26:14 +0100
-Message-Id: <20201112182614.10700-4-ggherdovich@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201112182614.10700-1-ggherdovich@suse.cz>
-References: <20201112182614.10700-1-ggherdovich@suse.cz>
+        id S1726355AbgKLS2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 13:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKLS2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 13:28:07 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7D5C0613D1;
+        Thu, 12 Nov 2020 10:28:07 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 62so4881102pgg.12;
+        Thu, 12 Nov 2020 10:28:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=vwjlBjbDACtF4Ua3IbKJkxhnFWucyDlPX5A5nXv2EN8=;
+        b=cB4HyCmrsIuqY2VFPTDD/VSa2CfXvmm/b5n6asHrugHLJOJsis/mh+JMDujKIqcmwP
+         LdZBsWZTTQjdlI2ZLx9wpfIPJcboIHq8qo1I4ATGfXdrymmm7HjB63Hf3GDCfHOKLo40
+         VDstk/JehBUQZFgcOTb7pWFd3/drACsU/1Y5K/k+93y9MMaPf45oWm+Rcm//3gJhPiYd
+         n5klQNsxWrBizSGZe3tk7nAVWTPLPcazV3DFlZBbzyP6tbsdd8dyKDiAlNGyyTrqwPTD
+         tfDL3XEHe+Irymle1n1rYLq62IHwkbRt6rFiKVWDoLgjjQlIsLcgMfarK97+jJXxxkqp
+         w6Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=vwjlBjbDACtF4Ua3IbKJkxhnFWucyDlPX5A5nXv2EN8=;
+        b=Cldvs8Q+ZMAFh8GIGKbxsrkdVfJ8HRA4UWbVV+bqJ7YvfzZuAqcj1YSuJOG6fvCQzZ
+         JE2EEBmsj6tUd11jfPxIigKU85VjUCtOPhHGUj6c0Yxmh3i4CKM8xfkRsFVy6POmAUpR
+         uzZITCuv+rk3vaWUJiCYt0n+mYYoL1vXMSYkRx4wPx37I6wEsLFzOfKFXcHUoTTV2OXY
+         tfvIcWsdOu3lqOJe2N25Y+auN3heKFLdsIgkSkrE8sFXOnZhvotfBZF0ti+XLFKJSi/G
+         gFP0ZF+i0d2n6PoIMG7D/diYIBmVDwvinpUnN1Z1zurx6eVaQD8dnyQMrPPhqhfSe01r
+         /I8w==
+X-Gm-Message-State: AOAM530NDXKLMRcdkyhFCloZD9K+lIbmU44brl0FyYM6+OwV/2Fxyg8a
+        wfXj3jGUL1K3C0LgfAzYq+9Ktb81vKQpVVDuvLA977OM+HU=
+X-Google-Smtp-Source: ABdhPJzTnXh+vnZ3ywWbkNtvZXRQxelAtjzShYns1U62P3ua906RZD1BUayEA84ZqaEPZe1JiyHep0GDGH1pW4Z56KE=
+X-Received: by 2002:a62:3004:0:b029:156:47d1:4072 with SMTP id
+ w4-20020a6230040000b029015647d14072mr711902pfw.63.1605205686789; Thu, 12 Nov
+ 2020 10:28:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Thu, 12 Nov 2020 10:27:56 -0800
+Message-ID: <CAJht_EMXvAEtKfivV2K-mC=0=G1n2_yQAZduSt7rxRV+bFUUMQ@mail.gmail.com>
+Subject: linux-x25 mail list not working
+To:     postmaster@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Martin Schiller <ms@dev.tdt.de>, Arnd Bergmann <arnd@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value freq_max/freq_base is a fundamental component of frequency
-invariance calculations. It may come from a variety of sources such as MSRs
-or ACPI data, tracking it down when troubleshooting a system could be
-non-trivial. It is worth saving it in the kernel logs.
+Hi Linux maintainers,
 
- # dmesg | grep 'Estimated ratio of average max'
- [   14.024036] smpboot: Estimated ratio of average max frequency by base frequency (times 1024): 1289
+The linux-x25 mail list doesn't seem to be working. We sent a lot of
+emails to linux-x25 but Martin Schiller as a subscriber hasn't
+received a single email from the mail list.
 
-Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
----
- arch/x86/kernel/smpboot.c | 1 +
- 1 file changed, 1 insertion(+)
+Looking at the mail list archive at:
+    https://www.spinics.net/lists/linux-x25/
+I see the last email in the archive was in 2009. It's likely that this
+mail list has stopped working since 2009.
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index c5dd5f6199d9..3577bb756d64 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -2110,6 +2110,7 @@ static void init_freq_invariance(bool secondary, bool cppc_ready)
- 	if (ret) {
- 		init_counter_refs();
- 		static_branch_enable(&arch_scale_freq_key);
-+		pr_info("Estimated ratio of average max frequency by base frequency (times 1024): %llu\n", arch_max_freq_ratio);
- 	} else {
- 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
- 	}
--- 
-2.26.2
+Can you please help fix this mail list. Thanks!
 
+Xie He
