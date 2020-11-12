@@ -2,152 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5BA2B09CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03C02B09D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgKLQV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:21:59 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48484 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728756AbgKLQV6 (ORCPT
+        id S1729085AbgKLQWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:22:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729073AbgKLQWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:21:58 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id C87BC8030809;
-        Thu, 12 Nov 2020 16:21:55 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id cgeN630w8DLP; Thu, 12 Nov 2020 19:21:55 +0300 (MSK)
-Date:   Thu, 12 Nov 2020 19:21:54 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
-        kernel test robot <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
- removes address space '__iomem' of expression
-Message-ID: <20201112162154.h66dtak7e7bcblnq@mobilestation>
-References: <202011021254.XC70BaQT-lkp@intel.com>
- <20201110113827.hl5i27cpl6exo3md@mobilestation>
- <20201110163556.3e3423f6@xps13>
- <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
- <20201112092715.7e466405@xps13>
- <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
- <20201112152739.r4673zyeixkcwukx@mobilestation>
- <20201112164301.60032276@xps13>
- <20201112161043.brhpuo7rykdip3hs@mobilestation>
- <20201112171510.0b0b8b80@xps13>
+        Thu, 12 Nov 2020 11:22:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605198137;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZW4Cjdd1Y3wnZ8yyT80IuYNIT2MC5nPP7PSwDghDV1Q=;
+        b=NEZQgmYo85TTjpcF52kzhlxScWrst6z9esMx+i5EwXxrIS3msnsQjVGcL7tFMMqx4sIH3k
+        tGNLm17SZpOM3NkWWalzbEYCG52owE8pc5rYln6ehsO5Js7yh6W78KCOi8zhCRiBlYUG2D
+        CWOO5exy241iIVLe6zU3iz09mfPXtPw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-hg3tEq1OPgmdqYl9GCjLuQ-1; Thu, 12 Nov 2020 11:22:13 -0500
+X-MC-Unique: hg3tEq1OPgmdqYl9GCjLuQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB783100F7A6;
+        Thu, 12 Nov 2020 16:22:08 +0000 (UTC)
+Received: from [10.36.115.61] (ovpn-115-61.ams2.redhat.com [10.36.115.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6D5B6EF48;
+        Thu, 12 Nov 2020 16:22:01 +0000 (UTC)
+Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20201110151444.20662-1-rppt@kernel.org>
+ <20201110151444.20662-3-rppt@kernel.org>
+ <9e2fafd7-abb0-aa79-fa66-cd8662307446@redhat.com>
+ <20201110180648.GB4758@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <3194b507-a85f-965a-e0eb-512a79ede6a9@redhat.com>
+Date:   Thu, 12 Nov 2020 17:22:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112171510.0b0b8b80@xps13>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20201110180648.GB4758@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:15:10PM +0100, Miquel Raynal wrote:
-> Hi Serge,
+On 10.11.20 19:06, Mike Rapoport wrote:
+> On Tue, Nov 10, 2020 at 06:17:26PM +0100, David Hildenbrand wrote:
+>> On 10.11.20 16:14, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> It will be used by the upcoming secret memory implementation.
+>>>
+>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>> ---
+>>>    mm/internal.h | 3 +++
+>>>    mm/mmap.c     | 5 ++---
+>>>    2 files changed, 5 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/mm/internal.h b/mm/internal.h
+>>> index c43ccdddb0f6..ae146a260b14 100644
+>>> --- a/mm/internal.h
+>>> +++ b/mm/internal.h
+>>> @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
+>>>    extern void mlock_vma_page(struct page *page);
+>>>    extern unsigned int munlock_vma_page(struct page *page);
+>>> +extern int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+>>> +			      unsigned long len);
+>>> +
+>>>    /*
+>>>     * Clear the page's PageMlocked().  This can be useful in a situation where
+>>>     * we want to unconditionally remove a page from the pagecache -- e.g.,
+>>> diff --git a/mm/mmap.c b/mm/mmap.c
+>>> index 61f72b09d990..c481f088bd50 100644
+>>> --- a/mm/mmap.c
+>>> +++ b/mm/mmap.c
+>>> @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
+>>>    	return hint;
+>>>    }
+>>> -static inline int mlock_future_check(struct mm_struct *mm,
+>>> -				     unsigned long flags,
+>>> -				     unsigned long len)
+>>> +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+>>> +		       unsigned long len)
+>>>    {
+>>>    	unsigned long locked, lock_limit;
+>>>
+>>
+>> So, an interesting question is if you actually want to charge secretmem
+>> pages against mlock now, or if you want a dedicated secretmem cgroup
+>> controller instead?
 > 
-> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Thu, 12 Nov
-> 2020 19:10:43 +0300:
+> Well, with the current implementation there are three limits an
+> administrator can use to control secretmem limits: mlock, memcg and
+> kernel parameter.
 > 
-> > On Thu, Nov 12, 2020 at 04:43:01PM +0100, Miquel Raynal wrote:
-> > > Hi Serge,
-> > > 
-> > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Thu, 12 Nov
-> > > 2020 18:27:39 +0300:
-> > >   
-> > > > Hello Vignesh
-> > > > 
-> > > > On Thu, Nov 12, 2020 at 08:30:42PM +0530, Vignesh Raghavendra wrote:  
-> > > > > 
-> > > > > 
-> > > > > On 11/12/20 1:57 PM, Miquel Raynal wrote:    
-> > > > > > Hi Sergey,
-> > > > > > 
-> > > > > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
-> > > > > > 2020 22:22:59 +0300:
-> > > > > >     
-> > > > > >> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:    
-> > > > > >>> Hi Serge,
-> > > > > >>>
-> > > > > >>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
-> > > > > >>> 2020 14:38:27 +0300:
-> > > > > >>>       
-> > > > > >>>> Hello Miquel,
-> > > > > >>>>
-> > > > > >>>> A situation noted by the warning below won't cause any problem because
-> > > > > >>>> the casting is done to a non-dereferenced variable. It is utilized
-> > > > > >>>> as a pointer bias later in that function. Shall we just ignore the
-> > > > > >>>> warning or still fix it somehow?      
-> > > > > >>>       
-> > > > > >>    
-> > > > > >>> Do you think the cast to a !__iomem value is mandatory here?      
-> > > > > >>
-> > > > > >> It's not mandatory to have the casting with no __iomem, but wouldn't
-> > > > > >> doing like this:
-> > > > > >> + 	shift = (ssize_t __iomem)src & 0x3;
-> > > > > >> be looking weird? Really, is there a good way to somehow extract the first
-> > > > > >> two bits of a __iomem pointer without getting the sparse warning?    
-> > > > > > 
-> > > > > > I asked around me, what about trying uintptr_t?
-> > > > > >     
-> > > > >     
-> > > >   
-> > > > > One more way is to use __force to tell sparse that this casting is
-> > > > > intentional:
-> > > > > 
-> > > > >        shift = (__force ssize_t)src & 0x3;    
-> > > > 
-> > > > Oh, great! That solution is actually much better than using some
-> > > > currently unexplained sparse peculiarity! I was thinking about applying
-> > > > some other attribute, but __force just didn't come to my mind. Thank
-> > > > you very much for the suggestion. I'll post the fix with the solution
-> > > > suggested by you.  
-> > >   
-> > 
-> > > Is the ssize_t cast the right one btw? I would definitely prefer an
-> > > unsigned type here.  
-> > 
-> > The reason of me deciding to use the ssize_t type here was to prevent
-> > the types casting across the "shift", "chunk" and "len" variables
-> > within this method. It seemed a bit better than having a standard type
-> > like "unsigned int" here seeing the ssize_t type width won't exceed
-> > the long type size anyway. Moreover since the "len" variable has got
-> > the ssize_t type and I couldn't change it (the method is the map_info
-> > callback), I've decided to stick with what is available and defined
-> > "shift" and "chunk" as ssize_t-es. Another callback method
-> > bt1_rom_map_read() in his module has been designed in the same way.
-> > 
-> > Do you think it's better to change it in favor of using a different
-> > type like "unsigned int" here anyway?
+> The kernel parameter puts a global upper limit for secretmem usage,
+> memcg accounts all secretmem allocations, including the unused memory in
+> large pages caching and mlock allows per task limit for secretmem
+> mappings, well, like mlock does.
 > 
+> I didn't consider a dedicated cgroup, as it seems we already have enough
+> existing knobs and a new one would be unnecessary.
 
-> I would say yes.
-> 
-> > If so for unification I'd need to
-> > change bt1_rom_map_read() (though the "shift" variable has been
-> > defined as "unsigned long" there in the first place because the offs
-> > argument has got that type).
-> 
-> Fine.
-> 
-> > 
-> > What to do with the __force attribute here? It does seem appropriate
-> > even if for some mystical reasons we haven't got the sparse warning
-> > for the unsigned types.
-> 
-> Yeah this is strange. I would, however, suggest not to add this keyword
-> if we don't need it.
+To me it feels like the mlock() limit is a wrong fit for secretmem. But 
+maybe there are other cases of using the mlock() limit without actually 
+doing mlock() that I am not aware of (most probably :) )?
 
-Ok. "unsigned int" it is then.
+I mean, my concern is not earth shattering, this can be reworked later. 
+As I said, it just feels wrong.
 
--Sergey
+-- 
+Thanks,
 
-> 
-> Thanks,
-> Miquèl
+David / dhildenb
+
