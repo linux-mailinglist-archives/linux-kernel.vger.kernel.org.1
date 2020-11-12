@@ -2,129 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A452B107B
+	by mail.lfdr.de (Postfix) with ESMTP id 7860D2B107A
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgKLVb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:31:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgKLVb2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:31:28 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDABBC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:31:27 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p22so6483014wmg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:31:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ltphK80Dwi9gQznPlQlyN4YpIhHPKbIf2gVpfnE2HcI=;
-        b=bP2LN9S5Pf4fuiSRQsCYX6czzue5yO3/VjUACYDpYHgUjxZ2oc98jY4tEnXQoZ2wEj
-         vKZPnSQvLj+0Yf3+H1gZXB4Bo2rnIuELOo63ZH2Q7GmQPEQr/zi9je2CfCZLi/X8t1+b
-         7iuXWehIyHKJFRlcE/ytv37gU2FE+hvHwB5HrRgTHkZl7dV1A9ltfUuoQmxjjWQxgQ7R
-         /S3LaNmgn00CZyzq7cjtSQAnM41w9YMdKuf8taxDagQ6+9aXPqTo7IQcd4g+mw5O0cmQ
-         Iw6EC86a5CxJOjBN/UWei8jXz/I+FPnVG6/5atgP3yfqLTNNiiTyzWMa8ku04AlsH9jM
-         tsXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ltphK80Dwi9gQznPlQlyN4YpIhHPKbIf2gVpfnE2HcI=;
-        b=emNt3IB4IzEW7Gj9aDhmTP9wCDKYE2duA3GxttDOobNUdOD0Kb3PY2BMPAUz92B0gE
-         MHUJD3CSECiXL4H9nfcvs1iuICkeo65H9UzOjkAhCLLQDlovxTdinRUw2S7JavUPI/WU
-         EtQZLnbGmcriOMqVhwl+3g0t65VNCun0xh7sxt2jmrALVzYXAFZZ+Phv6SeVYOUElqeD
-         fIGAjl9MoI93GPu7+UzEShdZiT8RDne0uw8+i9oBeIesrdUlwwvrE9VekijcYD9K8/N2
-         pQ6M+YFYEXsOVykZB4ZiEhd3yLOTL/iEflCZUJve9R5J1rCq4xLIygeVU+FZ2odRCWCG
-         3kvA==
-X-Gm-Message-State: AOAM5308Y4GDUk1HIxa4QmZUPtXsTRw+K5vc6zXb+4PTJ3VftfNjskNF
-        5MtlY2UZUnBbAHaO37uAJ6IHka+92WNOd/DPsrE=
-X-Google-Smtp-Source: ABdhPJzNfSfPYEKiCAFmNOttrty7rS8ZUMbff9aAkk048MYkpiyrQPEMs+yLfPkVxyaMDwdY2bNSoTmplM4XMWDQEeM=
-X-Received: by 2002:a05:600c:2319:: with SMTP id 25mr1700761wmo.102.1605216686520;
- Thu, 12 Nov 2020 13:31:26 -0800 (PST)
+        id S1727327AbgKLVbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:31:22 -0500
+Received: from mga12.intel.com ([192.55.52.136]:1424 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726337AbgKLVbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 16:31:21 -0500
+IronPort-SDR: K1af76DPRjiZ4HCOhLFwRNcx2r5oTWM0QcnxDwl+T2APY1lG33x2Ze1SRMbrydlmJp8GqiIVrA
+ 5/gHJh/MjASA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="149654946"
+X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
+   d="scan'208";a="149654946"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 13:31:21 -0800
+IronPort-SDR: xaU7fMlsK8TvKpZRLPGi93pw32e7/IVP4Ex1VTtb7XzbnhxkQEuqQOYxgnlhCHsZL/c/VE1qdK
+ nOl9FTV9hEGQ==
+X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
+   d="scan'208";a="542409097"
+Received: from pcathanx-mobl.amr.corp.intel.com (HELO [10.212.226.118]) ([10.212.226.118])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 13:31:20 -0800
+Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
+ vm_operations_struct
+To:     "Dr. Greg" <greg@enjellic.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
+ <20201106174359.GA24109@wind.enjellic.com>
+ <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com>
+ <20201107150930.GA29530@wind.enjellic.com>
+ <c7157bc6-8a65-11f4-e961-17163730df5d@intel.com>
+ <20201112205819.GA9172@wind.enjellic.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com>
+Date:   Thu, 12 Nov 2020 13:31:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-30-lee.jones@linaro.org>
-In-Reply-To: <20201112190039.2785914-30-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 12 Nov 2020 16:31:15 -0500
-Message-ID: <CADnq5_MjzzRhu0zwOeefjGP_mJ2tfTVvK1O5x55dE03kRxDa3Q@mail.gmail.com>
-Subject: Re: [PATCH 29/30] drm/amd/amdgpu/atombios_encoders: Remove set but
- unused variable 'backlight_level'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201112205819.GA9172@wind.enjellic.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 2:01 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/atombios_encoders.c: In function =E2=80=98amd=
-gpu_atombios_encoder_init_backlight=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/atombios_encoders.c:174:5: warning: variable =
-=E2=80=98backlight_level=E2=80=99 set but not used [-Wunused-but-set-variab=
-le]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Luben Tuikov <luben.tuikov@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/amdgpu/atombios_encoders.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c b/drivers/gpu=
-/drm/amd/amdgpu/atombios_encoders.c
-> index fa817ebff9804..af87505ad7d57 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c
-> @@ -171,7 +171,6 @@ void amdgpu_atombios_encoder_init_backlight(struct am=
-dgpu_encoder *amdgpu_encode
->         struct backlight_properties props;
->         struct amdgpu_backlight_privdata *pdata;
->         struct amdgpu_encoder_atom_dig *dig;
-> -       u8 backlight_level;
->         char bl_name[16];
->
->         /* Mac laptops with multiple GPUs use the gmux driver for backlig=
-ht
-> @@ -207,7 +206,7 @@ void amdgpu_atombios_encoder_init_backlight(struct am=
-dgpu_encoder *amdgpu_encode
->
->         pdata->encoder =3D amdgpu_encoder;
->
-> -       backlight_level =3D amdgpu_atombios_encoder_get_backlight_level_f=
-rom_reg(adev);
-> +       amdgpu_atombios_encoder_get_backlight_level_from_reg(adev);
+On 11/12/20 12:58 PM, Dr. Greg wrote:
+> @@ -270,11 +270,10 @@ static int sgx_vma_mprotect(struct vm_area_struct *vma,
+>  			    struct vm_area_struct **pprev, unsigned long start,
+>  			    unsigned long end, unsigned long newflags)
+>  {
+> -	int ret;
+> +	struct sgx_encl *encl = vma->vm_private_data;
+>  
+> -	ret = sgx_encl_may_map(vma->vm_private_data, start, end, newflags);
+> -	if (ret)
+> -		return ret;
+> +	if ( test_bit(SGX_ENCL_INITIALIZED, &encl->flags) )
+> +		return -EACCES;
+>  
+>  	return mprotect_fixup(vma, pprev, start, end, newflags);
+>  }
 
-We can drop this function call altogether.  We call it again below indirect=
-ly.
-
-Alex
-
->
->         dig =3D amdgpu_encoder->enc_priv;
->         dig->bl_dev =3D bd;
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+This rules out mprotect() on running enclaves.  Does that break any
+expectations from enclave authors, or take away capabilities that folks
+need?
