@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28982B080A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9EF2B080C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgKLPBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:01:44 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:45588 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728220AbgKLPBn (ORCPT
+        id S1728604AbgKLPCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:02:36 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:59684 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728507AbgKLPCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:01:43 -0500
-Received: by mail-ot1-f41.google.com with SMTP id k3so5803158otp.12;
-        Thu, 12 Nov 2020 07:01:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aAUelRMcvAJXaXpipWJpdYSsCWDu43G8R6f9TrGJYRo=;
-        b=lXTNSI73uEzOzPPNbIu2beTBM4W48v+ocB8uAtstrbiJUaevrLbSr6BgO8V6RJMCW5
-         r4UjmWDDUTID/kRs8FEi11jKzqXMWE08O4WRDxT+18cN1mFbv+eDzetYsPuOkvHup1+9
-         ur8BDpyznH3W9lGBCju8I3/45UeDlj5eVxqtjOpTzPNHL00RNXGVvbGRkci4EVVYKa96
-         +HKkseB+YFJMWuAVpPnPpnbIP2Xylh3wAzwAGcegdX7IuvrC93If4/Pb00hohh4MNNa2
-         ktiWdRcPHHSYuMYtIzluj2SPh8X337/OuIun1AdxRFMCu92S+UYsR3PQO1NKhAdNgYLc
-         bjjw==
-X-Gm-Message-State: AOAM531xwws5jv+gzSRC/ngGfC3u2aCTScSLH9K/KMc2qHBViUIlV70k
-        e+DQpGBk8jL9oDeCqjDs4bbUvaTwY/9ULHZL8qb+lwXv
-X-Google-Smtp-Source: ABdhPJyh+CQMhwVGiTecjsemaPnz6Y/GlLiHpgBP3QMFbhgwhmF8pcIqLWXomCAPJfpV6mjEhuBVtAkOjAq46MrscPI=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr22669238ota.260.1605193302680;
- Thu, 12 Nov 2020 07:01:42 -0800 (PST)
+        Thu, 12 Nov 2020 10:02:35 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ACF1e9i000765;
+        Thu, 12 Nov 2020 09:02:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=I/NF3nub6uPHdzCyjfku7U3YJ0PL4tdvBuI5HnvOvIw=;
+ b=ZTG9Fj60TtZqKLd57j69zEKLoB7XxisWQSyTX2mQqZ3nnnjwv5YaWAGgmcS4csVGfw3A
+ uXPQ0EVH262j9+m72MKtQrH5Au9rpn8qNEhKzZuZXbBVBMDUVbSh5eaEFgwNH2Gx4fGu
+ wChHXyDCH8YhgGCuYVVlCqCI6tnZ03Y06cB1kiEppZPC4F4IYDLNwJcOnXUzRgzGxUyl
+ hKbmOU8rT3omG63GQ9ZDULZjyIN4z2c5xRuf1Up+y+SSDL8QzE7gUOyXhbhNr2vXsVMp
+ iLOx4s1RJttkfOcZDx+QaTsclU32v/JpUxWA+0WbZ/rtbENrpkZRO2TJABW+geQFgfcf QQ== 
+Received: from ediex02.ad.cirrus.com ([5.172.152.52])
+        by mx0b-001ae601.pphosted.com with ESMTP id 34rn3chg3f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 12 Nov 2020 09:02:29 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 12 Nov
+ 2020 15:02:26 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 12 Nov 2020 15:02:26 +0000
+Received: from archtower.ad.cirrus.com (unknown [198.61.65.51])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 21B9C45;
+        Thu, 12 Nov 2020 15:02:26 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: [PATCH] regmap: Fix order of regmap write log
+Date:   Thu, 12 Nov 2020 15:02:17 +0000
+Message-ID: <20201112150217.459844-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201109032115.10610-1-rdunlap@infradead.org> <CAJZ5v0jhJcL6uJw_Cm02SeUMff_s1L-mKzX3haAyejcCkKihNg@mail.gmail.com>
- <20201111083041.698a561c@canb.auug.org.au>
-In-Reply-To: <20201111083041.698a561c@canb.auug.org.au>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 12 Nov 2020 16:01:32 +0100
-Message-ID: <CAJZ5v0h3qD2M0L+4gh7fgL0B282O9oE0WF4arqOb+f_EHxei_A@mail.gmail.com>
-Subject: Re: [PATCH -next v2] clk: pm_clock: provide stubs for pm_clk_runtime_suspend/_resume
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 spamscore=0
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 clxscore=1011 mlxlogscore=959 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+_regmap_write can trigger a _regmap_select_page, which will call
+another _regmap_write that will be executed first, but the log shows
+the inverse order
 
-On Tue, Nov 10, 2020 at 10:30 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi Rafael,
->
-> On Tue, 10 Nov 2020 18:43:04 +0100 "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> >
-> > > Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
-> >
-> > Applied to the PM tree as 5.10-rc material, thanks!
->
-> The problem is that the commit that this one fixes is in the clk tree
-> not the pm tree, so this patch needs to (also) be in the clk tree to
-> reduced bisect problems.
+Also, keep consistency with _regmap_read which only logs in case of
+success
 
-OK, dropping from pm then.
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
+ drivers/base/regmap/regmap.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 5db536ccfcd6b..297e95be25b3b 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1924,12 +1924,15 @@ int _regmap_write(struct regmap *map, unsigned int reg,
+ 		}
+ 	}
+ 
+-	if (regmap_should_log(map))
+-		dev_info(map->dev, "%x <= %x\n", reg, val);
++	ret = map->reg_write(context, reg, val);
++	if (ret == 0) {
++		if (regmap_should_log(map))
++			dev_info(map->dev, "%x <= %x\n", reg, val);
+ 
+-	trace_regmap_reg_write(map, reg, val);
++		trace_regmap_reg_write(map, reg, val);
++	}
+ 
+-	return map->reg_write(context, reg, val);
++	return ret;
+ }
+ 
+ /**
+-- 
+2.29.2
+
