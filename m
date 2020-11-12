@@ -2,144 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0921D2B0B1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336B12B0B29
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgKLRQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:16:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgKLRQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:16:18 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 666A9216FD;
-        Thu, 12 Nov 2020 17:16:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605201377;
-        bh=lxI2SWRNu/vNMf3oMbzXFnq0SSD1w9QmvZ1Ujav1o8I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xe2x5M1t18yJCKwVuL2NfQxj5Wr2gJMA2Gdc1O2AMfcZWsfxd8by8nRE2Mgl14ITQ
-         YMJY1x709L8eGOFJ9b4e5+b+CEIDYbpiAtu37j1IxdZcUfsYJ+JNEDrtHsgeAnKobT
-         hNNMtYZLOBGU52c9s3omM5ptGSNIrsuMJAWqI3q4=
-Date:   Thu, 12 Nov 2020 17:16:00 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-Message-ID: <20201112171600.GD4742@sirena.org.uk>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <20201104234427.26477-12-digetx@gmail.com>
- <20201110202945.GF2375022@ulmo>
- <20201110203257.GC5957@sirena.org.uk>
- <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
- <20201111115534.GA4847@sirena.org.uk>
- <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
+        id S1726187AbgKLRTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:19:53 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51736 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgKLRTx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:19:53 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACHAHnB098144;
+        Thu, 12 Nov 2020 17:19:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=hnDD1OaQV3/V8O1ynyyI2YtOMS2gUFD+PHh5569AHdU=;
+ b=c+g4DiulHXt6cLuxrGOTiFnhu599gnVJ4zGqJorgNZUGZ7m9DLJ7IsR9FKMpoUUELtR8
+ 12009ufC3nTNZLL/laGPiJb3UsbMPyEWfN6ay9ZMd6vHkCg3+EeNaM+nNvUJoT2yRZ41
+ 3PyI7WaA0T7m4oAzhh+udcf0MXU5a42Gr0VXoRBO448N3sHijXqMKZqfjV365J0ImnGU
+ idLGR5gXurtX/b09ALrF12VkACh4KxCliGVp2qTZpeoxtbls5NqNcIben7ZZxhzLu1V4
+ 8QAoX3ns6RSoofmOnQ2tgE61VPSBUGZQUaoDU0aXM7toqsW88/ZirIOizcr60rTOPxKV RQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34nkhm6jf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 17:19:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACHBRkl142898;
+        Thu, 12 Nov 2020 17:17:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34rt56ct7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 17:17:25 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ACHHKMa016619;
+        Thu, 12 Nov 2020 17:17:20 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 12 Nov 2020 09:17:19 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Prateek Sood <prsood@codeaurora.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH v2] cpuset: fix race between hotplug work and later CPU offline
+Date:   Thu, 12 Nov 2020 12:17:11 -0500
+Message-Id: <20201112171711.639541-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6WlEvdN9Dv0WHSBl"
-Content-Disposition: inline
-In-Reply-To: <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
-X-Cookie: Danger: do not shake.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120101
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+One of our machines keeled over trying to rebuild the scheduler domains.
+Mainline produces the same splat:
 
---6WlEvdN9Dv0WHSBl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  BUG: unable to handle page fault for address: 0000607f820054db
+  CPU: 2 PID: 149 Comm: kworker/1:1 Not tainted 5.10.0-rc1-master+ #6
+  Workqueue: events cpuset_hotplug_workfn
+  RIP: build_sched_domains
+  Call Trace:
+   partition_sched_domains_locked
+   rebuild_sched_domains_locked
+   cpuset_hotplug_workfn
 
-On Thu, Nov 12, 2020 at 07:59:36PM +0300, Dmitry Osipenko wrote:
-> 11.11.2020 14:55, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Wed, Nov 11, 2020 at 12:23:41AM +0300, Dmitry Osipenko wrote:
+It happens with cgroup2 and exclusive cpusets only.  This reproducer
+triggers it on an 8-cpu vm and works most effectively with no
+preexisting child cgroups:
 
-> >> I already changed that code to use regulator_get_optional() for v2.
+  cd $UNIFIED_ROOT
+  mkdir cg1
+  echo 4-7 > cg1/cpuset.cpus
+  echo root > cg1/cpuset.cpus.partition
 
-> > That doesn't look entirely appropriate given that the core does most
-> > likely require some kind of power to operate.
+  # with smt/control reading 'on',
+  echo off > /sys/devices/system/cpu/smt/control
 
-> We will need to do this because older DTBs won't have that regulator and
-> we want to keep them working.
+RIP maps to
 
-> Also, some device-trees won't have that regulator anyways because board
-> schematics isn't available, and thus, we can't fix them.
+  sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
 
-This is what dummy supplies are for?
+from sd_init().  sd_id is calculated earlier in the same function:
 
-> >> Regarding the enumerating supported voltage.. I think this should be
-> >> done by the OPP core, but regulator core doesn't work well if
-> >> regulator_get() is invoked more than one time for the same device, at
-> >> least there is a loud debugfs warning about an already existing
+  cpumask_and(sched_domain_span(sd), cpu_map, tl->mask(cpu));
+  sd_id = cpumask_first(sched_domain_span(sd));
 
-> > I don't understand why this would be an issue - if nothing else the core
-> > could just offer an interface to trigger the check.
+tl->mask(cpu), which reads cpu_sibling_map on x86, returns an empty mask
+and so cpumask_first() returns >= nr_cpu_ids, which leads to the bogus
+value from per_cpu_ptr() above.
 
-> It's not an issue, I just described what happens when device driver
-> tries to get a regulator twice.
+The problem is a race between cpuset_hotplug_workfn() and a later
+offline of CPU N.  cpuset_hotplug_workfn() updates the effective masks
+when N is still online, the offline clears N from cpu_sibling_map, and
+then the worker uses the stale effective masks that still have N to
+generate the scheduling domains, leading the worker to read
+N's empty cpu_sibling_map in sd_init().
 
-> There was an issue once that check is added to the regulator core code.
-> But perhaps not worth to discuss it for now because I don't remember
-> details.
+rebuild_sched_domains_locked() prevented the race during the cgroup2
+cpuset series up until the Fixes commit changed its check.  Make the
+check more robust so that it can detect an offline CPU in any exclusive
+cpuset's effective mask, not just the top one.
 
-So there's no known obstacle to putting enumeration of supported
-voltages into the OPP core then?  I'm a bit confused here.
+Fixes: 0ccea8feb980 ("cpuset: Make generate_sched_domains() work with partition")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Prateek Sood <prsood@codeaurora.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: cgroups@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+---
 
-> >> directory for a regulator. It's easy to check whether the debug
-> >> directory exists before creating it, like thermal framework does it for
-> >> example, but then there were some other more difficult issues.. I don't
-> >> recall what they were right now. Perhaps will be easier to simply get a
-> >> error from regulator_set_voltage() for now because it shouldn't ever
-> >> happen in practice, unless device-tree has wrong constraints.
+v2:
+ - Made the comment more descriptive (Peter)
 
-> > The constraints might not be wrong, there might be some board which has
-> > a constraint somewhere for=20
+ kernel/cgroup/cpuset.c | 33 ++++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
-> In this case board's DT shouldn't specify unsupportable OPPs.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 57b5b5d0a5fd..53c70c470a38 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -983,25 +983,48 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+  */
+ static void rebuild_sched_domains_locked(void)
+ {
++	struct cgroup_subsys_state *pos_css;
+ 	struct sched_domain_attr *attr;
+ 	cpumask_var_t *doms;
++	struct cpuset *cs;
+ 	int ndoms;
+ 
+ 	lockdep_assert_cpus_held();
+ 	percpu_rwsem_assert_held(&cpuset_rwsem);
+ 
+ 	/*
+-	 * We have raced with CPU hotplug. Don't do anything to avoid
++	 * If we have raced with CPU hotplug, return early to avoid
+ 	 * passing doms with offlined cpu to partition_sched_domains().
+-	 * Anyways, hotplug work item will rebuild sched domains.
++	 * Anyways, cpuset_hotplug_workfn() will rebuild sched domains.
++	 *
++	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
++	 * should be the same as the active CPUs, so checking only top_cpuset
++	 * is enough to detect racing CPU offlines.
+ 	 */
+ 	if (!top_cpuset.nr_subparts_cpus &&
+ 	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+ 		return;
+ 
+-	if (top_cpuset.nr_subparts_cpus &&
+-	   !cpumask_subset(top_cpuset.effective_cpus, cpu_active_mask))
+-		return;
++	/*
++	 * With subpartition CPUs, however, the effective CPUs of a partition
++	 * root should be only a subset of the active CPUs.  Since a CPU in any
++	 * partition root could be offlined, all must be checked.
++	 */
++	if (top_cpuset.nr_subparts_cpus) {
++		rcu_read_lock();
++		cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
++			if (!is_partition_root(cs)) {
++				pos_css = css_rightmost_descendant(pos_css);
++				continue;
++			}
++			if (!cpumask_subset(cs->effective_cpus,
++					    cpu_active_mask)) {
++				rcu_read_unlock();
++				return;
++			}
++		}
++		rcu_read_unlock();
++	}
+ 
+ 	/* Generate domain masks and attrs */
+ 	ndoms = generate_sched_domains(&doms, &attr);
 
-Ah, so each board duplicates the OPP tables then, or there's an
-expectation that if there's some limit then they'll copy and modify the
-table?  If that's the case then it's a bit redundant to do filtering
-indeed.
+base-commit: 3d5e28bff7ad55aea081c1af516cc1c94a5eca7d
+-- 
+2.29.2
 
---6WlEvdN9Dv0WHSBl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+tbc8ACgkQJNaLcl1U
-h9DMCwgAg/TVHTXmevYwD5s1Ajz8QKM96GSjHTvRKagWLF+y+O7/6SvbHmWmiMqD
-72lNxOyhMyrHsB/r2SJfYiZnTaxPvDwxTdU9CzTHTAPUdapJ6qyV0iuMkQHGTGKN
-SYqZvJhMfwBpvhvMDaUiOMYQ9uTqipBCfhqgXNhQaGfnIco6awkwlY3AKGp+50pg
-XKM7DBdL0naY0/Mog4jbOjAo3Np4dTsY/CPaIh/QPQe4p2lHaBmWLjobDZOlzEXI
-kZlYkHPdsANUEzVh7uuTgqYPs+WfxLW89lNjqL2/if0+KF5dNmcHORIOsJ5GQlQb
-J3JAZ0VQrlO7gydHgdEneannVwSdIg==
-=CmJu
------END PGP SIGNATURE-----
-
---6WlEvdN9Dv0WHSBl--
