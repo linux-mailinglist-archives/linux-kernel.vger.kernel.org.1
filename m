@@ -2,256 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877112AFC99
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012AA2AFC9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgKLBkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:40:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20374 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728172AbgKLA6m (ORCPT
+        id S1729076AbgKLBkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:40:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728174AbgKLBA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:58:42 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AC0XeIs069183;
-        Wed, 11 Nov 2020 19:58:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=y4MIbGodRBMWxrDdVLiZ+X5od4JJCs8quG1JStkJZ84=;
- b=n875d5uGhHJw1L5s8cXBpdchM6KSGg+vT0kEYkoe/eRMaANjWoN+UAG9O/N6OZ2ZPWRl
- U1NgZncAzxxfq9xFmm4NMECZz3sOTgFOd/to+iTX0mykkNf2ovSABpztR6je61fYJKVY
- HY1mAxKz5ShT/93xwK36jnTeHeyhX9I2sbLZV5HKsIDLXrINAoGwTR3PChuJJqbp/RR/
- pW2K02h4CzVF0+tXF1R5s1npDRdcNrp+JIqZ9veuTO7JqM6FB0haYQAbTz0TmMnXjvKA
- U3aty0VlnR2O2QkJf1/wk4S3aYbBcGERvguLJWnRVtxCisVsBmYydA7app9/EBnjfYdX uw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34r6c4238n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Nov 2020 19:58:37 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AC0wED5020195;
-        Thu, 12 Nov 2020 00:58:35 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 34p26pmbxc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Nov 2020 00:58:35 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AC0wX4n393922
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 00:58:33 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 019DD11C05B;
-        Thu, 12 Nov 2020 00:58:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F073311C04A;
-        Thu, 12 Nov 2020 00:58:31 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.66.19])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Nov 2020 00:58:31 +0000 (GMT)
-Message-ID: <743452bc4240779e4acafda5c0d3c19482dca38f.camel@linux.ibm.com>
-Subject: Re: [PATCH] ima: select ima-buf template for buffer measurement
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 11 Nov 2020 19:58:30 -0500
-In-Reply-To: <20201111205946.503-1-nramas@linux.microsoft.com>
-References: <20201111205946.503-1-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-11_12:2020-11-10,2020-11-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1015 mlxlogscore=999
- impostorscore=0 phishscore=0 malwarescore=0 adultscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011120001
+        Wed, 11 Nov 2020 20:00:57 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06DAC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:00:55 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id m13so2697544pgl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 17:00:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iWJMCBasD7Kt3omEYiLg083V4MvggRKPIB9CJhks3NU=;
+        b=E2SDleIw33M0R8xWlLbP1dQQIqjSWTBo7g8TkOt+PBqigSw/fT8HHs9kqx7PPjcLGv
+         o1PzOsS5nkJ6mpeXUfBONznwaCI9rG1jO4oLZ/EUdwAZXa7SOKAqoYSeNBGZq2MWNu7M
+         vUP04AIrnYjexiysNCIln819wS3Xg81VV4ZwoiIGh1fXS92hgkKt4f1a465Evi57mdBx
+         gFzv3ajsM/384IONJVUfJdnK8mnTvpxdDDFtez5K7dIBs+WDCdUt+0brrpEkYEVgY5IZ
+         PpW4OP8C1nxhQZrsbGsS+dO7PWot0Qfrr3Keht1BiMkiDWAUHjMN1rlLPd40S4x8+UJa
+         3jwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iWJMCBasD7Kt3omEYiLg083V4MvggRKPIB9CJhks3NU=;
+        b=oe8/lmGzeBPiANyFffLkROBpUShFjEBDrWtW7fH2gUCUP3c8TYsV/Gr2I3joM1WsP4
+         czB3Y9/OOBo9dAN99i9hgAH3PFNN7RJton+oCpuVOiQx0VL0V3OJHkb+UmlnFf5qRbAJ
+         G77czPquzX3Pac2GcjcklITPzteTosR/5/FRZgKiKgll7rdDR+JbZPMpoh+YX/FNobtM
+         lILo0oqj0kRetl5Qe4aZJEIYMK1KxFdsOvmCHfgbd/2AlIRHKG+I9pxtqDXwCa8KigID
+         cn+SqB+YbguvxDJGl2HSzkLK7otyMIvl11FlMbhcGyZK8UStS9X/j+e+KnmqFqJWTQiD
+         LLKg==
+X-Gm-Message-State: AOAM533k1NaNxczMZqUweM+vXXGATvLdEvB3GjxkQkxiqzOCYGhTBXX5
+        gd3ELuV1Pj8yQXmmiaWGZCo0KBIhC2g40pxuUTF4/A==
+X-Google-Smtp-Source: ABdhPJxkqswZCwL0P/Yg/0r4uGE5OG25zH8IOLZ2KgScZYDTBgDvU23Qg5gcYVNB0Fuqxoq6QxZuVUKrDRLekie6l7g=
+X-Received: by 2002:a62:ed0d:0:b029:18b:78d:626 with SMTP id
+ u13-20020a62ed0d0000b029018b078d0626mr213230pfh.15.1605142855176; Wed, 11 Nov
+ 2020 17:00:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20201112001422.340449-1-willmcvicker@google.com>
+In-Reply-To: <20201112001422.340449-1-willmcvicker@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 11 Nov 2020 17:00:43 -0800
+Message-ID: <CAKwvOdkDG2wt=ZT93GT7r60_qXn=tdW_zWiJ1Gr5JVdRvcU8uw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: Fix off-by-one vdso trampoline return value
+To:     Will McVicker <willmcvicker@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi,
+On Wed, Nov 11, 2020 at 4:14 PM Will McVicker <willmcvicker@google.com> wrote:
+>
+> Depending on your host nm version, the generated header
+> `include/generated/vdso32-offsets.h` may have the bottom bit set for the
+> thumb vdso offset addresses (as observed when using llvm-nm). This
 
-On Wed, 2020-11-11 at 12:59 -0800, Lakshmi Ramasubramanian wrote:
-> The default IMA template for measuring buffer should be 'ima-buf' - so
-> that the measured buffer is correctly included in the IMA measurement
-> log entry. But the default IMA template used for all policy rules is
-> the value set for CONFIG_IMA_DEFAULT_TEMPLATE if the policy rule does
-> not specify a template. 
+Sorry, the commit message seems to imply a bug in llvm-nm, but I don't
+think that's the case.  If it is, please, send us a bugreport.
 
-The second sentence defines the current status.  The first sentence
-describes the problem.  I would reverse the sentence order.
+$ aarch64-linux-gnu-nm arch/arm64/kernel/vdso32/vdso.so.raw | grep thumb
+00000968 T __kernel_rt_sigreturn_thumb
+00000960 T __kernel_sigreturn_thumb
+00000968 t VDSO_compat_rt_sigreturn_thumb
+00000960 t VDSO_compat_sigreturn_thumb
+$ llvm-nm arch/arm64/kernel/vdso32/vdso.so.raw | grep thumb
+00000968 t VDSO_compat_rt_sigreturn_thumb
+00000960 t VDSO_compat_sigreturn_thumb
+00000968 T __kernel_rt_sigreturn_thumb
+00000960 T __kernel_sigreturn_thumb
+$ /usr/bin/nm arch/arm64/kernel/vdso32/vdso.so.raw | grep thumb
+00000969 T __kernel_rt_sigreturn_thumb
+00000961 T __kernel_sigreturn_thumb
+00000969 t VDSO_compat_rt_sigreturn_thumb
+00000961 t VDSO_compat_sigreturn_thumb
+$ /usr/bin/nm --version
+GNU nm (GNU Binutils for Debian) 2.35.1
 
-^measuring buffer -> buffer measurements
+Would you mind amending the commit message to not imply that llvm-nm is broken?
 
-> IMA does not take into account the template
-> requirements of different rules when choosing a default template for
-> a given policy rule. This breaks the buffer measurement if the template
-> is not provided as part of the rule because the default template could
-> be different than 'ima-buf'.
+It might be of interest to find out why the host `nm` was invoked,
+rather than $(NM)/$(CROSS_COMPILE)nm.
 
-Does the above paragraph add anything new?  Instead describe the
-problem.  Perhaps something like:
-
-With the default template format, buffer measurements are added to the
-measurement list, but do not include the buffer data, making it
-difficult, if not impossible, to validate.  Including "ima-buf"
-template records in the measurement list by default, should not impact
-existing attestation servers without "ima-buf" template support.
-
-> 
-> For example, the following IMA policy rule enables measuring
-> the command line arguments passed to the new kernel on kexec system call.
-> 
->  measure func=KEXEC_CMDLINE
-> 
-> The IMA template selected should be 'ima-buf' to have the measured 
-> command line arguments included in the IMA measurement log entry.
-> Instead the default IMA template is selected, which could be different
-> than 'ima-buf'.
-
-When upstreaming a new type of measurement, including an example
-provides how to validate the new template data.  Not every patch
-description requires an example.
-
-> 
-> Initialize a global 'ima-buf' template and select that template,
-> by default, for measuring buffer.
-
-Good.
-> 
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> results in an additional +1 for thumb vdso trampoline return values
+> since compat_setup_return() already includes `vdso_trampoline + thumb`.
+> As a result, I see a SIGBUS error when running the LTP test
+> syscalls.rt_sigaction01. To fix this, let's clear the bottom bit of the
+> vdso_offset in the VDSO_SYMBOL macro.
+>
+> Test: LTP test syscalls.rt_sigaction01
+> Fixes: f01703b3d2e6 ("arm64: compat: Get sigreturn trampolines from vDSO")
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
 > ---
->  security/integrity/ima/ima.h          |  1 +
->  security/integrity/ima/ima_main.c     | 17 +++++------------
->  security/integrity/ima/ima_policy.c   |  2 +-
->  security/integrity/ima/ima_template.c | 25 +++++++++++++++++++++++++
->  4 files changed, 32 insertions(+), 13 deletions(-)
-> 
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index 6ebefec616e4..8e8b1e3cb847 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -156,6 +156,7 @@ int template_desc_init_fields(const char *template_fmt,
->  			      const struct ima_template_field ***fields,
->  			      int *num_fields);
->  struct ima_template_desc *ima_template_desc_current(void);
-> +struct ima_template_desc *ima_template_desc_buf(void);
->  struct ima_template_desc *lookup_template_desc(const char *name);
->  bool ima_template_has_modsig(const struct ima_template_desc *ima_template);
->  int ima_restore_measurement_entry(struct ima_template_entry *entry);
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index a962b23e0429..3646ae763ba9 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -413,7 +413,7 @@ int ima_file_mmap(struct file *file, unsigned long prot)
->   */
->  int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
->  {
-> -	struct ima_template_desc *template;
-> +	struct ima_template_desc *template = NULL;
->  	struct file *file = vma->vm_file;
->  	char filename[NAME_MAX];
->  	char *pathbuf = NULL;
-> @@ -802,7 +802,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->  					    .filename = eventname,
->  					    .buf = buf,
->  					    .buf_len = size};
-> -	struct ima_template_desc *template = NULL;
-> +	struct ima_template_desc *template = ima_template_desc_buf();
->  	struct {
->  		struct ima_digest_data hdr;
->  		char digest[IMA_MAX_DIGEST_SIZE];
-> @@ -833,16 +833,9 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->  		pcr = CONFIG_IMA_MEASURE_PCR_IDX;
->  
->  	if (!template) {
-> -		template = lookup_template_desc("ima-buf");
-> -		ret = template_desc_init_fields(template->fmt,
-> -						&(template->fields),
-> -						&(template->num_fields));
-> -		if (ret < 0) {
-> -			pr_err("template %s init failed, result: %d\n",
-> -			       (strlen(template->name) ?
-> -				template->name : template->fmt), ret);
-> -			return;
-> -		}
-> +		ret = -EINVAL;
-> +		audit_cause = "ima_template_desc_buf";
-> +		goto out;
+>  arch/arm64/include/asm/vdso.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/include/asm/vdso.h b/arch/arm64/include/asm/vdso.h
+> index f99dcb94b438..a7384379e8e1 100644
+> --- a/arch/arm64/include/asm/vdso.h
+> +++ b/arch/arm64/include/asm/vdso.h
+> @@ -23,7 +23,7 @@
+>
+>  #define VDSO_SYMBOL(base, name)                                                   \
+>  ({                                                                        \
+> -       (void *)(vdso_offset_##name - VDSO_LBASE + (unsigned long)(base)); \
+> +       (void *)((vdso_offset_##name & ~1UL) - VDSO_LBASE + (unsigned long)(base)); \
+>  })
+>
+>  #endif /* !__ASSEMBLY__ */
+> --
+> 2.29.2.299.gdc1121823c-goog
+>
 
-Normally a test follows the variable assignment, but in this case, the
-check is being deferred in case there isn't a policy rule.
 
->  	}
->  
->  	iint.ima_hash = &hash.hdr;
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 9b5adeaa47fc..823a0c1379cb 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -628,7 +628,7 @@ int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
->  	struct ima_rule_entry *entry;
->  	int action = 0, actmask = flags | (flags << 1);
->  
-> -	if (template_desc)
-> +	if (template_desc && !*template_desc)
->  		*template_desc = ima_template_desc_current();
->  
->  	rcu_read_lock();
-> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-> index 1e89e2d3851f..e53fce2c1610 100644
-> --- a/security/integrity/ima/ima_template.c
-> +++ b/security/integrity/ima/ima_template.c
-> @@ -55,6 +55,7 @@ static const struct ima_template_field supported_fields[] = {
->  #define MAX_TEMPLATE_NAME_LEN sizeof("d-ng|n-ng|sig|buf|d-modisg|modsig")
->  
->  static struct ima_template_desc *ima_template;
-> +static struct ima_template_desc *ima_buf_template;
->  
->  /**
->   * ima_template_has_modsig - Check whether template has modsig-related fields.
-> @@ -252,6 +253,30 @@ struct ima_template_desc *ima_template_desc_current(void)
->  	return ima_template;
->  }
->  
-> +struct ima_template_desc *ima_template_desc_buf(void)
-> +{
-> +	struct ima_template_desc *template = NULL;
-> +	int ret = 0;
-> +
-> +	if (ima_buf_template)
-> +		return ima_buf_template;
-> +
-> +	ima_init_template_list();
-> +	template = lookup_template_desc("ima-buf");
-> +	if (!template)
-> +		return NULL;
-> +
-> +	ret = template_desc_init_fields(template->fmt,
-> +					&(template->fields),
-> +					&(template->num_fields));
-> +	if (ret)
-> +		return NULL;
-
-Instead of initializing the fields here, maybe it should be done in
-ima_init_template()?  That would remove the deferred !template test in
-process_buffer_measurement() and would also simplify this function.
-
-thanks,
-
-Mimi
-
-> +
-> +	ima_buf_template = template;
-> +
-> +	return ima_buf_template;
-> +}
-> +
->  int __init ima_init_template(void)
->  {
->  	struct ima_template_desc *template = ima_template_desc_current();
-
+-- 
+Thanks,
+~Nick Desaulniers
