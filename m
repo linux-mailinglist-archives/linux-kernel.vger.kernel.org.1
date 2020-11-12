@@ -2,184 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D432B0B3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8612A2B0B40
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 18:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgKLRZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 12:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgKLRZ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 12:25:59 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEAFC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:25:58 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id q3so7216637edr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 09:25:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EYH3xwiXEDAnNYFH6sRlnj0nrx9OC5GkHU2BEsYeg8c=;
-        b=V1er74VJGkYMqey/iyOXhUJFrbfBMej3NDgDK/+Dsn878FmHqTP2crY3RgRv+amk6x
-         qmjtEZmsJbcY0UAfQUB4Uy/Au7ucKUx4UikT7GphdZINd4kjRqdu7vhLTTTpV1YG4zaU
-         7eSTqs1Ajd5b1s8r6edLBGVp0ADsMSfZVuRn4RIbtxiHxKc5NzogmuBfiG1TJ59nrTi8
-         jDtqKDS+c/qmN9QYU5oKIdKjsCTqT85+uPsYArzF81ZO2o053KEPLRhdaNUI7gbS37YR
-         ZYP6gYur4aoMH+k6trf/kSpCgk7T8XZUUHJ5JjANSOs0Y1Wmvue8yKT61v8pLlOtGbuv
-         QViA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EYH3xwiXEDAnNYFH6sRlnj0nrx9OC5GkHU2BEsYeg8c=;
-        b=LbElT0vAlPKI/fH/KssAWXtHQjVgQ/91vTtlTaR0PZqcSRIHv6YdjB2iRUE4icv3Zx
-         LLdZOrVxxlbzxeC0wfxN+iBK6NBM0x55CZUHZrDxrqC5UvSrm3szj7Kd2CG6svzHW6v2
-         KYAInTyH4dr8sQtFRjGZsaXLxKe98G1PqOt5LfLm2n3vWYiXv6onqRUMnM/tMj3r1iKj
-         IvgpILG+AKys1perEK+RQUhvgrTrhypDEiKizkiK5CF9UwP3aFvCE1I0b38PFjAc7ZhP
-         M7+AdvZK1vhieK1LNTuD2IgW79PEZIN0pAjNCEBqywk93HyDulz8A81WY7IJifYiYeKu
-         C5Dw==
-X-Gm-Message-State: AOAM530dTEDLO32DBGcZCfbKwZuHUCnu3IGQefUbGzsIK/BTIfg9VJ/f
-        cIO1Q8E0tYstH17AypLaP1LgIa+c69912XnEFgly4A==
-X-Google-Smtp-Source: ABdhPJwDBX/NfTxaAUg6N/MVUgyGIi6++bAnqswSeUgMd0WUV9wPeIj1nATdpL6JniiSVSiXHWRN6oFLXiRoHp9hbx0=
-X-Received: by 2002:aa7:d54b:: with SMTP id u11mr878250edr.341.1605201957042;
- Thu, 12 Nov 2020 09:25:57 -0800 (PST)
+        id S1726182AbgKLR02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 12:26:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:54702 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725999AbgKLR01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:26:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2A82169C;
+        Thu, 12 Nov 2020 09:26:26 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 851E63F73C;
+        Thu, 12 Nov 2020 09:26:24 -0800 (PST)
+References: <20201023101158.088940906@infradead.org> <20201023102346.921768277@infradead.org> <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
+Message-ID: <jhjd00ixz9z.mognet@arm.com>
+In-reply-to: <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com>
+Date:   Thu, 12 Nov 2020 17:26:14 +0000
 MIME-Version: 1.0
-References: <20201112163630.17177-1-nsaenzjulienne@suse.de> <20201112163630.17177-3-nsaenzjulienne@suse.de>
-In-Reply-To: <20201112163630.17177-3-nsaenzjulienne@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 12 Nov 2020 18:25:46 +0100
-Message-ID: <CAMpxmJWZsqfkkTP99a_8mu+O4xHwNWDqHuvgt7Cs88bA-iMvQA@mail.gmail.com>
-Subject: Re: [PATCH v4 02/11] firmware: raspberrypi: Introduce devm_rpi_firmware_get()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 5:44 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> Itroduce devm_rpi_firmware_get(), it'll simplify the firmware handling
-> for most consumers.
->
-> Suggested-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
->
-> Changes since v2:
-> - Introduce devm_rpi_firmware_get()
->
->  drivers/firmware/raspberrypi.c             | 31 +++++++++++++++++++++-
->  include/soc/bcm2835/raspberrypi-firmware.h |  8 ++++++
->  2 files changed, 38 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-> index 438e17074a97..4ab2dfdc82ad 100644
-> --- a/drivers/firmware/raspberrypi.c
-> +++ b/drivers/firmware/raspberrypi.c
-> @@ -237,10 +237,17 @@ static void rpi_firmware_delete(struct kref *kref)
->         kfree(fw);
->  }
->
-> -void rpi_firmware_put(struct rpi_firmware *fw)
-> +static void __rpi_firmware_put(void *data)
->  {
 
-The '__' prefix is very vague and usually used for unlocked variants
-of functions. The casting to void * in rpi_firmware_put() is also
-unneeded. I would much prefer that the devres release callback be
-called devm_rpi_firmware_put() and that it call rpi_firmware_put()
-which would then call kref_put().
+On 12/11/20 16:38, Qian Cai wrote:
+> Some syscall fuzzing from an unprivileged user starts to trigger this below
+> since this commit first appeared in the linux-next today. Does it ring any
+> bells?
+>
 
-Bartosz
+What's the .config? I'm interested in
+CONFIG_PREEMPT
+CONFIG_PREEMPT_RT
+CONFIG_SMP
 
-> +       struct rpi_firmware *fw = data;
-> +
->         kref_put(&fw->consumers, rpi_firmware_delete);
->  }
-> +
-> +void rpi_firmware_put(struct rpi_firmware *fw)
-> +{
-> +       __rpi_firmware_put(fw);
-> +}
->  EXPORT_SYMBOL_GPL(rpi_firmware_put);
->
->  static int rpi_firmware_probe(struct platform_device *pdev)
-> @@ -326,6 +333,28 @@ struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
->  }
->  EXPORT_SYMBOL_GPL(rpi_firmware_get);
->
-> +/**
-> + * devm_rpi_firmware_get - Get pointer to rpi_firmware structure.
-> + * @firmware_node:    Pointer to the firmware Device Tree node.
-> + *
-> + * Returns NULL is the firmware device is not ready.
-> + */
-> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                          struct device_node *firmware_node)
-> +{
-> +       struct rpi_firmware *fw;
-> +
-> +       fw = rpi_firmware_get(firmware_node);
-> +       if (!fw)
-> +               return NULL;
-> +
-> +       if (devm_add_action_or_reset(dev, __rpi_firmware_put, fw))
-> +               return NULL;
-> +
-> +       return fw;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_rpi_firmware_get);
-> +
->  static const struct of_device_id rpi_firmware_of_match[] = {
->         { .compatible = "raspberrypi,bcm2835-firmware", },
->         {},
-> diff --git a/include/soc/bcm2835/raspberrypi-firmware.h b/include/soc/bcm2835/raspberrypi-firmware.h
-> index fdfef7fe40df..73ad784fca96 100644
-> --- a/include/soc/bcm2835/raspberrypi-firmware.h
-> +++ b/include/soc/bcm2835/raspberrypi-firmware.h
-> @@ -142,6 +142,8 @@ int rpi_firmware_property_list(struct rpi_firmware *fw,
->                                void *data, size_t tag_size);
->  void rpi_firmware_put(struct rpi_firmware *fw);
->  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node);
-> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                          struct device_node *firmware_node);
->  #else
->  static inline int rpi_firmware_property(struct rpi_firmware *fw, u32 tag,
->                                         void *data, size_t len)
-> @@ -160,6 +162,12 @@ static inline struct rpi_firmware *rpi_firmware_get(struct device_node *firmware
->  {
->         return NULL;
->  }
-> +
-> +static inline struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                       struct device_node *firmware_node)
-> +{
-> +       return NULL;
-> +}
->  #endif
->
->  #endif /* __SOC_RASPBERRY_FIRMWARE_H__ */
-> --
-> 2.29.2
->
+From a quick look it seems that tree doesn't have Thomas' "generalization" of
+migrate_disable(), so if this doesn't have PREEMPT_RT we could forget about
+migrate_disable() for now.
+
+> [12065.065837][ T1310] INFO: task trinity-c30:91730 blocked for more than 368 seconds.
+> [12065.073524][ T1310]       Tainted: G             L    5.10.0-rc3-next-20201112 #2
+> [12065.081076][ T1310] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [12065.089648][ T1310] task:trinity-c30     state:D stack:26576 pid:91730 ppid: 82688 flags:0x00000000
+> [12065.098818][ T1310] Call trace:
+> [12065.101987][ T1310]  __switch_to+0xf0/0x1a8
+> [12065.106227][ T1310]  __schedule+0x6ec/0x1708
+> [12065.110505][ T1310]  schedule+0x1bc/0x3b0
+> [12065.114562][ T1310]  schedule_timeout+0x3c4/0x4c0
+> [12065.119275][ T1310]  wait_for_completion+0x13c/0x248
+> [12065.124257][ T1310]  affine_move_task+0x410/0x688
+> (inlined by) affine_move_task at kernel/sched/core.c:2261
+> [12065.129013][ T1310]  __set_cpus_allowed_ptr+0x1b4/0x370
+> [12065.134248][ T1310]  sched_setaffinity+0x4f0/0x7e8
+> [12065.139088][ T1310]  __arm64_sys_sched_setaffinity+0x1f4/0x2a0
+> [12065.144972][ T1310]  do_el0_svc+0x124/0x228
+> [12065.149165][ T1310]  el0_sync_handler+0x208/0x384
+> [12065.153876][ T1310]  el0_sync+0x140/0x180
+> [12065.157971][ T1310]
+
+So that's a task changing the affinity of some task (either itself or
+another; I can't say without a decoded stacktrace), and then blocking on a
+wait_for_completion() that apparently never happens.
+
+I don't see stop_one_cpu() in the trace, so I assume it's the !task_running
+case, for which the completion should be completed before getting to the
+wait (unless we *do* have migrate_disable()).
+
+Could you please run scripts/decode_stacktrace.sh on the above?
+
+> [12065.157971][ T1310] Showing all locks held in the system:
+> [12065.166401][ T1310] 1 lock held by khungtaskd/1310:
+> [12065.171288][ T1310]  #0: ffff800018d0cb40 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire.constprop.56+0x0/0x38
+> [12065.182210][ T1310] 4 locks held by trinity-main/82688:
+> [12065.187515][ T1310] 2 locks held by kworker/u513:3/82813:
+> [12065.192922][ T1310]  #0: ffff000000419d38 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x69c/0x18c8
+> [12065.203890][ T1310]  #1: ffff0000122bfd40 ((work_completion)(&buf->work)){+.+.}-{0:0}, at: __update_idle_core+0xa8/0x460
+> [12065.214916][ T1310] 1 lock held by trinity-c35/137168:
+> [12065.220061][ T1310]  #0: ffff0087ce767898 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x48
+> [12065.229483][ T1310] 3 locks held by trinity-c61/137611:
+> [12065.234757][ T1310] 1 lock held by trinity-c7/137630:
+> [12065.239828][ T1310] 1 lock held by trinity-c57/137714:
+> [12065.242612][T137611] futex_wake_op: trinity-c61 tries to shift op by 1008; fix this program
+> [12065.245012][ T1310] 1 lock held by trinity-c52/137771:
+> [12065.258538][ T1310] 2 locks held by trinity-c42/137835:
+> [12065.263783][ T1310] 4 locks held by trinity-c22/137868:
+> [12065.269051][ T1310]  #0: ffff000e78503798 (&rq->lock){-.-.}-{2:2}, at: newidle_balance+0x92c/0xd78
+> [12065.278155][ T1310]  #1: ffff0087ce767930 (&tty->atomic_write_lock){+.+.}-{3:3}, at: tty_write_lock+0x30/0x58
+> [12065.288317][ T1310]  #2: ffff800018d0cb40 (rcu_read_lock){....}-{1:2}, at: __mutex_lock+0x24c/0x1310
+> [12065.297592][ T1310]  #3: ffff800018d0cb40 (rcu_read_lock){....}-{1:2}, at: lock_page_memcg+0x98/0x240
+> [12065.307026][ T1310] 2 locks held by trinity-c34/137896:
+> [12065.312266][ T1310]  #0: ffff000e78463798 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x22c/0x1708
+> [12065.321023][ T1310]  #1: ffff800018d0cb40 (rcu_read_lock){....}-{1:2}, at: __update_idle_core+0xa8/0x460
+> [12065.330663][ T1310] 2 locks held by trinity-c43/137909:
+> [12065.335996][ T1310] 1 lock held by trinity-c24/137910:
+> [12065.341164][ T1310] 1 lock held by trinity-c1/137954:
+> [12065.346272][ T1310] 1 lock held by trinity-c49/138020:
+> [12065.351425][ T1310] 1 lock held by trinity-c10/138021:
+> [12065.356649][ T1310] 1 lock held by trinity-c32/138039:
+> [12065.361813][ T1310] 4 locks held by trinity-c36/138042:
+> [12065.367129][ T1310] 2 locks held by trinity-c14/138061:
+> [12065.372378][ T1310] 2 locks held by trinity-c38/138070:
+> [12065.377688][ T1310] 1 lock held by trinity-c50/138074:
+> [12065.382885][ T1310] 1 lock held by trinity-c12/138085:
+> [12065.388186][ T1310] 1 lock held by trinity-c4/138087:
+> [12065.393272][ T1310] 3 locks held by trinity-c6/138091:
+> [12065.398492][ T1310] 2 locks held by trinity-c48/138095:
+> [12065.403757][ T1310] 2 locks held by trinity-c62/138097:
+> [12065.409045][ T1310] 2 locks held by trinity-main/138107:
+> [12065.414441][ T1310] 1 lock held by modprobe/138108:
+> [12065.419351][ T1310]
+> [12065.421560][ T1310] =============================================
+> [12065.421560][ T1310]
