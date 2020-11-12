@@ -2,130 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6F62B04AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4712B04AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgKLMEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:04:11 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:49358 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726969AbgKLMEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:04:08 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtCmJK1fl58MAA--.18841S3;
-        Thu, 12 Nov 2020 20:03:50 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Loongson64: Add read_persistent_clock64()
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-References: <1605169793-10481-1-git-send-email-yangtiezhu@loongson.cn>
- <8d6ebfe2-e300-3f38-6316-196cba947d36@flygoat.com>
- <b84fe88b-7527-e88c-1efd-739f6d846518@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        WANG Xuerui <git@xen0n.name>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <6f0a7a43-4eac-65d8-61ff-778dc13f925c@loongson.cn>
-Date:   Thu, 12 Nov 2020 20:03:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1728117AbgKLMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:05:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbgKLMFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:05:16 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363D5C0613D1;
+        Thu, 12 Nov 2020 04:05:16 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i13so3992489pgm.9;
+        Thu, 12 Nov 2020 04:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IZQaNtNkLL6z6ZbtohWqKAcM+GdB+jm2XeErfe9vHvk=;
+        b=tWZZLSpZQp22wCUD9a5oZxqbpelF7THomnGgPYP9PNTyxbAVSr2agCxI5OniPq2g/r
+         nf0TcAHxo3fIWXJa8O3yMqN2ED6fxzXQso9mKvKJYl/vBT2n5S2PvEGtxG3t0j/DxoGA
+         NwbXNERV6wV9E8oxhZNi5NSYn6BVRl+0Rw7j6iHVtWXEnVXIqEiySm3yYyb2j9C1B/On
+         k39IE3CQkFcuD4rvK77NtBJAMo3Px1OMJ2NI/e23UFzOgPK4xQY495FJ79OUycHZfQgR
+         aRVTK4R9TwBAmdh4ulPFceB0/1cJpm3N47vf/y4qvSBZAaTf2Yqy4pj4fiA6356S5ofz
+         wQuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IZQaNtNkLL6z6ZbtohWqKAcM+GdB+jm2XeErfe9vHvk=;
+        b=QKRzFQNgEM8DIBlPUhHdiNsy/zWQL2Lus+aLw9iF8DTjbLkUd73oMewO5vLVHUJ3c0
+         GoglmCtr5Mfkn3s2R3B7iNjqUTVrbAjkPkVLfwmUK86C96UV15dBwIfc1ZudiQfNfznU
+         abOlH/lH50c4THB70hJc0N1xxQvlJOv62qIDz7oFfyoq5NEA0t5b2J2CvO5iZBPtwdXR
+         WxdexpVgVG1i3M2kQIN1VgMjPS4RKIhYWFsJt48zZlEBtxJwebexRn0c0O1ewqjcESTB
+         7IAnn0SoCQ2vEgKoBXeENvaFP4Ir1rAIgJJ7p+SkjfXjpyvawzKbsmxvvLM+TxpzdX5s
+         vlZQ==
+X-Gm-Message-State: AOAM530/BHLnXpeljgdIAs1O5inoYPq6j0ztYrQRNwz7yDu7rZ+YNT/J
+        aFPAlp9788RXOgyFImsPIw==
+X-Google-Smtp-Source: ABdhPJzO1hDeZ2IhKJ6bqNEiYkz8GU6RttBVRGOqDMF23KFVlKIirfFc4QCLUbOzesItxvr8eD/yrg==
+X-Received: by 2002:a62:1b02:0:b029:18a:b052:deb1 with SMTP id b2-20020a621b020000b029018ab052deb1mr28203408pfb.32.1605182715659;
+        Thu, 12 Nov 2020 04:05:15 -0800 (PST)
+Received: from localhost.localdomain ([221.124.243.27])
+        by smtp.gmail.com with ESMTPSA id i7sm6567928pjj.20.2020.11.12.04.05.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 04:05:14 -0800 (PST)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH 1/5] console: Delete unused con_font_copy() callback implementations
+Date:   Thu, 12 Nov 2020 07:04:03 -0500
+Message-Id: <c8d28007edf50de4387e1532eb3eb736db716f73.1605169912.git.yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1605169912.git.yepeilin.cs@gmail.com>
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b84fe88b-7527-e88c-1efd-739f6d846518@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxmtCmJK1fl58MAA--.18841S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4UWF18JFyfurW7AF13Jwb_yoW8Cw48pa
-        18Aan0kF4UXF1UCw4Iyrn8Cryjgw4rGF1qg34rt345ur1q93W3GFykC3yj9FyDur1fCw1v
-        vrW5t3sxWa1j9FJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUjfHUDUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2020 06:09 PM, Jiaxun Yang wrote:
->
->
-> 在 2020/11/12 18:04, Jiaxun Yang 写道:
->> Hi Tiezhu,
->>
->> 在 2020/11/12 16:29, Tiezhu Yang 写道:
->>> Add read_persistent_clock64() to read the time from the battery backed
->>> persistent clock. With this patch, we can fix the wrong time issue due
->>> to the system clock is not consistent with hardware clock after resume
->>> from sleep state S3 (suspend to RAM), at the same time, the system time
->>> can be right instead of "Thu Jan 1 08:00:00 CST 1970" without rtc 
->>> driver.
->>>
->>> start_kernel()
->>>    timekeeping_init()
->>>      read_persistent_wall_and_boot_offset()
->>>        read_persistent_clock64()
->>>
->>> timekeeping_resume()
->>>    read_persistent_clock64()
->>>
->>> timekeeping_suspend()
->>>    read_persistent_clock64()
->>
->> It is highly discoraged to do anything with bridgetype, which isn't 
->> probed via
->> devicetree.
->>
->> Please check if you can deal with that inside RTC framework, or make 
->> it as
->> a part of RTC driver (e.g. set up a callback).
->>
->> Also you should submit RTC driver at first if you intend to complete 
->> LS7A support.
->
-> Oops,
-> Just dig it deeper, I guess simply select RTC_HCTOSYS would solve the 
-> issue.
-> We're trying very hard to decouple all the drivers and conponents,
-> DeviceTree for all!
+Recently in commit 3c4e0dff2095 ("vt: Disable KD_FONT_OP_COPY") we
+disabled the KD_FONT_OP_COPY ioctl() option. Delete all the
+con_font_copy() callbacks, since we no longer use them.
 
-+cc WANG Xuerui <git@xen0n.name>
+Mark KD_FONT_OP_COPY as "obsolete" in include/uapi/linux/kd.h, just like
+what we have done for PPPIOCDETACH in commit af8d3c7c001a ("ppp: remove
+the PPPIOCDETACH ioctl").
 
-Hi Jiaxun,
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ drivers/usb/misc/sisusbvga/sisusb_con.c |  6 ------
+ drivers/video/console/dummycon.c        |  6 ------
+ drivers/video/fbdev/core/fbcon.c        | 11 -----------
+ include/linux/console.h                 |  1 -
+ include/uapi/linux/kd.h                 |  2 +-
+ 5 files changed, 1 insertion(+), 25 deletions(-)
 
-Thanks for your reply.
-
-Xuerui has already submitted the patch of LS7A rtc driver [1],
-but not yet been merged into the mainline kernel, I discussed
-with him early today.
-
-Do you mean that read_persistent_clock64() can call the function
-like rtc_read_time() defined in rtc driver?
-
-Thanks,
-Tiezhu
-
-[1] 
-https://patchwork.kernel.org/project/linux-mips/patch/20200923075845.360974-2-git@xen0n.name/
-
->
->>
->> Thanks.
->>
->> - Jiaxun
->>
->>>
->>> Signed-off-by: Yinglu Yang <yangyinglu@loongson.cn>
->>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->>> ---
->>>
+diff --git a/drivers/usb/misc/sisusbvga/sisusb_con.c b/drivers/usb/misc/sisusbvga/sisusb_con.c
+index c63e545fb105..fd9954381fbf 100644
+--- a/drivers/usb/misc/sisusbvga/sisusb_con.c
++++ b/drivers/usb/misc/sisusbvga/sisusb_con.c
+@@ -1358,11 +1358,6 @@ static int sisusbdummycon_font_default(struct vc_data *vc,
+ 	return 0;
+ }
+ 
+-static int sisusbdummycon_font_copy(struct vc_data *vc, int con)
+-{
+-	return 0;
+-}
+-
+ static const struct consw sisusb_dummy_con = {
+ 	.owner =		THIS_MODULE,
+ 	.con_startup =		sisusbdummycon_startup,
+@@ -1377,7 +1372,6 @@ static const struct consw sisusb_dummy_con = {
+ 	.con_blank =		sisusbdummycon_blank,
+ 	.con_font_set =		sisusbdummycon_font_set,
+ 	.con_font_default =	sisusbdummycon_font_default,
+-	.con_font_copy =	sisusbdummycon_font_copy,
+ };
+ 
+ int
+diff --git a/drivers/video/console/dummycon.c b/drivers/video/console/dummycon.c
+index 2a0d0bda7faa..ab3df752fb57 100644
+--- a/drivers/video/console/dummycon.c
++++ b/drivers/video/console/dummycon.c
+@@ -136,11 +136,6 @@ static int dummycon_font_default(struct vc_data *vc,
+ 	return 0;
+ }
+ 
+-static int dummycon_font_copy(struct vc_data *vc, int con)
+-{
+-	return 0;
+-}
+-
+ /*
+  *  The console `switch' structure for the dummy console
+  *
+@@ -161,6 +156,5 @@ const struct consw dummy_con = {
+ 	.con_blank =	dummycon_blank,
+ 	.con_font_set =	dummycon_font_set,
+ 	.con_font_default =	dummycon_font_default,
+-	.con_font_copy =	dummycon_font_copy,
+ };
+ EXPORT_SYMBOL_GPL(dummy_con);
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index cef437817b0d..26d1b0916692 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -2451,16 +2451,6 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h,
+ 	return 0;
+ }
+ 
+-static int fbcon_copy_font(struct vc_data *vc, int con)
+-{
+-	struct fbcon_display *od = &fb_display[con];
+-	struct console_font *f = &vc->vc_font;
+-
+-	if (od->fontdata == f->data)
+-		return 0;	/* already the same font... */
+-	return fbcon_do_set_font(vc, f->width, f->height, od->fontdata, od->userfont);
+-}
+-
+ /*
+  *  User asked to set font; we are guaranteed that
+  *	a) width and height are in range 1..32
+@@ -3111,7 +3101,6 @@ static const struct consw fb_con = {
+ 	.con_font_set 		= fbcon_set_font,
+ 	.con_font_get 		= fbcon_get_font,
+ 	.con_font_default	= fbcon_set_def_font,
+-	.con_font_copy 		= fbcon_copy_font,
+ 	.con_set_palette 	= fbcon_set_palette,
+ 	.con_invert_region 	= fbcon_invert_region,
+ 	.con_screen_pos 	= fbcon_screen_pos,
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 4b1e26c4cb42..20874db50bc8 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -62,7 +62,6 @@ struct consw {
+ 	int	(*con_font_get)(struct vc_data *vc, struct console_font *font);
+ 	int	(*con_font_default)(struct vc_data *vc,
+ 			struct console_font *font, char *name);
+-	int	(*con_font_copy)(struct vc_data *vc, int con);
+ 	int     (*con_resize)(struct vc_data *vc, unsigned int width,
+ 			unsigned int height, unsigned int user);
+ 	void	(*con_set_palette)(struct vc_data *vc,
+diff --git a/include/uapi/linux/kd.h b/include/uapi/linux/kd.h
+index 4616b31f84da..ee929ece4112 100644
+--- a/include/uapi/linux/kd.h
++++ b/include/uapi/linux/kd.h
+@@ -173,7 +173,7 @@ struct console_font {
+ #define KD_FONT_OP_SET		0	/* Set font */
+ #define KD_FONT_OP_GET		1	/* Get font */
+ #define KD_FONT_OP_SET_DEFAULT	2	/* Set font to default, data points to name / NULL */
+-#define KD_FONT_OP_COPY		3	/* Copy from another console */
++#define KD_FONT_OP_COPY		3	/* Obsolete, do not use */
+ 
+ #define KD_FONT_FLAG_DONT_RECALC 	1	/* Don't recalculate hw charcell size [compat] */
+ 
+-- 
+2.25.1
 
