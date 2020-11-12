@@ -2,86 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4E72B01BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6442B0178
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 10:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgKLJIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 04:08:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37746 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726960AbgKLJGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:06:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay1.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96635AE78;
-        Thu, 12 Nov 2020 09:06:23 +0000 (UTC)
-Message-ID: <9e3a04f0ae76675f610bf25e6b53b4aff26afae4.camel@suse.de>
-Subject: Re: [PATCH v3 07/11] input: raspberrypi-ts: Release firmware handle
- when not needed
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, linux-clk@vger.kernel.org,
-        sboyd@kernel.org, linux-rpi-kernel@lists.infradead.org,
-        bgolaszewski@baylibre.com, andy.shevchenko@gmail.com
-Date:   Thu, 12 Nov 2020 10:06:21 +0100
-In-Reply-To: <20201112014542.GA1003057@dtor-ws>
-References: <20201104103938.1286-1-nsaenzjulienne@suse.de>
-         <20201104103938.1286-8-nsaenzjulienne@suse.de>
-         <20201112014542.GA1003057@dtor-ws>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-j2+UKM6wkcW3jVx2ysNJ"
-User-Agent: Evolution 3.36.5 
+        id S1726843AbgKLJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 04:01:38 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7176 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgKLJBi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:01:38 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWwZF2fBJz15VWx;
+        Thu, 12 Nov 2020 17:01:25 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 12 Nov 2020 17:01:24 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
+        <maorg@mellanox.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chenzhou10@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] RDMA/core: Fix error return code in _ib_modify_qp()
+Date:   Thu, 12 Nov 2020 17:06:26 +0800
+Message-ID: <20201112090626.184976-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix to return a negative error code from the error handling case
+instead of 0 in function _ib_modify_qp(), as done elsewhere in this
+function.
 
---=-j2+UKM6wkcW3jVx2ysNJ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
+ drivers/infiniband/core/verbs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Wed, 2020-11-11 at 17:45 -0800, Dmitry Torokhov wrote:
-> Hi Nicolas,
->=20
-> On Wed, Nov 04, 2020 at 11:39:33AM +0100, Nicolas Saenz Julienne wrote:
-> > Use devm_rpi_firmware_get() so as to make sure we release RPi's firmwar=
-e
-> > interface when unbinding the device.
->=20
-> Unless I am mistaken this driver does not really need the firmware
-> structure past rpi_ts_probe(), and will be fine if it disappears earlier
-> than unbind time.
-
-Yes, I missed that. Will update it.
-
-Regards,
-Nicolas
-
-
---=-j2+UKM6wkcW3jVx2ysNJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+s+w0ACgkQlfZmHno8
-x/5iuQgApaPJZjl0NVPJ80THZ1yICuyOa9+6d8Bal28kwj6Ft8Xb+Z6ploXmWJ5T
-EPDFQF4pFMoSBGmgGSspJj4dl/KD3UaeJIRB3c3UNqIC7icH9TpBZY4Z41Mioqsv
-l4QH1DIWYVsRYi/9I1vhoijsquL5t5WK0c1N9GBs6GIQjVwEMN9tsDcQ3flTLKZs
-93saK4xtDp6UbqsYQYtwmupmREvAIxqnm0g3GB/Qk8Fkg9vpIK0H5cRBaJT9bfb8
-tQPpTY2LWTXQ53azvlBOcZC7yJQRBKitR2GkibS1ynNoNl43f5ZjyWXkzK2TEw1j
-HOKtCH+6NObb7Wm+xwL50tkanpTaGg==
-=eql2
------END PGP SIGNATURE-----
-
---=-j2+UKM6wkcW3jVx2ysNJ--
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 740f8454b6b4..3d895cc41c3a 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1698,8 +1698,10 @@ static int _ib_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+ 			slave = rdma_lag_get_ah_roce_slave(qp->device,
+ 							   &attr->ah_attr,
+ 							   GFP_KERNEL);
+-			if (IS_ERR(slave))
++			if (IS_ERR(slave)) {
++				ret = PTR_ERR(slave);
+ 				goto out_av;
++			}
+ 			attr->xmit_slave = slave;
+ 		}
+ 	}
+-- 
+2.20.1
 
