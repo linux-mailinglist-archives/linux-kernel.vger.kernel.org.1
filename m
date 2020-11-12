@@ -2,93 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94922B04F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FE32B04F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgKLMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:30:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:49070 "EHLO foss.arm.com"
+        id S1728073AbgKLMak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:30:40 -0500
+Received: from mga18.intel.com ([134.134.136.126]:37540 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLMaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:30:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54FD0101E;
-        Thu, 12 Nov 2020 04:30:03 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CA6B3F718;
-        Thu, 12 Nov 2020 04:30:01 -0800 (PST)
-References: <20201112111201.2081902-1-qperret@google.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@qperret.net>,
-        "open list\:SCHEDULER" <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com, Rick Yiu <rickyiu@google.com>
-Subject: Re: [PATCH] sched/fair: Fix overutilized update in enqueue_task_fair()
-In-reply-to: <20201112111201.2081902-1-qperret@google.com>
-Date:   Thu, 12 Nov 2020 12:29:59 +0000
-Message-ID: <jhjh7puyczc.mognet@arm.com>
+        id S1727035AbgKLMaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:30:39 -0500
+IronPort-SDR: h/mViDQNjntVi33CfCi9802VvSsKjBssiZnC31fsH4OzmBt+5zUFMJH8UJW1U+XmgXHIezlU3q
+ hePFXvGboF2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="158078519"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="158078519"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 04:30:37 -0800
+IronPort-SDR: IX5G07I5r7Fa3ycS3E5e+scfE3PD0jywPOjnJeKppnpcjbQyN69YvgGlcmoazDnhFoGNY4hFRV
+ c+hfoGsznjng==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
+   d="scan'208";a="328481629"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 04:30:35 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kdBlJ-006CgX-VS; Thu, 12 Nov 2020 14:31:37 +0200
+Date:   Thu, 12 Nov 2020 14:31:37 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation: ACPI: explain how to use
+ gpio-line-names
+Message-ID: <20201112123137.GA4077@smile.fi.intel.com>
+References: <20201112090241.570637-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112090241.570637-1-f.suligoi@asem.it>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 10:02:41AM +0100, Flavio Suligoi wrote:
+> The "gpio-line-names" declaration is not fully
+> documented, so can be useful to add some important
+> information and one more example.
+> 
+> This commit also fixes a trivial spelling mistake.
 
-Hi Quentin,
+Thanks!
 
-On 12/11/20 11:12, Quentin Perret wrote:
-> enqueue_task_fair() attempts to skip the overutilized update for new
-> tasks as their util_avg is not accurate yet. However, the flag we check
-> to do so is overwritten earlier on in the function, which makes the
-> condition pretty much a nop.
->
-> Fix this by saving the flag early on.
->
-> Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point
-> indicator")
-> Reported-by: Rick Yiu <rickyiu@google.com>
-> Signed-off-by: Quentin Perret <qperret@google.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-Alternatively: how much does not updating the overutilized status here help
-us? The next tick will unconditionally update it, which for arm64 is
-anywhere in the next ]0, 4]ms. That "fake" fork-time util_avg should already
-be accounted in the rq util_avg, and even if the new task was running the
-entire time, 4ms doesn't buy us much decay.
-
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 > ---
->  kernel/sched/fair.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 290f9e38378c..f3ee60b92718 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5477,6 +5477,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->       struct cfs_rq *cfs_rq;
->       struct sched_entity *se = &p->se;
->       int idle_h_nr_running = task_has_idle_policy(p);
-> +	int task_new = !(flags & ENQUEUE_WAKEUP);
->
->       /*
->        * The code below (indirectly) updates schedutil which looks at
-> @@ -5549,7 +5550,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->        * into account, but that is not straightforward to implement,
->        * and the following generally works well enough in practice.
->        */
-> -	if (flags & ENQUEUE_WAKEUP)
-> +	if (!task_new)
->               update_overutilized_status(rq);
->
->  enqueue_throttle:
+> 
+> v2: - fix commit spelling mistakes
+>     - add double back quotes to gpio-line-names
+>     - adjust documentation lines layout
+>     - add comma at the end of Package list names in the first example
+> 
+>  .../firmware-guide/acpi/gpio-properties.rst   | 58 ++++++++++++++++++-
+>  1 file changed, 56 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
+> index bb6d74f23ee0..ae5396a1f092 100644
+> --- a/Documentation/firmware-guide/acpi/gpio-properties.rst
+> +++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
+> @@ -107,7 +107,61 @@ Example::
+>  
+>  - gpio-line-names
+>  
+> -Example::
+> +The ``gpio-line-names`` declaration is a list of strings ("names"), which
+> +describes each line/pin of a GPIO controller/expander. This list, contained in
+> +a package, must be inserted inside the GPIO controller declaration of an ACPI
+> +table (typically inside the DSDT). The ``gpio-line-names`` list must respect the
+> +following rules (see also the examples):
+> +
+> +  - the first name in the list corresponds with the first line/pin of the GPIO
+> +    controller/expander
+> +  - the names inside the list must be consecutive (no "holes" are permitted)
+> +  - the list can be incomplete and can end before the last GPIO line: in
+> +    other words, it is not mandatory to fill all the GPIO lines
+> +  - empty names are allowed (two quotation marks ``""`` correspond to an empty
+> +    name)
+> +
+> +Example of a GPIO controller of 16 lines, with an incomplete list with two
+> +empty names::
+> +
+> +  Package () {
+> +      "gpio-line-names",
+> +      Package () {
+> +          "pin_0",
+> +          "pin_1",
+> +          "",
+> +          "",
+> +          "pin_3",
+> +          "pin_4_push_button",
+> +      }
+> +  }
+> +
+> +At runtime, the above declaration produces the following result (using the
+> +"libgpiod" tools)::
+> +
+> +  root@debian:~# gpioinfo gpiochip4
+> +  gpiochip4 - 16 lines:
+> +          line   0:      "pin_0"       unused   input  active-high
+> +          line   1:      "pin_1"       unused   input  active-high
+> +          line   2:      unnamed       unused   input  active-high
+> +          line   3:      unnamed       unused   input  active-high
+> +          line   4:      "pin_3"       unused   input  active-high
+> +          line   5: "pin_4_push_button" unused input active-high
+> +          line   6:      unnamed       unused   input  active-high
+> +          line   7       unnamed       unused   input  active-high
+> +          line   8:      unnamed       unused   input  active-high
+> +          line   9:      unnamed       unused   input  active-high
+> +          line  10:      unnamed       unused   input  active-high
+> +          line  11:      unnamed       unused   input  active-high
+> +          line  12:      unnamed       unused   input  active-high
+> +          line  13:      unnamed       unused   input  active-high
+> +          line  14:      unnamed       unused   input  active-high
+> +          line  15:      unnamed       unused   input  active-high
+> +  root@debian:~# gpiofind pin_4_push_button
+> +  gpiochip4 5
+> +  root@debian:~#
+> +
+> +Another example::
+>  
+>    Package () {
+>        "gpio-line-names",
+> @@ -191,7 +245,7 @@ The driver might expect to get the right GPIO when it does::
+>  but since there is no way to know the mapping between "reset" and
+>  the GpioIo() in _CRS desc will hold ERR_PTR(-ENOENT).
+>  
+> -The driver author can solve this by passing the mapping explictly
+> +The driver author can solve this by passing the mapping explicitly
+>  (the recommended way and documented in the above chapter).
+>  
+>  The ACPI GPIO mapping tables should not contaminate drivers that are not
+> -- 
+> 2.25.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
