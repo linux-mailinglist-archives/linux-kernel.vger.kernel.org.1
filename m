@@ -2,69 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB5A2B0085
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB402B009F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 08:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgKLHv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 02:51:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725860AbgKLHvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 02:51:25 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A374721D40;
-        Thu, 12 Nov 2020 07:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605167485;
-        bh=H++voLjw8gNQ+Dq+Pow/iwcpS4sbWJ++caecK3Ys/3s=;
+        id S1726419AbgKLH41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 02:56:27 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:40878 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726107AbgKLH40 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 02:56:26 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B2A7731A;
+        Thu, 12 Nov 2020 08:56:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1605167782;
+        bh=Qe8kT4bm4JlV6cWE128AGEkHVPOCYZBGKXDDcH7839M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g+ARMDQEcHkGj5PIN204gzzNtScCtTqBgH2jXcRHbEmjDx1BCZRQowhKbjrY6gSlJ
-         tLfnLOx11RxPTzK6hNvzqiRdvtTha0029SEYqgCYpUUXR32C9OOpy7jO9EzTlu6Edr
-         1a99BcmAONXdbuKTK1gjcvgaxSXLj1SySQ7nLDqo=
-Date:   Thu, 12 Nov 2020 08:52:23 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Junyong Sun <sunjy516@gmail.com>
-Cc:     arnd@arndb.de, sunjunyong@xiaomi.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ttyprintk: optimize tpk_close flush code
-Message-ID: <X6zptw9Fbd3AKbPy@kroah.com>
-References: <1604469744-8708-1-git-send-email-sunjunyong@xiaomi.com>
+        b=EJDKItYI706zF2Vn5pH6Be7sepNfWDp1ZT96GHfBmncBYP5RvSxBr0ciGpxcaPJEA
+         MDMwj1ErX2+ZQ1vYcAaDTtEqkIBbqxMbXKra653RC9ux+jew98qR/y0zap+gJGTxL+
+         7i3YdmYdgZi32JkOyOYCEhrbZC/i1l2mwQTW3Spk=
+Date:   Thu, 12 Nov 2020 09:56:19 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>
+Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
+Message-ID: <20201112075619.GA7931@pendragon.ideasonboard.com>
+References: <20201102203656.220187-1-robh@kernel.org>
+ <20201102203656.220187-2-robh@kernel.org>
+ <20201111140009.GD4115@pendragon.ideasonboard.com>
+ <CAL_Jsq+A6Ga+h4qK0nzyL87M1DvrRSnzxtjwUNpq--L7MDHxfA@mail.gmail.com>
+ <20201111142735.GG4115@pendragon.ideasonboard.com>
+ <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1604469744-8708-1-git-send-email-sunjunyong@xiaomi.com>
+In-Reply-To: <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 02:02:24PM +0800, Junyong Sun wrote:
-> tpk_printk(NULL,0) do nothing but call tpk_flush to
-> flush buffer, so why don't use tpk_flush diretcly?
-> this is a small optimization.
+Hi Rob,
+
+On Wed, Nov 11, 2020 at 05:03:26PM -0600, Rob Herring wrote:
+> On Wed, Nov 11, 2020 at 8:27 AM Laurent Pinchart wrote:
+> > On Wed, Nov 11, 2020 at 08:25:40AM -0600, Rob Herring wrote:
+> > > On Wed, Nov 11, 2020 at 8:00 AM Laurent Pinchart wrote:
+> > > > On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
+> > > > > From: Sameer Pujar <spujar@nvidia.com>
+> > > > >
+> > > > > Convert device tree bindings of graph to YAML format. Currently graph.txt
+> > > > > doc is referenced in multiple files and all of these need to use schema
+> > > > > references. For now graph.txt is updated to refer to graph.yaml.
+> > > > >
+> > > > > For users of the graph binding, they should reference to the graph
+> > > > > schema from either 'ports' or 'port' property:
+> > > > >
+> > > > > properties:
+> > > > >   ports:
+> > > > >     type: object
+> > > > >     $ref: graph.yaml#/properties/ports
+> > > > >
+> > > > >     properties:
+> > > > >       port@0:
+> > > > >         description: What data this port has
+> > > > >
+> > > > >       ...
+> > > > >
+> > > > > Or:
+> > > > >
+> > > > > properties:
+> > > > >   port:
+> > > > >     description: What data this port has
+> > > > >     type: object
+> > > > >     $ref: graph.yaml#/properties/port
+> > > >
+> > > > Sounds like a good approach.
+> > > >
+> > > > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> > > > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > > > ---
+> > > > > v3:
+> > > > >  - Move port 'reg' to port@* and make required
+> > > > >  - Make remote-endpoint required
+> > > > >  - Add 'additionalProperties: true' now required
+> > > > >  - Fix yamllint warnings
+> > > > >
+> > > > >  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
+> > > > >  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
+> > > > >  2 files changed, 200 insertions(+), 128 deletions(-)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/graph.yaml
+> > >
+> > > [...]
+> > >
+> > > > > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..b56720c5a13e
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/graph.yaml
+> > > > > @@ -0,0 +1,199 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/graph.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Common bindings for device graphs
+> > > > > +
+> > > > > +description: |
+> > > > > +  The hierarchical organisation of the device tree is well suited to describe
+> > > > > +  control flow to devices, but there can be more complex connections between
+> > > > > +  devices that work together to form a logical compound device, following an
+> > > > > +  arbitrarily complex graph.
+> > > > > +  There already is a simple directed graph between devices tree nodes using
+> > > > > +  phandle properties pointing to other nodes to describe connections that
+> > > > > +  can not be inferred from device tree parent-child relationships. The device
+> > > > > +  tree graph bindings described herein abstract more complex devices that can
+> > > > > +  have multiple specifiable ports, each of which can be linked to one or more
+> > > > > +  ports of other devices.
+> > > > > +
+> > > > > +  These common bindings do not contain any information about the direction or
+> > > > > +  type of the connections, they just map their existence. Specific properties
+> > > > > +  may be described by specialized bindings depending on the type of connection.
+> > > > > +
+> > > > > +  To see how this binding applies to video pipelines, for example, see
+> > > > > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > > > > +  Here the ports describe data interfaces, and the links between them are
+> > > > > +  the connecting data buses. A single port with multiple connections can
+> > > > > +  correspond to multiple devices being connected to the same physical bus.
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Philipp Zabel <p.zabel@pengutronix.de>
+> > > > > +
+> > > > > +select: false
+> > > > > +
+> > > > > +properties:
+> > > > > +  port:
+> > > > > +    type: object
+> > > > > +    description:
+> > > > > +      If there is more than one endpoint node or 'reg' property present in
+> > > > > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
+> > > > > +      required.
+> > > > > +
+> > > > > +    properties:
+> > > > > +      "#address-cells":
+> > > > > +        const: 1
+> > > > > +
+> > > > > +      "#size-cells":
+> > > > > +        const: 0
+> > > > > +
+> > > > > +    patternProperties:
+> > > > > +      "^endpoint(@[0-9a-f]+)?$":
+> > > > > +        type: object
+> > > > > +        properties:
+> > > > > +          reg:
+> > > > > +            maxItems: 1
+> > > > > +
+> > > > > +          remote-endpoint:
+> > > > > +            description: |
+> > > > > +              phandle to an 'endpoint' subnode of a remote device node.
+> > > > > +            $ref: /schemas/types.yaml#/definitions/phandle
+> > > > > +
+> > > > > +        required:
+> > > > > +          - remote-endpoint
+> > > >
+> > > > As noted elsewhere, this shouldn't be required.
+> > > >
+> > > > Should we set additionalProperties: false here ?
+> > >
+> > > No, we've got a bunch of properties that get added to endpoint nodes.
+> > > There's a few cases where 'port' nodes have properties too.
+> >
+> > I meant the port node, which I wasn't aware needed additional
+> > properties. Do you have any example ? (I wonder if you will point me to
+> > bindings that I have written ;-))
 > 
-> Signed-off-by: Junyong Sun <sunjunyong@xiaomi.com>
-> ---
->  drivers/char/ttyprintk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-> index 6a0059e..2ce78b3 100644
-> --- a/drivers/char/ttyprintk.c
-> +++ b/drivers/char/ttyprintk.c
-> @@ -104,7 +104,7 @@ static void tpk_close(struct tty_struct *tty, struct file *filp)
->  
->  	spin_lock_irqsave(&tpkp->spinlock, flags);
->  	/* flush tpk_printk buffer */
-> -	tpk_printk(NULL, 0);
-> +	tpk_flush();
+> Not you, but Renesas. dual-lvds-{odd,even}-pixels was the only one I
+> think. But really, I think we could actually drop those if the port
+> numbering defines even/odd instead. There's a patch I just reviewed
+> for common dual lane panels. See
+> 1604993797-14240-1-git-send-email-victor.liu@nxp.com
 
-If you do this, then please remove the logic in tpk_flush() that handles
-NULL as now that logic will not be needed at all, right?
+We've discussed this before, see
 
-Also the comment here wouldn't be needed as the code obviously does that
-based on the function call being made :)
+Subject: Re: [PATCH v2 7/9] drm: rcar-du: lvds: Add dual-LVDS panels support
+Message-ID: <20190815130834.GM5011@pendragon.ideasonboard.com>
 
-thanks,
+"But what will then happen if you panel has more than two ports (for
+audio for instance, or for other types of video links) ? It may not be
+possible to always use port 0 and 1 for the LVDS even and odd pixels in
+DT bindings of a particular panel or bridge."
 
-greg k-h
+-- 
+Regards,
+
+Laurent Pinchart
