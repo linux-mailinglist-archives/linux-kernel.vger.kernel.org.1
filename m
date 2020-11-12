@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04332B05F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D442B05F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 14:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgKLNGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 08:06:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727646AbgKLNGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 08:06:32 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728142AbgKLNII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 08:08:08 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:46453 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727223AbgKLNIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:08:07 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4CX22s26Y6z1qt4q;
+        Thu, 12 Nov 2020 14:08:05 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4CX22s0R30z1sQ3W;
+        Thu, 12 Nov 2020 14:08:05 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id q1H9Z6E-Iebn; Thu, 12 Nov 2020 14:08:04 +0100 (CET)
+X-Auth-Info: vsr9gRo0OSAbhlQrz/KAe+9xwgVeVZ42X9I8kHgyFVM=
+Received: from localhost (dslb-094-220-156-233.094.220.pools.vodafone-ip.de [94.220.156.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EB9E21D91
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 13:06:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605186391;
-        bh=sKoFwkNK0FZfJvRgRurVolmIWZI8/vuPH3IAnJnsf0E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OG3UFp0+apI0eNZMt4xX27afroH5VgZCXT7+PzPFtk3paCm8DQwMim5RTHrB1ITsv
-         holj4X9ZDS3saCWCz7EI01IoHjqqdmv6BdT1f4/e+j6I7frPZIAdo4orBkSBEO7AkH
-         AryoopGmuEqrMPycyMdab3JIIAZN8v3G9IoZyOjM=
-Received: by mail-ot1-f43.google.com with SMTP id a15so5495962otf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 05:06:31 -0800 (PST)
-X-Gm-Message-State: AOAM530FTrTe0LIO4S7NaP1X8rsNyisgkx9NdOIr9mrDGLur0qLzgchV
-        dX3FrbJyofrpAHPUagIsraa00MLPRJWUUrXQI7Y=
-X-Google-Smtp-Source: ABdhPJwYEUVjhsnzuRbZwrZo7wG6QaCpLnAHOXROlS+33fxNHzhKYzFDnFhpEExJSlMQMBB6Vb5vmoBd003mE9XQQN4=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr19755766oth.251.1605186390831;
- Thu, 12 Nov 2020 05:06:30 -0800 (PST)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 12 Nov 2020 14:08:04 +0100 (CET)
+From:   Claudius Heine <ch@denx.de>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        Claudius Heine <ch@denx.de>
+Subject: [PATCH v2 0/3] Adding I2C support to RX6110 RTC
+Date:   Thu, 12 Nov 2020 14:07:31 +0100
+Message-Id: <20201112130734.331094-1-ch@denx.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20200409232728.231527-1-caij2003@gmail.com> <20201107001056.225807-1-jiancai@google.com>
- <CAMj1kXEAhyTfFZg4_+wTZ5+obQpAzFknC4vR1bNrRG6GpW4D0Q@mail.gmail.com>
-In-Reply-To: <CAMj1kXEAhyTfFZg4_+wTZ5+obQpAzFknC4vR1bNrRG6GpW4D0Q@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 12 Nov 2020 14:06:14 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3Bf8EibVRG36fKg70wTiuvNC7P2XBygTinZWbM6VzU9Q@mail.gmail.com>
-Message-ID: <CAK8P3a3Bf8EibVRG36fKg70wTiuvNC7P2XBygTinZWbM6VzU9Q@mail.gmail.com>
-Subject: Re: [PATCH v2] Make iwmmxt.S support Clang's integrated assembler
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jian Cai <jiancai@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 9:42 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+Hi,
 
-> Although I must admit I am still on the fence when it comes to the
-> policy around rewriting perfectly valid code like this to accommodate
-> a toolchain that nobody is likely to use to build the code in
-> question.
->
-> Perhaps we should at least add some rationale to the commit log why
-> Clang's integrated assembler is something we should care about?
+here is the 2nd version of the patchset that adds I2C support to the RX6110 RTC.
 
-This is one of the last bits of kernel code that could be compiled but
-not assembled with clang. Once all of it works with IAS, we no longer
-need to special-case 32-bit Arm in Kbuild, or turn off CONFIG_IWMMXT
-when build-testing.
+Changes from v1:
+- moved common probing code into its own function `rx6110_probe`
+- added a small patch to fix a type in the Kconfig
 
-      Arnd
+
+Claudius Heine (2):
+  rtc: rx6110: add i2c support
+  rtc: Kconfig: Fix typo in help message of rx 6110
+
+Johannes Hahn (1):
+  rtc: rx6110: add ACPI bindings to I2C
+
+ drivers/rtc/Kconfig      |  20 +++--
+ drivers/rtc/rtc-rx6110.c | 177 ++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 166 insertions(+), 31 deletions(-)
+
+-- 
+2.20.1
+
