@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F2D2B119B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27C82B11A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 23:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgKLWfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 17:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgKLWfP (ORCPT
+        id S1727518AbgKLWf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 17:35:56 -0500
+Received: from www62.your-server.de ([213.133.104.62]:38464 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726543AbgKLWf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:35:15 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857F9C0613D1;
-        Thu, 12 Nov 2020 14:35:15 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id f20so10438903ejz.4;
-        Thu, 12 Nov 2020 14:35:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p57BL1UoJnRDA8LQQBCOb1AWL61sYpqhOcXl2s2Ktmo=;
-        b=QGeT47vbxx1u+X8AVugaKGDgMjeIGjP3nroq6qHJYc4hHBT7RrAQu5F1RNHqOxW+Ph
-         t9GeGsMzalx44u+Q/lISz/mgFTv29drub/WRetCfj8svZ865OZB42+3Jvebt8WQfqQ/a
-         WMYnz+gA92yYyFsBA9Yc7Y7Bpxt4nd/WOU5CXICc8odukDbrHeAVr0ieajz2pi6j7RTp
-         n+NaIW9Yx4fSufYqVYhbzdnbNwJlzbEmIeDwJMPfH2sBDxZ09hIjOsnE9M5t/HLJ0kfl
-         necRCubK5FCjxz0CAnBIR04wBXOvazPf0WFDMneI6SwF845XOcii8aJ0D+oyAZhcwymh
-         HM0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p57BL1UoJnRDA8LQQBCOb1AWL61sYpqhOcXl2s2Ktmo=;
-        b=MRJsfk5wh0wkcbLk7c0uDP72rhkKvSrUFyBn52kYuro0L6R52/nsc/+LmGQU0T57kk
-         EAYFQ3k30n9bB9cvujDS8J9gy8H8Oifm+xOICCiopgR8nq9FF6Fot85UdQiaBi7hJ9xr
-         /w72D0VpvapyVaL16klrIjcn7vtBpr+gAK/Sq3PeHEr2PMhwGy/RdbW7ZqLShTuyWB6Y
-         sjTQf2qP7OnzArkfSJQ14qmPfCY9TI/ZX6gh3xqr9DUPXOAL1FkBojfrR+Ulabfebatp
-         guHA0gtgiJT1FegfPsQUBx3qvKiug6675LZWoUBGRpbXgieIRlannAdnVFMPmQ2lR0/4
-         PJaA==
-X-Gm-Message-State: AOAM530NvVgNhgv6xntoLTZANPaXAx9jBI5lkbDa0Ge5nrmuLMNy+7HZ
-        RdJkFjuaa7gyBB6lQ7KumHk=
-X-Google-Smtp-Source: ABdhPJxSbE3Jwqg8xMBq220twIqtrWBS6+9ZlX9IX162gQ1ALtJ2lVuifaNmfGfuocLV9VyC1u5dNA==
-X-Received: by 2002:a17:906:5017:: with SMTP id s23mr1581466ejj.359.1605220514250;
-        Thu, 12 Nov 2020 14:35:14 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id g25sm2606855ejh.61.2020.11.12.14.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 14:35:13 -0800 (PST)
-Date:   Fri, 13 Nov 2020 00:35:12 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 01/11] dt-bindings: net: dsa: convert ksz
- bindings document to yaml
-Message-ID: <20201112223512.g77usyxfmsisklgp@skbuf>
-References: <20201112153537.22383-1-ceggers@arri.de>
- <20201112153537.22383-2-ceggers@arri.de>
+        Thu, 12 Nov 2020 17:35:56 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kdLC5-0004Xd-Hw; Thu, 12 Nov 2020 23:35:53 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kdLC5-0008M8-AO; Thu, 12 Nov 2020 23:35:53 +0100
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Augment the set of sleepable LSM
+ hooks
+To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+References: <20201112200346.404864-1-kpsingh@chromium.org>
+ <20201112200346.404864-2-kpsingh@chromium.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5d22e146-0dd1-2054-c718-fa76f8dfa7b9@iogearbox.net>
+Date:   Thu, 12 Nov 2020 23:35:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112153537.22383-2-ceggers@arri.de>
+In-Reply-To: <20201112200346.404864-2-kpsingh@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25986/Thu Nov 12 14:18:25 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:35:27PM +0100, Christian Eggers wrote:
-> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> new file mode 100644
-> index 000000000000..431ca5c498a8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> @@ -0,0 +1,150 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+On 11/12/20 9:03 PM, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> Update the set of sleepable hooks with the ones that do not trigger
+> a warning with might_fault() when exercised with the correct kernel
+> config options enabled, i.e.
+> 
+> 	DEBUG_ATOMIC_SLEEP=y
+> 	LOCKDEP=y
+> 	PROVE_LOCKING=y
+> 
+> This means that a sleepable LSM eBPF program can be attached to these
+> LSM hooks. A new helper method bpf_lsm_is_sleepable_hook is added and
+> the set is maintained locally in bpf_lsm.c
+> 
+> A comment is added about the list of LSM hooks that have been observed
+> to be called from softirqs, atomic contexts, or the ones that can
+> trigger pagefaults and thus should not be added to this list.
+> 
+[...]
+>   
+> +/* The set of hooks which are called without pagefaults disabled and are allowed
+> + * to "sleep" and thus can be used for sleeable BPF programs.
+> + *
+> + * There are some hooks which have been observed to be called from a
+> + * non-sleepable context and should not be added to this set:
+> + *
+> + *  bpf_lsm_bpf_prog_free_security
+> + *  bpf_lsm_capable
+> + *  bpf_lsm_cred_free
+> + *  bpf_lsm_d_instantiate
+> + *  bpf_lsm_file_alloc_security
+> + *  bpf_lsm_file_mprotect
+> + *  bpf_lsm_file_send_sigiotask
+> + *  bpf_lsm_inet_conn_request
+> + *  bpf_lsm_inet_csk_clone
+> + *  bpf_lsm_inode_alloc_security
+> + *  bpf_lsm_inode_follow_link
+> + *  bpf_lsm_inode_permission
+> + *  bpf_lsm_key_permission
+> + *  bpf_lsm_locked_down
+> + *  bpf_lsm_mmap_addr
+> + *  bpf_lsm_perf_event_read
+> + *  bpf_lsm_ptrace_access_check
+> + *  bpf_lsm_req_classify_flow
+> + *  bpf_lsm_sb_free_security
+> + *  bpf_lsm_sk_alloc_security
+> + *  bpf_lsm_sk_clone_security
+> + *  bpf_lsm_sk_free_security
+> + *  bpf_lsm_sk_getsecid
+> + *  bpf_lsm_socket_sock_rcv_skb
+> + *  bpf_lsm_sock_graft
+> + *  bpf_lsm_task_free
+> + *  bpf_lsm_task_getioprio
+> + *  bpf_lsm_task_getscheduler
+> + *  bpf_lsm_task_kill
+> + *  bpf_lsm_task_setioprio
+> + *  bpf_lsm_task_setnice
+> + *  bpf_lsm_task_setpgid
+> + *  bpf_lsm_task_setrlimit
+> + *  bpf_lsm_unix_may_send
+> + *  bpf_lsm_unix_stream_connect
+> + *  bpf_lsm_vm_enough_memory
+> + */
 
-Where is the "GPL-2.0-only OR BSD-2-Clause" license coming from? I see
-that the Microchip KSZ driver is GPL-2.0, and the previous bindings
-document had no license, which would also make it implicitly GPL I
-believe.
+I think this is very useful info. I was wondering whether it would make sense
+to annotate these more closely to the code so there's less chance this info
+becomes stale? Maybe something like below, not sure ... issue is if you would
+just place a cant_sleep() in there it might be wrong since this should just
+document that it can be invoked from non-sleepable context but it might not
+have to.
+
+diff --git a/security/security.c b/security/security.c
+index a28045dc9e7f..7899bf32cdaa 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -94,6 +94,11 @@ static __initdata bool debug;
+                         pr_info(__VA_ARGS__);                   \
+         } while (0)
+
++/*
++ * Placeholder for now to document that hook implementation cannot sleep
++ * since it could potentially be called from non-sleepable context, too.
++ */
++#define hook_cant_sleep()              do { } while (0)
++
+  static bool __init is_enabled(struct lsm_info *lsm)
+  {
+         if (!lsm->enabled)
+@@ -2522,6 +2527,7 @@ void security_bpf_map_free(struct bpf_map *map)
+  }
+  void security_bpf_prog_free(struct bpf_prog_aux *aux)
+  {
++       hook_cant_sleep();
+         call_void_hook(bpf_prog_free_security, aux);
+  }
+  #endif /* CONFIG_BPF_SYSCALL */
