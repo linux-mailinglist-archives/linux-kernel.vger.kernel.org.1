@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887D92B03C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4E02B03C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 12:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgKLLWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 06:22:35 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7177 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLLWc (ORCPT
+        id S1727865AbgKLLYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 06:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgKLLYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:22:32 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWzhZ3Pj5z15VfX;
-        Thu, 12 Nov 2020 19:22:06 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 12 Nov 2020 19:22:12 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <m.felsch@pengutronix.de>, <f.fainelli@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] net: phy: smsc: add missed clk_disable_unprepare in smsc_phy_probe()
-Date:   Thu, 12 Nov 2020 19:23:59 +0800
-Message-ID: <1605180239-1792-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 12 Nov 2020 06:24:09 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC766C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:24:08 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b8so5627686wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 03:24:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=szqL77OyEVf5vlwPlO5u0pCoBC9WdDfxlvV/jS14f7E=;
+        b=W+eu3SDUj96qApW3fPXVb+xDPNnyinb5iqfjnyWgB2qExiVq0mQwKnClSWWjqkt8OZ
+         fJkNHuW70oPJ/doSMrRfRizxIy6jPW2wSlMD8toIvwPk5bh3fOAjgdTBYKG/Aus9N9t3
+         1bJoWq2anjY3zJZ1pi/FzmllzANSkW2psCgx/vfhv4AXT2YLr/yavichSFSXUCCwNrvZ
+         BHE5035iiBFf6o7siVYZHXjfPiHIdnlGvxplVVriBuEdYHoBIAItWvqRUCeFfG2E6LEa
+         boMBxnUabqFVx09Y8reV5qhqsNMi1rHBANv77VZJ8stUSMd8Y4OfMQ2Vnr292kt8GE6m
+         oE2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=szqL77OyEVf5vlwPlO5u0pCoBC9WdDfxlvV/jS14f7E=;
+        b=RCqfmYJDLz0pCQLEJ1X3/EJWdf0FYL1JqVsRF45jTdaWxQLo+5NHXJq4eXIrN5AFMM
+         Xa6YVuYcSb4+LEQG/LLbE4QOhls5OGShAQJJpK5HjXJ1VmTS4LtsoBbBDbRBX2Qa4CWz
+         d6m762DmN2Wng7hmrFr3tYkye5WYTNKWpa6aBJ2elPKuiNBEXnAHxiAiHEYXGZ8LAAON
+         fMHVsrqM0s2v+UGTvsxzmO7gQZ1sk1BuKk2vfIV6HZ7SMcVD5LQkWIBKXPypqZmmUgtP
+         gKEShwWvBiBbohmcyM1/00wm5b2MEx7fKRMlPgLN/xhXriawvBndYV7u0NhjOqk8r2kP
+         12HQ==
+X-Gm-Message-State: AOAM531RMT3N8ZzTknR89nHCVRRiG7m7Ujqx8O2TLZhwMBKQcQyfF45i
+        6Y6UgiC4KAztLID9kUmfNcLNJQ==
+X-Google-Smtp-Source: ABdhPJxH7/ZKgWoWnVYh+D4j8m7LwUtdScXYKtOerDowIYHrkBFRK+sNKPZHBUWJnvIbUw7Xl+MMVw==
+X-Received: by 2002:a5d:444c:: with SMTP id x12mr23015463wrr.6.1605180247340;
+        Thu, 12 Nov 2020 03:24:07 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6971:b700:3764:fa96? ([2a01:e34:ed2f:f020:6971:b700:3764:fa96])
+        by smtp.googlemail.com with ESMTPSA id q7sm6837706wrg.95.2020.11.12.03.24.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 03:24:06 -0800 (PST)
+Subject: Re: [PATCH v2] thermal/drivers/cpufreq_cooling: Update cpufreq_state
+ only if state has changed
+To:     zhuguangqing83@gmail.com, viresh.kumar@linaro.org,
+        amit.kachhap@gmail.com, javi.merino@kernel.org,
+        rui.zhang@intel.com, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhuguangqing <zhuguangqing@xiaomi.com>,
+        "v5 . 4+" <stable@vger.kernel.org>
+References: <20201106092243.15574-1-zhuguangqing83@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <55b484fb-1532-e130-3b05-5a7f5e18a536@linaro.org>
+Date:   Thu, 12 Nov 2020 12:24:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201106092243.15574-1-zhuguangqing83@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing clk_disable_unprepare() before return from
-smsc_phy_probe() in the error handling case.
+On 06/11/2020 10:22, zhuguangqing83@gmail.com wrote:
+> From: Zhuguangqing <zhuguangqing@xiaomi.com>
+> 
+> If state has not changed successfully and we updated cpufreq_state,
+> next time when the new state is equal to cpufreq_state (not changed
+> successfully last time), we will return directly and miss a
+> freq_qos_update_request() that should have been.
+> 
+> Fixes: 5130802ddbb1 ("thermal: cpu_cooling: Switch to QoS requests for freq limits")
+> Cc: v5.4+ <stable@vger.kernel.org> # v5.4+
+> Signed-off-by: Zhuguangqing <zhuguangqing@xiaomi.com>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
 
-Fixes: bedd8d78aba3 ("net: phy: smsc: LAN8710/20: add phy refclk in support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/phy/smsc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Applied, thanks
 
-diff --git a/drivers/net/phy/smsc.c b/drivers/net/phy/smsc.c
-index ec97669..0fc39ac 100644
---- a/drivers/net/phy/smsc.c
-+++ b/drivers/net/phy/smsc.c
-@@ -291,8 +291,10 @@ static int smsc_phy_probe(struct phy_device *phydev)
- 		return ret;
- 
- 	ret = clk_set_rate(priv->refclk, 50 * 1000 * 1000);
--	if (ret)
-+	if (ret) {
-+		clk_disable_unprepare(priv->refclk);
- 		return ret;
-+	}
- 
- 	return 0;
- }
+
 -- 
-2.9.5
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
