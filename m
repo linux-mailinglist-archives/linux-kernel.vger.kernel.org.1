@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D89C2B00E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161152B00ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 09:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgKLIMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 03:12:00 -0500
-Received: from mail-db8eur05on2085.outbound.protection.outlook.com ([40.107.20.85]:42369
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725884AbgKLIL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 03:11:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LNtQs+vvapkV4rQmoRhKXOu6hCe9cR+xU8FpnzHlrLg543XrHV9pJ30+FrVZdeBFIdLKMoCgzTkgSuUiyIe6MuFfVymcgJ4qtxAm0WH/Aq4t/lichA06fz5bJRAZ6R6xPXMpjxvXTyAbkqswsyip/CmyQW+kihTM6dGgQDa2xv6EjalNrprY8KqsbvEC146pRGoFyOU6qVQBPNhKsOJR+MqwlgVEXiOOzWb2YoNC86G4+JNGr3F7guxOw5CVTVEA4UwQ8SnkrCS/8U3JBiEW4D4DdO7t8i3gsBm1UdAnQarfb7aALxRgz7YRA3T5A03+iOpV2GIHB5dyKZTncbVfCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oYIgd/BQ7h2nM2oYg3F6i6MmE2pDQYjLLmRMyAaausk=;
- b=C/NkuvydbRiS1y292Z9D/QiR8KUhy44+nHWBy/srTcKs42NNScr2ErLtf81EPw/lwWGdOOJA3LlAc97k4MuRyKmJhOzFUVfWQgmZ/O3aRAK1w0lbQij1jl/mQMNHgf+ZFEmnTjNXharIXwxIzzllJTqpMGcLilu7rZnu4Z+BrMZp0w6tF+6b5HZZrcF9V+wd4h507WnMFbCGpfdlkddxNazpEuxPVrJpjQR+C37RVk3KFWCqrDQQXZFZLhRWE7w0zP5k1xP2RypBTIPf7wdSYqezYy6KGsv1Yof7sUjyUsB8bWSS6M8ghP4uvPEZZMRy9ZcZ6RCJVstIwk+ahRxDbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=siemens.onmicrosoft.com; s=selector1-siemens-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oYIgd/BQ7h2nM2oYg3F6i6MmE2pDQYjLLmRMyAaausk=;
- b=e+1Nxiaynq9lgSd1haunqjnU5p5Fw/VK3/MrkuVo3p+kKSw+1xleCO5KewC6HmmJiSVHNo+F9k8aWHHngqVfC+DsnnfBYwmVyekR/mUU/Rin22jao1AKP/L4zCH1OSs6FaIWXLWx8pA2ifrmbOl44IyQOR2lVnOgwgtd+j0Cmh4=
-Received: from DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:138::9)
- by DB6PR10MB1559.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:6:36::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Thu, 12 Nov
- 2020 08:11:55 +0000
-Received: from DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::dd4e:81f8:cb7e:a1eb]) by DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::dd4e:81f8:cb7e:a1eb%3]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
- 08:11:55 +0000
-From:   "Valek, Andrej" <andrej.valek@siemens.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-CC:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
-Subject: RE: [PATCH v2] Input: st1232 - add support resolution reading
-Thread-Topic: [PATCH v2] Input: st1232 - add support resolution reading
-Thread-Index: AQHWuJausQ675DfOyEKCxRf7capNnKnEJVGA
-Content-Class: 
-Date:   Thu, 12 Nov 2020 08:11:55 +0000
-Message-ID: <DB8PR10MB3977BDD73A260EE7999DD76892E70@DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM>
-References: <202011030200.dKK6cKCM-lkp@intel.com>
- <20201103073949.12198-1-andrej.valek@siemens.com>
- <20201112015348.GD1003057@dtor-ws>
-In-Reply-To: <20201112015348.GD1003057@dtor-ws>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Enabled=true;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SetDate=2020-11-12T08:11:53Z;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Method=Standard;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Name=restricted-default;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ActionId=8687f37a-1984-451f-bf2b-f32752f66bf7;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ContentBits=0
-document_confidentiality: Restricted
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=siemens.com;
-x-originating-ip: [165.225.200.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 69d6f610-5e72-48f6-7c0a-08d886e29e94
-x-ms-traffictypediagnostic: DB6PR10MB1559:
-x-microsoft-antispam-prvs: <DB6PR10MB1559EC8EBDB5D3CC084343F892E70@DB6PR10MB1559.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4FgFAe0fS9PQiprAu6XHu/nfaCo9H2XQH7Q/PnhzQ3vuJw7KS7NZ3995wI9vSV73MZRRfV7Pfn6a46OzI0M8vjC+FX5cZZP/+nOZlDC0mrYvhtgntnzbX/rMUSdqAdpLjtdkFyAO+TaY5w1/WP24dMtlWvE4wJZ6BHQMX//1eOI5Q6nf58rMLZ223QF8VrgrgqVKAGDzYSBHseUYQMBgVOv0tgVeIGnfbL+KRxzMJv6ZZH2GgM7GnN7PT/JlItXhqi5KuZXk7k3bg4CXjHcVBPYG2d3g9ZYxvzNXTnBaZWIOjveUS0+lTiivH/lAdB30oaLiL6HKLk9aP+ypPhx25g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(64756008)(2906002)(86362001)(8676002)(66476007)(5660300002)(83380400001)(66946007)(186003)(55236004)(76116006)(316002)(71200400001)(26005)(53546011)(6506007)(33656002)(66556008)(8936002)(6916009)(7696005)(52536014)(66446008)(4326008)(54906003)(478600001)(55016002)(9686003)(4744005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 2W0WzavkYSa/9qFgquW8QVbIdmUKlTHt+rG4VZhFkwqYypeeG12PnsP57rupJ5JQAS1TFxaoayRoVdJzuKYwxz+wZf43kAdKTodlwT1fwtQpwS0g87AGaPd6LnvUTweLNxbahNciFr5asmjmjIL6KrbRoBAi0sRWqSZm+pNgn3dsjnSHuncJNm7dMMDlwaJAwlHH+t2fpySsNADI9gGP+MDvPQFPiGwPSClY6k3CkaokCDWqhXpzzWBsXlSVfDZ0gm7bWfsVpKg9gz70UCXkPfxicjmoFZr/X8ske+d46SAWO1e5TaqlgpG64Ceo+wgEZZlW78CXhikZ2heYi/VxnIYfl9PRqgqsYGR3mtL9oWiJqoYItHq7xu2EwNFYVhje454sCsdBgDXW5hmW3OTdZfeYQ1MfqaslFkukm7/sSQH4xWeyTBtdvjAF1F3qYeamZVIPaz5/AIvPsTE4gl3+4luV4iZVvQOCYpuUi0PyWqgRkyjHJJ29ZEL3jz5u+KSBOBLzwUwqBzruah+nB7g4CDgXoH0jHWZvZflqioy1oAZkRKlqkS8vpVUfL6qH3mYLGNi2UQ5dSv+/DlEWUny7zjdpor4D6lzEmFpUyKpRGxBN1WyBgYDPDfQFnJfaQvCimAcnABk9n1eZsHbHJUSSlH8/02A0tQ3LzfCazexN2pd38+313WWc4C4qSg4BsyAYpiU2+fWMyP5HB+KR+l7xrjTr/aeHMn83rbP3fk2Qmdsi6Hg+5Q75O4N6VDioyAuKVDUR2F5bYZDFJXAuipY+8zgAeRO7GimhVw2wkEs1UDwY9xKolRugQhh/cme+uoOCfs1UolG7rx5Ti+KHrYDarnvgGFzGt0Xh3pihfg5qJG2N4fdbvS4+BoEYOOlRJg3j9xH2WrN6D+QZAi5x2dQe7Q==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727054AbgKLIMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 03:12:21 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7210 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgKLIMU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 03:12:20 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWvTK3PVczkjYb;
+        Thu, 12 Nov 2020 16:12:05 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 12 Nov 2020 16:12:08 +0800
+Subject: Re: [PATCH v13 1/8] x86: kdump: replace the hard-coded alignment with
+ macro CRASH_ALIGN
+To:     Mike Rapoport <rppt@kernel.org>
+References: <20201031074437.168008-1-chenzhou10@huawei.com>
+ <20201031074437.168008-2-chenzhou10@huawei.com>
+ <20201112075810.GJ4758@kernel.org>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
+        <bhe@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
+        <bhsharma@redhat.com>, <prabhakar.pkin@gmail.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <james.morse@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
+        <xiexiuqi@huawei.com>, <guohanjun@huawei.com>,
+        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <3beb3c41-5b58-e108-55bd-550c852d9eb2@huawei.com>
+Date:   Thu, 12 Nov 2020 16:12:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69d6f610-5e72-48f6-7c0a-08d886e29e94
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 08:11:55.3131
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KU/5LD1xwZzgJlaURIpbqgxptncP0BTm9zRcOSVDfVz/F0lGF8ePym/z9dHUMZQW+EnHtPYQ+2R86UPuGNvOpCo71ed/6lwBMAx4kgl010Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR10MB1559
+In-Reply-To: <20201112075810.GJ4758@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dimitry,
 
-Thank you for that.
-What about the other patches?
 
-Regards,
-Andrej
-
-> -----Original Message-----
-> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>=20
-> Sent: Thursday, November 12, 2020 2:54 AM
-> To: Valek, Andrej (ADV D EU SK SI-BP1) <andrej.valek@siemens.com>
-> Cc: linux-input@vger.kernel.org; linux-kernel@vger.kernel.org; kbuild-all=
-@lists.01.org
-> Subject: Re: [PATCH v2] Input: st1232 - add support resolution reading
->=20
-> On Tue, Nov 03, 2020 at 08:39:49AM +0100, Andrej Valek wrote:
->> Hard-coding resolution for st1633 device was wrong. Some of LCDs like=20
->> YTS700TLBC-02-100C has assembled Sitronix st1633 touchcontroller too.=20
->> But the resolution is not 320x480 as was hard-coded.
->> Add new function which reads correct resolution directly from register.
->>=20
->> Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
+On 2020/11/12 15:58, Mike Rapoport wrote:
+> Hi,
 >
-> Applied, thank you.
+> On Sat, Oct 31, 2020 at 03:44:30PM +0800, Chen Zhou wrote:
+>> Move CRASH_ALIGN to header asm/kexec.h and replace the hard-coded
+>> alignment with macro CRASH_ALIGN in function reserve_crashkernel().
+>>
+>> Suggested-by: Dave Young <dyoung@redhat.com>
+>> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+>> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
+>> ---
+>>  arch/x86/include/asm/kexec.h | 3 +++
+>>  arch/x86/kernel/setup.c      | 5 +----
+>>  2 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
+>> index 6802c59e8252..8cf9d3fd31c7 100644
+>> --- a/arch/x86/include/asm/kexec.h
+>> +++ b/arch/x86/include/asm/kexec.h
+>> @@ -18,6 +18,9 @@
+>>  
+>>  # define KEXEC_CONTROL_CODE_MAX_SIZE	2048
+>>  
+>> +/* 2M alignment for crash kernel regions */
+>> +#define CRASH_ALIGN		SZ_16M
+> Please update the comment to match the code.
+Ok, thanks for pointing this mistake.
+
+Thanks,
+Chen Zhou
 >
-> --
-> Dmitry
+>> +
+>>  #ifndef __ASSEMBLY__
+>>  
+>>  #include <linux/string.h>
+>> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+>> index 84f581c91db4..bf373422dc8a 100644
+>> --- a/arch/x86/kernel/setup.c
+>> +++ b/arch/x86/kernel/setup.c
+>> @@ -395,9 +395,6 @@ static void __init memblock_x86_reserve_range_setup_data(void)
+>>  
+>>  #ifdef CONFIG_KEXEC_CORE
+>>  
+>> -/* 16M alignment for crash kernel regions */
+>> -#define CRASH_ALIGN		SZ_16M
+>> -
+>>  /*
+>>   * Keep the crash kernel below this limit.
+>>   *
+>> @@ -515,7 +512,7 @@ static void __init reserve_crashkernel(void)
+>>  	} else {
+>>  		unsigned long long start;
+>>  
+>> -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
+>> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
+>>  						  crash_base + crash_size);
+>>  		if (start != crash_base) {
+>>  			pr_info("crashkernel reservation failed - memory is in use.\n");
+>> -- 
+>> 2.20.1
+>>
+
