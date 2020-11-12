@@ -2,313 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9D42B0A13
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6612C2B0A2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgKLQfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:35:47 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:63113 "EHLO z5.mailgun.us"
+        id S1729117AbgKLQh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:37:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41908 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727739AbgKLQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:35:45 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605198944; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=GpPKFpqRzHEfItsWz+dTFTuMqGgZmD5+BkFgaIg6jiw=; b=OsnFZLyWS/l1NqB0Yuor1cbegutaywSVpwiu+8tIu1AoL4tI2ChbeCiDoaj21cI1mId2/H1Y
- NwBllieEmVHTHgPq5huh42V36VEt3qhUQzUSf4FF/oXP8YbIhW31QKxennHSQJKSBr0o7W6H
- 0ge75Vb11px4cZ5nf7Ij3QgCg5g=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fad6456135ce186e9e6ff51 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Nov 2020 16:35:34
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0AFC7C433C9; Thu, 12 Nov 2020 16:35:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9055C433C6;
-        Thu, 12 Nov 2020 16:35:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C9055C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Thu, 12 Nov 2020 09:35:27 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-Subject: Re: [PATCH] drm/msm: adreno: Make speed-bin support generic
-Message-ID: <20201112163527.GC2661@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-References: <1605196144-23516-1-git-send-email-akhilpo@codeaurora.org>
+        id S1729063AbgKLQhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:37:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 715CAAB95;
+        Thu, 12 Nov 2020 16:37:47 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org
+Cc:     f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
+        andy.shevchenko@gmail.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Subject: [PATCH v4 00/11] Raspberry Pi PoE HAT fan support
+Date:   Thu, 12 Nov 2020 17:36:18 +0100
+Message-Id: <20201112163630.17177-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605196144-23516-1-git-send-email-akhilpo@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:19:04PM +0530, Akhil P Oommen wrote:
-> So far a530v2 gpu has support for detecting its supported opps
-> based on a fuse value called speed-bin. This patch makes this
-> support generic across gpu families. This is in preparation to
-> extend speed-bin support to a6x family.
-> 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
-> This patch is rebased on top of msm-next-staging branch in rob's tree.
-> 
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 --------------
->  drivers/gpu/drm/msm/adreno/adreno_device.c |  4 ++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 71 ++++++++++++++++++++++++++++++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++
->  4 files changed, 80 insertions(+), 34 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 8fa5c91..7d42321 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -1531,38 +1531,6 @@ static const struct adreno_gpu_funcs funcs = {
->  	.get_timestamp = a5xx_get_timestamp,
->  };
->  
-> -static void check_speed_bin(struct device *dev)
-> -{
-> -	struct nvmem_cell *cell;
-> -	u32 val;
-> -
-> -	/*
-> -	 * If the OPP table specifies a opp-supported-hw property then we have
-> -	 * to set something with dev_pm_opp_set_supported_hw() or the table
-> -	 * doesn't get populated so pick an arbitrary value that should
-> -	 * ensure the default frequencies are selected but not conflict with any
-> -	 * actual bins
-> -	 */
-> -	val = 0x80;
-> -
-> -	cell = nvmem_cell_get(dev, "speed_bin");
-> -
-> -	if (!IS_ERR(cell)) {
-> -		void *buf = nvmem_cell_read(cell, NULL);
-> -
-> -		if (!IS_ERR(buf)) {
-> -			u8 bin = *((u8 *) buf);
-> -
-> -			val = (1 << bin);
-> -			kfree(buf);
-> -		}
-> -
-> -		nvmem_cell_put(cell);
-> -	}
-> -
-> -	dev_pm_opp_set_supported_hw(dev, &val, 1);
-> -}
-> -
->  struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
->  {
->  	struct msm_drm_private *priv = dev->dev_private;
-> @@ -1588,8 +1556,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
->  
->  	a5xx_gpu->lm_leakage = 0x4E001A;
->  
-> -	check_speed_bin(&pdev->dev);
-> -
->  	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 4);
->  	if (ret) {
->  		a5xx_destroy(&(a5xx_gpu->base.base));
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> index 87c8b03..e0ff16c 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> @@ -18,6 +18,8 @@ bool snapshot_debugbus = false;
->  MODULE_PARM_DESC(snapshot_debugbus, "Include debugbus sections in GPU devcoredump (if not fused off)");
->  module_param_named(snapshot_debugbus, snapshot_debugbus, bool, 0600);
->  
-> +const u32 a530v2_speedbins[] = {0, 1, 2, 3, 4, 5, 6, 7};
-> +
->  static const struct adreno_info gpulist[] = {
->  	{
->  		.rev   = ADRENO_REV(2, 0, 0, 0),
-> @@ -163,6 +165,8 @@ static const struct adreno_info gpulist[] = {
->  			ADRENO_QUIRK_FAULT_DETECT_MASK,
->  		.init = a5xx_gpu_init,
->  		.zapfw = "a530_zap.mdt",
-> +		.speedbins = a530v2_speedbins,
-> +		.speedbins_count = ARRAY_SIZE(a530v2_speedbins),
->  	}, {
->  		.rev = ADRENO_REV(5, 4, 0, 2),
->  		.revn = 540,
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index f21561d..cdd0c11 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -14,6 +14,7 @@
->  #include <linux/pm_opp.h>
->  #include <linux/slab.h>
->  #include <linux/soc/qcom/mdt_loader.h>
-> +#include <linux/nvmem-consumer.h>
->  #include <soc/qcom/ocmem.h>
->  #include "adreno_gpu.h"
->  #include "msm_gem.h"
-> @@ -891,6 +892,69 @@ void adreno_gpu_ocmem_cleanup(struct adreno_ocmem *adreno_ocmem)
->  			   adreno_ocmem->hdl);
->  }
->  
-> +static int adreno_set_supported_hw(struct device *dev,
-> +		struct adreno_gpu *adreno_gpu)
-> +{
-> +	u8 speedbins_count = adreno_gpu->info->speedbins_count;
-> +	const u32 *speedbins = adreno_gpu->info->speedbins;
+The aim of this series is to add support to the fan found on RPi's PoE
+HAT. Some commentary on the design can be found below. But the imporant
+part to the people CC'd here not involved with PWM is that, in order to
+achieve this properly, we also have to fix the firmware interface the
+driver uses to communicate with the PWM bus (and many other low level
+functions). Specifically, we have to make sure the firmware interface
+isn't unbound while consumers are still up. So, patch #1 & #2 introduce
+reference counting in the firwmware interface driver and patches #3 to
+#8 update all firmware users. Patches #9 to #11 introduce the new PWM
+driver.
 
-We don't need to make this generic and put it in the table. Just call the
-function from the target specific code and pass the speedbin array and size from
-there.
+I sent everything as a single series as the final version of the PWM
+drivers depends on the firwmare fixes, but I'll be happy to split this
+into two separate series if you think it's better.
 
-> +	struct nvmem_cell *cell;
-> +	u32 bin, i;
-> +	u32 val = 0;
-> +	void *buf, *opp_table;
-> +
-> +	cell = nvmem_cell_get(dev, "speed_bin");
-> +	/*
-> +	 * -ENOENT means that the platform doesn't support speedbin which is
-> +	 * fine
-> +	 */
-> +	if (PTR_ERR(cell) == -ENOENT)
-> +		return 0;
-> +	else if (IS_ERR(cell))
-> +		return PTR_ERR(cell);
-> +
-> +	/* A speedbin table is must if the platform supports speedbin */
-> +	if (!speedbins) {
-> +		DRM_DEV_ERROR(dev, "speed-bin table is missing\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	buf = nvmem_cell_read(cell, NULL);
-> +	if (IS_ERR(buf)) {
-> +		nvmem_cell_put(cell);
-> +		return PTR_ERR(buf);
-> +	}
-> +
-> +	bin = *((u32 *) buf);
-> +
-> +	for (i = 0; i < speedbins_count; i++) {
-> +		if (bin == speedbins[i]) {
-> +			val = (1 << i);
-> +			break;
-> +		}
-> +	}
-> +
-> +	kfree(buf);
-> +	nvmem_cell_put(cell);
-> +
-> +	if (!val) {
-> +		DRM_DEV_ERROR(dev, "missing support for speed-bin: %u\n", bin);
-> +		return -ENOENT;
-> +	}
-> +
-> +	opp_table = dev_pm_opp_set_supported_hw(dev, &val, 1);
-> +	if (IS_ERR(opp_table))
-> +		return PTR_ERR(opp_table);
-> +
-> +	adreno_gpu->opp_table = opp_table;
-> +	return 0;
-> +}
-> +
-> +static void adreno_put_supported_hw(struct opp_table *opp_table)
-> +{
-> +	if (opp_table)
-> +		dev_pm_opp_put_supported_hw(opp_table);
-> +}
-> +
->  int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  		struct adreno_gpu *adreno_gpu,
->  		const struct adreno_gpu_funcs *funcs, int nr_rings)
-> @@ -899,6 +963,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  	struct adreno_platform_config *config = dev->platform_data;
->  	struct msm_gpu_config adreno_gpu_config  = { 0 };
->  	struct msm_gpu *gpu = &adreno_gpu->base;
-> +	int ret;
->  
->  	adreno_gpu->funcs = funcs;
->  	adreno_gpu->info = adreno_info(config->rev);
-> @@ -910,6 +975,10 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  
->  	adreno_gpu_config.nr_rings = nr_rings;
->  
-> +	ret = adreno_set_supported_hw(dev, adreno_gpu);
-> +	if (ret)
-> +		return ret;
+--- Original cover letter below ---
 
-This bit should be in the target specific code
-> +
->  	adreno_get_pwrlevels(dev, gpu);
->  
->  	pm_runtime_set_autosuspend_delay(dev,
-> @@ -936,4 +1005,6 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
->  
->  	icc_put(gpu->icc_path);
->  	icc_put(gpu->ocmem_icc_path);
-> +
-> +	adreno_put_supported_hw(adreno_gpu->opp_table);
+This series aims at adding support to RPi's official PoE HAT fan[1].
 
-And this bit too, though it would be easier to just call the put function
-directly without having a intermediate function.  Also the OPP function should
-be NULL aware but thats a different story.
+The HW setup is the following:
 
-Jordan
->  }
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> index c3775f7..a756ad7 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> @@ -55,6 +55,7 @@ struct adreno_reglist {
->  };
->  
->  extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
-> +extern const u32 a618_speedbins[];
->  
->  struct adreno_info {
->  	struct adreno_rev rev;
-> @@ -67,6 +68,8 @@ struct adreno_info {
->  	const char *zapfw;
->  	u32 inactive_period;
->  	const struct adreno_reglist *hwcg;
-> +	const u32 *speedbins;
-> +	const u8 speedbins_count;
->  };
->  
->  const struct adreno_info *adreno_info(struct adreno_rev rev);
-> @@ -112,6 +115,8 @@ struct adreno_gpu {
->  	 * code (a3xx_gpu.c) and stored in this common location.
->  	 */
->  	const unsigned int *reg_offsets;
-> +
-> +	struct opp_table *opp_table;
->  };
->  #define to_adreno_gpu(x) container_of(x, struct adreno_gpu, base)
->  
-> -- 
-> 2.7.4
-> 
+| Raspberry Pi                               | PoE HAT                    |
+ arm core -> Mailbox -> RPi co-processor -> I2C -> Atmel MCU -> PWM -> FAN
+
+The arm cores have only access to the mailbox interface, as i2c0, even if
+physically accessible, is to be used solely by the co-processor
+(VideoCore 4/6).
+
+This series implements a PWM bus, and has pwm-fan sitting on top of it as per
+this discussion: https://lkml.org/lkml/2018/9/2/486. Although this design has a
+series of shortcomings:
+
+- It depends on a DT binding: it's not flexible if a new hat shows up with new
+  functionality, we're not 100% sure we'll be able to expand it without
+  breaking backwards compatibility. But without it we can't make use of DT
+  thermal-zones, which IMO is overkill.
+
+- We're using pwm-fan, writing a hwmon driver would, again, give us more
+  flexibility, but it's not really needed at the moment.
+
+I personally think that it's not worth the effort, it's unlikely we'll get
+things right in advance. And ultimately, if the RPi people come up with
+something new, we can always write a new driver/bindings from scratch (as in
+not reusing previous code).
+
+That said, I'm more than happy to change things if there is a consensus that
+another design will do the trick.
+
+[1] https://www.raspberrypi.org/blog/introducing-power-over-ethernet-poe-hat/
+
+---
+
+Changes since v3:
+ - Split first patch, #1 introduces refcount, then #2 the devm function
+ - Fix touchscreen function
+ - Use kref
+
+Changes since v2:
+ - Introduce devm_rpi_firmware_get()
+ - Small cleanups in PWM driver
+
+Changes since v1:
+ - Address PWM driver changes
+ - Fix binding, now with 2 cells
+
+Nicolas Saenz Julienne (11):
+  firmware: raspberrypi: Keep count of all consumers
+  firmware: raspberrypi: Introduce devm_rpi_firmware_get()
+  clk: bcm: rpi: Release firmware handle on unbind
+  gpio: raspberrypi-exp: Release firmware handle on unbind
+  reset: raspberrypi: Release firmware handle on unbind
+  soc: bcm: raspberrypi-power: Release firmware handle on unbind
+  staging: vchiq: Release firmware handle on unbind
+  input: raspberrypi-ts: Release firmware handle when not needed
+  dt-bindings: pwm: Add binding for RPi firmware PWM bus
+  DO NOT MERGE: ARM: dts: Add RPi's official PoE hat support
+  pwm: Add Raspberry Pi Firmware based PWM bus
+
+ .../arm/bcm/raspberrypi,bcm2835-firmware.yaml |  20 ++
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts         |  54 +++++
+ drivers/clk/bcm/clk-raspberrypi.c             |   2 +-
+ drivers/firmware/raspberrypi.c                |  66 +++++-
+ drivers/gpio/gpio-raspberrypi-exp.c           |   2 +-
+ drivers/input/touchscreen/raspberrypi-ts.c    |   2 +-
+ drivers/pwm/Kconfig                           |   9 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-raspberrypi-poe.c             | 216 ++++++++++++++++++
+ drivers/reset/reset-raspberrypi.c             |   2 +-
+ drivers/soc/bcm/raspberrypi-power.c           |   2 +-
+ .../interface/vchiq_arm/vchiq_arm.c           |   2 +-
+ .../pwm/raspberrypi,firmware-pwm.h            |  13 ++
+ include/soc/bcm2835/raspberrypi-firmware.h    |  10 +
+ 14 files changed, 391 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/pwm/pwm-raspberrypi-poe.c
+ create mode 100644 include/dt-bindings/pwm/raspberrypi,firmware-pwm.h
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.29.2
+
