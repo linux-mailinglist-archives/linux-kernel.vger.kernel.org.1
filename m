@@ -2,465 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C64B2B0919
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E302B0921
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgKLP54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:57:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43828 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728184AbgKLP5z (ORCPT
+        id S1728750AbgKLP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 10:58:12 -0500
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:12386 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728327AbgKLP6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:57:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605196672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eMsslzB60p6fE68DmvMliK7UF+Lv8JTCHb2KCVlluDo=;
-        b=X8iVyYW+O1zEN/3p7JLy+/WC4hDcMzF1uu4xYPGo9ikgUXYCA/QxOeqJ9OtpVi2UFtMImg
-        qVbL28At7YKGN+36f5chL7ucN+1QzC1VX8w9IA9SPIJkTiY24X9l5oUJe2XZy4IXPZwZGC
-        ZvFwS3Hfr+8q9bVsT2oz3xyqCi7GM3U=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-WqhNJ5nYMMS9tJwnVT3Zxw-1; Thu, 12 Nov 2020 10:57:50 -0500
-X-MC-Unique: WqhNJ5nYMMS9tJwnVT3Zxw-1
-Received: by mail-wr1-f69.google.com with SMTP id h11so2105302wrq.20
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 07:57:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=eMsslzB60p6fE68DmvMliK7UF+Lv8JTCHb2KCVlluDo=;
-        b=e8/Aax+lVccQpzNkwYSa3SuL+HZo52nIrYpW1tQCQlxnuLbHwNNeuk84Cg2eSxyBFK
-         Hy52/8Em32tHyn2QWi9PVTIJtPZ5N6BdFq5yVZny4IhUWvxHhftB5eZ3zAHPi22V+u2V
-         PUKkHqcyIbO1pMpEy6oRoNK6Me43Jx7u9/r9yHm6N54gSf5nNrz+E53982+cr7jb6AeA
-         vEvsCvufHItUHbjiPv+omCfkdSPQBhZyGXmUt5ga+cV1ZlW9iYMiv4jy1ri26Kx+48Wh
-         N4FEFKOnhZo1nVVp+iFmCrUQgIWdPTYdjnb5O8D9wXXMSYmSonQArBnrBWuNviCbTweP
-         JTcA==
-X-Gm-Message-State: AOAM531QhhdnR1I5gPQQVKbn8dE3tjBdT47gqjDbWeS0o31Exdfuc5Qt
-        3QnnwyfyjYK0bLR2EgtPAhfLsEveR8tZ85YHrOBzaaVcRNcQf4PMp2H2ckYifrRle3VvHZIm/aX
-        gbB3Pkf7/pja0kJg9/lGNrA3D
-X-Received: by 2002:a5d:5686:: with SMTP id f6mr164847wrv.329.1605196669180;
-        Thu, 12 Nov 2020 07:57:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxS8FL/rGWLRebjIj5BO7JLYQfEAyrXlJE2ouC3hPEX/lKUkClC2UxnLRmwJKF6B+Q3NpRgSA==
-X-Received: by 2002:a5d:5686:: with SMTP id f6mr164816wrv.329.1605196668951;
-        Thu, 12 Nov 2020 07:57:48 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id x81sm7556334wmg.5.2020.11.12.07.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 07:57:48 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v2 09/17] x86/hyperv: provide a bunch of helper functions
-In-Reply-To: <20201105165814.29233-10-wei.liu@kernel.org>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-10-wei.liu@kernel.org>
-Date:   Thu, 12 Nov 2020 16:57:46 +0100
-Message-ID: <871rgyy3d1.fsf@vitty.brq.redhat.com>
+        Thu, 12 Nov 2020 10:58:08 -0500
+Received: from pps.filterd (m0170397.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFWFPK018931;
+        Thu, 12 Nov 2020 10:57:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=UaaE6y9XajS74w/O95Ys6NB/3STF93D2Muvvx1/F9aQ=;
+ b=xO6ubptqMOQkOhrHPmqDmw3iVm7OZHufN3R3ypllOxI8vnznzN4gCFFVisiHrmZziALR
+ xQBf6XxGeoiuXEo0FKtrcrKLEQZT5uCcLsKf+jn8xAm840aDkdSvC0EUno0c/k15iby0
+ 1SJCsqv5XFKW6cBQyORiydDqP6JFlZ0VBB4IjSDmrjYwMNZYQJxEyBm3Q3GVgbASFPKH
+ ULshvufdVVi/r5+srLMaz2aLToXeWgQKZ/eBc2aKCH6FuBw3kTXMzlttDkgrN9Dq5u1y
+ HRSOt1xZTRXgULtzr0xafqadpFVXIdS/BZsiI/A1Ly3s8KLF1MCzGCNOFmlmdDFUjzxB Fw== 
+Received: from mx0b-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 34rtwhjx6a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 10:57:58 -0500
+Received: from pps.filterd (m0090350.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACFmB9X193753;
+        Thu, 12 Nov 2020 10:57:57 -0500
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by mx0b-00154901.pphosted.com with ESMTP id 34rarmk49c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 10:57:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j03wQrxDb1hGvM/g0bx+LInuSe59jVgr9svuhaa0n2TfHuD+/IgqVpuk3Wbxq608tLTmvV+OaeoTH73ev/Hj5/BljJM7n6R01Zo302yDQBgkWRIciHsLSHQ0APkcGhxLP8OCL07VhK2LzdgD5UCP+7S6CcWXr2zLu8YdUSZJPqjam8WBwylGWSyrxB38GQay/JRS2V+Tpir8XmWBdKX6Zfd7Vb0eCm5582YgNRDw9dKhkQ2KEPCrU8kw55/CsnzfoxaECyUM5Stmz246d+2pTymyR2LoT+Bq1fLGPz7DqyEE3h+Y63jkCl84uike7xctQEYN0uLFoVyREAn2S5zdrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UaaE6y9XajS74w/O95Ys6NB/3STF93D2Muvvx1/F9aQ=;
+ b=ln029rFjg5afcO7oNxZKoCZL6XW13Vam1f14OtqzFOdABS4WwsghMWAb2hcNYHhPNI4CytiDorXYaUnYwjxlm69/1APjGEDDLmYIk44y6YmojdlKRpLyY2fFfZJAnfRXl1JBAq8S0ckeLgl2fTsQtIerzWLcm10gNx2+5uv2G2+pX8VTd0tsZSeySbdpS0BrLPEoWwy+FYBFKzKy90x7KQ3cZZPLGXW2ccsthDre3RH9fzcTUKRcxq3/tlDoUaz5LG+QZuR1fybp34+6MzhTnFGl/KvrL0RO7Bj8VlAho0aqP4XmjX+Dx/YIODoHaB1Nj9/Atg48s93+U01ag6OY7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UaaE6y9XajS74w/O95Ys6NB/3STF93D2Muvvx1/F9aQ=;
+ b=hQxqBvJcOTTqWTzX/ML8JHyeipARvXDsUp5U3+vekr94jp44OiDOuICKQp0a+FmirO+FTJMQyFIYP42quBTRKMBlIH2XuXiVukM1iK7Z9q/6kjOfeV5l29yGM6OyxNupkVGKbVZJoBS73cC/GCutc5FDPCJhSUUmO13UuHmEmYA=
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
+ by DM6PR19MB2443.namprd19.prod.outlook.com (2603:10b6:5:15e::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Thu, 12 Nov
+ 2020 15:57:55 +0000
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a8ff:e803:ee80:e59a]) by DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a8ff:e803:ee80:e59a%3]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
+ 15:57:55 +0000
+From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        "Yuan, Perry" <Perry.Yuan@dell.com>
+CC:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: RE: [PATCH] platform/x86: dell-privacy: Add support for new privacy
+ driver
+Thread-Topic: [PATCH] platform/x86: dell-privacy: Add support for new privacy
+ driver
+Thread-Index: AQHWuQVotUSjecTwXUm8CCIPHIWS6qnEmNyQgAANe4CAAAAxIA==
+Date:   Thu, 12 Nov 2020 15:57:55 +0000
+Message-ID: <DM6PR19MB2636C714D1EE520F98617018FAE70@DM6PR19MB2636.namprd19.prod.outlook.com>
+References: <20201103125542.8572-1-Perry_Yuan@Dell.com>
+ <20201104014915.45tbmnrqvccbrd2k@srcf.ucam.org>
+ <SJ0PR19MB4528E93631DA5FD8BE1D6E8D84E80@SJ0PR19MB4528.namprd19.prod.outlook.com>
+ <20201111072456.tkwdzuq2wa7zvbod@srcf.ucam.org>
+ <DM6PR19MB2636956DB58B0E4ECAD43549FAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <e8e06aca-c3f1-d833-c766-01f05dfa0f37@metux.net>
+ <DM6PR19MB2636D792A7CCEE8937579EA6FAE70@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <544bc53f-c260-9e46-15a9-2ec2ea41343c@redhat.com>
+In-Reply-To: <544bc53f-c260-9e46-15a9-2ec2ea41343c@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-11-12T15:57:52.9613471Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=e5de38ac-daef-4948-b45e-1fdb5b9b18af;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [76.251.167.31]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c3e0afd3-a8e1-421d-3213-08d88723b855
+x-ms-traffictypediagnostic: DM6PR19MB2443:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR19MB2443EC041BE1F27040BAFDF2FAE70@DM6PR19MB2443.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i2f2aYYkNCfaeBgNfHTR7358cUwUNieZEfvyjyIF2xyb5s+WTBRRRiq5UOGLQVd3h6JVK2Muf8X7TNrcjMCt4dIOg5HyjMCqq/kP4GLAJEeCmSXeUXZH6uCceYfS3sZNQkaGLecBfBzEo0HJ/wjetEZFqLnvwZCCXV2Rfh2KoJeA9VPi5lItGuxT17vx3PpQ3OT9HKxmUrKYfxPI1kBPuYyCMubGrqRyj3Jw+KNvCgZftiHiITLBTJnIV2VdHnPnwpALF9Z++d8AF6XNK0S7fIAmj2OeM67QrPdj45/w6SGFSUJjwROSQ7uYYJM2OUvRUnFzADHznev/S0myR5EFzg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(376002)(396003)(346002)(5660300002)(66476007)(4744005)(55016002)(478600001)(26005)(64756008)(2906002)(66946007)(8936002)(9686003)(54906003)(316002)(83380400001)(4326008)(110136005)(86362001)(7696005)(186003)(76116006)(786003)(66556008)(8676002)(6636002)(71200400001)(52536014)(6506007)(66446008)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: c7UdBoVJXsh6boVBz0doQ2uI/TuybqQjEVVnltPkLKr57GsFctKV5+RyTMspSYhvt6BCGM2js6EbaMQVElgrFaSEK353vieQK1d6MABlJy8udR2eKSgBidW32nFsiGL+yBNeW6Df+exnX27I5utW3s69Yiy336/b0pz3tJp6x0E6sWX7yyJrENgDAQQeSCg9u0k6Sm4x8MgQ6eBmX9H/ViV3U2u3DWfRGfOBTO3vRZfLbKxSTqWOrY4VNembpMZ7z5rwI6ExvRM+74U4CZI7OlPVDWVWQDly/sbiVvg7fqa44DK1/P2fdXd4AnKNTkojGLYzQYqEE2a62sWXbqA68JbbMz04se5TkbroMQDflYaf6z/L2gLmx3z/waHcG69IYoBTbH2vUKnXHh5cA0ycBeQwmMBASTS4XG8hhMcETOiQN1cWNEWN7vFCubnQwBhZwV5kdCX2YQqCafMVCN1zc62jAt4ek8NMNvr0Jk1AqNKmauP0LQKwe02LktHuIoyMtP4L5bLRYAIgVHX3lILWeUfHa3RwyhNgvNKgpOB1NDPLNCzG7JDf4IVrkln4tD8HnuvFrrXTyDL/CLHQr5nMXuv7hmzL8Fxm4E+QUn+PtU7MPCJFgHI4E1lyKggWpsV/4i6CCrDBbZvjDxwtPbGvSg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3e0afd3-a8e1-421d-3213-08d88723b855
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 15:57:55.8291
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Mp53PaSiD66cHmAWxnrh9FNGufVFf1MgtIvRGPet0IjN7SlEYsYzIoqR4ghL9HxvHcwhJ5xn0xok4R08ncaMh3W80fxd+sVIvRJrVgAiWIo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB2443
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_06:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 spamscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011120093
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
-
-> They are used to deposit pages into Microsoft Hypervisor and bring up
-> logical and virtual processors.
->
-> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Co-Developed-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
-> v2:
-> 1. Adapt to hypervisor side changes
-> 2. Address Vitaly's comments
-> ---
->  arch/x86/hyperv/Makefile          |   2 +-
->  arch/x86/hyperv/hv_proc.c         | 217 ++++++++++++++++++++++++++++++
->  arch/x86/include/asm/mshyperv.h   |   4 +
->  include/asm-generic/hyperv-tlfs.h |  67 +++++++++
->  4 files changed, 289 insertions(+), 1 deletion(-)
->  create mode 100644 arch/x86/hyperv/hv_proc.c
->
-> diff --git a/arch/x86/hyperv/Makefile b/arch/x86/hyperv/Makefile
-> index 89b1f74d3225..565358020921 100644
-> --- a/arch/x86/hyperv/Makefile
-> +++ b/arch/x86/hyperv/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-y			:= hv_init.o mmu.o nested.o
-> -obj-$(CONFIG_X86_64)	+= hv_apic.o
-> +obj-$(CONFIG_X86_64)	+= hv_apic.o hv_proc.o
->  
->  ifdef CONFIG_X86_64
->  obj-$(CONFIG_PARAVIRT_SPINLOCKS)	+= hv_spinlock.o
-> diff --git a/arch/x86/hyperv/hv_proc.c b/arch/x86/hyperv/hv_proc.c
-> new file mode 100644
-> index 000000000000..0fd972c9129a
-> --- /dev/null
-> +++ b/arch/x86/hyperv/hv_proc.c
-> @@ -0,0 +1,217 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/types.h>
-> +#include <linux/version.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/mm.h>
-> +#include <linux/clockchips.h>
-> +#include <linux/acpi.h>
-> +#include <linux/hyperv.h>
-> +#include <linux/slab.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/minmax.h>
-> +#include <asm/hypervisor.h>
-> +#include <asm/mshyperv.h>
-> +#include <asm/apic.h>
-> +
-> +#include <asm/trace/hyperv.h>
-> +
-> +#define HV_DEPOSIT_MAX_ORDER (8)
-> +#define HV_DEPOSIT_MAX (1 << HV_DEPOSIT_MAX_ORDER)
-> +
-> +/*
-> + * Deposits exact number of pages
-> + * Must be called with interrupts enabled
-> + * Max 256 pages
-> + */
-> +int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
-> +{
-> +	struct page **pages;
-> +	int *counts;
-> +	int num_allocations;
-> +	int i, j, page_count;
-> +	int order;
-> +	int desired_order;
-> +	u16 status;
-> +	int ret;
-> +	u64 base_pfn;
-> +	struct hv_deposit_memory *input_page;
-> +	unsigned long flags;
-> +
-> +	if (num_pages > HV_DEPOSIT_MAX)
-> +		return -E2BIG;
-> +	if (!num_pages)
-> +		return 0;
-> +
-> +	/* One buffer for page pointers and counts */
-> +	pages = page_address(alloc_page(GFP_KERNEL));
-> +	if (!pages)
-> +		return -ENOMEM;
-> +
-> +	counts = kcalloc(HV_DEPOSIT_MAX, sizeof(int), GFP_KERNEL);
-> +	if (!counts) {
-> +		free_page((unsigned long)pages);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* Allocate all the pages before disabling interrupts */
-> +	num_allocations = 0;
-> +	i = 0;
-> +	order = HV_DEPOSIT_MAX_ORDER;
-> +
-> +	while (num_pages) {
-> +		/* Find highest order we can actually allocate */
-> +		desired_order = 31 - __builtin_clz(num_pages);
-> +		order = min(desired_order, order);
-> +		do {
-> +			pages[i] = alloc_pages_node(node, GFP_KERNEL, order);
-> +			if (!pages[i]) {
-> +				if (!order) {
-> +					ret = -ENOMEM;
-> +					goto err_free_allocations;
-> +				}
-> +				--order;
-> +			}
-> +		} while (!pages[i]);
-> +
-> +		split_page(pages[i], order);
-> +		counts[i] = 1 << order;
-> +		num_pages -= counts[i];
-> +		i++;
-> +		num_allocations++;
-> +	}
-> +
-> +	local_irq_save(flags);
-> +
-> +	input_page = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> +
-> +	input_page->partition_id = partition_id;
-> +
-> +	/* Populate gpa_page_list - these will fit on the input page */
-> +	for (i = 0, page_count = 0; i < num_allocations; ++i) {
-> +		base_pfn = page_to_pfn(pages[i]);
-> +		for (j = 0; j < counts[i]; ++j, ++page_count)
-> +			input_page->gpa_page_list[page_count] = base_pfn + j;
-> +	}
-> +	status = hv_do_rep_hypercall(HVCALL_DEPOSIT_MEMORY,
-> +				     page_count, 0, input_page,
-> +				     NULL) & HV_HYPERCALL_RESULT_MASK;
-> +	local_irq_restore(flags);
-> +
-> +	if (status != HV_STATUS_SUCCESS) {
-> +		pr_err("Failed to deposit pages: %d\n", status);
-> +		ret = status;
-> +		goto err_free_allocations;
-> +	}
-> +
-> +	ret = 0;
-> +	goto free_buf;
-> +
-> +err_free_allocations:
-> +	for (i = 0; i < num_allocations; ++i) {
-> +		base_pfn = page_to_pfn(pages[i]);
-> +		for (j = 0; j < counts[i]; ++j)
-> +			__free_page(pfn_to_page(base_pfn + j));
-> +	}
-> +
-> +free_buf:
-> +	free_page((unsigned long)pages);
-> +	kfree(counts);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hv_call_deposit_pages);
-> +
-> +int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
-> +{
-> +	struct hv_add_logical_processor_in *input;
-> +	struct hv_add_logical_processor_out *output;
-> +	int status;
-> +	unsigned long flags;
-> +	int ret = 0;
-> +
-> +	/*
-> +	 * When adding a logical processor, the hypervisor may return
-> +	 * HV_STATUS_INSUFFICIENT_MEMORY. When that happens, we deposit more
-> +	 * pages and retry.
-> +	 */
-> +	do {
-> +		local_irq_save(flags);
-> +
-> +		input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> +		/* We don't do anything with the output right now */
-> +		output = *this_cpu_ptr(hyperv_pcpu_output_arg);
-> +
-> +		input->lp_index = lp_index;
-> +		input->apic_id = apic_id;
-> +		input->flags = 0;
-> +		input->proximity_domain_info.domain_id = node_to_pxm(node);
-> +		input->proximity_domain_info.flags.reserved = 0;
-> +		input->proximity_domain_info.flags.proximity_info_valid = 1;
-> +		input->proximity_domain_info.flags.proximity_preferred = 1;
-> +		status = hv_do_hypercall(HVCALL_ADD_LOGICAL_PROCESSOR,
-> +					 input, output);
-> +		local_irq_restore(flags);
-> +
-> +		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
-> +			if (status != HV_STATUS_SUCCESS) {
-> +				pr_err("%s: cpu %u apic ID %u, %d\n", __func__,
-> +				       lp_index, apic_id, status);
-> +				ret = status;
-> +			}
-> +			break;
-> +		}
-> +		ret = hv_call_deposit_pages(node, hv_current_partition_id, 1);
-> +	} while (!ret);
-> +
-> +	return ret;
-> +}
-> +
-> +int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
-> +{
-> +	struct hv_create_vp *input;
-> +	u16 status;
-> +	unsigned long irq_flags;
-> +	int ret = 0;
-> +
-> +	/* Root VPs don't seem to need pages deposited */
-> +	if (partition_id != hv_current_partition_id) {
-> +		ret = hv_call_deposit_pages(node, partition_id, 90);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	do {
-> +		local_irq_save(irq_flags);
-> +
-> +		input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> +
-> +		input->partition_id = partition_id;
-> +		input->vp_index = vp_index;
-> +		input->flags = flags;
-> +		input->subnode_type = HvSubnodeAny;
-> +		if (node != NUMA_NO_NODE) {
-> +			input->proximity_domain_info.domain_id = node_to_pxm(node);
-> +			input->proximity_domain_info.flags.reserved = 0;
-> +			input->proximity_domain_info.flags.proximity_info_valid = 1;
-> +			input->proximity_domain_info.flags.proximity_preferred = 1;
-> +		} else {
-> +			input->proximity_domain_info.as_uint64 = 0;
-> +		}
-> +		status = hv_do_hypercall(HVCALL_CREATE_VP, input, NULL);
-> +		local_irq_restore(irq_flags);
-> +
-> +		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
-> +			if (status != HV_STATUS_SUCCESS) {
-> +				pr_err("%s: vcpu %u, lp %u, %d\n", __func__,
-> +				       vp_index, flags, status);
-> +				ret = status;
-> +			}
-> +			break;
-> +		}
-> +		ret = hv_call_deposit_pages(node, partition_id, 1);
-> +
-> +	} while (!ret);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hv_call_create_vp);
-> +
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index 67f5d35a73d3..4e590a167160 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -80,6 +80,10 @@ extern void  __percpu  **hyperv_pcpu_output_arg;
->  
->  extern u64 hv_current_partition_id;
->  
-> +int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages);
-> +int hv_call_add_logical_proc(int node, u32 lp_index, u32 acpi_id);
-> +int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags);
-
-You seem to be only doing EXPORT_SYMBOL_GPL() for
-hv_call_deposit_pages() and hv_call_create_vp() but not for
-hv_call_add_logical_proc() - is this intended? Also, I don't see
-hv_call_create_vp()/hv_call_add_logical_proc() usage outside of
-arch/x86/kernel/cpu/mshyperv.c so maybe we don't need to export them at all?
-
-> +
->  static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
->  {
->  	u64 input_address = input ? virt_to_phys(input) : 0;
-> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-> index 87b1a79b19eb..b6c74e1a5524 100644
-> --- a/include/asm-generic/hyperv-tlfs.h
-> +++ b/include/asm-generic/hyperv-tlfs.h
-> @@ -142,6 +142,8 @@ struct ms_hyperv_tsc_page {
->  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX	0x0014
->  #define HVCALL_SEND_IPI_EX			0x0015
->  #define HVCALL_GET_PARTITION_ID			0x0046
-> +#define HVCALL_DEPOSIT_MEMORY			0x0048
-> +#define HVCALL_CREATE_VP			0x004e
->  #define HVCALL_GET_VP_REGISTERS			0x0050
->  #define HVCALL_SET_VP_REGISTERS			0x0051
->  #define HVCALL_POST_MESSAGE			0x005c
-> @@ -149,6 +151,7 @@ struct ms_hyperv_tsc_page {
->  #define HVCALL_POST_DEBUG_DATA			0x0069
->  #define HVCALL_RETRIEVE_DEBUG_DATA		0x006a
->  #define HVCALL_RESET_DEBUG_SESSION		0x006b
-> +#define HVCALL_ADD_LOGICAL_PROCESSOR		0x0076
->  #define HVCALL_RETARGET_INTERRUPT		0x007e
->  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE 0x00af
->  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST 0x00b0
-> @@ -413,6 +416,70 @@ struct hv_get_partition_id {
->  	u64 partition_id;
->  } __packed;
->  
-> +/* HvDepositMemory hypercall */
-> +struct hv_deposit_memory {
-> +	u64 partition_id;
-> +	u64 gpa_page_list[];
-> +} __packed;
-> +
-> +struct hv_proximity_domain_flags {
-> +	u32 proximity_preferred : 1;
-> +	u32 reserved : 30;
-> +	u32 proximity_info_valid : 1;
-> +};
-> +
-> +/* Not a union in windows but useful for zeroing */
-> +union hv_proximity_domain_info {
-> +	struct {
-> +		u32 domain_id;
-> +		struct hv_proximity_domain_flags flags;
-> +	};
-> +	u64 as_uint64;
-> +};
-> +
-> +struct hv_lp_startup_status {
-> +	u64 hv_status;
-> +	u64 substatus1;
-> +	u64 substatus2;
-> +	u64 substatus3;
-> +	u64 substatus4;
-> +	u64 substatus5;
-> +	u64 substatus6;
-> +};
-> +
-> +/* HvAddLogicalProcessor hypercall */
-> +struct hv_add_logical_processor_in {
-> +	u32 lp_index;
-> +	u32 apic_id;
-> +	union hv_proximity_domain_info proximity_domain_info;
-> +	u64 flags;
-> +};
-> +
-> +struct hv_add_logical_processor_out {
-> +	struct hv_lp_startup_status startup_status;
-> +};
-> +
-> +enum HV_SUBNODE_TYPE
-> +{
-> +    HvSubnodeAny = 0,
-> +    HvSubnodeSocket,
-> +    HvSubnodeAmdNode,
-> +    HvSubnodeL3,
-> +    HvSubnodeCount,
-> +    HvSubnodeInvalid = -1
-> +};
-> +
-> +/* HvCreateVp hypercall */
-> +struct hv_create_vp {
-> +	u64 partition_id;
-> +	u32 vp_index;
-> +	u8 padding[3];
-> +	u8 subnode_type;
-> +	u64 subnode_id;
-> +	union hv_proximity_domain_info proximity_domain_info;
-> +	u64 flags;
-> +};
-
-You add '__packed' to 'struct hv_deposit_memory' but not to 'struct
-hv_create_vp'/'struct hv_add_logical_processor_in', this looks
-inconsistent.
-
-> +
->  /* HvRetargetDeviceInterrupt hypercall */
->  union hv_msi_entry {
->  	u64 as_uint64;
-
--- 
-Vitaly
-
+PiA+DQo+ID4gQWdhaW4sIGlmIGFueXRoaW5nIGluIHRoaXMgZmxvdyBkb2Vzbid0IGhhcHBlbiBI
+VyBtaWMgbXV0ZSBpcyBzdGlsbA0KPiBhY3RpdmF0ZWQsDQo+ID4ganVzdCB3aWxsIHRha2UgbG9u
+Z2VyIChmb3IgZHVyYXRpb24gb2YgdGltZW91dCkgYW5kIGhhdmUgcG9wcGluZyBub2lzZS4NCj4g
+DQo+IFRoYW5rIHlvdSwgY2FuIHdlIHB1dCB0aGlzIGluIGEgY29tbWVudCBpbiB0aGUgZHJpdmVy
+IHBsZWFzZSA/DQoNClllcywgSSBhZ3JlZS4gIEkgc3VnZ2VzdGVkIHRvIFBlcnJ5IHRoYXQgaGlz
+IG5leHQgc3VibWlzc2lvbiBvZiB0aGlzIGRyaXZlcg0KbmVlZHMgYSBsb3QgbW9yZSBjb250ZXh0
+IGluIGNvbW1pdCBtZXNzYWdlIChhbmQgaXQgc291bmRzIGxpa2UgcHJvYmFibHkNCmNvZGUgY29t
+bWVudHMgdG9vKS4NCg0KPiANCj4gSSBndWVzcyB0aGlzIGFsc28gbWVhbnMgdGhhdCB0aGUgbGVk
+X2NsYXNzIGRldmljZSBpcyBqdXN0IHRoZXJlIHRvDQo+IGNhdGNoIHRoZSBsZWR0cmlnX2F1ZGlv
+X3NldCgpIGNhbGwgc28gdGhhdCBkZWxsLWZpcm13YXJlIGNhbiB0ZWxsIHRoZQ0KPiBFQyB0aGF0
+IHRoZSBzdy1tdXRlIGlzIGRvbmUgYW5kIHRoYXQgaXQgY2FuIG1vdmUgYWhlYWQgd2l0aCB0aGUg
+aHctbXV0ZS4NCj4gDQo+IFdoaWxlIHRoZSByZWFsLCBwaHlzaWNhbCBMRUQgaXMgZnVsbHkgdW5k
+ZXIgaGFyZHdhcmUgY29udHJvbCwgcmlnaHQgPw0KPiANCj4gVGhhdCBzaG91bGQgcHJvYmFibHkg
+YWxzbyBiZSBpbiB0aGUgc2FtZSBjb21tZW50IGluIHRoZSBkcml2ZXINCj4gKGZlZWwgZnJlZSB0
+byByZS11c2UgcGFydCBvZiBteSB3b3JkaW5nIGZvciB0aGF0IGlmIHRoYXQgaGVscHMpLg0KPiAN
+Cj4gUmVnYXJkcywNCj4gDQo+IEhhbnMNCg0KWWVzIC0gZXhhY3RseS4NCg==
