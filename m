@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041652B103A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBF52B103F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 22:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgKLV0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 16:26:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29769 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726963AbgKLV0I (ORCPT
+        id S1727364AbgKLV0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 16:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbgKLV0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:26:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605216367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jWB515gB9BSyjwiQk48WO0yqF/B8oRyGtkVCRBUfRJY=;
-        b=RNqKtT41eJH8paQiZiuLioz+ab+AYw4MIRBQ/qD1WSkkd8uJvcSv0IK/ReusgMzmqa6TMD
-        gkoDIcLmVJqR/C5GwaSoBGP2iY7+aYungb6CHvMyc8BnYLFg8pu/TSFff1VKioiOhfPiH7
-        gXG24ysjVFVibKhIxw7J6zRbMYhNJro=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-AgUUydp_MFSRijVjhGRY1w-1; Thu, 12 Nov 2020 16:26:00 -0500
-X-MC-Unique: AgUUydp_MFSRijVjhGRY1w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D0811074643;
-        Thu, 12 Nov 2020 21:25:58 +0000 (UTC)
-Received: from krava (unknown [10.40.194.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 292401002382;
-        Thu, 12 Nov 2020 21:25:54 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 22:25:54 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 24/24] perf record: Add --buildid-mmap option to enable
- mmap's build id
-Message-ID: <20201112212554.GA753418@krava>
-References: <20201109215415.400153-1-jolsa@kernel.org>
- <20201109215415.400153-25-jolsa@kernel.org>
- <20201111170046.GB466880@tassilo.jf.intel.com>
- <20201112115710.GE619201@krava>
- <20201112203952.GA393548@kernel.org>
+        Thu, 12 Nov 2020 16:26:38 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DACC0613D1;
+        Thu, 12 Nov 2020 13:26:37 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id r17so7567059wrw.1;
+        Thu, 12 Nov 2020 13:26:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HziF5y2Ho33ipPGe8JAMvCvqv1ktqhXSvBiNR5cyKKo=;
+        b=oP8LyXkztYBwHuxXBbqefGv8Wv5Fkb4Baq8EfEKsKe2PUk0Ltwt3L4hW18aV0JDyUL
+         7G67vt3f5kB4hiR3wG/Wo+dsNIc2rlySaKnYnNM8RAfrG33fcGqgZNQSYiQdS8Mq+Kxo
+         W4Sa11T2vGBy1D8MuHB+mBgFqRennqN9Ej6m3JIVKzGmfMv51XJ65nOXlALFIynTXN8L
+         x2PtmDcc2RQ9TQX916x77GXA9v8fBaVPdJ6MIB/ZtHYlvRcY+HtmkhI52Pm8N4PYTb94
+         FTuGobt/Y9fjLTtKwWosYliZTbteFvO25y4oyZBqGF3+83qXsilDEFjf353n+6WP+3UL
+         Yuog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HziF5y2Ho33ipPGe8JAMvCvqv1ktqhXSvBiNR5cyKKo=;
+        b=f9JDRl6GlxygQhh2tvq81r5f9tXedb/JIlyL0EPeDj2QL9cdTTDKmAqaDWZQoKQtK7
+         gI8ourOBO1Za2NNkzyqGcGZs5MgjkLj89tQne9z2AK4tHFPgFsE2LIEfaWWVyD5r/vud
+         KXVs2hynEwDuIhwsplFfxWk8PO1DXj4BS4/woEaMHAHxME3suG2L7cTXpKB40sPwhqUd
+         WA265vMM3MAyjkGlCYNsi32DE6LSRyS0lrZ1aNn6oM8jeoxhbwQC3MLNutty405IQawi
+         QywneCtri0V0eeT83d0HRl2ZEUeNWDwVIp+AO9ZcQsYrWa9tUf/5ZOjwAZko1hOnY97X
+         /gqg==
+X-Gm-Message-State: AOAM532uyrYsUgNqgw4ojSrdXKJIJKq8bHu8DOLn3DlxkEcJGrxtQJ3d
+        Z1rHnEGzkA0fQInGzHemtHuW6R7vbBVsTITeijo=
+X-Google-Smtp-Source: ABdhPJxIB/Q0rdjTpnfspr2y90QDinSOTab3wfLFpbQI9qmynfR60kBK/QgPN53OHeJMMwYAI40XkoKskcEEG5Z2l60=
+X-Received: by 2002:adf:804e:: with SMTP id 72mr1869161wrk.114.1605216396614;
+ Thu, 12 Nov 2020 13:26:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112203952.GA393548@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-16-lee.jones@linaro.org>
+In-Reply-To: <20201112190039.2785914-16-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 12 Nov 2020 16:26:25 -0500
+Message-ID: <CADnq5_OfR3KdoOrcBAiLtyqOi6kBkwkErZtRiBjo=zdAgb8hFQ@mail.gmail.com>
+Subject: Re: [PATCH 15/30] drm/amd/amdgpu/amdgpu_display: Remove pointless header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        report to <xorg-driver-ati@lists.x.org>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:39:52PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Nov 12, 2020 at 12:57:10PM +0100, Jiri Olsa escreveu:
-> > On Wed, Nov 11, 2020 at 09:00:46AM -0800, Andi Kleen wrote:
-> > > On Mon, Nov 09, 2020 at 10:54:15PM +0100, Jiri Olsa wrote:
-> > > > Adding --buildid-mmap option to enable build id in mmap2 events.
-> > > > It will only work if there's kernel support for that and it disables
-> > > > build id cache (implies --no-buildid).
-> 
-> > > What's the point of the option? Why not enable it by default
-> > > if the kernel supports it?
->  
-> > > With the option most user won't get the benefit.
->  
-> > > The only reason I can think of for an option would be to disable
-> > > so that old tools can still process.
->  
-> > yes, that was request in the rfc post, we want the new default
-> > perf.data be still readable by older perf tools
-> 
-> We need to change perf so that when it finds some option it doesn't
-> grok, it just ignores extra things in a record like MMAP2 and just warns
-> the user that things are being ignored.
-> 
-> So that we can add new stuff by default without requiring an ever longer
-> command line option, like with --all-cgroups, etc.
-> 
-> And provide the options to avoid using new stuff if we know that the
-> perf.data file will be processed by someone with an older tool that
-> can't update.
+On Thu, Nov 12, 2020 at 2:01 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> It seems only to repeat the function name.
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:450: warning: Function param=
+eter or member 'amdgpu_connector' not described in 'amdgpu_display_ddc_prob=
+e'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:450: warning: Function param=
+eter or member 'use_aux' not described in 'amdgpu_display_ddc_probe'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: report to <xorg-driver-ati@lists.x.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-hum, can we just stop being this way compatible? ;-)
+Applied.  Thanks!
 
-I can't see too much benefit in it, but not sure how common is
-to report perf.data with older perf than it was recorded with
+Alex
 
-most of the time it will probably work anyway, just big changes
-list this one will screw that
-
-jirka
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/dr=
+m/amd/amdgpu/amdgpu_display.c
+> index 0b134598b3a65..f4de4b41adcfd 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> @@ -441,10 +441,6 @@ void amdgpu_display_print_display_setup(struct drm_d=
+evice *dev)
+>         drm_connector_list_iter_end(&iter);
+>  }
+>
+> -/**
+> - * amdgpu_display_ddc_probe
+> - *
+> - */
+>  bool amdgpu_display_ddc_probe(struct amdgpu_connector *amdgpu_connector,
+>                               bool use_aux)
+>  {
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
