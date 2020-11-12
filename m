@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDD22B08A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3349F2B08A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 16:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgKLPnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 10:43:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49235 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728230AbgKLPnG (ORCPT
+        id S1728743AbgKLPnO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 10:43:14 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:40691 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728688AbgKLPnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 10:43:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605195784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dxbxgJ3l9w064dkJ4nmc+S2zoOeV0z0h2c6CrYTGwuU=;
-        b=WXe4UtPJXS0A9puUNibsrOGzt65xItaRg1XyeSbzpPzbf71uF3llshcXj6s4nLy58tZdWW
-        fQw48Szh00x2QJcr5uGl70ozM9d8D2sux2QHnemeAPCHYFnJH54Ak8OudPY+hcatrmGefk
-        jmPeh/mlidUahItWhry/UfttN8wdOD4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-WWPp6-O5Ocm8dUXKMSFVfw-1; Thu, 12 Nov 2020 10:43:00 -0500
-X-MC-Unique: WWPp6-O5Ocm8dUXKMSFVfw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2C6680365A;
-        Thu, 12 Nov 2020 15:42:58 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D47A760C0F;
-        Thu, 12 Nov 2020 15:42:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
-References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     dhowells@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Bruce Fields <bfields@fieldses.org>,
-        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-afs@lists.infradead.org
-Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
+        Thu, 12 Nov 2020 10:43:08 -0500
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 94DAF20001A;
+        Thu, 12 Nov 2020 15:43:02 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 16:43:01 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        <linux-mtd@lists.infradead.org>, <kbuild-all@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201112164301.60032276@xps13>
+In-Reply-To: <20201112152739.r4673zyeixkcwukx@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+        <20201110113827.hl5i27cpl6exo3md@mobilestation>
+        <20201110163556.3e3423f6@xps13>
+        <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+        <20201112092715.7e466405@xps13>
+        <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
+        <20201112152739.r4673zyeixkcwukx@mobilestation>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2380560.1605195776.1@warthog.procyon.org.uk>
-Date:   Thu, 12 Nov 2020 15:42:56 +0000
-Message-ID: <2380561.1605195776@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chuck Lever <chuck.lever@oracle.com> wrote:
+Hi Serge,
 
-> > There are three main interfaces to it:
-> > 
-> > (*) I/O crypto: encrypt, decrypt, get_mic and verify_mic.
-> > 
-> >     These all do in-place crypto, using an sglist to define the buffer
-> >     with the data in it.  Is it necessary to make it able to take separate
-> >     input and output buffers?
+Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Thu, 12 Nov
+2020 18:27:39 +0300:
+
+> Hello Vignesh
 > 
-> Hi David, Wondering if these "I/O" APIs use synchronous or async
-> crypto under the covers. For small data items like MICs, synchronous
-> might be a better choice, especially if asynchronous crypto could
-> result in incoming requests getting re-ordered and falling out of
-> the GSS sequence number window.
+> On Thu, Nov 12, 2020 at 08:30:42PM +0530, Vignesh Raghavendra wrote:
+> > 
+> > 
+> > On 11/12/20 1:57 PM, Miquel Raynal wrote:  
+> > > Hi Sergey,
+> > > 
+> > > Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Wed, 11 Nov
+> > > 2020 22:22:59 +0300:
+> > >   
+> > >> On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:  
+> > >>> Hi Serge,
+> > >>>
+> > >>> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
+> > >>> 2020 14:38:27 +0300:
+> > >>>     
+> > >>>> Hello Miquel,
+> > >>>>
+> > >>>> A situation noted by the warning below won't cause any problem because
+> > >>>> the casting is done to a non-dereferenced variable. It is utilized
+> > >>>> as a pointer bias later in that function. Shall we just ignore the
+> > >>>> warning or still fix it somehow?    
+> > >>>     
+> > >>  
+> > >>> Do you think the cast to a !__iomem value is mandatory here?    
+> > >>
+> > >> It's not mandatory to have the casting with no __iomem, but wouldn't
+> > >> doing like this:
+> > >> + 	shift = (ssize_t __iomem)src & 0x3;
+> > >> be looking weird? Really, is there a good way to somehow extract the first
+> > >> two bits of a __iomem pointer without getting the sparse warning?  
+> > > 
+> > > I asked around me, what about trying uintptr_t?
+> > >   
+> >   
 > 
-> What say ye?
+> > One more way is to use __force to tell sparse that this casting is
+> > intentional:
+> > 
+> >        shift = (__force ssize_t)src & 0x3;  
+> 
+> Oh, great! That solution is actually much better than using some
+> currently unexplained sparse peculiarity! I was thinking about applying
+> some other attribute, but __force just didn't come to my mind. Thank
+> you very much for the suggestion. I'll post the fix with the solution
+> suggested by you.
 
-For the moment I'm using synchronous APIs as that's what sunrpc is using (I
-borrowed the basic code from there).
+Is the ssize_t cast the right one btw? I would definitely prefer an
+unsigned type here.
 
-It would be interesting to consider using async, but there's a potential
-issue.  For the simplified profile, encryption and integrity checksum
-generation can be done simultaneously, but decryption and verification can't.
-For the AES-2 profile, the reverse is true.
-
-For my purposes in rxrpc, async mode isn't actually that useful since I'm only
-doing the contents of a UDP packet at a time.  Either I'm encrypting with the
-intention of immediate transmission or decrypting with the intention of
-immediately using the data, so I'm in a context where I can wait anyway.
-
-What might get me more of a boost would be to encrypt the app data directly
-into a UDP packet and decrypt the UDP packet directly into the app buffers.
-This is easier said than done, though, as there's typically security metadata
-inserted into the packet inside the encrypted region.
-
-David
-
+Thanks,
+Miquèl
