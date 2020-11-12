@@ -2,63 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF9C2B07D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9278A2B07D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 15:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgKLOws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 09:52:48 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7526 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728155AbgKLOwo (ORCPT
+        id S1728489AbgKLOwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 09:52:43 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34828 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgKLOwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:52:44 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CX4MN1WtwzhkLK;
-        Thu, 12 Nov 2020 22:52:32 +0800 (CST)
-Received: from localhost (10.174.176.180) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 12 Nov 2020
- 22:52:33 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <axboe@kernel.dk>, <maco@android.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] loop: Fix passing zero to 'PTR_ERR' warning
-Date:   Thu, 12 Nov 2020 22:52:33 +0800
-Message-ID: <20201112145233.53060-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Thu, 12 Nov 2020 09:52:43 -0500
+Received: by mail-ot1-f68.google.com with SMTP id n11so5823146ota.2;
+        Thu, 12 Nov 2020 06:52:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j+NtsxIWerG3PypKnHGj1vHWDm1dlWfy0K8oMDj6ZN0=;
+        b=uDK1jYflja3a5Khn39GtyMWM+/sXR/M7qDXDClflFS2XPaQVyzAzYKG63+4iMY3Z0S
+         Sq1JYJZvCtKPQ6JfIIp3fIFxMmZ3/jL/OI11NnmVNl0TexkDhrPf7nIcugzZ7ibZ2xm5
+         XkdZeKcQGqEHtzwNczw8SuMjUC6QSyBEG12l9bq4M0yeUfG3drSKIeQzVBfseFfndBIN
+         dMq8/tr5UkRmezA4j7GyCe26kDf/vT0MsT1GdICvLjY4ouQOjB6/6tvHhhllwAFUnoKA
+         oUqls/xA5H+8+1rNvWITj95zxpqr3gRBuXRPjXvyQDvyj8SLXSTpvLIHnt5ELPapcFJq
+         IVmQ==
+X-Gm-Message-State: AOAM531Y9z9ksAeIjAsE9rV0sY/H0uW/I2TlBayZj9Nb8FXxKNLFY3lw
+        aj0zMyrdZ0uR+THlxBc2cWP0qzTYSA==
+X-Google-Smtp-Source: ABdhPJy3LKjufxrHMWCK3kiwWxQViG1miClOrK9sNPsfoNY+EeJrFLlPdDdAnpQ0Mbvw5/pnE6StRQ==
+X-Received: by 2002:a9d:ea9:: with SMTP id 38mr5656420otj.339.1605192761971;
+        Thu, 12 Nov 2020 06:52:41 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i82sm1166693oia.2.2020.11.12.06.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 06:52:41 -0800 (PST)
+Received: (nullmailer pid 3581406 invoked by uid 1000);
+        Thu, 12 Nov 2020 14:52:40 -0000
+Date:   Thu, 12 Nov 2020 08:52:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     yuji2.ishikawa@toshiba.co.jp, punit1.agrawal@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: gpio: Add bindings for Toshiba
+ Visconti GPIO Controller
+Message-ID: <20201112145240.GA3566867@bogus>
+References: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20201112084057.1399983-2-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.180]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112084057.1399983-2-nobuhiro1.iwamatsu@toshiba.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix smatch warning:
+On Thu, 12 Nov 2020 17:40:54 +0900, Nobuhiro Iwamatsu wrote:
+> Add bindings for the Toshiba Visconti GPIO Controller.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> ---
+>  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+> 
 
-drivers/block/loop.c:799 loop_attr_backing_file_show() warn: passing zero to 'PTR_ERR'
 
-file_path() never returns 0, so use IS_ERR instead of
-IS_ERR_OR_NULL to fix this.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/block/loop.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+yamllint warnings/errors:
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 83701c2ae3ca..65d392307c6a 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -795,7 +795,7 @@ static ssize_t loop_attr_backing_file_show(struct loop_device *lo, char *buf)
- 		p = file_path(lo->lo_backing_file, buf, PAGE_SIZE - 1);
- 	spin_unlock_irq(&lo->lo_lock);
- 
--	if (IS_ERR_OR_NULL(p))
-+	if (IS_ERR(p))
- 		ret = PTR_ERR(p);
- 	else {
- 		ret = strlen(p);
--- 
-2.17.1
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.example.dt.yaml: gpio@28020000: interrupts: [[0, 24, 4], [0, 25, 4], [0, 26, 4], [0, 27, 4], [0, 28, 4], [0, 29, 4], [0, 30, 4], [0, 31, 4], [0, 32, 4], [0, 33, 4], [0, 34, 4], [0, 35, 4], [0, 36, 4], [0, 37, 4], [0, 38, 4], [0, 39, 4]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1398656
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
