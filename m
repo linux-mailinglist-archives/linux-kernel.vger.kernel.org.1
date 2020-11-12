@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D1B2B0979
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E168D2B097C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 17:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgKLQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 11:05:41 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35820 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728389AbgKLQFk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:05:40 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACG5ZSB118306;
-        Thu, 12 Nov 2020 10:05:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605197135;
-        bh=9yETxY8RPhX8mtyohaZIEqS18xzqCiuxeaRy0WwXgn4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nyHcE2+TQuluMWit3IgaslrYTd5bGNBFq2BmM/XchOub+xku61WHETmyqWvaFsvFS
-         CHk2N3ManQHF9iobqbRO4y83Iwb3z71nGa6ZMYR5r//mJwXCYfsAQ7/9hrMGNEJBw7
-         S2jhxVfvPnXqhW0ii5B3u9nQmxckjGECY+uA7/OA=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACG5ZRt099598
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 10:05:35 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 10:05:35 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 10:05:35 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACG5VOt018182;
-        Thu, 12 Nov 2020 10:05:32 -0600
-Subject: Re: [PATCH v2 5/7] arm64: dts: ti: k3-j7200-main: Add PCIe device
- tree node
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, Lee Jones <lee.jones@linaro.org>
-CC:     <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201109170409.4498-1-kishon@ti.com>
- <20201109170409.4498-6-kishon@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <fa7dbf5c-adc3-db43-47c2-94c0afa72a40@ti.com>
-Date:   Thu, 12 Nov 2020 21:35:31 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728359AbgKLQGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 11:06:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728389AbgKLQGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:06:17 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B25322227;
+        Thu, 12 Nov 2020 16:06:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605197176;
+        bh=10qvMBJzG+sSHOSl4DkAXx/fQBkcDpJgq49vggcntLM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OpASYblgoZtU0AQ0o8DCgy4rY7gskFu/y14hKoUOVXbTl5c/4MNXrev1MNHft70p6
+         I2c0MBQN0q5JrX/6+Rq1AMvzYUgCgZgBcIiLqfU5rWDuKMP+EZZp4HOyoi7MDEYlLI
+         LupOQy+ceXOfr+ixjH/kK91lL+PSIPv0qT5cv3S4=
+Date:   Thu, 12 Nov 2020 11:06:15 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Ben Hutchings <ben.hutchings@codethink.co.uk>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 4.19 19/71] btrfs: extent_io: add proper error handling
+ to lock_extent_buffer_for_io()
+Message-ID: <20201112160615.GC403069@sasha-vm>
+References: <20201109125019.906191744@linuxfoundation.org>
+ <20201109125020.811120362@linuxfoundation.org>
+ <20201111124448.GA26508@amd>
+ <b51433b08042307ddbbdcb818bc5eab0d4cb8bec.camel@codethink.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201109170409.4498-6-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <b51433b08042307ddbbdcb818bc5eab0d4cb8bec.camel@codethink.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 02:39:34PM +0000, Ben Hutchings wrote:
+>On Wed, 2020-11-11 at 13:44 +0100, Pavel Machek wrote:
+>> Hi!
+>>
+>> > Thankfully it's handled by the only caller, btree_write_cache_pages(),
+>> > as later write_one_eb() call will trigger submit_one_bio().  So there
+>> > shouldn't be any problem.
+>>
+>> This explains there should not be any problem in _the
+>> mainline_. AFAICT this talks about this code. Mainline version is:
+>>
+>>  prev_eb = eb;
+>>  ret = lock_extent_buffer_for_io(eb, &epd);
+>>  if (!ret) {
+>>  	free_extent_buffer(eb);
+>>  	continue;
+>>  } else if (ret < 0) {
+>>  	done = 1;
+>>  	free_extent_buffer(eb);
+>>  	break;
+>>  }
+>>
+>> But 4.19 has:
+>>
+>>  ret = lock_extent_buffer_for_io(eb, fs_info, &epd);
+>>  if (!ret) {
+>>   	free_extent_buffer(eb);
+>>  	continue;
+>>  }
+>
+>That was changed in mainline two releases after this commit, though.
+>
+>> IOW missing the code mentioned in the changelog. Is 0607eb1d452d4
+>> prerequisite for this patch?
+>
+>I think it's a separate fix, but probably worth picking too.
 
+I'll take it in too, thanks!
 
-On 11/9/20 10:34 PM, Kishon Vijay Abraham I wrote:
-> Add PCIe device tree node (both RC and EP) for the single PCIe
-> instance present in j7200.
-> 
-
-nit: s/j7200/J7200
-
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
-
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-
-[...]
+-- 
+Thanks,
+Sasha
