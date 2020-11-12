@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BF62B04F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E12B2B04FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 13:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgKLMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 07:31:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54796 "EHLO mx2.suse.de"
+        id S1727865AbgKLMfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 07:35:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58314 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLMbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:31:07 -0500
+        id S1727223AbgKLMfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:35:03 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3D1FFAC6F;
-        Thu, 12 Nov 2020 12:31:05 +0000 (UTC)
-Subject: Re: [PATCH v21 18/19] mm/lru: introduce the relock_page_lruvec
- function
-To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-19-git-send-email-alex.shi@linux.alibaba.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5bd37d82-6a46-84eb-7110-411bc5e6515c@suse.cz>
-Date:   Thu, 12 Nov 2020 13:31:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by mx2.suse.de (Postfix) with ESMTP id 314A0AC6F;
+        Thu, 12 Nov 2020 12:35:02 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 12:34:58 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-kernel@vger.kernel.org, riel@surriel.com, clm@fb.com,
+        hannes@cmpxchg.org
+Subject: Re: [PATCH] sched/fair: ensure tasks spreading in LLC during LB
+Message-ID: <20201112123458.GY3306@suse.de>
+References: <20201102102457.28808-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-19-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201102102457.28808-1-vincent.guittot@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 9:55 AM, Alex Shi wrote:
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+On Mon, Nov 02, 2020 at 11:24:57AM +0100, Vincent Guittot wrote:
+> schbench shows latency increase for 95 percentile above since:
+>   commit 0b0695f2b34a ("sched/fair: Rework load_balance()")
 > 
-> Use this new function to replace repeated same code, no func change.
+> Align the behavior of the load balancer with the wake up path, which tries
+> to select an idle CPU which belongs to the LLC for a waking task.
 > 
-> When testing for relock we can avoid the need for RCU locking if we simply
-> compare the page pgdat and memcg pointers versus those that the lruvec is
-> holding. By doing this we can avoid the extra pointer walks and accesses of
-> the memory cgroup.
-
-Ah, clever. Seems to address my worry from previous patch (except the potential 
-to improve documenting comments).
-
-> In addition we can avoid the checks entirely if lruvec is currently NULL.
+> calculate_imbalance() will use nr_running instead of the spare
+> capacity when CPUs share resources (ie cache) at the domain level. This
+> will ensure a better spread of tasks on idle CPUs.
 > 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Running schbench on a hikey (8cores arm64) shows the problem:
+> 
+> tip/sched/core :
+> schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
+> Latency percentiles (usec)
+> 	50.0th: 33
+> 	75.0th: 45
+> 	90.0th: 51
+> 	95.0th: 4152
+> 	*99.0th: 14288
+> 	99.5th: 14288
+> 	99.9th: 14288
+> 	min=0, max=14276
+> 
+> tip/sched/core + patch :
+> schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
+> Latency percentiles (usec)
+> 	50.0th: 34
+> 	75.0th: 47
+> 	90.0th: 52
+> 	95.0th: 78
+> 	*99.0th: 94
+> 	99.5th: 94
+> 	99.9th: 94
+> 	min=0, max=94
+> 
+> Fixes: 0b0695f2b34a ("sched/fair: Rework load_balance()")
+> Reported-by: Chris Mason <clm@fb.com>
+> Suggested-by: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Mel Gorman <mgorman@suse.de>
 
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
+-- 
+Mel Gorman
+SUSE Labs
