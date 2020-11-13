@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF092B236C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899722B236D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgKMSME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:12:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57170 "EHLO mail.kernel.org"
+        id S1726424AbgKMSMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:12:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725959AbgKMSMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:12:03 -0500
-Subject: Re: [GIT PULL] MMC fixes for v5.10-rc4
+        id S1726357AbgKMSMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 13:12:07 -0500
+Subject: Re: [git pull] drm fixes for 5.10-rc4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605291123;
-        bh=yuJSfNTs6esETguebxguGXBlsktboDKpYUNASooKEOM=;
+        s=default; t=1605291127;
+        bh=x9R+SPmtE+wZEBEGTxhMT6R63q4htMWcndE7nmRsi5o=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=15h/UCiJ6Yc0h7igkUWu5pyGoEiqA4q0xylS1f7bi1W5x9gM4YJ1Wg48moNfyxZHB
-         fWsWBy9HYhz9kl/2SPa43bk6nkamhERsVx6mjIeFfpojlLLB4IlCcNI4wYTd7Zp/Re
-         j87Ywf95HmUHFPogJHOpy/d+Bjhieql7aG4x4RwE=
+        b=jHQdxWQpNrvoSL1pnMf3SZ3WLJS/T6kov8ezkKRBH1zkYHoK52TpxXRSxml/bCvAI
+         +tDR5wLP4mi/jstfv/2rJlVbzB5mCHw1iEwE59jBPImkRXbVZ419XC0H02oKLBd7Fv
+         RKTXkwtAUpZR9WZSEczvEVTo3AYiJ/Tz+WAboQ44=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201113112901.292826-1-ulf.hansson@linaro.org>
-References: <20201113112901.292826-1-ulf.hansson@linaro.org>
-X-PR-Tracked-List-Id: <linux-mmc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201113112901.292826-1-ulf.hansson@linaro.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc3
-X-PR-Tracked-Commit-Id: 03d80e042a8e3248163a38f74b43809f8079d652
+In-Reply-To: <CAPM=9txkA3-XwKMbxzZT6ZWq5jneJXYWneABHi02AxGnpvrPtA@mail.gmail.com>
+References: <CAPM=9txkA3-XwKMbxzZT6ZWq5jneJXYWneABHi02AxGnpvrPtA@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9txkA3-XwKMbxzZT6ZWq5jneJXYWneABHi02AxGnpvrPtA@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-11-13
+X-PR-Tracked-Commit-Id: 41f3ed2cac86ba533ce6a334a2e7fae5c7082946
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 673cb932b688ad3b03de89dc2b0b97c75ad47112
-Message-Id: <160529112340.14692.11927333842693898863.pr-tracker-bot@kernel.org>
-Date:   Fri, 13 Nov 2020 18:12:03 +0000
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+X-PR-Merge-Commit-Id: e627c25544dfec9af56842b07e40ad992731627a
+Message-Id: <160529112702.14692.1883293070526598235.pr-tracker-bot@kernel.org>
+Date:   Fri, 13 Nov 2020 18:12:07 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Nov 2020 12:29:01 +0100:
+The pull request you sent on Fri, 13 Nov 2020 16:41:04 +1000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc3
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-11-13
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/673cb932b688ad3b03de89dc2b0b97c75ad47112
+https://git.kernel.org/torvalds/c/e627c25544dfec9af56842b07e40ad992731627a
 
 Thank you!
 
