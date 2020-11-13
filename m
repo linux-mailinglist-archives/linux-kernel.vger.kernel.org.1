@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488212B2313
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182CC2B2319
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgKMR4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:56:11 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:33118 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgKMR4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:56:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605290170; x=1636826170;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=hi/EXWbkj8b1GwYopAr3TMpnILzgZhmOpGToZR+VA+w=;
-  b=I7Ba5mF3TsrTcRZwEBQrWgqM3uuRb2JaCNh4SwvZH7mMxZK5L1qTsjQK
-   B+Cf5iwfsssPCKKOZetsBGSOfzu2LLTgk4i4fYnxBaniwXKL4DFcrZZVQ
-   ZsGtbPd+/UPzaasoSHRYzZt4Nmq+0vSmB9Cs9HeK265FfMRZqO5YpQzwQ
-   2y0NGuzWe1qLuZLCIBLscf9dmSxHtXVNh4NkRB15kcxHLi0wKvQctC5Bt
-   o1GWXufKvUdBEYh+M/SbKJYCvd4WfZUn9e+00EkNmneIjk9sEH1st6RpB
-   W53ZHYY3JBMc+Zt4xC1wsyjSY8PAFgG2UQqrAsE3mrsNXUL/gammXz7k0
-   g==;
-IronPort-SDR: ITcZRXMHZRkgZlHPlLtPBUCmGzpAtfF+P/cOQZJWanCy1T92v0PmJrFgjpak3IeeNzqlqDEPgJ
- Vt4mCyR/v4qa6wPT5uN85RRbiE2bBLnh/MwgMGYyKPVTCbAxAgPmbRfGoORfAXBay1MhnYme57
- 9AAJBj9aTi4vPwN6rFs5dTGJSqjjTl8a0xKADoc2YvKVSJLXLQLxSncAoBYZgnRoyyPts8LmhK
- U7gauSwqZss8SdR0tf1YP/taK5zHYUdEVNfL9j9z49BZxvqYC1pyfkzaOPGrSV93wdH2xJmSvP
- 1t8=
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="93573092"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Nov 2020 10:56:10 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 13 Nov 2020 10:56:10 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 13 Nov 2020 10:56:07 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v4 1/1] regulator: core: do not continue if selector match
-Date:   Fri, 13 Nov 2020 19:56:04 +0200
-Message-ID: <1605290164-11556-1-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726172AbgKMR54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:57:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725959AbgKMR5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:57:55 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F5A6208D5;
+        Fri, 13 Nov 2020 17:57:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605290274;
+        bh=SPs6ifdr8H4sMKD7ax8Sx6hzwFG4f+SmdudJwla/AAk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=l+E3WoS3zzxVRAuAt1Dro8+KxAduqsliRUf/i4u9RcbveIlUEvlzRAYv0H4v0t5TM
+         S7TXa5flyp+i/Gg7uImRgq36p+Cxphb4t0TdcayxoIm3j1qD6DL8Kja1+NAfJSMLEL
+         VS9Y3NA3dfrIXdyc1vkm5e3GlMNmW+r3b8mWsX9M=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4C48D35212DC; Fri, 13 Nov 2020 09:57:54 -0800 (PST)
+Date:   Fri, 13 Nov 2020 09:57:54 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201113175754.GA6273@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201111133813.GA81547@elver.google.com>
+ <20201111130543.27d29462@gandalf.local.home>
+ <20201111182333.GA3249@paulmck-ThinkPad-P72>
+ <20201111183430.GN517454@elver.google.com>
+ <20201111192123.GB3249@paulmck-ThinkPad-P72>
+ <20201111202153.GT517454@elver.google.com>
+ <20201112001129.GD3249@paulmck-ThinkPad-P72>
+ <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
+ <20201112161439.GA2989297@elver.google.com>
+ <20201112175406.GF3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112175406.GF3249@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not continue if selector has already been located.
+On Thu, Nov 12, 2020 at 09:54:06AM -0800, Paul E. McKenney wrote:
+> On Thu, Nov 12, 2020 at 05:14:39PM +0100, Marco Elver wrote:
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
+[ . . . ]
 
-Changes in v4:
-- this was part of patch series with title
-  "regulator: mcp16502: add support for ramp delay" -> keep only this patch
-  in series as the rest were applied
-- rebased on top of current regulator/for-next
+> > | [  334.160218] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 15s!
+> 
+> It might be instructive to cause this code to provoke a backtrace.
+> I suggest adding something like "trigger_single_cpu_backtrace(cpu)"
+> in kernel/workqueue.c's function named wq_watchdog_timer_fn()
+> somewhere within its "if" statement that is preceded with the "did we
+> stall?" comment.  Or just search for "BUG: workqueue lockup - pool"
+> within kernel/workqueue.c.
 
- drivers/regulator/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+And I did get a small but unexpected gift of time, so here is an
+(untested) patch.
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index f0da0053579c..216b0cbce199 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4035,6 +4035,9 @@ int regulator_set_voltage_time(struct regulator *regulator,
- 		if (i < rdev->desc->linear_min_sel)
- 			continue;
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 437935e..f3d4ff7 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5792,6 +5792,7 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
+ 			pr_cont_pool_info(pool);
+ 			pr_cont(" stuck for %us!\n",
+ 				jiffies_to_msecs(jiffies - pool_ts) / 1000);
++			trigger_single_cpu_backtrace(cpu);
+ 		}
+ 	}
  
-+		if (old_sel >= 0 && new_sel >= 0)
-+			break;
-+
- 		voltage = regulator_list_voltage(regulator, i);
- 		if (voltage < 0)
- 			return -EINVAL;
--- 
-2.7.4
-
