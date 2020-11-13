@@ -2,125 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0708F2B1EDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DFD2B1EDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgKMPdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:33:45 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:39529 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMPdm (ORCPT
+        id S1726751AbgKMPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:33:43 -0500
+Received: from www62.your-server.de ([213.133.104.62]:56100 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726324AbgKMPdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Nov 2020 10:33:42 -0500
-Received: by mail-wr1-f54.google.com with SMTP id o15so10352764wru.6;
-        Fri, 13 Nov 2020 07:33:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gA1KPAigbuqo7QYg0x8mo1oWjdg2I5P+vvwNAb+YGgk=;
-        b=G4U4jHlz7TMLlFkPOc2QNZdfT5hrEfFy8FvDXPl/nQaP+FOSd9FF6ejN3/WRf6RpOH
-         I+TfomP/4IrrYMkoQwGkeNvl3PtYZTu40zp0Pio5lXZWA3NC8rCBYfIrpwWSkq/9tRCs
-         UsFFSdimMR/QiwzFZ8yI30Grem8HapAoBFeRhTUDNj4k7IwtGGNDWMs/l2eJvWMP/8Gu
-         rLZ7ckR9CmhjTcJZZc0gJRCf9NK5UuwnN9yFpb5hsixlTHLOCX9eNbaRrXGmRmjiCSk2
-         ql/nZ8yLWi+j2PflQjIlT/JeRc2T9QPM7sM4bUFUNEmr7HqSVgC5ZtE7PRtpRMM81BhQ
-         WU8g==
-X-Gm-Message-State: AOAM532SESo6quYJe42Aj5SINQCMQmBcDph8RZP37xZ8UmbHO1ib3VlE
-        ysTZk25tB6JRGxFY15LDKC0=
-X-Google-Smtp-Source: ABdhPJzgHnYfKEQTelHs6ytElg4q8ljn/Vvj5EyLvy05cwv1SGzrFPy8D7LeJSA+015V0MjREJKZPw==
-X-Received: by 2002:adf:8063:: with SMTP id 90mr4246564wrk.148.1605281615664;
-        Fri, 13 Nov 2020 07:33:35 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id l16sm11234318wrx.5.2020.11.13.07.33.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 07:33:35 -0800 (PST)
-Date:   Fri, 13 Nov 2020 15:33:33 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 08/17] x86/hyperv: handling hypercall page setup for
- root
-Message-ID: <20201113153333.yt54enp5dbqjj5nu@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-9-wei.liu@kernel.org>
- <874kluy3o2.fsf@vitty.brq.redhat.com>
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kdb52-0000Z9-KS; Fri, 13 Nov 2020 16:33:40 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kdb52-000XAi-CI; Fri, 13 Nov 2020 16:33:40 +0100
+Subject: Re: [PATCH bpf-next 2/2] bpf: Expose bpf_d_path helper to sleepable
+ LSM hooks
+To:     Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@chromium.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+References: <20201112171907.373433-1-kpsingh@chromium.org>
+ <20201112171907.373433-2-kpsingh@chromium.org>
+ <63870297-fffe-f01e-9747-219b63c5d7f4@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8ca075b7-1fda-bd63-e2c2-68618d30b414@iogearbox.net>
+Date:   Fri, 13 Nov 2020 16:33:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kluy3o2.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <63870297-fffe-f01e-9747-219b63c5d7f4@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25987/Fri Nov 13 14:19:33 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:51:09PM +0100, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
+On 11/13/20 4:18 AM, Yonghong Song wrote:
 > 
-> > When Linux is running as the root partition, the hypercall page will
-> > have already been setup by Hyper-V. Copy the content over to the
-> > allocated page.
-> >
-> > The suspend, resume and cleanup paths remain untouched because they are
-> > not supported in this setup yet.
 > 
-> What about adding BUG_ONs there then?
-
-I generally avoid cluttering code if I'm sure it definitely does not
-work.
-
-In any case, adding BUG_ONs is not the right answer. Both hv_suspend and
-hv_resume can return an error code. I would rather just do
-
-   if (hv_root_partition)
-       return -EPERM;
-
-in both places.
-
-And also make hv_is_hibernation_supported return false when Linux is the
-root partition.
-
-> > +
-> > +	if (hv_root_partition) {
-> > +		struct page *pg;
-> > +		void *src, *dst;
-> > +
-> > +		/*
-> > +		 * For the root partition, the hypervisor will set up its
-> > +		 * hypercall page. The hypervisor guarantees it will not show
-> > +		 * up in the root's address space. The root can't change the
-> > +		 * location of the hypercall page.
-> > +		 *
-> > +		 * Order is important here. We must enable the hypercall page
-> > +		 * so it is populated with code, then copy the code to an
-> > +		 * executable page.
-> > +		 */
-> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> > +
-> > +		pg = vmalloc_to_page(hv_hypercall_pg);
-> > +		dst = kmap(pg);
-> > +		src = memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PAGE_SIZE,
-> > +				MEMREMAP_WB);
-> > +		BUG_ON(!(src && dst));
-> > +		memcpy(dst, src, PAGE_SIZE);
+> On 11/12/20 9:19 AM, KP Singh wrote:
+>> From: KP Singh <kpsingh@google.com>
+>>
+>> Sleepable hooks are never called from an NMI/interrupt context, so it is
+>> safe to use the bpf_d_path helper in LSM programs attaching to these
+>> hooks.
+>>
+>> The helper is not restricted to sleepable programs and merely uses the
+>> list of sleeable hooks as the initial subset of LSM hooks where it can
 > 
-> Super-nit: while on x86 PAGE_SIZE always matches HV_HYP_PAGE_SIZE, would
-> it be more accurate to use the later here?
+> sleeable => sleepable
+> 
+> probably not need to resend if no other major changes. The maintainer
+> can just fix it up before merging.
 
-Sure. That can be done.
+Did while rebasing & applying, thanks everyone!
 
-Wei.
+>> be used.
+>>
+>> Signed-off-by: KP Singh <kpsingh@google.com>
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+
