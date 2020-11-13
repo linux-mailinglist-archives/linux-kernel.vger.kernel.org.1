@@ -2,142 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E932B21CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF012B21CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgKMRQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:16:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbgKMRQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:16:36 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33F0E20A8B;
-        Fri, 13 Nov 2020 17:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605287809;
-        bh=N8ZssNAeQHK3/FeIXh6bCTkDhU7NF7QYyuIFTSqop8o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NyOKjowQ8Wd2RdZSeUC+yfW2VxXmnLugXh4GV6JuUoCk2W4AJkqNN+jxQXyOa1j/M
-         PLegqhUHq1ETKqfwXELdpjomopCMQg+qYIDvgHEHdma6U55TrvhQOHPF/MsYyQXv1M
-         sYsNV8u7aYtjqdjW0Ki8XSUkjkiPzDyKRbFW7uCg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EA20F35212DC; Fri, 13 Nov 2020 09:16:48 -0800 (PST)
-Date:   Fri, 13 Nov 2020 09:16:48 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     eupm90@gmail.com, Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: #PF from NMI
-Message-ID: <20201113171648.GI3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201113125332.GA2611@hirez.programming.kicks-ass.net>
+        id S1726260AbgKMRQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:16:46 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:57705 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726028AbgKMRQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:16:45 -0500
+Received: (qmail 327091 invoked by uid 1000); 13 Nov 2020 12:16:58 -0500
+Date:   Fri, 13 Nov 2020 12:16:58 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     John Boero <boeroboy@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
+Message-ID: <20201113171658.GF322940@rowland.harvard.edu>
+References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
+ <X61rce8GANHW1ysh@kroah.com>
+ <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
+ <X613chtPVIg8kquH@kroah.com>
+ <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
+ <20201112192524.GB287229@rowland.harvard.edu>
+ <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
+ <20201113163449.GB322940@rowland.harvard.edu>
+ <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113125332.GA2611@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 01:53:32PM +0100, Peter Zijlstra wrote:
-> Hi
+On Fri, Nov 13, 2020 at 04:45:52PM +0000, John Boero wrote:
+> Sorry I wanted to include a pastebin or link but was trying to follow maillist
+> guidelines and not include links or exceed wrap guidelines.  Full contents:
+> https://paste.centos.org/view/3746bc40
 > 
-> Eugenio reported
-> (https://bugzilla.kernel.org/attachment.cgi?id=293659&action=edit):
+> Yes I understand the return dodges the config dereference.
 > 
-> [  139.226723] ------------[ cut here ]------------
-> [  139.226724] WARNING: CPU: 9 PID: 2290 at kernel/rcu/tree.c:932 __rcu_irq_enter_check_tick+0x84/0xd0
-> [  139.226725] Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_e
-> [  139.226746] CPU: 9 PID: 2290 Comm: perf Tainted: G S                5.10.0-rc2+ #1
-> [  139.226746] Hardware name: Dell Inc. PowerEdge R430/0CN7X8, BIOS 2.6.0 10/31/2017
-> [  139.226747] RIP: 0010:__rcu_irq_enter_check_tick+0x84/0xd0
-> [  139.226747] Code: 75 cc 48 8b 7b 18 e8 4b c9 84 00 80 bb 05 01 00 00 00 74 09 80 bb 06 01 00 00 00 74 11 48 8b 7b 18 c6 07 00 0f 1f 40 00
-> [  139.226748] RSP: 0000:ffffbdb38586b8c8 EFLAGS: 00010006
-> [  139.226749] RAX: 0000000080110000 RBX: ffff9cdc2f92b9c0 RCX: ffffffff9f600fb7
-> [  139.226749] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffbdb38586b938
-> [  139.226749] RBP: 000000000000000e R08: 0000000000000000 R09: 0000000000000000
-> [  139.226750] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> [  139.226750] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> [  139.226750] FS:  00007fb0c5a628c0(0000) GS:ffff9cdc2f900000(0000) knlGS:0000000000000000
-> [  139.226751] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  139.226751] CR2: 000000000000000e CR3: 000000010e0ea001 CR4: 00000000003706a0
-> [  139.226752] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  139.226752] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  139.226752] Call Trace:
-> [  139.226753]  irqentry_enter+0x25/0x40
-> [  139.226753]  exc_page_fault+0x38/0x4c0
-> [  139.226753]  asm_exc_page_fault+0x1e/0x30
-> [  139.226753] RIP: 0010:__get_user_nocheck_8+0x6/0x13
-> [  139.226754] Code: 01 ca c3 90 0f 01 cb 0f ae e8 0f b7 10 31 c0 0f 01 ca c3 90 0f 01 cb 0f ae e8 8b 10 31 c0 0f 01 ca c3 66 90 0f 01 cb 0f
-> [  139.226754] RSP: 0000:ffffbdb38586b9e8 EFLAGS: 00050087
-> [  139.226755] RAX: 000000000000000e RBX: ffffbdb38586ba30 RCX: 00007fb0c586f0d2
-> [  139.226756] RDX: 0000000000000080 RSI: 000000000000007f RDI: 00000000ffffdff0
-> [  139.226756] RBP: ffffbdb38586bf58 R08: 00000000bffffff0 R09: ffffffffa05a0460
-> [  139.226756] R10: 00ffffffffffeff0 R11: 00007fffffffeff0 R12: 000000000000000e
-> [  139.226757] R13: ffff9cd4daa017c0 R14: 0000000000000000 R15: 000000000000007f
-> [  139.226757]  ? kvmclock_cpu_down_prep+0x20/0x20 [kvm]
-> [  139.226757]  perf_callchain_user+0xf4/0x280
-> [  139.226758]  get_perf_callchain+0x17b/0x1b0
-> [  139.226758]  perf_callchain+0x71/0x80
-> [  139.226758]  setup_pebs_fixed_sample_data+0x2a8/0x360
-> [  139.226759]  intel_pmu_drain_pebs_nhm+0x477/0x5d0
-> [  139.226759]  ? get_page_from_freelist+0x117d/0x1390
-> [  139.226759]  ? page_counter_cancel+0x1f/0x30
-> [  139.226760]  ? page_counter_uncharge+0x1d/0x30
-> [  139.226760]  ? drain_stock.isra.54+0x64/0xb0
-> [  139.226760]  ? get_page_from_freelist+0x117d/0x1390
-> [  139.226761]  handle_pmi_common+0xc3/0x2d0
-> [  139.226761]  ? alloc_set_pte+0xd3/0x5e0
-> [  139.226761]  ? filemap_map_pages+0x2d2/0x430
-> [  139.226762]  ? xfs_filemap_map_pages+0x44/0x60 [xfs]
-> [  139.226762]  ? xfs_iunlock+0x86/0xd0 [xfs]
-> [  139.226762]  ? handle_mm_fault+0x145b/0x1650
-> [  139.226762]  intel_pmu_handle_irq+0xc9/0x1c0
-> [  139.226763]  perf_event_nmi_handler+0x24/0x40
-> [  139.226763]  nmi_handle+0x55/0x130
-> [  139.226763]  default_do_nmi+0x49/0x100
-> [  139.226764]  exc_nmi+0x121/0x150
-> [  139.226764]  asm_exc_nmi+0x8e/0xd7
-> [  139.226764] RIP: 0033:0x7fb0c586f0d2
-> [  139.226765] Code: 48 89 44 24 30 48 8b 83 00 03 00 00 48 85 c0 0f 84 d3 00 00 00 48 8b 7c 24 20 8b 8b fc 02 00 00 8b 54 24 38 23 93 f8 08
-> [  139.226766] RSP: 002b:00007ffcf13cde60 EFLAGS: 00010246
-> [  139.226766] RAX: 00007fb0c309c2b0 RBX: 00007fb0c5a73500 RCX: 0000000000000006
-> [  139.226766] RDX: 0000000000000000 RSI: 000000000000000a RDI: 00000000fc2c9fd0
-> [  139.226767] RBP: 000000000000000e R08: 00007ffcf13cdf90 R09: 00007fb0c5a8f410
-> [  139.226767] R10: 000000000000002b R11: 0000000000000246 R12: 0000000000000000
-> [  139.226768] R13: 0000000000000001 R14: 00007fb0c32a1fbc R15: 00007fb0c5a69cd0
+> Original line usb.c:281 is the original error:
 > 
-> Which is a #PF from NMI context, which is perfectly fine. However
-> __rcu_irq_enter_check_tick() is triggering WARN.
-> 
-> AFAICT the right thing is to simply remove the warn like so.
+> 280| for (i = 0; i < config->desc.bNumInterfaces; i++)
+> 281|  if (config->interface[i]->altsetting[0]
+> 282|    .desc.bInterfaceNumber == ifnum)
+> 283|  return config->interface[i];
 
-I have to defer to you guys on this one.
+Okay.  Without having looked at the code, I would guess that uvcvideo's 
+uvc_ioctl_streamon() handler -- or some routine beneath it -- either 
+doesn't lock the USB interface while starting I/O, or doesn't check 
+(while holding the lock) to see whether the driver has been unbound.
 
-But is a corresponding change required on return-from-NMI side?
-Looks OK to me at first glance, but I could be missing something.
-Plus I am most likely looking at the wrong version of the x86
-entry/exit code.  :-/
+This sort of error (config->interface[i] == NULL) is what you expect to 
+see if a driver tries to carry out I/O to a device that has been 
+unplugged and that it has been unbound from.
 
-							Thanx, Paul
-
-> ---
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 430ba58d8bfe..9bda92d8b914 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -928,8 +928,8 @@ void __rcu_irq_enter_check_tick(void)
->  {
->  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
->  
-> -	 // Enabling the tick is unsafe in NMI handlers.
-> -	if (WARN_ON_ONCE(in_nmi()))
-> +	// if we're here from NMI, there's nothing to do.
-> +	if (in_nmi())
->  		return;
->  
->  	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
+Alan Stern
