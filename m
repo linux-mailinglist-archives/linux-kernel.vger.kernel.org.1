@@ -2,195 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C202B190E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456B72B1910
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgKMKbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S1726384AbgKMKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKMKbF (ORCPT
+        with ESMTP id S1726176AbgKMKbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:31:05 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A441DC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:31:04 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so9219581wrx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=P5UyDjLS/2j5NOQXFG9JlqktY1ORdwFsk3E8r8jdx9g=;
-        b=QvmfEZp1GR7cR7jYyHNvp7jmshkyLAUcvw5UZ+tIfWrp8FdnIuBQq+HeYxeqR2YQM2
-         B3v3dfgtwwRQNo0hZCXSfLg2gYHq7gUiuWRqXtdLDvbnF6zqM5f2PhftiYLGdccFQKbs
-         1hABKGykYHD3amk32f2xyTBU+B+D1eAEsX2cOVOteH5cbapv2opX9/VNFGZOZN1BKzbh
-         eutWT0ipfgBRukbd8eH9VZSSxMafzAa8oMeRZ9MHDKSfjA5MYDLvxLqk7xn/dkGAGWcu
-         OfYGPkF5dYxT8VyWSa6iiz/Ppb7ORagfg5GZ8y7iVkvNlacT2tvgmGVZmS8ORLVEWCe8
-         VJZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P5UyDjLS/2j5NOQXFG9JlqktY1ORdwFsk3E8r8jdx9g=;
-        b=TSv22dPssWAB+hCawQn+6CdTnmkroZQUBzk1go8rwxlR3MCYRz3ebit8j9QvEJ0THl
-         a9b2pwqpHQwc82xtJoaKo1xi76N8Godk7T59/CEqfc5kH/WTZ/wd81dZsbTk69f8uTCP
-         iv9oZyRJpHn1AhJg3cEALMDcozdFt+Iex7N5fPD50Cn3YxcJSG6kHr1A3uhF1/xptmhr
-         dVMkH/JBSg6bmK+dmN84yxej3qn8fCnHiIrq38L9uAAOZXLGTwXP+X5e2lkCIUypoMnZ
-         xBzShTQFDDYfUG0zFanpiXVMdWs1T9OEb5oX7GYmDYLt0fjpE1LHmVJZaIUQKEq3EgsE
-         rgXQ==
-X-Gm-Message-State: AOAM5318Jlq6Y3u7H1iSdD9LgQztQ2L18lBceze6C/UIsoZVc0ek8RZH
-        T8sYhCpvLkajghdNs/RszXzn9UsMz9iM2g==
-X-Google-Smtp-Source: ABdhPJzSamfywisqfvIkrQffiLHRG8vrI4VkRiZPKk9wtZObNBU9jFTVzdIxhEcKMyLlAFoPY6RWUg==
-X-Received: by 2002:adf:eb4c:: with SMTP id u12mr2687568wrn.73.1605263463113;
-        Fri, 13 Nov 2020 02:31:03 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id n23sm9713848wmk.24.2020.11.13.02.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 02:31:01 -0800 (PST)
-Date:   Fri, 13 Nov 2020 11:30:56 +0100
-From:   Marco Elver <elver@google.com>
-To:     David Gow <davidgow@google.com>
-Cc:     "Bird, Tim" <Tim.Bird@sony.com>,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-Message-ID: <20201113103056.GA1568882@elver.google.com>
-References: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
- <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
- <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com>
- <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
- <BY5PR13MB29336C5BE374D69939DCADABFDE90@BY5PR13MB2933.namprd13.prod.outlook.com>
- <CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com>
- <BY5PR13MB293305FE7ED35EC2B2C81AF1FDE80@BY5PR13MB2933.namprd13.prod.outlook.com>
- <CABVgOSn0vUvHFTPPnFGCmg0pEotwr6TQXQieRV=EMqs1QmFYUw@mail.gmail.com>
- <20201112123706.GA2457520@elver.google.com>
- <CABVgOSkjExNtGny=CDT1WVaXUVgSEaf7hwx8=VY4atN5ot10KQ@mail.gmail.com>
+        Fri, 13 Nov 2020 05:31:11 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40000C0613D1;
+        Fri, 13 Nov 2020 02:31:11 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 14E651F46628
+Subject: Re: rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
+To:     Ard Biesheuvel <ardb@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+References: <5fadef1f.1c69fb81.9166e.093c@mx.google.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     kernelci-results@groups.io, linux-arm-kernel@lists.infradead.org,
+        Olof Johansson <olof@lixom.net>,
+        Mike Rapoport <rppt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Collabora Kernel ML <kernel@collabora.com>
+Message-ID: <e16e2ce5-dc21-d159-ecf2-e0a430d772e1@collabora.com>
+Date:   Fri, 13 Nov 2020 10:31:03 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABVgOSkjExNtGny=CDT1WVaXUVgSEaf7hwx8=VY4atN5ot10KQ@mail.gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <5fadef1f.1c69fb81.9166e.093c@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 01:17PM +0800, David Gow wrote:
-> On Thu, Nov 12, 2020 at 8:37 PM Marco Elver <elver@google.com> wrote:
-[...]
-> > > (It also might be a little tricky with the current implementation to
-> > > produce the test plan, as the parameters come from a generator, and I
-> > > don't think there's a way of getting the number of parameters ahead of
-> > > time. That's a problem with the sub-subtest model, too, though at
-> > > least there it's a little more isolated from other tests.)
-> >
-> > The whole point of generators, as I envisage it, is to also provide the
-> > ability for varying parameters dependent on e.g. environment,
-> > configuration, number of CPUs, etc. The current array-based generator is
-> > the simplest possible use-case.
-> >
-> > However, we *can* require generators generate a deterministic number of
-> > parameters when called multiple times on the same system.
+Hi Ard,
+
+Please see the bisection report below about a boot failure on
+RPi-2b.
+
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
+
+There's nothing in the serial console log, probably because it's
+crashing too early during boot.  I'm not sure if other platforms
+on kernelci.org were hit by this in the same way, but there
+doesn't seem to be any.
+
+The same regression can be see on rmk's for-next branch as well
+as in linux-next.  It happens with both bcm2835_defconfig and
+multi_v7_defconfig.
+
+Some more details can be found here:
+
+  https://kernelci.org/test/case/id/5fae44823818ee918adb8864/
+
+If this looks like a real issue but you don't have a platform at
+hand to reproduce it, please let us know if you would like the
+KernelCI test to be re-run with earlyprintk or some debug config
+turned on, or if you have a fix to try.
+
+Best wishes,
+Guillaume
+
+
+
+On 13/11/2020 02:27, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 > 
-> I think this is a reasonable compromise, though it's not actually
-> essential. As I understand the TAP spec, the test plan is actually
-> optional (and/or can be at the end of the sequence of tests), though
-> kunit_tool currently only supports having it at the beginning (which
-> is strongly preferred by the spec anyway). I think we could get away
-> with having it at the bottom of the subtest results though, which
-> would save having to run the generator twice, when subtest support is
-> added to kunit_tool.
-
-I can't find this in the TAP spec, where should I look? Perhaps we
-shouldn't venture too far off the beaten path, given we might not be the
-only ones that want to parse this output.
-
-> > To that end, I propose a v7 (below) that takes care of getting number of
-> > parameters (and also displays descriptions for each parameter where
-> > available).
-> >
-> > Now it is up to you how you want to turn the output from diagnostic
-> > lines into something TAP compliant, because now we have the number of
-> > parameters and can turn it into a subsubtest. But I think kunit-tool
-> > doesn't understand subsubtests yet, so I suggest we take these patches,
-> > and then somebody can prepare kunit-tool.
-> >
+> rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
 > 
-> This sounds good to me. The only thing I'm not sure about is the
-> format of the parameter description: thus far test names be valid C
-> identifier names, due to the fact they're named after the test
-> function. I don't think there's a fundamental reason parameters (and
-> hence, potentially, subsubtests) need to follow that convention as
-> well, but it does look a bit odd.  Equally, the square brackets around
-> the description shouldn't be necessary according to the TAP spec, but
-> do seem to make things a little more readable, particuarly with the
-> names in the ext4 inode test. I'm not too worried about either of
-> those, though: I'm sure it'll look fine once I've got used to it.
-
-The parameter description doesn't need to be a C identifier. At least
-that's what I could immediately glean from TAP v13 spec (I'm looking
-here: https://testanything.org/tap-version-13-specification.html and see
-e.g. "ok 1 - Input file opened" ...).
-
-[...]
-> > > In any case, I'm happy to leave the final decision here to Arpitha and
-> > > Marco, so long as we don't actually violate the TAP/KTAP spec and
-> > > kunit_tool is able to read at least the top-level result. My
-> > > preference is still to go either with the "# [test_case->name]:
-> > > [ok|not ok] [index] - param-[index]", or to get rid of the
-> > > per-parameter results entirely for now (or just print out a diagnostic
-> > > message on failure). In any case, it's a decision we can revisit once
-> > > we have support for named parameters, better tooling, or a better idea
-> > > of how people are actually using this.
-> >
-> > Right, so I think we'll be in a better place if we implement: 1)
-> > parameter to description conversion support, 2) counting parameters. So
-> > I decided to see what it looks like, and it wasn't too bad. I just don't
-> > know how you want to fix kunit-tool to make these non-diagnostic lines
-> > and not complain, but as I said, it'd be good to not block these
-> > patches.
+> Summary:
+>   Start:      40bd54f12902 Merge branch 'devel-stable' into for-next
+>   Plain log:  https://storage.kernelci.org/rmk/for-next/for-linus-35-g40bd54f129026/arm/bcm2835_defconfig/gcc-8/lab-collabora/baseline-bcm2836-rpi-2-b.txt
+>   HTML log:   https://storage.kernelci.org/rmk/for-next/for-linus-35-g40bd54f129026/arm/bcm2835_defconfig/gcc-8/lab-collabora/baseline-bcm2836-rpi-2-b.html
+>   Result:     7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
 > 
-> Yup, I tried this v7, and it looks good to me. The kunit_tool work
-> will probably be a touch more involved, so I definitely don't want to
-> hold up supporting this on that.
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
 > 
-> My only thoughts on the v7 patch are:
-> - I don't think we actually need the parameter count yet (or perhaps
-> ever if we go with subtests as planned), so I be okay with getting rid
-> of that.
-
-As noted above, perhaps we should keep it for compatibility with other
-parsers and CI systems we don't have much control over. It'd be a shame
-if 99% of KUnit output can be parsed by some partially compliant parser,
-yet this would break it.
-
-> - It'd be a possibility to get rid of the square brackets from the
-> output, and if we still want them, make them part of the test itself:
-> if this were TAP formatted, those brackets would be part of the
-> subsubtest name.
-
-I don't mind. It's just that we can't prescribe a format, and as
-seen below the descriptions include characters -<>=,. which can be
-confusing. But perhaps you're right, so let's remove them.
-
-But as noted, TAP doesn't seem to care. So let's remove them.
-
-[...]
-> > I hope this is a reasonable compromise for now.
+> Parameters:
+>   Tree:       rmk
+>   URL:        git://git.armlinux.org.uk/~rmk/linux-arm.git
+>   Branch:     for-next
+>   Target:     bcm2836-rpi-2-b
+>   CPU arch:   arm
+>   Lab:        lab-collabora
+>   Compiler:   gcc-8
+>   Config:     bcm2835_defconfig
+>   Test case:  baseline.login
 > 
-> Yeah: this seems like a great compromise until kunit_tool is improved.
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit 7a1be318f5795cb66fa0dc86b3ace427fe68057f
+> Author: Ard Biesheuvel <ardb@kernel.org>
+> Date:   Sun Oct 11 10:21:37 2020 +0100
+> 
+>     ARM: 9012/1: move device tree mapping out of linear region
+>     
+>     On ARM, setting up the linear region is tricky, given the constraints
+>     around placement and alignment of the memblocks, and how the kernel
+>     itself as well as the DT are placed in physical memory.
+>     
+>     Let's simplify matters a bit, by moving the device tree mapping to the
+>     top of the address space, right between the end of the vmalloc region
+>     and the start of the the fixmap region, and create a read-only mapping
+>     for it that is independent of the size of the linear region, and how it
+>     is organized.
+>     
+>     Since this region was formerly used as a guard region, which will now be
+>     populated fully on LPAE builds by this read-only mapping (which will
+>     still be able to function as a guard region for stray writes), bump the
+>     start of the [underutilized] fixmap region by 512 KB as well, to ensure
+>     that there is always a proper guard region here. Doing so still leaves
+>     ample room for the fixmap space, even with NR_CPUS set to its maximum
+>     value of 32.
+>     
+>     Tested-by: Linus Walleij <linus.walleij@linaro.org>
+>     Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>     Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+>     Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>     Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+> 
+> diff --git a/Documentation/arm/memory.rst b/Documentation/arm/memory.rst
+> index 0521b4ce5c96..34bb23c44a71 100644
+> --- a/Documentation/arm/memory.rst
+> +++ b/Documentation/arm/memory.rst
+> @@ -45,9 +45,14 @@ fffe8000	fffeffff	DTCM mapping area for platforms with
+>  fffe0000	fffe7fff	ITCM mapping area for platforms with
+>  				ITCM mounted inside the CPU.
+>  
+> -ffc00000	ffefffff	Fixmap mapping region.  Addresses provided
+> +ffc80000	ffefffff	Fixmap mapping region.  Addresses provided
+>  				by fix_to_virt() will be located here.
+>  
+> +ffc00000	ffc7ffff	Guard region
+> +
+> +ff800000	ffbfffff	Permanent, fixed read-only mapping of the
+> +				firmware provided DT blob
+> +
+>  fee00000	feffffff	Mapping of PCI I/O space. This is a static
+>  				mapping within the vmalloc space.
+>  
+> diff --git a/arch/arm/include/asm/fixmap.h b/arch/arm/include/asm/fixmap.h
+> index fc56fc3e1931..9575b404019c 100644
+> --- a/arch/arm/include/asm/fixmap.h
+> +++ b/arch/arm/include/asm/fixmap.h
+> @@ -2,7 +2,7 @@
+>  #ifndef _ASM_FIXMAP_H
+>  #define _ASM_FIXMAP_H
+>  
+> -#define FIXADDR_START		0xffc00000UL
+> +#define FIXADDR_START		0xffc80000UL
+>  #define FIXADDR_END		0xfff00000UL
+>  #define FIXADDR_TOP		(FIXADDR_END - PAGE_SIZE)
+>  
+> diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
+> index 99035b5891ef..bb79e52aeb90 100644
+> --- a/arch/arm/include/asm/memory.h
+> +++ b/arch/arm/include/asm/memory.h
+> @@ -67,6 +67,10 @@
+>   */
+>  #define XIP_VIRT_ADDR(physaddr)  (MODULES_VADDR + ((physaddr) & 0x000fffff))
+>  
+> +#define FDT_FIXED_BASE		UL(0xff800000)
+> +#define FDT_FIXED_SIZE		(2 * PMD_SIZE)
+> +#define FDT_VIRT_ADDR(physaddr)	((void *)(FDT_FIXED_BASE | (physaddr) % PMD_SIZE))
+> +
+>  #if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+>  /*
+>   * Allow 16MB-aligned ioremap pages
+> @@ -107,6 +111,7 @@ extern unsigned long vectors_base;
+>  #define MODULES_VADDR		PAGE_OFFSET
+>  
+>  #define XIP_VIRT_ADDR(physaddr)  (physaddr)
+> +#define FDT_VIRT_ADDR(physaddr)  ((void *)(physaddr))
+>  
+>  #endif /* !CONFIG_MMU */
+>  
+> diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+> index f8904227e7fd..9b18d8c66129 100644
+> --- a/arch/arm/kernel/head.S
+> +++ b/arch/arm/kernel/head.S
+> @@ -275,9 +275,8 @@ __create_page_tables:
+>  	 */
+>  	mov	r0, r2, lsr #SECTION_SHIFT
+>  	movs	r0, r0, lsl #SECTION_SHIFT
+> -	subne	r3, r0, r8
+> -	addne	r3, r3, #PAGE_OFFSET
+> -	addne	r3, r4, r3, lsr #(SECTION_SHIFT - PMD_ORDER)
+> +	ldrne	r3, =FDT_FIXED_BASE >> (SECTION_SHIFT - PMD_ORDER)
+> +	addne	r3, r3, r4
+>  	orrne	r6, r7, r0
+>  	strne	r6, [r3], #1 << PMD_ORDER
+>  	addne	r6, r6, #1 << SECTION_SHIFT
+> diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+> index 306bcd9844be..694aa6b4bd03 100644
+> --- a/arch/arm/kernel/setup.c
+> +++ b/arch/arm/kernel/setup.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/init.h>
+>  #include <linux/kexec.h>
+> +#include <linux/libfdt.h>
+>  #include <linux/of_fdt.h>
+>  #include <linux/cpu.h>
+>  #include <linux/interrupt.h>
+> @@ -89,7 +90,6 @@ unsigned int cacheid __read_mostly;
+>  EXPORT_SYMBOL(cacheid);
+>  
+>  unsigned int __atags_pointer __initdata;
+> -void *atags_vaddr __initdata;
+>  
+>  unsigned int system_rev;
+>  EXPORT_SYMBOL(system_rev);
+> @@ -1083,13 +1083,18 @@ void __init hyp_mode_check(void)
+>  void __init setup_arch(char **cmdline_p)
+>  {
+>  	const struct machine_desc *mdesc = NULL;
+> +	void *atags_vaddr = NULL;
+>  
+>  	if (__atags_pointer)
+> -		atags_vaddr = phys_to_virt(__atags_pointer);
+> +		atags_vaddr = FDT_VIRT_ADDR(__atags_pointer);
+>  
+>  	setup_processor();
+> -	if (atags_vaddr)
+> +	if (atags_vaddr) {
+>  		mdesc = setup_machine_fdt(atags_vaddr);
+> +		if (mdesc)
+> +			memblock_reserve(__atags_pointer,
+> +					 fdt_totalsize(atags_vaddr));
+> +	}
+>  	if (!mdesc)
+>  		mdesc = setup_machine_tags(atags_vaddr, __machine_arch_type);
+>  	if (!mdesc) {
+> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+> index d57112a276f5..a391804c7ce3 100644
+> --- a/arch/arm/mm/init.c
+> +++ b/arch/arm/mm/init.c
+> @@ -223,7 +223,6 @@ void __init arm_memblock_init(const struct machine_desc *mdesc)
+>  	if (mdesc->reserve)
+>  		mdesc->reserve();
+>  
+> -	early_init_fdt_reserve_self();
+>  	early_init_fdt_scan_reserved_mem();
+>  
+>  	/* reserve memory for DMA contiguous allocations */
+> diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+> index 55991fe60054..fa259825310c 100644
+> --- a/arch/arm/mm/mmu.c
+> +++ b/arch/arm/mm/mmu.c
+> @@ -39,6 +39,8 @@
+>  #include "mm.h"
+>  #include "tcm.h"
+>  
+> +extern unsigned long __atags_pointer;
+> +
+>  /*
+>   * empty_zero_page is a special page that is used for
+>   * zero-initialized data and COW.
+> @@ -946,7 +948,7 @@ static void __init create_mapping(struct map_desc *md)
+>  		return;
+>  	}
+>  
+> -	if ((md->type == MT_DEVICE || md->type == MT_ROM) &&
+> +	if (md->type == MT_DEVICE &&
+>  	    md->virtual >= PAGE_OFFSET && md->virtual < FIXADDR_START &&
+>  	    (md->virtual < VMALLOC_START || md->virtual >= VMALLOC_END)) {
+>  		pr_warn("BUG: mapping for 0x%08llx at 0x%08lx out of vmalloc space\n",
+> @@ -1333,6 +1335,15 @@ static void __init devicemaps_init(const struct machine_desc *mdesc)
+>  	for (addr = VMALLOC_START; addr < (FIXADDR_TOP & PMD_MASK); addr += PMD_SIZE)
+>  		pmd_clear(pmd_off_k(addr));
+>  
+> +	if (__atags_pointer) {
+> +		/* create a read-only mapping of the device tree */
+> +		map.pfn = __phys_to_pfn(__atags_pointer & SECTION_MASK);
+> +		map.virtual = FDT_FIXED_BASE;
+> +		map.length = FDT_FIXED_SIZE;
+> +		map.type = MT_ROM;
+> +		create_mapping(&map);
+> +	}
+> +
+>  	/*
+>  	 * Map the kernel if it is XIP.
+>  	 * It is always first in the modulearea.
+> @@ -1489,8 +1500,7 @@ static void __init map_lowmem(void)
+>  }
+>  
+>  #ifdef CONFIG_ARM_PV_FIXUP
+> -extern void *atags_vaddr;
+> -typedef void pgtables_remap(long long offset, unsigned long pgd, void *bdata);
+> +typedef void pgtables_remap(long long offset, unsigned long pgd);
+>  pgtables_remap lpae_pgtables_remap_asm;
+>  
+>  /*
+> @@ -1503,7 +1513,6 @@ static void __init early_paging_init(const struct machine_desc *mdesc)
+>  	unsigned long pa_pgd;
+>  	unsigned int cr, ttbcr;
+>  	long long offset;
+> -	void *boot_data;
+>  
+>  	if (!mdesc->pv_fixup)
+>  		return;
+> @@ -1520,7 +1529,6 @@ static void __init early_paging_init(const struct machine_desc *mdesc)
+>  	 */
+>  	lpae_pgtables_remap = (pgtables_remap *)(unsigned long)__pa(lpae_pgtables_remap_asm);
+>  	pa_pgd = __pa(swapper_pg_dir);
+> -	boot_data = atags_vaddr;
+>  	barrier();
+>  
+>  	pr_info("Switching physical address space to 0x%08llx\n",
+> @@ -1556,7 +1564,7 @@ static void __init early_paging_init(const struct machine_desc *mdesc)
+>  	 * needs to be assembly.  It's fairly simple, as we're using the
+>  	 * temporary tables setup by the initial assembly code.
+>  	 */
+> -	lpae_pgtables_remap(offset, pa_pgd, boot_data);
+> +	lpae_pgtables_remap(offset, pa_pgd);
+>  
+>  	/* Re-enable the caches and cacheable TLB walks */
+>  	asm volatile("mcr p15, 0, %0, c2, c0, 2" : : "r" (ttbcr));
+> diff --git a/arch/arm/mm/pv-fixup-asm.S b/arch/arm/mm/pv-fixup-asm.S
+> index 8eade0416739..5c5e1952000a 100644
+> --- a/arch/arm/mm/pv-fixup-asm.S
+> +++ b/arch/arm/mm/pv-fixup-asm.S
+> @@ -39,8 +39,8 @@ ENTRY(lpae_pgtables_remap_asm)
+>  
+>  	/* Update level 2 entries for the boot data */
+>  	add	r7, r2, #0x1000
+> -	add	r7, r7, r3, lsr #SECTION_SHIFT - L2_ORDER
+> -	bic	r7, r7, #(1 << L2_ORDER) - 1
+> +	movw	r3, #FDT_FIXED_BASE >> (SECTION_SHIFT - L2_ORDER)
+> +	add	r7, r7, r3
+>  	ldrd	r4, r5, [r7]
+>  	adds	r4, r4, r0
+>  	adc	r5, r5, r1
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [adc5f7029376049873289be305d507022281b8dd] ARM: add malloc size to decompressor kexec size structure
+> git bisect good adc5f7029376049873289be305d507022281b8dd
+> # bad: [40bd54f129026a114a76cd6e756659373cf40151] Merge branch 'devel-stable' into for-next
+> git bisect bad 40bd54f129026a114a76cd6e756659373cf40151
+> # good: [93b694d096cc10994c817730d4d50288f9ae3d66] Merge tag 'drm-next-2020-10-15' of git://anongit.freedesktop.org/drm/drm
+> git bisect good 93b694d096cc10994c817730d4d50288f9ae3d66
+> # good: [c4cf498dc0241fa2d758dba177634268446afb06] Merge branch 'akpm' (patches from Andrew)
+> git bisect good c4cf498dc0241fa2d758dba177634268446afb06
+> # good: [ceae608a54898fff2aa0aba358fe81af027ef8c9] Merge tag 'pwm/for-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm
+> git bisect good ceae608a54898fff2aa0aba358fe81af027ef8c9
+> # good: [e731f3146ff3bba5424b40140e1a7e6f92e94964] Merge tag 'armsoc-soc' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> git bisect good e731f3146ff3bba5424b40140e1a7e6f92e94964
+> # good: [873c331927302ab484c859601982a7cb88bc0723] Merge tag 'stm32-dt-for-v5.10-1' of git://git.kernel.org/pub/scm/linux/kernel/git/atorgue/stm32 into arm/dt
+> git bisect good 873c331927302ab484c859601982a7cb88bc0723
+> # good: [e533cda12d8f0e7936354bafdc85c81741f805d2] Merge tag 'armsoc-dt' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> git bisect good e533cda12d8f0e7936354bafdc85c81741f805d2
+> # good: [af0041875ce7f5a05362b884e90cf82c27876096] Merge tag 'io_uring-5.10-2020-10-24' of git://git.kernel.dk/linux-block
+> git bisect good af0041875ce7f5a05362b884e90cf82c27876096
+> # good: [c10037f8323d2a94acb4fc6ecfbab0cda152fdd6] Merge tag '5.10-rc-smb3-fixes-part2' of git://git.samba.org/sfrench/cifs-2.6
+> git bisect good c10037f8323d2a94acb4fc6ecfbab0cda152fdd6
+> # bad: [421015713b306e47af95d4d61cdfbd96d462e4cb] ARM: 9017/2: Enable KASan for ARM
+> git bisect bad 421015713b306e47af95d4d61cdfbd96d462e4cb
+> # good: [87702a337f748d19a59a7826aeeffe0f6aeab7d4] Merge tag 'sched-urgent-2020-10-25' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+> git bisect good 87702a337f748d19a59a7826aeeffe0f6aeab7d4
+> # good: [33def8498fdde180023444b08e12b72a9efed41d] treewide: Convert macro and uses of __section(foo) to __section("foo")
+> git bisect good 33def8498fdde180023444b08e12b72a9efed41d
+> # bad: [d5d44e7e3507b0ad868f68e0c5bca6a57afa1b8b] ARM: 9013/2: Disable KASan instrumentation for some code
+> git bisect bad d5d44e7e3507b0ad868f68e0c5bca6a57afa1b8b
+> # good: [e9a2f8b599d0bc22a1b13e69527246ac39c697b4] ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+> git bisect good e9a2f8b599d0bc22a1b13e69527246ac39c697b4
+> # bad: [7a1be318f5795cb66fa0dc86b3ace427fe68057f] ARM: 9012/1: move device tree mapping out of linear region
+> git bisect bad 7a1be318f5795cb66fa0dc86b3ace427fe68057f
+> # first bad commit: [7a1be318f5795cb66fa0dc86b3ace427fe68057f] ARM: 9012/1: move device tree mapping out of linear region
+> -------------------------------------------------------------------------------
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#3326): https://groups.io/g/kernelci-results/message/3326
+> Mute This Topic: https://groups.io/mt/78222009/924702
+> Group Owner: kernelci-results+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
 
-Thank you!
-
--- Marco
