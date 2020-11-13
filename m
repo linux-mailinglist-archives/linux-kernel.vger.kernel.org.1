@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB4A2B18FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F712B1901
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgKMKYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:24:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35140 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgKMKY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:24:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605263067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B+WTkGmdnbMkZJ6lvWOrKglzHqkfUKwJ37Bf3POufS0=;
-        b=hi6ZYCuBy9LTd32MYAOl7/1g6R/j+EPAtoejSTD+03b42sEHINgv7r/acGja+X956WhVPB
-        OG8xUpON2Gg2XkPlKW59eT85WuMPr/U5jjifWsNErS9amquE5QcDuE46lnzL9T7uX7CMmi
-        cDVrha+nhDPvEFgBYw/gisd0ao1PvdI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CA748AEFF;
-        Fri, 13 Nov 2020 10:24:27 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 11:24:27 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] kthread_worker: Add
- flush delayed work func
-Message-ID: <20201113102427.GI20201@alley>
-References: <20201111091355.19476-1-qiang.zhang@windriver.com>
- <20201112160135.2b5720c66b020472892f2366@linux-foundation.org>
- <BYAPR11MB263258BCE554A9EFD2F3A8A7FFE60@BYAPR11MB2632.namprd11.prod.outlook.com>
+        id S1726309AbgKMKZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:25:51 -0500
+Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:43349 "EHLO
+        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726176AbgKMKZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 05:25:51 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id 277FFBAED0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:25:49 +0000 (GMT)
+Received: (qmail 5515 invoked from network); 13 Nov 2020 10:25:48 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 13 Nov 2020 10:25:48 -0000
+Date:   Fri, 13 Nov 2020 10:25:43 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 10/24] mm: Add 'mprotect' hook to struct
+ vm_operations_struct
+Message-ID: <20201113102543.GK3371@techsingularity.net>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201112220135.165028-11-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB263258BCE554A9EFD2F3A8A7FFE60@BYAPR11MB2632.namprd11.prod.outlook.com>
+In-Reply-To: <20201112220135.165028-11-jarkko@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-11-13 08:59:37, Zhang, Qiang wrote:
+On Fri, Nov 13, 2020 at 12:01:21AM +0200, Jarkko Sakkinen wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 > 
+> Background
+> ==========
 > 
-> ________________________________________
-> 发件人: Andrew Morton <akpm@linux-foundation.org>
-> 发送时间: 2020年11月13日 8:01
-> 收件人: Zhang, Qiang
-> 抄送: pmladek@suse.com; tj@kernel.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH] kthread_worker: Add flush delayed work func
+> 1. SGX enclave pages are populated with data by copying from normal memory
+>    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
+>    this series.
+> 2. It is desirable to be able to restrict those normal memory data sources.
+>    For instance, to ensure that the source data is executable before
+>    copying data to an executable enclave page.
+> 3. Enclave page permissions are dynamic (just like normal permissions) and
+>    can be adjusted at runtime with mprotect().
 > 
-> [Please note this e-mail is from an EXTERNAL e-mail address]
+> This creates a problem because the original data source may have long since
+> vanished at the time when enclave page permissions are established (mmap()
+> or mprotect()).
 > 
-> On Wed, 11 Nov 2020 17:13:55 +0800 qiang.zhang@windriver.com wrote:
+> The solution (elsewhere in this series) is to force enclaves creators to
+> declare their paging permission *intent* up front to the ioctl().  This
+> intent can be immediately compared to the source data???s mapping and
+> rejected if necessary.
 > 
-> > Add 'kthread_flush_delayed_work' func, the principle of
-> > this func is wait for a dwork to finish executing the
-> > last queueing.
-> >
-> >We'd like to see some code which actually uses this new function
-> >please.  Either in this patch or as one or more followup patches.
-> >
-> >btw, we call it "function", not "func".  But neither is really needed -
-> >just use () to identify a function.  ie:
+> The ???intent??? is also stashed off for later comparison with enclave
+> PTEs. This ensures that any future mmap()/mprotect() operations
+> performed by the enclave creator or done on behalf of the enclave
+> can be compared with the earlier declared permissions.
 > 
-> >: Add kthread_flush_delayed_work().  The principle of this is to wait for
-> >: a dwork to finish executing the last queueing.
+> Problem
+> =======
 > 
-> I don't see it being used in the kernel code so far, and I'm not sure if it's going to be used in subsequent scenarios (it like flush_delayed_work in workqueue )or whether it's currently using "kthread_work" some code needs it.
+> There is an existing mmap() hook which allows SGX to perform this
+> permission comparison at mmap() time.  However, there is no corresponding
+> ->mprotect() hook.
+> 
+> Solution
+> ========
+> 
+> Add a vm_ops->mprotect() hook so that mprotect() operations which are
+> inconsistent with any page's stashed intent can be rejected by the driver.
+> 
+> Cc: linux-mm@kvack.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
+> Acked-by: Dave Hansen <dave.hansen@intel.com> # v40
+> # Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-I agree with Andrew. It does not make sense to add/maintain new API
-when it is not going to be used.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-The kthread_worker API is used only when the kthread needs some special
-scheduling policy or priority. There always will be only few users
-in compare with the workqueues API. It is possible that this function
-will never be necessary.
-
-Best Regards,
-Petr
+-- 
+Mel Gorman
+SUSE Labs
