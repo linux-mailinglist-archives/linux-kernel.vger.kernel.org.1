@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C31E2B1EBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0708F2B1EDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgKMPb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:31:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726324AbgKMPb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:31:57 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE112208D5;
-        Fri, 13 Nov 2020 15:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605281516;
-        bh=D+K4eSnXMa89LSYZ7jMaE8u+DXUbJR1/k9ED80rrD7w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tIa+n2qHt2lDhuEwBt0MljRqQxaq0sqOY4cMgfJ3+csbJx9x2mLT7Sc38QXTYVCl3
-         WDlCXMAFV6wi6QOHdHqb9JDAMmnPQ3igo8lcfJA3OaspPbUkgu+qp3VRkw8kpWX7Sb
-         +hHPtYlmIWiY7lHRbInh4m/G1boQ2bwcxWSYpj2I=
-Date:   Fri, 13 Nov 2020 16:32:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4] kcov, usb: only collect coverage from
- __usb_hcd_giveback_urb in softirq
-Message-ID: <X66nJSTbppPoFneS@kroah.com>
-References: <f3a7a153f0719cb53ec385b16e912798bd3e4cf9.1602856358.git.andreyknvl@google.com>
- <20201113123035.tjllvijjzd54npsf@linutronix.de>
- <CAAeHK+zd0ucaj8EJ8ro+0ekubrxp5GiBMaBULHJB05dDrzpQGw@mail.gmail.com>
- <20201113132818.zhtdhzg6ukv4wgxl@linutronix.de>
- <CAAeHK+yZEQ7r1bBWbUhdys8s1CntwpOyF+Fm+H=NiuK0g3KwYg@mail.gmail.com>
+        id S1726820AbgKMPdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:33:45 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:39529 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKMPdm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 10:33:42 -0500
+Received: by mail-wr1-f54.google.com with SMTP id o15so10352764wru.6;
+        Fri, 13 Nov 2020 07:33:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gA1KPAigbuqo7QYg0x8mo1oWjdg2I5P+vvwNAb+YGgk=;
+        b=G4U4jHlz7TMLlFkPOc2QNZdfT5hrEfFy8FvDXPl/nQaP+FOSd9FF6ejN3/WRf6RpOH
+         I+TfomP/4IrrYMkoQwGkeNvl3PtYZTu40zp0Pio5lXZWA3NC8rCBYfIrpwWSkq/9tRCs
+         UsFFSdimMR/QiwzFZ8yI30Grem8HapAoBFeRhTUDNj4k7IwtGGNDWMs/l2eJvWMP/8Gu
+         rLZ7ckR9CmhjTcJZZc0gJRCf9NK5UuwnN9yFpb5hsixlTHLOCX9eNbaRrXGmRmjiCSk2
+         ql/nZ8yLWi+j2PflQjIlT/JeRc2T9QPM7sM4bUFUNEmr7HqSVgC5ZtE7PRtpRMM81BhQ
+         WU8g==
+X-Gm-Message-State: AOAM532SESo6quYJe42Aj5SINQCMQmBcDph8RZP37xZ8UmbHO1ib3VlE
+        ysTZk25tB6JRGxFY15LDKC0=
+X-Google-Smtp-Source: ABdhPJzgHnYfKEQTelHs6ytElg4q8ljn/Vvj5EyLvy05cwv1SGzrFPy8D7LeJSA+015V0MjREJKZPw==
+X-Received: by 2002:adf:8063:: with SMTP id 90mr4246564wrk.148.1605281615664;
+        Fri, 13 Nov 2020 07:33:35 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id l16sm11234318wrx.5.2020.11.13.07.33.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 07:33:35 -0800 (PST)
+Date:   Fri, 13 Nov 2020 15:33:33 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 08/17] x86/hyperv: handling hypercall page setup for
+ root
+Message-ID: <20201113153333.yt54enp5dbqjj5nu@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-9-wei.liu@kernel.org>
+ <874kluy3o2.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAeHK+yZEQ7r1bBWbUhdys8s1CntwpOyF+Fm+H=NiuK0g3KwYg@mail.gmail.com>
+In-Reply-To: <874kluy3o2.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 02:42:44PM +0100, Andrey Konovalov wrote:
-> On Fri, Nov 13, 2020 at 2:28 PM Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de> wrote:
-> >
-> > On 2020-11-13 13:51:19 [+0100], Andrey Konovalov wrote:
-> > > Hi Sebastian,
-> >
-> > Hi Andrey,
-> >
-> > > Replaced with what and why?
-> >
-> > Linus requested in
-> >         https://lkml.kernel.org/r/CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com/
-> >
-> > that drivers should not change their behaviour on context magic like
-> > in_atomic(), in_interrupt() and so on.
-> > The USB bits were posted in
-> >         https://lkml.kernel.org/r/20201019100629.419020859@linutronix.de
-> >
-> > and merged (which is probably the same time as this patch).
-> >
-> > I haven't look what this code should do or does but there are HCDs for
-> > which this is never true like the UHCI/OHCI controller for instance.
+On Thu, Nov 12, 2020 at 04:51:09PM +0100, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
 > 
-> We could go back to adding softirq-specific kcov callbacks. Perhaps
-> with a simpler implementation than what we had before to only cover
-> this case. Something like kcov_remote_start_usb_softirq() and
-> kcov_remote_stop_softirq() that do the softirq check internally.
+> > When Linux is running as the root partition, the hypercall page will
+> > have already been setup by Hyper-V. Copy the content over to the
+> > allocated page.
+> >
+> > The suspend, resume and cleanup paths remain untouched because they are
+> > not supported in this setup yet.
 > 
-> Greg, what would you prefer?
+> What about adding BUG_ONs there then?
 
-I really have no idea, sorry.
+I generally avoid cluttering code if I'm sure it definitely does not
+work.
+
+In any case, adding BUG_ONs is not the right answer. Both hv_suspend and
+hv_resume can return an error code. I would rather just do
+
+   if (hv_root_partition)
+       return -EPERM;
+
+in both places.
+
+And also make hv_is_hibernation_supported return false when Linux is the
+root partition.
+
+> > +
+> > +	if (hv_root_partition) {
+> > +		struct page *pg;
+> > +		void *src, *dst;
+> > +
+> > +		/*
+> > +		 * For the root partition, the hypervisor will set up its
+> > +		 * hypercall page. The hypervisor guarantees it will not show
+> > +		 * up in the root's address space. The root can't change the
+> > +		 * location of the hypercall page.
+> > +		 *
+> > +		 * Order is important here. We must enable the hypercall page
+> > +		 * so it is populated with code, then copy the code to an
+> > +		 * executable page.
+> > +		 */
+> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
+> > +
+> > +		pg = vmalloc_to_page(hv_hypercall_pg);
+> > +		dst = kmap(pg);
+> > +		src = memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PAGE_SIZE,
+> > +				MEMREMAP_WB);
+> > +		BUG_ON(!(src && dst));
+> > +		memcpy(dst, src, PAGE_SIZE);
+> 
+> Super-nit: while on x86 PAGE_SIZE always matches HV_HYP_PAGE_SIZE, would
+> it be more accurate to use the later here?
+
+Sure. That can be done.
+
+Wei.
