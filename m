@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81382B15D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 07:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B912B15D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 07:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgKMG0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 01:26:36 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7495 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgKMG0g (ORCPT
+        id S1726277AbgKMGaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 01:30:18 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:10406 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgKMGaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 01:26:36 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CXT4y1Y3Tzhj8g;
-        Fri, 13 Nov 2020 14:26:26 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 13 Nov 2020 14:26:30 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
-        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
-        <wright.feng@cypress.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <stanley.hsu@cypress.com>
-CC:     <linux-wireless@vger.kernel.org>,
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] brcmfmac: fix error return code in brcmf_cfg80211_connect()
-Date:   Fri, 13 Nov 2020 14:28:16 +0800
-Message-ID: <1605248896-16812-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+        Fri, 13 Nov 2020 01:30:17 -0500
+IronPort-SDR: 6TctTulGF1gL+sBpL0IlknZ99Yw6dxVKYMIJu3fy+ScxCLq5NbEFjoVaF10nfo1U+4tLTLBiwA
+ zofBxl78sY+ML/jMcf26hQi+tytcX87UyA6Z4Nqz4Gh/KhPe21AYNjvxPnPRje/HE/vbOvZeZF
+ MfXXrLyyNiDNeJUZryNf5qbhWn6w8bNBFbf1CKiE+xHb2fyqA5Rq20fbNBoVGw6/VsiMKORGrB
+ 1ciEvBo/ncQYojrCP/PompnbIIaTtIFieuF/Q4RX9oruKQMI7MravJAuXZskjI5/oo0xawuCH/
+ +BM=
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="29276423"
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by labrats.qualcomm.com with ESMTP; 12 Nov 2020 22:30:17 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 12 Nov 2020 22:30:15 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id E48A321787; Thu, 12 Nov 2020 22:30:15 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        cang@codeaurora.org
+Cc:     Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH RFC v1 1/1] scsi: pm: Leave runtime resume along if block layer PM is enabled
+Date:   Thu, 12 Nov 2020 22:30:08 -0800
+Message-Id: <1605249009-13752-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1605249009-13752-1-git-send-email-cang@codeaurora.org>
+References: <1605249009-13752-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+If block layer runtime PM is enabled for one SCSI device, then there is
+no need to forcibly change the SCSI device and its request queue's runtime
+PM status to active in scsi_dev_type_resume(), since block layer PM shall
+resume the SCSI device on the demand of bios.
 
-Fixes: 3b1e0a7bdfee ("brcmfmac: add support for SAE authentication offload")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc: Stanley Chu <stanley.chu@mediatek.com>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Can Guo <cang@codeaurora.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_pm.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index a2dbbb9..0ee421f 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -2137,7 +2137,8 @@ brcmf_cfg80211_connect(struct wiphy *wiphy, struct net_device *ndev,
- 				    BRCMF_WSEC_MAX_PSK_LEN);
- 	else if (profile->use_fwsup == BRCMF_PROFILE_FWSUP_SAE) {
- 		/* clean up user-space RSNE */
--		if (brcmf_fil_iovar_data_set(ifp, "wpaie", NULL, 0)) {
-+		err = brcmf_fil_iovar_data_set(ifp, "wpaie", NULL, 0);
-+		if (err) {
- 			bphy_err(drvr, "failed to clean up user-space RSNE\n");
- 			goto done;
- 		}
+diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
+index 3717eea..278c27e 100644
+--- a/drivers/scsi/scsi_pm.c
++++ b/drivers/scsi/scsi_pm.c
+@@ -79,23 +79,22 @@ static int scsi_dev_type_resume(struct device *dev,
+ 	scsi_device_resume(to_scsi_device(dev));
+ 	dev_dbg(dev, "scsi resume: %d\n", err);
+ 
+-	if (err == 0) {
+-		pm_runtime_disable(dev);
+-		err = pm_runtime_set_active(dev);
+-		pm_runtime_enable(dev);
++	if (scsi_is_sdev_device(dev)) {
++		struct scsi_device *sdev;
+ 
++		sdev = to_scsi_device(dev);
+ 		/*
+-		 * Forcibly set runtime PM status of request queue to "active"
+-		 * to make sure we can again get requests from the queue
+-		 * (see also blk_pm_peek_request()).
+-		 *
+-		 * The resume hook will correct runtime PM status of the disk.
++		 * If block layer runtime PM is enabled for the SCSI device,
++		 * let block layer PM handle its runtime PM routines.
+ 		 */
+-		if (!err && scsi_is_sdev_device(dev)) {
+-			struct scsi_device *sdev = to_scsi_device(dev);
++		if (sdev->request_queue->dev)
++			return err;
++	}
+ 
+-			blk_set_runtime_active(sdev->request_queue);
+-		}
++	if (err == 0) {
++		pm_runtime_disable(dev);
++		err = pm_runtime_set_active(dev);
++		pm_runtime_enable(dev);
+ 	}
+ 
+ 	return err;
 -- 
-2.9.5
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
