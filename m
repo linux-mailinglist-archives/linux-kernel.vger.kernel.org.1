@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3EE2B1CBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57452B1CC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgKMN4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:56:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726498AbgKMN4e (ORCPT
+        id S1726662AbgKMN6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgKMN6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:56:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605275793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uItuPISD7qFedNEsC3ywS9bnXtTDrUFhBkgpWbFW2AQ=;
-        b=hnkjY91r+2LKP8TT9AEWbBe59r+QKQZ1pfbWkm8gFui3IRXq6i4hr1Ma8U8BgKFCvtJLYL
-        pCicmPt8neV5l9zeDtzpCsT712NeWgdDpytYxLFoSQkUS/w15BD4qYvP4SNT5OoNUjectp
-        cwqx8LMH++ms3rp7SU8uyZel5B5/+OU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-543-dr8wAl2vMuisuqrwhbmUDw-1; Fri, 13 Nov 2020 08:56:25 -0500
-X-MC-Unique: dr8wAl2vMuisuqrwhbmUDw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3F481084D69;
-        Fri, 13 Nov 2020 13:56:22 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F6776EF5F;
-        Fri, 13 Nov 2020 13:56:19 +0000 (UTC)
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-To:     wi nk <wink@technolu.st>,
-        Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Cc:     Carl Huang <cjhuang@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        akpm@linux-foundation.org, ath11k@lists.infradead.org,
-        Kalle Valo <kvalo@codeaurora.org>
-References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
- <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
- <87eekz4s04.fsf@codeaurora.org>
- <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
- <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com>
- <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
- <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
- <3e30ac52-6ad4-fa7b-8817-bca35a80d268@gmail.com>
- <CAHUdJJXnSd614ff+GDOAtUQV_vdUnOkVooFAzp_LA6CbbW=NDA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <719c1497-f48e-9f1e-359b-dbc5e4a4c11a@redhat.com>
-Date:   Fri, 13 Nov 2020 14:56:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 13 Nov 2020 08:58:07 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544E6C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:58:07 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id v12so7648118pfm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2vTnsverZoGzLekH1zBmdh7TzAPle0ubBo5+gTweQfA=;
+        b=Dp6zxRbXMqegXAhGPbxdglMuJR1k93K1FEsMyluCXpNYX968qprlhGjT1ui4oSFvLD
+         t/EwjOwyziznw6x3td07nrFR1dpN4VYnZyambrJ/zSwBtn+egDE4wVkW8TMNNaLN4RVB
+         R13/4RPSSPzJiXvbN4C7s2VGwpxZor8/EhCJf0yuu8Ds6jZ40NOGsWrWsRkehtAaHsjn
+         9jKpS5XlzcZCKgEGfvfiNLCmSlfxSdOLAHPDfOIpKsRcU+3Hv0FpHY9qf+QulWLU8pwy
+         oyCczicKfYkLEG/XZceegbbOrDqXefGQjTzxrBQVy9cmMyh9Jo9qKxGxnMVcvyTR6Wc4
+         wAyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2vTnsverZoGzLekH1zBmdh7TzAPle0ubBo5+gTweQfA=;
+        b=bLTMWCaakBWpV96Z/xGm00+gQdBydyDIjRIb996bwYxH/TcjJa2mhDClHnvLXKrq65
+         f+rQHWxSnshkes7HOoONtF6hNfaglrNP8uoDgGQ8ey63IWPlKUpJuSSBk3S/9TpxAr5S
+         ChX9loc2SXAwcZUSzqe8hMhXI542zw8G4dSdCZFp/NSfr1Ujw/tAJE4+gMkIrrYYj3vZ
+         ueKCDWk+pqTRpehReFaJc1gshBGGwGGFSV97sy3gfpkn/+OpbcvxEgny1XpDZ5PmKJB/
+         Bt7cOrqdOJ8rCg8/iG0V1ejYMply9WKD4sB2VRkDGu9UDbYp2aYJ/kiqhXyual+w+MeO
+         UqeQ==
+X-Gm-Message-State: AOAM530MLun1jRHh8bqM8rmFkT6zDhDg/RiOxz4EJluGiLpEz35hfQbR
+        QaO4z1X2hhJ40yaTpsyCvw+imsEfwuLVAEa6
+X-Google-Smtp-Source: ABdhPJwhVQmLyDRRjbaZXdhrHtxVXl2LeaJC7RjdFj5fMvnBU/Nf1v+RbFZw+uy/mvAJvbZR0UIXvA==
+X-Received: by 2002:a17:90a:cb08:: with SMTP id z8mr2940899pjt.152.1605275886547;
+        Fri, 13 Nov 2020 05:58:06 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6819:f451:9e0a:873f:ed68])
+        by smtp.gmail.com with ESMTPSA id v23sm10609956pjh.46.2020.11.13.05.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 05:58:05 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH] checkpatch: fix typo and remove duplicate word
+Date:   Fri, 13 Nov 2020 19:27:39 +0530
+Message-Id: <20201113135739.46776-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAHUdJJXnSd614ff+GDOAtUQV_vdUnOkVooFAzp_LA6CbbW=NDA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.11.20 14:36, wi nk wrote:
-> On Fri, Nov 13, 2020 at 1:52 PM Pavel Procopiuc
-> <pavel.procopiuc@gmail.com> wrote:
->>
->> Op 13.11.2020 om 12:08 schreef Carl Huang:
->>> Checked some logs. Looks when the error happens, the physical address are
->>> very small. Its' between 20M - 30M.
->>>
->>> So could you have a try to reserve the memory starting from 20M?
->>> Add "memmap=10M\$20M" to your grub.cfg or edit in kernel parameters. so ath11k
->>> can't allocate from these address.
->>>
->>> Or you can try to reserve even larger memory starting from 20M.
->>
->> That worked, booting with memmap=12M$20M resulted in the working wifi:
->>
->> $ journalctl -b | grep -iP '05:00|ath11k|Linux version|memmap'
->> Nov 13 13:45:34 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
->> p6) 2.34.0) #1 SMP Fri Nov 13 13:29:48 CET 2020
->> Nov 13 13:45:34 razor kernel: Command line: ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2
->> memmap=12M$20M quiet
->> Nov 13 13:45:34 razor kernel:   DMA zone: 64 pages used for memmap
->> Nov 13 13:45:34 razor kernel:   DMA32 zone: 5165 pages used for memmap
->> Nov 13 13:45:34 razor kernel:   Normal zone: 255840 pages used for memmap
->> Nov 13 13:45:34 razor kernel: Kernel command line: ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2
->> memmap=12M$20M quiet ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2 memmap=12M$20M quiet
->> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
->> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
->> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
->> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
->> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
->> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 32
->> Nov 13 13:45:35 razor kernel: mhi 0000:05:00.0: Requested to power ON
->> Nov 13 13:45:35 razor kernel: mhi 0000:05:00.0: Power on setup success
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x2100000 524288 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x2180000 524288 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x2200000 524288 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x2280000 294912 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x2300000 524288 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x2380000 524288 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x2400000 458752 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x20c0000 131072 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x2480000 524288 4
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x2500000 360448 4
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x20a4000 16384 1
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
->> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-24 19:50
->> fw_build_id
->> Nov 13 13:45:37 razor NetworkManager[782]: <info>  [1605271537.1168] rfkill1: found Wi-Fi radio killswitch (at
->> /sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0/ieee80211/phy0/rfkill1) (driver ath11k_pci)
->> Nov 13 13:45:39 razor ModemManager[722]: <info>  Couldn't check support for device
->> '/sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0': not supported by any plugin
->> Nov 13 13:45:45 razor kernel: ath11k_pci 0000:05:00.0: failed to enqueue rx buf: -28
->>
->> --
->> ath11k mailing list
->> ath11k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath11k
-> 
-> When I attempt to boot my 5.10rc2 kernel with that memmap option, my
-> machine immediately hangs.  That said, it seems to have done something
-> bizarre, as immediately afterwards, if I remove that option and let
-> 5.10 boot normally, it seems to boot and bring up the wifi adapter ok
-> (which didn't happen before).  Now that I've managed to boot 5.10
-> twice, the first time after a couple of minutes my video started going
-> nuts and displaying all sorts of artifacts[1].  This time things seem
-> to be functioning nominally (wifi is online and the machine is
-> behaving properly).  I may just never turn it off again :D.
+Delete repeated word in scripts/checkpatch.pl:
+"are are" -> "are"
 
-Honestly, that FW sounds horribly flawed. :)
+Fix typos:
+"commments" -> "comments"
+"falsly" -> "falsely"
 
-Would be interesting what happens when you boot back to 5.9 now ...
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 2749f32dffe9..041b82f6669e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2841,7 +2841,7 @@ sub process {
+ 
+ 
+ 				# stable@vger.kernel.org or stable@kernel.org shouldn't
+-				# have an email name. In addition commments should strictly
++				# have an email name. In addition comments should strictly
+ 				# begin with a #
+ 				if ($email =~ /^.*stable\@(?:vger\.)?kernel\.org/i) {
+ 					if (($comment ne "" && $comment !~ /^#.+/) ||
+@@ -5000,7 +5000,7 @@ sub process {
+ ## 		    $line !~ /^.\s*$Type\s+$Ident(?:\s*=[^,{]*)?\s*,\s*$Type\s*$Ident.*/) {
+ ##
+ ## 			# Remove any bracketed sections to ensure we do not
+-## 			# falsly report the parameters of functions.
++## 			# falsely report the parameters of functions.
+ ## 			my $ln = $line;
+ ## 			while ($ln =~ s/\([^\(\)]*\)//g) {
+ ## 			}
+@@ -7109,7 +7109,7 @@ sub process {
+ 		exit(0);
+ 	}
+ 
+-	# This is not a patch, and we are are in 'no-patch' mode so
++	# This is not a patch, and we are in 'no-patch' mode so
+ 	# just keep quiet.
+ 	if (!$chk_patch && !$is_patch) {
+ 		exit(0);
 -- 
-Thanks,
-
-David / dhildenb
+2.27.0
 
