@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FB22B1C60
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0C22B1C5F
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgKMNtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:49:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53709 "EHLO
+        id S1726858AbgKMNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:48:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27111 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726820AbgKMNsv (ORCPT
+        by vger.kernel.org with ESMTP id S1726837AbgKMNsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:48:51 -0500
+        Fri, 13 Nov 2020 08:48:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605275329;
+        s=mimecast20190719; t=1605275331;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QUWlJHRXTci3OE9aKsACoxuZyffR9CQAnZGBUFnY9/4=;
-        b=PRth3PyCPas1RCeJOa9f9oT8xDp5t8iHsg1RP0hlicpdNr9VnLhwJectH4dQA5HX1NnPDM
-        aNtE4p1MtC4I53V3ZPNvMmSMmKZ31NafgdX6CoCcafyyXpf3OmY9BVGjK1syLHT7pPiHhX
-        KH3GkWl3ViWCe4yogoMJrCz8sEAxa+k=
+        bh=zahLTNS43nRj+vHGeTYURaqz9Ba56dxaMqAEL8MHFEM=;
+        b=DzeiBxjaxlza6nV0gTvLiYvLxCPzkGGfbzNLopb1F56mkT7zOpBS0GFv7ojeEXFkUbkZXQ
+        rMSnMZIMpePRl/+6yKmJSBIRxiSWIkqEIRMB5c9mcpzNFqlVCp8flfw8egDwsLUc8WyA3l
+        P7apbGhSN3EAHg4+8zi5kGcpbrZzaJM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-Q5dfMm2JN-uBAE7tf67S5Q-1; Fri, 13 Nov 2020 08:48:45 -0500
-X-MC-Unique: Q5dfMm2JN-uBAE7tf67S5Q-1
+ us-mta-284-XNL1iMqPN5OBFqQ7ctti7g-1; Fri, 13 Nov 2020 08:48:48 -0500
+X-MC-Unique: XNL1iMqPN5OBFqQ7ctti7g-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD6F31084C96;
-        Fri, 13 Nov 2020 13:48:44 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 072748030A7;
+        Fri, 13 Nov 2020 13:48:47 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-114-21.ams2.redhat.com [10.36.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 064605D9F3;
-        Fri, 13 Nov 2020 13:48:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 306005D9F3;
+        Fri, 13 Nov 2020 13:48:45 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -42,9 +42,9 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: [PATCH RFC 10/12] vdpa_sim: split vdpasim_virtqueue's iov field in riov and wiov
-Date:   Fri, 13 Nov 2020 14:47:10 +0100
-Message-Id: <20201113134712.69744-11-sgarzare@redhat.com>
+Subject: [PATCH RFC 11/12] vringh: allow vringh_iov_xfer() to skip bytes when ptr is NULL
+Date:   Fri, 13 Nov 2020 14:47:11 +0100
+Message-Id: <20201113134712.69744-12-sgarzare@redhat.com>
 In-Reply-To: <20201113134712.69744-1-sgarzare@redhat.com>
 References: <20201113134712.69744-1-sgarzare@redhat.com>
 MIME-Version: 1.0
@@ -54,90 +54,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vringh_getdesc_iotlb() manages 2 iovs for writable and readable
-descriptors. This is very useful for the block device, where for
-each request we have both types of descriptor.
+In some cases, it may be useful to provide a way to skip a number
+of bytes in a vringh_iov.
 
-Let's split the vdpasim_virtqueue's iov field in riov and wiov
-to use them with vringh_getdesc_iotlb().
+In order to keep vringh_iov consistent, let's reuse vringh_iov_xfer()
+logic and skip bytes when the ptr is NULL.
 
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.h     | 3 ++-
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 6 +++---
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 8 ++++----
- 3 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-index cc21e07aa2f7..0d4629675e4b 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-@@ -27,7 +27,8 @@ struct vdpasim;
+I'm not sure if this is the best option, maybe we can add a new
+function vringh_iov_skip().
+
+Suggestions?
+---
+ drivers/vhost/vringh.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+index 8bd8b403f087..ed3290946ad7 100644
+--- a/drivers/vhost/vringh.c
++++ b/drivers/vhost/vringh.c
+@@ -75,7 +75,9 @@ static inline int __vringh_get_head(const struct vringh *vrh,
+ 	return head;
+ }
  
- struct vdpasim_virtqueue {
- 	struct vringh vring;
--	struct vringh_kiov iov;
-+	struct vringh_kiov riov;
-+	struct vringh_kiov wiov;
- 	unsigned short head;
- 	bool ready;
- 	u64 desc_addr;
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-index 122a3c039507..8e41b3ab98d5 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-@@ -41,13 +41,13 @@ static void vdpasim_blk_work(struct work_struct *work)
- 		if (!vq->ready)
- 			continue;
+-/* Copy some bytes to/from the iovec.  Returns num copied. */
++/* Copy some bytes to/from the iovec.  Returns num copied.
++ * If ptr is NULL, skips at most len bytes.
++ */
+ static inline ssize_t vringh_iov_xfer(struct vringh *vrh,
+ 				      struct vringh_kiov *iov,
+ 				      void *ptr, size_t len,
+@@ -89,12 +91,16 @@ static inline ssize_t vringh_iov_xfer(struct vringh *vrh,
+ 		size_t partlen;
  
--		while (vringh_getdesc_iotlb(&vq->vring, &vq->iov, &vq->iov,
-+		while (vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
- 					    &vq->head, GFP_ATOMIC) > 0) {
- 
- 			int write;
- 
--			vq->iov.i = vq->iov.used - 1;
--			write = vringh_iov_push_iotlb(&vq->vring, &vq->iov, &status, 1);
-+			vq->wiov.i = vq->wiov.used - 1;
-+			write = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
- 			if (write <= 0)
- 				break;
- 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-index d0a1403f64b2..783b1e85b09c 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-@@ -47,12 +47,12 @@ static void vdpasim_net_work(struct work_struct *work)
- 
- 	while (true) {
- 		total_write = 0;
--		err = vringh_getdesc_iotlb(&txq->vring, &txq->iov, NULL,
-+		err = vringh_getdesc_iotlb(&txq->vring, &txq->riov, NULL,
- 					   &txq->head, GFP_ATOMIC);
- 		if (err <= 0)
- 			break;
- 
--		err = vringh_getdesc_iotlb(&rxq->vring, NULL, &rxq->iov,
-+		err = vringh_getdesc_iotlb(&rxq->vring, NULL, &rxq->wiov,
- 					   &rxq->head, GFP_ATOMIC);
- 		if (err <= 0) {
- 			vringh_complete_iotlb(&txq->vring, txq->head, 0);
-@@ -60,13 +60,13 @@ static void vdpasim_net_work(struct work_struct *work)
- 		}
- 
- 		while (true) {
--			read = vringh_iov_pull_iotlb(&txq->vring, &txq->iov,
-+			read = vringh_iov_pull_iotlb(&txq->vring, &txq->riov,
- 						     vdpasim->buffer,
- 						     PAGE_SIZE);
- 			if (read <= 0)
- 				break;
- 
--			write = vringh_iov_push_iotlb(&rxq->vring, &rxq->iov,
-+			write = vringh_iov_push_iotlb(&rxq->vring, &rxq->wiov,
- 						      vdpasim->buffer, read);
- 			if (write <= 0)
- 				break;
+ 		partlen = min(iov->iov[iov->i].iov_len, len);
+-		err = xfer(vrh, iov->iov[iov->i].iov_base, ptr, partlen);
+-		if (err)
+-			return err;
++
++		if (ptr) {
++			err = xfer(vrh, iov->iov[iov->i].iov_base, ptr, partlen);
++			if (err)
++				return err;
++			ptr += partlen;
++		}
++
+ 		done += partlen;
+ 		len -= partlen;
+-		ptr += partlen;
+ 		iov->consumed += partlen;
+ 		iov->iov[iov->i].iov_len -= partlen;
+ 		iov->iov[iov->i].iov_base += partlen;
 -- 
 2.26.2
 
