@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC7A2B2934
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E062B293D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgKMXea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:34:30 -0500
-Received: from mga09.intel.com ([134.134.136.24]:44689 "EHLO mga09.intel.com"
+        id S1726081AbgKMXfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:35:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgKMXea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:34:30 -0500
-IronPort-SDR: 1//bveH8+fBGIX8kKf2nRGUGjIG4EXreFCfFBuyEgslsTwQ+vYFf3/WxvVUAR5unLYr1wWQWsD
- vEVAlHWl2+Jw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="170716667"
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="170716667"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 15:34:24 -0800
-IronPort-SDR: fa3kPOnzQAgpAoEortaPsAhrXIvRuAfgH62hMjKJpNE/meWsHqhaxcRRkRL4uywqoW3g85k0Tu
- RnIM5iw4nJJw==
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="542842902"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 15:34:17 -0800
-Date:   Fri, 13 Nov 2020 15:34:15 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 5/5] perf metric: Don't compute unused events.
-Message-ID: <20201113233415.GJ894261@tassilo.jf.intel.com>
-References: <20201113001651.544348-1-irogers@google.com>
- <20201113001651.544348-6-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113001651.544348-6-irogers@google.com>
+        id S1725866AbgKMXfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 18:35:51 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE40D22256;
+        Fri, 13 Nov 2020 23:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605310551;
+        bh=yCYKhD16gKX5xxn92nGzvJxUg2BQXXSqYsh+H+ozt0M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NReDqobeKJiLMaP96HWCBDgcA6mhV0+tOdewQYEQkUAxERv4gaAUzVKwCiServWNO
+         YcRJlYrcwz+O82B9HVJV1z7CFY+FbUIl0iQaPRdwAiUs9HilNLucXRTVz4E9I5Wdse
+         3m7wfL9a0uA4QRRzO6Tl4VCreqzzqh+ZmhoRmKiQ=
+Date:   Fri, 13 Nov 2020 15:35:50 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm v10 00/42] kasan: add hardware tag-based mode for
+ arm64
+Message-Id: <20201113153550.5ab0f21942ef7331935fecc4@linux-foundation.org>
+In-Reply-To: <cover.1605305705.git.andreyknvl@google.com>
+References: <cover.1605305705.git.andreyknvl@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch does a lot of stuff and is hard to review.
+On Fri, 13 Nov 2020 23:15:28 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
 
-The earlier patches all look good to me.
+> This patchset adds a new hardware tag-based mode to KASAN [1]. The new mode
+> is similar to the existing software tag-based KASAN, but relies on arm64
+> Memory Tagging Extension (MTE) [2] to perform memory and pointer tagging
+> (instead of shadow memory and compiler instrumentation).
+> 
+> ...
+>
+> ====== History
+> 
+> Change v9->v10:
 
->  
->  static int
->  __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
-> -	      int start, int runtime)
-> +	      bool compute_ids, int runtime)
->  {
->  	struct expr_scanner_ctx scanner_ctx = {
-> -		.start_token = start,
+I'll drop v9 from -mm and shall go into hiding for a few days, see how
+the ongoing review is proceeding.
 
-Okay so why do we not need that anymore?
-
-This should probably be a separate change.
-
-I'm not sure about the NaN handling. Why can't you use some 
-other value (perhaps 0 with some special case for division) 
-
-After all the computed values of the dead branch shouldn't 
-be used anyways, so I don't think we need the extra NaN 
-ceremony everywhere.
-
-The only thing that really matters is to track that the event
-is not added and not resolved.
-
-I think it would be a lot simpler if we changed the IF syntax.
-The problem right now is that the condition is after the first
-expression, so you can't use global state with an early reduction
-to track if the if branch is dead or not.
-
-If we used the C style cond ? a : b  it could be
-
-cond { set flag } '?' expr  { reset flag } : expr { reset flag }
-
-scanner checks flag and ignores the event if false
-
-This would need changing the JSON files but that should be easy enough
-with a script.
-
-Or maybe at some point need to bite the bullet and build
-an AST, but for now we probably can get away of not doing it.
-
-
--Andi
