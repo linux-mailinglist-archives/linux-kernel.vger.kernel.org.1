@@ -2,123 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879A62B13F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0A52B13FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgKMBn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 20:43:58 -0500
-Received: from mga06.intel.com ([134.134.136.31]:59579 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725965AbgKMBn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 20:43:58 -0500
-IronPort-SDR: GNZiQih51j85Njv5XWuaaq5yqTAhTRy9y1JoYaR6gYDyjYAjJou5Qiz8ITIPOVLFj8CkoxosMy
- y4Tk5p5hTi+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="232029480"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="232029480"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 17:43:57 -0800
-IronPort-SDR: r8uaihk5chuFK9Ma7CwaO8clBJhCqXBhTT+mi4Cr81rOCfgrR+IiAWt3ztI5cuxuUZL4fzcZxz
- eRPi0obRTqpg==
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="542480612"
-Received: from pcathanx-mobl.amr.corp.intel.com (HELO [10.212.226.118]) ([10.212.226.118])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 17:43:57 -0800
-Subject: Re: [PATCH net-next] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
-To:     Jakub Kicinski <kuba@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     Dmytro Shytyi <dmytro@shytyi.net>, kuznet <kuznet@ms2.inr.ac.ru>,
-        yoshfuji <yoshfuji@linux-ipv6.org>,
-        liuhangbin <liuhangbin@gmail.com>, davem <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
- <202011110944.7zNVZmvB-lkp@intel.com>
- <20201112162423.6b4de8d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <8b05710f-5718-986d-659c-916e2b85c892@intel.com>
-Date:   Thu, 12 Nov 2020 17:43:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726157AbgKMBqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 20:46:40 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6186 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725965AbgKMBqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 20:46:39 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AD1ilD9030223;
+        Thu, 12 Nov 2020 17:46:30 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=18aMaml0aO/rKzuf9U/glhTVW9D1tshy5MNeBveN9P4=;
+ b=FAJFS2V7ag01FUpgaknJAKEakC7YfRBX1tQXfdhjNTLnGCvHIvwr+BmySVn3NR1uP0GQ
+ NpKbJElmySovTTiFsXB1SdGjurGygmmxlC5+WkZZXoho/le3LEKZrcauKqrwHmmFKcHp
+ anUJZo2AGbn8P4tCiOuz1yP/TbPJdytBRWs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 34se3prrqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 12 Nov 2020 17:46:30 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 12 Nov 2020 17:46:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HORR7mgSJS4Z6cZ12bOMRFyLXupXGKFGTT31f9a7QeEz+uj9blHrFZUidIQ3S3QYLDXSxt8fEIlENLpD6tJ5qx/Qdrn3CEF2j02j5/K6vTPQgwjMs1IShstQLrHj2oYvd3UBy7AusbsWCIID44z+FAsh1A8SFFP3tErJ9fm+eEv9Gy0tQdRZXwMzi1Rog3PnWO0UZ1oeXRCWZfke+9DOv2fQq5K3hrpbg95xfz9ESahYZJ3qaoL9kZf+C8sZ/AiPGxdjL8Pg6IA4N3t5TndEokdW7m3bLNKbTkiM6sxMj36lDpYU+tS+tI5wS5w2VvZx9rQs1JfmVyyJJm7xAUFzWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=18aMaml0aO/rKzuf9U/glhTVW9D1tshy5MNeBveN9P4=;
+ b=j2hLLWqavhPm9TUbIpo1tpLbQhIlbGshdetLjcY05E2U7Wet6xKZssfQpQih3Ed8QK9HZXYtFuVD//nrZqUEwPSimGlAlaEFeWlq685jd7iygkYYv7bRY/OyX3J9rXu1knyXKwaGdiDcF6CunV/mQnux05e7eZryKnRd18AMhSw+tB9v45aiyEJuyxOTVaSk1wtukkxc/FDiwnbQStarrBEPnx4h3XRb0idcRLpbc+PQoisFyegomIBYkT6lnhlQTKg+ibkh5T4Q4Nw00hBS7+6qcQgcoEQNs21y4Q5+o9HOQeNtil9yOJh//3r3s38foi03pso9bQYrGK8mEIInQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=18aMaml0aO/rKzuf9U/glhTVW9D1tshy5MNeBveN9P4=;
+ b=ZrvGVEj2u+SDNlcTXnCv2cctR7JdcvZ2oxQvYnlgIZMBQ1tyGtBVqbA9FFufLxYOldBxYL7un8Bq2o/Fod2qRlYSaZGGpgIcxUHa0b6/RYpKCPLsbM6jLeBUjTCd8YZBQ539gdQqL4k6bi06CToCUtVTXF/UznyoMYUHCOL1iqY=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3397.namprd15.prod.outlook.com (2603:10b6:a03:10b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 13 Nov
+ 2020 01:46:27 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
+ 01:46:27 +0000
+Date:   Thu, 12 Nov 2020 17:46:22 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>, <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH 2/2] mm: memcg/slab: pre-allocate obj_cgroups for slab
+ caches with SLAB_ACCOUNT
+Message-ID: <20201113014622.GA2942851@carbon.DHCP.thefacebook.com>
+References: <20201110195753.530157-1-guro@fb.com>
+ <20201110195753.530157-2-guro@fb.com>
+ <20201112162303.GB873621@cmpxchg.org>
+ <20201113001926.GA2934489@carbon.dhcp.thefacebook.com>
+ <20201112171239.4f8ef107f741c3462556731f@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112171239.4f8ef107f741c3462556731f@linux-foundation.org>
+X-Originating-IP: [2620:10d:c090:400::5:b498]
+X-ClientProxiedBy: MW4PR03CA0085.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20201112162423.6b4de8d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:b498) by MW4PR03CA0085.namprd03.prod.outlook.com (2603:10b6:303:b6::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Fri, 13 Nov 2020 01:46:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ae0a2209-3b28-449e-b81f-08d88775ef78
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3397:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB33975474D8A7897785E09732BEE60@BYAPR15MB3397.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xe+KeQARKsEsS2Ceki+j2fPo3/Fzw53CQiwSfk28aO/0QSS1OtK1ncu4pnQNI01FtvnQgXPiCqRoQpq/Lr8636YLICGz2c2cMx4YawZLGd1zE4/z0oYWk/5OVfMQ3OfN5NNBOBCggYqBwcFdnkN3PHgl0Igeackl/dgJKLuX95Wcfr5VD33RIhzxCo31W7IKClBs+wZnmFKHuEKSF5xekRjvqfTzPpFlJe0vtgjyL3eTKD9962g798MfqjhBqcjUtAbMl2gD1B1RZBAxt7/TiLr+EnQ+xR1AMhhp+TsiFIjEhO/9sK9owhSU+jA73ZmtwvH3eoE2ELUqN80RVw2fDw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(396003)(136003)(39860400002)(16526019)(33656002)(8936002)(6506007)(53546011)(52116002)(5660300002)(6666004)(4326008)(66476007)(66556008)(6916009)(186003)(1076003)(478600001)(54906003)(316002)(83380400001)(7696005)(55016002)(86362001)(2906002)(9686003)(8676002)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: YsRzN/aKPRbrdO6hYJvzbROhiA855RHro+v9CEId2NIJqJPQdZV/hxkahedM8MgpZKTc6LXVguJX2SKMEKycNOcIOYyxeiBEPE+P6/cBzebgypZ8KkGZThDRtReqyfgYAaVqJiEknVETwoq79e4mdq6N3F+fDP5GF3sBJWsiZhofKhLkVbwa6cas8efRNH9VyBKQqR+ysm7lFlRxuyShqASTT49lToCr1+Ry+YxKZ/dyUE5XL7XyUI8twKjhZJBvt8CMfpUBVKCGQrvaDy2+pe/FLr1Oa7fCj5/lEjddAuGgSvoycTjj4dASlezyhymd3ku4mQm82y27JrUcyuFy7cyneBbNHPPoP9FIN+mw9U7gxkXput0h44SQBRAk9Q1qj0ZHjGlkuAMoTUUXnkTQC35GIGjQJvJKA+mH/+ATRiTL74jzOBEcNkWlRB0I6Lbnp+bgXDPVD6P1Hp+Iq0jtbnno+Sjip2AG0057WLCQVJhPiUnTrmCnU5Ht0KdNRrtxyZ2l+3OgBy8VpfVkFDOQejV2Jb1BpeJkBK1fmFhio98DyaAUhRiwWMt8hpxi86tQwOVXYBPNXszGbO6Y8S2Jz+taYg0CfW3kkGvC5mbZ8FntyXIA1ApPcxF6rUiVXOGAQN93MMfr/HPf3ZjWaXx4XowOFrIOKVIvYg07ryJ/qc52zLf0AAfNPA9ThyvEX5o2
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae0a2209-3b28-449e-b81f-08d88775ef78
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 01:46:27.3913
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6FbXfaBqZaeMt0mbvm26JWcadmp/ZdXDOZ+vGAo0rCVNhuCo2aDrVtvZXDTgynh+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3397
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_16:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 phishscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 suspectscore=1 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011130008
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 4:24 PM, Jakub Kicinski wrote:
-> On Wed, 11 Nov 2020 09:34:24 +0800 kernel test robot wrote:
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
-> Good people of kernel test robot, could you please rephrase this to say
-> that the tag is only appropriate if someone is sending a fix up/follow
-> up patch?
+On Thu, Nov 12, 2020 at 05:12:39PM -0800, Andrew Morton wrote:
+> On Thu, 12 Nov 2020 16:19:26 -0800 Roman Gushchin <guro@fb.com> wrote:
 > 
-> Folks keep adding those tags on the next revisions of the their patches
-> which is quite misleading.
+> > >From 8b28d91475d54c552e503e66f169e1e00475c856 Mon Sep 17 00:00:00 2001
+> > From: Roman Gushchin <guro@fb.com>
+> > Date: Wed, 16 Sep 2020 15:43:48 -0700
+> > Subject: [PATCH v2 2/2] mm: memcg/slab: pre-allocate obj_cgroups for slab
+> >  caches with SLAB_ACCOUNT
+> > 
+> > In general it's unknown in advance if a slab page will contain
+> > accounted objects or not. In order to avoid memory waste, an
+> > obj_cgroup vector is allocated dynamically when a need to account
+> > of a new object arises. Such approach is memory efficient, but
+> > requires an expensive cmpxchg() to set up the memcg/objcgs pointer,
+> > because an allocation can race with a different allocation on another
+> > cpu.
+> > 
+> > But in some common cases it's known for sure that a slab page will
+> > contain accounted objects: if the page belongs to a slab cache with a
+> > SLAB_ACCOUNT flag set. It includes such popular objects like
+> > vm_area_struct, anon_vma, task_struct, etc.
+> > 
+> > In such cases we can pre-allocate the objcgs vector and simple assign
+> > it to the page without any atomic operations, because at this early
+> > stage the page is not visible to anyone else.
+> > 
+> > v2: inline set_page_objcgs() and add some comments, by Johannes
+> 
+> Had me confused!  I was looking for the inlined function
+> set_page_objcgs().  I think "open-code" is a better term here than
+> "inline".
 
-I think it's still fair for the lkp folks to get *some* credit for
-reporting these bugs.  I mean, the stated reason[1] for it existing is:
+Sorry for the confusion! And thanks for picking up the new version!
 
-	The Reported-by tag gives credit to people who find bugs and
-	report them and it hopefully inspires them to help us again in
-	the future.
-
-I do agree, though, that it's confusing *what* they reported, especially
-if the patch in question is fixing something *else*.  Rather than invent
-a new tag, maybe a comment would suffice:
-
-Reported-by: kernel test robot <lkp@intel.com> # bug in earlier revision
-
-1.
-https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
-
+Roman
