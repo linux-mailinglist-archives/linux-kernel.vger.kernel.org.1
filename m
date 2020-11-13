@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C9A2B24A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5FC2B24A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgKMThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:37:01 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15774 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbgKMTg5 (ORCPT
+        id S1726394AbgKMThD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:37:03 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17905 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726300AbgKMTg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:36:57 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5faee0520002>; Fri, 13 Nov 2020 11:36:50 -0800
+        Fri, 13 Nov 2020 14:36:58 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5faee0620000>; Fri, 13 Nov 2020 11:37:06 -0800
 Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov
- 2020 19:36:56 +0000
+ 2020 19:36:57 +0000
 Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 13 Nov 2020 19:36:56 +0000
+ Transport; Fri, 13 Nov 2020 19:36:57 +0000
 From:   Sowjanya Komatineni <skomatineni@nvidia.com>
 To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
         <jonathanh@nvidia.com>, <robh+dt@kernel.org>
 CC:     <devicetree@vger.kernel.org>, <linux-ide@vger.kernel.org>,
         <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 5/6] arm64: tegra: Enable AHCI on Jetson TX2
-Date:   Fri, 13 Nov 2020 11:36:57 -0800
-Message-ID: <1605296218-2510-6-git-send-email-skomatineni@nvidia.com>
+Subject: [PATCH v2 6/6] ata: ahci_tegra: Add AHCI support for Tegra186
+Date:   Fri, 13 Nov 2020 11:36:58 -0800
+Message-ID: <1605296218-2510-7-git-send-email-skomatineni@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
 References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
@@ -35,81 +35,164 @@ X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605296210; bh=r3AVUbvt3RNfrllkiehC3fL0fC0040AbIRoa2VJA/gs=;
+        t=1605296226; bh=bqvYhM4gfczmD1UkOCBSQi6kCpayixLg2a8u43aYS8U=;
         h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
          References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=kzyHf7bxobwlamACg3XCfhUu1nFu2sOV6b4VwoXYei/OyANj5hN/O8CTGOgdDdnKP
-         sttIyMsX0FlqtAkTI/Q6X8ro2cIFJHc40cYu8/NEIDY2jy2pqE+TZVY/XQKUVt2QWB
-         g3himx+mgAtli+zSdbx7amOIuzwufTid9UF/Y2px2fw6r+HJtTmi8n2K7gucSYxO9M
-         H4lE4qugnbQXh+RiFzqwxRP3+/Rk5BKUuLPGPCtLfXGuKHU5FVOdO+pkfRblGDhxzC
-         V7M+HCpjPPZ2EDiTH1coe+2O5rQwM35m+hGewEfzKQVPzXx2Lr7T9ECXedVYYZ2cOy
-         FhQBOQM+bZY7g==
+        b=aZ+jQqCxEUboM6XMeiPKoCEOuxVDCK2qK9ZYY91Lrurh0i8Qk0zZIAJxChDhmABuY
+         wXBWGDaWuVwKxEiDZ0UekIUuRxAGfImLtrueFb2MR4UYmvyNsO8N87GzOz+lnWO+95
+         LF+Ei/Mco1X34nwfxN/Mj/pRrRPKWW7Ia8BQn3TXA6w/X4QD74xCSDqcR1twyThBoT
+         ZsHikWXhsfPzIMAv70mHNK6O/KpY/3MSKw73UKsFTBung5xXQAhJUMK+Fl5aiQY0iP
+         Nhk8KOJS5nkhYkoOjf8IQB/xLVfhiB1vB+cWhHCLaTAFPlY30MGEq8KEmW5AaGH7go
+         imu80vOPrKDzg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables AHCI on Jetson TX2.
+This patch adds support for AHCI-compliant Serial ATA controller
+on Tegra186 SoC.
+
+Tegra186 does not have sata-oob reset.
+Tegra186 SATA_NVOOB register filed COMMA_CNT position and width are
+different compared to Tegra210 and prior.
+
+So, this patch adds a flag has_sata_oob_rst and tegra_ahci_regs to
+SoC specific strcuture tegra_ahci_soc and updated their implementation
+accordingly.
 
 Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts |  4 ++++
- arch/arm64/boot/dts/nvidia/tegra186.dtsi           | 28 ++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+ drivers/ata/ahci_tegra.c | 60 +++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 47 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts b/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
-index 381a84912..7e1723e 100644
---- a/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
-@@ -297,6 +297,10 @@
- 		};
- 	};
+diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
+index cb55ebc1..56612af 100644
+--- a/drivers/ata/ahci_tegra.c
++++ b/drivers/ata/ahci_tegra.c
+@@ -59,8 +59,6 @@
+ #define T_SATA0_CFG_PHY_1_PAD_PLL_IDDQ_EN		BIT(22)
  
-+	sata@3507000 {
-+		status = "okay";
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
+ #define T_SATA0_NVOOB                                   0x114
+-#define T_SATA0_NVOOB_COMMA_CNT_MASK                    (0xff << 16)
+-#define T_SATA0_NVOOB_COMMA_CNT                         (0x07 << 16)
+ #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK          (0x3 << 24)
+ #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE               (0x1 << 24)
+ #define T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK        (0x3 << 26)
+@@ -154,11 +152,18 @@ struct tegra_ahci_ops {
+ 	int (*init)(struct ahci_host_priv *hpriv);
+ };
  
-diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-index 0c46ab7..7f5c002 100644
---- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-@@ -1501,6 +1501,34 @@
- 		};
- 	};
++struct tegra_ahci_regs {
++	unsigned int nvoob_comma_cnt_mask;
++	unsigned int nvoob_comma_cnt_val;
++};
++
+ struct tegra_ahci_soc {
+ 	const char *const		*supply_names;
+ 	u32				num_supplies;
+ 	bool				supports_devslp;
++	bool				has_sata_oob_rst;
+ 	const struct tegra_ahci_ops	*ops;
++	const struct tegra_ahci_regs	*regs;
+ };
  
-+	sata@3507000 {
-+		compatible = "nvidia,tegra186-ahci";
-+		reg = <0x0 0x03507000 0x0 0x00002000>, /* AHCI */
-+		      <0x0 0x03500000 0x0 0x00007000>, /* SATA */
-+		      <0x0 0x03A90000 0x0 0x00010000>; /* SATA AUX */
-+		interrupts = <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>;
+ struct tegra_ahci_priv {
+@@ -240,11 +245,13 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
+-						tegra->sata_clk,
+-						tegra->sata_rst);
+-	if (ret)
+-		goto disable_regulators;
++	if (!tegra->pdev->dev.pm_domain) {
++		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
++							tegra->sata_clk,
++							tegra->sata_rst);
++		if (ret)
++			goto disable_regulators;
++	}
+ 
+ 	reset_control_assert(tegra->sata_oob_rst);
+ 	reset_control_assert(tegra->sata_cold_rst);
+@@ -330,10 +337,10 @@ static int tegra_ahci_controller_init(struct ahci_host_priv *hpriv)
+ 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA_CFG_PHY_0);
+ 
+ 	val = readl(tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
+-	val &= ~(T_SATA0_NVOOB_COMMA_CNT_MASK |
++	val &= ~(tegra->soc->regs->nvoob_comma_cnt_mask |
+ 		 T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK |
+ 		 T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK);
+-	val |= (T_SATA0_NVOOB_COMMA_CNT |
++	val |= (tegra->soc->regs->nvoob_comma_cnt_val |
+ 		T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH |
+ 		T_SATA0_NVOOB_SQUELCH_FILTER_MODE);
+ 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
+@@ -449,15 +456,35 @@ static const struct tegra_ahci_ops tegra124_ahci_ops = {
+ 	.init = tegra124_ahci_init,
+ };
+ 
++static const struct tegra_ahci_regs tegra124_ahci_regs = {
++	.nvoob_comma_cnt_mask = GENMASK(30, 28),
++	.nvoob_comma_cnt_val = (7 << 28),
++};
 +
-+		power-domains = <&bpmp TEGRA186_POWER_DOMAIN_SAX>;
-+		interconnects = <&mc TEGRA186_MEMORY_CLIENT_SATAR &emc>,
-+				<&mc TEGRA186_MEMORY_CLIENT_SATAW &emc>;
-+		interconnect-names = "dma-mem", "write";
-+		iommus = <&smmu TEGRA186_SID_SATA>;
+ static const struct tegra_ahci_soc tegra124_ahci_soc = {
+ 	.supply_names = tegra124_supply_names,
+ 	.num_supplies = ARRAY_SIZE(tegra124_supply_names),
+ 	.supports_devslp = false,
++	.has_sata_oob_rst = true,
+ 	.ops = &tegra124_ahci_ops,
++	.regs = &tegra124_ahci_regs,
+ };
+ 
+ static const struct tegra_ahci_soc tegra210_ahci_soc = {
+ 	.supports_devslp = false,
++	.has_sata_oob_rst = true,
++	.regs = &tegra124_ahci_regs,
++};
 +
-+		clocks = <&bpmp TEGRA186_CLK_SATA>,
-+			 <&bpmp TEGRA186_CLK_SATA_OOB>;
-+		clock-names = "sata", "sata-oob";
-+		assigned-clocks = <&bpmp TEGRA186_CLK_SATA>,
-+				  <&bpmp TEGRA186_CLK_SATA_OOB>;
-+		assigned-clock-parents = <&bpmp TEGRA186_CLK_PLLP_OUT0>,
-+					 <&bpmp TEGRA186_CLK_PLLP>;
-+		assigned-clock-rates = <102000000>,
-+				       <204000000>;
-+		resets = <&bpmp TEGRA186_RESET_SATA>,
-+			<&bpmp TEGRA186_RESET_SATACOLD>;
-+		reset-names = "sata", "sata-cold";
-+		status = "disabled";
-+	};
++static const struct tegra_ahci_regs tegra186_ahci_regs = {
++	.nvoob_comma_cnt_mask = GENMASK(23, 16),
++	.nvoob_comma_cnt_val = (7 << 16),
++};
 +
- 	bpmp: bpmp {
- 		compatible = "nvidia,tegra186-bpmp";
- 		interconnects = <&mc TEGRA186_MEMORY_CLIENT_BPMPR &emc>,
++static const struct tegra_ahci_soc tegra186_ahci_soc = {
++	.supports_devslp = false,
++	.has_sata_oob_rst = false,
++	.regs = &tegra186_ahci_regs,
+ };
+ 
+ static const struct of_device_id tegra_ahci_of_match[] = {
+@@ -469,6 +496,10 @@ static const struct of_device_id tegra_ahci_of_match[] = {
+ 		.compatible = "nvidia,tegra210-ahci",
+ 		.data = &tegra210_ahci_soc
+ 	},
++	{
++		.compatible = "nvidia,tegra186-ahci",
++		.data = &tegra186_ahci_soc
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, tegra_ahci_of_match);
+@@ -518,10 +549,13 @@ static int tegra_ahci_probe(struct platform_device *pdev)
+ 		return PTR_ERR(tegra->sata_rst);
+ 	}
+ 
+-	tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev, "sata-oob");
+-	if (IS_ERR(tegra->sata_oob_rst)) {
+-		dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
+-		return PTR_ERR(tegra->sata_oob_rst);
++	if (tegra->soc->has_sata_oob_rst) {
++		tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev,
++							     "sata-oob");
++		if (IS_ERR(tegra->sata_oob_rst)) {
++			dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
++			return PTR_ERR(tegra->sata_oob_rst);
++		}
+ 	}
+ 
+ 	tegra->sata_cold_rst = devm_reset_control_get(&pdev->dev, "sata-cold");
 -- 
 2.7.4
 
