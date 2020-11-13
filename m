@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12B92B1DB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED642B1DB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgKMOvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:51:12 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34003 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMOvK (ORCPT
+        id S1726633AbgKMOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKMOvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:51:10 -0500
-Received: by mail-wr1-f67.google.com with SMTP id r17so10234464wrw.1;
-        Fri, 13 Nov 2020 06:51:09 -0800 (PST)
+        Fri, 13 Nov 2020 09:51:25 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CB6C0613D1;
+        Fri, 13 Nov 2020 06:51:25 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f38so7264491pgm.2;
+        Fri, 13 Nov 2020 06:51:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=FeQh4FdOZwVhx4i39hlguo34HgLhuLiBD0/DOQQq4rI=;
+        b=R3fMTtxIF543Ih5YOs+n3v5kt1uVu6ewdLPwgczWBuGSJfOhwmfZiQfCHlaz2+OeQE
+         nnYOwy71jqOodTVzkTszDyxcCDm5i4Bryf++//u2YyXwtjw6jBCD39PayLkmI4aihFrk
+         3xNkhZqdUVSms+ssnsGbgfPF12JbAsrvYs0MjEqwYSN8IOZFGfXl20ibyHdpeQhwiUNd
+         cGJWBv+Gr6q0I5ynGKbMeIs9iBLkE4kxH0S7B6z6wjsPmwjrYuTyqNA0QzrUNo1hNgsM
+         9BEwlZ7tRTz6n2ML4TMokaV9hyc5BzLch7SVYXvend25kRyA3kE5w0qKux0lxXzCEGme
+         sHiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aAlmyA4sfYYrPjrQD695bEObeqnhiYZCjllcBnn0e5k=;
-        b=TnAW1wf5CKPIV63JcECSbhI2Wg24FHUPACVebIHjpwE+1SQDgPyHexpak5mAnmlLaf
-         uYIqJiYarmvRgV/qcxrE8rRzdZq9ZLB8SBvevlFXVTGSG9uLRpIBQjJ5x6gWhyjLCGUR
-         wf3rsAvx8hU2FkDCBvFLsz0JN4NK8xFqY+y5vIdvrLVejIa93dn1WIbshNgXnt/i2j/l
-         v7wOpWEF3e/VLYLh4SEV+w/ZEheqfZepv47H4RBSZk+xNeco+wtqijH8U8+MZ38x2m88
-         N/JAIwGgqkNlOOX1eehxxL2omev+g2JiSGaTiVqW78toaTEoY661C4dnvZLbSDtjlzpl
-         fNQQ==
-X-Gm-Message-State: AOAM533wWrRtwMyM6FtrE0wHidEzhG4Eu3q6YMJ3E6lk2l8rSWRahvjX
-        076TIKHFdArsVDiwzQNIQho=
-X-Google-Smtp-Source: ABdhPJyGBkq3j9fFqjeueSZX46lLXN1F5neV8oNQAbZqbarx52SOLQVZz9CqIiA4OIOiFcHhRqYHpg==
-X-Received: by 2002:a5d:4409:: with SMTP id z9mr3823980wrq.309.1605279068895;
-        Fri, 13 Nov 2020 06:51:08 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id g138sm10560175wme.39.2020.11.13.06.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 06:51:08 -0800 (PST)
-Date:   Fri, 13 Nov 2020 14:51:06 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Subject: Re: [PATCH v2 03/17] Drivers: hv: vmbus: skip VMBus initialization
- if Linux is root
-Message-ID: <20201113145106.k4ekiw5cu427e3wi@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-4-wei.liu@kernel.org>
- <87imaay4w9.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87imaay4w9.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FeQh4FdOZwVhx4i39hlguo34HgLhuLiBD0/DOQQq4rI=;
+        b=q6d9Vo9N4jE0EjQpbKWwXrg+87+f7U/o+qA/hJNHbLlrYPgNp63AT51go3HI/bL47q
+         Lv0JE795SYJu/KPcC7zEJmNOhsKkLMVWB4Dtepbcq0KgJR3U82FXDS9Wn3GsB0C0cK0M
+         jsyvGq085ds01P7TpvsA535BdFeVE23xjD3tnbxARrV3p3rS9awtvWWwRQ3XV4MXfHYt
+         ojnjyr8jDfv6N9T4c3Rd+gDCXv/udbOuLCCPPInm/KNYc3ailxTSmsrXeD+feUg7Cz0j
+         uz1aVUu/pZzt0PPBk3N4GXLXeyQnuagGmIhIMCXEyYNzPgNuiFU/zsz8xMwrjTHS3C8D
+         C6tA==
+X-Gm-Message-State: AOAM532ssUP3EbOipRLq9MvUHN0/SpGfaDDBJKGCxBnqPfTY5k0BVzBV
+        caPsEhcImA3Dp576c5Xu8ew4mVfjpcoL
+X-Google-Smtp-Source: ABdhPJy16wOevtvij+fqDb1WHcMwi+goNOVnFva8Xzhl90PTNfWe+5pi0V/uwYGgWXjDZXxe/ARIGQ==
+X-Received: by 2002:a17:90a:f189:: with SMTP id bv9mr3571491pjb.174.1605279084911;
+        Fri, 13 Nov 2020 06:51:24 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id t9sm12818965pje.1.2020.11.13.06.51.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Nov 2020 06:51:24 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     krzk@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] ASoC: samsung: remove the unused variable value assignment
+Date:   Fri, 13 Nov 2020 22:51:19 +0800
+Message-Id: <1605279079-6416-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:24:38PM +0100, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-> 
-> > There is no VMBus and the other infrastructures initialized in
-> > hv_acpi_init when Linux is running as the root partition.
-> >
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> >  drivers/hv/vmbus_drv.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> > index 4fad3e6745e5..37c4d3a28309 100644
-> > --- a/drivers/hv/vmbus_drv.c
-> > +++ b/drivers/hv/vmbus_drv.c
-> > @@ -2612,6 +2612,9 @@ static int __init hv_acpi_init(void)
-> >  	if (!hv_is_hyperv_initialized())
-> >  		return -ENODEV;
-> >  
-> > +	if (hv_root_partition)
-> > +		return -ENODEV;
-> > +
-> 
-> Nit: any particular reason why we need to return an error from here? I'd
-> suggest we 'return 0;' if it doesn't break anything (we're still running
-> on Hyper-V, it's just a coincedence that there's nothing to do here,
-> eventually we may get some devices/handlers I guess. Also, there's going
-> to be server-side Vmbus eventually, we may as well initialize it here.
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Returning 0 should be fine. It is not likely to make any practical
-difference at this stage.
+The value of variable ret is overwritten by the following call
+devm_snd_soc_register_card(), so here the value assignment is useless.
+Remove it.
 
-Not sure what you mean by server-side Vmbus. If you mean Vmbus on the
-host, yes, there will be. The initialization is, again, a bit different
-there.  You will see why when my colleague post /dev/mshv code. The long
-term goal is to refactor the Vmbus initialization code to work in all
-scenarios.  We are not there yet though.
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ sound/soc/samsung/smdk_wm8994.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Wei.
+diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+index 64a1a64..1db5b59 100644
+--- a/sound/soc/samsung/smdk_wm8994.c
++++ b/sound/soc/samsung/smdk_wm8994.c
+@@ -160,11 +160,9 @@ static int smdk_audio_probe(struct platform_device *pdev)
+ 		smdk_dai[0].cpus->dai_name = NULL;
+ 		smdk_dai[0].cpus->of_node = of_parse_phandle(np,
+ 				"samsung,i2s-controller", 0);
+-		if (!smdk_dai[0].cpus->of_node) {
++		if (!smdk_dai[0].cpus->of_node)
+ 			dev_err(&pdev->dev,
+ 			   "Property 'samsung,i2s-controller' missing or invalid\n");
+-			ret = -EINVAL;
+-		}
+ 
+ 		smdk_dai[0].platforms->name = NULL;
+ 		smdk_dai[0].platforms->of_node = smdk_dai[0].cpus->of_node;
+-- 
+1.8.3.1
 
-> 
-> >  	init_completion(&probe_event);
-> >  
-> >  	/*
-> 
-> -- 
-> Vitaly
-> 
