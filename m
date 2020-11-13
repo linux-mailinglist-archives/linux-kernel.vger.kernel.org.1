@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42062B1D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 529422B1D3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgKMOZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:25:07 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52700 "EHLO
+        id S1726915AbgKMOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:25:03 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52544 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgKMOYb (ORCPT
+        with ESMTP id S1726876AbgKMOYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Nov 2020 09:24:31 -0500
-Message-Id: <20201113141734.096224353@linutronix.de>
+Message-Id: <20201113141734.207605126@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277469;
+        s=2020; t=1605277470;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7FMqhKuhnVJot7gugFY0sIHhr7C/a6J/+QfyYVD8emw=;
-        b=hWAB3oHVAGiodkIZKWVA/wHw+8lM5Yf9xpgH9yZCucVDL3PA3DKYbCR3kxRj/aEeniifps
-        SvXIhCS5yN18DxJrcFdOTteQ2XNq1ZARAhc5AarZf3NcZ0kofmD9ndFAw0sUyGz1vOgi3M
-        oMVOOhtMW5aIGAqGQR59uudOHtzseVzzr9CoU+VBu4W8O1apSYzc8GzsrimvBjLt3Wohq1
-        i6D2Tz8z7RzK1Pc1+GcoMLAr9Hxps0/mCwXgE3NWa3ScwqRpsrCTHaSPntIYLa/typVLWO
-        VfSUZ51CyDHAhDEau2h/yeF2NcU4eMjCmTAFJ/HouWZlfSRj9nF7INS1SDWjrw==
+        bh=hOeV4Uk7rTRj8OzrhfpKRZ7P0pi7lfMrsyiB2KyVEto=;
+        b=URSw8F8qCzxPeiiiqFqLJq9vgbvQvNB5bDnNWfPE+JIpuybZnnqa6IY2ofJgdJEzeECG1k
+        nhxbzeTOcEEvoxg1p1gpTnBtwmuhcli6AM1SNnRvxqaWxfgHNpCparobE9ZTa6h2KAAa+v
+        MBrwhlBSGWEvD5ZpHidwQC8lXS2eus6R0/70ep00jQRw4a9jRrgh1//4WmUXUh58ZUnCFL
+        xPUZYjZdaJI+U0Hp3OvS3r/2BITHOzsrQgk94F3mhIhmRjdcJz/nKaMQBzJN4VqrZeDiF+
+        dQnYFmwrcpE8ZJZTEriBYAiF9Sk4DG/6XxukcDyuOXKxIX9aB5EE6QSD48kitQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277469;
+        s=2020e; t=1605277470;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7FMqhKuhnVJot7gugFY0sIHhr7C/a6J/+QfyYVD8emw=;
-        b=kNX4csPHdXBz2VCKmQeCbwIwI3e4E8fGLYskNFO77kKPXf4ZoefJQdRB+pZU7ZYJcXn8Hq
-        Dfon13Yv89lSSnDQ==
-Date:   Fri, 13 Nov 2020 15:02:19 +0100
+        bh=hOeV4Uk7rTRj8OzrhfpKRZ7P0pi7lfMrsyiB2KyVEto=;
+        b=Fz21tLWb3UVdRRr7AeS4qYH3y/k/kNtsttrdQl7tgpxPBCYlIGzhDVQ+drwgixYSrTaLVV
+        n5yXU+FH5qMvt3Dw==
+Date:   Fri, 13 Nov 2020 15:02:20 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -53,7 +53,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 12/19] softirq: Add RT specific softirq accounting
+Subject: [patch 13/19] softirq: Move various protections into inline helpers
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,55 +62,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RT requires the softirq to be preemptible and uses a per CPU local lock to
-protect BH disabled sections and softirq processing. Therefore RT cannot
-use the preempt counter to keep track of BH disabled/serving.
-
-Add a RT only counter to task struct and adjust the relevant macros in
-preempt.h.
+To allow reuse of the bulk of softirq processing code for RT and to avoid
+#ifdeffery all over the place, split protections for various code sections
+out into inline helpers so the RT variant can just replace them in one go.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/hardirq.h |    1 +
- include/linux/preempt.h |    6 +++++-
- include/linux/sched.h   |    3 +++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ kernel/softirq.c |   53 ++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 44 insertions(+), 9 deletions(-)
 
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -6,6 +6,7 @@
- #include <linux/preempt.h>
- #include <linux/lockdep.h>
- #include <linux/ftrace_irq.h>
-+#include <linux/sched.h>
- #include <linux/vtime.h>
- #include <asm/hardirq.h>
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -204,6 +204,42 @@ void __local_bh_enable_ip(unsigned long
+ }
+ EXPORT_SYMBOL(__local_bh_enable_ip);
  
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -79,7 +79,11 @@
++static inline void local_bh_disable_irq_enter(void)
++{
++	local_bh_disable();
++}
++
++static inline void local_bh_enable_irq_enter(void)
++{
++	_local_bh_enable();
++}
++
++static inline void softirq_handle_begin(void)
++{
++	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
++}
++
++static inline void softirq_handle_end(void)
++{
++	__local_bh_enable(SOFTIRQ_OFFSET);
++	WARN_ON_ONCE(in_interrupt());
++}
++
++static inline void ksoftirqd_run_begin(void)
++{
++	local_irq_disable();
++}
++
++static inline void ksoftirqd_run_end(void)
++{
++	local_irq_enable();
++}
++
++static inline bool should_wake_ksoftirqd(void)
++{
++	return true;
++}
++
+ static inline void invoke_softirq(void)
+ {
+ 	if (ksoftirqd_running(local_softirq_pending()))
+@@ -317,7 +353,7 @@ asmlinkage __visible void __softirq_entr
+ 	pending = local_softirq_pending();
+ 	account_irq_enter_time(current);
  
- #define nmi_count()	(preempt_count() & NMI_MASK)
- #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
--#define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
-+#ifdef CONFIG_PREEMPT_RT
-+# define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
-+#else
-+# define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
-+#endif
- #define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+-	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
++	softirq_handle_begin();
+ 	in_hardirq = lockdep_softirq_start();
  
- /*
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1004,6 +1004,9 @@ struct task_struct {
- 	int				softirq_context;
- 	int				irq_config;
- #endif
-+#ifdef CONFIG_PREEMPT_RT
-+	int				softirq_disable_cnt;
-+#endif
+ restart:
+@@ -367,8 +403,7 @@ asmlinkage __visible void __softirq_entr
  
- #ifdef CONFIG_LOCKDEP
- # define MAX_LOCK_DEPTH			48UL
+ 	lockdep_softirq_end(in_hardirq);
+ 	account_irq_exit_time(current);
+-	__local_bh_enable(SOFTIRQ_OFFSET);
+-	WARN_ON_ONCE(in_interrupt());
++	softirq_handle_end();
+ 	current_restore_flags(old_flags, PF_MEMALLOC);
+ }
+ 
+@@ -382,9 +417,9 @@ void irq_enter_rcu(void)
+ 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
+ 		 * here, as softirq will be serviced on return from interrupt.
+ 		 */
+-		local_bh_disable();
++		local_bh_disable_irq_enter();
+ 		tick_irq_enter();
+-		_local_bh_enable();
++		local_bh_enable_irq_enter();
+ 	}
+ 	__irq_enter();
+ }
+@@ -467,7 +502,7 @@ inline void raise_softirq_irqoff(unsigne
+ 	 * Otherwise we wake up ksoftirqd to make sure we
+ 	 * schedule the softirq soon.
+ 	 */
+-	if (!in_interrupt())
++	if (!in_interrupt() && should_wake_ksoftirqd())
+ 		wakeup_softirqd();
+ }
+ 
+@@ -645,18 +680,18 @@ static int ksoftirqd_should_run(unsigned
+ 
+ static void run_ksoftirqd(unsigned int cpu)
+ {
+-	local_irq_disable();
++	ksoftirqd_run_begin();
+ 	if (local_softirq_pending()) {
+ 		/*
+ 		 * We can safely run softirq on inline stack, as we are not deep
+ 		 * in the task stack here.
+ 		 */
+ 		__do_softirq();
+-		local_irq_enable();
++		ksoftirqd_run_end();
+ 		cond_resched();
+ 		return;
+ 	}
+-	local_irq_enable();
++	ksoftirqd_run_end();
+ }
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
 
