@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D9F2B26B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C44CB2B26DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgKMV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:28:55 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:60090 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgKMV2z (ORCPT
+        id S1726610AbgKMVcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgKMVbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:28:55 -0500
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B30BC20B71B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:28:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B30BC20B71B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605302934;
-        bh=Q8tBea9wG2ltNWXDqKwNyyqi3spAu6w8nUfb7d6YXPM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ekV+DQ3eV4V/h41le2WjVH5Pe7KaGvAFmjNJRwWSbjnNHmU3NW9ugzflnJrh4ljHh
-         dtzOwotSvo97i4KH1O3znSWnwY7x7bSi2HmhC9ji0cmmN7Q9PsUTAmxeySELQ5wqPX
-         gEjnDrkXBrMUQNkzQtdveJcWzxLKuoK1AeEZIlKE=
-Received: by mail-qk1-f176.google.com with SMTP id l2so10352585qkf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:28:54 -0800 (PST)
-X-Gm-Message-State: AOAM531a/ZP9r8Ahiq7MfL6ADRfQKibdS0DlUHby4WvqNt1w8v1uZhN0
-        PXb6B6+q8W4nWG0mDPT+d4beDNAlNWrhFPJWGXA=
-X-Google-Smtp-Source: ABdhPJzKpfDUt8oKq6lB0q2F5+sHX0lLIMP1PUq2TnlD3i65IrF7aT/t60WWdXtX7SpNTmTFkamd791qEgNLoqBelnk=
-X-Received: by 2002:a37:4e0a:: with SMTP id c10mr4012902qkb.492.1605302933880;
- Fri, 13 Nov 2020 13:28:53 -0800 (PST)
+        Fri, 13 Nov 2020 16:31:51 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561FDC061A4E;
+        Fri, 13 Nov 2020 13:23:54 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id a18so8709544pfl.3;
+        Fri, 13 Nov 2020 13:23:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zDMkxDEKUwigLJNHN3ydwhNR21emZ0w4/kWJ79+z1uM=;
+        b=MsockhpYr1gBMiX/VNZ75vH9tTBzfewcY4HvAxaVNk4CsAgONCq03F0hm9hsTRbByp
+         6oVj4owU5MYMGTYi9ztLgqXHUJ+sk7cnGwURcTJAwek446tRfrp9iwsoJ/haaifZ68Ij
+         5VjbRXTaxJs75mqDfWHNtU+M0hqD0XPGO48xqZxbEu9il1dSEHQfATHfzJb3h1CCi4ks
+         Mf4YURPBLLnz/Xo67fsoXDqiLfVh5DVnCLwtEbInug3UgcFN6zIMLGpuvaB6U4N4hro7
+         HU5cqMZJnGEwDsUYzWMmZM+PkSpfg15+NG6nQ07KBxapX+wi2Xc2eNlRmQ+mDMyaEsNH
+         oZ5Q==
+X-Gm-Message-State: AOAM531gGXFBym4uS0pRDhDvTxi7qn4bQE62sAO3kJc4Hak4kA6++R+b
+        xG1Sid8vfxkKoTZ4vhe6s+M=
+X-Google-Smtp-Source: ABdhPJwuXR2Fvvsb1vzusQKpDgFzaJ8sjH07TtQxH9xHaExt8QMes7iZteziR5hWvSS164xJrGHlNg==
+X-Received: by 2002:a05:6a00:225c:b029:18b:d208:a366 with SMTP id i28-20020a056a00225cb029018bd208a366mr3668921pfu.5.1605302633812;
+        Fri, 13 Nov 2020 13:23:53 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:be97:ffd:339d:919c? ([2601:647:4802:9070:be97:ffd:339d:919c])
+        by smtp.gmail.com with ESMTPSA id e17sm10613872pfm.155.2020.11.13.13.23.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 13:23:53 -0800 (PST)
+Subject: Re: [PATCH] iosched: Add i10 I/O Scheduler
+To:     Jens Axboe <axboe@kernel.dk>, Rachit Agarwal <rach4x0r@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
+        Qizhe Cai <qc228@cornell.edu>,
+        Midhul Vuppalapati <mvv25@cornell.edu>,
+        Rachit Agarwal <ragarwal@cs.cornell.edu>,
+        Sagi Grimberg <sagi@lightbitslabs.com>,
+        Rachit Agarwal <ragarwal@cornell.edu>
+References: <20201112140752.1554-1-rach4x0r@gmail.com>
+ <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
+ <da0c7aea-d917-4f3a-5136-89c30d12ba1f@grimberg.me>
+ <fd12993a-bcb7-7b45-5406-61da1979d49d@kernel.dk>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <10993ce4-7048-a369-ea44-adf445acfca7@grimberg.me>
+Date:   Fri, 13 Nov 2020 13:23:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
- <20201112035023.974748-1-natechancellor@gmail.com> <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
- <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
- <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
- <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
- <20201112184637.de44afedf0ce0dcab36dd0ad@linux-foundation.org>
- <CAFnufp31YO9yTXVqgKNZGR9XXRKfGKM4Y4NLk+4_uXdoWa+G4w@mail.gmail.com> <20201113162043.GO1602@alley>
-In-Reply-To: <20201113162043.GO1602@alley>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 13 Nov 2020 22:28:18 +0100
-X-Gmail-Original-Message-ID: <CAFnufp3NBHUQ8fT1TEw5BvazGQjP9KmsU3y7ioJScWQ9qGiq1A@mail.gmail.com>
-Message-ID: <CAFnufp3NBHUQ8fT1TEw5BvazGQjP9KmsU3y7ioJScWQ9qGiq1A@mail.gmail.com>
-Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fd12993a-bcb7-7b45-5406-61da1979d49d@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 9:06 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Fri 2020-11-13 03:58:49, Matteo Croce wrote:
-> > On Fri, Nov 13, 2020 at 3:46 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > >
-> > > On Fri, 13 Nov 2020 02:38:18 +0100 Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > >
-> > > > At this point, since 'pci' enables BOOT_CF9_FORCE type and
-> > > > BOOT_CF9_SAFE is not user selectable, should I simply leave only
-> > > > 'pci'?
-> > > >
-> > > > This way, we'll have the same set of options for both sysfs and kernel cmdline.
-> > >
-> > > Well, you're the reboot expert ;)
-> > >
-> >
-> > So honored! :)
-> >
-> > > But my $0.02 is yes, let's keep the command-line and sysfs interfaces
-> > > in sync and cover it all in documentation.  It would of course be
-> > > problematic to change the existing reboot= interface.
-> > >
-> > > I assume that means doing this?
-> > >
-> > > - #define BOOT_CF9_FORCE_STR     "cf9_force"
-> > > + #define BOOT_CF9_FORCE_STR     "pci"
-> > > - #define BOOT_CF9_SAFE_STR      "cf9_safe"
-> >
-> > Either BOOT_PCI_STR or BOOT_CF9_FORCE_STR, I have no strong preference.
-> >
-> > The syntax is 'pci' while the enum BOOT_CF9_FORCE, so we can't please both.
->
-> The question is whether we should modify/allow to set these values at
-> all.
->
-> Anyway, we must prevent them on non-x86 architectures because
-> the reboot behavior would be undefined there. They could probably
-> make a mess even on many x86-architectures.
->
 
-That's right, but the same can be obtained by passing 'reboot=pci'  on
-non x86 machines: the cmdline parsing is generic and will set
-reboot_type on all arches.
+>>> I haven't taken a close look at the code yet so far, but one quick note
+>>> that patches like this should be against the branches for 5.11. In fact,
+>>> this one doesn't even compile against current -git, as
+>>> blk_mq_bio_list_merge is now called blk_bio_list_merge.
+>>
+>> Ugh, I guess that Jaehyun had this patch bottled up and didn't rebase
+>> before submitting.. Sorry about that.
+>>
+>>> In any case, I did run this through some quick peak testing as I was
+>>> curious, and I'm seeing about 20% drop in peak IOPS over none running
+>>> this. Perf diff:
+>>>
+>>>       10.71%     -2.44%  [kernel.vmlinux]  [k] read_tsc
+>>>        2.33%     -1.99%  [kernel.vmlinux]  [k] _raw_spin_lock
+>>
+>> You ran this with nvme? or null_blk? I guess neither would benefit
+>> from this because if the underlying device will not benefit from
+>> batching (at least enough for the extra cost of accounting for it) it
+>> will be counter productive to use this scheduler.
+> 
+> This is nvme, actual device. The initial posting could be a bit more
+> explicit on the use case, it says:
+> 
+> "For NVMe SSDs, the i10 I/O scheduler achieves ~60% improvements in
+> terms of IOPS per core over "noop" I/O scheduler."
+> 
+> which made me very skeptical, as it sounds like it's raw device claims.
 
-> I have to admit it has become much more complicated than I thought.
-> It brings back Andrew's original question whether this interface is
-> really needed. Are you going to use in the real life?
->
+You are absolutely right, that needs to be fixed.
 
-Yes, there are some cases.
-Not to mention complex use cases like let persist some memory regions,
-or change the page size,
-if a network driver fails to rmmod with the infamous
-"unregistered_netdevice: waiting for wlan0 to become free",
-enabling force on the fly allows to reboot the machine.
+> Does beg the question of why this is a new scheduler then. It's pretty
+> basic stuff, something that could trivially just be added a side effect
+> of the core (and in fact we have much of it already). Doesn't really seem
+> to warrant a new scheduler at all. There isn't really much in there.
 
+Not saying it absolutely warrants a new one, and it could I guess sit in
+the core, but this attempts to optimize for a specific metric while
+trading-off others, which is exactly what I/O schedulers are for,
+optimizing for a specific metric.
 
-> The interface might do more harm then good when it allows to set
-> reboot_type that is not normally accessible or disable it when
-> it is strictly needed.
->
+Not sure we want to build something biases towards throughput on the
+expense of latency into the block core. And, as mentioned this is not
+well suited to all device types...
 
-I looked at the reboot_type usage, there isn't any reference outside
-arch/x86. In fact, the parameter is just ignored:
+But if you think this has a better home, I'm assuming that the guys
+will be open to that.
 
-# uname -m
-aarch64
-# cat /proc/cmdline
-console=ttyS0,115200n8 reboot=pci
-# reboot -ff
-Rebooting.
-[   43.893833] reboot: Restarting system
+>>> Was curious and wanted to look it up, but it doesn't exist.
+>>
+>> I think this is the right one:
+>> https://github.com/i10-kernel/upstream-linux/blob/master/i10-evaluation.pdf
+>>
+>> We had some back and forth around the naming, hence this was probably
+>> omitted.
+> 
+> That works, my local results were a bit worse than listed in there though.
+> And what does this mean:
+> 
+> "We note that Linux I/O scheduler introduces an additional kernel worker
+> thread at the I/O dispatching stage"
+> 
+> It most certainly does not for the common/hot case.
 
-The same applies for reboot_force, the only flags available on
-different architectures are reboot_mode and reboot_cpu.
-We could hide some handlers for some architectures. We save some
-space, and avoid letting the user set flags which do nothing.
-
-> Anyway, we should get input from some x86-experts about the BOOT_CF9
-> values.
->
-
-Sure, x86@kernel.org ?
-
-Regards,
--- 
-per aspera ad upstream
+Yes I agree, didn't see the local results. Probably some
+misunderstanding or a typo, I'll let them reply on this.
