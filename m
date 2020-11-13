@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AD72B23DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3FB2B23E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgKMSfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
+        id S1726411AbgKMSgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:36:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKMSfI (ORCPT
+        with ESMTP id S1726081AbgKMSgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:35:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D139C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:35:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=94mpeEQ5347vYMWO2O5kVIMAmiKW0s2hsuuld99rPQE=; b=UUF/eMg7P5n0iBD1VCCYL5Zq2M
-        tj+1mIBSUKhSenAaGXCR+si9J54UDbmRgvSFLLlBDz9d0R3rk/YXrgTb57PDnmoGMCmvbf4LqAEtj
-        TdiTDjfNxP81mv5HU3cKQK6j5Az7vilT5rTnC6vxgRL5SAt0Su7eg/tjWXp0+wUlupLTszGGMZDlB
-        gT2NlzWfsBJD+J2LHAJta6XjN5KE2zWVsOZWhSTSXLvmSiLieDENMtym2iD6EKyBRAJ8C14Q3tq+N
-        VggEcvuh3yaW5M1e0Eo0T3dWZyFgazqklwerOvxbeYEDqkFXrdWCH49BvVLsMA1MdUcqpMxwpt/eS
-        lJi1Lubg==;
-Received: from [2601:1c0:6280:3f0::662d]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kddub-0003b0-Et; Fri, 13 Nov 2020 18:35:05 +0000
-Subject: Re: [PATCH] x86/e820: fix the function type for e820__mapped_all
-To:     Sami Tolvanen <samitolvanen@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>
-References: <20201113182654.967462-1-samitolvanen@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <95513107-5aa4-5e42-467f-f9a415eb9f3f@infradead.org>
-Date:   Fri, 13 Nov 2020 10:34:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 13 Nov 2020 13:36:52 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C29C0613D1;
+        Fri, 13 Nov 2020 10:36:51 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id j31so7352194qtb.8;
+        Fri, 13 Nov 2020 10:36:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uLLsU6PNK7gn2ZF6sgEbNvfAguFm+Twkz8HSYgMSdHA=;
+        b=P1KvIekJ77d1TC7nitWKAlL3pVw7ss+zZBh//e/EsaQTKTD1eTBf/bNMZilOhD09KE
+         c94opGCTQBZuuYQCTknaMU0siEiPFIJt8oO05DdL3g7VRP297jy2Xl36RZGE3ELtcy9z
+         +hq5cbu+4HY4DaxM7NF+wHbToWVOmCOwArSpbr69cRvHmgycLc2SNx23eV7Y5jYBOVXQ
+         QXX9MsQA1z4zHVTm/Rxq8kiiGqsXVZE1CRdAmgwSiNbcEyi1yUiy94al76ldaZcijdcZ
+         kJ0kDyg21X0AgmsekCsCH1afCsnVT3pM7f4XCEkHPrUn5QLdN5Rw8WlqkJij98IjXYjT
+         INrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uLLsU6PNK7gn2ZF6sgEbNvfAguFm+Twkz8HSYgMSdHA=;
+        b=amCOnonJi33wBE2zhbMuq37f9BPc/APMGTqje43pIAyuQkxmnVX/nGjOnK0CmZFuCb
+         8qS0KenDZb3RbOyZS/GSb7xHg5nak3Vxty1l3DzIqbYAnggKE2ZX7psaR+2nNL5svNOv
+         Pv+KAYXnFRfUZfL+2OUhTSMp4Cxgig/IheD/8llWAirM1JdH2dSlcMXjZwgy/HLwqa7S
+         xDPy9gKlwFb+ces1fgJtmxer3BbiaCuq0gYJko7q+KYjEErYNa7eCNOjZqULW8hsbK8b
+         pndsil9naiDFM9ONfTInDNw/xguUEgXLnW5y7v/h4I+SQXCux2UYRkDhdaDlGXj4pkpX
+         UkvQ==
+X-Gm-Message-State: AOAM530uGN4PRVJ3dnk6cdBaTUl9PcJ99XaRVmbTlslUOEnFzNfIhnZ4
+        GtZGbPLcIDow3vk3sjez3TM=
+X-Google-Smtp-Source: ABdhPJzrJwUQP7TRzyMS8vsdEmfnLmQuPHfTT7JGfv+V/qtg7cxxikUGbbygCkFIgOnjPJiFhQDYnQ==
+X-Received: by 2002:a05:622a:86:: with SMTP id o6mr3179517qtw.147.1605292611012;
+        Fri, 13 Nov 2020 10:36:51 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id 207sm2500356qki.91.2020.11.13.10.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 10:36:50 -0800 (PST)
+Date:   Fri, 13 Nov 2020 11:36:49 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipv6: remove unused function ipv6_skb_idev()
+Message-ID: <20201113183649.GA1436199@ubuntu-m3-large-x86>
+References: <20201113135012.32499-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113182654.967462-1-samitolvanen@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113135012.32499-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 10:26 AM, Sami Tolvanen wrote:
-> e820__mapped_all is passed as a callback to is_mmconf_reserved, which
-> expects a function of type:
+On Fri, Nov 13, 2020 at 02:50:12PM +0100, Lukas Bulwahn wrote:
+> Commit bdb7cc643fc9 ("ipv6: Count interface receive statistics on the
+> ingress netdev") removed all callees for ipv6_skb_idev(). Hence, since
+> then, ipv6_skb_idev() is unused and make CC=clang W=1 warns:
 > 
->   typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
+>   net/ipv6/exthdrs.c:909:33:
+>     warning: unused function 'ipv6_skb_idev' [-Wunused-function]
 > 
-> This trips indirect call checking with Clang's Control-Flow Integrity
-> (CFI). Change the last argument from enum e820_type to unsigned to fix
-> the type mismatch.
+> So, remove this unused function and a -Wunused-function warning.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Hi,
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Kernel style is no raw unsigned -- use unsigned int or unsigned long, please.
-
-checkpatch should or could have found that issue.
-
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 > ---
->  arch/x86/include/asm/e820/api.h | 2 +-
->  arch/x86/kernel/e820.c          | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> Alexey, Hideaki-san, please ack.
 > 
-> diff --git a/arch/x86/include/asm/e820/api.h b/arch/x86/include/asm/e820/api.h
-> index e8f58ddd06d9..e872a796619d 100644
-> --- a/arch/x86/include/asm/e820/api.h
-> +++ b/arch/x86/include/asm/e820/api.h
-> @@ -12,7 +12,7 @@ extern unsigned long pci_mem_start;
->  
->  extern bool e820__mapped_raw_any(u64 start, u64 end, enum e820_type type);
->  extern bool e820__mapped_any(u64 start, u64 end, enum e820_type type);
-> -extern bool e820__mapped_all(u64 start, u64 end, enum e820_type type);
-> +extern bool e820__mapped_all(u64 start, u64 end, unsigned type);
->  
->  extern void e820__range_add   (u64 start, u64 size, enum e820_type type);
->  extern u64  e820__range_update(u64 start, u64 size, enum e820_type old_type, enum e820_type new_type);
-> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-> index 22aad412f965..9f6a4e9bca4c 100644
-> --- a/arch/x86/kernel/e820.c
-> +++ b/arch/x86/kernel/e820.c
-> @@ -145,7 +145,7 @@ static struct e820_entry *__e820__mapped_all(u64 start, u64 end,
+> David, Jakub, please pick this minor non-urgent clean-up patch.
+> 
+>  net/ipv6/exthdrs.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
+> index 374105e4394f..584d1b06eb90 100644
+> --- a/net/ipv6/exthdrs.c
+> +++ b/net/ipv6/exthdrs.c
+> @@ -906,10 +906,6 @@ void ipv6_exthdrs_exit(void)
 >  /*
->   * This function checks if the entire range <start,end> is mapped with type.
+>   * Note: we cannot rely on skb_dst(skb) before we assign it in ip6_route_input().
 >   */
-> -bool __init e820__mapped_all(u64 start, u64 end, enum e820_type type)
-> +bool __init e820__mapped_all(u64 start, u64 end, unsigned type)
+> -static inline struct inet6_dev *ipv6_skb_idev(struct sk_buff *skb)
+> -{
+> -	return skb_dst(skb) ? ip6_dst_idev(skb_dst(skb)) : __in6_dev_get(skb->dev);
+> -}
+>  
+>  static inline struct net *ipv6_skb_net(struct sk_buff *skb)
 >  {
->  	return __e820__mapped_all(start, end, type);
->  }
+> -- 
+> 2.17.1
 > 
-> base-commit: 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
-> 
-
-
--- 
-~Randy
-
