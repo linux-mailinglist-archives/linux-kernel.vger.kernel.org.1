@@ -2,140 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6B32B2724
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679F22B26CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgKMVgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgKMVgw (ORCPT
+        id S1726233AbgKMVaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:30:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47824 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725885AbgKMVao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:36:52 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66666C08C5F2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:26:53 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id h16so4055148pgb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:26:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7J5Rp08GL5X3H15jor7CE7t4jnfk1M9RUzFFtD2jiKs=;
-        b=Xce78mtOzxG3MZwuIJ6qhBt9FLVIM6ylEG2N7m9qPfAKeCBzNXnKXpIoT7S1oqAebk
-         DPc5vJTliZWgA1EnHQA+6VAoEKQN/NITCCn0yOx30u7w1/xl99+Clk/8pZnXBLBcqP4E
-         47uqMIb1Av42Km/ps04jAlp1BSHPz8mOl++EklM0DZKonYVsT0Eay+eRAM5QE5u5ll2W
-         5HlsDWzXXdsN88Z59eLHWxkHZrNT4urZnIXC/4BoRNFDKA/30Sh+xw5FgzPIuD3lULJK
-         piJ/IsnPtsMeFjBPoggYPMc9bkvL7GyZroxnzvz61jvC198xGTGQ+u5s1Fexm6dmRbGZ
-         GjzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7J5Rp08GL5X3H15jor7CE7t4jnfk1M9RUzFFtD2jiKs=;
-        b=USZi8EbWdy0iF9/dhjKXvi+1V4Pl8jaWqjIMTB5nQt1MRVGLGEgc+FBeZfLsU2bdn1
-         G04Lyxw2IESzlJq7wLtB4vrkiGw2CmI2Tpsml1tCAE3bnoYgzWc5Y0e0v/2YPwAngeNa
-         dcRHvvuDkhxgCyIS0Tgr2RIiPaAgbO4vCjUa5zCv4TfQbuTg8BVXw1K3TS6v2g2JRdin
-         VGMJeyKZMxEHb0PJYtDUu5UdQSbtDo6ouComt0aWSwgTkqdrF9AOMDZpl89jPVE9sibG
-         ocg7ueiHs9ERC6pvAsHFL4+sEegfyUkRrcg6jiPpIRjxBmh+qYlhG3c7qF1j+bAuVaxS
-         Y7NA==
-X-Gm-Message-State: AOAM533+nc6EqY8ripxJHQ6WO2qWhl0Jd77nukCEh61JLcYQEU2v1In2
-        oKa5FDSg4DdbHSHAzh2JO7U93w==
-X-Google-Smtp-Source: ABdhPJwYKJWZ1egWWe92pGhU7NVyiLO88PgU+olcTBqFCmhwVwr0VM5zW/hb5u94Ganu/x4rHmyO5A==
-X-Received: by 2002:a17:90b:4683:: with SMTP id ir3mr5040531pjb.212.1605302812924;
-        Fri, 13 Nov 2020 13:26:52 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id e22sm11517673pjh.45.2020.11.13.13.26.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 13:26:52 -0800 (PST)
-Subject: Re: [PATCH] iosched: Add i10 I/O Scheduler
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Rachit Agarwal <rach4x0r@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
-        Qizhe Cai <qc228@cornell.edu>,
-        Midhul Vuppalapati <mvv25@cornell.edu>,
-        Rachit Agarwal <ragarwal@cs.cornell.edu>,
-        Sagi Grimberg <sagi@lightbitslabs.com>,
-        Rachit Agarwal <ragarwal@cornell.edu>
-References: <20201112140752.1554-1-rach4x0r@gmail.com>
- <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
- <da0c7aea-d917-4f3a-5136-89c30d12ba1f@grimberg.me>
- <fd12993a-bcb7-7b45-5406-61da1979d49d@kernel.dk>
- <10993ce4-7048-a369-ea44-adf445acfca7@grimberg.me>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c4cb66f6-8a66-7973-dc03-0f4f61d0a1e4@kernel.dk>
-Date:   Fri, 13 Nov 2020 14:26:50 -0700
+        Fri, 13 Nov 2020 16:30:44 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADL2sT3019504;
+        Fri, 13 Nov 2020 16:30:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=snyK0uCXlSYEhWgBVbNlWfSW7v+aaXHbYQSKhsCnA4c=;
+ b=lZAO/PkkvKjSc1xwUPDxbUv8rDtbC83IE6ahB6xynyIG2T+Wid4Hp7z0mRxfs15pT/Fu
+ LwJklwc9vgqNcSmtnCmCRI00e2vPGpEuijfVQuBbaRgW0oQbUSyCavE3DFfWBLlNhHc0
+ VXZ+x9bxwkzBoZGqhwBFozEHXjN0xGhwd+qRuFG2locgl9l2nPLyovLRBx5TuyJydhgW
+ cMng4ZfyHy+T4RzX5dTXSX7ZfGTI59oAex/45Fiq3XAhbCCCntKmZh3eiB44AdCg41gI
+ bPlJEOheTL/vxjSHF/7Mq7siwyzXt6gaHmD9Lkc6ZUTQH707OxOfPoQXcoVfz1Iysahd 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34t0hu2ksk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 16:30:38 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ADLR1bf101936;
+        Fri, 13 Nov 2020 16:30:38 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34t0hu2ksa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 16:30:38 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADLLr6E006401;
+        Fri, 13 Nov 2020 21:30:37 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma02dal.us.ibm.com with ESMTP id 34nk7akf9v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 21:30:37 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADLUY0R11993718
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 21:30:34 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDAA06A04D;
+        Fri, 13 Nov 2020 21:30:33 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86DE46A051;
+        Fri, 13 Nov 2020 21:30:32 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.152.80])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Nov 2020 21:30:32 +0000 (GMT)
+Subject: Re: [PATCH v11 04/14] s390/zcrypt: driver callback to indicate
+ resource in use
+To:     Harald Freudenberger <freude@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pasic@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
+        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+ <20201022171209.19494-5-akrowiak@linux.ibm.com>
+ <42f3f4f9-6263-cb1e-d882-30b62236a594@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <dcdb9c78-daf8-1f25-f59a-903f0db96ada@linux.ibm.com>
+Date:   Fri, 13 Nov 2020 16:30:31 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <10993ce4-7048-a369-ea44-adf445acfca7@grimberg.me>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <42f3f4f9-6263-cb1e-d882-30b62236a594@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-13_19:2020-11-13,2020-11-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011130131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 2:23 PM, Sagi Grimberg wrote:
-> 
->>>> I haven't taken a close look at the code yet so far, but one quick note
->>>> that patches like this should be against the branches for 5.11. In fact,
->>>> this one doesn't even compile against current -git, as
->>>> blk_mq_bio_list_merge is now called blk_bio_list_merge.
->>>
->>> Ugh, I guess that Jaehyun had this patch bottled up and didn't rebase
->>> before submitting.. Sorry about that.
->>>
->>>> In any case, I did run this through some quick peak testing as I was
->>>> curious, and I'm seeing about 20% drop in peak IOPS over none running
->>>> this. Perf diff:
->>>>
->>>>       10.71%     -2.44%  [kernel.vmlinux]  [k] read_tsc
->>>>        2.33%     -1.99%  [kernel.vmlinux]  [k] _raw_spin_lock
->>>
->>> You ran this with nvme? or null_blk? I guess neither would benefit
->>> from this because if the underlying device will not benefit from
->>> batching (at least enough for the extra cost of accounting for it) it
->>> will be counter productive to use this scheduler.
->>
->> This is nvme, actual device. The initial posting could be a bit more
->> explicit on the use case, it says:
->>
->> "For NVMe SSDs, the i10 I/O scheduler achieves ~60% improvements in
->> terms of IOPS per core over "noop" I/O scheduler."
->>
->> which made me very skeptical, as it sounds like it's raw device claims.
-> 
-> You are absolutely right, that needs to be fixed.
-> 
->> Does beg the question of why this is a new scheduler then. It's pretty
->> basic stuff, something that could trivially just be added a side effect
->> of the core (and in fact we have much of it already). Doesn't really seem
->> to warrant a new scheduler at all. There isn't really much in there.
-> 
-> Not saying it absolutely warrants a new one, and it could I guess sit in
-> the core, but this attempts to optimize for a specific metric while
-> trading-off others, which is exactly what I/O schedulers are for,
-> optimizing for a specific metric.
-> 
-> Not sure we want to build something biases towards throughput on the
-> expense of latency into the block core. And, as mentioned this is not
-> well suited to all device types...
-> 
-> But if you think this has a better home, I'm assuming that the guys
-> will be open to that.
 
-Also see the reply from Ming. It's a balancing act - don't want to add
-extra overhead to the core, but also don't want to carry an extra
-scheduler if the main change is really just variable dispatch batching.
-And since we already have a notion of that, seems worthwhile to explore
-that venue.
 
--- 
-Jens Axboe
+On 10/27/20 12:55 PM, Harald Freudenberger wrote:
+> On 22.10.20 19:11, Tony Krowiak wrote:
+>> Introduces a new driver callback to prevent a root user from unbinding
+>> an AP queue from its device driver if the queue is in use. The callback
+>> will be invoked whenever a change to the AP bus's sysfs apmask or aqmask
+>> attributes would result in one or more AP queues being removed from its
+>> driver. If the callback responds in the affirmative for any driver
+>> queried, the change to the apmask or aqmask will be rejected with a device
+>> in use error.
+>>
+>> For this patch, only non-default drivers will be queried. Currently,
+>> there is only one non-default driver, the vfio_ap device driver. The
+>> vfio_ap device driver facilitates pass-through of an AP queue to a
+>> guest. The idea here is that a guest may be administered by a different
+>> sysadmin than the host and we don't want AP resources to unexpectedly
+>> disappear from a guest's AP configuration (i.e., adapters and domains
+>> assigned to the matrix mdev). This will enforce the proper procedure for
+>> removing AP resources intended for guest usage which is to
+>> first unassign them from the matrix mdev, then unbind them from the
+>> vfio_ap device driver.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/ap_bus.c | 148 ++++++++++++++++++++++++++++++++---
+>>   drivers/s390/crypto/ap_bus.h |   4 +
+>>   2 files changed, 142 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
+>> index 485cbfcbf06e..998e61cd86d9 100644
+>> --- a/drivers/s390/crypto/ap_bus.c
+>> +++ b/drivers/s390/crypto/ap_bus.c
+>> @@ -35,6 +35,7 @@
+>>   #include <linux/mod_devicetable.h>
+>>   #include <linux/debugfs.h>
+>>   #include <linux/ctype.h>
+>> +#include <linux/module.h>
+>>   
+>>   #include "ap_bus.h"
+>>   #include "ap_debug.h"
+>> @@ -893,6 +894,23 @@ static int modify_bitmap(const char *str, unsigned long *bitmap, int bits)
+>>   	return 0;
+>>   }
+>>   
+>> +static int ap_parse_bitmap_str(const char *str, unsigned long *bitmap, int bits,
+>> +			       unsigned long *newmap)
+>> +{
+>> +	unsigned long size;
+>> +	int rc;
+>> +
+>> +	size = BITS_TO_LONGS(bits)*sizeof(unsigned long);
+>> +	if (*str == '+' || *str == '-') {
+>> +		memcpy(newmap, bitmap, size);
+>> +		rc = modify_bitmap(str, newmap, bits);
+>> +	} else {
+>> +		memset(newmap, 0, size);
+>> +		rc = hex2bitmap(str, newmap, bits);
+>> +	}
+>> +	return rc;
+>> +}
+>> +
+>>   int ap_parse_mask_str(const char *str,
+>>   		      unsigned long *bitmap, int bits,
+>>   		      struct mutex *lock)
+>> @@ -912,14 +930,7 @@ int ap_parse_mask_str(const char *str,
+>>   		kfree(newmap);
+>>   		return -ERESTARTSYS;
+>>   	}
+>> -
+>> -	if (*str == '+' || *str == '-') {
+>> -		memcpy(newmap, bitmap, size);
+>> -		rc = modify_bitmap(str, newmap, bits);
+>> -	} else {
+>> -		memset(newmap, 0, size);
+>> -		rc = hex2bitmap(str, newmap, bits);
+>> -	}
+>> +	rc = ap_parse_bitmap_str(str, bitmap, bits, newmap);
+>>   	if (rc == 0)
+>>   		memcpy(bitmap, newmap, size);
+>>   	mutex_unlock(lock);
+>> @@ -1111,12 +1122,70 @@ static ssize_t apmask_show(struct bus_type *bus, char *buf)
+>>   	return rc;
+>>   }
+>>   
+>> +static int __verify_card_reservations(struct device_driver *drv, void *data)
+>> +{
+>> +	int rc = 0;
+>> +	struct ap_driver *ap_drv = to_ap_drv(drv);
+>> +	unsigned long *newapm = (unsigned long *)data;
+>> +
+>> +	/*
+>> +	 * No need to verify whether the driver is using the queues if it is the
+>> +	 * default driver.
+>> +	 */
+>> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
+>> +		return 0;
+>> +
+>> +	/* The non-default driver's module must be loaded */
+> Can you please update this comment? It should be something like
+> /* increase the driver's module refcounter to be sure it is not
+>     going away when we invoke the callback function. */
+
+Will do.
+
+>
+>> +	if (!try_module_get(drv->owner))
+>> +		return 0;
+>> +
+>> +	if (ap_drv->in_use)
+>> +		if (ap_drv->in_use(newapm, ap_perms.aqm))
+>> +			rc = -EBUSY;
+>> +
+> And here: /* release driver's module */ or simmilar
+
+Okay
+
+>> +	module_put(drv->owner);
+>> +
+>> +	return rc;
+>> +}
+>> +
+>> +static int apmask_commit(unsigned long *newapm)
+>> +{
+>> +	int rc;
+>> +	unsigned long reserved[BITS_TO_LONGS(AP_DEVICES)];
+>> +
+>> +	/*
+>> +	 * Check if any bits in the apmask have been set which will
+>> +	 * result in queues being removed from non-default drivers
+>> +	 */
+>> +	if (bitmap_andnot(reserved, newapm, ap_perms.apm, AP_DEVICES)) {
+>> +		rc = bus_for_each_drv(&ap_bus_type, NULL, reserved,
+>> +				      __verify_card_reservations);
+>> +		if (rc)
+>> +			return rc;
+>> +	}
+>> +
+>> +	memcpy(ap_perms.apm, newapm, APMASKSIZE);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static ssize_t apmask_store(struct bus_type *bus, const char *buf,
+>>   			    size_t count)
+>>   {
+>>   	int rc;
+>> +	DECLARE_BITMAP(newapm, AP_DEVICES);
+>> +
+>> +	if (mutex_lock_interruptible(&ap_perms_mutex))
+>> +		return -ERESTARTSYS;
+>> +
+>> +	rc = ap_parse_bitmap_str(buf, ap_perms.apm, AP_DEVICES, newapm);
+>> +	if (rc)
+>> +		goto done;
+>>   
+>> -	rc = ap_parse_mask_str(buf, ap_perms.apm, AP_DEVICES, &ap_perms_mutex);
+>> +	rc = apmask_commit(newapm);
+>> +
+>> +done:
+>> +	mutex_unlock(&ap_perms_mutex);
+>>   	if (rc)
+>>   		return rc;
+>>   
+>> @@ -1142,12 +1211,71 @@ static ssize_t aqmask_show(struct bus_type *bus, char *buf)
+>>   	return rc;
+>>   }
+>>   
+>> +static int __verify_queue_reservations(struct device_driver *drv, void *data)
+>> +{
+>> +	int rc = 0;
+>> +	struct ap_driver *ap_drv = to_ap_drv(drv);
+>> +	unsigned long *newaqm = (unsigned long *)data;
+>> +
+>> +	/*
+>> +	 * If the reserved bits do not identify queues reserved for use by the
+>> +	 * non-default driver, there is no need to verify the driver is using
+>> +	 * the queues.
+>> +	 */
+>> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
+>> +		return 0;
+>> +
+>> +	/* The non-default driver's module must be loaded */
+> Same here.
+
+Okay
+
+>> +	if (!try_module_get(drv->owner))
+>> +		return 0;
+>> +
+>> +	if (ap_drv->in_use)
+>> +		if (ap_drv->in_use(ap_perms.apm, newaqm))
+>> +			rc = -EBUSY;
+>> +
+> and here
+
+Okay
+
+>> +	module_put(drv->owner);
+>> +
+>> +	return rc;
+>> +}
+>> +
+>> +static int aqmask_commit(unsigned long *newaqm)
+>> +{
+>> +	int rc;
+>> +	unsigned long reserved[BITS_TO_LONGS(AP_DOMAINS)];
+>> +
+>> +	/*
+>> +	 * Check if any bits in the aqmask have been set which will
+>> +	 * result in queues being removed from non-default drivers
+>> +	 */
+>> +	if (bitmap_andnot(reserved, newaqm, ap_perms.aqm, AP_DOMAINS)) {
+>> +		rc = bus_for_each_drv(&ap_bus_type, NULL, reserved,
+>> +				      __verify_queue_reservations);
+>> +		if (rc)
+>> +			return rc;
+>> +	}
+>> +
+>> +	memcpy(ap_perms.aqm, newaqm, AQMASKSIZE);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static ssize_t aqmask_store(struct bus_type *bus, const char *buf,
+>>   			    size_t count)
+>>   {
+>>   	int rc;
+>> +	DECLARE_BITMAP(newaqm, AP_DOMAINS);
+>>   
+>> -	rc = ap_parse_mask_str(buf, ap_perms.aqm, AP_DOMAINS, &ap_perms_mutex);
+>> +	if (mutex_lock_interruptible(&ap_perms_mutex))
+>> +		return -ERESTARTSYS;
+>> +
+>> +	rc = ap_parse_bitmap_str(buf, ap_perms.aqm, AP_DOMAINS, newaqm);
+>> +	if (rc)
+>> +		goto done;
+>> +
+>> +	rc = aqmask_commit(newaqm);
+>> +
+>> +done:
+>> +	mutex_unlock(&ap_perms_mutex);
+>>   	if (rc)
+>>   		return rc;
+>>   
+>> diff --git a/drivers/s390/crypto/ap_bus.h b/drivers/s390/crypto/ap_bus.h
+>> index 5029b80132aa..6ce154d924d3 100644
+>> --- a/drivers/s390/crypto/ap_bus.h
+>> +++ b/drivers/s390/crypto/ap_bus.h
+>> @@ -145,6 +145,7 @@ struct ap_driver {
+>>   
+>>   	int (*probe)(struct ap_device *);
+>>   	void (*remove)(struct ap_device *);
+>> +	bool (*in_use)(unsigned long *apm, unsigned long *aqm);
+>>   };
+>>   
+>>   #define to_ap_drv(x) container_of((x), struct ap_driver, driver)
+>> @@ -293,6 +294,9 @@ void ap_queue_init_state(struct ap_queue *aq);
+>>   struct ap_card *ap_card_create(int id, int queue_depth, int raw_device_type,
+>>   			       int comp_device_type, unsigned int functions);
+>>   
+>> +#define APMASKSIZE (BITS_TO_LONGS(AP_DEVICES) * sizeof(unsigned long))
+>> +#define AQMASKSIZE (BITS_TO_LONGS(AP_DOMAINS) * sizeof(unsigned long))
+>> +
+>>   struct ap_perms {
+>>   	unsigned long ioctlm[BITS_TO_LONGS(AP_IOCTLS)];
+>>   	unsigned long apm[BITS_TO_LONGS(AP_DEVICES)];
+> I still don't like this code. That's because of what it is doing - not because of the code quality.
+> And Halil, you are right. It is adding more pressure to the mutex used for locking the apmask
+> and aqmask stuff (and the zcrypt multiple device drivers support code also).
+> I am very concerned about the in_use callback which is called with the ap_perms_mutex
+> held AND during bus_for_each_drv (so holding the overall AP BUS mutex) and then diving
+> into the vfio_ap ... with yet another mutex to protect the vfio structs.
+> Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
+
+Thank you for your review. Maybe you ought to bring these concerns up with
+our crypto architect. Halil came up with a solution for the potential 
+deadlock
+situation. We will be using the mutex_trylock() function in our sysfs 
+assignment
+interfaces which make the call to the AP bus to check permissions (which 
+also
+locks ap_perms). If the mutex_trylock() fails, we return from the assignment
+function with -EBUSY. This should resolve that potential deadlock issue.
+
 
