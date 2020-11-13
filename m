@@ -2,407 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017692B130B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F27482B130E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgKMAJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        id S1726024AbgKMAMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKMAJa (ORCPT
+        with ESMTP id S1725894AbgKMAMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:09:30 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB77C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:09:16 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id y22so3656891plr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:09:16 -0800 (PST)
+        Thu, 12 Nov 2020 19:12:52 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EE2C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:12:51 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id w24so7022640wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:12:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2DHsDoriK54ucih8d4V/3kj6D7gH+qZ0YXsshl+T4v0=;
-        b=CzElBqwWilQwhy6JBOgUZY6M7XqXa+yl5U9ZdhZoZR5NE6dY1ajkPehr8X+pOXYAsB
-         W+qtHA8cHgfnCfGC5b0vsesszBUj/ZRlpOePuIKM90t5ASEVVK1DRJ1ICWtloJOvICMq
-         usqzCvJfTuiDZJukhpZ5gsW9TRqWGf/thsBmg2/Na8WQwKG+NEO91ez8QqBQRP2aF/Wp
-         NYMNHSCacOq+lrriq1DJ5U+kcZEXHACqUqSQocro4I1nC90Zo2AD49qMTlIYbzojzmvP
-         WSyZd2wc/iBq1qC7WLZeNeApaqajj5o+Dtt+g6iMXLiAaemt0Yb3j2gMaRwj0tXuzqKd
-         Ivfw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5aQjoHmKrLDA7704pKLy9Q0aTKPXPjODcZdmkkFaAvM=;
+        b=a3g8ssQ0AnZoCd/JTaE9Zur8XHCobId19WHZqBZ9OMzRvt0/2DWgwUGv4tIAYyA9ti
+         NTKWqXcty0BqPatWH4ydgNSlYEfib+xVdMhJarL7bhnykWoKfFJJb8yiHAj1X5m8lb2f
+         owZczQKIpJtxzDVx2PBtu93q39CfsSRQOlk2uYeFUhg66C4QhqUUCZ2hzU6VuuQkd5QX
+         w6yaLJItUN4m2PZRNeqqN0B5AG9dm1upZsdvjochKSzR2RFsqc2591uPSb/JrGvVYXtd
+         Qe5oS0H2xgfHUDs/HqK7+9HFeJq3AVWdVwrwfGYUWrgHki6ke5DRH7Wv5c3fY8j51Eoc
+         4Qfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2DHsDoriK54ucih8d4V/3kj6D7gH+qZ0YXsshl+T4v0=;
-        b=ibdO7A/LgdqNDzDIWJOhRjGynFTMX17VlzPzIW1KAbN48+hMYp/hVYaCitiacupkQr
-         7ShzwVCIHMS6NPsh1l9eP83+UHhfxRQsZ95dY4Fglaa2dA7GJPJ/MsOVislZhSUwa3XJ
-         kHBltBH+S8zURjRZLXXmgwACjNmwjUgEgoyhncRen+MbHiprqyU4m6utrfdw3J1WUSxq
-         dbITAss6UhWdmoEK4hkNGqNram9zj0MCf5qoOQwk2av/zVZcoR99EJX7daKa5se3v6kL
-         CGIZWBn14lE57fE2LuxqS4UWoCjoO0sHi6cYmbItNYxpG04ggQXRW9NjFbFy8KaREJMP
-         CwEA==
-X-Gm-Message-State: AOAM5325eNsUYdQVk/ICW0iy5ZOOBp/nBgJ+FYbAI1ykRHjBl3tQMvZN
-        kvlzrQC+NoMMLEAkbLhbj80CqaJ7jt2Y1bZDyKw9wA==
-X-Google-Smtp-Source: ABdhPJyZjo0cz+beY9g0VqJ59VUwS4NabDi36DB+VIb4/zk37mZeh2ChUQXkriQmeZwGU0Ph4EVBf9U9zcPnnnaLysk=
-X-Received: by 2002:a17:902:760c:b029:d6:efa5:4cdd with SMTP id
- k12-20020a170902760cb02900d6efa54cddmr1571407pll.56.1605226154891; Thu, 12
- Nov 2020 16:09:14 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5aQjoHmKrLDA7704pKLy9Q0aTKPXPjODcZdmkkFaAvM=;
+        b=BvHzl+a5l4Go9GgDksaGCwBN1Wa8Tgb7GtM3zwQ7QwK6rn1Ama/cJRyTIuzI8HWCJc
+         Cx/aal9gHX6pEjX8iNo6imuZSU193dzYA5fIfFqmkQn+WAsEXdFOkRA2gYGiJy2X7H4c
+         Ek7qZoZbhwqaftAQ+a970U9sL5jt7GEiH/Wn3WhBp+kQmkCqqgDMSDhGmu/zOdNclkkP
+         bRPokOre0JkLtg2mB7wKi7zpSh8RBzreLWp0yRVqQJ2DiqLN+JSS/8U2FPHDPUmnEJod
+         hbuATXOjtor0W68oeYGpmr5aOxf47bAIrh2IAI6AzGODnEsm8MQFgQZHWJdy7BYx0BP9
+         tSYw==
+X-Gm-Message-State: AOAM533xHah3dxqu0eDHc7qH3/sVOFTHaWb5Gtr3qoj5zu66AVCjl46G
+        jjKTQt6mzO5tUaBCV+wt1MNhmMaYIeo6QmVB
+X-Google-Smtp-Source: ABdhPJycOkoPoA49v+6wIv01mpIMZOe0z2s1IdIKn9+jEMRFcTEdNcyZ60fn59VzPo5JZPEvWCQN9g==
+X-Received: by 2002:a1c:4ca:: with SMTP id 193mr326206wme.137.1605226370583;
+        Thu, 12 Nov 2020 16:12:50 -0800 (PST)
+Received: from ?IPv6:2001:861:3a84:7260:5d3c:83d5:8524:33ca? ([2001:861:3a84:7260:5d3c:83d5:8524:33ca])
+        by smtp.gmail.com with ESMTPSA id v8sm8046333wmg.28.2020.11.12.16.12.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 16:12:49 -0800 (PST)
+Subject: Re: [PATCH v2] reset: make shared pulsed reset controls
+ re-triggerable
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-usb@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+References: <20201112230043.28987-1-aouledameur@baylibre.com>
+From:   Amjad Ouled-Ameur <aouledameur@baylibre.com>
+Message-ID: <96bce8ff-9601-e6cc-94b1-abd9583e19ae@baylibre.com>
+Date:   Fri, 13 Nov 2020 01:12:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com>
- <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
- <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com> <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 12 Nov 2020 16:09:03 -0800
-Message-ID: <CAKwvOdnYpmf=ydFVWSqVkWeUpn+M2v9PfdQd71T3oqQ9_1WQaQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201112230043.28987-1-aouledameur@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 1:48 PM Moore, Robert <robert.moore@intel.com> wrot=
-e:
->
->
->
-> -----Original Message-----
-> From: Nick Desaulniers <ndesaulniers@google.com>
-> Sent: Thursday, November 12, 2020 11:31 AM
-> To: Moore, Robert <robert.moore@intel.com>
-> Cc: Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wys=
-ocki@intel.com>; Gustavo A . R . Silva <gustavoars@kernel.org>; clang-built=
--linux@googlegroups.com; Len Brown <lenb@kernel.org>; linux-acpi@vger.kerne=
-l.org; devel@acpica.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
->
-> On Thu, Nov 12, 2020 at 7:13 AM Moore, Robert <robert.moore@intel.com> wr=
-ote:
-> >
-> >
-> >
-> > -----Original Message-----
-> > From: Nick Desaulniers <ndesaulniers@google.com>
-> > Sent: Wednesday, November 11, 2020 10:48 AM
-> > To: Moore, Robert <robert.moore@intel.com>
-> > Cc: Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J
-> > <rafael.j.wysocki@intel.com>; Gustavo A . R . Silva
-> > <gustavoars@kernel.org>; clang-built-linux@googlegroups.com; Len Brown
-> > <lenb@kernel.org>; linux-acpi@vger.kernel.org; devel@acpica.org;
-> > linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-> >
-> > On Wed, Nov 11, 2020 at 7:15 AM Moore, Robert <robert.moore@intel.com> =
-wrote:
-> > >
-> > > Yes, but: isn't the "fallthrough" keyword compiler-specific? That is =
-the problem for us.
-> >
-> > It's not a keyword.
-> >
-> > It's a preprocessor macro that expands to
-> > __attribute__((__fallthrough__)) for compilers that support it.  For co=
-mpilers that do not, it expands to nothing.  Both GCC 7+ and Clang support =
-this attribute.  Which other compilers that support -Wimplicit-fallthrough =
-do you care to support?
-> >
-> > We need to support MSVC 2017 -- which apparently does not support this.
->
-> In which case, the macro is not expanded to a compiler attribute the comp=
-iler doesn't support.  Please see also its definition in include/linux/comp=
-iler_attributes.h.
->
-> From what I can tell, MSVC does not warn on implicit fallthrough, so ther=
-e's no corresponding attribute (or comment) to disable the warning in MSVC.
->
-> That doesn't mean this code is not portable to MSVC; a macro that expands=
- to nothing should not be a problem.
->
-> Based on
-> https://docs.microsoft.com/en-us/cpp/code-quality/c26819?view=3Dmsvc-160
-> https://developercommunity.visualstudio.com/idea/423975/issue-compiler-wa=
-rning-when-using-implicit-fallthr.html
-> it sounds like MSVC 2019 will be able to warn, for C++ mode, which will r=
-ely on the C++ style attribute to annotate intentional fallthrough.
->
-> Can you confirm how this does not work for MSVC 2017?
->
-> 1>c:\acpica\source\components\utilities\utdelete.c(270): warning C4013: '=
-__attribute__' undefined; assuming extern returning int
-> 1>c:\acpica\source\components\utilities\utdelete.c(270): error C2065: '__=
-fallthrough__': undeclared identifier
-> 1>c:\acpica\source\components\utilities\utdelete.c(272): error C2143: syn=
-tax error: missing ';' before 'case'
-
-Thank you for the explicit diagnostics observed.  Something fishy is
-going on though, https://godbolt.org/z/Gbxbxa is how I expect MSVC to
-handle include/linux/compiler_attributes.h.
-
-The C preprocessor should make it such that MSVC never sees
-`__attribute__` or `__fallthrough__`; that it does begs the question.
-That would seem to imply that `#if __has_attribute(__fallthrough__)`
-somehow evaluates to true on MSVC, but my godbolt link shows it does
-not.
-
-Could the upstream ACPICA project be #define'ing something that could
-be altering this? (Or not #define'ing something?)
-
-Worst case, we could do as Joe Perches suggested and disable
--Wfallthrough for drivers/acpi/acpica/.
-
->
-> > > Bob
-> > >
-> > >
-> > > -----Original Message-----
-> > > From: ndesaulniers via sendgmr
-> > > <ndesaulniers@ndesaulniers1.mtv.corp.google.com> On Behalf Of Nick
-> > > Desaulniers
-> > > Sent: Tuesday, November 10, 2020 6:12 PM
-> > > To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik
-> > > <erik.kaneda@intel.com>; Wysocki, Rafael J
-> > > <rafael.j.wysocki@intel.com>; Gustavo A . R . Silva
-> > > <gustavoars@kernel.org>
-> > > Cc: clang-built-linux@googlegroups.com; Nick Desaulniers
-> > > <ndesaulniers@google.com>; Len Brown <lenb@kernel.org>;
-> > > linux-acpi@vger.kernel.org; devel@acpica.org;
-> > > linux-kernel@vger.kernel.org
-> > > Subject: [PATCH] ACPICA: fix -Wfallthrough
-> > >
-> > > The "fallthrough" pseudo-keyword was added as a portable way to denot=
-e intentional fallthrough. This code seemed to be using a mix of fallthroug=
-h comments that GCC recognizes, and some kind of lint marker.
-> > > I'm guessing that linter hasn't been run in a while from the mixed us=
-e of the marker vs comments.
-> > >
-> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > ---
-> > >  drivers/acpi/acpica/dscontrol.c | 3 +--
-> > >  drivers/acpi/acpica/dswexec.c   | 4 +---
-> > >  drivers/acpi/acpica/dswload.c   | 3 +--
-> > >  drivers/acpi/acpica/dswload2.c  | 3 +--
-> > >  drivers/acpi/acpica/exfldio.c   | 3 +--
-> > >  drivers/acpi/acpica/exresop.c   | 5 ++---
-> > >  drivers/acpi/acpica/exstore.c   | 6 ++----
-> > >  drivers/acpi/acpica/hwgpe.c     | 3 +--
-> > >  drivers/acpi/acpica/utdelete.c  | 3 +--
-> > >  drivers/acpi/acpica/utprint.c   | 2 +-
-> > >  10 files changed, 12 insertions(+), 23 deletions(-)
-> > >
-> > > diff --git a/drivers/acpi/acpica/dscontrol.c
-> > > b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19
-> > > 100644
-> > > --- a/drivers/acpi/acpica/dscontrol.c
-> > > +++ b/drivers/acpi/acpica/dscontrol.c
-> > > @@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_stat=
-e *walk_state,
-> > >                                 break;
-> > >                         }
-> > >                 }
-> > > -
-> > > -               /*lint -fallthrough */
-> > > +               fallthrough;
-> > >
-> > >         case AML_IF_OP:
-> > >                 /*
-> > > diff --git a/drivers/acpi/acpica/dswexec.c
-> > > b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f
-> > > 100644
-> > > --- a/drivers/acpi/acpica/dswexec.c
-> > > +++ b/drivers/acpi/acpica/dswexec.c
-> > > @@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_=
-state *walk_state)
-> > >                                 if (ACPI_FAILURE(status)) {
-> > >                                         break;
-> > >                                 }
-> > > -
-> > > -                               /* Fall through */
-> > > -                               /*lint -fallthrough */
-> > > +                               fallthrough;
-> > >
-> > >                         case AML_INT_EVAL_SUBTREE_OP:
-> > >
-> > > diff --git a/drivers/acpi/acpica/dswload.c
-> > > b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d
-> > > 100644
-> > > --- a/drivers/acpi/acpica/dswload.c
-> > > +++ b/drivers/acpi/acpica/dswload.c
-> > > @@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *wa=
-lk_state,
-> > >                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) =
-{
-> > >                                 break;
-> > >                         }
-> > > -
-> > > -                       /*lint -fallthrough */
-> > > +                       fallthrough;
-> > >
-> > >                 default:
-> > >
-> > > diff --git a/drivers/acpi/acpica/dswload2.c
-> > > b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072
-> > > 100644
-> > > --- a/drivers/acpi/acpica/dswload2.c
-> > > +++ b/drivers/acpi/acpica/dswload2.c
-> > > @@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *wa=
-lk_state,
-> > >                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) =
-{
-> > >                                 break;
-> > >                         }
-> > > -
-> > > -                       /*lint -fallthrough */
-> > > +                       fallthrough;
-> > >
-> > >                 default:
-> > >
-> > > diff --git a/drivers/acpi/acpica/exfldio.c
-> > > b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9
-> > > 100644
-> > > --- a/drivers/acpi/acpica/exfldio.c
-> > > +++ b/drivers/acpi/acpica/exfldio.c
-> > > @@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object =
-*obj_desc,
-> > >                  * Now that the Bank has been selected, fall through =
-to the
-> > >                  * region_field case and write the datum to the Opera=
-tion Region
-> > >                  */
-> > > -
-> > > -               /*lint -fallthrough */
-> > > +               fallthrough;
-> > >
-> > >         case ACPI_TYPE_LOCAL_REGION_FIELD:
-> > >                 /*
-> > > diff --git a/drivers/acpi/acpica/exresop.c
-> > > b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551
-> > > 100644
-> > > --- a/drivers/acpi/acpica/exresop.c
-> > > +++ b/drivers/acpi/acpica/exresop.c
-> > > @@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
-> > >                                 case ACPI_REFCLASS_DEBUG:
-> > >
-> > >                                         target_op =3D AML_DEBUG_OP;
-> > > -
-> > > -                                       /*lint -fallthrough */
-> > > +                                       fallthrough;
-> > >
-> > >                                 case ACPI_REFCLASS_ARG:
-> > >                                 case ACPI_REFCLASS_LOCAL:
-> > > @@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
-> > >                          * Else not a string - fall through to the no=
-rmal Reference
-> > >                          * case below
-> > >                          */
-> > > -                       /*lint -fallthrough */
-> > > +                       fallthrough;
-> > >
-> > >                 case ARGI_REFERENCE:    /* References: */
-> > >                 case ARGI_INTEGER_REF:
-> > > diff --git a/drivers/acpi/acpica/exstore.c
-> > > b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120
-> > > 100644
-> > > --- a/drivers/acpi/acpica/exstore.c
-> > > +++ b/drivers/acpi/acpica/exstore.c
-> > > @@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_des=
-c,
-> > >                 if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
-> > >                         return_ACPI_STATUS(AE_OK);
-> > >                 }
-> > > -
-> > > -               /*lint -fallthrough */
-> > > +               fallthrough;
-> > >
-> > >         default:
-> > >
-> > > @@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_o=
-bject *source_desc,
-> > >                                 }
-> > >                                 break;
-> > >                         }
-> > > -
-> > > -                       /* Fallthrough */
-> > > +                       fallthrough;
-> > >
-> > >                 case ACPI_TYPE_DEVICE:
-> > >                 case ACPI_TYPE_EVENT:
-> > > diff --git a/drivers/acpi/acpica/hwgpe.c
-> > > b/drivers/acpi/acpica/hwgpe.c index b13a4ed5bc63..fbfad80c8a53
-> > > 100644
-> > > --- a/drivers/acpi/acpica/hwgpe.c
-> > > +++ b/drivers/acpi/acpica/hwgpe.c
-> > > @@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *g=
-pe_event_info, u32 action)
-> > >                 if (!(register_bit & gpe_register_info->enable_mask))=
- {
-> > >                         return (AE_BAD_PARAMETER);
-> > >                 }
-> > > -
-> > > -               /*lint -fallthrough */
-> > > +               fallthrough;
-> > >
-> > >         case ACPI_GPE_ENABLE:
-> > >
-> > > diff --git a/drivers/acpi/acpica/utdelete.c
-> > > b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585
-> > > 100644
-> > > --- a/drivers/acpi/acpica/utdelete.c
-> > > +++ b/drivers/acpi/acpica/utdelete.c
-> > > @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acp=
-i_operand_object *object)
-> > >                         (void)acpi_ev_delete_gpe_block(object->device=
-.
-> > >                                                        gpe_block);
-> > >                 }
-> > > -
-> > > -               /*lint -fallthrough */
-> > > +               fallthrough;
-> > >
-> > >         case ACPI_TYPE_PROCESSOR:
-> > >         case ACPI_TYPE_THERMAL:
-> > > diff --git a/drivers/acpi/acpica/utprint.c
-> > > b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2
-> > > 100644
-> > > --- a/drivers/acpi/acpica/utprint.c
-> > > +++ b/drivers/acpi/acpica/utprint.c
-> > > @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const=
- char *format, va_list args)
-> > >                 case 'X':
-> > >
-> > >                         type |=3D ACPI_FORMAT_UPPER;
-> > > -                       /* FALLTHROUGH */
-> > > +                       fallthrough;
-> > >
-> > >                 case 'x':
-> > >
-> > > --
-> > > 2.29.2.222.g5d2a92d10f8-goog
-> > >
-> >
-> >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
->
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+Please find in this patchset [0] a use case of the reset_control_rearm() call
+on some of meson usb drivers:
 
 
+[0] https://lore.kernel.org/lkml/20201113000508.14702-1-aouledameur@baylibre.com/
 
---=20
-Thanks,
-~Nick Desaulniers
+On 13/11/2020 00:00, Amjad Ouled-Ameur wrote:
+
+> The current reset framework API does not allow to release what is done by
+> reset_control_reset(), IOW decrement triggered_count. Add the new
+> reset_control_rearm() call to do so.
+>
+> When reset_control_reset() has been called once, the counter
+> triggered_count, in the reset framework, is incremented i.e the resource
+> under the reset is in-use and the reset should not be done again.
+> reset_control_rearm() would be the way to state that the resource is
+> no longer used and, that from the caller's perspective, the reset can be
+> fired again if necessary.
+>
+> Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
+> Reported-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+> Change since v1: [0]
+> * Renamed the new call from reset_control_(array_)resettable to
+> reset_control_(array_)rearm
+> * Open-coded reset_control_array_rearm to check for errors before
+> decrementing triggered_count because we cannot roll back in case an
+> error occurs while decrementing one of the rstc.
+> * Reworded the new call's description.
+>
+> [0] https://lore.kernel.org/lkml/20201001132758.12280-1-aouledameur@baylibre.com
+>
+>   drivers/reset/core.c  | 73 +++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/reset.h |  1 +
+>   2 files changed, 74 insertions(+)
+>
+> diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+> index a2df88e90011..34e89aa0fb5e 100644
+> --- a/drivers/reset/core.c
+> +++ b/drivers/reset/core.c
+> @@ -208,6 +208,39 @@ static int reset_control_array_reset(struct reset_control_array *resets)
+>   	return 0;
+>   }
+>   
+> +static int reset_control_array_rearm(struct reset_control_array *resets)
+> +{
+> +	struct reset_control *rstc;
+> +	int i;
+> +
+> +	for (i = 0; i < resets->num_rstcs; i++) {
+> +		rstc = resets->rstc[i];
+> +
+> +		if (!rstc)
+> +			continue;
+> +
+> +		if (WARN_ON(IS_ERR(rstc)))
+> +			return -EINVAL;
+> +
+> +		if (rstc->shared) {
+> +			if (WARN_ON(atomic_read(&rstc->deassert_count) != 0))
+> +				return -EINVAL;
+> +		} else {
+> +			if (!rstc->acquired)
+> +				return -EPERM;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < resets->num_rstcs; i++) {
+> +		rstc = resets->rstc[i];
+> +
+> +		if (rstc && rstc->shared)
+> +			WARN_ON(atomic_dec_return(&rstc->triggered_count) < 0);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int reset_control_array_assert(struct reset_control_array *resets)
+>   {
+>   	int ret, i;
+> @@ -325,6 +358,46 @@ int reset_control_reset(struct reset_control *rstc)
+>   }
+>   EXPORT_SYMBOL_GPL(reset_control_reset);
+>   
+> +/**
+> + * reset_control_rearm - allow shared reset line to be re-triggered"
+> + * @rstc: reset controller
+> + *
+> + * On a shared reset line the actual reset pulse is only triggered once for the
+> + * lifetime of the reset_control instance, except if this call is used.
+> + *
+> + * Calls to this function must be balanced with calls to reset_control_reset,
+> + * a warning is thrown in case triggered_count ever dips below 0.
+> + *
+> + * Consumers must not use reset_control_(de)assert on shared reset lines when
+> + * reset_control_reset or reset_control_rearm have been used.
+> + *
+> + * If rstc is NULL the function will just return 0.
+> + */
+> +int reset_control_rearm(struct reset_control *rstc)
+> +{
+> +	if (!rstc)
+> +		return 0;
+> +
+> +	if (WARN_ON(IS_ERR(rstc)))
+> +		return -EINVAL;
+> +
+> +	if (reset_control_is_array(rstc))
+> +		return reset_control_array_rearm(rstc_to_array(rstc));
+> +
+> +	if (rstc->shared) {
+> +		if (WARN_ON(atomic_read(&rstc->deassert_count) != 0))
+> +			return -EINVAL;
+> +
+> +		WARN_ON(atomic_dec_return(&rstc->triggered_count) < 0);
+> +	} else {
+> +		if (!rstc->acquired)
+> +			return -EPERM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(reset_control_rearm);
+> +
+>   /**
+>    * reset_control_assert - asserts the reset line
+>    * @rstc: reset controller
+> diff --git a/include/linux/reset.h b/include/linux/reset.h
+> index 05aa9f440f48..439fec7112a9 100644
+> --- a/include/linux/reset.h
+> +++ b/include/linux/reset.h
+> @@ -13,6 +13,7 @@ struct reset_control;
+>   #ifdef CONFIG_RESET_CONTROLLER
+>   
+>   int reset_control_reset(struct reset_control *rstc);
+> +int reset_control_rearm(struct reset_control *rstc);
+>   int reset_control_assert(struct reset_control *rstc);
+>   int reset_control_deassert(struct reset_control *rstc);
+>   int reset_control_status(struct reset_control *rstc);
+
