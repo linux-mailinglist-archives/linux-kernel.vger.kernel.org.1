@@ -2,81 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4A52B289F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE472B28A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgKMWht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:37:49 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56112 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726116AbgKMWhe (ORCPT
+        id S1726322AbgKMWiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgKMWh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:37:34 -0500
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id E2C384047F
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 22:37:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1605307053; bh=IUbpBnemFjcPLXeZcS1UdiQeqGMTspGXKuMWboW3oZA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=UDs+bUMmC0080y5kSMVrn03qUFXUwlIV0ccP+ylE/eVQGScwKAYG3ZZooUdC0Ojls
-         QnkhIQt3olcqqfGcE56Q777i6v1/nMa4j+j4Aizv6F2OolxWbyIGHAWdTIOFgK63MP
-         TgI21IgCX2ajrx40wc9a3Xe+h/wgypseE4RBC+zyysi9+WBA+NdV6Yb1hp5VbWdE6X
-         yACO+bYS6bH8wwrGcjrW0NDiVmMm2lmObhjNdicl9EKPrDfrPsWmHQ3EbCp1mXFjqK
-         +u0tFCU4yPvitluUmei8HbCry0yBYWx9Ren2ojVmB9pca/W5NPDHhy7BZbaTCE0dI2
-         bd8toLUdS10YA==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id B03FAA0062;
-        Fri, 13 Nov 2020 22:37:31 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] MAINTAINERS: Add Synopsys xData IP driver maintainer
-Date:   Fri, 13 Nov 2020 23:37:16 +0100
-Message-Id: <5760fcec45ae5ed63b80546eb060754fc4d137da.1605306931.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1605306931.git.gustavo.pimentel@synopsys.com>
-References: <cover.1605306931.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1605306931.git.gustavo.pimentel@synopsys.com>
-References: <cover.1605306931.git.gustavo.pimentel@synopsys.com>
-To:     unlisted-recipients:; (no To-header on input)
+        Fri, 13 Nov 2020 17:37:59 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E43C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:37:59 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id r9so16369589lfn.11
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RqE3OxR3fLcJWt0UMFEVkW0qslrVCHrDJ2Sqt24Sbmw=;
+        b=jCHLj6m4MAR++j5GWyqwiUgqQkCrp6edW1xtrSvfyHy7GSWTtP57EosXjkqRhtCDO8
+         C4mm7llFtnvUt7UuFBahHdZfnnhomfadwWqltIQTwecnAEcuDA9chCda27/u6M7kfgQB
+         m0UuTrU4gDAWtTaqCmW6qfpMb8Cdq1hWDZK3VKq664GrmSL1/IF7I8vjMjBhhcpRARzI
+         lWdwIi3b/Di/irsVzk0JtS60CYgS50uBaPhntG53+Fxn4zWC7Ei/pjZYbJ1STYZXTJOr
+         MiaW7mHMyoWViWHjv2Bw3ZXNS42ueUMTd6xZFCJ9WGnhhFA4PDVgK2SgFFiDJg/4LFvC
+         2Izw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RqE3OxR3fLcJWt0UMFEVkW0qslrVCHrDJ2Sqt24Sbmw=;
+        b=c8PAl5uXjiO+dGSnqTiLqO9J93vWPr2S138fl7WoHcJtisyg7xpKj7YMVPjRzwrk38
+         Ip9Cd66EGZfHJGNSwDi7YNOGps48OGGrzQ1JZSjmGN22Q1AV1gRAxTyl38z2jh2voS/x
+         dRdehuBs4eGopN0N1Sg4v0SBy/KeesJx8X/yOkWfMU1YAJKFAHY/NeZlagPD+MnqTRkj
+         NSsItKU7Ds8r3o+KuxV2cR2Vl7xta0ZVGAd9STtTaiRUuqSCQRH35uRV7INiU2cYhcMA
+         96mY5Rg2W5B4sApUJl/OWhl2cChUYhiLCBv705URc1GHGbFl47T7qfU0hwvmG0FVFU2b
+         QBUA==
+X-Gm-Message-State: AOAM532Bj+L9xT0Wr1f+3zuqG/yA465bB5D/Qb1It+gt5Mx53ybYKg9B
+        +hZlwQxESMiIxT/z3AoArLJfYLsli5/bbpdIm7zlyw==
+X-Google-Smtp-Source: ABdhPJxJAEyX+ydr8CN7N/Sw1lhvdBBhlUsqRFkfdnSMyxGFrSDS5AkroJKzK9ugEaBcjyZePeaDFG10stqa5Md7RD4=
+X-Received: by 2002:ac2:5c01:: with SMTP id r1mr1815912lfp.436.1605307077210;
+ Fri, 13 Nov 2020 14:37:57 -0800 (PST)
+MIME-Version: 1.0
+References: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+ <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
+ <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com> <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
+ <BY5PR13MB29336C5BE374D69939DCADABFDE90@BY5PR13MB2933.namprd13.prod.outlook.com>
+ <CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com>
+ <BY5PR13MB293305FE7ED35EC2B2C81AF1FDE80@BY5PR13MB2933.namprd13.prod.outlook.com>
+ <CABVgOSn0vUvHFTPPnFGCmg0pEotwr6TQXQieRV=EMqs1QmFYUw@mail.gmail.com>
+ <20201112123706.GA2457520@elver.google.com> <CABVgOSkjExNtGny=CDT1WVaXUVgSEaf7hwx8=VY4atN5ot10KQ@mail.gmail.com>
+ <20201113103056.GA1568882@elver.google.com>
+In-Reply-To: <20201113103056.GA1568882@elver.google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 14 Nov 2020 06:37:44 +0800
+Message-ID: <CABVgOS=0Qm-Aa5qgh3PRxbcV0-2ZZaQCm-4HY0dx8597oY+yXw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>
+Cc:     "Bird, Tim" <Tim.Bird@sony.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Synopsys xData IP driver maintainer.
+On Fri, Nov 13, 2020 at 6:31 PM Marco Elver <elver@google.com> wrote:
+>
+> On Fri, Nov 13, 2020 at 01:17PM +0800, David Gow wrote:
+> > On Thu, Nov 12, 2020 at 8:37 PM Marco Elver <elver@google.com> wrote:
+> [...]
+> > > > (It also might be a little tricky with the current implementation to
+> > > > produce the test plan, as the parameters come from a generator, and I
+> > > > don't think there's a way of getting the number of parameters ahead of
+> > > > time. That's a problem with the sub-subtest model, too, though at
+> > > > least there it's a little more isolated from other tests.)
+> > >
+> > > The whole point of generators, as I envisage it, is to also provide the
+> > > ability for varying parameters dependent on e.g. environment,
+> > > configuration, number of CPUs, etc. The current array-based generator is
+> > > the simplest possible use-case.
+> > >
+> > > However, we *can* require generators generate a deterministic number of
+> > > parameters when called multiple times on the same system.
+> >
+> > I think this is a reasonable compromise, though it's not actually
+> > essential. As I understand the TAP spec, the test plan is actually
+> > optional (and/or can be at the end of the sequence of tests), though
+> > kunit_tool currently only supports having it at the beginning (which
+> > is strongly preferred by the spec anyway). I think we could get away
+> > with having it at the bottom of the subtest results though, which
+> > would save having to run the generator twice, when subtest support is
+> > added to kunit_tool.
+>
+> I can't find this in the TAP spec, where should I look? Perhaps we
+> shouldn't venture too far off the beaten path, given we might not be the
+> only ones that want to parse this output.
+>
 
-This driver aims to support Synopsys xData IP and is normally distributed
-along with Synopsys PCIe EndPoint IP as a PCIe traffic generator (depends
-of the use and licensing agreement).
+It's in the "Test Lines and the Plan" section:
+"The plan is optional but if there is a plan before the test points it
+must be the first non-diagnostic line output by the test file. In
+certain instances a test file may not know how many test points it
+will ultimately be running. In this case the plan can be the last
+non-diagnostic line in the output. The plan cannot appear in the
+middle of the output, nor can it appear more than once."
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+My only concern with running through the generator multiple times to
+get the count is that it might be slow and/or more difficult if
+someone uses a more complicated generator. I can't think of anything
+specific yet, though, so we can always do it for now and change it
+later if a problematic case occurs.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8671573..8856f6b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4983,6 +4983,13 @@ S:	Maintained
- F:	drivers/dma/dw-edma/
- F:	include/linux/dma/edma.h
- 
-+DESIGNWARE XDATA IP DRIVER
-+M:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+L:	linux-pci@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/misc-devices/dw-xdata-pcie.rst
-+F:	drivers/misc/dw-xdata-pcie.c
-+
- DESIGNWARE USB2 DRD IP DRIVER
- M:	Minas Harutyunyan <hminas@synopsys.com>
- L:	linux-usb@vger.kernel.org
--- 
-2.7.4
+> > > To that end, I propose a v7 (below) that takes care of getting number of
+> > > parameters (and also displays descriptions for each parameter where
+> > > available).
+> > >
+> > > Now it is up to you how you want to turn the output from diagnostic
+> > > lines into something TAP compliant, because now we have the number of
+> > > parameters and can turn it into a subsubtest. But I think kunit-tool
+> > > doesn't understand subsubtests yet, so I suggest we take these patches,
+> > > and then somebody can prepare kunit-tool.
+> > >
+> >
+> > This sounds good to me. The only thing I'm not sure about is the
+> > format of the parameter description: thus far test names be valid C
+> > identifier names, due to the fact they're named after the test
+> > function. I don't think there's a fundamental reason parameters (and
+> > hence, potentially, subsubtests) need to follow that convention as
+> > well, but it does look a bit odd.  Equally, the square brackets around
+> > the description shouldn't be necessary according to the TAP spec, but
+> > do seem to make things a little more readable, particuarly with the
+> > names in the ext4 inode test. I'm not too worried about either of
+> > those, though: I'm sure it'll look fine once I've got used to it.
+>
+> The parameter description doesn't need to be a C identifier. At least
+> that's what I could immediately glean from TAP v13 spec (I'm looking
+> here: https://testanything.org/tap-version-13-specification.html and see
+> e.g. "ok 1 - Input file opened" ...).
+>
 
+Yeah: it looked a bit weird for everything else to be an identifier
+(given that KUnit does require it for tests), but these parameter
+descriptions not to be. It's not a problem, though, so let's go ahead
+with it.
+
+> [...]
+> > > > In any case, I'm happy to leave the final decision here to Arpitha and
+> > > > Marco, so long as we don't actually violate the TAP/KTAP spec and
+> > > > kunit_tool is able to read at least the top-level result. My
+> > > > preference is still to go either with the "# [test_case->name]:
+> > > > [ok|not ok] [index] - param-[index]", or to get rid of the
+> > > > per-parameter results entirely for now (or just print out a diagnostic
+> > > > message on failure). In any case, it's a decision we can revisit once
+> > > > we have support for named parameters, better tooling, or a better idea
+> > > > of how people are actually using this.
+> > >
+> > > Right, so I think we'll be in a better place if we implement: 1)
+> > > parameter to description conversion support, 2) counting parameters. So
+> > > I decided to see what it looks like, and it wasn't too bad. I just don't
+> > > know how you want to fix kunit-tool to make these non-diagnostic lines
+> > > and not complain, but as I said, it'd be good to not block these
+> > > patches.
+> >
+> > Yup, I tried this v7, and it looks good to me. The kunit_tool work
+> > will probably be a touch more involved, so I definitely don't want to
+> > hold up supporting this on that.
+> >
+> > My only thoughts on the v7 patch are:
+> > - I don't think we actually need the parameter count yet (or perhaps
+> > ever if we go with subtests as planned), so I be okay with getting rid
+> > of that.
+>
+> As noted above, perhaps we should keep it for compatibility with other
+> parsers and CI systems we don't have much control over. It'd be a shame
+> if 99% of KUnit output can be parsed by some partially compliant parser,
+> yet this would break it.
+
+KUnit has only started providing the test plans in some cases pretty
+recently, and the spec does make it optional, so I'm not particularly
+worried about this breaking parsers. I'm not too worried about it
+causing problems to have it either, though, so if you'd rather keep
+it, that's fine by me as well.
+
+> > - It'd be a possibility to get rid of the square brackets from the
+> > output, and if we still want them, make them part of the test itself:
+> > if this were TAP formatted, those brackets would be part of the
+> > subsubtest name.
+>
+> I don't mind. It's just that we can't prescribe a format, and as
+> seen below the descriptions include characters -<>=,. which can be
+> confusing. But perhaps you're right, so let's remove them.
+>
+> But as noted, TAP doesn't seem to care. So let's remove them.
+>
+
+Yeah: I have a slight preference for removing them, as TAP parsers
+would otherwise include them in the parameter name, which looks a
+little weird.
+Of course, the point is moot until we actually fix kunit_tool and make
+these subtests, so there's no fundamental reason we couldn't leave
+them in for now, and remove them then if you thought it was
+significantly more readable. (Personally, I'd still err on the side of
+removing them to avoid any unnecessary churn.)
+
+Cheers,
+-- David
