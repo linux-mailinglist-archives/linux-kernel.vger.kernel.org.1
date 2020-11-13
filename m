@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883082B261F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A60B2B2621
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgKMVAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:00:04 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59824 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKMVAD (ORCPT
+        id S1726439AbgKMVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:00:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgKMVAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:00:03 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ADKxx0a104829;
-        Fri, 13 Nov 2020 14:59:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605301199;
-        bh=aQaBsZBNPDJstvPRnQs7u4/Mqz7Qu8uKZtWhen6EI/k=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=SzB3mYKMuFbf2IFHoO8EtWrLvNAqWFNP8m/vtP/JruT8Y+EuNHaltxn/Kap2ZaX7k
-         eNahvb111dS5UKFmxrjLCeVmkLWBqrsTT4hTBEASrXgFgPNeAE1BdXIAT8Vz7u+fTr
-         Q57526xBzPwOuUqbRDRvYTw2j8cqz2TYMIXOJxZI=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ADKxxGD108599
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 13 Nov 2020 14:59:59 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
- Nov 2020 14:59:59 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 13 Nov 2020 14:59:59 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ADKxxki065721;
-        Fri, 13 Nov 2020 14:59:59 -0600
-Date:   Fri, 13 Nov 2020 14:59:59 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Tero Kristo <t-kristo@ti.com>, Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH V3 0/5] arm64: dts: ti: Cleanup mix of "okay" and
- "disabled"
-Message-ID: <20201113205959.42q6p4enm7lem2if@facebook>
-References: <20201112183538.6805-1-nm@ti.com>
- <160527282700.18648.6417116883997393632.b4-ty@ti.com>
+        Fri, 13 Nov 2020 16:00:38 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8251BC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:00:38 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id b3so5102990pls.11
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:00:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gmGncwYFUvMs6I+eFXEBgHlp3fnbadm1lmVPKMGl9W8=;
+        b=usPrvtFP0mjVTGhG9cOFApqky0N+toPMIZu+IpepobuQ5dM96VP5NgRcWslMI8H/rn
+         AkhcQMvh1SHojptjsFXvFcDZE+lxt82u10QvfX4tmuv4O7EDUwhaG1vBvNx0vX1RBw3A
+         RsQzYIhquP12BJPyPyc7DVTjFSb+fByhR7UkkzD6VNN/GmJIlrc76vJrUo2v8NdN4lj3
+         zQ+WicrHJc24kzxFgXp/r5uX8m9DnhSfaig8rsbRTyo0v69oHxLiOE3eF7PpzqBOo/OU
+         nOqH7ZjfKZjujs6dldp7ZaQrr88SIxfn40NfXdM5trQ4OM9jeT5htISNn+KfSPyxGWAE
+         kgdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gmGncwYFUvMs6I+eFXEBgHlp3fnbadm1lmVPKMGl9W8=;
+        b=m8tm4f6Nq+8cM6GX8VXXFmbEcUKhB1gXVZSZnP5jLVR7+NKpTvEX0N7Vwc3hBdEpwL
+         kb7EgW+F58DnZ92/Yo3VszIe1/VoXzFkVOS9kIxwmVmIYjNKYIc46n4RlnmKPB8z/4zX
+         3m739sOXO/pT4OyqhUZDZxSO+QuU5ucHEDynBxAli7KfZLNbohr4D2Hxi97b8nJTmjs1
+         VjlD0voHlMqj0OhBtm+1BRYYG46RSE8Gx4K63pRGHv/F+MUFDWFQPbB+UvrhcQA3k8Li
+         egMVzxySet7z3H5ggOb0rO+cx96WvsOaRZAAOiopXo5CsFvFW376n0PoNol7M4pFmo7C
+         ah/g==
+X-Gm-Message-State: AOAM532zeK5tAx21uiLKFRpUNxCVrLpTcWKdjVYSxEAU6jyBRVws73RX
+        vjotdt0ZkmWVTqbyiXZhPbecO2WeHvMuYbp2R5/aNQ==
+X-Google-Smtp-Source: ABdhPJwCl8e37GFMxJhbQtFHBN3V/f1ns+lkfkgVBmhfxlpkW7L5oUSEgM6J7WyTuM5iIGnjdMA5NZLB4zM9wXacaow=
+X-Received: by 2002:a17:902:ee85:b029:d6:c43e:2321 with SMTP id
+ a5-20020a170902ee85b02900d6c43e2321mr3313392pld.29.1605301237814; Fri, 13 Nov
+ 2020 13:00:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <160527282700.18648.6417116883997393632.b4-ty@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201111021131.822867-1-ndesaulniers@google.com>
+ <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
+ <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com>
+ <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAKwvOdnYpmf=ydFVWSqVkWeUpn+M2v9PfdQd71T3oqQ9_1WQaQ@mail.gmail.com> <CANiq72k13K_zA5aH5hameoe4TSf2o5cA294bA4UEZG0M6S3DXQ@mail.gmail.com>
+In-Reply-To: <CANiq72k13K_zA5aH5hameoe4TSf2o5cA294bA4UEZG0M6S3DXQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 13 Nov 2020 13:00:26 -0800
+Message-ID: <CAKwvOdn9-B=CGa5t1diymfU8Cqpa3o2zDfmmi=PYvTeAmC8Bxw@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        "Moore, Robert" <robert.moore@intel.com>
+Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07:07-20201113, Nishanth Menon wrote:
-> On Thu, 12 Nov 2020 12:35:33 -0600, Nishanth Menon wrote:
-> > Changes since v2[3]:
-> > - Rebase on top of ti-k3-dts-next (no functional changes)
-> > - picked up reviewed-by and acks from folks.
-> > 
-> > Since we have all the required acks and reviews, I will apply this
-> > series tomorrow morning since this can cause churn for other folks.
-> > 
-> > [...]
-> 
-> Hi,
-> 
-> I have applied the following to branch ti-k3-dts-next on [1].
-> Thank you!
-> 
-> [1/5] arm64: dts: ti: k3-am65*: Cleanup disabled nodes at SoC dtsi level
->       commit: 957c8a49d2ed0d9ed710c8643d43912b64a3708a
-> [2/5] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at SoC dtsi level
->       commit: f388cb320905e0908429ce5ce8b14b5fadb6a1ea
-> [3/5] arm64: dts: ti: am65/j721e: Fix up un-necessary status set to "okay" for crypto
->       commit: 2fcb0ff200d0c9b0c5cab541cc8f8444d937e9ca
-> [4/5] arm64: dts: ti: k3-am654-base-board: Fix up un-necessary status set to "okay" for USB
->       commit: 399e08d521a34ca8180c8eaeaf181176ace85b47
-> [5/5] arm64: dts: ti: am65/j721e/j7200: Mark firmware used uart as "reserved"
->       commit: cf2e8c96b52984319c27f1e0b68fbef712df9bb9
-> 
-> 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent up the chain during
-> the next merge window (or sooner if it is a relevant bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
+On Fri, Nov 13, 2020 at 12:14 AM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Fri, Nov 13, 2020 at 1:09 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > Thank you for the explicit diagnostics observed.  Something fishy is
+> > going on though, https://godbolt.org/z/Gbxbxa is how I expect MSVC to
+> > handle include/linux/compiler_attributes.h.
+> >
+> > The C preprocessor should make it such that MSVC never sees
+> > `__attribute__` or `__fallthrough__`; that it does begs the question.
+> > That would seem to imply that `#if __has_attribute(__fallthrough__)`
+> > somehow evaluates to true on MSVC, but my godbolt link shows it does
+> > not.
+> >
+> > Could the upstream ACPICA project be #define'ing something that could
+> > be altering this? (Or not #define'ing something?)
+> >
+> > Worst case, we could do as Joe Perches suggested and disable
+> > -Wfallthrough for drivers/acpi/acpica/.
+>
+> I agree, something is fishy. MSVC has several flags for conformance
+> and extensions support, including two full C preprocessors in newer
+> versions; which means we might be missing something, but I don't see
+> how the code in compiler_attributes.h could be confusing MSVC even in
+> older non-conforming versions.
 
-
-I will drop this series from my tree - Fixes: tags on the patches should
-be dropped as it is not strictly to the stable tree rules and can
-potentially cause conflicts when backported.
-
-I will repost the next version dropping the same and pick the new series
-up instead.
-
-Apologies on the churn (and thanks Peter, Sekhar for the offline
-feedback - better safe than sorry).
+unless
+```
+# define fallthrough                    __attribute__((__fallthrough__))
+```
+was copy and pasted into the code, rather than #including the whole header?
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Thanks,
+~Nick Desaulniers
