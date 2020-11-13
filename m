@@ -2,186 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A803B2B23A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13162B23A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgKMSZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgKMSZH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:25:07 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC5EC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:25:06 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 10so9324746wml.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:25:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=5gT1sncz2gHkJ8mfZXjdkrmB0EKJ+rRT9HBVkP2LpJY=;
-        b=OOtbCEahN6iPPcU21Zq1kvc7UDoToKkinZI8owW54M4fn2WzRpcEcTVGo1xQuEVojE
-         rdh/GqWCkiSb6HuU/v47cjd1qlMdRq8GZf0hNlZiaXjfMqIKStn1oz4Rr+11/JV9pKmP
-         c09VVdScuIw4mw9iXd6PZm8dBVfZNwpPN50Ew=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=5gT1sncz2gHkJ8mfZXjdkrmB0EKJ+rRT9HBVkP2LpJY=;
-        b=FPryZ3i/LYWn9fXke856QmSHzL6417zyxOxYNvQuVrrukJSbv+Ml22hCvFFuUmydLm
-         CWRTLVKDfeH4J/f+NTNd7LSZUtc+kUqOq5NtkkP5tKyor2zR8bCnHhWrPFpB1ihCEY1a
-         YJ/M6lpEBWqcW3roI6Rzey8gcbqXLVu/tr2HL9FFrHuyE07b69ql0BvYfvACnBnfNRxq
-         fXPOR1klgzccA8Zce0hAD5Xi0V3zJjjmagp6oiycBJd6GMSBbnJdQop2xkPiMV9Zup2C
-         D/4akDgcvEfVI/VLoe+jq0eNv/IXEyiP4HJ7aZMt8J5JTCQZpaDvVAQOliYKB265R6N2
-         i0Jg==
-X-Gm-Message-State: AOAM530mnwyIxs8C0vbePT1x9m/nrfUPz2wm1I4oBBzkPHKVxn9u8Ez3
-        4aMhTweAQ/SMvsY/OqWnzinl0A==
-X-Google-Smtp-Source: ABdhPJxvwtwfylRoN3nAjiwCOXLFYMCb7AZ5BgztG/kOQulyvJM9+JtDW/hZVi2yW4ncBNeLfXe7wA==
-X-Received: by 2002:a1c:4d4:: with SMTP id 203mr3833562wme.153.1605291905082;
-        Fri, 13 Nov 2020 10:25:05 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id n128sm11543583wmb.46.2020.11.13.10.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 10:25:04 -0800 (PST)
-Message-ID: <5872d768dec1e94d616eee3b3c02d9d148940da5.camel@chromium.org>
-Subject: Re: saner sock_from_file() calling conventions (was Re: [PATCH]
- bpf: Expose a bpf_sock_from_file helper to tracing programs)
-From:   Florent Revest <revest@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, yhs@fb.com, andrii@kernel.org, kpsingh@chromium.org,
-        jackmanb@chromium.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@google.com>, netdev@vger.kernel.org
-Date:   Fri, 13 Nov 2020 19:25:03 +0100
-In-Reply-To: <20201112202829.GD3576660@ZenIV.linux.org.uk>
-References: <20201112200944.2726451-1-revest@chromium.org>
-         <20201112202829.GD3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        id S1726522AbgKMS0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:26:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726291AbgKMS0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 13:26:06 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35CC5206FB;
+        Fri, 13 Nov 2020 18:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605291965;
+        bh=fDi9mgIGTBupdmiWZEHRi2yYZozpJQMyVVHzaWsP1+0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=2OHEKMNeZC5cH7NsCGLurv4S7uBQoF1vi1qK8CjGNtcOVISY3xeuGIDL2UfJg4mVp
+         3SvNyXHgsIjMEThN4dbu51oUoIq8m8jsrswffAVQc/FTXgjEz+lsMU7McEvOFOV5PF
+         xKi14KNY9Xx+CtQO+iFe8T24BMQs1xkOCY2JXVzo=
+Date:   Fri, 13 Nov 2020 12:26:03 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 5/9] cxl/mem: Find device capabilities
+Message-ID: <20201113182603.GA1121815@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111054356.793390-6-ben.widawsky@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 20:28 +0000, Al Viro wrote:
-> On Thu, Nov 12, 2020 at 09:09:44PM +0100, Florent Revest wrote:
-> > From: Florent Revest <revest@google.com>
-> > 
-> > eBPF programs can already check whether a file is a socket using
-> > file->f_op == &socket_file_ops but they can not convert file-
-> > >private_data into a struct socket with BTF information. For that,
-> > we need a new helper that is essentially just a wrapper for
-> > sock_from_file.
-> > 
-> > sock_from_file can set an err value but this is only set to
-> > -ENOTSOCK when the return value is NULL so it's useless superfluous
-> > information.
+On Tue, Nov 10, 2020 at 09:43:52PM -0800, Ben Widawsky wrote:
+> CXL devices contain an array of capabilities that describe the
+> interactions software can interact with the device, or firmware running
+> on the device. A CXL compliant device must implement the device status
+> and the mailbox capability. A CXL compliant memory device must implement
+> the memory device capability.
 > 
-> That's a wrong way to handle that kind of stuff.  *IF*
-> sock_from_file() really has no need to return an error, its calling
-> conventions ought to be changed. OTOH, if that is not the case, your
-> API is a landmine.
+> Each of the capabilities can [will] provide an offset within the MMIO
+> region for interacting with the CXL device.
 > 
-> That needs to be dealt with by netdev folks, rather than quietly
-> papered over in BPF code.
-
-Sounds good to me. :) What do netdev folks think of this ?
-
-> It does appear that there's no realistic cause to ever need other
-> errors there (well, short of some clown attaching a hook, pardon the
-> obscenity), so I would recommend something like the patch below
-> (completely untested):
-
-Thanks for taking the time but is this the patch you meant to send?
-
-> sanitize sock_from_file() calling conventions
-> 
-> deal with error value (always -ENOTSOCK) in the callers
-> 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 > ---
-> diff --git a/fs/seq_file.c b/fs/seq_file.c
-> index 3b20e21604e7..07b33c1f34a9 100644
-> --- a/fs/seq_file.c
-> +++ b/fs/seq_file.c
-> @@ -168,7 +168,6 @@ EXPORT_SYMBOL(seq_read);
->  ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->  {
->  	struct seq_file *m = iocb->ki_filp->private_data;
-> -	size_t size = iov_iter_count(iter);
->  	size_t copied = 0;
->  	size_t n;
->  	void *p;
-> @@ -208,14 +207,11 @@ ssize_t seq_read_iter(struct kiocb *iocb,
-> struct iov_iter *iter)
->  	}
->  	/* if not empty - flush it first */
->  	if (m->count) {
-> -		n = min(m->count, size);
-> -		if (copy_to_iter(m->buf + m->from, n, iter) != n)
-> -			goto Efault;
-> +		n = copy_to_iter(m->buf + m->from, m->count, iter);
->  		m->count -= n;
->  		m->from += n;
-> -		size -= n;
->  		copied += n;
-> -		if (!size)
-> +		if (!iov_iter_count(iter) || m->count)
->  			goto Done;
->  	}
->  	/* we need at least one record in buffer */
-> @@ -249,6 +245,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct
-> iov_iter *iter)
->  	goto Done;
->  Fill:
->  	/* they want more? let's try to get some more */
-> +	/* m->count is positive and there's space left in iter */
->  	while (1) {
->  		size_t offs = m->count;
->  		loff_t pos = m->index;
-> @@ -263,7 +260,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct
-> iov_iter *iter)
->  			err = PTR_ERR(p);
->  			break;
->  		}
-> -		if (m->count >= size)
-> +		if (m->count >= iov_iter_count(iter))
->  			break;
->  		err = m->op->show(m, p);
->  		if (seq_has_overflowed(m) || err) {
-> @@ -273,16 +270,14 @@ ssize_t seq_read_iter(struct kiocb *iocb,
-> struct iov_iter *iter)
->  		}
->  	}
->  	m->op->stop(m, p);
-> -	n = min(m->count, size);
-> -	if (copy_to_iter(m->buf, n, iter) != n)
-> -		goto Efault;
-> +	n = copy_to_iter(m->buf, m->count, iter);
->  	copied += n;
->  	m->count -= n;
->  	m->from = n;
->  Done:
-> -	if (!copied)
-> -		copied = err;
-> -	else {
-> +	if (unlikely(!copied)) {
-> +		copied = m->count ? -EFAULT : err;
-> +	} else {
->  		iocb->ki_pos += copied;
->  		m->read_pos += copied;
->  	}
-> @@ -291,9 +286,6 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct
-> iov_iter *iter)
->  Enomem:
->  	err = -ENOMEM;
->  	goto Done;
-> -Efault:
-> -	err = -EFAULT;
-> -	goto Done;
->  }
->  EXPORT_SYMBOL(seq_read_iter);
+>  drivers/cxl/cxl.h | 89 +++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/cxl/mem.c | 58 +++++++++++++++++++++++++++---
+>  2 files changed, 143 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/cxl/cxl.h
+> 
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> new file mode 100644
+> index 000000000000..02858ae63d6d
+> --- /dev/null
+> +++ b/drivers/cxl/cxl.h
+> @@ -0,0 +1,89 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
 
+Fix comment usage (I think SPDX in .h needs "/* */")
+
+> +#ifndef __CXL_H__
+> +#define __CXL_H__
+> +
+> +/* Device */
+> +#define CXLDEV_CAP_ARRAY_REG 0x0
+> +#define CXLDEV_CAP_ARRAY_CAP_ID 0
+> +#define CXLDEV_CAP_ARRAY_ID(x) ((x) & 0xffff)
+> +#define CXLDEV_CAP_ARRAY_COUNT(x) (((x) >> 32) & 0xffff)
+> +
+> +#define CXL_CAPABILITIES_CAP_ID_DEVICE_STATUS 1
+> +#define CXL_CAPABILITIES_CAP_ID_PRIMARY_MAILBOX 2
+> +#define CXL_CAPABILITIES_CAP_ID_SECONDARY_MAILBOX 3
+> +#define CXL_CAPABILITIES_CAP_ID_MEMDEV 0x4000
+
+Strange that the first three are decimal and the last is hex.
+
+> +/* Mailbox */
+> +#define CXLDEV_MB_CAPS 0x00
+> +#define   CXLDEV_MB_CAP_PAYLOAD_SIZE(cap) ((cap) & 0x1F)
+
+Use upper- or lower-case hex consistently.  Add tabs to line things
+up.
+
+> +#define CXLDEV_MB_CTRL 0x04
+> +#define CXLDEV_MB_CMD 0x08
+> +#define CXLDEV_MB_STATUS 0x10
+> +#define CXLDEV_MB_BG_CMD_STATUS 0x18
+> +
+> +struct cxl_mem {
+> +	struct pci_dev *pdev;
+> +	void __iomem *regs;
+> +
+> +	/* Cap 0000h */
+> +	struct {
+> +		void __iomem *regs;
+> +	} status;
+> +
+> +	/* Cap 0002h */
+> +	struct {
+> +		void __iomem *regs;
+> +		size_t payload_size;
+> +	} mbox;
+> +
+> +	/* Cap 0040h */
+> +	struct {
+> +		void __iomem *regs;
+> +	} mem;
+> +};
+
+Maybe a note about why READ_ONCE() is required?
+
+> +#define cxl_reg(type)                                                          \
+> +	static inline void cxl_write_##type##_reg32(struct cxl_mem *cxlm,      \
+> +						    u32 reg, u32 value)        \
+> +	{                                                                      \
+> +		void __iomem *reg_addr = READ_ONCE(cxlm->type.regs);           \
+> +		writel(value, reg_addr + reg);                                 \
+> +	}                                                                      \
+> +	static inline void cxl_write_##type##_reg64(struct cxl_mem *cxlm,      \
+> +						    u32 reg, u64 value)        \
+> +	{                                                                      \
+> +		void __iomem *reg_addr = READ_ONCE(cxlm->type.regs);           \
+> +		writeq(value, reg_addr + reg);                                 \
+> +	}                                                                      \
+> +	static inline u32 cxl_read_##type##_reg32(struct cxl_mem *cxlm,        \
+> +						  u32 reg)                     \
+> +	{                                                                      \
+> +		void __iomem *reg_addr = READ_ONCE(cxlm->type.regs);           \
+> +		return readl(reg_addr + reg);                                  \
+> +	}                                                                      \
+> +	static inline u64 cxl_read_##type##_reg64(struct cxl_mem *cxlm,        \
+> +						  u32 reg)                     \
+> +	{                                                                      \
+> +		void __iomem *reg_addr = READ_ONCE(cxlm->type.regs);           \
+> +		return readq(reg_addr + reg);                                  \
+> +	}
+> +
+> +cxl_reg(status)
+> +cxl_reg(mbox)
+> +
+> +static inline u32 __cxl_raw_read_reg32(struct cxl_mem *cxlm, u32 reg)
+> +{
+> +	void __iomem *reg_addr = READ_ONCE(cxlm->regs);
+> +
+> +	return readl(reg_addr + reg);
+> +}
+> +
+> +static inline u64 __cxl_raw_read_reg64(struct cxl_mem *cxlm, u32 reg)
+> +{
+> +	void __iomem *reg_addr = READ_ONCE(cxlm->regs);
+> +
+> +	return readq(reg_addr + reg);
+> +}
+
+Are the "__" prefixes here to leave space for something else in the
+future?  "__" typically means something like "raw", so right now it
+sort of reads like "raw cxl raw read".  So if you don't *need* the
+"__" prefix, I'd drop it.
+
+> +#endif /* __CXL_H__ */
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 8d9b9ab6c5ea..4109ef7c3ecb 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -5,11 +5,57 @@
+>  #include <linux/io.h>
+>  #include "acpi.h"
+>  #include "pci.h"
+> +#include "cxl.h"
+>  
+> -struct cxl_mem {
+> -	struct pci_dev *pdev;
+> -	void __iomem *regs;
+> -};
+
+Probably nicer if you put "struct cxl_mem" in its ultimate destination
+(drivers/cxl/cxl.h) from the beginning.  Then it's easier to see what
+this patch adds because it's not moving at the same time.
+
+> +static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+> +{
+> +	u64 cap_array;
+> +	int cap;
+> +
+> +	cap_array = __cxl_raw_read_reg64(cxlm, CXLDEV_CAP_ARRAY_REG);
+> +	if (CXLDEV_CAP_ARRAY_ID(cap_array) != CXLDEV_CAP_ARRAY_CAP_ID)
+> +		return -ENODEV;
+> +
+> +	for (cap = 1; cap <= CXLDEV_CAP_ARRAY_COUNT(cap_array); cap++) {
+> +		void *__iomem register_block;
+> +		u32 offset;
+> +		u16 cap_id;
+> +
+> +		cap_id = __cxl_raw_read_reg32(cxlm, cap * 0x10) & 0xffff;
+> +		offset = __cxl_raw_read_reg32(cxlm, cap * 0x10 + 0x4);
+> +		register_block = cxlm->regs + offset;
+> +
+> +		switch (cap_id) {
+> +		case CXL_CAPABILITIES_CAP_ID_DEVICE_STATUS:
+> +			dev_dbg(&cxlm->pdev->dev, "found Status capability\n");
+
+Consider including the address or offset in these messages to help
+debug?  Printing a completely constant string always seems like a
+missed opportunity to me.
+
+> +			cxlm->status.regs = register_block;
+> +			break;
+> +		case CXL_CAPABILITIES_CAP_ID_PRIMARY_MAILBOX:
+> +			dev_dbg(&cxlm->pdev->dev,
+> +				 "found Mailbox capability\n");
+> +			cxlm->mbox.regs = register_block;
+> +			cxlm->mbox.payload_size = CXLDEV_MB_CAP_PAYLOAD_SIZE(cap_id);
+> +			break;
+> +		case CXL_CAPABILITIES_CAP_ID_SECONDARY_MAILBOX:
+> +			dev_dbg(&cxlm->pdev->dev,
+> +				   "found UNSUPPORTED Secondary Mailbox capability\n");
+> +			break;
+> +		case CXL_CAPABILITIES_CAP_ID_MEMDEV:
+> +			dev_dbg(&cxlm->pdev->dev,
+> +				 "found Memory Device capability\n");
+> +			cxlm->mem.regs = register_block;
+> +			break;
+> +		default:
+> +			dev_err(&cxlm->pdev->dev, "Unknown cap ID: %d\n", cap_id);
+> +			return -ENXIO;
+> +		}
+> +	}
+> +
+> +	if (!cxlm->status.regs || !cxlm->mbox.regs || !cxlm->mem.regs)
+> +		return -ENXIO;
+> +
+> +	return 0;
+> +}
+>  
+>  static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo, u32 reg_hi)
+>  {
+> @@ -110,6 +156,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (IS_ERR(cxlm))
+>  		return -ENXIO;
+>  
+> +	rc = cxl_mem_setup_regs(cxlm);
+> +	if (rc)
+> +		return rc;
+> +
+>  	pci_set_drvdata(pdev, cxlm);
+>  
+>  	return 0;
+> -- 
+> 2.29.2
+> 
