@@ -2,225 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2382B2203
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9C52B21E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgKMRTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:19:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbgKMRT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:19:27 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9061822258;
-        Fri, 13 Nov 2020 17:19:40 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kdcjb-000A3S-JG; Fri, 13 Nov 2020 12:19:39 -0500
-Message-ID: <20201113171939.455339580@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Fri, 13 Nov 2020 12:18:14 -0500
-From:   Steven Rostedt (VMware) <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        id S1726497AbgKMRSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:18:52 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33466 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726057AbgKMRSu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:18:50 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADHDnQu021429;
+        Fri, 13 Nov 2020 09:18:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=hygVj9no6G5a2gjxRTwDsSvyueWTARtjGRlJm+0DoAE=;
+ b=TVVQN449gbZ/hpRDjDgK2apw3Chkj33iShJgoIdhM08MGj2afjsRaamjmn/eRmlFxDUK
+ GYGpVq9kLDQLeEbAKRQOEXtBdzVlhASG4+f8mpiCm6kSDHZ8ckxysx9ZESDwFdjnk2Xm
+ R17bDReREEpSX24cfv9ZT9cWzgaLkFo+TUE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34s7gey3rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 13 Nov 2020 09:18:32 -0800
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 13 Nov 2020 09:18:29 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UawCmf4WPQVcZSiGXpjkaoaooyuzxJLPeW9PBvCj3LFiROen03OAZdf0KXFbWCUTY2CltYmYIJEzdIaC0zeEspb5Fqi43ho+H4gjBHdI/Zf1Kt4CjH/t68N5yDFXtpTSm+e3P3AzqBJHM5/sKXANJ7SZXzwN8wsmdb+Qho132kHL1tScJi5E7exQl147FJbImDV3qheDNSEeHs4MSLUCjNiWHCuc5+1Y+A27mv+FIVr7pYgaYqCZg8NWgVItq7EfzP7LHeUcptCOsoDqcpaSTfCw/QHZS8hQ2pKp5/C9nOiZf2sYkq46dgM9rfMWanBMe8CzJRzav6FvW0xMrt7QcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hygVj9no6G5a2gjxRTwDsSvyueWTARtjGRlJm+0DoAE=;
+ b=obpZQeXtZQlHqg+sx8Kte03lQXyoKqbmS/mjW+wm7Gf0JIKgAJd8IbBKeFWzP9U1IUPKrt4MKhAwvNkgyov6AG0b7i6hj/LUPBF+GFCof+Eyd/L89t/YvWC2EpZfB3DE3qXP//O0g4ZNMyihzWhXMs883FkehfqSsNPf8D/bCSHMufstTAFAjD1rA2cJEZCMvHE2I5v5Rry//BuSmXb/fdkW7tPzCRv1zIfDIZrYfNDTy/vYtGekGL3PV8H7AGEK7JjEQO5s8wDTX4EKx91qexhocpxEJZvJWl5ElBF89Swwt0o7rwbKhy1fuX72+IZUomqhQhrp/xmLFLg6A5lZjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hygVj9no6G5a2gjxRTwDsSvyueWTARtjGRlJm+0DoAE=;
+ b=eFakGUhwdlj9V3nLBq6jVMu1NgbOvmulPMVW6EoIIsScQ2CCXnnFevchRUhAA2WEQxP7pquKGRHwESbfq++i2WH0bjcMHgXuSxroQ+duGVPyViWrOFNRBaREIPPUHqSlW0pJ/UuhEnmum4WlkYzSlVylSTXVjVdbS0diev5KGKs=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SN7PR15MB4208.namprd15.prod.outlook.com
+ (2603:10b6:806:106::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Fri, 13 Nov
+ 2020 17:18:28 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::f966:8c42:dcc0:7d96]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::f966:8c42:dcc0:7d96%5]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
+ 17:18:28 +0000
+Date:   Fri, 13 Nov 2020 09:18:22 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org
-Subject: [PATCH 3/3 v7] livepatch: Use the default ftrace_ops instead of REGS when ARGS is
- available
-References: <20201113171811.288150055@goodmis.org>
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH bpf-next v5 01/34] mm: memcontrol: use helpers to read
+ page's memcg data
+Message-ID: <20201113171822.GB2955309@carbon.dhcp.thefacebook.com>
+References: <20201112221543.3621014-1-guro@fb.com>
+ <20201112221543.3621014-2-guro@fb.com>
+ <20201113095632.489e66e2@canb.auug.org.au>
+ <20201113002610.GB2934489@carbon.dhcp.thefacebook.com>
+ <20201113030456.drdswcndp65zmt2u@ast-mbp>
+ <20201112191825.1a7c3e0d50cc5e375a4e887c@linux-foundation.org>
+ <CAADnVQ+evkBCakrfEUqEvZ2Th=6xUGA2uTzdb_hwpaU9CPdj8Q@mail.gmail.com>
+ <20201113040151.GA2955309@carbon.dhcp.thefacebook.com>
+ <CALvZod5QtfNgtoTq2owEDvnEG4EfciNo14QYkdhembo9783nCA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5QtfNgtoTq2owEDvnEG4EfciNo14QYkdhembo9783nCA@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:4191]
+X-ClientProxiedBy: MWHPR22CA0061.namprd22.prod.outlook.com
+ (2603:10b6:300:12a::23) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:4191) by MWHPR22CA0061.namprd22.prod.outlook.com (2603:10b6:300:12a::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25 via Frontend Transport; Fri, 13 Nov 2020 17:18:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 050b7dfe-6776-45d2-9a32-08d887f822c0
+X-MS-TrafficTypeDiagnostic: SN7PR15MB4208:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN7PR15MB420846A6E5A32D19731B4209BEE60@SN7PR15MB4208.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0iCZEuPcIo173yOCpjgaLhPZDSp4xoJgR7TUL8iy5IOQrcActpPXHlcX4n1iNDwNexSOh4afiJIeRm+W6J47QypKysgoa6P6VAijoj1AutubebzH0BDDVko9/RijwBHQkD8VpiRg0/IBK+a9IX2bYkAWQGHWGPoMNGEkmbBCCIWu28kqMYJkICmnjkeF13u5vWmeRGtn5epUqeKmwVL+GvcZekkL2xCmu21FrPxX5vly9+dXJvPnB0ja0iU+yCRR1Q196j0+YhcjbdGMPwT6PSAy84TfO+CyAnfoJxOfVyGUDWzT+dpGUSFsmfDyZozW1GyoZBZjElStzyXyMXnTdQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(396003)(376002)(346002)(66556008)(83380400001)(52116002)(7696005)(1076003)(8676002)(4326008)(478600001)(53546011)(6506007)(186003)(8936002)(16526019)(5660300002)(6666004)(9686003)(33656002)(7416002)(316002)(55016002)(66476007)(2906002)(86362001)(66946007)(54906003)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: vcD48ixRK0wrQj3E28I7SrOIy3injF1MRSvy3wDfkrllDCrLaBz2Haq5H4WhW5jQ1KaezV3L5/LsvrMV2oFq/O+dv47ACj4pp17u5Jk9tVTkyVwkEyHfUSq1M+BaCbUnV/LtosCeq5kIQBwAog6Q2ViJTjqOW8gVh8uHwLRzdq3iQuxhYG2G4B4ebUK+NcgfSL4FElihrXW4M+WJp1bAlUVbf6A9sPkWEtc8umVY5sAVAVftI5Sjp7piW71gtOcrFEzH3lsgkhPYVKSPwn6TLk9juHx0GQay8JuxbKd9drIcPKEoVu8eDhnlx07D3JJNpeG8/rNOeX7KdRGAqabZieG79Bzi0JQVT8MCAv+q+XYJjlZ844+OQXLjksI357gUz4gzypRc1NoK10aDe1aQvNtiaAJE3Ew5fODAzPo8jtmFcZzWKxz8rLYKx+zp4e/4iTgrKCkr4Sf0oIzeS/fODLI9QyUUnktecPptJjaWg81yLiUJ8DcXgxixySJhvb887q4buWu9bbGFcDTFCYFu02NC9zap8O084jVkUWCOokAbl5/Nc363pTD/cX/jn82wlBbLM+LCCiIeJfqMKVl7vP+1gh5sN46xqYW+oHpmqhGwJy+h6ak42HXDEcYvZxIj2CoO/K17qydj0MzrBj4qBV/gc4159KoTfLKMafaNnG3YJ57u258mTrEDqSCWWeAi60Lwc119dv1IZuSafHDcJNBNuiD6oQtr7EeN+rN++kD62GzByn3i9qcFBeS3iq87bZMgw1w6bMevKrgYI9RYjaEBv4+xPBgatuNKno2qqD7QA6fBXB5cEHIJteura6S3PQEuno0izuoGTEVG6hAnopIa/BeYl6flRnBKCvN+8CDHGyUwBPAYVJLxIpDvP5btaxuzQHhMnEDzkp6yL1uApMWgOclcoC/oET2s9DsPbmk=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 050b7dfe-6776-45d2-9a32-08d887f822c0
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 17:18:28.0720
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Nz4rFFFLxFSLr5pRE/XHCQ6s3E6rcYIFWAHaM7QzRdTXn2UEjPBXi/SKDBOGc8HD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4208
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=1 impostorscore=0 malwarescore=0 phishscore=0 clxscore=1015
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011130112
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Fri, Nov 13, 2020 at 06:25:53AM -0800, Shakeel Butt wrote:
+> On Thu, Nov 12, 2020 at 8:02 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Thu, Nov 12, 2020 at 07:25:48PM -0800, Alexei Starovoitov wrote:
+> > > On Thu, Nov 12, 2020 at 7:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > >
+> > > > On Thu, 12 Nov 2020 19:04:56 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > > On Thu, Nov 12, 2020 at 04:26:10PM -0800, Roman Gushchin wrote:
+> > > > > >
+> > > > > > These patches are not intended to be merged through the bpf tree.
+> > > > > > They are included into the patchset to make bpf selftests pass and for
+> > > > > > informational purposes.
+> > > > > > It's written in the cover letter.
+> > > > > ...
+> > > > > > Maybe I had to just list their titles in the cover letter. Idk what's
+> > > > > > the best option for such cross-subsystem dependencies.
+> > > > >
+> > > > > We had several situations in the past releases where dependent patches
+> > > > > were merged into multiple trees. For that to happen cleanly from git pov
+> > > > > one of the maintainers need to create a stable branch/tag and let other
+> > > > > maintainers pull that branch into different trees. This way the sha-s
+> > > > > stay the same and no conflicts arise during the merge window.
+> > > > > In this case sounds like the first 4 patches are in mm tree already.
+> > > > > Is there a branch/tag I can pull to get the first 4 into bpf-next?
+> > > >
+> > > > Not really, at present.  This is largely by design, although it does cause
+> > > > this problem once or twice a year.
+> > > >
+> > > > These four patches:
+> > > >
+> > > > mm-memcontrol-use-helpers-to-read-pages-memcg-data.patch
+> > > > mm-memcontrol-slab-use-helpers-to-access-slab-pages-memcg_data.patch
+> > > > mm-introduce-page-memcg-flags.patch
+> > > > mm-convert-page-kmemcg-type-to-a-page-memcg-flag.patch
+> > > >
+> > > > are sufficiently reviewed - please pull them into the bpf tree when
+> > > > convenient.  Once they hit linux-next, I'll drop the -mm copies and the
+> > > > bpf tree maintainers will then be responsible for whether & when they
+> > > > get upstream.
+> > >
+> > > That's certainly an option if they don't depend on other patches in the mm tree.
+> > > Roman probably knows best ?
+> >
+> > Yes, they are self-contained and don't depend on any patches in the mm tree.
+> >
+> 
+> The patch "mm, kvm: account kvm_vcpu_mmap to kmemcg" in mm tree
+> depends on that series.
 
-When CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is available, the ftrace call
-will be able to set the ip of the calling function. This will improve the
-performance of live kernel patching where it does not need all the regs to
-be stored just to change the instruction pointer.
+True, and I believe there are (or will be) more dependencies like this.
+But it should be fine, we only have to make sure that these 4 patches
+will be merged first.
 
-If all archs that support live kernel patching also support
-HAVE_DYNAMIC_FTRACE_WITH_ARGS, then the architecture specific function
-klp_arch_set_pc() could be made generic.
-
-It is possible that an arch can support HAVE_DYNAMIC_FTRACE_WITH_ARGS but
-not HAVE_DYNAMIC_FTRACE_WITH_REGS and then have access to live patching.
-
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: live-patching@vger.kernel.org
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-Changes since v6:
- - Updated to use ftrace_instruction_pointer_set() macro
-
- arch/powerpc/include/asm/livepatch.h | 4 +++-
- arch/s390/include/asm/livepatch.h    | 5 ++++-
- arch/x86/include/asm/ftrace.h        | 3 +++
- arch/x86/include/asm/livepatch.h     | 4 ++--
- arch/x86/kernel/ftrace_64.S          | 4 ++++
- include/linux/ftrace.h               | 7 +++++++
- kernel/livepatch/Kconfig             | 2 +-
- kernel/livepatch/patch.c             | 9 +++++----
- 8 files changed, 29 insertions(+), 9 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
-index 4a3d5d25fed5..ae25e6e72997 100644
---- a/arch/powerpc/include/asm/livepatch.h
-+++ b/arch/powerpc/include/asm/livepatch.h
-@@ -12,8 +12,10 @@
- #include <linux/sched/task_stack.h>
- 
- #ifdef CONFIG_LIVEPATCH
--static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- {
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
- 	regs->nip = ip;
- }
- 
-diff --git a/arch/s390/include/asm/livepatch.h b/arch/s390/include/asm/livepatch.h
-index 818612b784cd..d578a8c76676 100644
---- a/arch/s390/include/asm/livepatch.h
-+++ b/arch/s390/include/asm/livepatch.h
-@@ -11,10 +11,13 @@
- #ifndef ASM_LIVEPATCH_H
- #define ASM_LIVEPATCH_H
- 
-+#include <linux/ftrace.h>
- #include <asm/ptrace.h>
- 
--static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- {
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
- 	regs->psw.addr = ip;
- }
- 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index e00fe88146e0..9f3130f40807 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -54,6 +54,9 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
- 		return NULL;
- 	return &fregs->regs;
- }
-+
-+#define ftrace_instruction_pointer_set(fregs, _ip)	\
-+	do { (fregs)->regs.ip = (_ip); } while (0)
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
-diff --git a/arch/x86/include/asm/livepatch.h b/arch/x86/include/asm/livepatch.h
-index 1fde1ab6559e..7c5cc6660e4b 100644
---- a/arch/x86/include/asm/livepatch.h
-+++ b/arch/x86/include/asm/livepatch.h
-@@ -12,9 +12,9 @@
- #include <asm/setup.h>
- #include <linux/ftrace.h>
- 
--static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- {
--	regs->ip = ip;
-+	ftrace_instruction_pointer_set(fregs, ip);
- }
- 
- #endif /* _ASM_X86_LIVEPATCH_H */
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 60e3b64f5ea6..0d54099c2a3a 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -157,6 +157,10 @@ SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
- SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
- 	call ftrace_stub
- 
-+	/* Handlers can change the RIP */
-+	movq RIP(%rsp), %rax
-+	movq %rax, MCOUNT_REG_SIZE(%rsp)
-+
- 	restore_mcount_regs
- 
- 	/*
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 588ea7023a7a..9a8ce28e4485 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -97,6 +97,13 @@ struct ftrace_regs {
- };
- #define arch_ftrace_get_regs(fregs) (&(fregs)->regs)
- 
-+/*
-+ * ftrace_instruction_pointer_set() is to be defined by the architecture
-+ * if to allow setting of the instruction pointer from the ftrace_regs
-+ * when HAVE_DYNAMIC_FTRACE_WITH_ARGS is set and it supports
-+ * live kernel patching.
-+ */
-+#define ftrace_instruction_pointer_set(fregs, ip) do { } while (0)
- #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
- 
- static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
-diff --git a/kernel/livepatch/Kconfig b/kernel/livepatch/Kconfig
-index 54102deb50ba..53d51ed619a3 100644
---- a/kernel/livepatch/Kconfig
-+++ b/kernel/livepatch/Kconfig
-@@ -6,7 +6,7 @@ config HAVE_LIVEPATCH
- 
- config LIVEPATCH
- 	bool "Kernel Live Patching"
--	depends on DYNAMIC_FTRACE_WITH_REGS
-+	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
- 	depends on MODULES
- 	depends on SYSFS
- 	depends on KALLSYMS_ALL
-diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
-index f89f9e7e9b07..e8029aea67f1 100644
---- a/kernel/livepatch/patch.c
-+++ b/kernel/livepatch/patch.c
-@@ -42,7 +42,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
- 				       struct ftrace_ops *fops,
- 				       struct ftrace_regs *fregs)
- {
--	struct pt_regs *regs = ftrace_get_regs(fregs);
- 	struct klp_ops *ops;
- 	struct klp_func *func;
- 	int patch_state;
-@@ -118,7 +117,7 @@ static void notrace klp_ftrace_handler(unsigned long ip,
- 	if (func->nop)
- 		goto unlock;
- 
--	klp_arch_set_pc(regs, (unsigned long)func->new_func);
-+	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
- 
- unlock:
- 	preempt_enable_notrace();
-@@ -200,8 +199,10 @@ static int klp_patch_func(struct klp_func *func)
- 			return -ENOMEM;
- 
- 		ops->fops.func = klp_ftrace_handler;
--		ops->fops.flags = FTRACE_OPS_FL_SAVE_REGS |
--				  FTRACE_OPS_FL_DYNAMIC |
-+		ops->fops.flags = FTRACE_OPS_FL_DYNAMIC |
-+#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+				  FTRACE_OPS_FL_SAVE_REGS |
-+#endif
- 				  FTRACE_OPS_FL_IPMODIFY |
- 				  FTRACE_OPS_FL_PERMANENT;
- 
--- 
-2.28.0
-
-
+Thanks!
