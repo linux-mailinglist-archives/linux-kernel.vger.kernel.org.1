@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69CB2B1439
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A55992B143B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgKMCTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 21:19:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50480 "EHLO mail.kernel.org"
+        id S1726231AbgKMCVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 21:21:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgKMCTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 21:19:13 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        id S1726017AbgKMCVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 21:21:12 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9608720936;
-        Fri, 13 Nov 2020 02:19:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1E1020936;
+        Fri, 13 Nov 2020 02:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605233952;
-        bh=j8k2m4iQeLiucHG4+DBx4IABFEV6NW97aGMFgyVolHw=;
+        s=default; t=1605234072;
+        bh=NJ1HOLpg4wa/8yhN2mfF+gAx1zfefk22egnvsrV9RmI=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eOS+MjWA0HIOGo1OPdWP6GbRA5MwFBA9T7nv9Z6kTVQzegUsXENV0Ek2ivmXDdNCJ
-         YDWdu70UWnfRyo2KYU5oxTSfkBCnhxO4pOdFOL8v2g8Khg+XkZgeFG+bCD5wN6PDuo
-         kaekCByd5zNN+IR9OlYSqRuvvY1EjiKRVi11GM5c=
-Date:   Thu, 12 Nov 2020 18:19:10 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andre Edich <andre.edich@microchip.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Nisar Sayed <Nisar.Sayed@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robert Hancock <robert.hancock@calian.com>,
-        Yuiko Oshino <yuiko.oshino@microchip.com>
-Subject: Re: [PATCH net-next 00/18] net: phy: add support for shared
- interrupts (part 2)
-Message-ID: <20201112181910.6e23c0fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201112155513.411604-1-ciorneiioana@gmail.com>
-References: <20201112155513.411604-1-ciorneiioana@gmail.com>
-MIME-Version: 1.0
+        b=TQEkAJNxxUtqdbFFbOJ5hl5DHuikpjM2AyIFTuR9Ipl8XDi+21YJSpuE8nVlb6P5A
+         nDxgdGnTlQBavA6XmMCNjpLGI3vQIrK8fKfi9a1yD4woNUd3REmPOxzgJShEyfRDrj
+         oDSxw/PoudFGG6Z6dRLI+SFkUguS8nKqyOkhI/rI=
+Date:   Fri, 13 Nov 2020 11:21:08 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Chen Yu <yu.chen.surf@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bootconfig: Extend the magic check range to the
+ preceding 3 bytes
+Message-Id: <20201113112108.77486a0475216ada6f8e03a0@kernel.org>
+In-Reply-To: <CADjb_WSx+sbxAz=p5dCN5PXzR5Zq2Nb3kgup-r8qNM1ftUMzDw@mail.gmail.com>
+References: <20201113003633.8db2b4e4c5fecf8de0adfa65@kernel.org>
+        <160520205132.303174.4876760192433315429.stgit@devnote2>
+        <CADjb_WSx+sbxAz=p5dCN5PXzR5Zq2Nb3kgup-r8qNM1ftUMzDw@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 17:54:55 +0200 Ioana Ciornei wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> This patch set aims to actually add support for shared interrupts in
-> phylib and not only for multi-PHY devices. While we are at it,
-> streamline the interrupt handling in phylib.
+On Fri, 13 Nov 2020 09:27:38 +0800
+Chen Yu <yu.chen.surf@gmail.com> wrote:
 
-Ioana, would you mind resending? Looks like the kernel.org patchwork
-instance is way less reliable at piecing series together :(
+> On Fri, Nov 13, 2020 at 1:27 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > Since Grub may align the size of initrd to 4 if user pass
+> > initrd from cpio, we have to check the preceding 3 bytes as well.
+> >
+> > Fixes: 85c46b78da58 ("bootconfig: Add bootconfig magic word for indicating bootconfig explicitly")
+> > Reported-by: Chen Yu <yu.chen.surf@gmail.com>
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> Works for me, thanks!
+> Tested-by: Chen Yu <yu.chen.surf@gmail.com>
+
+Thank you Chen!
+
+Steve, could you merge this fix? 
+
+Thank you,
+
+> 
+> Best,
+> Chenyu
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
