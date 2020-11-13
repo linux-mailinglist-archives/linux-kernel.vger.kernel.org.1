@@ -2,146 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B583E2B1684
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115392B1686
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgKMHeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:34:44 -0500
-Received: from mga18.intel.com ([134.134.136.126]:5675 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKMHeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:34:44 -0500
-IronPort-SDR: jfvWP1gre8yybNfusGXdRzLexlhNsyg8fsDdoBc/1KzUz6GzivQbKbi5U3FdTC68R5D2kgi/xf
- Fjl5i893/ZuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="158216693"
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="158216693"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:34:41 -0800
-IronPort-SDR: sQokg6Hx0MJz/Qpl4kQ0X6r+3xMgUTOGei0UkMY5FdtEADGTOybbLM7NZWtUmG1yH0qj7lA0V4
- +tuV/X/S5ggA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="532475822"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Nov 2020 23:34:37 -0800
-Date:   Fri, 13 Nov 2020 15:34:36 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Waiman Long <longman@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@intel.com, ying.huang@intel.com
-Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
- -22.7% regression
-Message-ID: <20201113073436.GA113119@shbuild999.sh.intel.com>
-References: <20201102091543.GM31092@shao2-debian>
- <20201102092754.GD22613@dhcp22.suse.cz>
- <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
- <20201102100247.GF22613@dhcp22.suse.cz>
- <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
- <20201104081546.GB10052@dhcp22.suse.cz>
- <20201112122844.GA11000@shbuild999.sh.intel.com>
- <20201112141654.GC12240@dhcp22.suse.cz>
+        id S1726308AbgKMHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgKMHgj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:36:39 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8688FC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:36:38 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id d12so8576545wrr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:36:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=h75klXVcmCdUqgkQ6FTqe7WDEW7XWDLja/aoiNvLvvA=;
+        b=XDxXhtqca6DKFfUR/ZqKAryL+7RB5T3U/piwok/uUO3i3lEYq4wahqq/CgTckFwbE0
+         FqJSLb8ZyaiBHndwkwq6XHm+N3LK+rUqrEJwx4IzlQTIwbxydg2FALf7l5Mggdjtmqtg
+         ePDME5k8cZ8ZW0jRK5ouCvXJCFJdPd9PITB/sktY4lGOOT1CjAdJScXi1RGXFGZCPH0r
+         db83Y+jXtz4qUR+a7MQ05mw6+zspknlWKwjptHvjKijBAiKzRjlAS2us2eX59ChzpXs0
+         h22ELXdErcpdwy7AZ/jDGzAmeQN4/AB0lht7cm5HXnruSocnymj1Y9hz+Yyy/WVH3UCJ
+         Fr5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=h75klXVcmCdUqgkQ6FTqe7WDEW7XWDLja/aoiNvLvvA=;
+        b=rK4CaifJKuU7DNWPdCGzium/Ek8v4mmc18xU3w0iml3pY16rjS6abNaO2IiaZItMPN
+         7lsSF/FITZfm1t4gH95PYgM+l8CtkREaMDuh2TsXIFe8OWgGESaKy+WaS+ImjvbBkFI7
+         YTAfloxj7fefgBRE+ZH2ulueWff5cDAwEsLNlLK8FlC69iqHZKYtfR3GHvjEo6uwzD1s
+         NcPNXMH2p2t66D2ccMeVWCrU7lV6HDktmFWMlmgXUfh2uU3hjx/ia4DEyKU/I9RPvbGc
+         2zwQUzzVh6h8oDdNuYOjJ7heuO5laafFsBTDjcDkbqbAzJdn32dpq5u9+nmBYxEmgphs
+         aMMg==
+X-Gm-Message-State: AOAM532K5Q0BOxU/KXMd0C/ttenZByYRh53MqIJjBNZkgyLt46KSM/5F
+        jEhBGC6i8sMoaPBxcT7L81jUqA==
+X-Google-Smtp-Source: ABdhPJwj2l3oAnuo6QHrM5Iat4Yv7D1oYYIfgkBuiyIm2+e/H9IEYWvHD5BWIHM/ICwOyeusyGOvlQ==
+X-Received: by 2002:adf:dc4c:: with SMTP id m12mr1662187wrj.177.1605252997162;
+        Thu, 12 Nov 2020 23:36:37 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id q2sm9826724wru.76.2020.11.12.23.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 23:36:36 -0800 (PST)
+Date:   Fri, 13 Nov 2020 07:36:34 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Andy Gross <andy.gross@ti.com>,
+        by <jhartmann@precisioninsight.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Eric Anholt <eric@anholt.net>,
+        Faith <faith@valinux.com>, Gareth Hughes <gareth@valinux.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Jeff Hartmann <jhartmann@valinux.com>,
+        Keith Whitwell <keith@tungstengraphics.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>, Rob Clark <rob@ti.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
+Message-ID: <20201113073634.GG2787115@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201113071932.GF2787115@dell>
+ <CADnq5_NnKoOMQCQm0fJnER7mOGgYPvudfbbFOZkPC5Kg6Lp0XA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201112141654.GC12240@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADnq5_NnKoOMQCQm0fJnER7mOGgYPvudfbbFOZkPC5Kg6Lp0XA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 03:16:54PM +0100, Michal Hocko wrote:
-> On Thu 12-11-20 20:28:44, Feng Tang wrote:
-> > Hi Michal,
-> > 
-> > On Wed, Nov 04, 2020 at 09:15:46AM +0100, Michal Hocko wrote:
-> > > > > > Hi Michal,
-> > > > > > 
-> > > > > > We used the default configure of cgroups, not sure what configuration you
-> > > > > > want,
-> > > > > > could you give me more details? and here is the cgroup info of will-it-scale
-> > > > > > process:
-> > > > > > 
-> > > > > > $ cat /proc/3042/cgroup
-> > > > > > 12:hugetlb:/
-> > > > > > 11:memory:/system.slice/lkp-bootstrap.service
-> > > > > 
-> > > > > OK, this means that memory controler is enabled and in use. Btw. do you
-> > > > > get the original performance if you add one phony page_counter after the
-> > > > > union?
-> > > > > 
-> > > > I add one phony page_counter after the union and re-test, the regression
-> > > > reduced to -1.2%. It looks like the regression caused by the data structure
-> > > > layout change.
-> > > 
-> > > Thanks for double checking. Could you try to cache align the
-> > > page_counter struct? If that helps then we should figure which counters
-> > > acks against each other by adding the alignement between the respective
-> > > counters. 
-> > 
-> > We tried below patch to make the 'page_counter' aligned.
-> >   
-> >   diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> >   index bab7e57..9efa6f7 100644
-> >   --- a/include/linux/page_counter.h
-> >   +++ b/include/linux/page_counter.h
-> >   @@ -26,7 +26,7 @@ struct page_counter {
-> >    	/* legacy */
-> >    	unsigned long watermark;
-> >    	unsigned long failcnt;
-> >   -};
-> >   +} ____cacheline_internodealigned_in_smp;
-> >    
-> > and with it, the -22.7% peformance change turns to a small -1.7%, which
-> > confirms the performance bump is caused by the change to data alignment.
-> > 
-> > After the patch, size of 'page_counter' increases from 104 bytes to 128
-> > bytes, and the size of 'mem_cgroup' increases from 2880 bytes to 3008
-> > bytes(with our kernel config). Another major data structure which
-> > contains 'page_counter' is 'hugetlb_cgroup', whose size will change
-> > from 912B to 1024B.
-> > 
-> > Should we make these page_counters aligned to reduce cacheline conflict?
+On Fri, 13 Nov 2020, Alex Deucher wrote:
+
+> On Fri, Nov 13, 2020 at 2:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Fri, 06 Nov 2020, Lee Jones wrote:
+> >
+> > > This set is part of a larger effort attempting to clean-up W=1
+> > > kernel builds, which are currently overwhelmingly riddled with
+> > > niggly little warnings.
+> > >
+> > > There are 5000 warnings to work through.  It will take a couple more
+> > > sets.  Although, ("drm/amd/display/dc/basics/fixpt31_32: Move
+> > > variables to where they're used") does take care of 2000 of them!
+> > >
+> > > Lee Jones (19):
+> > >   drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
+> > >   drm/r128/ati_pcigart: Source file headers are not good candidates for
+> > >     kernel-doc
+> > >   drm/selftests/test-drm_dp_mst_helper: Move
+> > >     'sideband_msg_req_encode_decode' onto the heap
+> > >   drm/mga/mga_dma: Demote kernel-doc abusers to standard comment blocks
+> > >   drm/mga/mga_state: Remove unused variable 'buf_priv'
+> > >   drm/radeon/atom: Move prototype into shared location
+> > >   drm/radeon/radeon_kms: Include header containing our own prototypes
+> > >   drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
+> > >   drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
+> > >   drm/radeon/radeon: Move prototype into shared header
+> > >   drm/radeon/radeon_drv: Source file headers are not good candidates for
+> > >     kernel-doc
+> > >   drm/amd/display/dc/basics/fixpt31_32: Move variables to where they're
+> > >     used
+> > >   drm/radeon/radeon_drv: Move prototypes to a shared headerfile
+> > >   drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr'
+> > >     params
+> > >   drm/radeon: Move prototypes to shared header
+> > >   drm/amd/amdgpu/amdgpu_kms: Remove 'struct drm_amdgpu_info_device
+> > >     dev_info' from the stack
+> > >   drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
+> > >   drm/radeon/atombios_crtc: Remove description of non-existent function
+> > >     param 'encoder'
+> > >   drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
+> > >
+> > >  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
+> > >  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       | 104 +++++++++---------
+> > >  .../drm/amd/display/dc/basics/fixpt31_32.c    |   5 +
+> > >  .../gpu/drm/amd/display/include/fixed31_32.h  |   6 -
+> > >  drivers/gpu/drm/mga/mga_dma.c                 |  10 +-
+> > >  drivers/gpu/drm/mga/mga_state.c               |   2 -
+> > >  drivers/gpu/drm/omapdrm/omap_dmm_tiler.c      |   6 +-
+> > >  drivers/gpu/drm/omapdrm/omap_gem.c            |   3 +-
+> > >  drivers/gpu/drm/r128/ati_pcigart.c            |   2 +-
+> > >  drivers/gpu/drm/radeon/atom.h                 |   6 +
+> > >  drivers/gpu/drm/radeon/atombios_crtc.c        |   1 -
+> > >  drivers/gpu/drm/radeon/atombios_encoders.c    |   4 -
+> > >  drivers/gpu/drm/radeon/radeon.h               |   6 +
+> > >  drivers/gpu/drm/radeon/radeon_device.c        |   1 +
+> > >  drivers/gpu/drm/radeon/radeon_device.h        |  32 ++++++
+> > >  drivers/gpu/drm/radeon/radeon_display.c       |   4 -
+> > >  drivers/gpu/drm/radeon/radeon_drv.c           |  11 +-
+> > >  drivers/gpu/drm/radeon/radeon_drv.h           |   7 ++
+> > >  drivers/gpu/drm/radeon/radeon_kms.c           |   3 +-
+> > >  .../drm/selftests/test-drm_dp_mst_helper.c    |  11 +-
+> > >  drivers/gpu/drm/ttm/ttm_range_manager.c       |   2 +-
+> > >  drivers/gpu/drm/v3d/v3d_drv.c                 |  36 ------
+> > >  22 files changed, 138 insertions(+), 126 deletions(-)
+> > >  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+> >
+> > Still no Radeon patches in today's -next.
+> >
+> > I really wanted to have had this set rebased by now.
+> >
+> > How long do they take to peculate through?
 > 
-> I would rather focus on a more effective mem_cgroup layout. It is very
-> likely that we are just stumbling over two counters here.
-> 
-> Could you try to add cache alignment of counters after memory and see
-> which one makes the difference? I do not expect memsw to be the one
-> because that one is used together with the main counter. But who knows
-> maybe the way it crosses the cache line has the exact effect. Hard to
-> tell without other numbers.
+> Usually a day or two, but I was swamped the last couple of days. I
+> pushed an updated -next branch today:
+> https://cgit.freedesktop.org/~agd5f/linux/log/?h=drm-next
 
-I added some alignments change around the 'memsw', but neither of them can
-restore the -22.7%. Following are some log showing how the alignments
-are:
+Ah, wonderful.
 
-tl: memcg=0x7cd1000 memory=0x7cd10d0 memsw=0x7cd1140 kmem=0x7cd11b0 tcpmem=0x7cd1220
-t2: memcg=0x7cd0000 memory=0x7cd00d0 memsw=0x7cd0140 kmem=0x7cd01c0 tcpmem=0x7cd0230
+I'll rebase all of the sets on Monday and see what we're left with.
 
-So both of the 'memsw' are aligned, but t2's 'kmem' is aligned while
-t1's is not.
-
-I will check more on the perf data about detailed hotspots.
-
-Thanks,
-Feng
-
-> Btw. it would be great to see what the effect is on cgroup v2 as well.
-> 
-> Thanks for pursuing this!
-> -- 
-> Michal Hocko
-> SUSE Labs
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
