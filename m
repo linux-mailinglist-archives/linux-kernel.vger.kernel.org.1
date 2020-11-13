@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315F42B1662
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26402B166A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgKMH0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgKMH0f (ORCPT
+        id S1726384AbgKMH1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:27:31 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:47857 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726133AbgKMH1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:26:35 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD95C0613D1;
-        Thu, 12 Nov 2020 23:26:19 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id d3so4150880plo.4;
-        Thu, 12 Nov 2020 23:26:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bVc4aZk4rKy/6/VqEhMXbEQ5ZVosOHXwKRbVIxDDoGY=;
-        b=GMiotV0GyRZSn0pn1dgPWm/1yR1DzPikBgKi5Lbkr2+y/iNDlpqYBVO7SfIvAgqAbf
-         uIaCVLY528t7w5yWehm/+G4BNoS1lB69IH4dB9iSPueZ2vY4/XYJoWpU0aQEMS570PMt
-         gfyrGW2DRdfuIkQPiOQfGiyd6Icf9TqwlJVhKT9GlbO7q/Mj4/7h6vRa/vNWfxW1mehI
-         GBBBTEzl+JU36/Sc52m4n+V0gVtafzPbCLB2RuMl1UZyUSG2LeWJBlAiNPu5ZgflYKFh
-         dBz3JOOX0NRmiUfmf22A+yolC5R2dAEyS/GcPJGRpS4tu3Prtj7hQV+cpG105mS2OmpU
-         cB8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bVc4aZk4rKy/6/VqEhMXbEQ5ZVosOHXwKRbVIxDDoGY=;
-        b=ilHQ4bKelIaLk5fRLJ4K1wju+atXDEou+ME04dzDW8cMYGS+v2y4Y4OjmjWaHt6BLT
-         eEVVnoYvNVkyO6tOmQLejfAufnSDjZuoTvwvvqHkVtXRuWhISdm/Qgo9Y8tkj0WidDHo
-         ymwkSnf3iGUQ41ZzQgnQALh5rSRSgJ9QG7o48MyseNa5w2DKiU6EjmOFODonKVWSRRc5
-         AjS58F6JdNtusghqSNWVNuYSJhP7j2rnXn9Mz6NswUsWoQrVv/rv0pnZTbxSt4sU/bfn
-         6Y54Prxym1xcAfx7r49UWixjR/ArssAhsVQE5gLkxzz7gGdRLh8vjL0bBBUOV5LcWBrf
-         BwvQ==
-X-Gm-Message-State: AOAM532fH+1JKn1dF+HSjqLXCfcqO5Y2WwahbF5zC1zyGjqPSCo7Rkh5
-        esLkJOwqWGGCZ2wfXQzYJZ0=
-X-Google-Smtp-Source: ABdhPJwxvk3sEiTwtCGzh6+CErNAzuUpI0fhTqrV5pUBqPIIf6eT7t4y2GPOTdCy6tzoqSvWpYqfbA==
-X-Received: by 2002:a17:902:c016:b029:d7:1a0:7cf0 with SMTP id v22-20020a170902c016b02900d701a07cf0mr878425plx.64.1605252379251;
-        Thu, 12 Nov 2020 23:26:19 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id l20sm9170507pfd.103.2020.11.12.23.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 23:26:18 -0800 (PST)
-Date:   Thu, 12 Nov 2020 23:26:15 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-pwm@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        linux-input <linux-input@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v4 01/11] firmware: raspberrypi: Keep count of all
- consumers
-Message-ID: <20201113072615.GE356503@dtor-ws>
-References: <20201112163630.17177-1-nsaenzjulienne@suse.de>
- <20201112163630.17177-2-nsaenzjulienne@suse.de>
- <CAHp75Vf9E7UWVDMs=eRjLjoSN6SVOWw9thNdnR8ruCL6GmY7JQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vf9E7UWVDMs=eRjLjoSN6SVOWw9thNdnR8ruCL6GmY7JQ@mail.gmail.com>
+        Fri, 13 Nov 2020 02:27:31 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UFAj9js_1605252447;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFAj9js_1605252447)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 13 Nov 2020 15:27:27 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Smack: fix kernel-doc interface on functions
+Date:   Fri, 13 Nov 2020 15:26:59 +0800
+Message-Id: <1605252419-64251-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 07:52:14PM +0200, Andy Shevchenko wrote:
-> On Thu, Nov 12, 2020 at 6:40 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> >
-> > When unbinding the firmware device we need to make sure it has no
-> > consumers left. Otherwise we'd leave them with a firmware handle
-> > pointing at freed memory.
-> >
-> > Keep a reference count of all consumers and introduce rpi_firmware_put()
-> > which will permit automatically decrease the reference count upon
-> > unbinding consumer drivers.
-> 
-> ...
-> 
-> >  /**
-> > - * rpi_firmware_get - Get pointer to rpi_firmware structure.
-> >   * @firmware_node:    Pointer to the firmware Device Tree node.
-> >   *
-> > + * The reference to rpi_firmware has to be released with rpi_firmware_put().
-> > + *
-> >   * Returns NULL is the firmware device is not ready.
-> >   */
-> >  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
-> >  {
-> >         struct platform_device *pdev = of_find_device_by_node(firmware_node);
-> > +       struct rpi_firmware *fw;
-> >
-> >         if (!pdev)
-> >                 return NULL;
-> >
-> > -       return platform_get_drvdata(pdev);
-> > +       fw = platform_get_drvdata(pdev);
-> > +       if (!fw)
-> > +               return NULL;
-> > +
-> > +       if (!kref_get_unless_zero(&fw->consumers))
-> > +               return NULL;
-> 
-> Don't we have a more traditional way of doing this, i.e.
-> try_module_get() coupled with get_device() ?
+The are some kernel-doc interface issues:
+security/smack/smackfs.c:1950: warning: Function parameter or member
+'list' not described in 'smk_parse_label_list'
+security/smack/smackfs.c:1950: warning: Excess function parameter
+'private' description in 'smk_parse_label_list'
+security/smack/smackfs.c:1979: warning: Function parameter or member
+'list' not described in 'smk_destroy_label_list'
+security/smack/smackfs.c:1979: warning: Excess function parameter 'head'
+description in 'smk_destroy_label_list'
+security/smack/smackfs.c:2141: warning: Function parameter or member
+'count' not described in 'smk_read_logging'
+security/smack/smackfs.c:2141: warning: Excess function parameter 'cn'
+description in 'smk_read_logging'
+security/smack/smackfs.c:2278: warning: Function parameter or member
+'format' not described in 'smk_user_access'
 
-get_device() will make sure that device is there, but gives no
-assurances that device is bound to a driver, so it will not help with
-the racy access to firmware via platform_get_drvdata() call.
+Correct them in this patch.
 
-Thanks.
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: linux-security-module@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ security/smack/smackfs.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index e567b4baf3a0..5d44b7d258ef 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -1942,7 +1942,7 @@ static void smk_list_swap_rcu(struct list_head *public,
+  * smk_parse_label_list - parse list of Smack labels, separated by spaces
+  *
+  * @data: the string to parse
+- * @private: destination list
++ * @list: destination list
+  *
+  * Returns zero on success or error code, as appropriate
+  */
+@@ -1973,7 +1973,7 @@ static int smk_parse_label_list(char *data, struct list_head *list)
+ 
+ /**
+  * smk_destroy_label_list - destroy a list of smack_known_list_elem
+- * @head: header pointer of the list to destroy
++ * @list: header pointer of the list to destroy
+  */
+ void smk_destroy_label_list(struct list_head *list)
+ {
+@@ -2131,7 +2131,7 @@ static const struct file_operations smk_unconfined_ops = {
+  * smk_read_logging - read() for /smack/logging
+  * @filp: file pointer, not actually used
+  * @buf: where to put the result
+- * @cn: maximum to send along
++ * @count: maximum to send along
+  * @ppos: where to start
+  *
+  * Returns number of bytes read or error code, as appropriate
+@@ -2272,6 +2272,7 @@ static const struct file_operations smk_load_self_ops = {
+  * @buf: data from user space
+  * @count: bytes sent
+  * @ppos: where to start - must be 0
++ * @format: /smack/load or /smack/load2 or /smack/change-rule format.
+  */
+ static ssize_t smk_user_access(struct file *file, const char __user *buf,
+ 				size_t count, loff_t *ppos, int format)
 -- 
-Dmitry
+2.29.GIT
+
