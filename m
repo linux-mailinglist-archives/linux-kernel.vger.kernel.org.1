@@ -2,138 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433A42B272F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0772B2736
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgKMVie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:38:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S1726251AbgKMVjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgKMVia (ORCPT
+        with ESMTP id S1725981AbgKMVjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:38:30 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDA3C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:38:29 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id t191so10380564qka.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:38:29 -0800 (PST)
+        Fri, 13 Nov 2020 16:39:44 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA065C0613D1;
+        Fri, 13 Nov 2020 13:39:42 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id v22so12454080edt.9;
+        Fri, 13 Nov 2020 13:39:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M8zBXFSjIZOK9hwx4MM/Gbo/B/5HKQYO+MnrHW6YcPQ=;
-        b=b81L7k86NKedHCptv4GYQ9yylINiHwfIIvGHNE+UbT1+t9LQb0M5hINKYk5nbaEwQ0
-         YAAJtkz7jqhLXDQHNYGLiNsjPxXdgYsi6VCZlsu6ZJ2eKWwYK7tgmV0pUirLAr2BYYeN
-         pKxY6WUmGncC7atMhzrOE5X52NVLbAfkst4vI=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GY3sxkg3pkqNwc0wL90fxKYZ45EqrlmAu69mRryF7BM=;
+        b=QsOQMrz4ShhUlES7isqspW1o38dZdZLYZ3bnw/pYncm8p7NSiCAur8hXoz+MgjoiuC
+         oUETvqL8Opp+A5mRL77tkDmyeoUJNPzhRbwP6sXK/suo4a30oJdLx9sJeV/3wK4idJTP
+         JWktnT9+kU1yb9FdiQ/6HgFNF9DgVoDBa7gNEMmUojuVjHGxxC4GinQVDn682o7A6doU
+         9HDipvWp0f8ln8xzFQsMcUyd+GdzzOBg6okpdp3D6gkxDVaD0AOEeSGzPgyS0+PK7z9i
+         z6o6KrTmsKKq/6t5c+vWvRpnBrCbo1pzb9ZmO3VXiQIddCjjIxW4yiu+iaU0/Wh0veSb
+         ZhBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M8zBXFSjIZOK9hwx4MM/Gbo/B/5HKQYO+MnrHW6YcPQ=;
-        b=gA1Tn9DW5ou+FWdyL/iGF3n2KCmh5kZov8MNdh2ep2qdgnp4gD1yKpxXT5+FeIgQuq
-         cXkN7MjPTN5fYKpN6hENbVbiGaufk61rj5v2Ozx97xV8qKx4P89q5RSgZ8Br0bjfthbA
-         2Loq3zN94qABmsSfpuTQVVKoPBzV0PYymeg1KW4IGHkMXpYAROXKICxAlJ0q//vLAqaF
-         m82RN91ugsqpW68IXi/tMEXZkXiw138rMbPgrutpFwWGqwgh8BVvLMY1jLHFcqE3N3yV
-         15Iyjg8yfe0yUA9UE2c7PkQ1gpa/vYiwS6wkeGSYfPDbx+NzIOhFQZQkBHR/GTqTi+s0
-         wOiw==
-X-Gm-Message-State: AOAM533la/FLHQiiyOzndqj6dMnZWVt3dQJMZevcuuOIN/v31uCtdQQH
-        Yf1bIeF8PfUnEG8O0/rzjdCaIde+dBZqSR3m3gXetQ==
-X-Google-Smtp-Source: ABdhPJzRnvmVib+xlIuKfefCefWqNoIa67f+sJv+wJjeoRl4VZanoAEP503Co7KJt5SuWqq6SOBZY3KXtDb1p+B18Ow=
-X-Received: by 2002:a37:4185:: with SMTP id o127mr4130185qka.442.1605303509007;
- Fri, 13 Nov 2020 13:38:29 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GY3sxkg3pkqNwc0wL90fxKYZ45EqrlmAu69mRryF7BM=;
+        b=sfSHKQldyK/Yx1/IokCI+jLf5SsgleKXhcFYLU6nzDHCr8po7JtRO3XaV6L1XOTTgS
+         a6piG2rIwtfYrqud/gm7EbRiD6KI1EKbN8A2Nv+rjDP5aYFJoBqO5ibh+FIBi4C2KZJa
+         B9fEKtIj3p24/cjeeMmrYApqLYnRos6gpa+7yXeHt+ynq3dIdxwA7d/t6GTmqWNL3Qjz
+         yNcTi/XLwp6DsEhV+VDIMHc/r/sZDHU0HUZcbkuPZdg1gNqGBC/vVtoqrPbVq1B37e8m
+         8sNYExgfkYe1Yt2A55D28WQomzTdlFdjZyrqndCmxzfNn5Jk0+r3K9Gwy1Nni2vXaQKR
+         I3Sg==
+X-Gm-Message-State: AOAM532p7tplJdcHBt7IZRt2IKxt2Tl3yOT7blRDRuo+spxH2V0bn4pd
+        jcZrh5AMliszDg+IcucqiW8=
+X-Google-Smtp-Source: ABdhPJxvP333YF/+k+Gwi+3JjsWYJs7f8n+Vq0nNrbugFBnqg0LfQdeG/4azufOrmOGtRssqLNnT9Q==
+X-Received: by 2002:a50:f392:: with SMTP id g18mr4798636edm.140.1605303581324;
+        Fri, 13 Nov 2020 13:39:41 -0800 (PST)
+Received: from andrea (host-82-51-6-75.retail.telecomitalia.it. [82.51.6.75])
+        by smtp.gmail.com with ESMTPSA id p26sm3095853eja.13.2020.11.13.13.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 13:39:40 -0800 (PST)
+Date:   Fri, 13 Nov 2020 22:39:33 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v9 2/3] scsi: storvsc: Use vmbus_requestor to generate
+ transaction IDs for VMBus hardening
+Message-ID: <20201113213933.GA4937@andrea>
+References: <20201109100402.8946-1-parri.andrea@gmail.com>
+ <20201109100402.8946-3-parri.andrea@gmail.com>
+ <20201113113327.dmium67e32iadqbz@liuwe-devbox-debian-v2>
+ <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-References: <20201112012329.1364975-1-pmalani@chromium.org> <X66Uo83dTGS2dMcx@kroah.com>
-In-Reply-To: <X66Uo83dTGS2dMcx@kroah.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Fri, 13 Nov 2020 13:38:17 -0800
-Message-ID: <CACeCKacBbYgkRx_BnYYgLOYiBHK+XSAu72+u=pCRZPnA6mntRg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] platform/chrome: cros_ec_typec: Add plug and plug altmodes
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, Nov 13, 2020 at 06:54:24PM +0000, Wei Liu wrote:
+> On Fri, Nov 13, 2020 at 11:33:27AM +0000, Wei Liu wrote:
+> > On Mon, Nov 09, 2020 at 11:04:01AM +0100, Andrea Parri (Microsoft) wrote:
+> > > From: Andres Beltran <lkmlabelt@gmail.com>
+> > > 
+> > > Currently, pointers to guest memory are passed to Hyper-V as
+> > > transaction IDs in storvsc. In the face of errors or malicious
+> > > behavior in Hyper-V, storvsc should not expose or trust the transaction
+> > > IDs returned by Hyper-V to be valid guest memory addresses. Instead,
+> > > use small integers generated by vmbus_requestor as requests
+> > > (transaction) IDs.
+> > > 
+> > > Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
+> > > Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> > > Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> > > Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> > > Cc: linux-scsi@vger.kernel.org
+> > 
+> > Reviewed-by: Wei Liu <wl@xen.org>
+> 
+> Martin already gave his ack back in July. I guess nothing substantial
+> changed so it should have been carried over?
 
-On Fri, Nov 13, 2020 at 6:13 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 11, 2020 at 05:23:25PM -0800, Prashant Malani wrote:
-> > This patch series add plug registration support to the cros-ec-typec
-> > driver. It also adds support for registering alternate modes for the
-> > registered plug. These features utilize the API provided by the Type C
-> > connector class framework.
-> >
-> > The first patch adds support to the connector class framework for the
-> > number_of_alternate_modes attribute (along with the relevant ABI
-> > documentation).
-> >
-> > The next two patches add plug registration, and then altmode
-> > registration for the plugs. The latter of these two patches utilizes the
-> > new function for plug number_of_alternate_modes introduced in the first patch.
-> >
-> > This series is based on top of the following branch and other patch
-> > series (applied in the order specified):
-> > - Branch: chrome-platform for-next [1], which is currently set to the
-> >   "Linux 5.10-rc1" tag.
-> > - cros-ec-typec: Patch series to register PD identity information + partner altmodes[2]
-> > - cros-ec-typec: Patch series to register cable[3]
-> > - cros-ec-typec: Patch series to add partner number_of_altmodes[4]
-> >
-> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git/log/?h=for-next
-> > [2]: https://lore.kernel.org/lkml/20201029222738.482366-1-pmalani@chromium.org/
-> > [3]: https://lore.kernel.org/lkml/20201106184104.939284-1-pmalani@chromium.org/
-> > [4]: https://lore.kernel.org/lkml/20201110061535.2163599-1-pmalani@chromium.org/
->
-> Ok, I'm confused.  This is not the first submission of this series, as
-> you sent out a v2 a few days before this one.
+The only change here happened in v7 and consisted in moving the
+allocation of the request IDs from the VSC code down into the core
+vmbus_sendpacket()&co functions.  As mentioned in v7 cover letter,
+this change was applied to ensure that the allocation in question
+is performed after the packet is copied into the ring buffer.  On
+a positive note, this change greatly reduced the diff of this and
+the following (NetVSC) patches.
 
-Sorry for confusing you. To clarify, this is the first version of this
-series particular set
-of patches. A few more related series of patches have been sent
-regarding this earlier
-(see [2], [3] & [4]) and I've not done a resend of those.
-
-This series depends on those earlier series.
-
->
-> And am I supposed to suck in the chrome-platform branch into the
-> usb-next tree?
->
-> What should I do here, ignore these?  Merge them?
-
-TBH I'm a little confused about how these get in myself. Across all
-these patches, there are probably
-3 patches (1 USB PD VDO header, two drivers/usb/typec/class.c patches)
-which belong to usb-next
-whereas everything else is chrome-platform.
-
->
-> I see the USB change lost the reviewer's ack as well, why?
-
-I'm sorry but I didn't follow. As I mentioned above this is the first
-version of this
-series (which deals with cable plug and it's altmodes) and AFAIK it
-hasn't received any acks till now.
-
-All the previous series have not had any re-uploads, so they should
-still have all their review tags.
-
->
-> I'm going to delete all of these patches from my review queue now and
-> wait for a resend with some clarity as to what I should do with it :)
-
-Enric, could you kindly help suggest a way I can upload things?
-Should I just merge everything into one big set of patches (RIght from
-[2] to this series) ?
-Or just let all the series go through chrome-platform?
-
-BR,
-
--Prashant
+  Andrea
