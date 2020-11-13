@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBA52B1681
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFC62B1683
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgKMHdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKMHdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:33:45 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0755C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:33:35 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id y22so4160943plr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:33:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QvQ428TJx+KV17p9c5/mcXZnocTLEPy4VRjPQYxd+7A=;
-        b=sK8EHjrrFkG766nxBzkfKyXLUMUGCZMvQsUO+k7dxJoVttYEhGrsNLFX0jjaIECL89
-         bZN0CL/GOHMF5N7x08l8dVc0gq5tSwWr7Nm7eP0V5TPE0wKdlnN9TBsdjWC04VqbaWan
-         WyYvJZiS7OCeppr73KWyzafRNkBUYQSHkLCVl7T/fxrujevw4Qr25Vw2JtICs9uumhkq
-         KaY8oWozkcn+x/KHyGFV9HXSla5hCtsrG9Pu9SEYhIvMb5iXtnAK8lB9SHIS65qSZZXO
-         mtbsl45rddxeKoa4s9CAQygUvPd/rCP7xvjcZRwDOwjFTtCIgVvUspXO4GtnnJ8iRchM
-         3etQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QvQ428TJx+KV17p9c5/mcXZnocTLEPy4VRjPQYxd+7A=;
-        b=FQKRf7+zBo8kWYnyx7mrygkkloN27R4u8D9p6cWji+JtEJkguFtm2r/YcmYXodSfP+
-         mW00fKnDP9uOVa98sTpqXuRh1NOrDeEXJy6XFLUGfuxighpXV1TJhurMbE1RBuslaCLr
-         d3H3ATF56VSBbZchxj/jsJDi2SOlBv2Rj3cZ9IBglk9rrUVB0mR12F4COPT99/J/lnFO
-         ShIAGsc2mIc806sl1IO4aGX/xHFaxLvewX7eNd/6TD6sp1avP6l8dkzPIGmH0F8qOhv0
-         UKbsu2JeuQat/BwhvPS9DPtu4fsseDmw5u8MkDErDtzUhxjf7KPJdyTV67n0zBAwAUfx
-         uAYA==
-X-Gm-Message-State: AOAM5336mXXzihOinEyPNo/CFMLlqFfdx071NsksSpbLPjcaNRyxQMrs
-        DYCRGSh0Daav9xBaXAc6wg==
-X-Google-Smtp-Source: ABdhPJzBYoRJXA8e6EjLEIO4xfTux6bk38StKI5ulb0WYlPXTMG6IFSHyXECVaAW/NVo1EmXu/Kxjg==
-X-Received: by 2002:a17:902:7c14:b029:d4:d894:7eed with SMTP id x20-20020a1709027c14b02900d4d8947eedmr898510pll.81.1605252815233;
-        Thu, 12 Nov 2020 23:33:35 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id t9sm9590577pjo.4.2020.11.12.23.33.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Nov 2020 23:33:34 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] tracing: remove the unused value assignment in test_create_synth_event
-Date:   Fri, 13 Nov 2020 15:33:30 +0800
-Message-Id: <1605252810-4669-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726396AbgKMHeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:34:02 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:48488 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726112AbgKMHeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:34:00 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowAAXKpzaNq5fakXMAA--.54661S2;
+        Fri, 13 Nov 2020 15:33:46 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] macintosh: windfarm: Use NULL to compare with pointer-typed value rather than 0
+Date:   Fri, 13 Nov 2020 07:33:43 +0000
+Message-Id: <20201113073343.64378-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowAAXKpzaNq5fakXMAA--.54661S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF1DZr1kuFy8Gr15Kw48WFg_yoWDCFXEkw
+        1xWrn7Wr47K39Fkr4jganaqFyvkayDu3Z5Wa1FqrZ3ZFyxJwnFqF1vqrnxXa1xu3WIgFZx
+        Gr1Fqr40yws29jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4xMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcsjjUUUUU
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAsTA18J9x6ybQAAsz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Compare pointer-typed values to NULL rather than 0.
 
-The value of variable ret is overwritten on the delete branch in the
-test_create_synth_event(), so here the value assignment is useless.
-Remove it.
-
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- kernel/trace/synth_event_gen_test.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/macintosh/windfarm_pm121.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/synth_event_gen_test.c b/kernel/trace/synth_event_gen_test.c
-index edd912cd14aa..c76b4c189560 100644
---- a/kernel/trace/synth_event_gen_test.c
-+++ b/kernel/trace/synth_event_gen_test.c
-@@ -276,10 +276,8 @@ static int __init test_create_synth_event(void)
- 	 */
- 	create_synth_test = trace_get_event_file(NULL, "synthetic",
- 						 "create_synth_test");
--	if (IS_ERR(create_synth_test)) {
--		ret = PTR_ERR(create_synth_test);
-+	if (IS_ERR(create_synth_test))
- 		goto delete;
--	}
+diff --git a/drivers/macintosh/windfarm_pm121.c b/drivers/macintosh/windfarm_pm121.c
+index ab467b9c31be..62826844b584 100644
+--- a/drivers/macintosh/windfarm_pm121.c
++++ b/drivers/macintosh/windfarm_pm121.c
+@@ -650,7 +650,7 @@ static void pm121_create_cpu_fans(void)
  
- 	/* Enable the event or you won't see anything */
- 	ret = trace_array_set_clr_event(create_synth_test->tr,
+ 	/* First, locate the PID params in SMU SBD */
+ 	hdr = smu_get_sdb_partition(SMU_SDB_CPUPIDDATA_ID, NULL);
+-	if (hdr == 0) {
++	if (hdr == NULL) {
+ 		printk(KERN_WARNING "pm121: CPU PID fan config not found.\n");
+ 		goto fail;
+ 	}
+@@ -969,7 +969,7 @@ static int pm121_init_pm(void)
+ 	const struct smu_sdbp_header *hdr;
+ 
+ 	hdr = smu_get_sdb_partition(SMU_SDB_SENSORTREE_ID, NULL);
+-	if (hdr != 0) {
++	if (hdr != NULL) {
+ 		struct smu_sdbp_sensortree *st =
+ 			(struct smu_sdbp_sensortree *)&hdr[1];
+ 		pm121_mach_model = st->model_id;
 -- 
-2.20.0
+2.17.1
 
