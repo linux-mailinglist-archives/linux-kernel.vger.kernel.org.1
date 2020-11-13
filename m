@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7F32B1C08
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3169D2B1C0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgKMNor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:44:47 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:45528 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726160AbgKMNoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:44:46 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CXfpY4r2szB09Zx;
-        Fri, 13 Nov 2020 14:44:37 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id SG5tmC5mOILx; Fri, 13 Nov 2020 14:44:37 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CXfpY3PwpzB09Zp;
-        Fri, 13 Nov 2020 14:44:37 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C54B68B859;
-        Fri, 13 Nov 2020 14:44:38 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GK4SN1t9uBy5; Fri, 13 Nov 2020 14:44:38 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5912A8B857;
-        Fri, 13 Nov 2020 14:44:37 +0100 (CET)
-Subject: Re: [PATCH 0/5] perf/mm: Fix PERF_SAMPLE_*_PAGE_SIZE
-To:     Peter Zijlstra <peterz@infradead.org>, kan.liang@linux.intel.com,
-        mingo@kernel.org, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        eranian@google.com
-Cc:     npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, will@kernel.org, willy@infradead.org,
-        aneesh.kumar@linux.ibm.com, sparclinux@vger.kernel.org,
-        davem@davemloft.net, catalin.marinas@arm.com,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com
-References: <20201113111901.743573013@infradead.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <16ad8cab-08e2-27a7-6803-baadc6b8721b@csgroup.eu>
-Date:   Fri, 13 Nov 2020 14:44:37 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726498AbgKMNrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:47:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42048 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726160AbgKMNr0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 08:47:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605275245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OfulPYTZhsoQhkiaVeD/pLg5PazzTZIGNLw9gLcaGuw=;
+        b=fAJP26JWfpOdHMQJISDY6F14ZbbM1T8Xy1Ri015pn3GRvmZRYICTaSt3wGoBMVeUavZAYk
+        8vEzFSRiJ5DpLOSELEjN2az5zQUMakFXwNtWGuzsBJH5WZ3lZj8PPs9P4LFgELZ6Ji+fzi
+        YtHTnIw1YUUeLtxFp5EarAYVMk9/IJA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-XlpqqaSlMveemIZAxuAuLA-1; Fri, 13 Nov 2020 08:47:23 -0500
+X-MC-Unique: XlpqqaSlMveemIZAxuAuLA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0B36809DC4;
+        Fri, 13 Nov 2020 13:47:21 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-114-21.ams2.redhat.com [10.36.114.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BEA8D60C84;
+        Fri, 13 Nov 2020 13:47:13 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block device
+Date:   Fri, 13 Nov 2020 14:47:00 +0100
+Message-Id: <20201113134712.69744-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201113111901.743573013@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Thanks to Max that started this work!
+I took his patches, and extended the block simulator a bit.
 
-Le 13/11/2020 à 12:19, Peter Zijlstra a écrit :
-> Hi,
-> 
-> These patches provide generic infrastructure to determine TLB page size from
-> page table entries alone. Perf will use this (for either data or code address)
-> to aid in profiling TLB issues.
-> 
-> While most architectures only have page table aligned large pages, some
-> (notably ARM64, Sparc64 and Power) provide non page table aligned large pages
-> and need to provide their own implementation of these functions.
-> 
-> I've provided (completely untested) implementations for ARM64 and Sparc64, but
-> failed to penetrate the _many_ Power MMUs. I'm hoping Nick or Aneesh can help
-> me out there.
-> 
+This series moves the network device simulator in a new module
+(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+module, allowing the possibility to add new vDPA device simulators.
+Then we added a new vdpa_sim_blk module to simulate a block device.
 
-I can help with powerpc 8xx. It is a 32 bits powerpc. The PGD has 1024 entries, that means each 
-entry maps 4M.
+I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
+bytes when ptr is NULL"), maybe we can add a new functions instead of
+modify vringh_iov_xfer().
 
-Page sizes are 4k, 16k, 512k and 8M.
+As Max reported, I'm also seeing errors with vdpa_sim_blk related to
+iotlb and vringh when there is high load, these are some of the error
+messages I can see randomly:
 
-For the 8M pages we use hugepd with a single entry. The two related PGD entries point to the same 
-hugepd.
+  vringh: Failed to access avail idx at 00000000e8deb2cc
+  vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
+  vringh: Failed to get flags at 000000006635d7a3
 
-For the other sizes, they are in standard page tables. 16k pages appear 4 times in the page table. 
-512k entries appear 128 times in the page table.
+  virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset: 0x2840000 len: 0x20000
+  virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset: 0x58ee000 len: 0x3000
 
-When the PGD entry has _PMD_PAGE_8M bits, the PMD entry points to a hugepd with holds the single 8M 
-entry.
+These errors should all be related to the fact that iotlb_translate()
+fails with -EINVAL, so it seems that we miss some mapping.
 
-In the PTE, we have two bits: _PAGE_SPS and _PAGE_HUGE
+I'll debug more carefully, in the meantime can you give a first review?
 
-_PAGE_HUGE means it is a 512k page
-_PAGE_SPS means it is not a 4k page
+Thanks,
+Stefano
 
-The kernel can by build either with 4k pages as standard page size, or 16k pages. It doesn't change 
-the page table layout though.
+Max Gurtovoy (4):
+  vhost-vdpa: add support for vDPA blk devices
+  vdpa: split vdpasim to core and net modules
+  vdpa_sim: remove hard-coded virtq count
+  vdpa: add vdpa simulator for block device
 
-Hope this is clear. Now I don't really know to wire that up to your series.
+Stefano Garzarella (8):
+  vdpa_sim: remove the limit of IOTLB entries
+  vdpa_sim: add struct vdpasim_device to store device properties
+  vdpa_sim: move config management outside of the core
+  vdpa_sim: use kvmalloc to allocate vdpasim->buffer
+  vdpa_sim: make vdpasim->buffer size configurable
+  vdpa_sim: split vdpasim_virtqueue's iov field in riov and wiov
+  vringh: allow vringh_iov_xfer() to skip bytes when ptr is NULL
+  vdpa_sim_blk: implement ramdisk behaviour
 
-Christophe
+ drivers/vdpa/vdpa_sim/vdpa_sim.h     | 117 +++++++++++
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     | 283 +++++----------------------
+ drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 251 ++++++++++++++++++++++++
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 172 ++++++++++++++++
+ drivers/vhost/vdpa.c                 |  11 +-
+ drivers/vhost/vringh.c               |  16 +-
+ drivers/vdpa/Kconfig                 |  16 +-
+ drivers/vdpa/vdpa_sim/Makefile       |   2 +
+ 8 files changed, 628 insertions(+), 240 deletions(-)
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+
+-- 
+2.26.2
+
