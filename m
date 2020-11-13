@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5562B1B18
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3B52B1B1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgKMM0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:26:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:37258 "EHLO foss.arm.com"
+        id S1726716AbgKMM1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:27:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbgKMM0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:26:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2F29142F;
-        Fri, 13 Nov 2020 04:26:35 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2D763F6CF;
-        Fri, 13 Nov 2020 04:26:34 -0800 (PST)
-Date:   Fri, 13 Nov 2020 12:26:32 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Yun Hsiang <hsiang023167@gmail.com>,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201113122632.jydnt2o7ipp4ntli@e107158-lin.cambridge.arm.com>
-References: <20201103023756.1012088-1-hsiang023167@gmail.com>
- <20201110122108.GG2594@hirez.programming.kicks-ass.net>
- <f3b59aad-3d5d-039b-205d-024308b609a1@arm.com>
- <20201112144131.7gqglj435bs6otwm@e107158-lin.cambridge.arm.com>
- <dd1e4632-5f1f-e493-8dcf-2de7468fb53f@arm.com>
- <131cb7b5-e400-11e1-8fc1-b6e8183f1a8d@arm.com>
+        id S1726279AbgKMM1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:27:08 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B6BD20797;
+        Fri, 13 Nov 2020 12:27:02 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 12:26:59 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v8 3/9] set_memory: allow set_direct_map_*_noflush() for
+ multiple pages
+Message-ID: <20201113122659.GD3212@gaia>
+References: <20201110151444.20662-1-rppt@kernel.org>
+ <20201110151444.20662-4-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <131cb7b5-e400-11e1-8fc1-b6e8183f1a8d@arm.com>
+In-Reply-To: <20201110151444.20662-4-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 12:45, Dietmar Eggemann wrote:
-> On 12/11/2020 17:01, Dietmar Eggemann wrote:
-> > On 12/11/2020 15:41, Qais Yousef wrote:
-> >> On 11/11/20 18:41, Dietmar Eggemann wrote:
-> >>> On 10/11/2020 13:21, Peter Zijlstra wrote:
-> >>>> On Tue, Nov 03, 2020 at 10:37:56AM +0800, Yun Hsiang wrote:
+On Tue, Nov 10, 2020 at 05:14:38PM +0200, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> [...]
+> The underlying implementations of set_direct_map_invalid_noflush() and
+> set_direct_map_default_noflush() allow updating multiple contiguous pages
+> at once.
 > 
-> >> If you or Yun would still like to send the patch to protect
-> >> SCHED_FLAG_UTIL_CLAMP and SCHED_FLAG_ALL with __kernel__ that'd be great.
-> > 
-> > Ah yes! Can add an extra patch for this when sending out the next version.
+> Add numpages parameter to set_direct_map_*_noflush() to expose this ability
+> with these APIs.
 > 
-> On second thought, why should we risk a change in UAPI? Since we're now
-> not introducing a new flag the meaning of SCHED_FLAG_ALL or
-> SCHED_FLAG_UTIL_CLAMP won't change.
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/arm64/include/asm/cacheflush.h |  4 ++--
+>  arch/arm64/mm/pageattr.c            | 10 ++++++----
 
-It's a judgement call. Hide them now where it's likely there are no users and
-hope we won't have to revert it. Or just ignore it and treat it as an ABI and
-make sure no one change them later.
+For arm64:
 
-My judgement call it's better to introduce the __kernel__ while we can. But
-I can't say for sure nothing will break. All I know it'd be easy to revert if
-it does cause breakage.
-
-You get to choose :-)
-
-Thanks
-
---
-Qais Yousef
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
