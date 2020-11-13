@@ -2,134 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF9E2B27E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89E32B27D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgKMWIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:08:44 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:63837 "EHLO z5.mailgun.us"
+        id S1726239AbgKMWIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:08:10 -0500
+Received: from ms.lwn.net ([45.79.88.28]:50964 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgKMWIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:08:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605305317; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=FpTgLx/uDoxiChUUk0f+rQsxadQ/qzSzohmcaXSx1x4=; b=tF81W25PfSgU3KcD6nBz7rfbIJf8Kox3uo1mOokoZ84l3o+KKfjCGj0G5iLQtd9oSZWLTkqY
- KKG4ZyMtRfOkruyS6mIx/ofVOFuyDY/487ftmZZ2qLTu9esCxXmGcDVFnYTLkOBtN4tBUkGG
- j8B2bMw1dK2Lf8txhC+EtdIrQis=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5faf03e08e090a8886a837b1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 22:08:32
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 573FDC433C9; Fri, 13 Nov 2020 22:08:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1725981AbgKMWII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:08:08 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80319C433C9;
-        Fri, 13 Nov 2020 22:08:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 80319C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] drm/msm/dp: promote irq_hpd handle to handle link training correctly
-Date:   Fri, 13 Nov 2020 14:08:03 -0800
-Message-Id: <20201113220803.15033-4-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201113220803.15033-1-khsieh@codeaurora.org>
-References: <20201113220803.15033-1-khsieh@codeaurora.org>
+        by ms.lwn.net (Postfix) with ESMTPSA id 9E4C14FA;
+        Fri, 13 Nov 2020 22:08:07 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 15:08:06 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
+Cc:     linux-doc@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: filesystems: link ubifs-authentication.rst
+ without .rst extension
+Message-ID: <20201113150806.364122cc@lwn.net>
+In-Reply-To: <20201108132415.1789142-1-j.neuschaefer@gmx.net>
+References: <20201108132415.1789142-1-j.neuschaefer@gmx.net>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some dongles require link training done at irq_hpd request instead
-of plugin request. This patch promote irq_hpd handler to handle link
-training and setup hpd_state correctly.
+On Sun,  8 Nov 2020 14:24:14 +0100
+Jonathan Neuschäfer <j.neuschaefer@gmx.net> wrote:
 
-Changes in V2:
---  fix Fixes tag text
+> Specifying the .rst extension doesn't cause any problems AFAICT, but
+> it's uncommon.
+> 
+> Fixes: 688f118e3139f ("docs: filesystems: convert ubifs-authentication.rst.txt to ReST")
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+>  Documentation/filesystems/index.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fixes: fdaf9a5e3c15 ("drm/msm/dp: fixes wrong connection state caused by failure of link training")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+Applied, thanks.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0c0573ad34e6..27e7e27b8b90 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -449,10 +449,9 @@ static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
- 	sink_request = dp->link->sink_request;
- 
- 	if (sink_request & DS_PORT_STATUS_CHANGED) {
--		dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
- 		if (dp_display_is_sink_count_zero(dp)) {
- 			DRM_DEBUG_DP("sink count is zero, nothing to do\n");
--			return 0;
-+			return -ENOTCONN;
- 		}
- 
- 		return dp_display_process_hpd_high(dp);
-@@ -469,7 +468,9 @@ static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
- static int dp_display_usbpd_attention_cb(struct device *dev)
- {
- 	int rc = 0;
-+	u32 sink_request;
- 	struct dp_display_private *dp;
-+	struct dp_usbpd *hpd;
- 
- 	if (!dev) {
- 		DRM_ERROR("invalid dev\n");
-@@ -483,10 +484,26 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
- 		return -ENODEV;
- 	}
- 
-+	hpd = dp->usbpd;
-+
- 	/* check for any test request issued by sink */
- 	rc = dp_link_process_request(dp->link);
--	if (!rc)
--		dp_display_handle_irq_hpd(dp);
-+	if (!rc) {
-+		sink_request = dp->link->sink_request;
-+		if (sink_request & DS_PORT_STATUS_CHANGED) {
-+			/* same as unplugged */
-+			hpd->hpd_high = 0;
-+			dp->hpd_state = ST_DISCONNECT_PENDING;
-+			dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
-+		}
-+
-+		rc = dp_display_handle_irq_hpd(dp);
-+
-+		if (!rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
-+			hpd->hpd_high = 1;
-+			dp->hpd_state = ST_CONNECT_PENDING;
-+		}
-+	}
- 
- 	return rc;
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+jon
