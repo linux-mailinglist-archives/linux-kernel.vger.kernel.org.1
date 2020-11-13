@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441C02B1D6E
+	by mail.lfdr.de (Postfix) with ESMTP id B3FB42B1D6F
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgKMO21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726701AbgKMO21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 13 Nov 2020 09:28:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7894 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMO20 (ORCPT
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7233 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgKMO20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Nov 2020 09:28:26 -0500
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CXgmn1tP2z75Fv;
-        Fri, 13 Nov 2020 22:28:09 +0800 (CST)
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CXgmp1RSpzkhGF;
+        Fri, 13 Nov 2020 22:28:10 +0800 (CST)
 Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 13 Nov 2020 22:28:08 +0800
+ 14.3.487.0; Fri, 13 Nov 2020 22:28:14 +0800
 From:   Zenghui Yu <yuzenghui@huawei.com>
 To:     <kvmarm@lists.cs.columbia.edu>, <maz@kernel.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <eric.auger@redhat.com>,
         <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
         <suzuki.poulose@arm.com>, <wanghaibin.wang@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH 0/2] KVM: arm64: vgic: Fix handling of userspace register accesses
-Date:   Fri, 13 Nov 2020 22:27:59 +0800
-Message-ID: <20201113142801.1659-1-yuzenghui@huawei.com>
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace Redistributor accesses
+Date:   Fri, 13 Nov 2020 22:28:00 +0800
+Message-ID: <20201113142801.1659-2-yuzenghui@huawei.com>
 X-Mailer: git-send-email 2.23.0.windows.1
+In-Reply-To: <20201113142801.1659-1-yuzenghui@huawei.com>
+References: <20201113142801.1659-1-yuzenghui@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -38,21 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We had recently seen a kernel panic when accidently programming QEMU in an
-inappropriate way (in short, accessing RD registers before setting the RD
-base address. See patch #1 for details). And it looks like we're missing
-some basic checking when handling userspace register access.
+It's expected that users will access registers in the redistributor *if*
+the RD has been initialized properly. Unfortunately userspace can be bogus
+enough to access registers before setting the RD base address, and KVM
+implicitly allows it (we handle the access anyway, regardless of whether
+the base address is set).
 
-I've only tested it with QEMU. It'd be appreciated if others can test it
-with other user tools.
+Bad thing happens when we're handling the user read of GICR_TYPER. We end
+up with an oops when deferencing the unset rdreg...
 
-Zenghui Yu (2):
-  KVM: arm64: vgic: Forbid invalid userspace Redistributor accesses
-  KVM: arm64: vgic: Forbid invalid userspace Distributor accesses
+	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
+			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
 
- arch/arm64/kvm/vgic/vgic-mmio-v3.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Fix this issue by informing userspace what had gone wrong (-ENXIO).
 
+Reported-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+index 52d6f24f65dc..30e370585a27 100644
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -1040,11 +1040,15 @@ int vgic_v3_dist_uaccess(struct kvm_vcpu *vcpu, bool is_write,
+ int vgic_v3_redist_uaccess(struct kvm_vcpu *vcpu, bool is_write,
+ 			   int offset, u32 *val)
+ {
++	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+ 	struct vgic_io_device rd_dev = {
+ 		.regions = vgic_v3_rd_registers,
+ 		.nr_regions = ARRAY_SIZE(vgic_v3_rd_registers),
+ 	};
+ 
++	if (IS_VGIC_ADDR_UNDEF(vgic_cpu->rd_iodev.base_addr))
++		return -ENXIO;
++
+ 	return vgic_uaccess(vcpu, &rd_dev, is_write, offset, val);
+ }
+ 
 -- 
 2.19.1
 
