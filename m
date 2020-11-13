@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056842B1A8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E442B1A89
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgKMMDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:03:43 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50829 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgKMLnz (ORCPT
+        id S1726889AbgKMMD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:03:28 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39512 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgKMLot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:43:55 -0500
-Received: by mail-wm1-f67.google.com with SMTP id h2so7851717wmm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:43:53 -0800 (PST)
+        Fri, 13 Nov 2020 06:44:49 -0500
+Received: by mail-wm1-f65.google.com with SMTP id s13so8115959wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:44:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0SpwRyb0TuJ7zwVMJU26I/lRO0ner+Y643hGtbb0oXo=;
-        b=OcxSB66aSQnoHa9k47M0EjaLM1bKsJt2z4cNnxUMEv64wcyGl9oYVGiBYmpZ9XF05Q
-         ZCgzY07Euv4d9CBou+vQMUCEfawthzoq8IdH0OA4ib+3BokMfnbqQHYEVOk+yyS94pA0
-         YYTacdO8JBUc8h8LGse/X4eOISmosyTiHLXPQn/tCojyoeS5QmbLQgv5OHHLK9Gcki9w
-         h3BFf0qngOSA+qffQ28tT3vBBl3+Y/guQlPDfRgNO8rdyFhZJKxHMb97B7JEHbkER2kK
-         EKl0ETxX9Q2cBHbWQLyrpTUC35AQXFWP9RXw+Ry1l5/GT+Y39s+SmkvT81dgkj07uS+7
-         Zwgw==
-X-Gm-Message-State: AOAM5335x/UIhpBuAsuNLbOcOGf+Cmm0lsg/05fHfah7yyzYibeCWGwT
-        UivTWTUW+4YcD1U3/H0nUMOZILnxkIU=
-X-Google-Smtp-Source: ABdhPJzto1ayTPSbWp7palp8RQsEdeA17/YLhio9PbL50h4Y4EuZ2MMQ01ikoHQxdq1b6CBwNb2qQA==
-X-Received: by 2002:a1c:2bc3:: with SMTP id r186mr1951868wmr.163.1605267209574;
-        Fri, 13 Nov 2020 03:33:29 -0800 (PST)
+        bh=d1KWoyCxIzbC720+xBKrOQK15eEM1twXcAUiyfQaowY=;
+        b=TJMSiKZwfoPAuxjMDtiJxTcbX65Aj1s3rjdS8vY0OTPtBlikaM+m9o3hVd2KGbtxbJ
+         z5Qk5O3Y9XWRwiMOkE/j/AESMFRoHp4j74bzsQChNkvZCpQixrk6IT3sq2JdpBKqdSeV
+         R2ZehS2D88MAycjqOaK1bPfrLwERqRPsUZUapryoowIA/A+NHqnYqAvJkfGIIvxwA/MW
+         pWXGFnxBneCKyLZVlhafrbrsffDTbhd+jLbB4dOTcfCJLedgwAH7/wp0NiOBNg81ZR7I
+         S9+6geBqvMb+DVvTKvF1y1vqhQq2A+xUILsWIkOidXi7Mcxvb19TT/NoAS303Ve86OOD
+         /G6Q==
+X-Gm-Message-State: AOAM5339GCmayBJHuUrJnR9E9NSwMIFK/GHkDZ5PNuVcAThMAJDMwDWu
+        jE7FEh0VvvTboZxUKXSPdkQTAGfxeIM=
+X-Google-Smtp-Source: ABdhPJxZQBzcTMRf76DZPR7PoAp2gCxSuinKtUAttdgGTrLJLVoAxY9BA2m1AN6Pt/+0k8Cse7RRcg==
+X-Received: by 2002:a1c:398a:: with SMTP id g132mr2151643wma.51.1605267223132;
+        Fri, 13 Nov 2020 03:33:43 -0800 (PST)
 Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id d2sm5489806wra.73.2020.11.13.03.33.28
+        by smtp.gmail.com with ESMTPSA id z189sm5194304wme.23.2020.11.13.03.33.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 03:33:29 -0800 (PST)
-Date:   Fri, 13 Nov 2020 11:33:27 +0000
+        Fri, 13 Nov 2020 03:33:42 -0800 (PST)
+Date:   Fri, 13 Nov 2020 11:33:41 +0000
 From:   Wei Liu <wei.liu@kernel.org>
 To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -46,29 +46,28 @@ Cc:     linux-kernel@vger.kernel.org,
         Michael Kelley <mikelley@microsoft.com>,
         Saruhan Karademir <skarade@microsoft.com>,
         Juan Vazquez <juvazq@microsoft.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v9 2/3] scsi: storvsc: Use vmbus_requestor to generate
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH v9 3/3] hv_netvsc: Use vmbus_requestor to generate
  transaction IDs for VMBus hardening
-Message-ID: <20201113113327.dmium67e32iadqbz@liuwe-devbox-debian-v2>
+Message-ID: <20201113113341.kwc2fwpqzhqztgms@liuwe-devbox-debian-v2>
 References: <20201109100402.8946-1-parri.andrea@gmail.com>
- <20201109100402.8946-3-parri.andrea@gmail.com>
+ <20201109100402.8946-4-parri.andrea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201109100402.8946-3-parri.andrea@gmail.com>
+In-Reply-To: <20201109100402.8946-4-parri.andrea@gmail.com>
 User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:04:01AM +0100, Andrea Parri (Microsoft) wrote:
+On Mon, Nov 09, 2020 at 11:04:02AM +0100, Andrea Parri (Microsoft) wrote:
 > From: Andres Beltran <lkmlabelt@gmail.com>
 > 
 > Currently, pointers to guest memory are passed to Hyper-V as
-> transaction IDs in storvsc. In the face of errors or malicious
-> behavior in Hyper-V, storvsc should not expose or trust the transaction
+> transaction IDs in netvsc. In the face of errors or malicious
+> behavior in Hyper-V, netvsc should not expose or trust the transaction
 > IDs returned by Hyper-V to be valid guest memory addresses. Instead,
 > use small integers generated by vmbus_requestor as requests
 > (transaction) IDs.
@@ -77,8 +76,9 @@ On Mon, Nov 09, 2020 at 11:04:01AM +0100, Andrea Parri (Microsoft) wrote:
 > Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
 > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
 > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: linux-scsi@vger.kernel.org
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
 
 Reviewed-by: Wei Liu <wl@xen.org>
