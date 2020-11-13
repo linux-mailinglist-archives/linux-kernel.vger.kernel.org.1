@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383732B1FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484E72B1FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgKMQQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:16:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgKMQQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:16:07 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 630DC2076E;
-        Fri, 13 Nov 2020 16:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605284166;
-        bh=A78YcjU5wXa8tlzrOpaXDNnSzLAvardtp8E9bjbkobU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CMzBr7E+FDS6ZgWNYaYY3g8HwzJPjCCycp7a2gmh7cOvce7d+siQhoXfXognj2qzp
-         pOGN3bp7VECK6K7YnDSdbMnw2aziHM6PtIwEwXTG+V8K8/U6wr3sW76YvNpadEF11r
-         zy7FZ9Dl6HkgEn015hlL9KrIauCdzqRkLRZJSiqA=
-Date:   Fri, 13 Nov 2020 16:15:50 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-Message-ID: <20201113161550.GC4828@sirena.org.uk>
-References: <20201110203257.GC5957@sirena.org.uk>
- <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
- <20201111115534.GA4847@sirena.org.uk>
- <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
- <20201112171600.GD4742@sirena.org.uk>
- <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
- <20201112200123.GF4742@sirena.org.uk>
- <ce9e2d9f-917e-fb8a-7323-f3bf1a367e9d@gmail.com>
- <20201113142937.GB4828@sirena.org.uk>
- <7f066805-97d9-088f-e89d-a554fe478574@gmail.com>
+        id S1726537AbgKMQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:16:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28031 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725866AbgKMQQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:16:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605284188;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jyN+DRRhVWX4G1okBIOdr3MH4mQtZ4BI+4XoCFZkPBY=;
+        b=DkSY0DTSRvCu9IEGbFLizm3K3eX+8p/hlAzzpVZB1Tif0/nmhsnTN3bvZRcbJcPChsXv/B
+        QCD9EsXKVMLG5jV7yPi2VVHFO7SdbNRVsHzdNhRyO9dszKd7sy2yb+9I2Kw1JIw232dFrX
+        XfmqR2KfZpvPROxFY4M3xkusL23sJyg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-N94m8hXJMbi0kq8Jvy3VJQ-1; Fri, 13 Nov 2020 11:16:26 -0500
+X-MC-Unique: N94m8hXJMbi0kq8Jvy3VJQ-1
+Received: by mail-wr1-f72.google.com with SMTP id h29so3994886wrb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:16:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=jyN+DRRhVWX4G1okBIOdr3MH4mQtZ4BI+4XoCFZkPBY=;
+        b=SJ5y/XD+NYP3eoM+cDz8BVarLPSxyrqd5cI3fJb/cMoiZFl8o3p0zqjaZWmTCnAdjo
+         M9jFCEU0WUo7M4YP8Ngf8UaPXvyB15FtlB5jXHwHeU5dfu4q5HqTbWxZifXAVN3QlqvT
+         WJImaGroFPhc6wcKVcnMFl2Rv3t3bg1drwVxvK5bWhyDVlDEkohCDRHw/Rt88l77ExMv
+         5Gx7HQjfnia6eZWLOyKH7HyVbfpIf9MoDVUQkomMVTMdSc/xmGBGCbqgs8HaMnJmcZnc
+         TqrEPec5bBkkVILSs0W9mAX4oXvcYDVseW34Z74RypibrkjlPyQRramdrp7XUDibQ+FA
+         XKWA==
+X-Gm-Message-State: AOAM531rjcOI9Q79U3O/6a9gFhuRL17N3dMEVHm6vmQ/XHz91OOYw++L
+        8LJLJG+PM3OWREfcJvY31Vq5Kpz+seFN4K86p2tHokzuoYW0jL4MCAxzvPZrth8d87/cSweIV/w
+        xKYTpnSKJC+Im436k+h0WRLza
+X-Received: by 2002:a05:600c:210:: with SMTP id 16mr3226514wmi.122.1605284180498;
+        Fri, 13 Nov 2020 08:16:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw6qc4C468qlMkz/BkAoW2zg7V66Dzr5nIEzyPk8ex6nToKTomKk7QfUb8pi/ZNVqMxbgaPow==
+X-Received: by 2002:a05:600c:210:: with SMTP id 16mr3226167wmi.122.1605284175430;
+        Fri, 13 Nov 2020 08:16:15 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id a131sm10530265wmh.30.2020.11.13.08.16.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 08:16:14 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 08/17] x86/hyperv: handling hypercall page setup for
+ root
+In-Reply-To: <20201113160907.rwgpge3zo53fcgvo@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-9-wei.liu@kernel.org>
+ <874kluy3o2.fsf@vitty.brq.redhat.com>
+ <20201113153333.yt54enp5dbqjj5nu@liuwe-devbox-debian-v2>
+ <20201113160907.rwgpge3zo53fcgvo@liuwe-devbox-debian-v2>
+Date:   Fri, 13 Nov 2020 17:16:13 +0100
+Message-ID: <87wnyput9u.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="adJ1OR3c6QgCpb/j"
-Content-Disposition: inline
-In-Reply-To: <7f066805-97d9-088f-e89d-a554fe478574@gmail.com>
-X-Cookie: No solicitors.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Wei Liu <wei.liu@kernel.org> writes:
 
---adJ1OR3c6QgCpb/j
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Fri, Nov 13, 2020 at 03:33:33PM +0000, Wei Liu wrote:
+>> On Thu, Nov 12, 2020 at 04:51:09PM +0100, Vitaly Kuznetsov wrote:
+>> > Wei Liu <wei.liu@kernel.org> writes:
+>> > 
+>> > > When Linux is running as the root partition, the hypercall page will
+>> > > have already been setup by Hyper-V. Copy the content over to the
+>> > > allocated page.
+>> > >
+>> > > The suspend, resume and cleanup paths remain untouched because they are
+>> > > not supported in this setup yet.
+>> > 
+>> > What about adding BUG_ONs there then?
+>> 
+>> I generally avoid cluttering code if I'm sure it definitely does not
+>> work.
+>> 
+>> In any case, adding BUG_ONs is not the right answer. Both hv_suspend and
+>> hv_resume can return an error code. I would rather just do
+>> 
+>>    if (hv_root_partition)
+>>        return -EPERM;
+>> 
+>> in both places.
+>
+> Correction: hv_resume is void, so I won't add that code snippet. But we
+> should still be fine because hv_suspend will have already failed in the
+> first place.
+>
 
-On Fri, Nov 13, 2020 at 06:55:27PM +0300, Dmitry Osipenko wrote:
-> 13.11.2020 17:29, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+Works for me. I just very much prefer to get reports like "system
+doesn't go to sleep" instead of "something crashes when I put my system
+to sleep")
 
-> > It's not clear if it matters - it's more a policy decision on the part
-> > of the driver about what it thinks safe error handling is.  If it's not
+-- 
+Vitaly
 
-> If regulator_get() returns a dummy regulator, then this means that
-> regulator isn't specified in a device-tree. But then the only way for a
-> consumer driver to check whether regulator is dummy, is to check
-> presence of the supply property in a device-tree.
-
-My point here is that the driver shouldn't be checking for a dummy
-regulator, the driver should be checking the features that are provided
-to it by the regulator and handling those.  It doesn't matter if this is
-a dummy regulator or an actual regulator with limited features, the
-effect is the same and the handling should be the same.  If the driver
-is doing anything to handle dummy regulators explicitly as dummy
-regulators it is doing it wrong.
-
-> We want to emit error messages when something goes wrong, for example
-> when regulator voltage fails to change. It's fine that voltage changes
-> are failing for a dummy regulator, but then consumer driver shouldn't
-> recognize it as a error condition.
-
-If you're fine with that you should also be fine with any other
-regulator for which you failed to enumerate any voltages which you can
-set.
-
-> The regulator_get_optional() provides a more consistent and
-> straightforward way for consumer drivers to check presence of a physical
-> voltage regulator in comparison to dealing with a regulator_get(). The
-> dummy regulator is nice to use when there is no need to change
-> regulator's voltage, which doesn't work for a dummy regulator.
-
-To repeat you should *only* be using regulator_get_optional() in the
-case where the supply may be physically absent which is not the case
-here.
-
---adJ1OR3c6QgCpb/j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+usTYACgkQJNaLcl1U
-h9Cdtgf+KPTFZMOoWB6AmVx7uO9sDi9hMEVVCzp/m6ePr9MDeju+i5ix2FQINkxE
-D3+IHQpy5uNaihmetU14FQqj46ci6B9LfYY2bJ83O4DQbLGFBp4IjfGHUZHSrG/H
-uOlmTAln3D7hJvmlexfC3pr/DaCmS29p9Zr9/jI7m96gq+QpksXL8vK347+CUcZi
-HB5BciEamTey+AESLGu13X9rEPhkyLuNpU3N53bp6rg+jZqEqXJz8NCfQ0DeGbRU
-ssePVo1EThW95vi1G7cQCi9XO+MaNQFp7YRQ91nQMfeY6UMgF6TCUvBB31A9U0BF
-N1T5iPikwB5hLC/LTyappOFpxG0AMw==
-=4ogU
------END PGP SIGNATURE-----
-
---adJ1OR3c6QgCpb/j--
