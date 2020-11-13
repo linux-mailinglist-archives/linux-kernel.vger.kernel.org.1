@@ -2,98 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE73D2B295D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669642B295E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgKMXyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:54:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgKMXyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:54:40 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A309420B80;
-        Fri, 13 Nov 2020 23:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605311679;
-        bh=9eC2CW2QafH5iaDoDfr9QC0DpqrajW1pVS4MswQ1RnU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZrxRncwsA3QCuYoHg7YXmZmOL+a8LLs4ndZwKXDL6/GacjUfgmHfEztDtTRyeXqll
-         ED/2cUpEDAG48PSgtWpJA0ye2k4N/pqQys12DGnfAWB0y3WeiuM2JikZDyLZBaF9CG
-         PI+nJ3mekC3C+l2dzvkbK3v0GDqYJjUE69k7tCRk=
-Date:   Fri, 13 Nov 2020 15:54:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4
- behavior
-Message-ID: <20201113155437.7d82550b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201114000024.614c6c097050188abc87a7ff@uniroma2.it>
-References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
-        <20201107153139.3552-5-andrea.mayer@uniroma2.it>
-        <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
-        <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
-        <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
-        <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
-        <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201113134010.5eb2a154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201114000024.614c6c097050188abc87a7ff@uniroma2.it>
+        id S1726177AbgKMXy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKMXy5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 18:54:57 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF674C0613D1;
+        Fri, 13 Nov 2020 15:54:56 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id x13so5693772qvk.8;
+        Fri, 13 Nov 2020 15:54:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xKlWX5sJu4sZOoZ9K5CyZiFGJMGh7jY2PGRdiy6fiqQ=;
+        b=PLMW2b5Dur5YVJJjAt4mxJuWZZJ7UtsxLfuWcKkKc/XI+gUX4MGNKcNw75W7ocwYBu
+         W3ca2Qsm3LdXD05q8akIEtfLWLAq9vLwBppeibNxF7nevcY3tXaO9UzCG1SDZJkyBH2q
+         yJBTNzX7br+KLDsEwEv2vFUEu2Ds6QgdLm5Lji9TtPh7c4AwGe3qKSf2dzkhtIPGw9RG
+         gZjbMQOWSUlAs9C1iIs3gmql4iZdgLQAJE67tbarVbstbuD72/gub8lRUfH63Y4ktEsJ
+         omGxwEORG/mpeXeph5s6apaSzCLQgeSRY6J8Y7+7A2NkNoHfUEFEmuw3ofOcdUrezuBG
+         XyLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xKlWX5sJu4sZOoZ9K5CyZiFGJMGh7jY2PGRdiy6fiqQ=;
+        b=UwVSmiOsp9tjKvN0Llv+znXTvYAAd3qNWA0rwURWTUeHvblifZ3/QxG2OVQ+aMvvE3
+         iaeB1gkWQ0fNZoqdy/I0fGvewI69f4A4hOaLONZhXho5qWkU6DPbBq2oKJk52XReWEui
+         cAr0PvxqdDwvzXmJM581wz6BQaqytMJ80wcEEpqMqC5UO1K5VRw54s+G3gtiyat5RHkT
+         e9S19n60ub6Fv/Wr+hlf07aU6udJlCBkBQSbDRFFg1E1BnM6NDMseer3QRiqfm7AMUKy
+         KLd604HMH62cxXDkfgH0y4pI78wilQmOBcuqPOV9/5nqKWuzwgxv4j673k5Wweq/b+ra
+         rwUQ==
+X-Gm-Message-State: AOAM533xyNeghKyYaesw6OyZMnB5T6rFdDoloZQhNCJrl1YR8nvDt8mh
+        YFD2QdBx/VVGpeIbAUrhQkI8CEzrlIZwLQ==
+X-Google-Smtp-Source: ABdhPJzAtn3Kf7aYFaBD+N5MeiVashIxbrIrgPLnVylphEuD+GN98DTqOJ8Rsk0ILYfSoJW70Yo8rg==
+X-Received: by 2002:ad4:45e6:: with SMTP id q6mr5163804qvu.28.1605311696001;
+        Fri, 13 Nov 2020 15:54:56 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id g19sm6416914qkl.86.2020.11.13.15.54.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 15:54:54 -0800 (PST)
+Date:   Fri, 13 Nov 2020 16:54:53 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201113235453.GA227700@ubuntu-m3-large-x86>
+References: <20201104082738.1054792-1-hch@lst.de>
+ <20201104082738.1054792-2-hch@lst.de>
+ <20201110213253.GV3576660@ZenIV.linux.org.uk>
+ <20201110213511.GW3576660@ZenIV.linux.org.uk>
+ <20201110232028.GX3576660@ZenIV.linux.org.uk>
+ <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
+ <20201111215220.GA3576660@ZenIV.linux.org.uk>
+ <20201111222116.GA919131@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111222116.GA919131@ZenIV.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Nov 2020 00:00:24 +0100 Andrea Mayer wrote:
-> On Fri, 13 Nov 2020 13:40:10 -0800
-> Jakub Kicinski <kuba@kernel.org> wrote:
-> 
-> > On Fri, 13 Nov 2020 11:40:36 -0800 Jakub Kicinski wrote:  
-> > > > agreed. The v6 variant has existed for a while. The v4 version is
-> > > > independent.    
-> > > 
-> > > Okay, I'm not sure what's the right call so I asked DaveM.  
-> > 
-> > DaveM raised a concern that unless we implement v6 now we can't be sure
-> > the interface we create for v4 is going to fit there.
-> > 
-> > So Andrea unless it's a major hurdle, could you take a stab at the v6
-> > version with VRFs as part of this series?  
-> 
-> I can tackle the v6 version but how do we face the compatibility issue raised
-> by Stefano in his message?
-> 
-> if it is ok to implement a uAPI that breaks the existing scripts, it is relatively
-> easy to replicate the VRF-based approach also in v6.
+Hi Al,
 
-We need to keep existing End.DT6 as is, and add a separate
-implementation.
+On Wed, Nov 11, 2020 at 10:21:16PM +0000, Al Viro wrote:
+> On Wed, Nov 11, 2020 at 09:52:20PM +0000, Al Viro wrote:
+> 
+> > That can be done, but I would rather go with
+> > 		n = copy_to_iter(m->buf + m->from, m->count, iter);
+> > 		m->count -= n;
+> > 		m->from += n;
+> >                 copied += n;
+> >                 if (!size)
+> >                         goto Done;
+> > 		if (m->count)
+> > 			goto Efault;
+> > if we do it that way.  Let me see if I can cook something
+> > reasonable along those lines...
+> 
+> Something like below (build-tested only):
+> 
+> diff --git a/fs/seq_file.c b/fs/seq_file.c
+> index 3b20e21604e7..07b33c1f34a9 100644
+> --- a/fs/seq_file.c
+> +++ b/fs/seq_file.c
+> @@ -168,7 +168,6 @@ EXPORT_SYMBOL(seq_read);
+>  ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  {
+>  	struct seq_file *m = iocb->ki_filp->private_data;
+> -	size_t size = iov_iter_count(iter);
+>  	size_t copied = 0;
+>  	size_t n;
+>  	void *p;
+> @@ -208,14 +207,11 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  	}
+>  	/* if not empty - flush it first */
+>  	if (m->count) {
+> -		n = min(m->count, size);
+> -		if (copy_to_iter(m->buf + m->from, n, iter) != n)
+> -			goto Efault;
+> +		n = copy_to_iter(m->buf + m->from, m->count, iter);
+>  		m->count -= n;
+>  		m->from += n;
+> -		size -= n;
+>  		copied += n;
+> -		if (!size)
+> +		if (!iov_iter_count(iter) || m->count)
+>  			goto Done;
+>  	}
+>  	/* we need at least one record in buffer */
+> @@ -249,6 +245,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  	goto Done;
+>  Fill:
+>  	/* they want more? let's try to get some more */
+> +	/* m->count is positive and there's space left in iter */
+>  	while (1) {
+>  		size_t offs = m->count;
+>  		loff_t pos = m->index;
+> @@ -263,7 +260,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  			err = PTR_ERR(p);
+>  			break;
+>  		}
+> -		if (m->count >= size)
+> +		if (m->count >= iov_iter_count(iter))
+>  			break;
+>  		err = m->op->show(m, p);
+>  		if (seq_has_overflowed(m) || err) {
+> @@ -273,16 +270,14 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  		}
+>  	}
+>  	m->op->stop(m, p);
+> -	n = min(m->count, size);
+> -	if (copy_to_iter(m->buf, n, iter) != n)
+> -		goto Efault;
+> +	n = copy_to_iter(m->buf, m->count, iter);
+>  	copied += n;
+>  	m->count -= n;
+>  	m->from = n;
+>  Done:
+> -	if (!copied)
+> -		copied = err;
+> -	else {
+> +	if (unlikely(!copied)) {
+> +		copied = m->count ? -EFAULT : err;
+> +	} else {
+>  		iocb->ki_pos += copied;
+>  		m->read_pos += copied;
+>  	}
+> @@ -291,9 +286,6 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  Enomem:
+>  	err = -ENOMEM;
+>  	goto Done;
+> -Efault:
+> -	err = -EFAULT;
+> -	goto Done;
+>  }
+>  EXPORT_SYMBOL(seq_read_iter);
+>  
 
-The way to distinguish between the two could be either by passing via
-netlink a flag attribute (which would request use of VRF in both
-cases); using a different attribute than SEG6_LOCAL_TABLE for the
-table id (or perhaps passing VRF's ifindex instead), e.g.
-SEG6_LOCAL_TABLE_VRF; or adding a new command
-(SEG6_LOCAL_ACTION_END_DT6_VRF) which would behave like End.DT4.
+This patch in -next (6a9f696d1627bacc91d1cebcfb177f474484e8ba) breaks
+WSL2's interoperability feature, where Windows paths automatically get
+added to PATH on start up so that Windows binaries can be accessed from
+within Linux (such as clip.exe to pipe output to the clipboard). Before,
+I would see a bunch of Linux + Windows folders in $PATH but after, I
+only see the Linux folders (I can give you the actual PATH value if you
+care but it is really long).
+
+I am not at all familiar with the semantics of this patch or how
+Microsoft would be using it to inject folders into PATH (they have some
+documentation on it here:
+https://docs.microsoft.com/en-us/windows/wsl/interop) and I am not sure
+how to go about figuring that out to see why this patch breaks something
+(unless you have an idea). I have added the Hyper-V maintainers and list
+to CC in case they know someone who could help.
+
+Cheers,
+Nathan
