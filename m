@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867102B13BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AECF2B13C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgKMBRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 20:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgKMBRh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 20:17:37 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581EEC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:17:37 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id za3so10906022ejb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:17:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ohq8+x9eEOak/Ig85gQN21Sgb5PYQa0/81WkrT87xo=;
-        b=AZTMbeyQim36UjRMz7YoSpVXaJezM0rRkJDniP8CycMhtXc3jX100IMVlGafpRzQ5m
-         IxM7tSm631jtIcfjURSsgjotpUmRRPxq1NyfnF/vNkizNROukZTYP6x2aZKaxPLu8SYt
-         wUbAA914pWcemdNr7F8LQdDJGzWMZgAWxIQFWCkLjrqDUxLXJorl5rPu5IHKB0EjlqsU
-         EFgrkJVMnd4jO9YmJxMek60uYCKuKmmh5dvRplFVtk1mTa5zBOxRKO0tPJj3+ormfoHN
-         XzwliKHnymUirTxCiUHig9JVTFJdhrJyhbbCM/YUyek2Fw/tPQfgA5NGJMkbfeJp+jKG
-         AwHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ohq8+x9eEOak/Ig85gQN21Sgb5PYQa0/81WkrT87xo=;
-        b=IPEwoIcLkvJLivAn+mhmbChIAIOxuCGLfrCaYRLJ7zZxtJGS3ZsFC1qzgtQ3afeZzx
-         B+6SbyzVUBHXCvmqea7T9XundRVmeeua3RdE8jIBihW1wHLvYXJjh8xZ73+7RqtEkjE7
-         Y4f/i5lOc4IpCxBqP0C+ErZb8TBpCse5uOJM9arexwhd+3/Jeo9nXxQB5fzjvMn9uG73
-         0p5dKWWMMeUmh8TA/hGUcZ80M3xRgBDLFD0WfP2hMz/JVL9KhDXTZEEa/W8Syk/fIOae
-         6+eT+Z2foUu5s5HLC7Pv6/VyXcuMejHa1ZMX7OsC/mwOYD7dAEQhpitecmk99Vv7c3Uv
-         euwQ==
-X-Gm-Message-State: AOAM531gTz6ykNYV7yWHKLC1hoAzVUgHBy2xttLjQgHlSC2ecw+JqbGD
-        F6gIFjzVsgdvSMOUhRcncn+mItE5NP68cVj4Qftl
-X-Google-Smtp-Source: ABdhPJzJ15t+2ga5rDM57/GFm5+T4e0h0LIJ4QXUh8f4Gz1+sUrPZ4NWEulbwER/egBpKhQQ+TwdTBMRiyezBe6IJfQ=
-X-Received: by 2002:a17:906:268c:: with SMTP id t12mr710224ejc.91.1605230255955;
- Thu, 12 Nov 2020 17:17:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112135332.89062-1-chenzhou10@huawei.com>
-In-Reply-To: <20201112135332.89062-1-chenzhou10@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 12 Nov 2020 20:17:23 -0500
-Message-ID: <CAHC9VhS-XL0AL8wUY62pZSRb_545Vgic-dQqS_RDZKPk32=_gg@mail.gmail.com>
-Subject: Re: [PATCH v2] selinux: Fix error return code in sel_ib_pkey_sid_slow()
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, danielj@mellanox.com,
-        dledford@redhat.com, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726160AbgKMBS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 20:18:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726005AbgKMBS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 20:18:28 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B6FD216C4;
+        Fri, 13 Nov 2020 01:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605230308;
+        bh=+BcndtHMLbCZgLLpKs6+e77sbXfPv6PvkofRyK7eY3Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M8uOspxhCcy9VaAVIv3ZMu3YJDUTbgLhOzebBywhbY2TH/wJjmC1/jD39XaDs9KBe
+         d1ArDgONxt9UrfRp1ali3MkGTlwo9txQ1uDWHklj5NRB9VBXja+H48nVd2V9PV+xjq
+         Wxo5VhOcV6WSpUrwiDpJN+pWnfW6p5TFql6X8qvs=
+Date:   Thu, 12 Nov 2020 17:18:26 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
+Message-Id: <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
+In-Reply-To: <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
+References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
+        <20201112035023.974748-1-natechancellor@gmail.com>
+        <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
+        <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 8:48 AM Chen Zhou <chenzhou10@huawei.com> wrote:
->
-> Fix to return a negative error code from the error handling case
-> instead of 0 in function sel_ib_pkey_sid_slow(), as done elsewhere
-> in this function.
->
-> Fixes: 409dcf31538a ("selinux: Add a cache for quicker retreival of PKey SIDs")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> ---
->  security/selinux/ibpkey.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+On Fri, 13 Nov 2020 01:20:29 +0100 Matteo Croce <mcroce@linux.microsoft.com> wrote:
 
-Thanks for the fix!  I've merged this into the selinux/stable-5.10
-branch and I'll send this up to Linus tomorrow or early next week.
+> While writing the script I found that in the documentation I left for
+> 'type' the values from
+> Documentation/admin-guide/kernel-parameters.txt, which is 'pci' for
+> cf9_force reboot.
+> While at it, should we update the doc with the values 'cf9_force' and
+> 'cf9_safe', or rename to 'pci' and 'pci_safe' to be coherent with the
+> kernel cmdline?
 
--- 
-paul moore
-www.paul-moore.com
+I looked at Documentation/admin-guide/kernel-parameters.txt's "reboot="
+section and decided that I don't understand your above words :( Can you
+please expand on all of this?  Simple akpm-compatible words ;)
+
+> In any case, kernel-parameters.txt doesn't mention that reboot=q does
+> the 'cf9_safe' reboot type, so it must be fixed anyway.
+
+Thanks for noticing.
