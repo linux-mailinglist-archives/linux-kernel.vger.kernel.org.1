@@ -2,155 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADC52B25ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA852B25F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgKMUxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:53:49 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22796 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726092AbgKMUxs (ORCPT
+        id S1726569AbgKMUyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726545AbgKMUyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:53:48 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADKf9tL004367;
-        Fri, 13 Nov 2020 12:53:31 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=puy4wuiD5nvb2dJldHTy6vEvR/UFTrSIbMb+SKikWWY=;
- b=magRjzxa1SbVcVDZZg2jn6rt/pXIFgmCXKs2sjkhlGEWU0Ul/exDDV/v2J+bsQWseIHL
- VL+jdwmCRbss2IgGgSj8KV6iXsPU+/hgyysRWI3b9YwYahfUGIw7mgYOmGl1EvIRxhOZ
- km+6G8+j4aKfSTW2ZNGMraerX4t5ihaRef0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34rf8syqnr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 13 Nov 2020 12:53:30 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 13 Nov 2020 12:53:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oo1s68+HAmTZKUSNVb7yhf27PesHZnHGPfbMHbt20XySyk7eOoa68vADxBT7Y2pGY8Zgk7qSNWzx4dYTF1iEdUvqlraawl41a/urIZTbUSAeL4wG2Z+ywc0DM5igvq2uOApYir+q8uQg9aXeHOBkvVuLF8lKIr+NX5z6bXH7s5lWiqp+98lczook+LcKE9G9dQgF1vwKIq1883n/9PmdAtlE5/c6ULG0nXZX0YXYlsrl8G3goHVPeroHlJde0BwLvZLgf+VdLhGZ9fV8HznysgSUvrB/SMuWtHD3r1I+i6OZ+9dmZ8eiRkrB/2/Q5scdIVx4rubkA3z6yxauNa71qg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=puy4wuiD5nvb2dJldHTy6vEvR/UFTrSIbMb+SKikWWY=;
- b=Hw9AHKsLOtzaT5QFfUr9fSFb8P2y3sYnd7RywvQah9JFsHWMd2w1Ff5yKaHdZYvoxjjL68Y4FElKNowQjm/CrxHNidwYQtJ0kKseaHrjQpX7y+gabcb3QXevj61v5IAz+9Y2xDF+9dyjklRN8+QEFxOUf0uZDSKL6TWP1bJQfO2wC2bVoJCP4zFlKICJCCRm8oOXWbbuRyaMv3X72URMv7ycEl7xmMnMJbo5HpIYhbIGZDy8dNz6bltH/i8Eei/ja6iaf3Ug5357KnWprMR0hppn5LDXzWk5hLrKba0e1qQe1RX6JKrLCU3RCO/i8PBkko5X7qFJ+2uLqWS23JKV4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=puy4wuiD5nvb2dJldHTy6vEvR/UFTrSIbMb+SKikWWY=;
- b=YQThIA+G6wY0ZF3IVhQlPwqrUiTbkkkIBaVjpKDmtw8TqDM9cQ730exOfQYEcCQ6hTr3XsRWFHDYYrJ0CEZdlfOEGVi3le75X8iH8+4RfyDWLet6++U+Ej8gNO8eu+8TUzg+/hujbBK+R9tq5rKPaxliu+c8c0guZmlKS74HSSc=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BY5PR15MB3569.namprd15.prod.outlook.com (2603:10b6:a03:1ff::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 13 Nov
- 2020 20:53:25 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 20:53:25 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Roman Gushchin <guro@fb.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v5 31/34] bpf: eliminate rlimit-based memory
- accounting for bpf local storage maps
-Thread-Topic: [PATCH bpf-next v5 31/34] bpf: eliminate rlimit-based memory
- accounting for bpf local storage maps
-Thread-Index: AQHWuUFqlzOfptSqHUWGJwxUOMopjanGXzqAgAAV4ICAABZygA==
-Date:   Fri, 13 Nov 2020 20:53:25 +0000
-Message-ID: <0DE88C8F-54AC-4E90-90D9-6BCFB2442953@fb.com>
-References: <20201112221543.3621014-1-guro@fb.com>
- <20201112221543.3621014-32-guro@fb.com>
- <4270B214-010E-4554-89E8-3FD279C44B7A@fb.com>
- <20201113193305.GC2955309@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201113193305.GC2955309@carbon.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-x-originating-ip: [2620:10d:c090:400::5:f6d8]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7450a60c-c8e4-4d49-ec22-08d888162a8b
-x-ms-traffictypediagnostic: BY5PR15MB3569:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR15MB35693B69508C67B5C64F3D64B3E60@BY5PR15MB3569.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5g2DEwz0zeSzyqViljpoxk+P1qqNW1Ye92CuxfYq3hcJQVZQBJsk0Zli3650aFhkhFsZWYUyGKY7/o/WNZeK7xFGOD1ZoM5Jtt+C/WPMhSWSd4rQCEZZ79g7q0uvvrlBKTMizF+TaPX8AMlaGyq5ONma9EKrd78KJRvEtdPC39hSaArqY8Ozjs/nE+GgKtr90BAZfH8qBWHznwNrSxhB89r5ifoVANcqIny2lxcztgJq8ZDZua7P22+vIAMJlZ2+jITHlnTHEC10D6KmoL/XxxoMpUzEfsiE5V0EIDY4CO9urJ5juxqLR9c0wOnrxHStXGNcbuDZ3xJfo0RwJ1i+wg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(346002)(136003)(366004)(83380400001)(76116006)(6512007)(8936002)(4326008)(66476007)(91956017)(66446008)(8676002)(66556008)(5660300002)(64756008)(66946007)(71200400001)(6862004)(36756003)(33656002)(37006003)(15650500001)(2906002)(316002)(6636002)(6486002)(86362001)(2616005)(6506007)(53546011)(54906003)(186003)(478600001)(4744005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: mMCDfXDXeZcsfTw464iPdDXZsabshP4GpCHz+0Ng8nPdCXv/Q9JJGhGU6fpJ7fj6rUD6YWk3GMc620+Pft/FFgMbWqXw0pvm4qGt2BFkyo2E9YMyFBI03C8AaVT1QZko24aef73WbSd2jbjECqpIV8EtXMFIz8g9C9guAxq20IAf6pEAqPLJ/ecfn1LAZlYsIUuYD7BD04KTfLoXrqrtRoGaO5pKofqgMl76UTQDa9WZ6Rfl5006x+RbPOPWrGbAfmXp98Nvk1yK74wRuQcAQqdOxN/ssOMOgaYLWJoZyodsKYvIr9MTjmZMnV9XQOvl1h1tn6XOj15kPB687cM3u60kDGdYy2397g9WvkF/wuj2gFqD4kkGyUepWm1+KPu++JqtlOqNEFlL9/EOkiIR+WSc1R2MeMV1SP5UgaWg01urjRgsg0cSyKAC9T1Ec/TOsSYl0XJNi/6vXoB5nJCv1V5gVQMFJY5WDnBS/vsV2SjiZ55JrYfZvWTkXhpu0eTZHS4dJ0m4BEwtQX2oKJbgJLIvdvGUsGFtNspK17MwSlVsD4sCwpFHMwzlQJ6vIBwF0m3L2slUPZoESzSLghzznsbYQJGFND22unoFuAWLHoitf28HOqKKPtSsxhlfm93hSMc/gTk5RG9lnCGzO/9zY5jgv8ZSbBzC9IcGJRzn1tGafhFWLzqhDEezBU3e7z2r7JtG33olzvS+489+FAwJDBszbM3WaRgR2BBfqcXEhE/7QGS9hd7NQMSWNSaa0sPQIkSXlfOhW2v1CAbDo6eXulqNx38yItdjYxdmvBUtgk8pripUzq4wNF/oAF0WEOENV5isM8vaMMj8mvn25KUwcjS15towcZAng+y3pdX0egN2NwjDTQ5E25EDyD+AhEOMNyOf/fVCLzHRM9WDvDRNNdCTu2Ckmb5bhThYKPSpcFA=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C97486A773374246A4CCD57F8BDEA2BA@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 13 Nov 2020 15:54:10 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDCFC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:54:09 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 34so4796432pgp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bk8vHF0tT8ztZ+U57073Ow5h2docyDMHtlyObudynDc=;
+        b=ms/PIi/YnevYmcaWqTNDmJjkEPhUzUbCxQhpNU0UZI6cLSWomkqgY4xGptZN2YQNeb
+         r5BCyKkFILhtli0Jy3XxXaV/vBRgm1IIVtWNWmdmfI0DWJlTZ/1v5MN/vCIF+3zQnKm2
+         zOylaiLD+l/RVHOXqOpcDVYDHa76sL1mFxkAchXKiI+zygSitgwzpBK/gUKRjJjXyM0G
+         3/nekSXSHvcOyniVS9yEQhJP0NRmiC4K/ZrpsfMu33imRMVzf69QEFVHxZouv5QSPz/4
+         SediNe/hxUGddOMxAabMhJixJM+nLyyw6lftcmGGIBZJzXNaxXbXxZ99+29rQVuMw+IM
+         9pGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bk8vHF0tT8ztZ+U57073Ow5h2docyDMHtlyObudynDc=;
+        b=XuQlEZ7CHoKtEdYAaccjHWuXgKHHfISaVxn3s8Yc6Gw1cc4DdcT91IgiXgmrTELC2N
+         bbNRmj9jWxDQ+NcVcHzgM0pQHWJkBDSWzAM0EHOwuePzk966f39vdVDu2J78dJ7CXC/0
+         vxgfignTb80JaddU50KogfsylyKr+0rlTF1kA2q2OaBNcElHZkPa6OSvrktBW2j4TQAg
+         AIcnJU8okNgdNtReTJ+oXLPwUuQglsU5F/WYkmvSr2C0BCF2VeUSDejvYM/s5iIcuSow
+         ZR/V2ac3ZZ1aR6TTI/AmcXRZ7tCe4R3XcADlt7iK6dYwLi8czcUryDZCrgaIi1+BvbvB
+         Gm1A==
+X-Gm-Message-State: AOAM531gnDASztjWsT1/gRtY5k5lMics858f4M23yFH3XuFs+uz65Y68
+        jc7pa2zOor890qfJNGp1WIs=
+X-Google-Smtp-Source: ABdhPJxjDpTvty9BLWzy2k7Q1G1p5iejS5jG9y46a7aWnobReEgunlHIg4HvvL3R476cmTfOuHjriw==
+X-Received: by 2002:a17:90a:a609:: with SMTP id c9mr4991124pjq.124.1605300849528;
+        Fri, 13 Nov 2020 12:54:09 -0800 (PST)
+Received: from localhost.localdomain (c-107-3-138-210.hsd1.ca.comcast.net. [107.3.138.210])
+        by smtp.gmail.com with ESMTPSA id a18sm3780234pfa.151.2020.11.13.12.54.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 12:54:08 -0800 (PST)
+From:   Yang Shi <shy828301@gmail.com>
+To:     mhocko@suse.com, ziy@nvidia.com, songliubraving@fb.com,
+        mgorman@suse.de, jack@suse.cz, willy@infradead.org,
+        akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [v3 PATCH 0/5] mm: misc migrate cleanup and improvement
+Date:   Fri, 13 Nov 2020 12:53:54 -0800
+Message-Id: <20201113205359.556831-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7450a60c-c8e4-4d49-ec22-08d888162a8b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 20:53:25.7126
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JHJKwSBgss93qheUf4iYC6kzbhQ3vY1LauZUmbM45tiuyxQ9P2Yq7Pw0s5jMiEKZX3KQ44KgeY7aoqMcwJaB9g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3569
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_19:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=865 adultscore=0
- impostorscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011130132
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Some misc migrate code cleanup and improvement.
 
-> On Nov 13, 2020, at 11:33 AM, Roman Gushchin <guro@fb.com> wrote:
->=20
-> On Fri, Nov 13, 2020 at 10:14:48AM -0800, Song Liu wrote:
->>=20
->>=20
->>> On Nov 12, 2020, at 2:15 PM, Roman Gushchin <guro@fb.com> wrote:
->>>=20
->>> Do not use rlimit-based memory accounting for bpf local storage maps.
->>> It has been replaced with the memcg-based memory accounting.
->>>=20
->>> Signed-off-by: Roman Gushchin <guro@fb.com>
->>> ---
->>> kernel/bpf/bpf_local_storage.c | 11 -----------
->>> 1 file changed, 11 deletions(-)
->>>=20
->>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_stor=
-age.c
->>> index fd4f9ac1d042..3b0da5a04d55 100644
->>> --- a/kernel/bpf/bpf_local_storage.c
->>> +++ b/kernel/bpf/bpf_local_storage.c
->>=20
->> Do we need to change/remove mem_charge() and mem_uncharge() in=20
->> bpf_local_storage.c? I didn't find that in the set.
->=20
-> No, those are used for per-socket memory limits (see sk_storage_charge()
-> and omem_charge()).
+v3: * Incorporated the comments from Willy
 
-I see. Thanks for the explanation.=20
+v2: * Fixed the comments from Zi Yan
+    * Collected Reviewed-by
 
-Acked-by: Song Liu <songliubraving@fb.com>
+
+Yang Shi (5):
+      mm: truncate_complete_page is not existed anymore
+      mm: migrate: simplify the logic for handling permanent failure
+      mm: migrate: skip shared exec THP for NUMA balancing
+      mm: migrate: clean up migrate_prep{_local}
+      mm: migrate: return -ENOSYS if THP migration is unsupported
+
+ include/linux/migrate.h |   4 +--
+ mm/mempolicy.c          |   8 ++---
+ mm/migrate.c            | 158 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------
+ mm/vmscan.c             |   2 +-
+ 4 files changed, 108 insertions(+), 64 deletions(-)
 
