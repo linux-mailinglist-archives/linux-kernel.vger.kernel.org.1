@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1653C2B19AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19652B19AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgKMLKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:10:34 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:58645 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgKMLIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:08:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605265705; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=I/CVbI8TPJTyTAGZ/DnpOIXP94vnB8sbEPZNC//8PdI=;
- b=nJQhJ93haf4inr8eONELOtPVEVwRd+zfgwrCPdWBNCEyYVMbuouKWEhkBl/1n4gBPl4Wlqul
- ODPc5dxOWhC1e8mxCgwYL7D7092FeQ8uTSMBw6/ExouHOU8+jEUlWB0KdtGQyv3XtiayXfu/
- biwLAhupz37mzzzHy5XRn27rOFs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fae6927d6e6336a4e6accd2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 11:08:23
- GMT
-Sender: cjhuang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5A6F7C43385; Fri, 13 Nov 2020 11:08:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        LOTS_OF_MONEY autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726600AbgKMLLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:11:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726598AbgKMLJi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:09:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605265776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rimX36Qvv5sOLJryfQ7O8d6YF2GdBPtAORACH4c6Ctw=;
+        b=PcYB/Ct+VqTNec0AYxNTPnuMJ5DalkwDloUgcMhtoVKMAoG6QM5gAu16xCSZ5SIf+g+MXa
+        8FWQVJAIkpz3CfydIaYdyAX8EzUs3gcKtSgOXnbTHk0i+J9zy/6k9etmhsZfyw/Wqa+rVB
+        VK5kIKNP3Zy5bCYbGJXJZFMPJT+ysFQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-EpMIlOTaO7SD0LMhxXM2nA-1; Fri, 13 Nov 2020 06:09:32 -0500
+X-MC-Unique: EpMIlOTaO7SD0LMhxXM2nA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cjhuang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C0E8C433C8;
-        Fri, 13 Nov 2020 11:08:21 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91FC5100E32C;
+        Fri, 13 Nov 2020 11:09:30 +0000 (UTC)
+Received: from krava (unknown [10.40.195.79])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 994D05F9DF;
+        Fri, 13 Nov 2020 11:09:27 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 12:09:26 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 24/24] perf record: Add --buildid-mmap option to enable
+ mmap's build id
+Message-ID: <20201113110926.GE753418@krava>
+References: <20201109215415.400153-1-jolsa@kernel.org>
+ <20201109215415.400153-25-jolsa@kernel.org>
+ <20201113044000.GC167797@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 13 Nov 2020 19:08:21 +0800
-From:   Carl Huang <cjhuang@codeaurora.org>
-To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        ath11k@lists.infradead.org, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-In-Reply-To: <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
-References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
- <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
- <87eekz4s04.fsf@codeaurora.org>
- <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
- <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com>
- <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
-Message-ID: <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
-X-Sender: cjhuang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113044000.GC167797@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-13 16:17, Pavel Procopiuc wrote:
-> Op 12.11.2020 om 11:48 schreef David Hildenbrand:
->> Trying to understand the code, it looks like there are always two 
->> rounds of reqests. The first one always fails ("requesting one big 
->> chunk of DMA memory"), the second one (providing multiple chunks of 
->> DMA memory) is supposed to work - and we do allocate memory.
->> 
->> 
->> In the *working* cases we have
->> 
->> Respond mem req failed, result: 1, err: 0
->> qmi failed to respond fw mem req:-22
->> ...
->> chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
->> 
->> We don't fail in qmi_txn_wait() - second request w
->> 
->> 
->> In the *non-working* cases we have
->> 
->> Respond mem req failed, result: 1, err: 0
->> qmi failed to respond fw mem req:-22
->> ...
->> qmi failed memory request, err = -110
->> qmi failed to respond fw mem req:-110
->> 
->> We fail in qmi_txn_wait(). We run into a timeout (ETIMEDOUT).
->> 
->> Can we bump up the timeout limit and see if things change? Maybe FW 
->> needs more time with other addresses.
+On Fri, Nov 13, 2020 at 01:40:00PM +0900, Namhyung Kim wrote:
+> On Mon, Nov 09, 2020 at 10:54:15PM +0100, Jiri Olsa wrote:
+> > Adding --buildid-mmap option to enable build id in mmap2 events.
+> > It will only work if there's kernel support for that and it disables
+> > build id cache (implies --no-buildid).
+> > 
+> > It's also possible to enable it permanently via config option
+> > in ~.perfconfig file:
+> > 
+> >   [record]
+> >   build-id=mmap
 > 
-> I tried increasing ATH11K_QMI_WLANFW_TIMEOUT_MS 20 times to 100000
-> (i.e. 100 seconds) and it didn't have any positive effect, the second
-> error (-110) just came 100 seconds later and not 5.
+> You also need to update the documentation.
+
+right, forgot doc for the config option
+
+SNIP
+
+> >  		    "append timestamp to output filename"),
+> >  	OPT_BOOLEAN(0, "timestamp-boundary", &record.timestamp_boundary,
+> > @@ -2657,6 +2662,21 @@ int cmd_record(int argc, const char **argv)
+> >  
+> >  	}
+> >  
+> > +	if (rec->buildid_mmap) {
+> > +		if (!perf_can_record_build_id()) {
+> > +			pr_err("Failed: no support to record build id in mmap events, update your kernel.\n");
+> > +			err = -EINVAL;
+> > +			goto out_opts;
+> > +		}
+> > +		pr_debug("Enabling build id in mmap2 events.\n");
+> > +		/* Enable mmap build id synthesizing. */
+> > +		symbol_conf.buildid_mmap2 = true;
+> > +		/* Enable perf_event_attr::build_id bit. */
+> > +		rec->opts.build_id = true;
+> > +		/* Disable build id cache. */
+> > +		rec->no_buildid = true;
 > 
-Checked some logs. Looks when the error happens, the physical address 
-are
-very small. Its' between 20M - 30M.
+> I'm afraid this can make it miss some build-id in the end because of
+> the possibility of the failure.
 
-So could you have a try to reserve the memory starting from 20M?
-Add "memmap=10M\$20M" to your grub.cfg or edit in kernel parameters. so 
-ath11k
-can't allocate from these address.
+with following fix (already merged):
+  b33164f2bd1c bpf: Iterate through all PT_NOTE sections when looking for build id
 
-Or you can try to reserve even larger memory starting from 20M.
+I could see high rate of build id being retrieved
+
+I'll make new numbers for next version, but I think we can neglect
+the failure, considering that we pick only 'hit' objects out of all
+of them
+
+also enabling the build id cache for this would go against the
+purpose why I'd like to have this.. so hopefuly the numbers
+will be convincing ;-)
+
+jirka
+
