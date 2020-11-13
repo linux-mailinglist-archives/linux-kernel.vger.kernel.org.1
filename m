@@ -2,233 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CF92B1F77
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6282B1F78
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgKMQCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:02:08 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44905 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgKMQCI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:02:08 -0500
-Received: by mail-wr1-f67.google.com with SMTP id c17so10413113wrc.11;
-        Fri, 13 Nov 2020 08:02:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SOFgbtEKT08GIsaRlGdHEBhLrv7nMLKYi0Qeedgqdrw=;
-        b=hIVRxdck4hge8b2rg+r15sgZkwLK1JfLNPaqRw+PbSLZUrka5E3cDMA0PkN7qYZJqx
-         y5pkefxPSYgK7yMUP91GiCpAmjtGpC3EJwIRh0GxsQxSoWc26IlfObOqgivLVa90yNqC
-         TLEAGdW0r1J60RvlEyk9S461PaNf1uMIf5QWOhr5J/xVd3DMafvv+EuTpQpjbUpLJ5hs
-         W9dZxJalxbHGmRXGCpBU5OOdn4JOJzumWg1JF/BcfRFJPzTLlhPhYbGJpo3a5EygyxLo
-         sS4pzNPa60w1OGBvuRzXt6yVoile6IUYtyx32Z3lJd+bjnOMU1CzQNqHFsJyJcFzrdNj
-         8wrw==
-X-Gm-Message-State: AOAM533tpHJbQTJ3fnAEVC38WBloGKpchHvt1jZOMccRoV2DjeDA9JRk
-        sMAIDTA+ej1TVsJL7srK69k=
-X-Google-Smtp-Source: ABdhPJxLGVaamLIC1LlMIWls9KiB13YFjHlZOHL4e1EkWFYtknKo5xd/tBWWvVBzADv1/VsEhGIP9w==
-X-Received: by 2002:adf:ffc3:: with SMTP id x3mr4326029wrs.32.1605283320928;
-        Fri, 13 Nov 2020 08:02:00 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s4sm11648636wro.10.2020.11.13.08.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:02:00 -0800 (PST)
-Date:   Fri, 13 Nov 2020 16:01:58 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 17/17] x86/hyperv: handle IO-APIC when running as root
-Message-ID: <20201113160158.idndhuygfgenxyhm@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-18-wei.liu@kernel.org>
- <87v9eawm2e.fsf@vitty.brq.redhat.com>
+        id S1726805AbgKMQCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:02:31 -0500
+Received: from mga07.intel.com ([134.134.136.100]:1880 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726439AbgKMQCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:02:30 -0500
+IronPort-SDR: nQ15CELw5vxNnpH8LCCwHHCAYksYtn54Ib+Z5xwjeOTF7NY2Xz4AcWkFQQV6Bq8GVkNZQWHrno
+ UHHgSxnI7Hvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="234649333"
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
+   d="scan'208";a="234649333"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 08:02:29 -0800
+IronPort-SDR: 6Q5SZdXA/W4VXopOfyKrwctpRkaa01eGzX+3ypJ27APftuKv7DrH/f7e1o2Vb0UeNkOnr9eIG4
+ ARJ6K3chFN2g==
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
+   d="scan'208";a="542700124"
+Received: from pkawatra-mobl1.amr.corp.intel.com (HELO [10.209.51.49]) ([10.209.51.49])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 08:02:29 -0800
+Subject: Re: [PATCH v6] lib: optimize cpumask_local_spread()
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Yuqi Jin <jinyuqi@huawei.com>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Juergen Gross <jgross@suse.com>,
+        Paul Burton <paul.burton@mips.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <1604410767-55947-1-git-send-email-zhangshaokun@hisilicon.com>
+ <3e2e760d-e4b9-8bd0-a279-b23bd7841ae7@intel.com>
+ <eec4c1b6-8dad-9d07-7ef4-f0fbdcff1785@hisilicon.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5e8b0304-4de1-4bdc-41d2-79fa5464fbc7@intel.com>
+Date:   Fri, 13 Nov 2020 08:02:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9eawm2e.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <eec4c1b6-8dad-9d07-7ef4-f0fbdcff1785@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:56:41PM +0100, Vitaly Kuznetsov wrote:
-[...]
-> > +static unsigned int hv_ioapic_startup_irq(struct irq_data *data)
-> > +{
-> > +	u16 status;
-> > +	struct IO_APIC_route_entry ire;
-> > +	u32 vector;
-> > +	struct irq_cfg *cfg;
-> > +	int ioapic;
-> > +	u8 ioapic_pin;
-> > +	int ioapic_id;
-> > +	int gsi;
-> > +	union entry_union eu;
-> > +	struct cpumask *affinity;
-> > +	int cpu, vcpu;
-> > +	struct hv_interrupt_entry entry;
-> > +	struct mp_chip_data *mp_data = data->chip_data;
-> > +
-> > +	gsi = data->irq;
-> > +	cfg = irqd_cfg(data);
-> > +	affinity = irq_data_get_effective_affinity_mask(data);
-> > +	cpu = cpumask_first_and(affinity, cpu_online_mask);
-> > +	vcpu = hv_cpu_number_to_vp_number(cpu);
-> > +
-> > +	vector = cfg->vector;
-> > +
-> > +	ioapic = mp_find_ioapic(gsi);
-> > +	ioapic_pin = mp_find_ioapic_pin(ioapic, gsi);
-> > +	ioapic_id = mpc_ioapic_id(ioapic);
-> > +	ire = ioapic_read_entry(ioapic, ioapic_pin);
-> > +
-> > +	/*
-> > +	 * Always try unmapping. We do not have visibility into which whether
-> > +	 * an IO-APIC has been mapped or not. We can't use chip_data because it
-> > +	 * already points to mp_data.
-> > +	 *
-> > +	 * We don't use retarget interrupt hypercalls here because Hyper-V
-> > +	 * doens't allow root to change the vector or specify VPs outside of
-> > +	 * the set that is initially used during mapping.
-> > +	 */
-> > +	status = hv_unmap_ioapic_interrupt(gsi);
-> > +
-> > +	if (!(status == HV_STATUS_SUCCESS || status == HV_STATUS_INVALID_PARAMETER)) {
-> > +		pr_debug("%s: unexpected unmap status %d\n", __func__, status);
-> > +		return -1;
+On 11/12/20 6:06 PM, Shaokun Zhang wrote:
+>>> On Huawei Kunpeng 920 server, there are 4 NUMA node(0 - 3) in the 2-cpu
+>>> system(0 - 1). The topology of this server is followed:
+>>
+>> This is with a feature enabled that Intel calls sub-NUMA-clustering
+>> (SNC), right?  Explaining *that* feature would also be great context for
 > 
-> Nit: the function returns 'unsigned int' but I see other 'irq_startup'
-> routines return negative values too, however, they tend to returd
-> '-ESOMETHING' so maybe -EFAULT here?
+> Correct,
 > 
+>> why this gets triggered on your system and not normally on others and
+>> why nobody noticed this until now.
+> 
+> This is on intel 6248 platform:
 
-The return type should've been int instead. That's what the function
-signature in struct irq_chip looks like.
+I have no idea what a "6248 platform" is.
 
-> > +	}
-> > +
-> > +	status = hv_map_ioapic_interrupt(ioapic_id, ire.trigger, vcpu, vector, &entry);
-> > +
-> > +	if (status != HV_STATUS_SUCCESS) {
-> > +		pr_err("%s: map hypercall failed, status %d\n", __func__, status);
-> > +		return -1;
+>>> +static void calc_node_distance(int *node_dist, int node)
+>>> +{
+>>> +	int i;
+>>> +
+>>> +	for (i = 0; i < nr_node_ids; i++)
+>>> +		node_dist[i] = node_distance(node, i);
+>>> +}
+>>
+>> This appears to be the only place node_dist[] is written.  That means it
+>> always contains a one-dimensional slice of the two-dimensional data
+>> represented by node_distance().
+>>
+>> Why is a copy of this data needed?
 > 
-> and here.
-> 
+> It is used to store the distance with the @node for later, apologies that I
+> can't follow your question correctly.
 
--EINVAL would be more appropriate in both cases.
+Right, the data that you store is useful.  *But*, it's also a verbatim
+copy of the data from node_distance().  Why not just use node_distance()
+directly in your code rather than creating a partial copy of it in the
+local node_dist[] array?
 
-Wei.
 
-> > +	}
-> > +
-> > +	/* Update the entry in mp_chip_data. It is used in other places. */
-> > +	mp_data->entry = *(struct IO_APIC_route_entry *)&entry.ioapic_rte;
-> > +
-> > +	/* Sync polarity -- Hyper-V's returned polarity is always 0... */
-> > +	mp_data->entry.polarity = ire.polarity;
-> > +
-> > +	eu.w1 = entry.ioapic_rte.low_uint32;
-> > +	eu.w2 = entry.ioapic_rte.high_uint32;
-> > +	ioapic_write_entry(ioapic, ioapic_pin, eu.entry);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void hv_ioapic_mask_irq(struct irq_data *data)
-> > +{
-> > +	mask_ioapic_irq(data);
-> > +}
-> > +
-> > +static void hv_ioapic_unmask_irq(struct irq_data *data)
-> > +{
-> > +	unmask_ioapic_irq(data);
-> > +}
-> > +
-> > +static int hv_ioapic_set_affinity(struct irq_data *data,
-> > +			       const struct cpumask *mask, bool force)
-> > +{
-> > +	/*
-> > +	 * We only update the affinity mask here. Programming the hardware is
-> > +	 * done in irq_startup.
-> > +	 */
-> > +	return ioapic_set_affinity(data, mask, force);
-> > +}
-> > +
-> > +void hv_ioapic_ack_level(struct irq_data *irq_data)
-> > +{
-> > +	/*
-> > +	 * Per email exchange with Hyper-V team, all is needed is write to
-> > +	 * LAPIC's EOI register. They don't support directed EOI to IO-APIC.
-> > +	 * Hyper-V handles it for us.
-> > +	 */
-> > +	apic_ack_irq(irq_data);
-> > +}
-> > +
-> > +struct irq_chip hv_ioapic_chip __read_mostly = {
-> > +	.name			= "HV-IO-APIC",
-> > +	.irq_startup		= hv_ioapic_startup_irq,
-> > +	.irq_mask		= hv_ioapic_mask_irq,
-> > +	.irq_unmask		= hv_ioapic_unmask_irq,
-> > +	.irq_ack		= irq_chip_ack_parent,
-> > +	.irq_eoi		= hv_ioapic_ack_level,
-> > +	.irq_set_affinity	= hv_ioapic_set_affinity,
-> > +	.irq_retrigger		= irq_chip_retrigger_hierarchy,
-> > +	.irq_get_irqchip_state	= ioapic_irq_get_chip_state,
-> > +	.flags			= IRQCHIP_SKIP_SET_WAKE,
-> > +};
-> > +
-> > +
-> > +int (*native_acpi_register_gsi)(struct device *dev, u32 gsi, int trigger, int polarity);
-> > +void (*native_acpi_unregister_gsi)(u32 gsi);
-> > +
-> > +int hv_acpi_register_gsi(struct device *dev, u32 gsi, int trigger, int polarity)
-> > +{
-> > +	int irq = gsi;
-> > +
-> > +#ifdef CONFIG_X86_IO_APIC
-> > +	irq = native_acpi_register_gsi(dev, gsi, trigger, polarity);
-> > +	if (irq < 0) {
-> > +		pr_err("native_acpi_register_gsi failed %d\n", irq);
-> > +		return irq;
-> > +	}
-> > +
-> > +	if (trigger) {
-> > +		irq_set_status_flags(irq, IRQ_LEVEL);
-> > +		irq_set_chip_and_handler_name(irq, &hv_ioapic_chip,
-> > +			handle_fasteoi_irq, "ioapic-fasteoi");
-> > +	} else {
-> > +		irq_clear_status_flags(irq, IRQ_LEVEL);
-> > +		irq_set_chip_and_handler_name(irq, &hv_ioapic_chip,
-> > +			handle_edge_irq, "ioapic-edge");
-> > +	}
-> > +#endif
-> > +	return irq;
-> > +}
-> > +
-> > +void hv_acpi_unregister_gsi(u32 gsi)
-> > +{
-> > +#ifdef CONFIG_X86_IO_APIC
-> > +	(void)hv_unmap_ioapic_interrupt(gsi);
-> > +	native_acpi_unregister_gsi(gsi);
-> > +#endif
-> > +}
+>>>  unsigned int cpumask_local_spread(unsigned int i, int node)
+>>>  {
+>>> -	int cpu, hk_flags;
+>>> +	static DEFINE_SPINLOCK(spread_lock);
+>>> +	static int node_dist[MAX_NUMNODES];
+>>> +	static bool used[MAX_NUMNODES];
+>>
+>> Not to be *too* picky, but there is a reason we declare nodemask_t as a
+>> bitmap and not an array of bools.  Isn't this just wasteful?
+>>
+>>> +	unsigned long flags;
+>>> +	int cpu, hk_flags, j, id;
+>>>  	const struct cpumask *mask;
+>>>  
+>>>  	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
+>>> @@ -220,20 +256,28 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
+>>>  				return cpu;
+>>>  		}
+>>>  	} else {
+>>> -		/* NUMA first. */
+>>> -		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
+>>> -			if (i-- == 0)
+>>> -				return cpu;
+>>> -		}
+>>> +		spin_lock_irqsave(&spread_lock, flags);
+>>> +		memset(used, 0, nr_node_ids * sizeof(bool));
+>>> +		calc_node_distance(node_dist, node);
+>>> +		/* Local node first then the nearest node is used */
+>>
+>> Is this comment really correct?  This makes it sound like there is only
 > 
-> -- 
-> Vitaly
+> I think it is correct, that's what we want to choose the nearest node.
 > 
+>> fallback to a single node.  Doesn't the _code_ fall back basically
+>> without limit?
+> 
+> If I follow your question correctly, without this patch, if the local
+> node is used up, one random node will be choosed, right? Now we firstly
+> choose the nearest node by the distance, if all nodes has been choosen,
+> it will return the initial solution.
+
+The comment makes it sound like the code does:
+	1. Do the local node
+	2. Do the next nearest node
+	3. Stop
+
+In reality, I *think* it's more of a loop where it search
+ever-increasing distances away from the local node.
+
+I just think the comment needs to be made more precise.
+
+>>> +		for (j = 0; j < nr_node_ids; j++) {
+>>> +			id = find_nearest_node(node_dist, used);
+>>> +			if (id < 0)
+>>> +				break;
+>>>  
+>>> -		for_each_cpu(cpu, mask) {
+>>> -			/* Skip NUMA nodes, done above. */
+>>> -			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
+>>> -				continue;
+>>> +			for_each_cpu_and(cpu, cpumask_of_node(id), mask)
+>>> +				if (i-- == 0) {
+>>> +					spin_unlock_irqrestore(&spread_lock,
+>>> +							       flags);
+>>> +					return cpu;
+>>> +				}
+>>> +			used[id] = 1;
+>>> +		}
+>>> +		spin_unlock_irqrestore(&spread_lock, flags);
+>>
+>> The existing code was pretty sparsely commented.  This looks to me to
+>> make it more complicated and *less* commented.  Not the best combo.
+> 
+> Apologies for the bad comments, hopefully I describe it clearly by the above
+> explantion.
+
+Do you want to take another pass at submitting this patch?
