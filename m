@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAD62B1EEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AC72B1EEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgKMPiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgKMPiH (ORCPT
+        id S1726754AbgKMPjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:39:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41813 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726336AbgKMPjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:38:07 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4926CC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:38:07 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id c9so8482332wml.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nuviainc-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=57krU+NCAgGExjwCBwh+1UXaHAkBn07nSnJKylJjuGM=;
-        b=wvk2SAsnBz1AqRznm6MHeicgMLWvf+oOvhW5mWJqCxX3Ap/wvECXGNAeUffJeSteSy
-         6yVy7TBo1KAMRAH6kZiUR2kHTBigQz/2F5ozKsDvHJSvy45IvRUgUvrJJr8VRv+KrNj7
-         B5fj/5jzoNMWXUgGLkiN/l/e+eDvBIqRn+OMryFaYGnHWa2R8kfS/GjPWBt1eDI56usk
-         qEHh0YJxM/AIY3Q1mwNcS+gW4cvotXg5VSGtcEeG5EFZ5A7s/0TrznC7aAkWs/+FvmYR
-         iDex9aTS2wBcHmilbplmnnvLn0yjHYf66r2xOErSxuzuUg36GqAeNEQb/kOpAr5iyAx/
-         UpnA==
+        Fri, 13 Nov 2020 10:39:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605281962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3sVmrN/C/Kv+IDV0OFYnceQhXDUD+b2Eui7WOb+LnZE=;
+        b=PyKtSpsBar4JwMa36iiUZo4P36nPAxnD8RCHFi2RMNSYWz1dzVJ+a2+AxizSBvfwny5Adq
+        eIrkDeiAizi8WHAQjGwPFUFcETrZ87GDrJLI8L8f4m04Qza7/YqGtpIkN14Yz2wWgngLMj
+        FfSY+NKeQ4+C7K8BdgRYPD2C+y4mkaQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-4nMi6yisNC-7DxW2If78gw-1; Fri, 13 Nov 2020 10:39:20 -0500
+X-MC-Unique: 4nMi6yisNC-7DxW2If78gw-1
+Received: by mail-wr1-f70.google.com with SMTP id h11so4021278wrq.20
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:39:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=57krU+NCAgGExjwCBwh+1UXaHAkBn07nSnJKylJjuGM=;
-        b=QtJTGQMc9aca/0ZwScz3BYnYJFJmCsGO51BXU7vzaMC7FmTxIbyoTFu/m0dhqnZtxw
-         bLoWYt437F2zkWrxK0VjRWXz24tj3sMRzfACA6ksxooTzH/y/pOGXUfMuQfF8AZvYa2m
-         1VDO7EkgCPvdoq1FLAG2aeOiE7PRWhG3bf4Wj1nFf9yIh9/YHq3kPBC33VIeJUCVdCLY
-         UARg4FbCY66MbxZbK2+cSuIb906OSfHG1+27fVAV+RNEIEr3+Husk79vIncF6vWLKaYD
-         3TQAaKm3YdH0jrgAJ4FAQoXGbMnFopqdett7QPIz1yvDhHpYu8O78GwYD6tcicAEf+UZ
-         l3RQ==
-X-Gm-Message-State: AOAM533kf9HxfHnDfzfN/4Jx6LY/Yz+BfBKhEIz7R19BTAYjglQnsQrg
-        ue4z0L7wZpWuXVsISRwE7LD+tQ==
-X-Google-Smtp-Source: ABdhPJw/w0xhz0igmXwp0dWR2Xj5eHRrCOia2mdOHn2WNy0yqwhxY5Ys95iE19FcJiIDKasYbhXR1w==
-X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr3245377wmg.161.1605281881173;
-        Fri, 13 Nov 2020 07:38:01 -0800 (PST)
-Received: from localhost ([82.44.17.50])
-        by smtp.gmail.com with ESMTPSA id f11sm11435902wrs.70.2020.11.13.07.38.00
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=3sVmrN/C/Kv+IDV0OFYnceQhXDUD+b2Eui7WOb+LnZE=;
+        b=LxGzY+FwhCXkfuvogQ/IXdqSkPtse1OBXf4pCKsH2l9oSo2mcxtXCg/xlBdgfTmv9b
+         q4oT3/Xl6Z321q1H2dxWInkA1fRHfPk4jRVSME30JCu0+8mdMTfWiDzl5bJK9Ccs9Byi
+         E7AjamkdB8wXk5jSn91/FWRtepXWOdbY/JytQ6scy/GnmgbnZGpTMhKGz62XSWRbtxxb
+         6S8LwVtaak2ClTpOuyVKY5AyMur7OsW8DbwThFDuPiM9gndpb18WDlU7oyBcVeuPiY8/
+         EmYJJgFenkTJXmxZa6630mkqddIfcxcHzqeld8e6Kp3aurHk6gHWOXQbiN79IahUks1J
+         JUEA==
+X-Gm-Message-State: AOAM530IbuSO5jz7GoaUzTQlZUdY+vXjF+l5woA6Jb1ZRZncmzpwpzKO
+        FGjtfYcyCvAaLJcYko2NuOozz4E13P9pc6spwU3Zvdpzh8bZxwzT0AHa/l2y2wBS2pFkZ1oglH/
+        F1swSTDvgF1y2lWzvJSrMHZO/GrSTsaspyjszLbszy3YIVzAG5gF/cKrPjnDd/zdbk9T4t9k7MB
+        74
+X-Received: by 2002:a05:600c:2285:: with SMTP id 5mr3140835wmf.149.1605281954368;
+        Fri, 13 Nov 2020 07:39:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx7rJrV3ihlOr4+/s5jLfPJiFT3LF4QQ9loxw6d7jCck5tzg9yvmEn8xNaai16p+3MSbkOfFg==
+X-Received: by 2002:a05:600c:2285:: with SMTP id 5mr3140483wmf.149.1605281949385;
+        Fri, 13 Nov 2020 07:39:09 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b73sm17842334wmb.0.2020.11.13.07.39.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 07:38:00 -0800 (PST)
-Date:   Fri, 13 Nov 2020 15:38:00 +0000
-From:   Jamie Iles <jamie@nuviainc.com>
-To:     James Morse <james.morse@arm.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Fri, 13 Nov 2020 07:39:08 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: Re: [PATCH 00/24] x86/resctrl: Merge the CDP resources
-Message-ID: <20201113153800.GA2754@poplar>
-References: <20201030161120.227225-1-james.morse@arm.com>
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/boot/compressed/64: Drop the now-unused
+ finalize_identity_maps()
+In-Reply-To: <20201113151342.GA618063@rani.riverdale.lan>
+References: <20201113150810.1233016-1-vkuznets@redhat.com>
+ <20201113151342.GA618063@rani.riverdale.lan>
+Date:   Fri, 13 Nov 2020 16:39:07 +0100
+Message-ID: <87361dw9k4.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030161120.227225-1-james.morse@arm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Arvind Sankar <nivedita@alum.mit.edu> writes:
 
-On Fri, Oct 30, 2020 at 04:10:56PM +0000, James Morse wrote:
-> Hi folks,
-> 
-> This series re-folds the resctrl code so the CDP resources (L3CODE et al)
-> behaviour is all contained in the filesystem parts, with a minimum amount
-> of arch specific code.
-> 
-> Arm have some CPU support for dividing caches into portions, and
-> applying bandwidth limits at various points in the SoC. The collective term
-> for these features is MPAM: Memory Partitioning and Monitoring.
-> 
-> MPAM is similar enough to Intel RDT, that it should use the defacto linux
-> interface: resctrl. This filesystem currently lives under arch/x86, and is
-> tightly coupled to the architecture.
-> Ultimately, my plan is to split the existing resctrl code up to have an
-> arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
-> MPAM can be wired up.
-> 
-> x86 might have two resources with cache controls, (L2 and L3) but has
-> extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
-> if CDP is enabled for the corresponding cache.
-> 
-> MPAM has an equivalent feature to CDP, but its a property of the CPU,
-> not the cache. Resctrl needs to have x86's odd/even behaviour, as that
-> its the ABI, but this isn't how the MPAM hardware works. It is entirely
-> possible that an in-kernel user of MPAM would not be using CDP, whereas
-> resctrl is.
-> Pretending L3CODE and L3DATA are entirely separate resources is a neat
-> trick, but doing this is specific to x86.
-> Doing this leaves the arch code in control of various parts of the
-> filesystem ABI: the resources names, and the way the schemata are parsed.
-> Allowing this stuff to vary between architectures is bad for user space.
-> 
-> 
-> This series collapses the CODE/DATA resources, moving all the user-visible
-> resctrl ABI into the filesystem code. CDP becomes the type of configuration
-> being applied to a cache. This is done by adding a struct resctrl_schema to
-> the parts of resctrl that will move to fs. This holds the arch-code resource
-> that is in use for this schema, along with other properties like the name,
-> and whether the configuration being applied is CODE/DATA/BOTH.
-> 
-> This lets us fold the extra resources out of the arch code so that they
-> don't need to be duplicated if the equivalent feature to CDP is missing, or
-> implemented in a different way.
-> 
-> 
-> The first two patches split the resource and domain structs to have an
-> arch specific 'hw' portion, and the rest that is visible to resctrl.
-> Future series massage the resctrl code so there are no accesses to 'hw'
-> structures in the parts of resctrl that will move to fs, providing helpers
-> where necessary.
-> 
-> 
-> Since anyone last looked at this, the CDP property has been made per-resource
-> instead of global. MPAM will need to make this global in the arch code, as
-> CODE/DATA closid are based on how the CPU tags traffic, not how the cache
-> interprets it. resctrl sets CDP enabled on a resource, but reads it back on
-> each one.
-> The attempt to keep closids as-used-by-resctrl and closids as-written-to-hw
-> appart has been dropped.
-> There are two copies of num_closid. The version private to the arch code is
-> the value discovered from hardware. resctrl has its own version, which it
-> may write to, which is exposed to user-space. This lets resctrl do its
-> odd/even thing, even if thats not how the hardware works.
-> 
-> This series adds temporary scaffolding, which it removes a few patches
-> later. This is to allow things like the ctrlval arrays and resources to be
-> merged separately, which should make is easier to bisect. These things
-> are marked temporary, and should all be gone by the end of the series.
-> 
-> This series is a little rough around the monitors, would a fake
-> struct resctrl_schema for the monitors simplify things, or be a source
-> of bugs?
-> 
-> This series is based on v5.10-rc1, and can be retrieved from:
-> git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v1
-> 
-> Parts were previously posted as an RFC here:
-> https://lore.kernel.org/lkml/20200214182947.39194-1-james.morse@arm.com/
+> On Fri, Nov 13, 2020 at 04:08:10PM +0100, Vitaly Kuznetsov wrote:
+>> Since commit 8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in
+>> KASLR code") finalize_identity_maps() has no users, drop it.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/boot/compressed/ident_map_64.c | 10 ----------
+>>  1 file changed, 10 deletions(-)
+>> 
+>> diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+>> index a5e5db6ada3c..6bf20223dc0f 100644
+>> --- a/arch/x86/boot/compressed/ident_map_64.c
+>> +++ b/arch/x86/boot/compressed/ident_map_64.c
+>> @@ -167,16 +167,6 @@ void initialize_identity_maps(void *rmode)
+>>  	write_cr3(top_level_pgt);
+>>  }
+>>  
+>> -/*
+>> - * This switches the page tables to the new level4 that has been built
+>> - * via calls to add_identity_map() above. If booted via startup_32(),
+>> - * this is effectively a no-op.
+>> - */
+>> -void finalize_identity_maps(void)
+>> -{
+>> -	write_cr3(top_level_pgt);
+>> -}
+>> -
+>>  static pte_t *split_large_pmd(struct x86_mapping_info *info,
+>>  			      pmd_t *pmdp, unsigned long __address)
+>>  {
+>> -- 
+>> 2.26.2
+>> 
+>
+> I had sent this and another unused removal last month:
+> https://lore.kernel.org/lkml/20201005151208.2212886-1-nivedita@alum.mit.edu/
+>
 
-Reviewed-by: Jamie Iles <jamie@nuviainc.com>
+Ah, no problem, let this serve as a gentle ping to the maintainers then)
 
-Jamie
+-- 
+Vitaly
+
