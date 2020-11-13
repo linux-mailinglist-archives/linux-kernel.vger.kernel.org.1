@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C8D2B2925
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0566F2B2929
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgKMX2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:28:43 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:39085 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKMX2m (ORCPT
+        id S1726200AbgKMX3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKMX3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:28:42 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id C00EE240004;
-        Fri, 13 Nov 2020 23:28:39 +0000 (UTC)
-Date:   Sat, 14 Nov 2020 00:28:39 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Olof Johansson <olof@lixom.net>, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: ./include/generated/autoconf.h:1601:33: fatal error:
- mach/debug-macro.S: No such file or directory
-Message-ID: <20201113232839.GA6117@piout.net>
-References: <202011111443.lt7V48Ig-lkp@intel.com>
- <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
+        Fri, 13 Nov 2020 18:29:37 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C304C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 15:29:37 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id s25so16143722ejy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 15:29:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=t/qZm+FmOV7fcrGuKM74tPZpmLFufkl+cYUDyl8sKjE=;
+        b=ZEWrlqZtfDE9MXM93iwSO6Hsrg4uifO8GvUjrPmcSMuPr6VYJKlHpAsn3EU2NMUmb6
+         gY7+eEPPOY1tKQ3mS5kQEYtQg7S5neA5MvaeD+s0f5W3ZwKK/lH4A2H/XnNFcn9ASJ6Y
+         5uJh5c1WFIKNge7njSMVHHAqL6Z/h9YVcAKIBCt9z0sWxoXYbZ1OrS9s+zhHu9RhVV6q
+         eYL9gwizQHEyX2ZkvLLtB/KO/R209D8dPwh8DTKkQQn0DV8/eChaJRm8nbeksSgwuVnI
+         S47ovJW0E4DU3C9s0cHGtPjJ+F6Yl1rpu2XABYs/myj77eaD+f4PoXC2wXt9YaP3axrf
+         i8aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=t/qZm+FmOV7fcrGuKM74tPZpmLFufkl+cYUDyl8sKjE=;
+        b=q7dCINiwBLSfBGYaF4JUqkVuibflzvMh5tWBlmtw8CVyF5/fWvXrYjLUDSKEWF4lGZ
+         8pskBd/p8DXNNcffTFpWqc5JyqtohCHiCvxakWHyVpCV66pIw7ZvPE022TO4VH0dGcI1
+         vJd2vN2t1idx9q32XLejo/IPykBCeYVEIJgj7fUCzG4tlmcoteqvXeLTWrUdDymyMQGP
+         Rl+LxghbtlAF9j7NiTOJqxniU0tjkycSGDriiM1HUFHwKWCrny5JAE5+UjEVZiKNkjeN
+         iGnDWOQ54ElylVT595/sAHo2egKrGOu8yB2/xDOZ7zd+L3AqMqyS8x2F9ejtEGUBq2VR
+         4zLg==
+X-Gm-Message-State: AOAM531taPMpPzpTGrxLWI0YjWPeTruTiOwh969wlPPUcboFM4o8bb5s
+        4RQ4tUuCqwh1c+VNJeUOVxYBGC63+Rg0zZF8MVmQUKwzdDduzoU/hQ==
+X-Google-Smtp-Source: ABdhPJxamGXwgRKFOprxSFaRdh+ouv37lES+1fjEDVj39NZwgn0zQWnhAsv4C70CMT3n5kCBXarPNFhPd5QqXHqNWZ4=
+X-Received: by 2002:a17:906:c096:: with SMTP id f22mr4268775ejz.488.1605310175763;
+ Fri, 13 Nov 2020 15:29:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 13 Nov 2020 18:29:23 -0500
+Message-ID: <CAHC9VhSrJLtasTbE+smvHYMxD3B018TCLx74y9RQ0pk8jDaX4w@mail.gmail.com>
+Subject: [GIT PULL] SELinux fixes for v5.10 (#1)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2020 09:51:26+0100, Linus Walleij wrote:
-> On Wed, Nov 11, 2020 at 7:18 AM kernel test robot <lkp@intel.com> wrote:
-> 
-> >    In file included from include/linux/kconfig.h:7,
-> >                     from <command-line>:
-> > >> ./include/generated/autoconf.h:1601:33: fatal error: mach/debug-macro.S: No such file or directory
-> >     1601 | #define CONFIG_DEBUG_LL_INCLUDE "mach/debug-macro.S"
-> >          |                                 ^~~~~~~~~~~~~~~~~~~~
-> >    compilation terminated.
-> 
-> This is an interesting one!
-> 
-> It happens when CONFIG_DEBUG_LL_INCLUDE does not have a custom
-> debug header for the platform under arch/arm/include/debug and the
-> KConfig falls through to the default value, which is <mach/debug-macro.S>.
-> 
-> Only that the majority is not using <mach/*> anymore.
-> 
-> I feel a bit like setting the default to debug/8250.S or something.
-> 
-> Suggestions?
-> 
-> Then the actual bug exposed:
-> 
-> The config tested by the robot is using
-> CONFIG_ARCH_AT91=y
-> CONFIG_SOC_SAMV7=y
-> 
-> When I look into Kconfig.debug it seems that this will define
-> DEBUG_AT91_SAMV7_USART1 but only a physical address,
-> no virtual address and and actually no debug header. It seems
-> LL_DEBUG is broken on SAMV7 and never really worked
-> so now that crops up.
-> 
-> Nicolas, something that should be fixed, I think?
-> 
+Hi Linus,
 
-This is what the platforms without an MMU are doing. I don't think there
-is anything platform specific to fix.
+One small SELinux patch for v5.10-rcX to make sure we return an error
+code when an allocation fails.  It passes all of our tests, but given
+the nature of the patch that isn't surprising.  Please merge during
+the v5.10-rcX cycle.
+
+Thanks,
+-Paul
+
+--
+The following changes since commit 0d50f059c4cdc9e436f6f4db8779ac0795bfdadf:
+
+ selinux: provide a "no sooner than" date for the checkreqprot removal
+   (2020-09-29 16:50:57 -0400)
+
+are available in the Git repository at:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+   tags/selinux-pr-20201113
+
+for you to fetch changes up to c350f8bea271782e2733419bd2ab9bf4ec2051ef:
+
+ selinux: Fix error return code in sel_ib_pkey_sid_slow()
+   (2020-11-12 20:16:09-0500)
+
+----------------------------------------------------------------
+selinux/stable-5.10 PR 20201113
+
+----------------------------------------------------------------
+Chen Zhou (1):
+     selinux: Fix error return code in sel_ib_pkey_sid_slow()
+
+security/selinux/ibpkey.c | 4 +++-
+1 file changed, 3 insertions(+), 1 deletion(-)
+
+-- 
+paul moore
+www.paul-moore.com
