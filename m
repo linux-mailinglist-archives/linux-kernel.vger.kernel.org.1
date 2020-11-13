@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564A62B1689
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8C12B168C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgKMHgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:36:46 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42074 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKMHgp (ORCPT
+        id S1726438AbgKMHhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726344AbgKMHg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:36:45 -0500
-Received: by mail-ej1-f66.google.com with SMTP id i19so11895462ejx.9;
-        Thu, 12 Nov 2020 23:36:44 -0800 (PST)
+        Fri, 13 Nov 2020 02:36:59 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA6C0613D1;
+        Thu, 12 Nov 2020 23:36:59 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id 62so6400842pgg.12;
+        Thu, 12 Nov 2020 23:36:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DI+53oZSBiBFl4dOg9AxzRmdEkfr9Y5AiP/wrRfP7RI=;
+        b=SbuJVIw3qwdjtjkK9lsYf5VXzo0CLsT2HwsFrA0XX56OB6nDEFAKlqiwT/xUatSdVL
+         WURF1ZcBlBmtaFrSYuMlhQcwnJ/83N8qkLT6CmHfT7fIuI9ccLGdTIdUHnVXocLGHX2X
+         16SK0YNCQ3T8Jtw6Sc1j6WpHTpJGnnPe7DLipNZ4bDiKp+QGjYB5QSn727dNlhwr+cet
+         uzXJ8F8h1OpkoJ5b4B6SlfUzDsr3/h5YrI5017MztligKmLfJWjfKQd6iH3V51un9RL0
+         BK8m4V7LDcEfQxtWSb33acB2WUqaIKAqQogYRluUSuDpCiaNzIdaXk1LSjwF16cHapCF
+         pxdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lF9F6ulOL21hYHmYnWk/iPK3JjbD1z5cgjWscdLc7o4=;
-        b=Eec7C07MBXFS3dMJFBQq7cQrtn8GYCFk45NMjZVjfEhw5oqcM2ruBZ9BFVBTSmfcUa
-         2ApRrXXvtnBkvfPFR57iDORMCwpwAul7i7LfCXKBV2nxD2c+GAEuFHV/BTh4JySg1i4T
-         /xzRnADOdb/xsno42NBYiIpiBc4zqAQloiBj2sZRq+SY3hTCRx3r4p253kqX37gewPl/
-         JGp6njHx1d1IfGiLdd1vAO24rEZkeVXNE0X/lYXrCgTBUN1E/wryY0PCZcmy/hUkAQt0
-         Y8+2NIfaRpDR4z4y7O6zhnneiyNnA8c/Mdx0pBZOCQcvfD2s5y84coZOsFQOif3mFM6E
-         iT8w==
-X-Gm-Message-State: AOAM5312rO7MwgQ7J3/+0dzAHP+03m6VyDQZn8hv8dnUzj6LtFuNQTq1
-        MbPfH12Do17/DsSi95Mfxa8=
-X-Google-Smtp-Source: ABdhPJyGD5+mmTulDLlgvMkt/TG2cliCNiLEJPvGahMPDQz8KN2r1/II3OoM9LERzf2d1xWkKiHUuw==
-X-Received: by 2002:a17:906:934d:: with SMTP id p13mr693013ejw.245.1605253003489;
-        Thu, 12 Nov 2020 23:36:43 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id t21sm3154426edy.39.2020.11.12.23.36.42
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DI+53oZSBiBFl4dOg9AxzRmdEkfr9Y5AiP/wrRfP7RI=;
+        b=RF1kTy8pPeKCZTmYuY5ZNwpnTv8wJfyn3+gPiNyCicjvoLbaN98wl0InDTkUY9HaZO
+         zrLSSQfT3ycu/kHbDCxakjEIUOyimlePdJi/08BgjAtmhcwfRGqtMeNJVEtu+fg+tTTv
+         aVY7WRGMZ33s6u7zSx53PbHN/P1aem2Arb13mUM9F3R7QVTxK+ckhHkocaKL6Ad3yx0t
+         /1qdhGi7yKQ5m2ROYcv18DfepxacajcPnSOZHjgqYjhzM2PxiB6Q/s0dZCxaccgJwVEH
+         K5jODwTX3yWxyHMxNFeGXASo05BMNfShxsR8vbJDwKcQ0JFL7oON3NANGRbceQINPtcZ
+         fXyw==
+X-Gm-Message-State: AOAM533giD1sm4EIfdiEpEaJPxTf6I6uOb+OewknNPr8U2hfCAHH8yc9
+        yxkjw5H9IXI/m2NDIYUK9Ro=
+X-Google-Smtp-Source: ABdhPJyDRb3qYR67UjgZRH7K/x0GnFBr0f0hPXPWVl8DWROkKyRM3whY/DuQ1nvnDUlLrf/pCa5tvw==
+X-Received: by 2002:a17:90a:4417:: with SMTP id s23mr1491076pjg.156.1605253018911;
+        Thu, 12 Nov 2020 23:36:58 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id g5sm9458799pji.12.2020.11.12.23.36.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 23:36:42 -0800 (PST)
-Date:   Fri, 13 Nov 2020 08:36:41 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     linux-clk@vger.kernel.org, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, m.szyprowski@samsung.com, sboyd@kernel.org,
-        mturquette@baylibre.com, b.zolnierkie@samsung.com,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v4] clk: samsung: Prevent potential endless loop in the
- PLL set_rate ops
-Message-ID: <20201113073641.GA4405@kozik-lap>
-References: <CGME20201110193254eucas1p22e954946d03c07995c73a019e5593ba0@eucas1p2.samsung.com>
- <20201110193226.20681-1-s.nawrocki@samsung.com>
+        Thu, 12 Nov 2020 23:36:57 -0800 (PST)
+Date:   Thu, 12 Nov 2020 23:36:55 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        Daniel Ritz <daniel.ritz@gmx.ch>, linux-input@vger.kernel.org
+Subject: Re: [PATCH 07/15] input: touchscreen: usbtouchscreen: Remove unused
+ variable 'ret'
+Message-ID: <20201113073655.GF356503@dtor-ws>
+References: <20201112110204.2083435-1-lee.jones@linaro.org>
+ <20201112110204.2083435-8-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201110193226.20681-1-s.nawrocki@samsung.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112110204.2083435-8-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:32:26PM +0100, Sylwester Nawrocki wrote:
-> The PLL status polling loops in the set_rate callbacks of some PLLs
-> have no timeout detection and may become endless loops when something
-> goes wrong with the PLL.
+On Thu, Nov 12, 2020 at 11:01:56AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> For some PLLs there is already the ktime API based timeout detection,
-> but it will not work in all conditions when .set_rate gets called.
-> In particular, before the clocksource is initialized or when the
-> timekeeping is suspended.
+>  drivers/input/touchscreen/usbtouchscreen.c: In function ‘nexio_read_data’:
+>  drivers/input/touchscreen/usbtouchscreen.c:1052:50: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
 > 
-> This patch adds a common helper with the PLL status bit polling and
-> timeout detection. For conditions where the timekeeping API should not
-> be used a simple readl_relaxed/cpu_relax() busy loop is added with the
-> iterations limit derived from measurements of readl_relaxed() execution
-> time for various PLL types and Exynos SoCs variants.
-> 
-> Actual PLL lock time depends on the P divider value, the VCO frequency
-> and a constant PLL type specific LOCK_FACTOR and can be calculated as
-> 
->  lock_time = Pdiv * LOCK_FACTOR / VCO_freq
-> 
-> For the ktime API use cases a common timeout value of 20 ms is applied
-> for all the PLLs with an assumption that maximum possible value of Pdiv
-> is 64, maximum possible LOCK_FACTOR value is 3000 and minimum VCO
-> frequency is 24 MHz.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: James Hilliard <james.hilliard1@gmail.com>
+> Cc: Daniel Ritz <daniel.ritz@gmx.ch>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> I'm not sure whether we actually need to implement precise timeouts,
-> likely the simple busy loop case would be enough. AFAIK the PLL
-> failures happen very rarely, mostly in early code development stage
-> for given platform.
+>  drivers/input/touchscreen/usbtouchscreen.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Changes since v3:
->  - dropped udelay() from the PLL status bit polling loop as it didn't
->    work on arm64 at early boot time, before timekeeping was initialized,
->  - use the timekeeping API in cases when it is already initialized and
->    not suspended,
->  - use samsung_pll_lock_wait() also in samsung_pll3xxx_enable() function,
->    now all potential endless loops are removed.
-> ---
->  drivers/clk/samsung/clk-pll.c | 147 ++++++++++++++++++++----------------------
->  1 file changed, 71 insertions(+), 76 deletions(-)
+> diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/touchscreen/usbtouchscreen.c
+> index 397cb1d3f481b..c3b7130cd9033 100644
+> --- a/drivers/input/touchscreen/usbtouchscreen.c
+> +++ b/drivers/input/touchscreen/usbtouchscreen.c
+> @@ -1049,7 +1049,7 @@ static int nexio_read_data(struct usbtouch_usb *usbtouch, unsigned char *pkt)
+>  	unsigned int data_len = be16_to_cpu(packet->data_len);
+>  	unsigned int x_len = be16_to_cpu(packet->x_len);
+>  	unsigned int y_len = be16_to_cpu(packet->y_len);
+> -	int x, y, begin_x, begin_y, end_x, end_y, w, h, ret;
+> +	int x, y, begin_x, begin_y, end_x, end_y, w, h;
+>  
+>  	/* got touch data? */
+>  	if ((pkt[0] & 0xe0) != 0xe0)
+> @@ -1061,7 +1061,7 @@ static int nexio_read_data(struct usbtouch_usb *usbtouch, unsigned char *pkt)
+>  		x_len -= 0x80;
+>  
+>  	/* send ACK */
+> -	ret = usb_submit_urb(priv->ack, GFP_ATOMIC);
+> +	usb_submit_urb(priv->ack, GFP_ATOMIC);
+
+I wonder if we should handle potential errors instead.
+
+>  
+>  	if (!usbtouch->type->max_xc) {
+>  		usbtouch->type->max_xc = 2 * x_len;
+> -- 
+> 2.25.1
 > 
-> diff --git a/drivers/clk/samsung/clk-pll.c b/drivers/clk/samsung/clk-pll.c
-> index ac70ad7..cefb57e 100644
-> --- a/drivers/clk/samsung/clk-pll.c
-> +++ b/drivers/clk/samsung/clk-pll.c
-> @@ -8,14 +8,17 @@
->  
->  #include <linux/errno.h>
->  #include <linux/hrtimer.h>
-> +#include <linux/iopoll.h>
->  #include <linux/delay.h>
->  #include <linux/slab.h>
-> +#include <linux/timekeeping.h>
->  #include <linux/clk-provider.h>
->  #include <linux/io.h>
->  #include "clk.h"
->  #include "clk-pll.h"
->  
-> -#define PLL_TIMEOUT_MS		10
-> +#define PLL_TIMEOUT_US		20000U
-> +#define PLL_TIMEOUT_LOOPS	1000000U
->  
->  struct samsung_clk_pll {
->  	struct clk_hw		hw;
-> @@ -63,6 +66,53 @@ static long samsung_pll_round_rate(struct clk_hw *hw,
->  	return rate_table[i - 1].rate;
->  }
->  
-> +static bool __early_timeout = true;
 
-Drop the __ prefix and maybe use "pll_early_timeout".
-This looks like __ro_after_init.
+Thanks.
 
-Best regards,
-Krzysztof
+-- 
+Dmitry
