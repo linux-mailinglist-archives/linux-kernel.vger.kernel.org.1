@@ -2,135 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C4A2B1E81
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63142B1E84
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgKMPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:22:01 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:35887 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726692AbgKMPV7 (ORCPT
+        id S1726603AbgKMPX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbgKMPX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:21:59 -0500
-Received: by mail-wr1-f51.google.com with SMTP id j7so10324181wrp.3;
-        Fri, 13 Nov 2020 07:21:58 -0800 (PST)
+        Fri, 13 Nov 2020 10:23:56 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E94C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:23:56 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q5so7878981pfk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:23:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/WeHfKsKBskJF//nV0gHHSqUsCVNd9uwrdvRUtYIsCQ=;
+        b=UiGMlYnf46lTNVE2g7F/8bxf+FZ4CYFKFxahm7UkJvKVQOlJ3uurv0goMXp5a+dzOL
+         9mExWR637tkf/ZSZWPTzU7CZ6ulwsQa2yhfgZczAeanP3tgZov5w16XSTV0EDpEMZJCZ
+         2lQ8oPHduXeGnYdlZcb4JHdWJFRwxoePaPueQPKTZj35q1q0SCBii0idpJQDGZtiXj9F
+         SF92pFRVlfI2aaCGcKRAx2Dg/JcMsBdFcBsHzkfSG/jsDzQxvxpiIexDrY7+3Xhvs7Yy
+         5+pG6dHXvXPOPC3D84p0bpNqRcGpvjH5BDMP4hiIywErjIaV0uJDIW8G0Th5WDCwGfH1
+         uFLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jZZec1UP1XPcIdy5fKYFw1mzad8DvYZuIK/MWVjeSRM=;
-        b=KmL9sj03sEWqqN6nS0jNLOulUUGm4URpZlB5CxQ4r/FAlHcSKxV95Q1hVldHBxoyaG
-         2p6h5fCC2+6ihK2TYtyABFqVj278YRSEVnVdPQyMYFSeNRhXRSMNO1K9S1aK9HU/A1JH
-         3Xnzz9O2DHIO6oRPieCI0oYD1704mAHPcKyTl2UTwURhGjx2Oc9zqMN6NkNv62PbzYX6
-         o/GrY5geSuEXBiVePoPrtstgBuLBWa0v7lIMdWIGcqTxhVbIq4pDihyfgl+kWRn/IIXl
-         SSEpW6T1HJkMMutnNclfRGQKxsDSJeVzc7+RuKZY6jvM8pgUC4ABU2z4K8n9skLnCBN+
-         7lMA==
-X-Gm-Message-State: AOAM532orn0zZugeB4FMXHFVzNwIDEFO6FQnyBGEcqL1IprjamhguE5p
-        ETvSx6/xZRZFaqfH62+1P54=
-X-Google-Smtp-Source: ABdhPJzBdtuPpgt+j2Np+tFFbKUsasVLHBh68MsaUYgv2L7B+Zk/61mo73OVJC/luZPKqb4waQ5eCw==
-X-Received: by 2002:a5d:4b8f:: with SMTP id b15mr4384031wrt.38.1605280914863;
-        Fri, 13 Nov 2020 07:21:54 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id m20sm13924160wrg.81.2020.11.13.07.21.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/WeHfKsKBskJF//nV0gHHSqUsCVNd9uwrdvRUtYIsCQ=;
+        b=lLikNpSuj3gIhQndljouGthhowJKEVz7IWr8M0cnNqItyYq5xzKAhQ1i1XUarR4Kb5
+         S33TvGqHDwmtOIUzu6flfcsk+V8d1uIWu55nTXi/ECaayAG7j9a8aBJXYbHYWsfEyuUV
+         xbb/0N7zwn1loy+R9LpSOazRbplEb5JBzQrirQ/aKEogYng7Gqquk5Cdv99FzbDwXpcX
+         ajR/1Mx1MjENu8FXEjLxIwpvopNCf++1TELvg03n7cRyPed5G585Y8w5BLbr51D0wSn7
+         LNISj0CA3hBJLZdPjVhkx9223aM/aYwC0TCCH6ZiFDvC6JE8BJ/9Yby/YnI1JVKiPm8Y
+         oYwA==
+X-Gm-Message-State: AOAM533nTizmUKW3i4aCF8EJhrpvIGmQu+AMmqDX8I+0Uio09DZ1DDmQ
+        F2Fb3DCbp+yN//FeixK1Ein9fGhvpadzSIjo
+X-Google-Smtp-Source: ABdhPJyuYXKPkYLe0VYEYJ5+xB/uMeGHM5J3tb1rSBKR0Y7i8gDSbmSLndBvONsZ/MFhs4DkODNgYQ==
+X-Received: by 2002:a63:c945:: with SMTP id y5mr2490173pgg.118.1605281030623;
+        Fri, 13 Nov 2020 07:23:50 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6819:f451:9e0a:873f:ed68])
+        by smtp.gmail.com with ESMTPSA id a17sm9391408pga.56.2020.11.13.07.23.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 07:21:54 -0800 (PST)
-Date:   Fri, 13 Nov 2020 15:21:52 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v2 07/17] x86/hyperv: extract partition ID from Microsoft
- Hypervisor if necessary
-Message-ID: <20201113152152.omo6pljscvlrzpsc@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-8-wei.liu@kernel.org>
- <877dqqy3yw.fsf@vitty.brq.redhat.com>
+        Fri, 13 Nov 2020 07:23:49 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH V3] checkpatch: Fix spelling errors and remove repeated word
+Date:   Fri, 13 Nov 2020 20:53:16 +0530
+Message-Id: <20201113152316.62975-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dqqy3yw.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:44:39PM +0100, Vitaly Kuznetsov wrote:
-[...]
-> > +void __init hv_get_partition_id(void)
-> > +{
-> > +	struct hv_get_partition_id *output_page;
-> > +	u16 status;
-> > +	unsigned long flags;
-> > +
-> > +	local_irq_save(flags);
-> > +	output_page = *this_cpu_ptr(hyperv_pcpu_output_arg);
-> > +	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page) &
-> > +		HV_HYPERCALL_RESULT_MASK;
-> > +	if (status != HV_STATUS_SUCCESS)
-> > +		pr_err("Failed to get partition ID: %d\n", status);
-> > +	else
-> > +		hv_current_partition_id = output_page->partition_id;
-> 
-> Nit: I'd suggest we simplify this to:
-> 
-> 	if (status != HV_STATUS_SUCCESS) {
-> 		pr_err("Failed to get partition ID: %d\n", status);
-> 		BUG();
-> 	}
-> 	hv_current_partition_id = output_page->partition_id;
-> 
-> and drop BUG_ON() below;
-> 
-> > +	local_irq_restore(flags);
-> > +
-> > +	/* No point in proceeding if this failed */
-> > +	BUG_ON(status != HV_STATUS_SUCCESS);
-> > +}
-> > +
-> >  /*
-> >   * This function is to be invoked early in the boot sequence after the
-> >   * hypervisor has been detected.
-> > @@ -430,6 +453,9 @@ void __init hyperv_init(void)
-> >  
-> >  	register_syscore_ops(&hv_syscore_ops);
-> >  
-> > +	if (hv_root_partition)
-> > +		hv_get_partition_id();
-> > +
-> 
-> 
-> We don't seem to check that the partition has AccessPartitionId
-> privilege. While I guess that root partitions always have it, I'd
-> suggest we write this as:
-> 
+Delete repeated word in scripts/checkpatch.pl:
+"are are" -> "are"
 
-Yes. Root should always have that permission. That's my understanding.
+Fix typos:
+"commments" -> "comments"
+"falsly" -> "falsely"
 
-> 	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_ACCESS_PARTITION_ID)
-> 		hv_get_partition_id();
-> 
-> 	BUG_ON(hv_root_partition && !hv_current_partition_id);
-> 
-> for correctness. Also, we need to make sure '0' is not a valid partition
-> id and use e.g. -1 otherwise.
-> 
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+Changes in V3:
+- Change subject line
+Changes in V2:
+- Add correction for falsly
 
-I've changed both places.
+ scripts/checkpatch.pl | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Wei.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 2749f32dffe9..041b82f6669e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2841,7 +2841,7 @@ sub process {
+ 
+ 
+ 				# stable@vger.kernel.org or stable@kernel.org shouldn't
+-				# have an email name. In addition commments should strictly
++				# have an email name. In addition comments should strictly
+ 				# begin with a #
+ 				if ($email =~ /^.*stable\@(?:vger\.)?kernel\.org/i) {
+ 					if (($comment ne "" && $comment !~ /^#.+/) ||
+@@ -5000,7 +5000,7 @@ sub process {
+ ## 		    $line !~ /^.\s*$Type\s+$Ident(?:\s*=[^,{]*)?\s*,\s*$Type\s*$Ident.*/) {
+ ##
+ ## 			# Remove any bracketed sections to ensure we do not
+-## 			# falsly report the parameters of functions.
++## 			# falsely report the parameters of functions.
+ ## 			my $ln = $line;
+ ## 			while ($ln =~ s/\([^\(\)]*\)//g) {
+ ## 			}
+@@ -7109,7 +7109,7 @@ sub process {
+ 		exit(0);
+ 	}
+ 
+-	# This is not a patch, and we are are in 'no-patch' mode so
++	# This is not a patch, and we are in 'no-patch' mode so
+ 	# just keep quiet.
+ 	if (!$chk_patch && !$is_patch) {
+ 		exit(0);
+-- 
+2.27.0
+
