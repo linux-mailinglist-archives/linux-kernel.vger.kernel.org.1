@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF172B131F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE502B131A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgKMARC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgKMARA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:17:00 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DD1C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:17:00 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id d4so4918288pgi.16
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:17:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ryYfvt+lWMJVuIdFeA4yxNPWYH9tZ+u/Mvva/I+PHwE=;
-        b=dbPGB9FAcvnTP4ZA1p8ZUtQfF5RQhRYLEXlF7595Sv2OsT16/iC7h6cyLeq5UBY2G2
-         UtPYWZAxQLDLIPVTGqvegu66k4Pn6g95aYF+CC8EsXuwOQPcaTBeZyGWJpyzIuBt7VM2
-         iucd4PUCVmb8ZVKSVDttf3nnr0gHVIiTb6KY8U1FPJFht7d+yIMsNvIdenU+9Gc+UcNz
-         sJPRdmeqw6qOnhChF1uGfF7KPfccprvRfwpJfJhZWQJmXHwVW8nAiaMTVIv2gEygeCcV
-         s03onl4zQy0tXmAnQH9jovw8Lz1k/XoWU5qX8HDlYbhgg52BBfjJgkvef1SYZAe6HMkN
-         zIcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ryYfvt+lWMJVuIdFeA4yxNPWYH9tZ+u/Mvva/I+PHwE=;
-        b=nYVETccw8KU8r25vqVKcJxXuH4eAv/qA1z8IwyqgWenQ2jt+BQDzZQqUrWidaN9iRi
-         c7k+ucM+NzYDCye30Otu/6Qn1BRGNW11pWK6TIthAdOyjZO/5GuBk8hAxKVW/4Ou9hzJ
-         XPU3jKgW58ZSe4Gm2SmB3GI1iOZchbxDOQlFkKJkl0BhrPP6HYA/2uRmkMEpF5bBuLrI
-         A7daLTVW6ekHOmmFBKJe/1DAM3PWPoVoAMmww6AgnFC1z7gt3BwHwMfdW9vS+ZyWFpsV
-         /qFMHUvw7zK9Hmsna7CxcNP0VNsj6e9fmbNlwO948w8nARllL7eV0qQeoyCPD0fBvd9r
-         dtng==
-X-Gm-Message-State: AOAM533fpAGisRgwJf61Fx8XJMPV22Dxy23bzQJ7N+SdSnfzMTeRa3e9
-        HunVOCgoeaKadAy6V07DYCANgYgPwMMs
-X-Google-Smtp-Source: ABdhPJxfLFnGF+ZocdGLTalH1W7KN4rMDtnDIikUAKADm9x42WYHKIzvV/RwtXPhRHBSFzw1edS6CfqZD4xe
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:aa7:8c17:0:b029:18c:967a:d793 with SMTP id
- c23-20020aa78c170000b029018c967ad793mr1792863pfd.4.1605226619538; Thu, 12 Nov
- 2020 16:16:59 -0800 (PST)
-Date:   Thu, 12 Nov 2020 16:16:48 -0800
-In-Reply-To: <20201113001651.544348-1-irogers@google.com>
-Message-Id: <20201113001651.544348-3-irogers@google.com>
-Mime-Version: 1.0
-References: <20201113001651.544348-1-irogers@google.com>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH 2/5] perf metric: Use NAN for missing event IDs.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726121AbgKMAQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:16:53 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:1503 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgKMAQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 19:16:51 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CXJtT1cYDzKj;
+        Fri, 13 Nov 2020 01:16:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1605226609; bh=V7HSPNSozpIXr1ujMh8djMuILzn4otXrS7tNpH0CxW8=;
+        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+        b=KkIebHuvOAcx+XFnOyxGphCUIRbkt9pplf3yMWzQ3od9CXifiMDaRCDWY0Ggzd10d
+         n/JSERh/xNWdhArRDp+gZ5OpR41rtdLT6ezG9GvAxVqVGlG/lyWBXgLGHlBNuEX8Nj
+         H3u3qXpj5g70ZdAJbOMjmTSPnSog2By5y5jveaDkCuXsIEnFaMBdSl0y+iAbwSBovU
+         AD9oq3hBpGB+uuvd05GTU524mchsUNmay1Ja8IGlp5gSkn8B+9gUurT0gYGuhQwip6
+         6W5DppaPU0eSUWT2LAnlolH2WRY63qApGitGCVvDLNtWAQVTfQM8GUIGq/6SBkUyyP
+         igS70rzWahSjA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Fri, 13 Nov 2020 01:16:49 +0100
+Message-Id: <78c3d4016cebc08d441aad18cb924b4e4d9cf9df.1605225991.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1605225991.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1605225991.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 1/4] regulator: fix memory leak with repeated
+ set_machine_constraints()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-arm-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If during computing a metric an event (id) is missing the parsing
-aborts. A later patch will make it so that events that aren't used in
-the output are deliberately omitted, in which case we don't want the
-abort. Modify the missing ID case to report NAN for these cases.
+Fixed commit introduced a possible second call to
+set_machine_constraints() and that allocates memory for
+rdev->constraints. Move the allocation to the caller so
+it's easier to manage and done once.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- tools/perf/util/expr.y | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/regulator/core.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index d34b370391c6..4ce76adeb337 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -1,6 +1,7 @@
- /* Simple expression parser */
- %{
- #define YYDEBUG 1
-+#include <math.h>
- #include <stdio.h>
- #include "util.h"
- #include "util/debug.h"
-@@ -89,8 +90,7 @@ expr:	  NUMBER
- 					struct expr_id_data *data;
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 2e1ea18221ef..bcd64ba21fb9 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1315,7 +1315,6 @@ static int _regulator_do_enable(struct regulator_dev *rdev);
+ /**
+  * set_machine_constraints - sets regulator constraints
+  * @rdev: regulator source
+- * @constraints: constraints to apply
+  *
+  * Allows platform initialisation code to define and constrain
+  * regulator circuits e.g. valid voltage/current ranges, etc.  NOTE:
+@@ -1323,21 +1322,11 @@ static int _regulator_do_enable(struct regulator_dev *rdev);
+  * regulator operations to proceed i.e. set_voltage, set_current_limit,
+  * set_mode.
+  */
+-static int set_machine_constraints(struct regulator_dev *rdev,
+-	const struct regulation_constraints *constraints)
++static int set_machine_constraints(struct regulator_dev *rdev)
+ {
+ 	int ret = 0;
+ 	const struct regulator_ops *ops = rdev->desc->ops;
  
- 					if (expr__resolve_id(ctx, $1, &data)) {
--						free($1);
--						YYABORT;
-+						$$ = NAN;
- 					}
+-	if (constraints)
+-		rdev->constraints = kmemdup(constraints, sizeof(*constraints),
+-					    GFP_KERNEL);
+-	else
+-		rdev->constraints = kzalloc(sizeof(*constraints),
+-					    GFP_KERNEL);
+-	if (!rdev->constraints)
+-		return -ENOMEM;
+-
+ 	ret = machine_constraints_voltage(rdev, rdev->constraints);
+ 	if (ret != 0)
+ 		return ret;
+@@ -5146,7 +5135,6 @@ struct regulator_dev *
+ regulator_register(const struct regulator_desc *regulator_desc,
+ 		   const struct regulator_config *cfg)
+ {
+-	const struct regulation_constraints *constraints = NULL;
+ 	const struct regulator_init_data *init_data;
+ 	struct regulator_config *config = NULL;
+ 	static atomic_t regulator_no = ATOMIC_INIT(-1);
+@@ -5285,14 +5273,23 @@ regulator_register(const struct regulator_desc *regulator_desc,
  
- 					$$ = data->val;
+ 	/* set regulator constraints */
+ 	if (init_data)
+-		constraints = &init_data->constraints;
++		rdev->constraints = kmemdup(&init_data->constraints,
++					    sizeof(*rdev->constraints),
++					    GFP_KERNEL);
++	else
++		rdev->constraints = kzalloc(sizeof(*rdev->constraints),
++					    GFP_KERNEL);
++	if (!rdev->constraints) {
++		ret = -ENOMEM;
++		goto wash;
++	}
+ 
+ 	if (init_data && init_data->supply_regulator)
+ 		rdev->supply_name = init_data->supply_regulator;
+ 	else if (regulator_desc->supply_name)
+ 		rdev->supply_name = regulator_desc->supply_name;
+ 
+-	ret = set_machine_constraints(rdev, constraints);
++	ret = set_machine_constraints(rdev);
+ 	if (ret == -EPROBE_DEFER) {
+ 		/* Regulator might be in bypass mode and so needs its supply
+ 		 * to set the constraints */
+@@ -5301,7 +5298,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 		 * that is just being created */
+ 		ret = regulator_resolve_supply(rdev);
+ 		if (!ret)
+-			ret = set_machine_constraints(rdev, constraints);
++			ret = set_machine_constraints(rdev);
+ 		else
+ 			rdev_dbg(rdev, "unable to resolve supply early: %pe\n",
+ 				 ERR_PTR(ret));
 -- 
-2.29.2.299.gdc1121823c-goog
+2.20.1
 
