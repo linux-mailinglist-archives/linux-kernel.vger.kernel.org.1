@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEBE2B1AE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C48E2B1AE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgKMMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:14:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48278 "EHLO mail.kernel.org"
+        id S1726973AbgKMMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:14:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgKMMOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:14:35 -0500
+        id S1726869AbgKMMOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:14:39 -0500
 Received: from localhost.localdomain (unknown [176.167.84.141])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDEE82224B;
-        Fri, 13 Nov 2020 12:14:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA33C22254;
+        Fri, 13 Nov 2020 12:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605269675;
-        bh=pVkdoCcCylVBGej69uN3zi3eWDQy5R0//b4FU0YwlBY=;
+        s=default; t=1605269678;
+        bh=pzg3H1SAcQ8CRdYtrrU6JJlUNejMzIJGGg1ue4KpFhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hrSn1Rx2k+JVfYWkbXWcsLqqKRGrkaiMSw2IvJw83NeVf5s7KTieyFLJh7dSl3vq0
-         b18bEKqYbsGk4A/X7kHeu9gYG5MxDez4DQJ926b/B0rsrhkaxbdkQSmN13eIiCETcO
-         Ke0cXVEWKu2PbgAo+mtrgKSO5Ke61wLwwYW0GVn8=
+        b=TMB/TnqB1v9MjDexs/G4Bh7e8tB4UZnxViI0IhHN+drwBLwyMP638LELGa7NRsKic
+         3nlIh1Im99gyl8/tvZXEEO3n2inNdnuqLV7JamIWLrGEcx+BEFXBtZdjYuq1ROrLXM
+         N4Q6SOFrDsFIYvJZGY4cDhfVWeJKD8cZgt3X9JLY=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: [PATCH 17/19] cpu/hotplug: Add lockdep_is_cpus_held()
-Date:   Fri, 13 Nov 2020 13:13:32 +0100
-Message-Id: <20201113121334.166723-18-frederic@kernel.org>
+Subject: [PATCH 18/19] timer: Add timer_curr_running()
+Date:   Fri, 13 Nov 2020 13:13:33 +0100
+Message-Id: <20201113121334.166723-19-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113121334.166723-1-frederic@kernel.org>
 References: <20201113121334.166723-1-frederic@kernel.org>
@@ -47,9 +47,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RCU needs to check if the cpu hotplug lock is held, in the middle of
-other conditions to check the sanity of RCU-nocb. Provide a helper for
-that.
+RCU needs to check if the current code is running a specific timer
+callback, in the middle of other conditions to check the sanity of
+RCU-nocb. Provide a helper for that.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
@@ -62,40 +62,47 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
- include/linux/cpu.h | 1 +
- kernel/cpu.c        | 7 +++++++
- 2 files changed, 8 insertions(+)
+ include/linux/timer.h |  2 ++
+ kernel/time/timer.c   | 13 +++++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index d6428aaf67e7..27eb3875e45a 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -118,6 +118,7 @@ extern void cpus_read_lock(void);
- extern void cpus_read_unlock(void);
- extern int  cpus_read_trylock(void);
- extern void lockdep_assert_cpus_held(void);
-+extern int lockdep_is_cpus_held(void);
- extern void cpu_hotplug_disable(void);
- extern void cpu_hotplug_enable(void);
- void clear_tasks_mm_cpumask(int cpu);
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6ff2578ecf17..3cca5b27de25 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
- 	percpu_rwsem_assert_held(&cpu_hotplug_lock);
- }
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index d10bc7e73b41..c75dbf7d118f 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -192,6 +192,8 @@ extern int try_to_del_timer_sync(struct timer_list *timer);
  
-+#ifdef CONFIG_LOCKDEP
-+int lockdep_is_cpus_held(void)
-+{
-+	return percpu_rwsem_is_held(&cpu_hotplug_lock);
-+}
-+#endif
+ #define del_singleshot_timer_sync(t) del_timer_sync(t)
+ 
++extern bool timer_curr_running(struct timer_list *timer);
 +
- static void lockdep_acquire_cpus_lock(void)
+ extern void init_timers(void);
+ extern void run_local_timers(void);
+ struct hrtimer;
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index de37e33a868d..9d41e4c4cfd4 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1242,6 +1242,19 @@ int try_to_del_timer_sync(struct timer_list *timer)
+ }
+ EXPORT_SYMBOL(try_to_del_timer_sync);
+ 
++bool timer_curr_running(struct timer_list *timer)
++{
++	int i;
++
++	for (i = 0; i < NR_BASES; i++) {
++		struct timer_base *base = this_cpu_ptr(&timer_bases[i]);
++		if (base->running_timer == timer)
++			return true;
++	}
++
++	return false;
++}
++
+ #ifdef CONFIG_PREEMPT_RT
+ static __init void timer_base_init_expiry_lock(struct timer_base *base)
  {
- 	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
 -- 
 2.25.1
 
