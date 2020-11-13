@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4C62B1DC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B542E2B1DCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgKMOxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:53:08 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46961 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgKMOxH (ORCPT
+        id S1726823AbgKMOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:53:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgKMOxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:53:07 -0500
-Received: by mail-wr1-f67.google.com with SMTP id d12so10168474wrr.13;
-        Fri, 13 Nov 2020 06:53:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=J3g1EmbPGYLgsVJyJusBp+ecz9drgGWXqp9ghw7oo04=;
-        b=oc9l91eWAtIhZ02QQ8YnH+Vu9Mg80ncYBDbdOOtSmY7zsRV1MeiSo3FOkfOxAkMaIe
-         ljnHFBCqrh0wHU3RuQdUYi8ZzEsxfl5ttEP4T3imbZQzaH5aFlGtap+Jare0WRH89MEz
-         TwJlmFeIUpkuQQQrfQpzBLnOHAXU+GiHSLZSnz1z/R8JmeBEB0L1yRPP4gKJnVjlty4z
-         HQdg+MWIQB0rmXqWleBNbZuMhP8RTpCj0Vb85/YMh6mhTV5FPCc2TYoQk6l/dUYXQ2dt
-         qhlKDL+lkw7fDzign76PbJoMk312v7ui+7dAdB9AOAX9JxbzW0lLqPD/c7FfzDWr3PcV
-         w2LA==
-X-Gm-Message-State: AOAM533dd6UWq6lGME/JKxc4T7jMWvQ1zzxIvN8+OH0pwT9ZH4GmNi/j
-        +sE1HTqnC/1bv1F9hrO4VSg=
-X-Google-Smtp-Source: ABdhPJzVhgHWH+ov3Hd5rUXZqXGqiSjFrXDw4D/7d7K8Q6VCR1SzDiuP4R19ZvbbTIhBSZZZ4eN/EA==
-X-Received: by 2002:adf:804b:: with SMTP id 69mr3963167wrk.274.1605279186710;
-        Fri, 13 Nov 2020 06:53:06 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a17sm12104587wra.61.2020.11.13.06.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 06:53:06 -0800 (PST)
-Date:   Fri, 13 Nov 2020 14:53:04 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-Subject: Re: [PATCH v2 04/17] iommu/hyperv: don't setup IRQ remapping when
- running as root
-Message-ID: <20201113145304.37w3h6xi7fmhgcg6@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-5-wei.liu@kernel.org>
- <87ft5ey4rx.fsf@vitty.brq.redhat.com>
+        Fri, 13 Nov 2020 09:53:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30803C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 06:53:33 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kdaRx-0000CS-8F; Fri, 13 Nov 2020 15:53:17 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kdaRw-0002AU-A8; Fri, 13 Nov 2020 15:53:16 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: imx6q: demote warning about pre-boot ldb_di_clk reparenting
+Date:   Fri, 13 Nov 2020 15:53:09 +0100
+Message-Id: <20201113145310.8274-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft5ey4rx.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:27:14PM +0100, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-> 
-> > The IOMMU code needs more work. We're sure for now the IRQ remapping
-> > hooks are not applicable when Linux is the root.
-> 
-> Super-nitpick: I would suggest we always say 'root partition' as 'root'
-> has a 'slightly different' meaning in Linux and this commit message may
-> sound confusing to an unprepared reader.
+Since 5d283b083800 ("clk: imx6: Fix procedure to switch the parent
+of LDB_DI_CLK"), the clock driver warns if ldb_di\d_sel is changed
+from reset value on system boot. This warning is printed even if
+the bootloader (or a previous kernel that did kexec) followed the
+correct procedure for glitch-free reparenting.
 
-Fixed.
+As such systems are doing everything correctly, a warning is too
+harsh. Demote to a notice, so users are still alerted, but without
+cluttering a loglevel=5 boot.
 
-> 
-> >
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > Acked-by: Joerg Roedel <jroedel@suse.de>
-> > ---
-> >  drivers/iommu/hyperv-iommu.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-> > index e09e2d734c57..8d3ce3add57d 100644
-> > --- a/drivers/iommu/hyperv-iommu.c
-> > +++ b/drivers/iommu/hyperv-iommu.c
-> > @@ -20,6 +20,7 @@
-> >  #include <asm/io_apic.h>
-> >  #include <asm/irq_remapping.h>
-> >  #include <asm/hypervisor.h>
-> > +#include <asm/mshyperv.h>
-> >  
-> >  #include "irq_remapping.h"
-> >  
-> > @@ -143,7 +144,7 @@ static int __init hyperv_prepare_irq_remapping(void)
-> >  	int i;
-> >  
-> >  	if (!hypervisor_is_type(X86_HYPER_MS_HYPERV) ||
-> > -	    !x2apic_supported())
-> > +	    !x2apic_supported() || hv_root_partition)
-> >  		return -ENODEV;
-> >  
-> >  	fn = irq_domain_alloc_named_id_fwnode("HYPERV-IR", 0);
-> 
-> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ drivers/clk/imx/clk-imx6q.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks.
+diff --git a/drivers/clk/imx/clk-imx6q.c b/drivers/clk/imx/clk-imx6q.c
+index ba33c79158de..b2e4b6234ac0 100644
+--- a/drivers/clk/imx/clk-imx6q.c
++++ b/drivers/clk/imx/clk-imx6q.c
+@@ -337,10 +337,10 @@ static void init_ldb_clks(struct device_node *np, void __iomem *ccm_base)
+ 	of_assigned_ldb_sels(np, &sel[0][3], &sel[1][3]);
+ 
+ 	for (i = 0; i < 2; i++) {
+-		/* Warn if a glitch might have been introduced already */
++		/* Print a notice if a glitch might have been introduced already */
+ 		if (sel[i][0] != 3) {
+-			pr_warn("ccm: ldb_di%d_sel already changed from reset value: %d\n",
+-				i, sel[i][0]);
++			pr_notice("ccm: ldb_di%d_sel already changed from reset value: %d\n",
++				  i, sel[i][0]);
+ 		}
+ 
+ 		if (sel[i][0] == sel[i][3])
+-- 
+2.28.0
 
-Wei.
-
-> 
-> -- 
-> Vitaly
-> 
