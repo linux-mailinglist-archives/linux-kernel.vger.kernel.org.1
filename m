@@ -2,198 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E442B1CD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9AC2B1CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgKMN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:59:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726594AbgKMN7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:59:43 -0500
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DD3420797;
-        Fri, 13 Nov 2020 13:59:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605275982;
-        bh=5zh5U6QQTfrb1zJ1Qx6ri3/VJb6vcNkANMos1Y8u4Yk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AuM3bbMr1Y8rDFBUhaaWssTCj0V8b0g406jdEEsSbegNHXbcomzAKdFvFtY9pE+Jm
-         asDr3mJLRtlQM52OXAe9BuYUrtqVd75lkT7xtn2oY9hZyKRQtAOIfYc+C3eYCOFGHV
-         0wLy4TAWYo162p9Ev7CCTe0GcIXi8/GDKbSXsVK4=
-Received: by mail-ot1-f52.google.com with SMTP id g19so8940647otp.13;
-        Fri, 13 Nov 2020 05:59:42 -0800 (PST)
-X-Gm-Message-State: AOAM530PDLXA8cXJx83/jsJVnCDnhGl4whnPMHm07Uni9BG8CxYIaL2e
-        ywURLtIr4kLgl1QUZRi6cqMgxlG/J32LdJU8fQ==
-X-Google-Smtp-Source: ABdhPJxBUIJ2lKibMEAtB+Y6lMxOKxXu95T92jIViUP4LWwGjEKihU7Jf+EZChksfqcYHoyBhuXZQIfesQ+odI9lj/0=
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr1630402otd.192.1605275981804;
- Fri, 13 Nov 2020 05:59:41 -0800 (PST)
+        id S1726868AbgKMN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbgKMN74 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 08:59:56 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF13C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:59:55 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kdZcD-0001kj-Qb; Fri, 13 Nov 2020 14:59:49 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kdZcB-0005PK-2Y; Fri, 13 Nov 2020 14:59:47 +0100
+Date:   Fri, 13 Nov 2020 14:59:47 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     leoyang.li@nxp.com, linux@rempel-privat.de, kernel@pengutronix.de,
+        wsa@the-dreams.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, aisheng.dong@nxp.com, xiaoning.wang@nxp.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
+Subject: Re: [v10] i2c: imx: support slave mode for imx I2C driver
+Message-ID: <20201113135947.h7cek55eevilay2t@pengutronix.de>
+References: <20201111113255.28710-1-biwen.li@oss.nxp.com>
 MIME-Version: 1.0
-References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
- <1604628968-1501-2-git-send-email-skomatineni@nvidia.com> <20201106161122.GB3289870@bogus>
- <f8ba33f1-90fa-a9f0-5834-9de23fc8ad31@nvidia.com> <d0a42b1c-8ddc-fc97-c675-70a5b7601580@nvidia.com>
- <f7ccb10e-e375-d6a9-78b3-21a9f85a0148@nvidia.com>
-In-Reply-To: <f7ccb10e-e375-d6a9-78b3-21a9f85a0148@nvidia.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 13 Nov 2020 07:59:30 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+g_sXp4t9dPq5LOrhKrsXyu+3-ZCRFqw-AZJs_S=6M=A@mail.gmail.com>
-Message-ID: <CAL_Jsq+g_sXp4t9dPq5LOrhKrsXyu+3-ZCRFqw-AZJs_S=6M=A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] dt-bindings: ata: tegra: Convert binding
- documentation to YAML
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>, devicetree@vger.kernel.org,
-        Jon Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201111113255.28710-1-biwen.li@oss.nxp.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:58:11 up 364 days,  5:16, 30 users,  load average: 0.26, 0.26,
+ 0.11
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 9:54 PM Sowjanya Komatineni
-<skomatineni@nvidia.com> wrote:
->
-> Hi Rob,
->
-> Updated yamllint and dt-schema as well.
->
-> When I do make dt_binding_check, I see it failed as
-> processed-schema-examples.json is not generated.
-> Any idea of what I may be missing?
->
-> Also it did not go thru bindings/ata path. Tried with DT_SCHEMA_FILES to
-> tegra-ahci.yaml as well and I see same.
-> make dt_binding_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->
-> LINT    Documentation/devicetree/bindings
-> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml:20:9: [warning]
-> wrong indentation: expected 10 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml:30:9: [warning]
-> wrong indentation: expected 10 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml:33:9: [warning]
-> wrong indentation: expected 10 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml:37:2:
-> [error] syntax error: expected <block end>, but found '<scalar>' (syntax)
+On Wed, Nov 11, 2020 at 07:32:55PM +0800, Biwen Li wrote:
+> From: Biwen Li <biwen.li@nxp.com>
+> 
+> The patch supports slave mode for imx I2C driver
+> 
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
 
-I believe this error only occurred on linux-next. linux-next is not a
-base you should develop on (usually). rc2 is good. Unfortunately
-someone broke rc3.
+Thank you for your work!
 
-> ./Documentation/devicetree/bindings/soc/aspeed/xdma.yaml:10:2: [warning]
-> wrong indentation: expected 2 but found 1 (indentation)
-> ./Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml:10:4:
-> [warning] wrong indentation: expected 2 but found 3 (indentation)
-> ./Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml:18:7:
-> [warning] wrong indentation: expected 4 but found 6 (indentation)
-> ./Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml:10:4:
-> [warning] wrong indentation: expected 2 but found 3 (indentation)
-> ./Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml:15:7:
-> [warning] wrong indentation: expected 4 but found 6 (indentation)
-> ./Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml:25:10:
-> [warning] wrong indentation: expected 10 but found 9 (indentation)
-> ./Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml:52:9:
-> [warning] wrong indentation: expected 6 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml:32:13:
-> [warning] wrong indentation: expected 14 but found 12 (indentation)
-> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml:35:9:
-> [warning] wrong indentation: expected 10 but found 8 (indentation)
-> Documentation/devicetree/bindings/Makefile:59: recipe for target
-> 'Documentation/devicetree/bindings/processed-schema-examples.json' failed
-> make[1]: ***
-> [Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
-> Makefile:1362: recipe for target 'dt_binding_check' failed
-> make: *** [dt_binding_check] Error 2
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Use 'make -k' if there are unrelated errors.
+@Wolfram, Christian Eggers I2SR_IAL patches should go before this one.
 
->
-> When I do dtbs_check, I see
-> Documentation/devicetree/bindings/processed-schema.json generated and
-> also it passes for tegra-ahci.yaml
+> ---
+> Change in v10:
+> 	- totally remove CONFIG_I2C_SLAVE
+> 	- replace api with i2c_imx_clart_irq()
+> 	- remove robust code
+> 	- place pm_runtime_get in i2c_imx_slave_init()
+> 	  to i2c_imx_reg_slave()
+> 	- apply the patch on top of this patch set:
+> 	  [PATCH v6 0/3] i2c: imx: Fix handling of arbitration loss
+> 	  https://lkml.org/lkml/2020/10/9/407
+> 
+> Change in v9:
+> 	- remove #ifdef after select I2C_SLAVE by default
+> 
+> Change in v8:
+> 	- fix build issue
+> 
+> Change in v7:
+> 	- support auto switch mode between master and slave
+> 	- enable interrupt when idle in slave mode
+> 	- remove #ifdef
+> 
+> Change in v6:
+> 	- delete robust logs and comments
+> 	- not read status register again in master isr.
+> 
+> Change in v5:
+> 	- fix a bug that cannot determine in what mode(master mode or
+> 	  slave mode)
+> 
+> Change in v4:
+> 	- add MACRO CONFIG_I2C_SLAVE to fix compilation issue
+> 
+> Change in v3:
+> 	- support layerscape and i.mx platform
+> 
+> Change in v2:
+> 	- remove MACRO CONFIG_I2C_SLAVE
+> 
+>  drivers/i2c/busses/Kconfig   |   1 +
+>  drivers/i2c/busses/i2c-imx.c | 219 +++++++++++++++++++++++++++++++----
+>  2 files changed, 196 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index a97a9d058198..e2ad62481f25 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -675,6 +675,7 @@ config I2C_IMG
+>  config I2C_IMX
+>  	tristate "IMX I2C interface"
+>  	depends on ARCH_MXC || ARCH_LAYERSCAPE || COLDFIRE
+> +	select I2C_SLAVE
+>  	help
+>  	  Say Y here if you want to use the IIC bus controller on
+>  	  the Freescale i.MX/MXC, Layerscape or ColdFire processors.
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index e6f8d6e45a15..a8e8af57e33f 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -17,6 +17,7 @@
+>   *	Copyright (C) 2008 Darius Augulis <darius.augulis at teltonika.lt>
+>   *
+>   *	Copyright 2013 Freescale Semiconductor, Inc.
+> + *	Copyright 2020 NXP
+>   *
+>   */
+>  
+> @@ -73,6 +74,11 @@
+>  #define IMX_I2C_I2SR	0x03	/* i2c status */
+>  #define IMX_I2C_I2DR	0x04	/* i2c transfer data */
+>  
+> +/*
+> + * All of the layerscape series SoCs support IBIC register.
+> + */
+> +#define IMX_I2C_IBIC	0x05    /* i2c bus interrupt config */
+> +
+>  #define IMX_I2C_REGSHIFT	2
+>  #define VF610_I2C_REGSHIFT	0
+>  
+> @@ -91,6 +97,7 @@
+>  #define I2CR_MSTA	0x20
+>  #define I2CR_IIEN	0x40
+>  #define I2CR_IEN	0x80
+> +#define IBIC_BIIE	0x80 /* Bus idle interrupt enable */
+>  
+>  /* register bits different operating codes definition:
+>   * 1) I2SR: Interrupt flags clear operation differ between SoCs:
+> @@ -201,6 +208,7 @@ struct imx_i2c_struct {
+>  	struct pinctrl_state *pinctrl_pins_gpio;
+>  
+>  	struct imx_i2c_dma	*dma;
+> +	struct i2c_client	*slave;
+>  };
+>  
+>  static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
+> @@ -265,6 +273,11 @@ static inline int is_imx1_i2c(struct imx_i2c_struct *i2c_imx)
+>  	return i2c_imx->hwdata->devtype == IMX1_I2C;
+>  }
+>  
+> +static inline int is_vf610_i2c(struct imx_i2c_struct *i2c_imx)
+> +{
+> +	return i2c_imx->hwdata->devtype == VF610_I2C;
+> +}
+> +
+>  static inline void imx_i2c_write_reg(unsigned int val,
+>  		struct imx_i2c_struct *i2c_imx, unsigned int reg)
+>  {
+> @@ -277,6 +290,27 @@ static inline unsigned char imx_i2c_read_reg(struct imx_i2c_struct *i2c_imx,
+>  	return readb(i2c_imx->base + (reg << i2c_imx->hwdata->regshift));
+>  }
+>  
+> +static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
+> +{
+> +	unsigned int temp;
+> +
+> +	/*
+> +	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
+> +	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
+> +	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
+> +	 */
+> +	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
+> +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> +}
+> +
+> +/* Set up i2c controller register and i2c status register to default value. */
+> +static void i2c_imx_reset_regs(struct imx_i2c_struct *i2c_imx)
+> +{
+> +	imx_i2c_write_reg(i2c_imx->hwdata->i2cr_ien_opcode ^ I2CR_IEN,
+> +			  i2c_imx, IMX_I2C_I2CR);
+> +	i2c_imx_clear_irq(i2c_imx, I2SR_IIF | I2SR_IAL);
+> +}
+> +
+>  /* Functions for DMA support */
+>  static void i2c_imx_dma_request(struct imx_i2c_struct *i2c_imx,
+>  						dma_addr_t phy_addr)
+> @@ -412,19 +446,6 @@ static void i2c_imx_dma_free(struct imx_i2c_struct *i2c_imx)
+>  	dma->chan_using = NULL;
+>  }
+>  
+> -static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
+> -{
+> -	unsigned int temp;
+> -
+> -	/*
+> -	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
+> -	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
+> -	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
+> -	 */
+> -	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
+> -	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> -}
+> -
+>  static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy, bool atomic)
+>  {
+>  	unsigned long orig_jiffies = jiffies;
+> @@ -638,18 +659,165 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
+>  	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+>  }
+>  
+> +/*
+> + * Enable bus idle interrupts
+> + * Note: IBIC register will be cleared after disabled i2c module.
+> + * All of layerscape series SoCs support IBIC register.
+> + */
+> +static void i2c_imx_enable_bus_idle(struct imx_i2c_struct *i2c_imx)
+> +{
+> +	if (is_vf610_i2c(i2c_imx)) {
+> +		unsigned int temp;
+> +
+> +		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_IBIC);
+> +		temp |= IBIC_BIIE;
+> +		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_IBIC);
+> +	}
+> +}
+> +
+> +static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
+> +				     unsigned int status, unsigned int ctl)
+> +{
+> +	u8 value;
+> +
+> +	if (status & I2SR_IAL) { /* Arbitration lost */
+> +		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
+> +		if (!(status & I2SR_IAAS))
+> +			return IRQ_HANDLED;
+> +	}
+> +
+> +	if (status & I2SR_IAAS) { /* Addressed as a slave */
+> +		if (status & I2SR_SRW) { /* Master wants to read from us*/
+> +			dev_dbg(&i2c_imx->adapter.dev, "read requested");
+> +			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_READ_REQUESTED, &value);
+> +
+> +			/* Slave transmit */
+> +			ctl |= I2CR_MTX;
+> +			imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
+> +
+> +			/* Send data */
+> +			imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
+> +		} else { /* Master wants to write to us */
+> +			dev_dbg(&i2c_imx->adapter.dev, "write requested");
+> +			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_REQUESTED, &value);
+> +
+> +			/* Slave receive */
+> +			ctl &= ~I2CR_MTX;
+> +			imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
+> +			/* Dummy read */
+> +			imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
+> +		}
+> +	} else if (!(ctl & I2CR_MTX)) { /* Receive mode */
+> +		if (status & I2SR_IBB) { /* No STOP signal detected */
+> +			value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
+> +			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_RECEIVED, &value);
+> +		} else { /* STOP signal is detected */
+> +			dev_dbg(&i2c_imx->adapter.dev,
+> +				"STOP signal detected");
+> +			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_STOP, &value);
+> +		}
+> +	} else if (!(status & I2SR_RXAK)) { /* Transmit mode received ACK */
+> +		ctl |= I2CR_MTX;
+> +		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
+> +
+> +		i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_READ_PROCESSED, &value);
+> +
+> +		imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
+> +	} else { /* Transmit mode received NAK */
+> +		ctl &= ~I2CR_MTX;
+> +		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
+> +		imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
+> +	}
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void i2c_imx_slave_init(struct imx_i2c_struct *i2c_imx)
+> +{
+> +	int temp;
+> +
+> +	/* Set slave addr. */
+> +	imx_i2c_write_reg((i2c_imx->slave->addr << 1), i2c_imx, IMX_I2C_IADR);
+> +
+> +	i2c_imx_reset_regs(i2c_imx);
+> +
+> +	/* Enable module */
+> +	temp = i2c_imx->hwdata->i2cr_ien_opcode;
+> +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+> +
+> +	/* Enable interrupt from i2c module */
+> +	temp |= I2CR_IIEN;
+> +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+> +
+> +	i2c_imx_enable_bus_idle(i2c_imx);
+> +}
+> +
+> +static int i2c_imx_reg_slave(struct i2c_client *client)
+> +{
+> +	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(client->adapter);
+> +	int ret;
+> +
+> +	if (i2c_imx->slave)
+> +		return -EBUSY;
+> +
+> +	i2c_imx->slave = client;
+> +
+> +	/* Resume */
+> +	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
+> +	if (ret < 0) {
+> +		dev_err(&i2c_imx->adapter.dev, "failed to resume i2c controller");
+> +		return ret;
+> +	}
+> +
+> +	i2c_imx_slave_init(i2c_imx);
+> +
+> +	return 0;
+> +}
+> +
+> +static int i2c_imx_unreg_slave(struct i2c_client *client)
+> +{
+> +	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(client->adapter);
+> +	int ret;
+> +
+> +	if (!i2c_imx->slave)
+> +		return -EINVAL;
+> +
+> +	/* Reset slave address. */
+> +	imx_i2c_write_reg(0, i2c_imx, IMX_I2C_IADR);
+> +
+> +	i2c_imx_reset_regs(i2c_imx);
+> +
+> +	i2c_imx->slave = NULL;
+> +
+> +	/* Suspend */
+> +	ret = pm_runtime_put_sync(i2c_imx->adapter.dev.parent);
+> +	if (ret < 0)
+> +		dev_err(&i2c_imx->adapter.dev, "failed to suspend i2c controller");
+> +
+> +	return ret;
+> +}
+> +
+> +static irqreturn_t i2c_imx_master_isr(struct imx_i2c_struct *i2c_imx, unsigned int status)
+> +{
+> +	/* save status register */
+> +	i2c_imx->i2csr = status;
+> +	wake_up(&i2c_imx->queue);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
+>  {
+>  	struct imx_i2c_struct *i2c_imx = dev_id;
+> -	unsigned int temp;
+> +	unsigned int ctl, status;
+>  
+> -	temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
+> -	if (temp & I2SR_IIF) {
+> -		/* save status register */
+> -		i2c_imx->i2csr = temp;
+> +	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
+> +	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
+> +	if (status & I2SR_IIF) {
+>  		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
+> -		wake_up(&i2c_imx->queue);
+> -		return IRQ_HANDLED;
+> +		if (i2c_imx->slave && !(ctl & I2CR_MSTA))
+> +			return i2c_imx_slave_isr(i2c_imx, status, ctl);
+> +		return i2c_imx_master_isr(i2c_imx, status);
+>  	}
+>  
+>  	return IRQ_NONE;
+> @@ -1027,6 +1195,10 @@ static int i2c_imx_xfer_common(struct i2c_adapter *adapter,
+>  	dev_dbg(&i2c_imx->adapter.dev, "<%s> exit with: %s: %d\n", __func__,
+>  		(result < 0) ? "error" : "success msg",
+>  			(result < 0) ? result : num);
+> +	/* After data is transferred, switch to slave mode(as a receiver) */
+> +	if (i2c_imx->slave)
+> +		i2c_imx_slave_init(i2c_imx);
+> +
+>  	return (result < 0) ? result : num;
+>  }
+>  
+> @@ -1140,6 +1312,8 @@ static const struct i2c_algorithm i2c_imx_algo = {
+>  	.master_xfer = i2c_imx_xfer,
+>  	.master_xfer_atomic = i2c_imx_xfer_atomic,
+>  	.functionality = i2c_imx_func,
+> +	.reg_slave	= i2c_imx_reg_slave,
+> +	.unreg_slave	= i2c_imx_unreg_slave,
+>  };
+>  
+>  static int i2c_imx_probe(struct platform_device *pdev)
+> @@ -1233,10 +1407,7 @@ static int i2c_imx_probe(struct platform_device *pdev)
+>  	clk_notifier_register(i2c_imx->clk, &i2c_imx->clk_change_nb);
+>  	i2c_imx_set_clk(i2c_imx, clk_get_rate(i2c_imx->clk));
+>  
+> -	/* Set up chip registers to defaults */
+> -	imx_i2c_write_reg(i2c_imx->hwdata->i2cr_ien_opcode ^ I2CR_IEN,
+> -			i2c_imx, IMX_I2C_I2CR);
+> -	imx_i2c_write_reg(i2c_imx->hwdata->i2sr_clr_opcode, i2c_imx, IMX_I2C_I2SR);
+> +	i2c_imx_reset_regs(i2c_imx);
+>  
+>  	/* Init optional bus recovery function */
+>  	ret = i2c_imx_init_recovery_info(i2c_imx, pdev);
+> -- 
+> 2.17.1
+> 
+> 
 
-Then it should be good.
-
-Rob
-
->
-> make ARCH=arm64 dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->
-> Regards,
->
-> Sowjanya
->
->
-> On 11/6/20 9:18 AM, Sowjanya Komatineni wrote:
-> >
-> > On 11/6/20 8:41 AM, Sowjanya Komatineni wrote:
-> >>
-> >> On 11/6/20 8:11 AM, Rob Herring wrote:
-> >>> On Thu, 05 Nov 2020 18:16:05 -0800, Sowjanya Komatineni wrote:
-> >>>> This patch converts text based dt-binding document to YAML based
-> >>>> dt-binding document.
-> >>>>
-> >>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> >>>> ---
-> >>>>   .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 152
-> >>>> +++++++++++++++++++++
-> >>>>   .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 ------
-> >>>>   2 files changed, 152 insertions(+), 44 deletions(-)
-> >>>>   create mode 100644
-> >>>> Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
-> >>>>   delete mode 100644
-> >>>> Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
-> >>>>
-> >>>
-> >>> My bot found errors running 'make dt_binding_check' on your patch:
-> >>>
-> >>> yamllint warnings/errors:
-> >>>
-> >>> dtschema/dtc warnings/errors:
-> >>> Error:
-> >>> Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32
-> >>> syntax error
-> >>> FATAL ERROR: Unable to parse input tree
-> >>> make[1]: *** [scripts/Makefile.lib:342:
-> >>> Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml]
-> >>> Error 1
-> >>> make[1]: *** Waiting for unfinished jobs....
-> >>> make: *** [Makefile:1364: dt_binding_check] Error 2
-> >>>
-> >>>
-> >>> See https://patchwork.ozlabs.org/patch/1395390
-> >>>
-> >>> The base for the patch is generally the last rc1. Any dependencies
-> >>> should be noted.
-> >>>
-> >>> If you already ran 'make dt_binding_check' and didn't see the above
-> >>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> >>> date:
-> >>>
-> >>> pip3 install dtschema --upgrade
-> >>>
-> >>> Please check and re-submit.
-> >> Thanks Rob. Will re-try after installing up-to-date.
-> >
-> > Somehow running 'make dt_binding_check' gives below error.
-> >
-> > I have yamllint newest version (1.2.1-1). Any specific version of
-> > yamllint is needed?
-> >
-> >  LINT    Documentation/devicetree/bindings
-> > invalid config: unknown option "max-spaces-inside-empty" for rule
-> > "braces"
-> > xargs: /usr/bin/yamllint: exited with status 255; aborting
-> > Documentation/devicetree/bindings/Makefile:59: recipe for target
-> > 'Documentation/devicetree/bindings/processed-schema-examples.json' failed
-> > make[1]: ***
-> > [Documentation/devicetree/bindings/processed-schema-examples.json]
-> > Error 124
-> > Makefile:1362: recipe for target 'dt_binding_check' failed
-> > make: *** [dt_binding_check] Error 2
-> >
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
