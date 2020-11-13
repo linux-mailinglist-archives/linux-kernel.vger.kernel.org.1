@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377B62B1E21
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E91A22B1E2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgKMPFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:05:48 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40943 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgKMPFs (ORCPT
+        id S1726859AbgKMPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKMPGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:05:48 -0500
-Received: by mail-wm1-f66.google.com with SMTP id a3so8751627wmb.5;
-        Fri, 13 Nov 2020 07:05:47 -0800 (PST)
+        Fri, 13 Nov 2020 10:06:33 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51479C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:06:19 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a65so8783043wme.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:06:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P6O+JmTd7OSlnPV06boaBBFveFRRN3XWMhK2wrrY0xg=;
+        b=F94NbCxB+lEMiO4/fwMQDTjCdnAmBRCjHfAtrinB3kQ4+7+SXEH5wNUza7BtqAR2FN
+         qK19yOApXiI4xMQhnVwkidB4uCW7XIhYXrhUd7sYDj8emMPJ1oMq1BMQKdUEC8c6jo1W
+         16O2fnlp3CN+kb92H9umJ7BWwO9QfevuY37g09l1w/dPKi0zAun2K2bHYkeL2FkGl5vN
+         n3T3w/9kcDCsJz1tjQi6legJd3qBRPFxcuNyfmQOKMmMkeyI67dnjmb9u/IGdm1JKmBA
+         uwx6l55RvKF3A6WqryCQ7QLWtjaAm6el5xd9kQBwXu8WADu6+4cWACSnJjLrrC9OH2Qb
+         SnaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bVaU10leUNBpSZ8QLekWuqLmBxn7RuMG1m+hwrLuz6g=;
-        b=orWZs6ro18hpOjpeQeq74jyJDjhRWpehrf9Y5a0oNqXW23q4EFC8E4IQCxP0M3ndFw
-         P8JOrKsQEdnkt6blk6TN72nqPJKI1FyzdR/nVm5nIJxgRcVxBpk2fphLrKaVDmqJ6p/h
-         x7vzCD4HlSqxea8BivJ37LEj6cfX8WosY+tuTgKhwIg3PFvCGTdCyqANi81F0uJdLDUA
-         39Bw2locTn2YlpESC1cHoW0nmISdMND0MeJFqr9JMUxKLkR9Zzp+IDnTh0lnC2CFZ8iv
-         MaV7VYjr58xmB8e33etf/SM0S2KB7nT+3oxlYB5FOUBN0qnHrvoB9gRdMmBRprT9OkV2
-         tU9A==
-X-Gm-Message-State: AOAM533IhOohGzUw7YVB7uc5RoRLy9AiZHBqvBGSCigi1S6El8o/YXfK
-        EPoWRo5/9Qwuu+DxiG+JwWw=
-X-Google-Smtp-Source: ABdhPJyt09W3jXfPJxn0KjzPJUsp/JJ3bB4BaSGATWAC3rkRQ65MiVyRh5JtcpvI5BLhcx5njZISfw==
-X-Received: by 2002:a1c:7e8e:: with SMTP id z136mr3108670wmc.46.1605279946339;
-        Fri, 13 Nov 2020 07:05:46 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id q12sm9984512wrx.86.2020.11.13.07.05.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P6O+JmTd7OSlnPV06boaBBFveFRRN3XWMhK2wrrY0xg=;
+        b=IAudnuzyiE/olqIJ6az+OsRCGiZ4GX+p48NIG1csUpraInNIL6rXi7vcCGWVIwpBbM
+         wpcclmlAVB1DnwIH2D+w6gaZBs1O3PyfIn3b0mqkLG0L8yxzku9B7T40SZ6+D5lT21Fp
+         yeE8fVPoOdr2iD4N7qjAl1R4om5NOLWf3Ktq6/Kd0rGNiJa9aO/UTvsbQNN2ZdSTj6zN
+         /Kr+Bql1Qth1A7WlcJ0AwHl9YE744oqvCyF4r6YBkZaZZ3wGoMpNMaurtqV7aDQjKz+S
+         tH0iB2004nop9qWUL95h3eJif4G8G4HU3lN6X34XmD4HohcfZaKNuTra9UORgY66VHSO
+         dVKw==
+X-Gm-Message-State: AOAM532vLZq6Qh+IxZQpGP0Vp4/Vr81wGycwOuTjGGJ5W20a2A1vuAg5
+        Cw2cuWqr4+XQRKA3F/Yl9Ejx5Q==
+X-Google-Smtp-Source: ABdhPJzHvZod0Kx4nTCcJrjfewRNR3UUkzGDyxxrfPKrY7LkIsnrAzrAuKKvv5sw6VTrry+15Q0NaA==
+X-Received: by 2002:a1c:a555:: with SMTP id o82mr3009941wme.188.1605279977972;
+        Fri, 13 Nov 2020 07:06:17 -0800 (PST)
+Received: from arch-thunder.local (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
+        by smtp.gmail.com with ESMTPSA id m22sm11615092wrb.97.2020.11.13.07.06.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 07:05:45 -0800 (PST)
-Date:   Fri, 13 Nov 2020 15:05:44 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 06/17] x86/hyperv: allocate output arg pages if
- required
-Message-ID: <20201113150544.drm4qk4jlchewukg@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-7-wei.liu@kernel.org>
- <87a6vmy4dn.fsf@vitty.brq.redhat.com>
+        Fri, 13 Nov 2020 07:06:17 -0800 (PST)
+From:   Rui Miguel Silva <rui.silva@linaro.org>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
+        Rui Miguel Silva <rui.silva@linaro.org>
+Subject: [PATCH] optee: add writeback to valid memory type
+Date:   Fri, 13 Nov 2020 15:06:04 +0000
+Message-Id: <20201113150604.426784-1-rui.silva@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6vmy4dn.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:35:48PM +0100, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-[...]
-> > @@ -209,14 +219,23 @@ static int hv_cpu_die(unsigned int cpu)
-> >  	unsigned int new_cpu;
-> >  	unsigned long flags;
-> >  	void **input_arg;
-> > -	void *input_pg = NULL;
-> > +	void *pg;
-> >  
-> >  	local_irq_save(flags);
-> >  	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
-> > -	input_pg = *input_arg;
-> > +	pg = *input_arg;
-> >  	*input_arg = NULL;
-> > +
-> > +	if (hv_root_partition) {
-> > +		void **output_arg;
-> > +
-> > +		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
-> > +		*output_arg = NULL;
-> > +	}
-> > +
-> >  	local_irq_restore(flags);
-> > -	free_page((unsigned long)input_pg);
-> > +
-> > +	free_page((unsigned long)pg);
-> >  
-> 
-> Hm, but in case we've allocated output_arg, don't we need to do
-> 	free_pages((unsigned long)pg, 1);
-> 
-> instead?
+Only in smp systems the cache policy is setup as write alloc, in
+single cpu systems the cache policy is set as writeback and it is
+normal memory, so, it should pass the is_normal_memory check in the
+share memory registration.
 
-Indeed. This has been fixed with:
+Add the right condition to make it work in no smp systems.
 
-    free_pages((unsigned long)pg, hv_root_partition ? 1 : 0);
+Fixes: cdbcf83d29c1 ("tee: optee: check type of registered shared memory")
+Signed-off-by: Rui Miguel Silva <rui.silva@linaro.org>
 
-Wei.
+---
+ drivers/tee/optee/call.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+index 20b6fd7383c5..c981757ba0d4 100644
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -534,7 +534,8 @@ void optee_free_pages_list(void *list, size_t num_entries)
+ static bool is_normal_memory(pgprot_t p)
+ {
+ #if defined(CONFIG_ARM)
+-	return (pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEALLOC;
++	return (((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEALLOC) ||
++		((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEBACK));
+ #elif defined(CONFIG_ARM64)
+ 	return (pgprot_val(p) & PTE_ATTRINDX_MASK) == PTE_ATTRINDX(MT_NORMAL);
+ #else
+-- 
+2.29.2
+
