@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAD92B19FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C69F2B19FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgKMLXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:23:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgKMLW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:22:56 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61633C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:22:56 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kdXAL-0000Qs-Cn; Fri, 13 Nov 2020 12:22:53 +0100
-Subject: Re: [PATCH RESEND 0/4] regulator: debugging and fixing supply deps
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <cover.1605226675.git.mirq-linux@rere.qmqm.pl>
- <0cb181b3-d257-b7a4-56e4-0d2bb04b0387@pengutronix.de>
-Message-ID: <49aaa901-041d-e803-2ec5-167d8bb6372f@pengutronix.de>
-Date:   Fri, 13 Nov 2020 12:22:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1726481AbgKMLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:24:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:36446 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726478AbgKMLY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:24:28 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5479E1042;
+        Fri, 13 Nov 2020 03:24:26 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ED82C3F6CF;
+        Fri, 13 Nov 2020 03:24:23 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Qian Cai <cai@redhat.com>, bigeasy@linutronix.de,
+        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, mgorman@suse.de, mingo@kernel.org,
+        ouwen210@hotmail.com, peterz@infradead.org, qais.yousef@arm.com,
+        rostedt@goodmis.org, swood@redhat.com, tglx@linutronix.de,
+        tj@kernel.org, vincent.donnefort@arm.com,
+        vincent.guittot@linaro.org
+Subject: [PATCH] sched/core: Add missing completion for affine_move_task() waiters
+Date:   Fri, 13 Nov 2020 11:24:14 +0000
+Message-Id: <20201113112414.2569-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <0cb181b3-d257-b7a4-56e4-0d2bb04b0387@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC += linux-stm32 as other STM32MP1 boards are also affected.
+Qian reported that some fuzzer issuing sched_setaffinity() ends up stuck on
+a wait_for_completion(). The problematic pattern seems to be:
 
-On 11/13/20 12:19 PM, Ahmad Fatoum wrote:
-> Hello Michał,
-> 
-> On 11/13/20 1:20 AM, Michał Mirosław wrote:
->> It turns out that commit aea6cb99703e ("regulator: resolve supply
->> after creating regulator") exposed a number of issues in regulator
->> initialization and introduced a memory leak of its own. One uncovered
->> problem was already fixed by cf1ad559a20d ("regulator: defer probe when
->> trying to get voltage from unresolved supply"). This series fixes the
->> remaining ones and adds a two debugging aids to help in the future.
->>
->> The final patch adds a workaround to preexisting problem occurring with
->> regulators that have the same name as its supply_name. This worked
->> before by accident, so might be worth backporting. The error message is
->> left on purpose so that these configurations can be detected and fixed.
->>
->> (The first two patches are resends from Nov 5).
->>
->> (Series resent because of wrong arm-kernel ML address.)
-> 
-> lxa-mc1 (STM32MP1 board with STPMIC) now manages to boot again with following
-> new warning:
-> 
->   stpmic1-regulator 5c002000.i2c:stpmic@33:regulators: Supply for VREF_DDR
-> 
-> So for the whole series,
-> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
-> 
-> Thanks!
-> Ahmad
-> 
->>
->> Michał Mirosław (4):
->>   regulator: fix memory leak with repeated set_machine_constraints()
->>   regulator: debug early supply resolving
->>   regulator: avoid resolve_supply() infinite recursion
->>   regulator: workaround self-referent regulators
->>
->>  drivers/regulator/core.c | 40 ++++++++++++++++++++++++----------------
->>  1 file changed, 24 insertions(+), 16 deletions(-)
->>
-> 
+  affine_move_task()
+      // task_running() case
+      stop_one_cpu();
+      wait_for_completion(&pending->done);
 
+Combined with, on the stopper side:
+
+  migration_cpu_stop()
+    // Task moved between unlocks and scheduling the stopper
+    task_rq(p) != rq &&
+    // task_running() case
+    dest_cpu >= 0
+
+    => no complete_all()
+
+This can happen with both PREEMPT and !PREEMPT, although !PREEMPT should
+be more likely to see this given the targeted task has a much bigger window
+to block and be woken up elsewhere before the stopper runs.
+
+Make migration_cpu_stop() always look at pending affinity requests; signal
+their completion if the stopper hits a rq mismatch but the task is
+still within its allowed mask. When Migrate-Disable isn't involved, this
+matches the previous set_cpus_allowed_ptr() vs migration_cpu_stop()
+behaviour.
+
+Link: https://lore.kernel.org/lkml/8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com
+Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+Reported-by: Qian Cai <cai@redhat.com>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ kernel/sched/core.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 02076e6d3792..fad0a8e62aca 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1923,7 +1923,7 @@ static int migration_cpu_stop(void *data)
+ 		else
+ 			p->wake_cpu = dest_cpu;
+ 
+-	} else if (dest_cpu < 0) {
++	} else if (dest_cpu < 0 || pending) {
+ 		/*
+ 		 * This happens when we get migrated between migrate_enable()'s
+ 		 * preempt_enable() and scheduling the stopper task. At that
+@@ -1933,6 +1933,17 @@ static int migration_cpu_stop(void *data)
+ 		 * more likely.
+ 		 */
+ 
++		/*
++		 * The task moved before the stopper got to run. We're holding
++		 * ->pi_lock, so the allowed mask is stable - if it got
++		 * somewhere allowed, we're done.
++		 */
++		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
++			p->migration_pending = NULL;
++			complete = true;
++			goto out;
++		}
++
+ 		/*
+ 		 * When this was migrate_enable() but we no longer have an
+ 		 * @pending, a concurrent SCA 'fixed' things and we should be
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.27.0
+
