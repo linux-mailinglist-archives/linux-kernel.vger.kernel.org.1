@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA78D2B16B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7692B16B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgKMHrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKMHrB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:47:01 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E87C0613D1;
-        Thu, 12 Nov 2020 23:47:01 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id o21so11986810ejb.3;
-        Thu, 12 Nov 2020 23:47:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=xyFPgfJGZElUDS+PI2Phj5FKf+h5B1qSjvSoQQaGK30=;
-        b=H0uuAfr62wXmYh3GdjTb4/g0FY9lMiVTQFQk3ppJb1GKYB12OFKy9YeMM/+CP7W9w2
-         p4NVxzdZS6eV4fTQ1SgRyV2HKd6PACx9D1IO0ZMzIELSEpScp95uALTHXNZ3vh0xe1x0
-         lTPSXGIm9CU16mcIs3wK++he5jeCwhVPvk56cHdQi6Ag7XY+7Ze67zgSCOiPc9dBI5Af
-         HBS7KapJUUIlDqFPgBQS93LT7O/RVagtEpPUrVBg1uCyU/QmyB+RLiqJkBwDeTcPFli1
-         sHfW6xVe733NsPh6CW1off/H9mB7KLezJr3nUmo0+7fAGwUdHrCNXKOjF9mqprwoHfye
-         kc8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=xyFPgfJGZElUDS+PI2Phj5FKf+h5B1qSjvSoQQaGK30=;
-        b=qIsxHwpkuwo2V1I0A7jhH78l4vpHLIG4LoLPmFPePSyNjOkDGm5xUIeUihklUUcxUo
-         yrfuZ2wBF8ASDNfqIvqhliqpG5uy+jeSIN/zG5m4Uoqtp0LRmguromBrD0DoLeUcZtEh
-         /3A9DYWK80RpzJg0FtLI7RiekKqMykuplIaBPxCSIRQLZquUgW76cdh9udWRgFzv+qRq
-         AbveGe+4coJixoPlEeeZ/FcNIIH87ZKYr0U6JGO1y2XhuBOSgqeswywC7NVjeFFgxpRC
-         6fEbnju9ZJypb7WE4lBiyqjdTqRSzH56Pzn1NmXZP5RWseeIHFHRCaXBgHBLfEgktQBW
-         Zv/Q==
-X-Gm-Message-State: AOAM533ZsnUdgAF7KvrUQvVLzYqXm0d8GJkltHuOLEplQ3FgGaLX/UpG
-        96XGqY/Vk63AIfXzdfwonTygpiwTJc2CTw==
-X-Google-Smtp-Source: ABdhPJwVXDRwL7YD222iy0r6wsuoZZ145TW4JxlvR8+v+l+0iKXRcADDSJJINNHbSgRywEniUgJZSw==
-X-Received: by 2002:a17:906:e53:: with SMTP id q19mr805931eji.254.1605253618387;
-        Thu, 12 Nov 2020 23:46:58 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f23:2800:e113:5d8d:7b96:ca98? (p200300ea8f232800e1135d8d7b96ca98.dip0.t-ipconnect.de. [2003:ea:8f23:2800:e113:5d8d:7b96:ca98])
-        by smtp.googlemail.com with ESMTPSA id y18sm3011727ejq.69.2020.11.12.23.46.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2020 23:46:57 -0800 (PST)
-Subject: Re: [PATCH 3/3] net: xfrm: use core API for updating TX stats
-To:     Lev Stipakov <lstipakov@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Lev Stipakov <lev@openvpn.net>
-References: <20201112111345.34625-1-lev@openvpn.net>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <59b6c94d-e0de-e4f5-d02e-e799694f6dc8@gmail.com>
-Date:   Fri, 13 Nov 2020 08:46:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726207AbgKMHt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:49:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726133AbgKMHt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:49:26 -0500
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 004EE20936
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605253766;
+        bh=8kvl6kbcf3I7sjDJ7WflrDos9Tai0vUrQQSTGsyMk4U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CjvOtuprdR/aiRjhZYzmc9gonc/53vpRt4Kvk+nv/KF7Yt7cG/sFysr67RBom2aNk
+         VHTbSEwcGeeVt2I2pn8fgneQHT82532go/wdIohJqawMZHRsuHrFnnRLrxxDRuMOOV
+         PATRqBS6jd1K+Vl5GvFPDMIVzTRKqa9677NOuRyc=
+Received: by mail-ot1-f50.google.com with SMTP id z16so8185384otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:49:25 -0800 (PST)
+X-Gm-Message-State: AOAM532Npv4y+K4wrZAmzx96bl+ngcaoeQVdy1k/shKRHVJMPhZadK2+
+        jtbuIG+GEETaS1Aucja84cvNGpmmgb1x1eQRtXA=
+X-Google-Smtp-Source: ABdhPJwXAQ3X3z9DgTnNWgOwgPi0i0p6wCcMybY+A2TesXmeeDs8hhF5CFZA8QdcGHm8tRtgj5vukAj1ArXspI+lu70=
+X-Received: by 2002:a05:6830:115a:: with SMTP id x26mr701341otq.77.1605253765263;
+ Thu, 12 Nov 2020 23:49:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201112111345.34625-1-lev@openvpn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+References: <20201112212457.2042105-1-adrian.ratiu@collabora.com> <20201112212457.2042105-2-adrian.ratiu@collabora.com>
+In-Reply-To: <20201112212457.2042105-2-adrian.ratiu@collabora.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 13 Nov 2020 08:49:12 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFbLRTvGuRt5J3-oEuJrrHFV9+SBGFFDNsAftGUbwoTPw@mail.gmail.com>
+Message-ID: <CAMj1kXFbLRTvGuRt5J3-oEuJrrHFV9+SBGFFDNsAftGUbwoTPw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6 warning
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>, kernel@collabora.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.11.2020 um 12:13 schrieb Lev Stipakov:
-> Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add") has added
-> function "dev_sw_netstats_tx_add()" to update net device per-cpu TX
-> stats.
-> 
-> Use this function instead of own code.
-> 
-LGTM. In addition you can replace xfrmi_get_stats64() with
-dev_get_tstats64().
+On Thu, 12 Nov 2020 at 22:23, Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+>
+> From: Nathan Chancellor <natechancellor@gmail.com>
+>
+> Drop warning because kernel now requires GCC >= v4.9 after
+> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9").
+>
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 
-> Signed-off-by: Lev Stipakov <lev@openvpn.net>
+Again, this does not do what it says on the tin.
+
+If you want to disable the pragma for Clang, call that out in the
+commit log, and don't hide it under a GCC version change.
+
+Without the pragma, the generated code is the same as the generic
+code, so it makes no sense to build xor-neon.ko at all, right?
+
 > ---
->  net/xfrm/xfrm_interface.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-> index 9b8e292a7c6a..43ee4c5a6fa9 100644
-> --- a/net/xfrm/xfrm_interface.c
-> +++ b/net/xfrm/xfrm_interface.c
-> @@ -319,12 +319,7 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
->  
->  	err = dst_output(xi->net, skb->sk, skb);
->  	if (net_xmit_eval(err) == 0) {
-> -		struct pcpu_sw_netstats *tstats = this_cpu_ptr(dev->tstats);
-> -
-> -		u64_stats_update_begin(&tstats->syncp);
-> -		tstats->tx_bytes += length;
-> -		tstats->tx_packets++;
-> -		u64_stats_update_end(&tstats->syncp);
-> +		dev_sw_netstats_tx_add(dev, 1, length);
->  	} else {
->  		stats->tx_errors++;
->  		stats->tx_aborted_errors++;
-> 
-
+>  arch/arm/lib/xor-neon.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> index b99dd8e1c93f..e1e76186ec23 100644
+> --- a/arch/arm/lib/xor-neon.c
+> +++ b/arch/arm/lib/xor-neon.c
+> @@ -19,15 +19,8 @@ MODULE_LICENSE("GPL");
+>   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+>   * NEON instructions.
+>   */
+> -#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+> +#ifdef CONFIG_CC_IS_GCC
+>  #pragma GCC optimize "tree-vectorize"
+> -#else
+> -/*
+> - * While older versions of GCC do not generate incorrect code, they fail to
+> - * recognize the parallel nature of these functions, and emit plain ARM code,
+> - * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
+> - */
+> -#warning This code requires at least version 4.6 of GCC
+>  #endif
+>
+>  #pragma GCC diagnostic ignored "-Wunused-variable"
+> --
+> 2.29.2
+>
