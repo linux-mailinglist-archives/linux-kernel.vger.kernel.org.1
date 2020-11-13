@@ -2,270 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C38E2B1C64
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1976D2B1C16
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgKMNtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:49:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726878AbgKMNtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:49:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605275361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c3r8/B+7cC6X7RvaWGidvwKg/ni8ZPyPCRRKcbTbrJM=;
-        b=d2+G5vX2BiP/wawcjOdClPTejq2pT72TT3bY46lnQYTjrjyb7pcgeOgzboO0xwBSOkzqn0
-        /QubdIYi+vZLLsrs1YJ/beQQHwSQp7BjcvoJu4ew4XVt1Dmpfr3nv9XSD3vZqoaSH8ohm3
-        qzCeGL1zCCrwrVY6UsvjxNbM+yI5GNs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-8jc7Dpz7NXe4sBQBG-oZEQ-1; Fri, 13 Nov 2020 08:49:19 -0500
-X-MC-Unique: 8jc7Dpz7NXe4sBQBG-oZEQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726732AbgKMNsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:48:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726707AbgKMNr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 08:47:58 -0500
+Received: from [10.0.0.27] (cpe-70-114-140-30.austin.res.rr.com [70.114.140.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FAE21882FBD;
-        Fri, 13 Nov 2020 13:49:18 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-114-21.ams2.redhat.com [10.36.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C4CA5C1C7;
-        Fri, 13 Nov 2020 13:49:07 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: [PATCH RFC 12/12] vdpa_sim_blk: implement ramdisk behaviour
-Date:   Fri, 13 Nov 2020 14:47:12 +0100
-Message-Id: <20201113134712.69744-13-sgarzare@redhat.com>
-In-Reply-To: <20201113134712.69744-1-sgarzare@redhat.com>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id F3BBB22201;
+        Fri, 13 Nov 2020 13:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605275277;
+        bh=Gym7LfdFLwprB43tuvSsVXNBKwRMIyYDLPnbY+rAX34=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=LSRyuAjS/GwKvW8SMI1YX0BzDPE66OA1ZFm2BZo/HyiiozEcs51xspg2Se+a+qfFx
+         QqQPWd7nhIBlBdPNwx3d3/pRTLAD2JsSW/l2gn79JmPodzfKgnsgHEzTqBf08Bxayz
+         L2HoyE+VvmQ6o9kTqXxP893UJG+qvFYZlOeoOhIs=
+Subject: Re: [PATCH 1/8] arm64: dts: socfpga: Use generic "ngpios" rather than
+ "snps,nr-gpios"
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Wei Xu <xuwei5@hisilicon.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Saravana Kannan <saravanak@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <20201109170258.4a70c768@xhacker.debian>
+ <20201109170335.00a0523b@xhacker.debian>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5e05ecfd-4d67-c1b0-36fd-ddb59d2e9061@kernel.org>
+Date:   Fri, 13 Nov 2020 07:47:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201109170335.00a0523b@xhacker.debian>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous implementation wrote only the status of each request.
-This patch implements a more accurate block device simulator,
-providing a ramdisk-like behavior.
 
-Also handle VIRTIO_BLK_T_GET_ID request, always answering the
-"vdpa_blk_sim" string.
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 151 +++++++++++++++++++++++----
- 1 file changed, 133 insertions(+), 18 deletions(-)
+On 11/9/20 3:03 AM, Jisheng Zhang wrote:
+> This is to remove similar errors as below:
+> 
+> OF: /.../gpio-port@0: could not find phandle
+> 
+> Commit 7569486d79ae ("gpio: dwapb: Add ngpios DT-property support")
+> explained the reason of above errors well and added the generic
+> "ngpios" property, let's use it.
+> 
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> index 0f893984c256..d301ac0d406b 100644
+> --- a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> +++ b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> @@ -203,7 +203,7 @@ porta: gpio-controller@0 {
+>  				compatible = "snps,dw-apb-gpio-port";
+>  				gpio-controller;
+>  				#gpio-cells = <2>;
+> -				snps,nr-gpios = <24>;
+> +				ngpios = <24>;
+>  				reg = <0>;
+>  				interrupt-controller;
+>  				#interrupt-cells = <2>;
+> @@ -223,7 +223,7 @@ portb: gpio-controller@0 {
+>  				compatible = "snps,dw-apb-gpio-port";
+>  				gpio-controller;
+>  				#gpio-cells = <2>;
+> -				snps,nr-gpios = <24>;
+> +				ngpios = <24>;
+>  				reg = <0>;
+>  				interrupt-controller;
+>  				#interrupt-cells = <2>;
+> 
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-index 8e41b3ab98d5..68e74383322f 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/blkdev.h>
- #include <uapi/linux/virtio_blk.h>
- 
- #include "vdpa_sim.h"
-@@ -24,10 +25,137 @@
- 
- static struct vdpasim *vdpasim_blk_dev;
- 
-+static int vdpasim_blk_handle_req(struct vdpasim *vdpasim,
-+				  struct vdpasim_virtqueue *vq)
-+{
-+	size_t wrote = 0, to_read = 0, to_write = 0;
-+	struct virtio_blk_outhdr hdr;
-+	uint8_t status;
-+	uint32_t type;
-+	ssize_t bytes;
-+	loff_t offset;
-+	int i, ret;
-+
-+	vringh_kiov_cleanup(&vq->riov);
-+	vringh_kiov_cleanup(&vq->wiov);
-+
-+	ret = vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
-+				   &vq->head, GFP_ATOMIC);
-+	if (ret != 1)
-+		return ret;
-+
-+	for (i = 0; i < vq->wiov.used; i++)
-+		to_write += vq->wiov.iov[i].iov_len;
-+	to_write -= 1; /* last byte is the status */
-+
-+	for (i = 0; i < vq->riov.used; i++)
-+		to_read += vq->riov.iov[i].iov_len;
-+
-+	bytes = vringh_iov_pull_iotlb(&vq->vring, &vq->riov, &hdr, sizeof(hdr));
-+	if (bytes != sizeof(hdr))
-+		return 0;
-+
-+	to_read -= bytes;
-+
-+	type = le32_to_cpu(hdr.type);
-+	offset = le64_to_cpu(hdr.sector) << SECTOR_SHIFT;
-+	status = VIRTIO_BLK_S_OK;
-+
-+	switch (type) {
-+	case VIRTIO_BLK_T_IN:
-+		if (offset + to_write > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
-+			dev_err(&vdpasim->vdpa.dev,
-+				"reading over the capacity - offset: 0x%llx len: 0x%lx\n",
-+				offset, to_write);
-+			status = VIRTIO_BLK_S_IOERR;
-+			break;
-+		}
-+
-+		bytes = vringh_iov_push_iotlb(&vq->vring, &vq->wiov,
-+					      vdpasim->buffer + offset,
-+					      to_write);
-+		if (bytes < 0) {
-+			dev_err(&vdpasim->vdpa.dev,
-+				"vringh_iov_push_iotlb() error: %ld offset: 0x%llx len: 0x%lx\n",
-+				bytes, offset, to_write);
-+			status = VIRTIO_BLK_S_IOERR;
-+			break;
-+		}
-+
-+		wrote += bytes;
-+		break;
-+
-+	case VIRTIO_BLK_T_OUT:
-+		if (offset + to_read > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
-+			dev_err(&vdpasim->vdpa.dev,
-+				"writing over the capacity - offset: 0x%llx len: 0x%lx\n",
-+				offset, to_read);
-+			status = VIRTIO_BLK_S_IOERR;
-+			break;
-+		}
-+
-+		bytes = vringh_iov_pull_iotlb(&vq->vring, &vq->riov,
-+					      vdpasim->buffer + offset,
-+					      to_read);
-+		if (bytes < 0) {
-+			dev_err(&vdpasim->vdpa.dev,
-+				"vringh_iov_pull_iotlb() error: %ld offset: 0x%llx len: 0x%lx\n",
-+				bytes, offset, to_read);
-+			status = VIRTIO_BLK_S_IOERR;
-+			break;
-+		}
-+		break;
-+
-+	case VIRTIO_BLK_T_GET_ID: {
-+		char id[VIRTIO_BLK_ID_BYTES] = "vdpa_blk_sim";
-+
-+		bytes = vringh_iov_push_iotlb(&vq->vring,
-+					      &vq->wiov, id,
-+					      VIRTIO_BLK_ID_BYTES);
-+		if (bytes < 0) {
-+			dev_err(&vdpasim->vdpa.dev,
-+				"vringh_iov_push_iotlb() error: %ld\n", bytes);
-+			status = VIRTIO_BLK_S_IOERR;
-+			break;
-+		}
-+
-+		wrote += bytes;
-+		break;
-+	}
-+
-+	default:
-+		dev_warn(&vdpasim->vdpa.dev,
-+			 "Unsupported request type %d\n", type);
-+		status = VIRTIO_BLK_S_IOERR;
-+		break;
-+	}
-+
-+	/* if VIRTIO_BLK_T_IN or VIRTIO_BLK_T_GET_ID fail, we need to skip
-+	 * the remaining bytes to put the status in the last byte
-+	 */
-+	if (to_write - wrote > 0) {
-+		vringh_iov_push_iotlb(&vq->vring, &vq->wiov, NULL,
-+				      to_write - wrote);
-+	}
-+
-+	/* last byte is the status */
-+	bytes = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
-+	if (bytes != 1)
-+		return 0;
-+
-+	wrote += bytes;
-+
-+	/* Make sure data is wrote before advancing index */
-+	smp_wmb();
-+
-+	vringh_complete_iotlb(&vq->vring, vq->head, wrote);
-+
-+	return ret;
-+}
-+
- static void vdpasim_blk_work(struct work_struct *work)
- {
- 	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
--	u8 status = VIRTIO_BLK_S_OK;
- 	int i;
- 
- 	spin_lock(&vdpasim->lock);
-@@ -41,21 +169,7 @@ static void vdpasim_blk_work(struct work_struct *work)
- 		if (!vq->ready)
- 			continue;
- 
--		while (vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
--					    &vq->head, GFP_ATOMIC) > 0) {
--
--			int write;
--
--			vq->wiov.i = vq->wiov.used - 1;
--			write = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
--			if (write <= 0)
--				break;
--
--			/* Make sure data is wrote before advancing index */
--			smp_wmb();
--
--			vringh_complete_iotlb(&vq->vring, vq->head, write);
--
-+		while (vdpasim_blk_handle_req(vdpasim, vq) > 0) {
- 			/* Make sure used is visible before rasing the interrupt. */
- 			smp_wmb();
- 
-@@ -67,6 +181,7 @@ static void vdpasim_blk_work(struct work_struct *work)
- 				vq->cb(vq->private);
- 			local_bh_enable();
- 		}
-+
- 	}
- out:
- 	spin_unlock(&vdpasim->lock);
-@@ -84,7 +199,7 @@ static void vdpasim_blk_update_config(struct vdpasim *vdpasim)
- 	config->num_queues = cpu_to_vdpasim16(vdpasim, VDPASIM_BLK_VQ_NUM);
- 	config->min_io_size = cpu_to_vdpasim16(vdpasim, 1);
- 	config->opt_io_size = cpu_to_vdpasim32(vdpasim, 1);
--	config->blk_size = cpu_to_vdpasim32(vdpasim, 512);
-+	config->blk_size = cpu_to_vdpasim32(vdpasim, SECTOR_SIZE);
- }
- 
- static int __init vdpasim_blk_init(void)
-@@ -100,7 +215,7 @@ static int __init vdpasim_blk_init(void)
- 	attr.device.update_config = vdpasim_blk_update_config;
- 
- 	attr.work_fn = vdpasim_blk_work;
--	attr.buffer_size = PAGE_SIZE;
-+	attr.buffer_size = VDPASIM_BLK_CAPACITY << SECTOR_SHIFT;
- 
- 	vdpasim_blk_dev = vdpasim_create(&attr);
- 	if (IS_ERR(vdpasim_blk_dev)) {
--- 
-2.26.2
-
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
