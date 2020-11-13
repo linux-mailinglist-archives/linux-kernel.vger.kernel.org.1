@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D702B18EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFB22B18EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgKMKTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:19:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgKMKTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:19:23 -0500
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A70A22245;
-        Fri, 13 Nov 2020 10:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605262762;
-        bh=qVTJQRf6GmtiuWOPt1SdAlwhgxqs13LlxzA1gWVZ5Kk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LcaNGCU1OiWW3rbylaLYKSJFR5y4eXE/6sb4POw+2a28Q9lGIt1uSe8egkPaC593I
-         HfFOx1ZAIreAEI2umpw6p3Ei6cbq7vZki6cD/nloIIJj5nb83TqeX5hFeyY8QS1XOJ
-         ykSbZdR2LCAZVCTWxI1bUF6nJ4JPKPEr1c0tECPw=
-Received: by pali.im (Postfix)
-        id 4002F723; Fri, 13 Nov 2020 11:19:19 +0100 (CET)
-Date:   Fri, 13 Nov 2020 11:19:19 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Terry Zhou <bjzhou@marvell.com>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: Re: [PATCH] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
-Message-ID: <20201113101919.wega756egs7dinth@pali>
-References: <20201106100039.11385-1-pali@kernel.org>
- <20201106115118.43eab492@kernel.org>
+        id S1726374AbgKMKTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgKMKTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 05:19:51 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F115CC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:19:43 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 23so7763411wmg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:19:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RmkrxeBx46DhTuid3vYjjgytEVotpngZcVJnlj9M3tM=;
+        b=nCt/I4kddXnWLS5DWKyA7EfwbtbE5EeCRPUdXTBaB7mouJ0mlP4lfIhY+KtGNrpoCs
+         UqjT0hnPJcP+sZECJ1txcVZPMgOVQDeDqH4hd2pmqYFKFw72eCq8XFQyhdBzaT9/lQVf
+         WlZhTUpe6T6c4w+7uqyKd81LL0q4hYfa6+2pnU7BYjf00DGkapnc5A8P/4J2neyhdzgr
+         wOk+7L527/5n5Y3Bo1cRiWe2ssF0sIJDQ2v0AI9LLAN7gpAiY0jZUTE1yyravaB1gx5b
+         swWQpOrzoo50CHAGhru818syrdIKbRuLISNol8KcoMHOVWtRWAbX+hL/sXiBt7tJrIJx
+         x2JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=RmkrxeBx46DhTuid3vYjjgytEVotpngZcVJnlj9M3tM=;
+        b=j88DsIpRcdcLbMOjQG96bES3YVYhECf6svK+UOHCJDkdwY56vXvdOGx9ZeZL8jeiKG
+         GGVhOrlviSRDEnc8Fs7GIgpxkea+sTr/C3BTI/h6ZX1fz1OfjBVjQTXkFCwH9zYOIxF5
+         qUGFRuvUVRlsBUQbd+fyyrinXj+djyEqFnpZnF1stlLPHRHLPW2K8WK8dlebvNURLs10
+         SomPsRU1MW0jIiPFO3RDAHi8UQbzFAPy1BTeI4+ZWCM9FFqjW68UsuCb48pg7lf33EOR
+         ndcuewL0X28IJsSdKuB76xhxYzCNf3tHcwgXRPTQ++Ww3mHpzAIY4f0kBMopeADkx8rL
+         L1wg==
+X-Gm-Message-State: AOAM532dT+YO73TS9oSYEs0eLOEJxmNIO0NNk3FS3ckafeW0nzLUAvgM
+        wJGSw5qAK9/M8QUxe/rZo9Zn3A==
+X-Google-Smtp-Source: ABdhPJyQLrgVxYbtgAvS0x3odOLq2yPYGt4sTtE+7H/0Q+/ULR7DVcmiPK2frcmdXhl9pAHZKVChNQ==
+X-Received: by 2002:a1c:7d12:: with SMTP id y18mr1727783wmc.103.1605262782647;
+        Fri, 13 Nov 2020 02:19:42 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id h62sm10243357wrh.82.2020.11.13.02.19.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 02:19:41 -0800 (PST)
+Date:   Fri, 13 Nov 2020 10:19:40 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] mfd: syscon: Add
+ syscon_regmap_lookup_by_phandle_optional() function.
+Message-ID: <20201113101940.GH3718728@dell>
+References: <20201110161338.18198-1-enric.balletbo@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106115118.43eab492@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201110161338.18198-1-enric.balletbo@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael, Stephen: Could you take this clk patch?
+On Tue, 10 Nov 2020, Enric Balletbo i Serra wrote:
 
-On Friday 06 November 2020 11:51:18 Marek Behún wrote:
-> Also, this is how A3720 WTMI code and ATF determines XTAL clock rate.
-> No reason for kernel to do it differently.
+> This adds syscon_regmap_lookup_by_phandle_optional() function to get an
+> optional regmap.
 > 
-> Reviewed-by: Marek Behún <kabel@kernel.org>
+> It behaves the same as syscon_regmap_lookup_by_phandle() except where
+> there is no regmap phandle. In this case, instead of returning -ENODEV,
+> the function returns NULL. This makes error checking simpler when the
+> regmap phandle is optional.
 > 
-> On Fri,  6 Nov 2020 11:00:39 +0100
-> Pali Rohár <pali@kernel.org> wrote:
+> Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> ---
 > 
-> > From: Terry Zhou <bjzhou@marvell.com>
-> > 
-> > There is an error in the current code that the XTAL MODE
-> > pin was set to NB MPP1_31 which should be NB MPP1_9.
-> > The latch register of NB MPP1_9 has different offset of 0x8.
-> > 
-> > Signed-off-by: Terry Zhou <bjzhou@marvell.com>
-> > [pali: Fix pin name in commit message]
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
-> > Cc: stable@vger.kernel.org
-> > 
-> > ---
-> > This patch is present in Marvell SDK and also in Marvell's kernel fork:
-> > https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/80d4cec4cef8282e5ac3aaf98ce3e68fb299a134
-> > 
-> > Konstantin Porotchkin wrote on Github that Gregory Clement was notified
-> > about this patch, but as this patch is still not in mainline kernel I'm
-> > sending it again for review.
-> > 
-> > In original commit message (only in commit message, not code) was
-> > specified MPP9 pin on South Bridge, but correct is North Bridge.
-> > ---
-> >  drivers/clk/mvebu/armada-37xx-xtal.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/clk/mvebu/armada-37xx-xtal.c b/drivers/clk/mvebu/armada-37xx-xtal.c
-> > index e9e306d4e9af..41271351cf1f 100644
-> > --- a/drivers/clk/mvebu/armada-37xx-xtal.c
-> > +++ b/drivers/clk/mvebu/armada-37xx-xtal.c
-> > @@ -13,8 +13,8 @@
-> >  #include <linux/platform_device.h>
-> >  #include <linux/regmap.h>
-> >  
-> > -#define NB_GPIO1_LATCH	0xC
-> > -#define XTAL_MODE	    BIT(31)
-> > +#define NB_GPIO1_LATCH	0x8
-> > +#define XTAL_MODE	    BIT(9)
-> >  
-> >  static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
-> >  {
+> Changes in v2:
+> - Add Matthias r-b tag.
+> - Add the explanation from the patch description to the code.
+> - Return NULL instead of -ENOTSUPP when regmap helpers are not enabled.
 > 
+>  drivers/mfd/syscon.c       | 18 ++++++++++++++++++
+>  include/linux/mfd/syscon.h | 11 +++++++++++
+>  2 files changed, 29 insertions(+)
+
+Applied, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
