@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536042B1485
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 04:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E912B14A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 04:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKMDFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 22:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgKMDFA (ORCPT
+        id S1726309AbgKMDTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 22:19:52 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7530 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKMDTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 22:05:00 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C2EC0613D1;
-        Thu, 12 Nov 2020 19:05:00 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id x15so5079999pfm.9;
-        Thu, 12 Nov 2020 19:05:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J3xxlo0J7OEQ31x58M9zvwm+GKsy+33IUbEliZsTWrs=;
-        b=Uykun2xa0ICp1fXGTHcbokQvuKH2nSIViYf1ItzAqP4kpZOI/jHohqmYYQTPVbheBO
-         7M9rDA2UXDIUPxpm/Qnhz3nN/Ut3l8mWreU0z6JP4lBP9LBhgB6YZAmWTTI6Wac7Xqb4
-         pn/BeOV5KXxe0/cUmRWLKaHnNhpT2PzOzcXF5jRERV1PSDGoCvKeMmnqTfHeDvxTidoc
-         4NyulzTSKQgqwLmpSR2ie4fQxpL1xOzaweegv8ayneja963BHqMlglvsTLD66FybEZK5
-         5kKAzipqwNLSZ1N9wUp/FmjHfsqbzU2kgyVQAhlBPhsDXvxJ0U8Ycm99YnrS3fCOfBse
-         ZYLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J3xxlo0J7OEQ31x58M9zvwm+GKsy+33IUbEliZsTWrs=;
-        b=j3fixrZCl+jE7X/kRObE6e3FqdGSIGUSlHk+Pi52N6e/3g515T3eH8+b+a6BaTf5v5
-         zGH7T9rylQWeBo9Ni1lGDwBAsHyeF/oYLiBs8zxp5ZqDSxL7nabHqbWIB0eGUTfjoqkE
-         OM6Fd5y9jKaYgYIk/WUsHSYDO9tuue3WwWPACT9v2JWpJqVJFcnsMMHZRxXZ3KIbk6Yq
-         ChyC6q5Srak82eeDhtcdtan3yxvAjHdxghX5oyeyMGTXA90Sgt4g14MQiR0IUmHq17gK
-         Z+e6dsHjDBkQcwTLbTXlX75xn5qSfDoAcUYaEsm9ilfvNP4uLm1qHuvpvI8LLdao/GLE
-         A1vw==
-X-Gm-Message-State: AOAM531JqzUenjv8W431KKzve41Q5Dya84CbVS/mczfiTG4CkQHrhy6W
-        sK2XK8EJGpMdRp3CescpX4I=
-X-Google-Smtp-Source: ABdhPJzMdJtLxZWjzkxjYFM+noXSnpWOIMV32Ng3PHbPRSaMSKsTIj/0HxBg3Meb0gCU6wO7fiyd6g==
-X-Received: by 2002:aa7:9190:0:b029:18b:6556:1e62 with SMTP id x16-20020aa791900000b029018b65561e62mr207259pfa.62.1605236699666;
-        Thu, 12 Nov 2020 19:04:59 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:a370])
-        by smtp.gmail.com with ESMTPSA id 21sm8083426pfw.105.2020.11.12.19.04.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 19:04:58 -0800 (PST)
-Date:   Thu, 12 Nov 2020 19:04:56 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH bpf-next v5 01/34] mm: memcontrol: use helpers to read
- page's memcg data
-Message-ID: <20201113030456.drdswcndp65zmt2u@ast-mbp>
-References: <20201112221543.3621014-1-guro@fb.com>
- <20201112221543.3621014-2-guro@fb.com>
- <20201113095632.489e66e2@canb.auug.org.au>
- <20201113002610.GB2934489@carbon.dhcp.thefacebook.com>
+        Thu, 12 Nov 2020 22:19:50 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CXNxN0V1Zzhl1l;
+        Fri, 13 Nov 2020 11:19:36 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 13 Nov 2020 11:19:39 +0800
+From:   Hanjun Guo <guohanjun@huawei.com>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>
+Subject: [PATCH v3 1/2] drm/amdkfd: Move the ignore_crat check before the CRAT table get
+Date:   Fri, 13 Nov 2020 11:11:13 +0800
+Message-ID: <1605237074-58920-1-git-send-email-guohanjun@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113002610.GB2934489@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:26:10PM -0800, Roman Gushchin wrote:
-> 
-> These patches are not intended to be merged through the bpf tree.
-> They are included into the patchset to make bpf selftests pass and for
-> informational purposes.
-> It's written in the cover letter.
-...
-> Maybe I had to just list their titles in the cover letter. Idk what's
-> the best option for such cross-subsystem dependencies.
+If the ignore_crat is set to non-zero value, it's no point getting
+the CRAT table, so just move the ignore_crat check before we get the
+CRAT table.
 
-We had several situations in the past releases where dependent patches
-were merged into multiple trees. For that to happen cleanly from git pov
-one of the maintainers need to create a stable branch/tag and let other
-maintainers pull that branch into different trees. This way the sha-s
-stay the same and no conflicts arise during the merge window.
-In this case sounds like the first 4 patches are in mm tree already.
-Is there a branch/tag I can pull to get the first 4 into bpf-next?
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+index 3de5e14..c23e571 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+@@ -780,6 +780,11 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
+ 
+ 	*crat_image = NULL;
+ 
++	if (kfd_ignore_crat()) {
++		pr_info("CRAT table disabled by module option\n");
++		return -ENODATA;
++	}
++
+ 	/* Fetch the CRAT table from ACPI */
+ 	status = acpi_get_table(CRAT_SIGNATURE, 0, &crat_table);
+ 	if (status == AE_NOT_FOUND) {
+@@ -792,11 +797,6 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (kfd_ignore_crat()) {
+-		pr_info("CRAT table disabled by module option\n");
+-		return -ENODATA;
+-	}
+-
+ 	pcrat_image = kvmalloc(crat_table->length, GFP_KERNEL);
+ 	if (!pcrat_image)
+ 		return -ENOMEM;
+-- 
+1.7.12.4
+
