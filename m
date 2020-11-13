@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F0F2B22AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B67E2B22B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgKMRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:40:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:42758 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726070AbgKMRkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:40:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D6711042;
-        Fri, 13 Nov 2020 09:40:51 -0800 (PST)
-Received: from [10.57.53.43] (unknown [10.57.53.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6B8C3F718;
-        Fri, 13 Nov 2020 09:40:42 -0800 (PST)
-Subject: Re: About devm_platform_ioremap_resource [Was: Re: [PATCH 01/32] pwm:
- sun4i: convert to devm_platform_ioremap_resource]
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     alexandre.belloni@bootlin.com, heiko@sntech.de,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-riscv@lists.infradead.org, festevam@gmail.com,
-        f.fainelli@gmail.com, shc_work@mail.ru,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        khilman@baylibre.com, wens@csie.org, jonathanh@nvidia.com,
-        linux-rockchip@lists.infradead.org,
-        ludovic.desroches@microchip.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-imx@nxp.com,
-        slemieux.tyco@gmail.com, linux-pwm@vger.kernel.org,
-        rjui@broadcom.com, s.hauer@pengutronix.de, mripard@kernel.org,
-        vz@mleia.com, linux-mediatek@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, paul.walmsley@sifive.com,
-        matthias.bgg@gmail.com, linux-amlogic@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, sbranden@broadcom.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        nicolas.ferre@microchip.com, palmer@dabbelt.com,
-        kernel@pengutronix.de, shawnguo@kernel.org,
-        claudiu.beznea@microchip.com, nsaenzjulienne@suse.de
-References: <20191229080610.7597-1-tiny.windzz@gmail.com>
- <20201112161346.gp5nenuagx5wmwl2@pengutronix.de>
- <20201112190649.GA908613@ulmo>
- <20201112211429.kfyqzkmmchjo6pll@pengutronix.de>
- <20201113070343.lhcsbyvi5baxn3lq@pengutronix.de>
- <20201113161153.GB1408970@ulmo>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <6cddd32c-50eb-4399-02bc-d4377237134c@arm.com>
-Date:   Fri, 13 Nov 2020 17:40:41 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726355AbgKMRni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgKMRnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:43:37 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C59C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:43:37 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id k7so4889098plk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:43:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cxl8X/HuYAqqnrXtUbdxyEhUXeoGgiAFGf9Dpt4A/GQ=;
+        b=XzSI+EfFHCu6NXkWq5Jr+3fI3IaEfHaGNFer1Go731uCdMNPQwbmweg2/rS+kOj91Y
+         7k1dof770HztDnF4CoXIOk7Rpco/ucI4tyHl10l1s5nhf7MfTbcbb4XFiGsswx5Bnvn5
+         eCf9vzzn6Clg1siCDBsJGhvs0xAptg700w2jrtmOLyi1RAKEaG4bOFFLL1Wdk899gj34
+         YAlB7u9I6Dj2KdevCGY3qITbJk2Gdt3zLlFaPTqYkMhy0AsqCPdkpDMgRMbJu/csHweF
+         QQdsp6EL3NyTWuYaAxbjF9elGVIPu8qdzFtlMOcvxHd9AztuF8VH4jL8Fs1LQ97Bvj55
+         TQvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cxl8X/HuYAqqnrXtUbdxyEhUXeoGgiAFGf9Dpt4A/GQ=;
+        b=PFMyKLiwYiJqYwE4yyK/+m5+Ab7WTTiuNUXunEHej62ydRRtG3upKG1ukVcODNVQQe
+         H6K5FJBWmHUpfa5Un24hkcIq/l6ilCy/tloXQJXcHMjbwhyId4BoHU/UZfoetfOsMm9i
+         Grd7KFCO6vm/HjoWvu4TlrogN8G2jg7zCA+JmqlNw6qoT5Jv+FRflZmMxyEq/1mOotGf
+         57pqz5c59xbQtDtFFsO0t20MZ/twJHkGchqoGJMatOJq/Dh8UlEhu0ShIHjXTn5CnEWT
+         AvyojGJihsYwArhqA0lv712sUht7xZPOE9oygB81pKLeVOCLA8TyKXihkaHhOSbRCgP5
+         b3eA==
+X-Gm-Message-State: AOAM531c+CgcgceihaskmVrXxcp+zlC80ljiD5Nqodok71SWJNEu8prM
+        za4/VkkxuuD7wwkdq8uR6ieRgTkE72Rwfj2AfTJutw==
+X-Google-Smtp-Source: ABdhPJyOi86TRga/jqHfc8BYafx4xQK6HLBAhmrHUjK8NzNFDuQXcuNQv/ZdLylQ0vvoEdv89A5rhnyr710SVHZhwBg=
+X-Received: by 2002:a17:902:7043:b029:d6:9d17:44f3 with SMTP id
+ h3-20020a1709027043b02900d69d1744f3mr3059245plt.45.1605289412040; Fri, 13 Nov
+ 2020 09:43:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201113161153.GB1408970@ulmo>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20201101193452.678628-1-lzye@google.com> <nycvar.YFH.7.76.2011091255280.18859@cbobk.fhfr.pm>
+ <e39fbd02-e691-010c-702d-de86ecfc8854@gmail.com>
+In-Reply-To: <e39fbd02-e691-010c-702d-de86ecfc8854@gmail.com>
+From:   Michael Wright <michaelwr@android.com>
+Date:   Fri, 13 Nov 2020 17:43:20 +0000
+Message-ID: <CALDEARh3325ZxQqY58T6imT3QBAkKX_i7ZnuX3PFJ9uQjofozA@mail.gmail.com>
+Subject: Re: [PATCH v2] Input: Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+To:     Chris Ye <linzhao.ye@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>, Chris Ye <lzye@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-13 16:11, Thierry Reding wrote:
-> On Fri, Nov 13, 2020 at 08:03:43AM +0100, Uwe Kleine-König wrote:
->> Hello,
->>
->> [Added lkml and the people involved in commit 7945f929f1a7
->> ("drivers: provide devm_platform_ioremap_resource()") to Cc:. For the
->> new readers: This is about patches making use of
->> devm_platform_ioremap_resource() instead of open coding it. Full context
->> at https://lore.kernel.org/r/20201112190649.GA908613@ulmo]
->>
->> On Thu, Nov 12, 2020 at 10:14:29PM +0100, Uwe Kleine-König wrote:
->>> On Thu, Nov 12, 2020 at 08:06:49PM +0100, Thierry Reding wrote:
->>>> I also think that it's overly narrow is scope, so you can't actually
->>>> "blindly" use this helper and I've seen quite a few cases where this was
->>>> unknowingly used for cases where it shouldn't have been used and then
->>>> broke things (because some drivers must not do the request_mem_region()
->>>> for example).
->>>
->>> You have a link to such an accident?
->>
->> I got a hint in private here: https://lore.kernel.org/r/1555670144-24220-1-git-send-email-aisheng.dong@nxp.com
->>
->> devm_platform_ioremap_resource() is platform_get_resource() +
->> devm_ioremap_resource() and here it was used to replace
->> platform_get_resource() + devm_ioremap().
->>
->> IMHO the unlucky thing in this situation is that devm_ioremap_resource()
->> and devm_ioremap() are different by more than just how they get the area
->> to remap. (i.e. devm_ioremap_resource() also does
->> devm_request_mem_region().)
->>
->> So the problem is not the added wrapper, but unclear semantics in the
->> functions it uses.
-> 
-> The semantics aren't unclear. It's just that the symbol name doesn't
-> spell out every detail that the function implements, which, frankly, no
-> function name ever does, at least not for anything beyond simple
-> instructional examples. That's what we have documentation for and why
-> people should read the documentation before they use a function and make
-> (potentially wrong) assumption about what it does.
-> 
->>                     In my eyes devm_ioremap() and
->> devm_platform_ioremap_resource() should better be named
->> devm_request_ioremap() and devm_platform_request_ioremap_resource()
->> respectively. Is it worth to rename these for clearity?
-> 
-> I think function names are always a compromise between giving you the
-> gist of what the implementation does and being short enough so it
-> doesn't become difficult to read or use.
-> 
-> One of the reasons why I dislike the addition of helpers for every
-> common special case (like devm_platform_ioremap_resource()) is because
-> it doesn't (always) actually make things easier for developers and/or
-> maintainers. Replacing three lines of code with one is a minor
-> improvement, even though there may be many callsites and therefore in
-> the sum this being a fairly sizeable reduction. The flip side is that
-> now we've got an extra symbol with an unwieldy name that people need
-> to become familiar with, and then, like the link above shows, it doesn't
-> work in all cases, so you either need to fall back to the open-coded
-> version or you keep adding helpers until you've covered all cases. And
-> then we end up with a bunch of helpers that you actually have to go and
-> read the documentation for in order to find out which one exactly fits
-> your use-case.
-> 
-> Without the helpers it's pretty simple to write, even if a little
-> repetitive:
-> 
->    1) get the resource you want to map
->    2) request the resource
->    3) map the resource
-> 
-> 2) & 3) are very commonly done together, so it makes sense to have a
-> generic helper for them. If you look at the implementation, the
-> devm_ioremap_request() implementation does quite a bit of things in
-> addition to just requesting and remapping, and that's the reason why
-> that helper makes sense.
-> 
-> For me personally, devm_platform_ioremap_resource() is just not adding
-> enough value to justify its existence. And then we get all these other
-> variants that operate on the resource name (_byname) and those which
-> remap write-combined (_wc). But don't we also need a _byname_wc()
-> variant for the combination? Where does it stop?
+Hi Chris,
 
-Arguably the worst thing about devm_platform_ioremap_resource() is that 
-it was apparently the gateway drug to a belief that 
-devm_platform_get_and_ioremap_resource() is anything other than a 
-hideous way to obfuscate an assignment...
+I believe the patch is applied to the HID tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git/commit/?h=for-5.10/upstream-fixes&id=f59ee399de4a8ca4d7d19cdcabb4b63e94867f09
 
-Robin.
+If so, the commit SHA is f59ee399de4a8ca4d7d19cdcabb4b63e94867f09.
+
+Hope this helps,
+Michael
+
+
+On Fri, Nov 13, 2020 at 5:27 PM Chris Ye <linzhao.ye@gmail.com> wrote:
+>
+> Hi Jiri,  can I have a commit ID for 5.10? I'll need this to submit the
+> patch internally.
+>
+> Thanks!
+>
+> Chris
+>
+> On 11/9/20 3:55 AM, Jiri Kosina wrote:
+> > On Sun, 1 Nov 2020, Chris Ye wrote:
+> >
+> >> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+> >> index 74be76e848bf..cf55dca494f3 100644
+> >> --- a/drivers/hid/hid-ids.h
+> >> +++ b/drivers/hid/hid-ids.h
+> >> @@ -449,6 +449,10 @@
+> >>   #define USB_VENDOR_ID_FRUCTEL      0x25B6
+> >>   #define USB_DEVICE_ID_GAMETEL_MT_MODE      0x0002
+> >>
+> >> +#define USB_VENDOR_ID_GAMEVICE      0x27F8
+> >> +#define USB_DEVICE_ID_GAMEVICE_GV186        0x0BBE
+> >> +#define USB_DEVICE_ID_GAMEVICE_KISHI        0x0BBF
+> >> +
+> >>   #define USB_VENDOR_ID_GAMERON              0x0810
+> >>   #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR     0x0001
+> >>   #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR     0x0002
+> >> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+> >> index 0440e2f6e8a3..36d94e3485e3 100644
+> >> --- a/drivers/hid/hid-quirks.c
+> >> +++ b/drivers/hid/hid-quirks.c
+> >> @@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
+> >>      { HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
+> >>      { HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+> >>      { HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
+> >> +    { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
+> >> +            HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+> >> +    { HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
+> >> +            HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+> >>      { HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+> >>      { HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+> >>      { HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+> > Applied for 5.10, thanks.
+> >
