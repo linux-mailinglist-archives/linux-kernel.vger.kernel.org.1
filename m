@@ -2,161 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97652B1797
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 983B12B17BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgKMIxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:53:52 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:59076 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgKMIxv (ORCPT
+        id S1726344AbgKMJDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:03:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726237AbgKMJDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:53:51 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201113085347epoutp03ac219bfcc1b9f3f1343e3af224aea8a2~HBU6YZ_472670526705epoutp03e
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:53:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201113085347epoutp03ac219bfcc1b9f3f1343e3af224aea8a2~HBU6YZ_472670526705epoutp03e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1605257627;
-        bh=CmhQQ+b8Nd14NE83uFOol/Pb/bgGtMAeG2yEorHiLng=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=RaaGs8W4NGnLjqEhrgATAWHDMA/uYX9JkZ4SJxJLtMtSS6wv3xiVd4t9e84lWq61e
-         DjcDn2QCa5t0L12x3FqK+SPFt7BDrAKT+dre3CvSVZyZi5peko01DQde2s/gMbuzIL
-         OH33m4itVPEV1CUQmmV6A33lJW6KD0cEKJlnLldY=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20201113085346epcas1p4d8103c2ea5ecc14e318301bdcb107c6c~HBU5xVZM92081020810epcas1p45;
-        Fri, 13 Nov 2020 08:53:46 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CXXLw3dnXzMqYkX; Fri, 13 Nov
-        2020 08:53:44 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        33.21.09577.8994EAF5; Fri, 13 Nov 2020 17:53:44 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201113085343epcas1p198641b74a3aff97168379b595e37b7fa~HBU3OC3Bm2769827698epcas1p1A;
-        Fri, 13 Nov 2020 08:53:43 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201113085343epsmtrp24919d78d46d76d4d4ac3f71d7533107d~HBU3NOwmf2268222682epsmtrp28;
-        Fri, 13 Nov 2020 08:53:43 +0000 (GMT)
-X-AuditID: b6c32a39-bfdff70000002569-e5-5fae4998deb6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D4.D1.08745.7994EAF5; Fri, 13 Nov 2020 17:53:43 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201113085343epsmtip2326aba259bb05a3468ef94574a790136~HBU26NvLh2166221662epsmtip2W;
-        Fri, 13 Nov 2020 08:53:43 +0000 (GMT)
-Subject: Re: [PATCH v9 0/5] Exynos: Simple QoS for exynos-bus using
- interconnect
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        inki.dae@samsung.com
-Cc:     krzk@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        sw0312.kim@samsung.com, b.zolnierkie@samsung.com,
-        m.szyprowski@samsung.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <9cb7e3a6-2a3f-8f46-2bf1-d6d8ea01613b@samsung.com>
-Date:   Fri, 13 Nov 2020 18:07:54 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Fri, 13 Nov 2020 04:03:19 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC53C0613D1;
+        Fri, 13 Nov 2020 01:03:19 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 11so9795972ljf.2;
+        Fri, 13 Nov 2020 01:03:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jOx9/hL9gcypJbYKVQmbDZbvLP/OxmK+3X0k+2YLwtI=;
+        b=QB2KkR+ZBDshhCgbXCg99iRunoBLOQQuuJHx03u+I9M4KWg3oSRSC93pCOAeYozgON
+         FJG5lxKfLfkf3vOkJv+BbszR0Tec0IET8GqxXdcdWKA+ctGe1J1Oq12fkrS2L4R5TU3m
+         evSW2v9MT2PsoFqEQDomHux7UzKKstuI3at1e8KwUM+kjhXSfqc+Hn1gYWeYboM4rUM6
+         mOAwf9MhHy0zJ5qqhn2FYlFjURh8lAV0h0ncHyAqphl7A3c2xA0kfZHoqCAE8aOYzXez
+         kvAvknzfYwPYpuphZZ8gVggrIJtS6u3uHfKqcvOZPp5eOjO9QhxWrNmI7mYcBv/f4YYj
+         +Fyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jOx9/hL9gcypJbYKVQmbDZbvLP/OxmK+3X0k+2YLwtI=;
+        b=AgFbaIkxPEJF55As37lVonKIKXy3DM2JwVnRTWxQZ6h4X3KxbEYgv6xaeiyCFPv2fI
+         FKxktBm66sA3ImuHv/1KCIMfBylX9jRCm7pryaeeFZUyU93EdON7JFEAv0Q1RBceXJQN
+         GHe9/ZH6A/lWdmPovxwV7vsPcotS7wFhbW43zddW872ETNub6KrAuVn/MODcMfcJPAmQ
+         csLDv3PYlGtSSndsJoMsiWpIXW+/U+OFRKqhVg+OpM6WgPMHUuwI+q2vXOTJA/9Dsxgt
+         6fTeu2VLzLeRfAJkURLBy0eht5gBvV1IC6bF1pK3Ln2U5ZbIN7FmRFChP4/wqqRRUb0j
+         VlPQ==
+X-Gm-Message-State: AOAM531VxKDzBokXoMNNwIbkYB8jiwJiE+vnqwAKgUqg6y6bYJ2hruP8
+        6rIdMQ0G0lVOE6u0ZM2Gy/Q=
+X-Google-Smtp-Source: ABdhPJzPHX5eBspcz8RbOMHzgzd0DdUJ49lB/KCdR5s9frlvXJ+9CexOkkF1/3bu38c9j3ASNYigig==
+X-Received: by 2002:a2e:91cd:: with SMTP id u13mr584825ljg.239.1605258197991;
+        Fri, 13 Nov 2020 01:03:17 -0800 (PST)
+Received: from localhost.localdomain (dmjt96jhvbz3j2f08hy-4.rev.dnainternet.fi. [2001:14bb:51:e1dd:1cd1:d2e:7b13:dc30])
+        by smtp.gmail.com with ESMTPSA id c6sm1477876lfm.226.2020.11.13.01.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 01:03:17 -0800 (PST)
+From:   Lev Stipakov <lstipakov@gmail.com>
+X-Google-Original-From: Lev Stipakov <lev@openvpn.net>
+To:     Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Lev Stipakov <lev@openvpn.net>
+Subject: [PATCH v2 2/3] net: openvswitch: use core API to update/provide stats
+Date:   Fri, 13 Nov 2020 11:02:40 +0200
+Message-Id: <20201113090240.116518-1-lev@openvpn.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <598c779c-fb0b-a9a6-43be-3a7cd5b38946@gmail.com>
+References: <598c779c-fb0b-a9a6-43be-3a7cd5b38946@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b0a8e994-06d2-e04a-579c-40580b71f760@linaro.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJJsWRmVeSWpSXmKPExsWy7bCmnu4Mz3XxBucnSVrcn9fKaLFxxnpW
-        i/lHzrFaXPn6ns1i+t5NbBaT7k9gsTh/fgO7xabH11gtLu+aw2bxufcIo8WM8/uYLNYeuctu
-        cbtxBZtF694j7BaH37SzWsyY/JLNQcBj06pONo871/awedzvPs7ksXlJvUffllWMHp83yQWw
-        RWXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gDdraRQ
-        lphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzI
-        zph9eAtjwTS+irkzrjE1MB7k7mLk5JAQMJFovjSDHcQWEtjBKNG3TK+LkQvI/sQosaD9NiuE
-        85lRYvXSZnaYju/HVrBAJHYxShx++JAZov09o0TnTlkQW1ggSGLi/SNgDSIChRJznv4Ea2AW
-        eM0kcfjmeSaQBJuAlsT+FzfYQGx+AUWJqz8eM4LYvAJ2Eqv2TWUBsVkEVCXOHDwJViMqECZx
-        clsLVI2gxMmZT8BqOIHqFy98xwpiMwuIS9x6Mp8JwpaX2P52DjPIYgmBFxwSGz7sZIN4wUVi
-        y6qFUO8IS7w6vgXKlpL4/G4vVE21xMqTR9ggmjsYJbbsv8AKkTCW2L90MtAGDqANmhLrd+lD
-        hBUldv6eywixmE/i3dceVpASCQFeiY42IYgSZYnLD+4yQdiSEovbO9kmMCrNQvLOLCQvzELy
-        wiyEZQsYWVYxiqUWFOempxYbFpgix/YmRnCa1rLcwTj97Qe9Q4xMHIyHGCU4mJVEeJUd1sQL
-        8aYkVlalFuXHF5XmpBYfYjQFBvBEZinR5HxgpsgriTc0NTI2NrYwMTQzNTRUEuf9o90RLySQ
-        nliSmp2aWpBaBNPHxMEp1cCkeTV5otCUpUrxx/06WGcEmK/cafU1asrevSIZetGF9dv2+VWx
-        +Tt47hWOrH5z+bxN5d9TMVKrn4bdveTYGau1cRbn7GMMiec5P8dkFOw9IOF43dRExbxzy66Y
-        p22cjdO5dUPkQ3vPnGqad3WHz7JpC4r+CvaYbVIMMHz/YNUPn5IsnpBpbTY+Vu8ri7SE4945
-        3ngjrbQ9Y6eIeaRKff+tz4eOrbOWqNys+OqeUU7rhmeyjE/drCI78tze/7H2VT25aOLdO4fm
-        C/9LtN/n7HSS1bFwafP5O5zulc9yL3LvqMt/mMkp83Ox/7PDF7bueHT8wTGOE/eNGSuKy/IW
-        PK4zEBdeIBLOc+ZI/EezZ0FKLMUZiYZazEXFiQDXa5MTXAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsWy7bCSvO50z3XxBv2LDS3uz2tltNg4Yz2r
-        xfwj51gtrnx9z2Yxfe8mNotJ9yewWJw/v4HdYtPja6wWl3fNYbP43HuE0WLG+X1MFmuP3GW3
-        uN24gs2ide8RdovDb9pZLWZMfsnmIOCxaVUnm8eda3vYPO53H2fy2Lyk3qNvyypGj8+b5ALY
-        orhsUlJzMstSi/TtErgyZh/ewlgwja9i7oxrTA2MB7m7GDk5JARMJL4fW8HSxcjFISSwg1Fi
-        4vM57BAJSYlpF48ydzFyANnCEocPF0PUvGWUmHroBQtIjbBAkMTE+0fA6kUECiXOTrkENohZ
-        4DWTxJyJ39khOg4zStxbcZoRpIpNQEti/4sbbCA2v4CixNUfj8HivAJ2Eqv2TQWbyiKgKnHm
-        4EmwGlGBMImdSx4zQdQISpyc+QSshhOofvHCd6wgNrOAusSfeZeYIWxxiVtP5jNB2PIS29/O
-        YZ7AKDwLSfssJC2zkLTMQtKygJFlFaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcMxq
-        ae1g3LPqg94hRiYOxkOMEhzMSiK8yg5r4oV4UxIrq1KL8uOLSnNSiw8xSnOwKInzfp21ME5I
-        ID2xJDU7NbUgtQgmy8TBKdXAZBk0JVeJgSNPSbqjKo352FtLG+N3Xy977Xiz+XzlHU/119Ym
-        Z3fGxU51PFczxapdkOH5luwNHsVn+gqrXZl2rGl4uGJ60+WS42mnyh6ZLTx1xJDhVKmB9Zaj
-        1fbaD9iVCpd03I5+Kb9Aes7JQ3MNP9V0RDxJeO3FEBLHd/6+Wt6TFTlSMwOrji9c1bhs0sRl
-        6pFCqxbEqh3rkPDc80DpaWPamvOGZxZnv5T7urEh6deE01nqArcUJop8/3R+a5JlHfOJxWqu
-        TEvfn22RO+esF7y04u6J9pJLFWE6ex9qrpu6ehnrjr3JN5543TjvVLzL78IzFbftp4/op25b
-        amJlz5z3suNf26ozPuve56f41ymxFGckGmoxFxUnAgArIZi3SAMAAA==
-X-CMS-MailID: 20201113085343epcas1p198641b74a3aff97168379b595e37b7fa
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201112141041eucas1p1a29130955afd4ec1d5d94cf17183920c
-References: <CGME20201112141041eucas1p1a29130955afd4ec1d5d94cf17183920c@eucas1p1.samsung.com>
-        <20201112140931.31139-1-s.nawrocki@samsung.com>
-        <b0a8e994-06d2-e04a-579c-40580b71f760@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 5:48 PM, Georgi Djakov wrote:
-> On 11/12/20 16:09, Sylwester Nawrocki wrote:
->>
->> This patchset adds interconnect API support for the Exynos SoC "samsung,
->> exynos-bus" compatible devices, which already have their corresponding
->> exynos-bus driver in the devfreq subsystem.  Complementing the devfreq
->> driver with an interconnect functionality allows to ensure the QoS
->> requirements of devices accessing the system memory (e.g. video processing
->> devices) are fulfilled and allows to avoid issues like the one discussed
->> in thread [1].
->>
->> This patch series adds implementation of the interconnect provider per each
->> "samsung,exynos-bus" compatible DT node, with one interconnect node per
->> provider.  The interconnect code which was previously added as a part of
->> the devfreq driver has been converted to a separate platform driver.
->> In the devfreq a corresponding virtual child platform device is registered.
->> Integration of devfreq and interconnect frameworks is achieved through
->> the PM QoS API.
->>
->> A sample interconnect consumer for exynos-mixer is added in patch 5/5,
->> it is currently added only for exynos4412 and allows to address the
->> mixer DMA underrun error issues [1].
-> 
-> Good work Sylwester! Thank you and all the reviewers! What would be the merge
-> path for this patchset? Looks like there is no build dependency between patches.
-> Should i take just patches 2,3 or also patch 1? Chanwoo?
+Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add") has added
+function "dev_sw_netstats_tx_add()" to update net device per-cpu TX
+stats.
 
-Hi Georgi,
+Use this function instead of own code.
 
-If you take the patch 2,3, I'll apply patch 1,4 to devfreq.git.
+While on it, remove internal_get_stats() and replace it
+with dev_get_tstats64().
 
-Hi Sylwester,
-First of all, thanks for your work to finish it for a long time.
-I'm very happy about finishing this work. It is very necessary feature
-for the QoS. Once again, thank for your work.
+Signed-off-by: Lev Stipakov <lev@openvpn.net>
+---
 
+ v2:
+  - do not delete len variable and add comment why
+  - replace internal_get_stats() vs dev_get_tstats64()
+
+ net/openvswitch/vport-internal_dev.c | 29 +++++++---------------------
+ 1 file changed, 7 insertions(+), 22 deletions(-)
+
+diff --git a/net/openvswitch/vport-internal_dev.c b/net/openvswitch/vport-internal_dev.c
+index 1e30d8df3ba5..5b2ee9c1c00b 100644
+--- a/net/openvswitch/vport-internal_dev.c
++++ b/net/openvswitch/vport-internal_dev.c
+@@ -35,21 +35,18 @@ internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
+ {
+ 	int len, err;
+ 
++	/* store len value because skb can be freed inside ovs_vport_receive() */
+ 	len = skb->len;
++
+ 	rcu_read_lock();
+ 	err = ovs_vport_receive(internal_dev_priv(netdev)->vport, skb, NULL);
+ 	rcu_read_unlock();
+ 
+-	if (likely(!err)) {
+-		struct pcpu_sw_netstats *tstats = this_cpu_ptr(netdev->tstats);
+-
+-		u64_stats_update_begin(&tstats->syncp);
+-		tstats->tx_bytes += len;
+-		tstats->tx_packets++;
+-		u64_stats_update_end(&tstats->syncp);
+-	} else {
++	if (likely(!err))
++		dev_sw_netstats_tx_add(netdev, 1, len);
++	else
+ 		netdev->stats.tx_errors++;
+-	}
++
+ 	return NETDEV_TX_OK;
+ }
+ 
+@@ -83,24 +80,12 @@ static void internal_dev_destructor(struct net_device *dev)
+ 	ovs_vport_free(vport);
+ }
+ 
+-static void
+-internal_get_stats(struct net_device *dev, struct rtnl_link_stats64 *stats)
+-{
+-	memset(stats, 0, sizeof(*stats));
+-	stats->rx_errors  = dev->stats.rx_errors;
+-	stats->tx_errors  = dev->stats.tx_errors;
+-	stats->tx_dropped = dev->stats.tx_dropped;
+-	stats->rx_dropped = dev->stats.rx_dropped;
+-
+-	dev_fetch_sw_netstats(stats, dev->tstats);
+-}
+-
+ static const struct net_device_ops internal_dev_netdev_ops = {
+ 	.ndo_open = internal_dev_open,
+ 	.ndo_stop = internal_dev_stop,
+ 	.ndo_start_xmit = internal_dev_xmit,
+ 	.ndo_set_mac_address = eth_mac_addr,
+-	.ndo_get_stats64 = internal_get_stats,
++	.ndo_get_stats64 = dev_get_tstats64,
+ };
+ 
+ static struct rtnl_link_ops internal_dev_link_ops __read_mostly = {
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.25.1
+
