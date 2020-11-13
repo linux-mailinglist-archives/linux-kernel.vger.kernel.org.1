@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816E02B1AD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9655C2B1A75
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgKMMLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:11:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbgKMMLx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:11:53 -0500
-X-Greylist: delayed 429 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 Nov 2020 04:11:53 PST
-Received: from forward500j.mail.yandex.net (forward500j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA96C0613D1;
-        Fri, 13 Nov 2020 04:11:53 -0800 (PST)
-Received: from mxback18j.mail.yandex.net (mxback18j.mail.yandex.net [IPv6:2a02:6b8:0:1619::94])
-        by forward500j.mail.yandex.net (Yandex) with ESMTP id 0AB2411C1C33;
-        Fri, 13 Nov 2020 15:04:37 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback18j.mail.yandex.net (mxback/Yandex) with ESMTP id 4fGUZinil1-4aKaNgI3;
-        Fri, 13 Nov 2020 15:04:36 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1605269076;
-        bh=8JTSwotuRGgc/44wdb4s+/iJsvCU7rusxQ3UllDMBSU=;
-        h=References:Date:Message-Id:Cc:Subject:To:From;
-        b=tTEnTkT72hcEIYLWsXMMSADjwPt9KZLUcKGwXTma1LLMqzxze/DckwxDHLIytcAN6
-         YtriDipyDVALu1fu1GqOM0Ej89xQxi9lb9/M4kHRxmYobzEx1SPAiqHSzWDzDiWpaa
-         62+JarJ5J4idn12vn0XChnzmvpTDckTqhY2F8V9w=
-Authentication-Results: mxback18j.mail.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by sas1-c37eebe3eab8.qloud-c.yandex.net with HTTP;
-        Fri, 13 Nov 2020 15:04:35 +0300
-From:   "nikita.shubin@maquefel.me" <nikita.shubin@maquefel.me>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Clark Wang <xiaoning.wang@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20200727063354.17031-1-xiaoning.wang@nxp.com> <20201113091800.27469-1-nikita.shubin@maquefel.me> <CAOMZO5AVJjhqEvkiB3mXc24RNy+Ac3VW_CTg6BGNsqfSVLq0Sg@mail.gmail.com>
-Subject: Re: [PATCH] spi: imx: enable runtime pm support
+        id S1726642AbgKMMCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:02:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:36910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726876AbgKMMCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:02:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D440C142F;
+        Fri, 13 Nov 2020 04:01:45 -0800 (PST)
+Received: from [10.37.12.45] (unknown [10.37.12.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4BE93F6CF;
+        Fri, 13 Nov 2020 04:01:42 -0800 (PST)
+Subject: Re: [PATCH v9 30/44] arm64: kasan: Allow enabling in-kernel MTE
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1605046192.git.andreyknvl@google.com>
+ <5ce2fc45920e59623a4a9d8d39b6c96792f1e055.1605046192.git.andreyknvl@google.com>
+ <20201112094354.GF29613@gaia> <66ef4957-f399-4af1-eec5-d5782551e995@arm.com>
+ <20201113120000.GB3212@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <0ab166e6-9087-6d3b-fc66-ce9909721a86@arm.com>
+Date:   Fri, 13 Nov 2020 12:04:47 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Fri, 13 Nov 2020 15:04:35 +0300
-Message-Id: <717261605268864@mail.yandex.ru>
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113120000.GB3212@gaia>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
 
-Apllied on the top of
 
-   Revert "spi: imx: Fix freeing of DMA channels if spi_bitbang_start() fails"
-
-   This reverts commit 9e68d974b2fd4977e896e166656c36e2f80293d6.
-
-Still experiencing the same issue:
-
-[    4.322131] inv-mpu6000-spi spi2.0: I/O Error in PIO
-[    4.329353] inv-mpu6000-spi spi2.0: SPI transfer failed: -110
-[    4.391504] spi_master spi2: failed to transfer one message from queue
-
-I have config CONFIG_PM=y.
-
-13.11.2020, 14:26, "Fabio Estevam" <festevam@gmail.com>:
-> Hi Nikita,
->
-> On Fri, Nov 13, 2020 at 6:18 AM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
->>  Hello Clark,
+On 11/13/20 12:00 PM, Catalin Marinas wrote:
+> On Fri, Nov 13, 2020 at 11:17:15AM +0000, Vincenzo Frascino wrote:
+>> On 11/12/20 9:43 AM, Catalin Marinas wrote:
+>>> On Tue, Nov 10, 2020 at 11:10:27PM +0100, Andrey Konovalov wrote:
+>>>> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>>>>
+>>>> Hardware tag-based KASAN relies on Memory Tagging Extension (MTE)
+>>>> feature and requires it to be enabled. MTE supports
+>>>>
+>>>> This patch adds a new mte_init_tags() helper, that enables MTE in
+>>>> Synchronous mode in EL1 and is intended to be called from KASAN runtime
+>>>> during initialization.
+>>>
+>>> There's no mte_init_tags() in this function.
 >>
->>  This patch breaks spi-imx on imx7d.
->>  Toradex Colibri imx7d spi reports with:
->>
->>      [ 4.258468] inv-mpu6000-spi spi2.0: I/O Error in PIO
->>      [ 4.264269] inv-mpu6000-spi spi2.0: SPI transfer failed: -110
->>      [ 4.264305] spi_master spi2: failed to transfer one message from queue
->>
->>  We are using spi-imx with dma.
->>
->>  Reverting your patch fixes this issue.
->>
->>  The baseline commit 951cbbc386ff01b50da4f46387e994e81d9ab431 (tag: v5.9.8, stable/linux-5.9.y)
->>
->>  Could you please give some comments on this issue ?
->
-> Could you please try this patch from Sascha?
-> https://lkml.org/lkml/2020/10/12/981
+>> During the rework, I realized that the description of mte_init_tags() in this
+>> patch refers to mte_enable_kernel(). In fact the only thing that mte_init_tags()
+>> does is to configure the GCR_EL1 register, hence my preference would be to keep
+>> all the code that deals with such a register in one patch.
+> 
+> Fine by me as long as the commit text is consistent with the diff.
+> 
+
+Done already, it will be in the next series. Thank you for the quick turnaround.
+
+-- 
+Regards,
+Vincenzo
