@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5772B2714
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C472B271B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgKMVfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgKMVfK (ORCPT
+        id S1726524AbgKMVgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:36:20 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:42935 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgKMVgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:35:10 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE04C0613D1;
-        Fri, 13 Nov 2020 13:35:09 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id t9so12460733edq.8;
-        Fri, 13 Nov 2020 13:35:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2cxwnj4lvvDa/xdNK2NIpsCOU23p/MBBEu1nguvpMQ0=;
-        b=F+hAwde6UWUQieKq1xiGdYeuNKYbhgRlHsUS4ewujyr+ooWFcafZg0SGWK4Eug0KU5
-         qwYCXXgFuKyir8p8JpwDRAa31Y9zkbnCA1AxlBKJbeG/mNV+h24kXXdXnvsCdwUyDeGe
-         Ga7vUyszX49+tyaBj4u/3N6HaKeskkBqwNJgnI4npCrVs4yffLrT86byK9ZZ6QYi0E5r
-         LS2/pvIBkEH7Fl3+hl3XHnUV77kkxTCY84ErHeqF/bVQSgFMiPMkx7oIJZAo8fN9yi8N
-         EYmjKNLlKihLAwUxDgc4Fv7HcYrbuhBJ29xsEfaUv05vrQNMwVFlmyYqCLdWspwqCPuM
-         B/gw==
+        Fri, 13 Nov 2020 16:36:20 -0500
+Received: by mail-pg1-f196.google.com with SMTP id i13so8141108pgm.9;
+        Fri, 13 Nov 2020 13:36:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=2cxwnj4lvvDa/xdNK2NIpsCOU23p/MBBEu1nguvpMQ0=;
-        b=LWuXOt8kQ4cO7M9SR+8R5foiKfdGq5y1Vlqgz9gJuXaNlFX/opOyBobj/6HfcLi1t9
-         Rum5EBjmgvqndKep5DCEIrhEtybUhDFmS63p4iZWAeb6fBP2aTlKUwI5pKjbKBucDLhJ
-         IdRvA+foHeq8rnnW2iSE1ifMhGjfeBd9YoR8qvsNkF76xCjjvX+6o+OHMid1bA8l/ZQR
-         OOp5JFONMmZk17DvfmrteMejo5MzxLrPNlZDxpPGiDub/t3Ob7w5P/jMIZJxL6GgnkbM
-         rsejQgk1+NmGil80btwQOfGVYyTvAd78j8dVI6c4izlGAxXCndvWzHqE8N55LycA2+cX
-         cusw==
-X-Gm-Message-State: AOAM531gcfnNOAq1mfl+ZuCQdhT4ZwBpN2rddhiRTa7ZWKE2f4DAv6Cz
-        7MVDa4Ovga7oUBcRB+J15BoOcS6vjXU=
-X-Google-Smtp-Source: ABdhPJyzBG+Gw7PQ3NpEo5HltnfIpsihlhpReNdxB3L3Mv3V+D50iC+kuERoxiNS8pqDL+54RrFkfA==
-X-Received: by 2002:a05:6402:33a:: with SMTP id q26mr4722857edw.224.1605303308074;
-        Fri, 13 Nov 2020 13:35:08 -0800 (PST)
-Received: from ?IPv6:2a01:110f:b59:fd00:b15d:6782:80f1:8d19? ([2a01:110f:b59:fd00:b15d:6782:80f1:8d19])
-        by smtp.gmail.com with ESMTPSA id l25sm5019991eds.65.2020.11.13.13.35.06
+        bh=Jm0UQg+mdszuwGSP+rSGtDVxYjXFAKTIf/hP3qOCt5s=;
+        b=n1oMl71ey4nw84qSa7Ff98YjFNCQwsWUwhOZTLM63m8M73DuV2EvqBjkrydDnmyMVD
+         h2CsDIdBsAlkIB7yjPsmzqUfkOcjJWtJWn4F6gsOGgmToST+LBkEjtl0lElUKmbB36qh
+         Zatwxwpy1S9GDG/6Xssvg/5kUNvrC6JiMXT0fH0r6Wv9HMOyz+ESMrAWGJAG+5IB/5lS
+         Bs8BJJlFldHyy9TxpOhsBM2oPLuyqp5bvnWbpeSATvvJhs6aF7CrcH7As4DQpEYy5hkq
+         7lfC/+VytOqglMxFgeHIJpgQR0cFtCbgY1xu4PzNm1bLPvQfiQgDE4DR8AD+tnK2uxKV
+         s0yQ==
+X-Gm-Message-State: AOAM531l2XrxsMnnP/Vo1nfw3tAzYdrSaBdQ9h/EUo/5Mtl2OCoqzG0F
+        pMfpN1f+b0vwpxNae5aUA64=
+X-Google-Smtp-Source: ABdhPJyd2mq3CcH87fe4TuuOQePNIWrpkvt9hnJ7sQTx3mTF7rd18fMqO1nNSZ6lKYfYZ9gwY9KR7A==
+X-Received: by 2002:a62:8cd6:0:b029:18b:ad92:503b with SMTP id m205-20020a628cd60000b029018bad92503bmr3670399pfd.77.1605303379651;
+        Fri, 13 Nov 2020 13:36:19 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:be97:ffd:339d:919c? ([2601:647:4802:9070:be97:ffd:339d:919c])
+        by smtp.gmail.com with ESMTPSA id a84sm10727208pfa.53.2020.11.13.13.36.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 13:35:07 -0800 (PST)
-Subject: Re: [PATCH] s5p-jpeg: hangle error condition in s5p_jpeg_probe
-To:     Baskov Evgeiny <baskov@ispras.ru>,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-References: <20201113160625.1281-1-baskov@ispras.ru>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <f8c9ea26-fc55-d65d-e2b3-734af8b97c95@gmail.com>
-Date:   Fri, 13 Nov 2020 22:35:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 13 Nov 2020 13:36:18 -0800 (PST)
+Subject: Re: [PATCH] iosched: Add i10 I/O Scheduler
+To:     Jens Axboe <axboe@kernel.dk>, Rachit Agarwal <rach4x0r@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
+        Qizhe Cai <qc228@cornell.edu>,
+        Midhul Vuppalapati <mvv25@cornell.edu>,
+        Rachit Agarwal <ragarwal@cs.cornell.edu>,
+        Sagi Grimberg <sagi@lightbitslabs.com>,
+        Rachit Agarwal <ragarwal@cornell.edu>
+References: <20201112140752.1554-1-rach4x0r@gmail.com>
+ <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
+ <da0c7aea-d917-4f3a-5136-89c30d12ba1f@grimberg.me>
+ <fd12993a-bcb7-7b45-5406-61da1979d49d@kernel.dk>
+ <10993ce4-7048-a369-ea44-adf445acfca7@grimberg.me>
+ <c4cb66f6-8a66-7973-dc03-0f4f61d0a1e4@kernel.dk>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <cbe18a3d-8a6b-e775-81bb-3b3f11045183@grimberg.me>
+Date:   Fri, 13 Nov 2020 13:36:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201113160625.1281-1-baskov@ispras.ru>
+In-Reply-To: <c4cb66f6-8a66-7973-dc03-0f4f61d0a1e4@kernel.dk>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,24 +67,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Evgeiny,
 
-Thank you for the patch.
-
-There is a typo in the subject: s/hangle/handle/
-
-Otherwise:
-
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-
-
-On 11/13/20 5:06 PM, Baskov Evgeiny wrote:
-> If an error happens in jpeg_get_drv_data(), i.e. match fails,
-> jpeg->variant field is NULL, so we cannot access it.
+>> But if you think this has a better home, I'm assuming that the guys
+>> will be open to that.
 > 
-> Consider device probe failed if jpeg->variant is NULL.
+> Also see the reply from Ming. It's a balancing act - don't want to add
+> extra overhead to the core, but also don't want to carry an extra
+> scheduler if the main change is really just variable dispatch batching.
+> And since we already have a notion of that, seems worthwhile to explore
+> that venue.
 
+I agree,
 
--- 
-Best regards,
-Jacek Anaszewski
+The main difference is that this balancing is not driven from device
+resource pressure, but rather from an assumption of device specific
+optimization (and also with a specific optimization target), hence a
+scheduler a user would need to opt-in seemed like a good compromise.
+
+But maybe Ming has some good ideas on a different way to add it..
