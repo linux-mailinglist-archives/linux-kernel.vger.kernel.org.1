@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8A72B1FCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172832B1FD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgKMQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:12:58 -0500
-Received: from bosmailout10.eigbox.net ([66.96.185.10]:39815 "EHLO
-        bosmailout10.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgKMQM5 (ORCPT
+        id S1726981AbgKMQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:13:42 -0500
+Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:52788 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726437AbgKMQNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:12:57 -0500
-Received: from bosmailscan10.eigbox.net ([10.20.15.10])
-        by bosmailout10.eigbox.net with esmtp (Exim)
-        id 1kdbh1-0005Q2-JI; Fri, 13 Nov 2020 11:12:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=cornelisnetworks.com; s=dkim; h=Sender:Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=I7K6O43ihGGOH28+RqFfcTYQnUcAUwFpAo/tpNQRB1g=; b=PkvC2FWBWCFsG7biYAV/OIaj7a
-        Cq1tqkkCcknF+YWzuoctEBwuCR6lCfAPZH7BdOORfK86wpDN3TmPoim6J6yFZhf3y52KRQseHWKIS
-        mYF3NYy+sehMCMNNc04gLUp9by0h7dB0izPMzGU9p85pEk5VWVEHZluspNNozwhE8uI3OvrztqwHj
-        BT1knDzaovRQJweUtcvAvIhkJI1lVGwRMJlDXT6XkxrS+9CGyBi6M767ViaEPZZPW/SAa8KHfzH0Q
-        xV+neEe0AG6zrZ8lQjDiQ5PGRrYyB6GxfaKGG9HS6wIQcPJmSahk1HSeukwXqTdR03vYaZ+jOpamV
-        AsZb+Zuw==;
-Received: from [10.115.3.31] (helo=bosimpout11)
-        by bosmailscan10.eigbox.net with esmtp (Exim)
-        id 1kdbh1-00033P-9y; Fri, 13 Nov 2020 11:12:55 -0500
-Received: from bosauthsmtp14.yourhostingaccount.com ([10.20.18.14])
-        by bosimpout11 with 
-        id rsCs2300A0JCtq201sCvAP; Fri, 13 Nov 2020 11:12:55 -0500
-X-Authority-Analysis: v=2.3 cv=DtjNBF3+ c=1 sm=1 tr=0
- a=AnsiuLKgxXFeB68GILQVjQ==:117 a=PId9yTw908ogKca1p5g/DQ==:17
- a=IkcTkHD0fZMA:10 a=nNwsprhYR40A:10 a=V1zYLna590sA:10 a=i0EeH86SAAAA:8
- a=LRYjQimtAAAA:8 a=iuss-EWV1xAoJR7U0UoA:9 a=QEXdDO2ut3YA:10
- a=JC7xiqAVgOyvJ6DxgMma:22
-Received: from [192.55.54.42] (port=40911)
-        by bosauthsmtp14.eigbox.net with esmtpa (Exim)
-        id 1kdbgy-00009w-3I; Fri, 13 Nov 2020 11:12:52 -0500
-Subject: Re: [PATCH] IB/hfi1: fix error return code in hfi1_init_dd()
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, sadanand.warrier@intel.com,
-        grzegorz.andrejczuk@intel.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1605249747-17942-1-git-send-email-zhangchangzhong@huawei.com>
-From:   Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Message-ID: <c0a3d9c7-362f-0415-ee3e-c5e3a975d9c6@cornelisnetworks.com>
-Date:   Fri, 13 Nov 2020 11:12:40 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Fri, 13 Nov 2020 11:13:42 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 0D394837F24A;
+        Fri, 13 Nov 2020 16:13:41 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2198:2199:2393:2525:2560:2563:2682:2685:2828:2859:2901:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:5007:6117:6119:7208:7464:7904:8784:8957:9025:9113:9121:9163:9165:9391:10004:10394:10400:10848:11026:11232:11233:11658:11876:11914:11984:12043:12050:12114:12266:12295:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:13870:13904:14181:14659:14721:14777:21063:21067:21080:21347:21433:21451:21611:21627:21789:30003:30029:30054:30055:30056:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: owl98_140d4ca27310
+X-Filterd-Recvd-Size: 2867
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 13 Nov 2020 16:13:37 +0000 (UTC)
+Message-ID: <97b1b575659bc87a07a308765769451d9eee4aef.camel@perches.com>
+Subject: Re: [mm] b6efe2fcc4: BUG:kernel_NULL_pointer_dereference,address
+From:   Joe Perches <joe@perches.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, 0day robot <lkp@intel.com>,
+        lkp@lists.01.org, ltp@lists.linux.it
+Date:   Fri, 13 Nov 2020 08:13:36 -0800
+In-Reply-To: <20201113121025.GA7578@xsang-OptiPlex-9020>
+References: <20201113121025.GA7578@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <1605249747-17942-1-git-send-email-zhangchangzhong@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EN-UserInfo: 0c01d0184442a6165e428d14bd4242e2:931c98230c6409dcc37fa7e93b490c27
-X-EN-AuthUser: mike.marciniszyn@cornelisnetworks.com
-Sender:  Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-X-EN-OrigIP: 192.55.54.42
-X-EN-OrigHost: unknown
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/13/2020 1:42 AM, Zhang Changzhong wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+On Fri, 2020-11-13 at 20:10 +0800, kernel test robot wrote:
+> Greeting,
 > 
-> Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: b6efe2fcc4e11010710ef5cd8e2bcbeb221a06c6 ("mm: slub: Convert sysfs sprintf family to sysfs_emit/sysfs_emit_at")
+> url: https://github.com/0day-ci/linux/commits/Joe-Perches/mm-Convert-sysfs-sprintf-family-to-sysfs_emit/20201102-041456
+[] 
+> on test machine: 8 threads Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz with 32G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> [   41.689368] BUG: kernel NULL pointer dereference, address: 0000000000000010
+> [   41.696354] #PF: supervisor read access in kernel mode
+> [   41.701508] #PF: error_code(0x0000) - not-present page
+> [   41.706661] PGD 0 P4D 0 
+> [   41.709205] Oops: 0000 [#1] SMP PTI
+> [   41.712702] CPU: 3 PID: 4619 Comm: read_all Tainted: G          I       5.10.0-rc1-00005-gb6efe2fcc4e1 #1
+> [   41.722296] Hardware name: Dell Inc. OptiPlex 7050/062KRH, BIOS 1.2.0 12/22/2016
+> [   41.729714] RIP: 0010:slabs_cpu_partial_show+0x95/0xe0
 
-We actually have this exact patch queued but have not yet sent it.
+Right, thanks.
 
-You saved us the trouble!
+I mistakenly dropped a test for page below:
 
-Mike
+@@ -5156,44 +5156,45 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
+ 
+                page = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
+ 
+-               if (page && len < PAGE_SIZE - 20)
+-                       len += sprintf(buf + len, " C%d=%d(%d)", cpu,
+-                               page->pobjects, page->pages);
++               len += sysfs_emit_at(buf, len, " C%d=%d(%d)",
++                                    cpu, page->pobjects, page->pages);
+        }
 
-Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+I'll correct it and resubmit.
+
+
