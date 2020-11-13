@@ -2,91 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C932B25DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3772B25E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgKMUu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:50:59 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:33041 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726003AbgKMUu6 (ORCPT
+        id S1726327AbgKMUwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:52:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43385 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726094AbgKMUwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:50:58 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id AA2FE2C7;
-        Fri, 13 Nov 2020 15:50:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 13 Nov 2020 15:50:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=74IkybClz9uGjeMG8qi3WvTKNpt
-        GiWLVFERtT4jCPF0=; b=L7/Pq354dBgqlQhF+RIDXHEGRVF1Xyr2VNvx6iY+Tik
-        d6jwUu+rOEJCfC2T/9Uzb9rHiERqm6GLdG9qq8vERjAxwkvnCXCUNCtAa9leDPOx
-        g5n9XzVqojd9jjHdnClHFpTnI4nau9UGvAiJG6c38PdsokPmNM0SSAa1GjRzPt6s
-        IkSKe9IoqIaQ+2/5PeVHowhEJx1fPd8Cfl8sbox1EnpVujWtSBQGIS4MtlrUrtDI
-        tLxncqzSYqeME4R6GTtAyqlaD3quGsDgVj0f8y2z9q8JAFm0JJPhzVzdV9DDsBPO
-        N+iUqTztEc/t0tLRoKB2CoI5XsD4mCkBSBx2qdHWw5A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=74Ikyb
-        Clz9uGjeMG8qi3WvTKNptGiWLVFERtT4jCPF0=; b=NWLEW0Ax5yKT7ckeS6RF+z
-        JgfTSrOjJlll0Y3qIPa7tk1g7k+d7/8e9QbuehOiHHI5cg+r8LdJTHOauLqHrkMq
-        Ck/n/gcnz2JNQDd8h+HrrssoZW6vFmZ+gx+e1dGAeymKFx6IUJrYvhVUN5C5Jz68
-        jd1tKFHD+n/Ruq97BhWPtaBCpvwq1M5M9KJwBOqF6pR/MUeEXAWjuuMK5noRfbPT
-        VwUOcxtzACOuwq4OrCPQQRKeJMa7hsl80e2R5UwfPsbccJMeZWZNE03O0ESI87Gf
-        h8Rhmezjccgrk1KiCiNRNPkByYOI0qzt1x2jahNb49ZcbrXY9MpInBqVLpuiSPjg
-        ==
-X-ME-Sender: <xms:sPGuX7jd3BT8Qynwr8D2eaJQEGEgYm8iSzf72n9WowKM3CjzeQAdWQ>
-    <xme:sPGuX4DT045-En1pKBCb-pxBPC7dfDn4JuEQRUmfdzt0W5U-ZIwPvYrAgfbiXbs1-
-    m96pQBnfALF3vaGgA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvhedgudegfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeff
-    hfeuffdunecukfhppeeijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghl
-    rdguvg
-X-ME-Proxy: <xmx:sPGuX7FllhEhuDXhpf3i2q_wR3TNmPFL36EWisQhWZsNm9wQdvI88Q>
-    <xmx:sPGuX4S-dR7VCLSeDYQyAJdnDLRUmRlqV632S0TvqVQ6oN-zBEL0FQ>
-    <xmx:sPGuX4x6QBfSG_lcW8l4KpHBA8EPBnwIQNGsp9XOprqZEfJx7kFWqA>
-    <xmx:sfGuX08HyKxrnm5eJPqGOWalilfjwEIvT7EdzGpzT7X_MjxsozkIdA>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AEE373280065;
-        Fri, 13 Nov 2020 15:50:56 -0500 (EST)
-Date:   Fri, 13 Nov 2020 12:50:55 -0800
-From:   Andres Freund <andres@anarazel.de>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-Message-ID: <20201113205055.5vyey2qmkx23rkkg@alap3.anarazel.de>
-References: <20200115184415.1726953-1-andres@anarazel.de>
- <2a5e9df32e2df27297149a577512f6b1557de241.camel@linux.intel.com>
- <20200116184250.qlvc3ilx2b42czqk@alap3.anarazel.de>
- <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
- <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
- <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
+        Fri, 13 Nov 2020 15:52:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605300754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BjbZK0zeIm65whn17k5UcYS2uZ9Kdra7izOdoHD5fpw=;
+        b=Vja5qVPNIORDTOqSTqSA1jcAlfT/9vrn5afRTuLTV2O+YzVDYdQDkZoL37/6A1pzb93pSt
+        eb+daRvz6lU/tMbAKzxYhO8jb90f8eR6wDYa+ixONXQWp9/6C6CtIDgp0SGNW3th3CrTwM
+        yiZn5KPlfqSCzNaHzf+p9LDCBY+kRcM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-6NjMwWGtNSa0dWipx0MBdw-1; Fri, 13 Nov 2020 15:52:30 -0500
+X-MC-Unique: 6NjMwWGtNSa0dWipx0MBdw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E7A28015A8;
+        Fri, 13 Nov 2020 20:52:28 +0000 (UTC)
+Received: from treble (ovpn-117-69.rdu2.redhat.com [10.10.117.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6296B5B4A4;
+        Fri, 13 Nov 2020 20:52:24 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 14:52:21 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <20201113205221.jybsu3himgjqd3tq@treble>
+References: <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
+ <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com>
+ <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble>
+ <20201110174606.mp5m33lgqksks4mt@treble>
+ <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+ <20201113195408.atbpjizijnhuinzy@treble>
+ <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
+In-Reply-To: <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 13, 2020 at 12:24:32PM -0800, Sami Tolvanen wrote:
+> On Fri, Nov 13, 2020 at 11:54 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Tue, Nov 10, 2020 at 10:59:55AM -0800, Sami Tolvanen wrote:
+> > > On Tue, Nov 10, 2020 at 9:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > > >
+> > > > On Mon, Nov 09, 2020 at 08:29:24PM -0600, Josh Poimboeuf wrote:
+> > > > > On Mon, Nov 09, 2020 at 03:11:41PM -0800, Sami Tolvanen wrote:
+> > > > > > CONFIG_XEN
+> > > > > >
+> > > > > > __switch_to_asm()+0x0: undefined stack state
+> > > > > >   xen_hypercall_set_trap_table()+0x0: <=== (sym)
+> > > >
+> > > > With your branch + GCC 9 I can recreate all the warnings except this
+> > > > one.
+> > >
+> > > In a gcc build this warning is replaced with a different one:
+> > >
+> > > vmlinux.o: warning: objtool: __startup_secondary_64()+0x7: return with
+> > > modified stack frame
+> > >
+> > > This just seems to depend on which function is placed right after the
+> > > code in xen-head.S. With gcc, the disassembly looks like this:
+> > >
+> > > 0000000000000000 <asm_cpu_bringup_and_idle>:
+> > >        0:       e8 00 00 00 00          callq  5 <asm_cpu_bringup_and_idle+0x5>
+> > >                         1: R_X86_64_PLT32       cpu_bringup_and_idle-0x4
+> > >        5:       e9 f6 0f 00 00          jmpq   1000
+> > > <xen_hypercall_set_trap_table>
+> > > ...
+> > > 0000000000001000 <xen_hypercall_set_trap_table>:
+> > >         ...
+> > > ...
+> > > 0000000000002000 <__startup_secondary_64>:
+> > >
+> > > With Clang+LTO, we end up with __switch_to_asm here instead of
+> > > __startup_secondary_64.
+> >
+> > I still don't see this warning for some reason.
+> 
+> Do you have CONFIG_XEN enabled? I can reproduce this on ToT master as follows:
+> 
+> $ git rev-parse HEAD
+> 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> $ make defconfig && \
+> ./scripts/config -e HYPERVISOR_GUEST -e PARAVIRT -e XEN && \
+> make olddefconfig && \
+> make -j110
+> ...
+> $ ./tools/objtool/objtool check -arfld vmlinux.o 2>&1 | grep secondary
+> vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with
+> modified stack frame
 
-On 2020-11-12 12:34:08 +0100, Daniel Lezcano wrote:
-> It does no longer apply, is it possible to do a respin ?
+Ok, I see it now on Linus' tree.  I just didn't see it on your clang-lto
+branch.
 
-Yep, sent.
+-- 
+Josh
 
-Thanks,
-
-- Andres
