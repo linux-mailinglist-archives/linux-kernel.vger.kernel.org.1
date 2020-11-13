@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7011D2B1C95
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206282B1C71
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgKMNwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:52:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52524 "EHLO
+        id S1727059AbgKMNuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:50:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727011AbgKMNuI (ORCPT
+        with ESMTP id S1727013AbgKMNuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:50:08 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D504CC0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:07 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id p1so9960998wrf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:07 -0800 (PST)
+        Fri, 13 Nov 2020 08:50:09 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24801C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:09 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 10so8207708wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
-        b=GQ2nGnd7ei9cM5vD1JEPCD7VBWcLAZDk9tid5K2m1xB+49husnSK/V/fuJKikI0pJ2
-         jy1I+r7PYWoJlfHHSwpCmz3O8VIJer6bYuPQrIfusLAwvQd/dr+NFAd03BYUpLjj1HCn
-         o/CNud2pA03ra46Eoojnh3roIyHaeUuTCXnuWocrauXB4AjYHI3mBdr2crnYp+ZIRoeW
-         I991Y4euR9IKVcPE3mLFtSxlrrst7X5qViXjT0nOamfVU9oPzPNq3ISGr7T41vitiSGG
-         VxopJOVPIXrdplhprsaLEkD1NXrt1bxBB9Ey97Amfw2JrdELeLoJcp5z3bu8vH6QF04l
-         wQyg==
+        bh=XGQ7i9boPClQe1oyR8utsPB6lLJWRf0r7to87NlJAVY=;
+        b=tq3YEaY/3TDVCn8qdDXnhOaaOrrxOH5BxxOKr+wdKm7kChxUnNxuggo9rpj/reOkjV
+         y2Vq9KREeLPXJ2WPiKYB3kyRIdXpbfStNqg8NRiCJGsQPIv4MByCZaHm49tkAMEe2wBs
+         cfNqUTziP7ShG4PEJp8SzklYk/xeH3dDelLf/Wx2lp+x31i3n0JZoW9dx2eYNwmEwAKm
+         RnODfEx3Pa5h79269T7DHlX6YJwhZRbTZBp1deopMe5/QXVB7d6soWsuO75rkZsRYhPk
+         kqtEpTC9r9eMqE13Rg74gHGz0LWVhWtVR/MoppqMCXKEF4pTzRd7lbijMk2oOz7YZdp7
+         hjAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
-        b=ZNtSHGcH4Q+c48v/kp/PPZsGI3UbhhHKMqaYUG28vyI67tq//O9iDmSbKdrFZWpc6E
-         GF69vwyj5sciEdtxd3hanPTzGqTtBKbxfsjBPFojERejQ2QVyY4bDyh5pm/e2D6HDEVe
-         AfCABjOoBg+GZiNnBa0rw8ahD4ku46XM6Nj67naZ8o56uN41ZZbdhDmKpnBio0RtoYJW
-         Q8eFrAknRKN0pK7KMzhYZAGBWQtlMZxfHi4x74Gh9nBlXwLv6zQL2njUU1edOEoMtd94
-         18MP6en1FyIyY4aX+baVZV03XqP9NHorFtIMYgRnLqqZMVgZIj21zVocNopa7RMmwzde
-         qXKA==
-X-Gm-Message-State: AOAM5320cgG3zva72apaHWsXbOLDR0H2zvqfPcxkLEMcExJ5z4CiP2Nv
-        KMOLJSiQbTsaAfz/Q0BU4I5NwQ==
-X-Google-Smtp-Source: ABdhPJxkktgUMZ93Vt2pOU9eROULFhMoiiN6/Qcg7QUfTEQlsQNZFV9mcp77LfG1pzYLuY40XOCt/Q==
-X-Received: by 2002:a5d:488f:: with SMTP id g15mr3566282wrq.151.1605275406578;
-        Fri, 13 Nov 2020 05:50:06 -0800 (PST)
+        bh=XGQ7i9boPClQe1oyR8utsPB6lLJWRf0r7to87NlJAVY=;
+        b=WYZ0RmLlM1tl2K6Xkbyaa4SF7rEPXykoiMzOEE93I5d4ZUHD2kzREAsYywuqDSs6Rw
+         4IboCf/vSSdAeRXHOxSYaUKMq6qS2sbj2uhKkfNTSsgLwL403LB5YD7aLJ+fcjqd8gZ5
+         NnVmRXUPYxMm8sw3KYq/bLMplfnpyNkJ5Z4RqudNxq9Rt0SfxmMZsmuvt4ieSq1H1/ZP
+         UoZNE8L3Mxnjwi1y9wnJkUlINVG4U7VmE3FcXoHjtajUmRBNgrwBVFGz2Wi+ysZ8xbTz
+         fwBrOUUbMCOvDZ2UWW41xKREpiWv9YaWs8/UVolCDuHKZFtBdvW1ZOJYc7PMpu649CPs
+         YqbA==
+X-Gm-Message-State: AOAM532mGSfW7quW9PhZ8sM+eKaz1CSdokvxSe8PQCtiQ+tunUdYv8OZ
+        EhkpDo19Uc4PKo5YcC3858qy+Q==
+X-Google-Smtp-Source: ABdhPJwD0bDR7huq2ppkbFkSvCBisuFBCTTr0W+eZnfRWOkea8mefvO6GAjT1RzC0ZQfM0qVBMnLmw==
+X-Received: by 2002:a1c:bb02:: with SMTP id l2mr2555867wmf.166.1605275407774;
+        Fri, 13 Nov 2020 05:50:07 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.05
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:50:05 -0800 (PST)
+        Fri, 13 Nov 2020 05:50:07 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 20/40] drm/pl111/pl111_debugfs: Make local function 'pl111_debugfs_regs()' static
-Date:   Fri, 13 Nov 2020 13:49:18 +0000
-Message-Id: <20201113134938.4004947-21-lee.jones@linaro.org>
+Subject: [PATCH 21/40] drm/amd/amdgpu/amdgpu_virt: Make local function 'amdgpu_virt_update_vf2pf_work_item()' static
+Date:   Fri, 13 Nov 2020 13:49:19 +0000
+Message-Id: <20201113134938.4004947-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
@@ -69,30 +71,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/pl111/pl111_debugfs.c:33:5: warning: no previous prototype for ‘pl111_debugfs_regs’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:560:6: warning: no previous prototype for ‘amdgpu_virt_update_vf2pf_work_item’ [-Wmissing-prototypes]
 
-Cc: Eric Anholt <eric@anholt.net>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/pl111/pl111_debugfs.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/pl111/pl111_debugfs.c b/drivers/gpu/drm/pl111/pl111_debugfs.c
-index 317f68abf18b0..6744fa16f4644 100644
---- a/drivers/gpu/drm/pl111/pl111_debugfs.c
-+++ b/drivers/gpu/drm/pl111/pl111_debugfs.c
-@@ -30,7 +30,7 @@ static const struct {
- 	REGDEF(CLCD_PL111_LCUR),
- };
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+index 8aff6ef50f918..905b85391e64a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+@@ -557,7 +557,7 @@ static int amdgpu_virt_write_vf2pf_data(struct amdgpu_device *adev)
+ 	return 0;
+ }
  
--int pl111_debugfs_regs(struct seq_file *m, void *unused)
-+static int pl111_debugfs_regs(struct seq_file *m, void *unused)
+-void amdgpu_virt_update_vf2pf_work_item(struct work_struct *work)
++static void amdgpu_virt_update_vf2pf_work_item(struct work_struct *work)
  {
- 	struct drm_info_node *node = (struct drm_info_node *)m->private;
- 	struct drm_device *dev = node->minor->dev;
+ 	struct amdgpu_device *adev = container_of(work, struct amdgpu_device, virt.vf2pf_work.work);
+ 
 -- 
 2.25.1
 
