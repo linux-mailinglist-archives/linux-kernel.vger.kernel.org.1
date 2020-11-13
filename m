@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3B52B1B1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39C42B1B22
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgKMM1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:27:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbgKMM1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:27:08 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B6BD20797;
-        Fri, 13 Nov 2020 12:27:02 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 12:26:59 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v8 3/9] set_memory: allow set_direct_map_*_noflush() for
- multiple pages
-Message-ID: <20201113122659.GD3212@gaia>
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-4-rppt@kernel.org>
+        id S1726488AbgKMM1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:27:41 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:26302 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726237AbgKMM1h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:27:37 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADCDGU4023151;
+        Fri, 13 Nov 2020 13:27:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=HdXPcM6waAIGKpwJ/di7i2L0+52iFpv+3+uBIYa3/BI=;
+ b=ikXe53F+o0lZqf9vVnN03So8MbK/Oo3x4YyRQ+C2KA0O8U3YyZFYOkICw/Vxh/P1l+mD
+ v1YfDrwDKNLZkBqpnyDKVcy7gskrNVKSPvulSEBy2ECCzFexJYN16wJA7+ysg9ZDAAe+
+ UM+p4oCMjLUAjxgwH+FhsIXCAZpX9i1gzeBChKwDSjEqI5GZoOdFDxGOeo1+zZM+bXj4
+ CzKyHqRs2UsEjHKplSnRD2HPwY+Pgbu3w5yBjpyW9s9xtDaDrkgtnQsaPkQI6rtfTeg/
+ 5ZvDPXL66EhwIddoJhMPqEJvXsDrAexWlqe7i/F/m2W8NbRPTD4Nkf9tcH7j1JJDzlkK pg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34nhx5k998-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 13:27:28 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7719B10002A;
+        Fri, 13 Nov 2020 13:27:27 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 67C2B254665;
+        Fri, 13 Nov 2020 13:27:27 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov 2020 13:27:26
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>
+Subject: [PATCH v2 1/1] mfd: stmfx: fix dev_err_probe call in stmfx_chip_init
+Date:   Fri, 13 Nov 2020 13:27:25 +0100
+Message-ID: <20201113122725.12971-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110151444.20662-4-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 05:14:38PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> The underlying implementations of set_direct_map_invalid_noflush() and
-> set_direct_map_default_noflush() allow updating multiple contiguous pages
-> at once.
-> 
-> Add numpages parameter to set_direct_map_*_noflush() to expose this ability
-> with these APIs.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/arm64/include/asm/cacheflush.h |  4 ++--
->  arch/arm64/mm/pageattr.c            | 10 ++++++----
+ret may be 0 so, dev_err_probe should be called only when ret is an error
+code.
 
-For arm64:
+Fixes: 41c9c06c491a ("mfd: stmfx: Simplify with dev_err_probe()")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+---
+v2: address Lee's comment about error handling area
+---
+ drivers/mfd/stmfx.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
+index 5e680bfdf5c9..988e2ba6dd0f 100644
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -329,11 +329,11 @@ static int stmfx_chip_init(struct i2c_client *client)
+ 
+ 	stmfx->vdd = devm_regulator_get_optional(&client->dev, "vdd");
+ 	ret = PTR_ERR_OR_ZERO(stmfx->vdd);
+-	if (ret == -ENODEV) {
+-		stmfx->vdd = NULL;
+-	} else {
+-		return dev_err_probe(&client->dev, ret,
+-				     "Failed to get VDD regulator\n");
++	if (ret) {
++		if (ret == -ENODEV)
++			stmfx->vdd = NULL;
++		else
++			return dev_err_probe(&client->dev, ret, "Failed to get VDD regulator\n");
+ 	}
+ 
+ 	if (stmfx->vdd) {
+-- 
+2.17.1
+
