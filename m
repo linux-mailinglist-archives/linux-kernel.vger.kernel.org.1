@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07A82B1E0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377B62B1E21
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgKMPEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:04:37 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:58480 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgKMPEg (ORCPT
+        id S1726854AbgKMPFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:05:48 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:40943 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgKMPFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:04:36 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kdacs-0003QC-Qr; Fri, 13 Nov 2020 15:04:34 +0000
-Subject: Re: [PATCH][next] drm/kmb: fix array out-of-bounds writes to
- kmb->plane_status[]
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201113120121.33212-1-colin.king@canonical.com>
- <20201113145557.GB3647624@ravnborg.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <8dd5b960-d6c4-73cc-703e-349dc66f2937@canonical.com>
-Date:   Fri, 13 Nov 2020 15:04:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Fri, 13 Nov 2020 10:05:48 -0500
+Received: by mail-wm1-f66.google.com with SMTP id a3so8751627wmb.5;
+        Fri, 13 Nov 2020 07:05:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bVaU10leUNBpSZ8QLekWuqLmBxn7RuMG1m+hwrLuz6g=;
+        b=orWZs6ro18hpOjpeQeq74jyJDjhRWpehrf9Y5a0oNqXW23q4EFC8E4IQCxP0M3ndFw
+         P8JOrKsQEdnkt6blk6TN72nqPJKI1FyzdR/nVm5nIJxgRcVxBpk2fphLrKaVDmqJ6p/h
+         x7vzCD4HlSqxea8BivJ37LEj6cfX8WosY+tuTgKhwIg3PFvCGTdCyqANi81F0uJdLDUA
+         39Bw2locTn2YlpESC1cHoW0nmISdMND0MeJFqr9JMUxKLkR9Zzp+IDnTh0lnC2CFZ8iv
+         MaV7VYjr58xmB8e33etf/SM0S2KB7nT+3oxlYB5FOUBN0qnHrvoB9gRdMmBRprT9OkV2
+         tU9A==
+X-Gm-Message-State: AOAM533IhOohGzUw7YVB7uc5RoRLy9AiZHBqvBGSCigi1S6El8o/YXfK
+        EPoWRo5/9Qwuu+DxiG+JwWw=
+X-Google-Smtp-Source: ABdhPJyt09W3jXfPJxn0KjzPJUsp/JJ3bB4BaSGATWAC3rkRQ65MiVyRh5JtcpvI5BLhcx5njZISfw==
+X-Received: by 2002:a1c:7e8e:: with SMTP id z136mr3108670wmc.46.1605279946339;
+        Fri, 13 Nov 2020 07:05:46 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id q12sm9984512wrx.86.2020.11.13.07.05.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 07:05:45 -0800 (PST)
+Date:   Fri, 13 Nov 2020 15:05:44 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 06/17] x86/hyperv: allocate output arg pages if
+ required
+Message-ID: <20201113150544.drm4qk4jlchewukg@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-7-wei.liu@kernel.org>
+ <87a6vmy4dn.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113145557.GB3647624@ravnborg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6vmy4dn.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2020 14:55, Sam Ravnborg wrote:
-> Hi Colin.
+On Thu, Nov 12, 2020 at 04:35:48PM +0100, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
+[...]
+> > @@ -209,14 +219,23 @@ static int hv_cpu_die(unsigned int cpu)
+> >  	unsigned int new_cpu;
+> >  	unsigned long flags;
+> >  	void **input_arg;
+> > -	void *input_pg = NULL;
+> > +	void *pg;
+> >  
+> >  	local_irq_save(flags);
+> >  	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
+> > -	input_pg = *input_arg;
+> > +	pg = *input_arg;
+> >  	*input_arg = NULL;
+> > +
+> > +	if (hv_root_partition) {
+> > +		void **output_arg;
+> > +
+> > +		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
+> > +		*output_arg = NULL;
+> > +	}
+> > +
+> >  	local_irq_restore(flags);
+> > -	free_page((unsigned long)input_pg);
+> > +
+> > +	free_page((unsigned long)pg);
+> >  
 > 
-> On Fri, Nov 13, 2020 at 12:01:21PM +0000, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Writes to elements in the kmb->plane_status array in function
->> kmb_plane_atomic_disable are overrunning the array when plane_id is
->> more than 1 because currently the array is KMB_MAX_PLANES elements
->> in size and this is currently #defined as 1.  Fix this by defining
->> KMB_MAX_PLANES to 4.
+> Hm, but in case we've allocated output_arg, don't we need to do
+> 	free_pages((unsigned long)pg, 1);
 > 
-> I fail to follow you here.
-> In kmb_plane_init() only one plane is allocated - with id set to 0.
-> So for now only one plane is allocated thus kmb_plane_atomic_disable()
-> is only called for this plane.
-> 
-> With your change we will start allocating four planes, something that is
-> not tested.
-> 
-> Do I miss something?
-> 
-> 	Sam
-> 
+> instead?
 
-The static analysis from coverity on linux-next suggested that there was
-an array overflow as follows:
+Indeed. This has been fixed with:
 
-108 static void kmb_plane_atomic_disable(struct drm_plane *plane,
-109                                     struct drm_plane_state *state)
-110 {
+    free_pages((unsigned long)pg, hv_root_partition ? 1 : 0);
 
-   1. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-!__builtin_types_compatible_p()) */, taking false branch.
-
-111        struct kmb_plane *kmb_plane = to_kmb_plane(plane);
-
-   2. assignment: Assigning: plane_id = kmb_plane->id.
-
-112        int plane_id = kmb_plane->id;
-113        struct kmb_drm_private *kmb;
-114
-115        kmb = to_kmb(plane->dev);
-116
-
-   3. Switch case value LAYER_3.
-
-117        switch (plane_id) {
-118        case LAYER_0:
-119                kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL1_ENABLE;
-120                break;
-121        case LAYER_1:
-
-   (#2 of 4): Out-of-bounds write (OVERRUN)
-
-122                kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL2_ENABLE;
-123                break;
-124        case LAYER_2:
-
-   (#3 of 4): Out-of-bounds write (OVERRUN)
-
-125                kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL1_ENABLE;
-126                break;
-
-   4. equality_cond: Jumping to case LAYER_3.
-
-127        case LAYER_3:
-
-   (#1 of 4): Out-of-bounds write (OVERRUN)
-   5. overrun-local: Overrunning array kmb->plane_status of 1 8-byte
-elements at element index 3 (byte offset 31) using index plane_id (which
-evaluates to 3).
-
-128                kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL2_ENABLE;
-129                break;
-130        }
-131
-
-   (#4 of 4): Out-of-bounds write (OVERRUN)
-
-132        kmb->plane_status[plane_id].disable = true;
-133 }
-134
-
-So it seems the assignments to  kmb->plane_status[plane_id] are
-overrunning the array since plane_status is allocated as 1 element and
-yet plane_id can be 0..3
-
-I could be misunderstanding this, or it may be a false positive.
-
-Colin
+Wei.
