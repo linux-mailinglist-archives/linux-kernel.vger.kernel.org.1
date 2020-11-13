@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385082B2095
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A1D2B2097
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgKMQgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:36:47 -0500
-Received: from smtprelay0114.hostedemail.com ([216.40.44.114]:49716 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726156AbgKMQgr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:36:47 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 4713618224D63;
-        Fri, 13 Nov 2020 16:36:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3421:3622:3865:3867:3868:4321:4361:5007:9108:10004:10400:10471:10848:11026:11232:11658:11914:12043:12114:12295:12297:12438:12740:12895:13069:13255:13311:13357:13439:13894:14180:14181:14659:14721:21080:21451:21627:30030:30054:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: steel67_1e01f7727310
-X-Filterd-Recvd-Size: 2245
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 13 Nov 2020 16:36:45 +0000 (UTC)
-Message-ID: <fe5ad7c72eadac32eda6a41b61feaa42c04392b0.camel@perches.com>
-Subject: Re: [PATCH 3/2] checkpatch: document the function renaming and
- deprecation around devm_ioremap_resource
-From:   Joe Perches <joe@perches.com>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>
-Date:   Fri, 13 Nov 2020 08:36:44 -0800
-In-Reply-To: <20201113091157.125766-1-u.kleine-koenig@pengutronix.de>
-References: <20201113085327.125041-1-u.kleine-koenig@pengutronix.de>
-         <20201113091157.125766-1-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1726614AbgKMQhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:37:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:41182 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgKMQhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:37:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9B5C1042;
+        Fri, 13 Nov 2020 08:37:13 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AB1B3F718;
+        Fri, 13 Nov 2020 08:37:13 -0800 (PST)
+Date:   Fri, 13 Nov 2020 16:37:12 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, will@kernel.org,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] arm64: implement CPPC FFH support using AMUs
+Message-ID: <20201113163712.GA5058@arm.com>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
+ <20201106125334.21570-4-ionela.voinescu@arm.com>
+ <20201113141658.v2oq47nzerx3abga@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113141658.v2oq47nzerx3abga@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-13 at 10:11 +0100, Uwe Kleine-König wrote:
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
-> 
-> this can also be squashed into the respective patches instead.
-> 
-> Best regards
-> Uwe
-> 
->  scripts/checkpatch.pl | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -615,6 +615,11 @@ our %deprecated_apis = (
->  	"rcu_barrier_sched"			=> "rcu_barrier",
->  	"get_state_synchronize_sched"		=> "get_state_synchronize_rcu",
->  	"cond_synchronize_sched"		=> "cond_synchronize_rcu",
-> +	"devm_platform_get_and_ioremap_resource" => "devm_platform_get_request_and_ioremap_resource",
+Hi Sudeep,
 
-Do we really need 46 character length function names?
-
-> +	"devm_platform_ioremap_resource"	=> "devm_platform_request_ioremap_resource",
-> +	"devm_platform_ioremap_resource_wc"	=> "devm_platform_request_ioremap_resource_wc",
-> +	"devm_ioremap_resource"			=> "devm_request_ioremap_resource",
-> +	"devm_ioremap_resource_wc"		=> "devm_request_ioremap_resource_wc",
->  );
->  
+On Friday 13 Nov 2020 at 14:16:58 (+0000), Sudeep Holla wrote:
+[..]
+> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > index b8cb16e3a2cc..7c9b6a0ecd6a 100644
+> > --- a/arch/arm64/kernel/topology.c
+> > +++ b/arch/arm64/kernel/topology.c
+> > @@ -147,6 +147,9 @@ void update_freq_counters_refs(void)
+> >
+> >  static inline bool freq_counters_valid(int cpu)
+> >  {
+> > +	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
+> > +		return false;
+> > +
+> >  	if (!cpu_has_amu_feat(cpu)) {
+> >  		pr_debug("CPU%d: counters are not supported.\n", cpu);
+> >  		return false;
+> > @@ -323,3 +326,64 @@ void topology_scale_freq_tick(void)
+> >  	this_cpu_write(arch_core_cycles_prev, core_cnt);
+> >  	this_cpu_write(arch_const_cycles_prev, const_cnt);
+> >  }
+> > +
+> > +#ifdef CONFIG_ACPI_CPPC_LIB
+> > +#include <acpi/cppc_acpi.h>
 > 
->  #Create a search pattern for all these strings to speed up a loop below
+> Not sure what arm64 maintainers prefer, but this code has nothing to do
+> with topolopy strictly speaking. I wonder if we can put it in separate
 
-And do please send your proposed patches to the appropriate maintainers.
+Yes, you are correct. I am/was wondering the same for all the
+counters/AMU related functions, but given they were only used for
+topology_scale_freq_tick() *until now*, it was okay to keep them in
+topology.c.
 
+But I might soon have at least one additional (to FIE and FFH) small
+usecase for them in the implementation of arch_freq_get_on_cpu(), so all
+these functions might be better off in a separate file as well.
 
+Side note: I don't think frequency invariance is strictly speaking
+related to topology either. Nether are other functions in the
+arch_topology driver. It's likely we got used to placing all
+arch function implementation in either the arch_topology driver or the
+<arch>/kernel/topology.c.
+
+> file conditionally compiled if CONFIG_ACPI_CPPC_LIB is enabled there
+> by eliminating #ifdef(main reason for raising this point).
+> 
+
+I'm happy to split either one(FFH) or both(FFH and counters) in separate
+files. Given the above, let me know if/how you guys prefer this done.
+
+> Either way:
+> 
+> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> 
+
+Thank you for the reviews,
+Ionela.
+
+> --
+> Regards,
+> Sudeep
