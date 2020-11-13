@@ -2,176 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8B52B2880
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EBB2B2885
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgKMWXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:23:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59954 "EHLO mail.kernel.org"
+        id S1726107AbgKMW06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:26:58 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:37789 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgKMWXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:23:42 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725973AbgKMW0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:26:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605306411; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=MxIz1PS/QYcvKUyybnMX0F8kTF31tCq+qC/fv7RjJlc=; b=L/FyYN5xGrhFM3AdWn8OeRab9TmHK7AYsNQCSMhW8KMtehUL1q8KwdDmYI2YGeVCL9RvCH6F
+ wlZsboU1C4PGxnzT+idUkZND9D5vFJaooFXJ6P5L/mjvZzn1QkzIT5bBfm57oeWt69j0qisa
+ +21VbGNSy1lFel5dqoha/mYe4AU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5faf082bf34fcfd5e52180e8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 22:26:51
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 850CBC43387; Fri, 13 Nov 2020 22:26:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1568207DE;
-        Fri, 13 Nov 2020 22:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605306221;
-        bh=GTuPcqEWVM+VGI2FMkFJFWknqieSxgBdfJx/huPl714=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=L9yhbjdstA2Y7+3ZeEDEsD9GjOfKd+YBOAqAQoYcnQYdDy9Bj3ETKsd0z4dh4uXyF
-         XcPXq47j39zuMAUg/64vMz4FnE63VM8/+mz1832k9E7s1MwLLJ/2XRICWkUkk/RuUy
-         qrj9/eZADLxzhLQA7F+AKMgKEzPkL5yKXL8flDtY=
-Date:   Fri, 13 Nov 2020 16:23:39 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     bhelgaas@google.com, hkallweit1@gmail.com,
-        wangxiongfeng2@huawei.com, mika.westerberg@linux.intel.com,
-        kai.heng.feng@canonical.com, chris.packham@alliedtelesis.co.nz,
-        yangyicong@hisilicon.com, lorenzo.pieralisi@arm.com,
-        treding@nvidia.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH] PCI/ASPM: Save/restore ASPM-L1SS controls for
- suspend/resume
-Message-ID: <20201113222339.GA1138933@bjorn-Precision-5520>
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DB71EC433C9;
+        Fri, 13 Nov 2020 22:26:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DB71EC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: fix connect/disconnect handled at ir_hdp
+Date:   Fri, 13 Nov 2020 14:26:39 -0800
+Message-Id: <20201113222639.18786-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201024190442.871-1-vidyas@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 12:34:42AM +0530, Vidya Sagar wrote:
-> Previously ASPM L1-Sub-States control registers (CTL1 and CTL2) weren't
-> saved and restored during suspend/resume leading to ASPM-L1SS
-> configuration being lost post resume.
-> 
-> Save the ASPM-L1SS control registers so that the configuration is retained
-> post resume.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+Some usb type-c dongle use irq_hpd request to perform device
+connect and disconnect. This patch add handling of both connection
+and disconnection are based on hpd_state and sink_count.
 
-Applied to pci/aspm for v5.11, thanks!
+Fixes: 6c6e8b2e04d5 ("drm/msm/dp: promote irq_hpd handle to handle link training correctly")
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 78 +++++++++++++++++------------
+ 1 file changed, 45 insertions(+), 33 deletions(-)
 
-I tidied up pci_restore_aspm_l1ss_state() so it does the checking the
-same way as pci_save_aspm_l1ss_state().
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 27e7e27b8b90..4e84f500b721 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -279,13 +279,25 @@ static void dp_display_send_hpd_event(struct msm_dp *dp_display)
+ 	drm_helper_hpd_irq_event(connector->dev);
+ }
+ 
+-static int dp_display_send_hpd_notification(struct dp_display_private *dp,
+-					    bool hpd)
++
++static void dp_display_set_encoder_mode(struct dp_display_private *dp)
+ {
+-	static bool encoder_mode_set;
+ 	struct msm_drm_private *priv = dp->dp_display.drm_dev->dev_private;
+ 	struct msm_kms *kms = priv->kms;
++	static bool encoder_mode_set;
++
++	if (!encoder_mode_set && dp->dp_display.encoder &&
++				kms->funcs->set_encoder_mode) {
++		kms->funcs->set_encoder_mode(kms,
++				dp->dp_display.encoder, false);
+ 
++		encoder_mode_set = true;
++	}
++}
++
++static int dp_display_send_hpd_notification(struct dp_display_private *dp,
++					    bool hpd)
++{
+ 	if ((hpd && dp->dp_display.is_connected) ||
+ 			(!hpd && !dp->dp_display.is_connected)) {
+ 		DRM_DEBUG_DP("HPD already %s\n", (hpd ? "on" : "off"));
+@@ -298,15 +310,6 @@ static int dp_display_send_hpd_notification(struct dp_display_private *dp,
+ 
+ 	dp->dp_display.is_connected = hpd;
+ 
+-	if (dp->dp_display.is_connected && dp->dp_display.encoder
+-				&& !encoder_mode_set
+-				&& kms->funcs->set_encoder_mode) {
+-		kms->funcs->set_encoder_mode(kms,
+-				dp->dp_display.encoder, false);
+-		DRM_DEBUG_DP("set_encoder_mode() Completed\n");
+-		encoder_mode_set = true;
+-	}
+-
+ 	dp_display_send_hpd_event(&dp->dp_display);
+ 
+ 	return 0;
+@@ -359,6 +362,8 @@ static void dp_display_host_init(struct dp_display_private *dp)
+ 	if (dp->usbpd->orientation == ORIENTATION_CC2)
+ 		flip = true;
+ 
++	dp_display_set_encoder_mode(dp);
++
+ 	dp_power_init(dp->power, flip);
+ 	dp_ctrl_host_init(dp->ctrl, flip);
+ 	dp_aux_init(dp->aux);
+@@ -448,15 +453,6 @@ static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
+ 
+ 	sink_request = dp->link->sink_request;
+ 
+-	if (sink_request & DS_PORT_STATUS_CHANGED) {
+-		if (dp_display_is_sink_count_zero(dp)) {
+-			DRM_DEBUG_DP("sink count is zero, nothing to do\n");
+-			return -ENOTCONN;
+-		}
+-
+-		return dp_display_process_hpd_high(dp);
+-	}
+-
+ 	dp_ctrl_handle_sink_request(dp->ctrl);
+ 
+ 	if (dp->link->sink_request & DP_TEST_LINK_VIDEO_PATTERN)
+@@ -491,17 +487,29 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
+ 	if (!rc) {
+ 		sink_request = dp->link->sink_request;
+ 		if (sink_request & DS_PORT_STATUS_CHANGED) {
+-			/* same as unplugged */
+-			hpd->hpd_high = 0;
+-			dp->hpd_state = ST_DISCONNECT_PENDING;
+-			dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
+-		}
+-
+-		rc = dp_display_handle_irq_hpd(dp);
+-
+-		if (!rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
+-			hpd->hpd_high = 1;
+-			dp->hpd_state = ST_CONNECT_PENDING;
++			if (dp_display_is_sink_count_zero(dp)) {
++				DRM_DEBUG_DP("sink count is zero, nothing to do\n");
++				if (dp->hpd_state != ST_DISCONNECTED) {
++					hpd->hpd_high = 0;
++					dp->hpd_state = ST_DISCONNECT_PENDING;
++					dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
++				}
++				rc = -ENOTCONN;
++			} else {
++				if (dp->hpd_state == ST_DISCONNECTED) {
++					hpd->hpd_high = 1;
++					dp->hpd_state = ST_CONNECT_PENDING;
++
++					rc = dp_display_process_hpd_high(dp);
++					if (rc) {
++						hpd->hpd_high = 0;
++						dp->hpd_state = ST_DISCONNECTED;
++					}
++				}
++			}
++		} else {
++			if (!dp_display_is_ds_bridge(dp->panel))
++				rc = dp_display_handle_irq_hpd(dp);
+ 		}
+ 	}
+ 
+@@ -661,6 +669,7 @@ static int dp_disconnect_pending_timeout(struct dp_display_private *dp, u32 data
+ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ {
+ 	u32 state;
++	int ret;
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+@@ -671,7 +680,10 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
+-	dp_display_usbpd_attention_cb(&dp->pdev->dev);
++	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
++	if (ret == -ECONNRESET) { /* cable unplugged */
++		dp->core_initialized = false;
++	}
+ 
+ 	mutex_unlock(&dp->event_mutex);
+ 
 
-> ---
-> v1:
-> * It would be really good if someone can verify it on a non tegra194 platform
-> 
->  drivers/pci/pci.c       |  7 +++++++
->  drivers/pci/pci.h       |  4 ++++
->  drivers/pci/pcie/aspm.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 52 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index a458c46d7e39..034497264bde 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1551,6 +1551,7 @@ int pci_save_state(struct pci_dev *dev)
->  		return i;
->  
->  	pci_save_ltr_state(dev);
-> +	pci_save_aspm_l1ss_state(dev);
->  	pci_save_dpc_state(dev);
->  	pci_save_aer_state(dev);
->  	return pci_save_vc_state(dev);
-> @@ -1656,6 +1657,7 @@ void pci_restore_state(struct pci_dev *dev)
->  	 * LTR itself (in the PCIe capability).
->  	 */
->  	pci_restore_ltr_state(dev);
-> +	pci_restore_aspm_l1ss_state(dev);
->  
->  	pci_restore_pcie_state(dev);
->  	pci_restore_pasid_state(dev);
-> @@ -3319,6 +3321,11 @@ void pci_allocate_cap_save_buffers(struct pci_dev *dev)
->  	if (error)
->  		pci_err(dev, "unable to allocate suspend buffer for LTR\n");
->  
-> +	error = pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_L1SS,
-> +					    2 * sizeof(u32));
-> +	if (error)
-> +		pci_err(dev, "unable to allocate suspend buffer for ASPM-L1SS\n");
-> +
->  	pci_allocate_vc_save_buffers(dev);
->  }
->  
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index fa12f7cbc1a0..8d2135f61e36 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -565,11 +565,15 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev);
->  void pcie_aspm_exit_link_state(struct pci_dev *pdev);
->  void pcie_aspm_pm_state_change(struct pci_dev *pdev);
->  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
-> +void pci_save_aspm_l1ss_state(struct pci_dev *dev);
-> +void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
->  #else
->  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
->  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
->  static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
->  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
-> +static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
-> +static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
->  #endif
->  
->  #ifdef CONFIG_PCIE_ECRC
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 253c30cc1967..d965bbc563ed 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -742,6 +742,47 @@ static void pcie_config_aspm_l1ss(struct pcie_link_state *link, u32 state)
->  				PCI_L1SS_CTL1_L1SS_MASK, val);
->  }
->  
-> +void pci_save_aspm_l1ss_state(struct pci_dev *dev)
-> +{
-> +	struct pci_cap_saved_state *save_state;
-> +	int aspm_l1ss;
-> +	u32 *cap;
-> +
-> +	if (!pci_is_pcie(dev))
-> +		return;
-> +
-> +	aspm_l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
-> +	if (!aspm_l1ss)
-> +		return;
-> +
-> +	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
-> +	if (!save_state)
-> +		return;
-> +
-> +	cap = (u32 *)&save_state->cap.data[0];
-> +	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
-> +	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, cap++);
-> +}
-> +
-> +void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
-> +{
-> +	struct pci_cap_saved_state *save_state;
-> +	int aspm_l1ss;
-> +	u32 *cap;
-> +
-> +	if (!pci_is_pcie(dev))
-> +		return;
-> +
-> +	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
-> +	aspm_l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
-> +	if (!save_state || !aspm_l1ss)
-> +		return;
-> +
-> +	cap = (u32 *)&save_state->cap.data[0];
-> +	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
-> +	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
-> +}
-> +
->  static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
->  {
->  	pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
-> -- 
-> 2.17.1
-> 
+base-commit: 6c6e8b2e04d537f42b5ebb8b8b0b31a39b44ccf4
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
