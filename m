@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3172B19A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578872B19CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgKMLII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:08:08 -0500
-Received: from mail-eopbgr10084.outbound.protection.outlook.com ([40.107.1.84]:17220
+        id S1726723AbgKMLPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:15:12 -0500
+Received: from mail-eopbgr10088.outbound.protection.outlook.com ([40.107.1.88]:56293
         "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726621AbgKMLFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:05:52 -0500
+        id S1726619AbgKMLF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:05:59 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vx34GG7uTnveZGXdVbFRoSOR0LIInW8AuBvyE/cULYHXj2ykvfDTQCeKxyoq7/BB1/lDzdNtfOdeJ7/CnHGChSJawCUy0uatWT5Og0j9kOPTyUq5rc+r+Zi1KKyQH2EzobmshpQaB9VYsJ6IZaPA5wOcY0ku0zr2ZL61c5OkE27JmYcStp5J2hyMzSYCdYmsIeE9go27Ly3/rC9g4KMrpasfL0TKNopeT3kPTJqVrxSuau5vGG+210tVVN+0MpBq+7gi2EBbV1z2wSIVX3w2/AeIsVLDud7trZQTaXclBIfzSFjpmOroYyitdzgF08/BTLpZUu1p+qIgMJ488XVAmQ==
+ b=MnEf0DDAGIndAst9vd5CMQAI1hIPGA9qU6a7iLPvVRc21+d9cOzsQIChwV0fsnL5MA2blIOEw5PXHWJL3o7m8vthfJuPZAFFoO9DodF5vAzgVe+WoSAg/1stybbT7aWuQM2KGkN7Tddrd4kIS+GMM5p0hwnzli9n+kgBVjANsLk0nx0sp4/Mii2NGH4BYK3kH1dRnphhvLMDxZoa0FQhWPP/16RA4Qbr0d+xmiTlJn6udnwFmLBNBg/rnmdpg84mAKFBLfIhDkb9DLWvh19u/wH6F+gr4nZmCkOnHBhnfTw+ShOWq4B/3p6x1r556zRxB5BFPw3qzBjf/lUKb4FSoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C/UnqVSWhX7CfXa9AN46bNW2rTl6rHiSSzsHtYvshDw=;
- b=YcEj/qSYeR3+Vf5JSEbpckzHPOQfdNRvxdA9wrNj+Kkq+QYBhOQxX7jizwujyzHPNAx3J8Z5/lcAE1SGce5SvRi18+KF+58WU/BAeSEhT9KPW/tvBMkwXpFEbiSPuWCviMAo/y7JTQS1bMTIEQHKlSJIBJ3HRVBKfCV1Z1arZovCpwnIF1kizqGUucKbIw3mu7XMwDc4/1DDqrsA6fAYBNdYYg9PLLZ6pnSpnchZb/z4gqVj43nIOjbtqFdnN35jIrobTg0Evh0ivTjprXX9nKX5Lgj+/ttQD61K3pe/mq2Byv1YEQiOAFAODu+Y+IFE68P5iYffOvA+idTpZ908GA==
+ bh=8Jb282RrjJoppsIFcnPv5605ItICZ2v3cjmDkA2j69o=;
+ b=Mdl6i9f0BkWiMo5C1f1j75gQsKfiTga/dNX7TuvQvYZou+JAwSzGUQdaetR4Lz6vDxPnek/t3CE1dNQesIWlLbMVv+aIpDloKoK75MhHn6ZcpdomZpWKOv6SHjxjmm6cdnnAEFWKc3PrvodSyZkqXVelfaOabgPX00Crpiw6biQFS6S8+XGfFIEiXHZdT8jcbHLaaDSvm+Tt8q6qCpkDZtT51hQGxfL40j5MiUfBpV0OyMfyeokFcbsVxFNY0kTvW5St7xLXz/Lbyz8YdgZac7ew5QmOGkl6fMvoF9ECCzldBypGVIkQtjJN9+IxQASpcPW6p0vjI+8AUCjzOaFPeA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C/UnqVSWhX7CfXa9AN46bNW2rTl6rHiSSzsHtYvshDw=;
- b=UFU7kekupobhtoNm0t6qM2ryQ9lZG7twpkRLt9sL8u7pl3eOxMQGrRQ8y0WeEOHyr6wVW+KR+wU6XqefJgKfRCai41RZEQShYrDiFkdFgOT1C/t3DBeQ6RU1BxSt2/jJVM4HeU+LeHrslOhu7M6PbmhxKHGszTlGeuZGjN6nvLM=
+ bh=8Jb282RrjJoppsIFcnPv5605ItICZ2v3cjmDkA2j69o=;
+ b=dS2xCrQl5sdgoFxKoZQNkomd+dO44kCZyyIv1r2MfkT6DTu8ZlXYz3L47wz1qDFZDkn3rmlo/J+wnY81ARdHAGS7QBfPJ214IsBteeR/NtB2U5nLjU5QZEeU7z182u5xVrVKqInaWlMCeKT12wrjFtbfttJFGQGxlHjohF8FKKQ=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
 Received: from VI1PR04MB7071.eurprd04.prod.outlook.com (2603:10a6:800:128::8)
  by VE1PR04MB7279.eurprd04.prod.outlook.com (2603:10a6:800:1a5::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 13 Nov
- 2020 11:04:25 +0000
+ 2020 11:04:33 +0000
 Received: from VI1PR04MB7071.eurprd04.prod.outlook.com
  ([fe80::1de8:9a84:bb92:f944]) by VI1PR04MB7071.eurprd04.prod.outlook.com
  ([fe80::1de8:9a84:bb92:f944%7]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 11:04:25 +0000
+ 11:04:33 +0000
 From:   Alice Guo <alice.guo@nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         krzk@kernel.org
 Cc:     linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 3/4] arm64: dts: imx8m: add nvmem-cell related stuff
-Date:   Fri, 13 Nov 2020 19:04:08 +0800
-Message-Id: <20201113110409.13546-3-alice.guo@nxp.com>
+Subject: [PATCH v3 4/4] soc: imx8m: change to use platform driver
+Date:   Fri, 13 Nov 2020 19:04:09 +0800
+Message-Id: <20201113110409.13546-4-alice.guo@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201113110409.13546-1-alice.guo@nxp.com>
 References: <20201113110409.13546-1-alice.guo@nxp.com>
@@ -55,140 +55,219 @@ X-ClientProxiedBy: AM0PR07CA0018.eurprd07.prod.outlook.com
  (2603:10a6:800:128::8)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by AM0PR07CA0018.eurprd07.prod.outlook.com (2603:10a6:208:ac::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.15 via Frontend Transport; Fri, 13 Nov 2020 11:04:22 +0000
+Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by AM0PR07CA0018.eurprd07.prod.outlook.com (2603:10a6:208:ac::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.15 via Frontend Transport; Fri, 13 Nov 2020 11:04:30 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 84df484a-06f8-4e89-77d1-08d887c3e203
+X-MS-Office365-Filtering-Correlation-Id: 4c192b14-b924-4a65-b2bf-08d887c3e6a6
 X-MS-TrafficTypeDiagnostic: VE1PR04MB7279:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB7279E40AE753D870D03864AAE2E60@VE1PR04MB7279.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-Microsoft-Antispam-PRVS: <VE1PR04MB7279C305BB903392E73FD3AEE2E60@VE1PR04MB7279.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k0Ge8ejdlusaE3nrYQWCgQUCrXmR6ACxQ/z+7uqPALlCK/vGD26zrAHeQAZ63IhUl94aTzxR5k6Q5AIizT/xzCNTz5ckEQBoQ/aFP9vgNdEGnSl6EC5JXu2tc9CSEpbyYs8EuIN4Dco9/pcHNj9WPHWgIxQgAs7QxptqSKwc0GC5XT+LcqKtlv4r/tLkvfgIO8MH1OR6dxrVdj8AwW8k4xMLvy45j3KFaKrFOai5ekMwlGD+4IsbphkutXffTmupWMSlsGLYts38eVmEQ8+dHOGbRA0INQRItZd3xy7FJVGull2gPvWCT5LE8BcYNxtibzGxoG+ViJzyVGnRuTkRN46VPqGQmwADblbr75aGT2AVKOwWnwpRmzyAz1ufQ3n0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(136003)(39860400002)(66476007)(956004)(478600001)(86362001)(66556008)(6486002)(186003)(16526019)(6512007)(1076003)(66946007)(36756003)(2616005)(2906002)(316002)(44832011)(26005)(8936002)(8676002)(5660300002)(4326008)(52116002)(6506007)(6666004)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: rxqJAHCHq2rX4aBsulSExsHEUq9hJ/TrYbmij9+bSt6rqQjimNhLvZ16C3S5HPpoQCd8I2i4N1GczvF9u3bAzK1D04/7v8YSLr8ncnl6dRw5ui2Xkz7jmhcIHNRHpyOOYko+SNDrvHfkbAcqxOYJsueMY6nGQ5DM3ZYzRHHaMW6gjsUcegpLD6FALDLypsTeGemiuugjLljbQahcuGf3QwnB2WWCbzycUEfvTxNTnOtbk57E6I7qcwh0v0SM956oZD0ETjMpbxxXJ96oRgSWbNfeD0+7kkg6UlcbTBDpuIPxRSEGtXFDKynmoygRufs98IbB1TObZWMRrsiObb0BGkEkOxn2/1n4gjPxt/JDw3vigZTMvLE/yvhoBpDGBJUqjHka2svQZYqRSNgDBb70ikoYDi2kDkcb1fBhxOdbF6458O4df6HtXcXnv22aEI0KZpfJA1vI6yv8lr/abgTgrGXfAGao/rbdNecWM84r7Kz0Q1l0zJMKK+GaMMJUkKSahRHLGlTkIowyX4S7jn9J3wENDCvxv+KXdbIurvuVJPWxt9DHsSJurY5+blfrfxP/svBKQXEeGfsfXHaMTY0sIUUAhjGYhWGZFoPwFndUOL+X0/BIzI4+XHd53zDXEaQ1pYDh75teVbT/k5HH+lZ+Ug4pBHnlb7euR5O0RbJresJX78sXPtsZlAVoXfnP5we2eaLmhbJyDfOhvNyYo0WRzHmixZuOKNqRL/qMpQm3kBxwBPHWu45IG4z4Y4kSxYcc4mNnQQCbS75TP2SXLl+7gdohIHOgSxBMOmFf8f09zuYsOcrTtb1XU2ORQuk3iexXaSYOJGFjtyWpTUala1jqF8gM/qNzHbxnp0DGrz4RuaBBp0yLs919rOQbR5u1DBujC9TqcAjf5S4pDb+/9HCafw==
+X-Microsoft-Antispam-Message-Info: n79MTc/lER/AMxoHPEemeunMrk/0iHSAWITgFf1gAWIGNDShXYuFOx3C7mxRS+Fxn/aEwSA04Y4/7EtGBQ5qInkHWsXCb/6fBvzuMZ1/mcTOgD0sWX58ereq2tdKBIpgL9XVjyxaYyyS7kqg+HQbcCL+B6BuuuC1MxiQriTt2kSHqfGo348y2CGzKwJI2sTlEwmaZ6pLKo5XVL7R4iRnY0djNTnTu5mjuKfg4+EVaDxi5EsU/1nP3Eo80Ddr6syGga7tswpZQoJohl5BAMkuqNDYgKhIMwzBeAguDFhQCCO+Q6UH3eN3NYrwlk5u2QGW2r8GUgJpqQuwyKN5wiWcKv1PB26+/KwDQgX9tL+CgXq1Q/51sldQqlZxio2kloub
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(136003)(39860400002)(66476007)(956004)(478600001)(86362001)(66556008)(6486002)(186003)(16526019)(6512007)(1076003)(66946007)(36756003)(2616005)(83380400001)(2906002)(316002)(44832011)(26005)(8936002)(8676002)(5660300002)(4326008)(52116002)(6506007)(6666004)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: P0vWY/XkuM+1lJfRIJSmT/ecF7a1mK3+jshKWHCnt7XyrMZur0LAkeFE0TfrGDSKIPezlPVBhipiBeIxId6qMNDfyRlN2/l6peW0+YRgVGg6mg2vAMzytCDEhfbxlpaN4tA9HP57ubKpMv1EGfDGNYC6nR1ThSB7aEfYHYPiyFgoiCsW2VtZ1HPDvmKMlRYy75ZFx/sWLiEOPrY3hixud8QWVIrntZjW27GtVLzGjLqIoQIFXfxWwSlJ32JJvO9srBaxM6BW0hBXe9rd55h9bLqi4WxsKBuGnZDEFo2xcJA0QCkzCeFCPoaFmrv/IqW5FKtI56ddiKkFWRYmzQs2N2xPODb9t/P1fSkg7Su3dq8o/FJz4oEti4fqVChc1nKH2+bGP5M0Gh3CqvpTm9+hhuX71RmuTXyhaphj4X75SvN1vxzu2og20+bX/N9fLE/CQbu2wJYzk4rTioECa/kqrLw+Fwy3Kiicy+vP12knUrKLz2fD7ciNnA/1yIIELzpSpTXYdISgKfbh4R1i3nsFlkApT2hCSBtmh5N14moJtFp2aF5BXorKMppHPdsa0/h6py4NbjgMGFC3Z628N3SujITp516Uy5e0nio0iOhUEzceS4sN5J9moeCEJ1z8IsBJDte4pdFrMJMu6h+XJX1DpLOdtjGtQej493WSrpHQz4fROnqZdlgb9YPEI/l7/kz8duFq7UwjtGW8aY6INA3vHeILRFftVqrGYXolLeeRR9rUKHkoVfr7CqhJUmUIFKjpvuzWN3PMtE+VjnWI4CzJILcb57q1hLf9+LKThjfqbUcV4RL5TaSpOm/imagHBiz26A4i1dteVzeHZC3GPQhHY3PzroziRRUfuY5Ee1PreJ2BLTN2loXVu7uEFlIrKQFgPSbKo4IxErUG1/SzbQWTcQ==
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84df484a-06f8-4e89-77d1-08d887c3e203
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c192b14-b924-4a65-b2bf-08d887c3e6a6
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB7071.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 11:04:25.6799
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 11:04:33.4625
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6bSozh/kypRcokrapLP1UYV94g3Yyr0vAt4LpnHPT2XSK4eh0FgZTeD9pphD6CYWoflcZ0ymcNNBmR+poJfX5g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: CQBI4YiaeM350Qcl0Ks8932+5ZVAwfejTE4H7wc4KYIyXCDX0487hxJuMXmA0V7cjQu3gsOwReXOcS5Rl1qfSw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7279
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add nvmem-cell related stuff for the soc unique ID.
+Directly reading ocotp register depends on that bootloader enables ocotp
+clk, which is not always effective, so change to use nvmem API. Using
+nvmem API requires to support driver defer probe and thus change
+soc-imx8m.c to use platform driver.
+
+The other reason is that directly reading ocotp register causes kexec
+kernel hang because the 1st kernel running will disable unused clks
+after kernel boots up, and then ocotp clk will be disabled even if
+bootloader enables it. When kexec kernel, ocotp clk needs to be enabled
+before reading ocotp registers, and nvmem API with platform driver
+supported can accomplish this.
+
+Old .dts files can also work.
 
 Signed-off-by: Alice Guo <alice.guo@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 6 ++++++
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 6 ++++++
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 6 ++++++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 6 ++++++
- 4 files changed, 24 insertions(+)
+ drivers/soc/imx/soc-imx8m.c | 89 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 79 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index cd9a77d763eb..d4aec3eae147 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -261,6 +261,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
-+		nvmem-cells = <&imx8mm_uid>;
-+		nvmem-cell-names = "soc_unique_id";
+diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+index cc57a384d74d..af2c0dbe8291 100644
+--- a/drivers/soc/imx/soc-imx8m.c
++++ b/drivers/soc/imx/soc-imx8m.c
+@@ -5,6 +5,8 @@
 
- 		aips1: bus@30000000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -518,6 +520,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+ #include <linux/init.h>
+ #include <linux/io.h>
++#include <linux/module.h>
++#include <linux/nvmem-consumer.h>
+ #include <linux/of_address.h>
+ #include <linux/slab.h>
+ #include <linux/sys_soc.h>
+@@ -29,7 +31,7 @@
 
-+				imx8mm_uid: unique_id@410 {
-+					reg = <0x4 0x8>;
-+				};
+ struct imx8_soc_data {
+ 	char *name;
+-	u32 (*soc_revision)(void);
++	u32 (*soc_revision)(struct device *dev, int flag);
+ };
+
+ static u64 soc_uid;
+@@ -50,7 +52,7 @@ static u32 imx8mq_soc_revision_from_atf(void)
+ static inline u32 imx8mq_soc_revision_from_atf(void) { return 0; };
+ #endif
+
+-static u32 __init imx8mq_soc_revision(void)
++static u32 __init imx8mq_soc_revision(struct device *dev, int flag)
+ {
+ 	struct device_node *np;
+ 	void __iomem *ocotp_base;
+@@ -75,9 +77,17 @@ static u32 __init imx8mq_soc_revision(void)
+ 			rev = REV_B1;
+ 	}
+
+-	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
+-	soc_uid <<= 32;
+-	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
++	if (flag) {
++		int ret = 0;
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index 6d3a809a00fd..ff12194b60a1 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -245,6 +245,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
-+		nvmem-cells = <&imx8mn_uid>;
-+		nvmem-cell-names = "soc_unique_id";
++		ret = nvmem_cell_read_u64(dev, "soc_unique_id", &soc_uid);
++		if (ret)
++			return ret;
++	} else {
++		soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
++		soc_uid <<= 32;
++		soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
++	}
 
- 		aips1: bus@30000000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -388,6 +390,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+ 	iounmap(ocotp_base);
+ 	of_node_put(np);
+@@ -107,7 +117,7 @@ static void __init imx8mm_soc_uid(void)
+ 	of_node_put(np);
+ }
 
-+				imx8mn_uid: unique_id@410 {
-+					reg = <0x4 0x8>;
-+				};
+-static u32 __init imx8mm_soc_revision(void)
++static u32 __init imx8mm_soc_revision(struct device *dev, int flag)
+ {
+ 	struct device_node *np;
+ 	void __iomem *anatop_base;
+@@ -125,7 +135,15 @@ static u32 __init imx8mm_soc_revision(void)
+ 	iounmap(anatop_base);
+ 	of_node_put(np);
+
+-	imx8mm_soc_uid();
++	if (flag) {
++		int ret = 0;
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 9cd218f5f004..3db59f61e871 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -222,6 +222,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
-+		nvmem-cells = <&imx8mp_uid>;
-+		nvmem-cell-names = "soc_unique_id";
++		ret = nvmem_cell_read_u64(dev, "soc_unique_id", &soc_uid);
++		if (ret)
++			return ret;
++	} else {
++		imx8mm_soc_uid();
++	}
 
- 		aips1: bus@30000000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -328,6 +330,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+ 	return rev;
+ }
+@@ -158,12 +176,21 @@ static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+ 	{ }
+ };
 
-+				imx8mp_uid: unique_id@420 {
-+					reg = <0x8 0x8>;
-+				};
++static __maybe_unused const struct of_device_id imx8m_soc_match[] = {
++	{ .compatible = "fsl,imx8mq-soc", .data = &imx8mq_soc_data, },
++	{ .compatible = "fsl,imx8mm-soc", .data = &imx8mm_soc_data, },
++	{ .compatible = "fsl,imx8mn-soc", .data = &imx8mn_soc_data, },
++	{ .compatible = "fsl,imx8mp-soc", .data = &imx8mp_soc_data, },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, imx8m_soc_match);
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 9b6d9307e5d7..6db5cba9c07d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -291,6 +291,8 @@
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
- 		dma-ranges = <0x40000000 0x0 0x40000000 0xc0000000>;
-+		nvmem-cells = <&imx8mq_uid>;
-+		nvmem-cell-names = "soc_unique_id";
+ #define imx8_revision(soc_rev) \
+ 	soc_rev ? \
+ 	kasprintf(GFP_KERNEL, "%d.%d", (soc_rev >> 4) & 0xf,  soc_rev & 0xf) : \
+ 	"unknown"
 
- 		bus@30000000 { /* AIPS1 */
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -555,6 +557,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+-static int __init imx8_soc_init(void)
++static int imx8_soc_init_flag(struct platform_device *pdev, int flag)
+ {
+ 	struct soc_device_attribute *soc_dev_attr;
+ 	struct soc_device *soc_dev;
+@@ -182,7 +209,10 @@ static int __init imx8_soc_init(void)
+ 	if (ret)
+ 		goto free_soc;
 
-+				imx8mq_uid: soc_uid@410 {
-+					reg = <0x4 0x8>;
-+				};
+-	id = of_match_node(imx8_soc_match, of_root);
++	if (flag)
++		id = of_match_node(imx8m_soc_match, pdev->dev.of_node);
++	else
++		id = of_match_node(imx8_soc_match, of_root);
+ 	if (!id) {
+ 		ret = -ENODEV;
+ 		goto free_soc;
+@@ -192,7 +222,13 @@ static int __init imx8_soc_init(void)
+ 	if (data) {
+ 		soc_dev_attr->soc_id = data->name;
+ 		if (data->soc_revision)
+-			soc_rev = data->soc_revision();
++			soc_rev = data->soc_revision(&pdev->dev, flag);
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
++		if (flag) {
++			ret = soc_rev;
++			if (ret < 0)
++				goto free_soc;
++		}
+ 	}
+
+ 	soc_dev_attr->revision = imx8_revision(soc_rev);
+@@ -230,4 +266,37 @@ static int __init imx8_soc_init(void)
+ 	kfree(soc_dev_attr);
+ 	return ret;
+ }
++
++static int __init imx8_soc_init(void)
++{
++	int ret = 0, flag = 0;
++
++	if (of_find_compatible_node(NULL, NULL, "fsl,imx8mm-soc") ||
++	    of_find_compatible_node(NULL, NULL, "fsl,imx8mn-soc") ||
++	    of_find_compatible_node(NULL, NULL, "fsl,imx8mp-soc") ||
++	    of_find_compatible_node(NULL, NULL, "fsl,imx8mq-soc"))
++		return 0;
++
++	ret = imx8_soc_init_flag(NULL, flag);
++	return ret;
++}
+ device_initcall(imx8_soc_init);
++
++static int imx8_soc_init_probe(struct platform_device *pdev)
++{
++	int ret = 0, flag = 1;
++
++	ret = imx8_soc_init_flag(pdev, flag);
++	return ret;
++}
++
++static struct platform_driver imx8_soc_init_driver = {
++	.probe = imx8_soc_init_probe,
++	.driver = {
++		.name = "imx8_soc_init",
++		.of_match_table = of_match_ptr(imx8m_soc_match),
++	},
++};
++
++module_platform_driver(imx8_soc_init_driver);
++MODULE_LICENSE("GPL v2");
 --
 2.17.1
 
