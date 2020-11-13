@@ -2,247 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8A82B2391
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315C12B2397
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgKMSVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgKMSVh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:21:37 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D7DC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:21:37 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id p10so9320574ile.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:21:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=79wbZoE3GOyuxGWKfedfZYeqkSHAT4uL/MrnpeM74QQ=;
-        b=XicMtrDj3dd1//eikUVoP+OEKSK5r7Ovb2VtsTPyZmpYmfZnIjNfCudn4WdL8H9+cc
-         kVR9eN7Re0bnD+P/MAOA5n0PuXpNjRNUraR3M8ssFfhSPnW+B5LmY4pZvUMwhX459DT2
-         cjBNHhk+rZuwMEu3itugnytO6y35fzbky0l/bi0QFjzN7w+1XZdJEs0L+2ofY6GH1rTF
-         QorhYU9IvIMt5Eer0p/CRlzGaiR4QbD8qN8SPvq42a1h2vjkRzm2/WOAUHKXso/M27rv
-         /E19htNtm/MHIj3N7h+YQYluuFaGFMXYr03xbHKmN+pJTBgJXrgJikcH8yoSc3eY/UvS
-         K66g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=79wbZoE3GOyuxGWKfedfZYeqkSHAT4uL/MrnpeM74QQ=;
-        b=UiHKPZBIw2siSnuum05OIpJcpd4gSNdZXhbutlx/izDlwRgWQqQhjV9wn1QWCMZqHE
-         wEWNJlOT0We+k6wd7s5SorNHiYFvlwjNAllEDdlQcYO7a4X8I7UvWTCz7jX07riboaKG
-         QiwHjoiSe/9MZV2I4WHr5LL7EdKAA4DpwgIZ5/X+vszn4IxfLF/nKIMdw3lCXykBkLyt
-         88++lCzRrgCyWlqae8vVJIF4OMIF6a81HYwuzcg50P5+Rybrl5TvTGZTtb3oeFr7oW7t
-         geJNGXC9oGJkcepFpOa8JXXXlGKqpHxql56Pd0vRMYsvO7Vloml3afLc0vE01hJ5zaPD
-         S/rg==
-X-Gm-Message-State: AOAM532NHdqlVWFPwulC7lMhS9zOLA3c8W+vN57v1g91kCNM2NyjT/Vg
-        fcFHXcqYH1/mUQvHse1KexQnB+8AbPUDBVc0a8qq1HIWl+/86Q==
-X-Google-Smtp-Source: ABdhPJxqWNHlfEFT0soeAX+8qUeACIvDckTcYuYaZrjQumMierhE7yj7EFHyOH81XDRqnxq9PLzrjirJgzoDDFBBIfA=
-X-Received: by 2002:a92:b311:: with SMTP id p17mr869050ilh.194.1605291696308;
- Fri, 13 Nov 2020 10:21:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102213656.2700500-1-dlatypov@google.com> <CABVgOSnCkbs+5EEOq7gxUdQUpTL4vOPFvagJoMQ7t0dtg4DQeA@mail.gmail.com>
-In-Reply-To: <CABVgOSnCkbs+5EEOq7gxUdQUpTL4vOPFvagJoMQ7t0dtg4DQeA@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 13 Nov 2020 10:21:24 -0800
-Message-ID: <CAGS_qxqmrC19csfmOx_Reerfubo7OHdwDF+Ra-MBaN8X-Sbobw@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: provide guidance for testing many inputs
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726204AbgKMSYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:24:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:43250 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbgKMSYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 13:24:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B74B1042;
+        Fri, 13 Nov 2020 10:24:42 -0800 (PST)
+Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A28763F718;
+        Fri, 13 Nov 2020 10:24:40 -0800 (PST)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/5] ARM: arm64: Add SMCCC TRNG entropy service
+Date:   Fri, 13 Nov 2020 18:24:30 +0000
+Message-Id: <20201113182435.64015-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 8:21 PM David Gow <davidgow@google.com> wrote:
->
-> On Tue, Nov 3, 2020 at 5:37 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > usage.rst goes into a detailed about faking out classes, but currently
->
-> Nit: a detailed what?
+Hi,
 
-Thanks for the catch, added "detailed section" locally.
+an update to v2 with some fixes and a few tweaks. Ard's patch [1] should
+significantly reduce the frequency of arch_get_random_seed_long() calls,
+not sure if that is enough the appease the concerns about the
+potentially long latency of SMC calls. I also dropped the direct
+arch_get_random() call in KVM for the same reason. An alternative could
+be to just use the SMC in the _early() versions, but then we would lose
+the SMCCC entropy source for the periodic reseeds. This could be mitigated
+by using a hwrng driver [2] and rngd.
+The only other non-minor change to v2 is the addition of using the SMCCC
+call in the _early() variant. For a changelog see below.
 
->
-> > lacks wording about how one might idiomatically test a range of inputs.
-> >
-> > Give an example of how one might test a hash function via macros/helper
-> > funcs and a table-driven test and very briefly discuss pros and cons.
-> >
-> > Also highlight the KUNIT_EXPECT_*_MSG() variants (that aren't mentioned
-> > elsewhere [1]) which are particularly useful in these situations.
-> >
-> > It is also criminally underused at the moment, only appearing in 2
-> > tests (both written by people involved in KUnit).
-> >
-> > [1] not even on
-> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/api/test.html
->
-> I suspect we'll eventually want to document the _MSG variants here as
-> well, though it will bloat the page somewhat. In any case, it can be
-> left to a separate patch.
+Sudeep: patch 1/5 is a prerequisite for all other patches, which
+themselves could be considered separate and need to go via different trees.
+If we could agree on that one now and get that merged, it would help the
+handling of the other patches going forward.
 
-Agreed.
+Cheers,
+Andre
+==============================
 
->
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
->
-> Thanks for writing this -- it's definitely a common test pattern which
-> it'd be nice to encourage and explain a bit better.
+The ARM architected TRNG firmware interface, described in ARM spec
+DEN0098[3], defines an ARM SMCCC based interface to a true random number
+generator, provided by firmware.
 
-Apologies for the delayed response.
-Noting here that having talked offline with David, this section will
-have to change for parameterized testing (which is basically just
-formalized support for table-driven tests).
-But it seems it'll take a while to resolve the debate on TAP output,
-so this docs change shouldn't be blocked on that going in.
+This series collects all the patches implementing this in various
+places: as a user feeding into the ARCH_RANDOM pool, both for ARM and
+arm64, and as a service provider for KVM guests.
 
->
-> Cheers,
-> -- David
->
-> >  Documentation/dev-tools/kunit/usage.rst | 66 +++++++++++++++++++++++++
-> >  1 file changed, 66 insertions(+)
-> >
-> > diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-> > index 62142a47488c..317390df2b96 100644
-> > --- a/Documentation/dev-tools/kunit/usage.rst
-> > +++ b/Documentation/dev-tools/kunit/usage.rst
-> > @@ -451,6 +451,72 @@ We can now use it to test ``struct eeprom_buffer``:
-> >                 destroy_eeprom_buffer(ctx->eeprom_buffer);
-> >         }
-> >
-> > +Testing various inputs
-> > +----------------------
-> Nit: "various" isn't hugely descriptive here. Maybe something like
-> "Testing against multiple inputs" would be better?
+Patch 1 introduces the interface definition used by all three entities.
+Patch 2 prepares the Arm SMCCC firmware driver to probe for the
+interface. This patch is needed to avoid a later dependency on *two*
+patches (there might be a better solution to this problem).
 
-Changed.
-As you can tell from the name of this patch ("many inputs"), I had
-been unsure what to put here.
-"multiple inputs" works fine, I think.
- I had initially changed from that, since I had wanted to convey that
-these patterns are more useful when you have a larger number of inputs
-to go through.
-But in hindsight "multiple inputs" is just more clear.
+Patch 3 implements the ARM part, patch 4 is the arm64 version.
+The final patch 5 adds support to provide random numbers to KVM guests.
 
->
-> > +
-> > +Testing just a few inputs might not be enough to have confidence that the code
-> > +works correctly, e.g. for a hash function.
-> > +
-> > +In such cases, it can be helpful to have a helper macro or function, e.g. this
-> > +fictitious example for ``md5sum(1)``
-> > +
-> > +.. code-block:: c
-> > +
-> > +       /* Note: the cast is to satisfy overly strict type-checking. */
-> > +       #define TEST_MD5(in, want) \
-> > +               md5sum(in, out); \
-> > +               KUNIT_EXPECT_STREQ_MSG(test, (char *)out, want, "md5sum(%s)", in);
-> > +
-> > +       char out[16];
-> > +       TEST_MD5("hello world",   "5eb63bbbe01eeed093cb22bb8f5acdc3");
-> > +       TEST_MD5("hello world!",  "fc3ff98e8c6a0d3087d515c0473f8677");
-> > +
-> > +Note the use of ``KUNIT_EXPECT_STREQ_MSG`` to give more context when it fails
-> > +and make it easier to track down. (Yes, in this example, ``want`` is likely
-> > +going to be unique enough on its own).
-> > +
-> > +The ``_MSG`` variants are even more useful when the same expectation is called
-> > +multiple times (in a loop or helper function) and thus the line number isn't
-> > +enough to identify what failed, like below.
-> > +
-> > +In some cases, it can be helpful to write a *table-driven test* instead, e.g.
-> > +
-> > +.. code-block:: c
-> > +
-> > +       int i;
-> > +       char out[16];
-> > +
-> > +       struct md5_test_case {
-> > +               const char *str;
-> > +               const char *md5;
-> > +       };
-> > +
-> > +       struct md5_test_case cases[] = {
-> > +               {
-> > +                       .str = "hello world",
-> > +                       .md5 = "5eb63bbbe01eeed093cb22bb8f5acdc3",
-> > +               },
-> > +               {
-> > +                       .str = "hello world!",
-> > +                       .md5 = "fc3ff98e8c6a0d3087d515c0473f8677",
-> > +               },
-> > +       };
-> > +       for (i = 0; i < ARRAY_SIZE(cases); ++i) {
-> > +               md5sum(cases[i].str, out);
-> > +               KUNIT_EXPECT_STREQ_MSG(test, (char *)out, cases[i].md5,
-> > +                                     "md5sum(%s)", cases[i].str);
-> > +       }
-> > +
-> > +
-> > +There's more boilerplate involved, but it can:
-> > +
-> > +* be more readable when there are multiple inputs/outputs thanks to field names,
-> > +
-> > +  * E.g. see ``fs/ext4/inode-test.c`` for an example of both.
-> > +* reduce duplication if test cases can be shared across multiple tests.
-> > +
-> > +  * E.g. if we had a magical ``undo_md5sum`` function, we could reuse ``cases``.
-> > +
->
-> This is a bit of a nitpick, but I don't think this is quite conveying
-> the usefulness of table-based testing. Maybe it's that a hypothetical
-> "undo_md5sum" is too unrealistic an example? Maybe, instead of having
-> both the macro-based and table-driven examples based around md5sum(),
-> the table-based one could use something more obviously invertible /
-> reusable, and include both in the example code. E.g, something akin to
-> toupper() and tolower() or some other conversion function. I think
-> having a better example here is probably more useful than having both
-> the table- and macro- driven examples test the same thing.
+This was tested on:
+- QEMU -kernel (no SMCCC, regression test)
+- Juno w/ prototype of the h/w Trusted RNG support
+- mainline KVM (SMCCC, but no TRNG: regression test)
+- ARM and arm64 KVM guests, using the KVM service in patch 5/5
 
-Heh, I was worried about this a bit as well.
-Perhaps an inverse md5 breaks "suspension of disbelief" too much, even
-in this hypothetical context.
+Based on v5.10-rc3, please let me know if I should rebased on something
+else. A git repo is accessible at:
+https://gitlab.arm.com/linux-arm/linux-ap/-/commits/smccc-trng/v3/
 
-I had considered toupper()/tolower() but they aren't truly inverses,
-e.g. tolower(toupper("Hello")), and felt a bit too trivial perhaps.
-I'm also unsure I would test these functions on strs as opposed to
-chars (unless we're dealing with non-ascii), whereas I probably would
-test a checksum like this.
-I wouldn't be too opposed to switching over to tolower/toupper().
+Cheers,
+Andre
 
-But perhaps something like
+[1] http://lists.infradead.org/pipermail/linux-arm-kernel/2020-November/615446.html
+[2] https://gitlab.arm.com/linux-arm/linux-ap/-/commit/87e3722f437
+[3] https://developer.arm.com/documentation/den0098/latest/
 
-struct sha_test_case {
-  const char *str;
-  const char *sha1, *sha256;
-};
+Changelog v2 ... v3:
+- ARM: fix compilation with randconfig
+- arm64: use SMCCC call also in arch_get_random_seed_long_early()
+- KVM: comment on return value usage
+- KVM: use more interesting UUID (enjoy, Marc!)
+- KVM: use bitmaps instead of open coded long arrays
+- KVM: drop direct usage of arch_get_random() interface
 
-and reusing the same table would be good enough to demonstrate a
-different kind of "reuse" that is somewhat common for table-driven
-tests?
+Changelog "v1" ... v2:
+- trigger ARCH_RANDOM initialisation from the SMCCC firmware driver
+- use a single bool in smccc.c to hold the initialisation state for arm64
+- handle endianess correctly in the KVM provider
 
->
->
-> >  .. _kunit-on-non-uml:
-> >
-> >  KUnit on non-UML architectures
-> >
-> > base-commit: 77c8473edf7f7664137f555cfcdc8c460bbd947d
-> > --
-> > 2.29.1.341.ge80a0c044ae-goog
-> >
+Andre Przywara (2):
+  firmware: smccc: Introduce SMCCC TRNG framework
+  arm64: Add support for SMCCC TRNG entropy source
+
+Ard Biesheuvel (3):
+  firmware: smccc: Add SMCCC TRNG function call IDs
+  ARM: implement support for SMCCC TRNG entropy source
+  KVM: arm64: implement the TRNG hypervisor call
+
+ arch/arm/Kconfig                    |  4 ++
+ arch/arm/include/asm/archrandom.h   | 74 +++++++++++++++++++++++++
+ arch/arm64/include/asm/archrandom.h | 79 +++++++++++++++++++++++----
+ arch/arm64/include/asm/kvm_host.h   |  2 +
+ arch/arm64/kvm/Makefile             |  2 +-
+ arch/arm64/kvm/hypercalls.c         |  6 ++
+ arch/arm64/kvm/trng.c               | 85 +++++++++++++++++++++++++++++
+ drivers/firmware/smccc/smccc.c      |  5 ++
+ include/linux/arm-smccc.h           | 31 +++++++++++
+ 9 files changed, 277 insertions(+), 11 deletions(-)
+ create mode 100644 arch/arm/include/asm/archrandom.h
+ create mode 100644 arch/arm64/kvm/trng.c
+
+-- 
+2.17.1
+
