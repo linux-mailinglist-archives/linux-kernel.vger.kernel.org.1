@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F712B1901
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA232B1902
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgKMKZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:25:51 -0500
-Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:43349 "EHLO
-        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726176AbgKMKZv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:25:51 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id 277FFBAED0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:25:49 +0000 (GMT)
-Received: (qmail 5515 invoked from network); 13 Nov 2020 10:25:48 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 13 Nov 2020 10:25:48 -0000
-Date:   Fri, 13 Nov 2020 10:25:43 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v41 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-Message-ID: <20201113102543.GK3371@techsingularity.net>
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-11-jarkko@kernel.org>
+        id S1726432AbgKMKZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:25:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbgKMKZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 05:25:52 -0500
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FB4E22245;
+        Fri, 13 Nov 2020 10:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605263151;
+        bh=fmMlFSkUkiIEEJjEslJKRhRoitzG9cHfpTbjNPi7h58=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wFquYnstrFjRHpS4pjUUPnL6NUiHBQf3xgKTwO6J+mrqdiH5Mf8q3b4mF19nn6+yE
+         h7VJiEz74ARwUYXaeMV2y6n8cykIdsK6aAzsH93WQbKM0l6w7TNNcehEGZGRtoARZe
+         nKlauhyHMRaXWEUYFP2T4WEzJ/UeNVnX+PeXKYcg=
+Received: by pali.im (Postfix)
+        id 69C16723; Fri, 13 Nov 2020 11:25:49 +0100 (CET)
+Date:   Fri, 13 Nov 2020 11:25:49 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andre Heider <a.heider@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: marvell: espressobin: Update link to V7
+ schematic
+Message-ID: <20201113102549.qkyvc4ezlfjwr4rx@pali>
+References: <20200925084306.16309-1-pali@kernel.org>
+ <20201005133513.8649-1-pali@kernel.org>
+ <20201019081933.32w6flugk55n2i4q@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201112220135.165028-11-jarkko@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201019081933.32w6flugk55n2i4q@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:01:21AM +0200, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> Background
-> ==========
-> 
-> 1. SGX enclave pages are populated with data by copying from normal memory
->    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
->    this series.
-> 2. It is desirable to be able to restrict those normal memory data sources.
->    For instance, to ensure that the source data is executable before
->    copying data to an executable enclave page.
-> 3. Enclave page permissions are dynamic (just like normal permissions) and
->    can be adjusted at runtime with mprotect().
-> 
-> This creates a problem because the original data source may have long since
-> vanished at the time when enclave page permissions are established (mmap()
-> or mprotect()).
-> 
-> The solution (elsewhere in this series) is to force enclaves creators to
-> declare their paging permission *intent* up front to the ioctl().  This
-> intent can be immediately compared to the source data???s mapping and
-> rejected if necessary.
-> 
-> The ???intent??? is also stashed off for later comparison with enclave
-> PTEs. This ensures that any future mmap()/mprotect() operations
-> performed by the enclave creator or done on behalf of the enclave
-> can be compared with the earlier declared permissions.
-> 
-> Problem
-> =======
-> 
-> There is an existing mmap() hook which allows SGX to perform this
-> permission comparison at mmap() time.  However, there is no corresponding
-> ->mprotect() hook.
-> 
-> Solution
-> ========
-> 
-> Add a vm_ops->mprotect() hook so that mprotect() operations which are
-> inconsistent with any page's stashed intent can be rejected by the driver.
-> 
-> Cc: linux-mm@kvack.org
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
-> Acked-by: Dave Hansen <dave.hansen@intel.com> # v40
-> # Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Ping?
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
-
--- 
-Mel Gorman
-SUSE Labs
+On Monday 19 October 2020 10:19:33 Pali Rohár wrote:
+> Gregory, it is OK now?
+> 
+> On Monday 05 October 2020 15:35:13 Pali Rohár wrote:
+> > Up-to-date version of V7 schematic is on new URL linked from official
+> > tech-spec webpage http://espressobin.net/tech-spec/
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > 
+> > ---
+> > Changes in V2:
+> > * Added commit description
+> > ---
+> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts | 2 +-
+> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts      | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> > index e225dce64b9e..4775a7eda481 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> > @@ -8,7 +8,7 @@
+> >   *
+> >   */
+> >  /*
+> > - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
+> > + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
+> >   */
+> >  
+> >  /dts-v1/;
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> > index 44dbe9a21cc7..c47a93978386 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> > @@ -8,7 +8,7 @@
+> >   *
+> >   */
+> >  /*
+> > - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
+> > + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
+> >   */
+> >  
+> >  /dts-v1/;
+> > -- 
+> > 2.20.1
+> > 
