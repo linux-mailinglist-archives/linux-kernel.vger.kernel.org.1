@@ -2,398 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E892B185A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249092B186D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgKMJiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        id S1726664AbgKMJim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726459AbgKMJhw (ORCPT
+        with ESMTP id S1726387AbgKMJih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:37:52 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2666C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:37:51 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id w24so7817757wmi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:37:51 -0800 (PST)
+        Fri, 13 Nov 2020 04:38:37 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F102BC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:38:36 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id 3so6271878qtx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:38:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZchWVqYUt/lS8DYtOsUcSqWAZLfZ47tBMaD11Li0pts=;
-        b=MmHs05EYYQKgQcSGbFHZa07bNMdaq6fAMtA0GK2gjWc7e2+w++NE1QglcibGR0T6qr
-         PiabNnnrx3pCZOjBF5qNlvfAm6SIs22ElbcX0cc7FBaeHb0BFNMoiPhTW7XWtQTgHTv8
-         DS7DjAfGR/mweUQbddKu+lUQTj6ieQwP/nDtkOdXp4ZaxOVAyg29BERI+upUzfefpE2i
-         PQHD+v15cb9ZDyzwsT7a3TWxsYWQAebBIG+Xrc5kNYcBMmPAg9q9nSuyLencW18+LRVl
-         7vxMg8ZFJ9qT5t/NH03NiMT6hmL/rJJ5pn4OBUOV7wBHcDJNURy5H1LW/whpHUPgm38k
-         Yzew==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=+nPinMUroPmGA/FkIjqQBwtdL5YldQSIOTcEcMGd2/4=;
+        b=sP2UXoyAtZ8SikAA1SjVp8Qbu9mStc+okk5CaBBKtm6aEuLYvcn/xZmC6YYtsx6tDv
+         JovxPRgLgng8mBgt11H0QsOGNILZX7PG+qp/gor5f+9poI80ZNmKKad28FWeogZxM4+2
+         JPJ9sAit/KD9in3TN4IrR6oC1r/AykE1DQsghE5pk9lNEecxVoalulS6XsLYioWn2D3e
+         kAO9QXXyQ2PULPhUMD8wKxfmujBAMWh8do3KxILxHqvRRJRyq3ezTtSMwKuCUh/g2GN4
+         Msr+Ch/GaoB63BFLcwbJmwBAltaitf0oJYtoyu+beHvbGuEGhtjsVzC5lX8zokUtJJxw
+         4Rjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZchWVqYUt/lS8DYtOsUcSqWAZLfZ47tBMaD11Li0pts=;
-        b=UmowvF9SUO86U3GUw8ZEv3q4QFjMt0kWuQdpeFiPS7g4Y1IPJUtusMIXjz8tQDolzF
-         mm0tJlTfsvm3npvfDQ4ra/TKVueWm95C+Mqz2Vd3UmNEcI8l6gYmVf4yn27w1IsqQlYo
-         qRR4g+jZTt4zoqR3+InnTMj5PIRXhRxx9V8DV4ekJBWJA2IdTZCxrswGvZ2tvQT/qTar
-         c6rTGjSfUQNRj3zjcXdxbfXZnvGEBmQI0HZf9qf6DHtoC2OlhuzimOspGPN7npRs4but
-         uFvNv3yqPz1LnKbX+DWgOid9IKPi0RPGE7x3rGB+MWBXC2qs3xsx+PKOVXqWe0U/uj7u
-         ZJxw==
-X-Gm-Message-State: AOAM532U5NtjnbO1WCqhVQPprQHKiae3ndCNXeekk5WM1nyty8XfFa8P
-        sZhhhmCWWOqvkhXGRV5uVlIDWw==
-X-Google-Smtp-Source: ABdhPJzMRzlPRDLEIUvvH6HB5GYnbIQqmvUnhOHk/v3lwbeNtpgLbz6w0llziPFMUee4sPvPS/F+vA==
-X-Received: by 2002:a1c:35c7:: with SMTP id c190mr1519974wma.7.1605260270278;
-        Fri, 13 Nov 2020 01:37:50 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id b63sm10284814wme.9.2020.11.13.01.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 01:37:49 -0800 (PST)
-Date:   Fri, 13 Nov 2020 09:37:47 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] mfd: Add driver for Embedded Controller found on
- Acer Iconia Tab A500
-Message-ID: <20201113093747.GJ2787115@dell>
-References: <20201104203403.24937-1-digetx@gmail.com>
- <20201104203403.24937-3-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=+nPinMUroPmGA/FkIjqQBwtdL5YldQSIOTcEcMGd2/4=;
+        b=LsoHL/Fsx0rez59u3EWtNXEyOwtl8zyBKJhmWwovtWJLilZniZFLeTQQ5LAy3DqZG6
+         AMbz9tDa4R5jnwQYi3yZN1SSo3m9ZX++02+dz5pQS0m2J9Ms3RYpa+VXcjzv/oD4LnP1
+         jwcSvxadZuVkJJfyjt8ZC8rz9M59WO2OLwpbN5omynDnqZiFOphRknsPCcFyOAXf4Ehd
+         PcF1UBfUxGcV+za3pNI3QDYH6eelRccd7lPz86C4LYezi3Lfsg8ShS8thL7c8N182GUj
+         2v7FxzNEwDxh8SsgNwz5ah36F/fx5f/DWMGoRMUvC1fRLr6TvCCDjAx+U+8+SKOm+2EN
+         hmXQ==
+X-Gm-Message-State: AOAM530EHWhpaVIUKL/C9ydyV/SCZ9/TI85GIHK7PfRwwulyyKXlqmc2
+        OHRalAG4s6BjBjHD7I1Bxjl+sXZDtQLkkA2XPfilrw==
+X-Google-Smtp-Source: ABdhPJyo/Cl+Ne93ZkCd4fZlwp/wG54EGnO3l6zPkSR9N43rFoK2rdDDxK08DHhrUJKQSjmiJSohka5GpTEd5MZS0y4=
+X-Received: by 2002:aed:2b47:: with SMTP id p65mr1051756qtd.337.1605260315929;
+ Fri, 13 Nov 2020 01:38:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104203403.24937-3-digetx@gmail.com>
+References: <000000000000bb202905af132b8f@google.com> <0000000000004c208d05b3f8cbb6@google.com>
+In-Reply-To: <0000000000004c208d05b3f8cbb6@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 13 Nov 2020 10:38:24 +0100
+Message-ID: <CACT4Y+ZKyCCreqOTx9POAGbabf0=WMenQk3YJc4d4E8Tb4=_Gg@mail.gmail.com>
+Subject: Re: kernel panic: stack is corrupted in get_kernel_gp_address
+To:     syzbot <syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020, Dmitry Osipenko wrote:
+On Fri, Nov 13, 2020 at 9:27 AM syzbot
+<syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit a49145acfb975d921464b84fe00279f99827d816
+> Author: George Kennedy <george.kennedy@oracle.com>
+> Date:   Tue Jul 7 19:26:03 2020 +0000
+>
+>     fbmem: add margin check to fb_check_caps()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10ff7572500000
+> start commit:   f4d51dff Linux 5.9-rc4
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d6459d8f8984c0929e54
+> userspace arch: i386
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164270dd900000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: fbmem: add margin check to fb_check_caps()
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-> Acer Iconia Tab A500 is an Android tablet device, it has ENE KB930
-> Embedded Controller which provides battery-gauge, LED, GPIO and some
-> other functions. The EC uses firmware that is specifically customized
-> for Acer A500. This patch adds MFD driver for the Embedded Controller
-> which allows to power-off / reboot the A500 device, it also provides
-> a common register read/write API that will be used by the sub-devices.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/mfd/Kconfig        |  12 +++
->  drivers/mfd/Makefile       |   1 +
->  drivers/mfd/acer-ec-a500.c | 203 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 216 insertions(+)
->  create mode 100644 drivers/mfd/acer-ec-a500.c
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 8b99a13669bf..527ba5054d80 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -2097,6 +2097,18 @@ config MFD_KHADAS_MCU
->  	  additional drivers must be enabled in order to use the functionality
->  	  of the device.
->  
-> +config MFD_ACER_A500_EC
-> +	tristate "Embedded Controller driver for Acer Iconia Tab A500"
-
-Drop "driver".  This is meant to be describing the device.
-
-> +	depends on I2C
-
-depends on OF ?
-
-> +	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
-> +	select MFD_CORE
-> +	select REGMAP
-> +	help
-> +	  Support for Acer Iconia Tab A500 Embedded Controller.
-> +
-> +	  The controller itself is ENE KB930, it is running firmware
-> +	  customized for the specific needs of the Acer A500 hardware.
-> +
->  menu "Multimedia Capabilities Port drivers"
->  	depends on ARCH_SA1100
->  
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 1780019d2474..7bfc57c8b363 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -263,6 +263,7 @@ obj-$(CONFIG_MFD_ROHM_BD71828)	+= rohm-bd71828.o
->  obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
->  obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
->  obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
-> +obj-$(CONFIG_MFD_ACER_A500_EC)	+= acer-ec-a500.o
->  
->  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
->  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+= simple-mfd-i2c.o
-> diff --git a/drivers/mfd/acer-ec-a500.c b/drivers/mfd/acer-ec-a500.c
-> new file mode 100644
-> index 000000000000..2785a6d9bcc4
-> --- /dev/null
-> +++ b/drivers/mfd/acer-ec-a500.c
-> @@ -0,0 +1,203 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * MFD driver for Acer Iconia Tab A500 Embedded Controller.
-
-An "MFD" isn't a thing.  Please describe the device.
-
-> + * Copyright 2020 GRATE-driver project.
-> + *
-> + * Based on downstream driver from Acer Inc.
-
-Most drivers are.  Not sure this is required.
-
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/mfd/core.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reboot.h>
-
-Alphabetical please. ;)
-
-> +#define A500_EC_I2C_ERR_TIMEOUT		500
-> +#define A500_EC_POWER_CMD_TIMEOUT	1000
-> +
-> +enum {
-> +	REG_CURRENT_NOW = 0x03,
-> +	REG_SHUTDOWN = 0x52,
-> +	REG_WARM_REBOOT = 0x54,
-> +	REG_COLD_REBOOT = 0x55,
-> +};
-> +
-> +static struct i2c_client *a500_ec_client_pm_off;
-> +
-> +static int a500_ec_read(void *context, const void *reg_buf, size_t reg_size,
-> +			void *val_buf, size_t val_sizel)
-> +{
-> +	struct i2c_client *client = context;
-> +	unsigned int reg, retries = 5;
-> +	u16 *ret_val = val_buf;
-> +	s32 ret = 0;
-> +
-> +	if (reg_size != 1 || val_sizel != 2)
-
-No magic numbers please.
-
-What does this *mean*?
-
-> +		return -EOPNOTSUPP;
-
-Why EOPNOTSUPP?
-
-> +	reg = *(u8 *)reg_buf;
-> +
-> +	while (retries-- > 0) {
-> +		ret = i2c_smbus_read_word_data(client, reg);
-> +		if (ret >= 0)
-> +			break;
-> +
-> +		msleep(A500_EC_I2C_ERR_TIMEOUT);
-> +	}
-> +
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "read 0x%x failed: %d\n", reg, ret);
-> +		return ret;
-> +	}
-> +
-> +	*ret_val = ret;
-> +
-> +	if (reg == REG_CURRENT_NOW)
-> +		fsleep(10000);
-
-Ooo, new toy!
-
-> +	return 0;
-> +}
-
-I'm surprised there isn't a generic function which does this kind of
-read.  Seems like pretty common/boilerplate stuff.
-
-> +static int a500_ec_write(void *context, const void *data, size_t count)
-> +{
-> +	struct i2c_client *client = context;
-> +	unsigned int reg, val, retries = 5;
-> +	s32 ret = 0;
-> +
-> +	if (count != 3)
-
-Define or comment needed.
-
-> +		return -EOPNOTSUPP;
-> +
-> +	reg = *(u8  *)(data + 0);
-> +	val = *(u16 *)(data + 1);
-> +
-> +	while (retries-- > 0) {
-> +		ret = i2c_smbus_write_word_data(client, reg, val);
-> +		if (ret >= 0)
-> +			break;
-> +
-> +		msleep(A500_EC_I2C_ERR_TIMEOUT);
-> +	}
-> +
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "write 0x%x failed: %d\n", reg, ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-
-Again, seems pretty boilerplate.  Are you sure there isn't a helper?
-
-> +static const struct regmap_config a500_ec_regmap_config = {
-> +	.name = "KB930",
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +	.max_register = 0xff,
-> +};
-> +
-> +static const struct regmap_bus a500_ec_regmap_bus = {
-> +	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
-> +	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
-> +	.write = a500_ec_write,
-> +	.read = a500_ec_read,
-> +	.max_raw_read = 2,
-> +};
-> +
-> +static void a500_ec_poweroff(void)
-> +{
-> +	i2c_smbus_write_word_data(a500_ec_client_pm_off, REG_SHUTDOWN, 0);
-> +
-> +	mdelay(A500_EC_POWER_CMD_TIMEOUT);
-> +}
-> +
-> +static int a500_ec_restart_notify(struct notifier_block *this,
-> +				  unsigned long reboot_mode, void *data)
-> +{
-> +	if (reboot_mode == REBOOT_WARM)
-> +		i2c_smbus_write_word_data(a500_ec_client_pm_off,
-> +					  REG_WARM_REBOOT, 0);
-> +	else
-> +		i2c_smbus_write_word_data(a500_ec_client_pm_off,
-> +					  REG_COLD_REBOOT, 1);
-
-What's with the magic '0' and '1's at the end?
-
-> +	mdelay(A500_EC_POWER_CMD_TIMEOUT);
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static struct notifier_block a500_ec_restart_handler = {
-> +	.notifier_call = a500_ec_restart_notify,
-> +	.priority = 200,
-> +};
-> +
-> +static const struct mfd_cell a500_ec_cells[] = {
-> +	{ .name = "acer-a500-iconia-battery", },
-> +	{ .name = "acer-a500-iconia-leds", },
-> +};
-> +
-> +static int a500_ec_probe(struct i2c_client *client)
-> +{
-> +	struct regmap *rmap;
-
-'rmap' barely makes the top 10:
-
-$ git grep -ho "struct regmap \*[a-z]*" | sort | uniq -c | sort -rn | head
-   1814 struct regmap *regmap
-    581 struct regmap *map
-     97 struct regmap *
-     50 struct regmap *syscon
-     50 struct regmap *r
-     35 struct regmap *reg
-     34 struct regmap *cfgchip
-     32 struct regmap *grf
-     30 struct regmap *rmap
-     27 struct regmap *base
-
-Please use regmap here.
-
-> +	int err;
-> +
-> +	rmap = devm_regmap_init(&client->dev, &a500_ec_regmap_bus,
-> +				client, &a500_ec_regmap_config);
-> +	if (IS_ERR(rmap))
-> +		return PTR_ERR(rmap);
-> +
-> +	/* register battery and LED sub-devices */
-
-This comment is superfluous and is just the type of documentation that
-becomes out-of-date quickly.
-
-> +	err = devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO,
-> +				   a500_ec_cells, ARRAY_SIZE(a500_ec_cells),
-> +				   NULL, 0, NULL);
-> +	if (err) {
-> +		dev_err(&client->dev, "failed to add sub-devices: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	/* set up power management functions */
-
-We know what "power" and "pm" mean.  You can safely remove this
-comment.
-
-> +	if (of_device_is_system_power_controller(client->dev.of_node)) {
-> +		a500_ec_client_pm_off = client;
-> +
-> +		err = register_restart_handler(&a500_ec_restart_handler);
-> +		if (err)
-> +			return err;
-> +
-> +		if (!pm_power_off)
-> +			pm_power_off = a500_ec_poweroff;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int a500_ec_remove(struct i2c_client *client)
-> +{
-> +	if (of_device_is_system_power_controller(client->dev.of_node)) {
-> +		if (pm_power_off == a500_ec_poweroff)
-> +			pm_power_off = NULL;
-> +
-> +		unregister_restart_handler(&a500_ec_restart_handler);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id a500_ec_match[] = {
-> +	{ .compatible = "acer,a500-iconia-ec" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, a500_ec_match);
-> +
-> +static struct i2c_driver a500_ec_driver = {
-> +	.driver = {
-> +		.name = "acer-a500-embedded-controller",
-> +		.of_match_table = a500_ec_match,
-> +	},
-> +	.probe_new = a500_ec_probe,
-> +	.remove = a500_ec_remove,
-> +};
-> +module_i2c_driver(a500_ec_driver);
-> +
-> +MODULE_DESCRIPTION("Acer Iconia Tab A500 Embedded Controller driver");
-> +MODULE_AUTHOR("Dmitry Osipenko <digetx@gmail.com>");
-> +MODULE_LICENSE("GPL");
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+#syz fix: fbmem: add margin check to fb_check_caps()
