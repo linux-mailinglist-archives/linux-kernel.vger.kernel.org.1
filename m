@@ -2,106 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F462B14B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 04:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173642B14B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 04:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgKMD2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 22:28:54 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:57886 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726017AbgKMD2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 22:28:54 -0500
-Received: from [10.130.0.88] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr9Nk_a1fWzMNAA--.28806S3;
-        Fri, 13 Nov 2020 11:28:37 +0800 (CST)
-Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>
-References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
- <20201107094028.GA4918@alpha.franken.de>
- <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
- <20201110095503.GA10357@alpha.franken.de>
- <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
- <20201111145240.lok3q5g3pgcvknqr@mobilestation>
- <4625868b-f845-2f03-c3f2-fc3ff1ccf63d@flygoat.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <4a73a75f-a3b2-7ba1-d8a1-a46f5c20e734@loongson.cn>
-Date:   Fri, 13 Nov 2020 11:28:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726181AbgKMD31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 22:29:27 -0500
+Received: from mga11.intel.com ([192.55.52.93]:18267 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgKMD30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 22:29:26 -0500
+IronPort-SDR: gF2w81S6p+CS+cXXBaw1fbQfckpKdJT8yigHvYVcdvT+AnfIBin45OpZIdFL/4UEFgzWOpq+Qk
+ aoRB+Kkpp4jA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="166912346"
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="166912346"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 19:29:26 -0800
+IronPort-SDR: yxM71JzhdhUOwTnqzVfNCBSAJtzsJHy1uDFN1m2mNno/o5OsZ+yeLQSja0/W1hO0WZqkQvZNX+
+ uXwsmaAbGkYA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="366594431"
+Received: from lkp-server02.sh.intel.com (HELO 697932c29306) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Nov 2020 19:29:25 -0800
+Received: from kbuild by 697932c29306 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kdPm8-000020-Ev; Fri, 13 Nov 2020 03:29:24 +0000
+Date:   Fri, 13 Nov 2020 11:29:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ bf6a52d6ce5f1c297fa5c26066739745d51c1b15
+Message-ID: <5fadfd91./eIEtnm3Gyr7W1fI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <4625868b-f845-2f03-c3f2-fc3ff1ccf63d@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxr9Nk_a1fWzMNAA--.28806S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr18ZFWDtr45GF13AFWxCrg_yoW8GFWkpr
-        4UKF1IkF4DCr12v348Aws7uayFyan7AFW3KrZ3G3s8ZwsxZr92gFWI9a1Y9r90qFnYqw1j
-        qF48tasaqa18ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JV
-        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IU01a0PUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jiaxun,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: bf6a52d6ce5f1c297fa5c26066739745d51c1b15  fixup! scftorture: Add debug output for wrong-CPU warning
 
-On 11/13/2020 10:30 AM, Jiaxun Yang wrote:
-> Hi all,
->
-> 在 2020/11/11 22:52, Serge Semin 写道:
->> Hello Alexander
->>
->> On Tue, Nov 10, 2020 at 11:29:50AM +0100, Alexander Sverdlin wrote:
->> 2) The check_kernel_sections_mem() method can be removed. But it
->> should be done carefully. We at least need to try to find all the
->> platforms, which rely on its functionality.
-> It have been more than 10 years since introducing this this check, but
-> I believe there must be a reason at the time.
->
-> Also currently we have some unmaintained platform and it's impossible
-> to test on them for us.
->
-> For Cavium's issue, I believe removing the page rounding can help.
-> I'd suggest keep this method but remove the rounding part, also
-> leave a warning or kernel taint when out of boundary kernel image
-> is detected.
->
-> Thanks.
->
-> - Jiaxun
->
-I found the first submission.
-Commit: d3ff93380232 (mips: Make sure kernel memory is in iomem)
-As I thought, this check is related to kdump. More directly, it is
-related to the "mem=" parameter. Kexec-tools provide a "mem=" parameter
-to limit the kernel location in kdump. But sometimes the memory may be not
-enough and this check gives a way to ensure the capture kernel can
-start rightly. Although "mem=" is not in kexec-tools now, I thought
-it is also useful if someone use "mem=" to do other things.
+elapsed time: 725m
 
-Thanks,
-Jinyang
+configs tested: 128
+configs skipped: 3
 
->>
->> -Sergey
->>
->>> -- 
->>> Best regards,
->>> Alexander Sverdlin.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                       maple_defconfig
+openrisc                            defconfig
+powerpc                      acadia_defconfig
+sh                          rsk7201_defconfig
+arm                          pxa3xx_defconfig
+powerpc                     pq2fads_defconfig
+arm                           tegra_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                           h3600_defconfig
+m68k                        m5407c3_defconfig
+m68k                        mvme16x_defconfig
+powerpc                     pseries_defconfig
+mips                           rs90_defconfig
+arm                          exynos_defconfig
+m68k                           sun3_defconfig
+powerpc                 mpc836x_rdk_defconfig
+m68k                         apollo_defconfig
+powerpc                          g5_defconfig
+parisc                generic-32bit_defconfig
+arm                        keystone_defconfig
+powerpc                    adder875_defconfig
+powerpc                       ebony_defconfig
+xtensa                    smp_lx200_defconfig
+microblaze                      mmu_defconfig
+arm                        trizeps4_defconfig
+arm                         shannon_defconfig
+powerpc                     asp8347_defconfig
+powerpc                         wii_defconfig
+sh                           sh2007_defconfig
+nios2                            allyesconfig
+arm                       imx_v6_v7_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                malta_kvm_guest_defconfig
+i386                             alldefconfig
+mips                        maltaup_defconfig
+powerpc                        warp_defconfig
+arm                         mv78xx0_defconfig
+c6x                        evmc6457_defconfig
+powerpc                    socrates_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                   lite5200b_defconfig
+m68k                         amcore_defconfig
+mips                       lemote2f_defconfig
+powerpc                      obs600_defconfig
+arm64                            alldefconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                     tqm8548_defconfig
+sh                        sh7785lcr_defconfig
+arm                         orion5x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201111
+i386                 randconfig-a005-20201111
+i386                 randconfig-a002-20201111
+i386                 randconfig-a001-20201111
+i386                 randconfig-a003-20201111
+i386                 randconfig-a004-20201111
+i386                 randconfig-a006-20201112
+i386                 randconfig-a005-20201112
+i386                 randconfig-a002-20201112
+i386                 randconfig-a001-20201112
+i386                 randconfig-a003-20201112
+i386                 randconfig-a004-20201112
+x86_64               randconfig-a015-20201111
+x86_64               randconfig-a011-20201111
+x86_64               randconfig-a014-20201111
+x86_64               randconfig-a013-20201111
+x86_64               randconfig-a016-20201111
+x86_64               randconfig-a012-20201111
+i386                 randconfig-a012-20201111
+i386                 randconfig-a014-20201111
+i386                 randconfig-a016-20201111
+i386                 randconfig-a011-20201111
+i386                 randconfig-a015-20201111
+i386                 randconfig-a013-20201111
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20201111
+x86_64               randconfig-a005-20201111
+x86_64               randconfig-a004-20201111
+x86_64               randconfig-a002-20201111
+x86_64               randconfig-a006-20201111
+x86_64               randconfig-a001-20201111
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
