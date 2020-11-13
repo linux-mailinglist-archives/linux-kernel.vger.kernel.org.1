@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360162B1AF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD0A2B1AE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgKMMPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:15:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
+        id S1726821AbgKMMOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:14:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726771AbgKMMOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:14:07 -0500
+        id S1726789AbgKMMOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:14:09 -0500
 Received: from localhost.localdomain (unknown [176.167.84.141])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB5EF22249;
-        Fri, 13 Nov 2020 12:14:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB6C822255;
+        Fri, 13 Nov 2020 12:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605269645;
-        bh=q7NHZ+oRGrAZD0DAyhWbqIuqvDCvMK63fBwv6s5bAJw=;
+        s=default; t=1605269648;
+        bh=eLExhSQSXS5B7otxntXzK5K8mPDMaZJX3vIuPHTeUKo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DrsyUhx+ypzBsRA6NIlOFSK4I9gmqR3gAqsxwAWa1v18sJ55qB1j15qDY6qAFOpZU
-         LWLbkIUlBLILI4QGL1IfeExKl8B13P5ygEWssr3kujEfNeReq1xi7mV1afbj8O2tkr
-         DifzbPj/0Q+H0E9jtBhhiF8gBsYFA2Tc5cB4km0c=
+        b=EJbZRnsBbfV+QPwamVPmcu/SsuyB3sCOxIAd7K4OyjC4Z5Zk4ETsf3SjPJ0YHrX9u
+         ZM47SyiYD3qhwayLWfgTPN293zmZWg1gf8OId39VYzDz0xPG9d2m0yI53z4NpDqXmV
+         yfhmlgId8aPUNM9ZlG9A3DKY0URRx3/Xrm2H3n/c=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: [PATCH 07/19] rcu/nocb: Re-offload support
-Date:   Fri, 13 Nov 2020 13:13:22 +0100
-Message-Id: <20201113121334.166723-8-frederic@kernel.org>
+Subject: [PATCH 08/19] rcu/nocb: Shutdown nocb timer on de-offloading
+Date:   Fri, 13 Nov 2020 13:13:23 +0100
+Message-Id: <20201113121334.166723-9-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113121334.166723-1-frederic@kernel.org>
 References: <20201113121334.166723-1-frederic@kernel.org>
@@ -47,15 +47,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to re-offload the callbacks processing of an rdp, we must clear
-SEGCBLIST_SOFTIRQ_ONLY, set SEGCBLIST_OFFLOADED and notify the CB and GP
-kthreads so that they both set their own bit flag and start processing
-the callbacks remotely. The re-offloading worker is then notified that
-it can stop processing the callbacks locally.
-
-Ordering must be carefully enforced so that the callbacks that used to
-be processed locally without locking must have their latest updates
-visible by the time they get processed by the kthreads.
+Make sure the nocb timer can't fire anymore before we reach the final
+de-offload state. Spuriously waking up the GP kthread is no big deal but
+we must prevent from executing the timer callback without nocb locking.
 
 Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
@@ -69,255 +63,66 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
- include/linux/rcupdate.h |   2 +
- kernel/rcu/tree_plugin.h | 162 +++++++++++++++++++++++++++++++++------
- 2 files changed, 140 insertions(+), 24 deletions(-)
+ kernel/rcu/tree.h        |  1 +
+ kernel/rcu/tree_plugin.h | 12 +++++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 40266eb418b6..e0ee52e2756d 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -104,9 +104,11 @@ static inline void rcu_user_exit(void) { }
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index e0deb4829847..5d359b9f9fec 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -257,6 +257,7 @@ struct rcu_data {
+ };
  
- #ifdef CONFIG_RCU_NOCB_CPU
- void rcu_init_nohz(void);
-+int rcu_nocb_cpu_offload(int cpu);
- int rcu_nocb_cpu_deoffload(int cpu);
- #else /* #ifdef CONFIG_RCU_NOCB_CPU */
- static inline void rcu_init_nohz(void) { }
-+static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
- static inline int rcu_nocb_cpu_deoffload(int cpu) { return 0; }
- #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
- 
+ /* Values for nocb_defer_wakeup field in struct rcu_data. */
++#define RCU_NOCB_WAKE_OFF	-1
+ #define RCU_NOCB_WAKE_NOT	0
+ #define RCU_NOCB_WAKE		1
+ #define RCU_NOCB_WAKE_FORCE	2
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 10e7a8962a47..3b4f01a111d8 100644
+index 3b4f01a111d8..44b4ab9b3953 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -1928,6 +1928,20 @@ static void do_nocb_bypass_wakeup_timer(struct timer_list *t)
- 	__call_rcu_nocb_wake(rdp, true, flags);
+@@ -1665,6 +1665,8 @@ static void wake_nocb_gp(struct rcu_data *rdp, bool force,
+ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+ 			       const char *reason)
+ {
++	if (rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_OFF)
++		return;
+ 	if (rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT)
+ 		mod_timer(&rdp->nocb_timer, jiffies + 1);
+ 	if (rdp->nocb_defer_wakeup < waketype)
+@@ -2243,7 +2245,7 @@ static int rcu_nocb_cb_kthread(void *arg)
+ /* Is a deferred wakeup of rcu_nocb_kthread() required? */
+ static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp)
+ {
+-	return READ_ONCE(rdp->nocb_defer_wakeup);
++	return READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT;
  }
  
-+/*
-+ * Check if we ignore this rdp.
-+ *
-+ * We check that without holding the nocb lock but
-+ * we make sure not to miss a freshly offloaded rdp
-+ * with the current ordering:
-+ *
-+ *  rdp_offload_toggle()        nocb_gp_enabled_cb()
-+ * -------------------------   ----------------------------
-+ *    WRITE flags                 LOCK nocb_gp_lock
-+ *    LOCK nocb_gp_lock           READ/WRITE nocb_gp_sleep
-+ *    READ/WRITE nocb_gp_sleep    UNLOCK nocb_gp_lock
-+ *    UNLOCK nocb_gp_lock         READ flags
-+ */
- static inline bool nocb_gp_enabled_cb(struct rcu_data *rdp)
- {
- 	u8 flags = SEGCBLIST_OFFLOADED | SEGCBLIST_KTHREAD_GP;
-@@ -1940,6 +1954,11 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
- 	struct rcu_segcblist *cblist = &rdp->cblist;
- 
- 	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
-+		if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP)) {
-+			rcu_segcblist_set_flags(cblist, SEGCBLIST_KTHREAD_GP);
-+			if (rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
-+				*needwake_state = true;
-+		}
- 		return true;
- 	} else {
- 		/*
-@@ -2003,6 +2022,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 			bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
- 		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
- 			rcu_nocb_unlock_irqrestore(rdp, flags);
-+			if (needwake_state)
-+				swake_up_one(&rdp->nocb_state_wq);
- 			continue; /* No callbacks here, try next. */
- 		}
- 		if (bypass_ncbs) {
-@@ -2054,6 +2075,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		}
- 		if (needwake_gp)
- 			rcu_gp_kthread_wake();
-+		if (needwake_state)
-+			swake_up_one(&rdp->nocb_state_wq);
- 	}
- 
- 	my_rdp->nocb_gp_bypass = bypass;
-@@ -2159,6 +2182,11 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 	WRITE_ONCE(rdp->nocb_cb_sleep, true);
- 
- 	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
-+		if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB)) {
-+			rcu_segcblist_set_flags(cblist, SEGCBLIST_KTHREAD_CB);
-+			if (rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP))
-+				needwake_state = true;
-+		}
- 		if (rcu_segcblist_ready_cbs(cblist))
- 			WRITE_ONCE(rdp->nocb_cb_sleep, false);
- 	} else {
-@@ -2254,12 +2282,44 @@ static void do_nocb_deferred_wakeup(struct rcu_data *rdp)
- 		do_nocb_deferred_wakeup_common(rdp);
- }
- 
-+static int rdp_offload_toggle(struct rcu_data *rdp,
-+			       bool offload, unsigned long flags)
-+	__releases(rdp->nocb_lock)
-+{
-+	struct rcu_segcblist *cblist = &rdp->cblist;
-+	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
-+	bool wake_gp = false;
-+
-+	rcu_segcblist_offload(cblist, offload);
-+
-+	if (rdp->nocb_cb_sleep)
-+		rdp->nocb_cb_sleep = false;
-+	rcu_nocb_unlock_irqrestore(rdp, flags);
-+
-+	/*
-+	 * Ignore former value of nocb_cb_sleep and force wake up as it could
-+	 * have been spuriously set to false already.
-+	 */
-+	swake_up_one(&rdp->nocb_cb_wq);
-+
-+	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
-+	if (rdp_gp->nocb_gp_sleep) {
-+		rdp_gp->nocb_gp_sleep = false;
-+		wake_gp = true;
-+	}
-+	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
-+
-+	if (wake_gp)
-+		wake_up_process(rdp_gp->nocb_gp_kthread);
-+
-+	return 0;
-+}
-+
- static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
- {
- 	struct rcu_segcblist *cblist = &rdp->cblist;
--	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
--	bool wake_cb = false, wake_gp = false;
- 	unsigned long flags;
-+	int ret;
- 
- 	printk("De-offloading %d\n", rdp->cpu);
- 
-@@ -2273,31 +2333,11 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
- 		return -EBUSY;
- 	}
- 
--	rcu_segcblist_offload(cblist, false);
--
--	if (rdp->nocb_cb_sleep) {
--		rdp->nocb_cb_sleep = false;
--		wake_cb = true;
--	}
--	rcu_nocb_unlock_irqrestore(rdp, flags);
--
--	if (wake_cb)
--		swake_up_one(&rdp->nocb_cb_wq);
--
--	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
--	if (rdp_gp->nocb_gp_sleep) {
--		rdp_gp->nocb_gp_sleep = false;
--		wake_gp = true;
--	}
--	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
--
--	if (wake_gp)
--		wake_up_process(rdp_gp->nocb_gp_kthread);
--
-+	ret = rdp_offload_toggle(rdp, false, flags);
+ /* Do a deferred wakeup of rcu_nocb_kthread(). */
+@@ -2337,6 +2339,12 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
  	swait_event_exclusive(rdp->nocb_state_wq,
  			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
  							SEGCBLIST_KTHREAD_GP));
--	return 0;
-+	return ret;
- }
- 
- static long rcu_nocb_rdp_deoffload(void *arg)
-@@ -2334,6 +2374,80 @@ int rcu_nocb_cpu_deoffload(int cpu)
++	/* Make sure nocb timer won't stay around */
++	rcu_nocb_lock_irqsave(rdp, flags);
++	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_OFF);
++	rcu_nocb_unlock_irqrestore(rdp, flags);
++	del_timer_sync(&rdp->nocb_timer);
++
  	return ret;
  }
  
-+static int __rcu_nocb_rdp_offload(struct rcu_data *rdp)
-+{
-+	struct rcu_segcblist *cblist = &rdp->cblist;
-+	unsigned long flags;
-+	int ret;
-+
-+	/*
-+	 * For now we only support re-offload, ie: the rdp must have been
-+	 * offloaded on boot first.
-+	 */
-+	if (!rdp->nocb_gp_rdp)
-+		return -EINVAL;
-+
-+	printk("Offloading %d\n", rdp->cpu);
-+	/*
-+	 * Can't use rcu_nocb_lock_irqsave() while we are in
-+	 * SEGCBLIST_SOFTIRQ_ONLY mode.
-+	 */
-+	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
-+	/*
-+	 * We didn't take the nocb lock while working on the
-+	 * rdp->cblist in SEGCBLIST_SOFTIRQ_ONLY mode.
-+	 * Every modifications that have been done previously on
-+	 * rdp->cblist must be visible remotely by the nocb kthreads
-+	 * upon wake up after reading the cblist flags.
-+	 *
-+	 * The layout against nocb_lock enforces that ordering:
-+	 *
-+	 *  __rcu_nocb_rdp_offload()   nocb_cb_wait()/nocb_gp_wait()
-+	 * -------------------------   ----------------------------
-+	 *      WRITE callbacks           rcu_nocb_lock()
-+	 *      rcu_nocb_lock()           READ flags
-+	 *      WRITE flags               READ callbacks
-+	 *      rcu_nocb_unlock()         rcu_nocb_unlock()
-+	 */
-+	ret = rdp_offload_toggle(rdp, true, flags);
-+	swait_event_exclusive(rdp->nocb_state_wq,
-+			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
-+			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
-+
-+	return ret;
-+}
-+
-+static long rcu_nocb_rdp_offload(void *arg)
-+{
-+	struct rcu_data *rdp = arg;
-+
-+	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-+	return __rcu_nocb_rdp_offload(rdp);
-+}
-+
-+int rcu_nocb_cpu_offload(int cpu)
-+{
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+	int ret = 0;
-+
-+	mutex_lock(&rcu_state.barrier_mutex);
-+	cpus_read_lock();
-+	if (!rcu_segcblist_is_offloaded(&rdp->cblist)) {
-+		if (cpu_online(cpu)) {
-+			ret = work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
-+		} else {
-+			ret = __rcu_nocb_rdp_offload(rdp);
-+		}
-+		if (!ret)
-+			cpumask_set_cpu(cpu, rcu_nocb_mask);
-+	}
-+	cpus_read_unlock();
-+	mutex_unlock(&rcu_state.barrier_mutex);
-+
-+	return ret;
-+}
-+
-+
- void __init rcu_init_nohz(void)
- {
- 	int cpu;
+@@ -2393,6 +2401,8 @@ static int __rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 	 * SEGCBLIST_SOFTIRQ_ONLY mode.
+ 	 */
+ 	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	/* Re-enable nocb timer */
++	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+ 	/*
+ 	 * We didn't take the nocb lock while working on the
+ 	 * rdp->cblist in SEGCBLIST_SOFTIRQ_ONLY mode.
 -- 
 2.25.1
 
