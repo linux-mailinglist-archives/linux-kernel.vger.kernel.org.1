@@ -2,108 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5072B1A19
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BA02B1A18
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgKMLal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgKML3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:29:05 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C4CC0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:29:05 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id p12so10233196ljc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:29:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DDegh8tRLZdZUaOxApIDHKwtV2S/hfTSpd/mCcBDwW4=;
-        b=t1yUwGoLWVYLzwXirBRjAFli99u0/JjI5HW88vpBo44ajQgw8rGXBa3Rym6FUrLWEs
-         Gad2D6WOvtoCyC8L6bzfwXJ+9PR+aqk20wiJu6+YFOmURknmSHMY2aC/QwmMw1Tz93eX
-         Sk+BYNMjddf5nD7NJgIUmS0vsd/CORMj2xYqV6/1YCGC5inZKYKpQwzXsbam0HlYCw/a
-         d4Z9evWyY0aCXHwrKuh+kBJah4Kj0FYBvww3GvorpzKW+jjAj62VbD/5h4vet4DM9grj
-         GPWFzS+JecEG+vfWCTacdPYojPhMOkSQltXLS8Ww8XU7z6sPbREMvQ/kPWtATvzgt38N
-         urgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DDegh8tRLZdZUaOxApIDHKwtV2S/hfTSpd/mCcBDwW4=;
-        b=jBRCSZqm/8S3W5WbcQLANh9elEvtMw6ZSekWvmxs0LfA2clVxJS+zSNUrUd18NFLAb
-         7PAmonE/LkgH9xWrYkB4nX4lWqkN4bncN7yL97XNl50XJx75/6mia4i2sATfmLtQyrRB
-         Jd56q6pXLwaTxZw56jyAAUdUZuJB8dhdN2Td0ASSRcc9H++LYTxT3xPCeGNbWsdhZjTb
-         Tqt2tKrASqru8oW8VFLdkzWmWAC5HX5pRknofBl1LznMCBbQMhFLDVoxYheMjxM4EhJc
-         KZC11VpcUexJ4dixeqOBZ9XA7hmLrSzVHLv644DeBur/EzBXVd7vG1FHiNWFE/sJLbk7
-         Jw9A==
-X-Gm-Message-State: AOAM530nwtrpXubMcwpF23R656BxtSbzzSwKo4cOsIuARMRrGPS10+f4
-        sXlW1YdBwSFp0k91zG0esfNr/rdP/y40nmBn
-X-Google-Smtp-Source: ABdhPJz8u1vcpX+I/3oC0Ia+nllHrxbYvLOw7/xfaciFUsCmH/A+YktO/CLU3soY3+P+HZ3W+Vyiqw==
-X-Received: by 2002:a05:651c:2005:: with SMTP id s5mr850242ljo.36.1605266943945;
-        Fri, 13 Nov 2020 03:29:03 -0800 (PST)
-Received: from localhost.localdomain (h-155-4-131-134.NA.cust.bahnhof.se. [155.4.131.134])
-        by smtp.gmail.com with ESMTPSA id q4sm1609517ljh.38.2020.11.13.03.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 03:29:02 -0800 (PST)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v5.10-rc4
-Date:   Fri, 13 Nov 2020 12:29:01 +0100
-Message-Id: <20201113112901.292826-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726557AbgKMLaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:30:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726541AbgKML3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:29:09 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45804207DE;
+        Fri, 13 Nov 2020 11:29:05 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 11:29:02 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     James Morse <james.morse@arm.com>, robh+dt@kernel.org, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        will@kernel.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org,
+        linux-rpi-kernel@lists.infradead.org, guohanjun@huawei.com,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
+        Chen Zhou <chenzhou10@huawei.com>
+Subject: Re: [PATCH v6 1/7] arm64: mm: Move reserve_crashkernel() into
+ mem_init()
+Message-ID: <20201113112901.GA3212@gaia>
+References: <20201103173159.27570-1-nsaenzjulienne@suse.de>
+ <20201103173159.27570-2-nsaenzjulienne@suse.de>
+ <e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com>
+ <88c69ac0c9d7e144c80cebc7e9f82b000828e7f5.camel@suse.de>
+ <X6rZRvWyigCJxAVW@trantor>
+ <b5336064145a30aadcfdb8920226a8c63f692695.camel@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5336064145a30aadcfdb8920226a8c63f692695.camel@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Nicolas,
 
-Here's a PR with a couple of MMC fixes intended for v5.10-rc4. Details about the
-highlights are as usual found in the signed tag.
+On Thu, Nov 12, 2020 at 04:56:38PM +0100, Nicolas Saenz Julienne wrote:
+> On Tue, 2020-11-10 at 18:17 +0000, Catalin Marinas wrote:
+> > On Fri, Nov 06, 2020 at 07:46:29PM +0100, Nicolas Saenz Julienne wrote:
+> > > On Thu, 2020-11-05 at 16:11 +0000, James Morse wrote:
+> > > > On 03/11/2020 17:31, Nicolas Saenz Julienne wrote:
+> > > > > crashkernel might reserve memory located in ZONE_DMA. We plan to delay
+> > > > > ZONE_DMA's initialization after unflattening the devicetree and ACPI's
+> > > > > boot table initialization, so move it later in the boot process.
+> > > > > Specifically into mem_init(), this is the last place crashkernel will be
+> > > > > able to reserve the memory before the page allocator kicks in.
+> > > > > There
+> > > > > isn't any apparent reason for doing this earlier.
+> > > > 
+> > > > It's so that map_mem() can carve it out of the linear/direct map.
+> > > > This is so that stray writes from a crashing kernel can't accidentally corrupt the kdump
+> > > > kernel. We depend on this if we continue with kdump, but failed to offline all the other
+> > > > CPUs.
+> > > 
+> > > I presume here you refer to arch_kexec_protect_crashkres(), IIUC this will only
+> > > happen further down the line, after having loaded the kdump kernel image. But
+> > > it also depends on the mappings to be PAGE sized (flags == NO_BLOCK_MAPPINGS |
+> > > NO_CONT_MAPPINGS).
+> > 
+> > IIUC, arch_kexec_protect_crashkres() is only for the crashkernel image,
+> > not the whole reserved memory that the crashkernel will use. For the
+> > latter, we avoid the linear map by marking it as nomap in map_mem().
+> 
+> I'm not sure we're on the same page here, so sorry if this was already implied.
+> 
+> The crashkernel memory mapping is bypassed while preparing the linear mappings
+> but it is then mapped right away, with page granularity and !MTE.
+> See paging_init()->map_mem():
+> 
+> 	/*
+> 	 * Use page-level mappings here so that we can shrink the region
+> 	 * in page granularity and put back unused memory to buddy system
+> 	 * through /sys/kernel/kexec_crash_size interface.
+> 	 */
+> 	if (crashk_res.end) {
+> 		__map_memblock(pgdp, crashk_res.start, crashk_res.end + 1,
+> 			       PAGE_KERNEL,
+> 			       NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS);
+> 		memblock_clear_nomap(crashk_res.start,
+> 				     resource_size(&crashk_res));
+> 	}
+> 
+> IIUC the inconvenience here is that we need special mapping options for
+> crashkernel and updating those after having mapped that memory as regular
+> memory isn't possible/easy to do.
 
-Please pull this in!
+You are right, it still gets mapped but with page granularity. However,
+to James' point, we still need to know the crashkernel range in
+map_mem() as arch_kexec_protect_crashkres() relies on having page rather
+than block mappings.
 
-Kind regards
-Ulf Hansson
+> > > > We also depend on this when skipping the checksum code in purgatory, which can be
+> > > > exceedingly slow.
+> > > 
+> > > This one I don't fully understand, so I'll lazily assume the prerequisite is
+> > > the same WRT how memory is mapped. :)
+> > > 
+> > > Ultimately there's also /sys/kernel/kexec_crash_size's handling. Same
+> > > prerequisite.
+> > > 
+> > > Keeping in mind acpi_table_upgrade() and unflatten_device_tree() depend on
+> > > having the linear mappings available.
+> > 
+> > So it looks like reserve_crashkernel() wants to reserve memory before
+> > setting up the linear map with the information about the DMA zones in
+> > place but that comes later when we can parse the firmware tables.
+> > 
+> > I wonder, instead of not mapping the crashkernel reservation, can we not
+> > do an arch_kexec_protect_crashkres() for the whole reservation after we
+> > created the linear map?
+> 
+> arch_kexec_protect_crashkres() depends on __change_memory_common() which
+> ultimately depends on the memory to be mapped with PAGE_SIZE pages. As I
+> comment above, the trick would work as long as there is as way to update the
+> linear mappings with whatever crashkernel needs later in the boot process.
 
+Breaking block mappings into pages is a lot more difficult later. OTOH,
+the default these days is rodata_full==true, so I don't think we have
+block mappings anyway. We could add NO_BLOCK_MAPPINGS if KEXEC_CORE is
+enabled.
 
-The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
+> > > Let me stress that knowing the DMA constraints in the system before reserving
+> > > crashkernel's regions is necessary if we ever want it to work seamlessly on all
+> > > platforms. Be it small stuff like the Raspberry Pi or huge servers with TB of
+> > > memory.
+> > 
+> > Indeed. So we have 3 options (so far):
+> > 
+> > 1. Allow the crashkernel reservation to go into the linear map but set
+> >    it to invalid once allocated.
+> > 
+> > 2. Parse the flattened DT (not sure what we do with ACPI) before
+> >    creating the linear map. We may have to rely on some SoC ID here
+> >    instead of actual DMA ranges.
+> > 
+> > 3. Assume the smallest ZONE_DMA possible on arm64 (1GB) for crashkernel
+> >    reservations and not rely on arm64_dma_phys_limit in
+> >    reserve_crashkernel().
+> > 
+> > I think (2) we tried hard to avoid. Option (3) brings us back to the
+> > issues we had on large crashkernel reservations regressing on some
+> > platforms (though it's been a while since, they mostly went quiet ;)).
+> > However, with Chen's crashkernel patches we end up with two
+> > reservations, one in the low DMA zone and one higher, potentially above
+> > 4GB. Having a fixed 1GB limit wouldn't be any worse for crashkernel
+> > reservations than what we have now.
+> > 
+> > If (1) works, I'd go for it (James knows this part better than me),
+> > otherwise we can go for (3).
+> 
+> Overall, I'd prefer (1) as well, and I'd be happy to have a got at it. If not
+> I'll append (3) in this series.
 
-  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
+I think for 1 we could also remove the additional KEXEC_CORE checks,
+something like below, untested:
 
-are available in the Git repository at:
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 3e5a6913acc8..27ab609c1c0c 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -477,7 +477,8 @@ static void __init map_mem(pgd_t *pgdp)
+ 	int flags = 0;
+ 	u64 i;
+ 
+-	if (rodata_full || debug_pagealloc_enabled())
++	if (rodata_full || debug_pagealloc_enabled() ||
++	    IS_ENABLED(CONFIG_KEXEC_CORE))
+ 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ 
+ 	/*
+@@ -487,11 +488,6 @@ static void __init map_mem(pgd_t *pgdp)
+ 	 * the following for-loop
+ 	 */
+ 	memblock_mark_nomap(kernel_start, kernel_end - kernel_start);
+-#ifdef CONFIG_KEXEC_CORE
+-	if (crashk_res.end)
+-		memblock_mark_nomap(crashk_res.start,
+-				    resource_size(&crashk_res));
+-#endif
+ 
+ 	/* map all the memory banks */
+ 	for_each_mem_range(i, &start, &end) {
+@@ -518,21 +514,6 @@ static void __init map_mem(pgd_t *pgdp)
+ 	__map_memblock(pgdp, kernel_start, kernel_end,
+ 		       PAGE_KERNEL, NO_CONT_MAPPINGS);
+ 	memblock_clear_nomap(kernel_start, kernel_end - kernel_start);
+-
+-#ifdef CONFIG_KEXEC_CORE
+-	/*
+-	 * Use page-level mappings here so that we can shrink the region
+-	 * in page granularity and put back unused memory to buddy system
+-	 * through /sys/kernel/kexec_crash_size interface.
+-	 */
+-	if (crashk_res.end) {
+-		__map_memblock(pgdp, crashk_res.start, crashk_res.end + 1,
+-			       PAGE_KERNEL,
+-			       NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS);
+-		memblock_clear_nomap(crashk_res.start,
+-				     resource_size(&crashk_res));
+-	}
+-#endif
+ }
+ 
+ void mark_rodata_ro(void)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc3
-
-for you to fetch changes up to 03d80e042a8e3248163a38f74b43809f8079d652:
-
-  Revert "mmc: renesas_sdhi: workaround a regression when reinserting SD cards" (2020-11-10 13:58:01 +0100)
-
-----------------------------------------------------------------
-MMC host:
- - tmio: Fixup support for reset
- - sdhci-of-esdhc: Extend erratum for pulse width to more broken HWs
- - renesas_sdhi: Fix re-binding of drivers
-
-----------------------------------------------------------------
-Wolfram Sang (3):
-      mmc: tmio: when resetting, reset DMA controller, too
-      mmc: tmio: bring tuning HW to a sane state with MMC_POWER_OFF
-      Revert "mmc: renesas_sdhi: workaround a regression when reinserting SD cards"
-
-Yangbo Lu (1):
-      mmc: sdhci-of-esdhc: Handle pulse width detection erratum for more SoCs
-
-Yoshihiro Shimoda (1):
-      mmc: renesas_sdhi_core: Add missing tmio_mmc_host_free() at remove
-
- drivers/mmc/host/renesas_sdhi_core.c | 14 +-------------
- drivers/mmc/host/sdhci-of-esdhc.c    |  2 ++
- drivers/mmc/host/tmio_mmc_core.c     |  7 +++++--
- 3 files changed, 8 insertions(+), 15 deletions(-)
+-- 
+Catalin
