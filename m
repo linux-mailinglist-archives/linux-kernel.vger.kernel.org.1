@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1F42B21E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F272B21EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgKMRSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:18:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKMRSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:18:49 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8CBC0613D1;
-        Fri, 13 Nov 2020 09:19:03 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h62so9224465wme.3;
-        Fri, 13 Nov 2020 09:19:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Odh9S4GXnjRv304GJfgc5XVM032BtmrndNkaL6PWoQQ=;
-        b=dqygrZ/7I0MeF6Ka1mhBuF0NzD/2dnGxkk/WTlSrEEOIvguKpPTJBZDqLC8jLJfGmz
-         EVAStBt3qg27yKw2w1Evwiql94xjLxNxiy42VRxMemRbWkwZ4Qu3C9Uy2PnMWhfZeeEz
-         t2HMTPLlinMl0+bN6lh5JJSxojtIjUyLLm6UmBZSs0acFBqae27wst1O8RLSGLS+h503
-         XPR2pccjzGWAEONrr+OsEvbgSvScNsAYdX9WsVksKIAEkErcP+nYMhp7JUvgNwLsB384
-         c9Qh3/DeGojEtsP8DIP+fboxRjd5CPU+tc15b1ZlMtxWyw5kZKhspxW6j4l8JJdz89SJ
-         ZYOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Odh9S4GXnjRv304GJfgc5XVM032BtmrndNkaL6PWoQQ=;
-        b=DJHGPLP79Ze0I8WD3bJBkwF7Rq4inYLNs6n4/RhEPY94Jvj9VE/QrhCfaun8qhCtSD
-         y0Q2yfS85CQL2GXfb10dmwQEL8L4W9XfH5PIVnJnSJro/xteMWHlg7R2U9divUk36IiY
-         2FKevFRreM240FVBtpSsgNzd4w61hegjemLqIq02vpiBLYkBrhOvSJy/rymoMvOD1jRR
-         zFUjWMEPbvsoGpX8pgWJLInYt4OBAyh7D/2W1OluSLvwFPKk+x/cMVIHKG7UZltms4RE
-         JlV4bdAE4chNOrhpHVWtuVVvwsIehVSew5ikQrxyLAQwEZzYB3XOZND+YhEDfeTZVxyD
-         sHRw==
-X-Gm-Message-State: AOAM530IIZshEGZT1pVRbqn3EEfdw0MVU2bNcJN+YjypK4I2iPqIkwQO
-        Bp054wd59XO+MWH+qjcFEKHvUOwjwNcqlcl7dyQ=
-X-Google-Smtp-Source: ABdhPJw8aLTjdYh+1Z4YbylQ6OFrhzAqpIztbxmRHRPTy2NG/itvTCYemARbosA+4Fk6pXGQV6PdsyqChDTsqfogCyo=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr3502636wmi.70.1605287936955;
- Fri, 13 Nov 2020 09:18:56 -0800 (PST)
+        id S1726339AbgKMRTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:19:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:41860 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726057AbgKMRTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:19:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADC2F1042;
+        Fri, 13 Nov 2020 09:19:36 -0800 (PST)
+Received: from e121896.arm.com (unknown [10.57.58.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D51163F718;
+        Fri, 13 Nov 2020 09:19:34 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com
+Cc:     james.clark@arm.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 00/13 v3] perf tools: fix perf stat with large socket IDs
+Date:   Fri, 13 Nov 2020 19:19:10 +0200
+Message-Id: <20201113171923.29721-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-17-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-17-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 13 Nov 2020 12:18:45 -0500
-Message-ID: <CADnq5_PUE3Hiv6dngNwEgZ_3hX=RQaZxiFtudt6-zesYbuLYQQ@mail.gmail.com>
-Subject: Re: [PATCH 16/40] drm/amd/amdgpu/amdgpu_sync: Fix misnamed, missing
- and extra param descriptions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:50 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c:86: warning: Function parameter=
- or member 'f' not described in 'amdgpu_sync_get_owner'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c:86: warning: Excess function pa=
-rameter 'fence' description in 'amdgpu_sync_get_owner'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c:182: warning: Excess function p=
-arameter 'adev' description in 'amdgpu_sync_vm_fence'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c:203: warning: Function paramete=
-r or member 'adev' not described in 'amdgpu_sync_resv'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Break up the previous v2 patchset into smaller atomic commits.
+The end result is the same as the previous patchset apart from
+some minor refactoring, asserting on an empty header and
+calling cpu__setup_cpunode_map() in the topology self test.
 
-Applied.  Thanks!
+Testing done:
 
-Alex
+Tested --per-core, --per-thread, --per-die, --per-node 'perf
+stat' outputs on Arm ThunderX2 and Intel KNL.
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c b/drivers/gpu/drm/a=
-md/amdgpu/amdgpu_sync.c
-> index 8ea6c49529e7d..4e558632a5d2b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-> @@ -78,7 +78,7 @@ static bool amdgpu_sync_same_dev(struct amdgpu_device *=
-adev,
->  /**
->   * amdgpu_sync_get_owner - extract the owner of a fence
->   *
-> - * @fence: fence get the owner from
-> + * @f: fence get the owner from
->   *
->   * Extract who originally created the fence.
->   */
-> @@ -172,7 +172,6 @@ int amdgpu_sync_fence(struct amdgpu_sync *sync, struc=
-t dma_fence *f)
->  /**
->   * amdgpu_sync_vm_fence - remember to sync to this VM fence
->   *
-> - * @adev: amdgpu device
->   * @sync: sync object to add fence to
->   * @fence: the VM fence to add
->   *
-> @@ -190,6 +189,7 @@ int amdgpu_sync_vm_fence(struct amdgpu_sync *sync, st=
-ruct dma_fence *fence)
->  /**
->   * amdgpu_sync_resv - sync to a reservation object
->   *
-> + * @adev: amdgpu device
->   * @sync: sync object to add fences from reservation object to
->   * @resv: reservation object with embedded fence
->   * @mode: how owner affects which fences we sync to
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Also tested 'perf stat record' and 'perf stat report --input'
+with recordings from a version of perf before this patchset
+to confirm that the output was the same.
+
+Signed-off-by: James Clark <james.clark@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Cc: John Garry <john.garry@huawei.com>
+
+James Clark (13):
+  perf tools: Improve topology test
+  perf tools: Use allocator for perf_cpu_map
+  perf tools: Add new struct for cpu aggregation
+  perf tools: Replace aggregation ID with a struct
+  perf tools: add new map type for aggregation
+  perf tools: drop in cpu_aggr_map struct
+  perf tools: restrict visibility of functions
+  perf tools: Start using cpu_aggr_id in map
+  perf tools: Add separate node member
+  perf tools: Add separate socket member
+  perf tools: Add separate die member
+  perf tools: Add separate core member
+  perf tools: add thread field
+
+ tools/perf/builtin-stat.c      | 128 +++++++++++++------------
+ tools/perf/tests/topology.c    |  58 +++++++++--
+ tools/perf/util/cpumap.c       | 170 ++++++++++++++++++++++-----------
+ tools/perf/util/cpumap.h       |  55 ++++++-----
+ tools/perf/util/stat-display.c | 106 +++++++++++---------
+ tools/perf/util/stat.c         |   2 +-
+ tools/perf/util/stat.h         |   9 +-
+ 7 files changed, 332 insertions(+), 196 deletions(-)
+
+-- 
+2.28.0
+
