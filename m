@@ -2,144 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8959B2B17F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A07D2B17F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgKMJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgKMJM7 (ORCPT
+        id S1726288AbgKMJNf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Nov 2020 04:13:35 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54883 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726181AbgKMJNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:12:59 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A672CC0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:12:58 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id o9so12323095ejg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZEmt/VsFl2qImvUHyYQ40Mn9lV8wv5XsZxCOGudpurw=;
-        b=f1bUvjmhfWE+ct5QqgGMY6/gkTD5psyD2wc7dPODO9KgsCqB0ixK2JPE4ApZME0L+f
-         o+j/KQpgc+LGI+sy9NKih2qxrYPBpaQK80/YlKEIfiam5j6/jox/xl7S67zEJBgHRhL8
-         cC2JAk2kdxb8hl2qPEL8s8diqprVyEXWPho7OWj77Yhoa/sErE0JYFAGOOaQ5cATUGKY
-         F5Cjaa+3H9MMjuJX7ZjrIP+4lHKh1L9GJKuN6KYWlOjulGQ+fl9kGjcaX+U5ulY6njT2
-         GONrmz7QkZvDGLaoc1q1EP8N6ae56fXmTlM6BM1RdxoaTw2tDzKkqRm1xqynDenDFr/+
-         WHIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZEmt/VsFl2qImvUHyYQ40Mn9lV8wv5XsZxCOGudpurw=;
-        b=T2Y7+BmtC2vrA1ndOVtvNJrCx+yvlo6pfGB6+4VHlDqzXFUyC9jefTYIDEANKTOguh
-         4lAoyKL6XDBwHWKcm1UcjK3D04an97eXicvXDRgLcPp6/PTgLp0yY6NQc+FEqhdOEsim
-         b6/dqs5pc4ssIHxC3NBwO9RPD6gduBPukW5UiY3O+W9PAd+vibHL3bV8Pdb8ZYj31V1/
-         E0un1SOIIz2zSaXyCUfLen4/c/Nb9w7vdZ6CRqkU9gIEehSir+xe3ilcijd96Ph/SmOc
-         GWuztg2Pot+TG+kRf6R5YfGlTEpUw42Pd+RtGQVJ0UDAMkYDQ98SxsGe9GK9yGTeW/Fx
-         qIbQ==
-X-Gm-Message-State: AOAM530eY891bK7PpFAkAZLT2PzTHhqg7rF8nA2crHrccC3b5jikWlVC
-        +rV1cwnUoRdUscVyguYgpd8rY9ttRpWppA06Ui6iQQ==
-X-Google-Smtp-Source: ABdhPJxtT1qVgA2FoQk7OAdlmJdj+DkZw+qwoVg8AzHfWl781Sx239Ic//jhdSO4tEd0RKQpUy7u9kHYLDSFOZst3ZE=
-X-Received: by 2002:a17:906:1c83:: with SMTP id g3mr989338ejh.168.1605258777288;
- Fri, 13 Nov 2020 01:12:57 -0800 (PST)
+        Fri, 13 Nov 2020 04:13:34 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-220-PqFSW9A9PH2BcaJY30TEYQ-1; Fri, 13 Nov 2020 09:13:25 +0000
+X-MC-Unique: PqFSW9A9PH2BcaJY30TEYQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 13 Nov 2020 09:13:24 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 13 Nov 2020 09:13:24 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nathan Chancellor' <natechancellor@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: RE: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR in
+ crypto4xx_build_pd
+Thread-Topic: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR
+ in crypto4xx_build_pd
+Thread-Index: AQHWuT2oUlZMOSIiOk6Ynob79/7MV6nFxI1w
+Date:   Fri, 13 Nov 2020 09:13:24 +0000
+Message-ID: <a163bb51881149eaa13461a93b3e45bd@AcuMS.aculab.com>
+References: <20201112200702.1664905-1-natechancellor@gmail.com>
+ <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
+ <20201112214904.GA3194701@ubuntu-m3-large-x86>
+In-Reply-To: <20201112214904.GA3194701@ubuntu-m3-large-x86>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20191229080610.7597-1-tiny.windzz@gmail.com> <20201112161346.gp5nenuagx5wmwl2@pengutronix.de>
- <20201112190649.GA908613@ulmo> <20201112211429.kfyqzkmmchjo6pll@pengutronix.de>
- <20201113070343.lhcsbyvi5baxn3lq@pengutronix.de>
-In-Reply-To: <20201113070343.lhcsbyvi5baxn3lq@pengutronix.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 13 Nov 2020 10:12:46 +0100
-Message-ID: <CAMpxmJXWqKwhNxgY7CKG6ZvszWLxrVo-JCy4riWoXN8y+bCLUA@mail.gmail.com>
-Subject: Re: About devm_platform_ioremap_resource [Was: Re: [PATCH 01/32] pwm:
- sun4i: convert to devm_platform_ioremap_resource]
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-riscv@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>, shc_work@mail.ru,
-        Kevin Hilman <khilman@baylibre.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        linux-pwm@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Scott Branden <sbranden@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, claudiu.beznea@microchip.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:04 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Hello,
->
-> [Added lkml and the people involved in commit 7945f929f1a7
-> ("drivers: provide devm_platform_ioremap_resource()") to Cc:. For the
-> new readers: This is about patches making use of
-> devm_platform_ioremap_resource() instead of open coding it. Full context
-> at https://lore.kernel.org/r/20201112190649.GA908613@ulmo]
->
-> On Thu, Nov 12, 2020 at 10:14:29PM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> > On Thu, Nov 12, 2020 at 08:06:49PM +0100, Thierry Reding wrote:
-> > > I also think that it's overly narrow is scope, so you can't actually
-> > > "blindly" use this helper and I've seen quite a few cases where this =
-was
-> > > unknowingly used for cases where it shouldn't have been used and then
-> > > broke things (because some drivers must not do the request_mem_region=
-()
-> > > for example).
+From: Nathan Chancellor
+> Sent: 12 November 2020 21:49
+> 
+> On Thu, Nov 12, 2020 at 10:21:35PM +0100, Christian Lamparter wrote:
+> > Hello,
 > >
-> > You have a link to such an accident?
->
-> I got a hint in private here: https://lore.kernel.org/r/1555670144-24220-=
-1-git-send-email-aisheng.dong@nxp.com
->
-> devm_platform_ioremap_resource() is platform_get_resource() +
-> devm_ioremap_resource() and here it was used to replace
-> platform_get_resource() + devm_ioremap().
->
-> IMHO the unlucky thing in this situation is that devm_ioremap_resource()
-> and devm_ioremap() are different by more than just how they get the area
-> to remap. (i.e. devm_ioremap_resource() also does
-> devm_request_mem_region().)
->
-> So the problem is not the added wrapper, but unclear semantics in the
-> functions it uses. In my eyes devm_ioremap() and
-> devm_platform_ioremap_resource() should better be named
-> devm_request_ioremap() and devm_platform_request_ioremap_resource()
-> respectively. Is it worth to rename these for clearity?
+> > On 12/11/2020 21:07, Nathan Chancellor wrote:
+> > > Clang warns:
+> > >
+> > > drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
+> > > lower precedence than '|'; '|' will be evaluated first
+> > > [-Wbitwise-conditional-parentheses]
+> > >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> > >                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+> > > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+> > > around the '|' expression to silence this warning
+> > >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> > >                                                                           ^
+> > >                                                                          )
+> > > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
+> > > around the '?:' expression to evaluate it first
+> > >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
+> > >                                                                           ^
+> > >                   (
+> > > 1 warning generated.
+> > >
+> > > It looks like this should have been a logical OR so that
+> > > PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
+> > > is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD.
+> > Yes. This probably wasn't spotted earlier since the driver doesn't make
+> > use of CRYPTO_ALG_TYPE_AHASH (yet). This is because the hash accelerator
+> > setup cost was never worth it.
+> >
+> > > Change the operator so that everything works properly.
+> > I'm curious if this is true. Is there a way to break this somehow on purpose?
+> 
+> I do not really have a way to validate that statement, I just figured
+> that the operator being wrong meant that something could go wrong that
+> was not intended.
+> 
+> > I've extracted the code from line 921 and added the defines
+> > (the CRYPTO_ALG_... from the current 5.10-rc3 crypto.h and the PD_CTL_
+> > from crypto4xx_reg_def.h) and replaced the u32 with uint32_t
+> > so it runs in userspace too:
+> >
+> > --- crypto4xx_test.c ---
+> > /* test study - is it possible to break the | vs || in crypto4xx's code */
+> >
+> > #include <stdio.h>
+> > #include <stdint.h>
+> >
+> > #define CRYPTO_ALG_TYPE_AEAD 	0x00000003
+> > #define CRYPTO_ALG_TYPE_AHASH	0x0000000f
+> > #define PD_CTL_HASH_FINAL	(1<<4) /* Stand-in for BIT(4) */
+> > #define PD_CTL_HOST_READY	(1<<0) /* BIT(0) */
+> >
+> > uint32_t func_with_bitwise_or(uint32_t alg_type)
+> > {
+> > 	return PD_CTL_HOST_READY |
+> > 		((alg_type == CRYPTO_ALG_TYPE_AHASH) |
+> > 		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
+> > 			PD_CTL_HASH_FINAL : 0);
+> > }
+> 
+> Looking at this more, I think the only reason that the code works as is
+> is because PD_CTL_HOST_READY is 1 AND CRYPTO_ALG_TYPE_AHASH is not used.
+> 
+> (alg_type == CRYPTO_ALG_TYPE_AEAD) ? PD_CTL_HASH_FINAL : 0 is evaluated
+> first, which results in either PD_CTL_HASH_FINAL or 0.
+> 
+> Then (alg_type == CRYPTO_ALG_TYPE_AHASH) is evaluated, which is
+> evaluated to either 0 or 1.
+> 
+> Then we mask everything together:
+> 
+> PD_CTL_HOST_READY | (0 || 1) | (PD_CTL_HOST_READY || 0)
 
-But devm_ioremap() doesn't request the region. Did you mean
-devm_ioremap_resource() should become devm_request_ioremap_resource()?
+The result is the same for both | and || as they are both higher
+priority than ?: (which is only higher priority than ,).
 
-Bartosz
+The () around the == aren't needed (except to stop the compiler
+bleating). The bitwise | is lower priority than == because it
+existed before || and K&R didn't change the priority when they
+added || (I think they've said later they wished they had.)
+
+The () around the entire ?: clause are needed.
+
+So the code is the same as:
+	rval = PD_CTL_HOST_READY;
+	if (alg_type == CRYPTO_ALG_TYPE_AHASH | alg_type == CRYPTO_ALG_TYPE_AEAD)
+		rval |= PD_CTL_HASH_FINAL;
+	return rval;
+
+Using | may well generate faster code (no branches).
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
