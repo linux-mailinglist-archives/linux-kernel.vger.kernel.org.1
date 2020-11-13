@@ -2,63 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866832B1E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E6E2B1EA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgKMP1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:27:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgKMP1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:27:37 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 043B620691;
-        Fri, 13 Nov 2020 15:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605281256;
-        bh=/bzvI3PSf1RkDSZTm2OPFclH/942L9sd3Hb0v1zJtrI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nl6pczxOVhFOBct+PzCMV9PU84jPFZUalVo90dNEVSL2F4kL1DIYjb4WjpW1bxgpS
-         DoHZhvjRPuwokungp9fmSU7hN3SEwUC61tkg/YE3baSoEgXDA8nr22s46JE0+R5NPD
-         W59VIX6d2oJEulqAmmppCaPysQrUJ+4Fk9VQDKlM=
-Date:   Fri, 13 Nov 2020 16:28:32 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     xiakaixu1987@gmail.com
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: Re: [PATCH v2] tracing: remove the useless value assignment in
- test_create_synth_event
-Message-ID: <X66mILjXqug9YGgR@kroah.com>
-References: <1605280878-6612-1-git-send-email-kaixuxia@tencent.com>
+        id S1726774AbgKMP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKMP3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 10:29:08 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5F1C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:29:08 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kdb0V-0005ZU-Sx; Fri, 13 Nov 2020 16:28:59 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kdb0V-0000zk-2g; Fri, 13 Nov 2020 16:28:59 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] ARM: dts: imx6qdl: specify vcc-supply for NOP USB PHYs
+Date:   Fri, 13 Nov 2020 16:28:55 +0100
+Message-Id: <20201113152856.3758-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605280878-6612-1-git-send-email-kaixuxia@tencent.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:21:18PM +0800, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
-> 
-> The value of variable ret is overwritten on the delete branch in the
-> test_create_synth_event() and we care more about the above error than
-> this delete portion. Remove it.
-> 
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
->  kernel/trace/synth_event_gen_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+The SoC dtsi lists a NOP USB PHY for each of the two HSIC-only USB
+controllers. Their device tree node doesn't indicate a vcc-supply
+resulting in:
 
-$ ./scripts/get_maintainer.pl kernel/trace/synth_event_gen_test.c
-Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
-Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
-linux-kernel@vger.kernel.org (open list)
+  usb_phy_generic usbphynop1: supply vcc not found, using dummy regulator
+  usb_phy_generic usbphynop2: supply vcc not found, using dummy regulator
 
+warnings on boot up. The USB IP vcc-supply - separate from the vusb - is
+hardwired to LDO_2P5[1], which we already have a device tree node for.
+Reference it for the dummy "phy" as well.
 
-You have an odd selection of people you copied on this patch, ensuring
-thtat the correct people would not see it :(
+This will lead to breakage (probe deferment) for kernels that:
+  - Use a HSIC USB controller
+  - Use this new device tree
+  - but have CONFIG_REGULATOR_ANATOP disabled
+
+Because while the regulator is always-on, it can't be resolved when
+there is no driver for it.
+
+As there are
+
+  - no affected upstream device trees
+  - existing device trees are unaffected without recompilation
+  - disabling CONFIG_REGULATOR_ANATOP is explicitly a non-recommended
+    configuration per symbol help text
+
+this potential breakage is deemed acceptable.
+
+[1]: i.MX 6Dual/6Quad Reference Manual, Rev. C,
+     Figure 53-1. Power System Overview
+
+Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ arch/arm/boot/dts/imx6qdl.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 43edbf1156c7..22e4c142de13 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -131,11 +131,13 @@ pmu: pmu {
+ 
+ 	usbphynop1: usbphynop1 {
+ 		compatible = "usb-nop-xceiv";
++		vcc-supply = <&reg_vdd2p5>;
+ 		#phy-cells = <0>;
+ 	};
+ 
+ 	usbphynop2: usbphynop2 {
+ 		compatible = "usb-nop-xceiv";
++		vcc-supply = <&reg_vdd2p5>;
+ 		#phy-cells = <0>;
+ 	};
+ 
+-- 
+2.28.0
 
