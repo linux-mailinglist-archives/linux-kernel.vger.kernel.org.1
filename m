@@ -2,112 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6FA2B1694
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6534F2B1695
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgKMHjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:39:33 -0500
-Received: from mga07.intel.com ([134.134.136.100]:29494 "EHLO mga07.intel.com"
+        id S1726394AbgKMHkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:40:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:33650 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726133AbgKMHjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:39:32 -0500
-IronPort-SDR: g/EOUGQOh4F/EpLJZ8KwCCMhsvMc0tJ5q+eVaH3WJk/Fy/zPB2D65w5alMgnAeCTDI8jgzVKWP
- BkJpYDN/BE2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="234598819"
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="234598819"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:39:31 -0800
-IronPort-SDR: OeJS4RuRDltwgNKFLl6vi9iaaXpE8N6cFHBQjoquGyp9i7Z2lxgaM2P6oApP3IUHEL/G92pq0D
- GfBoZNoiNdyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="328791314"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by orsmga006.jf.intel.com with ESMTP; 12 Nov 2020 23:39:27 -0800
-Date:   Fri, 13 Nov 2020 15:39:26 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@intel.com, ying.huang@intel.com
-Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
- -22.7% regression
-Message-ID: <20201113073926.GB113119@shbuild999.sh.intel.com>
-References: <20201102091543.GM31092@shao2-debian>
- <20201102092754.GD22613@dhcp22.suse.cz>
- <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
- <20201102100247.GF22613@dhcp22.suse.cz>
- <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
- <20201104081546.GB10052@dhcp22.suse.cz>
- <20201112122844.GA11000@shbuild999.sh.intel.com>
- <20201112141654.GC12240@dhcp22.suse.cz>
- <7e40849b-f9e0-34d4-4254-c2c99dd71f78@redhat.com>
+        id S1726112AbgKMHkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:40:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E02A2142F;
+        Thu, 12 Nov 2020 23:40:09 -0800 (PST)
+Received: from [10.163.80.57] (unknown [10.163.80.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB8013F718;
+        Thu, 12 Nov 2020 23:40:04 -0800 (PST)
+Subject: Re: [PATCH] arm64: mm: account for hotplug memory when randomizing
+ the linear region
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        gshan@redhat.com, Robin Murphy <robin.murphy@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20201014081857.3288-1-ardb@kernel.org>
+ <160503561804.1015659.16599672230432576934.b4-ty@arm.com>
+ <a330440d-803b-5aa2-0092-a18317819850@arm.com> <20201112092558.GC29613@gaia>
+ <2f0d9bc5-6288-7388-ff10-97198dabac6f@arm.com>
+ <CAMj1kXGa-WUr8LzDHGEfgG18ctJJp1v8b4UFckbcwtzpoEv+Tw@mail.gmail.com>
+ <ae1bdb23-4e44-bc6f-bdf0-a4efbcb5a3cb@arm.com>
+ <CAMj1kXESYQjtuWOBVz=2=GwrczohUDqCTfQVOYmyj4wkdpUYnA@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <2e84fa4b-f35b-5ecf-5b67-f570bdd29a06@arm.com>
+Date:   Fri, 13 Nov 2020 13:10:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e40849b-f9e0-34d4-4254-c2c99dd71f78@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAMj1kXESYQjtuWOBVz=2=GwrczohUDqCTfQVOYmyj4wkdpUYnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:43:45AM -0500, Waiman Long wrote:
-> >>We tried below patch to make the 'page_counter' aligned.
-> >>   diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> >>   index bab7e57..9efa6f7 100644
-> >>   --- a/include/linux/page_counter.h
-> >>   +++ b/include/linux/page_counter.h
-> >>   @@ -26,7 +26,7 @@ struct page_counter {
-> >>    	/* legacy */
-> >>    	unsigned long watermark;
-> >>    	unsigned long failcnt;
-> >>   -};
-> >>   +} ____cacheline_internodealigned_in_smp;
-> >>and with it, the -22.7% peformance change turns to a small -1.7%, which
-> >>confirms the performance bump is caused by the change to data alignment.
-> >>
-> >>After the patch, size of 'page_counter' increases from 104 bytes to 128
-> >>bytes, and the size of 'mem_cgroup' increases from 2880 bytes to 3008
-> >>bytes(with our kernel config). Another major data structure which
-> >>contains 'page_counter' is 'hugetlb_cgroup', whose size will change
-> >>from 912B to 1024B.
-> >>
-> >>Should we make these page_counters aligned to reduce cacheline conflict?
-> >I would rather focus on a more effective mem_cgroup layout. It is very
-> >likely that we are just stumbling over two counters here.
-> >
-> >Could you try to add cache alignment of counters after memory and see
-> >which one makes the difference? I do not expect memsw to be the one
-> >because that one is used together with the main counter. But who knows
-> >maybe the way it crosses the cache line has the exact effect. Hard to
-> >tell without other numbers.
-> >
-> >Btw. it would be great to see what the effect is on cgroup v2 as well.
-> >
-> >Thanks for pursuing this!
-> 
-> The contention may be in the page counters themselves or it can be in other
-> fields below the page counters. The cacheline alignment will cause
-> "high_work" just after the page counters to start at a cacheline boundary. I
-> will try removing the cacheline alignment in the page counter and add it to
-> high_work to see there is any change in performance. If there is no change,
-> the performance problem will not be in the page counters.
- 
-Yes, that's a good spot to check. I even doubt it could be other members of
-'struct mem_cgroup', which affects the benchmark, as we've seen some other
-performance bump which is possibly related to it too.
 
-Thanks,
-Feng
+
+On 11/13/20 12:36 PM, Ard Biesheuvel wrote:
+> On Fri, 13 Nov 2020 at 08:03, Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>>
+>>
+>>
+>> On 11/13/20 11:44 AM, Ard Biesheuvel wrote:
+>>> On Fri, 13 Nov 2020 at 04:16, Anshuman Khandual
+>>> <anshuman.khandual@arm.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 11/12/20 2:55 PM, Catalin Marinas wrote:
+>>>>> Hi Anshuman,
+>>>>>
+>>>>> On Wed, Nov 11, 2020 at 09:18:56AM +0530, Anshuman Khandual wrote:
+>>>>>> On 11/11/20 12:44 AM, Catalin Marinas wrote:
+>>>>>>> On Wed, 14 Oct 2020 10:18:57 +0200, Ard Biesheuvel wrote:
+>>>>>>>> As a hardening measure, we currently randomize the placement of
+>>>>>>>> physical memory inside the linear region when KASLR is in effect.
+>>>>>>>> Since the random offset at which to place the available physical
+>>>>>>>> memory inside the linear region is chosen early at boot, it is
+>>>>>>>> based on the memblock description of memory, which does not cover
+>>>>>>>> hotplug memory. The consequence of this is that the randomization
+>>>>>>>> offset may be chosen such that any hotplugged memory located above
+>>>>>>>> memblock_end_of_DRAM() that appears later is pushed off the end of
+>>>>>>>> the linear region, where it cannot be accessed.
+>>>>>>>>
+>>>>>>>> [...]
+>>>>>>>
+>>>>>>> Applied to arm64 (for-next/mem-hotplug), thanks!
+>>>>>>>
+>>>>>>> [1/1] arm64: mm: account for hotplug memory when randomizing the linear region
+>>>>>>>       https://git.kernel.org/arm64/c/97d6786e0669
+>>>>>>
+>>>>>> Got delayed and never made here in time, sorry about that. Nonetheless,
+>>>>>> I have got something working with respect to the generic mechanism that
+>>>>>> David Hildenbrand had asked for earlier.
+>>>>>>
+>>>>>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
+>>>>>
+>>>>> There was a lot of discussion around this patch but I haven't seen any
+>>>>> new version posted.
+>>>>
+>>>> Just posted before some time.
+>>>>
+>>>> https://lore.kernel.org/linux-arm-kernel/1605236574-14636-1-git-send-email-anshuman.khandual@arm.com/
+>>>>
+>>>
+>>> You failed to cc me on that patch.
+>>
+>> I could see 'ardb@kernel.org' marked as a copy on the patch. You
+>> did not receive the email ? The CC list is in the commit message
+>> itself. Even the lore.kernel.org based URL does list you email
+>> as well. Not sure what might have happened.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: Steven Price <steven.price@arm.com>
+>> Cc: Robin Murphy <robin.murphy@arm.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>>
+> 
+> Right. Not sure what happened there, I may have deleted it by
+> accident. Apologies.
+> 
+>>>
+>>> The logic looks correct but please fix up the comment block:
+>>> - PAGE_END is no longer defined in terms of vabits_actual
+>>> - bits [51..48] are not ignored by the MMU
+>>>
+>>> Actually, I think the entire second paragraph of that comment block
+>>> can be dropped.
+>>
+>> And from the commit message as well, had reused it in both places.
+>>
+>>>
+>>> Please also fix up the coding style:
+>>> - put && at the end of the first line
+>>> - drop the redundant parens
+>>> - fix the indentation
+>>
+>> Does this look okay ?
+>>
+>> static bool inside_linear_region(u64 start, u64 size)
+>> {
+>>         /*
+>>          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+>>          * accommodating both its ends but excluding PAGE_END. Max physical
+>>          * range which can be mapped inside this linear mapping range, must
+>>          * also be derived from its end points.
+>>          */
+>>         return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+>>                         (start + size - 1) <= __pa(PAGE_END - 1);
+>> }
+> 
+> Not sure whether the whitespace has been mangled by the email client,
+> but the first ( on the second line should align vertically with the
+> 's' of 'start' on the first line
+
+It was not aligned vertically here but fixed it. I hope you have received
+the latest version this time.
+
+https://lore.kernel.org/linux-arm-kernel/1605252614-761-1-git-send-email-anshuman.khandual@arm.com/
