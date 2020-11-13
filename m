@@ -2,78 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0162B1D92
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC04A2B1DA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgKMOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:36:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:39460 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726443AbgKMOgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:36:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3425142F;
-        Fri, 13 Nov 2020 06:36:31 -0800 (PST)
-Received: from bogus (unknown [10.57.15.107])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 744703F6CF;
-        Fri, 13 Nov 2020 06:36:30 -0800 (PST)
-Date:   Fri, 13 Nov 2020 14:36:27 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] firmware: arm_scmi: Augment SMC/HVC to allow
- optional interrupt
-Message-ID: <20201113143627.jxxha7uejhjucwbz@bogus>
-References: <20201112175632.42234-1-james.quinlan@broadcom.com>
- <20201112175632.42234-3-james.quinlan@broadcom.com>
- <20201113094732.4bcyjs7zz7vwg4of@bogus>
- <CA+-6iNxZ73gYtjP54kBJhcwzL5h4Co6Wh8-Nk4poqLV0s=jA8w@mail.gmail.com>
+        id S1726606AbgKMOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgKMOqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 09:46:21 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695F0C061A49
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 06:46:21 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id b67so5314134vsc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 06:46:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Aa2pPBMOldZH+yQGH0UrveON65rZ08/cb06MQFHGa0E=;
+        b=oI7Irk60nS8p8IJ9aebTfBT8tKh0VFGTFn4N+jHvPSrvutUGz4HDN9F2eXGWUFLUJO
+         pztkL1zvJJMqmmqAU4axiDuUUDb7ZZEfZv/0TZRBLjwcw3/kbFA/Hx96JgrITvvr02pZ
+         P9ohzUknb4wDMFPoki9mO18MI2KcxcBOr1dFLBdisyT0QQlXZ092Oz52zVXzS4AIl6nm
+         U8S/pCXL5v33Tp7vs3/soInXrThDoA5cbxXaCLXchnNuLPv28h5iBteaaK6ficGI1j82
+         XTk7m3rfU//IdaFvmbs97w3+GVYDzQv+iWKbaHXieTVM3M0QznSjPWGv6+xYuZCuLvZr
+         7YfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Aa2pPBMOldZH+yQGH0UrveON65rZ08/cb06MQFHGa0E=;
+        b=XPVD7he8uzdkoI4+mwFqE9OU5G4EBT9oCVOKeKp6lD7e2JLmGU1lnZA5x5mVzD8rwj
+         Lbdgn+VhWpgTIxcxHVfoxS5VA3iKoXKAaFliMTIyPjv7UoNRvaTNlRcpVZeNQ4cXAB9P
+         TqksRp686pzLYAQE8y2YBjPjXIm2EQp00G5VFTfRV32Zi+U+HZ9LtVjB1VaySk85WXZ1
+         tGN44TNaYW/zxGlWAzGHitukFyBK8MxlgDdDeh2L1iU00O9l+vq9pga/tY8yyeeARr78
+         ZG1T4BY3j+9TBLUuu4LWglJADn0duEMeUHevcvGFiaE1Jsto3KD0adtQ17fyGN0Q3Dyf
+         SsmA==
+X-Gm-Message-State: AOAM5312WLNJC7wNfihC0FD22uFWoircvGHJt7ti2D/gkNj2eCgxh8Dj
+        T5RmG5pipRQPFS87UVGkFcVbQ6IdiZ3wLg7xbuLV6A==
+X-Google-Smtp-Source: ABdhPJwkbgKSdaTWhgIsxWjShz+Kw+ub2606C3A/AwjkR07HCOjuCnqip2AUmLV/UBcfKhNInvgSpQVBCTAIPmGnX5w=
+X-Received: by 2002:a67:3256:: with SMTP id y83mr1567875vsy.48.1605278780301;
+ Fri, 13 Nov 2020 06:46:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+-6iNxZ73gYtjP54kBJhcwzL5h4Co6Wh8-Nk4poqLV0s=jA8w@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+References: <20201104234427.26477-1-digetx@gmail.com> <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
+ <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com> <2716c195-083a-112f-f1e5-2f6b7152a4b5@gmail.com>
+ <CAPDyKFqUMsH9dCZ=OYqfdLt==+-8NjK9n=S5jGGNXZu6Y9q=2w@mail.gmail.com>
+ <1f7e90c4-6134-2e2b-4869-5afbda18ead3@gmail.com> <20201112204358.GA1027187@ulmo>
+ <25942da9-b527-c0aa-5403-53c9cc34ad93@gmail.com>
+In-Reply-To: <25942da9-b527-c0aa-5403-53c9cc34ad93@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 13 Nov 2020 15:45:43 +0100
+Message-ID: <CAPDyKFomk7mw7-wpZFPOfT27CEXuCbzRiBoicH5-k7QF_pphVw@mail.gmail.com>
+Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
+ Tegra20/30 SoCs
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 09:26:43AM -0500, Jim Quinlan wrote:
-> Hi, these are fast calls.  Regards, Jim
-> 
-> 
-> On Fri, Nov 13, 2020 at 4:47 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Thu, Nov 12, 2020 at 12:56:27PM -0500, Jim Quinlan wrote:
-> > > The SMC/HVC SCMI transport is modified to allow the completion of an SCMI
-> > > message to be indicated by an interrupt rather than the return of the smc
-> > > call.  This accommodates the existing behavior of the BrcmSTB SCMI
-> > > "platform" whose SW is already out in the field and cannot be changed.
-> > >
-> >
-> > Sorry for missing to check with you earlier. Are these not fast smc calls ?
-> > Can we check the SMC Function IDs for the same and expect IRQ to be present
-> > if they are not fast calls ?
-> Hi, if I understand you correctly you want to do something like this:
+On Thu, 12 Nov 2020 at 23:14, Dmitry Osipenko <digetx@gmail.com> wrote:
 >
->  if (! ARM_SMCCC_IS_FAST_CALL(func_id)) {
->         /* look for irq and request it */
-> }
+> 12.11.2020 23:43, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> The difference in comparison to using voltage regulator directly is
+> >> minimal, basically the core-supply phandle is replaced is replaced wit=
+h
+> >> a power-domain phandle in a device tree.
+> > These new power-domain handles would have to be added to devices that
+> > potentially already have a power-domain handle, right? Isn't that going
+> > to cause issues? I vaguely recall that we already have multiple power
+> > domains for the XUSB controller and we have to jump through extra hoops
+> > to make that work.
 >
+> I modeled the core PD as a parent of the PMC sub-domains, which
+> presumably is a correct way to represent the domains topology.
+>
+> https://gist.github.com/digetx/dfd92c7f7e0aa6cef20403c4298088d7
 
-Yes.
+That could make sense, it seems.
 
-> But we  do use fast calls.
+Anyway, this made me realize that
+dev_pm_genpd_set_performance_state(dev) returns -EINVAL, in case the
+device's genpd doesn't have the ->set_performance_state() assigned.
+This may not be correct. Instead we should likely consider an empty
+callback as okay and continue to walk the topology upwards to the
+parent domain, etc.
 
-What was the rationale for retaining fast SMC calls but use IRQ for Tx
-completion ?
+Just wanted to point this out. I intend to post a patch as soon as I
+can for this.
 
-Is it because you offload it to some other microprocessor and don't
-continue execution on secure side in whcih case you can afford fast call ?
+[...]
 
---
-Regards,
-Sudeep
+Kind regards
+Uffe
