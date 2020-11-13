@@ -2,106 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343ED2B2554
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8CB2B2557
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgKMUZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:25:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725941AbgKMUZ1 (ORCPT
+        id S1726287AbgKMU0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:26:13 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:43164 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgKMU0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:25:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605299126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=necTzLb9sYFoxc0q+K6VlpmR/hW224U1Sbo8SlUmuww=;
-        b=ROvywgXXh1CDhI+7soDis7YOmPMpG4d0failoujNr2wmmr6MIE+hgkX2XF57Fng6MTY7Ff
-        /m0o6stQpoIKkQeMynn1d0CXbKbUrWTNmTQWptzecCALqTJ5RlAdGdy91h71ZBWQ+/0f2+
-        2USTmMBlUOT+ffhSV4lpfNCla3kooeI=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-S8VqbOx8Pn-zFtyqgPTd7g-1; Fri, 13 Nov 2020 15:25:24 -0500
-X-MC-Unique: S8VqbOx8Pn-zFtyqgPTd7g-1
-Received: by mail-qv1-f69.google.com with SMTP id q6so6823401qvr.21
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:25:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=necTzLb9sYFoxc0q+K6VlpmR/hW224U1Sbo8SlUmuww=;
-        b=FEfo/rENVZQQciuvz2zIgi1qd+Wj7lHqxMt1n1R6i2/p82k2s1Tat9jZvKytxvIreW
-         5lCL2zG7eCTpnhCRpbxX8U9b1Jqs0Oe+1evHRcysnQIE31a93KGQkS/tXvoAYrHWqaEL
-         htgqlGHROgqCtV5gnxSwFRX0Y3VJtZZ/7n6UMZHHlP0NhlIcvEZDnWl9MbHbMFBRV2Ng
-         fet9gWtLhN6x8t7lDYV5tVASqiH/P/nnP6wk4ccrwJH+MxuJYlyIHBuMopXqQ0Q61bLN
-         Ebtbr+MlLdZ/0Qrha9+G+Sw6QMjMkofy5I/F8jugMQQ/Iv+l8ckfaoMp4ZwU2tCvKx1s
-         34AA==
-X-Gm-Message-State: AOAM533Y9nvC3C5VDiIU6z+eNuznzYkMGyeUmcbpH/4OgjaiAuLWtRT0
-        GrofsimXkRXSCZLG9FCDGCqeAJacQppq8b5R7MWdZ1yr9D+O/mvDDxjaqFGsOjHs6WtVK2Bv8EL
-        F2XBs6JZVCnx6KtEXE6qsDArk
-X-Received: by 2002:ad4:4ae4:: with SMTP id cp4mr3963873qvb.21.1605299124277;
-        Fri, 13 Nov 2020 12:25:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwgQ3IKgA+akf6N6ze870DJdV7l9Rp4BdDzrp4QFHzRYP9k9+MCyCSmj4vEdBSyDJYJ9rXxbg==
-X-Received: by 2002:ad4:4ae4:: with SMTP id cp4mr3963846qvb.21.1605299123973;
-        Fri, 13 Nov 2020 12:25:23 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id f189sm7354421qkb.84.2020.11.13.12.25.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 12:25:23 -0800 (PST)
-Subject: Re: [PATCHv1 2/4] fpga: of-fpga-region: add authenticate-fpga-config
- property
-To:     richard.gong@linux.intel.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
- <1605204403-6663-3-git-send-email-richard.gong@linux.intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <77c39677-e6cb-92eb-3680-897a3a755e91@redhat.com>
-Date:   Fri, 13 Nov 2020 12:25:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 13 Nov 2020 15:26:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1605299171; x=1636835171;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aMGUJyhItmKZRJpcyfb3GcMubGvsstL4VJvXXylXx24=;
+  b=mo/4EqwYt/vJ5vRwFE+54zQNGTesTMnii582sRlZ5RXDgTUBcQlznZwM
+   NOTJ7NqNc8EG3FjEwI+DGTOPpjIlNSsl2NmBQEA7SbdwcdnySgGFizQ4f
+   xvbZwSs82iI+W8jnxO1FttmUlaaUj2A3zA2Kcy/5lUrhbZLYFxoa9LpLL
+   RQUAUqW5ZAcw3d1sFhQw+AeN4VEATFQA7ylL9WecGwDysoZMBM/OffQFz
+   8oFNqZFxE9nvKNDdh9fytwosCUgxOkGUXBsmmf/xo/NCkgBKpHGvM0VEv
+   8ADDOFYBLUhgijjd8q3VzN1O2Q27dIUSLFmqBl2oOclVvfkmdPPR7AAOa
+   A==;
+IronPort-SDR: GvT65azZmgLwc59EIrQoI2m4/qwDap8RpGvDQjl7ZxURfdMgdpp5GLJWCTMAgfuICy/GobxELG
+ BPkzNhCCfEu+yYiSxFV25FW4OdYt6m+A4skW4yMJZhcugDi7ROMJC9EUltUqgNgaUzsv5IGGmu
+ IHwNLvBRnbTkMX/7CKquRHj8qAr6Ku9rOoTWcqGnkRWldmUccZpeuxM5kHnA55X8XqETzhlkL0
+ oIBOnapG6DK1ZIRNkkmdmueLKRFVUjp0vb1Vbngbt2fUC+wbMbaYlP4k0Qb8/aFZh03fmS3+nd
+ 18o=
+X-IronPort-AV: E=Sophos;i="5.77,476,1596470400"; 
+   d="scan'208";a="157074936"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2020 04:26:11 +0800
+IronPort-SDR: Nz+OGuTERmoGQg2D188Pub6lsQthrwIU2wGXQnsrB1+gyJW5bIppdkPGEeehNo3u3wMHZb1KWW
+ 35WLrUGkQTjrJrZiZ671kldLNiCnIpss33rPshIPF4eam7jJKpCxgMhJCNX7iYxM7Lcq99nHu+
+ 85AhAFJZBUdauVoWcRTyvzPlm52QJsOE2peLQe67jPuhJQPsooppLDEEJjk0rEuq7n9kNR+RGS
+ i5tLcc/Kv+a46wFUMNBtsOeE6R/zgHOnxO8NDTHRG8j9k0Gbypv4U2kYTUtJWpogAAH/2tmeKo
+ ubMr+XXBrIau98NNF1w2uWS0
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 12:12:08 -0800
+IronPort-SDR: rFi0Qt+Ab2PLPGASxi8YGY51ueh2j8HSBInPX4L6oSpxE3yB1nxkkVjJFgFzIyP65RA6tjRJRf
+ lDdvuy5JFqS0iZtICpeXAlpHnDGUS/xxGuMcmjZFpiuNOHXYzy7TYLG3t8N74yLCZi4nn/RNAO
+ pDvshD5qtKC4VLfSvNCuZZfD7SfpbiBGUAPAsLfPM8K40ByqpqxyZK4WXpNu3kmZFEDiv29ByD
+ vNRZnfSiJ7+ouT1WWcVLzrSCl5+bR9wCYCOWe+cXCH7GHP0IeQu8R58sj21nP0leA3oO86yCZc
+ 9+c=
+WDCIronportException: Internal
+Received: from usa003372.ad.shared (HELO jedi-01.hgst.com) ([10.86.61.22])
+  by uls-op-cesaip01.wdc.com with ESMTP; 13 Nov 2020 12:26:12 -0800
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Cyril.Jean@microchip.com, Ivan.Griffin@microchip.com,
+        Conor.Dooley@microchip.com
+Subject: [RFC PATCH v2 0/4] Add Microchip PolarFire Soc Support 
+Date:   Fri, 13 Nov 2020 12:25:46 -0800
+Message-Id: <20201113202550.3693323-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1605204403-6663-3-git-send-email-richard.gong@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds minimal support for Microchip Polar Fire Soc Icicle kit.
+It is rebased on v5.10-rc3 and depends on clock support. 
+Only MMC and ethernet drivers are enabled via this series.
+The idea here is to add the foundational patches so that other drivers
+can be added to on top of this. The device tree may change based on
+feedback on bindings of individual driver support patches.
 
-On 11/12/20 10:06 AM, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
->
-> Add authenticate-fpga-config property to support FPGA bitstream
-> authentication.
->
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> ---
->  drivers/fpga/of-fpga-region.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
-> index e405309..c7c6d1c 100644
-> --- a/drivers/fpga/of-fpga-region.c
-> +++ b/drivers/fpga/of-fpga-region.c
-> @@ -228,6 +228,9 @@ static struct fpga_image_info *of_fpga_region_parse_ov(
->  	if (of_property_read_bool(overlay, "encrypted-fpga-config"))
->  		info->flags |= FPGA_MGR_ENCRYPTED_BITSTREAM;
->  
-> +	if (of_property_read_bool(overlay, "authenticate-fpga-config"))
-> +		info->flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
-> +
->  	if (!of_property_read_string(overlay, "firmware-name",
->  				     &firmware_name)) {
->  		info->firmware_name = devm_kstrdup(dev, firmware_name,
+This series has been tested on Qemu and Polar Fire Soc Icicle kit.
+The following qemu series is necessary to test it on Qemu.
 
-This looks fine.
+The series can also be found at.
+https://github.com/atishp04/linux/tree/polarfire_support_upstream_v2
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+I noticed the latest version of mmc driver[2] hangs on the board with
+the latest clock driver. That's why, I have tested with the old clock
+driver available in the above github repo.
+
+[1] https://lists.nongnu.org/archive/html/qemu-devel/2020-10/msg08582.html
+[2] https://www.spinics.net/lists/devicetree/msg383626.html
+
+@Cyril: I have added you as the maintainer for this board as I am not sure
+who else from Microchip should be the added to the maintainer list. Please
+let me know and I can add the entry to the MAINTAINERS file in next version.
+
+Changes from v1->v2:
+1. Modified the DT to match the device tree in U-Boot.
+2. Added both eMMC & SDcard entries in DT. However, SD card is only enabled
+   as it allows larger storage option for linux distros.
+
+Atish Patra (4):
+RISC-V: Add Microchip PolarFire SoC kconfig option
+dt-bindings: riscv: microchip: Add YAML documentation for the
+PolarFire SoC
+RISC-V: Initial DTS for Microchip ICICLE board
+RISC-V: Enable Microchip PolarFire ICICLE SoC
+
+.../devicetree/bindings/riscv/microchip.yaml  |  27 ++
+arch/riscv/Kconfig.socs                       |   7 +
+arch/riscv/boot/dts/Makefile                  |   1 +
+arch/riscv/boot/dts/microchip/Makefile        |   2 +
+.../microchip/microchip-mpfs-icicle-kit.dts   |  54 +++
+.../boot/dts/microchip/microchip-mpfs.dtsi    | 342 ++++++++++++++++++
+arch/riscv/configs/defconfig                  |   4 +
+7 files changed, 437 insertions(+)
+create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
+create mode 100644 arch/riscv/boot/dts/microchip/Makefile
+create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+
+--
+2.25.1
 
