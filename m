@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAAB2B138B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BF42B138D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgKMAx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:53:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        id S1726102AbgKMAyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:54:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKMAx0 (ORCPT
+        with ESMTP id S1725929AbgKMAyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:53:26 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B77EC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:53:26 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 10so6158181pfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:53:26 -0800 (PST)
+        Thu, 12 Nov 2020 19:54:03 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06885C0613D1;
+        Thu, 12 Nov 2020 16:53:51 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id n132so7462968qke.1;
+        Thu, 12 Nov 2020 16:53:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kpvnKSrVoabXQhGOD0rhoXlbZEbSnpbz56+dy5+JM3c=;
-        b=CCoUOKAEuP3dgQeDYy5FUfj2zEbtK8AtB9vlZlMHZ3QyqTAvhQOLQ6DTjHAbwciNKm
-         b8KAhm0DIozDlTZ1ph4G9pklcyTMZOIDQBlz+cUogtjeetIlz5UoNRJiTEHqrmS+uDVh
-         Cv5PjEmZmR4PjA/vyFg4r2zYvt9lJqDBD2GhuunxqgIGS/ZyzQkEYlZUZAZ6ihH2zVS8
-         1BBn0/VKet6kSgLWrPYwfaRTa1hlr5LsDiI5es005tOYGmPE7jrBhrY4Ge5R/5FFzV8F
-         4SNy6Xlv7Qdhg6qtQCDvdR7zhcSe12BiW4X+7sPYF/LqEem4bCoEROdRYJyP5Y1BAHc7
-         tRHQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yh/YuTw0y4KR1MgkgIBehu19vz49jA8SsJy90VDwqGU=;
+        b=J5hJ054G32wzCXh7R5D/WPjTqiomiHjOOgzNffvkR2KB9Gxxp1mCIg1Bpyh3ODjPtw
+         fHM53tdVC7fJPJck2D2zbXqvZHDPltV/mUJYRTltz4towedQTSvpxMmV2o8rg8DHyX+K
+         kCCNZvfbX9K+1R2sZCj1LbqarVu/LWF5m1ImklDLwEvTLfgopHlQz8ZE5PAwW3BewItc
+         QLsYyt8JOVghe2br+L9VhWXFkCHaqs5jiVN9sRdz5HK1AVKkY0uFEz5asEE2z6uU245+
+         GHr4nYRS4k1fYK6afm4g+wRg0RtGYcS/tzD4BXLYCCB/S3clmd7s74O1dhvUFxgc9p5g
+         6qaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kpvnKSrVoabXQhGOD0rhoXlbZEbSnpbz56+dy5+JM3c=;
-        b=pC/PPBe+lkljSsA2bOZmsR5ory/HrYPLM6B/iVNtYGQCujdhC/G79Qtdr9QEGWEsZT
-         Dcdz0GyLNZdnnflYxm/kLkw/1t7zS0QMPYunuLMPTEU8kuCbdLTFRVumysvgfQVodyBV
-         IleoceqUpGlWPVNuyTfPN00BKEdUehq+jxtoU9Qbop58bhfmU/Tok9JcsJTu36hGG07L
-         Ijy/KmGbA451yYnEs30x0Rsy50kDmN2vgX8Y8vWOmHnHiUwSRrOUIlxHDNxpuDylvpOp
-         +PAUZ/8VmGxRt/hSXEsKfembGLtT7V5JuuOwi1YOaT8cE1m96Egazl1L9XvzA4T+f7V2
-         LstA==
-X-Gm-Message-State: AOAM532DitQwULr0Pt5EX5rf9Nd7sTcmE1aQoFpoM9f+g3n6G0TqP7TS
-        88HdIxhtp04R2Zox3suVa24UgN7JR0tvuvs9PukI/Q==
-X-Google-Smtp-Source: ABdhPJxTBlrZxQlw0dn4qABCTcVsaWoJtRrne8IIUHKppzrewlebxbyEvHPJcP8m5PzSvUKZ8s8PbXlR3tasMKpvzvQ=
-X-Received: by 2002:a17:90b:110b:: with SMTP id gi11mr491437pjb.25.1605228805456;
- Thu, 12 Nov 2020 16:53:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201108203737.94270-1-natechancellor@gmail.com>
-In-Reply-To: <20201108203737.94270-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 12 Nov 2020 16:53:14 -0800
-Message-ID: <CAKwvOd=P2yFxkAXh9TUpJ=D5=jNnxnx7O5Nr3iTDeqV40UA19A@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Explicitly specify the build id style in vDSO
- Makefile again
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv@lists.infradead.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yh/YuTw0y4KR1MgkgIBehu19vz49jA8SsJy90VDwqGU=;
+        b=q2/m+Bjv2eiks9fcuOvFNBtoaM5M9ZAWA3tJ2GdEPTTvSYsoyV5Ymdlw5hWFWcytd0
+         qw3Oi1/puhUtjYd1CiMbHKFAnHzMd1DDj2kumRZmyABh5JC7drCdEqrcYGSseeAUnYrZ
+         u4w50BA9peu7J7q7QfomYzx9/hsdhwpPyUyXoVMLP9W8Odl0uT+3KRAA7Xmb93k8bk4m
+         jeRBKTmdaj+zCyIiNwk+gp2w4PKLij7D6G5+HOJp2TUYB6FIYGcPGRQ+aUcz54ha9TPX
+         ijTkiE4JQw/gJ9tk059lMXFXMqZbZhLDj//M+RwUJbflCp88w6UJpTzj7F4+XCyxGZKk
+         0ybA==
+X-Gm-Message-State: AOAM5304t2eYtbU7/WDqxCBMfIGb8p3XPc7ihUoNLKr5T/1h0QiZ794X
+        EgqefTtNQNdizrlUjAocOic=
+X-Google-Smtp-Source: ABdhPJxI6cxHqXTnL8iNUPyKAT3DdO12ers/lEE6XssOLoVGxQGUFwOgjoS54/qkoRdbXCzDQgS0OA==
+X-Received: by 2002:a37:b985:: with SMTP id j127mr2629060qkf.282.1605228830079;
+        Thu, 12 Nov 2020 16:53:50 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id r190sm5941546qkf.101.2020.11.12.16.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 16:53:49 -0800 (PST)
+Date:   Thu, 12 Nov 2020 17:53:47 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jian Cai <jiancai@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Bill Wendling <morbo@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
+Message-ID: <20201113005347.GA3625030@ubuntu-m3-large-x86>
+References: <20201112183839.1009297-1-natechancellor@gmail.com>
+ <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 8, 2020 at 12:37 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> Commit a96843372331 ("kbuild: explicitly specify the build id style")
-> explicitly set the build ID style to SHA1. Commit c2c81bb2f691 ("RISC-V:
-> Fix the VDSO symbol generaton for binutils-2.35+") undid this change,
-> likely unintentionally.
->
-> Restore it so that the build ID style stays consistent across the tree
-> regardless of linker.
->
-> Fixes: c2c81bb2f691 ("RISC-V: Fix the VDSO symbol generaton for binutils-2.35+")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+On Thu, Nov 12, 2020 at 04:44:46PM -0800, Nick Desaulniers wrote:
+> On Thu, Nov 12, 2020 at 10:41 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > Commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker
+> > script and options") added '-z norelro' to the arm64 Makefile when
+> > CONFIG_RELOCATABLE was set to help support ld.lld because ld.lld
+> > defaults to '-z relro' but the kernel does not use program headers or
+> > adhere to the section layout that is required for RELRO to work.
+> >
+> > Commit 3b92fa7485eb ("arm64: link with -z norelro regardless of
+> > CONFIG_RELOCATABLE") unconditionally added it to LDFLAGS_vmlinux because
+> > an error occurs with CONFIG_KASAN set even when CONFIG_RELOCATABLE is
+> > unset.
+> >
+> > As it turns out, ARM experiences the same error after CONFIG_KASAN was
+> > implemented, meaning that '-z norelro' needs to be added to that
+> > Makefile as well (multi_v7_defconfig + CONFIG_KASAN=y + LD=ld.lld):
+> >
+> > $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 zImage
+> > ld.lld: error: section: .exit.data is not contiguous with other relro sections
+> >
+> > To avoid playing whack-a-mole with different architectures over time,
+> > hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
+> > because '-z norelro' is the default for it.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1189
+> > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> Why not add it additionally to KBUILD_LDFLAGS_MODULE a la
+> `--build-id=sha1` a few lines above? (or `LDFLAGS_MODULE`, but that
+> looks unused?)  We probably don't want this for modules either.  In
+> that case, you could add -z norelo to the two existing lines with
+> `--build-id=sha1` above?
 
-Thanks for the fixup!
+Yes, I can do that. I will send a v2 along tomorrow morning to let
+others comment.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-(I'm curious what --build-id linker flag does, and what kind of spooky
-bugs that led to a96843372331?)
-
-> ---
->  arch/riscv/kernel/vdso/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> index cb8f9e4cfcbf..0cfd6da784f8 100644
-> --- a/arch/riscv/kernel/vdso/Makefile
-> +++ b/arch/riscv/kernel/vdso/Makefile
-> @@ -44,7 +44,7 @@ SYSCFLAGS_vdso.so.dbg = $(c_flags)
->  $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
->         $(call if_changed,vdsold)
->  SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
-> -       -Wl,--build-id -Wl,--hash-style=both
-> +       -Wl,--build-id=sha1 -Wl,--hash-style=both
->
->  # We also create a special relocatable object that should mirror the symbol
->  # table and layout of the linked DSO. With ld --just-symbols we can then
->
-> base-commit: c2c81bb2f69138f902e1a58d3bef6ad97fb8a92c
-> --
-> 2.29.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201108203737.94270-1-natechancellor%40gmail.com.
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Cheers,
+Nathan
