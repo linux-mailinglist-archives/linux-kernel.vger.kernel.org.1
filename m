@@ -2,51 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144362B16FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363DF2B1705
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgKMINF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:13:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgKMINE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:13:04 -0500
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27387217A0;
-        Fri, 13 Nov 2020 08:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605255184;
-        bh=uzHAiLbo+aC1ss3zjuPDQuBqsIryl2lKizi9018PHyk=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=IK6jsPcyOcr4aMCNj5/GPq39a3wDr8cQj5QvPLSw/FOy45seu0O0TNCvzTScIG0mu
-         AzP38sj/boocBTzJxqp/h20mnZkNKdMOY1mD9zRlcJuEnHNuhbKXCOezo9gcaz0FBV
-         LMIXMg1o+ibBnZvR5VwD+/LKsHSBbeZqoneVt984=
-Content-Type: text/plain; charset="utf-8"
+        id S1726303AbgKMIOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 03:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgKMION (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 03:14:13 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FC9C0613D1;
+        Fri, 13 Nov 2020 00:14:13 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id k65so7945844ybk.5;
+        Fri, 13 Nov 2020 00:14:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IGuhm4DDjXM82cBc9tqmhMIUTIMqD4s7kPGRRYpiNzs=;
+        b=c8RAUBDE+Ue238rSIJCCf0RauNJZQw6t3/5DlvGEEH6NFjNfN6fDHyp9CBtDsYFTQp
+         h+OLaJ/8g4gqbVfYSggv/SBfuai8Cfx82NszN51c9Tgk+P0WZq60m6WPGnZqmXa/GC9L
+         rwhuRIAjOKV0PkuMAXcluJJ8dScjXuEuvlEs3srm4rqF95lylht9Vc3oh7XxZc2iuCH+
+         3cjvXWK6rRX0Baheu7alF6T2Shg03TcMANdty6950EO31MV1tlMdLl8EX5qCHzcMfcy5
+         qb5ELBGIGLznYjyfjpo6/sbmy5FTt1zxBbMgpI+vTpe9ALQxcBB5KysZe3husQrmiZKh
+         /48Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IGuhm4DDjXM82cBc9tqmhMIUTIMqD4s7kPGRRYpiNzs=;
+        b=L3alAlm2ZMXHWH94R9vapSuWSSbH0EVuWoRRnG7DfXJQS+092kDEjhfapgI6p5hnrB
+         kD86Ckh81/PZVxjkpTORrrVQRfwExNuZknXwXHrNGJdKWa1Y0mltOv4z+UjwU7Ai4vUa
+         1LguiHFjQcwV8svNRnSS/XR39gnv5jCsJW5Ylpw/22eFM4vKyfZtLFxTGxTeJ7bTMRCI
+         i1FDe1WIqfrRBlLu1i9oImKX5hQCm7l3F26gsZ4NLLibX9NPoijjMuIIKstEzUQ4AZTK
+         2EN7g+OmerNKWV2hWtVDiV/NyO8cM1A/SEaQf5NkKwLsLn/UFnqSwk/3DmOqnop3wQYm
+         oKBw==
+X-Gm-Message-State: AOAM53239Fx963sN2NODmUR9dlOEvmkPZK47eHYhpJBqeE9na4nF+8an
+        w2m8Wz7Fm7OqFBJkQbeP9c0p1JEMy3dCEE7DlIk=
+X-Google-Smtp-Source: ABdhPJy8TyFXL7XZ3U447iEAI04X21uq6utlKB5gB8S8IpKtxbhOpTXbu1mpRzeii2G3o/I1H6GKbLOZAAC73Np2vPM=
+X-Received: by 2002:a25:338b:: with SMTP id z133mr1271346ybz.33.1605255252936;
+ Fri, 13 Nov 2020 00:14:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1605062036-12735-1-git-send-email-weiyi.lu@mediatek.com>
-References: <1605062036-12735-1-git-send-email-weiyi.lu@mediatek.com>
-Subject: Re: [PATCH v2] clk: mediatek: fix mtk_clk_register_mux() as static function
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com, Weiyi Lu <weiyi.lu@mediatek.com>,
-        Owen Chen <owen.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>
-Date:   Fri, 13 Nov 2020 00:13:02 -0800
-Message-ID: <160525518273.60232.13374675894733235790@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20201111021131.822867-1-ndesaulniers@google.com>
+ <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
+ <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com>
+ <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAKwvOdnYpmf=ydFVWSqVkWeUpn+M2v9PfdQd71T3oqQ9_1WQaQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdnYpmf=ydFVWSqVkWeUpn+M2v9PfdQd71T3oqQ9_1WQaQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 13 Nov 2020 09:14:01 +0100
+Message-ID: <CANiq72k13K_zA5aH5hameoe4TSf2o5cA294bA4UEZG0M6S3DXQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "Moore, Robert" <robert.moore@intel.com>,
+        "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Fix" is a little strong. Maybe the subject should just be "Make
-mtk_clk_register_mux() a static function".
+On Fri, Nov 13, 2020 at 1:09 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Thank you for the explicit diagnostics observed.  Something fishy is
+> going on though, https://godbolt.org/z/Gbxbxa is how I expect MSVC to
+> handle include/linux/compiler_attributes.h.
+>
+> The C preprocessor should make it such that MSVC never sees
+> `__attribute__` or `__fallthrough__`; that it does begs the question.
+> That would seem to imply that `#if __has_attribute(__fallthrough__)`
+> somehow evaluates to true on MSVC, but my godbolt link shows it does
+> not.
+>
+> Could the upstream ACPICA project be #define'ing something that could
+> be altering this? (Or not #define'ing something?)
+>
+> Worst case, we could do as Joe Perches suggested and disable
+> -Wfallthrough for drivers/acpi/acpica/.
 
-Quoting Weiyi Lu (2020-11-10 18:33:56)
-> mtk_clk_register_mux() should be a static function
->=20
-> Fixes: a3ae549917f16 ("clk: mediatek: Add new clkmux register API")
+I agree, something is fishy. MSVC has several flags for conformance
+and extensions support, including two full C preprocessors in newer
+versions; which means we might be missing something, but I don't see
+how the code in compiler_attributes.h could be confusing MSVC even in
+older non-conforming versions.
+
+Cheers,
+Miguel
