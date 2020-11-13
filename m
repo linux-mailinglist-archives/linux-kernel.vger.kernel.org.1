@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE402B17C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 242C02B17C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgKMJEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S1726248AbgKMJH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgKMJEd (ORCPT
+        with ESMTP id S1726149AbgKMJH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:04:33 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EBFC0613D1;
-        Fri, 13 Nov 2020 01:04:32 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id j205so12736647lfj.6;
-        Fri, 13 Nov 2020 01:04:32 -0800 (PST)
+        Fri, 13 Nov 2020 04:07:56 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9B0C0613D1;
+        Fri, 13 Nov 2020 01:07:56 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id 74so12741845lfo.5;
+        Fri, 13 Nov 2020 01:07:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2GxhUCefEOa/B6zdFZukUMX5vwuWHoZ4mk0/X54rIZY=;
-        b=HVGTSAeTWJudmGTp17fSJDYNbrg4dxXFjx/IOQ0uLp2ZICcL7iw/PI0jlxfHikdZGx
-         hkrzdczrlfX7xE0zX9zAF7tVum74KM/67YMwYH4gdN5Cpeuzb+cb/gJMh+Z72oGDIsrM
-         m+shjk9V6bg2eL6CNGxqBvpyrj8ziTyW808V1Go5Lv7q2/CmwzMefSfA9dLu3Lc81+Uj
-         OyuRPRw+zTr5o5zk9lpoOPoWq/YYuH9QUy2ol73gwFURc6D4BTeRVp00mm6gq7LAzpJa
-         j8/XBsEVf+spxn+oMLy4toLJLqHSs4rqAbzARmxRejHFy3tzx1VHyq5kFTFTftg5BuPf
-         Z4Sg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lR7/8vjXJDBM73PVRP/RhfEwJV/6UykOcvsNpMs/RAE=;
+        b=cXKphYEMrBWFsSAa2+890QE7UsPFgUnJm7kKit91fFJrp3FJULrOTbjYIn5Oo1T3rl
+         BWYXXOTj+sOzD6G5ITNcokkG6aFPZYHajJ0EmNFyttZQ2LiII68OaQ23kpbOnkzdUuQG
+         eBTxlIZGTW524iE1sbUuOewyIWkFVukBgSdUrrM2SmWFHNlynjf5svkFHYm3nEDNB7Wt
+         DdocptY4OqYdGOu00ThUMbL1HUSiNqMddLtZQMDEfb1Q/FbFEpJlKB4+5BkGtsiQa1+G
+         8gUrTQFvd/jkWS5TJawiOFD5pVZCHlddnhnQdMDJsJaGEgaXeCg1F+ti0u0GRq0ZQekf
+         T8Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2GxhUCefEOa/B6zdFZukUMX5vwuWHoZ4mk0/X54rIZY=;
-        b=X3Zfxt+8DQ2vzf31B8/Ak/2sTZ/m+978WUrL9VwJKiH4MvYPYhQrU0vAgwt7p/cRVh
-         2oOXQ46LGS+pKt9r5N2+DnUB0MJrYkEeP6jSpvT6q8y6nbufBOKLirRYGiYM3l05pm/5
-         vDK31yCz02bqL9F8qiYmSZcWdMv+oX2J/F5NzWx+xRp2T81MobxRCfsioKYPa+yeNZZ3
-         QL1EOLKhnDRgoZbT8teqsRM6e676WIVTQp4pGhhTqiZ7Fi6wusrWmlstRqkuq9Zg0Y5+
-         0zZBEbvxJJLZ3s46NvJJ8KJDr17ri+uNoKzif6FZu8DQalUS06/BB5C6FxwkgeyOu2d1
-         x3uA==
-X-Gm-Message-State: AOAM530a5+CdEKXy9Rqf1R7NkuAihyUsEsddJTuIrGI4uQ3jHA+VtPOt
-        CsyYOPorVgodF0iyrlaq8MT7SkF2+wA=
-X-Google-Smtp-Source: ABdhPJynCMzZYISl7vpAXlcm6rIcnGx2Q0JYl/1WSXHcUtg6esCLaQzR/10qulOq3rbyHw7eARJGVg==
-X-Received: by 2002:a19:6619:: with SMTP id a25mr450970lfc.186.1605258271117;
-        Fri, 13 Nov 2020 01:04:31 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id p9sm1473413lfa.129.2020.11.13.01.04.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 01:04:30 -0800 (PST)
-Subject: Re: [PATCH v1] clk: Add enable-state column to clk summary
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201104165631.22295-1-digetx@gmail.com>
- <160525551074.60232.7613044083282105115@swboyd.mtv.corp.google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <519526ca-fd50-f8c5-6ea9-dba6d356f0e9@gmail.com>
-Date:   Fri, 13 Nov 2020 12:04:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lR7/8vjXJDBM73PVRP/RhfEwJV/6UykOcvsNpMs/RAE=;
+        b=hYeLveu1K9TlVtz5jf9akPzyXo6vxGqUjOyGLOr+m+EMbKFY6Xq7ItH+AcwA0uqqEj
+         OqfRm+uKCLIfYPxPO1sZSlIGq2xDlJKCwirpOWv/v4Vh0KeTFCGPSKnjMwbviPren1Bt
+         psn0IgPTh5zyhOsRjZGMNBlvDF9yLNbQczFQm/4rANQvTvFzD7QJ4DMsj7UR7FUo1t3E
+         xym0KpAtSz0vAJ0wXtI6kdqPLeg7OasQTBOffqnXhHzms8l0fwYEr3rFi2vkGcWWV4er
+         ozq4mAtrxFWQDpwQnxWsnLRqs69N+GawmiIuEjpsKWPoW4E8k7zMeDy7+SMrr/WKSigR
+         mVpw==
+X-Gm-Message-State: AOAM5319CD2ksWi7XKR5DRf8NUMfRJuBhNwK54fbAKrRTXmswFQue7II
+        Fd17vpC6P7wqBOWhTolGKyY=
+X-Google-Smtp-Source: ABdhPJyxGKAD90tNpLzL0m0Fm78FGMIIHqz4xSYuklo+YQHPvL9qyzVt/XUep8Eex1S2SHDQgBemGA==
+X-Received: by 2002:a19:c191:: with SMTP id r139mr535421lff.258.1605258474914;
+        Fri, 13 Nov 2020 01:07:54 -0800 (PST)
+Received: from localhost.localdomain (dmjt96jhvbz3j2f08hy-4.rev.dnainternet.fi. [2001:14bb:51:e1dd:1cd1:d2e:7b13:dc30])
+        by smtp.gmail.com with ESMTPSA id a8sm603684ljq.77.2020.11.13.01.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 01:07:54 -0800 (PST)
+From:   Lev Stipakov <lstipakov@gmail.com>
+X-Google-Original-From: Lev Stipakov <lev@openvpn.net>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Lev Stipakov <lev@openvpn.net>
+Subject: [PATCH v2 3/3] net: xfrm: use core API for updating/providing stats
+Date:   Fri, 13 Nov 2020 11:07:34 +0200
+Message-Id: <20201113090734.117349-1-lev@openvpn.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <59b6c94d-e0de-e4f5-d02e-e799694f6dc8@gmail.com>
+References: <59b6c94d-e0de-e4f5-d02e-e799694f6dc8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <160525551074.60232.7613044083282105115@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.11.2020 11:18, Stephen Boyd пишет:
-> Quoting Dmitry Osipenko (2020-11-04 08:56:31)
->> Add "enable state" column to the clk summary. It's handy to know actual
->> hardware state of all clocks for debugging purposes. In conjunction with
->> clk_ignore_unused, this tells us what unused clocks are left on after
->> bootloader without disabling the clocks.
-> 
-> Should it be called "boot state" then? That idea sounds OK to me.
-> 
->> It's also s useful debugging
-> 
-> Stray 's' here.
-> 
->> information for cases where firmware touches clocks.
-> 
-> Care to explain more? Presumably you mean when firmware is modifying clk
-> state without notifying the kernel?
+Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add") has added
+function "dev_sw_netstats_tx_add()" to update net device per-cpu TX
+stats.
 
-This is exactly what I meant.
+Use this function instead of own code.
 
-> In which case it should be called
-> "hardware enable" or something like that and be a "Y/N/?" value
-> depending on if the value can be read or not and if it is enabled or not?
+While on it, remove xfrmi_get_stats64() and replace it with
+dev_get_tstats64().
 
-Indeed, I like the "hardware enable", thank you for the suggestion. The
-"Y/N/?" suggestion is also good.
+Signed-off-by: Lev Stipakov <lev@openvpn.net>
+---
+ 
+ v2: replace xfrmi_get_stats64() vs dev_get_tstats64()
 
-I'll prepare v2, thank you for the review!
+ net/xfrm/xfrm_interface.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
+
+diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
+index 9b8e292a7c6a..697cdcfbb5e1 100644
+--- a/net/xfrm/xfrm_interface.c
++++ b/net/xfrm/xfrm_interface.c
+@@ -319,12 +319,7 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
+ 
+ 	err = dst_output(xi->net, skb->sk, skb);
+ 	if (net_xmit_eval(err) == 0) {
+-		struct pcpu_sw_netstats *tstats = this_cpu_ptr(dev->tstats);
+-
+-		u64_stats_update_begin(&tstats->syncp);
+-		tstats->tx_bytes += length;
+-		tstats->tx_packets++;
+-		u64_stats_update_end(&tstats->syncp);
++		dev_sw_netstats_tx_add(dev, 1, length);
+ 	} else {
+ 		stats->tx_errors++;
+ 		stats->tx_aborted_errors++;
+@@ -538,15 +533,6 @@ static int xfrmi_update(struct xfrm_if *xi, struct xfrm_if_parms *p)
+ 	return err;
+ }
+ 
+-static void xfrmi_get_stats64(struct net_device *dev,
+-			       struct rtnl_link_stats64 *s)
+-{
+-	dev_fetch_sw_netstats(s, dev->tstats);
+-
+-	s->rx_dropped = dev->stats.rx_dropped;
+-	s->tx_dropped = dev->stats.tx_dropped;
+-}
+-
+ static int xfrmi_get_iflink(const struct net_device *dev)
+ {
+ 	struct xfrm_if *xi = netdev_priv(dev);
+@@ -554,12 +540,11 @@ static int xfrmi_get_iflink(const struct net_device *dev)
+ 	return xi->p.link;
+ }
+ 
+-
+ static const struct net_device_ops xfrmi_netdev_ops = {
+ 	.ndo_init	= xfrmi_dev_init,
+ 	.ndo_uninit	= xfrmi_dev_uninit,
+ 	.ndo_start_xmit = xfrmi_xmit,
+-	.ndo_get_stats64 = xfrmi_get_stats64,
++	.ndo_get_stats64 = dev_get_tstats64,
+ 	.ndo_get_iflink = xfrmi_get_iflink,
+ };
+ 
+-- 
+2.25.1
+
