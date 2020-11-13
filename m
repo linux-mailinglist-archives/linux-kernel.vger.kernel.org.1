@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC04A2B1DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12B92B1DB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgKMOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:46:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgKMOqV (ORCPT
+        id S1726603AbgKMOvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:51:12 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34003 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKMOvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:46:21 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695F0C061A49
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 06:46:21 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id b67so5314134vsc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 06:46:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Aa2pPBMOldZH+yQGH0UrveON65rZ08/cb06MQFHGa0E=;
-        b=oI7Irk60nS8p8IJ9aebTfBT8tKh0VFGTFn4N+jHvPSrvutUGz4HDN9F2eXGWUFLUJO
-         pztkL1zvJJMqmmqAU4axiDuUUDb7ZZEfZv/0TZRBLjwcw3/kbFA/Hx96JgrITvvr02pZ
-         P9ohzUknb4wDMFPoki9mO18MI2KcxcBOr1dFLBdisyT0QQlXZ092Oz52zVXzS4AIl6nm
-         U8S/pCXL5v33Tp7vs3/soInXrThDoA5cbxXaCLXchnNuLPv28h5iBteaaK6ficGI1j82
-         XTk7m3rfU//IdaFvmbs97w3+GVYDzQv+iWKbaHXieTVM3M0QznSjPWGv6+xYuZCuLvZr
-         7YfA==
+        Fri, 13 Nov 2020 09:51:10 -0500
+Received: by mail-wr1-f67.google.com with SMTP id r17so10234464wrw.1;
+        Fri, 13 Nov 2020 06:51:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Aa2pPBMOldZH+yQGH0UrveON65rZ08/cb06MQFHGa0E=;
-        b=XPVD7he8uzdkoI4+mwFqE9OU5G4EBT9oCVOKeKp6lD7e2JLmGU1lnZA5x5mVzD8rwj
-         Lbdgn+VhWpgTIxcxHVfoxS5VA3iKoXKAaFliMTIyPjv7UoNRvaTNlRcpVZeNQ4cXAB9P
-         TqksRp686pzLYAQE8y2YBjPjXIm2EQp00G5VFTfRV32Zi+U+HZ9LtVjB1VaySk85WXZ1
-         tGN44TNaYW/zxGlWAzGHitukFyBK8MxlgDdDeh2L1iU00O9l+vq9pga/tY8yyeeARr78
-         ZG1T4BY3j+9TBLUuu4LWglJADn0duEMeUHevcvGFiaE1Jsto3KD0adtQ17fyGN0Q3Dyf
-         SsmA==
-X-Gm-Message-State: AOAM5312WLNJC7wNfihC0FD22uFWoircvGHJt7ti2D/gkNj2eCgxh8Dj
-        T5RmG5pipRQPFS87UVGkFcVbQ6IdiZ3wLg7xbuLV6A==
-X-Google-Smtp-Source: ABdhPJwkbgKSdaTWhgIsxWjShz+Kw+ub2606C3A/AwjkR07HCOjuCnqip2AUmLV/UBcfKhNInvgSpQVBCTAIPmGnX5w=
-X-Received: by 2002:a67:3256:: with SMTP id y83mr1567875vsy.48.1605278780301;
- Fri, 13 Nov 2020 06:46:20 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aAlmyA4sfYYrPjrQD695bEObeqnhiYZCjllcBnn0e5k=;
+        b=TnAW1wf5CKPIV63JcECSbhI2Wg24FHUPACVebIHjpwE+1SQDgPyHexpak5mAnmlLaf
+         uYIqJiYarmvRgV/qcxrE8rRzdZq9ZLB8SBvevlFXVTGSG9uLRpIBQjJ5x6gWhyjLCGUR
+         wf3rsAvx8hU2FkDCBvFLsz0JN4NK8xFqY+y5vIdvrLVejIa93dn1WIbshNgXnt/i2j/l
+         v7wOpWEF3e/VLYLh4SEV+w/ZEheqfZepv47H4RBSZk+xNeco+wtqijH8U8+MZ38x2m88
+         N/JAIwGgqkNlOOX1eehxxL2omev+g2JiSGaTiVqW78toaTEoY661C4dnvZLbSDtjlzpl
+         fNQQ==
+X-Gm-Message-State: AOAM533wWrRtwMyM6FtrE0wHidEzhG4Eu3q6YMJ3E6lk2l8rSWRahvjX
+        076TIKHFdArsVDiwzQNIQho=
+X-Google-Smtp-Source: ABdhPJyGBkq3j9fFqjeueSZX46lLXN1F5neV8oNQAbZqbarx52SOLQVZz9CqIiA4OIOiFcHhRqYHpg==
+X-Received: by 2002:a5d:4409:: with SMTP id z9mr3823980wrq.309.1605279068895;
+        Fri, 13 Nov 2020 06:51:08 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g138sm10560175wme.39.2020.11.13.06.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 06:51:08 -0800 (PST)
+Date:   Fri, 13 Nov 2020 14:51:06 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>
+Subject: Re: [PATCH v2 03/17] Drivers: hv: vmbus: skip VMBus initialization
+ if Linux is root
+Message-ID: <20201113145106.k4ekiw5cu427e3wi@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-4-wei.liu@kernel.org>
+ <87imaay4w9.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20201104234427.26477-1-digetx@gmail.com> <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
- <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com> <2716c195-083a-112f-f1e5-2f6b7152a4b5@gmail.com>
- <CAPDyKFqUMsH9dCZ=OYqfdLt==+-8NjK9n=S5jGGNXZu6Y9q=2w@mail.gmail.com>
- <1f7e90c4-6134-2e2b-4869-5afbda18ead3@gmail.com> <20201112204358.GA1027187@ulmo>
- <25942da9-b527-c0aa-5403-53c9cc34ad93@gmail.com>
-In-Reply-To: <25942da9-b527-c0aa-5403-53c9cc34ad93@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 13 Nov 2020 15:45:43 +0100
-Message-ID: <CAPDyKFomk7mw7-wpZFPOfT27CEXuCbzRiBoicH5-k7QF_pphVw@mail.gmail.com>
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87imaay4w9.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 at 23:14, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 12.11.2020 23:43, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >> The difference in comparison to using voltage regulator directly is
-> >> minimal, basically the core-supply phandle is replaced is replaced wit=
-h
-> >> a power-domain phandle in a device tree.
-> > These new power-domain handles would have to be added to devices that
-> > potentially already have a power-domain handle, right? Isn't that going
-> > to cause issues? I vaguely recall that we already have multiple power
-> > domains for the XUSB controller and we have to jump through extra hoops
-> > to make that work.
->
-> I modeled the core PD as a parent of the PMC sub-domains, which
-> presumably is a correct way to represent the domains topology.
->
-> https://gist.github.com/digetx/dfd92c7f7e0aa6cef20403c4298088d7
+On Thu, Nov 12, 2020 at 04:24:38PM +0100, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
+> 
+> > There is no VMBus and the other infrastructures initialized in
+> > hv_acpi_init when Linux is running as the root partition.
+> >
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > ---
+> >  drivers/hv/vmbus_drv.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> > index 4fad3e6745e5..37c4d3a28309 100644
+> > --- a/drivers/hv/vmbus_drv.c
+> > +++ b/drivers/hv/vmbus_drv.c
+> > @@ -2612,6 +2612,9 @@ static int __init hv_acpi_init(void)
+> >  	if (!hv_is_hyperv_initialized())
+> >  		return -ENODEV;
+> >  
+> > +	if (hv_root_partition)
+> > +		return -ENODEV;
+> > +
+> 
+> Nit: any particular reason why we need to return an error from here? I'd
+> suggest we 'return 0;' if it doesn't break anything (we're still running
+> on Hyper-V, it's just a coincedence that there's nothing to do here,
+> eventually we may get some devices/handlers I guess. Also, there's going
+> to be server-side Vmbus eventually, we may as well initialize it here.
 
-That could make sense, it seems.
+Returning 0 should be fine. It is not likely to make any practical
+difference at this stage.
 
-Anyway, this made me realize that
-dev_pm_genpd_set_performance_state(dev) returns -EINVAL, in case the
-device's genpd doesn't have the ->set_performance_state() assigned.
-This may not be correct. Instead we should likely consider an empty
-callback as okay and continue to walk the topology upwards to the
-parent domain, etc.
+Not sure what you mean by server-side Vmbus. If you mean Vmbus on the
+host, yes, there will be. The initialization is, again, a bit different
+there.  You will see why when my colleague post /dev/mshv code. The long
+term goal is to refactor the Vmbus initialization code to work in all
+scenarios.  We are not there yet though.
 
-Just wanted to point this out. I intend to post a patch as soon as I
-can for this.
+Wei.
 
-[...]
-
-Kind regards
-Uffe
+> 
+> >  	init_completion(&probe_event);
+> >  
+> >  	/*
+> 
+> -- 
+> Vitaly
+> 
