@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C08E2B17AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9F32B17B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKMI7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:59:42 -0500
-Received: from mail-eopbgr760077.outbound.protection.outlook.com ([40.107.76.77]:13027
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726184AbgKMI7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:59:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LENovbgNmFy4GcWsp+Pw7wOT/7jPlmavNI0ds9076hGquij6Eix4vXiTzNPxz16fNZYazGQyXxIvjUOj7V/YmmQ6sBGP7QrVUwI/CVCldsdDj9vwH88Lh+1PF0Uvn36FV34lmhlLtX0AIbsJ1rU4FiivEnplw+X4U4DMy5GQ+MHotWuhYcqt91FBYbO0KJf+piUuX8Ng6ypmHdhrMcTZ+TioWFDRVumyTX9BPyDLnk/rltkgvYmErjm9ZVEn6CachzeZtVyUBY1XPXr5bkWN0KJhtCIaqaphfLyFl1CPtFMtd9Cyx5fpSeVAWpgHrc5u1YoXaTgK3W69BUMgFbY15A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sAbpZgVOlSnratarffnoXddLQ5n1UaOnb3loPsL2I1U=;
- b=Ai1cXDw6dWI/vGUbevknnuh8S9WKAUDT1NhF73Fe3x8AbaEhaL/ZDrAk8ReElelHvFloRE+OVV8/4WwYRNJtpPTCAz1N9N4jQtxQartqIeqjFx44saOUcbRtRYu/84DWy4k2jkGFGD2wcNtiydja/8xIkTt+jr6dxLweMYBVwteMofrA/3Jco3g6r0zlGJ0TJ1yoJlhFHral0hC24qHUaHcTgB+u2QmJIcZ73yLaD+rx4lDyO0zojUVeGUe6wK3JhM/vm8Fd8dEsOAVYgB7VxAsLleCokvFcZZIGe7C16oGVGjLEl6JXLMpgkKflPof1C2eQdXh8zAeN8PcRsjM3lA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726359AbgKMJAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:00:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726221AbgKMJAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 04:00:39 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90177C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:00:39 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id w13so12212576eju.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:00:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sAbpZgVOlSnratarffnoXddLQ5n1UaOnb3loPsL2I1U=;
- b=Z/kBPOXIAEMhjJQZA6hrvhMvQNtPWqVkLRVfhO3kSk2zDp5C0nizxajN6Vzhm8GniKan4SLQ5iJ6cfKiyA6UYZdLyAngDipYCaC5bjMUlQpyftL0oIEXfvvBBblXhy38bg9mSlOv44+54ItA+UCabJNSvIr1bFiZi1pJIhiHROc=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BYAPR11MB2918.namprd11.prod.outlook.com (2603:10b6:a03:92::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 13 Nov
- 2020 08:59:38 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::dc7e:c582:20a1:5bc7]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::dc7e:c582:20a1:5bc7%6]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 08:59:37 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "pmladek@suse.com" <pmladek@suse.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBrdGhyZWFkX3dvcmtlcjogQWRkIGZsdXNoIGRlbGF5?=
- =?gb2312?Q?ed_work_func?=
-Thread-Topic: [PATCH] kthread_worker: Add flush delayed work func
-Thread-Index: AQHWuAsDS+sR9Wac5EetEP/DfReRF6nFMDeAgABxhow=
-Date:   Fri, 13 Nov 2020 08:59:37 +0000
-Message-ID: <BYAPR11MB263258BCE554A9EFD2F3A8A7FFE60@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <20201111091355.19476-1-qiang.zhang@windriver.com>,<20201112160135.2b5720c66b020472892f2366@linux-foundation.org>
-In-Reply-To: <20201112160135.2b5720c66b020472892f2366@linux-foundation.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b6120edf-82c2-4e9c-c510-08d887b27336
-x-ms-traffictypediagnostic: BYAPR11MB2918:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB291895653D9951A23C0CCA55FFE60@BYAPR11MB2918.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HoiaR2YEG5uekfKxIoXNmguxwhTVDfLly50PLtilA8og1rdsSHJKIBq3/HYsGzBNxxJar7jI980Vmg1JB5fAlgFHRcbijsjfMQsCvmAicrS382QVWOUcXJMgj+BjlFEki1c4tF3PSjV3S9y9xHHDpvcI4g18xxbQua7VtjM/+6NekSuR4K5pAiLcR+71TxfZrl2Oyus43eZxAZuHBsKy4xLYM/7sX/1GaT2yIn5fuBB+NbG1y9tEuVMcu6DXrdHlI+CXecyLfkHwSquo3DLlVk312V/UqTalLmZPrn7l+9WlSJl1ExtTEYhIe49ln0HJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(366004)(346002)(376002)(54906003)(224303003)(6506007)(478600001)(71200400001)(26005)(76116006)(316002)(91956017)(8936002)(2906002)(107886003)(6916009)(33656002)(66476007)(66946007)(5660300002)(55016002)(7696005)(4326008)(66556008)(66446008)(64756008)(9686003)(86362001)(186003)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: h+P09maV3vQ2QjXz1k7vZmi5NK7t59c8+vA2AMp3psf5k3eSzWSUwmejlySG1SThE/yijgDNkRX9CJ12QG7fPrQSOlDk8uQyQt/8m7qzKrF51PjfwlmAK95PHgado1m+sjXHRk/qaoVGcRYiWxxTDvngKMf0X2NZSZvFL3RwV9+oiaFhmV+fsrJO061QVMC04urwmUTZhE3V2xzutLVlpCWI3tLktVA3AzkxDzfoEqZ5SfKPyVBGUo3BcdmBEhARvj7mR6GNSsvW/iT3cMzd83RtoM4bkja2gf3i1CS7KUEXtELESIjbjIoiT6JNebXpwuVlxClBeA5i4tWA6UKbH9XBeA7/6eR0209cscKsziiEGjmmxedo6nFtrBR9gX3ekwsfWR16HnUSmCOvlMVnxBR80N2s+O7DZ8/qiPIzXXDi0kIzqH+ayxUzKwp/aR4w8+wSQzHUk99+6KGQlN701zz/IppqWuEf0HuspobF41sVoPQrB6pWJlXcfCZgLpbX89pfnkOjh9VR59UCw4Nh/H3eQUzBhHtskOJp8paadAx9iX0TcYgzxthr3lyj1zTNZ2O12AhPmPchucIvT0ZwwXjOf1j8VPXjOuAxMDlWfNzYmSnrq87LsYTpYd6LmBPMAVRUGowOqqvQgKkV6JnAgg==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=excD4cp3O4ACeckeKCo0xXDfnsFfAYE0sjV9B/u/mho=;
+        b=yg7i0U8I0QbLXjYORw9rlpXwOpm5e9gz9XZZrRF4p45pBrnpsZVb57vvYOdXWQnsE/
+         qtckK2EG+JqNE/NNddiMoskNTzDmb39a7UA3db8PoMVqGqJe3PzlreMzHYQwilhjJ2eD
+         UVCvGZcvLczczyfRrAAeeyad4UW06nMtze1W/kRolre/cNJy3bEv0vkSBFqF9A9gEfV8
+         iz3wNZRD7jMKW74gaLDLFGr4kNjzo4fr0a4Umw8UU6n3mlHcqPJa9uR6c3IQHCYSczUK
+         x/gO5wqG3zw6HUWzVEQxSHQYQeHAPUwVQLs0QtacIc1bSSq70iPQlriH+qSixA+oXbmk
+         hCVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=excD4cp3O4ACeckeKCo0xXDfnsFfAYE0sjV9B/u/mho=;
+        b=NcMj7GdaqrJczCgmgkHyoAdCIJlvzqLPbocBJTa6eEk2obY5kek4PSuUViu15xMPH/
+         cvtEoZwJHvftuV/UW4XCEflZ4UQ4UKBOCVpAV3GYj5FGgNCOFN3rIffXD7rfJD713Qtq
+         0udQzSUIfcmTCbGEVaOMyX2vYGSRMdfp2fPX+XCWZKWCmFQD0LyWCJXtyH87yOQXHBlY
+         TMhMvBGhUf7xHJgfr9w8b6PTXajtSsWZYisUDmeJm4NZu6xmoDQzyVReQPwUtXDLbjBf
+         IkOZ3trFvRqLVx+xMi3NO4W/Id4oFwOQvRbGxov6lc+3KQfd/B1Mdq5NWI3vFPCBiKaw
+         nGEA==
+X-Gm-Message-State: AOAM5338RR6RBqsL98w2msM8618x/LRPEpzFtuLozIDhPM4JX70yOpv5
+        Vh+VukP4mEl7wLyNARn6SZaeXc4BX697AS5MySHzBQ==
+X-Google-Smtp-Source: ABdhPJzLjkClTJB/MB9vkSlquLDXsB1sQDBPgaHx9ehM6qKyouTSRmGGqwJfA19Yb5DirukswltpZ+iD+NjKGC8Oi8s=
+X-Received: by 2002:a17:907:420d:: with SMTP id oh21mr966361ejb.429.1605258038318;
+ Fri, 13 Nov 2020 01:00:38 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6120edf-82c2-4e9c-c510-08d887b27336
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 08:59:37.8613
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Tg9P569d1lUlvSGiMXU4CxaVt7nt7cnmBe8wWJ4A8eY2Vwy43bLov2kLKNb8/tuyglpW0G04Q5U3Sgc3FRk33JQAmG2C8zhP1kKvyMLONRM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2918
+References: <20201113023355.43406-1-greentime.hu@sifive.com>
+In-Reply-To: <20201113023355.43406-1-greentime.hu@sifive.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 13 Nov 2020 10:00:27 +0100
+Message-ID: <CAMpxmJVZ8OHnGrkC_5TZdZUg004p1=90KqOxpOTgi4036BGWfQ@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: sifive: To get gpio irq offset from device tree data
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogQW5kcmV3
-IE1vcnRvbiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4Kt6LLzcqxvOQ6IDIwMjDE6jEx1MIx
-M8jVIDg6MDEKytW8/sjLOiBaaGFuZywgUWlhbmcKs63LzTogcG1sYWRla0BzdXNlLmNvbTsgdGpA
-a2VybmVsLm9yZzsgbGludXgtbW1Aa3ZhY2sub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnCtb3zOI6IFJlOiBbUEFUQ0hdIGt0aHJlYWRfd29ya2VyOiBBZGQgZmx1c2ggZGVsYXllZCB3
-b3JrIGZ1bmMKCltQbGVhc2Ugbm90ZSB0aGlzIGUtbWFpbCBpcyBmcm9tIGFuIEVYVEVSTkFMIGUt
-bWFpbCBhZGRyZXNzXQoKT24gV2VkLCAxMSBOb3YgMjAyMCAxNzoxMzo1NSArMDgwMCBxaWFuZy56
-aGFuZ0B3aW5kcml2ZXIuY29tIHdyb3RlOgoKPiBBZGQgJ2t0aHJlYWRfZmx1c2hfZGVsYXllZF93
-b3JrJyBmdW5jLCB0aGUgcHJpbmNpcGxlIG9mCj4gdGhpcyBmdW5jIGlzIHdhaXQgZm9yIGEgZHdv
-cmsgdG8gZmluaXNoIGV4ZWN1dGluZyB0aGUKPiBsYXN0IHF1ZXVlaW5nLgo+Cj5XZSdkIGxpa2Ug
-dG8gc2VlIHNvbWUgY29kZSB3aGljaCBhY3R1YWxseSB1c2VzIHRoaXMgbmV3IGZ1bmN0aW9uCj5w
-bGVhc2UuICBFaXRoZXIgaW4gdGhpcyBwYXRjaCBvciBhcyBvbmUgb3IgbW9yZSBmb2xsb3d1cCBw
-YXRjaGVzLgo+Cj5idHcsIHdlIGNhbGwgaXQgImZ1bmN0aW9uIiwgbm90ICJmdW5jIi4gIEJ1dCBu
-ZWl0aGVyIGlzIHJlYWxseSBuZWVkZWQgLQo+anVzdCB1c2UgKCkgdG8gaWRlbnRpZnkgYSBmdW5j
-dGlvbi4gIGllOgoKPjogQWRkIGt0aHJlYWRfZmx1c2hfZGVsYXllZF93b3JrKCkuICBUaGUgcHJp
-bmNpcGxlIG9mIHRoaXMgaXMgdG8gd2FpdCBmb3IKPjogYSBkd29yayB0byBmaW5pc2ggZXhlY3V0
-aW5nIHRoZSBsYXN0IHF1ZXVlaW5nLgoKSSBkb24ndCBzZWUgaXQgYmVpbmcgdXNlZCBpbiB0aGUg
-a2VybmVsIGNvZGUgc28gZmFyLCBhbmQgSSdtIG5vdCBzdXJlIGlmIGl0J3MgZ29pbmcgdG8gYmUg
-dXNlZCBpbiBzdWJzZXF1ZW50IHNjZW5hcmlvcyAoaXQgbGlrZSBmbHVzaF9kZWxheWVkX3dvcmsg
-aW4gd29ya3F1ZXVlIClvciB3aGV0aGVyIGl0J3MgY3VycmVudGx5IHVzaW5nICJrdGhyZWFkX3dv
-cmsiIHNvbWUgY29kZSBuZWVkcyBpdC4KClRoYW5rcwoKUWlhbmcK
+On Fri, Nov 13, 2020 at 3:34 AM Greentime Hu <greentime.hu@sifive.com> wrote:
+>
+> We can get hwirq number of the gpio by its irq_data->hwirq so that we don't
+> need to add more macros for different platforms. This patch is tested in
+> SiFive Unleashed board and SiFive Unmatched board.
+>
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+
+Please list the changes between versions of patches. What has changed since v2?
+
+Bartosz
