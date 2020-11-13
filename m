@@ -2,144 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E212F2B20BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4142B20C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgKMQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgKMQqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:46:09 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFF1C0613D1;
-        Fri, 13 Nov 2020 08:46:09 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id l36so9490182ota.4;
-        Fri, 13 Nov 2020 08:46:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i7zjvxB8IPM5Mhr2gw8hZWusdq8Z7SVhEwNnCSZ2W0A=;
-        b=gYDpFI0IJFPeUKrMjgO+G5qRDjpWh3koaJ9fER24+4aboghe/I+yzNfbSd5G8+Vt5E
-         ppvi5Q773XiFNeBdZ27zrfu6xbB+PnyV3mr1feJGkfpSxzbN1agJfDSfxiimyWonf3KL
-         LgZl3ZiojfgtlGL4FwUbs6Pk2TyoqGkPtTjE1hC1ao5F+8/zF0EY2MBht3OTRo6ZH0c8
-         s5/YguZ6349pQV2/Lhp26e2nc6ZHE0KjFatzKERbnsPXpFkRkmxztpxvCBfyGp7mpmRs
-         nQl9VSCQafmODOczX0lkwJO0+DWaQ07uXCxVBIF+St8kkfP3dDRwphDnhBEQiiLzDTNE
-         GbpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i7zjvxB8IPM5Mhr2gw8hZWusdq8Z7SVhEwNnCSZ2W0A=;
-        b=qvJ+6ZeGD4tE65oOp+fSW9Oi4yXZxCQQ1/8qCkMXAiyRXtp9mEMjqDhFKdt2rwSP9l
-         4WcJd6SN3cKV2ie17cQEi/8qyQykcc7kTgyGa3EfDIozhc8GY+XAaQryD5rnjQKxbF30
-         bMpULqX7e590ywfR5p1okcZeQLP2EDeg+hPBF1qkQMcXGLpq2x+VgEMpTP9GuHjMp+Ks
-         XQSl61q+b1i3OBhBEusmqHxnDeKYNwg0V6XygOHaP/G8wRotfOL7EagbP6TUDCGqt/3W
-         wpn4wZMuX/bTUoyrAzaW2f0TShrxsB3mWXMYoU5LBXBDKTbwNAQLZejN7tbnQ2x7TaSd
-         VtEw==
-X-Gm-Message-State: AOAM531qtN0JiyzppgEU9jsUIdNJ0pgMPlnJOT+du3AiZ6TUZy+R/FDD
-        RAOYEDqdGQrqb2OV5ZefgT2G4HaydY8MsKrRMuU=
-X-Google-Smtp-Source: ABdhPJwSYa7zc8BKwHO408gv+VEOzNUP0dG9UPHF3tEBu7A+/LLBxuzIp0SWJji6Bnhi8BKG4R/AxmVIY1OrRQpL1bc=
-X-Received: by 2002:a9d:6207:: with SMTP id g7mr2276252otj.22.1605285964008;
- Fri, 13 Nov 2020 08:46:04 -0800 (PST)
+        id S1726518AbgKMQql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:46:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgKMQql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:46:41 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF2C72137B;
+        Fri, 13 Nov 2020 16:46:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605286000;
+        bh=H6g8Ry6LF3fT3Mg+983j+AekkcPTRIYeNjaYhL8NFMM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VFWTK7lpIZBSonIj/NuBM3/IvkQlu/kmCs26BehXS+9c+JMJyMy+BAyAQ9BCKeKGx
+         k7mOFHyGZMokejPSCrDUZWaDAJKw/gTqVJn+fP4qWUdrLN45XnqbddpfFrfq5318ft
+         IWFT1JiweMqIanVdDN5AnSuvbApEFMhwwIO+jfQU=
+Date:   Fri, 13 Nov 2020 10:46:38 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Cc:     tglx@linutronix.de, linux-pci@vger.kernel.org,
+        kexec@lists.infradead.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
+        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
+        ddstreet@canonical.com, gavin.guo@canonical.com,
+        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
+        shan.gavin@linux.alibaba.com
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+Message-ID: <20201113164638.GA1019448@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
- <X61rce8GANHW1ysh@kroah.com> <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
- <X613chtPVIg8kquH@kroah.com> <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
- <20201112192524.GB287229@rowland.harvard.edu> <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
- <20201113163449.GB322940@rowland.harvard.edu>
-In-Reply-To: <20201113163449.GB322940@rowland.harvard.edu>
-From:   John Boero <boeroboy@gmail.com>
-Date:   Fri, 13 Nov 2020 16:45:52 +0000
-Message-ID: <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
-Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <684cf38f-3977-4ec2-c4a6-7c4c31f9851a@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry I wanted to include a pastebin or link but was trying to follow maillist
-guidelines and not include links or exceed wrap guidelines.  Full contents:
-https://paste.centos.org/view/3746bc40
+On Fri, Nov 06, 2020 at 10:14:14AM -0300, Guilherme G. Piccoli wrote:
+> On 23/10/2018 14:03, Bjorn Helgaas wrote:
+> > On Mon, Oct 22, 2018 at 05:35:06PM -0300, Guilherme G. Piccoli wrote:
+> >> On 18/10/2018 19:15, Bjorn Helgaas wrote:
+> >>> On Thu, Oct 18, 2018 at 03:37:19PM -0300, Guilherme G. Piccoli wrote:
+> >>> [...] 
+> >> I understand your point, but I think this is inherently an architecture
+> >> problem. No matter what solution we decide for, it'll need to be applied
+> >> in early boot time, like before the PCI layer gets initialized.
+> > 
+> > This is the part I want to know more about.  Apparently there's some
+> > event X between early_quirks() and the PCI device enumeration, and we
+> > must disable MSIs before X:
+> > 
+> >   setup_arch()
+> >       early_quirks()                     # arch/x86/kernel/early-quirks.c
+> >       early_pci_clear_msi()
+> >   ...
+> >   X
+> >   ...
+> >   pci_scan_root_bus_bridge()
+> >     ...
+> >     DECLARE_PCI_FIXUP_EARLY              # drivers/pci/quirks.c
+> > 
+> > I want to know specifically what X is.  If we don't know what X is and
+> > all we know is "we have to disable MSIs earlier than PCI init", then
+> > we're likely to break things again in the future by changing the order
+> > of disabling MSIs and whatever X is.
+> 
+> Hi Bjorn (and all CCed), I'm sorry to necro-bump a thread >2 years
+> later, but recent discussions led to a better understanding of this 'X'
+> point, thanks to Thomas!
+> 
+> For those that deleted this thread from their email clients, it's
+> available in [0] - the summary is that we faced an IRQ storm really
+> early in boot, due to a bogus PCIe device MSI behavior, when booting a
+> kdump kernel. This led the machine to get stuck in the boot and we
+> couldn't kdump. The solution hereby proposed is to clear MSI interrupts
+> early in x86, if a parameter is provided. I don't have the reproducer
+> anymore and it was pretty hard to reproduce in virtual environments.
+> 
+> So, about the 'X' Bjorn, in another recent thread about IRQ storms [1],
+> Thomas clarified that and after a brief discussion, it seems there's no
+> better way to prevent the MSI storm other than clearing the MSI
+> capability early in boot. As discussed both here and in thread [1], this
+> is indeed a per-architecture issue (powerpc is not subject to that, due
+> to a better FW reset mechanism), so I think we still could benefit in
+> having this idea implemented upstream, at least in x86 (we could expand
+> to other architectures if desired, in the future).
+> 
+> As a "test" data point, this was implemented in Ubuntu (same 3 patches
+> present in this series) for ~2 years and we haven't received bug reports
+> - I'm saying that because I understand your concerns about expanding the
+> early PCI quirks scope.
+> 
+> Let me know your thoughts. I'd suggest all to read thread [1], which
+> addresses a similar issue but in a different "moment" of the system boot
+> and provides some more insight on why the early MSI clearing seems to
+> make sense.
 
-Yes I understand the return dodges the config dereference.
+I guess Thomas' patch [2] (from thread [1]) doesn't solve this
+problem?
 
-Original line usb.c:281 is the original error:
+I think [0] proposes using early_quirks() to disable MSIs at
+boot-time.  That doesn't seem like a robust solution because (a) the
+problem affects all arches but early_quirks() is x86-specific and (b)
+even on x86 early_quirks() only works for PCI segment 0 because it
+relies on the 0xCF8/0xCFC I/O ports.
 
-280| for (i = 0; i < config->desc.bNumInterfaces; i++)
-281|  if (config->interface[i]->altsetting[0]
-282|    .desc.bInterfaceNumber == ifnum)
-283|  return config->interface[i];
+If I understand Thomas' email correctly, the IRQ storm occurs here:
 
-Thanks
-John
+  start_kernel
+    setup_arch
+      early_quirks               # x86-only
+        ...
+          read_pci_config_16(num, slot, func, PCI_VENDOR_ID)
+            outl(..., 0xcf8)     # PCI segment 0 only
+            inw(0xcfc)
+    local_irq_enable
+      ...
+        native_irq_enable
+          asm("sti")             # <-- enable IRQ, storm occurs
 
-On Fri, Nov 13, 2020 at 4:34 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, Nov 13, 2020 at 01:18:05PM +0000, John Boero wrote:
-> > Thanks for the tips.
-> >
-> > I've spent some more time on this this morning.
-> > It looks like it's not the dev after all.
->
-> What isn't the dev?
->
-> > Every interface in the dev is set NULL after init.
->
-> I can't tell what this means.  Please be more explicit.
->
-> > Just like in the original Ubuntu bug 1827452 filed by someone else
-> > the device seems to disconnect itself after uvcvideo initialization.
-> > Then there is a 5 second pause before usb_ifnum_to_if tries
-> > to iterate through its 8 interfaces - all of which are null.
-> > It looks like uvc properly locks the dev, so maybe this could
-> > be caused by any device being unplugged after init?
->
-> More likely there is a bug in the uvcvideo driver.
->
-> > The WARNING handle preserves USB function though,
-> > and subsequent lsusb behaves fine:
->
-> No, the WARN only writes a message to the system log.  The "return"
-> statement is what prevented the system from crashing.
->
-> > $ lsusb | fold -w 80
-> > Bus 002 Device 002: ID 8087:8002 Intel Corp. 8 channel internal hub
-> > Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> > Bus 001 Device 002: ID 8087:800a Intel Corp. Hub
-> > Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> > Bus 004 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
-> > Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> > Bus 003 Device 005: ID 1ea7:0064 SHARKOON Technologies GmbH 2.4GHz Wireless rech
-> > argeable vertical mouse [More&Better]
-> > Bus 003 Device 004: ID 145f:025c Trust Trust USB Microphone
-> > Bus 003 Device 002: ID 1050:0407 Yubico.com Yubikey 4/5 OTP+U2F+CCID
-> > Bus 003 Device 009: ID 0a5c:21e8 Broadcom Corp. BCM20702A0 Bluetooth 4.0
-> > Bus 003 Device 008: ID 0451:8142 Texas Instruments, Inc. TUSB8041 4-Port Hub
-> > Bus 003 Device 006: ID 062a:4101 MosArt Semiconductor Corp. Wireless Keyboard/Mo
-> > use
-> > Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> > Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> > Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> >
-> > 8x (0-7) occurences of the following WARNING:
-> >
-> > [ 140.678756] usb 3-4: USB disconnect, device number 3
-> > [ 145.995855] ------------[ cut here ]------------
-> > [ 145.995863] dev interface is NULL in usb_ifnum_to_if
-> > [ 145.995907] WARNING: CPU: 31 PID: 5617 at drivers/usb/core/usb.c:289
-> > usb_ifnum_to_if+0x58/0x80
->
-> You removed the most important part of the log message!  What appears
-> below this point?
->
-> In fact, you should just post the entire log (or put it on a server
-> somewhere and post a URL).
->
-> Alan Stern
+native_irq_enable() happens long before we discover PCI host bridges
+and run the normal PCI quirks, so those would be too late to disable
+MSIs.
+
+It doesn't seem practical to disable MSIs in the kdump kernel at the
+PCI level.  I was hoping we could disable them somewhere in the IRQ
+code, e.g., at IOAPICs, but I think Thomas is saying that's not
+feasible.
+
+It seems like the only option left is to disable MSIs before the
+kexec.  We used to clear the MSI/MSI-X Enable bits in
+pci_device_shutdown(), but that broke console devices that relied on
+MSI and caused "nobody cared" warnings when the devices fell back to
+using INTx, so fda78d7a0ead ("PCI/MSI: Stop disabling MSI/MSI-X in
+pci_device_shutdown()") left them unchanged.
+
+pci_device_shutdown() still clears the Bus Master Enable bit if we're
+doing a kexec and the device is in D0-D3hot, which should also disable
+MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
+device causing the storm was in PCI_UNKNOWN state?
+
+> [0] https://lore.kernel.org/linux-pci/20181018183721.27467-1-gpiccoli@canonical.com
+> 
+> [1] https://lore.kernel.org/lkml/87y2js3ghv.fsf@nanos.tec.linutronix.de
+
+[2] https://lore.kernel.org/lkml/87tuueftou.fsf@nanos.tec.linutronix.de/
+
+Notes to my future self about related changes:
+
+  2008-04-23 d52877c7b1af ("pci/irq: let pci_device_shutdown to call pci_msi_shutdown v2")
+    Disable MSI before kexec because new kernel isn't prepared for MSI
+
+  2011-10-17 d5dea7d95c48 ("PCI: msi: Disable msi interrupts when we initialize a pci device")
+    Disable MSI/MSI-X at boot; only works for new kernels with
+    CONFIG_PCI_MSI=y
+
+  2012-04-27 b566a22c2332 ("PCI: disable Bus Master on PCI device shutdown")
+    Disable bus mastering on shutdown (if enable/disable nested correctly)
+
+  2013-02-04 7897e6022761 ("PCI: Disable Bus Master unconditionally in pci_device_shutdown()")
+    Disable bus mastering unconditionally (ignore nested enable/disable)
+
+  2013-03-14 6e0eda3c3898 ("PCI: Don't try to disable Bus Master on disconnected PCI devices")
+    Don't touch bus mastering for D3cold or unknown state
+
+  2015-05-07 1851617cd2da ("PCI/MSI: Disable MSI at enumeration even if kernel doesn't support MSI")
+    Disable MSI/MSI-X at boot even without CONFIG_PCI_MSI=y; broke
+    Open Firmware arches
+
+  2015-10-21 e80e7edc55ba ("PCI/MSI: Initialize MSI capability for all architectures")
+    Disable MSI/MSI-X at boot for all arches, including Open Firmware
+
+  2017-01-26 fda78d7a0ead ("PCI/MSI: Stop disabling MSI/MSI-X in pci_device_shutdown()")
+    Leave MSI enabled before kexec; disabling causes device to use INTx,
+    which drivers aren't prepared for, causing "nobody cared" warnings
