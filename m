@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9052B2572
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343ED2B2554
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgKMU1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:27:03 -0500
-Received: from mga06.intel.com ([134.134.136.31]:13739 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725959AbgKMU07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:26:59 -0500
-IronPort-SDR: Gs8YenaL4IKKmvCjSXMnumMKYmAGxXvwM6GpYcktb3LLhfWzAAlGCm4UCqHzq/nOkMntYBEc/8
- /nKnzzhP0WDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="232145829"
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="232145829"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 12:26:55 -0800
-IronPort-SDR: Fe1lLJqLe3XwSO91v4PXXtxMEhKUXUAzdCfmW98bnXl89UQp9KrpbyeJx6Z8HYq8Ro5o0VBQNa
- K+ZsuutbVR0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="367050293"
-Received: from uhpatel-desk4.jf.intel.com (HELO uhpatel-desk4.intel.com) ([10.23.15.15])
-  by orsmga007.jf.intel.com with ESMTP; 13 Nov 2020 12:26:55 -0800
-From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, pmalani@chromium.org,
-        enric.balletbo@collabora.com, rajmohan.mani@intel.com,
-        azhar.shaikh@intel.com, Utkarsh Patel <utkarsh.h.patel@intel.com>
-Subject: [PATCH v2 8/8] usb: typec: Remove active_link_training variable from Enter_USB message
-Date:   Fri, 13 Nov 2020 12:25:03 -0800
-Message-Id: <20201113202503.6559-9-utkarsh.h.patel@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
-References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
+        id S1726278AbgKMUZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:25:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47135 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgKMUZ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 15:25:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605299126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=necTzLb9sYFoxc0q+K6VlpmR/hW224U1Sbo8SlUmuww=;
+        b=ROvywgXXh1CDhI+7soDis7YOmPMpG4d0failoujNr2wmmr6MIE+hgkX2XF57Fng6MTY7Ff
+        /m0o6stQpoIKkQeMynn1d0CXbKbUrWTNmTQWptzecCALqTJ5RlAdGdy91h71ZBWQ+/0f2+
+        2USTmMBlUOT+ffhSV4lpfNCla3kooeI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-S8VqbOx8Pn-zFtyqgPTd7g-1; Fri, 13 Nov 2020 15:25:24 -0500
+X-MC-Unique: S8VqbOx8Pn-zFtyqgPTd7g-1
+Received: by mail-qv1-f69.google.com with SMTP id q6so6823401qvr.21
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:25:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=necTzLb9sYFoxc0q+K6VlpmR/hW224U1Sbo8SlUmuww=;
+        b=FEfo/rENVZQQciuvz2zIgi1qd+Wj7lHqxMt1n1R6i2/p82k2s1Tat9jZvKytxvIreW
+         5lCL2zG7eCTpnhCRpbxX8U9b1Jqs0Oe+1evHRcysnQIE31a93KGQkS/tXvoAYrHWqaEL
+         htgqlGHROgqCtV5gnxSwFRX0Y3VJtZZ/7n6UMZHHlP0NhlIcvEZDnWl9MbHbMFBRV2Ng
+         fet9gWtLhN6x8t7lDYV5tVASqiH/P/nnP6wk4ccrwJH+MxuJYlyIHBuMopXqQ0Q61bLN
+         Ebtbr+MlLdZ/0Qrha9+G+Sw6QMjMkofy5I/F8jugMQQ/Iv+l8ckfaoMp4ZwU2tCvKx1s
+         34AA==
+X-Gm-Message-State: AOAM533Y9nvC3C5VDiIU6z+eNuznzYkMGyeUmcbpH/4OgjaiAuLWtRT0
+        GrofsimXkRXSCZLG9FCDGCqeAJacQppq8b5R7MWdZ1yr9D+O/mvDDxjaqFGsOjHs6WtVK2Bv8EL
+        F2XBs6JZVCnx6KtEXE6qsDArk
+X-Received: by 2002:ad4:4ae4:: with SMTP id cp4mr3963873qvb.21.1605299124277;
+        Fri, 13 Nov 2020 12:25:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwgQ3IKgA+akf6N6ze870DJdV7l9Rp4BdDzrp4QFHzRYP9k9+MCyCSmj4vEdBSyDJYJ9rXxbg==
+X-Received: by 2002:ad4:4ae4:: with SMTP id cp4mr3963846qvb.21.1605299123973;
+        Fri, 13 Nov 2020 12:25:23 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f189sm7354421qkb.84.2020.11.13.12.25.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 12:25:23 -0800 (PST)
+Subject: Re: [PATCHv1 2/4] fpga: of-fpga-region: add authenticate-fpga-config
+ property
+To:     richard.gong@linux.intel.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+ <1605204403-6663-3-git-send-email-richard.gong@linux.intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <77c39677-e6cb-92eb-3680-897a3a755e91@redhat.com>
+Date:   Fri, 13 Nov 2020 12:25:21 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <1605204403-6663-3-git-send-email-richard.gong@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thunderbolt 3 cable discover mode VDO support has been added as part of
-Enter_USB message to fill details of active cable plug link training.
-Hence, removing unused variable active_link_training from Enter_USB
-message data structure.
 
-Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+On 11/12/20 10:06 AM, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
+>
+> Add authenticate-fpga-config property to support FPGA bitstream
+> authentication.
+>
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> ---
+>  drivers/fpga/of-fpga-region.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
+> index e405309..c7c6d1c 100644
+> --- a/drivers/fpga/of-fpga-region.c
+> +++ b/drivers/fpga/of-fpga-region.c
+> @@ -228,6 +228,9 @@ static struct fpga_image_info *of_fpga_region_parse_ov(
+>  	if (of_property_read_bool(overlay, "encrypted-fpga-config"))
+>  		info->flags |= FPGA_MGR_ENCRYPTED_BITSTREAM;
+>  
+> +	if (of_property_read_bool(overlay, "authenticate-fpga-config"))
+> +		info->flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
+> +
+>  	if (!of_property_read_string(overlay, "firmware-name",
+>  				     &firmware_name)) {
+>  		info->firmware_name = devm_kstrdup(dev, firmware_name,
 
---
-Changes in v2:
-- No change.
---
----
- include/linux/usb/typec.h | 6 ------
- 1 file changed, 6 deletions(-)
+This looks fine.
 
-diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-index d91e09d9d91c..4a9608a15ac1 100644
---- a/include/linux/usb/typec.h
-+++ b/include/linux/usb/typec.h
-@@ -76,16 +76,10 @@ enum typec_orientation {
-  * struct enter_usb_data - Enter_USB Message details
-  * @eudo: Enter_USB Data Object
-  * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
-- * @active_link_training: Active Cable Plug Link Training
-- *
-- * @active_link_training is a flag that should be set with uni-directional SBRX
-- * communication, and left 0 with passive cables and with bi-directional SBRX
-- * communication.
-  */
- struct enter_usb_data {
- 	u32			eudo;
- 	u32			tbt_cable_vdo;
--	unsigned char		active_link_training:1;
- };
- 
- /*
--- 
-2.17.1
+Reviewed-by: Tom Rix <trix@redhat.com>
 
