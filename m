@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5F22B23C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA5E2B23C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgKMS2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgKMS2y (ORCPT
+        id S1726255AbgKMS3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:29:52 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:32968 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbgKMS3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:28:54 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814FCC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:28:54 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id s8so10993524wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:28:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Ng2VvXg7vNgUseRrMkMXXM0qsKkjJ84iIXJLcjxcu38=;
-        b=FVGsLbXP42Ja2KvJ+ArlS6vyZbaEwBpcVH4K0t0qpSfpD+Yi6gRw5Oj+1pGJxsyprf
-         KeX3ljBJlp9gE4lF5dOvntv7B/VMifX9EVDWBn54VnW4SYc54SH7UzPTrACryAKVysCK
-         0CWLiAZA76MujIkb1WO9eVG+pcaZzCKuKnSfU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Ng2VvXg7vNgUseRrMkMXXM0qsKkjJ84iIXJLcjxcu38=;
-        b=kPvZD+YRFWjNYZQtLEf0haWhOgfsh/PbpVsU4r6vV4xam2Re2jRyC6TNg6apzHH+Qx
-         o6uc/P0P5Bcyrh1q6KZ1lpA4Iu5/+SVs8Qx6VO5XS06fBfoczKz5bvqz+JIfU0E4opM8
-         XfmllXggRzLDkVTVUs4c3mmm9CDAT0IaJxBRI7tqtPF2p6oS77yWDxcdeLaI4Ns+QeLw
-         VqbAv9o0C1gRtklO8dLRRqQJmqkk7qBHAMyamH0GPfBEMiallBLxpClihyfHUZj01+x+
-         Yc/lltfWRdL8rQseWsd7gZnoayc7yDORff75DKMlmHvYO0bb22aGD7Ga1rMSZtl1D6fe
-         dShQ==
-X-Gm-Message-State: AOAM531RSeP4V+x773Fu6kSF2zPtLK6TWYQtA5yZ7AtCENt+Om1CTrJh
-        8PpCRRdWjEJh8jKv8KVrYeeSGw==
-X-Google-Smtp-Source: ABdhPJy84uz9MZNSChglFhbjANXAAUrOKCoo4+CnNGfwPoFkV7hAkgCD05sbKtueWmDy0M9IROhQig==
-X-Received: by 2002:adf:e544:: with SMTP id z4mr5089010wrm.83.1605292133214;
-        Fri, 13 Nov 2020 10:28:53 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id o205sm11138131wma.25.2020.11.13.10.28.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 10:28:52 -0800 (PST)
-Message-ID: <4c446d3f19dd644eb520ae29a4d0b91a7ea3b956.camel@chromium.org>
-Subject: Re: [PATCH] bpf: Expose bpf_sk_storage_* to iterator programs
-From:   Florent Revest <revest@chromium.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        yhs@fb.com, andrii@kernel.org, kpsingh@chromium.org,
-        jackmanb@chromium.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@google.com>
-Date:   Fri, 13 Nov 2020 19:28:51 +0100
-In-Reply-To: <20201112215742.mzznj7py3fmnl5ia@kafai-mbp>
-References: <20201112200914.2726327-1-revest@chromium.org>
-         <20201112215742.mzznj7py3fmnl5ia@kafai-mbp>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Fri, 13 Nov 2020 13:29:52 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ADITkav023269;
+        Fri, 13 Nov 2020 12:29:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605292186;
+        bh=0vUD35pH0zhF62AhI+ZyzQ8mAewqNaA1dAl9KpnWAlw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=MT+5T/LEmMlyBDPgkfmt5eJZGx8jFumBy8QHEJbViLkvV7LxBzCc0GTvzJH6NgZxH
+         i0Qh9xOJVDVhd0S6x66bo4lSo0/pmHBm85javUqB/8RT+B1C1FMVpRKByzKNQvuzQS
+         /feuhh8ux1oy9YOPD5lLckE7picbhWZ6/yv0SJ08=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ADITkYX120444
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 12:29:46 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
+ Nov 2020 12:29:46 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 13 Nov 2020 12:29:46 -0600
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ADITdDj128227;
+        Fri, 13 Nov 2020 12:29:41 -0600
+Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-j7200-main: Add gpio nodes in main
+ domain
+To:     Nishanth Menon <nm@ti.com>, Faiz Abbas <faiz_abbas@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <t-kristo@ti.com>,
+        <robh+dt@kernel.org>, Grygorii Strashko <grygorii.strashko@ti.com>
+References: <20201102191120.20380-1-faiz_abbas@ti.com>
+ <20201102191120.20380-2-faiz_abbas@ti.com>
+ <20201112163953.soia5cje4ry42ujf@kahuna>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <6ce6de4b-6e4d-1d2d-aa7a-570d1796d668@ti.com>
+Date:   Fri, 13 Nov 2020 23:59:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20201112163953.soia5cje4ry42ujf@kahuna>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-12 at 13:57 -0800, Martin KaFai Lau wrote:
-> Test(s) is needed.  e.g. iterating a bpf_sk_storage_map and also
-> calling bpf_sk_storage_get/delete.
+Hi Nishanth,
+
+On 12/11/20 10:09 PM, Nishanth Menon wrote:
+> On 00:41-20201103, Faiz Abbas wrote:
+>> There are 4 instances of gpio modules in main domain:
+>> 	gpio0, gpio2, gpio4 and gpio6
+>>
+>> Groups are created to provide protection between different processor virtual
+>> worlds. Each of these modules I/O pins are muxed within the group. Exactly
+>> one module can be selected to control the corresponding pin by selecting it
+>> in the pad mux configuration registers.
+> Could you check with checkpatch --strict please?
 > 
-> I would expect to see another test/example showing how it works end-
-> to-end to solve the problem you have in hand.
-> This patch probably belongs to a longer series.
+> I see:
+> 
+> WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
+> 
+>>
+>> This group pins out 69 lines (5 banks).
+>>
+>> Add DT modes for each module instance in the main domain.
+>>
+>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 68 +++++++++++++++++++++++
+> 
+> dtbs_check: we added:
+> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@600000: Missing #address-cells in interrupt provider
+> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@610000: Missing #address-cells in interrupt provider
+> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@620000: Missing #address-cells in interrupt provider
+> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@630000: Missing #address-cells in interrupt provider
 
-Fair point, I'll get that done, thank you!
+Hmm, running dtbs_check, I did not really see this. These are all the
+warnings I see for TI platforms: https://pastebin.ubuntu.com/p/m2my62mjQq/
 
-> BTW, I am also enabling bpf_sk_storage_(get|delete) for
-> FENTRY/FEXIT/RAW_TP but I think the conflict should be manageable.
-> https://patchwork.ozlabs.org/project/netdev/patch/20201112211313.2587383-1-kafai@fb.com/
+The tree I am testing is linux-next of 12th Nov + these three patches
+applied.
 
-Thanks for the heads up, should be no problem :) 
+Also, #address-cells for interrupt provider being compulsory does not
+make full sense to me. Nothing in
+Documentation/devicetree/bindings/interrupt-controller/interrupts.txt or
+Documentation/devicetree/bindings/gpio/gpio-davinci.txt suggests that as
+well.
 
+Existing GPIO nodes for AM654 or J721E does not have #address-cells as well.
+
+Adding Grygorii as well, in case he knows more about this.
+
+Thanks,
+Sekhar
