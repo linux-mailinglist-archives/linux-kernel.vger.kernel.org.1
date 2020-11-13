@@ -2,135 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8D12B248C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1342B248F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgKMTeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:34:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S1726240AbgKMTeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgKMTeY (ORCPT
+        with ESMTP id S1725967AbgKMTet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:34:24 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1F0C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:34:24 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id x15so5039917pll.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:34:24 -0800 (PST)
+        Fri, 13 Nov 2020 14:34:49 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E43C0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:34:49 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id ay21so12094094edb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:34:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z8F0h3EiXSYH2EwQ00yhxQHEYYtz5zW5mBasLaONkpU=;
-        b=P6HAc57qE2Y5UcbYBoRa5r/4fC17b0CPIYGfj09rjoC4y+H+fAssvRyYyO+LgbOh4k
-         0Avtb8vbC2gKyR8qI/tRiojazj31g/0UjY/wR/h1q1SRtRo5UfFWU8QNqjSzcDtOFMc1
-         YvgGbbQgMs/h1aqB09iLPlZAjftBRLiyiyivj8rN6vkaGIel6wcEPX0G7g2k5SA1Vqw1
-         8EQTImjwSSiZKrdYvcvFJ2sPkDrpRJd0ndDLysiqRYfSTDSbDBsm94dGVXlM/UDfdwaX
-         GzV+fgDxCX3U+OubSQkCQ44eJr2p7G0vRobS9xQP47oG7PmbwY4Bo09RNStd63bzeZBt
-         DBTw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FfDhl4nuyUb6HYPUKcekq3JcuHxWGBlQZla0xXcl2nY=;
+        b=V1NkWsgoVDl8+qr4orj3g19djymyEKrOG9kBJDVoL2aIoDvjfrJldK3I0abqrCeTTY
+         khFhxaldEPGwhjeCRqZRAsC5f6A09YJdZGHXo9Eq4oLmqyPyjKn0ftTbt3nUnIMqe+3h
+         3uEoxB8eOPKRRU7S4UZaqpQfXXC3GOIsPU6xjxZ9uP4kUWT9bmbn86M5rRi10TErSLMk
+         XA5FtucBCfUawH4KaWr81u2J0+n41lUbjVKQ1HgYAhnMJLfvPDfCZBNeSRBFAP6wCTZv
+         tb71DRNTlg/W2esmabQ8xDw6ZKq0P0R1gvMGapEsDMmM+C4tA87RvfeNmFpmwIVoGc9W
+         gulg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z8F0h3EiXSYH2EwQ00yhxQHEYYtz5zW5mBasLaONkpU=;
-        b=PreUenPIQl+bK4WUhwej7EaZa1wogDUUzMVMyhbjUkxrXdVOrgdErb8Dn7ck7RV8IU
-         xB9awSgIL96efxmlDIAWRcNmV3vY0UcGnmTLDwSMmmsGvXZPAVix5SXrZ8hMb1rDYuWc
-         Tk/JDQzBYoes7xDQG1lVcsj+t+XRX0TzQLTxAFepSoyIAEzaf6BRv4onMFCya+syjuuJ
-         92RKXXDKK34+492Gkvux3OUqMyVySFqK++4ui7DS5Yfn+/QPsFGL+VzJvMzVz99Quy87
-         bNUKkUfDTH8BzsX8HKta0KiAIu+Ri3mEv8F8Q1oC93j807JpSmDkS8k32lTU5soA/gOH
-         8PaA==
-X-Gm-Message-State: AOAM532ydZHMFAoth3eXfXjfYSH+YV/dij1mAS2vfLVmmmbEP5mUrL4s
-        S711iXMS+wku1YjG+lq6JYM62O5NqUIIS6szrFt8vg==
-X-Google-Smtp-Source: ABdhPJyhopxb7RfHnNVf8DNmtk8myF/2H+M5fzPOJVrVSM9HWXnDlBhQ6V385hHHAXP1h8pNPPVnryqLNySs22r4GZE=
-X-Received: by 2002:a17:902:760c:b029:d6:efa5:4cdd with SMTP id
- k12-20020a170902760cb02900d6efa54cddmr3344130pll.56.1605296063135; Fri, 13
- Nov 2020 11:34:23 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=FfDhl4nuyUb6HYPUKcekq3JcuHxWGBlQZla0xXcl2nY=;
+        b=iagPWbPfnWrusODmx2vLr6Q4A9zzaZAsXNEMoxMrd6c5JuIXRizcIkpLs7cbweSDpz
+         hw0GEbcGsN/MXak4xpfecCWLJ9oghubEf4JPjH2150jHUgn7WbUvjR8fkwi92Nn7Db78
+         UWq/KPqcG31IhIwUwZ3qST42x38dsQib6RGpEcnQXO2OW6xp6ieO02pzYnnOJNxQbp1n
+         9o5IPykcKe5OFTqEcqhY6/aNokhGJWi2DlpoSq+yhnnzsrM+byV1ZKqeiIajRCbPI1gA
+         Q9uM4opiXxnGAcbAPKyum4/kks2viWXblcczEvRZgRJSpKSlGVfzQq8lYH6/KNcTJ2Pq
+         QSyw==
+X-Gm-Message-State: AOAM532aPxwAb/QmQ2LSR3Ok2HLgnr13OiDyzoh3CtEGc95Fr5qGgcOi
+        doZPpGEXdndxkfovJb+PwrF2q+mSm0vWOdEtLo8=
+X-Google-Smtp-Source: ABdhPJwcfruMf++uaMxQvevTL0gOQ0s+FvZ+UjoHmVAfhQ686uMdqx5+ceow3WNNCSVvo+ClLQIgnOV8R4PY0uIUxnA=
+X-Received: by 2002:a50:8acc:: with SMTP id k12mr4251747edk.257.1605296085393;
+ Fri, 13 Nov 2020 11:34:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112183839.1009297-1-natechancellor@gmail.com>
- <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com>
- <20201113005347.GA3625030@ubuntu-m3-large-x86> <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
-In-Reply-To: <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 13 Nov 2020 11:34:11 -0800
-Message-ID: <CAKwvOdk1ir=D---9xVAxcErJWSGVxK1Mv6AC=TK3RVwNdcvFjw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jian Cai <jiancai@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Received: by 2002:ab4:a846:0:0:0:0:0 with HTTP; Fri, 13 Nov 2020 11:34:44
+ -0800 (PST)
+Reply-To: robinsonevelyn997@gmail.com
+From:   Evelyn <kouleaboudoulai@gmail.com>
+Date:   Fri, 13 Nov 2020 11:34:44 -0800
+Message-ID: <CAGz00sorpCL8nQ=6fZRA5o2RbdKwFYXb0fm+H9zHiNK84xv38g@mail.gmail.com>
+Subject: =?UTF-8?B?2YXYsdit2KjYpw==?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 10:06 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Fri, 13 Nov 2020 at 01:53, Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > On Thu, Nov 12, 2020 at 04:44:46PM -0800, Nick Desaulniers wrote:
-> > > On Thu, Nov 12, 2020 at 10:41 AM Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
-> > > >
-> > > > Commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker
-> > > > script and options") added '-z norelro' to the arm64 Makefile when
-> > > > CONFIG_RELOCATABLE was set to help support ld.lld because ld.lld
-> > > > defaults to '-z relro' but the kernel does not use program headers or
-> > > > adhere to the section layout that is required for RELRO to work.
-> > > >
-> > > > Commit 3b92fa7485eb ("arm64: link with -z norelro regardless of
-> > > > CONFIG_RELOCATABLE") unconditionally added it to LDFLAGS_vmlinux because
-> > > > an error occurs with CONFIG_KASAN set even when CONFIG_RELOCATABLE is
-> > > > unset.
-> > > >
-> > > > As it turns out, ARM experiences the same error after CONFIG_KASAN was
-> > > > implemented, meaning that '-z norelro' needs to be added to that
-> > > > Makefile as well (multi_v7_defconfig + CONFIG_KASAN=y + LD=ld.lld):
-> > > >
-> > > > $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 zImage
-> > > > ld.lld: error: section: .exit.data is not contiguous with other relro sections
-> > > >
-> > > > To avoid playing whack-a-mole with different architectures over time,
-> > > > hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
-> > > > because '-z norelro' is the default for it.
-> > > >
-> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1189
-> > > > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > >
-> > > Why not add it additionally to KBUILD_LDFLAGS_MODULE a la
-> > > `--build-id=sha1` a few lines above? (or `LDFLAGS_MODULE`, but that
-> > > looks unused?)  We probably don't want this for modules either.  In
-> > > that case, you could add -z norelo to the two existing lines with
-> > > `--build-id=sha1` above?
-> >
-> > Yes, I can do that. I will send a v2 along tomorrow morning to let
-> > others comment.
-> >
->
-> Modules are partially linked objects, so there is no point in passing
-> -z options for them.
-
-Ok then.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-More work to be done to boot this config, but at least we can link
-without error.
--- 
-Thanks,
-~Nick Desaulniers
+2YXYsdit2KjYpyDYudiy2YrYstmJLiDZg9mK2YEg2K3Yp9mE2YMg2KfZhNmK2YjZhdifINii2YXZ
+hCDYo9mGINmK2YPZiNmGINio2K7Zitix2J8g2KfYs9mF2Yog2KXZitmB2YTZitmGLiDYo9iq2YXZ
+htmJINij2YYg2KrZg9mI2YYg2YPYsNmE2YMNCtmE2K/ZiiDYudmE2KfZgtipINis2YrYr9ipINmI
+2YbYp9i22KzYqSDZhdi52YMuINmI2KPYsdmK2K8g2KPZhiDYo9i02KfYsdmD2YPZhSDYtNmK2KbZ
+i9inINmF2YfZhdmL2Kcg2YTZhNi62KfZitipLiDYs9ij2YPZiNmGINmB2YoNCtmB2Yog2KfZhtiq
+2LjYp9ix2YPZhSDZgtix2YrYqNmL2Kcg2KXYsNinINmD2YbYqiDZhdmH2KrZhdmL2Kcg2KjZgy4N
+Cg==
