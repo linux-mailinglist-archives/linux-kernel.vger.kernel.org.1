@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DB52B1404
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E082B1406
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgKMBvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 20:51:25 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55838 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbgKMBvY (ORCPT
+        id S1726295AbgKMBvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 20:51:44 -0500
+Received: from sender11-of-o52.zoho.eu ([31.186.226.238]:21371 "EHLO
+        sender11-of-o52.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbgKMBvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 20:51:24 -0500
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 136CC20C2884
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:51:24 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 136CC20C2884
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605232284;
-        bh=OOJfuTij/WDmu9nVOlF7gDSBvVsQ0moMnMR59C+JADg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f2wnACQkuvA2/L/gOyBhxCov3/1MNgLeoajOu1D41Z2NIiHRCoJ/vTZuHK/cBmJX+
-         yudUrAwjjCMhMh0EEnuRpJSMj4s74bP1HG9CkPtNj9V2fFT/iF+bpXrEZSDnYX4rY0
-         yy4L1KBG5jiuBR4/7HmbfOOojA1KVk+ndpeh+ZfI=
-Received: by mail-qv1-f49.google.com with SMTP id x13so3889349qvk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:51:23 -0800 (PST)
-X-Gm-Message-State: AOAM533TW4Ts68edeEt010uoyil/WIvk2L9KARbIoxWyNsoNsTlblMdj
-        ivd20PTVKM+wMfMveRcB6JF4ff/cJmOMy3/+TGk=
-X-Google-Smtp-Source: ABdhPJxJrrmk9DZyRN3Lg7DByg08WgeUz21AJ+lf2CKwfPwsXCnf3EK01N5Idzf8C54KvjRe+bPGn3WgFGa9G/WBkAg=
-X-Received: by 2002:ad4:5685:: with SMTP id bc5mr223052qvb.48.1605232283117;
- Thu, 12 Nov 2020 17:51:23 -0800 (PST)
+        Thu, 12 Nov 2020 20:51:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1605232265; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=cBvKcBMM/njmNYSGfQhrlVdRm/9nvY1EkaAYn7+vIXYUklR6PVd5RkRpKTJdVt7q7OhwNND7g3VL8yU0TjyLGLIeNvsdffJc7Ged7qiDvzC4P2TTNH5i2QeLXS4UWXMJ4Mc3zu74ixQB5xPI18A4HP32kWCvqrvkndaDbXRNOQ0=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1605232265; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=gEngQWGy289WgIOsFRNzQyvfCUzrxtfgSSenRYNqNts=; 
+        b=TKT9xr9QglCsYM7RDMA4UOViWqyFyQ98rFxD48ji+3BgufvnH3FHgiunAkgqx7jkolj2/jef0zr++/SRxhpahJCyMv9KnH3fJyXH2c4iMphgawnMHpVmhStZOiv26zgv89A481QPmjEolnhArbP6CbdmtWs42ZMpxaPSwGQt6YM=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        dkim=pass  header.i=shytyi.net;
+        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
+        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1605232265;
+        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
+        h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=gEngQWGy289WgIOsFRNzQyvfCUzrxtfgSSenRYNqNts=;
+        b=P54G9w/lj4jiY0p+9OpCbe3ZbEjC6XpaJNDYCYfcNyNqd0+qCK0OkJDQCJ5YdSlZ
+        b7xFR2eKTx5U9To0lkq8uLw8gtRN72w1I1ptYLi99Z4IdTq1WDwrYPCmIbjKYj3G3Oy
+        qaxPIqyYAofuPvAPRp8AKtQYhpQYCAyk7Zs/hLJ8=
+Received: from mail.zoho.eu by mx.zoho.eu
+        with SMTP id 1605232258219691.6899643912467; Fri, 13 Nov 2020 02:50:58 +0100 (CET)
+Date:   Fri, 13 Nov 2020 02:50:58 +0100
+From:   Dmytro Shytyi <dmytro@shytyi.net>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <175bf4c6caa.ba8cba7c131155.80422714589772777@shytyi.net>
+In-Reply-To: <20201112162156.211cad4e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
+        <202011110944.7zNVZmvB-lkp@intel.com>
+        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net> <20201112162156.211cad4e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: Re: [PATCH net-next V3] net: Variable SLAAC: SLAAC with prefixes of
+ arbitrary length in PIO
 MIME-Version: 1.0
-References: <20201113010739.516026-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20201113010739.516026-1-mcroce@linux.microsoft.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 13 Nov 2020 02:50:47 +0100
-X-Gmail-Original-Message-ID: <CAFnufp1WrFKx1OnWqcv-sfeF=TL9jw=V0Qg+GidQJz9DEc=jzA@mail.gmail.com>
-Message-ID: <CAFnufp1WrFKx1OnWqcv-sfeF=TL9jw=V0Qg+GidQJz9DEc=jzA@mail.gmail.com>
-Subject: Re: [PATCH] reboot: sync documentation with current code
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 2:07 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> The valid values accepted by /sys/kernel/reboot/type are a bit different
-> that the ones used in the kernel command line.
->
-> In /sys we supports 'cf9_force' and 'cf9_safe', while in the kernel command
-> line 'pci' and 'q' are used.
->
-> Document the right values in the sysfs documentation.
->
-> Fixes: eab8da48579d ("reboot: allow to specify reboot mode via sysfs")
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> ---
->  Documentation/ABI/testing/sysfs-kernel-reboot | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-reboot b/Documentation/ABI/testing/sysfs-kernel-reboot
-> index 837330fb2511..fcc5d193c16c 100644
-> --- a/Documentation/ABI/testing/sysfs-kernel-reboot
-> +++ b/Documentation/ABI/testing/sysfs-kernel-reboot
-> @@ -16,7 +16,8 @@ What:         /sys/kernel/reboot/type
->  Date:          November 2020
->  KernelVersion: 5.11
->  Contact:       Matteo Croce <mcroce@microsoft.com>
-> -Description:   Reboot type. Valid values are: bios acpi kbd triple efi pci
-> +Description:   Reboot type. Valid values are:
-> +               bios acpi kbd triple efi cf9_force cf9_safe
->
->  What:          /sys/kernel/reboot/cpu
->  Date:          November 2020
-> --
-> 2.28.0
->
+Hello,
+          
+---- On Fri, 13 Nov 2020 01:21:56 +0100 Jakub Kicinski <kuba@kernel.org> wrote ----
 
-So, discard this one, I will rename 'cf9_force' to 'pci' instead.
-Simpler, and coherent with the kernel cmdline.
+ > On Thu, 12 Nov 2020 16:44:54 +0100 Dmytro Shytyi wrote: 
+ > > Reported-by: kernel test robot <lkp@intel.com> 
+ >  
+ > You don't have to add the reported by tag just because the bot pointed 
+ > out issues in the previous version. 
+ > 
+[Dmytro] Understood. Thank you for the comment.
+                    
+Dmytro SHYTYI
 
--- 
-per aspera ad upstream
