@@ -2,132 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483F82B1AA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D793D2B1AC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgKMMEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:04:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgKMLjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:39:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85916C061A4D;
-        Fri, 13 Nov 2020 03:38:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=TbjAEl0VNgxr5FAZ34L9dbraIDKc0iauYUncRRc0dNs=; b=hIBn1ijbK87tkjZTZ6sN4ALaBs
-        /BuVNPW+2Ch84dUQbzBbsXhoSzlFETz/3kyYtDXUW07UIKnbW/lGU3CSEgCp03HR9qmVo4uEqb8pc
-        blxMH5pjs8m3VCMaPuwnJwkJN8NULegtO6/b6Qf76Y849/SpNnz2SoU12Wer/ZOd12aZtcFVpERWx
-        U0CQOodsii5uMDuSaXnFsUIX0SES6+/SbPtkCs5vK9QYSxJmXODqMTe+Hh/Bs2P9CsqEpC3GF2XXp
-        wyy6O+G4lPnoimRd+Muc7gPxCx7DEY4f5i7gMb8QD62SaLjfWML7HGK19N1oSnzsK88TYWyrPY/cT
-        hni5eehw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdXPK-0001jM-Th; Fri, 13 Nov 2020 11:38:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E5F2307197;
-        Fri, 13 Nov 2020 12:38:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 463052BCDBFDC; Fri, 13 Nov 2020 12:38:19 +0100 (CET)
-Message-ID: <20201113113426.655116103@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 13 Nov 2020 12:19:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com
-Cc:     christophe.leroy@csgroup.eu, npiggin@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, will@kernel.org,
-        willy@infradead.org, aneesh.kumar@linux.ibm.com,
-        sparclinux@vger.kernel.org, davem@davemloft.net,
-        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        peterz@infradead.org
-Subject: [PATCH 5/5] sparc64/mm: Implement pXX_leaf_size() support
-References: <20201113111901.743573013@infradead.org>
+        id S1726396AbgKMMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:05:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726503AbgKML1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:27:46 -0500
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A4352224C;
+        Fri, 13 Nov 2020 11:27:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605266864;
+        bh=BQ5vuTVOn43rBxAnk4/nLf/ku8ZvJLFxqB5/ej6AnZs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aD1dKNH2Jm/JiJdkQH5+5Rw5r8X0BKUVsHr9Mo4ePgY+8Lv/UJHxsC3YKRnOYVWps
+         +r2Hrr7nniHVamn/B4KiSst9QjiCbEQL9UxWllbCVZ2vBJuyAXFNi1V7nVlBeYmgUr
+         jEk0Z2aoIBX7SzR1QWRZJ1uZ5su+gdQ4j4STPKMg=
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        David Hildenbrand <david@redhat.com>, ardb@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH V3] arm64/mm: Validate hotplug range before creating linear mapping
+Date:   Fri, 13 Nov 2020 11:27:35 +0000
+Message-Id: <160526070909.1978780.9007672953232342231.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1605252614-761-1-git-send-email-anshuman.khandual@arm.com>
+References: <1605252614-761-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparc64 has non-pagetable aligned large page support; wire up the
-pXX_leaf_size() functions to report the correct TLB page size.
+On Fri, 13 Nov 2020 13:00:14 +0530, Anshuman Khandual wrote:
+> During memory hotplug process, the linear mapping should not be created for
+> a given memory range if that would fall outside the maximum allowed linear
+> range. Else it might cause memory corruption in the kernel virtual space.
+> 
+> Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
+> both its ends but excluding PAGE_END. Max physical range that can be mapped
+> inside this linear mapping range, must also be derived from its end points.
+> 
+> [...]
 
-This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate TLB
-page sizes.
+Applied to arm64 (for-next/fixes), thanks!
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/sparc/include/asm/pgtable_64.h |   13 +++++++++++++
- arch/sparc/mm/hugetlbpage.c         |   19 +++++++++++++------
- 2 files changed, 26 insertions(+), 6 deletions(-)
+[1/1] arm64/mm: Validate hotplug range before creating linear mapping
+      https://git.kernel.org/arm64/c/58284a901b42
 
---- a/arch/sparc/include/asm/pgtable_64.h
-+++ b/arch/sparc/include/asm/pgtable_64.h
-@@ -1121,6 +1121,19 @@ extern unsigned long cmdline_memory_size
- 
- asmlinkage void do_sparc64_fault(struct pt_regs *regs);
- 
-+#ifdef CONFIG_HUGETLB_PAGE
-+
-+#define pud_leaf_size pud_leaf_size
-+extern unsigned long pud_leaf_size(pud_t pud);
-+
-+#define pmd_leaf_size pmd_leaf_size
-+extern unsigned long pmd_leaf_size(pmd_t pmd);
-+
-+#define pte_leaf_size pte_leaf_size
-+extern unsigned long pte_leaf_size(pte_t pte);
-+
-+#endif /* CONFIG_HUGETLB_PAGE */
-+
- #endif /* !(__ASSEMBLY__) */
- 
- #endif /* !(_SPARC64_PGTABLE_H) */
---- a/arch/sparc/mm/hugetlbpage.c
-+++ b/arch/sparc/mm/hugetlbpage.c
-@@ -247,14 +247,17 @@ static unsigned int sun4u_huge_tte_to_sh
- 	return shift;
- }
- 
--static unsigned int huge_tte_to_shift(pte_t entry)
-+static unsigned long tte_to_shift(pte_t entry)
- {
--	unsigned long shift;
--
- 	if (tlb_type == hypervisor)
--		shift = sun4v_huge_tte_to_shift(entry);
--	else
--		shift = sun4u_huge_tte_to_shift(entry);
-+		return sun4v_huge_tte_to_shift(entry);
-+
-+	return sun4u_huge_tte_to_shift(entry);
-+}
-+
-+static unsigned int huge_tte_to_shift(pte_t entry)
-+{
-+	unsigned long shift = tte_to_shift(entry);
- 
- 	if (shift == PAGE_SHIFT)
- 		WARN_ONCE(1, "tto_to_shift: invalid hugepage tte=0x%lx\n",
-@@ -272,6 +275,10 @@ static unsigned long huge_tte_to_size(pt
- 	return size;
- }
- 
-+unsigned long pud_leaf_size(pud_t pud) { return 1UL << tte_to_shift((pte_t)pud); }
-+unsigned long pmd_leaf_size(pmd_t pmd) { return 1UL << tte_to_shift((pte_t)pmd); }
-+unsigned long pte_leaf_size(pte_t pte) { return 1UL << tte_to_shift((pte_t)pte); }
-+
- pte_t *huge_pte_alloc(struct mm_struct *mm,
- 			unsigned long addr, unsigned long sz)
- {
+Cheers,
+-- 
+Will
 
-
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
