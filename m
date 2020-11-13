@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101932B16BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990002B16C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgKMHue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:50:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgKMHue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:50:34 -0500
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A77D208D5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605253833;
-        bh=d6BGyCcCSgbHoYMKMxTIl0AJYabKgxYHNH+q+hkvaho=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wewAVQn1W4pd4getXESlJMCq4Vj3/AT37H2Rz5gNA0D8n1QlIfVLMj29ZlqRbSikM
-         tt1/C6F8v/oIIS9Hu9VRcNgay1/48d8qTFmgPxXxN/vRVwBQ+zwMmEoOm5A2dmHsgz
-         Gv88P56niLiVBD1YFbAMWaegrTsRkqxMK5ZTHZcw=
-Received: by mail-oo1-f46.google.com with SMTP id y3so1960252ooq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:50:33 -0800 (PST)
-X-Gm-Message-State: AOAM533hFWwN5MmTg7GT8XcgNXpTM6XhRifQrKnSIgmtJHaHR6pbuYOD
-        4rTIhFRAfQc2L51rGbhp0JgqZFO6Al7rxLiN6cE=
-X-Google-Smtp-Source: ABdhPJw8VK/Ch7r/ol4qAhpmBp/AAzGrTzQmky2H/AqXLAq1jo6xvl6Ejg/lU9sKycZJQrdBCUsGK1hb5pMvf5wDOhc=
-X-Received: by 2002:a4a:8928:: with SMTP id f37mr621623ooi.41.1605253832849;
- Thu, 12 Nov 2020 23:50:32 -0800 (PST)
+        id S1726176AbgKMHz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:55:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKMHz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:55:29 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D541CC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:55:28 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id k2so8699134wrx.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Q1l/HymtP+vc378Y/Np+GkoFHr0gL46JSMprjW5gcHg=;
+        b=W6OTiDd6PQVAEvsSyoGRQ8WivxpBsXNlhqoESGt9S5UbeeZozWqO7Qas+JXd92QCV/
+         7GktRH+eZUUpsqDkPtT6uSG6pwen3Ms7wRwxSIG4wPoqwAjdb7wF099Jo2GJlros1J7k
+         drlgUDYHbhlilYG2/zQfYKz+RwKHoXCAgrsx/PlWQoDwNt0WnjWokS5CTT69n6C9SEwN
+         DPOp+3YvXUaZi3ENNXQ3cJatpXno5s3HBwcnrPBsGow23gFY+BVLvzjSQ0MMPo6O0+yx
+         c4JOgvAnx1rzlvd20YFQu9FHOhg8ATiOmi+3H4jvSZPEgjcfE8rn9GVPU9IrmBMt5wAy
+         nhBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Q1l/HymtP+vc378Y/Np+GkoFHr0gL46JSMprjW5gcHg=;
+        b=Qb9aJ+zD/FHJeTbBayHDLkStk1JWsW8okui9ismBRE1qS8wVCvwjdvR3l4Yu8KT+n5
+         6TiyVSFkwqWYYLCHhLHg2TEy6Se/gkpnmUcn3heIHZCoGLclFAEFni7BV3vbVscrqWvL
+         V3yJs6R7MFAkXewD6cnSwuuA2AITTn5CCrnCewiMPBxXKYFDvrPDLRPAibdzzUMAMfVO
+         upMt79hRHxxbTPX9/jPtl6Dhrw1XkW1/tf72N22VkH8q7iHPoviMwnFTsCSDI0j8i9Xj
+         uamn4dS7iLxlHP2cgk5bLFWgOqd0fbiBHp+D73qF6hfVVlyrPGlc4xJBn6CP0AfXbdpJ
+         gUUA==
+X-Gm-Message-State: AOAM531GhcZ6xvN14KcI8sD3kp9J6rXHNNnXxvCaRssSLuzhHQJEpdTj
+        dF5aLDfnmxFiZVbVkvzQApUcUg==
+X-Google-Smtp-Source: ABdhPJwdAROKvd2jTLMn2e9z0ekroGImfcvzEP9xJ6DrNTOJZf6VyB+r2rwh7KfCIrzxfU+MsVXscw==
+X-Received: by 2002:a5d:4409:: with SMTP id z9mr1668333wrq.309.1605254127639;
+        Thu, 12 Nov 2020 23:55:27 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id x63sm9825095wmb.48.2020.11.12.23.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 23:55:26 -0800 (PST)
+Date:   Fri, 13 Nov 2020 07:55:25 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Sangwon Jee <jeesw@melfas.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 06/15] input: touchscreen: melfas_mip4: Remove a bunch of
+ unused variables
+Message-ID: <20201113075525.GH2787115@dell>
+References: <20201112110204.2083435-1-lee.jones@linaro.org>
+ <20201112110204.2083435-7-lee.jones@linaro.org>
+ <20201113074202.GJ356503@dtor-ws>
 MIME-Version: 1.0
-References: <20201112212457.2042105-1-adrian.ratiu@collabora.com> <20201112212457.2042105-3-adrian.ratiu@collabora.com>
-In-Reply-To: <20201112212457.2042105-3-adrian.ratiu@collabora.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 13 Nov 2020 08:50:20 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEpD1pp5uzOMeSYhgS_dzOysKuPMOMNgivUx58PGUdMJw@mail.gmail.com>
-Message-ID: <CAMj1kXEpD1pp5uzOMeSYhgS_dzOysKuPMOMNgivUx58PGUdMJw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm: lib: xor-neon: move pragma options to makefile
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>, kernel@collabora.com,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113074202.GJ356503@dtor-ws>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 at 22:23, Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
->
-> Using a pragma like GCC optimize is a bad idea because it tags
-> all functions with an __attribute__((optimize)) which replaces
-> optimization options rather than appending so could result in
-> dropping important flags. Not recommended for production use.
->
-> Because these options should always be enabled for this file,
-> it's better to set them via command line. tree-vectorize is on
-> by default in Clang, but it doesn't hurt to make it explicit.
->
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> ---
->  arch/arm/lib/Makefile   |  2 +-
->  arch/arm/lib/xor-neon.c | 10 ----------
->  2 files changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-> index 6d2ba454f25b..12d31d1a7630 100644
-> --- a/arch/arm/lib/Makefile
-> +++ b/arch/arm/lib/Makefile
-> @@ -45,6 +45,6 @@ $(obj)/csumpartialcopyuser.o: $(obj)/csumpartialcopygeneric.S
->
->  ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
->    NEON_FLAGS                   := -march=armv7-a -mfloat-abi=softfp -mfpu=neon
-> -  CFLAGS_xor-neon.o            += $(NEON_FLAGS)
-> +  CFLAGS_xor-neon.o            += $(NEON_FLAGS) -ftree-vectorize -Wno-unused-variable
->    obj-$(CONFIG_XOR_BLOCKS)     += xor-neon.o
->  endif
-> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-> index e1e76186ec23..62b493e386c4 100644
-> --- a/arch/arm/lib/xor-neon.c
-> +++ b/arch/arm/lib/xor-neon.c
-> @@ -14,16 +14,6 @@ MODULE_LICENSE("GPL");
->  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
->  #endif
->
-> -/*
-> - * Pull in the reference implementations while instructing GCC (through
-> - * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
-> - * NEON instructions.
-> - */
-> -#ifdef CONFIG_CC_IS_GCC
-> -#pragma GCC optimize "tree-vectorize"
-> -#endif
-> -
-> -#pragma GCC diagnostic ignored "-Wunused-variable"
->  #include <asm-generic/xor.h>
->
->  struct xor_block_template const xor_block_neon_inner = {
-> --
-> 2.29.2
->
+On Thu, 12 Nov 2020, Dmitry Torokhov wrote:
 
-So what is the status now here? How does putting -ftree-vectorize on
-the command line interact with Clang?
+> On Thu, Nov 12, 2020 at 11:01:55AM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/input/touchscreen/melfas_mip4.c: In function ‘mip4_report_touch’:
+> >  drivers/input/touchscreen/melfas_mip4.c:474:5: warning: variable ‘size’ set but not used [-Wunused-but-set-variable]
+> >  drivers/input/touchscreen/melfas_mip4.c:472:5: warning: variable ‘pressure_stage’ set but not used [-Wunused-but-set-variable]
+> >  drivers/input/touchscreen/melfas_mip4.c:469:7: warning: variable ‘palm’ set but not used [-Wunused-but-set-variable]
+> >  drivers/input/touchscreen/melfas_mip4.c:468:7: warning: variable ‘hover’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Cc: Sangwon Jee <jeesw@melfas.com>
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Henrik Rydberg <rydberg@bitmath.org>
+> > Cc: linux-input@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/input/touchscreen/melfas_mip4.c | 11 -----------
+> >  1 file changed, 11 deletions(-)
+> > 
+> > diff --git a/drivers/input/touchscreen/melfas_mip4.c b/drivers/input/touchscreen/melfas_mip4.c
+> > index f67efdd040b24..9c98759098c7a 100644
+> > --- a/drivers/input/touchscreen/melfas_mip4.c
+> > +++ b/drivers/input/touchscreen/melfas_mip4.c
+> > @@ -465,13 +465,9 @@ static void mip4_report_keys(struct mip4_ts *ts, u8 *packet)
+> >  static void mip4_report_touch(struct mip4_ts *ts, u8 *packet)
+> >  {
+> >  	int id;
+> > -	bool hover;
+> > -	bool palm;
+> >  	bool state;
+> >  	u16 x, y;
+> > -	u8 pressure_stage = 0;
+> >  	u8 pressure;
+> > -	u8 size;
+> >  	u8 touch_major;
+> >  	u8 touch_minor;
+> >  
+> > @@ -480,14 +476,11 @@ static void mip4_report_touch(struct mip4_ts *ts, u8 *packet)
+> >  	case 1:
+> >  		/* Touch only */
+> >  		state = packet[0] & BIT(7);
+> > -		hover = packet[0] & BIT(5);
+> > -		palm = packet[0] & BIT(4);
+> 
+> No really happy that we'd be losing information about protocol. Is there
+> a better way to suppress the warning while keeping this info?
+
+Yes.  We can either convert the information to comments, or mark the
+variables as __always_unused.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
