@@ -2,115 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FF42B2014
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5403C2B1FF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgKMQWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:22:19 -0500
-Received: from mga09.intel.com ([134.134.136.24]:10822 "EHLO mga09.intel.com"
+        id S1726278AbgKMQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:19:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:40996 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726603AbgKMQVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:21:48 -0500
-IronPort-SDR: 4q9/fmWsSmkeiD2ccYR88Sl4UubNnRRifOUT0RyTg6ADLkE87jjiYNAAOtc2Qt2Nipi8A8wN/e
- mVSgndpQk9+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="170664316"
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
-   d="scan'208";a="170664316"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 08:21:47 -0800
-IronPort-SDR: VoJIdrVOahzLn09Hlos2+YZXTi9c7IJbWuSU7SpysP/0TkLwyi3q9ylxnhhdSa2vm+dnX+gLal
- 7896ip1n9FTQ==
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
-   d="scan'208";a="366767263"
-Received: from dmert-dev.jf.intel.com ([10.166.241.5])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 08:21:47 -0800
-From:   Dave Ertman <david.m.ertman@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com, dledford@redhat.com, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com,
-        linux-kernel@vger.kernel.org, leonro@nvidia.com
-Subject: [PATCH v4 10/10] ASoC: SOF: Intel: CNL: register probes client
-Date:   Fri, 13 Nov 2020 08:18:59 -0800
-Message-Id: <20201113161859.1775473-11-david.m.ertman@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201113161859.1775473-1-david.m.ertman@intel.com>
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725866AbgKMQTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:19:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 097BF1042;
+        Fri, 13 Nov 2020 08:19:22 -0800 (PST)
+Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF1363F718;
+        Fri, 13 Nov 2020 08:19:20 -0800 (PST)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] random: Use arch_get_random_long_early() for init_std_data()
+Date:   Fri, 13 Nov 2020 16:19:12 +0000
+Message-Id: <20201113161912.62068-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In commit 253d3194c2b5 ("random: add arch_get_random_*long_early()") we
+introduced _early versions of arch_get_random_long(), that are used on
+arm64 to use the CPU RNDR instruction early in the boot process, before
+we have established system-wide availability.
+This covers the calls in crng_initialize_primary(), but missed the calls
+in init_std_data(), happening just before that.
 
-Register the client device for probes support on the
-CNL platform. Creating this client device alleviates the
-need for modifying the sound card definitions in the existing
-machine drivers to add support for the new probes feature in
-the FW. This will result in the creation of a separate sound
-card that can be used for audio data extraction from user
-specified points in the audio pipeline.
+Use the _early versions of the arch_get_random* calls also in
+init_std_data(), to help initialising the pool with proper seed values.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Tested-by: Fred Oh <fred.oh@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Fixes: 253d3194c2b5 ("random: add arch_get_random_*long_early()")
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
- sound/soc/sof/intel/cnl.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/char/random.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 20afb622c315..6d15b871dc17 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -19,6 +19,7 @@
- #include "hda.h"
- #include "hda-ipc.h"
- #include "../sof-audio.h"
-+#include "../sof-client.h"
- #include "intel-client.h"
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 2a41b21623ae..43bb331a67bd 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -1778,8 +1778,8 @@ static void __init init_std_data(struct entropy_store *r)
  
- static const struct snd_sof_debugfs_map cnl_dsp_debugfs[] = {
-@@ -233,12 +234,26 @@ void cnl_ipc_dump(struct snd_sof_dev *sdev)
- 
- static int cnl_register_clients(struct snd_sof_dev *sdev)
- {
--	return intel_register_ipc_test_clients(sdev);
-+	int ret;
-+
-+	ret = intel_register_ipc_test_clients(sdev);
-+	if (ret < 0)
-+		return ret;
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	return sof_client_dev_register(sdev, "probes", 0);
-+#endif
-+
-+	return 0;
- }
- 
- static void cnl_unregister_clients(struct snd_sof_dev *sdev)
- {
- 	intel_unregister_ipc_test_clients(sdev);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	sof_client_dev_unregister(sdev, "probes", 0);
-+#endif
- }
- 
- /* cannonlake ops */
-@@ -409,3 +424,4 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
- };
- EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
- MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_CLIENT);
-+MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
+ 	mix_pool_bytes(r, &now, sizeof(now));
+ 	for (i = r->poolinfo->poolbytes; i > 0; i -= sizeof(rv)) {
+-		if (!arch_get_random_seed_long(&rv) &&
+-		    !arch_get_random_long(&rv))
++		if (!arch_get_random_seed_long_early(&rv) &&
++		    !arch_get_random_long_early(&rv))
+ 			rv = random_get_entropy();
+ 		mix_pool_bytes(r, &rv, sizeof(rv));
+ 	}
 -- 
-2.26.2
+2.17.1
 
