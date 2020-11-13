@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBB92B1E7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D862B1E78
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgKMPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:21:46 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:43066 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbgKMPVp (ORCPT
+        id S1726789AbgKMPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726753AbgKMPV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:21:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605280904; x=1636816904;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=1NQQGaJt2PCWmF7RL3nHYGDUbhmMDmkT+F9bi77B4mM=;
-  b=WT7weI5iPjIwxNzI9ZxvJPj5drS86e7N1fo5wQxdc9IE5/szhIOZmW51
-   G74oV19b3bVfcnAmjPQMTZH2JXvDsOKTWsEQdS9SRNTMx6sIKG+suU6gW
-   qgPvWkYDcQdGhef8VBwgYKO+g6XdzIdCdsjfXazxwRfqCsoIYs6VKhQoi
-   bfGAwlqlVPLsZjhtDsmQCt9Zmwj9IAix8N8F49HZsG5GL4B0FmJmoCOEN
-   OjxItw0+L0CnB7h2PXq3RRX9P2nwXzU7+wkEgbNLfI6/HZ/AgL7klOpZM
-   kXFjaTi0Cyh+V/BJvkJ8tqbnlwZhfckSqIaFA/TLCC6xwauWHWVmOrSxL
-   Q==;
-IronPort-SDR: vtWst5nzQZfqRnW//XgMxw5WxPI9/ObxgzDBAULLNPhdk9K79X9QJ8yJXfM9HWC152j13JM/WJ
- vl10EZQjQuOT8kEPkS1LCMPdxTDSHaz9guQQag3F51EvUzN6NRn42sVEyYuUqJmm87HSW4duOd
- AgZnwFdTlzGXiJ84fAsSWhQDipcpqFNsfE1LpdYu8oDsk+HR4ZSv5GDS476jEfn8pHBeoX4ato
- bK70pNIh+ab9PMR8e6lSochmvZ85F8LiXN2AhojjP5UQUV1sG9sfu0QW0FT8gWrL7R5bxeBkGW
- GDA=
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
-   d="scan'208";a="93552156"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Nov 2020 08:21:44 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 13 Nov 2020 08:21:44 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 13 Nov 2020 08:21:39 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-CC:     <s.hauer@pengutronix.de>, <ttynkkynen@nvidia.com>,
-        <linus.walleij@linaro.org>, <axel.lin@ingics.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 6/6] regulator: mcp16502: remove void documentation of struct mcp16502
-Date:   Fri, 13 Nov 2020 17:21:10 +0200
-Message-ID: <1605280870-32432-7-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 13 Nov 2020 10:21:29 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1C6C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:21:28 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id j19so517891pgg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hRq5gupgdZ9QFzQ7R7Gj9jMw4zXfd000qEqyyyCrYMI=;
+        b=RRAIf7Dc402cOQVjpfcmIsVhu6ikjT2PBEc4QjcTlrIfpV+DZtlEasPMzO8P7kfO1x
+         TcLpEtiWd9PSwjDCna5EV2jXFRX1txa+8YU6K0X++rQ6CMAqwXmnwvecSC49XN0shANJ
+         4sEezWOHrFR1DdLfwrjc+u5PTI7g54o9XIToz1YBln9zeTac4uOTjjRT972odKOU7xjH
+         6vswg+fP25TGpUwfwIMrIAyAwwd2UQpIA1FoHfTjrmhuWlvWbYPRAQcIgeO0zBFOei47
+         FJH7IuocxxZu+9QfQIWoTownpoiOjq2WHt4lR9jPU/zfIi06mX/2TraWxgTqi+gNeCms
+         YpVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hRq5gupgdZ9QFzQ7R7Gj9jMw4zXfd000qEqyyyCrYMI=;
+        b=qriDrxWKPbpX3B42HWbSzB1B2OTwErZqxGCjCuCPQea5tNZDhojWnbo7Y7Jp7k1NVx
+         w7Fry/bq7Rlkvg6MIE+dq9Uiwdb9IGVg6wrvZ2Le+UCyojyMBJwOcmZyPZqzbO4z3aVr
+         Vp+ozPvHw4TUBY8udaxrUeNWP8+0wS6mrVbaTD4q2dH0A6bwE+xWJZMk6xAkYsYwl9X1
+         /Mbxo684Iq8Oz1LA3qBrqtNKTtYdKeIysDlfOj3pP9uv9r+sCpIU35rdMIatQt3GAJxl
+         vOE0pPECH7X5OhWtLsc6VeBn9bIovp66Wgb/Js9nxolMAk8B086PTwHWJKCXTLtvbxwK
+         usEg==
+X-Gm-Message-State: AOAM530Bm6KsJo/xZsdG5+n0uwb7KSFceOkk/RhR2pAP/xuxsD5o2g25
+        C2c7F84n3zp2ddfbWPolSw==
+X-Google-Smtp-Source: ABdhPJwMInQ4bmHkOc4AUo23Fg63tCg1OzmBaPEfYVqQS1wnqy3iBsty4bydI8c/N/RAqjHU8tfFFw==
+X-Received: by 2002:a17:90b:1011:: with SMTP id gm17mr3409202pjb.73.1605280883746;
+        Fri, 13 Nov 2020 07:21:23 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id h5sm9786615pfn.12.2020.11.13.07.21.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Nov 2020 07:21:23 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH v2] tracing: remove the useless value assignment in test_create_synth_event
+Date:   Fri, 13 Nov 2020 23:21:18 +0800
+Message-Id: <1605280878-6612-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct mcp16502 has no members called rdev or rmap. Remove the
-documentation.
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+The value of variable ret is overwritten on the delete branch in the
+test_create_synth_event() and we care more about the above error than
+this delete portion. Remove it.
+
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 ---
- drivers/regulator/mcp16502.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/trace/synth_event_gen_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/mcp16502.c b/drivers/regulator/mcp16502.c
-index f81afeeddb19..74ad92dc664a 100644
---- a/drivers/regulator/mcp16502.c
-+++ b/drivers/regulator/mcp16502.c
-@@ -135,8 +135,6 @@ enum {
+diff --git a/kernel/trace/synth_event_gen_test.c b/kernel/trace/synth_event_gen_test.c
+index edd912cd14aa..a4b4bbf8c3bf 100644
+--- a/kernel/trace/synth_event_gen_test.c
++++ b/kernel/trace/synth_event_gen_test.c
+@@ -307,7 +307,7 @@ static int __init test_create_synth_event(void)
+ 	return ret;
+  delete:
+ 	/* We got an error after creating the event, delete it */
+-	ret = synth_event_delete("create_synth_test");
++	synth_event_delete("create_synth_test");
  
- /*
-  * struct mcp16502 - PMIC representation
-- * @rdev: the regulators belonging to this chip
-- * @rmap: regmap to be used for I2C communication
-  * @lpm: LPM GPIO descriptor
-  */
- struct mcp16502 {
+ 	goto out;
+ }
 -- 
-2.7.4
+2.20.0
 
