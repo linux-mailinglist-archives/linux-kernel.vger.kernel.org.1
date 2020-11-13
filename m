@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC402B1F49
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903252B1F51
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgKMPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgKMPzh (ORCPT
+        id S1726743AbgKMP4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:56:39 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:56299 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgKMP4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:55:37 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D450BC0613D1;
-        Fri, 13 Nov 2020 07:55:36 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id z21so14481633lfe.12;
-        Fri, 13 Nov 2020 07:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4/bF4c42U9QIMTb1QGxEpNjGgqxOXHed/9Sju++TrnQ=;
-        b=EmXWyr9gx7KS0zwcEBEAYUaxurDUV3ESqpMaCg9JaE9hKPHdsMyptRiU0PhucAJg57
-         sWNit+5QfNq8tNVIqx46BqCocNtjeJXbt4jKtikifYsjkdUQbLjXrnxr9qkxjgZRyZHq
-         TXlCW0/ciAaZVvMnyVhuZxC2ijNcNkBjiAcv9bDzbBMXnusu37wDsDL7NY0jYqQtA3vp
-         PIgR17yr3IOJzvWiye1+iRzAfcIGWQeDEi+egnXgCSnrSt/IzJcPeOgFOq4e5cJTdOLu
-         hhiAHxxwDWXN0pyDhoMxZJHVC4zrdnmiTI5ssYzWwy6ojWuvzKDNpVu8jf2LV7apAlp+
-         bE+g==
+        Fri, 13 Nov 2020 10:56:38 -0500
+Received: by mail-wm1-f68.google.com with SMTP id c9so8527280wml.5;
+        Fri, 13 Nov 2020 07:56:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4/bF4c42U9QIMTb1QGxEpNjGgqxOXHed/9Sju++TrnQ=;
-        b=jLRCFJSC4LVQ9WUs0yyiPmszK0QoY8YTndx9qxhP7JieDaEOoVb7/5Q4bm9Ixtw234
-         Dmv8ZtdjxT/weu7ooPJ5y3z4mQZ+snejT4TCqfrUaLr/rOpV1ToXrKAMZNByJtBrfCtl
-         rXNIS995/TntlTPElbGrtLPiqud00YolaGtAG36hdxiKfVHdX6C2m5kulga60M/ENZht
-         ghOP4O+oZSkGg6i3KhvqLQSgtTWG4SlWr4c3xbFIE7+AV3VcZjY3J2pcF624IsSnvgjF
-         1tDyhJhlUb4Rl6bZad2Bg7MQCorE1nw5/sY7C8eIymiAqu1GQAFUfzXyuGL7jSFGL61u
-         pYHg==
-X-Gm-Message-State: AOAM533NWPiXoKqarqfKC62EiffB3h7RIxxrSOL1pfzP4Ku0h7RXCAfl
-        X+vxbkC0cs0b8oKwmuOwzJOzBxp0/FE=
-X-Google-Smtp-Source: ABdhPJw1/12loswbdkPkD8Zhl2Yvb+Tjd/1tqW0mRR71ohF0rznxZ7TNEV0H6NcysfGbIqHPuGQf6Q==
-X-Received: by 2002:ac2:5503:: with SMTP id j3mr1281724lfk.94.1605282930190;
-        Fri, 13 Nov 2020 07:55:30 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id v12sm1474128lji.3.2020.11.13.07.55.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 07:55:29 -0800 (PST)
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20201104234427.26477-12-digetx@gmail.com>
- <20201110202945.GF2375022@ulmo> <20201110203257.GC5957@sirena.org.uk>
- <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
- <20201111115534.GA4847@sirena.org.uk>
- <dd26eb18-8ac4-22a6-29b0-dbbe5fa6075b@gmail.com>
- <20201112171600.GD4742@sirena.org.uk>
- <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
- <20201112200123.GF4742@sirena.org.uk>
- <ce9e2d9f-917e-fb8a-7323-f3bf1a367e9d@gmail.com>
- <20201113142937.GB4828@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7f066805-97d9-088f-e89d-a554fe478574@gmail.com>
-Date:   Fri, 13 Nov 2020 18:55:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=s6hyMVEFfMlo0q95MNqmUfjlLkrSXFwE1LaCrXDrf1U=;
+        b=T7GlhVgQg1AiqMBL5AxD8kXFbzWQbAmSuPZCfSo0A8EkuVLrlJ0ifWX652KFtdMPAc
+         5uRrKQhTQ2rQ1Oy7zIQvyD6H6eIwNVhrW2HIu4tFMCE7HzwPEOuFa50oJmgy36GxHa4K
+         B1Xgn0mhxHJmO4re6AGPMZl1CSoUFq50/yahdNG908uC2In/piy8H21Cxy7LUpe60BKM
+         49UzKynUQXiCFabc7wmgXXm6uHkxIMFmSjP+koGasjsMIN/RcL+7DXMvVbJJPmO3UXZB
+         uTGB3/V3hAvapO1ym9TxyxU/2kZXOVOBFhdjH3oxYqf5Tfd907vuXzwJeIa9ZrbLdBeS
+         6EyQ==
+X-Gm-Message-State: AOAM531aY59mXvySawSFjRp+tZFqo4xe2QmOzHd84n8LTSbAD26hOdRC
+        Ek1E8jJGz+yAlPEFrMtJeNA=
+X-Google-Smtp-Source: ABdhPJwxmDHIqC3YZFsvlTECTSLwSAi65CsT4dZPk+I9eWtnFzWgSXA34nI1Jw+q43SYi23eyToExQ==
+X-Received: by 2002:a1c:2643:: with SMTP id m64mr3286089wmm.28.1605282992030;
+        Fri, 13 Nov 2020 07:56:32 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id m18sm9567357wru.37.2020.11.13.07.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 07:56:31 -0800 (PST)
+Date:   Fri, 13 Nov 2020 15:56:29 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 10/17] x86/hyperv: implement and use
+ hv_smp_prepare_cpus
+Message-ID: <20201113155629.bkw45kcuqhr6puck@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-11-wei.liu@kernel.org>
+ <87y2j6wmm7.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113142937.GB4828@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2j6wmm7.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.11.2020 17:29, Mark Brown пишет:
-> On Fri, Nov 13, 2020 at 01:37:01AM +0300, Dmitry Osipenko wrote:
->> 12.11.2020 23:01, Mark Brown пишет:
->>>> But it's not allowed to change voltage of a dummy regulator, is it
->>>> intentional?
+On Thu, Nov 12, 2020 at 05:44:48PM +0100, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
 > 
->>> Of course not, we can't know if the requested new voltage is valid - the
->>> driver would have to have explict support for handling situations where
->>> it's not possible to change the voltage (which it can detect through
->>> enumerating the values it wants to set at startup).
+> > Microsoft Hypervisor requires the root partition to make a few
+> > hypercalls to setup application processors before they can be used.
+> >
+> > Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > ---
+> > CPU hotplug and unplug is not yet supported in this setup, so those
+> > paths remain untouched.
+> > ---
+> >  arch/x86/kernel/cpu/mshyperv.c | 27 +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >
+> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> > index f7633e1e4c82..4795e54550e6 100644
+> > --- a/arch/x86/kernel/cpu/mshyperv.c
+> > +++ b/arch/x86/kernel/cpu/mshyperv.c
+> > @@ -31,6 +31,7 @@
+> >  #include <asm/reboot.h>
+> >  #include <asm/nmi.h>
+> >  #include <clocksource/hyperv_timer.h>
+> > +#include <asm/numa.h>
+> >  
+> >  struct ms_hyperv_info ms_hyperv;
+> >  EXPORT_SYMBOL_GPL(ms_hyperv);
+> > @@ -208,6 +209,30 @@ static void __init hv_smp_prepare_boot_cpu(void)
+> >  	hv_init_spinlocks();
+> >  #endif
+> >  }
+> > +
+> > +static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+> > +{
+> > +#if defined(CONFIG_X86_64)
 > 
->>> [Requesting the same supply multiple times]
+> '#ifdef CONFIG_X86_64' is equally good as you can't compile x86_64
+> support as a module :-)
 > 
->> But how driver is supposed to recognize that it's a dummy or buggy
->> regulator if it rejects all voltages?
+> > +	int i;
+> > +	int ret;
+> > +
+> > +	native_smp_prepare_cpus(max_cpus);
+> > +
 > 
-> It's not clear if it matters - it's more a policy decision on the part
-> of the driver about what it thinks safe error handling is.  If it's not
-> possible to read voltages from the regulator the consumer driver has to
-> decide what it thinks it's safe for it to do, either way it has no idea
-> what the actual current voltage is.  It could assume that it's something
-> that supports all the use cases it wants to use and just carry on with
-> no configuration of voltages, it could decide that it might not support
-> everything and not make any changes to be safe, or do something like
-> try to figure out that if we're currently at a given OPP that's the top
-> OPP possible.  Historically when we've not had regulator control in
-> these drivers so they have effectively gone with the first option of
-> just assuming it's a generally safe value, this often aligns with what
-> the power on requirements for SoCs are so it's not unreasonable.
+> So hypotetically, if hv_root_partition is true but 'ifdef CONFIG_X86_64'
+> is false, we won't even be doing native_smp_prepare_cpus()? This doesn't
+> sound right. Either move it outside of #ifdef or put the #ifdef around
+> 'smp_ops.smp_prepare_cpus' assignment too.
+> 
 
-I don't think that in a case of this particular driver there is a way to
-make any decisions other than to assume that all changes are safe to be
-done if regulator isn't specified in a device-tree.
+Fixed. Thanks.
 
-If regulator_get() returns a dummy regulator, then this means that
-regulator isn't specified in a device-tree. But then the only way for a
-consumer driver to check whether regulator is dummy, is to check
-presence of the supply property in a device-tree.
-
-We want to emit error messages when something goes wrong, for example
-when regulator voltage fails to change. It's fine that voltage changes
-are failing for a dummy regulator, but then consumer driver shouldn't
-recognize it as a error condition.
-
-The regulator_get_optional() provides a more consistent and
-straightforward way for consumer drivers to check presence of a physical
-voltage regulator in comparison to dealing with a regulator_get(). The
-dummy regulator is nice to use when there is no need to change
-regulator's voltage, which doesn't work for a dummy regulator.
+Wei.
