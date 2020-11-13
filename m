@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478972B1CAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF332B1C68
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgKMNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
+        id S1726558AbgKMNt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgKMNtt (ORCPT
+        with ESMTP id S1726894AbgKMNtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:49:49 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2970C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:48 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id d142so8199700wmd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:48 -0800 (PST)
+        Fri, 13 Nov 2020 08:49:50 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D9BC061A48
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:49 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id c16so8553667wmd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+yLMECfz4SQeh3+r6t6vIS8Tp4hfLiHYcv2v7xPbbH8=;
-        b=XwFxvGa9Xc8VSIwGJA9BMdIQW9mUlNFmQAqTyunI02+OZcgeOhYLBswJPnWTzruwhx
-         mo2BJ/8T2PrZu9oTvXUxAG0l3V9EYDdFyx7DsRMMIdRybw/crYokPbqPGjgsX1OrvKg4
-         EuqJPpQkRnhM/0e2vZJTF4poIpcDRj4YipAu3SOfO88BrBy4UvVqd6Oj6r7hGQb0nBCl
-         G7TVdOXrrDTrsVtibgzInH4IYVN7myIIjGIn1Azb4qlkyWs2s5seN8RWVtcVNwjVALRa
-         WnWakzteQsdODnVicJ5uPCUXG2Htl3eFcSD+gBt//wKClhkOCRFtaX3Pdpj9eQAFs918
-         VaGA==
+        bh=6/SblzwLdOmJ9tWarQDFSbsr05Zj/WUad2ODh3SNdKc=;
+        b=Y1p0NVuHUW4H9XgyeNEWCXTCVdtUlbV30yUCoYgsuqo4Y01RdEjka3nughIasrl1gp
+         /eqiX+NbO1uIk+A3G8OtTbt0AwZXPnEaxkpnpoX0txhxN5lZMtgFsh2BUkU/LiDjdh36
+         Ly8Ij7JoJsu4OIEFMhMk9bCFS5nA+jHJAv1qyMPRlaq1hSyddSb1ydx+hp1xs0J3hShO
+         zbbnJdr/fBEncMp+JHcFJNpQqw0FQ5p88wQWyBocKZ+5TV7ehN7RQUtW07XFUDBVEgF8
+         7dkkhHl5fRILzvVR8k65Yiax9xqCgRdFaUy/6BoiRrP+EWD61nsmY8gCMlxu2+ru4vjv
+         k0Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+yLMECfz4SQeh3+r6t6vIS8Tp4hfLiHYcv2v7xPbbH8=;
-        b=p/ZDbQ9HW/U4pE7rh/PbDVbJISg7IE6Uub3qCrH9F28q2qSJZI576aSNDnQls6LgkH
-         JfzG1p8EenynAxrMWAjlEvc24kVi/gg3jQuLI2j3EMUF3C4ZkeajMPLUtkO5KHVHMRry
-         bA/YYx41IPE3QUY+UtiC5pNwkIhwK9FtRaq5QTzPC4SeeVtO1/vttC+iZsl1kKY+P1bi
-         1sDoAJstxABSxkMbwxtWTQ9sKjSDGw+CsZO+3isyJgCChITdW5uX9u3lhY8lwxfI28EZ
-         bLBjdOuMCYy+fkOSZVAn1e4aApB11nDarwxduT6ADbSySJtpOgje+2y/UY/GIuJP0h6w
-         cEyg==
-X-Gm-Message-State: AOAM533AnsiVwROJ39IiaUUFsoLwO26c6npaQb6jxm5bixGTXbgVxYDa
-        Uk1/T6/eGmZFvEe4lyuvtYrgSg==
-X-Google-Smtp-Source: ABdhPJx+1sAzkV64JF8F64spUR6Uwp5TXog7Wm8TUi4ys94jGGva4WCiRiKmB8JtjjfXmRWCmxKYsA==
-X-Received: by 2002:a1c:bac1:: with SMTP id k184mr2593413wmf.76.1605275387562;
-        Fri, 13 Nov 2020 05:49:47 -0800 (PST)
+        bh=6/SblzwLdOmJ9tWarQDFSbsr05Zj/WUad2ODh3SNdKc=;
+        b=k6rA2bUxqNfdkW55dV4KZZOaUvrPD4YbGfnGY3WLPGD3mYde9gN7zzVpCzGZJhDQ8E
+         jUI3palbBMcBxuCW/r8FHLqbA24cvE2X86m7l5Nzj6BrFpmgHxf++9da0GkJjvA3FoMC
+         6OZ7RfTsnTEZ7rAXN/zPCUkRGp2XqbFwlDceDn8dKoyIDQtMfCD3BMc+wtub8oxUAq8j
+         bE1UdoOO87ytHKca5CPuip97OskyaCq1mBlM4Vz9s34rHfRMI0m9UK5xYvxmPSPAYSQQ
+         KSAjXSGjiNs9FlWD26riTkDjwTxinj3YG/P9DUVyGeKyErm3DD84O0Zr62/tthagd2SQ
+         gXsQ==
+X-Gm-Message-State: AOAM530bvq1VGCu66aa6Mr5mVX3JChCQR3yVLs5chAKxc3fvvahBbf6m
+        qjEkQojVsgID5ivO9YzJflTxSQ==
+X-Google-Smtp-Source: ABdhPJxrcuhGfoNe9QQTIoT/4z4aQpdapdF6KKqt0Msq0U2GXATSYUSIF5p6At39W9yFD+O2Ih7GmA==
+X-Received: by 2002:a1c:c286:: with SMTP id s128mr2672526wmf.88.1605275388627;
+        Fri, 13 Nov 2020 05:49:48 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.46
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:49:46 -0800 (PST)
+        Fri, 13 Nov 2020 05:49:48 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 04/40] drm/amd/amdgpu/amdgpu_drv: Move 'amdgpu_info_ioctl()'s prototype to shared header
-Date:   Fri, 13 Nov 2020 13:49:02 +0000
-Message-Id: <20201113134938.4004947-5-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 05/40] drm/amd/amdgpu/amdgpu_ring: Fix misnaming of param 'max_dw'
+Date:   Fri, 13 Nov 2020 13:49:03 +0000
+Message-Id: <20201113134938.4004947-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
@@ -71,95 +73,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c:486:5: warning: no previous prototype for ‘amdgpu_info_ioctl’ [-Wmissing-prototypes]
- 486 | int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
- | ^~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:168: warning: Function parameter or member 'max_dw' not described in 'amdgpu_ring_init'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:168: warning: Excess function parameter 'max_ndw' description in 'amdgpu_ring_init'
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |  4 +---
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c |  1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h | 31 +++++++++++++++++++++++++
- 3 files changed, 33 insertions(+), 3 deletions(-)
- create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index 1dfea15bbec36..afd357df0f886 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -43,7 +43,7 @@
- #include "amdgpu_sched.h"
- 
- #include "amdgpu_amdkfd.h"
--
-+#include "amdgpu_kms.h"
- #include "amdgpu_ras.h"
- 
- /*
-@@ -1521,8 +1521,6 @@ int amdgpu_file_to_fpriv(struct file *filp, struct amdgpu_fpriv **fpriv)
- 	return 0;
- }
- 
--int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp);
--
- const struct drm_ioctl_desc amdgpu_ioctls_kms[] = {
- 	DRM_IOCTL_DEF_DRV(AMDGPU_GEM_CREATE, amdgpu_gem_create_ioctl, DRM_AUTH|DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(AMDGPU_CTX, amdgpu_ctx_ioctl, DRM_AUTH|DRM_RENDER_ALLOW),
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-index 98721ae931841..54c4ee6d230d8 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-@@ -41,6 +41,7 @@
- #include "amdgpu_amdkfd.h"
- #include "amdgpu_gem.h"
- #include "amdgpu_display.h"
-+#include "amdgpu_kms.h"
- #include "amdgpu_ras.h"
- 
- void amdgpu_unregister_gpu_instance(struct amdgpu_device *adev)
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h
-new file mode 100644
-index 0000000000000..f3111aef76cae
---- /dev/null
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h
-@@ -0,0 +1,31 @@
-+/* amdgpu_kms.h -- Private header for radeon driver -*- linux-c -*-
-+ *
-+ * Copyright 2008 Advanced Micro Devices, Inc.
-+ * Copyright 2008 Red Hat Inc.
-+ * Copyright 2009 Jerome Glisse.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice shall be included in
-+ * all copies or substantial portions of the Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-+ * OTHER DEALINGS IN THE SOFTWARE.
-+ */
-+
-+#ifndef __AMDGPU_KMS_H__
-+#define __AMDGPU_KMS_H__
-+
-+int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp);
-+
-+#endif                         /* __AMDGPU_KMS_H__ */
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+index a23b2079696a1..1a612f51ecd9e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+@@ -154,7 +154,7 @@ void amdgpu_ring_undo(struct amdgpu_ring *ring)
+  *
+  * @adev: amdgpu_device pointer
+  * @ring: amdgpu_ring structure holding ring information
+- * @max_ndw: maximum number of dw for ring alloc
++ * @max_dw: maximum number of dw for ring alloc
+  * @irq_src: interrupt source to use for this ring
+  * @irq_type: interrupt type to use for this ring
+  * @hw_prio: ring priority (NORMAL/HIGH)
 -- 
 2.25.1
 
