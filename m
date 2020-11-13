@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAEC2B20C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EBF2B20CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgKMQrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:47:02 -0500
-Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:38354 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726248AbgKMQrC (ORCPT
+        id S1726397AbgKMQsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbgKMQsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:47:02 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0ED6E100E7B48;
-        Fri, 13 Nov 2020 16:47:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:6120:6742:7901:7903:7904:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14180:14659:14721:21060:21080:21324:21451:21627:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: join27_180ffb427310
-X-Filterd-Recvd-Size: 3227
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 13 Nov 2020 16:46:58 +0000 (UTC)
-Message-ID: <8d00647824e2ce8c05ee4447e158885e0134ed37.camel@perches.com>
-Subject: Re: [PATCH v4 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-From:   Joe Perches <joe@perches.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Date:   Fri, 13 Nov 2020 08:46:57 -0800
-In-Reply-To: <20201113105418.GB15897@paasikivi.fi.intel.com>
-References: <20201103133400.24805-1-sakari.ailus@linux.intel.com>
-         <20201103144747.GD4077@smile.fi.intel.com>
-         <20201103145616.GJ26150@paasikivi.fi.intel.com>
-         <b389f6991ede1f8ae89a0dbaa8deab06aecc6146.camel@perches.com>
-         <20201113105418.GB15897@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 13 Nov 2020 11:48:37 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C42C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:48:37 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id h23so11427690ljg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:48:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=7doX+Q2P5UCUWUpT6ReldByi3ONljUYbb1V/UFZ9JIo=;
+        b=LHIUxm6paAm/InNjhVnoYu9ahFKjZd4EUYet7mgmvHK0Y2Pd1mMQ+tSzdu1ZMkIR2k
+         hHaQWJSIeNgbgZUxIFuYxncARjTG7hQo6hq27iBJHFzrdtydRO1VUnO0RcQIWqiouaNQ
+         +DKlpU89b+NTXBd8a46eBP6XCBLb2XDY5BPsPD4K54UDbkqEQCplzTp7wOK1ldIHT0dH
+         AtagVAi7qSIcksAViBUV5PL8138KSKBSeJb5LEvPGOYvJgL8EZeoF3uB+AYkBB5n7/uG
+         KEpzy9gLkcEBPQeyo05u0QJP5F5ug/0lAYyQrckD7eQxkrCewbLeQfz+CZ+0w0jQzyDe
+         9ovQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=7doX+Q2P5UCUWUpT6ReldByi3ONljUYbb1V/UFZ9JIo=;
+        b=jEreeVnwJeHm8kKDiLfTZdLohvASuWCp21Q2ESiIWrhd6Lo3jMhtuKuy2HBA3tg6Kd
+         6BSXGF4a/PNN3CaXzSj7EB01ZJsVRNZH53TWUPwAQFFRnJrNHPMxQmaa747Nf+T4fbyZ
+         6FgZBKRcZ8SnGHbUuUA6PyPROWoIUubwH1raTwcK2NHKNYbZ9aAU1FPg8rourlCzW/Lq
+         uXW5TUh2x7RDiN+GcOg/qPlqh/dHPjnl9r62WtTOjbUu1Wu+m3LqRxxFez3Mohk/Zo6e
+         3rNLc1a84A93c+Bk5KThg5JuMcdttupM8o85dJM9onQPvw9ct8mc9t2p4/17X5zfczN6
+         iNyw==
+X-Gm-Message-State: AOAM530skpFaG/wtIraZxMO+I6JJ/08siKeIzZqORfxkEZ5Masv1TxSd
+        uhYXZeGEQxGLPWD918rluJ6TxY3bCi73k64CKr2vvPFl
+X-Google-Smtp-Source: ABdhPJyltpuX/dQGQeWYoX49byF3eHJneMYa4jVHDqobQQmuuAtrtg717QnOK3F0mJJaDTM0BGoAv7xWguo0GINkQiA=
+X-Received: by 2002:a2e:585e:: with SMTP id x30mr1532097ljd.426.1605286111094;
+ Fri, 13 Nov 2020 08:48:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab3:7110:0:0:0:0:0 with HTTP; Fri, 13 Nov 2020 08:48:30
+ -0800 (PST)
+Reply-To: gabrieledgal00@gmail.com
+From:   Mrscarressa Danton <vivianbikomagu126@gmail.com>
+Date:   Fri, 13 Nov 2020 08:48:30 -0800
+Message-ID: <CAPAK+woK-pF+qvBtMvaMG1CJeNL73ySZAbrh0ot1-1eJtOnhCQ@mail.gmail.com>
+Subject: JK
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-13 at 12:54 +0200, Sakari Ailus wrote:
-> Hi Joe,
-> 
-> On Tue, Nov 03, 2020 at 08:49:36AM -0800, Joe Perches wrote:
-> > On Tue, 2020-11-03 at 16:56 +0200, Sakari Ailus wrote:
-> > > On Tue, Nov 03, 2020 at 04:47:47PM +0200, Andy Shevchenko wrote:
-> > > > On Tue, Nov 03, 2020 at 03:34:00PM +0200, Sakari Ailus wrote:
-> > > > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
-> > > > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
-> > > > > so the same implementation can be used.
-> > > > 
-> > > > ...
-> > > > 
-> > > > > +static noinline_for_stack
-> > > > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
-> > > > > +		    struct printf_spec spec, const char *fmt)
-> > > > > +{
-> > > > > +	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
-> > > > 
-> > > > I would add a comment that there is another possibility, i.e. big-endian, but
-> > > > it occupies less space.
-> > 
-> > I think it's unnecessary as it's obvious and similarly done in other
-> > <foo>_string type functions.
-> > 
-> > > > > +	p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
-> > > > > +			       sizeof(u32));
-> > > > 
-> > > > I would go with one line here.
-> > > 
-> > > It's wrapped since the result would be over 80 otherwise.
-> > 
-> > Perhaps simpler as
-> > 
-> > 	p = special_hex_number(p, p + 10, *fourcc, sizeof(u32));
-> 
-> Yes. But having bugs elsewhere would have a magnified effect.
+-- 
+Dear Beloved One.
 
-How's that?  Where would "elsewhere" be?
+I am  Mr. Gabriel Edgal  , I'm an internal Auditor in Btci bank,I have an
+abandoned fund of $9.5 million Dollars to transfer to you ,which we are
+going to share 50:50 .You will only stand as the next of kin to my late
+client who deposited the fund in our bank so many years back and leave no
+one behind to claim the inheritance fund as his or her family relatives
+,The reason why i contacted in this transaction is because you  bear the
+same name or surname as my late client who died with his entire family in
+an Auto Accident in 2010 none of his family member was alive after the
+incident . I want to invite you as foreign partner to stand as the  next of
+kin to the deceased customer ,for we to put a claim over the  deposited
+fund and share it between two of us 50: 50 each  . I want you to contact me
+back here through my email address (gabrieledgal00@gmail.com) for more details
 
-> I wouldn't be afraid of a newline here.
-
-I'd prefer obvious code instead of indirected p vs output
-and having to lookup whatever output is again.
-
-special_hex_number is already known to fit in the buffer.
-
+Best Regards,
+Mr. Gabriel Edgal
