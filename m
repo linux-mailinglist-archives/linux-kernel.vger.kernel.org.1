@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE5A2B18D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43EC2B18D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgKMKOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:14:39 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:60286 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKMKOi (ORCPT
+        id S1726405AbgKMKO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:14:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726324AbgKMKO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:14:38 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADAAnDI160473;
-        Fri, 13 Nov 2020 10:14:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=l4B1MAfnMRL1EsdoVAfHURAMa/V+QkYO+uBwIFlUECI=;
- b=UAVKs+wSiu554wUg2pEOoJBXFMlWor1sID20/T5QjkK6iBMmBu21uLSI8czAqsraCk/D
- 865SYqSmUiEsVbu2KyEGrTa3kroZJV4CY306TDFoXU0DYP34rFbwpVQg9ENvpQ4BufMV
- N0QsVvOfhmmV6Bce5uqTFE606Pbxx9lObwWsqmfWxIB6y9y20gVutQqHhRZlX9SvE+Jq
- pcZrlGrGigUrMEnxBdCCbcqjH0jfBVHK+1ocMYSWcJi6694gECT+dDIUwYcBO5zApSuc
- eTq0rhwV9Ui/h4mN8zowpMj6pFwtEjjXk4flYdEWtWDTl4bwpOvLPE1UmmVhaBdjP3I2 vg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 34p72f006g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 13 Nov 2020 10:14:30 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADABMgB097084;
-        Fri, 13 Nov 2020 10:14:30 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 34p55stf3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Nov 2020 10:14:29 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0ADAERu7032154;
-        Fri, 13 Nov 2020 10:14:28 GMT
-Received: from mwanda (/10.175.206.108)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 13 Nov 2020 02:14:27 -0800
-Date:   Fri, 13 Nov 2020 13:14:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] clk: qcom: lpass-sc7180: Clean up on error in
- lpass_sc7180_init()
-Message-ID: <20201113101419.GC168908@mwanda>
+        Fri, 13 Nov 2020 05:14:58 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D60BC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:14:42 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id u12so1925977wrt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:14:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=lPwX4KhpzNCXai8Ockag9i6UQPlNHUWTUTdeI3sp8BM=;
+        b=makBkJDwS1XqB+QR2XXJFQ/qQ/IRhYlwJ/o4F68LYeMqHW4goG6yVLUvDJqvkb0KxY
+         QQRvNBsVTPD54ibEFwSAKJDUS3MlHqExjX0/0kfc1RiWlYQETBbsXESs2rY2C75BxcAt
+         FJaprSUAvujrsHTpJ9A9KHfxu12Z9FhoKpSxU9lQ3wSbO/DpkXLdaFHowSrwefS+0oOP
+         /P8ueY9EZYOxcSB6Y7dhC3xzLYGqljcj+vR+pZOYfUrxUSJSZ9sV2jiObdjs8vStOHyl
+         N90gbhrPdnVPYsfJg2dcjJN1kAzVCcj8IctM4KWKHFITsCpGaB3Dv1PrG2hT9rViJc+n
+         gljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=lPwX4KhpzNCXai8Ockag9i6UQPlNHUWTUTdeI3sp8BM=;
+        b=CDVZ0HUYOhOT7fbheBqQkVdGGYlPuWokPXqipdAXZBkpU+OazbdcXQUe5L7RXOKD21
+         c/Y5vYy1z1ICslDsvc21irA5hhTDwtIWDzteEY9Vu1qRzwPHtQQSFJJpQfljJ6yQr37/
+         vJT0emsmR+s8y/B+RfH1TCGNchE1ti65YLCRkFKWhidNd/stSJQ4KnHangDbpcns/zpU
+         i+80GHgfzytkpUMSowRsrsVAREdlS/wtwX4icBYP71lkkeTkYgXqxDjahSRADuCqjm+l
+         R7Ep1KCDQg6l958yXQKsHZj7aTysDi3jZ2pCW45xWpTg84YdT3L+GGEWUVEEITjJ4XQD
+         gTtg==
+X-Gm-Message-State: AOAM532twF5fK8DHqHfzJdVq0ZKIeqMvvIk8PK6OhXc63phOPsspNazo
+        p4LywJCuveqTES1myuSTllHIBA==
+X-Google-Smtp-Source: ABdhPJzOjrgNKGSimKiyC4WJC509yx5Vd/eQx3pmMYwdFjx1IigZuAnMyo0I+AnrzhpXOBlGdNxzrA==
+X-Received: by 2002:adf:fc41:: with SMTP id e1mr2470991wrs.406.1605262481066;
+        Fri, 13 Nov 2020 02:14:41 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id g138sm9738203wme.39.2020.11.13.02.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 02:14:40 -0800 (PST)
+Date:   Fri, 13 Nov 2020 10:14:38 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Michael Brunner <Michael.Brunner@kontron.com>,
+        "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "mibru@gmx.de" <mibru@gmx.de>,
+        "vkrasnov@dev.rtsoft.ru" <vkrasnov@dev.rtsoft.ru>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mvanyulin@dev.rtsoft.ru" <mvanyulin@dev.rtsoft.ru>
+Subject: Re: [PATCH v2] mfd: kempld-core: Check for DMI definition before ACPI
+Message-ID: <20201113101438.GF3718728@dell>
+References: <981276386ec1b496b423b7605b7ac912884b7172.camel@kontron.com>
+ <bf70506e5aeb87889b298e342f96bae0e2187102.camel@kontron.com>
+ <20201110161118.GE17288@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011130061
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011130061
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201110161118.GE17288@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the first driver if the second driver can't be registered.
+On Tue, 10 Nov 2020, Guenter Roeck wrote:
 
-Fixes: 4ee9fe3e292b ("clk: qcom: lpass-sc7180: Disentangle the two clock devices")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/clk/qcom/lpasscorecc-sc7180.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> On Tue, Nov 10, 2020 at 03:23:21PM +0000, Michael Brunner wrote:
+> > Change the detection order to priorize DMI table entries over available
+> > ACPI entries.
+> > 
+> > This makes it more easy for product developers to patch product specific
+> > handling into the driver.
+> > Furthermore it allows to simplify the implementation a bit and
+> > especially to remove the need to force synchronous probing.
+> > 
+> > Based on the following commit introduced with v5.10-rc1:
+> > commit e8299c7313af ("mfd: Add ACPI support to Kontron PLD driver")
+> > 
+> > v2: Fixed coding style as suggested by Guenther Roeck
+> > 
+> 
+> Nit: change logs should be after '---'.
 
-diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-index 1a3925badd7c..9081649f476f 100644
---- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-+++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-@@ -491,7 +491,13 @@ static int __init lpass_sc7180_init(void)
- 	if (ret)
- 		return ret;
- 
--	return platform_driver_register(&lpass_hm_sc7180_driver);
-+	ret = platform_driver_register(&lpass_hm_sc7180_driver);
-+	if (ret) {
-+		platform_driver_unregister(&lpass_core_cc_sc7180_driver);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- subsys_initcall(lpass_sc7180_init);
- 
+Right.  Please submit a v3 fixing this.
+
+> Other than that,
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
 -- 
-2.28.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
