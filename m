@@ -2,135 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097F72B24D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA22D2B24E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgKMTpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:45:50 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:36031 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgKMTpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:45:49 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605296749; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/yWkcPTIQsfeWoQXHfqsMxaK6CtFGnKWHzbg1QN52pM=;
- b=RiTnzAQlDnFmkTPMQ7Y/BCb4jG7u0W+k2IGYVxXcQDCQbX+Y5Lu7U/LuAJyhQGbh3XR4ww/+
- YjDdawo0qsU0cm30uuEQdAn2rw41exiA3+F76UUA4q7wMAhJIFLIXg9cZ6m4MKmXJGYEZpvJ
- LgwGOfM8smWhrezALjgumIYQ9u8=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5faee25ae9dd187f532d168c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 19:45:30
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9992FC433FE; Fri, 13 Nov 2020 19:45:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1E95C433CB;
-        Fri, 13 Nov 2020 19:45:29 +0000 (UTC)
+        id S1726460AbgKMTq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:46:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKMTqz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 14:46:55 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A415C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:46:55 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id s9so12155143ljo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:46:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HsABYu4fiHtPfsyj03E4PvSaOqgBaRQivbPyU1cy34A=;
+        b=cMNc6fXdDKF/qTr3R323Nz73YQEzMHyOvf8fPTz8pwE791It5ltCdQRmumuyS1+HzL
+         xFxPusKNldryA4c1IkUZnCMVZINvoXDY4zzgX8drrQfyYcx6nzLCRzrTI6tA8WQ8bVmo
+         uMOboLvLcpDAG6eUsq773dhlTVXXZW1pFMtVQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HsABYu4fiHtPfsyj03E4PvSaOqgBaRQivbPyU1cy34A=;
+        b=Y3/IZkvpHptIVCxmkOyqTLKJDi0VQwIksB+/8tOoMQyN3/t/3VHzujQqM2UJFwfi84
+         WSwqpn9xsnXwqU1vOueU8b8s87xgbqZnAjOTEjPS2+xf1nzyf8wxTWB6usaZl2uqW6bL
+         XXrGXqcyvfwqQ6ez7FpkiRanVduf5Y6v0yZMVC60FeOp8oZNbcVdXl0BYDcDhRdkYotZ
+         H//ceWONxGhZ3uYXevikqpzTU+q36a9d2df/PDCoLKnzDpaR634VNEcKJQIDLUawsdIv
+         TohgjV7dJ83B5eelEKBhZoZO5k608jp9jVx8lrn6swgV26eeB/xuizIR8/xS2iidZK9i
+         bPrw==
+X-Gm-Message-State: AOAM532g90ahzwNT5wMH1hzHJWqjtKgb8iUmCuZo9ZhdvK4CIKNG1fP9
+        LBfy7FfpuXqrLLZR7lbC2ZaSVSRZ5gM+Sg==
+X-Google-Smtp-Source: ABdhPJwHu8sPdI+1/+BmMT8SeKRlyh2iKiPAyWRnFaCt+Cl7m4w9WAzM5nzw1+LGwQxQXwPyuLr3pw==
+X-Received: by 2002:a2e:7a18:: with SMTP id v24mr1879268ljc.224.1605296813489;
+        Fri, 13 Nov 2020 11:46:53 -0800 (PST)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id i125sm1749740lji.50.2020.11.13.11.46.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 11:46:52 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id b17so12175513ljf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:46:52 -0800 (PST)
+X-Received: by 2002:a2e:a375:: with SMTP id i21mr1527056ljn.421.1605296811879;
+ Fri, 13 Nov 2020 11:46:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 13 Nov 2020 11:45:29 -0800
-From:   abhinavk@codeaurora.org
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-Subject: Re: [Freedreno] [PATCH 34/40] drm/msm/disp/mdp5/mdp5_ctl: Demote
- non-conformant kernel-doc headers
-In-Reply-To: <20201113134938.4004947-35-lee.jones@linaro.org>
-References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-35-lee.jones@linaro.org>
-Message-ID: <e3fc578627e273ed0e80552b196f51c0@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <cover.1605134506.git.dxu@dxuuu.xyz> <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
+ <20201113170338.3uxdgb4yl55dgto5@ast-mbp> <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
+ <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
+In-Reply-To: <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 13 Nov 2020 11:46:36 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj4EjAq=bN1aKUyfVR4xTM9K1QO-99+N0132V1DHs1XBQ@mail.gmail.com>
+Message-ID: <CAHk-=wj4EjAq=bN1aKUyfVR4xTM9K1QO-99+N0132V1DHs1XBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-13 05:49, Lee Jones wrote:
-> Very little attempt has been made to document these functions.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function
-> parameter or member 'ctl' not described in
-> 'mdp5_ctl_set_encoder_state'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function
-> parameter or member 'pipeline' not described in
-> 'mdp5_ctl_set_encoder_state'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function
-> parameter or member 'enabled' not described in
-> 'mdp5_ctl_set_encoder_state'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Excess
-> function parameter 'enable' description in
-> 'mdp5_ctl_set_encoder_state'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
-> parameter or member 'ctl' not described in 'mdp5_ctl_commit'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
-> parameter or member 'pipeline' not described in 'mdp5_ctl_commit'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
-> parameter or member 'flush_mask' not described in 'mdp5_ctl_commit'
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
-> parameter or member 'start' not described in 'mdp5_ctl_commit'
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
-> b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
-> index 030279d7b64b7..b5c40f9773629 100644
-> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
-> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
-> @@ -213,10 +213,10 @@ static void send_start_signal(struct mdp5_ctl 
-> *ctl)
->  	spin_unlock_irqrestore(&ctl->hw_lock, flags);
->  }
-> 
-> -/**
-> +/*
->   * mdp5_ctl_set_encoder_state() - set the encoder state
->   *
-> - * @enable: true, when encoder is ready for data streaming; false, 
-> otherwise.
-> + * @enabled: true, when encoder is ready for data streaming; false, 
-> otherwise.
->   *
->   * Note:
->   * This encoder state is needed to trigger START signal (data path 
-> kickoff).
-> @@ -507,7 +507,7 @@ static void fix_for_single_flush(struct mdp5_ctl
-> *ctl, u32 *flush_mask,
->  	}
->  }
-> 
-> -/**
-> +/*
->   * mdp5_ctl_commit() - Register Flush
->   *
->   * The flush register is used to indicate several registers are all
+On Fri, Nov 13, 2020 at 11:17 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> The destination buffer was already initialized with zeros before the call.
+
+Side note: this is another example of you using the interface incorrectly.
+
+You should *not* initialize the buffer with zeroes. That's just extra
+work. One of the points of the strncpy_from_user() interface is that
+it is *not* the incredibly broken garbage that "strncpy()" is.
+
+strncpy_from_user() returns the size of the resulting string,
+*EXACTLY* so that people who care can then use that information
+directly and efficiently.
+
+Most of the time it's to avoid a strlen() on the result (and check for
+overflow), of course, but the other use-case is exactly that "maybe I
+need to pad out the result", so that you don't need to initialize the
+buffer beforehand.
+
+I'm not sure exactly which strncpy_from_user() user you have issues
+with, but I did a
+
+     git grep strncpy_from_user -- '*bpf*'
+
+and several of them look quite questionable.
+
+All of the ones in kernel/bpf/syscall.c seem to handle overflow
+incorrectly, for example, with a silent truncation instead of error.
+Maybe that's fine,  but it's questionable.
+
+And the bpf_trace_copy_string() thing doesn't check the result at all,
+so the end result may not be NUL-terminated. Maybe that's ok. I didn't
+check the call chain.
+
+              Linus
