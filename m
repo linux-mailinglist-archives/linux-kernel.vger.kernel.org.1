@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDF62B22FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C962B22F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgKMRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:47:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S1726776AbgKMRqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgKMRqo (ORCPT
+        with ESMTP id S1726594AbgKMRqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:46:44 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0E2C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:44 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id y17so9217934ilg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:44 -0800 (PST)
+        Fri, 13 Nov 2020 12:46:43 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58689C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:42 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id y9so9230288ilb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Jfejap+8Du6797JcyNsOi4rRJRb08+4y2GV2+v6nu0s=;
-        b=IuV8gkTO5CZpZfLPe00JA/img/sMGD2hPSw5r6J5oeG2t4j2ZLRXP/55DeRC1Qbk1Z
-         on3JtCbn61GadUrBOIbZTTc1BiA04aEg+X5SI0vzOSYIIyhcEjgm7V/5e6SQy2INnwHE
-         +MSLKTA0n1yS7nzG8fMjk0OKuJISuIqt66KTc=
+        bh=ps/6H7hrK1ATADSAJ/P7uDiDCoe2QlP6mffaF3J5A5c=;
+        b=a5dvCRcRRODlvMdlID+NlFVInONNQLGPdNimDwKArKb3vTyMagpLWi7+VrtAPN1dIJ
+         7cxgpDFkMwgusrzXnSqokNwl8F4l/eQ7HYWMxpUKbVwqw0mGFWjRkZQpaar480/JHExv
+         ZTFYPYKN9PWpNTzRf6Nxeb+fw6FX80B9mKtus=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Jfejap+8Du6797JcyNsOi4rRJRb08+4y2GV2+v6nu0s=;
-        b=tvCCEgAOUkEZ8kWDtD3xNNEHPUTPHDf6H/C602zbDFL/v2+wUAk/c+0RWdI4KNBbx/
-         ojPDih9n4RmfG+KOo6VAPcHl2Ndbf/fubgui2mEE5tiBzRdesA2YLkORmOrLpVL6EEA9
-         uo01tMLSybsD+Lpks7C9C/oBKedtkQEtf6E2E+zJ2vOb8X6HkGt4W0RMNf0jhGYU1eUt
-         5TNbA5iBWVzRnSAoR06ATbMVvHXPHvZIEby/Pnk5QN5vZqYiK7bZqamwNEy/ruJziSUj
-         Q/GGTrRpiPsf2HPINdsDnuNznB9WIQagja9fIJYg+z+QflWiFWETHWiJAVegWUF1yXJw
-         LKKg==
-X-Gm-Message-State: AOAM531gEw2VC/RHDexxe62JQIuKsrrF/5DRPGmQPaVPJx3N5yu/waBq
-        e96ZTe7nFrYBfR+DENqqYGj+7Q==
-X-Google-Smtp-Source: ABdhPJyZ0Z0BjU6Tdj/It/tBdXPQNbxJuI2xLWMLsJ5Sqmf/vaPNlTcbObOVzvqQVNnCHM4gXsZTug==
-X-Received: by 2002:a92:c648:: with SMTP id 8mr796543ill.176.1605289598015;
-        Fri, 13 Nov 2020 09:46:38 -0800 (PST)
+        bh=ps/6H7hrK1ATADSAJ/P7uDiDCoe2QlP6mffaF3J5A5c=;
+        b=CKinoP5CyE+qYMnl29aje9FDlyB3HgFLFuAXXGEWNrpdUfTIGGVJ0j4ikQ50egkxBE
+         bEgLd3avkdWSNIFWEEjT1PzLepljB2N6vklYBE2e7Jqc+l//WHAiTliUcZjuH74C+0/o
+         hJjnueEyPRZRwpm4NSGC2BGdStdRxKGEfR9OnYUMXxN8O3IDLQ9SfRRZBpFUI3BgswMD
+         LMydQGcRZ4f0CFwFZyO4AOAsqfv6EYcrX00D0Ltl9KC5YyVhtgTSz78arktWLJ32xk3Z
+         CXJyUy3wtF//+l0WrbupxNW26HbifEoXiKlmm95Z9CjnHN3OHlnR1CJjG6jKIy4vzckl
+         r+ig==
+X-Gm-Message-State: AOAM530/6Zj/wSUpi1pr7IAwW8zVGJA8ToBX4kGgtoosYDCFAw8Miftu
+        UnBwSXliGbXaUdYnZ51EiX28/w==
+X-Google-Smtp-Source: ABdhPJy34jNE7u5FOVq2FNyrhEkY4l6HDPO6T6pMZc40jCWj39E58N9YgjT7bqu+ZrtLZuFjMEOMZg==
+X-Received: by 2002:a92:9641:: with SMTP id g62mr785072ilh.166.1605289599323;
+        Fri, 13 Nov 2020 09:46:39 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.37
+        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 09:46:37 -0800 (PST)
+        Fri, 13 Nov 2020 09:46:38 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+To:     minyard@acm.org, arnd@arndb.de, gregkh@linuxfoundation.org,
         keescook@chromium.org, peterz@infradead.org
 Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/13] drivers/base/test/test_async_driver_probe: convert to use seqnum_ops
-Date:   Fri, 13 Nov 2020 10:46:07 -0700
-Message-Id: <633b231ad210279f0a5af0508db016812c8da496.1605287778.git.skhan@linuxfoundation.org>
+Subject: [PATCH v2 06/13] drivers/char/ipmi: convert stats to use seqnum_ops
+Date:   Fri, 13 Nov 2020 10:46:08 -0700
+Message-Id: <dc6bc91f50d3fe5c06b1157810e98b780bd0c737.1605287778.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605287778.git.skhan@linuxfoundation.org>
 References: <cover.1605287778.git.skhan@linuxfoundation.org>
@@ -65,94 +66,137 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Sequence Number api provides interfaces for unsigned atomic up counters
 leveraging atomic_t and atomic64_t ops underneath.
 
-atomic_t variables used to count errors, warns, keep track of timeout,
-and async completion are counters. Convert them to use seqnum32 and init
-counters to 0.
+Convert stats to use seqnum_ops.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/base/test/test_async_driver_probe.c | 28 +++++++++++++--------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ drivers/char/ipmi/ipmi_msghandler.c | 9 +++++----
+ drivers/char/ipmi/ipmi_si_intf.c    | 9 +++++----
+ drivers/char/ipmi/ipmi_ssif.c       | 9 +++++----
+ 3 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/base/test/test_async_driver_probe.c b/drivers/base/test/test_async_driver_probe.c
-index 3bb7beb127a9..75a3b617dcac 100644
---- a/drivers/base/test/test_async_driver_probe.c
-+++ b/drivers/base/test/test_async_driver_probe.c
-@@ -14,11 +14,15 @@
- #include <linux/numa.h>
- #include <linux/nodemask.h>
- #include <linux/topology.h>
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 8774a3b8ff95..a21c8e6f391b 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -35,6 +35,7 @@
+ #include <linux/nospec.h>
+ #include <linux/vmalloc.h>
+ #include <linux/delay.h>
 +#include <linux/seqnum_ops.h>
  
- #define TEST_PROBE_DELAY	(5 * 1000)	/* 5 sec */
- #define TEST_PROBE_THRESHOLD	(TEST_PROBE_DELAY / 2)
+ #define IPMI_DRIVER_VERSION "39.2"
  
--static atomic_t warnings, errors, timeout, async_completed;
-+static struct seqnum32 warnings = SEQNUM_INIT(0);
-+static struct seqnum32 errors = SEQNUM_INIT(0);
-+static struct seqnum32 timeout = SEQNUM_INIT(0);
-+static struct seqnum32 async_completed = SEQNUM_INIT(0);
+@@ -587,7 +588,7 @@ struct ipmi_smi {
+ 	struct ipmi_my_addrinfo addrinfo[IPMI_MAX_CHANNELS];
+ 	bool channels_ready;
  
- static int test_probe(struct platform_device *pdev)
- {
-@@ -29,9 +33,9 @@ static int test_probe(struct platform_device *pdev)
- 	 * have then report it as an error, otherwise we wil sleep for the
- 	 * required amount of time and then report completion.
- 	 */
--	if (atomic_read(&timeout)) {
-+	if (seqnum32_fetch(&timeout)) {
- 		dev_err(dev, "async probe took too long\n");
--		atomic_inc(&errors);
-+		seqnum32_inc_return(&errors);
- 	} else {
- 		dev_dbg(&pdev->dev, "sleeping for %d msecs in probe\n",
- 			 TEST_PROBE_DELAY);
-@@ -48,10 +52,10 @@ static int test_probe(struct platform_device *pdev)
- 		    dev_to_node(dev) != numa_node_id()) {
- 			dev_warn(dev, "NUMA node mismatch %d != %d\n",
- 				 dev_to_node(dev), numa_node_id());
--			atomic_inc(&warnings);
-+			seqnum32_inc_return(&warnings);
- 		}
+-	atomic_t stats[IPMI_NUM_STATS];
++	struct seqnum32 stats[IPMI_NUM_STATS];
  
--		atomic_inc(&async_completed);
-+		seqnum32_inc_return(&async_completed);
- 	}
+ 	/*
+ 	 * run_to_completion duplicate of smb_info, smi_info
+@@ -633,9 +634,9 @@ static LIST_HEAD(smi_watchers);
+ static DEFINE_MUTEX(smi_watchers_mutex);
  
- 	return 0;
-@@ -244,11 +248,12 @@ static int __init test_async_probe_init(void)
- 	 * Otherwise if they completed without errors or warnings then
- 	 * report successful completion.
- 	 */
--	if (atomic_read(&async_completed) != async_id) {
-+	if (seqnum32_fetch(&async_completed) != async_id) {
- 		pr_err("async events still pending, forcing timeout\n");
--		atomic_inc(&timeout);
-+		seqnum32_inc_return(&timeout);
- 		err = -ETIMEDOUT;
--	} else if (!atomic_read(&errors) && !atomic_read(&warnings)) {
-+	} else if (!seqnum32_fetch(&errors) &&
-+		   !seqnum32_fetch(&warnings)) {
- 		pr_info("completed successfully\n");
- 		return 0;
- 	}
-@@ -271,12 +276,13 @@ static int __init test_async_probe_init(void)
- 	 * errors or warnings being reported by the probe routine.
- 	 */
- 	if (err)
--		atomic_inc(&errors);
-+		seqnum32_inc_return(&errors);
- 	else
- 		err = -EINVAL;
+ #define ipmi_inc_stat(intf, stat) \
+-	atomic_inc(&(intf)->stats[IPMI_STAT_ ## stat])
++	seqnum32_inc_return(&(intf)->stats[IPMI_STAT_ ## stat])
+ #define ipmi_get_stat(intf, stat) \
+-	((unsigned int) atomic_read(&(intf)->stats[IPMI_STAT_ ## stat]))
++	(seqnum32_fetch(&(intf)->stats[IPMI_STAT_ ## stat]))
  
--	pr_err("Test failed with %d errors and %d warnings\n",
--	       atomic_read(&errors), atomic_read(&warnings));
-+	pr_err("Test failed with %u errors and %u warnings\n",
-+	       seqnum32_fetch(&errors),
-+	       seqnum32_fetch(&warnings));
+ static const char * const addr_src_to_str[] = {
+ 	"invalid", "hotmod", "hardcoded", "SPMI", "ACPI", "SMBIOS", "PCI",
+@@ -3468,7 +3469,7 @@ int ipmi_add_smi(struct module         *owner,
+ 	INIT_LIST_HEAD(&intf->cmd_rcvrs);
+ 	init_waitqueue_head(&intf->waitq);
+ 	for (i = 0; i < IPMI_NUM_STATS; i++)
+-		atomic_set(&intf->stats[i], 0);
++		seqnum32_init(&intf->stats[i]);
  
- 	return err;
- }
+ 	mutex_lock(&ipmi_interfaces_mutex);
+ 	/* Look for a hole in the numbers. */
+diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+index 5eac94cf4ff8..584742b51c22 100644
+--- a/drivers/char/ipmi/ipmi_si_intf.c
++++ b/drivers/char/ipmi/ipmi_si_intf.c
+@@ -43,6 +43,7 @@
+ #include "ipmi_si_sm.h"
+ #include <linux/string.h>
+ #include <linux/ctype.h>
++#include <linux/seqnum_ops.h>
+ 
+ /* Measure times between events in the driver. */
+ #undef DEBUG_TIMING
+@@ -237,7 +238,7 @@ struct smi_info {
+ 	bool dev_group_added;
+ 
+ 	/* Counters and things for the proc filesystem. */
+-	atomic_t stats[SI_NUM_STATS];
++	struct seqnum32 stats[SI_NUM_STATS];
+ 
+ 	struct task_struct *thread;
+ 
+@@ -245,9 +246,9 @@ struct smi_info {
+ };
+ 
+ #define smi_inc_stat(smi, stat) \
+-	atomic_inc(&(smi)->stats[SI_STAT_ ## stat])
++	seqnum32_inc_return(&(smi)->stats[SI_STAT_ ## stat])
+ #define smi_get_stat(smi, stat) \
+-	((unsigned int) atomic_read(&(smi)->stats[SI_STAT_ ## stat]))
++	(seqnum32_fetch(&(smi)->stats[SI_STAT_ ## stat]))
+ 
+ #define IPMI_MAX_INTFS 4
+ static int force_kipmid[IPMI_MAX_INTFS];
+@@ -2030,7 +2031,7 @@ static int try_smi_init(struct smi_info *new_smi)
+ 	atomic_set(&new_smi->req_events, 0);
+ 	new_smi->run_to_completion = false;
+ 	for (i = 0; i < SI_NUM_STATS; i++)
+-		atomic_set(&new_smi->stats[i], 0);
++		seqnum32_init(&new_smi->stats[i]);
+ 
+ 	new_smi->interrupt_disabled = true;
+ 	atomic_set(&new_smi->need_watch, 0);
+diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
+index 0416b9c9d410..d793286a635f 100644
+--- a/drivers/char/ipmi/ipmi_ssif.c
++++ b/drivers/char/ipmi/ipmi_ssif.c
+@@ -47,6 +47,7 @@
+ #include <linux/acpi.h>
+ #include <linux/ctype.h>
+ #include <linux/time64.h>
++#include <linux/seqnum_ops.h>
+ #include "ipmi_dmi.h"
+ 
+ #define DEVICE_NAME "ipmi_ssif"
+@@ -286,13 +287,13 @@ struct ssif_info {
+ 	unsigned int  multi_len;
+ 	unsigned int  multi_pos;
+ 
+-	atomic_t stats[SSIF_NUM_STATS];
++	struct seqnum32 stats[SSIF_NUM_STATS];
+ };
+ 
+ #define ssif_inc_stat(ssif, stat) \
+-	atomic_inc(&(ssif)->stats[SSIF_STAT_ ## stat])
++	seqnum32_inc_return(&(ssif)->stats[SSIF_STAT_ ## stat])
+ #define ssif_get_stat(ssif, stat) \
+-	((unsigned int) atomic_read(&(ssif)->stats[SSIF_STAT_ ## stat]))
++	(seqnum32_fetch(&(ssif)->stats[SSIF_STAT_ ## stat]))
+ 
+ static bool initialized;
+ static bool platform_registered;
+@@ -1864,7 +1865,7 @@ static int ssif_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ 	timer_setup(&ssif_info->watch_timer, watch_timeout, 0);
+ 
+ 	for (i = 0; i < SSIF_NUM_STATS; i++)
+-		atomic_set(&ssif_info->stats[i], 0);
++		seqnum32_init(&ssif_info->stats[i]);
+ 
+ 	if (ssif_info->supports_pec)
+ 		ssif_info->client->flags |= I2C_CLIENT_PEC;
 -- 
 2.27.0
 
