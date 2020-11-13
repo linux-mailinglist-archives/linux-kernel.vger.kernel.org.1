@@ -2,151 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4A72B1802
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6B32B1803
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgKMJRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:17:13 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:28472 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726181AbgKMJRM (ORCPT
+        id S1726309AbgKMJRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:17:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKMJRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:17:12 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD99TvI028705;
-        Fri, 13 Nov 2020 04:17:10 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34npab4y9m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 04:17:10 -0500
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AD9H9vL056536
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 13 Nov 2020 04:17:09 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Fri, 13 Nov
- 2020 04:17:08 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Fri, 13 Nov 2020 04:17:08 -0500
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AD9H6sW025285;
-        Fri, 13 Nov 2020 04:17:06 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: adc: ad7887: convert probe to device-managed functions
-Date:   Fri, 13 Nov 2020 11:16:48 +0200
-Message-ID: <20201113091648.148589-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_06:2020-11-12,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 clxscore=1015 lowpriorityscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0 spamscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011130056
+        Fri, 13 Nov 2020 04:17:32 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A02C0613D1;
+        Fri, 13 Nov 2020 01:17:32 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x15so4293271pll.2;
+        Fri, 13 Nov 2020 01:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1a1lBoMKaF9SveclJWs+RsYOR0BXSQKnr2c/16CY6gk=;
+        b=IAeYavo4X8xJrI11Qr1AQf5+93NOW39lTX8Dg7D9+u3H0u6AZCZWejVRWtcapUiAmb
+         Iwx0ZwyIAPFBh/55ahQx5y3bovKpfh0GFfWn3FJhsEfC5XowDoUQxZ8japhVoytKc97T
+         vwvQbF9/WVHEHgvlyrAi20SSuVgraPLfngZSHsJR64JJe1tetVs/f38ObEgSMZE1cN/k
+         K2D/nhhrJ2qig/V7PfoDQAZ9G34BMkYbGt52auszMuoRLAI/jcfXVyFMXEUEywUInvLG
+         JCxQaHe4jKllooZystVYqxRNHb499NaH54thUCl0rJ0uefHTUgYJwJgc/7UDR0L3gHuW
+         GmVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1a1lBoMKaF9SveclJWs+RsYOR0BXSQKnr2c/16CY6gk=;
+        b=n6KALPbqQ0mKEOPwWIPmw7EX10zcOPw8Lg/ddBZtbNpIqeZdeY/pwTZmYarqZyUzuj
+         3LwEIfrl9+FTZe8xRX/c8tSyeMH4ufCJP7Z8uK0pJzhLF+xWaMBrMRYEmZOXGNCg3SN2
+         gL4NsSkon11tzafgwvHPWjzZ1+pv6axXdF4Mj70tfAygx6v+qbLCR5Y0rCUGO8WVkVaQ
+         h2EzZDg/fxh2tvN4+nUsIBxtaOAU2W1MrmoBgMw2DHMIzvmQhQ4IXKvvJweu75Fgm7FG
+         joWDUlQTNnFVw0uuwP1/tkByO4oXn7XfV1siFG+/Z0Gp5hoPKY4XlLTCyejC1Ygu6yHT
+         LflA==
+X-Gm-Message-State: AOAM530itI19Z3hWvvo4/45PiIYGRIWWGp4bVYGNswKq/qTXh++6Zt54
+        zFWH58RlNBm6ukO6osKpIJo=
+X-Google-Smtp-Source: ABdhPJx8WfuAmSuc/zlJNZ64hvVSyHDyT3IEN24XS+IqLlvJTd3J3ckc8Izw+AejF7375DzUdmmogg==
+X-Received: by 2002:a17:902:8d93:b029:d8:d8ee:e275 with SMTP id v19-20020a1709028d93b02900d8d8eee275mr271468plo.71.1605259052110;
+        Fri, 13 Nov 2020 01:17:32 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id o67sm8936666pfb.109.2020.11.13.01.17.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Nov 2020 01:17:31 -0800 (PST)
+From:   chenlei0x@gmail.com
+X-Google-Original-From: lennychen@tencent.com
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lei Chen <lennychen@tencent.com>
+Subject: [PATCH] Remove unnecessary invoking of wbt_update_limits in wbt_init
+Date:   Fri, 13 Nov 2020 17:17:04 +0800
+Message-Id: <1605259024-21764-1-git-send-email-lennychen@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is conversion of the driver to use device-managed functions.
-The IIO registration and triggered buffer setup both have device-managed
-versions.
-The regulator disable needs to be handled via an action_or_reset handler.
+From: Lei Chen <lennychen@tencent.com>
 
-With these changes, the remove hook is removed, and the error path is
-cleaned up in probe.
+It's unnecessary to call wbt_update_limits explicitly within wbt_init,
+because it will be called in the following function wbt_queue_depth_changed.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Lei Chen <lennychen@tencent.com>
 ---
- drivers/iio/adc/ad7887.c | 43 ++++++++++++++--------------------------
- 1 file changed, 15 insertions(+), 28 deletions(-)
+ block/blk-wbt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
-index 99a480ad3985..4f6f0e0e03ee 100644
---- a/drivers/iio/adc/ad7887.c
-+++ b/drivers/iio/adc/ad7887.c
-@@ -232,6 +232,13 @@ static const struct iio_info ad7887_info = {
- 	.read_raw = &ad7887_read_raw,
- };
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index fd41008..0321ca8 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -835,7 +835,6 @@ int wbt_init(struct request_queue *q)
+ 	rwb->enable_state = WBT_STATE_ON_DEFAULT;
+ 	rwb->wc = 1;
+ 	rwb->rq_depth.default_depth = RWB_DEF_DEPTH;
+-	wbt_update_limits(rwb);
  
-+static void ad7887_reg_disable(void *data)
-+{
-+	struct regulator *reg = data;
-+
-+	regulator_disable(reg);
-+}
-+
- static int ad7887_probe(struct spi_device *spi)
- {
- 	struct ad7887_platform_data *pdata = spi->dev.platform_data;
-@@ -258,6 +265,10 @@ static int ad7887_probe(struct spi_device *spi)
- 		ret = regulator_enable(st->reg);
- 		if (ret)
- 			return ret;
-+
-+		ret = devm_add_action_or_reset(&spi->dev, ad7887_reg_disable, st->reg);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	st->chip_info =
-@@ -316,36 +327,13 @@ static int ad7887_probe(struct spi_device *spi)
- 		indio_dev->num_channels = st->chip_info->num_channels;
- 	}
- 
--	ret = iio_triggered_buffer_setup(indio_dev, &iio_pollfunc_store_time,
-+	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
-+			&iio_pollfunc_store_time,
- 			&ad7887_trigger_handler, &ad7887_ring_setup_ops);
- 	if (ret)
--		goto error_disable_reg;
--
--	ret = iio_device_register(indio_dev);
--	if (ret)
--		goto error_unregister_ring;
--
--	return 0;
--error_unregister_ring:
--	iio_triggered_buffer_cleanup(indio_dev);
--error_disable_reg:
--	if (st->reg)
--		regulator_disable(st->reg);
--
--	return ret;
--}
--
--static int ad7887_remove(struct spi_device *spi)
--{
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct ad7887_state *st = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	iio_triggered_buffer_cleanup(indio_dev);
--	if (st->reg)
--		regulator_disable(st->reg);
-+		return ret;
- 
--	return 0;
-+	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
- static const struct spi_device_id ad7887_id[] = {
-@@ -359,7 +347,6 @@ static struct spi_driver ad7887_driver = {
- 		.name	= "ad7887",
- 	},
- 	.probe		= ad7887_probe,
--	.remove		= ad7887_remove,
- 	.id_table	= ad7887_id,
- };
- module_spi_driver(ad7887_driver);
+ 	/*
+ 	 * Assign rwb and add the stats callback.
 -- 
-2.27.0
+1.8.3.1
 
