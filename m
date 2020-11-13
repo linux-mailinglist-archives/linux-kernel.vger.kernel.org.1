@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692732B19D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25BF2B19F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgKMLQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:16:42 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45420 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgKMLQK (ORCPT
+        id S1726176AbgKMLT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:19:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbgKMLTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:16:10 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 52DAE1F468E4
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>, kernel@collabora.com,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] arm: lib: xor-neon: move pragma options to makefile
-In-Reply-To: <CAMj1kXEpD1pp5uzOMeSYhgS_dzOysKuPMOMNgivUx58PGUdMJw@mail.gmail.com>
-References: <20201112212457.2042105-1-adrian.ratiu@collabora.com>
- <20201112212457.2042105-3-adrian.ratiu@collabora.com>
- <CAMj1kXEpD1pp5uzOMeSYhgS_dzOysKuPMOMNgivUx58PGUdMJw@mail.gmail.com>
-Date:   Fri, 13 Nov 2020 13:17:38 +0200
-Message-ID: <87k0upjyjx.fsf@collabora.com>
+        Fri, 13 Nov 2020 06:19:30 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646DFC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:19:27 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kdX6y-0008Sx-TA; Fri, 13 Nov 2020 12:19:24 +0100
+Subject: Re: [PATCH RESEND 0/4] regulator: debugging and fixing supply deps
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <cover.1605226675.git.mirq-linux@rere.qmqm.pl>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <0cb181b3-d257-b7a4-56e4-0d2bb04b0387@pengutronix.de>
+Date:   Fri, 13 Nov 2020 12:19:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+In-Reply-To: <cover.1605226675.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020, Ard Biesheuvel <ardb@kernel.org> wrote:
-> On Thu, 12 Nov 2020 at 22:23, Adrian Ratiu 
-> <adrian.ratiu@collabora.com> wrote: 
->> 
->> Using a pragma like GCC optimize is a bad idea because it tags 
->> all functions with an __attribute__((optimize)) which replaces 
->> optimization options rather than appending so could result in 
->> dropping important flags. Not recommended for production use. 
->> 
->> Because these options should always be enabled for this file, 
->> it's better to set them via command line. tree-vectorize is on 
->> by default in Clang, but it doesn't hurt to make it explicit. 
->> 
->> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu> 
->> Suggested-by: Ard Biesheuvel <ardb@kernel.org> Signed-off-by: 
->> Adrian Ratiu <adrian.ratiu@collabora.com> --- 
->>  arch/arm/lib/Makefile   |  2 +- arch/arm/lib/xor-neon.c | 10 
->>  ---------- 2 files changed, 1 insertion(+), 11 deletions(-) 
->> 
->> diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile 
->> index 6d2ba454f25b..12d31d1a7630 100644 --- 
->> a/arch/arm/lib/Makefile +++ b/arch/arm/lib/Makefile @@ -45,6 
->> +45,6 @@ $(obj)/csumpartialcopyuser.o: 
->> $(obj)/csumpartialcopygeneric.S 
->> 
->>  ifeq ($(CONFIG_KERNEL_MODE_NEON),y) 
->>    NEON_FLAGS                   := -march=armv7-a 
->>    -mfloat-abi=softfp -mfpu=neon 
->> -  CFLAGS_xor-neon.o            += $(NEON_FLAGS) + 
->> CFLAGS_xor-neon.o            += $(NEON_FLAGS) -ftree-vectorize 
->> -Wno-unused-variable 
->>    obj-$(CONFIG_XOR_BLOCKS)     += xor-neon.o 
->>  endif 
->> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c 
->> index e1e76186ec23..62b493e386c4 100644 --- 
->> a/arch/arm/lib/xor-neon.c +++ b/arch/arm/lib/xor-neon.c @@ 
->> -14,16 +14,6 @@ MODULE_LICENSE("GPL"); 
->>  #error You should compile this file with '-march=armv7-a 
->>  -mfloat-abi=softfp -mfpu=neon' #endif 
->> 
->> -/* - * Pull in the reference implementations while instructing 
->> GCC (through - * -ftree-vectorize) to attempt to exploit 
->> implicit parallelism and emit - * NEON instructions.  - */ 
->> -#ifdef CONFIG_CC_IS_GCC -#pragma GCC optimize "tree-vectorize" 
->> -#endif - -#pragma GCC diagnostic ignored "-Wunused-variable" 
->>  #include <asm-generic/xor.h> 
->> 
->>  struct xor_block_template const xor_block_neon_inner = { 
->> -- 2.29.2 
->> 
+Hello Michał,
+
+On 11/13/20 1:20 AM, Michał Mirosław wrote:
+> It turns out that commit aea6cb99703e ("regulator: resolve supply
+> after creating regulator") exposed a number of issues in regulator
+> initialization and introduced a memory leak of its own. One uncovered
+> problem was already fixed by cf1ad559a20d ("regulator: defer probe when
+> trying to get voltage from unresolved supply"). This series fixes the
+> remaining ones and adds a two debugging aids to help in the future.
 > 
-> So what is the status now here? How does putting 
-> -ftree-vectorize on the command line interact with Clang? 
+> The final patch adds a workaround to preexisting problem occurring with
+> regulators that have the same name as its supply_name. This worked
+> before by accident, so might be worth backporting. The error message is
+> left on purpose so that these configurations can be detected and fixed.
+> 
+> (The first two patches are resends from Nov 5).
+> 
+> (Series resent because of wrong arm-kernel ML address.)
 
-Clang needs to be fixed separately as -ftree-vectorize does not 
-change anything, the option is enabled by default.
+lxa-mc1 (STM32MP1 board with STPMIC) now manages to boot again with following
+new warning:
 
-I know it sucks to have such a silent failure, but it's always 
-been there (the "upgrade your GCC" warning during Clang builds was 
-bogus) and I do not want to rush a Clang fix without fully 
-understanding it.
+  stpmic1-regulator 5c002000.i2c:stpmic@33:regulators: Supply for VREF_DDR
 
-Warning Clang users that the optimization doesn't work was 
-discussed but dropped because users can't do anything about it.
+So for the whole series,
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
 
-If we are positively certain this is a kernel bug and not a Clang 
-bug (i.e. the xor-neon use case is not enabling/triggering the 
-optimization properly) I could add a TODO comment in the code 
-FWIW.
+Thanks!
+Ahmad
 
-Adrian
+> 
+> Michał Mirosław (4):
+>   regulator: fix memory leak with repeated set_machine_constraints()
+>   regulator: debug early supply resolving
+>   regulator: avoid resolve_supply() infinite recursion
+>   regulator: workaround self-referent regulators
+> 
+>  drivers/regulator/core.c | 40 ++++++++++++++++++++++++----------------
+>  1 file changed, 24 insertions(+), 16 deletions(-)
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
