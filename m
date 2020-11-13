@@ -2,222 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD0D2B16EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8441B2B16E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgKMIDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:03:24 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:42510 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726147AbgKMIDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:03:23 -0500
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-05 (Coremail) with SMTP id zQCowABnepy8Pa5f+OfMAA--.56342S2;
-        Fri, 13 Nov 2020 16:03:08 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        linux-rtc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: snvs: Remove NULL pointer check before clk_*
-Date:   Fri, 13 Nov 2020 08:03:05 +0000
-Message-Id: <20201113080305.65961-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowABnepy8Pa5f+OfMAA--.56342S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr18XFW7KryrJFWxGFWkCrg_yoWrtrW3pa
-        yfGFZYyrW2qF1kKF45Ar4Dur13JrWxKas7Xa4UC34I9343tryDtF4rCa40qayYyrWkAF42
-        gr45JFyaya15KFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8ZwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bFHqxUUUUU=
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwUTA1z4jkvYdgAAsR
+        id S1726222AbgKMIDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 03:03:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgKMIDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 03:03:14 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3B6620857;
+        Fri, 13 Nov 2020 08:03:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605254593;
+        bh=wtJt7F4vlmce/drFU3S1eZEo8CDrUYp19bWjAusZv6w=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ZEe502JBSE7qHDdEPozczkESUGdTlv1PgE+53xICs34OJ7bBp4hJc0k1aiUbJ39FZ
+         lUjxBIxmVL4gwzxX0qkHPMo5V/PGDO+PJlRQOqeFG3G8TEMhRAmeXlvVQQfe7jhA5k
+         9X7YQPKCdseRfzGBWjKYE5wKpofYR53zZ69cUU40=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b18625cf-7dd0-db96-9460-bb0ff920b5db@topic.nl>
+References: <20201103141741.2511-1-mike.looijmans@topic.nl> <160454088987.3965362.6147280271557523496@swboyd.mtv.corp.google.com> <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.e888d4ad-6d00-4e78-a0c7-083be5e86c8e@emailsignatures365.codetwo.com> <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.9c2cb1f3-6c6b-4005-b459-f71a0d72128e@emailsignatures365.codetwo.com> <b18625cf-7dd0-db96-9460-bb0ff920b5db@topic.nl>
+Subject: Re: [PATCH] clk-si5341: Support NVM programming through sysfs
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     mturquette@baylibre.com, linux-kernel@vger.kernel.org
+To:     Mike Looijmans <mike.looijmans@topic.nl>, linux-clk@vger.kernel.org
+Date:   Fri, 13 Nov 2020 00:03:12 -0800
+Message-ID: <160525459234.60232.7901604955432682238@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_* already checked NULL clock parameter,
-so the additional checks are unnecessary, just remove them.
+Quoting Mike Looijmans (2020-11-05 01:06:54)
+> On 05-11-2020 02:48, Stephen Boyd wrote:
+> > Quoting Mike Looijmans (2020-11-03 06:17:41)
+> >> Export an attribute program_nvm_bank that when read reports the current
+> >> bank value. To program the chip's current state into NVM, write the
+> >> magic value 0xC7 into this attribute.
+> >>
+> >> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> >> ---
+> >=20
+> > Any chance this can be done through the nvmem framework?
+>=20
+> This part doesn't fit. The purpose is to store the current state of the c=
+lock=20
+> chip into its non-volatile storage so it boots up with that configuration=
+ the=20
+> next POR. Main use case is that some vendors initialize PLLs only in a=20
+> bootloader and thus need the clock running at boot. Or it might just be t=
+o=20
+> save on that 300ms initialization time.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/rtc/rtc-snvs.c | 67 +++++++++++++++---------------------------
- 1 file changed, 24 insertions(+), 43 deletions(-)
+Can these details be put in the commit text? It would go a long way
+towards helping reviewers understand the motivation if it is to speed up
+boot and stash away clk configuration across resets. Why is userspace
+involved? Why can't the driver write to the non-volatile storage with
+shutdown or reboot driver hooks instead of implementing a bespoke sysfs
+ABI?
 
-diff --git a/drivers/rtc/rtc-snvs.c b/drivers/rtc/rtc-snvs.c
-index 0263d996b8a8..a7d39a49b748 100644
---- a/drivers/rtc/rtc-snvs.c
-+++ b/drivers/rtc/rtc-snvs.c
-@@ -151,17 +151,14 @@ static int snvs_rtc_read_time(struct device *dev, struct rtc_time *tm)
- 	unsigned long time;
- 	int ret;
- 
--	if (data->clk) {
--		ret = clk_enable(data->clk);
--		if (ret)
--			return ret;
--	}
-+	ret = clk_enable(data->clk);
-+	if (ret)
-+		return ret;
- 
- 	time = rtc_read_lp_counter(data);
- 	rtc_time64_to_tm(time, tm);
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return 0;
- }
-@@ -172,11 +169,9 @@ static int snvs_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 	unsigned long time = rtc_tm_to_time64(tm);
- 	int ret;
- 
--	if (data->clk) {
--		ret = clk_enable(data->clk);
--		if (ret)
--			return ret;
--	}
-+	ret = clk_enable(data->clk);
-+	if (ret)
-+		return ret;
- 
- 	/* Disable RTC first */
- 	ret = snvs_rtc_enable(data, false);
-@@ -190,8 +185,7 @@ static int snvs_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 	/* Enable RTC again */
- 	ret = snvs_rtc_enable(data, true);
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return ret;
- }
-@@ -202,11 +196,9 @@ static int snvs_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	u32 lptar, lpsr;
- 	int ret;
- 
--	if (data->clk) {
--		ret = clk_enable(data->clk);
--		if (ret)
--			return ret;
--	}
-+	ret = clk_enable(data->clk);
-+	if (ret)
-+		return ret;
- 
- 	regmap_read(data->regmap, data->offset + SNVS_LPTAR, &lptar);
- 	rtc_time64_to_tm(lptar, &alrm->time);
-@@ -214,8 +206,7 @@ static int snvs_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	regmap_read(data->regmap, data->offset + SNVS_LPSR, &lpsr);
- 	alrm->pending = (lpsr & SNVS_LPSR_LPTA) ? 1 : 0;
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return 0;
- }
-@@ -225,11 +216,9 @@ static int snvs_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
- 	struct snvs_rtc_data *data = dev_get_drvdata(dev);
- 	int ret;
- 
--	if (data->clk) {
--		ret = clk_enable(data->clk);
--		if (ret)
--			return ret;
--	}
-+	ret = clk_enable(data->clk);
-+	if (ret)
-+		return ret;
- 
- 	regmap_update_bits(data->regmap, data->offset + SNVS_LPCR,
- 			   (SNVS_LPCR_LPTA_EN | SNVS_LPCR_LPWUI_EN),
-@@ -237,8 +226,7 @@ static int snvs_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
- 
- 	ret = rtc_write_sync_lp(data);
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return ret;
- }
-@@ -249,11 +237,9 @@ static int snvs_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	unsigned long time = rtc_tm_to_time64(&alrm->time);
- 	int ret;
- 
--	if (data->clk) {
--		ret = clk_enable(data->clk);
--		if (ret)
--			return ret;
--	}
-+	ret = clk_enable(data->clk);
-+	if (ret)
-+		return ret;
- 
- 	regmap_update_bits(data->regmap, data->offset + SNVS_LPCR, SNVS_LPCR_LPTA_EN, 0);
- 	ret = rtc_write_sync_lp(data);
-@@ -264,8 +250,7 @@ static int snvs_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	/* Clear alarm interrupt status bit */
- 	regmap_write(data->regmap, data->offset + SNVS_LPSR, SNVS_LPSR_LPTA);
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return snvs_rtc_alarm_irq_enable(dev, alrm->enabled);
- }
-@@ -285,8 +270,7 @@ static irqreturn_t snvs_rtc_irq_handler(int irq, void *dev_id)
- 	u32 lpsr;
- 	u32 events = 0;
- 
--	if (data->clk)
--		clk_enable(data->clk);
-+	clk_enable(data->clk);
- 
- 	regmap_read(data->regmap, data->offset + SNVS_LPSR, &lpsr);
- 
-@@ -302,8 +286,7 @@ static irqreturn_t snvs_rtc_irq_handler(int irq, void *dev_id)
- 	/* clear interrupt status */
- 	regmap_write(data->regmap, data->offset + SNVS_LPSR, lpsr);
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return events ? IRQ_HANDLED : IRQ_NONE;
- }
-@@ -316,8 +299,7 @@ static const struct regmap_config snvs_rtc_config = {
- 
- static void snvs_rtc_action(void *data)
- {
--	if (data)
--		clk_disable_unprepare(data);
-+	clk_disable_unprepare(data);
- }
- 
- static int snvs_rtc_probe(struct platform_device *pdev)
-@@ -412,8 +394,7 @@ static int __maybe_unused snvs_rtc_suspend_noirq(struct device *dev)
- {
- 	struct snvs_rtc_data *data = dev_get_drvdata(dev);
- 
--	if (data->clk)
--		clk_disable(data->clk);
-+	clk_disable(data->clk);
- 
- 	return 0;
- }
--- 
-2.17.1
+>=20
+> Having said that, the clock chip does have some "scratch" areas that'd be=
+=20
+> useful as NVMEM storage. That'd be for a separate patch.
+>=20
+> For this device to be NVMEM compatible, nvmem would need to have a sort o=
+f=20
+> transaction model, where you write several values and then "commit" them =
+all=20
+> to NVM in one call. The nvmem framework wasn't intended for that I think.
 
+I suppose patches could be written to support that if desired.
