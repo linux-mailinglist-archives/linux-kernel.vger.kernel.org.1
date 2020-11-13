@@ -2,141 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4A62B2100
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:54:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5587A2B2113
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726064AbgKMQx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726647AbgKMQxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:53:23 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AEFC0613D1;
-        Fri, 13 Nov 2020 08:53:21 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f23so14474954ejk.2;
-        Fri, 13 Nov 2020 08:53:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qt4TBD0WTlxDExy+5uLdRHot9ANakmUntHhTQK8GBOE=;
-        b=kfbB3R2x83Hu6nT+3hHGwjmrmOiohwfvD0yDmvglvsOnOLpTrvILVQJqs+RHIN2f5l
-         Z3CUQdFrxWH1x05FuL8QjJvxXUpaLTo2fPCgue2OiTb1aO+ln/GZaXgUuVo/lptDOkbN
-         FRHTPmeJAzhZJmG1aVTLoIq59FdONhMGlv4lmdDPDq6pSSvWriqQgj5HNJhcG7x8vdMQ
-         fc3dGs/NY68ity9XdZuXliH7Wsvx+WBff17rVh5ifIQ0x0SroKn4GBFOuKfkK8ah5cfc
-         zZjTQ4HO0T2AnMEuoQ0ZH/brxQYYRy5ujruB7fjFtpA2HoovrclNY1wJxT37k4UCE2b/
-         aszA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qt4TBD0WTlxDExy+5uLdRHot9ANakmUntHhTQK8GBOE=;
-        b=MGYtHe/FhJHraALTB5pXXsyvSptbW34Rb9xn1z99Wzb9Q+X+LC5H2IqNTV1MAvLG2L
-         I55C8wcHxFrMUdpNqvkhul/uEYoVBz7FTwkLtj30Wf+N4QBeTMTDD8Nsq/J8R/hSfK+3
-         /HP/5BgnjAAnPpDr8Dcxx/f6lhpKL+IWEXldHX6a5/soy+mWClVzDZPwWF4e0CYwXLII
-         D4MlCAXb4n5gOgicnBxz6l2RLxY2Rw+WPs9R18YYBy73DUEL4xR7OUn5kGpbVKjndhJQ
-         0n+6lcfqdm/NqRvu040haD4rRVCKB2G16xyVReR5DfOiJ1QuQ66Jt11v8dfVLOjIbbx3
-         btPg==
-X-Gm-Message-State: AOAM532W24O8p2UP0YKXw2YNzxZp2l6JSuUN+fJZcgQmZDxZzcuNNbo8
-        J7cMJJMpeLa5qnwi9KxbYiU=
-X-Google-Smtp-Source: ABdhPJyoyPGDwWoKSxMEnCkUgmYIBNdoxJDo5ofiZ1HeDi3NGt2fH13XAXYhfmXwGJYlDCXT1/iCsw==
-X-Received: by 2002:a17:906:ec9:: with SMTP id u9mr2814330eji.400.1605286395597;
-        Fri, 13 Nov 2020 08:53:15 -0800 (PST)
-Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id rp28sm4076570ejb.77.2020.11.13.08.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:53:14 -0800 (PST)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
+        id S1726162AbgKMQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:54:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725967AbgKMQyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:54:47 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C41E4217A0;
+        Fri, 13 Nov 2020 16:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605286487;
+        bh=NCAyniXfdRxfHRzI4qNes22DvttbWADXUgli0Y2BOQQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=2XUS0ErlviKqJet0jE8A21ad/Fwp8G6oIzxaNwgh6lkrhR2SNV4ubKJt/1Sz+8onw
+         p/CnUKVV9rf2fN7vBmHo08sAuH5OySCnCoGQfzTwCmeRbtTyFNjP7WkXHLaCy9XGy4
+         nTUdh1GAvSVjXAKVpDVYir/HmJqCen28+4fBMZTs=
+Date:   Fri, 13 Nov 2020 10:54:45 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Toan Le <toan@os.amperecomputing.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH RESEND net-next 18/18] net: phy: adin: remove the use of the .ack_interrupt()
-Date:   Fri, 13 Nov 2020 18:52:26 +0200
-Message-Id: <20201113165226.561153-19-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201113165226.561153-1-ciorneiioana@gmail.com>
-References: <20201113165226.561153-1-ciorneiioana@gmail.com>
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] PCI: altera-msi: remove chained IRQ handler and
+ data in one go
+Message-ID: <20201113165445.GA1117268@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112221010.9473-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+Please capitalize your subject lines consistently.  [3/3] is fine, but
+you didn't capitalize [1/3] and [2/3] to match.
 
-In preparation of removing the .ack_interrupt() callback, we must replace
-its occurrences (aka phy_clear_interrupt), from the 2 places where it is
-called from (phy_enable_interrupts and phy_disable_interrupts), with
-equivalent functionality.
+The fact that this is a *chained* IRQ isn't really relevant to the
+patch, so this would be more succinct:
 
-This means that clearing interrupts now becomes something that the PHY
-driver is responsible of doing, before enabling interrupts and after
-clearing them. Make this driver follow the new contract.
+  PCI: altera-msi: Remove IRQ handler and data in one go
 
-Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- drivers/net/phy/adin.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+Lorenzo can likely touch these up when he applies these so you don't
+have to repost just for this.
 
-diff --git a/drivers/net/phy/adin.c b/drivers/net/phy/adin.c
-index ba24434b867d..55a0b91816e2 100644
---- a/drivers/net/phy/adin.c
-+++ b/drivers/net/phy/adin.c
-@@ -471,12 +471,25 @@ static int adin_phy_ack_intr(struct phy_device *phydev)
- 
- static int adin_phy_config_intr(struct phy_device *phydev)
- {
--	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
--		return phy_set_bits(phydev, ADIN1300_INT_MASK_REG,
--				    ADIN1300_INT_MASK_EN);
-+	int err;
-+
-+	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-+		err = adin_phy_ack_intr(phydev);
-+		if (err)
-+			return err;
-+
-+		err = phy_set_bits(phydev, ADIN1300_INT_MASK_REG,
-+				   ADIN1300_INT_MASK_EN);
-+	} else {
-+		err = phy_clear_bits(phydev, ADIN1300_INT_MASK_REG,
-+				     ADIN1300_INT_MASK_EN);
-+		if (err)
-+			return err;
-+
-+		err = adin_phy_ack_intr(phydev);
-+	}
- 
--	return phy_clear_bits(phydev, ADIN1300_INT_MASK_REG,
--			      ADIN1300_INT_MASK_EN);
-+	return err;
- }
- 
- static irqreturn_t adin_phy_handle_interrupt(struct phy_device *phydev)
-@@ -895,7 +908,6 @@ static struct phy_driver adin_driver[] = {
- 		.read_status	= adin_read_status,
- 		.get_tunable	= adin_get_tunable,
- 		.set_tunable	= adin_set_tunable,
--		.ack_interrupt	= adin_phy_ack_intr,
- 		.config_intr	= adin_phy_config_intr,
- 		.handle_interrupt = adin_phy_handle_interrupt,
- 		.get_sset_count	= adin_get_sset_count,
-@@ -919,7 +931,6 @@ static struct phy_driver adin_driver[] = {
- 		.read_status	= adin_read_status,
- 		.get_tunable	= adin_get_tunable,
- 		.set_tunable	= adin_set_tunable,
--		.ack_interrupt	= adin_phy_ack_intr,
- 		.config_intr	= adin_phy_config_intr,
- 		.handle_interrupt = adin_phy_handle_interrupt,
- 		.get_sset_count	= adin_get_sset_count,
--- 
-2.28.0
-
+On Thu, Nov 12, 2020 at 11:10:08PM +0100, Martin Kaiser wrote:
+> Call irq_set_chained_handler_and_data() to clear the chained handler
+> and the handler's data under irq_desc->lock.
+> 
+> See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
+> IRQ handler").
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+> v3:
+>  - rewrite the commit message again. this is no race condition if we
+>    remove the interrupt handler. sorry for the noise.
+> v2:
+>  - rewrite the commit message to clarify that this is a bugfix
+> 
+>  drivers/pci/controller/pcie-altera-msi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-altera-msi.c b/drivers/pci/controller/pcie-altera-msi.c
+> index e1636f7714ca..42691dd8ebef 100644
+> --- a/drivers/pci/controller/pcie-altera-msi.c
+> +++ b/drivers/pci/controller/pcie-altera-msi.c
+> @@ -204,8 +204,7 @@ static int altera_msi_remove(struct platform_device *pdev)
+>  	struct altera_msi *msi = platform_get_drvdata(pdev);
+>  
+>  	msi_writel(msi, 0, MSI_INTMASK);
+> -	irq_set_chained_handler(msi->irq, NULL);
+> -	irq_set_handler_data(msi->irq, NULL);
+> +	irq_set_chained_handler_and_data(msi->irq, NULL, NULL);
+>  
+>  	altera_free_domains(msi);
+>  
+> -- 
+> 2.20.1
+> 
