@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033F12B1B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7602B1B25
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgKMM2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:28:53 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:3026 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726526AbgKMM2w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:28:52 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADCCDZY006699;
-        Fri, 13 Nov 2020 13:28:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=D6ax8bSplNDzhM9Q/b1J1XsUBFnRNHgE12ab49u37NM=;
- b=lwxDyFW5K7nvaCVd/bA66jOyjMFsL9ndoIo+sABl27xxhNdIGSNuyaR1eQual+r9FDhw
- eWZR5YVRik8rfwRFZ6OgVvI6tL49rH+FBl6ZPlrHz9TnlLA2zX6zfHytG1w42NlgHIf5
- otr19n+7MsVWy4LPFq7HHpzoVEkK/mOlBWU4bOLxbWKRoLjchvS59ZPZS71NWdtkiWvR
- 44uPnKdGiJ6Wjz6+XLFZ6eC0o5noACLqy/k2Nsvxjqw1vB284A1dxesstX1LjdA9COUe
- GbP2rLeBOsOM2/1yHsoKze/2LNy1myD3y41riZ9cop72ATss8AGIvdbD7H66vu56TEnC Fg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nhkdc854-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 13:28:41 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C072E10002A;
-        Fri, 13 Nov 2020 13:28:40 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AEA2F254667;
-        Fri, 13 Nov 2020 13:28:40 +0100 (CET)
-Received: from lmecxl0995.lme.st.com (10.75.127.45) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov
- 2020 13:28:39 +0100
-Subject: Re: [PATCH 1/1] mfd: stmfx: fix dev_err_probe call in stmfx_chip_init
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201110080400.7207-1-amelie.delaunay@st.com>
- <20201113100919.GC3718728@dell>
-From:   Amelie DELAUNAY <amelie.delaunay@st.com>
-Message-ID: <33150808-aace-b5cd-baeb-f5192373e6ee@st.com>
-Date:   Fri, 13 Nov 2020 13:28:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726503AbgKMM2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:28:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:37316 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726278AbgKMM2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:28:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05147142F;
+        Fri, 13 Nov 2020 04:28:48 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A8343F6CF;
+        Fri, 13 Nov 2020 04:28:47 -0800 (PST)
+Date:   Fri, 13 Nov 2020 12:28:46 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     mark.rutland@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] arm64: implement CPPC FFH support using AMUs
+Message-ID: <20201113122846.GA31212@arm.com>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
+ <20201106125334.21570-4-ionela.voinescu@arm.com>
+ <20201112180045.GO29613@gaia>
 MIME-Version: 1.0
-In-Reply-To: <20201113100919.GC3718728@dell>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112180045.GO29613@gaia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 11:09 AM, Lee Jones wrote:
-> On Tue, 10 Nov 2020, Amelie Delaunay wrote:
+Hi,
+
+On Thursday 12 Nov 2020 at 18:00:46 (+0000), Catalin Marinas wrote:
+> On Fri, Nov 06, 2020 at 12:53:34PM +0000, Ionela Voinescu wrote:
+> > +static inline
+> > +int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> > +{
+> > +	if (!cpu_has_amu_feat(cpu))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	smp_call_function_single(cpu, func, val, 1);
+> > +
+> > +	return 0;
+> > +}
 > 
->> ret may be 0 so, dev_err_probe should be called only when ret is an error
->> code.
->>
->> Fixes: 41c9c06c491a ("mfd: stmfx: Simplify with dev_err_probe()")
->> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
->> ---
->>   drivers/mfd/stmfx.c | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
->> index 5e680bfdf5c9..360fb4646688 100644
->> --- a/drivers/mfd/stmfx.c
->> +++ b/drivers/mfd/stmfx.c
->> @@ -329,12 +329,11 @@ static int stmfx_chip_init(struct i2c_client *client)
->>   
->>   	stmfx->vdd = devm_regulator_get_optional(&client->dev, "vdd");
->>   	ret = PTR_ERR_OR_ZERO(stmfx->vdd);
->> -	if (ret == -ENODEV) {
->> +	if (ret == -ENODEV)
->>   		stmfx->vdd = NULL;
->> -	} else {
->> +	else if (ret)
->>   		return dev_err_probe(&client->dev, ret,
->>   				     "Failed to get VDD regulator\n");
->> -	}
-> 
-> Probably nicer to keep all of the error handing in one area, like:
-> 
-> 	if (ret) {
-> 		if (ret == -ENODEV)
-> 			stmfx->vdd = NULL;
-> 		else
-> 			return dev_err_probe(&client->dev, ret,
-> 					     "Failed to get VDD regulator\n");
-> 	}
-> 
-> I'll let you make the call though.
+> I got lost in the cpufreq call chains. Can this function ever be called
+> with interrupts disabled?
 > 
 
-Thanks for the review. I agree. Fixed in v2.
+The short answer is: not with the current implementation of its only
+user, the cppc_cpufreq driver (given the current cpufreq implementation).
 
-Regards,
-Amelie
+The long answer is: there is a case where the cpufreq .get function is
+called with local interrupts disabled - cpufreq_quick_get(), but there
+are a few "if"s in between this becoming a problem:
+
+ 1. If cppc_cpufreq ever implements .setpolicy or,
+    1.1 Current implementation of cpufreq_quick_get() changes.
+ 2. If one of the few users of cpufreq_quick_get() is used: cppc_cpufreq
+    ends up being used as CPU cooling device(+IPA governor) or
+    devfreq/tegra30 is used.
+
+ In this potential case, smp_call_function_single() will warn us of call
+ with irqs_disable() and if the stars align there could be a potential
+ deadlock if two CPUs try to IPI (get counter reads of) each other.
+
+So it could be called with irqs disabled, but a few code changes are
+needed before that happens.
+
+I can bail out of counters_read_on_cpu() if irqs_disabled() to be on the
+safe side.
+
+Thanks for the review,
+Ionela.
+
+
+> -- 
+> Catalin
