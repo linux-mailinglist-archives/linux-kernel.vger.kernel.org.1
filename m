@@ -2,144 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0100F2B1E9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D56C2B1E97
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgKMP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgKMP1q (ORCPT
+        id S1726788AbgKMP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:27:32 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:40706 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgKMP1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:27:46 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69EBC0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:27:45 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 23so10312653wrc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:27:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yxHsF+KemCYkb6AEPL2z/e19oUNusseMU7Gcvc/FfJ4=;
-        b=eSiE5xwUbwEotdWdSzSCyuIt9amSHoyu9DOpwLgNXMMZh94m1n/0JxqJ8UkU4bZDsF
-         YYa8eNuXZUYHW67i1OPfvcIPR4LdnTJ/aL6TrCtdVJHjgEj6lWSkAOIVBhLUrQQ4s6t1
-         zXoSDFS3rYAm97nwNOsQSRNWW+8IwfbBXQMDHakJDX243TVRpWDV0ugbqoUW7u4tXcOX
-         9ULWE7fYNmaau80ZAn9XBbc4uNOprp2pPql76OoBbkA4CStbbThIpEPRIDE1a6yvHeCW
-         f0Pg0bZJv+DIiITlQmncNeTFXAwCsfMWMhTQCGj2ZeLzUz/062ZF20zS949XUnxokf5y
-         eTnQ==
+        Fri, 13 Nov 2020 10:27:31 -0500
+Received: by mail-lj1-f196.google.com with SMTP id x9so11127681ljc.7;
+        Fri, 13 Nov 2020 07:27:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yxHsF+KemCYkb6AEPL2z/e19oUNusseMU7Gcvc/FfJ4=;
-        b=lRRK2iNQtACF8dBmJN1x/hDJNvzUFI+gFkn5FvqSZEhx2R162QxVZ2y0as8d/6ba2w
-         oJOm3RQoTyCm3gVyzRN/s5PvBgcNOoM8XXTO356sClDafoW4fUI+EhjvL4Z1uv4GASTc
-         reUaW+tpTNh/m50p9Os+p1F113qCKzc/o/lJUsB/K3FwGxNsiFFfACzGQBei2SOvrELD
-         8hFyBFT+J1u6pQ3HwR//iFPYdi+bUDmqY/aYKzw2+zGGg6xlxo9ZvBpJBKRNY8h6u+S1
-         eA3EN5zZ3eH0vwOTQWcB2wC6qD9PsBF6Oony3L5zscF5MMEFN+2ISvzM4UYl/9KtE+/l
-         heIA==
-X-Gm-Message-State: AOAM533hafusRukBie46MUhHcYA2DF747hcW6kBTEWqoE1tQH4nydStP
-        I0tLU4cmqQXIwwLvsyO/hXe9HeXGH4kuz52mgEI=
-X-Google-Smtp-Source: ABdhPJzfJSnTs25NUi0XwRgIqaVNtK+qdLfhBSC2A1tVepq+Caq0ZEAWFJQJJWjUHUYeF7Cm6Bs+M/GD5SFhedhk1eI=
-X-Received: by 2002:adf:e551:: with SMTP id z17mr4197640wrm.374.1605281259590;
- Fri, 13 Nov 2020 07:27:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kbDcH7OxuU5kmg2HT6wUfLKLTTzmoxUrOtw1c5hU1VI=;
+        b=Mi0SogmhJTNuNVM6SmzxvPSWuMc9MftLYNOYzwuJAM6uuqWlp6NgE/1jjPYAUxTPdQ
+         Wa/HvJA0Njtc+tA53Zcu8pTeWp5tbbIMMicR5syiQhszwoYQQShue5kPmHrerfJPhbQd
+         8QhO7brfzwC91ZzdIrm01k3hYr9/jbOCgUllRi5NeTihtf3Ef4aglqFNq3CdSSgksCsV
+         +2a+0Z7nwDmMrLenL8Ncb4FM2fNiYwlyVMeEt/4ZTZ4PF6B6d8JkVAy0j3wuuPJKAayA
+         fdHggL7oUfHB2wqtCx/acsJrQkCprnPg5JHesZlnYg/mgBEN2DR4dZ3cfgJRBAchcqx7
+         jS9g==
+X-Gm-Message-State: AOAM531KR5rR0us5qeLf6I8ZXDFnhIjWsefVyhLnkuNVieFZxhi39LFu
+        V5fTQ8KlRkJV4+tG835Zk+k=
+X-Google-Smtp-Source: ABdhPJx8gKuylIekm+ROz9Z6mOTUY2XE2jvNGrLJSiwa/Au+THype5WIk7fEz+DDP+9uQ018ez7XnA==
+X-Received: by 2002:a05:651c:107:: with SMTP id a7mr1305926ljb.463.1605281243415;
+        Fri, 13 Nov 2020 07:27:23 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id r2sm1620068lfm.220.2020.11.13.07.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 07:27:22 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kdaz5-0002E3-Db; Fri, 13 Nov 2020 16:27:31 +0100
+Date:   Fri, 13 Nov 2020 16:27:31 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Sheng Long Wang <china_shenglong@163.com>
+Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkp@intel.com, Wang Sheng Long <shenglong.wang.ext@siemens.com>
+Subject: Re: [PATCH v6] usb-serial:cp210x: add support to software flow
+ control
+Message-ID: <X66l44MqSlj774DL@localhost>
+References: <20201016022428.9671-1-china_shenglong@163.com>
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-3-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-3-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 13 Nov 2020 10:27:28 -0500
-Message-ID: <CADnq5_Nn+a-idC__uZtw=XHjac9mRX1Wwustphf6zZS188DQWA@mail.gmail.com>
-Subject: Re: [PATCH 02/40] drm/amd/display/dc/core/dc_link_dp: Move
- DP_VGA_LVDS_CONVERTER_ID_{2, 3} to where they're used
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016022428.9671-1-china_shenglong@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:49 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> This patch fixes >200 warnings.
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:123:22=
-: warning: =E2=80=98DP_VGA_LVDS_CONVERTER_ID_3=E2=80=99 defined but not use=
-d [-Wunused-const-variable=3D]
->  123 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:121:22=
-: warning: =E2=80=98DP_VGA_LVDS_CONVERTER_ID_2=E2=80=99 defined but not use=
-d [-Wunused-const-variable=3D]
->  121 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
->
-> NB: Repeated ~100 times - snipped for brevity
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Fri, Oct 16, 2020 at 10:24:28AM +0800, Sheng Long Wang wrote:
+> From: Wang Sheng Long <shenglong.wang.ext@siemens.com>
+> 
+> When data is transmitted between two serial ports,
+> the phenomenon of data loss often occurs. The two kinds
+> of flow control commonly used in serial communication
+> are hardware flow control and software flow control.
+> 
+> In serial communication, If you only use RX/TX/GND Pins, you
+> can't do hardware flow. So we often used software flow control
+> and prevent data loss. The user sets the software flow control
+> through the application program, and the application program
+> sets the software flow control mode for the serial port
+> chip through the driver.
+> 
+> For the cp210 serial port chip, its driver lacks the
+> software flow control setting code, so the user cannot set
+> the software flow control function through the application
+> program. This adds the missing software flow control.
+> 
+> Signed-off-by: Wang Sheng Long <shenglong.wang.ext@siemens.com>
+> 
+> Changes in v3:
+> - fixed code style, It mainly adjusts the code style acccording
+>   to kernel specification.
+> 
+> Changes in v4:
+> - It mainly adjusts the patch based on the last usb-next branch
+>   of the usb-serial.
 
-Applied.  thanks!
+Again, you did a whole lot more than just rebase here based on the
+review feedback you got.
 
-Alex
-
+> Changes in v5:
+> - Fixes:
+>   * According to the cp210x specification, use usb_control_msg()
+>     requesttype 'REQTYPE_DEVICE_TO_HOST' is modified to
+>     'REQTYPE_INTERFACE_TO_HOST' in cp210x_get_chars().
+> 
+>   * If modify IXOFF/IXON has been changed, we can call set software
+>     flow control code.
+> 
+>   * If the setting software flow control wrong, do not continue
+>     processing proceed with updating software flow control.
+> 
+> Changes in v6:
+> - Fix 'result' variable not uninitialized warning in cp210x_set_termios().
 > ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c        | 5 +++++
->  drivers/gpu/drm/amd/display/include/ddc_service_types.h | 4 ----
->  2 files changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/g=
-pu/drm/amd/display/dc/core/dc_link_dp.c
-> index 6c60c1fdebdc1..f2023d2b53234 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> @@ -15,6 +15,11 @@
->  #include "dc_dmub_srv.h"
->  #include "dce/dmub_hw_lock_mgr.h"
->
-> +/*Travis*/
-> +static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
-> +/*Nutmeg*/
-> +static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
+>  drivers/usb/serial/cp210x.c | 128 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 123 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index d0c05aa8a0d6..2d5e31282599 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -412,6 +412,15 @@ struct cp210x_comm_status {
+>  	u8       bReserved;
+>  } __packed;
+>  
+> +struct cp210x_special_chars {
+> +	u8	bEofChar;
+> +	u8	bErrorChar;
+> +	u8	bBreakChar;
+> +	u8	bEventChar;
+> +	u8	bXonChar;
+> +	u8	bXoffChar;
+> +};
 > +
->  #define DC_LOGGER \
->         link->ctx->logger
->  #define DC_TRACE_LEVEL_MESSAGE(...) /* do nothing */
-> diff --git a/drivers/gpu/drm/amd/display/include/ddc_service_types.h b/dr=
-ivers/gpu/drm/amd/display/include/ddc_service_types.h
-> index c9be899cd25cd..b453ce5a9bfdb 100644
-> --- a/drivers/gpu/drm/amd/display/include/ddc_service_types.h
-> +++ b/drivers/gpu/drm/amd/display/include/ddc_service_types.h
-> @@ -117,10 +117,6 @@ struct av_sync_data {
->         uint8_t aud_del_ins3;/* DPCD 0002Dh */
->  };
->
-> -/*Travis*/
-> -static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
-> -/*Nutmeg*/
-> -static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
->  /*DP to Dual link DVI converter*/
->  static const uint8_t DP_DVI_CONVERTER_ID_4[] =3D "m2DVIa";
->  static const uint8_t DP_DVI_CONVERTER_ID_5[] =3D "3393N2";
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  /*
+>   * CP210X_PURGE - 16 bits passed in wValue of USB request.
+>   * SiLabs app note AN571 gives a strange description of the 4 bits:
+> @@ -675,6 +684,70 @@ static int cp210x_read_vendor_block(struct usb_serial *serial, u8 type, u16 val,
+>  	return result;
+>  }
+>  
+> +static int cp210x_get_chars(struct usb_serial_port *port, void *buf)
+
+As I said earlier, these functions should take a pointer to a struct
+special_chars (not void *).
+
+> +{
+> +	struct usb_serial *serial = port->serial;
+> +	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
+> +	struct cp210x_special_chars *special_chars;
+> +	void *dmabuf;
+> +	int result;
+> +
+> +	dmabuf = kmemdup(buf, sizeof(*special_chars), GFP_KERNEL);
+> +	if (!dmabuf)
+> +		return -ENOMEM;
+> +
+> +	result = usb_control_msg(serial->dev,
+> +				usb_rcvctrlpipe(serial->dev, 0),
+> +				CP210X_GET_CHARS, REQTYPE_INTERFACE_TO_HOST, 0,
+> +				port_priv->bInterfaceNumber,
+> +				dmabuf, sizeof(*special_chars),
+> +				USB_CTRL_GET_TIMEOUT);
+> +
+> +	if (result == sizeof(*special_chars)) {
+> +		memcpy(buf, dmabuf, sizeof(*special_chars));
+> +		result = 0;
+> +	} else {
+> +		dev_err(&port->dev, "failed to get special chars: %d\n", result);
+> +		if (result >= 0)
+> +			result = -EIO;
+> +	}
+> +
+> +	kfree(dmabuf);
+> +
+> +	return result;
+> +}
+> +
+> +static int cp210x_set_chars(struct usb_serial_port *port, void *buf)
+> +{
+> +	struct usb_serial *serial = port->serial;
+> +	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
+> +	struct cp210x_special_chars *special_chars;
+> +	void *dmabuf;
+> +	int result;
+> +
+> +	dmabuf = kmemdup(buf, sizeof(*special_chars), GFP_KERNEL);
+> +	if (!dmabuf)
+> +		return -ENOMEM;
+> +
+> +	result = usb_control_msg(serial->dev,
+> +				usb_sndctrlpipe(serial->dev, 0),
+> +				CP210X_SET_CHARS, REQTYPE_HOST_TO_INTERFACE, 0,
+> +				port_priv->bInterfaceNumber,
+> +				dmabuf, sizeof(*special_chars), USB_CTRL_SET_TIMEOUT);
+> +
+> +	if (result == sizeof(*special_chars)) {
+> +		result = 0;
+> +	} else {
+> +		dev_err(&port->dev, "failed to set special chars: %d\n", result);
+> +		if (result >= 0)
+> +			result = -EIO;
+> +	}
+> +
+> +	kfree(dmabuf);
+> +
+> +	return result;
+> +}
+> +
+>  /*
+>   * Writes any 16-bit CP210X_ register (req) whose value is passed
+>   * entirely in the wValue field of the USB request.
+> @@ -1356,11 +1429,18 @@ static void cp210x_set_termios(struct tty_struct *tty,
+>  		struct usb_serial_port *port, struct ktermios *old_termios)
+>  {
+>  	struct device *dev = &port->dev;
+> -	unsigned int cflag, old_cflag;
+> +	unsigned int cflag, old_cflag, iflag, old_iflag;
+> +	struct cp210x_special_chars special_chars;
+> +	struct cp210x_flow_ctl flow_ctl;
+>  	u16 bits;
+> +	int result = 0;
+> +	u32 ctl_hs;
+> +	u32 flow_repl;
+>  
+>  	cflag = tty->termios.c_cflag;
+> +	iflag = tty->termios.c_iflag;
+>  	old_cflag = old_termios->c_cflag;
+> +	old_iflag = old_termios->c_iflag;
+>  
+>  	if (tty->termios.c_ospeed != old_termios->c_ospeed)
+>  		cp210x_change_speed(tty, port, old_termios);
+> @@ -1434,10 +1514,6 @@ static void cp210x_set_termios(struct tty_struct *tty,
+>  	}
+>  
+>  	if ((cflag & CRTSCTS) != (old_cflag & CRTSCTS)) {
+> -		struct cp210x_flow_ctl flow_ctl;
+> -		u32 ctl_hs;
+> -		u32 flow_repl;
+> -
+>  		cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl,
+>  				sizeof(flow_ctl));
+>  		ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
+> @@ -1474,6 +1550,48 @@ static void cp210x_set_termios(struct tty_struct *tty,
+>  				sizeof(flow_ctl));
+>  	}
+>  
+> +	if (((iflag & IXOFF) != (old_iflag & IXOFF)) ||
+> +		((iflag & IXON) != (old_iflag & IXON))) {
+
+You need to check if START_CHAR or STOP_CHAR has changed too.
+
+> +		result = cp210x_get_chars(port, &special_chars);
+> +		if (result < 0)
+> +			goto out;
+> +
+> +		special_chars.bXonChar  = START_CHAR(tty);
+> +		special_chars.bXoffChar = STOP_CHAR(tty);
+> +
+> +		result = cp210x_set_chars(port, &special_chars);
+> +		if (result < 0)
+> +			goto out;
+> +
+> +		result = cp210x_read_reg_block(port,
+> +					CP210X_GET_FLOW,
+> +					&flow_ctl,
+> +					sizeof(flow_ctl));
+> +		if (result < 0)
+> +			goto out;
+> +
+> +		flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
+> +
+> +		if (iflag & IXOFF)
+> +			flow_repl |= CP210X_SERIAL_AUTO_RECEIVE;
+> +		else
+> +			flow_repl &= ~CP210X_SERIAL_AUTO_RECEIVE;
+> +
+> +		if (iflag & IXON)
+> +			flow_repl |= CP210X_SERIAL_AUTO_TRANSMIT;
+> +		else
+> +			flow_repl &= ~CP210X_SERIAL_AUTO_TRANSMIT;
+> +
+> +		flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
+> +		result = cp210x_write_reg_block(port,
+> +					CP210X_SET_FLOW,
+> +					&flow_ctl,
+> +					sizeof(flow_ctl));
+> +	}
+> +out:
+> +	if (result < 0)
+> +		dev_err(dev, "failed to set software flow control: %d\n", result);
+> +
+
+Ok, this works, but it's weird with a label named "out" in the middle of
+a function. Please handle software flow control in a helper function as
+I suggested.
+
+>  	/*
+>  	 * Enable event-insertion mode only if input parity checking is
+>  	 * enabled for now.
+
+Also, you didn't address my final comment:
+
+	Finally, this driver is a bit weird in that it retrieves the
+	termios settings from the device on open. You need to handle
+	IXON/IXOFF there as well for now I'm afraid.
+
+Without that bit, output flow control (IXON, which is set in termios by
+default) will not be enabled in the device until it's disabled and
+re-enabled.
+
+I'll try to find some time to rip that bit out of the driver, but for
+now you need to handle also IXON/IXOFF in cp210x_get_termios().
+
+Johan
