@@ -2,157 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AE32B1645
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E452B164B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgKMHTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgKMHTg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:19:36 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DBDC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:19:36 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id o15so8567527wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:19:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bnJYl7E+i8htBIliisICLU3QBRLhtKX5V6IRkESXblI=;
-        b=k2FznTBmuBtIdb9vmIsFnefvjPAL49o04oAcgtmRfuhjCi1voMK9DNvTeL35Q98Bhu
-         Fnf3X2PwBuYGCK20FoLEl2g44owGkYJtgK/wfjvrWCE7wV4vO3Qzj4WQmEzejwEMA6Yb
-         kviwwk3HRP1j8xVxthJ+mlkPqqOhNp5S+8BTy3cRjICoDu8VhF+Bou9AyoksJLEbjn9k
-         v4kqsqfHj+s9oOvojGisAZTtWXB0ZNtFBTsgmnUeVXgSUm62p/yO6OThk/S2tB0lfgeL
-         9L7cp5IzV1+lAmgYnDOL0xxue73LP/tMrLwEdt0vAeEv6ZMPSnp/Rtxgq7P0ICuqI0gv
-         2/fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bnJYl7E+i8htBIliisICLU3QBRLhtKX5V6IRkESXblI=;
-        b=oEcWb46zcyuuRYfsA1mqNyH3ikvmFd2Th0v68fCst0T5grjIxuS/J3UdkHT65ykenk
-         r8KyxQplB2BKPTo8LTKE4IGynYhs9UcJCGtN+7O97Tz5aziQ275ttAfHDdEC1kkhQoeJ
-         rEkF2vBK6BYKR9jDoLTGLHgS5ymHgii9lkTYdWIBtKblZssnt6NZPhekr3wSf7FJZoF2
-         Z49d0Oo/6mZXSyD0cHZkJocF6bVnrkkyJ5kIxCCqR11xztsLSCXVUHX4Dccyczt+AmnL
-         NYgwGZnPzgUsH013pfji2qOg70gGJt7kWzmqOO+xdFkgxPZWvlyClQ9mdnK1fe41Us7X
-         qDlQ==
-X-Gm-Message-State: AOAM531QqiJtR4IbIlYvTR3pWFC+5bYXUBr3KqmTlcecWoKAONNcY4AY
-        IMs4k17bmMDh51W6AfBpyFodyBoh4KuNBoaX
-X-Google-Smtp-Source: ABdhPJwyloqmRo9bTH+UlgyIYTE0cdzl4YZHqxc71/L1xDZmUoB+GN0sXlank69DctPsSMAdjz0T1Q==
-X-Received: by 2002:adf:fd03:: with SMTP id e3mr1494073wrr.303.1605251974761;
-        Thu, 12 Nov 2020 23:19:34 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t4sm9631123wmb.20.2020.11.12.23.19.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 23:19:34 -0800 (PST)
-Date:   Fri, 13 Nov 2020 07:19:32 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Andy Gross <andy.gross@ti.com>,
-        by <jhartmann@precisioninsight.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
-        Faith <faith@valinux.com>, Gareth Hughes <gareth@valinux.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Jeff Hartmann <jhartmann@valinux.com>,
-        Keith Whitwell <keith@tungstengraphics.com>,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Clark <rob.clark@linaro.org>, Rob Clark <rob@ti.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
-Message-ID: <20201113071932.GF2787115@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
+        id S1726353AbgKMHVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:21:07 -0500
+Received: from mga07.intel.com ([134.134.136.100]:28234 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgKMHVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:21:06 -0500
+IronPort-SDR: w02Uf+WBKzmOeOm1Q0rEteUk2bu1wX3mq8OO3dRepPfmDnw2V2gsKk+Sk9xoi599di8hBucqsF
+ 2VTT7ZkkWeLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="234597292"
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="234597292"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:21:01 -0800
+IronPort-SDR: EONXJF7YvBQvv6j5Nm8hLVoWEA4SJGRtIy3wvSNf/su8bmK+TZUrddVSFriM57SurvPJggLmbO
+ nBpzcdy8a2xQ==
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="542568340"
+Received: from zhangn1-mobl2.ccr.corp.intel.com (HELO [10.254.209.85]) ([10.254.209.85])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:20:57 -0800
+Cc:     baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
+        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Woodhouse <dwmw2@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Ziyad Atiyyeh <ziyadat@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>
+References: <20200826111628.794979401@linutronix.de>
+ <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
+ <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
+ <87d00imlop.fsf@nanos.tec.linutronix.de>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
+Message-ID: <f507c2cf-f628-3b79-6c36-8ad8a10bb69c@linux.intel.com>
+Date:   Fri, 13 Nov 2020 15:20:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <87d00imlop.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106214949.2042120-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Lee Jones wrote:
+Hi Thomas,
 
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+On 2020/11/13 3:15, Thomas Gleixner wrote:
+> The recent changes to store the MSI irqdomain pointer in struct device
+> missed that Intel DMAR does not register virtual function devices.  Due to
+> that a VF device gets the plain PCI-MSI domain assigned and then issues
+> compat MSI messages which get caught by the interrupt remapping unit.
 > 
-> There are 5000 warnings to work through.  It will take a couple more
-> sets.  Although, ("drm/amd/display/dc/basics/fixpt31_32: Move
-> variables to where they're used") does take care of 2000 of them!
+> Cure that by inheriting the irq domain from the physical function
+> device.
 > 
-> Lee Jones (19):
->   drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
->   drm/r128/ati_pcigart: Source file headers are not good candidates for
->     kernel-doc
->   drm/selftests/test-drm_dp_mst_helper: Move
->     'sideband_msg_req_encode_decode' onto the heap
->   drm/mga/mga_dma: Demote kernel-doc abusers to standard comment blocks
->   drm/mga/mga_state: Remove unused variable 'buf_priv'
->   drm/radeon/atom: Move prototype into shared location
->   drm/radeon/radeon_kms: Include header containing our own prototypes
->   drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
->   drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
->   drm/radeon/radeon: Move prototype into shared header
->   drm/radeon/radeon_drv: Source file headers are not good candidates for
->     kernel-doc
->   drm/amd/display/dc/basics/fixpt31_32: Move variables to where they're
->     used
->   drm/radeon/radeon_drv: Move prototypes to a shared headerfile
->   drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr'
->     params
->   drm/radeon: Move prototypes to shared header
->   drm/amd/amdgpu/amdgpu_kms: Remove 'struct drm_amdgpu_info_device
->     dev_info' from the stack
->   drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
->   drm/radeon/atombios_crtc: Remove description of non-existent function
->     param 'encoder'
->   drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
+> That's a temporary workaround. The correct fix is to inherit the irq domain
+> from the bus, but that's a larger effort which needs quite some other
+> changes to the way how x86 manages PCI and MSI domains.
 > 
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
->  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       | 104 +++++++++---------
->  .../drm/amd/display/dc/basics/fixpt31_32.c    |   5 +
->  .../gpu/drm/amd/display/include/fixed31_32.h  |   6 -
->  drivers/gpu/drm/mga/mga_dma.c                 |  10 +-
->  drivers/gpu/drm/mga/mga_state.c               |   2 -
->  drivers/gpu/drm/omapdrm/omap_dmm_tiler.c      |   6 +-
->  drivers/gpu/drm/omapdrm/omap_gem.c            |   3 +-
->  drivers/gpu/drm/r128/ati_pcigart.c            |   2 +-
->  drivers/gpu/drm/radeon/atom.h                 |   6 +
->  drivers/gpu/drm/radeon/atombios_crtc.c        |   1 -
->  drivers/gpu/drm/radeon/atombios_encoders.c    |   4 -
->  drivers/gpu/drm/radeon/radeon.h               |   6 +
->  drivers/gpu/drm/radeon/radeon_device.c        |   1 +
->  drivers/gpu/drm/radeon/radeon_device.h        |  32 ++++++
->  drivers/gpu/drm/radeon/radeon_display.c       |   4 -
->  drivers/gpu/drm/radeon/radeon_drv.c           |  11 +-
->  drivers/gpu/drm/radeon/radeon_drv.h           |   7 ++
->  drivers/gpu/drm/radeon/radeon_kms.c           |   3 +-
->  .../drm/selftests/test-drm_dp_mst_helper.c    |  11 +-
->  drivers/gpu/drm/ttm/ttm_range_manager.c       |   2 +-
->  drivers/gpu/drm/v3d/v3d_drv.c                 |  36 ------
->  22 files changed, 138 insertions(+), 126 deletions(-)
->  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
+> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
+>   1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -333,6 +333,11 @@ static void  dmar_pci_bus_del_dev(struct
+>   	dmar_iommu_notify_scope_dev(info);
+>   }
+>   
+> +static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
+> +{
+> +	dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
+> +}
+> +
+>   static int dmar_pci_bus_notifier(struct notifier_block *nb,
+>   				 unsigned long action, void *data)
+>   {
+> @@ -342,8 +347,20 @@ static int dmar_pci_bus_notifier(struct
+>   	/* Only care about add/remove events for physical functions.
+>   	 * For VFs we actually do the lookup based on the corresponding
+>   	 * PF in device_to_iommu() anyway. */
+> -	if (pdev->is_virtfn)
+> +	if (pdev->is_virtfn) {
+> +		/*
+> +		 * Note: This is a horrible hack and needs to be cleaned
+> +		 * up by assigning the domain to the bus, but that's too
+> +		 * big of a change for post rc3.
+> +		 *
+> +		 * Ensure that the VF device inherits the irq domain of the
+> +		 * PF device:
+> +		 */
+> +		if (action == BUS_NOTIFY_ADD_DEVICE)
+> +			vf_inherit_msi_domain(pdev);
+>   		return NOTIFY_DONE;
+> +	}
+> +
+>   	if (action != BUS_NOTIFY_ADD_DEVICE &&
+>   	    action != BUS_NOTIFY_REMOVED_DEVICE)
+>   		return NOTIFY_DONE;
 
-Still no Radeon patches in today's -next.
+We also encountered this problem in internal testing. This patch can
+solve the problem.
 
-I really wanted to have had this set rebased by now.
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-How long do they take to peculate through?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best regards,
+baolu
