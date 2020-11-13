@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BB52B1C89
+	by mail.lfdr.de (Postfix) with ESMTP id 85F302B1C88
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgKMNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:51:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
+        id S1727251AbgKMNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727100AbgKMNuY (ORCPT
+        with ESMTP id S1727116AbgKMNuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:50:24 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685D6C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:24 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 23so9966399wrc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:24 -0800 (PST)
+        Fri, 13 Nov 2020 08:50:25 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9399DC061A48
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:25 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id h62so8560289wme.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=451+tFthAljOAh2f/Wv8bktxEJYp2PVcrpZPPSF00gU=;
-        b=pe6e21nu0qjtMO7L/dhgnVP1pOLq2uLl2Q603f2mIEfsxLZ4RIF5ndrN5ElCTk5gBH
-         qQChgdrqm4R3PWyX5mMgOaxx9OkofEfBCcsS2ylOlDJ7yGlIIK5W9xGGJPcsDPMjho8J
-         0j2P0H2AQeAsAZf+VeoXuXFXESasVb2kJfTC2fFe3IqwTvNbzmL61XTiAJLVbf//ktvE
-         7wgdTtkmRnKSQmwwcqNylRCy7SZdv0M1aolSP2I49SYf0yYufITdguFUZ3pxAGSsFjQ3
-         3Wi/1IjSnNLf+E/nmecH+3SNI7gxA8ulpguIdKsungNlVSzRdzgfEjtTVghmCWTbEB79
-         ZvZA==
+        bh=OFGPsQBWaqIstUovZEQuV7ZoQw1xUxoIPu10HqknCTI=;
+        b=hDDNRtwmjy7UzVPZNCJaQ+bu+PRm7kW3v0HnLqD/oaFNjNOldbhgb4hKirvW7RQ3XG
+         txtByjBe8inFiRzGvNE+0ZhuM7fV8Syu7RL2PxTSw2iQ4LD1FFAVBa7/GJ93TuAgl0XA
+         ACpV0/PDpouzHfBWTiLt7rJyhWBmcfvQ9qFIvNY4YbDDotBVfQmZZoxQ8vEKkrAwZ3DS
+         i3XKYmnsRMMZb3YU7tGhZTUDY4RrTNSSIqPhVlTAfqW/ZFop7DarUDsHz7+LSVLhD4vD
+         hnfZR+RX+VS+Bxjl5AVbcbeSDW5bYjOBDFd4HsO95GvFkJNQ/mV9Ogq4rZyjmic5vcYi
+         FTZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=451+tFthAljOAh2f/Wv8bktxEJYp2PVcrpZPPSF00gU=;
-        b=PVBwsGTh5cCpCpWcOx6Oc1LADODp5bbBKBf/Oyg3n6jJ4pCVAGK3/Z6qsG0UDiSeGu
-         qXBOG3NFKsDwhk+CoNNTDfAJKAEe+vm/qadWg/SH4VRaMqyniTU9BKZpKn6kTDkO4YYU
-         9Y1jRunKB9nJ8RAngB+nkqDcVJ9T+tNm7NwrVsGQhMwcp2u3wfqac3vZrv08M8LBBC0y
-         H7FcZTrUrwWvTy6f9l2ixlmLkEvxy7WYjTOd2yMdv9LS+/+OS3EdqDK9kNDpUMRRMe23
-         2NHfcfKH3tJ+AmN8gbQuXe5dY9S7ScRyDmrR981Qca6+BUmF65+KGghRno5WytBKZERO
-         GcaA==
-X-Gm-Message-State: AOAM5338QDJbTyqSKr8fnHEcekSYEEsY8PH193FqGr7f9NTNBDHhQT7X
-        fG3oWIDpMTvi1x3e+VMXpiCQBQ==
-X-Google-Smtp-Source: ABdhPJyjledgKwa6fPP8UYFTcytP7jLttiwL2vQI0keB72vsOIAUvnnP5rtBVPtFkTM4WWb/v+5bVA==
-X-Received: by 2002:adf:f852:: with SMTP id d18mr3466397wrq.232.1605275423174;
-        Fri, 13 Nov 2020 05:50:23 -0800 (PST)
+        bh=OFGPsQBWaqIstUovZEQuV7ZoQw1xUxoIPu10HqknCTI=;
+        b=poc5B6MEbqbDvd1g2C1KHROYVKbIbOvmub3A47kVg4K7uKXluZANsEbWs80ub6h07I
+         gFNUlfK6emaSrQVYUluHZV0fYA9xNK0hVrIJaC8mU/i+3uY3/wTXVgH919+Fcg7dXxwc
+         kHJUHRkBaHtCjcWQNIO9vaqZVKWWM39klWU7dEHGRg/rDGNJur/bbxqxZtLcETY1ATad
+         6yP4W83Y6iSqC74t34TFKlTECUVU3pLsUk67EVCaBbqqoKs19n2nmEYcFYrSrdtRCV+9
+         i4IVgweoc8X7cM0TRIE6jcejVJe031ht95xIYqi8Rto/NdfKKpFfu/gVBAGTpzsFDDbX
+         hyxA==
+X-Gm-Message-State: AOAM530iNOSLJNlMkyeUTNzf6HQxAQ8MmtoV6rlY+lO/SAvhhvjneAJ8
+        c/V4X1GxHAOfd/OhldzB6DLhjg==
+X-Google-Smtp-Source: ABdhPJyRl6lkCY0QwpZX7ubai9WllsidpusPMAw7vEARujcTCQ0A8ompo9Cv1/xtXRSuPmAwCaT85w==
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr2533032wms.182.1605275424372;
+        Fri, 13 Nov 2020 05:50:24 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.22
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:50:22 -0800 (PST)
+        Fri, 13 Nov 2020 05:50:23 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 33/40] drm/drm_dp_mst_topology: Remove set but never used variable 'len'
-Date:   Fri, 13 Nov 2020 13:49:31 +0000
-Message-Id: <20201113134938.4004947-34-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: [PATCH 34/40] drm/msm/disp/mdp5/mdp5_ctl: Demote non-conformant kernel-doc headers
+Date:   Fri, 13 Nov 2020 13:49:32 +0000
+Message-Id: <20201113134938.4004947-35-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Very little attempt has been made to document these functions.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
- drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'enabled' not described in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Excess function parameter 'enable' description in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_commit'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_commit'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'flush_mask' not described in 'mdp5_ctl_commit'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'start' not described in 'mdp5_ctl_commit'
 
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Sean Paul <sean@poorly.run>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-arm-msm@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: freedreno@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index e875425336406..0401b2f475002 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3260,7 +3260,7 @@ int drm_dp_send_query_stream_enc_status(struct drm_dp_mst_topology_mgr *mgr,
- {
- 	struct drm_dp_sideband_msg_tx *txmsg;
- 	u8 nonce[7];
--	int len, ret;
-+	int ret;
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+index 030279d7b64b7..b5c40f9773629 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+@@ -213,10 +213,10 @@ static void send_start_signal(struct mdp5_ctl *ctl)
+ 	spin_unlock_irqrestore(&ctl->hw_lock, flags);
+ }
  
- 	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
- 	if (!txmsg)
-@@ -3281,7 +3281,7 @@ int drm_dp_send_query_stream_enc_status(struct drm_dp_mst_topology_mgr *mgr,
- 	 */
- 	txmsg->dst = mgr->mst_primary;
+-/**
++/*
+  * mdp5_ctl_set_encoder_state() - set the encoder state
+  *
+- * @enable: true, when encoder is ready for data streaming; false, otherwise.
++ * @enabled: true, when encoder is ready for data streaming; false, otherwise.
+  *
+  * Note:
+  * This encoder state is needed to trigger START signal (data path kickoff).
+@@ -507,7 +507,7 @@ static void fix_for_single_flush(struct mdp5_ctl *ctl, u32 *flush_mask,
+ 	}
+ }
  
--	len = build_query_stream_enc_status(txmsg, port->vcpi.vcpi, nonce);
-+	build_query_stream_enc_status(txmsg, port->vcpi.vcpi, nonce);
- 
- 	drm_dp_queue_down_tx(mgr, txmsg);
- 
+-/**
++/*
+  * mdp5_ctl_commit() - Register Flush
+  *
+  * The flush register is used to indicate several registers are all
 -- 
 2.25.1
 
