@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3169D2B1C0F
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9882B1C10
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgKMNrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:47:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42048 "EHLO
+        id S1726544AbgKMNre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:47:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53035 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726160AbgKMNr0 (ORCPT
+        by vger.kernel.org with ESMTP id S1726324AbgKMNra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:47:26 -0500
+        Fri, 13 Nov 2020 08:47:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605275245;
+        s=mimecast20190719; t=1605275247;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OfulPYTZhsoQhkiaVeD/pLg5PazzTZIGNLw9gLcaGuw=;
-        b=fAJP26JWfpOdHMQJISDY6F14ZbbM1T8Xy1Ri015pn3GRvmZRYICTaSt3wGoBMVeUavZAYk
-        8vEzFSRiJ5DpLOSELEjN2az5zQUMakFXwNtWGuzsBJH5WZ3lZj8PPs9P4LFgELZ6Ji+fzi
-        YtHTnIw1YUUeLtxFp5EarAYVMk9/IJA=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qUSCXqZfVu5qowPNJ7+Usz2GPpNw0QJvHN5TBNVtPXI=;
+        b=ZN+yGDgV8jI5n1dsGxqnrMVHHTdSXMiIAeA6DC5eudT5gBdrlrt6gj4oa75vx3r3oSPDig
+        t1iK51OW5V2QxOqXYjdALctHAUuoG7h2mLEeC3Ein7amMgEvbZmFdm2imS+/Ejnuzw5JA8
+        r8HOm3Gq/2SXbr4X9H9/5SsHcDslJDU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-XlpqqaSlMveemIZAxuAuLA-1; Fri, 13 Nov 2020 08:47:23 -0500
-X-MC-Unique: XlpqqaSlMveemIZAxuAuLA-1
+ us-mta-259--0QA5k77MY-frLRzGvAyxA-1; Fri, 13 Nov 2020 08:47:25 -0500
+X-MC-Unique: -0QA5k77MY-frLRzGvAyxA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0B36809DC4;
-        Fri, 13 Nov 2020 13:47:21 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D55210066FA;
+        Fri, 13 Nov 2020 13:47:24 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-114-21.ams2.redhat.com [10.36.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BEA8D60C84;
-        Fri, 13 Nov 2020 13:47:13 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5310B60C84;
+        Fri, 13 Nov 2020 13:47:22 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -41,10 +42,11 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block device
-Date:   Fri, 13 Nov 2020 14:47:00 +0100
-Message-Id: <20201113134712.69744-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset="utf-8"
+Subject: [PATCH RFC 01/12] vhost-vdpa: add support for vDPA blk devices
+Date:   Fri, 13 Nov 2020 14:47:01 +0100
+Message-Id: <20201113134712.69744-2-sgarzare@redhat.com>
+In-Reply-To: <20201113134712.69744-1-sgarzare@redhat.com>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
@@ -52,66 +54,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks to Max that started this work!
-I took his patches, and extended the block simulator a bit.
+From: Max Gurtovoy <maxg@mellanox.com>
 
-This series moves the network device simulator in a new module
-(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
-module, allowing the possibility to add new vDPA device simulators.
-Then we added a new vdpa_sim_blk module to simulate a block device.
+Currently only net devices can act as vDPA backends. Add an
+infrastructure for block devices will basic feature list that will be
+increased in the future.
 
-I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
-bytes when ptr is NULL"), maybe we can add a new functions instead of
-modify vringh_iov_xfer().
+Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+Reviewed-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ drivers/vhost/vdpa.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-As Max reported, I'm also seeing errors with vdpa_sim_blk related to
-iotlb and vringh when there is high load, these are some of the error
-messages I can see randomly:
-
-  vringh: Failed to access avail idx at 00000000e8deb2cc
-  vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
-  vringh: Failed to get flags at 000000006635d7a3
-
-  virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset: 0x2840000 len: 0x20000
-  virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset: 0x58ee000 len: 0x3000
-
-These errors should all be related to the fact that iotlb_translate()
-fails with -EINVAL, so it seems that we miss some mapping.
-
-I'll debug more carefully, in the meantime can you give a first review?
-
-Thanks,
-Stefano
-
-Max Gurtovoy (4):
-  vhost-vdpa: add support for vDPA blk devices
-  vdpa: split vdpasim to core and net modules
-  vdpa_sim: remove hard-coded virtq count
-  vdpa: add vdpa simulator for block device
-
-Stefano Garzarella (8):
-  vdpa_sim: remove the limit of IOTLB entries
-  vdpa_sim: add struct vdpasim_device to store device properties
-  vdpa_sim: move config management outside of the core
-  vdpa_sim: use kvmalloc to allocate vdpasim->buffer
-  vdpa_sim: make vdpasim->buffer size configurable
-  vdpa_sim: split vdpasim_virtqueue's iov field in riov and wiov
-  vringh: allow vringh_iov_xfer() to skip bytes when ptr is NULL
-  vdpa_sim_blk: implement ramdisk behaviour
-
- drivers/vdpa/vdpa_sim/vdpa_sim.h     | 117 +++++++++++
- drivers/vdpa/vdpa_sim/vdpa_sim.c     | 283 +++++----------------------
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 251 ++++++++++++++++++++++++
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 172 ++++++++++++++++
- drivers/vhost/vdpa.c                 |  11 +-
- drivers/vhost/vringh.c               |  16 +-
- drivers/vdpa/Kconfig                 |  16 +-
- drivers/vdpa/vdpa_sim/Makefile       |   2 +
- 8 files changed, 628 insertions(+), 240 deletions(-)
- create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
- create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
- create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 2754f3069738..fb0411594963 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -22,6 +22,7 @@
+ #include <linux/nospec.h>
+ #include <linux/vhost.h>
+ #include <linux/virtio_net.h>
++#include <linux/virtio_blk.h>
+ 
+ #include "vhost.h"
+ 
+@@ -194,6 +195,9 @@ static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
+ 	case VIRTIO_ID_NET:
+ 		size = sizeof(struct virtio_net_config);
+ 		break;
++	case VIRTIO_ID_BLOCK:
++		size = sizeof(struct virtio_blk_config);
++		break;
+ 	}
+ 
+ 	if (c->len == 0)
+@@ -975,12 +979,13 @@ static void vhost_vdpa_release_dev(struct device *device)
+ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
+ {
+ 	const struct vdpa_config_ops *ops = vdpa->config;
++	u32 device_id = ops->get_device_id(vdpa);
+ 	struct vhost_vdpa *v;
+ 	int minor;
+ 	int r;
+ 
+-	/* Currently, we only accept the network devices. */
+-	if (ops->get_device_id(vdpa) != VIRTIO_ID_NET)
++	/* Currently, we only accept the network and block devices. */
++	if (device_id != VIRTIO_ID_NET && device_id != VIRTIO_ID_BLOCK)
+ 		return -ENOTSUPP;
+ 
+ 	v = kzalloc(sizeof(*v), GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+@@ -998,7 +1003,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
+ 	v->minor = minor;
+ 	v->vdpa = vdpa;
+ 	v->nvqs = vdpa->nvqs;
+-	v->virtio_id = ops->get_device_id(vdpa);
++	v->virtio_id = device_id;
+ 
+ 	device_initialize(&v->dev);
+ 	v->dev.release = vhost_vdpa_release_dev;
 -- 
 2.26.2
 
