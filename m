@@ -2,113 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC0B2B139C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889032B139F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKMBBX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 20:01:23 -0500
-Received: from mga09.intel.com ([134.134.136.24]:10942 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725965AbgKMBBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 20:01:22 -0500
-IronPort-SDR: 5Dx8NFtyqsGTBeGog/Engpc5K+nSlTLuEHhAMMihelAtV3RVzA/7vYEqxeklUHP+Qpmptoe4Wr
- bkr5ez/aAOTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="170576609"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="170576609"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 17:01:14 -0800
-IronPort-SDR: UTyCa1TTlO3Scx0RkJ2KoBpkmPVK0edGxutARnjcBJ/P3wunH0pyc2qGDybmyyKjlkhru56qc4
- NWDhKmqymz2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="309009253"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Nov 2020 17:01:14 -0800
-Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 17:01:13 -0800
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- SHSMSX603.ccr.corp.intel.com (10.109.6.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 13 Nov 2020 09:01:11 +0800
-Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
- SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.1713.004;
- Fri, 13 Nov 2020 09:01:11 +0800
-From:   "Li, Philip" <philip.li@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     lkp <lkp@intel.com>, Dmytro Shytyi <dmytro@shytyi.net>,
-        kuznet <kuznet@ms2.inr.ac.ru>,
-        yoshfuji <yoshfuji@linux-ipv6.org>,
-        liuhangbin <liuhangbin@gmail.com>, davem <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
-Subject: RE: [kbuild-all] Re: [PATCH net-next] net: Variable SLAAC: SLAAC with
- prefixes of arbitrary length in PIO
-Thread-Topic: [kbuild-all] Re: [PATCH net-next] net: Variable SLAAC: SLAAC
- with prefixes of arbitrary length in PIO
-Thread-Index: AQHWt8rnymHV+oRFv0+mSedV58/YYKnEsPmAgACHjsD//3/5gIAAhmeA
-Date:   Fri, 13 Nov 2020 01:01:11 +0000
-Message-ID: <905a3ef02edb4aa9883ae4d6080120a9@intel.com>
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
-        <202011110944.7zNVZmvB-lkp@intel.com>
-        <20201112162423.6b4de8d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <5bc4f8ce9a6c40029043bc902a38af25@intel.com>
- <20201112165119.54bd07ee@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201112165119.54bd07ee@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726198AbgKMBDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 20:03:09 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:50456 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbgKMBDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 20:03:09 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AD0s0Xm113957;
+        Fri, 13 Nov 2020 01:02:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=A+yROxOeZMxSIj57WnkMpxlM1xxqGLo7/Ocbao+mSa4=;
+ b=GtFpgr+A9E/huD3eJ55I5RGk8VjGiDcihl56B+TSv/k3eTo9Z+ZnY/VxrCCO+D8KeCln
+ D2MmNw75g/nwlYGOAhutmpqS30efgbLBfchtOt3tkan4hZNZ+FpiU7cEQyP76AtpLm/p
+ bDHqmQRctlbTWnwYIUNeboHyvXG5H70Htb3+O1WW/u6ImgDs5V1c/4FZrBX+Kncy/Gpr
+ Aozs85oqCFU8px9g3KIZ2vr/3KGGDrfDCw/DRdFOREiX4ifMep6JbVq4aVQlUD2xcQmC
+ wIHnm5ZTbC3koigE2l1ARPcYt4P2iTJgdQAy3y8w7rPM4snHvYZ96LMuXavUhY/y9U8/ 0g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34nh3b8k5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 01:02:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AD0tCms182230;
+        Fri, 13 Nov 2020 01:02:42 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34rt56yg8t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 01:02:42 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AD12dlr017570;
+        Fri, 13 Nov 2020 01:02:39 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 12 Nov 2020 17:02:39 -0800
+Subject: Re: [External] Re: [PATCH v3 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-6-songmuchun@bytedance.com>
+ <9dc62874-379f-b126-94a7-5bd477529407@oracle.com>
+ <CAMZfGtV+_vP66N1WagwNfxs4r3QGwnrYoR60yimwutTs=awXag@mail.gmail.com>
+ <b7c16e3f-d906-1a11-dbd5-dc4199d70821@oracle.com>
+Message-ID: <0f22bb94-478c-c1a4-7033-fbc6aca2404f@oracle.com>
+Date:   Thu, 12 Nov 2020 17:02:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
+In-Reply-To: <b7c16e3f-d906-1a11-dbd5-dc4199d70821@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=2 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130002
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=2
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/12/20 4:35 PM, Mike Kravetz wrote:
+> On 11/10/20 7:41 PM, Muchun Song wrote:
+>> On Wed, Nov 11, 2020 at 8:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>>
+>>> On 11/8/20 6:10 AM, Muchun Song wrote:
+>>> I am reading the code incorrectly it does not appear page->lru (of the huge
+>>> page) is being used for this purpose.  Is that correct?
+>>>
+>>> If it is correct, would using page->lru of the huge page make this code
+>>> simpler?  I am just missing the reason why you are using
+>>> page_huge_pte(page)->lru
+>>
+>> For 1GB HugeTLB pages, we should pre-allocate more than one page
+>> table. So I use a linked list. The page_huge_pte(page) is the list head.
+>> Because the page->lru shares storage with page->pmd_huge_pte.
 > 
-> On Fri, 13 Nov 2020 00:32:55 +0000 Li, Philip wrote:
-> > > Subject: [kbuild-all] Re: [PATCH net-next] net: Variable SLAAC: SLAAC
-> with
-> > > prefixes of arbitrary length in PIO
-> > >
-> > > On Wed, 11 Nov 2020 09:34:24 +0800 kernel test robot wrote:
-> > > > If you fix the issue, kindly add following tag as appropriate
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > Good people of kernel test robot, could you please rephrase this to say
-> > > that the tag is only appropriate if someone is sending a fix up/follow
-> > > up patch?
-> > Thanks for the input, based on your suggestion how about
-> >
-> > Kindly add below tag as appropriate if you send a fix up/follow up patch
+> Sorry, but I do not understand the statement page->lru shares storage with
+> page->pmd_huge_pte.  Are you saying they are both in head struct page of
+> the huge page?
 > 
-> I'm not sure myself how best to phrase it, I'm not a native speaker.
-> How about:
+> Here is what I was suggesting.  If we just use page->lru for the list
+> then vmemmap_pgtable_prealloc() could be coded like the following:
 > 
-> Kindly add below tag if you send a new patch solely addressing this issue
-Thanks, we will consider this, and provide update next week to gather
-more inputs. If anyone has further suggestion, it will be very welcome.
-
-There did have some confusion and discussed earlier actually regarding
-when/how to add the Reported-by, thus we use appropriate to let developer
-decide the best choice for his own situation. But if it leads to confusion,
-we will keep looking for a better way.
-
-BTW: if we just remove this message line, and leave below Reported-by only, would
-it be a good choice? 
-
+> static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> {
+> 	struct page *pte_page, *t_page;
+> 	unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
 > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > Or any wording change suggestion to make it more clear/friendly?
+> 	if (!nr)
+> 		return 0;
+> 
+> 	/* Store preallocated pages on huge page lru list */
+> 	INIT_LIST_HEAD(&page->lru);
+> 
+> 	while (nr--) {
+> 		pte_t *pte_p;
+> 
+> 		pte_p = pte_alloc_one_kernel(&init_mm);
+> 		if (!pte_p)
+> 			goto out;
+> 		list_add(&virt_to_page(pte_p)->lru, &page->lru);
+> 	}
+> 
+> 	return 0;
+> out:
+> 	list_for_each_entry_safe(pte_page, t_page, &page->lru, lru)
 
+Forgot the list_del(&pte_page->lru)
+Perhaps it is not simpler after all. :)
+-- 
+Mike Kravetz
+
+> 		pte_free_kernel(&init_mm, page_to_virt(pte_page));
+> 	return -ENOMEM;
+> }
+> 
+> By doing this we could eliminate the routines,
+> vmemmap_pgtable_init()
+> vmemmap_pgtable_deposit()
+> vmemmap_pgtable_withdraw()
+> and simply use the list manipulation routines.
+> 
+> To me, that looks simpler than the proposed code in this patch.
+> 
