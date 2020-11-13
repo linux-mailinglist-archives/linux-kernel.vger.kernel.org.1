@@ -2,162 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F1D2B172F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA3A2B172C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgKMI1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:27:25 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43216 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725866AbgKMI1Y (ORCPT
+        id S1726299AbgKMI1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 03:27:09 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35302 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKMI1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:27:24 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD8RCT7028783;
-        Fri, 13 Nov 2020 09:27:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ofrXjoO1UDhDTqrPQH8FB+yGKCEcamxbT6TXyX1/+70=;
- b=DR76wqlWXhLbdLq2CtcFaDAMzJD/eNZFyZyO5rUT876cgeCZ+Tq2G/iONC9yxQXQTYZX
- fiHYEFPNbuztxPTyYbZkzDCzn8YOSrCaHwEOY0iGKadei9mUm7QDxukhoWaNPHRJ19Ss
- 60CAdl0hdceVRb+pVLTVDegHCm+ZDbu332fW25sWdD63bQCDKU4Z2NWy/+bbYOwGv4Sd
- y3jEPEPYMxs/xI37qfZnjjcmV2MPGKxF9Bhm+FKcQanK4jasXEDqAO4MPcpEeNnzd/G1
- G1FEwz8z5g09GQn+ydgOBKkA1ibtNxXJlajS+5NkMo6v4V+YBjeTLfKfEERGruIqBL48 LA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nkbnjc2b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 09:27:12 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C4314100034;
-        Fri, 13 Nov 2020 09:27:06 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AB66A22A4C0;
-        Fri, 13 Nov 2020 09:27:06 +0100 (CET)
-Received: from [10.211.4.198] (10.75.127.47) by SFHDAG1NODE3.st.com
- (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov
- 2020 09:27:05 +0100
-Subject: Re: [PATCH] iio: adc: stm32-adc: adapt clock duty cycle for proper
- operation
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <alexandre.torgue@st.com>,
-        <olivier.moysan@st.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <1604681846-31234-1-git-send-email-fabrice.gasnier@st.com>
- <20201108151835.5d78ebca@archlinux>
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-Message-ID: <0d7c4b81-3f4e-e952-892f-35296c87f987@st.com>
-Date:   Fri, 13 Nov 2020 09:27:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 13 Nov 2020 03:27:08 -0500
+Received: by mail-io1-f70.google.com with SMTP id u8so1834720ior.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 00:27:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=aodAqy64F6XTaLuDziEH7zjvDDBZw6JGTnABsNn/TvA=;
+        b=YhWfWCGAh7lyobQaAWnvATtAGiUZa0STM8+Y7JAPdzM5tGRmLyQZ9wUTJmto3RbFld
+         pJy2pVyfw6GBwENxKVBP0Kv8De43ybItQN3l6cVISuSeH+8ZkS+kSWQPp0nwwAInLmkD
+         qTcg+fDp/hacdraumaOxOBcUnpZbk4B+ICO5P9vgxrBaD0CU3x9aCk9r8awea3dojrN/
+         R188xSNDx2WGwxVOxIn3MFtmTLA/2R8EHlsL11YMvhhT7zj3ik3SdKvosS/cpd52gJxs
+         s/1mEzh3CAVpyH/PRkhdQH2lt/xhnjxAktmoZQFjav3gsGSuznvMNECIjxxrMphOGI6l
+         cbIg==
+X-Gm-Message-State: AOAM532kZ0SUmaWO2qLNSfEpyh56dP6qHg88dztVPE+m8BRjJqfr7kem
+        rH9ONPPG8Inw41WZu8xEWjYeYn65oEdOYXyOAAgujwudwBeG
+X-Google-Smtp-Source: ABdhPJxWG1D/1TdRIPE77iS79tX50Lk/pBj7OeAvfo760sgMZV71tViJj+mPhQ1xA9IkXqvruQWHzT14CG/WNCXKk72WTY/CL/T+
 MIME-Version: 1.0
-In-Reply-To: <20201108151835.5d78ebca@archlinux>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_05:2020-11-12,2020-11-13 signatures=0
+X-Received: by 2002:a05:6e02:931:: with SMTP id o17mr1041906ilt.273.1605256027576;
+ Fri, 13 Nov 2020 00:27:07 -0800 (PST)
+Date:   Fri, 13 Nov 2020 00:27:07 -0800
+In-Reply-To: <000000000000bb202905af132b8f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c208d05b3f8cbb6@google.com>
+Subject: Re: kernel panic: stack is corrupted in get_kernel_gp_address
+From:   syzbot <syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com>
+To:     alexandre.chartre@oracle.com, b.zolnierkie@samsung.com,
+        bp@alien8.de, dan.carpenter@oracle.com, george.kennedy@oracle.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/20 4:18 PM, Jonathan Cameron wrote:
-> On Fri, 6 Nov 2020 17:57:26 +0100
-> Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
-> 
->> For proper operation, STM32 ADC should be used with a clock duty cycle
->> of 50%, in the range of 49% to 51%. Depending on the clock tree, divider
->> can be used in case clock duty cycle is out of this range.
->> In case clk_get_scaled_duty_cycle() returns an error, kindly apply a
->> divider by default (don't make the probe fail).
->>
->> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Hi Fabrice,
-> 
-> This sounds like it's a fix for a situation in which the device is not
-> currently working?  If so, please let me know a fixes tag.
+syzbot suspects this issue was fixed by commit:
 
-Hi Jonathan,
+commit a49145acfb975d921464b84fe00279f99827d816
+Author: George Kennedy <george.kennedy@oracle.com>
+Date:   Tue Jul 7 19:26:03 2020 +0000
 
-That's a good point. I also thought about adding a fixes tag. Currently
-I think this can't be hit upstream, as clock tree is tuned to fit duty
-cycle constraints. So far, nobody seems to complain about it. So this
-can probably go through the normal tree.
+    fbmem: add margin check to fb_check_caps()
 
-Thanks,
-Fabrice
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10ff7572500000
+start commit:   f4d51dff Linux 5.9-rc4
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6459d8f8984c0929e54
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164270dd900000
 
-> 
-> Thanks,
-> 
-> Jonathan
-> 
->> ---
->>  drivers/iio/adc/stm32-adc-core.c | 21 ++++++++++++++++++++-
->>  1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
->> index cd870c0..d64a9e8 100644
->> --- a/drivers/iio/adc/stm32-adc-core.c
->> +++ b/drivers/iio/adc/stm32-adc-core.c
->> @@ -202,7 +202,7 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
->>  {
->>  	u32 ckmode, presc, val;
->>  	unsigned long rate;
->> -	int i, div;
->> +	int i, div, duty;
->>  
->>  	/* stm32h7 bus clock is common for all ADC instances (mandatory) */
->>  	if (!priv->bclk) {
->> @@ -226,6 +226,11 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
->>  			return -EINVAL;
->>  		}
->>  
->> +		/* If duty is an error, kindly use at least /2 divider */
->> +		duty = clk_get_scaled_duty_cycle(priv->aclk, 100);
->> +		if (duty < 0)
->> +			dev_warn(&pdev->dev, "adc clock duty: %d\n", duty);
->> +
->>  		for (i = 0; i < ARRAY_SIZE(stm32h7_adc_ckmodes_spec); i++) {
->>  			ckmode = stm32h7_adc_ckmodes_spec[i].ckmode;
->>  			presc = stm32h7_adc_ckmodes_spec[i].presc;
->> @@ -234,6 +239,13 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
->>  			if (ckmode)
->>  				continue;
->>  
->> +			/*
->> +			 * For proper operation, clock duty cycle range is 49%
->> +			 * to 51%. Apply at least /2 prescaler otherwise.
->> +			 */
->> +			if (div == 1 && (duty < 49 || duty > 51))
->> +				continue;
->> +
->>  			if ((rate / div) <= priv->max_clk_rate)
->>  				goto out;
->>  		}
->> @@ -246,6 +258,10 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
->>  		return -EINVAL;
->>  	}
->>  
->> +	duty = clk_get_scaled_duty_cycle(priv->bclk, 100);
->> +	if (duty < 0)
->> +		dev_warn(&pdev->dev, "bus clock duty: %d\n", duty);
->> +
->>  	for (i = 0; i < ARRAY_SIZE(stm32h7_adc_ckmodes_spec); i++) {
->>  		ckmode = stm32h7_adc_ckmodes_spec[i].ckmode;
->>  		presc = stm32h7_adc_ckmodes_spec[i].presc;
->> @@ -254,6 +270,9 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
->>  		if (!ckmode)
->>  			continue;
->>  
->> +		if (div == 1 && (duty < 49 || duty > 51))
->> +			continue;
->> +
->>  		if ((rate / div) <= priv->max_clk_rate)
->>  			goto out;
->>  	}
-> 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fbmem: add margin check to fb_check_caps()
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
