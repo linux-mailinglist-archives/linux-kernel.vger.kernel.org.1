@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA22D2B24E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DF32B24E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgKMTq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgKMTqz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:46:55 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A415C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:46:55 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id s9so12155143ljo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:46:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HsABYu4fiHtPfsyj03E4PvSaOqgBaRQivbPyU1cy34A=;
-        b=cMNc6fXdDKF/qTr3R323Nz73YQEzMHyOvf8fPTz8pwE791It5ltCdQRmumuyS1+HzL
-         xFxPusKNldryA4c1IkUZnCMVZINvoXDY4zzgX8drrQfyYcx6nzLCRzrTI6tA8WQ8bVmo
-         uMOboLvLcpDAG6eUsq773dhlTVXXZW1pFMtVQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HsABYu4fiHtPfsyj03E4PvSaOqgBaRQivbPyU1cy34A=;
-        b=Y3/IZkvpHptIVCxmkOyqTLKJDi0VQwIksB+/8tOoMQyN3/t/3VHzujQqM2UJFwfi84
-         WSwqpn9xsnXwqU1vOueU8b8s87xgbqZnAjOTEjPS2+xf1nzyf8wxTWB6usaZl2uqW6bL
-         XXrGXqcyvfwqQ6ez7FpkiRanVduf5Y6v0yZMVC60FeOp8oZNbcVdXl0BYDcDhRdkYotZ
-         H//ceWONxGhZ3uYXevikqpzTU+q36a9d2df/PDCoLKnzDpaR634VNEcKJQIDLUawsdIv
-         TohgjV7dJ83B5eelEKBhZoZO5k608jp9jVx8lrn6swgV26eeB/xuizIR8/xS2iidZK9i
-         bPrw==
-X-Gm-Message-State: AOAM532g90ahzwNT5wMH1hzHJWqjtKgb8iUmCuZo9ZhdvK4CIKNG1fP9
-        LBfy7FfpuXqrLLZR7lbC2ZaSVSRZ5gM+Sg==
-X-Google-Smtp-Source: ABdhPJwHu8sPdI+1/+BmMT8SeKRlyh2iKiPAyWRnFaCt+Cl7m4w9WAzM5nzw1+LGwQxQXwPyuLr3pw==
-X-Received: by 2002:a2e:7a18:: with SMTP id v24mr1879268ljc.224.1605296813489;
-        Fri, 13 Nov 2020 11:46:53 -0800 (PST)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id i125sm1749740lji.50.2020.11.13.11.46.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 11:46:52 -0800 (PST)
-Received: by mail-lj1-f181.google.com with SMTP id b17so12175513ljf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:46:52 -0800 (PST)
-X-Received: by 2002:a2e:a375:: with SMTP id i21mr1527056ljn.421.1605296811879;
- Fri, 13 Nov 2020 11:46:51 -0800 (PST)
+        id S1726325AbgKMTqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:46:49 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:33716 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726107AbgKMTqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 14:46:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605296809; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=XQR2DizaqucPQpeF3S73VOOHiAuFQxlGivhbcgxWTSo=;
+ b=WeXwaIFzRU9eFqtUVYFlQF5nEGHW2Vz8yUcDEfOhKKcwAQEkDQ3d5ddwiOsswmzHgkJssJJf
+ 72q37v+To+A6crgP/CiLqIWZXE3J30GMI0zeZGPd5Wunim2scyhgl+rq5WOt7QEjAN03Sl8I
+ R76ZGqkNnfEcaUQQlcKAQNy9bk4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5faee2a1135ce186e9fc298a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 19:46:41
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 18F88C433CB; Fri, 13 Nov 2020 19:46:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57163C433C6;
+        Fri, 13 Nov 2020 19:46:40 +0000 (UTC)
 MIME-Version: 1.0
-References: <cover.1605134506.git.dxu@dxuuu.xyz> <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
- <20201113170338.3uxdgb4yl55dgto5@ast-mbp> <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
- <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
-In-Reply-To: <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Nov 2020 11:46:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj4EjAq=bN1aKUyfVR4xTM9K1QO-99+N0132V1DHs1XBQ@mail.gmail.com>
-Message-ID: <CAHk-=wj4EjAq=bN1aKUyfVR4xTM9K1QO-99+N0132V1DHs1XBQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 13 Nov 2020 11:46:40 -0800
+From:   abhinavk@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 35/40] drm/msm/disp/mdp5/mdp5_kms: Make local functions
+ 'mdp5_{en, dis}able()' static
+In-Reply-To: <20201113134938.4004947-36-lee.jones@linaro.org>
+References: <20201113134938.4004947-1-lee.jones@linaro.org>
+ <20201113134938.4004947-36-lee.jones@linaro.org>
+Message-ID: <cf160e1968c0473501e66e163c4c6beb@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:17 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> The destination buffer was already initialized with zeros before the call.
-
-Side note: this is another example of you using the interface incorrectly.
-
-You should *not* initialize the buffer with zeroes. That's just extra
-work. One of the points of the strncpy_from_user() interface is that
-it is *not* the incredibly broken garbage that "strncpy()" is.
-
-strncpy_from_user() returns the size of the resulting string,
-*EXACTLY* so that people who care can then use that information
-directly and efficiently.
-
-Most of the time it's to avoid a strlen() on the result (and check for
-overflow), of course, but the other use-case is exactly that "maybe I
-need to pad out the result", so that you don't need to initialize the
-buffer beforehand.
-
-I'm not sure exactly which strncpy_from_user() user you have issues
-with, but I did a
-
-     git grep strncpy_from_user -- '*bpf*'
-
-and several of them look quite questionable.
-
-All of the ones in kernel/bpf/syscall.c seem to handle overflow
-incorrectly, for example, with a silent truncation instead of error.
-Maybe that's fine,  but it's questionable.
-
-And the bpf_trace_copy_string() thing doesn't check the result at all,
-so the end result may not be NUL-terminated. Maybe that's ok. I didn't
-check the call chain.
-
-              Linus
+On 2020-11-13 05:49, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c:299:5: warning: no previous
+> prototype for ‘mdp5_disable’ [-Wmissing-prototypes]
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c:319:5: warning: no previous
+> prototype for ‘mdp5_enable’ [-Wmissing-prototypes]
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> index b3eecf8694771..15aed45022bc8 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> @@ -296,7 +296,7 @@ static const struct mdp_kms_funcs kms_funcs = {
+>  	.set_irqmask         = mdp5_set_irqmask,
+>  };
+> 
+> -int mdp5_disable(struct mdp5_kms *mdp5_kms)
+> +static int mdp5_disable(struct mdp5_kms *mdp5_kms)
+>  {
+>  	DBG("");
+> 
+> @@ -316,7 +316,7 @@ int mdp5_disable(struct mdp5_kms *mdp5_kms)
+>  	return 0;
+>  }
+> 
+> -int mdp5_enable(struct mdp5_kms *mdp5_kms)
+> +static int mdp5_enable(struct mdp5_kms *mdp5_kms)
+>  {
+>  	DBG("");
