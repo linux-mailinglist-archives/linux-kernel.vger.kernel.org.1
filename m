@@ -2,98 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA7B2B229E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2107F2B22A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgKMRgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:36:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23247 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726771AbgKMRgM (ORCPT
+        id S1726205AbgKMRhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:37:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgKMRhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:36:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605288971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NAWOiKNPr7NdH0SfoGuNiXpNKXaZRwcJVJ3a0/q6UEM=;
-        b=YiO0JKczEiBNtIFWPn9YAqI/+lVq8hzwXVZNPNO8oeZj+ri+MMokLbfYphrHDzfvlq1WY1
-        PxiYSz1jiegg42jiOUhEVO1auDYAdMQ9lOeHr/4XgH9vUnMZ/l9H+dF3aZUWrxsuSrq68K
-        flren0lAkpkL8MnQXOOE/jJ5StLf/ug=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-heobo9GqOPy8jsTTUG5krQ-1; Fri, 13 Nov 2020 12:36:09 -0500
-X-MC-Unique: heobo9GqOPy8jsTTUG5krQ-1
-Received: by mail-wr1-f69.google.com with SMTP id w5so1946947wrm.22
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:36:09 -0800 (PST)
+        Fri, 13 Nov 2020 12:37:38 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87535C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:37:36 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id l1so10785499wrb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:37:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hjhurK9P35kGnhWjbyimEvcQqerqsp2/lDGVzt9PJQE=;
+        b=ghFs2rH1tOxUzusPZBY7hh+pYGf0lSRP1oZiBayW95v4HRIM53tzKkbLSh0pzuA5Co
+         xfHhtLLdYKm2lD8HfJ/Q471eufx4MtA4EnYfIIUIZLQdzAjhwzJxqAJFLgi6DTGfCWXt
+         VE51V6vz9UOot7j8ToGThJ5WRcoqDehfUZQ4IwLdu3FaFRGpkJevLb0EjnPfoBIeYXs5
+         MCPP0KqGyKiMu30O+byGDpFRzV9S2EgR48Dbz7oDYVsNl9VTs9ZRdfnNtN7+lxKFG0HP
+         M4Ofux07F5YxHa6/vFLE9zZOz3mRQBWIzHOzWNFPSAZIG+1D4vFt2vyXHpUr4u1MAZhJ
+         FjQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NAWOiKNPr7NdH0SfoGuNiXpNKXaZRwcJVJ3a0/q6UEM=;
-        b=cnCE2XoGFuKMII//f+ry35V7gwZXD5aXe515qC4nS3i+x6MSxUoJcwRDGaJfK/Q58J
-         hcQ/k3fOsMwTiqwI3PqN7ld0CmDe21AUZjav3RShD+H08pwwbSrhh1oGsxTqU5EBEHt2
-         KqhtAkAsAVGvdweGQ/nBqV9Fk5oFbSHfJURfbbkBANRi8rNCUwdk5lfiHzOGEPUiz9HX
-         yWyqtpagFx5MI4KepH5v1QFEe6xbH/84yMWrTpcQSGtOwCT1Ry4ULBJsQ3kjDOw3bdw3
-         BMptutxEhYngAkfZiNyVh1EGp5Z9RPn1aBndzXyn4ndSa/mh6oiNwXhIhfh+6jdpHlTc
-         RgBQ==
-X-Gm-Message-State: AOAM531mj0fY9q/d9Db9DWKJqSMdPt9HeChr9HC0M7W0xN/RnyVopAkE
-        0LjBwlMNEMthu4Q3aCuTehQyVIdwqn4kf7wiPhNmAHGeEpxMX/Fc3+ELcFCkqYaWVor7C5B7HBa
-        B8ICLb2OJRfIbUvMO+qt4/tvf
-X-Received: by 2002:adf:fc01:: with SMTP id i1mr4829496wrr.250.1605288964942;
-        Fri, 13 Nov 2020 09:36:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx0vudkfKU4Xydr2EdpA/kzp9pTcHNEHyW7SYCAkCMGeUkCOR26XxFLcWnUl7631MBD2ZKN5A==
-X-Received: by 2002:adf:fc01:: with SMTP id i1mr4829446wrr.250.1605288964464;
-        Fri, 13 Nov 2020 09:36:04 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d63sm10940123wmd.12.2020.11.13.09.36.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 09:36:03 -0800 (PST)
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Cathy Avery <cavery@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, wei.huang2@amd.com, mlevitsk@redhat.com
-References: <20201011184818.3609-1-cavery@redhat.com>
- <20201011184818.3609-3-cavery@redhat.com>
- <20201013013349.GB10366@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 2/2] KVM: SVM: Use a separate vmcb for the nested L2
- guest
-Message-ID: <f3268301-6cbd-904e-949c-7ccc4a2e5d36@redhat.com>
-Date:   Fri, 13 Nov 2020 18:36:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hjhurK9P35kGnhWjbyimEvcQqerqsp2/lDGVzt9PJQE=;
+        b=N38NP8Ew8GW8jO6+c7RzD479JyS7lSOyAsT+KlVgLmyCwBRSiF9FnENlqSLqAA33zS
+         D7Ac/qM5srKdOq6cfbG4bRItEAyvMdTM3tC1jxiAne7EPfYyczCvXKLmNGwVid+8DHgT
+         U2uk4KpNVO7UzMb+W8fI8kJzvf7I8KHqYbhjUpY9G5Ck94DGePGkZp2VdO1H2Kk9Z6tt
+         LwPzeA72RJdxe3SBtMV5HaFKh/fZf7h/LpwQw+vMbgETr5LerW7BnIYjHGYmwfEQVIap
+         fJGhTSXhmb5w6GgE4fpUvnyu2j5udmlNNcHHuhjGOV2bsQmSM8fB+NPVDLW3DKSgVlzk
+         Yn2Q==
+X-Gm-Message-State: AOAM530oMNCl5Q/6dA22J1tGVsUqeESWpWf59FtscmRlxamM6D4CGzzd
+        tj2XIqZ/Ci3GAkVxBQraZm27Tr6d75yQMuyZbGJspw==
+X-Google-Smtp-Source: ABdhPJysGkR3uusoAbdMq81+hVOKWOIh9cN2NKfa5it3R7D7WPHOzI7MxNNO6qLC7Og9ApYXomjjySnltJCldDkJTG0=
+X-Received: by 2002:adf:db87:: with SMTP id u7mr4984321wri.334.1605289050149;
+ Fri, 13 Nov 2020 09:37:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201013013349.GB10366@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
+ <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
+ <20201103093550.GE21990@dhcp22.suse.cz> <20201103213228.GB1631979@google.com>
+ <20201104065844.GM21990@dhcp22.suse.cz> <20201104204051.GA3544305@google.com>
+ <20201105122012.GD21348@dhcp22.suse.cz> <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+ <20201105171611.GO21348@dhcp22.suse.cz> <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
+ <20201105174357.GR21348@dhcp22.suse.cz> <CAJuCfpGNC1m=tz1fBbFnCc=_87Dr=L4OuORbLDGd=iD6r6Q3Ng@mail.gmail.com>
+In-Reply-To: <CAJuCfpGNC1m=tz1fBbFnCc=_87Dr=L4OuORbLDGd=iD6r6Q3Ng@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 13 Nov 2020 09:37:18 -0800
+Message-ID: <CAJuCfpHT-ew_d5F=r+SfxZqv1awyJ=e1FGdVx71wYkGZ5ZFOLg@mail.gmail.com>
+Subject: Re: [RFC]: userspace memory reaping
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Minchan Kim <minchan@kernel.org>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/20 03:33, Sean Christopherson wrote:
->> +	svm->vmcb = svm->vmcb01;
->> +	svm->vmcb_pa = svm->vmcb01_pa;
-> I very highly recommend adding a helper to switch VMCB.  Odds are very good
-> there will be more than just these two lines of boilerplate code for changing
-> the active VMCB.
+On Thu, Nov 5, 2020 at 10:02 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Thu, Nov 5, 2020 at 9:44 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 05-11-20 09:21:13, Suren Baghdasaryan wrote:
+> > > On Thu, Nov 5, 2020 at 9:16 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Thu 05-11-20 08:50:58, Suren Baghdasaryan wrote:
+> > > > > On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > >
+> > > > > > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
+> > > > > > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
+> > > > > > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
+> > > > > > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
+> > > > > > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
+> > > > > > > > > > [...]
+> > > > > > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
+> > > > > > > > > > > which in addition to sending a kill signal would also reap the
+> > > > > > > > > > > victim's mm in the context of the caller? Maybe having some code will
+> > > > > > > > > > > get the discussion moving forward?
+> > > > > > > > > >
+> > > > > > > > > > Yeah, having a code, even preliminary, might help here. This definitely
+> > > > > > > > > > needs a good to go from process management people as that proper is land
+> > > > > > > > > > full of surprises...
+> > > > > > > > >
+> > > > > > > > > Just to remind a idea I suggested to reuse existing concept
+> > > > > > > > >
+> > > > > > > > >     fd = pidfd_open(victim process)
+> > > > > > > > >     fdatasync(fd);
+> > > > > > > > >     close(fd);
+> > > > > > > >
+> > > > > > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
+> > > > > > > > to act as a destructive operation?
+> > > > > > >
+> > > > > > > write(fd) && fdatasync(fd) are already destructive operation if the file
+> > > > > > > is shared.
+> > > > > >
+> > > > > > I am likely missing something because fdatasync will not destroy any
+> > > > > > underlying data. It will sync
+> > > > > >
+> > > > > > > You don't need to reaping as destruptive operation. Rather than, just
+> > > > > > > commit on the asynchrnous status "write file into page cache and commit
+> > > > > > > with fsync" and "killing process and commit with fsync".
+> > > > > >
+> > > > > > I am sorry but I do not follow. The result of the memory reaping is a
+> > > > > > data loss. Any private mapping will simply lose it's content. The caller
+> > > > > > will get EFAULT when trying to access it but there is no way to
+> > > > > > reconstruct the data. This is everything but not resembling what I see
+> > > > > > f{data}sync is used for.
+> > > > >
+> > > > > I think Minchan considers f{data}sync as a "commit" operation.
+> > > >
+> > > > But there is nothing like commit in that operation. It is simply a
+> > > > destroy operation. ftruncate as Minchan mentions in another reply would
+> > > > be a closer fit but how do you interpret the length argument? What about
+> > > > memory regions which cannot be reaped?
+> > > >
+> > > > I do understand that reusing an existing mechanism is usually preferable
+> > > > but the semantic should be reasonable and easy to reason about.
+> > >
+> > > Maybe then we can consider a flag for pidfd_send_signal() to indicate
+> > > that we want a synchronous mm cleanup when SIGKILL is being sent?
+> > > Similar to my original RFC but cleanup would happen in the context of
+> > > the caller. That seems to me like the simplest and most obvious way of
+> > > expressing what we want to accomplish. WDYT?
+> >
+> > Yes that would make sense. Althought it would have to be SIGKILL
+> > specific flag IMO. But let's see what process management people think
+> > about that.
+>
+> Very well, I'll brush up the implementation and will post a new RFC. Thanks!
+>
 
-Yes, probably we can make svm->vmcb01 and svm->vmcb02 something like 
-VMX's struct loaded_vmcs:
+Sorry for the delay. The new RFC is posted at
+https://lkml.org/lkml/2020/11/13/849
 
-struct kvm_vmcb {
-	void *vmcb;
-	unsigned long pa;
-}
-
-I don't expect a lot more to happen due to SVM having no need for 
-caching, so for now I think it's okay.
-
-I have other comments for which I'll reply to the patch itself.
-
-Paolo
-
+> >
+> > --
+> > Michal Hocko
+> > SUSE Labs
