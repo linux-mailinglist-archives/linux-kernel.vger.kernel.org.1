@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82F62B1D35
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1841B2B1D31
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgKMOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:24:43 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52700 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbgKMOYe (ORCPT
+        id S1726949AbgKMOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgKMOYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:34 -0500
-Message-Id: <20201113141734.442990268@linutronix.de>
+        Fri, 13 Nov 2020 09:24:35 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABCAC0613D1;
+        Fri, 13 Nov 2020 06:24:35 -0800 (PST)
+Message-Id: <20201113141734.558782917@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277472;
+        s=2020; t=1605277474;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Ze6MlncdnmAY8gfHx7Z+rZEVhWAMCevnsPTsGbdb6v0=;
-        b=G1UREJyGcaUjT+N2wtoQyCERcLxyjyMAfw8NfT+wy0zwm0us+pf2Ntglv96NgSHbt9/Yjp
-        qoaQCmQHCEZLSl4tgh2fObbzd5Eg0IzKsZOwRDqSmqku7HiNL3S3LkyTYUFx3yi5dSfTxu
-        MFctcDrCS9gok9I097XT39eWW13m7iPU863iXCxWWkLue2i4sFBBOxeCX2J3FMIX3WJFOU
-        XfnbdSiKjTIyQx4waIuiaRF6W5mUn7JksZs9HbxgKcANUpu5giQHMT3WvlrsVLnuu9ttOJ
-        05xVo+iYIedu+Z/p/XcxdBOfYtlbWlAMcmQFwZfDQFcdF0rqvP2z6Iy7H5Dc2A==
+        bh=bJK1LO9o5t1YtWfdpnIDn/r1MfJlfGCVMVDvWJrraew=;
+        b=tyt0QkxwI34Q9lW1JnnsRXtivNBFuy/gK+3Wg6p8oacuKn8YRx4hzKHdlinpDrp/pth55z
+        /BAfQMJ9oWB1Hzij2dQW9TnNIt72zNuUSK2q7Y9sitLs8LbSezy690e41NnW6R8l+bjdLt
+        Dy9N0KzC4rjbiZvWJbppzIRBBCJaXY4iwlr6/VDI4DFLjpd+Wid0zoJ5Q8KMUVs9kyP8bn
+        TkcwawJ0a/VM2kifuvxHRxw/fuqLeI5ylL/tFMj9ii+lhwD4TeYdWFVfkRiSMmUrOKnq5i
+        Dd6AOCs0W4DGmkrLSJyCQlgdlvArt+4ylbScr0BlX4BWaQMR0kH/Ya66obWHBg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277472;
+        s=2020e; t=1605277474;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Ze6MlncdnmAY8gfHx7Z+rZEVhWAMCevnsPTsGbdb6v0=;
-        b=Qk1c/61DOVl3kFFVW+aZ3dXfkp84eaNY2QVxxJLj8d6ltQSfXPHHs0VNAwsQ94XeTMC/Dx
-        80Ju8vg9dueyHvAQ==
-Date:   Fri, 13 Nov 2020 15:02:22 +0100
+        bh=bJK1LO9o5t1YtWfdpnIDn/r1MfJlfGCVMVDvWJrraew=;
+        b=fnUwM9/d5ZyoIg34+qJ50+11yImCVU3JOFQ12wxkKiRXsscC5nDPI2NL/xdAbOB6hy8cm9
+        lNk1ofd0+ZGBajBA==
+Date:   Fri, 13 Nov 2020 15:02:23 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -53,8 +56,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 15/19] tick/sched: Prevent false positive softirq pending
- warnings on RT
+Subject: [patch 16/19] rcu: Prevent false positive softirq warning on RT
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,69 +65,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On RT a task which has soft interrupts disabled can block on a lock and
-schedule out to idle while soft interrupts are pending. This triggers the
-warning in the NOHZ idle code which complains about going idle with pending
-soft interrupts. But as the task is blocked soft interrupt processing is
-temporarily blocked as well which means that such a warning is a false
-positive.
-
-To prevent that check the per CPU state which indicates that a scheduled
-out task has soft interrupts disabled.
+Soft interrupt disabled sections can legitimately be preempted or schedule
+out when blocking on a lock on RT enabled kernels so the RCU preempt check
+warning has to be disabled for RT kernels.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/bottom_half.h |    6 ++++++
- kernel/softirq.c            |   15 +++++++++++++++
- kernel/time/tick-sched.c    |    2 +-
- 3 files changed, 22 insertions(+), 1 deletion(-)
+ include/linux/rcupdate.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/include/linux/bottom_half.h
-+++ b/include/linux/bottom_half.h
-@@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
- 	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
- }
- 
-+#ifdef CONFIG_PREEMPT_RT
-+extern bool local_bh_blocked(void);
-+#else
-+static inline bool local_bh_blocked(void) { return false; }
-+#endif
-+
- #endif /* _LINUX_BH_H */
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -138,6 +138,21 @@ static DEFINE_PER_CPU(struct softirq_ctr
- 	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
- };
- 
-+/**
-+ * local_bh_blocked() - Check for idle whether BH processing is blocked
-+ *
-+ * Returns false if the per CPU softirq::cnt is 0 otherwise true.
-+ *
-+ * This is invoked from the idle task to guard against false positive
-+ * softirq pending warnings, which would happen when the task which holds
-+ * softirq_ctrl::lock was the only running task on the CPU and blocks on
-+ * some other lock.
-+ */
-+bool local_bh_blocked(void)
-+{
-+	return this_cpu_read(softirq_ctrl.cnt) != 0;
-+}
-+
- void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
- {
- 	unsigned long flags;
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -925,7 +925,7 @@ static bool can_stop_idle_tick(int cpu,
- 	if (unlikely(local_softirq_pending())) {
- 		static int ratelimit;
- 
--		if (ratelimit < 10 &&
-+		if (ratelimit < 10 && !local_bh_blocked() &&
- 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
- 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
- 				(unsigned int) local_softirq_pending());
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -319,7 +319,8 @@ static inline void rcu_preempt_sleep_che
+ #define rcu_sleep_check()						\
+ 	do {								\
+ 		rcu_preempt_sleep_check();				\
+-		RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
++		if (!IS_ENABLED(CONFIG_PREEMPT_RT))			\
++		    RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
+ 				 "Illegal context switch in RCU-bh read-side critical section"); \
+ 		RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),	\
+ 				 "Illegal context switch in RCU-sched read-side critical section"); \
 
