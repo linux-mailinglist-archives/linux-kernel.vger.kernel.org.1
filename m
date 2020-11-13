@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3422B1B00
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E6B2B1AC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgKMMUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:20:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7537 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgKMMUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:20:37 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CXcTg6xYLzhkB3;
-        Fri, 13 Nov 2020 19:59:51 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 13 Nov 2020 19:59:57 +0800
-Subject: Re: [PATCH net] devlink: Add missing genlmsg_cancel() in
- devlink_nl_sb_port_pool_fill()
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <jiri@nvidia.com>, <davem@davemloft.net>, <idosch@mellanox.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201111135853.63997-1-wanghai38@huawei.com>
- <20201112095124.660733a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <c6c5af9e-431d-97f7-16d3-aa4774041765@huawei.com>
-Date:   Fri, 13 Nov 2020 19:59:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726501AbgKMMGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:06:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbgKMMGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:06:19 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FD642224B;
+        Fri, 13 Nov 2020 12:00:03 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 12:00:01 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 30/44] arm64: kasan: Allow enabling in-kernel MTE
+Message-ID: <20201113120000.GB3212@gaia>
+References: <cover.1605046192.git.andreyknvl@google.com>
+ <5ce2fc45920e59623a4a9d8d39b6c96792f1e055.1605046192.git.andreyknvl@google.com>
+ <20201112094354.GF29613@gaia>
+ <66ef4957-f399-4af1-eec5-d5782551e995@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112095124.660733a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66ef4957-f399-4af1-eec5-d5782551e995@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 13, 2020 at 11:17:15AM +0000, Vincenzo Frascino wrote:
+> On 11/12/20 9:43 AM, Catalin Marinas wrote:
+> > On Tue, Nov 10, 2020 at 11:10:27PM +0100, Andrey Konovalov wrote:
+> >> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> >>
+> >> Hardware tag-based KASAN relies on Memory Tagging Extension (MTE)
+> >> feature and requires it to be enabled. MTE supports
+> >>
+> >> This patch adds a new mte_init_tags() helper, that enables MTE in
+> >> Synchronous mode in EL1 and is intended to be called from KASAN runtime
+> >> during initialization.
+> > 
+> > There's no mte_init_tags() in this function.
+> 
+> During the rework, I realized that the description of mte_init_tags() in this
+> patch refers to mte_enable_kernel(). In fact the only thing that mte_init_tags()
+> does is to configure the GCR_EL1 register, hence my preference would be to keep
+> all the code that deals with such a register in one patch.
 
-在 2020/11/13 1:51, Jakub Kicinski 写道:
-> On Wed, 11 Nov 2020 21:58:53 +0800 Wang Hai wrote:
->> If sb_occ_port_pool_get() failed in devlink_nl_sb_port_pool_fill(),
->> msg should be canceled by genlmsg_cancel().
->> +++ b/net/core/devlink.c
->> @@ -1447,8 +1447,10 @@ static int devlink_nl_sb_port_pool_fill(struct sk_buff *msg,
-[...]
->>   			return err;
-> I guess the driver would have to return -EMSGSIZE for this to matter,
-> which is quite unlikely but we should indeed fix.
->
-> Still, returning in the middle of the function with an epilogue is what
-> got use here in the first place, so please use a goto. E.g. like this:
->
-[...]
->   static int devlink_nl_cmd_sb_port_pool_get_doit(struct sk_buff *skb,
->
-> .
+Fine by me as long as the commit text is consistent with the diff.
 
-Thanks for your review,  I just sent v2
-
-[PATCH v2 net] devlink: Add missing genlmsg_cancel() in 
-devlink_nl_sb_port_pool_fill()
-
+-- 
+Catalin
