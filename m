@@ -2,104 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B312B24CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0822B2B24D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgKMTno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:43:44 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:13457 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgKMTno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:43:44 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605296623; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TyQ0mHnntgl9EfCWZQvfvs2r3JqCv/GaZsWL2QQ2T34=;
- b=mcGfDQXmSpedB1mHLQQdBldBw4EYKMMZ0a1BZ8RqTrUmTw05oS7CDMU2Yb726RFc6lJUHOk+
- 9Z/lJ3fFr390pZncpO2KFzzti6JPBgg7JYd2hLkVusI8cg8KICUWkeVNEW8SEQplSJflPoqU
- +ztFNfjJuTIaMw2OFAYrlPy2bCY=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5faee1eb8bd2e3c2224ff88b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 19:43:39
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 618F6C433CB; Fri, 13 Nov 2020 19:43:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4833C433C6;
-        Fri, 13 Nov 2020 19:43:38 +0000 (UTC)
+        id S1726384AbgKMTpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:45:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgKMTpS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 14:45:18 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3552EC0613D1;
+        Fri, 13 Nov 2020 11:45:17 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 10so8502367pfp.5;
+        Fri, 13 Nov 2020 11:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hkEByu5NaYXbpu/E/2DlifVZ1EfrvqJGLXUDnNk39PE=;
+        b=Rz2XI7G1+m0ld1eHrQzMuvdwM7JVktfgJBRZssdlP431IvCpwop0fPtidv4cA16zG1
+         YW8m70eOTbY+DnBRInp5zDhMcPh78P6fjTVUXz/oktLPqDuRRs9FGhmwPyGVf68HiLgi
+         PQN3dSIQ4IkboU607MzK7nyKEi26RJCB1p2Fp0Ye4Ai3AgI3kqYVlYNEfDh5hbIYXTHH
+         2CCCaRW9ch9IAubYq5WMe29Lw8AFt3/QNQz75EvL2WQD+a8JyPahW/0DwNL0nktJsc+t
+         aQ2MdflYcYDCWAVPa6o/N0SmaBRPo4L+L8K/kwQBCiI6/RmnK5BQasNCO3ELEhwNUhCX
+         fKXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hkEByu5NaYXbpu/E/2DlifVZ1EfrvqJGLXUDnNk39PE=;
+        b=Hjc5CYtLUr8nLc6s5UEjR4wyLrKKLT7MvVyB5buku5wH3I/tOnQhxUI93SaO5nSFQN
+         B5+vbuBkJ8gxv4TrNh3ocs63oQfFliXgQTl3E/qtjfNvQH/q7Egydjw6pkBN2Ky0bnH5
+         uTOkgfooz8/IwokDqvL2wuU7WwIR4ASNYS1Y8cRfi/X3OW+5kaZrJ2IExkJLGXliGNIa
+         AyHmfeqstyDOBDFPMW4vvD4tlrcVV210cPhA2Q3Hd2Cz3dY/5p/0OgeHfqJNson2ZY52
+         VsgRgve6l+5tgtsymCZFYOcNSmOeDe4LSSBXXOaT7vWSw1X6R1boPXTKcWJlUX8mnQyq
+         KnOA==
+X-Gm-Message-State: AOAM530+mG69lSxDphjpLZF1kcIm2Hzr52FdDYY76FBX0Tp6CRyj/6wK
+        pZTOdZqpH2JCctwEo1PjprgBA8PgaeIcSEEqXgk=
+X-Google-Smtp-Source: ABdhPJxJMB475AzgJKmkxrj9hbti9Hm2ImgxJYxsQnBlDjERd6f7NR4NyARgrTSN+GjQAPKiOlye2zfCxR0Tb6QHJB4=
+X-Received: by 2002:a63:3e05:: with SMTP id l5mr3160904pga.74.1605296716678;
+ Fri, 13 Nov 2020 11:45:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 13 Nov 2020 11:43:38 -0800
-From:   abhinavk@codeaurora.org
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sean Paul <sean@poorly.run>
-Subject: Re: [PATCH 32/40] drm/msm/disp/mdp5/mdp5_crtc: Make local function
- 'mdp5_crtc_setup_pipeline()' static
-In-Reply-To: <20201113134938.4004947-33-lee.jones@linaro.org>
-References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-33-lee.jones@linaro.org>
-Message-ID: <25c1f9f7bb42feebb08f7a357d78166a@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201024012411.GT5979@pendragon.ideasonboard.com>
+ <d188f8b5-ed3b-f91b-171a-26afeb7d213e@gmail.com> <20201024093702.GA3939@pendragon.ideasonboard.com>
+ <20201026161050.GQ4077@smile.fi.intel.com> <20201029201918.GD15024@pendragon.ideasonboard.com>
+ <CAHp75Vc9uYVvhBe3OyCJzCsU0EY9yi62hsxt3pAwppSfjB+jDg@mail.gmail.com>
+ <20201029212930.GE15024@pendragon.ideasonboard.com> <20201029222215.GI4077@smile.fi.intel.com>
+ <20201029225124.GI15024@pendragon.ideasonboard.com> <60b36af2-ad57-000b-76e4-379e1b58a3a0@gmail.com>
+ <20201113162231.GO7524@pendragon.ideasonboard.com>
+In-Reply-To: <20201113162231.GO7524@pendragon.ideasonboard.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 13 Nov 2020 21:45:00 +0200
+Message-ID: <CAHp75VeGJKMeY-reNWgypVzJ6Myz5S2RXJPHqbPH5kzLYX3G4g@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
+ software_node connections to sensors on platforms designed for Windows
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dan Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-13 05:49, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c:581:5: warning: no previous
-> prototype for ‘mdp5_crtc_setup_pipeline’ [-Wmissing-prototypes]
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-> b/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-> index 79dd56faf3de0..0c8f9f88301fa 100644
-> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-> @@ -578,9 +578,9 @@ static void mdp5_crtc_atomic_enable(struct drm_crtc 
-> *crtc,
->  	mdp5_crtc->enabled = true;
->  }
-> 
-> -int mdp5_crtc_setup_pipeline(struct drm_crtc *crtc,
-> -			     struct drm_crtc_state *new_crtc_state,
-> -			     bool need_right_mixer)
-> +static int mdp5_crtc_setup_pipeline(struct drm_crtc *crtc,
-> +				    struct drm_crtc_state *new_crtc_state,
-> +				    bool need_right_mixer)
->  {
->  	struct mdp5_crtc_state *mdp5_cstate =
->  			to_mdp5_crtc_state(new_crtc_state);
+On Fri, Nov 13, 2020 at 6:22 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Fri, Nov 13, 2020 at 10:02:30AM +0000, Dan Scally wrote:
+> > On 29/10/2020 22:51, Laurent Pinchart wrote:
+> > > On Fri, Oct 30, 2020 at 12:22:15AM +0200, Andy Shevchenko wrote:
+> > >> On Thu, Oct 29, 2020 at 11:29:30PM +0200, Laurent Pinchart wrote:
+
+...
+
+> > >> In this case we probably need something like
+> > >>
+> > >> struct acpi_device *
+> > >> acpi_dev_get_next_match_dev(struct acpi_device *adev,
+> > >>                        const char *hid, const char *uid, s64 hrv)
+> > >> {
+> > >>    struct device *start = adev ? &adev->dev : NULL;
+> > >>    ...
+> > >>    dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
+> > >>    ...
+> > >> }
+> > >>
+> > >> in drivers/acpi/utils.c and
+> > >>
+> > >> static inline struct acpi_device *
+> > >> acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
+> > >> {
+> > >>    return acpi_dev_get_next_match_dev(NULL, hid, uid, hrv);
+> > >> }
+> > >>
+> > >> in include/linux/acpi.h.
+> > >>
+> > >> Then we may add
+> > >>
+> > >> #define for_each_acpi_dev_match(adev, hid, uid, hrv)                       \
+> > >>    for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);        \
+> > >>         adev;                                                      \
+> > >>         adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
+> > >
+> > > What the cio2-bridge code needs is indeed
+> > >
+> > >     for each hid in supported hids:
+> > >             for each acpi device that is compatible with hid:
+> > >                     ...
+> > >
+> > > which could also be expressed as
+> > >
+> > >     for each acpi device:
+> > >             if acpi device hid is in supported hids:
+> > >                     ...
+> > >
+> > > I don't mind either option, I'll happily follow the preference of the
+> > > ACPI maintainers.
+> >
+> > Does this need raising elsewhere then? The original idea of just
+> > bus_for_each_dev(&acpi_bus_type...) I have now tested and it works fine,
+> > but it does mean that I need to export acpi_bus_type (currently that
+> > symbol's not available)...that seems much simpler to me but I'm not sure
+> > whether that's something to avoid, and if so whether Andy's approach is
+> > better.
+> >
+> > Thoughts?
+>
+> I like simple options :-) A patch to export acpi_bus_type, with enough
+> context in the commit message (and in the cover latter of the series),
+> should be enough to provide all the information the ACPI maintainers
+> need to decide which option is best. With a bit of luck that patch will
+> be considered the best option and no extra work will be needed.
+
+The problem with ACPI bus is that it is not as simple as other buses,
+i.e. it may have purely ACPI devices along with *companion* devices,
+which are usually represented by platform bus. On top of that for
+several ACPI devices there can be one physical node and it will be not
+so clear what you are exactly looking for by traversing acpi_bus_type.
+I believe it's hidden on purpose.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
