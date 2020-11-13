@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EF22B1C8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0701D2B1C73
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgKMNv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:51:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S1727120AbgKMNu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:50:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgKMNuS (ORCPT
+        with ESMTP id S1726487AbgKMNuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:50:18 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFAFC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:17 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id l1so9973700wrb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:17 -0800 (PST)
+        Fri, 13 Nov 2020 08:50:19 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02634C061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:19 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h62so8559990wme.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4fbIgQuSd7qx2Uw2PNoVR5q/2EBKr9ikJs14+3PNgZs=;
-        b=n4DRu6udIoyajnEV5cYhZElN9i8TgkAMzWGe2XXO8ZJAtYQn5MO7IMOTwcJKM7snU9
-         JqPnyBnWOlcnU/T21rzOcwxuyqy/YqZQIRnFwrNhrXPMSSPdiF3vagDOA9lzf7m8sCkS
-         P6upsPYAj91zk7+AQIlxbK4GxzVVMlYDAmdq7JzKe742gAi6bOyd1aJpogxYwpxPjfam
-         6fh/2Jnt7GS3QFBfKuPgxTxVRHEsqcST5Z/5kex7Nd3qOzjB5szFrz1oHxHH1vSwV6nm
-         JdwijeFcrJb6v608c3XTw2RKXAfMl3ruV4hyrimERbrJ75RNT8ou4IwZ4nP+zsSXYXX9
-         niRQ==
+        bh=0nBtcs67BpWpOtsS+lroYBZ8Diqx4j2HTgrmz/2vMqY=;
+        b=MZqbEth6gfS7gsdu8IDgb7OmV3SEY4rst4Sy2mkC6oksoLOtw6fd22wjt+QT2/Yw2H
+         62bL1YqeHmtIX6VodEiiU+N74OMmHF2P3tuz/aHXhCn+9HMoG7z9b4NJBuXg6ytgHid6
+         HE2Sk7dx4QRuNx7vDJ1UG6liqfUrpDPgTGAY0pP+XzXaQQ1lqH4kw2gTA3NUxQtTrLtl
+         wi0i/JshReJaWzdC+Wqguzyj/iwJZIDR2991HnAHfb2QxqoEFRV9LfJH38BHW6tTzqBW
+         JZNCBDhKFa8U64wvxMiCTkhmUgv+ojpTS4RSvfMh6LDeBb9EPee4VhoqIC0Uh5N+lw+7
+         leMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4fbIgQuSd7qx2Uw2PNoVR5q/2EBKr9ikJs14+3PNgZs=;
-        b=NthrM5e4uyX/qJWREB0KV9pDTPYhjJJtZBOrILeQb4VnfS0w45jTzVhm0WjXIbKEZK
-         xBV8//R2+ZCKAsyoqZGPdK8eNzdbJf2NjDkfpVSHFaGXlDf3FmI09r1nhssEnqdkibyt
-         +CrgEZdZfMD1ApDbZLJlVfFsEvPc02O3FB60UZzB5zz7HbIMSzYaf90gzpEmhRN6ivwT
-         JsKlw5qCumxlZrXfm8WUl6q+WNViHYU/wWpvQAX8caW2ZTfMLp85Dip6F54BtjbAkkgu
-         zaiJ7+Bbvbzq7K+9tYAo/gZJPDJ8H7cfZnTYqADlDu0mGSlGM9MHr/0I/gjEhHeEY71c
-         XsUg==
-X-Gm-Message-State: AOAM530cJGJrajV514kQUwzaL3srjlr1ixKtHyetORRvOpN0XDYE5wQ7
-        CBEnjUJ76bqQ6x4nc5KB5sM16w==
-X-Google-Smtp-Source: ABdhPJwRAPuVH+2vvmutSjwOa8Cia0gPuinTJS19FPHN1ooaNyDBXHTCw7kmrU3q3Z5aPZKc7t1QmA==
-X-Received: by 2002:adf:9e08:: with SMTP id u8mr3518812wre.282.1605275416485;
-        Fri, 13 Nov 2020 05:50:16 -0800 (PST)
+        bh=0nBtcs67BpWpOtsS+lroYBZ8Diqx4j2HTgrmz/2vMqY=;
+        b=S8G0u8XoCcAaT5LN20wjhhf1826b5Cf9oM1Kj5pE5SwVxZ7jwViRPn/Mr81I4xa7Kh
+         j/q5/+iyqeLtzJhaFt9Azlli9gEpinmeByP7D5Ykf0sLb5TfdOfj27VS9SLLtwQoyMTQ
+         NemVipXYnRW/+DB6QCqsqMteq47G2c/7sGcn4kViAgd3pT7L1Cytn4+8YxPkur5X6q5b
+         urE67pB849kI78Ko4gXmhlciTahqnLIbwIxzkRXfUzGJGxfiXHYMshxZHtrblErf8O38
+         cJswlW2gzpN3ndPQwuJi9Irf+h44IJGaMd0pJI09zWEfaamyegpax1CLWj6DDcMHRdkU
+         yWvQ==
+X-Gm-Message-State: AOAM530z32VPkFXjWtR0KihqmEQ1iEdF4kNi2VVoK+Jdy/n4nKcIAMoI
+        VwEA+xFTGfuf89adDsCgfSw/gw==
+X-Google-Smtp-Source: ABdhPJxu5mybMd3oZAipyOuLv/NoqB/Sknp+7MJ4jdBGXBUKsP93PylVtz4Lu+Xsi+XwvfjExrOung==
+X-Received: by 2002:a7b:c089:: with SMTP id r9mr2532584wmh.45.1605275417717;
+        Fri, 13 Nov 2020 05:50:17 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.15
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:50:15 -0800 (PST)
+        Fri, 13 Nov 2020 05:50:17 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 28/40] drm/amd/amdgpu/amdgpu_ras: Make local function 'amdgpu_ras_error_status_query' static
-Date:   Fri, 13 Nov 2020 13:49:26 +0000
-Message-Id: <20201113134938.4004947-29-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, Monk.liu@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 29/40] drm/amd/amdgpu/amdgpu_csa: Remove set but unused variable 'r'
+Date:   Fri, 13 Nov 2020 13:49:27 +0000
+Message-Id: <20201113134938.4004947-30-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
@@ -71,34 +71,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c:1482:6: warning: no previous prototype for ‘amdgpu_ras_error_status_query’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c: In function ‘amdgpu_allocate_static_csa’:
+ drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c:40:6: warning: variable ‘r’ set but not used [-Wunused-but-set-variable]
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Monk.liu@amd.com
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index f89a991999428..9d11b847e6efe 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -1472,8 +1472,8 @@ static void amdgpu_ras_log_on_err_counter(struct amdgpu_device *adev)
- }
- 
- /* Parse RdRspStatus and WrRspStatus */
--void amdgpu_ras_error_status_query(struct amdgpu_device *adev,
--		struct ras_query_if *info)
-+static void amdgpu_ras_error_status_query(struct amdgpu_device *adev,
-+					  struct ras_query_if *info)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
+index 08047bc4d5886..da21e60bb8272 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
+@@ -37,10 +37,9 @@ uint64_t amdgpu_csa_vaddr(struct amdgpu_device *adev)
+ int amdgpu_allocate_static_csa(struct amdgpu_device *adev, struct amdgpu_bo **bo,
+ 				u32 domain, uint32_t size)
  {
- 	/*
- 	 * Only two block need to query read/write
+-	int r;
+ 	void *ptr;
+ 
+-	r = amdgpu_bo_create_kernel(adev, size, PAGE_SIZE,
++	amdgpu_bo_create_kernel(adev, size, PAGE_SIZE,
+ 				domain, bo,
+ 				NULL, &ptr);
+ 	if (!*bo)
 -- 
 2.25.1
 
