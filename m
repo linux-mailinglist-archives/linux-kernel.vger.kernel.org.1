@@ -2,163 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328E12B2189
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41B82B218B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgKMRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:07:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726101AbgKMRG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:06:57 -0500
-Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 204A621D1A;
-        Fri, 13 Nov 2020 17:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605287216;
-        bh=jxrsetvXvF40pvVmBFCblOz9uKz1shtGKlBiFLqjRkU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=KUccD8fXUkWkX4ppCDwKMAfmb1Nq46Gl/b3bD878B8wSV1kL56H3INDaeBuEuVF4q
-         zt2TmcDygUBfFipKTp7iCxpdEPwHqEtGPxXDkvFlaWkOzcSH35meNfmyzyzlQk+cMj
-         Y9AsY8BsO/ChSPD4RsnlREiN8JvfyvPGzz86oUM8=
-Message-ID: <617eb5e8478df466afa9013b02a2425f7c4c673f.camel@kernel.org>
-Subject: Re: [PATCH RT 1/5] net: Properly annotate the try-lock for the
- seqlock
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Mike Galbraith <efault@gmx.de>, stable-rt@vger.kernel.org
-Date:   Fri, 13 Nov 2020 11:06:53 -0600
-In-Reply-To: <20201110154024.958923729@goodmis.org>
-References: <20201110153853.463368981@goodmis.org>
-         <20201110154024.958923729@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726344AbgKMRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:08:07 -0500
+Received: from smtprelay0212.hostedemail.com ([216.40.44.212]:59902 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726094AbgKMRIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:08:07 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id E490918224956;
+        Fri, 13 Nov 2020 17:08:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:2890:3138:3139:3140:3141:3142:3354:3421:3622:3865:3866:3867:3868:3870:3872:3873:3874:4042:4250:4321:4361:5007:9108:10004:10400:10471:10848:11026:11232:11658:11914:12043:12114:12295:12297:12438:12740:12895:13161:13229:13255:13439:13618:13894:14093:14097:14180:14181:14659:14721:21080:21450:21451:21627:30001:30029:30030:30054:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: back79_4308f9c27310
+X-Filterd-Recvd-Size: 3298
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 13 Nov 2020 17:08:18 +0000 (UTC)
+Message-ID: <70cc9c74785937695c795b5a655f3ab894b14141.camel@perches.com>
+Subject: Re: [PATCH 3/2] checkpatch: document the function renaming and
+ deprecation around devm_ioremap_resource
+From:   Joe Perches <joe@perches.com>
+To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Date:   Fri, 13 Nov 2020 09:08:17 -0800
+In-Reply-To: <20201113170043.osr63jash7anc3xn@pengutronix.de>
+References: <20201113085327.125041-1-u.kleine-koenig@pengutronix.de>
+         <20201113091157.125766-1-u.kleine-koenig@pengutronix.de>
+         <fe5ad7c72eadac32eda6a41b61feaa42c04392b0.camel@perches.com>
+         <20201113170043.osr63jash7anc3xn@pengutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-On Tue, 2020-11-10 at 10:38 -0500, Steven Rostedt wrote:
-> 5.4.74-rt42-rc2 stable review patch.
-> If anyone has any objections, please let me know.
+On Fri, 2020-11-13 at 18:00 +0100, Uwe Kleine-König wrote:
+> On Fri, Nov 13, 2020 at 08:36:44AM -0800, Joe Perches wrote:
+> > On Fri, 2020-11-13 at 10:11 +0100, Uwe Kleine-König wrote:
+> > > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > > ---
+> > > Hello,
+> > > 
+> > > this can also be squashed into the respective patches instead.
+> > > 
+> > > Best regards
+> > > Uwe
+> > > 
+> > >  scripts/checkpatch.pl | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > []
+> > > @@ -615,6 +615,11 @@ our %deprecated_apis = (
+> > >  	"rcu_barrier_sched"			=> "rcu_barrier",
+> > >  	"get_state_synchronize_sched"		=> "get_state_synchronize_rcu",
+> > >  	"cond_synchronize_sched"		=> "cond_synchronize_rcu",
+> > > +	"devm_platform_get_and_ioremap_resource" => "devm_platform_get_request_and_ioremap_resource",
+> > 
+> > Do we really need 46 character length function names?
 > 
-> ------------------
+> I can drop the "_and" and maybe "_get", so we're down to 38 "only".
+> Other than that I think all name parts are relevant.
 > 
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > > +	"devm_platform_ioremap_resource"	=> "devm_platform_request_ioremap_resource",
+> > > +	"devm_platform_ioremap_resource_wc"	=> "devm_platform_request_ioremap_resource_wc",
+> > > +	"devm_ioremap_resource"			=> "devm_request_ioremap_resource",
+> > > +	"devm_ioremap_resource_wc"		=> "devm_request_ioremap_resource_wc",
+> > >  );
+> > >  
+> > > 
+> > >  #Create a search pattern for all these strings to speed up a loop below
+> > 
+> > And do please send your proposed patches to the appropriate maintainers.
 > 
-> In patch
->    ("net/Qdisc: use a seqlock instead seqcount")
-> 
-> the seqcount has been replaced with a seqlock to allow to reader to
-> boost the preempted writer.
-> The try_write_seqlock() acquired the lock with a try-lock but the
-> seqcount annotation was "lock".
-> 
-> Opencode write_seqcount_t_begin() and use the try-lock annotation for
-> lockdep.
-> 
-> Reported-by: Mike Galbraith <efault@gmx.de>
-> Cc: stable-rt@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  include/linux/seqlock.h   |  9 ---------
->  include/net/sch_generic.h | 10 +++++++++-
->  2 files changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-> index e5207897c33e..f390293974ea 100644
-> --- a/include/linux/seqlock.h
-> +++ b/include/linux/seqlock.h
-> @@ -489,15 +489,6 @@ static inline void write_seqlock(seqlock_t *sl)
->  	__raw_write_seqcount_begin(&sl->seqcount);
->  }
->  
-> -static inline int try_write_seqlock(seqlock_t *sl)
-> -{
-> -	if (spin_trylock(&sl->lock)) {
-> -		__raw_write_seqcount_begin(&sl->seqcount);
-> -		return 1;
-> -	}
-> -	return 0;
-> -}
-> -
->  static inline void write_sequnlock(seqlock_t *sl)
->  {
->  	__raw_write_seqcount_end(&sl->seqcount);
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index e6afb4b9cede..112d2dca8b08 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -168,8 +168,16 @@ static inline bool qdisc_run_begin(struct Qdisc
-> *qdisc)
->  		return false;
->  	}
->  #ifdef CONFIG_PREEMPT_RT
-> -	if (try_write_seqlock(&qdisc->running))
-> +	if (spin_trylock(&qdisc->running.lock)) {
-> +		seqcount_t *s = &qdisc->running.seqcount;
-> +		/*
-> +		 * Variant of write_seqcount_t_begin() telling lockdep
-> that a
-> +		 * trylock was attempted.
-> +		 */
-> +		__raw_write_seqcount_begin(s);
-> +		seqcount_acquire(&s->dep_map, 0, 1, _RET_IP_);
->  		return true;
-> +	}
->  	return false;
->  #else
->  	/* Variant of write_seqcount_begin() telling lockdep a trylock
+> Yes, sure. This patch 3/2 was only a quick shot and it was already clear
+> to me that I have to redo it. I want to squash this change in the patch
+> that does the actual renaming, I assume that's fine for you?!
 
-I applied this to 4.19 and saw some splat with my 'debug-full'
-configuration, so tried 5.4 and saw the same thing:
+Sure.
 
-[   30.573698] BUG: workqueue leaked lock or atomic: kworker/1:4/0x00000000/143
-                    last function: wireless_nlevent_process
-[   30.573707] 1 lock held by kworker/1:4/143:
-[   30.573708]  #0: ffffffff8e981d80 (noop_qdisc.running#2){+.+.}, at: __do_softirq+0xca/0x561
-[   30.573715] CPU: 1 PID: 143 Comm: kworker/1:4 Not tainted 5.4.74-rt42-rt-test-full-debug #1
-[   30.573716] Hardware name: LENOVO 4236L51/4236L51, BIOS 83ET59WW (1.29 ) 06/01/2011
-[   30.573720] Workqueue: events wireless_nlevent_process
-[   30.573721] Call Trace:
-[   30.573724]  dump_stack+0x71/0x9b
-[   30.573728]  process_one_work+0x533/0x760
-[   30.573731]  worker_thread+0x39/0x3f0
-[   30.573733]  ? process_one_work+0x760/0x760
-[   30.573734]  kthread+0x165/0x180
-[   30.573736]  ? __kthread_create_on_node+0x180/0x180
-[   30.573737]  ret_from_fork+0x3a/0x50
-[   30.629329] wlp3s0: authenticate with 84:1b:5e:41:5e:4d
-[   30.634864] wlp3s0: send auth to 84:1b:5e:41:5e:4d (try 1/3)
-[   30.638433] wlp3s0: authenticated
-[   30.642250] wlp3s0: associate with 84:1b:5e:41:5e:4d (try 1/3)
-[   30.645704] wlp3s0: RX AssocResp from 84:1b:5e:41:5e:4d (capab=0x411 status=0 aid=6)
-[   30.650803] wlp3s0: associated
+But please do take Thierry Reding's comment about overall
+API complexity into account.
 
-[   30.656764] ================================================
-[   30.656765] WARNING: lock held when returning to user space!
-[   30.656766] 5.4.74-rt42-rt-test-full-debug #1 Not tainted
-[   30.656767] ------------------------------------------------
-[   30.656768] wpa_supplicant/836 is leaving the kernel with locks still held!
-[   30.656769] 1 lock held by wpa_supplicant/836:
-[   30.656770]  #0: ffff98f1c9622280 (&dev->qdisc_running_key){+.+.}, at: packet_sendmsg+0xec1/0x1ad0
+All wrapper macro/functions aren't always obviously good.
 
-Let me know if you want me to send you my .config or the full output (a
-bunch more of the above).
+They can be useful, but can make knowing which of many
+possible wrappers to use and when to use them appropriately
+difficult.
 
-Thanks,
+Wrappers also add complexity to documentation.
 
-Tom
 
