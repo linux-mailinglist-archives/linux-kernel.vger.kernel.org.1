@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CC82B1D16
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859212B1D1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgKMOYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:24:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
+        id S1726802AbgKMOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMOYR (ORCPT
+        with ESMTP id S1726731AbgKMOYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:17 -0500
+        Fri, 13 Nov 2020 09:24:18 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC149C0613D1;
-        Fri, 13 Nov 2020 06:24:17 -0800 (PST)
-Message-Id: <20201113141732.680780121@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F49C0613D1;
+        Fri, 13 Nov 2020 06:24:18 -0800 (PST)
+Message-Id: <20201113141732.844232404@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277455;
+        s=2020; t=1605277456;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=RnPutIEhghgoo536rGP1gany4COll9eV5Xh0J3bCRIo=;
-        b=Oi7V+t3xMEVk/+5l6bz8QLaSNx3nUUoDN6UwYKH3pm2ZJbGJ8GLol3FoZmJPqe1Lh6/Dxh
-        1nFGYLlKHZhmFpXrxnk6JdbowHwTuGlO2STIeU8MeveK6O95OmP3Y/VreNOCTmosQKpltl
-        PodJ580NczVuQOFpRgrs7SX4Ei9k8aBdoe6gjx9954mt69zvRCw8nwR76Sh7ec51WIle3i
-        tn6ga8Tw6wzpm67El32MNj8AxrJlHq2DalzZhCV1JpZfLvMG75RYS9W5lWLRNni53vzQwG
-        5MLc2ApK4iDcWiRj9cBqcZj5cSawHc9QSGKYtcAM60QM6RanQU/pcQhN9wqsqA==
+        bh=ldQX6LV392Sp6q38lky8DIKaFNB4v1tclruB3q140vY=;
+        b=DWxKl2oTbNiJFq242wyZFcPjhLIfi3MaxEuLNamTK0kgTpXZwoj9qCXalq5cmZeVakyDGb
+        cvWQ7byxNNAmxOd6N/SxAJvBHXxlhNqBclgGsibUj82yLY8MuKQzAAPCHCjAf/qIYHy2D6
+        W5tsHVECZdJYVjqPxrYP9rLOyReZ2k4MtGlj43h6ccGqhN6bZQ5/IjSB2po7a0CWoD980B
+        iAvURAzqfrzpjhUJg4BBA0zGWTdL77O8rgWb0A1nTMg+XWiIZq71MMP2TqSl2LZoyObVtA
+        VkoPC+VsDJte/Al56vqeV/59r0im2vkOGC5hEHuQhQqiYjuYshTMPE/PIM8NqA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277455;
+        s=2020e; t=1605277456;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=RnPutIEhghgoo536rGP1gany4COll9eV5Xh0J3bCRIo=;
-        b=xlFmjKxnDnUjXDDS5b3QeICpxgLMcYIi4FZ/GuOqg1NYVyeTiU7BKlPKFqFLY+z+/eZi6x
-        enZDTrTmo4YKGdAg==
-Date:   Fri, 13 Nov 2020 15:02:08 +0100
+        bh=ldQX6LV392Sp6q38lky8DIKaFNB4v1tclruB3q140vY=;
+        b=nExdUbbfCrGRLLhnMqfpr0nkpzGHfv4w1OWpXggW5hEFnW/+ZTqdLmi9nHPs7YdyQs2O8Z
+        ljzOoqMbS2TkhZCg==
+Date:   Fri, 13 Nov 2020 15:02:09 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -43,10 +43,10 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Paul McKenney <paulmck@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
         Jeff Dike <jdike@addtoit.com>,
         Richard Weinberger <richard@nod.at>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -56,7 +56,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 01/19] parisc: Remove bogus __IRQ_STAT macro
+Subject: [patch 02/19] sh: Get rid of nmi_count()
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,24 +65,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a leftover from a historical array based implementation and unused.
+nmi_count() is a historical leftover and SH is the only user. Replace it
+with regular per cpu accessors.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
 ---
- arch/parisc/include/asm/hardirq.h |    1 -
- 1 file changed, 1 deletion(-)
+ arch/sh/kernel/irq.c   |    2 +-
+ arch/sh/kernel/traps.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -32,7 +32,6 @@ typedef struct {
- DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+--- a/arch/sh/kernel/irq.c
++++ b/arch/sh/kernel/irq.c
+@@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file
  
- #define __ARCH_IRQ_STAT
--#define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
- #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
- #define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
- #define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector %02x\n", irq)
+ 	seq_printf(p, "%*s: ", prec, "NMI");
+ 	for_each_online_cpu(j)
+-		seq_printf(p, "%10u ", nmi_count(j));
++		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
+ 	seq_printf(p, "  Non-maskable interrupts\n");
+ 
+ 	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
+--- a/arch/sh/kernel/traps.c
++++ b/arch/sh/kernel/traps.c
+@@ -186,7 +186,7 @@ BUILD_TRAP_HANDLER(nmi)
+ 	arch_ftrace_nmi_enter();
+ 
+ 	nmi_enter();
+-	nmi_count(cpu)++;
++	this_cpu_inc(irq_stat.__nmi_count);
+ 
+ 	switch (notify_die(DIE_NMI, "NMI", regs, 0, vec & 0xff, SIGINT)) {
+ 	case NOTIFY_OK:
 
