@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9B32B24F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417812B24F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKMTyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:54:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725966AbgKMTyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:54:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605297261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yYOZqfS1DftClANj54I945kAOQfBrrvPepHj2JAwlgE=;
-        b=NeS9DVHzmLAdPHOeNRUQD6EDbKFfbZNU6RSnp3XdKpXlVfskFwjtpUjuvBqyNPm5ukC8YS
-        yct8R3ZLUYRtrAXewF7sSt1EyKBcC+26jkeEzVLxtXp/7TjRxm5mc8x2ALTtjsLRi4Zciq
-        ZhFSTqWB1k1T8cFEZy0px/T8ZPH6VHA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-o3eHZUV6NbaT1cJ-TJ4RWQ-1; Fri, 13 Nov 2020 14:54:18 -0500
-X-MC-Unique: o3eHZUV6NbaT1cJ-TJ4RWQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726414AbgKMTya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:54:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgKMTy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 14:54:29 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F5778730A8;
-        Fri, 13 Nov 2020 19:54:15 +0000 (UTC)
-Received: from treble (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54ADF62A16;
-        Fri, 13 Nov 2020 19:54:11 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 13:54:08 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201113195408.atbpjizijnhuinzy@treble>
-References: <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble>
- <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
- <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com>
- <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble>
- <20201110174606.mp5m33lgqksks4mt@treble>
- <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id B14A022245;
+        Fri, 13 Nov 2020 19:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605297268;
+        bh=FvZCzZux1JORm8mOiWoyNrChOKx4NI1KMe1ztchfQU0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2CYwt0+UXBugI/2IWsGMerb1q2cz1fj+YtxbaXkIbqdiUy1X9JjxCKuPBrWSMMS1u
+         8DJf22xARS0aLCESABM4tfN+DsYjU7P2j8D8/bbXBduqPSz27Aigkz2RJeZpJZR1CN
+         smuotcJSysVry3wEAHZWJ248jJi+X2hie0zJAA+E=
+Date:   Fri, 13 Nov 2020 11:54:26 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robert Hancock <robert.hancock@calian.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next 00/18] net: phy: add support for shared
+ interrupts (part 2)
+Message-ID: <20201113115426.33794b5c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201113081659.kkifu6dwxq3gxtpm@skbuf>
+References: <20201112155513.411604-1-ciorneiioana@gmail.com>
+        <20201112181910.6e23c0fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201113081659.kkifu6dwxq3gxtpm@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:59:55AM -0800, Sami Tolvanen wrote:
-> On Tue, Nov 10, 2020 at 9:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Mon, Nov 09, 2020 at 08:29:24PM -0600, Josh Poimboeuf wrote:
-> > > On Mon, Nov 09, 2020 at 03:11:41PM -0800, Sami Tolvanen wrote:
-> > > > CONFIG_XEN
-> > > >
-> > > > __switch_to_asm()+0x0: undefined stack state
-> > > >   xen_hypercall_set_trap_table()+0x0: <=== (sym)
-> >
-> > With your branch + GCC 9 I can recreate all the warnings except this
-> > one.
-> 
-> In a gcc build this warning is replaced with a different one:
-> 
-> vmlinux.o: warning: objtool: __startup_secondary_64()+0x7: return with
-> modified stack frame
-> 
-> This just seems to depend on which function is placed right after the
-> code in xen-head.S. With gcc, the disassembly looks like this:
-> 
-> 0000000000000000 <asm_cpu_bringup_and_idle>:
->        0:       e8 00 00 00 00          callq  5 <asm_cpu_bringup_and_idle+0x5>
->                         1: R_X86_64_PLT32       cpu_bringup_and_idle-0x4
->        5:       e9 f6 0f 00 00          jmpq   1000
-> <xen_hypercall_set_trap_table>
-> ...
-> 0000000000001000 <xen_hypercall_set_trap_table>:
->         ...
-> ...
-> 0000000000002000 <__startup_secondary_64>:
-> 
-> With Clang+LTO, we end up with __switch_to_asm here instead of
-> __startup_secondary_64.
+On Fri, 13 Nov 2020 08:17:00 +0000 Ioana Ciornei wrote:
+> On Thu, Nov 12, 2020 at 06:19:10PM -0800, Jakub Kicinski wrote:
+> > On Thu, 12 Nov 2020 17:54:55 +0200 Ioana Ciornei wrote: =20
+> > > From: Ioana Ciornei <ioana.ciornei@nxp.com>
+> > >=20
+> > > This patch set aims to actually add support for shared interrupts in
+> > > phylib and not only for multi-PHY devices. While we are at it,
+> > > streamline the interrupt handling in phylib. =20
+> >=20
+> > Ioana, would you mind resending? Looks like the kernel.org patchwork
+> > instance is way less reliable at piecing series together :( =20
+>=20
+> No problem, I'll resend.
+>=20
+> So from now on we'll be using the kernel.org patchwork only, right?  I
+> am asking this because from what I can tell the ozlabs patchwork was not
+> updated in the last days.
 
-I still don't see this warning for some reason.
+Yup, that's the plan. We're keeping ozlabs going for a bit just in case
+kernel.org is acting up (like if the need to repost stuff persists),
+but the plan is to stop the patchwork entry for netdev on ozlabs once
+things settle.
 
-Is it fixed by adding cpu_bringup_and_idle() to global_noreturns[] in
-tools/objtool/check.c?
-
--- 
-Josh
-
+=46rom where I live ozlabs takes 1s to respond to a request while
+kernel.org instance takes 0.2s.
