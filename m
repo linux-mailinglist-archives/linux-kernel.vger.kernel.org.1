@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E592B22E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E992B22ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgKMRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S1726889AbgKMRrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbgKMRqq (ORCPT
+        with ESMTP id S1726829AbgKMRqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:46:46 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F394CC061A47
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:45 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id g7so9192578ilr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:45 -0800 (PST)
+        Fri, 13 Nov 2020 12:46:53 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8C5C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:51 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id h6so5574433ilj.8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sm0dp8m6PYoCSpzYftgx2Y3mqZEh1Lp+bGdH0kDy5dk=;
-        b=JOxktDfZSV66zoJecCtVPD5DV3Oc5AicK13DHQg7s8MkflrIrX/+PMCP/1Vn5VC/D7
-         /x/RSybOc2X95HeMyLAw4c1vLiKJVRIirRtIHOEwBbcvpjOVAndGhpV1d/isxVanrZXd
-         Q1V5w7SZt1fdQIozxoxpp6KhEcDS2VISoLEKU=
+        bh=Qd1eMF3Snx/S44vJhI0lvR0izYUd0pJkDl8pUTw476M=;
+        b=hnfllv1gN4r7GNagxEOwgUdFDGtSCe/tY5l8KidnnPeysqSCyDBndquy0gCJuKbJq/
+         jaZcRjjNqLMlX+YmeiyD0jd5t/Os9nPnfPdNb6q3Ch76GtVI+LYxELHsGq/D+rAXDLnX
+         /74wwP+gRr977rJiLuZJFnov7dAPAFZJF1bAw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sm0dp8m6PYoCSpzYftgx2Y3mqZEh1Lp+bGdH0kDy5dk=;
-        b=mKQN8vwLgCoisONAw2+Sv4lATbb5LBgFbAM/cS9EcrCWw0L3Qy9qfd7pk/K5E8DEL/
-         rCLslRVOIM+MPJbobaSZCrhRYdQTm1r9YiJfxpUgJqSPXuKHqJHVbrc9zP37kDgcTTZh
-         zXaLfISXjuayLDY6o8ow0f/mbEX+N7sRrDfRPc3f2HL/upq6Fl6G/MByMwFUNAhmQymi
-         1RL5e/A6tNbxOb3LU72O8dCzH7AagsyzfT78FKicCSgx7d2Oo0ouy38Qq2THXdrE/ATx
-         E8HadJ3LGilpRTYK6L7lQy/7ed9D8dBZHb1J60o29Ynhq/hM5Sv6c+My6Z8HM+VO9sbs
-         VetA==
-X-Gm-Message-State: AOAM530liqQtAs5WvOtW1a1+Rt6ipAQdhJA+ZBnKAXohDBPMiW/XIkpM
-        IfbHKw827xz9BuT40AET4OyrkQ==
-X-Google-Smtp-Source: ABdhPJzkJd/du2JaXEEO+I8eBHlvnqsa7Fbuu4Q+CxUmhErClnXK++/Zonb9rRsW2jSUNHZqQq8h/g==
-X-Received: by 2002:a92:cb51:: with SMTP id f17mr730291ilq.64.1605289604832;
-        Fri, 13 Nov 2020 09:46:44 -0800 (PST)
+        bh=Qd1eMF3Snx/S44vJhI0lvR0izYUd0pJkDl8pUTw476M=;
+        b=fuffJ+GEgwuff6i6k2x7NTJdryoUBQjcbtcPB8sI64mgyhqvlyr7KkIAC83QUyFKbZ
+         5YatDN12deu5jAy7iwBm+UWkRKloBBnfzRLSuIOU/JJLI3wQpCkyyybaibsL1FrSvU74
+         wyEq0d8SFZhvUfGd/e+mqshkEyxz6Sb8aUJkTw7LcaGT7fcvgT8TPjrmyiml3yjYXgjq
+         Ds6rvsEzLMrIi9VVkOEcvGRUkzCC1ydGEJKjK/GYHdMQktLiTbiXPKuGS5lHFkwOqOiN
+         rb6CZXB4mG8OGgxy2vVDJO5OOm/OTkSCQRAQoNnKKQ+SdGDtSo/S1g589xz+FxiTmKlU
+         Nzvg==
+X-Gm-Message-State: AOAM533aeedU++6L6tfAGTIckq1FG5J9f/vnoBC+3pX4PXUl77mm8WjL
+        MiaMZNxHWu0c/575Zl7AR+PG6A==
+X-Google-Smtp-Source: ABdhPJyFLtVZS22Hy3GIumYaSmQAg9OWpbhsIVkMZRkDcO/qSiEIaFmQze9v57BiyqDlDSgejUn3Ug==
+X-Received: by 2002:a92:600e:: with SMTP id u14mr660525ilb.221.1605289606467;
+        Fri, 13 Nov 2020 09:46:46 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.44
+        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 09:46:44 -0800 (PST)
+        Fri, 13 Nov 2020 09:46:45 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     valentina.manea.m@gmail.com, shuah@kernel.org,
-        gregkh@linuxfoundation.org, keescook@chromium.org,
+To:     gregkh@linuxfoundation.org, keescook@chromium.org,
         peterz@infradead.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-usb@vger.kernel.org,
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/13] usb: usbip/vhci: convert seqno to seqnum_ops
-Date:   Fri, 13 Nov 2020 10:46:12 -0700
-Message-Id: <8c22e939de78436afc6112d8022771121d438a83.1605287778.git.skhan@linuxfoundation.org>
+Subject: [PATCH v2 11/13] drivers/staging/rtl8188eu: convert stats to use seqnum_ops
+Date:   Fri, 13 Nov 2020 10:46:13 -0700
+Message-Id: <9862cdd72a54d11dc0d08489df4c19902aab3785.1605287778.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605287778.git.skhan@linuxfoundation.org>
 References: <cover.1605287778.git.skhan@linuxfoundation.org>
@@ -72,95 +71,107 @@ use seqnum_ops.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/usb/usbip/vhci.h     | 3 ++-
- drivers/usb/usbip/vhci_hcd.c | 7 ++++---
- drivers/usb/usbip/vhci_rx.c  | 5 +++--
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 23 ++++++++++++++-----
+ .../staging/rtl8188eu/include/rtw_mlme_ext.h  |  3 ++-
+ 2 files changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/usbip/vhci.h b/drivers/usb/usbip/vhci.h
-index 5659dce1526e..cb76747f423b 100644
---- a/drivers/usb/usbip/vhci.h
-+++ b/drivers/usb/usbip/vhci.h
-@@ -15,6 +15,7 @@
- #include <linux/usb.h>
- #include <linux/usb/hcd.h>
- #include <linux/wait.h>
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+index b3eddcb83cd0..d8b5ab1dac26 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+@@ -7,6 +7,7 @@
+ #define _RTW_MLME_EXT_C_
+ 
+ #include <linux/ieee80211.h>
 +#include <linux/seqnum_ops.h>
+ #include <asm/unaligned.h>
  
- struct vhci_device {
- 	struct usb_device *udev;
-@@ -108,7 +109,7 @@ struct vhci_hcd {
- 	unsigned resuming:1;
- 	unsigned long re_timeout;
+ #include <osdep_service.h>
+@@ -3860,7 +3861,7 @@ static void init_mlme_ext_priv_value(struct adapter *padapter)
+ 		_12M_RATE_, _24M_RATE_, 0xff,
+ 	};
  
--	atomic_t seqnum;
-+	struct seqnum32 seqnum;
+-	atomic_set(&pmlmeext->event_seq, 0);
++	seqnum32_init(&pmlmeext->event_seq);
+ 	pmlmeext->mgnt_seq = 0;/* reset to zero when disconnect at client mode */
  
- 	/*
- 	 * NOTE:
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 66cde5e5f796..57287165537c 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+ 	pmlmeext->cur_channel = padapter->registrypriv.channel;
+@@ -4189,7 +4190,9 @@ void report_survey_event(struct adapter *padapter,
+ 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
+ 	pc2h_evt_hdr->len = sizeof(struct survey_event);
+ 	pc2h_evt_hdr->ID = _Survey_EVT_;
+-	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
++
++	/* seq is unsigned int seq:8 */
++	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
+ 
+ 	psurvey_evt = (struct survey_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
+ 
+@@ -4239,7 +4242,9 @@ void report_surveydone_event(struct adapter *padapter)
+ 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
+ 	pc2h_evt_hdr->len = sizeof(struct surveydone_event);
+ 	pc2h_evt_hdr->ID = _SurveyDone_EVT_;
+-	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
++
++	/* seq is unsigned int seq:8 */
++	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
+ 
+ 	psurveydone_evt = (struct surveydone_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
+ 	psurveydone_evt->bss_cnt = pmlmeext->sitesurvey_res.bss_cnt;
+@@ -4283,7 +4288,9 @@ void report_join_res(struct adapter *padapter, int res)
+ 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
+ 	pc2h_evt_hdr->len = sizeof(struct joinbss_event);
+ 	pc2h_evt_hdr->ID = _JoinBss_EVT_;
+-	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
++
++	/* seq is unsigned int seq:8 */
++	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
+ 
+ 	pjoinbss_evt = (struct joinbss_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
+ 	memcpy((unsigned char *)(&pjoinbss_evt->network.network), &pmlmeinfo->network, sizeof(struct wlan_bssid_ex));
+@@ -4333,7 +4340,9 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr,
+ 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
+ 	pc2h_evt_hdr->len = sizeof(struct stadel_event);
+ 	pc2h_evt_hdr->ID = _DelSTA_EVT_;
+-	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
++
++	/* seq is unsigned int seq:8 */
++	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
+ 
+ 	pdel_sta_evt = (struct stadel_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
+ 	ether_addr_copy((unsigned char *)(&pdel_sta_evt->macaddr), MacAddr);
+@@ -4386,7 +4395,9 @@ void report_add_sta_event(struct adapter *padapter, unsigned char *MacAddr,
+ 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
+ 	pc2h_evt_hdr->len = sizeof(struct stassoc_event);
+ 	pc2h_evt_hdr->ID = _AddSTA_EVT_;
+-	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
++
++	/* seq is unsigned int seq:8 */
++	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
+ 
+ 	padd_sta_evt = (struct stassoc_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
+ 	ether_addr_copy((unsigned char *)(&padd_sta_evt->macaddr), MacAddr);
+diff --git a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
+index b11a6886a083..09b7e3bb2738 100644
+--- a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
++++ b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
+@@ -7,6 +7,7 @@
+ #ifndef __RTW_MLME_EXT_H_
+ #define __RTW_MLME_EXT_H_
+ 
 +#include <linux/seqnum_ops.h>
+ #include <osdep_service.h>
+ #include <drv_types.h>
+ #include <wlan_bssdef.h>
+@@ -393,7 +394,7 @@ struct p2p_oper_class_map {
+ struct mlme_ext_priv {
+ 	struct adapter	*padapter;
+ 	u8	mlmeext_init;
+-	atomic_t	event_seq;
++	struct	seqnum32 event_seq;
+ 	u16	mgnt_seq;
  
- #include "usbip_common.h"
- #include "vhci.h"
-@@ -665,7 +666,7 @@ static void vhci_tx_urb(struct urb *urb, struct vhci_device *vdev)
- 
- 	spin_lock_irqsave(&vdev->priv_lock, flags);
- 
--	priv->seqnum = atomic_inc_return(&vhci_hcd->seqnum);
-+	priv->seqnum = seqnum32_inc_return(&vhci_hcd->seqnum);
- 	if (priv->seqnum == 0xffff)
- 		dev_info(&urb->dev->dev, "seqnum max\n");
- 
-@@ -921,7 +922,7 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
- 			return -ENOMEM;
- 		}
- 
--		unlink->seqnum = atomic_inc_return(&vhci_hcd->seqnum);
-+		unlink->seqnum = seqnum32_inc_return(&vhci_hcd->seqnum);
- 		if (unlink->seqnum == 0xffff)
- 			pr_info("seqnum max\n");
- 
-@@ -1181,7 +1182,7 @@ static int vhci_start(struct usb_hcd *hcd)
- 		vdev->rhport = rhport;
- 	}
- 
--	atomic_set(&vhci_hcd->seqnum, 0);
-+	seqnum32_init(&vhci_hcd->seqnum);
- 
- 	hcd->power_budget = 0; /* no limit */
- 	hcd->uses_new_polling = 1;
-diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
-index 266024cbb64f..84620538093f 100644
---- a/drivers/usb/usbip/vhci_rx.c
-+++ b/drivers/usb/usbip/vhci_rx.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/kthread.h>
- #include <linux/slab.h>
-+#include <linux/seqnum_ops.h>
- 
- #include "usbip_common.h"
- #include "vhci.h"
-@@ -66,9 +67,9 @@ static void vhci_recv_ret_submit(struct vhci_device *vdev,
- 	spin_unlock_irqrestore(&vdev->priv_lock, flags);
- 
- 	if (!urb) {
--		pr_err("cannot find a urb of seqnum %u max seqnum %d\n",
-+		pr_err("cannot find a urb of seqnum %u max seqnum %u\n",
- 			pdu->base.seqnum,
--			atomic_read(&vhci_hcd->seqnum));
-+			seqnum32_fetch(&vhci_hcd->seqnum));
- 		usbip_event_add(ud, VDEV_EVENT_ERROR_TCP);
- 		return;
- 	}
+ 	unsigned char	cur_channel;
 -- 
 2.27.0
 
