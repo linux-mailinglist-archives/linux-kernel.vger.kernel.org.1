@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4D62B23BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB242B23C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgKMS01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:26:27 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51998 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgKMS0Z (ORCPT
+        id S1726295AbgKMS1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKMS1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:26:25 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E8FEA1C0B7D; Fri, 13 Nov 2020 19:26:21 +0100 (CET)
-Date:   Fri, 13 Nov 2020 19:26:21 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>,
-        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 4.19 107/191] ARM: dts: s5pv210: move PMU node out of
- clock controller
-Message-ID: <20201113182621.GA7102@duo.ucw.cz>
-References: <20201103203232.656475008@linuxfoundation.org>
- <20201103203243.594174920@linuxfoundation.org>
- <20201105114648.GB9009@duo.ucw.cz>
- <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
- <20201105195508.GB19957@duo.ucw.cz>
- <20201106201245.GA332560@kozik-lap>
- <20201106211038.GA400980@kozik-lap>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
-Content-Disposition: inline
-In-Reply-To: <20201106211038.GA400980@kozik-lap>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 13 Nov 2020 13:27:07 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10031C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:27:06 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id w4so11665027ybq.21
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 10:27:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=xdF5VExq/IBWGsj2OEHUNluwUzzlJmZ8MV9WRDo+8nE=;
+        b=vFIPLkCaqwKSBguafVn6m1/I+5QrOZPDGtj/UkUiZfs3xbc1XEp8UDUFXRqeTwf7ia
+         C0LHCIOHkJZ5k0yCyanXd0vKgH/fPGcoYAnvm7jv/6PIyL1FgjZ8X3jLzvNOX3+PEvuw
+         5LC8TKb5yf59dIDK+1uDBdYENHicNa3zw6L+DzDJQLY/P7B3QcQTxyf3lNEGiUqg7kn0
+         vksgztLnnFSDwCEW3vvyPPL0Hi5NdIxoiozPUeCuaU5avftQywTt+PCxSsXQPafiAQrH
+         RHrH3Ay2PKHKDkPr3xqdUg4UgiKhwoDKeWKkvVP+YwZRNk0ygyho+ZHA0DDPe9eN/3Xs
+         KOjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=xdF5VExq/IBWGsj2OEHUNluwUzzlJmZ8MV9WRDo+8nE=;
+        b=FG2MJNp8czBMWvBoHZU62USBkT25Mp+pTuP1Zu7ChxTW+7YTu4nMJiR6kt4Y6VNxfq
+         j24pWo5p5106qlBCPijPxZyYMufhwFY1OxkWPeWPyrMp5MWJSXr8I2lzql7M/3mJDxrL
+         6+c94nqVq2o6pzMrFcQ3S9EY5il0TJXWO483eYWHFUlyBnw9qSRn3tTK8kKFU70cRmrK
+         ibCsd+gdEiEux+bIfroe/fm6BBOr2w/Zqd9PzV9dQeqEv77NHbgOi1j5yrjLjULmOr6H
+         W39ZgBCdROkYZ0LPD/VJWHgWofcsdDBtZlis/TEXZZoBoCW+sicihOQU6gONatsYIcUF
+         c3CA==
+X-Gm-Message-State: AOAM533wtA0eMOLce+m1zY2ij+Oha/K/d1+tIjdkW8a7oOprceJ+jd2n
+        O9fQ4GOIWpTPrc3Bf0MtwiVUQU6oS80WdnuHFXc=
+X-Google-Smtp-Source: ABdhPJwWoewcmHHjSS240pc3RuOvn1E8zFNJX/2yJW4FRrHjCDV3yYzamaoh0ImL6L1+JS7BgYSrnVtws1rUUKKTPF8=
+Sender: "samitolvanen via sendgmr" 
+        <samitolvanen@samitolvanen1.mtv.corp.google.com>
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a25:6903:: with SMTP id
+ e3mr4860426ybc.295.1605292025213; Fri, 13 Nov 2020 10:27:05 -0800 (PST)
+Date:   Fri, 13 Nov 2020 10:26:54 -0800
+Message-Id: <20201113182654.967462-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH] x86/e820: fix the function type for e820__mapped_all
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+e820__mapped_all is passed as a callback to is_mmconf_reserved, which
+expects a function of type:
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
 
-Hi!
+This trips indirect call checking with Clang's Control-Flow Integrity
+(CFI). Change the last argument from enum e820_type to unsigned to fix
+the type mismatch.
 
-> > > > I don't think this commit should be backported to stable. It is sim=
-ple
-> > > > dtbs_check - checking whether Devicetree source matches device tree
-> > > > schema. Neither the schema nor the warning existed in v4.19. I think
-> > > > dtbs_check fixes should not be backported, unless a real issue is
-> > > > pointed out.
-> > >=20
-> > > I agree with you about the backporting. Hopefully Greg drops the
-> > > commit.
-> > >=20
-> > > But the other issue is: should mainline be fixed so that ranges do no=
-t overlap?
-> >=20
-> > Yes, it should be. This should fail on mapping resources...
-> >=20
-> > I'll take a look, thanks for the report.
->=20
-> +Cc Pawe=C5=82 and Marek,
->=20
-> The IO memory mappings overlap unfortunately on purpose. Most of the
-> clock driver registers are in the first range of 0x3000 but it also uses
-> two registers at offset 0xe000.
->=20
-> The samsung-s5pv210-pmu is used only as a syscon by phy-s5pv210-usb2.c
-> which wants to play with 0x680c.
->=20
-> The solution could be to split the mapping into two parts but I don't
-> want to do this. I don't have the hardware so there is a chance I will
-> break things.
->=20
-> However if Pawe=C5=82, Jonathan or Marek want to improve it - patches are
-> welcomed. :)
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ arch/x86/include/asm/e820/api.h | 2 +-
+ arch/x86/kernel/e820.c          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Okay, it would be nice to at least have a comment there.
+diff --git a/arch/x86/include/asm/e820/api.h b/arch/x86/include/asm/e820/api.h
+index e8f58ddd06d9..e872a796619d 100644
+--- a/arch/x86/include/asm/e820/api.h
++++ b/arch/x86/include/asm/e820/api.h
+@@ -12,7 +12,7 @@ extern unsigned long pci_mem_start;
+ 
+ extern bool e820__mapped_raw_any(u64 start, u64 end, enum e820_type type);
+ extern bool e820__mapped_any(u64 start, u64 end, enum e820_type type);
+-extern bool e820__mapped_all(u64 start, u64 end, enum e820_type type);
++extern bool e820__mapped_all(u64 start, u64 end, unsigned type);
+ 
+ extern void e820__range_add   (u64 start, u64 size, enum e820_type type);
+ extern u64  e820__range_update(u64 start, u64 size, enum e820_type old_type, enum e820_type new_type);
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index 22aad412f965..9f6a4e9bca4c 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -145,7 +145,7 @@ static struct e820_entry *__e820__mapped_all(u64 start, u64 end,
+ /*
+  * This function checks if the entire range <start,end> is mapped with type.
+  */
+-bool __init e820__mapped_all(u64 start, u64 end, enum e820_type type)
++bool __init e820__mapped_all(u64 start, u64 end, unsigned type)
+ {
+ 	return __e820__mapped_all(start, end, type);
+ }
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+base-commit: 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+-- 
+2.29.2.299.gdc1121823c-goog
 
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX67PzQAKCRAw5/Bqldv6
-8hHkAJ0ZbOImgXDcxxJOlzR/bIB/mVCXIACff68HKiF8eXGf8iWV+1ymXlDQRrc=
-=ThZD
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
