@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356AA2B1C1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC79D2B1C1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgKMNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:48:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32720 "EHLO
+        id S1726776AbgKMNsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:48:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60260 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726740AbgKMNsN (ORCPT
+        by vger.kernel.org with ESMTP id S1726502AbgKMNsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:48:13 -0500
+        Fri, 13 Nov 2020 08:48:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605275291;
+        s=mimecast20190719; t=1605275292;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9UzDD4XLBsIex8H3gAmLcepWoyVKDMnza///IOvxEZI=;
-        b=h8KHPKuUbjrXsgc/Kv0go7+AN/gsUWC1Dmotav+AOynv0j0oeeffgwG43LzMOHFIINVy5k
-        jXs9bVSjQoiGihZn+N0mw8aujD+V8+5mqI2sTPYBpW/dqq7MIlj/YJ01ww24nafDmEVGVN
-        qjyFjdOib92A4cGyhP5tGPYlu/XZrGI=
+        bh=qmwRVxQsc/qPsoRgsbehfRwdGseE/2GhYjwbTfPKCsU=;
+        b=TiAM8OZZLtI9xVn7W8qLFn3P+cf2UAG52pdyyUiMpPfUTj6ISjo0f5Wx0Xx9q852lv7l/t
+        QmKjN0zLfagJRsIWyFEWoBWMT/8TooJBv0lu7FDSODQNF08GExFtXxhubkMrvB17vxRa1O
+        sO4Eb8SazLPK7eIUFuZ14/fT1qAWZm0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-HiiljqWwMnSO1WrRG7vhpA-1; Fri, 13 Nov 2020 08:48:07 -0500
-X-MC-Unique: HiiljqWwMnSO1WrRG7vhpA-1
+ us-mta-300-g0kZstaGM5WQhPfq2LYcNA-1; Fri, 13 Nov 2020 08:48:09 -0500
+X-MC-Unique: g0kZstaGM5WQhPfq2LYcNA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81C53809DC5;
-        Fri, 13 Nov 2020 13:48:06 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ADFF9802B76;
+        Fri, 13 Nov 2020 13:48:08 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-114-21.ams2.redhat.com [10.36.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 947A219C66;
-        Fri, 13 Nov 2020 13:48:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0BA419C66;
+        Fri, 13 Nov 2020 13:48:06 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -42,9 +42,9 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: [PATCH RFC 06/12] vdpa_sim: add struct vdpasim_device to store device properties
-Date:   Fri, 13 Nov 2020 14:47:06 +0100
-Message-Id: <20201113134712.69744-7-sgarzare@redhat.com>
+Subject: [PATCH RFC 07/12] vdpa_sim: move config management outside of the core
+Date:   Fri, 13 Nov 2020 14:47:07 +0100
+Message-Id: <20201113134712.69744-8-sgarzare@redhat.com>
 In-Reply-To: <20201113134712.69744-1-sgarzare@redhat.com>
 References: <20201113134712.69744-1-sgarzare@redhat.com>
 MIME-Version: 1.0
@@ -54,234 +54,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move device properties used during the entire life cycle in a new
-structure to simplify the copy of these fields during the vdpasim
-initialization.
+In order to simplify the code of the vdpa_sim core, we move the
+config management in each device simulator.
+
+The device must provide the size of config structure and a callback
+to update this structure called during the vdpasim_set_features().
 
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.h     | 17 ++++++++------
- drivers/vdpa/vdpa_sim/vdpa_sim.c     | 33 ++++++++++++++--------------
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c |  8 +++++--
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c |  9 +++++---
- 4 files changed, 38 insertions(+), 29 deletions(-)
+ drivers/vdpa/vdpa_sim/vdpa_sim.h     |  5 +++--
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     | 29 +++++-----------------------
+ drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 27 ++++++++++++++++----------
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 12 ++++++++++++
+ 4 files changed, 37 insertions(+), 36 deletions(-)
 
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-index 6a1267c40d5e..76e642042eb0 100644
+index 76e642042eb0..f7e1fe0a88d3 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-@@ -40,12 +40,17 @@ struct vdpasim_virtqueue {
- 	irqreturn_t (*cb)(void *data);
+@@ -10,8 +10,6 @@
+ #include <linux/vdpa.h>
+ #include <linux/vhost_iotlb.h>
+ #include <uapi/linux/virtio_config.h>
+-#include <uapi/linux/virtio_net.h>
+-#include <uapi/linux/virtio_blk.h>
+ 
+ #define DRV_VERSION  "0.1"
+ #define DRV_AUTHOR   "Jason Wang <jasowang@redhat.com>"
+@@ -42,8 +40,11 @@ struct vdpasim_virtqueue {
+ 
+ struct vdpasim_device {
+ 	u64 supported_features;
++	size_t config_size;
+ 	u32 id;
+ 	int nvqs;
++
++	void (*update_config)(struct vdpasim *vdpasim);
  };
  
-+struct vdpasim_device {
-+	u64 supported_features;
-+	u32 id;
-+	int nvqs;
-+};
-+
  struct vdpasim_init_attr {
--	u32		device_id;
--	u64		features;
-+	struct vdpasim_device device;
-+	int batch_mapping;
-+
- 	work_func_t	work_fn;
--	int		batch_mapping;
--	int		nvqs;
- };
- 
- /* State of each vdpasim device */
-@@ -53,18 +58,16 @@ struct vdpasim {
- 	struct vdpa_device vdpa;
- 	struct vdpasim_virtqueue *vqs;
- 	struct work_struct work;
-+	struct vdpasim_device device;
- 	/* spinlock to synchronize virtqueue state */
- 	spinlock_t lock;
- 	/* virtio config according to device type */
- 	void *config;
- 	struct vhost_iotlb *iommu;
- 	void *buffer;
--	u32 device_id;
- 	u32 status;
- 	u32 generation;
- 	u64 features;
--	u64 supported_features;
--	int nvqs;
- 	/* spinlock to synchronize iommu table */
- 	spinlock_t iommu_lock;
- };
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 9c9717441bbe..d053bd14b3f8 100644
+index d053bd14b3f8..9c29c2013661 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -28,7 +28,7 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
+@@ -185,14 +185,8 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
  {
- 	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
- 
--	vringh_init_iotlb(&vq->vring, vdpasim->supported_features,
-+	vringh_init_iotlb(&vq->vring, vdpasim->device.supported_features,
- 			  VDPASIM_QUEUE_MAX, false,
- 			  (struct vring_desc *)(uintptr_t)vq->desc_addr,
- 			  (struct vring_avail *)
-@@ -46,7 +46,7 @@ static void vdpasim_vq_reset(struct vdpasim *vdpasim,
- 	vq->device_addr = 0;
- 	vq->cb = NULL;
- 	vq->private = NULL;
--	vringh_init_iotlb(&vq->vring, vdpasim->supported_features,
-+	vringh_init_iotlb(&vq->vring, vdpasim->device.supported_features,
- 			  VDPASIM_QUEUE_MAX, false, NULL, NULL, NULL);
- }
- 
-@@ -54,7 +54,7 @@ static void vdpasim_reset(struct vdpasim *vdpasim)
- {
- 	int i;
- 
--	for (i = 0; i < vdpasim->nvqs; i++)
-+	for (i = 0; i < vdpasim->device.nvqs; i++)
- 		vdpasim_vq_reset(vdpasim, &vdpasim->vqs[i]);
- 
- 	spin_lock(&vdpasim->iommu_lock);
-@@ -189,7 +189,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
+ 	const struct vdpa_config_ops *ops;
+ 	struct vdpasim *vdpasim;
+-	u32 device_id;
  	struct device *dev;
- 	int i, size, ret = -ENOMEM;
+-	int i, size, ret = -ENOMEM;
+-
+-	device_id = attr->device.id;
+-	/* Currently, we only accept the network and block devices. */
+-	if (device_id != VIRTIO_ID_NET && device_id != VIRTIO_ID_BLOCK)
+-		return ERR_PTR(-EOPNOTSUPP);
++	int i, ret = -ENOMEM;
  
--	device_id = attr->device_id;
-+	device_id = attr->device.id;
- 	/* Currently, we only accept the network and block devices. */
- 	if (device_id != VIRTIO_ID_NET && device_id != VIRTIO_ID_BLOCK)
- 		return ERR_PTR(-EOPNOTSUPP);
-@@ -200,10 +200,12 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
- 		ops = &vdpasim_config_ops;
+ 	if (attr->batch_mapping)
+ 		ops = &vdpasim_batch_config_ops;
+@@ -206,11 +200,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
  
- 	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops,
--				    attr->nvqs);
-+				    attr->device.nvqs);
- 	if (!vdpasim)
- 		goto err_alloc;
+ 	vdpasim->device = attr->device;
  
-+	vdpasim->device = attr->device;
-+
- 	if (device_id == VIRTIO_ID_NET)
- 		size = sizeof(struct virtio_net_config);
- 	else
-@@ -212,14 +214,11 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
+-	if (device_id == VIRTIO_ID_NET)
+-		size = sizeof(struct virtio_net_config);
+-	else
+-		size = sizeof(struct virtio_blk_config);
+-	vdpasim->config = kzalloc(size, GFP_KERNEL);
++	vdpasim->config = kzalloc(vdpasim->device.config_size, GFP_KERNEL);
  	if (!vdpasim->config)
  		goto err_iommu;
  
--	vdpasim->vqs = kcalloc(attr->nvqs, sizeof(struct vdpasim_virtqueue),
--			       GFP_KERNEL);
-+	vdpasim->vqs = kcalloc(vdpasim->device.nvqs,
-+			       sizeof(struct vdpasim_virtqueue), GFP_KERNEL);
- 	if (!vdpasim->vqs)
- 		goto err_iommu;
- 
--	vdpasim->device_id = device_id;
--	vdpasim->supported_features = attr->features;
--	vdpasim->nvqs = attr->nvqs;
- 	INIT_WORK(&vdpasim->work, attr->work_fn);
- 	spin_lock_init(&vdpasim->lock);
- 	spin_lock_init(&vdpasim->iommu_lock);
-@@ -238,7 +237,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
- 	if (!vdpasim->buffer)
- 		goto err_iommu;
- 
--	for (i = 0; i < vdpasim->nvqs; i++)
-+	for (i = 0; i < vdpasim->device.nvqs; i++)
- 		vringh_set_iotlb(&vdpasim->vqs[i].vring, vdpasim->iommu);
- 
- 	vdpasim->vdpa.dma_dev = dev;
-@@ -347,7 +346,7 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 
--	return vdpasim->supported_features;
-+	return vdpasim->device.supported_features;
- }
- 
- static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
-@@ -358,14 +357,14 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- 	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
- 		return -EINVAL;
- 
--	vdpasim->features = features & vdpasim->supported_features;
-+	vdpasim->features = features & vdpasim->device.supported_features;
- 
- 	/* We generally only know whether guest is using the legacy interface
- 	 * here, so generally that's the earliest we can set config fields.
+@@ -364,13 +354,8 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
  	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
  	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
  	 */
--	if (vdpasim->device_id == VIRTIO_ID_NET) {
-+	if (vdpasim->device.id == VIRTIO_ID_NET) {
- 		struct virtio_net_config *config =
- 			(struct virtio_net_config *)vdpasim->config;
+-	if (vdpasim->device.id == VIRTIO_ID_NET) {
+-		struct virtio_net_config *config =
+-			(struct virtio_net_config *)vdpasim->config;
+-
+-		config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+-		config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
+-	}
++	if (vdpasim->device.update_config)
++		vdpasim->device.update_config(vdpasim);
  
-@@ -391,7 +390,7 @@ static u32 vdpasim_get_device_id(struct vdpa_device *vdpa)
+ 	return 0;
+ }
+@@ -426,11 +411,7 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
  {
  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
  
--	return vdpasim->device_id;
-+	return vdpasim->device.id;
- }
- 
- static u32 vdpasim_get_vendor_id(struct vdpa_device *vdpa)
-@@ -427,10 +426,10 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 
--	if (vdpasim->device_id == VIRTIO_ID_BLOCK &&
-+	if (vdpasim->device.id == VIRTIO_ID_BLOCK &&
- 	    (offset + len < sizeof(struct virtio_blk_config)))
- 		memcpy(buf, vdpasim->config + offset, len);
--	else if (vdpasim->device_id == VIRTIO_ID_NET &&
-+	else if (vdpasim->device.id == VIRTIO_ID_NET &&
- 		 (offset + len < sizeof(struct virtio_net_config)))
+-	if (vdpasim->device.id == VIRTIO_ID_BLOCK &&
+-	    (offset + len < sizeof(struct virtio_blk_config)))
+-		memcpy(buf, vdpasim->config + offset, len);
+-	else if (vdpasim->device.id == VIRTIO_ID_NET &&
+-		 (offset + len < sizeof(struct virtio_net_config)))
++	if (offset + len < vdpasim->device.config_size)
  		memcpy(buf, vdpasim->config + offset, len);
  }
+ 
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-index 386dbb2f7138..363273d72e26 100644
+index 363273d72e26..f456a0e4e097 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-@@ -78,9 +78,13 @@ static int __init vdpasim_blk_init(void)
- 	struct virtio_blk_config *config;
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/module.h>
++#include <uapi/linux/virtio_blk.h>
+ 
+ #include "vdpa_sim.h"
+ 
+@@ -72,16 +73,31 @@ static void vdpasim_blk_work(struct work_struct *work)
+ 
+ }
+ 
++static void vdpasim_blk_update_config(struct vdpasim *vdpasim)
++{
++	struct virtio_blk_config *config =
++		(struct virtio_blk_config *)vdpasim->config;
++
++	config->capacity = cpu_to_vdpasim64(vdpasim, VDPASIM_BLK_CAPACITY);
++	config->size_max = cpu_to_vdpasim32(vdpasim, VDPASIM_BLK_SIZE_MAX);
++	config->seg_max = cpu_to_vdpasim32(vdpasim, VDPASIM_BLK_SEG_MAX);
++	config->num_queues = cpu_to_vdpasim16(vdpasim, VDPASIM_BLK_VQ_NUM);
++	config->min_io_size = cpu_to_vdpasim16(vdpasim, 1);
++	config->opt_io_size = cpu_to_vdpasim32(vdpasim, 1);
++	config->blk_size = cpu_to_vdpasim32(vdpasim, 512);
++}
++
+ static int __init vdpasim_blk_init(void)
+ {
+ 	struct vdpasim_init_attr attr = {};
+-	struct virtio_blk_config *config;
  	int ret;
  
--	attr.device_id = VIRTIO_ID_BLOCK;
--	attr.features = VDPASIM_FEATURES | VDPASIM_BLK_FEATURES;
-+	attr.device.id = VIRTIO_ID_BLOCK;
-+	attr.device.supported_features = VDPASIM_FEATURES |
-+					 VDPASIM_BLK_FEATURES;
-+	attr.device.nvqs = VDPASIM_BLK_VQ_NUM;
-+
+ 	attr.device.id = VIRTIO_ID_BLOCK;
+ 	attr.device.supported_features = VDPASIM_FEATURES |
+ 					 VDPASIM_BLK_FEATURES;
+ 	attr.device.nvqs = VDPASIM_BLK_VQ_NUM;
++	attr.device.config_size = sizeof(struct virtio_blk_config);
++	attr.device.update_config = vdpasim_blk_update_config;
+ 
  	attr.work_fn = vdpasim_blk_work;
-+
- 	vdpasim_blk_dev = vdpasim_create(&attr);
- 	if (IS_ERR(vdpasim_blk_dev)) {
- 		ret = PTR_ERR(vdpasim_blk_dev);
+ 
+@@ -91,15 +107,6 @@ static int __init vdpasim_blk_init(void)
+ 		goto out;
+ 	}
+ 
+-	config = (struct virtio_blk_config *)vdpasim_blk_dev->config;
+-	config->capacity = cpu_to_vdpasim64(vdpasim_blk_dev, VDPASIM_BLK_CAPACITY);
+-	config->size_max = cpu_to_vdpasim32(vdpasim_blk_dev, VDPASIM_BLK_SIZE_MAX);
+-	config->seg_max = cpu_to_vdpasim32(vdpasim_blk_dev, VDPASIM_BLK_SEG_MAX);
+-	config->num_queues = cpu_to_vdpasim16(vdpasim_blk_dev, VDPASIM_BLK_VQ_NUM);
+-	config->min_io_size = cpu_to_vdpasim16(vdpasim_blk_dev, 1);
+-	config->opt_io_size = cpu_to_vdpasim32(vdpasim_blk_dev, 1);
+-	config->blk_size = cpu_to_vdpasim32(vdpasim_blk_dev, 512);
+-
+ 	ret = vdpa_register_device(&vdpasim_blk_dev->vdpa);
+ 	if (ret)
+ 		goto put_dev;
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-index e1e57c52b108..88c9569f6bd3 100644
+index 88c9569f6bd3..b9372fdf2415 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-@@ -105,11 +105,14 @@ static int __init vdpasim_net_init(void)
- 	struct virtio_net_config *config;
- 	int ret;
+@@ -9,6 +9,7 @@
  
--	attr.device_id = VIRTIO_ID_NET;
--	attr.features = VDPASIM_FEATURES | VDPASIM_NET_FEATURES;
--	attr.nvqs = VDPASIM_NET_VQ_NUM;
-+	attr.device.id = VIRTIO_ID_NET;
-+	attr.device.supported_features = VDPASIM_FEATURES |
-+					 VDPASIM_NET_FEATURES;
-+	attr.device.nvqs = VDPASIM_NET_VQ_NUM;
+ #include <linux/module.h>
+ #include <linux/etherdevice.h>
++#include <uapi/linux/virtio_net.h>
+ 
+ #include "vdpa_sim.h"
+ 
+@@ -99,6 +100,15 @@ static void vdpasim_net_work(struct work_struct *work)
+ 	spin_unlock(&vdpasim->lock);
+ }
+ 
++static void vdpasim_net_update_config(struct vdpasim *vdpasim)
++{
++	struct virtio_net_config *config =
++		(struct virtio_net_config *)vdpasim->config;
 +
++	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
++	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
++}
++
+ static int __init vdpasim_net_init(void)
+ {
+ 	struct vdpasim_init_attr attr = {};
+@@ -109,6 +119,8 @@ static int __init vdpasim_net_init(void)
+ 	attr.device.supported_features = VDPASIM_FEATURES |
+ 					 VDPASIM_NET_FEATURES;
+ 	attr.device.nvqs = VDPASIM_NET_VQ_NUM;
++	attr.device.config_size = sizeof(struct virtio_net_config);
++	attr.device.update_config = vdpasim_net_update_config;
+ 
  	attr.work_fn = vdpasim_net_work;
  	attr.batch_mapping = batch_mapping;
-+
- 	vdpasim_net_dev = vdpasim_create(&attr);
- 	if (IS_ERR(vdpasim_net_dev)) {
- 		ret = PTR_ERR(vdpasim_net_dev);
 -- 
 2.26.2
 
