@@ -2,148 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193132B1627
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC512B1628
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgKMHCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:02:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgKMHCp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:02:45 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DB0C0613D1;
-        Thu, 12 Nov 2020 23:02:45 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CXTtn2Sxrz9sPB;
-        Fri, 13 Nov 2020 18:02:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605250961;
-        bh=Rkv381qprtefXC6KwG2DDIK3zuwdwvP0t8znTCZTTDA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Keiv8OKpo89cCc/c95Ijt5rIHw9LehLIUcUFsrBy7Fv2y2+G3ZqU739zbOEzjMsIZ
-         JAHJE1cfI/CfxLtaibhgkM36LKh0kSQY3buZKT4JnA/Rd2yEpqQ65ksUaJGYi0KXO8
-         e/TlIFcFddQFtQ8T6tM0IzZuUuxHo2YEQc/OlT4vwhiqQWlv6rjnXwE6CneQL3VVuD
-         XYkZhJmSbMZVYVhLexhyF4e8n8KjvsH/IDaQe1DCvaL281maqxH8p1hSeYcPi+XltU
-         PzgOj7/T+7rUkp8/tJGfNwvQpyYXs9ShZ3dlH4HDO4vz+C5Kz6efVJqAzFPv8S6ESS
-         0ssiDnFK16c/g==
-Date:   Fri, 13 Nov 2020 18:02:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
+        id S1726339AbgKMHC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:02:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:33280 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726134AbgKMHC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:02:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AE15142F;
+        Thu, 12 Nov 2020 23:02:58 -0800 (PST)
+Received: from [10.163.80.57] (unknown [10.163.80.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 511303F718;
+        Thu, 12 Nov 2020 23:02:50 -0800 (PST)
+Subject: Re: [PATCH] arm64: mm: account for hotplug memory when randomizing
+ the linear region
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm tree
-Message-ID: <20201113180239.0ee06fd2@canb.auug.org.au>
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        gshan@redhat.com, Robin Murphy <robin.murphy@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20201014081857.3288-1-ardb@kernel.org>
+ <160503561804.1015659.16599672230432576934.b4-ty@arm.com>
+ <a330440d-803b-5aa2-0092-a18317819850@arm.com> <20201112092558.GC29613@gaia>
+ <2f0d9bc5-6288-7388-ff10-97198dabac6f@arm.com>
+ <CAMj1kXGa-WUr8LzDHGEfgG18ctJJp1v8b4UFckbcwtzpoEv+Tw@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <ae1bdb23-4e44-bc6f-bdf0-a4efbcb5a3cb@arm.com>
+Date:   Fri, 13 Nov 2020 12:32:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8b19XPWAq99xHaUFCjRLPkm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAMj1kXGa-WUr8LzDHGEfgG18ctJJp1v8b4UFckbcwtzpoEv+Tw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8b19XPWAq99xHaUFCjRLPkm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the akpm tree, today's linux-next build (i386 defconfig)
-failed like this:
+On 11/13/20 11:44 AM, Ard Biesheuvel wrote:
+> On Fri, 13 Nov 2020 at 04:16, Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>>
+>>
+>>
+>> On 11/12/20 2:55 PM, Catalin Marinas wrote:
+>>> Hi Anshuman,
+>>>
+>>> On Wed, Nov 11, 2020 at 09:18:56AM +0530, Anshuman Khandual wrote:
+>>>> On 11/11/20 12:44 AM, Catalin Marinas wrote:
+>>>>> On Wed, 14 Oct 2020 10:18:57 +0200, Ard Biesheuvel wrote:
+>>>>>> As a hardening measure, we currently randomize the placement of
+>>>>>> physical memory inside the linear region when KASLR is in effect.
+>>>>>> Since the random offset at which to place the available physical
+>>>>>> memory inside the linear region is chosen early at boot, it is
+>>>>>> based on the memblock description of memory, which does not cover
+>>>>>> hotplug memory. The consequence of this is that the randomization
+>>>>>> offset may be chosen such that any hotplugged memory located above
+>>>>>> memblock_end_of_DRAM() that appears later is pushed off the end of
+>>>>>> the linear region, where it cannot be accessed.
+>>>>>>
+>>>>>> [...]
+>>>>>
+>>>>> Applied to arm64 (for-next/mem-hotplug), thanks!
+>>>>>
+>>>>> [1/1] arm64: mm: account for hotplug memory when randomizing the linear region
+>>>>>       https://git.kernel.org/arm64/c/97d6786e0669
+>>>>
+>>>> Got delayed and never made here in time, sorry about that. Nonetheless,
+>>>> I have got something working with respect to the generic mechanism that
+>>>> David Hildenbrand had asked for earlier.
+>>>>
+>>>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
+>>>
+>>> There was a lot of discussion around this patch but I haven't seen any
+>>> new version posted.
+>>
+>> Just posted before some time.
+>>
+>> https://lore.kernel.org/linux-arm-kernel/1605236574-14636-1-git-send-email-anshuman.khandual@arm.com/
+>>
+> 
+> You failed to cc me on that patch.
 
-mm/secretmem.c: In function 'secretmem_memcg_charge':
-mm/secretmem.c:72:4: error: 'struct page' has no member named 'memcg_data'
-   72 |   p->memcg_data =3D page->memcg_data;
-      |    ^~
-mm/secretmem.c:72:23: error: 'struct page' has no member named 'memcg_data'
-   72 |   p->memcg_data =3D page->memcg_data;
-      |                       ^~
-mm/secretmem.c: In function 'secretmem_memcg_uncharge':
-mm/secretmem.c:86:4: error: 'struct page' has no member named 'memcg_data'
-   86 |   p->memcg_data =3D 0;
-      |    ^~
+I could see 'ardb@kernel.org' marked as a copy on the patch. You
+did not receive the email ? The CC list is in the commit message
+itself. Even the lore.kernel.org based URL does list you email
+as well. Not sure what might have happened.
 
-Caused by commit
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-  5f964602825e ("secretmem: add memcg accounting")
+> 
+> The logic looks correct but please fix up the comment block:
+> - PAGE_END is no longer defined in terms of vabits_actual
+> - bits [51..48] are not ignored by the MMU
+> 
+> Actually, I think the entire second paragraph of that comment block
+> can be dropped.
 
-memcg_data only exists when CONFIG_MEMCG is set.
+And from the commit message as well, had reused it in both places.
 
-I have applied the following patch for today.
+> 
+> Please also fix up the coding style:
+> - put && at the end of the first line
+> - drop the redundant parens
+> - fix the indentation
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 13 Nov 2020 17:50:30 +1100
-Subject: [PATCH] secretmem-add-memcg-accounting-fix2
+Does this look okay ?
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/secretmem.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index 5ed6b2070136..3dfdbd85ba00 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -69,7 +69,9 @@ static int secretmem_memcg_charge(struct page *page, gfp_=
-t gfp, int order)
- 	for (i =3D 1; i < nr_pages; i++) {
- 		struct page *p =3D page + i;
-=20
-+#ifdef CONFIG_MEMCG
- 		p->memcg_data =3D page->memcg_data;
-+#endif
- 	}
-=20
- 	return 0;
-@@ -83,7 +85,9 @@ static void secretmem_memcg_uncharge(struct page *page, i=
-nt order)
- 	for (i =3D 1; i < nr_pages; i++) {
- 		struct page *p =3D page + i;
-=20
-+#ifdef CONFIG_MEMCG
- 		p->memcg_data =3D 0;
-+#endif
- 	}
-=20
- 	memcg_kmem_uncharge_page(page, PMD_PAGE_ORDER);
---=20
-2.28.0
-
-This unfortunately produced these warnings:
-
-mm/secretmem.c: In function 'secretmem_memcg_charge':
-mm/secretmem.c:70:16: warning: unused variable 'p' [-Wunused-variable]
-   70 |   struct page *p =3D page + i;
-      |                ^
-mm/secretmem.c: In function 'secretmem_memcg_uncharge':
-mm/secretmem.c:86:16: warning: unused variable 'p' [-Wunused-variable]
-   86 |   struct page *p =3D page + i;
-      |                ^
-
-which I will fix up for the next linux-next release, if necessary.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8b19XPWAq99xHaUFCjRLPkm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+uL48ACgkQAVBC80lX
-0Gz3ZQf/ZEfrYN0aAUrwrow4Yt62CHQ42sgt1Ubkm9/2XdD9VvWXeCSunW/76eXI
-6JHrsOBk2QcZO9BQ4IuEAfzCFFt8BUifck2ZH/VZ66cj8Ccu4Hk9sIiRVkrNWdyw
-UfzoYe+15PyJR7Ec+C1oL1Ud1mDCrt2+ZAcJSIvvVlxpwNDTBKWky2xsUSUR/jCo
-r3d8sRx70yxyg6IdlCvRlQ8eCFlbYIsMrormwqTVQUXZNv7+wEFWWp8WazkfVJah
-UskLFYieADkr9MfIyfd9VCR/w+xTDkTFs6/cSQwPzwRbvbiNiJm71C+EyT4A46jf
-yM2tzKYiRRKp1dSSVpVcrdpcL8tEhQ==
-=H+cW
------END PGP SIGNATURE-----
-
---Sig_/8b19XPWAq99xHaUFCjRLPkm--
+static bool inside_linear_region(u64 start, u64 size)
+{
+        /*
+         * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+         * accommodating both its ends but excluding PAGE_END. Max physical
+         * range which can be mapped inside this linear mapping range, must
+         * also be derived from its end points.
+         */
+        return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+                        (start + size - 1) <= __pa(PAGE_END - 1);
+}
