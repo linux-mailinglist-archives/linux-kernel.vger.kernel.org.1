@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3285A2B1B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ACB2B1B77
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgKMMxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgKMMxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:53:39 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A492AC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 04:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=XCeAuutd5z3hmzPQQ5JQ7FW1ymU48X2n+KxmdK3c6H0=; b=vSNigp/2I41KjmjuwsMFd2EGDd
-        efYP4xsiLH9j34Fg5NAO+3POiY5Iy5Cl4Ldn48++SqCsXMKwAxFHJAXX0aDnsK9Z8KCS2uCS3Vi9e
-        8p4TGZLSJYmW82DjUYigElTlPr6lnig2txqGklGyKFU79VVVFncy8LtQb5fEbFerqZ/aoUU0VR4nk
-        zrYnwnMFedZ4b264ISGEWu+4a4io6LjBq13aFtGdB5Kj/9MDfVwupFyQFRDOBQ3vErn4JnxwLvtqU
-        pVr4uDQLwLj/mmnp0V7GSN171MzZA9RXCKho7jX/5JDB631ZmxK5ROuLIFxL0Z1EHf/ffNuJcWH1C
-        E5WEzekQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdYa7-0008Md-LP; Fri, 13 Nov 2020 12:53:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1726443AbgKMMyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:54:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbgKMMyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:54:38 -0500
+Received: from gaia (unknown [2.26.170.190])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3979D304E03;
-        Fri, 13 Nov 2020 13:53:32 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 218FE201C5E36; Fri, 13 Nov 2020 13:53:32 +0100 (CET)
-Date:   Fri, 13 Nov 2020 13:53:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paul McKenney <paulmck@kernel.org>, eupm90@gmail.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: #PF from NMI
-Message-ID: <20201113125332.GA2611@hirez.programming.kicks-ass.net>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6713E206D9;
+        Fri, 13 Nov 2020 12:54:36 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 12:54:33 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     mark.rutland@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] arm64: implement CPPC FFH support using AMUs
+Message-ID: <20201113125432.GE3212@gaia>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
+ <20201106125334.21570-4-ionela.voinescu@arm.com>
+ <20201112180045.GO29613@gaia>
+ <20201113122846.GA31212@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201113122846.GA31212@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Fri, Nov 13, 2020 at 12:28:46PM +0000, Ionela Voinescu wrote:
+> On Thursday 12 Nov 2020 at 18:00:46 (+0000), Catalin Marinas wrote:
+> > On Fri, Nov 06, 2020 at 12:53:34PM +0000, Ionela Voinescu wrote:
+> > > +static inline
+> > > +int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> > > +{
+> > > +	if (!cpu_has_amu_feat(cpu))
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > > +	smp_call_function_single(cpu, func, val, 1);
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > I got lost in the cpufreq call chains. Can this function ever be called
+> > with interrupts disabled?
+> 
+> The short answer is: not with the current implementation of its only
+> user, the cppc_cpufreq driver (given the current cpufreq implementation).
+> 
+> The long answer is: there is a case where the cpufreq .get function is
+> called with local interrupts disabled - cpufreq_quick_get(), but there
+> are a few "if"s in between this becoming a problem:
+> 
+>  1. If cppc_cpufreq ever implements .setpolicy or,
+>     1.1 Current implementation of cpufreq_quick_get() changes.
+>  2. If one of the few users of cpufreq_quick_get() is used: cppc_cpufreq
+>     ends up being used as CPU cooling device(+IPA governor) or
+>     devfreq/tegra30 is used.
+> 
+>  In this potential case, smp_call_function_single() will warn us of call
+>  with irqs_disable() and if the stars align there could be a potential
+>  deadlock if two CPUs try to IPI (get counter reads of) each other.
+> 
+> So it could be called with irqs disabled, but a few code changes are
+> needed before that happens.
+> 
+> I can bail out of counters_read_on_cpu() if irqs_disabled() to be on the
+> safe side.
 
-Eugenio reported
-(https://bugzilla.kernel.org/attachment.cgi?id=293659&action=edit):
+Thanks for the explanation. In case we forget two years from now and the
+core code changes, I think it's safe to bail out early with an error.
+You can add a patch on top of this series, no need to resend the whole.
 
-[  139.226723] ------------[ cut here ]------------
-[  139.226724] WARNING: CPU: 9 PID: 2290 at kernel/rcu/tree.c:932 __rcu_irq_enter_check_tick+0x84/0xd0
-[  139.226725] Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_e
-[  139.226746] CPU: 9 PID: 2290 Comm: perf Tainted: G S                5.10.0-rc2+ #1
-[  139.226746] Hardware name: Dell Inc. PowerEdge R430/0CN7X8, BIOS 2.6.0 10/31/2017
-[  139.226747] RIP: 0010:__rcu_irq_enter_check_tick+0x84/0xd0
-[  139.226747] Code: 75 cc 48 8b 7b 18 e8 4b c9 84 00 80 bb 05 01 00 00 00 74 09 80 bb 06 01 00 00 00 74 11 48 8b 7b 18 c6 07 00 0f 1f 40 00
-[  139.226748] RSP: 0000:ffffbdb38586b8c8 EFLAGS: 00010006
-[  139.226749] RAX: 0000000080110000 RBX: ffff9cdc2f92b9c0 RCX: ffffffff9f600fb7
-[  139.226749] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffbdb38586b938
-[  139.226749] RBP: 000000000000000e R08: 0000000000000000 R09: 0000000000000000
-[  139.226750] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[  139.226750] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[  139.226750] FS:  00007fb0c5a628c0(0000) GS:ffff9cdc2f900000(0000) knlGS:0000000000000000
-[  139.226751] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  139.226751] CR2: 000000000000000e CR3: 000000010e0ea001 CR4: 00000000003706a0
-[  139.226752] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  139.226752] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  139.226752] Call Trace:
-[  139.226753]  irqentry_enter+0x25/0x40
-[  139.226753]  exc_page_fault+0x38/0x4c0
-[  139.226753]  asm_exc_page_fault+0x1e/0x30
-[  139.226753] RIP: 0010:__get_user_nocheck_8+0x6/0x13
-[  139.226754] Code: 01 ca c3 90 0f 01 cb 0f ae e8 0f b7 10 31 c0 0f 01 ca c3 90 0f 01 cb 0f ae e8 8b 10 31 c0 0f 01 ca c3 66 90 0f 01 cb 0f
-[  139.226754] RSP: 0000:ffffbdb38586b9e8 EFLAGS: 00050087
-[  139.226755] RAX: 000000000000000e RBX: ffffbdb38586ba30 RCX: 00007fb0c586f0d2
-[  139.226756] RDX: 0000000000000080 RSI: 000000000000007f RDI: 00000000ffffdff0
-[  139.226756] RBP: ffffbdb38586bf58 R08: 00000000bffffff0 R09: ffffffffa05a0460
-[  139.226756] R10: 00ffffffffffeff0 R11: 00007fffffffeff0 R12: 000000000000000e
-[  139.226757] R13: ffff9cd4daa017c0 R14: 0000000000000000 R15: 000000000000007f
-[  139.226757]  ? kvmclock_cpu_down_prep+0x20/0x20 [kvm]
-[  139.226757]  perf_callchain_user+0xf4/0x280
-[  139.226758]  get_perf_callchain+0x17b/0x1b0
-[  139.226758]  perf_callchain+0x71/0x80
-[  139.226758]  setup_pebs_fixed_sample_data+0x2a8/0x360
-[  139.226759]  intel_pmu_drain_pebs_nhm+0x477/0x5d0
-[  139.226759]  ? get_page_from_freelist+0x117d/0x1390
-[  139.226759]  ? page_counter_cancel+0x1f/0x30
-[  139.226760]  ? page_counter_uncharge+0x1d/0x30
-[  139.226760]  ? drain_stock.isra.54+0x64/0xb0
-[  139.226760]  ? get_page_from_freelist+0x117d/0x1390
-[  139.226761]  handle_pmi_common+0xc3/0x2d0
-[  139.226761]  ? alloc_set_pte+0xd3/0x5e0
-[  139.226761]  ? filemap_map_pages+0x2d2/0x430
-[  139.226762]  ? xfs_filemap_map_pages+0x44/0x60 [xfs]
-[  139.226762]  ? xfs_iunlock+0x86/0xd0 [xfs]
-[  139.226762]  ? handle_mm_fault+0x145b/0x1650
-[  139.226762]  intel_pmu_handle_irq+0xc9/0x1c0
-[  139.226763]  perf_event_nmi_handler+0x24/0x40
-[  139.226763]  nmi_handle+0x55/0x130
-[  139.226763]  default_do_nmi+0x49/0x100
-[  139.226764]  exc_nmi+0x121/0x150
-[  139.226764]  asm_exc_nmi+0x8e/0xd7
-[  139.226764] RIP: 0033:0x7fb0c586f0d2
-[  139.226765] Code: 48 89 44 24 30 48 8b 83 00 03 00 00 48 85 c0 0f 84 d3 00 00 00 48 8b 7c 24 20 8b 8b fc 02 00 00 8b 54 24 38 23 93 f8 08
-[  139.226766] RSP: 002b:00007ffcf13cde60 EFLAGS: 00010246
-[  139.226766] RAX: 00007fb0c309c2b0 RBX: 00007fb0c5a73500 RCX: 0000000000000006
-[  139.226766] RDX: 0000000000000000 RSI: 000000000000000a RDI: 00000000fc2c9fd0
-[  139.226767] RBP: 000000000000000e R08: 00007ffcf13cdf90 R09: 00007fb0c5a8f410
-[  139.226767] R10: 000000000000002b R11: 0000000000000246 R12: 0000000000000000
-[  139.226768] R13: 0000000000000001 R14: 00007fb0c32a1fbc R15: 00007fb0c5a69cd0
-
-Which is a #PF from NMI context, which is perfectly fine. However
-__rcu_irq_enter_check_tick() is triggering WARN.
-
-AFAICT the right thing is to simply remove the warn like so.
-
----
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 430ba58d8bfe..9bda92d8b914 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -928,8 +928,8 @@ void __rcu_irq_enter_check_tick(void)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
--	 // Enabling the tick is unsafe in NMI handlers.
--	if (WARN_ON_ONCE(in_nmi()))
-+	// if we're here from NMI, there's nothing to do.
-+	if (in_nmi())
- 		return;
- 
- 	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
+-- 
+Catalin
