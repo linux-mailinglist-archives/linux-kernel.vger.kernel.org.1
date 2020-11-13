@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C3B2B19C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692732B19D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgKMLOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:14:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:36290 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726275AbgKMLOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:14:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B40081042;
-        Fri, 13 Nov 2020 03:14:12 -0800 (PST)
-Received: from [10.37.12.45] (unknown [10.37.12.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 568CB3F6CF;
-        Fri, 13 Nov 2020 03:14:10 -0800 (PST)
-Subject: Re: [PATCH v9 30/44] arm64: kasan: Allow enabling in-kernel MTE
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1605046192.git.andreyknvl@google.com>
- <5ce2fc45920e59623a4a9d8d39b6c96792f1e055.1605046192.git.andreyknvl@google.com>
- <20201112094354.GF29613@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <66ef4957-f399-4af1-eec5-d5782551e995@arm.com>
-Date:   Fri, 13 Nov 2020 11:17:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726279AbgKMLQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:16:42 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45420 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726628AbgKMLQK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:16:10 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 52DAE1F468E4
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>, kernel@collabora.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] arm: lib: xor-neon: move pragma options to makefile
+In-Reply-To: <CAMj1kXEpD1pp5uzOMeSYhgS_dzOysKuPMOMNgivUx58PGUdMJw@mail.gmail.com>
+References: <20201112212457.2042105-1-adrian.ratiu@collabora.com>
+ <20201112212457.2042105-3-adrian.ratiu@collabora.com>
+ <CAMj1kXEpD1pp5uzOMeSYhgS_dzOysKuPMOMNgivUx58PGUdMJw@mail.gmail.com>
+Date:   Fri, 13 Nov 2020 13:17:38 +0200
+Message-ID: <87k0upjyjx.fsf@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112094354.GF29613@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
-
-On 11/12/20 9:43 AM, Catalin Marinas wrote:
-> On Tue, Nov 10, 2020 at 11:10:27PM +0100, Andrey Konovalov wrote:
->> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
->>
->> Hardware tag-based KASAN relies on Memory Tagging Extension (MTE)
->> feature and requires it to be enabled. MTE supports
->>
->> This patch adds a new mte_init_tags() helper, that enables MTE in
->> Synchronous mode in EL1 and is intended to be called from KASAN runtime
->> during initialization.
+On Fri, 13 Nov 2020, Ard Biesheuvel <ardb@kernel.org> wrote:
+> On Thu, 12 Nov 2020 at 22:23, Adrian Ratiu 
+> <adrian.ratiu@collabora.com> wrote: 
+>> 
+>> Using a pragma like GCC optimize is a bad idea because it tags 
+>> all functions with an __attribute__((optimize)) which replaces 
+>> optimization options rather than appending so could result in 
+>> dropping important flags. Not recommended for production use. 
+>> 
+>> Because these options should always be enabled for this file, 
+>> it's better to set them via command line. tree-vectorize is on 
+>> by default in Clang, but it doesn't hurt to make it explicit. 
+>> 
+>> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu> 
+>> Suggested-by: Ard Biesheuvel <ardb@kernel.org> Signed-off-by: 
+>> Adrian Ratiu <adrian.ratiu@collabora.com> --- 
+>>  arch/arm/lib/Makefile   |  2 +- arch/arm/lib/xor-neon.c | 10 
+>>  ---------- 2 files changed, 1 insertion(+), 11 deletions(-) 
+>> 
+>> diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile 
+>> index 6d2ba454f25b..12d31d1a7630 100644 --- 
+>> a/arch/arm/lib/Makefile +++ b/arch/arm/lib/Makefile @@ -45,6 
+>> +45,6 @@ $(obj)/csumpartialcopyuser.o: 
+>> $(obj)/csumpartialcopygeneric.S 
+>> 
+>>  ifeq ($(CONFIG_KERNEL_MODE_NEON),y) 
+>>    NEON_FLAGS                   := -march=armv7-a 
+>>    -mfloat-abi=softfp -mfpu=neon 
+>> -  CFLAGS_xor-neon.o            += $(NEON_FLAGS) + 
+>> CFLAGS_xor-neon.o            += $(NEON_FLAGS) -ftree-vectorize 
+>> -Wno-unused-variable 
+>>    obj-$(CONFIG_XOR_BLOCKS)     += xor-neon.o 
+>>  endif 
+>> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c 
+>> index e1e76186ec23..62b493e386c4 100644 --- 
+>> a/arch/arm/lib/xor-neon.c +++ b/arch/arm/lib/xor-neon.c @@ 
+>> -14,16 +14,6 @@ MODULE_LICENSE("GPL"); 
+>>  #error You should compile this file with '-march=armv7-a 
+>>  -mfloat-abi=softfp -mfpu=neon' #endif 
+>> 
+>> -/* - * Pull in the reference implementations while instructing 
+>> GCC (through - * -ftree-vectorize) to attempt to exploit 
+>> implicit parallelism and emit - * NEON instructions.  - */ 
+>> -#ifdef CONFIG_CC_IS_GCC -#pragma GCC optimize "tree-vectorize" 
+>> -#endif - -#pragma GCC diagnostic ignored "-Wunused-variable" 
+>>  #include <asm-generic/xor.h> 
+>> 
+>>  struct xor_block_template const xor_block_neon_inner = { 
+>> -- 2.29.2 
+>> 
 > 
-> There's no mte_init_tags() in this function.
-> 
+> So what is the status now here? How does putting 
+> -ftree-vectorize on the command line interact with Clang? 
 
-During the rework, I realized that the description of mte_init_tags() in this
-patch refers to mte_enable_kernel(). In fact the only thing that mte_init_tags()
-does is to configure the GCR_EL1 register, hence my preference would be to keep
-all the code that deals with such a register in one patch.
+Clang needs to be fixed separately as -ftree-vectorize does not 
+change anything, the option is enabled by default.
 
-What is your preference?
+I know it sucks to have such a silent failure, but it's always 
+been there (the "upgrade your GCC" warning during Clang builds was 
+bogus) and I do not want to rush a Clang fix without fully 
+understanding it.
 
--- 
-Regards,
-Vincenzo
+Warning Clang users that the optimization doesn't work was 
+discussed but dropped because users can't do anything about it.
+
+If we are positively certain this is a kernel bug and not a Clang 
+bug (i.e. the xor-neon use case is not enabling/triggering the 
+optimization properly) I could add a TODO comment in the code 
+FWIW.
+
+Adrian
