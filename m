@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0FB2B16A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D192B16A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgKMHqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:46:01 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:56614 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725866AbgKMHqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:46:01 -0500
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-05 (Coremail) with SMTP id zQCowAC3ypylOa5fu3bMAA--.60550S2;
-        Fri, 13 Nov 2020 15:45:42 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: brcmstb-waketimer: Remove redundant null check before clk_disable_unprepare
-Date:   Fri, 13 Nov 2020 07:45:38 +0000
-Message-Id: <20201113074538.65028-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowAC3ypylOa5fu3bMAA--.60550S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw43Ary8uFyUJrb_yoW3urb_CF
-        1UWa1fGa1Durs2kw15Cwsxur92q3WxZr4kXFy0ga93AasFqrs8u3y8tr4SkFWkX3y5tFn8
-        AF1UKrySyrnI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4xMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8YhF7UUUUU==
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAsTA18J9x6ybQABsy
+        id S1726181AbgKMHom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:44:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726133AbgKMHol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:44:41 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AA98208D5;
+        Fri, 13 Nov 2020 07:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605253481;
+        bh=HsvXe7iGCQcUXJwGgfM5sQFPMyfm6rO5evBIGLSL41o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pFQnhOevpwTnpyuhfosti2Axiti+Sxw/8XLAzYdMOEmM9OhbLx5OWYJWlNfWGKNyA
+         UMuC8Cds+7eGHZIdP/AzBuyUln6q3+cevseKzyUiATyW8c9ozZ7L+L1b8+7PDbYlFC
+         N2eYbw//MSl3McFSzYarcS6r8cmUIzgxcRlmAKGg=
+Date:   Fri, 13 Nov 2020 08:45:38 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     rkir@google.com
+Cc:     linux-kernel@vger.kernel.org, lfy@google.com
+Subject: Re: [PATCH] drivers: staging: retire drivers/staging/goldfish
+Message-ID: <X645op2c70msQ+o3@kroah.com>
+References: <20201112234907.3761694-1-rkir@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112234907.3761694-1-rkir@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare() already checked NULL clock parameter,
-so the additional check is unnecessary, just remove it.
+On Thu, Nov 12, 2020 at 03:49:07PM -0800, rkir@google.com wrote:
+> From: Roman Kiryanov <rkir@google.com>
+> 
+> Android Studio Emulator (goldfish) migrated
+> to Intel HDA.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/rtc/rtc-brcmstb-waketimer.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+When was that?
 
-diff --git a/drivers/rtc/rtc-brcmstb-waketimer.c b/drivers/rtc/rtc-brcmstb-waketimer.c
-index 4fee57c51280..375a9987a1d6 100644
---- a/drivers/rtc/rtc-brcmstb-waketimer.c
-+++ b/drivers/rtc/rtc-brcmstb-waketimer.c
-@@ -264,8 +264,7 @@ static int brcmstb_waketmr_probe(struct platform_device *pdev)
- 	unregister_reboot_notifier(&timer->reboot_notifier);
- 
- err_clk:
--	if (timer->clk)
--		clk_disable_unprepare(timer->clk);
-+	clk_disable_unprepare(timer->clk);
- 
- 	return ret;
- }
--- 
-2.17.1
+> 
+> Signed-off-by: Roman Kiryanov <rkir@google.com>
+> ---
+>  arch/mips/configs/generic/board-ranchu.config |   1 -
+>  drivers/staging/Kconfig                       |   2 -
+>  drivers/staging/Makefile                      |   1 -
+>  drivers/staging/goldfish/Kconfig              |   7 -
+>  drivers/staging/goldfish/Makefile             |   6 -
+>  drivers/staging/goldfish/README               |   5 -
+>  drivers/staging/goldfish/goldfish_audio.c     | 383 ------------------
 
+What about the other goldfish drivers?
+
+thanks,
+
+greg k-h
