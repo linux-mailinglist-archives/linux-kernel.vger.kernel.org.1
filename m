@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43A02B27F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA812B2859
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgKMWQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:16:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725866AbgKMWQN (ORCPT
+        id S1726740AbgKMWTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:19:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgKMWRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:16:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605305771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RU/SSy/zKQ6WuVt0KMSkbVTJl5tSXBXiAe6IqFkcJeg=;
-        b=EMqGkpH3Vt/07VPADfh5wudyH4z8bUFTy/d2XSI7nkTy4zrpO52WIu+CBKmHc9pG2XPyf8
-        eqWZAVTFFW///7J46HsUqtb7tuL2hZ72EClxCLZpc7G+KxkLweBLCM39C+Z0vaf2CiJLtS
-        5yXat7UKvBJk7xYNjkZhMahcBfcKbSU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-mqBnpqnRNyagKiVGVM6Uuw-1; Fri, 13 Nov 2020 17:16:07 -0500
-X-MC-Unique: mqBnpqnRNyagKiVGVM6Uuw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81BEA188C122;
-        Fri, 13 Nov 2020 22:16:05 +0000 (UTC)
-Received: from krava (unknown [10.40.195.79])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C2A8627BA9;
-        Fri, 13 Nov 2020 22:16:02 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 23:16:01 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>, Sam Xi <xyzsam@google.com>
-Subject: Re: [PATCH] perf stat: Use proper cpu for shadow stats
-Message-ID: <20201113221601.GE842058@krava>
-References: <20201113050236.175141-1-namhyung@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113050236.175141-1-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Fri, 13 Nov 2020 17:17:51 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1685C061A48
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:37 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id x20so6629541qts.19
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=TQ3h/P2zSifjnEPKLUt8MfrzzWgegpurLotLIMb03KU=;
+        b=OViFLnDTVEAxFsckz/o9boWChDoxestNvKjwTZsSPS7jrseTOgUX9USIFCNOWcVpZS
+         r3EYgwV1T7nRg/vvajdNJoxIuOcVL9VyJuHySHsUf7f4ZqH1x6bVJ2F1IMnLBR3NaAxe
+         GsqChWDLawz+nIIY2rcxcZ4ZP7Lk/U2IeM8Ft1vjba7gdP6gBK5PwM0c03LUrr+ZPQ4o
+         ZUMNugUWF9uQLBq+3yUa+B3x4f6baVj7KNKW6SVrTIvz0G6gNoGt+b9FOgWoeQPSl0/t
+         sgOmJIsfyfA4NKuaeIEwAuyUxdxqsFrDivJQnO7l/VxgIRVlgrnF9S0bkEPEbyDQ4SSs
+         tIcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=TQ3h/P2zSifjnEPKLUt8MfrzzWgegpurLotLIMb03KU=;
+        b=D25F0w45TYebjadayX5U3HYW1PbDT5N7br61DWylLTS4wQFwXKeq/wjaKbKTA+9xUe
+         rn0fvqMb02lZTL451YgiCP4PhSQL61VqDxa0PSzK5fAQK/RixmR7Y4KpC/M914QllZjo
+         SlbbVRutWpbjrI5rlhl/A6bNNOqG09Cf5tPc7FgJ+vVrPykDNOXWw0glRH097a2gQtCZ
+         5blYyruNSzhiOFFSqQfX0Ld47W95d6HTLm06CLpou7o3M7kYr/BC7/hz0LhOFLn94SWh
+         BIe+hoNS1i94nWIdvAvQQOuP3a1YQcbRom6wp3aqpSGbcZ5DNLtxEX1e9tOWpID2PXZS
+         dtDw==
+X-Gm-Message-State: AOAM531dtCAEMGKNclpNoQ+UGkhiMSdeErIwtUdmwzVc9mt9DqhWlgnu
+        MiLVWSdK0alKlT9iM2bpEwESnEfEleSPS41l
+X-Google-Smtp-Source: ABdhPJyyzzzWMa5ZfSEgGXq+uNnpkhGRH/ZM85ww0X98O3xAcNqQSmoe4gJo+qIxTd+l67OWdxYkvdchOYXxOEn1
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:f254:: with SMTP id
+ z20mr4721382qvl.36.1605305856867; Fri, 13 Nov 2020 14:17:36 -0800 (PST)
+Date:   Fri, 13 Nov 2020 23:16:02 +0100
+In-Reply-To: <cover.1605305705.git.andreyknvl@google.com>
+Message-Id: <67354d1e68484b547d222b8f0ef402887954be06.1605305705.git.andreyknvl@google.com>
+Mime-Version: 1.0
+References: <cover.1605305705.git.andreyknvl@google.com>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH mm v10 34/42] kasan: define KASAN_GRANULE_SIZE for HW_TAGS
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 02:02:36PM +0900, Namhyung Kim wrote:
-> Currently perf stat shows some metrics (like IPC) for defined events.
-> But when no aggregation mode is used (-A option), it shows incorrect
-> values since it used a value from a different cpu.
-> 
-> Before:
-> 
->   $ perf stat -aA -e cycles,instructions sleep 1
-> 
->    Performance counter stats for 'system wide':
-> 
->   CPU0      116,057,380      cycles
->   CPU1       86,084,722      cycles
->   CPU2       99,423,125      cycles
->   CPU3       98,272,994      cycles
->   CPU0       53,369,217      instructions      #    0.46  insn per cycle
->   CPU1       33,378,058      instructions      #    0.29  insn per cycle
->   CPU2       58,150,086      instructions      #    0.50  insn per cycle
->   CPU3       40,029,703      instructions      #    0.34  insn per cycle
-> 
->        1.001816971 seconds time elapsed
-> 
-> So the IPC for CPU1 should be 0.38 (= 33,378,058 / 86,084,722)
-> but it was 0.29 (= 33,378,058 / 116,057,380) and so on.
-> 
-> After:
-> 
->   $ perf stat -aA -e cycles,instructions sleep 1
-> 
->    Performance counter stats for 'system wide':
-> 
->   CPU0      109,621,384      cycles
->   CPU1      159,026,454      cycles
->   CPU2       99,460,366      cycles
->   CPU3      124,144,142      cycles
->   CPU0       44,396,706      instructions      #    0.41  insn per cycle
->   CPU1      120,195,425      instructions      #    0.76  insn per cycle
->   CPU2       44,763,978      instructions      #    0.45  insn per cycle
->   CPU3       69,049,079      instructions      #    0.56  insn per cycle
-> 
->        1.001910444 seconds time elapsed
-> 
-> Reported-by: Sam Xi <xyzsam@google.com>
-> Fixes: 44d49a600259 ("perf stat: Support metrics in --per-core/socket mode")
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Hardware tag-based KASAN has granules of MTE_GRANULE_SIZE. Define
+KASAN_GRANULE_SIZE to MTE_GRANULE_SIZE for CONFIG_KASAN_HW_TAGS.
 
-nice catch! would be great to have test for this
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+---
+Change-Id: I5d1117e6a991cbca00d2cfb4ba66e8ae2d8f513a
+---
+ mm/kasan/kasan.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
-> ---
->  tools/perf/util/stat-display.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index 4b57c0c07632..a963b5b8eb72 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -324,13 +324,10 @@ static int first_shadow_cpu(struct perf_stat_config *config,
->  	struct evlist *evlist = evsel->evlist;
->  	int i;
->  
-> -	if (!config->aggr_get_id)
-> -		return 0;
-> -
->  	if (config->aggr_mode == AGGR_NONE)
->  		return id;
->  
-> -	if (config->aggr_mode == AGGR_GLOBAL)
-> +	if (!config->aggr_get_id)
->  		return 0;
->  
->  	for (i = 0; i < evsel__nr_cpus(evsel); i++) {
-> -- 
-> 2.29.2.299.gdc1121823c-goog
-> 
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index bc4f28156157..92cb2c16e314 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -5,7 +5,13 @@
+ #include <linux/kasan.h>
+ #include <linux/stackdepot.h>
+ 
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
++#else
++#include <asm/mte-kasan.h>
++#define KASAN_GRANULE_SIZE	MTE_GRANULE_SIZE
++#endif
++
+ #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
+ 
+ #define KASAN_MEMORY_PER_SHADOW_PAGE	(KASAN_GRANULE_SIZE << PAGE_SHIFT)
+-- 
+2.29.2.299.gdc1121823c-goog
 
