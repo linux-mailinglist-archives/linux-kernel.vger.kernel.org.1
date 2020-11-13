@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5772B1E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC382B1E42
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgKMPIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMPIk (ORCPT
+        id S1726908AbgKMPIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:08:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35637 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726815AbgKMPIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:08:40 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BE8C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:08:40 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id u18so14245176lfd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:08:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IGwVdhfGcvEmkdbFGAAQ61slya8H21zM/TxBTsp4bmQ=;
-        b=UKA/i/yaQnCfreh4DHUnB2gEWyAePwkaJJ7TD82bCeCH4H57HZbdwoNhNH91isW+ib
-         bS+NW4a0xgX2xSkWCAxCvMX6spK+zyDmVPeL+hQRDs6VRoJbVnuNmwCU/ZvzAtK67jwa
-         Ds3tQghul4J/kI83FXV8MFiwCxNgMPCKGCck30j76vKCuST5Aj7mxJZNWrb+toIlrXGa
-         kz+/LeHVJvl/YlpxTupN5DWZnuxL/lnlAvS+xxg0bZnMZiGiiGz7kksRQ5Ba2u1513bV
-         l/v3R4HAkA+PWPuYpLnJnoHCv+Xkhv8tjdnXS1ffMVlL5k8j03nMaLv6SLjlkxtwsF82
-         Hspw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IGwVdhfGcvEmkdbFGAAQ61slya8H21zM/TxBTsp4bmQ=;
-        b=k6CPsHbKzu4aqXigH4gWg8uvpG5HEMjg3lgIxjhkaRb8MCSepF4wsNDOZUhQMpn/Je
-         Ikl1r9xZ8ei+5w+nFCwqZA5ILxg59qecuDa4iuHdn/UxqFQIdC2cAMuf1jq+42rv26VB
-         VJSYunaWiDBtakIe0MaFLFIn/OAKwFJQSjOt0I5ivhpnyzpQ7YqQWUqgCiq0BaEJcH+k
-         XsyXKpJGzVkkiTpICIGVslnwhYjNkZtk/hhYbJJYC+Kr023TcLSyaA22TX8KFvAnYMIJ
-         WTfnIaeA5slLHTEZr098/U3iz/DIXZiH/LPuP858ONTMbJeimstnzeJ6xSy0WUoU3yOX
-         5PyQ==
-X-Gm-Message-State: AOAM531S/5hpfjNXwP4R7yftF89OL7zF+8I4XT2lUCzqEq2VSzWVxDkI
-        SYWCY1kmNZiDCrXNXZZGpL/gCuPa6nK19A84GUY=
-X-Google-Smtp-Source: ABdhPJy6mLMMN5UtXzcyMwT25QN7J5QiX3HYzjM1FDbL76I9MMKAEc9dxKmj/EVkK/dlyTMJXgxdvbOIIqS3VX4K2z0=
-X-Received: by 2002:a19:4890:: with SMTP id v138mr1059175lfa.254.1605280118638;
- Fri, 13 Nov 2020 07:08:38 -0800 (PST)
+        Fri, 13 Nov 2020 10:08:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605280099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=C9rPuSXlrjcqDgyEAQl7K983fiCHNWFVeaKbQl3STrQ=;
+        b=GDyoVQ4ISM6qsvfx2tFdksgot+zQdGTdLwVlGwdF7h787a2LHGxl1BzVIyI22/eOcyt+C/
+        vN2irlfcWZRBAPyPBkXtqcXWQrZfswk+9BLGlx3K+4rn+rO5d01Shp3lOfD12YS2aKInVL
+        8BmigoKLSJfYsAPQ24lxJgFwCd4Qu3o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-56L1U8yvMGSeLKDSQSgE_g-1; Fri, 13 Nov 2020 10:08:15 -0500
+X-MC-Unique: 56L1U8yvMGSeLKDSQSgE_g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFDD21891E8E;
+        Fri, 13 Nov 2020 15:08:13 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 000F162A16;
+        Fri, 13 Nov 2020 15:08:11 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/boot/compressed/64: Drop the now-unused finalize_identity_maps()
+Date:   Fri, 13 Nov 2020 16:08:10 +0100
+Message-Id: <20201113150810.1233016-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20201113135739.46776-1-dwaipayanray1@gmail.com> <3a0455c93dfd6749cf2050dd973c5bee1cc9f237.camel@perches.com>
-In-Reply-To: <3a0455c93dfd6749cf2050dd973c5bee1cc9f237.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Fri, 13 Nov 2020 20:38:07 +0530
-Message-ID: <CABJPP5AVgXLh5-JmBX_hSjtP35ATHUR2T4Rt7pFhM+aZ0KmktQ@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: fix typo and remove duplicate word
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:30 PM Joe Perches <joe@perches.com> wrote:
->
-> On Fri, 2020-11-13 at 19:27 +0530, Dwaipayan Ray wrote:
-> > Delete repeated word in scripts/checkpatch.pl:
-> > "are are" -> "are"
-> >
-> > Fix typos:
-> > "commments" -> "comments"
-> > "falsly" -> "falsely"
-> >
-> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> > ---
->
-> style: this should have subject prefix:
->
-> "[PATCH V2] checkpatch: Fix spelling errors and remove repeated word"
->
-> And here below the --- line you should add a V2 changelog like:
->
-> o Add correction for falsly
->
-> Other than that, you might consider sending a V3 just to get
-> used the proper patch resubmission form but thanks.
->
+Since commit 8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in
+KASLR code") finalize_identity_maps() has no users, drop it.
 
-Thanks, I will do that.
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/boot/compressed/ident_map_64.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Regards,
-Dwaipayan.
+diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+index a5e5db6ada3c..6bf20223dc0f 100644
+--- a/arch/x86/boot/compressed/ident_map_64.c
++++ b/arch/x86/boot/compressed/ident_map_64.c
+@@ -167,16 +167,6 @@ void initialize_identity_maps(void *rmode)
+ 	write_cr3(top_level_pgt);
+ }
+ 
+-/*
+- * This switches the page tables to the new level4 that has been built
+- * via calls to add_identity_map() above. If booted via startup_32(),
+- * this is effectively a no-op.
+- */
+-void finalize_identity_maps(void)
+-{
+-	write_cr3(top_level_pgt);
+-}
+-
+ static pte_t *split_large_pmd(struct x86_mapping_info *info,
+ 			      pmd_t *pmdp, unsigned long __address)
+ {
+-- 
+2.26.2
+
