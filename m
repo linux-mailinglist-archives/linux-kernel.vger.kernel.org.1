@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0701D2B1C73
+	by mail.lfdr.de (Postfix) with ESMTP id 7312A2B1C74
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgKMNu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
+        id S1726648AbgKMNul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:50:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgKMNuT (ORCPT
+        with ESMTP id S1727070AbgKMNuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:50:19 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02634C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:19 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h62so8559990wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:18 -0800 (PST)
+        Fri, 13 Nov 2020 08:50:20 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EDCC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:20 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so2764556wrt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0nBtcs67BpWpOtsS+lroYBZ8Diqx4j2HTgrmz/2vMqY=;
-        b=MZqbEth6gfS7gsdu8IDgb7OmV3SEY4rst4Sy2mkC6oksoLOtw6fd22wjt+QT2/Yw2H
-         62bL1YqeHmtIX6VodEiiU+N74OMmHF2P3tuz/aHXhCn+9HMoG7z9b4NJBuXg6ytgHid6
-         HE2Sk7dx4QRuNx7vDJ1UG6liqfUrpDPgTGAY0pP+XzXaQQ1lqH4kw2gTA3NUxQtTrLtl
-         wi0i/JshReJaWzdC+Wqguzyj/iwJZIDR2991HnAHfb2QxqoEFRV9LfJH38BHW6tTzqBW
-         JZNCBDhKFa8U64wvxMiCTkhmUgv+ojpTS4RSvfMh6LDeBb9EPee4VhoqIC0Uh5N+lw+7
-         leMA==
+        bh=a52ICVH+xE+6XFb27F1p5fPxl4mBgRlINo5mYgFGiGQ=;
+        b=L05jL7z2ETjWI9KIsm7A5p4VGI9RsHiDec6sbmMFg65N8W/3J2fLj8Gize4e3TKmij
+         HbeGEC+Jkb6BGQy9k6jMszJ5Q2Yv6A/poxxZ+HidxYyMzMaJkyj8FnFRzfP6acpRrLHs
+         +lsvbVezKoAwn4Yc5OmFzXaVssxUlV/nlF/Lz9hJn2Ii2njVhZGF17dwmDo+jxrHzeGY
+         sHe317SIWSifDtomdptySzHypaTbMJCwGEiP7Oork0h5OlGWH5SJS7aef0HgK+9xKWYX
+         /JufKCuIU5fSvai1z4mdUsGZ+Yer6KWirS9w0tDtnpFWcMq0DvfiRETtkERwB6wqBr+L
+         rW4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0nBtcs67BpWpOtsS+lroYBZ8Diqx4j2HTgrmz/2vMqY=;
-        b=S8G0u8XoCcAaT5LN20wjhhf1826b5Cf9oM1Kj5pE5SwVxZ7jwViRPn/Mr81I4xa7Kh
-         j/q5/+iyqeLtzJhaFt9Azlli9gEpinmeByP7D5Ykf0sLb5TfdOfj27VS9SLLtwQoyMTQ
-         NemVipXYnRW/+DB6QCqsqMteq47G2c/7sGcn4kViAgd3pT7L1Cytn4+8YxPkur5X6q5b
-         urE67pB849kI78Ko4gXmhlciTahqnLIbwIxzkRXfUzGJGxfiXHYMshxZHtrblErf8O38
-         cJswlW2gzpN3ndPQwuJi9Irf+h44IJGaMd0pJI09zWEfaamyegpax1CLWj6DDcMHRdkU
-         yWvQ==
-X-Gm-Message-State: AOAM530z32VPkFXjWtR0KihqmEQ1iEdF4kNi2VVoK+Jdy/n4nKcIAMoI
-        VwEA+xFTGfuf89adDsCgfSw/gw==
-X-Google-Smtp-Source: ABdhPJxu5mybMd3oZAipyOuLv/NoqB/Sknp+7MJ4jdBGXBUKsP93PylVtz4Lu+Xsi+XwvfjExrOung==
-X-Received: by 2002:a7b:c089:: with SMTP id r9mr2532584wmh.45.1605275417717;
-        Fri, 13 Nov 2020 05:50:17 -0800 (PST)
+        bh=a52ICVH+xE+6XFb27F1p5fPxl4mBgRlINo5mYgFGiGQ=;
+        b=fm15u9R7O3HEmxEGJy+mIjlM6blDvOp0u+jJ0i23kGPc/omS8741kRk7wuOOUEjTpX
+         PAzZuaBcsYVSIZFaiBu2AX3tdc0jrk494C3mUfBenblbXnab3RqWzO0jdpWNnLCdfLau
+         7d1aGyr9FlsqMn8FEvxnH5p58MAn2i4qme5BE75Jtrr8OeRjD4qFWpKdRxNrahj8nPIw
+         EaTAAyH9i+CRe+sgXQ91K/bQTDOUQQbGBoCEjG61lXYsCoqKLF3/dd4DPYecpAcYtLjy
+         iyNUwxLXJ6qfKWEpAjI68CGup2ufFddGMfGgpX0D2kGKmTdQUWda9s0BjTyUDsepNbfp
+         f3cw==
+X-Gm-Message-State: AOAM531p2fkRzb5BGfWJPkhlp4Qpsk8IPRVPmEBH3C/BOavk9bpp0unD
+        oT9B00Z5Th3RC7mQFe6Xji49hw==
+X-Google-Smtp-Source: ABdhPJxoM/5L2V6PAjUnoUZECKaqTMYBE6srvcr6DjvjId68CnDWgP++QlPsk5O+bhjYDoqI3Gunvw==
+X-Received: by 2002:adf:e983:: with SMTP id h3mr3474235wrm.382.1605275418913;
+        Fri, 13 Nov 2020 05:50:18 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.16
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:50:17 -0800 (PST)
+        Fri, 13 Nov 2020 05:50:18 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Monk.liu@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 29/40] drm/amd/amdgpu/amdgpu_csa: Remove set but unused variable 'r'
-Date:   Fri, 13 Nov 2020 13:49:27 +0000
-Message-Id: <20201113134938.4004947-30-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 30/40] drm/amd/amdgpu/amdgpu_vm_cpu: Fix 'amdgpu_vm_cpu_prepare()'s doc-rot
+Date:   Fri, 13 Nov 2020 13:49:28 +0000
+Message-Id: <20201113134938.4004947-31-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
@@ -71,37 +74,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c: In function ‘amdgpu_allocate_static_csa’:
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c:40:6: warning: variable ‘r’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c:50: warning: Function parameter or member 'resv' not described in 'amdgpu_vm_cpu_prepare'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c:50: warning: Function parameter or member 'sync_mode' not described in 'amdgpu_vm_cpu_prepare'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c:50: warning: Excess function parameter 'owner' description in 'amdgpu_vm_cpu_prepare'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c:50: warning: Excess function parameter 'exclusive' description in 'amdgpu_vm_cpu_prepare'
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Monk.liu@amd.com
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Felix Kuehling <Felix.Kuehling@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
-index 08047bc4d5886..da21e60bb8272 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
-@@ -37,10 +37,9 @@ uint64_t amdgpu_csa_vaddr(struct amdgpu_device *adev)
- int amdgpu_allocate_static_csa(struct amdgpu_device *adev, struct amdgpu_bo **bo,
- 				u32 domain, uint32_t size)
- {
--	int r;
- 	void *ptr;
- 
--	r = amdgpu_bo_create_kernel(adev, size, PAGE_SIZE,
-+	amdgpu_bo_create_kernel(adev, size, PAGE_SIZE,
- 				domain, bo,
- 				NULL, &ptr);
- 	if (!*bo)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c
+index 0786e7555554b..ac45d9c7a4e94 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c
+@@ -38,8 +38,8 @@ static int amdgpu_vm_cpu_map_table(struct amdgpu_bo *table)
+  * amdgpu_vm_cpu_prepare - prepare page table update with the CPU
+  *
+  * @p: see amdgpu_vm_update_params definition
+- * @owner: owner we need to sync to
+- * @exclusive: exclusive move fence we need to sync to
++ * @resv: reservation object with embedded fence
++ * @sync_mode: synchronization mode
+  *
+  * Returns:
+  * Negativ errno, 0 for success.
 -- 
 2.25.1
 
