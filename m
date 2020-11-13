@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFA02B182F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E722B1836
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgKMJYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:24:53 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2099 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgKMJYw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:24:52 -0500
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CXY174SvFz67LCL;
-        Fri, 13 Nov 2020 17:23:23 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 13 Nov 2020 10:24:50 +0100
-Received: from [10.47.88.104] (10.47.88.104) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 13 Nov
- 2020 09:24:49 +0000
-Subject: Re: [PATCH RFC v5 01/13] perf jevents: Add support for an extra
- directory level
-To:     kajoljain <kjain@linux.ibm.com>, <acme@kernel.org>,
-        <will@kernel.org>, <mark.rutland@arm.com>, <jolsa@redhat.com>,
-        <irogers@google.com>, <leo.yan@linaro.org>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <alexander.shishkin@linux.intel.com>,
-        <namhyung@kernel.org>, <mathieu.poirier@linaro.org>
-CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <qiangqing.zhang@nxp.com>,
-        <zhangshaokun@hisilicon.com>, <linux-imx@nxp.com>
-References: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
- <1604666153-4187-2-git-send-email-john.garry@huawei.com>
- <61c23ae8-73d4-4616-38f5-f81dafbf5851@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <3ca35e0f-e5e6-8616-0435-0f8e553df1f9@huawei.com>
-Date:   Fri, 13 Nov 2020 09:24:39 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726297AbgKMJ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:27:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726160AbgKMJ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 04:27:32 -0500
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE6EE2224D
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605259652;
+        bh=OIM03Fej0Qv7ys4fG+OsO5oPdBvHvBk4pQGuvEDfeY4=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=nZ0r/kocNVEoHSptb4nNkyMSdwCC+Ve7UACrpO1YY63cnNC2l2vZ20RRRJ/ElEVfd
+         aRUBNveb8zW5bSazIWL+KJWw32nw9VQ1t5qAA6oyxhgpoM6o20PJgwkE6Q7N/+PL45
+         xmDOffz34cWzMZYunLOLJ7ymzhyokKCStC7A+3wI=
+Received: by mail-oi1-f173.google.com with SMTP id t16so9701887oie.11
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:27:31 -0800 (PST)
+X-Gm-Message-State: AOAM532tzWHDT43cmZSeAKOC/MDRcukTS3NUFS8k5QIL8Vn2fNDtbzAp
+        Q0fgR9fscQenCQkNNHnxVraWsvCw6HKt5PahR1MbEQ==
+X-Google-Smtp-Source: ABdhPJwUx3S73L9XUE7mVfp7hH73qWmdFgeySdKDNxGnovyGciPUTZWyy2UDCaldkGC4ad9qA374P5Lx1TFP8OSAbMk=
+X-Received: by 2002:aca:3a04:: with SMTP id h4mr810472oia.42.1605259651226;
+ Fri, 13 Nov 2020 01:27:31 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 13 Nov 2020 09:27:30 +0000
 MIME-Version: 1.0
-In-Reply-To: <61c23ae8-73d4-4616-38f5-f81dafbf5851@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.88.104]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201113091116.1102450-1-steen.hegelund@microchip.com>
+References: <20201113091116.1102450-1-steen.hegelund@microchip.com>
+From:   Antoine Tenart <atenart@kernel.org>
+Date:   Fri, 13 Nov 2020 09:27:30 +0000
+X-Gmail-Original-Message-ID: <CADCXZ1wx_Uxp46hRDuQakzApPTRLKufyoH-tybyQ4m3nvV=w7A@mail.gmail.com>
+Message-ID: <CADCXZ1wx_Uxp46hRDuQakzApPTRLKufyoH-tybyQ4m3nvV=w7A@mail.gmail.com>
+Subject: Re: [PATCH net v2] net: phy: mscc: remove non-MACSec compatible phy
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bryan Whitehead <Bryan.Whitehead@microchip.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        John Haechten <John.Haechten@microchip.com>,
+        Netdev List <netdev@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2020 08:48, kajoljain wrote:
-> 
-> On 11/6/20 6:05 PM, John Garry wrote:
->> Currently only upto a level 2 directory is supported, in form
->> vendor/platform.
-> Hi John,
->      Just want to check in case of sub directories,
-> Will it be good add on/feasible to be able to include events of particular sub-directory for a
-> platform? Otherwise with this patch in the end all event will be part of
-> same pmu_event structure. So what is the purpose of sub directories? Let me know if I am missing something.
+Quoting Steen Hegelund (2020-11-13 10:11:16)
+> Selecting VSC8575 as a MACSec PHY was not correct
+>
+> The relevant datasheet can be found here:
+>   - VSC8575: https://www.microchip.com/wwwproducts/en/VSC8575
+>
+> History:
+> v1 -> v2:
+>    - Corrected the sha in the "Fixes:" tag
+>
+> Fixes: 1bbe0ecc2a1a ("net: phy: mscc: macsec initialization")
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
 
-Hi Kajol Jain,
+Reviewed-by: Antoine Tenart <atenart@kernel.org>
 
-So currently we support both of the following structure:
-arch/platform
-arch/vendor/platform/
+Small comment: you can put the commit history after the --- so it
+doesn't end-up in the commit log (except when it's relevant, which isn't
+the case here). I don't think that's a blocker though.
 
-arch/vendor/platform/ is for an arch like arm, where the arch provider 
-may not be the vendor.
+Thanks Steen!
+Antoine
 
-I want to go one step further, to support also:
-arch/vendor/platform/cpu
-arch/vendor/platform/sys
-
-Here we have separate folders for cpu and sys events. CPU events in 
-"cpu" folder are added to pmu_events_map[], as before. And events in 
-"sys" folder are added from patch 2/13 to new table pmu_sys_events_table[].
-
-I hope it's clearer now.
-
-Thanks,
-John
-
-> 
-> Thanks,
-> Kajol Jain
->> Add support for a further level, to support vendor/platform
->> sub-directories in future.
-
+> ---
+>  drivers/net/phy/mscc/mscc_macsec.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
+> index 1d4c012194e9..72292bf6c51c 100644
+> --- a/drivers/net/phy/mscc/mscc_macsec.c
+> +++ b/drivers/net/phy/mscc/mscc_macsec.c
+> @@ -981,7 +981,6 @@ int vsc8584_macsec_init(struct phy_device *phydev)
+>
+>         switch (phydev->phy_id & phydev->drv->phy_id_mask) {
+>         case PHY_ID_VSC856X:
+> -       case PHY_ID_VSC8575:
+>         case PHY_ID_VSC8582:
+>         case PHY_ID_VSC8584:
+>                 INIT_LIST_HEAD(&vsc8531->macsec_flows);
+> --
+> 2.29.2
+>
