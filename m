@@ -2,138 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242C02B17C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA2F2B17D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgKMJH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        id S1726298AbgKMJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgKMJH4 (ORCPT
+        with ESMTP id S1726187AbgKMJKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:07:56 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9B0C0613D1;
-        Fri, 13 Nov 2020 01:07:56 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id 74so12741845lfo.5;
-        Fri, 13 Nov 2020 01:07:56 -0800 (PST)
+        Fri, 13 Nov 2020 04:10:51 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96624C0613D1;
+        Fri, 13 Nov 2020 01:10:50 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id l1so8911105wrb.9;
+        Fri, 13 Nov 2020 01:10:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lR7/8vjXJDBM73PVRP/RhfEwJV/6UykOcvsNpMs/RAE=;
-        b=cXKphYEMrBWFsSAa2+890QE7UsPFgUnJm7kKit91fFJrp3FJULrOTbjYIn5Oo1T3rl
-         BWYXXOTj+sOzD6G5ITNcokkG6aFPZYHajJ0EmNFyttZQ2LiII68OaQ23kpbOnkzdUuQG
-         eBTxlIZGTW524iE1sbUuOewyIWkFVukBgSdUrrM2SmWFHNlynjf5svkFHYm3nEDNB7Wt
-         DdocptY4OqYdGOu00ThUMbL1HUSiNqMddLtZQMDEfb1Q/FbFEpJlKB4+5BkGtsiQa1+G
-         8gUrTQFvd/jkWS5TJawiOFD5pVZCHlddnhnQdMDJsJaGEgaXeCg1F+ti0u0GRq0ZQekf
-         T8Xw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EICGtdSdBUVTfYQynfx1jthTLvT03AILkfeZoMTfCBA=;
+        b=jw+KiuDr2MCpgnurAjQL+7y/5jqx9CRSCS2W2kR3HJ20amCZ2/0qsVaa2UpLdtFYtz
+         oVhctDoevJXZJJAjVRwzxzFweHPV0g0kMVCmiy+BhGpnI54RdTHUzExCOFETjpQQHd/N
+         XVyGHN02S0hhakUkNc3a1IxM2m7CfvIvDxj2AS/iRKC/7wiviIACJfbhNiQ3x+JG58KQ
+         wZTY1B6qFVshdSo1AmTTzaC9Zlr80r8Vw+gJXRCG8Zr5ImrKk+KcIIrnlXx4Zep5SzFO
+         4TlcWoJvYg/CSCREZwpdA4KyWyznDcKn/WgxscoC+1+e9cTLCBmtjjmAh3jXw14KOAOg
+         N/rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lR7/8vjXJDBM73PVRP/RhfEwJV/6UykOcvsNpMs/RAE=;
-        b=hYeLveu1K9TlVtz5jf9akPzyXo6vxGqUjOyGLOr+m+EMbKFY6Xq7ItH+AcwA0uqqEj
-         OqfRm+uKCLIfYPxPO1sZSlIGq2xDlJKCwirpOWv/v4Vh0KeTFCGPSKnjMwbviPren1Bt
-         psn0IgPTh5zyhOsRjZGMNBlvDF9yLNbQczFQm/4rANQvTvFzD7QJ4DMsj7UR7FUo1t3E
-         xym0KpAtSz0vAJ0wXtI6kdqPLeg7OasQTBOffqnXhHzms8l0fwYEr3rFi2vkGcWWV4er
-         ozq4mAtrxFWQDpwQnxWsnLRqs69N+GawmiIuEjpsKWPoW4E8k7zMeDy7+SMrr/WKSigR
-         mVpw==
-X-Gm-Message-State: AOAM5319CD2ksWi7XKR5DRf8NUMfRJuBhNwK54fbAKrRTXmswFQue7II
-        Fd17vpC6P7wqBOWhTolGKyY=
-X-Google-Smtp-Source: ABdhPJyxGKAD90tNpLzL0m0Fm78FGMIIHqz4xSYuklo+YQHPvL9qyzVt/XUep8Eex1S2SHDQgBemGA==
-X-Received: by 2002:a19:c191:: with SMTP id r139mr535421lff.258.1605258474914;
-        Fri, 13 Nov 2020 01:07:54 -0800 (PST)
-Received: from localhost.localdomain (dmjt96jhvbz3j2f08hy-4.rev.dnainternet.fi. [2001:14bb:51:e1dd:1cd1:d2e:7b13:dc30])
-        by smtp.gmail.com with ESMTPSA id a8sm603684ljq.77.2020.11.13.01.07.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 01:07:54 -0800 (PST)
-From:   Lev Stipakov <lstipakov@gmail.com>
-X-Google-Original-From: Lev Stipakov <lev@openvpn.net>
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Lev Stipakov <lev@openvpn.net>
-Subject: [PATCH v2 3/3] net: xfrm: use core API for updating/providing stats
-Date:   Fri, 13 Nov 2020 11:07:34 +0200
-Message-Id: <20201113090734.117349-1-lev@openvpn.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EICGtdSdBUVTfYQynfx1jthTLvT03AILkfeZoMTfCBA=;
+        b=FMavN7UfvJ7wyT2OmTUjhZyxvyFlsYLXDWGJyifs5EunHTzG/bClXDeGVy1NIV01uA
+         yT5uypmJg7/g1ZlLvAHCwI1N75y9Mj0N6RP2hqj8EYfDSM2n3IE8gCalHLJZDZtpLduW
+         e6opzv/jF7I/PzdXzzI0ABltFW5frq0EM78sBNdCSrEXPBHoJY0TYPsPrwo6F4ZXAs9V
+         tkpKOHTYPXb4G2HAAIA0K3EKvZDwcRWb3wjlBvjxuoitEShrKRouyH8L5NLerJKWNAKz
+         v3hWfa7CbL1qhNlYNFckMKfE115fu8wXpVqX98sDOcPdMRMi0/bwB6+2OW3czwCjmMSV
+         moHg==
+X-Gm-Message-State: AOAM530Km/JIAZSEz3p1Izb4AUg/vDOVPgUZQbeg2RUL8k3l2WSQAugB
+        sg6SCbw5Vn9poDKdO0hAYOQ=
+X-Google-Smtp-Source: ABdhPJwARQUWT+LL5qd7cHVha5dx9jUOCqUFoy8FspFQSSJ3cgmhpS3edvtOzv47RdlBZwdtHXXC6A==
+X-Received: by 2002:adf:8284:: with SMTP id 4mr2166748wrc.386.1605258649314;
+        Fri, 13 Nov 2020 01:10:49 -0800 (PST)
+Received: from localhost.localdomain (245.red-79-158-78.dynamicip.rima-tde.net. [79.158.78.245])
+        by smtp.gmail.com with ESMTPSA id 15sm9266183wmg.1.2020.11.13.01.10.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Nov 2020 01:10:48 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     mturquette@baylibre.com
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, tsbogend@alpha.franken.de,
+        john@phrozen.org, gregkh@linuxfoundation.org, gch981213@gmail.com,
+        hackpascal@gmail.com, jiaxun.yang@flygoat.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devel@driverdev.osuosl.org, neil@brown.name
+Subject: [PATCH v2 0/5] MIPS: ralink: add CPU clock detection and clock gate driver for MT7621
+Date:   Fri, 13 Nov 2020 10:10:41 +0100
+Message-Id: <20201113091046.30964-1-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <59b6c94d-e0de-e4f5-d02e-e799694f6dc8@gmail.com>
-References: <59b6c94d-e0de-e4f5-d02e-e799694f6dc8@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add") has added
-function "dev_sw_netstats_tx_add()" to update net device per-cpu TX
-stats.
+This patchset ports CPU clock detection for MT7621 from OpenWrt
+and adds a complete clock plan for the mt7621 SOC.
 
-Use this function instead of own code.
+The documentation for this SOC only talks about two registers
+regarding to the clocks:
+* SYSC_REG_CPLL_CLKCFG0 - provides some information about boostrapped
+refclock. PLL and dividers used for CPU and some sort of BUS (AHB?).
+* SYSC_REG_CPLL_CLKCFG1 - a banch of gates to enable/disable clocks for
+all or some ip cores. 
 
-While on it, remove xfrmi_get_stats64() and replace it with
-dev_get_tstats64().
+No documentation about a probably existant set of dividers for each ip
+core is included in the datasheets. So we cannot make anything better,
+AFAICT.
 
-Signed-off-by: Lev Stipakov <lev@openvpn.net>
----
- 
- v2: replace xfrmi_get_stats64() vs dev_get_tstats64()
+Looking into driver code, and some openWRT patched there are
+another frequences which are used in some drivers (uart, sd...).
+According to all of this information the clock plan for this
+SoC is set as follows:
+- Main top clock "xtal" from where all the rest of the world is
+derived.
+- CPU clock "cpu" derived from "xtal" frequencies and a bunch of
+register reads and predividers.
+- BUS clock "bus" derived from "cpu" and with (cpu / 4) MHz.
+- Fixed clocks from "xtal":
+    * "50m": 50 MHz.
+    * "125m": 125 MHz.
+    * "150m": 150 MHz.
+    * "250m": 250 MHz.
+    * "270m": 270 MHz.
 
- net/xfrm/xfrm_interface.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+We also have a buch of gate clocks with their parents:
+ - "hsdma": "150m"
+ - "fe": "250m"
+ - "sp_divtx": "270m"
+ - "timer": "50m"
+ - "pcm": "270m"
+ - "pio": "50m"
+ - "gdma": "bus"
+ - "nand": "125m"
+ - "i2c": "50m"
+ - "i2s": "270m"
+ - "spi": "bus"
+ - "uart1": "50m"
+ - "uart2": "50m"
+ - "uart3": "50m"
+ - "eth": "50m"
+ - "pcie0": "125m"
+ - "pcie1": "125m"
+ - "pcie2": "125m"
+ - "crypto": "250m"
+ - "shxc": "50m"
 
-diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-index 9b8e292a7c6a..697cdcfbb5e1 100644
---- a/net/xfrm/xfrm_interface.c
-+++ b/net/xfrm/xfrm_interface.c
-@@ -319,12 +319,7 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
- 
- 	err = dst_output(xi->net, skb->sk, skb);
- 	if (net_xmit_eval(err) == 0) {
--		struct pcpu_sw_netstats *tstats = this_cpu_ptr(dev->tstats);
--
--		u64_stats_update_begin(&tstats->syncp);
--		tstats->tx_bytes += length;
--		tstats->tx_packets++;
--		u64_stats_update_end(&tstats->syncp);
-+		dev_sw_netstats_tx_add(dev, 1, length);
- 	} else {
- 		stats->tx_errors++;
- 		stats->tx_aborted_errors++;
-@@ -538,15 +533,6 @@ static int xfrmi_update(struct xfrm_if *xi, struct xfrm_if_parms *p)
- 	return err;
- }
- 
--static void xfrmi_get_stats64(struct net_device *dev,
--			       struct rtnl_link_stats64 *s)
--{
--	dev_fetch_sw_netstats(s, dev->tstats);
--
--	s->rx_dropped = dev->stats.rx_dropped;
--	s->tx_dropped = dev->stats.tx_dropped;
--}
--
- static int xfrmi_get_iflink(const struct net_device *dev)
- {
- 	struct xfrm_if *xi = netdev_priv(dev);
-@@ -554,12 +540,11 @@ static int xfrmi_get_iflink(const struct net_device *dev)
- 	return xi->p.link;
- }
- 
--
- static const struct net_device_ops xfrmi_netdev_ops = {
- 	.ndo_init	= xfrmi_dev_init,
- 	.ndo_uninit	= xfrmi_dev_uninit,
- 	.ndo_start_xmit = xfrmi_xmit,
--	.ndo_get_stats64 = xfrmi_get_stats64,
-+	.ndo_get_stats64 = dev_get_tstats64,
- 	.ndo_get_iflink = xfrmi_get_iflink,
- };
- 
+There was a previous attempt of doing this here[0] but the author
+(Chuanhong Guo) did not wanted to make assumptions of a clock plan
+for the platform that time. It seems that now he has a better idea of
+how the clocks are dispossed for this SoC so he share code[1] where
+some frequencies and clock parents for the gates are coded from a
+real mediatek private clock plan.
+    
+I do really want this to be upstreamed so according to the comments
+in previous attempt[0] from Oleksij Rempel and the frequencies in
+code[1] I have tried to do this by myself.
+
+All of this patches have been tested in a GNUBee PC1 resulting in a
+working platform.
+
+Changes in v2:
+  - Remove the following patches:
+     * dt: bindings: add mt7621-pll device tree binding documentation.
+     * MIPS: ralink: add clock device providing cpu/ahb/apb clock for mt7621.
+  - Move all relevant clock code to 'drivers/clk/ralink/clk-mt7621.c' and
+    unify there previous 'mt7621-pll' and 'mt7621-clk' into a unique driver
+    and binding 'mt7621-clk'.
+  - Driver is not a platform driver anymore and now make use of 'CLK_OF_DECLARE'
+    because we need clocks available in 'plat_time_init' before setting up
+    the timer for the GIC.
+  - Use new fixed clocks as parents for different gates and deriving from 'xtal'
+    using frequencies in[1].
+  - Adapt dts file and bindings header and documentation for new changes.
+  - Change MAINTAINERS file to only contains clk-mt7621.c code and
+    mediatek,mt7621-clk.yaml file.
+
+[0]: https://www.lkml.org/lkml/2019/7/23/1044
+[1]: https://github.com/981213/linux/commit/2eca1f045e4c3db18c941135464c0d7422ad8133
+
+Sergio Paracuellos (5):
+  dt-bindings: clock: add dt binding header for mt7621 clocks
+  dt: bindings: add mt7621-clk device tree binding documentation
+  clk: ralink: add clock driver for mt7621 SoC
+  staging: mt7621-dts: make use of new 'mt7621-clk'
+  MAINTAINERS: add MT7621 CLOCK maintainer
+
+ .../bindings/clock/mediatek,mt7621-clk.yaml   |  61 ++++
+ MAINTAINERS                                   |   6 +
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/ralink/Kconfig                    |  14 +
+ drivers/clk/ralink/Makefile                   |   2 +
+ drivers/clk/ralink/clk-mt7621.c               | 345 ++++++++++++++++++
+ drivers/staging/mt7621-dts/gbpc1.dts          |  11 -
+ drivers/staging/mt7621-dts/mt7621.dtsi        |  72 ++--
+ include/dt-bindings/clock/mt7621-clk.h        |  41 +++
+ 10 files changed, 504 insertions(+), 50 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+ create mode 100644 drivers/clk/ralink/Kconfig
+ create mode 100644 drivers/clk/ralink/Makefile
+ create mode 100644 drivers/clk/ralink/clk-mt7621.c
+ create mode 100644 include/dt-bindings/clock/mt7621-clk.h
+
 -- 
 2.25.1
 
