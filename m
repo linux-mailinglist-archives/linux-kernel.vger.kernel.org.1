@@ -2,93 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED642B1DB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC1B2B1DB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgKMOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:51:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMOvZ (ORCPT
+        id S1726707AbgKMOwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:52:18 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:62802 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKMOwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:51:25 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CB6C0613D1;
-        Fri, 13 Nov 2020 06:51:25 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id f38so7264491pgm.2;
-        Fri, 13 Nov 2020 06:51:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=FeQh4FdOZwVhx4i39hlguo34HgLhuLiBD0/DOQQq4rI=;
-        b=R3fMTtxIF543Ih5YOs+n3v5kt1uVu6ewdLPwgczWBuGSJfOhwmfZiQfCHlaz2+OeQE
-         nnYOwy71jqOodTVzkTszDyxcCDm5i4Bryf++//u2YyXwtjw6jBCD39PayLkmI4aihFrk
-         3xNkhZqdUVSms+ssnsGbgfPF12JbAsrvYs0MjEqwYSN8IOZFGfXl20ibyHdpeQhwiUNd
-         cGJWBv+Gr6q0I5ynGKbMeIs9iBLkE4kxH0S7B6z6wjsPmwjrYuTyqNA0QzrUNo1hNgsM
-         9BEwlZ7tRTz6n2ML4TMokaV9hyc5BzLch7SVYXvend25kRyA3kE5w0qKux0lxXzCEGme
-         sHiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FeQh4FdOZwVhx4i39hlguo34HgLhuLiBD0/DOQQq4rI=;
-        b=q6d9Vo9N4jE0EjQpbKWwXrg+87+f7U/o+qA/hJNHbLlrYPgNp63AT51go3HI/bL47q
-         Lv0JE795SYJu/KPcC7zEJmNOhsKkLMVWB4Dtepbcq0KgJR3U82FXDS9Wn3GsB0C0cK0M
-         jsyvGq085ds01P7TpvsA535BdFeVE23xjD3tnbxARrV3p3rS9awtvWWwRQ3XV4MXfHYt
-         ojnjyr8jDfv6N9T4c3Rd+gDCXv/udbOuLCCPPInm/KNYc3ailxTSmsrXeD+feUg7Cz0j
-         uz1aVUu/pZzt0PPBk3N4GXLXeyQnuagGmIhIMCXEyYNzPgNuiFU/zsz8xMwrjTHS3C8D
-         C6tA==
-X-Gm-Message-State: AOAM532ssUP3EbOipRLq9MvUHN0/SpGfaDDBJKGCxBnqPfTY5k0BVzBV
-        caPsEhcImA3Dp576c5Xu8ew4mVfjpcoL
-X-Google-Smtp-Source: ABdhPJy16wOevtvij+fqDb1WHcMwi+goNOVnFva8Xzhl90PTNfWe+5pi0V/uwYGgWXjDZXxe/ARIGQ==
-X-Received: by 2002:a17:90a:f189:: with SMTP id bv9mr3571491pjb.174.1605279084911;
-        Fri, 13 Nov 2020 06:51:24 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id t9sm12818965pje.1.2020.11.13.06.51.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Nov 2020 06:51:24 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     krzk@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] ASoC: samsung: remove the unused variable value assignment
-Date:   Fri, 13 Nov 2020 22:51:19 +0800
-Message-Id: <1605279079-6416-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 13 Nov 2020 09:52:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605279137; x=1636815137;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yV2HkxAG0/DBudqLtQxcT+BFvOnhMV/3Cue+wO1EP7g=;
+  b=kk76zWlH0x4PJEA87c9J2jCxpHBUeugSwABRjLzjD9bzZwjXcW9n3eh+
+   YxJJPfKBcUksINERbOvtmnoWrTERTQSwGhHLnzByR577IMODUSvxO6Cyc
+   7R73QBLnrT65AILmyYQAvaxAhVtVUQH0O/iy5pvgNW+LyGRGsqMirFxKw
+   Paq1KVUCbywFYW/P9kQFVLNaCf/8a1rauOK5UPPlNvakypZdfkGldzdlk
+   FtRTY+SOd035yn0N/UyzQegcGFOryFEvOtkycEBV8gOIUPH/kHc+Mx1iO
+   7GWLLcTpA+70LPTeLYhrWbV7VDBquTgKR5Cs8zxpUhZ0j0Pyk6y0Z0iOq
+   Q==;
+IronPort-SDR: y46HRo/M1JjhTBpD9idJyZziUnVzas7QTVFlSFcnFagUMBYF9usKEZDlbNMN2PyFv0e0IuKAnv
+ PQYG9BG0CT0FDxBys4eqYWqDF7bJIg6VxvWYskHWR8Nx5NMEkEph/rq2lAG9bRiok46r2wK6DC
+ ij8WzojQquGy4ETWgOKQUcHoccSo6QOKKBi3Sdfh7SLQtG5DaD5f6CgQlYODdcgq4axpW7AH5x
+ L88OvvOmSZGqoIUxj1MLcdVLT2U/SfRqmJNBjgT7qn1cq0IDxVHCSk3F13vfqrDw90PE/i8oia
+ dzo=
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
+   d="scan'208";a="96233652"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Nov 2020 07:52:17 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 13 Nov 2020 07:52:16 -0700
+Received: from soft-dev10.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 13 Nov 2020 07:52:14 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v10 0/3] Adding support for Microchip/Microsemi serial GPIO controller
+Date:   Fri, 13 Nov 2020 15:51:48 +0100
+Message-ID: <20201113145151.68900-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+The series add support for the serial GPIO controller used by
+Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
 
-The value of variable ret is overwritten by the following call
-devm_snd_soc_register_card(), so here the value assignment is useless.
-Remove it.
+v10 changes - anniversary edition (from Andy):
+ - Fixed "Author" comment
+ - Added missing "break;" in default switch case
+ - Return -EINVAL when requesting pin disabled in bitstream
+ - Change bank consistency check to return -ERANGE if failed (-EINVAL
+   previously)
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- sound/soc/samsung/smdk_wm8994.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+v9 changes (from Andy):
+ - Avoid bitfield duplication (use FIELD_PREP/FIELD_GET)
+ - Introduce SGPIO_SRC_BITS define constant
+ - Use ENOTSUPP instead of EOPNOTSUPP (checkpatch will complain)
+ - Drop dev_err() when using pin for wrong direction
+ - Replaced left-over OF code with device_property_* flavors
+ - Use devm_kasprintf() instead of strnprintf()+devm_strdup()
+ - Minor formatting changes, deleted comments
 
-diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-index 64a1a64..1db5b59 100644
---- a/sound/soc/samsung/smdk_wm8994.c
-+++ b/sound/soc/samsung/smdk_wm8994.c
-@@ -160,11 +160,9 @@ static int smdk_audio_probe(struct platform_device *pdev)
- 		smdk_dai[0].cpus->dai_name = NULL;
- 		smdk_dai[0].cpus->of_node = of_parse_phandle(np,
- 				"samsung,i2s-controller", 0);
--		if (!smdk_dai[0].cpus->of_node) {
-+		if (!smdk_dai[0].cpus->of_node)
- 			dev_err(&pdev->dev,
- 			   "Property 'samsung,i2s-controller' missing or invalid\n");
--			ret = -EINVAL;
--		}
- 
- 		smdk_dai[0].platforms->name = NULL;
- 		smdk_dai[0].platforms->of_node = smdk_dai[0].cpus->of_node;
--- 
-1.8.3.1
+v8 changes (from Andy):
+ - Removed OF dependency/usage entirely.
+ - Trimmed+sorted include files.
+ - Made local variables reverse xmas sorted.
+ - Removed __func__ usage.
+ - Changed some occurences of "if (x) { ..." to early return.
+ - Use dev_err_probe() where possible.
+ - Replace of_device_get_match_data() with device_get_match_data()
+ - Some minor formatting corrections
+ - Do per-pin string allocation as opposed to bulk allocation+chop.
 
+v7 changes:
+- Fixed wrong sizeof in pin string name template. (Andy)
+- Collapsed sgpio_input_get() to one liner. (Andy)
+- Eliminated unneeded variable in microchip_sgpio_get_value()
+- Removed noisy dev_info(). (Andy)
+- Replaced platform_get_resource()+devm_ioremap_resource() with
+ devm_platform_ioremap_resource(). (Andy)
+- Replaced device_property_read_u32() with
+  of_property_read_u32(). (Andy)
+- Replaced __builtin_ffsll() with __builtin_ffs() for MIPS32 targets.
+
+v6 changes:
+- Use "bus-frequency" instead of "microchip,sgpio-frequency". Drop
+  '$ref'. (Robh)
+- Added "ngpios" description, bumped minimum to 32. (Linus)
+- Added "#size-cells" description. (Linus)
+- Changed "bus-frequency" validation in driver to reflect the YAML
+  description.
+
+v5 changes (driver comments from Linus):
+- Collect bank data in sgpio_bank struct
+- Add is_input boolean to sgpio_bank struct
+- Use single-bit bitmasks in sgpio_output_set() and sgpio_output_get()
+- Eliminate superfluous struct pinctrl_dev *pctl_dev in bank data
+- Fix wrong ngpio consistency check
+
+v4 changes (binding comments from Rob):
+- microchip,sgpio-port-ranges changed to uint32-matrix so tuples can
+  be represented properly.
+- gpio controller node name changed to "gpio@[0-1]"
+- whitespace fixes
+- DT files updated as per schema changes
+
+v3 changes:
+- Renamed all usage of "mchp" abbrevation with "microchip".
+- Split the in/output directions into (two) separate banks.
+- Eliminated the bindings include file (from above)
+- Changed SPDX license to "GPL-2.0-or-later"
+- Change -ENOTSUPP to -EOPNOTSUPP
+- Minor type/symbol naming changes
+
+v2 changes:
+- Adds both in and output modes.
+- Use direct adressing of the individual banks (#gpio-cells = <4>),
+  also osoleting need for addressing macros in bindings include file.
+- Property 'microchip,sgpio-ports' (uint32, bitmask) replaced by
+  proper range set (array of [start,end]) 'microchip,sgpio-port-ranges'.
+- Fixes whitespace issues in Kconfig file
+
+Lars Povlsen (3):
+  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
+    Serial GPIO
+  arm64: dts: sparx5: Add SGPIO devices
+
+ .../pinctrl/microchip,sparx5-sgpio.yaml       | 145 ++++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  91 +++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
+ .../dts/microchip/sparx5_pcb134_board.dtsi    | 258 +++++++
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |  55 ++
+ drivers/pinctrl/Kconfig                       |  16 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-microchip-sgpio.c     | 709 ++++++++++++++++++
+ 9 files changed, 1281 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-microchip-sgpio.c
+
+--
+2.25.1
