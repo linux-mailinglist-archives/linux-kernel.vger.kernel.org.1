@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1762B1AF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B654F2B1AE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgKMMN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:13:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47494 "EHLO mail.kernel.org"
+        id S1726606AbgKMMN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:13:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726267AbgKMMNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:13:45 -0500
+        id S1726176AbgKMMNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:13:47 -0500
 Received: from localhost.localdomain (unknown [176.167.84.141])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E49C2085B;
-        Fri, 13 Nov 2020 12:13:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 789D22224B;
+        Fri, 13 Nov 2020 12:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605269624;
-        bh=F9MUOquSB7T4ePXdM6eH0VAMkUBZhDoVNIIhHNUF+00=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PstkH/Wk4pOHTyQTTSN8eIDX4EId0UA+xuSvN/phSk0Un5k08cPlk9X1KYRdfgGlZ
-         vfv5KSxK/vkW6mSU5FQWBHROTSW8sWumVGWm4hwckLDC4YQ7UlxpCV2AGghznzjixo
-         ZyqcCIA3iZRo8HwdJHFn7fuZHrB5R03FPi6ILvCg=
+        s=default; t=1605269627;
+        bh=sujLKVw46d3MU1NqvO30Z15mMB9Z4AXw745RHEipyUg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=koMXFZnNGjggK7MiYc1svqIhk5YCemnctWAMOARdvDWea/vStw9/9Qo0xARXF+c8t
+         2sN78rRSu6HA/xWgdLCQplXa+zCaGHgYVh4el1Y5hGTB6R8dH0jN4l7+RamUtN+lvI
+         +sH7QZa/oQfTP9X+zQ8QU/IqbT5ZpM05+aprGQeg=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -35,73 +35,139 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: [PATCH 00/19] rcu/nocb: De-offload and re-offload support v4
-Date:   Fri, 13 Nov 2020 13:13:15 +0100
-Message-Id: <20201113121334.166723-1-frederic@kernel.org>
+Subject: [PATCH 01/19] rcu/nocb: Turn enabled/offload states into a common flag
+Date:   Fri, 13 Nov 2020 13:13:16 +0100
+Message-Id: <20201113121334.166723-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201113121334.166723-1-frederic@kernel.org>
+References: <20201113121334.166723-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This keeps growing up. Rest assured, most of it is debug code and sanity
-checks.
+Gather the segcblist properties in a common map to avoid spreading
+booleans in the structure. And this prepares for the offloaded state to
+be mutable on runtime.
 
-Boqun Feng found that holding rnp lock while updating the offloaded
-state of an rdp isn't needed, and he was right despite my initial
-reaction. The sites that read the offloaded state while holding the rnp
-lock are actually protected because they read it locally in a non
-preemptible context.
-
-So I removed the rnp lock in "rcu/nocb: De-offloading CB". And just to
-make sure I'm not missing something, I added sanity checks that ensure
-we always read the offloaded state in a safe way (3 last patches).
-
-Still passes TREE01 (but I had to fight!)
-
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	rcu/nocb-toggle-v4
-
-HEAD: 579e15efa48fb6fc4ecf14961804051f385807fe
-
-Thanks,
-	Frederic
+Inspired-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
+ include/linux/rcu_segcblist.h |  6 ++++--
+ kernel/rcu/rcu_segcblist.c    |  6 +++---
+ kernel/rcu/rcu_segcblist.h    | 23 +++++++++++++++++++++--
+ 3 files changed, 28 insertions(+), 7 deletions(-)
 
-Frederic Weisbecker (19):
-      rcu/nocb: Turn enabled/offload states into a common flag
-      rcu/nocb: Provide basic callback offloading state machine bits
-      rcu/nocb: Always init segcblist on CPU up
-      rcu/nocb: De-offloading CB kthread
-      rcu/nocb: Don't deoffload an offline CPU with pending work
-      rcu/nocb: De-offloading GP kthread
-      rcu/nocb: Re-offload support
-      rcu/nocb: Shutdown nocb timer on de-offloading
-      rcu: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
-      rcu/nocb: Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of de-offloading
-      rcu/nocb: Only cond_resched() from actual offloaded batch processing
-      rcu/nocb: Process batch locally as long as offloading isn't complete
-      rcu/nocb: Locally accelerate callbacks as long as offloading isn't complete
-      tools/rcutorture: Support nocb toggle in TREE01
-      rcutorture: Remove weak nocb declarations
-      rcutorture: Export nocb (de)offloading functions
-      cpu/hotplug: Add lockdep_is_cpus_held()
-      timer: Add timer_curr_running()
-      rcu/nocb: Detect unsafe checks for offloaded rdp
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index 6c01f09a6456..4714b0263c76 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -63,6 +63,9 @@ struct rcu_cblist {
+ #define RCU_NEXT_TAIL		3
+ #define RCU_CBLIST_NSEGS	4
+ 
++#define SEGCBLIST_ENABLED	BIT(0)
++#define SEGCBLIST_OFFLOADED	BIT(1)
++
+ struct rcu_segcblist {
+ 	struct rcu_head *head;
+ 	struct rcu_head **tails[RCU_CBLIST_NSEGS];
+@@ -73,8 +76,7 @@ struct rcu_segcblist {
+ 	long len;
+ #endif
+ 	long seglen[RCU_CBLIST_NSEGS];
+-	u8 enabled;
+-	u8 offloaded;
++	u8 flags;
+ };
+ 
+ #define RCU_SEGCBLIST_INITIALIZER(n) \
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 5059b6102afe..e374f9c3ec2c 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -234,7 +234,7 @@ void rcu_segcblist_init(struct rcu_segcblist *rsclp)
+ 		rcu_segcblist_set_seglen(rsclp, i, 0);
+ 	}
+ 	rcu_segcblist_set_len(rsclp, 0);
+-	rsclp->enabled = 1;
++	rcu_segcblist_set_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /*
+@@ -245,7 +245,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+ {
+ 	WARN_ON_ONCE(!rcu_segcblist_empty(rsclp));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(rsclp));
+-	rsclp->enabled = 0;
++	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /*
+@@ -254,7 +254,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+  */
+ void rcu_segcblist_offload(struct rcu_segcblist *rsclp)
+ {
+-	rsclp->offloaded = 1;
++	rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
+ }
+ 
+ /*
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index cd35c9faaf51..3d1195dbf030 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -50,19 +50,38 @@ static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
+ #endif
+ }
+ 
++static inline void rcu_segcblist_set_flags(struct rcu_segcblist *rsclp,
++					   int flags)
++{
++	rsclp->flags |= flags;
++}
++
++static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *rsclp,
++					     int flags)
++{
++	rsclp->flags &= ~flags;
++}
++
++static inline bool rcu_segcblist_test_flags(struct rcu_segcblist *rsclp,
++					    int flags)
++{
++	return READ_ONCE(rsclp->flags) & flags;
++}
++
+ /*
+  * Is the specified rcu_segcblist enabled, for example, not corresponding
+  * to an offline CPU?
+  */
+ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+ {
+-	return rsclp->enabled;
++	return rcu_segcblist_test_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /* Is the specified rcu_segcblist offloaded?  */
+ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ {
+-	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) && rsclp->offloaded;
++	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
++		rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED);
+ }
+ 
+ /*
+-- 
+2.25.1
 
-
- include/linux/cpu.h                                |   1 +
- include/linux/rcu_segcblist.h                      | 119 +++++-
- include/linux/rcupdate.h                           |   4 +
- include/linux/timer.h                              |   2 +
- kernel/cpu.c                                       |   7 +
- kernel/rcu/rcu_segcblist.c                         |  13 +-
- kernel/rcu/rcu_segcblist.h                         |  45 ++-
- kernel/rcu/rcutorture.c                            |   3 -
- kernel/rcu/tree.c                                  |  49 ++-
- kernel/rcu/tree.h                                  |   2 +
- kernel/rcu/tree_plugin.h                           | 416 +++++++++++++++++++--
- kernel/time/timer.c                                |  13 +
- .../selftests/rcutorture/configs/rcu/TREE01.boot   |   4 +-
- 13 files changed, 614 insertions(+), 64 deletions(-)
