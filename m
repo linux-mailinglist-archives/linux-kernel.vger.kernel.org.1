@@ -2,211 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924212B223B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF1A2B2231
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgKMR1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:27:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:42470 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgKMR1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:27:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C69781042;
-        Fri, 13 Nov 2020 09:27:40 -0800 (PST)
-Received: from e121896.arm.com (unknown [10.57.58.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F2B1A3F718;
-        Fri, 13 Nov 2020 09:27:38 -0800 (PST)
-From:   James Clark <james.clark@arm.com>
-To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@redhat.com
-Cc:     james.clark@arm.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 13/13 v4] perf tools: add thread field
-Date:   Fri, 13 Nov 2020 19:26:54 +0200
-Message-Id: <20201113172654.989-14-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201113172654.989-1-james.clark@arm.com>
-References: <20201113172654.989-1-james.clark@arm.com>
+        id S1726293AbgKMR1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:27:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgKMR1F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:27:05 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E7EC0613D1;
+        Fri, 13 Nov 2020 09:27:05 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id z13so2328429ooa.5;
+        Fri, 13 Nov 2020 09:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=y9K9YUhl2zYZsowQIL6lc2DNOPHGRC1ZPB3JI5P8kMw=;
+        b=rM2Vr08zkOxR8FY+BqFg9Jv2Eas8KrEmQqn1Ozig0vyhZYKoMKPS7/o0U7LsevuR5h
+         p3ZjkBcOlN+G6wTDB64s2eiMg6KiHDFbq1EvZOx17pVCNNXI+KWWkBX0JcSV6zOHREZA
+         0XOXkO2w88UH0S/8ePYArV+l87eSI3ikYKL+S+G/3QJvPMl1Y18bwG4rQ+RSWaR8Ii4B
+         r7k5j0RkvNnaZja7gMlj3PnCBd5vk4rICzn7+CU0JGaYR91Cow02BykdqMJlStRVx58t
+         H/XDmDjgpGSmC4Xx3Jw2rfBscgab3n85DA033cbZ7cDIPLevTF8jVmXvXgXhdzW16BgR
+         IZUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=y9K9YUhl2zYZsowQIL6lc2DNOPHGRC1ZPB3JI5P8kMw=;
+        b=hhwJ0SfFpurt1RLgAflO8CtWblxnzRD7DXIaqEUHW9cSQIsT4Thm+EgR+CeVDCHCBe
+         Bx0Qzof9Ra7nNM/Ci82OIF78FV0I6MzxCzHU9C0sxJmjSNYkC8uOPmXDU8uRYfIggdYI
+         julp979vz6DKnuB9+JH2owgqoC38ZFP5EuUfMpj/pyYSubC/IQp6VpsZpHMuu5L4/z4s
+         h/0R/DElv/8dQjOQoZ9mUmo9mvIvj4Cn5CpaGbyVWOmfZY1kXokTNFiHKCCVKK3tYpeS
+         mP8xGgTDKt6fOkCk07NSgxLt3XQNGvJ2VbnotCCiHnnvC98U9p7m66BPOkoaw5xCpwl0
+         rzpA==
+X-Gm-Message-State: AOAM530L2/W9llR4Un1hPBZGIF8Cidc1KTIhPhYiRLdjRJoElpfiixgn
+        OFRbBD0pcKMBfH/Hxtk7yfpt7ki8KZSE7azV
+X-Google-Smtp-Source: ABdhPJynEnA+jWaxRWcp3tlH+nY7AYxEk+eZA00tsSUPUJGJIiz+kInG7+hacEg8JSpjN8czXlUw9w==
+X-Received: by 2002:a4a:5182:: with SMTP id s124mr2311444ooa.88.1605288419708;
+        Fri, 13 Nov 2020 09:26:59 -0800 (PST)
+Received: from ?IPv6:2600:1700:4a30:eaf0::35? ([2600:1700:4a30:eaf0::35])
+        by smtp.gmail.com with ESMTPSA id y8sm2083902ota.64.2020.11.13.09.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 09:26:58 -0800 (PST)
+Subject: Re: [PATCH v2] Input: Add devices for
+ HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+To:     Jiri Kosina <jikos@kernel.org>, Chris Ye <lzye@google.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+References: <20201101193452.678628-1-lzye@google.com>
+ <nycvar.YFH.7.76.2011091255280.18859@cbobk.fhfr.pm>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <e39fbd02-e691-010c-702d-de86ecfc8854@gmail.com>
+Date:   Fri, 13 Nov 2020 09:26:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <nycvar.YFH.7.76.2011091255280.18859@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A separate field isn't strictly required. The core
-field could be re-used for thread IDs as a single
-field was used previously.
+Hi Jiri,  can I have a commit ID for 5.10? I'll need this to submit the 
+patch internally.
 
-But separating them will avoid confusion and catch
-potential errors where core IDs are read as thread
-IDs and vice versa.
+Thanks!
 
-Also remove the placeholder id field which is now
-no longer used.
+Chris
 
-Signed-off-by: James Clark <james.clark@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Cc: John Garry <john.garry@huawei.com>
----
- tools/perf/tests/topology.c    |  8 ++++----
- tools/perf/util/cpumap.c       | 14 +++++++-------
- tools/perf/util/cpumap.h       |  2 +-
- tools/perf/util/stat-display.c |  8 ++++----
- 4 files changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 694f786a77f3..2276db0b1b6f 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -119,7 +119,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 		TEST_ASSERT_VAL("Core map - Die ID doesn't match",
- 			session->header.env.cpu[map->map[i]].die_id == id.die);
- 		TEST_ASSERT_VAL("Core map - Node ID is set", id.node == -1);
--		TEST_ASSERT_VAL("Core map - ID is set", id.id == -1);
-+		TEST_ASSERT_VAL("Core map - Thread is set", id.thread == -1);
- 	}
- 
- 	// Test that die ID contains socket and die
-@@ -131,7 +131,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 		TEST_ASSERT_VAL("Die map - Die ID doesn't match",
- 			session->header.env.cpu[map->map[i]].die_id == id.die);
- 		TEST_ASSERT_VAL("Die map - Node ID is set", id.node == -1);
--		TEST_ASSERT_VAL("Die map - ID is set", id.id == -1);
-+		TEST_ASSERT_VAL("Die map - Thread is set", id.thread == -1);
- 	}
- 
- 	// Test that socket ID contains only socket
-@@ -141,7 +141,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 			session->header.env.cpu[map->map[i]].socket_id == id.socket);
- 		TEST_ASSERT_VAL("Socket map - Node ID is set", id.node == -1);
- 		TEST_ASSERT_VAL("Socket map - Die ID is set", id.die == -1);
--		TEST_ASSERT_VAL("Socket map - ID is set", id.id == -1);
-+		TEST_ASSERT_VAL("Socket map - Thread is set", id.thread == -1);
- 	}
- 
- 	// Test that node ID contains only node
-@@ -149,7 +149,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 		id = cpu_map__get_node(map, i, NULL);
- 		TEST_ASSERT_VAL("Node map - Node ID doesn't match",
- 			cpu__get_node(map->map[i]) == id.node);
--		TEST_ASSERT_VAL("Node map - ID shouldn't be set", id.id == -1);
-+		TEST_ASSERT_VAL("Node map - Thread shouldn't be set", id.thread == -1);
- 		TEST_ASSERT_VAL("Node map - Die ID is set", id.die == -1);
- 	}
- 	perf_session__delete(session);
-diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-index d988dfc4e6b6..5f824aa0311d 100644
---- a/tools/perf/util/cpumap.c
-+++ b/tools/perf/util/cpumap.c
-@@ -148,16 +148,16 @@ static int cmp_aggr_cpu_id(const void *a_pointer, const void *b_pointer)
- 	struct aggr_cpu_id *a = (struct aggr_cpu_id *)a_pointer;
- 	struct aggr_cpu_id *b = (struct aggr_cpu_id *)b_pointer;
- 
--	if (a->id != b->id)
--		return a->id - b->id;
--	else if (a->node != b->node)
-+	if (a->node != b->node)
- 		return a->node - b->node;
- 	else if (a->socket != b->socket)
- 		return a->socket - b->socket;
- 	else if (a->die != b->die)
- 		return a->die - b->die;
--	else
-+	else if (a->core != b->core)
- 		return a->core - b->core;
-+	else
-+		return a->thread - b->thread;
- }
- 
- int cpu_map__build_map(struct perf_cpu_map *cpus, struct cpu_aggr_map **res,
-@@ -617,7 +617,7 @@ const struct perf_cpu_map *cpu_map__online(void) /* thread unsafe */
- 
- bool cpu_map__compare_aggr_cpu_id(struct aggr_cpu_id a, struct aggr_cpu_id b)
- {
--	return a.id == b.id &&
-+	return a.thread == b.thread &&
- 		a.node == b.node &&
- 		a.socket == b.socket &&
- 		a.die == b.die &&
-@@ -626,7 +626,7 @@ bool cpu_map__compare_aggr_cpu_id(struct aggr_cpu_id a, struct aggr_cpu_id b)
- 
- bool cpu_map__aggr_cpu_id_is_empty(struct aggr_cpu_id a)
- {
--	return a.id == -1 &&
-+	return a.thread == -1 &&
- 		a.node == -1 &&
- 		a.socket == -1 &&
- 		a.die == -1 &&
-@@ -636,7 +636,7 @@ bool cpu_map__aggr_cpu_id_is_empty(struct aggr_cpu_id a)
- struct aggr_cpu_id cpu_map__empty_aggr_cpu_id(void)
- {
- 	struct aggr_cpu_id ret = {
--		.id = -1,
-+		.thread = -1,
- 		.node = -1,
- 		.socket = -1,
- 		.die = -1,
-diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
-index 1bb8f7d47206..a27eeaf086e8 100644
---- a/tools/perf/util/cpumap.h
-+++ b/tools/perf/util/cpumap.h
-@@ -8,7 +8,7 @@
- #include <perf/cpumap.h>
- 
- struct aggr_cpu_id {
--	int id;
-+	int thread;
- 	int node;
- 	int socket;
- 	int die;
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 6fb70a45afe3..fc741b569096 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -127,9 +127,9 @@ static void aggr_printout(struct perf_stat_config *config,
- 	case AGGR_THREAD:
- 		fprintf(config->output, "%*s-%*d%s",
- 			config->csv_output ? 0 : 16,
--			perf_thread_map__comm(evsel->core.threads, id.id),
-+			perf_thread_map__comm(evsel->core.threads, id.thread),
- 			config->csv_output ? 0 : -8,
--			perf_thread_map__pid(evsel->core.threads, id.id),
-+			perf_thread_map__pid(evsel->core.threads, id.thread),
- 			config->csv_sep);
- 		break;
- 	case AGGR_GLOBAL:
-@@ -743,7 +743,7 @@ static struct perf_aggr_thread_value *sort_aggr_thread(
- 
- 		buf[i].counter = counter;
- 		buf[i].id = cpu_map__empty_aggr_cpu_id();
--		buf[i].id.id = thread;
-+		buf[i].id.thread = thread;
- 		buf[i].uval = uval;
- 		buf[i].val = val;
- 		buf[i].run = run;
-@@ -782,7 +782,7 @@ static void print_aggr_thread(struct perf_stat_config *config,
- 		if (config->stats)
- 			printout(config, buf[thread].id, 0, buf[thread].counter, buf[thread].uval,
- 				 prefix, buf[thread].run, buf[thread].ena, 1.0,
--				 &config->stats[buf[thread].id.id]);
-+				 &config->stats[buf[thread].id.thread]);
- 		else
- 			printout(config, buf[thread].id, 0, buf[thread].counter, buf[thread].uval,
- 				 prefix, buf[thread].run, buf[thread].ena, 1.0,
--- 
-2.28.0
-
+On 11/9/20 3:55 AM, Jiri Kosina wrote:
+> On Sun, 1 Nov 2020, Chris Ye wrote:
+>
+>> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+>> index 74be76e848bf..cf55dca494f3 100644
+>> --- a/drivers/hid/hid-ids.h
+>> +++ b/drivers/hid/hid-ids.h
+>> @@ -449,6 +449,10 @@
+>>   #define USB_VENDOR_ID_FRUCTEL	0x25B6
+>>   #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+>>   
+>> +#define USB_VENDOR_ID_GAMEVICE	0x27F8
+>> +#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
+>> +#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
+>> +
+>>   #define USB_VENDOR_ID_GAMERON		0x0810
+>>   #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
+>>   #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
+>> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+>> index 0440e2f6e8a3..36d94e3485e3 100644
+>> --- a/drivers/hid/hid-quirks.c
+>> +++ b/drivers/hid/hid-quirks.c
+>> @@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
+>>   	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
+>>   	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+>>   	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
+>> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
+>> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+>> +	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
+>> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+>>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+>>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+>>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+> Applied for 5.10, thanks.
+>
