@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FF52B16F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A472B16FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgKMIKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKMIKS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:10:18 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AD8C0613D1;
-        Fri, 13 Nov 2020 00:10:18 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id i193so7952336yba.1;
-        Fri, 13 Nov 2020 00:10:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YZly4fKiBbV+IkexCkfhDwIO10bCLlCQxITCXC1nduc=;
-        b=u2+i4ApZzbglKW/ZY0KZq8G55eme853Hcxfb0QmEAFmaNROCNYHDJThV7bgI1Dwj3u
-         pR4MtaMYZlMIYkydd2bglPivi43m+c8nhXkNAfWFgNQmT0H/+PCw5y28wYogFlNrJxYP
-         xDLcbVmRUclmos/AgE3Cgf5RM3Hz9Yc845piAFhG6PJAfESlmYVU3+TkGWtU0ioNA6op
-         Y+6TM93BD96hywl2I7jyC3DpFGFoliP51bZWBPHP1GViSl/X7HmwBEpBuvdvMexUA5CP
-         ZWqR1JG3CZDn7H339C32yqa4S/Z2gVJNZq56jaUtMtGMwmq5Aw+rDaX2z4FJXOSSu7ud
-         CgeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YZly4fKiBbV+IkexCkfhDwIO10bCLlCQxITCXC1nduc=;
-        b=b2VZjdfF+OCRbzc9J9WuFzeoYiKHpvbnet93iEWZ3iVfGJNCJ/zOV+kRa2GArcAGVS
-         Rnr57zLWKNR03UFmQl+DahmrnJtAiDRFvxjL/nFbh+CrK4TC7KW3rimG8n/KtOY2bpvJ
-         R20b54vG0YG+szxn4LESQ75IsaLf+1Gr9fNOLlx3N37CCroGA5p/8TfraE6+J6LXxCMM
-         xQz0ukmnXYmBkgzu6m/ihgVaOVYH5zD6J4SygQ0CfNXGiGASwWdMlD6D04A+ElAHJOZH
-         mQvt/8Vi0L4aubgiI2uuMbGhu9ZbaqZI6o55wd+dN1ofMuULMA94cpedo7KjyXdU2F9v
-         /xhw==
-X-Gm-Message-State: AOAM533pcrNqYeX8y9Wq7uDkFj5ce/1eRKk9PK/ahMYPdaaXcXQgMj/P
-        qb4XSt3ntoACEEsDeAsu6qJVpdYdZ1laM0mxzMKXBBxzQh0=
-X-Google-Smtp-Source: ABdhPJwjEpoizRa9L79ZPsT2OVUutT8ozRSyE/0JHG/Ved9tIK9IL3j4WF2zqwupgavLD15Kp/RVtgEi3TpOGmdfEks=
-X-Received: by 2002:a25:5f0f:: with SMTP id t15mr1252894ybb.26.1605255017552;
- Fri, 13 Nov 2020 00:10:17 -0800 (PST)
+        id S1726260AbgKMIMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 03:12:49 -0500
+Received: from mga07.intel.com ([134.134.136.100]:31947 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726217AbgKMIMt (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 03:12:49 -0500
+IronPort-SDR: AJEKklCjOW7yeG2gvAjomdQPCQrgHq6bLUYo2fAhyDWd6fdlLc9tg0lSI9auIKZnEaDXgxDOWJ
+ aJKdptOW5tXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="234601511"
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="234601511"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 00:12:42 -0800
+IronPort-SDR: 4XFea9hQO71cV+aS9i+KFCEtpeaKq0/fyp4jZfkLDrN/om9LTctsIzl7L35qZM6/UlpDtKCR3w
+ 4edogvruxLNQ==
+X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
+   d="scan'208";a="542580418"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 00:12:39 -0800
+Subject: Re: [PATCH] perf vendor events: Update Skylake client events to v50
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel <Linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Liang, Kan" <kan.liang@intel.com>, yao.jin@intel.com,
+        Ian Rogers <irogers@google.com>
+References: <20201104015102.30363-1-yao.jin@linux.intel.com>
+ <20201106030018.GA359712@google.com>
+ <93fae76f-ce2b-ab0b-3ae9-cc9a2b4cbaec@linux.intel.com>
+ <CAM9d7chhrYh1hmHkw8NKkwEHDoU0q2ArpOj3NGm0_RiQ7eSuxQ@mail.gmail.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <38be0597-7f93-0aa1-b4c5-3c7f23b74f13@linux.intel.com>
+Date:   Fri, 13 Nov 2020 16:12:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com>
- <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
- <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com> <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 13 Nov 2020 09:10:06 +0100
-Message-ID: <CANiq72nL5O30-QXh9nBnE8rUdkHs=OxZJ=9uVWtKJ3YTDFr-fg@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAM9d7chhrYh1hmHkw8NKkwEHDoU0q2ArpOj3NGm0_RiQ7eSuxQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 10:49 PM Moore, Robert <robert.moore@intel.com> wrote:
->
-> 1>c:\acpica\source\components\utilities\utdelete.c(270): warning C4013: '__attribute__' undefined; assuming extern returning int
-> 1>c:\acpica\source\components\utilities\utdelete.c(270): error C2065: '__fallthrough__': undeclared identifier
-> 1>c:\acpica\source\components\utilities\utdelete.c(272): error C2143: syntax error: missing ';' before 'case'
+Hi Andi, Ian,
 
-Can you share a minimized sample with the `cl` version and command-line options?
+On 11/6/2020 12:21 PM, Namhyung Kim wrote:
+> On Fri, Nov 6, 2020 at 12:12 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
+>>
+>> Hi Namhyung,
+>>
+>> On 11/6/2020 11:00 AM, Namhyung Kim wrote:
+>>> Hi,
+>>>
+>>> On Wed, Nov 04, 2020 at 09:51:02AM +0800, Jin Yao wrote:
+>>>> - Update Skylake events to v50.
+>>>> - Update Skylake JSON metrics from TMAM 4.0.
+>>>> - Fix the issue in DRAM_Parallel_Reads
+>>>> - Fix the perf test warning
+>>>>
+>>>> Before:
+>>>>
+>>>> root@kbl-ppc:~# perf stat -M DRAM_Parallel_Reads -- sleep 1
+>>>> event syntax error: '{arb/event=0x80,umask=0x2/,arb/event=0x80,umask=0x2,thresh=1/}:W'
+>>>>                        \___ unknown term 'thresh' for pmu 'uncore_arb'
+>>>>
+>>>> valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,percore
+>>>>
+>>>> Initial error:
+>>>> event syntax error: '..umask=0x2/,arb/event=0x80,umask=0x2,thresh=1/}:W'
+>>>>                                     \___ Cannot find PMU `arb'. Missing kernel support?
+>>>>
+>>>> root@kbl-ppc:~# perf test metrics
+>>>> 10: PMU events                                 :
+>>>> 10.3: Parsing of PMU event table metrics               : Skip (some metrics failed)
+>>>> 10.4: Parsing of PMU event table metrics with fake PMUs: Ok
+>>>> 67: Parse and process metrics                  : Ok
+>>>>
+>>>> After:
+>>>>
+>>>> root@kbl-ppc:~# perf stat -M MEM_Parallel_Reads -- sleep 1
+>>>>
+>>>>    Performance counter stats for 'system wide':
+>>>>
+>>>>            4,951,646      arb/event=0x80,umask=0x2/ #    26.30 MEM_Parallel_Reads       (50.04%)
+>>>>              188,251      arb/event=0x80,umask=0x2,cmask=1/                                     (49.96%)
+>>>>
+>>>>          1.000867010 seconds time elapsed
+>>>>
+>>>> root@kbl-ppc:~# perf test metrics
+>>>> 10: PMU events                                 :
+>>>> 10.3: Parsing of PMU event table metrics               : Ok
+>>>> 10.4: Parsing of PMU event table metrics with fake PMUs: Ok
+>>>> 67: Parse and process metrics                  : Ok
+>>>>
+>>>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>>>
+>>> It seems not applied to acme/perf/core cleanly.
+>>>
+>>> Thanks,
+>>> Namhyung
+>>>
+>>
+>> It seems the patch mail is truncated. :(
+>>
+>> I attach the patch file in the mail. Sorry for inconvenience.
+> 
+> I've checked it fixed the perf test on my laptop (skylake).
+> 
+> Tested-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> Thanks,
+> Namhyung
+> 
 
-Cheers,
-Miguel
+Can I get ACK for this patch?
+
+It's mainly for fixing the perf-test issue and MEM_Parallel_Reads issue.
+
+Thanks
+Jin Yao
