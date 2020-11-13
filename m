@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826892B2966
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146A42B296A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgKMXzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:55:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgKMXzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:55:41 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23A1120B80;
-        Fri, 13 Nov 2020 23:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605311740;
-        bh=Mh4yXLMcmZQt7AZnvC9pTq+YtBQJCLQlTJ6Hv2pRFNs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VNoww2mH/7yh/oHYpz+Udrp4ex+Q74+w8jiJQDU4dVn3K2hg5gYJvbS2kOaYF/23C
-         +PYWS6Yn2GH5pNQtu9u+G9TEXK2lGPqwp/vfmqN+k3AHGcdk+rPr+opX+YznNF8/bF
-         OUjZ3RbCIj/XgQO43GcSiEYmIcvDL26r36p64Bas=
-Date:   Fri, 13 Nov 2020 15:55:39 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     mhocko@kernel.org, rientjes@google.com, willy@infradead.org,
-        hannes@cmpxchg.org, guro@fb.com, riel@surriel.com,
-        minchan@kernel.org, christian@brauner.io, oleg@redhat.com,
-        timmurray@google.com, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-Message-Id: <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
-In-Reply-To: <20201113173448.1863419-1-surenb@google.com>
-References: <20201113173448.1863419-1-surenb@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726156AbgKMX6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:58:07 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:47761 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgKMX6G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 18:58:06 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id A898A1C0005;
+        Fri, 13 Nov 2020 23:58:02 +0000 (UTC)
+Date:   Sat, 14 Nov 2020 00:58:01 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Olof Johansson <olof@lixom.net>, kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: ./include/generated/autoconf.h:1601:33: fatal error:
+ mach/debug-macro.S: No such file or directory
+Message-ID: <20201113235801.GB6117@piout.net>
+References: <202011111443.lt7V48Ig-lkp@intel.com>
+ <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 09:34:48 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+On 11/11/2020 09:51:26+0100, Linus Walleij wrote:
+> On Wed, Nov 11, 2020 at 7:18 AM kernel test robot <lkp@intel.com> wrote:
+> 
+> >    In file included from include/linux/kconfig.h:7,
+> >                     from <command-line>:
+> > >> ./include/generated/autoconf.h:1601:33: fatal error: mach/debug-macro.S: No such file or directory
+> >     1601 | #define CONFIG_DEBUG_LL_INCLUDE "mach/debug-macro.S"
+> >          |                                 ^~~~~~~~~~~~~~~~~~~~
+> >    compilation terminated.
+> 
+> This is an interesting one!
+> 
+> It happens when CONFIG_DEBUG_LL_INCLUDE does not have a custom
+> debug header for the platform under arch/arm/include/debug and the
+> KConfig falls through to the default value, which is <mach/debug-macro.S>.
+> 
+> Only that the majority is not using <mach/*> anymore.
+> 
+> I feel a bit like setting the default to debug/8250.S or something.
+> 
+> Suggestions?
+> 
+> Then the actual bug exposed:
+> 
+> The config tested by the robot is using
+> CONFIG_ARCH_AT91=y
+> CONFIG_SOC_SAMV7=y
+> 
+> When I look into Kconfig.debug it seems that this will define
+> DEBUG_AT91_SAMV7_USART1 but only a physical address,
+> no virtual address and and actually no debug header. It seems
+> LL_DEBUG is broken on SAMV7 and never really worked
+> so now that crops up.
+> 
+> Nicolas, something that should be fixed, I think?
+> 
 
-> When a process is being killed it might be in an uninterruptible sleep
-> which leads to an unpredictable delay in its memory reclaim. In low memory
-> situations, when it's important to free up memory quickly, such delay is
-> problematic. Kernel solves this problem with oom-reaper thread which
-> performs memory reclaim even when the victim process is not runnable.
-> Userspace currently lacks such mechanisms and the need and potential
-> solutions were discussed before (see links below).
-> This patch provides a mechanism to perform memory reclaim in the context
-> of the process that sends SIGKILL signal. New SYNC_REAP_MM flag for
-> pidfd_send_signal syscall can be used only when sending SIGKILL signal
-> and will lead to the caller synchronously reclaiming the memory that
-> belongs to the victim and can be easily reclaimed.
+I confirm DEBUG_LL is not broken on SAMV7. The config used by lkp doen't
+define DEBUG_AT91_SAMV7_USART1, it is not the culprit. Select it and the
+problem is gone since DEBUG_AT91_SAMV7_USART1 selects DEBUG_AT91_UART
+and DEBUG_LL_INCLUDE has:
+default "debug/at91.S" if DEBUG_AT91_UART
 
-hm.
-
-Seems to me that the ability to reap another process's memory is a
-generally useful one, and that it should not be tied to delivering a
-signal in this fashion.
-
-And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
-few changes and tweaks, but can't that be used to solve this problem?
+Your issue is CONFIG_DEBUG_SEMIHOSTING
 
