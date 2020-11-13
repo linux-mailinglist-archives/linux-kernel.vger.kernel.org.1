@@ -2,103 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7722B20E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6412B20E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgKMQwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:52:21 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61314 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725941AbgKMQwU (ORCPT
+        id S1726150AbgKMQws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgKMQwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:52:20 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADGXH87066679;
-        Fri, 13 Nov 2020 11:52:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=20opIcxHL6KerUt1ZtOZ7lNdftubKY4nb3a7SIpkdXM=;
- b=h0zuYmCgYo5cXz2KTcmHrJ7bEe36PHxRyBFDdCq1OEwtxhkpRxzpeMlpGUe4FVx9BGTH
- 6IVrO2tIQRosMqcGgG+tq6cQ6Y0tMSvYowSJ9edCalUV120fLzyTiMSqolhWq7+Ypk1b
- oRd+HtWfKQsfFx3NayQPW65jjBdb0H+4ny2I/aFlPHlUNIXgn6KeswLrvHPE+e9VOF4P
- gjPWdk0XatzcC0Q1IO9wv58VEFH8AzSe46kZ9MALWY3XAV6fgNMcqBxAkgsEnJX6HepR
- 0H42Lhsg6xcXvqK5o8KrSeu71sHAFiQRmt5B8l9+J3sB7kquMldCo9WUAPXPL7bHR/hI Mw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34swrd0gs3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 11:52:10 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADGpwN2016720;
-        Fri, 13 Nov 2020 16:52:08 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 34njuh6w7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 16:52:08 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADGq5Ml3539496
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Nov 2020 16:52:06 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C696E11C058;
-        Fri, 13 Nov 2020 16:52:05 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7E94A11C05B;
-        Fri, 13 Nov 2020 16:52:05 +0000 (GMT)
-Received: from [9.171.37.149] (unknown [9.171.37.149])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 13 Nov 2020 16:52:05 +0000 (GMT)
-Subject: Re: [PATCH 0/2] nvme-pic: improve max I/O queue handling
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <kbusch@kernel.org>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20201112082302.82441-1-schnelle@linux.ibm.com>
- <20201112145325.GC2573679@dhcp-10-100-145-180.wdc.com>
- <10908f20-7e18-e967-76dd-1a38e216b378@linux.ibm.com>
- <20201112173634.GA2626470@dhcp-10-100-145-180.wdc.com>
- <c753af20-878a-91ad-c5c2-692016fe2014@linux.ibm.com>
- <20201113162502.GA16940@lst.de>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <822e0e06-28c2-a069-6cc1-a0810b17fbdd@linux.ibm.com>
-Date:   Fri, 13 Nov 2020 17:52:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Fri, 13 Nov 2020 11:52:47 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F14C0613D1;
+        Fri, 13 Nov 2020 08:52:47 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id v22so11448905edt.9;
+        Fri, 13 Nov 2020 08:52:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IKZ0bJ9wrwGZuyOlCMns8U747V5thrsJagTuvXdjRs0=;
+        b=B5QKWdB6XLthMd7loD3Jk4sxXaEtcB8n4U3Mb9hq/gcdCgkrxNRynMEJwW61FU1DA4
+         RFSyMseFIBfVzxrexJKoO9Ck+E80Ef8+IgbaMnb8PVifymkACaiH7oN2tQD/jzR0t234
+         zczqDejfx0GN1I3kgCtzwVLJfRCEKAKYXZ7/eBBqW15cKXYj3ChnQb+ila0eLJUG3zyQ
+         kMHyzxm1wkifKclRrCHYP+Amf/q2nEchq/RsB4V30/8n8+4GB0JTIXhz6Tf7gmuIfcvM
+         86sF/dVj8+/h9GKbs22RUp/LJNLZnV/JUyeca6rhOjvLKMX3XXnBeoBRQx7l2555/0O0
+         95hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IKZ0bJ9wrwGZuyOlCMns8U747V5thrsJagTuvXdjRs0=;
+        b=Zt6DzowDeErhuzg2IEQdR0S+VuPZzG5oIwYdPnHvcr25/EWesnwsYKqk/rg2nGs18h
+         bN7RFlUkhhcxnFMwTkRn5OplYXgs1ohtvVpzL0jWzncknOMy+WYo7cEb6AH69I7SBKnX
+         lmjSDketeFbGsAkVYYW+p2R6azL+6qGvfmtoAUyRo2vYYPxGV8I3i645xOtG3QYjU/Yc
+         FBSTMcv4V4YQ/bY5ZXJU+7IjLZxTraigr4RAWACE9z+vEsvcxR6j89Q+/MxiDnXZlbrQ
+         y4hdNjqJ+mJL86Xo4ocrRaiv7eG8nackTfaYi4jnWRpGhRI0ARL8oIQJANPsPF0qlj2S
+         TZmQ==
+X-Gm-Message-State: AOAM531AYUdVAUjUhOrSASc05QWO+SURkNbox3DxnTWLUp6dDfmeReWX
+        ueyw6cPBx9N3yXj21tNO+ZLRa1ThXv5jKQ==
+X-Google-Smtp-Source: ABdhPJyybBa61atUbsLzBLVcxFjcWl8+HHcmbs0PP4Up1VBGFheVfq+mRInAYCPlJ0iukA6bUsjPJw==
+X-Received: by 2002:a05:6402:22d1:: with SMTP id dm17mr3411288edb.179.1605286365300;
+        Fri, 13 Nov 2020 08:52:45 -0800 (PST)
+Received: from yoga-910.localhost ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id rp28sm4076570ejb.77.2020.11.13.08.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 08:52:43 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robert Hancock <robert.hancock@calian.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: [PATCH RESEND net-next 00/18] net: phy: add support for shared interrupts (part 2)
+Date:   Fri, 13 Nov 2020 18:52:08 +0200
+Message-Id: <20201113165226.561153-1-ciorneiioana@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201113162502.GA16940@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- phishscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011130107
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
+This patch set aims to actually add support for shared interrupts in
+phylib and not only for multi-PHY devices. While we are at it,
+streamline the interrupt handling in phylib.
 
-On 11/13/20 5:25 PM, Christoph Hellwig wrote:
-> On Fri, Nov 13, 2020 at 02:15:59PM +0100, Niklas Schnelle wrote:
->>
->>
->> On 11/12/20 6:36 PM, Keith Busch wrote:
->>> On Thu, Nov 12, 2020 at 04:45:35PM +0100, Niklas Schnelle wrote:
->>>> You got to get something wrong, I hope in this case it's just the subject
->>>> of the cover letter :D
->>>
->>> I suppose the change logs could be worded a little better :)
->>
->> Do you think I should send a v2 with an improved message?
->> I just realized I'm pretty alone (and wrong) in starting
->> the commit message body lower case too.
-> 
-> I'll pull in soon, no need to resend.
-> 
+For a bit of context, at the moment, there are multiple phy_driver ops
+that deal with this subject:
 
-Thanks, appreciate your effort!
+- .config_intr() - Enable/disable the interrupt line.
+
+- .ack_interrupt() - Should quiesce any interrupts that may have been
+  fired.  It's also used by phylib in conjunction with .config_intr() to
+  clear any pending interrupts after the line was disabled, and before
+  it is going to be enabled.
+
+- .did_interrupt() - Intended for multi-PHY devices with a shared IRQ
+  line and used by phylib to discern which PHY from the package was the
+  one that actually fired the interrupt.
+
+- .handle_interrupt() - Completely overrides the default interrupt
+  handling logic from phylib. The PHY driver is responsible for checking
+  if any interrupt was fired by the respective PHY and choose
+  accordingly if it's the one that should trigger the link state machine.
+
+From my point of view, the interrupt handling in phylib has become
+somewhat confusing with all these callbacks that actually read the same
+PHY register - the interrupt status.  A more streamlined approach would
+be to just move the responsibility to write an interrupt handler to the
+driver (as any other device driver does) and make .handle_interrupt()
+the only way to deal with interrupts.
+
+Another advantage with this approach would be that phylib would gain
+support for shared IRQs between different PHY (not just multi-PHY
+devices), something which at the moment would require extending every
+PHY driver anyway in order to implement their .did_interrupt() callback
+and duplicate the same logic as in .ack_interrupt(). The disadvantage
+of making .did_interrupt() mandatory would be that we are slightly
+changing the semantics of the phylib API and that would increase
+confusion instead of reducing it.
+
+What I am proposing is the following:
+
+- As a first step, make the .ack_interrupt() callback optional so that
+  we do not break any PHY driver amid the transition.
+
+- Every PHY driver gains a .handle_interrupt() implementation that, for
+  the most part, would look like below:
+
+	irq_status = phy_read(phydev, INTR_STATUS);
+	if (irq_status < 0) {
+		phy_error(phydev);
+		return IRQ_NONE;
+	}
+
+	if (!(irq_status & irq_mask))
+		return IRQ_NONE;
+
+	phy_trigger_machine(phydev);
+
+	return IRQ_HANDLED;
+
+- Remove each PHY driver's implementation of the .ack_interrupt() by
+  actually taking care of quiescing any pending interrupts before
+  enabling/after disabling the interrupt line.
+
+- Finally, after all drivers have been ported, remove the
+  .ack_interrupt() and .did_interrupt() callbacks from phy_driver.
+
+This patch set is part 2 of the entire change set and it addresses the
+changes needed in 9 PHY drivers. The rest can be found on my Github
+branch here:
+https://github.com/IoanaCiornei/linux/commits/phylib-shared-irq
+
+I do not have access to most of these PHY's, therefore I Cc-ed the
+latest contributors to the individual PHY drivers in order to have
+access, hopefully, to more regression testing.
+
+Ioana Ciornei (18):
+  net: phy: vitesse: implement generic .handle_interrupt() callback
+  net: phy: vitesse: remove the use of .ack_interrupt()
+  net: phy: microchip: implement generic .handle_interrupt() callback
+  net: phy: microchip: remove the use of .ack_interrupt()
+  net: phy: marvell: implement generic .handle_interrupt() callback
+  net: phy: marvell: remove the use of .ack_interrupt()
+  net: phy: lxt: implement generic .handle_interrupt() callback
+  net: phy: lxt: remove the use of .ack_interrupt()
+  net: phy: nxp-tja11xx: implement generic .handle_interrupt() callback
+  net: phy: nxp-tja11xx: remove the use of .ack_interrupt()
+  net: phy: amd: implement generic .handle_interrupt() callback
+  net: phy: amd: remove the use of .ack_interrupt()
+  net: phy: smsc: implement generic .handle_interrupt() callback
+  net: phy: smsc: remove the use of .ack_interrupt()
+  net: phy: ste10Xp: implement generic .handle_interrupt() callback
+  net: phy: ste10Xp: remove the use of .ack_interrupt()
+  net: phy: adin: implement generic .handle_interrupt() callback
+  net: phy: adin: remove the use of the .ack_interrupt()
+
+ drivers/net/phy/adin.c         | 45 +++++++++++++---
+ drivers/net/phy/amd.c          | 37 +++++++++++--
+ drivers/net/phy/lxt.c          | 94 ++++++++++++++++++++++++++++++----
+ drivers/net/phy/marvell.c      | 88 ++++++++++++++++---------------
+ drivers/net/phy/microchip.c    | 24 +++++++--
+ drivers/net/phy/microchip_t1.c | 28 +++++++---
+ drivers/net/phy/nxp-tja11xx.c  | 42 +++++++++++++--
+ drivers/net/phy/smsc.c         | 55 ++++++++++++++++----
+ drivers/net/phy/ste10Xp.c      | 53 +++++++++++++------
+ drivers/net/phy/vitesse.c      | 61 ++++++++++++++--------
+ 10 files changed, 405 insertions(+), 122 deletions(-)
+
+Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Andre Edich <andre.edich@microchip.com>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Maxim Kochetkov <fido_max@inbox.ru>
+Cc: Nisar Sayed <Nisar.Sayed@microchip.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Robert Hancock <robert.hancock@calian.com>
+Cc: Yuiko Oshino <yuiko.oshino@microchip.com>
+
+-- 
+2.28.0
+
