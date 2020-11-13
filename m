@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856942B1E7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314722B1E7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgKMPVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:21:37 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:43041 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbgKMPVh (ORCPT
+        id S1726853AbgKMPVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:21:41 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:1222 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726753AbgKMPVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:21:37 -0500
+        Fri, 13 Nov 2020 10:21:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605280896; x=1636816896;
+  t=1605280900; x=1636816900;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=n+2kDWPFZI5Ji0zVR0elRY7r1xjxPZHctLTadiVY/zQ=;
-  b=Qhn9AYASbEY7qAGgIwhrNZisGBu7uTpgnzGb35znbtJBn9jtWXfcME/9
-   nX8cl4nFNCWND+glkgy5KwrkUpK7X73E0SORYx/u7N7DDKu3kCFBJ3QVV
-   m6Hql1NSJU02ScajWC8wOtZtQgZj4XPbIaOCD+FbHXeC/N5Xv2Ni4DgMU
-   ZxCh2+gg99ByqiHKxzLx1/HuZreVuq60FVWfaj7cswhPiKl7mS9tDt0Jk
-   omq5j+do+XVQVec9I5FjO8zJCWm2gVuhmob2z05840VdwJ/mxrpEeCErp
-   ccbIKjXRnrbcH3LcSMuZQIXlsaY4uBau6FbxuvH0Zz+uUa3qymQX2KNQ9
-   Q==;
-IronPort-SDR: uBwrt2a72qwOWA5p6DoPq1jBB/iwK7tXUKUnTsXPIgylWfwyQyzJJb71L1M3tcrpnErOeCp1v7
- kCQtDRSCEw+xuwiftvG5k6ehHauBDPN25ErCoo+ovzqTfRf2f6lKand0pDLTfGDMAzgF01WLKt
- aZLpQ8s5RWVAMyJoPTVzgZxF8Q0uBIXP+bVLNX6zpr8jI9CmFkEJaW63JQpfLsLc3PHtRBzapv
- 3d6JJy5ia0h3cODlwdyWmS8AUugcWG8z6IVs474pBZQg9z7BF3ntkGrV6k/PUI9NOiQ9UkqTqg
- YtI=
+  bh=gHTGJxT/Hd2GGsGVFZ5ukn7Hbstro+OxdfGBisfdTfE=;
+  b=Fhx0679BTt/qrT5RjsHCGaboDg3ngslkjR3eXM7ELcBjICFW2CDhLpd2
+   CjSQI5Re+V/y5+YATB0wpe3+5oJ/wPCcFXywVMCiINipZq3qqhY6dSjrw
+   4HB4z4ts2dk5K52g49wvQcDOTlulsdSVFj4D3/CM8MZsdufTNQ9+uergy
+   IL3Al/Zr/2HLa7LXYCH/sE95NKQ+HstnsNMB0RXDyVScRHn9+yJAceykF
+   +7kqgw1g7e8LFf/r1Xz7S8AtvbrNDYdRLXCmkaQpixB7rhVEN68zTNiLl
+   6Xx8nXCMyjWy3rz7WR4GD+WaTSrUqRtTXIez6AEY4jU+z9j5r0EcCe7NO
+   w==;
+IronPort-SDR: EYR8ww1Ov49NKPhNdDAJL9wVCiATrWf7A0W5ylrD1lzSGq+CrZDlQ8q54awtK9gU27/ZV49tV2
+ +GyCl4wSA4tEdamuMWDYTzLs25qRNM6TBf9FE/3CmYShYL5rvSIURfMVd9LaxQWWdtBKC0mArf
+ GWROxY/H4ADBkjTfDKbR/6yTIAbBUHowGerqX+2DbEKAUmN9Y8jxgmekcGdYjmTXCTRVuvbmm7
+ 0iYGlujn2pqStRcagaxzrKqiowPvgCXDEh1IuVpetAt8z4DCPysMBJ8zb/YX2OOngUI1cMyT3B
+ KhQ=
 X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
-   d="scan'208";a="93552136"
+   d="scan'208";a="96238169"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Nov 2020 08:21:36 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Nov 2020 08:21:39 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 13 Nov 2020 08:21:35 -0700
+ 15.1.1979.3; Fri, 13 Nov 2020 08:21:39 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 13 Nov 2020 08:21:32 -0700
+ 15.1.1979.3 via Frontend Transport; Fri, 13 Nov 2020 08:21:35 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <lgirdwood@gmail.com>, <broonie@kernel.org>
 CC:     <s.hauer@pengutronix.de>, <ttynkkynen@nvidia.com>,
@@ -48,9 +48,9 @@ CC:     <s.hauer@pengutronix.de>, <ttynkkynen@nvidia.com>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 4/6] regulator: mcp16502: adapt for get/set on other registers
-Date:   Fri, 13 Nov 2020 17:21:08 +0200
-Message-ID: <1605280870-32432-5-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v3 5/6] regulator: mcp16502: add support for ramp delay
+Date:   Fri, 13 Nov 2020 17:21:09 +0200
+Message-ID: <1605280870-32432-6-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
@@ -60,117 +60,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MCP16502 have multiple registers for each regulator (as described
-in enum mcp16502_reg). Adapt the code to be able to get/set all these
-registers. This is necessary for the following commits.
+MCP16502 have configurable ramp delay support (via DVSR bits in
+regulators' CFG register).
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/regulator/mcp16502.c | 43 +++++++++++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+ drivers/regulator/mcp16502.c | 89 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 87 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/regulator/mcp16502.c b/drivers/regulator/mcp16502.c
-index ab78f831f5bf..48eb64bc4018 100644
+index 48eb64bc4018..f81afeeddb19 100644
 --- a/drivers/regulator/mcp16502.c
 +++ b/drivers/regulator/mcp16502.c
-@@ -54,13 +54,9 @@
-  * This function is useful for iterating over all regulators and accessing their
-  * registers in a generic way or accessing a regulator device by its id.
-  */
--#define MCP16502_BASE(i) (((i) + 1) << 4)
-+#define MCP16502_REG_BASE(i, r) ((((i) + 1) << 4) + MCP16502_REG_##r)
- #define MCP16502_STAT_BASE(i) ((i) + 5)
+@@ -22,8 +22,9 @@
+ #define VDD_LOW_SEL 0x0D
+ #define VDD_HIGH_SEL 0x3F
  
--#define MCP16502_OFFSET_MODE_A 0
--#define MCP16502_OFFSET_MODE_LPM 1
--#define MCP16502_OFFSET_MODE_HIB 2
--
- #define MCP16502_OPMODE_ACTIVE REGULATOR_MODE_NORMAL
- #define MCP16502_OPMODE_LPM REGULATOR_MODE_IDLE
- #define MCP16502_OPMODE_HIB REGULATOR_MODE_STANDBY
-@@ -75,6 +71,23 @@
- #define MCP16502_MIN_REG 0x0
- #define MCP16502_MAX_REG 0x65
+-#define MCP16502_FLT BIT(7)
+-#define MCP16502_ENS BIT(0)
++#define MCP16502_FLT		BIT(7)
++#define MCP16502_DVSR		GENMASK(3, 2)
++#define MCP16502_ENS		BIT(0)
  
-+/**
-+ * enum mcp16502_reg - MCP16502 regulators's registers
-+ * @MCP16502_REG_A: active state register
-+ * @MCP16502_REG_LPM: low power mode state register
-+ * @MCP16502_REG_HIB: hibernate state register
-+ * @MCP16502_REG_SEQ: startup sequence register
-+ * @MCP16502_REG_CFG: configuration register
-+ */
-+enum mcp16502_reg {
-+	MCP16502_REG_A,
-+	MCP16502_REG_LPM,
-+	MCP16502_REG_HIB,
-+	MCP16502_REG_HPM,
-+	MCP16502_REG_SEQ,
-+	MCP16502_REG_CFG,
-+};
+ /*
+  * The PMIC has four sets of registers corresponding to four power modes:
+@@ -88,6 +89,12 @@ enum mcp16502_reg {
+ 	MCP16502_REG_CFG,
+ };
+ 
++/* Ramp delay (uV/us) for buck1, ldo1, ldo2. */
++static const int mcp16502_ramp_b1l12[] = { 6250, 3125, 2083, 1563 };
++
++/* Ramp delay (uV/us) for buck2, buck3, buck4. */
++static const int mcp16502_ramp_b234[] = { 3125, 1563, 1042, 781 };
 +
  static unsigned int mcp16502_of_map_mode(unsigned int mode)
  {
  	if (mode == REGULATOR_MODE_NORMAL || mode == REGULATOR_MODE_IDLE)
-@@ -144,22 +157,20 @@ static void mcp16502_gpio_set_mode(struct mcp16502 *mcp, int mode)
+@@ -271,6 +278,80 @@ static int mcp16502_get_status(struct regulator_dev *rdev)
+ 	return REGULATOR_STATUS_UNDEFINED;
  }
  
++static int mcp16502_set_voltage_time_sel(struct regulator_dev *rdev,
++					 unsigned int old_sel,
++					 unsigned int new_sel)
++{
++	static const u8 us_ramp[] = { 8, 16, 24, 32 };
++	int id = rdev_get_id(rdev);
++	unsigned int uV_delta, val;
++	int ret;
++
++	ret = regmap_read(rdev->regmap, MCP16502_REG_BASE(id, CFG), &val);
++	if (ret)
++		return ret;
++
++	val = (val & MCP16502_DVSR) >> 2;
++	uV_delta = abs(new_sel * rdev->desc->linear_ranges->step -
++		       old_sel * rdev->desc->linear_ranges->step);
++	switch (id) {
++	case BUCK1:
++	case LDO1:
++	case LDO2:
++		ret = DIV_ROUND_CLOSEST(uV_delta * us_ramp[val],
++					mcp16502_ramp_b1l12[val]);
++		break;
++
++	case BUCK2:
++	case BUCK3:
++	case BUCK4:
++		ret = DIV_ROUND_CLOSEST(uV_delta * us_ramp[val],
++					mcp16502_ramp_b234[val]);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return ret;
++}
++
++static int mcp16502_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
++{
++	const int *ramp;
++	int id = rdev_get_id(rdev);
++	unsigned int i, size;
++
++	switch (id) {
++	case BUCK1:
++	case LDO1:
++	case LDO2:
++		ramp = mcp16502_ramp_b1l12;
++		size = ARRAY_SIZE(mcp16502_ramp_b1l12);
++		break;
++
++	case BUCK2:
++	case BUCK3:
++	case BUCK4:
++		ramp = mcp16502_ramp_b234;
++		size = ARRAY_SIZE(mcp16502_ramp_b234);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	for (i = 0; i < size; i++) {
++		if (ramp[i] == ramp_delay)
++			break;
++	}
++	if (i == size)
++		return -EINVAL;
++
++	return regmap_update_bits(rdev->regmap, MCP16502_REG_BASE(id, CFG),
++				  MCP16502_DVSR, (i << 2));
++}
++
+ #ifdef CONFIG_SUSPEND
  /*
-- * mcp16502_get_reg() - get the PMIC's configuration register for opmode
-+ * mcp16502_get_reg() - get the PMIC's state configuration register for opmode
-  *
-  * @rdev: the regulator whose register we are searching
-  * @opmode: the PMIC's operating mode ACTIVE, Low-power, Hibernate
-  */
--static int mcp16502_get_reg(struct regulator_dev *rdev, int opmode)
-+static int mcp16502_get_state_reg(struct regulator_dev *rdev, int opmode)
- {
--	int reg = MCP16502_BASE(rdev_get_id(rdev));
--
- 	switch (opmode) {
- 	case MCP16502_OPMODE_ACTIVE:
--		return reg + MCP16502_OFFSET_MODE_A;
-+		return MCP16502_REG_BASE(rdev_get_id(rdev), A);
- 	case MCP16502_OPMODE_LPM:
--		return reg + MCP16502_OFFSET_MODE_LPM;
-+		return MCP16502_REG_BASE(rdev_get_id(rdev), LPM);
- 	case MCP16502_OPMODE_HIB:
--		return reg + MCP16502_OFFSET_MODE_HIB;
-+		return MCP16502_REG_BASE(rdev_get_id(rdev), HIB);
- 	default:
- 		return -EINVAL;
- 	}
-@@ -179,7 +190,7 @@ static unsigned int mcp16502_get_mode(struct regulator_dev *rdev)
- 	unsigned int val;
- 	int ret, reg;
+  * mcp16502_suspend_get_target_reg() - get the reg of the target suspend PMIC
+@@ -365,6 +446,8 @@ static const struct regulator_ops mcp16502_buck_ops = {
+ 	.disable			= regulator_disable_regmap,
+ 	.is_enabled			= regulator_is_enabled_regmap,
+ 	.get_status			= mcp16502_get_status,
++	.set_voltage_time_sel		= mcp16502_set_voltage_time_sel,
++	.set_ramp_delay			= mcp16502_set_ramp_delay,
  
--	reg = mcp16502_get_reg(rdev, MCP16502_OPMODE_ACTIVE);
-+	reg = mcp16502_get_state_reg(rdev, MCP16502_OPMODE_ACTIVE);
- 	if (reg < 0)
- 		return reg;
+ 	.set_mode			= mcp16502_set_mode,
+ 	.get_mode			= mcp16502_get_mode,
+@@ -389,6 +472,8 @@ static const struct regulator_ops mcp16502_ldo_ops = {
+ 	.disable			= regulator_disable_regmap,
+ 	.is_enabled			= regulator_is_enabled_regmap,
+ 	.get_status			= mcp16502_get_status,
++	.set_voltage_time_sel		= mcp16502_set_voltage_time_sel,
++	.set_ramp_delay			= mcp16502_set_ramp_delay,
  
-@@ -210,7 +221,7 @@ static int _mcp16502_set_mode(struct regulator_dev *rdev, unsigned int mode,
- 	int val;
- 	int reg;
- 
--	reg = mcp16502_get_reg(rdev, op_mode);
-+	reg = mcp16502_get_state_reg(rdev, op_mode);
- 	if (reg < 0)
- 		return reg;
- 
-@@ -269,10 +280,10 @@ static int mcp16502_suspend_get_target_reg(struct regulator_dev *rdev)
- {
- 	switch (pm_suspend_target_state) {
- 	case PM_SUSPEND_STANDBY:
--		return mcp16502_get_reg(rdev, MCP16502_OPMODE_LPM);
-+		return mcp16502_get_state_reg(rdev, MCP16502_OPMODE_LPM);
- 	case PM_SUSPEND_ON:
- 	case PM_SUSPEND_MEM:
--		return mcp16502_get_reg(rdev, MCP16502_OPMODE_HIB);
-+		return mcp16502_get_state_reg(rdev, MCP16502_OPMODE_HIB);
- 	default:
- 		dev_err(&rdev->dev, "invalid suspend target: %d\n",
- 			pm_suspend_target_state);
+ #ifdef CONFIG_SUSPEND
+ 	.set_suspend_voltage		= mcp16502_set_suspend_voltage,
 -- 
 2.7.4
 
