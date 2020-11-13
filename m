@@ -2,71 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC3D2B1FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A79F2B1FBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgKMQME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:12:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726278AbgKMQMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:12:01 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726995AbgKMQMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:12:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56683 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726920AbgKMQMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:12:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605283922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MzPV3G2COP33yZAJV3i6S/9jkDAO8h9mjkNYvu/SPwg=;
+        b=ZMfFlICiyxVYaVKoA75+pBccEyW5XzhvdG9W7JVTkuifiylnwQq77X9zjKUbYB6w+qagwD
+        OrKBuzfVlD6zlyhKtKQFGVb4swRPL50D2ffVdwk7TUo+7C7dorVz0u1433nD20bEnEsRcD
+        OtfrrOgXskbOQL8IuSp1jAGzpr9KAag=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-vDgneSjqO1Gg21M8dJbxMw-1; Fri, 13 Nov 2020 11:11:58 -0500
+X-MC-Unique: vDgneSjqO1Gg21M8dJbxMw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 562EA2076E;
-        Fri, 13 Nov 2020 16:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605283920;
-        bh=Fn17hh3pWFGUEXoHqDEupLKztXazD710yS3CyNpdX6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mmjzJqUG7djArN0Me3XtBxhVNTEQPfTQUS+Pv0DMYe36NmGjALV0L+tFMywTLLW0t
-         EpMQN3Zh630jcp7bjgf3eNnHyxqmY6Wge88R6b//mqxPf1e/MLc5zkQeEJd5W+CtPb
-         ACeiS2mxRV7jxB2x2b9lOe09LG/4G7nqpOboNfoI=
-Date:   Fri, 13 Nov 2020 16:11:44 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     lgirdwood@gmail.com, axel.lin@ingics.com, s.hauer@pengutronix.de,
-        linux-kernel@vger.kernel.org, ttynkkynen@nvidia.com,
-        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/6] regulator: core: do not continue if selector match
-Message-ID: <20201113161144.GA4355@sirena.org.uk>
-References: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
- <1605280870-32432-3-git-send-email-claudiu.beznea@microchip.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58756801FDE;
+        Fri, 13 Nov 2020 16:11:56 +0000 (UTC)
+Received: from [10.36.114.125] (ovpn-114-125.ams2.redhat.com [10.36.114.125])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8442B46;
+        Fri, 13 Nov 2020 16:11:49 +0000 (UTC)
+Subject: Re: [PATCH v10 05/11] vfio/pci: Register an iommu fault handler
+To:     Zenghui Yu <yuzenghui@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, joro@8bytes.org,
+        alex.williamson@redhat.com, jacob.jun.pan@linux.intel.com,
+        yi.l.liu@intel.com, robin.murphy@arm.com
+References: <20200320161911.27494-1-eric.auger@redhat.com>
+ <20200320161911.27494-6-eric.auger@redhat.com>
+ <571978ff-ee8a-6e9f-6755-519d0871646f@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <80befd0f-8876-2cd2-7af0-c5e32e79323b@redhat.com>
+Date:   Fri, 13 Nov 2020 17:11:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-In-Reply-To: <1605280870-32432-3-git-send-email-claudiu.beznea@microchip.com>
-X-Cookie: Avoid gunfire in the bathroom tonight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <571978ff-ee8a-6e9f-6755-519d0871646f@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Zenghui,
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 9/24/20 10:49 AM, Zenghui Yu wrote:
+> Hi Eric,
+> 
+> On 2020/3/21 0:19, Eric Auger wrote:
+>> Register an IOMMU fault handler which records faults in
+>> the DMA FAULT region ring buffer. In a subsequent patch, we
+>> will add the signaling of a specific eventfd to allow the
+>> userspace to be notified whenever a new fault as shown up.
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> 
+> [...]
+> 
+>> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+>> index 586b89debed5..69595c240baf 100644
+>> --- a/drivers/vfio/pci/vfio_pci.c
+>> +++ b/drivers/vfio/pci/vfio_pci.c
+>> @@ -27,6 +27,7 @@
+>>   #include <linux/vfio.h>
+>>   #include <linux/vgaarb.h>
+>>   #include <linux/nospec.h>
+>> +#include <linux/circ_buf.h>
+>>     #include "vfio_pci_private.h"
+>>   @@ -283,6 +284,38 @@ static const struct vfio_pci_regops
+>> vfio_pci_dma_fault_regops = {
+>>       .add_capability = vfio_pci_dma_fault_add_capability,
+>>   };
+>>   +int vfio_pci_iommu_dev_fault_handler(struct iommu_fault *fault,
+>> void *data)
+>> +{
+>> +    struct vfio_pci_device *vdev = (struct vfio_pci_device *)data;
+>> +    struct vfio_region_dma_fault *reg =
+>> +        (struct vfio_region_dma_fault *)vdev->fault_pages;
+>> +    struct iommu_fault *new =
+>> +        (struct iommu_fault *)(vdev->fault_pages + reg->offset +
+>> +            reg->head * reg->entry_size);
+> 
+> Shouldn't 'reg->head' be protected under the fault_queue_lock? Otherwise
+> things may change behind our backs...>
+> We shouldn't take any assumption about how IOMMU driver would report the
+> fault (serially or in parallel), I think.
 
-On Fri, Nov 13, 2020 at 05:21:06PM +0200, Claudiu Beznea wrote:
-> Do not continue if selector has already been located.
+Yes I modified the locking
 
-This doesn't apply against current code, please check and resend.
+Thanks
 
---C7zPtVaVf+AK4Oqc
-Content-Type: application/pgp-signature; name="signature.asc"
+Eric
+> 
+>> +    int head, tail, size;
+>> +    int ret = 0;
+>> +
+>> +    if (fault->type != IOMMU_FAULT_DMA_UNRECOV)
+>> +        return -ENOENT;
+>> +
+>> +    mutex_lock(&vdev->fault_queue_lock);
+>> +
+>> +    head = reg->head;
+>> +    tail = reg->tail;
+>> +    size = reg->nb_entries;
+>> +
+>> +    if (CIRC_SPACE(head, tail, size) < 1) {
+>> +        ret = -ENOSPC;
+>> +        goto unlock;
+>> +    }
+>> +
+>> +    *new = *fault;
+>> +    reg->head = (head + 1) % size;
+>> +unlock:
+>> +    mutex_unlock(&vdev->fault_queue_lock);
+>> +    return ret;
+>> +}
+>> +
+>>   #define DMA_FAULT_RING_LENGTH 512
+>>     static int vfio_pci_init_dma_fault_region(struct vfio_pci_device
+>> *vdev)
+>> @@ -317,6 +350,13 @@ static int vfio_pci_init_dma_fault_region(struct
+>> vfio_pci_device *vdev)
+>>       header->entry_size = sizeof(struct iommu_fault);
+>>       header->nb_entries = DMA_FAULT_RING_LENGTH;
+>>       header->offset = sizeof(struct vfio_region_dma_fault);
+>> +
+>> +    ret = iommu_register_device_fault_handler(&vdev->pdev->dev,
+>> +                    vfio_pci_iommu_dev_fault_handler,
+>> +                    vdev);
+>> +    if (ret)
+>> +        goto out;
+>> +
+>>       return 0;
+>>   out:
+>>       kfree(vdev->fault_pages);
+> 
+> 
+> Thanks,
+> Zenghui
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+usD8ACgkQJNaLcl1U
-h9D9FggAhfjW1qkUWNVF5sUtv0D+r7MlzNb5DOx5IsU44tjQV52LwRdna31Y9E90
-Mn2sM6Qrg49P4SScwIyKZfMs9hKh/w40kq/TSiam+0lwS2TavmODts+mPS+FIhuT
-yu51KDx1CLNTzbHKcHS7SbGGzXjLcjk8RC4zuOxwtn/IPbh05ktPeP6Oj9zqXMbZ
-pDQt15RhMXSyNWHZBFo1PQBnjwMQU3ZSuLqu9BsXDADGwJUfBPV+EkHTdi63F18P
-1Asyvncd700tIqCiwZhtQiKAQulprcNEDBw2A0fHlw1YRfmS+VF6+qWImW1/Yds9
-N0ztBsOBUg3Nchjwg2u9iKFDvxWGkw==
-=9sF/
------END PGP SIGNATURE-----
-
---C7zPtVaVf+AK4Oqc--
