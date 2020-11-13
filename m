@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1082B2082
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADE52B2084
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgKMQej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgKMQej (ORCPT
+        id S1726396AbgKMQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:34:51 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:59825 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726157AbgKMQeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:34:39 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03166C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:34:39 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id n11so9471528ota.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:34:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IeHjEdBwujyvptGFaPRXgb7qbeR0MajjTNsJZ6r0AwI=;
-        b=y6Q2abrkuHY7SORVLGVtSi9chpFmfGS4kCgoHhlcACBE72aXcO8Q+U84eNqc2XjuRl
-         WC7/lHVqIauBLQqf0qrT559UJdTD0oudH6oFcPXw0DEfN3RerI01/C0OxqiTdSO9+OHs
-         8R3O6MFgaRvyP2rdXQzNXLYT7wTr9I3FIgwo6Za/i2+uTf1DHV0vrkYriCiAMfJ5RiAk
-         Emf5PmFtRtBAEDpIC99O803SydbD7JjomxWh1ENvUxPiL4Wq/ND5ws/MiaynurB8qfN3
-         X+xTPOQb6p1kUgMbg0nsYQLdOomSrZTtfAg4j/QnrxGqEVlFjtjDb/4FUzvyApBeyZmp
-         46EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IeHjEdBwujyvptGFaPRXgb7qbeR0MajjTNsJZ6r0AwI=;
-        b=UVm9kW02sejChb4Urf+OeDZOdkJhAE1JdqjUolBSh8yks3eR/7D59fggW1YW9781s/
-         z/DMfjFC2knrTRB8tds/+q6Kw8h7yGGbWSN4DLYff0DuW4dJfTZR0dzrG4iHTojIujNR
-         oMoutnXGGTInG/O5ZT6J36mUmQwOkqaauo9YRjwXdFECO3Yo/a03Ioiuu2KLdONv9lX2
-         bniXAGtsOJwbA4qGDdkxsDzYMkz/7k3miIyCrVLUJJT80lcTG8DJizlDx1DXLf66iKJo
-         oVQ0fzkXtKQAub8y7Ui0QizAp2o0hLPA1xpsoguAC44Qzm9rzXpMquyk078t93AcPRHJ
-         zmig==
-X-Gm-Message-State: AOAM531Gv73YmEVp7MG3714icVcjPq4dRieJm8A+OdILMcttPO+1oeaR
-        KkZ/cpDVJmrRMUV4c+4tCGhxzQ==
-X-Google-Smtp-Source: ABdhPJw5ymtgZo2jPecNpbI790tRVM9vWhc0GRyo6zgJrBo68tYmw7crULQ/ayo50yDFFTvY8i/crg==
-X-Received: by 2002:a9d:1f5:: with SMTP id e108mr2104201ote.309.1605285273332;
-        Fri, 13 Nov 2020 08:34:33 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r188sm1957982oia.13.2020.11.13.08.34.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:34:32 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        georgi.djakov@linaro.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: defconfig: Enable Qualcomm OSM L3 driver
-Date:   Fri, 13 Nov 2020 08:34:44 -0800
-Message-Id: <20201113163444.3138807-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        Fri, 13 Nov 2020 11:34:50 -0500
+Received: (qmail 324707 invoked by uid 1000); 13 Nov 2020 11:34:49 -0500
+Date:   Fri, 13 Nov 2020 11:34:49 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     John Boero <boeroboy@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
+Message-ID: <20201113163449.GB322940@rowland.harvard.edu>
+References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
+ <X61rce8GANHW1ysh@kroah.com>
+ <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
+ <X613chtPVIg8kquH@kroah.com>
+ <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
+ <20201112192524.GB287229@rowland.harvard.edu>
+ <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OSM L3 interconnect driver is used for scaling the bus to the L3
-cache on modern Qualcomm platforms, enable it.
+On Fri, Nov 13, 2020 at 01:18:05PM +0000, John Boero wrote:
+> Thanks for the tips.
+> 
+> I've spent some more time on this this morning.
+> It looks like it's not the dev after all.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+What isn't the dev?
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 8992328174fd..6eecac032825 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1052,6 +1052,7 @@ CONFIG_MUX_MMIO=y
- CONFIG_INTERCONNECT=y
- CONFIG_INTERCONNECT_QCOM=y
- CONFIG_INTERCONNECT_QCOM_MSM8916=m
-+CONFIG_INTERCONNECT_QCOM_OSM_L3=m
- CONFIG_INTERCONNECT_QCOM_SDM845=m
- CONFIG_INTERCONNECT_QCOM_SM8150=m
- CONFIG_INTERCONNECT_QCOM_SM8250=m
--- 
-2.28.0
+> Every interface in the dev is set NULL after init.
 
+I can't tell what this means.  Please be more explicit.
+
+> Just like in the original Ubuntu bug 1827452 filed by someone else
+> the device seems to disconnect itself after uvcvideo initialization.
+> Then there is a 5 second pause before usb_ifnum_to_if tries
+> to iterate through its 8 interfaces - all of which are null.
+> It looks like uvc properly locks the dev, so maybe this could
+> be caused by any device being unplugged after init?
+
+More likely there is a bug in the uvcvideo driver.
+
+> The WARNING handle preserves USB function though,
+> and subsequent lsusb behaves fine:
+
+No, the WARN only writes a message to the system log.  The "return" 
+statement is what prevented the system from crashing.
+
+> $ lsusb | fold -w 80
+> Bus 002 Device 002: ID 8087:8002 Intel Corp. 8 channel internal hub
+> Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> Bus 001 Device 002: ID 8087:800a Intel Corp. Hub
+> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> Bus 004 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
+> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+> Bus 003 Device 005: ID 1ea7:0064 SHARKOON Technologies GmbH 2.4GHz Wireless rech
+> argeable vertical mouse [More&Better]
+> Bus 003 Device 004: ID 145f:025c Trust Trust USB Microphone
+> Bus 003 Device 002: ID 1050:0407 Yubico.com Yubikey 4/5 OTP+U2F+CCID
+> Bus 003 Device 009: ID 0a5c:21e8 Broadcom Corp. BCM20702A0 Bluetooth 4.0
+> Bus 003 Device 008: ID 0451:8142 Texas Instruments, Inc. TUSB8041 4-Port Hub
+> Bus 003 Device 006: ID 062a:4101 MosArt Semiconductor Corp. Wireless Keyboard/Mo
+> use
+> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+> Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> 
+> 8x (0-7) occurences of the following WARNING:
+> 
+> [ 140.678756] usb 3-4: USB disconnect, device number 3
+> [ 145.995855] ------------[ cut here ]------------
+> [ 145.995863] dev interface is NULL in usb_ifnum_to_if
+> [ 145.995907] WARNING: CPU: 31 PID: 5617 at drivers/usb/core/usb.c:289
+> usb_ifnum_to_if+0x58/0x80
+
+You removed the most important part of the log message!  What appears 
+below this point?
+
+In fact, you should just post the entire log (or put it on a server 
+somewhere and post a URL).
+
+Alan Stern
