@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0548F2B1F55
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743D32B1F57
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgKMP5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:57:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726741AbgKMP5T (ORCPT
+        id S1726859AbgKMP5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:57:24 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35612 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726741AbgKMP5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:57:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605283037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=60wJj95OB0HMoxRPwUZqpPdQUOWeJPZmog9M4skpc20=;
-        b=cmsxZnZvSI6I7bX5BjwduYPOy062CycFmIyLp5F8SQGh+XQcTGH/gqo4dZdiT3TVPiN0PG
-        0lDMrKpWQyrRGMEx2Y/xnf+GXL/7e0t/2zcOU/KHI2dMsAHXrDl+e5D22f/wFMv7mwdqe2
-        EJBQ9TMkDWSEMXks4fQRHVOGW+7oAl0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403--STiG3t2NrKA4VtThMO5tw-1; Fri, 13 Nov 2020 10:57:13 -0500
-X-MC-Unique: -STiG3t2NrKA4VtThMO5tw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D357C1868401;
-        Fri, 13 Nov 2020 15:57:12 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-113-83.ams2.redhat.com [10.36.113.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4364710013BD;
-        Fri, 13 Nov 2020 15:57:08 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] vdpasim: fix "mac_pton" undefined error
-Date:   Fri, 13 Nov 2020 16:57:06 +0100
-Message-Id: <20201113155706.599434-1-lvivier@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Fri, 13 Nov 2020 10:57:23 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADFfpe3053436;
+        Fri, 13 Nov 2020 10:57:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=6Bma8JVVvotebU2sHjOCW2Bu+52hzHJBheh7pWVE0Ow=;
+ b=tS9sH5Gg7MoMpcQ6luqe//kA0Cl0YCoDfkBP+jHvzeScizXTIa3tLyVD8ajQrmk79BNu
+ II5L775mnYNBJ5wmZ6LxO/+G5+W+nAiqXYVhXTd4qbiO5noi9s0e0jEz24CwON7wdR09
+ LoVqSqq87rRHa9WdMqY+IADeXmyrCScoXrTAMedcmm+cBaBt4IuSMvoFIriFP1gBj7Q6
+ u3Oepq0aOzhWGpJtjYcB0LIPupbDIB064MwhGnFWYNGv4GhVNFal9xkPY6RNng3GXXmQ
+ PPlcqUU830UH550O0p6qykFDK0ybLoYcaRM3hA/mZUy/sdKgdaDyQpQdHSF6geUzR1MU tQ== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34sw0v8exm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 10:57:20 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADFrVP1012531;
+        Fri, 13 Nov 2020 15:57:19 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 34nk77ug7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 15:57:18 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADFvGnu3670690
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 15:57:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 943CCAE04D;
+        Fri, 13 Nov 2020 15:57:16 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 53044AE055;
+        Fri, 13 Nov 2020 15:57:15 +0000 (GMT)
+Received: from sig-9-65-233-212.ibm.com (unknown [9.65.233.212])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Nov 2020 15:57:15 +0000 (GMT)
+Message-ID: <27ecba12eb9f61e73b4b3ecf69310ce3f21bc2e9.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] ima: select ima-buf template for buffer measurement
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 13 Nov 2020 10:57:14 -0500
+In-Reply-To: <20201112203959.3657-1-nramas@linux.microsoft.com>
+References: <20201112203959.3657-1-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 spamscore=0
+ malwarescore=0 phishscore=0 suspectscore=3 mlxscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011130096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-   ERROR: modpost: "mac_pton" [drivers/vdpa/vdpa_sim/vdpa_sim.ko] undefined!
+Hi Lakshmi,
 
-mac_pton() is defined in lib/net_utils.c and is not built if NET is not set.
+On Thu, 2020-11-12 at 12:39 -0800, Lakshmi Ramasubramanian wrote:
+> The default IMA template used for all policy rules is the value set
+> for CONFIG_IMA_DEFAULT_TEMPLATE if the policy rule does not specify
+> a template. The default IMA template for buffer measurements should be
+> 'ima-buf' - so that the measured buffer is correctly included in the IMA
+> measurement log entry.
+> 
+> With the default template format, buffer measurements are added to
+> the measurement list, but do not include the buffer data, making it
+> difficult, if not impossible, to validate. Including 'ima-buf'
+> template records in the measurement list by default, should not impact
+> existing attestation servers without 'ima-buf' template support.
+> 
+> Initialize a global 'ima-buf' template and select that template,
+> by default, for buffer measurements.
+> 
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-Select GENERIC_NET_UTILS as vdpasim doesn't depend on NET.
+Thanks!  It's now queued in next-integrity-testing.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- drivers/vdpa/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-index d7d32b656102..358f6048dd3c 100644
---- a/drivers/vdpa/Kconfig
-+++ b/drivers/vdpa/Kconfig
-@@ -13,6 +13,7 @@ config VDPA_SIM
- 	depends on RUNTIME_TESTING_MENU && HAS_DMA
- 	select DMA_OPS
- 	select VHOST_RING
-+	select GENERIC_NET_UTILS
- 	default n
- 	help
- 	  vDPA networking device simulator which loop TX traffic back
--- 
-2.28.0
+Mimi
 
