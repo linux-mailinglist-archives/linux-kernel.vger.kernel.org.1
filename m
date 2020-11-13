@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D16E2B28AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7F22B28AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgKMWjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
+        id S1726327AbgKMWkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgKMWjS (ORCPT
+        with ESMTP id S1726003AbgKMWkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:39:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837DFC0613D1;
-        Fri, 13 Nov 2020 14:39:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1sWnp4xWoSWviiDD1uAEscmQshNS251FQK6w82npo+M=; b=E+466uXzpNs/shBMZwR881bP99
-        xhxdKK1ctFWU47M5vckLUcTgM916hgFGQltFU06JOQYkbJsrva/AZ/WlZwZ7KI4AJjhLtu61fmcvR
-        EGCKlHDYfJmArEkkQ2z1rblhq82n6hIfmaH0hV9BX8fSu2ZEe0+a4qaNTHfgwEH07TWGjI+07GKsZ
-        Fs9S+Fs7DoGCM1xjYUQeZZZ2pYJ6SmD7KNlHJ8gqpQpiTRrq0bm51gM5JisJH8xZ7FfC1iO2EI2k5
-        fkGmlNmmvhwGwbGWu1tOKPLNDlmAnhf0urqHrz+23BtmNw2Psi166xr6gDBD39lU2lZYe9XWANGDp
-        IHYlzKKA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdhiq-0001WW-6N; Fri, 13 Nov 2020 22:39:12 +0000
-Date:   Fri, 13 Nov 2020 22:39:12 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>
-Subject: Re: [PATCH 2/2] kernel-doc: Handle function typedefs without
- asterisks
-Message-ID: <20201113223912.GK17076@casper.infradead.org>
-References: <20201030144713.201372-1-pbonzini@redhat.com>
- <20201030144713.201372-3-pbonzini@redhat.com>
- <20201113152106.7b4a07ee@lwn.net>
+        Fri, 13 Nov 2020 17:40:12 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0B9C0613D1;
+        Fri, 13 Nov 2020 14:40:11 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p1so11828257wrf.12;
+        Fri, 13 Nov 2020 14:40:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xKudFHJ7NTrvGxc8c99xpuNccdIUwDTSbaq60DduiFo=;
+        b=N1ZBOw79eZcRy9yLNVufX01Tp2tRSMnkLMiOJczGcWdWGyQGKB98D4yoS68T2Cyalu
+         C8/hp3slDiCr2I8BSf5TzV/unPaZKk2/bLY9DpZXVdmbEKFyPX7cLTPPqF0KvGAZI6MY
+         RozxM5tXfirncUayHRoRS6RiVgtjCfcl5FUjH93zmoHwVkm8k2Gdf4QVLj1t0orGTSlh
+         BcF3mX0LOuJIJOB/LhQR2OmjOnVSWcEgSuBcEVnrl7NrIp3b10P6UNkl3o7tawqeCEHt
+         sxgAI6foPa2cXSX7wj8By5HaVy8w5HtRQh58nmSYqv4xQ8mOhZP4vw+dHsczyvH6p11Y
+         ZdAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xKudFHJ7NTrvGxc8c99xpuNccdIUwDTSbaq60DduiFo=;
+        b=FSgfLwMKPd/65cseq2U58CIReyq5mn6NoRtennaoukdxuDtnxDsdn0FS9qHAOUPCpW
+         rv67ebtMDSNKkES0W2DcOUjgKZmjcl9NWAzt4iZyRb9+DuaZU3ahteH43EUhvYQHP005
+         DYsAmTyvqZtg+0b0Pzilo3BldmFWTGtc911zOqBPlXI2CMhkiFX9RpcGoxancVUUuodV
+         0DolhN6pwA7xFSGv2HIjHuhTsrdY0TQe5woCogCTIUFdFfk5pozh5+e3tyKGh3SgChDi
+         GxxveVQpZnvZ34vG8ko7vfL435311Lt4SFFx4akFmkGOBs4midQ5i9dyt8e573nGueBw
+         +WWg==
+X-Gm-Message-State: AOAM5300gFLrZDo2rRp9buy9cvaRkM+MrF2LD/mfpsdwknALz3faj8L6
+        AacFmQJ3TqOckTYMhLyeT3PIQHNh8fc=
+X-Google-Smtp-Source: ABdhPJyoO9AB1J+eCna4qFKpfFnA1J/Ce5QK8vXg7CpeJi+5cmx4Wrj7eHP73keYeTu2R8TgdSI8uA==
+X-Received: by 2002:a5d:690c:: with SMTP id t12mr6038033wru.405.1605307210115;
+        Fri, 13 Nov 2020 14:40:10 -0800 (PST)
+Received: from xws.fritz.box (pd9e5a945.dip0.t-ipconnect.de. [217.229.169.69])
+        by smtp.gmail.com with ESMTPSA id f23sm11206558wmb.43.2020.11.13.14.40.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 14:40:09 -0800 (PST)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: [PATCH] platform/surface: gpe: Add support for 15" Intel version of Surface Laptop 3
+Date:   Fri, 13 Nov 2020 23:39:35 +0100
+Message-Id: <20201113223935.2073847-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113152106.7b4a07ee@lwn.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 03:21:06PM -0700, Jonathan Corbet wrote:
-> On Fri, 30 Oct 2020 15:47:13 +0100
-> Paolo Bonzini <pbonzini@redhat.com> wrote:
-> 
-> > From: Eduardo Habkost <ehabkost@redhat.com>
-> > 
-> > Example of typedef that was not parsed by kernel-doc:
-> > 
-> >   typedef void (ObjectUnparent)(Object *obj);
-> > 
-> > Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> 
-> So as you've undoubtedly noticed, reading those kernel-doc regexes is ... a
-> wee bit on the painful side.  Trying to compare two of them in a patch to
-> figure out what you have done is even worse.  I suspect we want these
-> patches, but can you please supply a changelog that describes the change? 
+In addition to a 13" version, there is also a 15" (business) version of
+the Surface Laptop 3 based on Intel CPUs. This version also handles
+wakeup by lid via (unmarked) GPEs, so add support for it as well.
 
-Better ... can we have a test suite for the regexes and make patches to
-them include updates to the test suite?  They have clearly passed the
-point of human understanding ;-)
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
+ drivers/platform/surface/surface_gpe.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/platform/surface/surface_gpe.c b/drivers/platform/surface/surface_gpe.c
+index 0f44a52d3a9b..e49e5d6d5d4e 100644
+--- a/drivers/platform/surface/surface_gpe.c
++++ b/drivers/platform/surface/surface_gpe.c
+@@ -146,6 +146,18 @@ static const struct dmi_system_id dmi_lid_device_table[] = {
+ 		},
+ 		.driver_data = (void *)lid_device_props_l4D,
+ 	},
++	{
++		.ident = "Surface Laptop 3 (Intel 15\")",
++		.matches = {
++			/*
++			 * We match for SKU here due to different variants: The
++			 * AMD (15") version does not rely on GPEs.
++			 */
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Laptop_3_1872"),
++		},
++		.driver_data = (void *)lid_device_props_l4D,
++	},
+ 	{ }
+ };
+ 
+-- 
+2.29.2
 
