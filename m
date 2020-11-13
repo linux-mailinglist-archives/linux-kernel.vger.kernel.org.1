@@ -2,163 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6534F2B1695
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3392E2B169A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgKMHkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:40:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:33650 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKMHkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:40:10 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E02A2142F;
-        Thu, 12 Nov 2020 23:40:09 -0800 (PST)
-Received: from [10.163.80.57] (unknown [10.163.80.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB8013F718;
-        Thu, 12 Nov 2020 23:40:04 -0800 (PST)
-Subject: Re: [PATCH] arm64: mm: account for hotplug memory when randomizing
- the linear region
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steve Capper <steve.capper@arm.com>,
-        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        gshan@redhat.com, Robin Murphy <robin.murphy@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20201014081857.3288-1-ardb@kernel.org>
- <160503561804.1015659.16599672230432576934.b4-ty@arm.com>
- <a330440d-803b-5aa2-0092-a18317819850@arm.com> <20201112092558.GC29613@gaia>
- <2f0d9bc5-6288-7388-ff10-97198dabac6f@arm.com>
- <CAMj1kXGa-WUr8LzDHGEfgG18ctJJp1v8b4UFckbcwtzpoEv+Tw@mail.gmail.com>
- <ae1bdb23-4e44-bc6f-bdf0-a4efbcb5a3cb@arm.com>
- <CAMj1kXESYQjtuWOBVz=2=GwrczohUDqCTfQVOYmyj4wkdpUYnA@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <2e84fa4b-f35b-5ecf-5b67-f570bdd29a06@arm.com>
-Date:   Fri, 13 Nov 2020 13:10:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726479AbgKMHkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgKMHkb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:40:31 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE69C0613D1;
+        Thu, 12 Nov 2020 23:40:31 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w14so6917947pfd.7;
+        Thu, 12 Nov 2020 23:40:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Kc4zpgCIo7TfpbXs93lzsYdWhQWRL3/bt5FKJ8OT6Ok=;
+        b=c5iRV+TVxkKb9WaqrpRn5rf4JeUYhg6cMZouSz9pd7SrGfWawMgxs1ep9lTG3LNjd5
+         Xp5Wuzp+X1Z0ex6e+tF9/TI5jWe7KURr8Qyg1jP8yP5SoIARvrZaO8Ze9L6EqxwGOow+
+         jwXTXm/XsPQQ2iIokiAIT82rS942qPJXkWaf6jzti1jV70T1o58J99UdO8dQeoeKrXG3
+         cvo1LKBdhWeFnsR0siDcbthi3WU6eRxYocpShJI1uN52J5GGzyYnfJpX0glXcq8Z2bpy
+         jH88jgnJwfnSmDOKydkp8VLjSV1AfPs9ck6FcEbFGYdJ60tsdw9168ichWmE8Uf6y7W3
+         cfGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Kc4zpgCIo7TfpbXs93lzsYdWhQWRL3/bt5FKJ8OT6Ok=;
+        b=TZyDQ/RmV6K9BWmPMuMETGrQzA5F9NCYk89s1inrzQ24980Gtyc55c1ZkPsP1TT938
+         90Pucf4PtGBGJzEN/VnA82IOOkO/AMRwr5jV3MMWaLC72fGrfsbS0v3ixTf4ELpY6IzS
+         /agiCZhpeEG65i1yds2UXPwqK33qbRDDkkRZnML6d3jbDkZzRmdBwjvmmcf+a4ek6ahq
+         rHOiQbRbqMYFzltctAUZ8970EggZDHoeDJu0ltN29G1+KvlZhXCOPETwRIf/T1KuV9b2
+         gsq62ogT1oaF1xqh3fMfDJ8p9d5tUb5phgfai6/sx5jKnsWi5swxSCU860NKlLvQ0V5p
+         n65Q==
+X-Gm-Message-State: AOAM530ENyNdvZM2K5/Z367c9NvT3Re7/SBCM0cedsnbc6GZlq0fCESC
+        /xZooCiTOraYsqlr/bVl+UDp7P0OXTw=
+X-Google-Smtp-Source: ABdhPJxS7sM9wBhoU4SnE3Wbnq9NyDqSYDIvLWXd+gJMpezdIifAVvYeUD5nePM1SIGfmvbBX+8AFw==
+X-Received: by 2002:a63:5d04:: with SMTP id r4mr1054276pgb.165.1605253231281;
+        Thu, 12 Nov 2020 23:40:31 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id i29sm8067234pgb.10.2020.11.12.23.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 23:40:30 -0800 (PST)
+Date:   Thu, 12 Nov 2020 23:40:28 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 08/15] input: touchscreen: surface3_spi: Remove set but
+ unused variable 'timestamp'
+Message-ID: <20201113074028.GI356503@dtor-ws>
+References: <20201112110204.2083435-1-lee.jones@linaro.org>
+ <20201112110204.2083435-9-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXESYQjtuWOBVz=2=GwrczohUDqCTfQVOYmyj4wkdpUYnA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112110204.2083435-9-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/13/20 12:36 PM, Ard Biesheuvel wrote:
-> On Fri, 13 Nov 2020 at 08:03, Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->>
->>
->>
->> On 11/13/20 11:44 AM, Ard Biesheuvel wrote:
->>> On Fri, 13 Nov 2020 at 04:16, Anshuman Khandual
->>> <anshuman.khandual@arm.com> wrote:
->>>>
->>>>
->>>>
->>>> On 11/12/20 2:55 PM, Catalin Marinas wrote:
->>>>> Hi Anshuman,
->>>>>
->>>>> On Wed, Nov 11, 2020 at 09:18:56AM +0530, Anshuman Khandual wrote:
->>>>>> On 11/11/20 12:44 AM, Catalin Marinas wrote:
->>>>>>> On Wed, 14 Oct 2020 10:18:57 +0200, Ard Biesheuvel wrote:
->>>>>>>> As a hardening measure, we currently randomize the placement of
->>>>>>>> physical memory inside the linear region when KASLR is in effect.
->>>>>>>> Since the random offset at which to place the available physical
->>>>>>>> memory inside the linear region is chosen early at boot, it is
->>>>>>>> based on the memblock description of memory, which does not cover
->>>>>>>> hotplug memory. The consequence of this is that the randomization
->>>>>>>> offset may be chosen such that any hotplugged memory located above
->>>>>>>> memblock_end_of_DRAM() that appears later is pushed off the end of
->>>>>>>> the linear region, where it cannot be accessed.
->>>>>>>>
->>>>>>>> [...]
->>>>>>>
->>>>>>> Applied to arm64 (for-next/mem-hotplug), thanks!
->>>>>>>
->>>>>>> [1/1] arm64: mm: account for hotplug memory when randomizing the linear region
->>>>>>>       https://git.kernel.org/arm64/c/97d6786e0669
->>>>>>
->>>>>> Got delayed and never made here in time, sorry about that. Nonetheless,
->>>>>> I have got something working with respect to the generic mechanism that
->>>>>> David Hildenbrand had asked for earlier.
->>>>>>
->>>>>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
->>>>>
->>>>> There was a lot of discussion around this patch but I haven't seen any
->>>>> new version posted.
->>>>
->>>> Just posted before some time.
->>>>
->>>> https://lore.kernel.org/linux-arm-kernel/1605236574-14636-1-git-send-email-anshuman.khandual@arm.com/
->>>>
->>>
->>> You failed to cc me on that patch.
->>
->> I could see 'ardb@kernel.org' marked as a copy on the patch. You
->> did not receive the email ? The CC list is in the commit message
->> itself. Even the lore.kernel.org based URL does list you email
->> as well. Not sure what might have happened.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Ard Biesheuvel <ardb@kernel.org>
->> Cc: Steven Price <steven.price@arm.com>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->>
+On Thu, Nov 12, 2020 at 11:01:57AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Right. Not sure what happened there, I may have deleted it by
-> accident. Apologies.
+>  drivers/input/touchscreen/surface3_spi.c: In function ‘surface3_spi_process_touch’:
+>  drivers/input/touchscreen/surface3_spi.c:97:6: warning: variable ‘timestamp’ set but not used [-Wunused-but-set-variable]
 > 
->>>
->>> The logic looks correct but please fix up the comment block:
->>> - PAGE_END is no longer defined in terms of vabits_actual
->>> - bits [51..48] are not ignored by the MMU
->>>
->>> Actually, I think the entire second paragraph of that comment block
->>> can be dropped.
->>
->> And from the commit message as well, had reused it in both places.
->>
->>>
->>> Please also fix up the coding style:
->>> - put && at the end of the first line
->>> - drop the redundant parens
->>> - fix the indentation
->>
->> Does this look okay ?
->>
->> static bool inside_linear_region(u64 start, u64 size)
->> {
->>         /*
->>          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
->>          * accommodating both its ends but excluding PAGE_END. Max physical
->>          * range which can be mapped inside this linear mapping range, must
->>          * also be derived from its end points.
->>          */
->>         return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
->>                         (start + size - 1) <= __pa(PAGE_END - 1);
->> }
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@gmail.com>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/input/touchscreen/surface3_spi.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Not sure whether the whitespace has been mangled by the email client,
-> but the first ( on the second line should align vertically with the
-> 's' of 'start' on the first line
+> diff --git a/drivers/input/touchscreen/surface3_spi.c b/drivers/input/touchscreen/surface3_spi.c
+> index ce4828b1415a8..72dc4c562a4e1 100644
+> --- a/drivers/input/touchscreen/surface3_spi.c
+> +++ b/drivers/input/touchscreen/surface3_spi.c
+> @@ -94,9 +94,7 @@ static void surface3_spi_report_touch(struct surface3_ts_data *ts_data,
+>  
+>  static void surface3_spi_process_touch(struct surface3_ts_data *ts_data, u8 *data)
+>  {
+> -	u16 timestamp;
+>  	unsigned int i;
+> -	timestamp = get_unaligned_le16(&data[15]);
 
-It was not aligned vertically here but fixed it. I hope you have received
-the latest version this time.
+Benjamin, should we pass timing data on to userspace instead?
 
-https://lore.kernel.org/linux-arm-kernel/1605252614-761-1-git-send-email-anshuman.khandual@arm.com/
+>  
+>  	for (i = 0; i < 13; i++) {
+>  		struct surface3_ts_data_finger *finger;
+> -- 
+> 2.25.1
+> 
+
+Thanks.
+
+-- 
+Dmitry
