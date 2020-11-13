@@ -2,126 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403E92B21D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019D12B21DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgKMRRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:17:19 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44828 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgKMRRT (ORCPT
+        id S1726424AbgKMRRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgKMRRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:17:19 -0500
-Received: by mail-io1-f72.google.com with SMTP id p12so1072821ioj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:17:32 -0800 (PST)
+        Fri, 13 Nov 2020 12:17:55 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62293C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:18:08 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id k2so10770734wrx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:18:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MGDV1m39Q0RpjWz9porpS9WltATtsX2nbsrGwBakBoI=;
+        b=cNu+U8JzWYov9+pOuR15lmt9jJN7mU15Fct9ujeB8OBZYHXJijUkou+Rbp9bEgJkzg
+         vxa9qAnS4Grf/3uzQvgJqQIbo1wvji0mABrMYjia8ZfwxiKoEiEPiKdH7c6W9LrEysK2
+         h8fzkxnD/3UbZD6iqHYdBRwFk9NwubRM9VFsCPkqbg4pl7oRssQ6VIcGdRr1qvcQxrvM
+         fsuUgOEWDejY9NGe7DO1reHM/rt5qlrUu0k5P7I85l/LLpEh8SbKiak4YWKRCHXie5cg
+         955XfNbnmsskkY8HF1eXKAChkyaWiZsRqy5E3lNLEq/bkG+IGAW4WaGHFFDuEBxRBt6V
+         ssbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Agi4vIfpYIxnSc7sohSHL9s1YwIYP2n4KLNjGhcfDCM=;
-        b=trPdcuSyfIpZnVpXNrNhYwsX2SbfksVeK7b61MtjF3HqIVSNGA8GxtTxxVz6AeUKI7
-         Pm2JtHUeVU54f5KQ7jnL3+5vGajAmQ0I04484hv3wbEasr7mSPGCBP5I0zCDdWNkVuw3
-         GJ8tK5Fn3DFLeljeOP9J4zCiZx6hlDYyIuxYaIeWU9XPQhbFF9r2l73z+vQv/wKb/XP7
-         G9+vIQtD5H+a+EW/K4+snQSHLcEvBQgoi5Azzc0OWCZ+Jf2ZDjL/ph1GHCm1+1KwIIhb
-         0Z/jdEMJVKumXx4miB+COQHJwvdgsR9xrZRD/nlXyMdhd+LW8vnjDDeG30JkRX7eEc/H
-         eFWg==
-X-Gm-Message-State: AOAM533GMGiVi6Dpu+y7HCQwLv2FcPtRB/pW2U2IMDrim7LY9cd7Zd6x
-        HtTcdde83SeQx43RS/xPIqG6WpZOCoLwjjNvZZPKf0ssSWZd
-X-Google-Smtp-Source: ABdhPJwI9+L9+ot7vk2bnhKDzXurwWlV5KlrNJKrob8iF9WD+egoT9JMaIH9aJUvR1UIiWh6g+/XC2sdEeDFY0hPf6XlrZxwpUSS
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MGDV1m39Q0RpjWz9porpS9WltATtsX2nbsrGwBakBoI=;
+        b=Pix37qnTGwIcije7PnDksGEsv1KogW08Kv4bszIBO/r7PJUMci8isoIYrc6zY0T4Uk
+         yXpMpQaaJf+vKrpu5fRv5eYJEWdFcM1/4bBHKvWhjiqnQwvfUOpY3y4jdNxcpcL67vlR
+         gKB/bzFCIIzLLFTaifBEwmrjxgGVI0D+l/PLylTeSkQp6fJ2+GqTrec2UimG6Pw+0xkV
+         dB6cqqoDrHG4QpPUnH/DmfKzDXZqUyf27te4lgKNsOeGAb9vg2GayhvhVw5ccN1wpN1i
+         /DM4fnMRSwgmR4f0yTY7uUYEEczLfrNHwSt/O/Xzpdt1E309/Yz6Of6rIRMmTNtCeNRt
+         +NNg==
+X-Gm-Message-State: AOAM531QkZJ5r93keDrBiOqKWqD8lD4qkuNHb1hOgeJZ8ytm7lV86IQO
+        aPWkfSNk3vlEj5p+00En1ypJA6doY08Pzmwz93E=
+X-Google-Smtp-Source: ABdhPJyc+LFP+psa3kZ9XXFFTBsO7MMYF0HBYfo22CWlrebU7Zt7G1eB3hJqkmoT0bo6m/ImkA8fBnM1ja1uK8dwDkk=
+X-Received: by 2002:adf:8028:: with SMTP id 37mr4635256wrk.111.1605287884168;
+ Fri, 13 Nov 2020 09:18:04 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:bf3:: with SMTP id d19mr618076ilu.184.1605287852034;
- Fri, 13 Nov 2020 09:17:32 -0800 (PST)
-Date:   Fri, 13 Nov 2020 09:17:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002ed0ef05b4003400@google.com>
-Subject: memory leak in atusb_probe
-From:   syzbot <syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com>
-To:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, ingrassia@epigenesys.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        oneukum@suse.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.de
+References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-12-lee.jones@linaro.org>
+In-Reply-To: <20201113134938.4004947-12-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 13 Nov 2020 12:17:52 -0500
+Message-ID: <CADnq5_NuaUM7Ch==-ZkjzdsSeUL9uw6h9Amp10F4Ncoiwku3ZQ@mail.gmail.com>
+Subject: Re: [PATCH 11/40] drm/amd/amdgpu/amdgpu_pll: Fix kernel-doc
+ formatting, missing and extra params
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Nov 13, 2020 at 8:50 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c:121: warning: Function parameter=
+ or member 'freq' not described in 'amdgpu_pll_compute'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c:121: warning: Function parameter=
+ or member 'fb_div_p' not described in 'amdgpu_pll_compute'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c:121: warning: Function parameter=
+ or member 'frac_fb_div_p' not described in 'amdgpu_pll_compute'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c:121: warning: Function parameter=
+ or member 'ref_div_p' not described in 'amdgpu_pll_compute'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c:121: warning: Function parameter=
+ or member 'post_div_p' not described in 'amdgpu_pll_compute'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c:317: warning: Excess function pa=
+rameter 'encoder' description in 'amdgpu_pll_get_shared_nondp_ppll'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-syzbot found the following issue on:
+Applied.  Thanks!
 
-HEAD commit:    af5043c8 Merge tag 'acpi-5.10-rc4' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10f165e6500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
-dashboard link: https://syzkaller.appspot.com/bug?extid=28a246747e0a465127f3
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155d8dba500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153b46a1500000
+Alex
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff888109e0af00 (size 192):
-  comm "kworker/1:2", pid 3205, jiffies 4294942324 (age 8.180s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 18 af e0 09 81 88 ff ff  ................
-  backtrace:
-    [<0000000070ad19b0>] kmalloc include/linux/slab.h:557 [inline]
-    [<0000000070ad19b0>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-    [<000000008781be0e>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline]
-    [<000000008781be0e>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038
-    [<00000000cce0cf01>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<0000000020e0d57d>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000e105c1d7>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000027607927>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<000000003813d62a>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000e9e76ec4>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<00000000db4b9c2e>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<0000000004dae719>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<000000002e126243>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
-    [<0000000076889926>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000004ff8d735>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<0000000020e0d57d>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000e105c1d7>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000027607927>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-
-BUG: memory leak
-unreferenced object 0xffff888109e0a300 (size 192):
-  comm "kworker/1:2", pid 3205, jiffies 4294942324 (age 8.180s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 18 a3 e0 09 81 88 ff ff  ................
-  backtrace:
-    [<0000000070ad19b0>] kmalloc include/linux/slab.h:557 [inline]
-    [<0000000070ad19b0>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-    [<000000008781be0e>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline]
-    [<000000008781be0e>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038
-    [<00000000cce0cf01>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<0000000020e0d57d>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000e105c1d7>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000027607927>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<000000003813d62a>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000e9e76ec4>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<00000000db4b9c2e>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<0000000004dae719>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<000000002e126243>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
-    [<0000000076889926>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000004ff8d735>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<0000000020e0d57d>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000e105c1d7>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000027607927>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_pll.c
+> index 1f2305b7bd135..f2e20666c9c1b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c
+> @@ -102,11 +102,12 @@ static void amdgpu_pll_get_fb_ref_div(unsigned nom,=
+ unsigned den, unsigned post_
+>   * amdgpu_pll_compute - compute PLL paramaters
+>   *
+>   * @pll: information about the PLL
+> + * @freq: requested frequency
+>   * @dot_clock_p: resulting pixel clock
+> - * fb_div_p: resulting feedback divider
+> - * frac_fb_div_p: fractional part of the feedback divider
+> - * ref_div_p: resulting reference divider
+> - * post_div_p: resulting reference divider
+> + * @fb_div_p: resulting feedback divider
+> + * @frac_fb_div_p: fractional part of the feedback divider
+> + * @ref_div_p: resulting reference divider
+> + * @post_div_p: resulting reference divider
+>   *
+>   * Try to calculate the PLL parameters to generate the given frequency:
+>   * dot_clock =3D (ref_freq * feedback_div) / (ref_div * post_div)
+> @@ -308,7 +309,6 @@ int amdgpu_pll_get_shared_dp_ppll(struct drm_crtc *cr=
+tc)
+>   * amdgpu_pll_get_shared_nondp_ppll - return the PPLL used by another no=
+n-DP crtc
+>   *
+>   * @crtc: drm crtc
+> - * @encoder: drm encoder
+>   *
+>   * Returns the PPLL (Pixel PLL) used by another non-DP crtc/encoder whic=
+h can
+>   * be shared (i.e., same clock).
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
