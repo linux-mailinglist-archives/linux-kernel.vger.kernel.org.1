@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B912B1A42
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF30A2B1A4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgKMLqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:46:47 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:11825 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726821AbgKMLob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:44:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605267865; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=8D/P2NUOwr9dXGs1xXx6ou3TEUU+cru+7sF8Q++MqwY=;
- b=Li9DKNdQ2R4dI1KjMPtmRWjWMoLe7nAWkVQ7pEURZJtvvv2QckaPYws+UPNpdy9+PyllNlGD
- jB6rIdG9F2uFK7DA3bZ8FtFgNBtMWvIPcXZEEdZDB7T2Lsp6DhnN0B6eMjhQjerihjJwq0L7
- f/S7WRfP2Lad/3JUD1DaaoaQkdo=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fae718df34fcfd5e57e8ab2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 11:44:13
- GMT
-Sender: cjhuang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D4ECC433C9; Fri, 13 Nov 2020 11:44:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        LOTS_OF_MONEY autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cjhuang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB530C433C6;
-        Fri, 13 Nov 2020 11:44:11 +0000 (UTC)
+        id S1726864AbgKMLtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgKMLph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:45:37 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4273C0613D1;
+        Fri, 13 Nov 2020 03:45:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jQU4qNuDdZU27a5ijyKvpcUU0ywYdFHyt7SQu4F9MLo=; b=r4jA8ox3PBkqEzLoXdgbxAa/u1
+        M9GVXID7RRadO2bbX1dSPGBrKm+ZYbeUir6yHJ5kVUX09G/8sIaoOJOi/t2lYUXkv4Ih45WIpqZkd
+        4HhOAx7bTE8HKhp9dN1n0sVzG20tT4HU/FPiHjFs9Rcx5fBqM1/kYuCxqC8yDkDc9RTcoq4oe8vay
+        Tm/UBXI/w2xGCiApjzJzusxm0bDRb+7eMLczjdnxFk3s4WlzppapYQLtSCvwsL0SUeJdnuwAmgi4p
+        3nSrC4fNDVH+z3uR6cwMiOSaPMJHfN9QaxLJ9DDl3kZtXEK8+6XJLYFfkcbCcoETdx9GNhbqwbnER
+        wNmCBprA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdXVv-0003Al-Op; Fri, 13 Nov 2020 11:45:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5952B306102;
+        Fri, 13 Nov 2020 12:45:10 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 44BDC20A2A30E; Fri, 13 Nov 2020 12:45:10 +0100 (CET)
+Date:   Fri, 13 Nov 2020 12:45:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com
+Cc:     christophe.leroy@csgroup.eu, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, will@kernel.org,
+        willy@infradead.org, aneesh.kumar@linux.ibm.com,
+        sparclinux@vger.kernel.org, davem@davemloft.net,
+        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH 2/5] mm: Introduce pXX_leaf_size()
+Message-ID: <20201113114510.GX2611@hirez.programming.kicks-ass.net>
+References: <20201113111901.743573013@infradead.org>
+ <20201113113426.465239104@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 13 Nov 2020 19:44:11 +0800
-From:   Carl Huang <cjhuang@codeaurora.org>
-To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        akpm@linux-foundation.org, ath11k@lists.infradead.org,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-In-Reply-To: <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
-References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
- <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
- <87eekz4s04.fsf@codeaurora.org>
- <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
- <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com>
- <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
- <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
-Message-ID: <056b74d48fb735c69a6268b18184d7e8@codeaurora.org>
-X-Sender: cjhuang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113113426.465239104@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-13 19:08, Carl Huang wrote:
-> On 2020-11-13 16:17, Pavel Procopiuc wrote:
->> Op 12.11.2020 om 11:48 schreef David Hildenbrand:
->>> Trying to understand the code, it looks like there are always two 
->>> rounds of reqests. The first one always fails ("requesting one big 
->>> chunk of DMA memory"), the second one (providing multiple chunks of 
->>> DMA memory) is supposed to work - and we do allocate memory.
->>> 
->>> 
->>> In the *working* cases we have
->>> 
->>> Respond mem req failed, result: 1, err: 0
->>> qmi failed to respond fw mem req:-22
->>> ...
->>> chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
->>> 
->>> We don't fail in qmi_txn_wait() - second request w
->>> 
->>> 
->>> In the *non-working* cases we have
->>> 
->>> Respond mem req failed, result: 1, err: 0
->>> qmi failed to respond fw mem req:-22
->>> ...
->>> qmi failed memory request, err = -110
->>> qmi failed to respond fw mem req:-110
->>> 
->>> We fail in qmi_txn_wait(). We run into a timeout (ETIMEDOUT).
->>> 
->>> Can we bump up the timeout limit and see if things change? Maybe FW 
->>> needs more time with other addresses.
->> 
->> I tried increasing ATH11K_QMI_WLANFW_TIMEOUT_MS 20 times to 100000
->> (i.e. 100 seconds) and it didn't have any positive effect, the second
->> error (-110) just came 100 seconds later and not 5.
->> 
-> Checked some logs. Looks when the error happens, the physical address 
-> are
-> very small. Its' between 20M - 30M.
+On Fri, Nov 13, 2020 at 12:19:03PM +0100, Peter Zijlstra wrote:
+> A number of architectures have non-pagetable aligned huge/large pages.
+> For such architectures a leaf can actually be part of a larger TLB
+> entry.
 > 
-> So could you have a try to reserve the memory starting from 20M?
-> Add "memmap=10M\$20M" to your grub.cfg or edit in kernel parameters. so 
-> ath11k
-> can't allocate from these address.
+> Provide generic helpers to determine the TLB size of a page-table
+> leaf.
 > 
-> Or you can try to reserve even larger memory starting from 20M.
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  include/linux/pgtable.h |   16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-To guarantee ath11k doesn't get physical address below 32M, reserve some 
-more, for
-example "memmap=12M\$20M".
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1536,4 +1536,20 @@ typedef unsigned int pgtbl_mod_mask;
+>  #define pmd_leaf(x)	0
+>  #endif
+>  
+> +#ifndef pgd_leaf_size
+> +#define pgd_leaf_size(x) PGD_SIZE
+
+Argh, I lost a refresh, that should've been:
+
++#define pgd_leaf_size(x) (1ULL << PGDIR_SHIFT)
+
+
+> +#endif
+> +#ifndef p4d_leaf_size
+> +#define p4d_leaf_size(x) P4D_SIZE
+> +#endif
+> +#ifndef pud_leaf_size
+> +#define pud_leaf_size(x) PUD_SIZE
+> +#endif
+> +#ifndef pmd_leaf_size
+> +#define pmd_leaf_size(x) PMD_SIZE
+> +#endif
+> +#ifndef pte_leaf_size
+> +#define pte_leaf_size(x) PAGE_SIZE
+> +#endif
+> +
+>  #endif /* _LINUX_PGTABLE_H */
+> 
+> 
