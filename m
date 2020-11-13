@@ -2,134 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629242B162D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19082B1630
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgKMHEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:04:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgKMHET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:04:19 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FBBC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:04:19 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kdT7e-0002r8-3x; Fri, 13 Nov 2020 08:03:50 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kdT7Z-0004f0-FQ; Fri, 13 Nov 2020 08:03:45 +0100
-Date:   Fri, 13 Nov 2020 08:03:43 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     alexandre.belloni@bootlin.com, heiko@sntech.de,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        nicolas.ferre@microchip.com, matthias.bgg@gmail.com,
-        linux-riscv@lists.infradead.org, festevam@gmail.com,
-        f.fainelli@gmail.com, shc_work@mail.ru, khilman@baylibre.com,
-        ludovic.desroches@microchip.com, jonathanh@nvidia.com,
-        linux-rockchip@lists.infradead.org, wens@csie.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-imx@nxp.com,
-        slemieux.tyco@gmail.com, linux-pwm@vger.kernel.org,
-        rjui@broadcom.com, s.hauer@pengutronix.de, mripard@kernel.org,
-        vz@mleia.com, linux-mediatek@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, paul.walmsley@sifive.com,
-        linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, sbranden@broadcom.com,
-        linux-kernel@vger.kernel.org, palmer@dabbelt.com,
-        kernel@pengutronix.de, shawnguo@kernel.org,
-        claudiu.beznea@microchip.com, nsaenzjulienne@suse.de,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: About devm_platform_ioremap_resource [Was: Re: [PATCH 01/32] pwm:
- sun4i: convert to devm_platform_ioremap_resource]
-Message-ID: <20201113070343.lhcsbyvi5baxn3lq@pengutronix.de>
-References: <20191229080610.7597-1-tiny.windzz@gmail.com>
- <20201112161346.gp5nenuagx5wmwl2@pengutronix.de>
- <20201112190649.GA908613@ulmo>
- <20201112211429.kfyqzkmmchjo6pll@pengutronix.de>
+        id S1726301AbgKMHGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:06:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgKMHG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:06:28 -0500
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E1922137B
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:06:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605251187;
+        bh=WbJxdX7i65iGGj/6JCfUwtS00InwXWVNH2dZ9vBzjzA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BkXLBtxos2+dHXQKR73xsRhlNE/ZBRkb8xI71J38UxTAr6a88WPHgg5lIHl36Bnyv
+         iWZ2s85aHkIzRr+J2YJvyzXEeKJytTKxMX3ZWxW91kEeO42AfAMJd7rNuopfexmQ72
+         sBHhr3rCXARFX1MypejNSy8Yr+Hkcu20oVDitjJk=
+Received: by mail-oi1-f174.google.com with SMTP id c128so1068191oia.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:06:27 -0800 (PST)
+X-Gm-Message-State: AOAM5338r+qNrrMzd8gatpqFoOjjnMQW6ePLci80OWiB7qTtKLV1qsF2
+        ejqw/bobY9j6c+NGlH4BugJ3kL2uCBov7aTQsEE=
+X-Google-Smtp-Source: ABdhPJzEAFrL833vXXI/5kawhAcABgyWROXiFnbyR8XMw9mygPbwEZ+qGU6FZYqPVTU6pFU6ws0nE8vnDdjAw5T9vVg=
+X-Received: by 2002:aca:c60c:: with SMTP id w12mr589488oif.174.1605251186667;
+ Thu, 12 Nov 2020 23:06:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bfm7upvbg2x7q3rm"
-Content-Disposition: inline
-In-Reply-To: <20201112211429.kfyqzkmmchjo6pll@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201014081857.3288-1-ardb@kernel.org> <160503561804.1015659.16599672230432576934.b4-ty@arm.com>
+ <a330440d-803b-5aa2-0092-a18317819850@arm.com> <20201112092558.GC29613@gaia>
+ <2f0d9bc5-6288-7388-ff10-97198dabac6f@arm.com> <CAMj1kXGa-WUr8LzDHGEfgG18ctJJp1v8b4UFckbcwtzpoEv+Tw@mail.gmail.com>
+ <ae1bdb23-4e44-bc6f-bdf0-a4efbcb5a3cb@arm.com>
+In-Reply-To: <ae1bdb23-4e44-bc6f-bdf0-a4efbcb5a3cb@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 13 Nov 2020 08:06:13 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXESYQjtuWOBVz=2=GwrczohUDqCTfQVOYmyj4wkdpUYnA@mail.gmail.com>
+Message-ID: <CAMj1kXESYQjtuWOBVz=2=GwrczohUDqCTfQVOYmyj4wkdpUYnA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: mm: account for hotplug memory when randomizing
+ the linear region
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        gshan@redhat.com, Robin Murphy <robin.murphy@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 13 Nov 2020 at 08:03, Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+>
+>
+> On 11/13/20 11:44 AM, Ard Biesheuvel wrote:
+> > On Fri, 13 Nov 2020 at 04:16, Anshuman Khandual
+> > <anshuman.khandual@arm.com> wrote:
+> >>
+> >>
+> >>
+> >> On 11/12/20 2:55 PM, Catalin Marinas wrote:
+> >>> Hi Anshuman,
+> >>>
+> >>> On Wed, Nov 11, 2020 at 09:18:56AM +0530, Anshuman Khandual wrote:
+> >>>> On 11/11/20 12:44 AM, Catalin Marinas wrote:
+> >>>>> On Wed, 14 Oct 2020 10:18:57 +0200, Ard Biesheuvel wrote:
+> >>>>>> As a hardening measure, we currently randomize the placement of
+> >>>>>> physical memory inside the linear region when KASLR is in effect.
+> >>>>>> Since the random offset at which to place the available physical
+> >>>>>> memory inside the linear region is chosen early at boot, it is
+> >>>>>> based on the memblock description of memory, which does not cover
+> >>>>>> hotplug memory. The consequence of this is that the randomization
+> >>>>>> offset may be chosen such that any hotplugged memory located above
+> >>>>>> memblock_end_of_DRAM() that appears later is pushed off the end of
+> >>>>>> the linear region, where it cannot be accessed.
+> >>>>>>
+> >>>>>> [...]
+> >>>>>
+> >>>>> Applied to arm64 (for-next/mem-hotplug), thanks!
+> >>>>>
+> >>>>> [1/1] arm64: mm: account for hotplug memory when randomizing the linear region
+> >>>>>       https://git.kernel.org/arm64/c/97d6786e0669
+> >>>>
+> >>>> Got delayed and never made here in time, sorry about that. Nonetheless,
+> >>>> I have got something working with respect to the generic mechanism that
+> >>>> David Hildenbrand had asked for earlier.
+> >>>>
+> >>>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
+> >>>
+> >>> There was a lot of discussion around this patch but I haven't seen any
+> >>> new version posted.
+> >>
+> >> Just posted before some time.
+> >>
+> >> https://lore.kernel.org/linux-arm-kernel/1605236574-14636-1-git-send-email-anshuman.khandual@arm.com/
+> >>
+> >
+> > You failed to cc me on that patch.
+>
+> I could see 'ardb@kernel.org' marked as a copy on the patch. You
+> did not receive the email ? The CC list is in the commit message
+> itself. Even the lore.kernel.org based URL does list you email
+> as well. Not sure what might have happened.
+>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+>
 
---bfm7upvbg2x7q3rm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right. Not sure what happened there, I may have deleted it by
+accident. Apologies.
 
-Hello,
+> >
+> > The logic looks correct but please fix up the comment block:
+> > - PAGE_END is no longer defined in terms of vabits_actual
+> > - bits [51..48] are not ignored by the MMU
+> >
+> > Actually, I think the entire second paragraph of that comment block
+> > can be dropped.
+>
+> And from the commit message as well, had reused it in both places.
+>
+> >
+> > Please also fix up the coding style:
+> > - put && at the end of the first line
+> > - drop the redundant parens
+> > - fix the indentation
+>
+> Does this look okay ?
+>
+> static bool inside_linear_region(u64 start, u64 size)
+> {
+>         /*
+>          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+>          * accommodating both its ends but excluding PAGE_END. Max physical
+>          * range which can be mapped inside this linear mapping range, must
+>          * also be derived from its end points.
+>          */
+>         return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+>                         (start + size - 1) <= __pa(PAGE_END - 1);
+> }
 
-[Added lkml and the people involved in commit 7945f929f1a7
-("drivers: provide devm_platform_ioremap_resource()") to Cc:. For the
-new readers: This is about patches making use of
-devm_platform_ioremap_resource() instead of open coding it. Full context
-at https://lore.kernel.org/r/20201112190649.GA908613@ulmo]
-
-On Thu, Nov 12, 2020 at 10:14:29PM +0100, Uwe Kleine-K=F6nig wrote:
-> On Thu, Nov 12, 2020 at 08:06:49PM +0100, Thierry Reding wrote:
-> > I also think that it's overly narrow is scope, so you can't actually
-> > "blindly" use this helper and I've seen quite a few cases where this was
-> > unknowingly used for cases where it shouldn't have been used and then
-> > broke things (because some drivers must not do the request_mem_region()
-> > for example).
->=20
-> You have a link to such an accident?
-
-I got a hint in private here: https://lore.kernel.org/r/1555670144-24220-1-=
-git-send-email-aisheng.dong@nxp.com
-
-devm_platform_ioremap_resource() is platform_get_resource() +
-devm_ioremap_resource() and here it was used to replace
-platform_get_resource() + devm_ioremap().
-
-IMHO the unlucky thing in this situation is that devm_ioremap_resource()
-and devm_ioremap() are different by more than just how they get the area
-to remap. (i.e. devm_ioremap_resource() also does
-devm_request_mem_region().)
-
-So the problem is not the added wrapper, but unclear semantics in the
-functions it uses. In my eyes devm_ioremap() and
-devm_platform_ioremap_resource() should better be named
-devm_request_ioremap() and devm_platform_request_ioremap_resource()
-respectively. Is it worth to rename these for clearity?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---bfm7upvbg2x7q3rm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+uL8wACgkQwfwUeK3K
-7AmhFQf/UMY3Z/O4ajFXsCh5aeqAW1EKy0wv+YtVLmLASYlkvBQ5OpoaFH6U7oZY
-a1BVjZ2I3q3pi1zMs+2dPAkylNi0VEIERvwncqHOfYN4FjdNsI85rKbxu4DNsWHJ
-wlaQxLwmUmDXDESpJ4RN8JqF/V/nPZfj/4V52ANK31PZ+i4fYnIlW6TU0cJwoJ9s
-aGSM2QwTb27uaRg5hqZqfOyIkt3wwkDJIF65H/vi64r0Gtm3c+0iKbEmlXr2XZCh
-APhFgQQDGFOMXdSBZeFxTtuLCzuG/RA3Fxb+7okleZUL6GrSwq7xWHJGorO136kq
-mo88jw2ceYf/qJA9E4atasOfbQUtlg==
-=gJ1m
------END PGP SIGNATURE-----
-
---bfm7upvbg2x7q3rm--
+Not sure whether the whitespace has been mangled by the email client,
+but the first ( on the second line should align vertically with the
+'s' of 'start' on the first line
