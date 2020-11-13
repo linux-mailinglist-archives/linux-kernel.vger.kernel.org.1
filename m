@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249092B186D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD822B1873
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgKMJim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:38:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgKMJih (ORCPT
+        id S1726342AbgKMJj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:39:29 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:17979 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgKMJj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:38:37 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F102BC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:38:36 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id 3so6271878qtx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:38:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=+nPinMUroPmGA/FkIjqQBwtdL5YldQSIOTcEcMGd2/4=;
-        b=sP2UXoyAtZ8SikAA1SjVp8Qbu9mStc+okk5CaBBKtm6aEuLYvcn/xZmC6YYtsx6tDv
-         JovxPRgLgng8mBgt11H0QsOGNILZX7PG+qp/gor5f+9poI80ZNmKKad28FWeogZxM4+2
-         JPJ9sAit/KD9in3TN4IrR6oC1r/AykE1DQsghE5pk9lNEecxVoalulS6XsLYioWn2D3e
-         kAO9QXXyQ2PULPhUMD8wKxfmujBAMWh8do3KxILxHqvRRJRyq3ezTtSMwKuCUh/g2GN4
-         Msr+Ch/GaoB63BFLcwbJmwBAltaitf0oJYtoyu+beHvbGuEGhtjsVzC5lX8zokUtJJxw
-         4Rjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=+nPinMUroPmGA/FkIjqQBwtdL5YldQSIOTcEcMGd2/4=;
-        b=LsoHL/Fsx0rez59u3EWtNXEyOwtl8zyBKJhmWwovtWJLilZniZFLeTQQ5LAy3DqZG6
-         AMbz9tDa4R5jnwQYi3yZN1SSo3m9ZX++02+dz5pQS0m2J9Ms3RYpa+VXcjzv/oD4LnP1
-         jwcSvxadZuVkJJfyjt8ZC8rz9M59WO2OLwpbN5omynDnqZiFOphRknsPCcFyOAXf4Ehd
-         PcF1UBfUxGcV+za3pNI3QDYH6eelRccd7lPz86C4LYezi3Lfsg8ShS8thL7c8N182GUj
-         2v7FxzNEwDxh8SsgNwz5ah36F/fx5f/DWMGoRMUvC1fRLr6TvCCDjAx+U+8+SKOm+2EN
-         hmXQ==
-X-Gm-Message-State: AOAM530EHWhpaVIUKL/C9ydyV/SCZ9/TI85GIHK7PfRwwulyyKXlqmc2
-        OHRalAG4s6BjBjHD7I1Bxjl+sXZDtQLkkA2XPfilrw==
-X-Google-Smtp-Source: ABdhPJyo/Cl+Ne93ZkCd4fZlwp/wG54EGnO3l6zPkSR9N43rFoK2rdDDxK08DHhrUJKQSjmiJSohka5GpTEd5MZS0y4=
-X-Received: by 2002:aed:2b47:: with SMTP id p65mr1051756qtd.337.1605260315929;
- Fri, 13 Nov 2020 01:38:35 -0800 (PST)
+        Fri, 13 Nov 2020 04:39:28 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1DB2F240004;
+        Fri, 13 Nov 2020 09:39:24 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 10:39:24 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH v2 16/25] arch: arm: mach-at91: pm: Move prototypes to
+ mutually included header
+Message-ID: <20201113093924.GI4556@piout.net>
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-17-lee.jones@linaro.org>
+ <20201112093918.GV2063125@dell>
+ <20201112100731.GC4556@piout.net>
+ <20201112104810.GH1997862@dell>
 MIME-Version: 1.0
-References: <000000000000bb202905af132b8f@google.com> <0000000000004c208d05b3f8cbb6@google.com>
-In-Reply-To: <0000000000004c208d05b3f8cbb6@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 13 Nov 2020 10:38:24 +0100
-Message-ID: <CACT4Y+ZKyCCreqOTx9POAGbabf0=WMenQk3YJc4d4E8Tb4=_Gg@mail.gmail.com>
-Subject: Re: kernel panic: stack is corrupted in get_kernel_gp_address
-To:     syzbot <syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112104810.GH1997862@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 9:27 AM syzbot
-<syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit a49145acfb975d921464b84fe00279f99827d816
-> Author: George Kennedy <george.kennedy@oracle.com>
-> Date:   Tue Jul 7 19:26:03 2020 +0000
->
->     fbmem: add margin check to fb_check_caps()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10ff7572500000
-> start commit:   f4d51dff Linux 5.9-rc4
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d6459d8f8984c0929e54
-> userspace arch: i386
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164270dd900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: fbmem: add margin check to fb_check_caps()
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 12/11/2020 10:48:10+0000, Lee Jones wrote:
+> On Thu, 12 Nov 2020, Alexandre Belloni wrote:
+> 
+> > Hi,
+> > 
+> > On 12/11/2020 09:39:18+0000, Lee Jones wrote:
+> > > Both the caller and the supplier's source file should have access to
+> > > the include file containing the prototypes.
+> > > 
+> > > Fixes the following W=1 kernel build warning(s):
+> > > 
+> > >  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
+> > >  1637 | void at91_pinctrl_gpio_suspend(void)
+> > >  | ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > >  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
+> > >  1661 | void at91_pinctrl_gpio_resume(void)
+> > >  | ^~~~~~~~~~~~~~~~~~~~~~~~
+> > > 
+> > > Cc: Russell King <linux@armlinux.org.uk>
+> > > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> > > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> 
+> [...]
+> 
+> > > diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
+> > > new file mode 100644
+> > > index 0000000000000..0fd5093f7f73a
+> > > --- /dev/null
+> > > +++ b/include/soc/at91/pm.h
+> > > @@ -0,0 +1,9 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/*
+> > > + * atmel platform data
+> > > + */
+> > > +
+> > > +#ifdef CONFIG_PINCTRL_AT91
+> > 
+> > Shouldn't that be a header guard instead of depending on PINCTRL_AT91 ?
+> 
+> I copied the same semantics from the header it was taken from.
+> 
+> Happy to turn it into a proper header file too.
 
-#syz fix: fbmem: add margin check to fb_check_caps()
+I guess that would be better. How do you expect this patch to be merged?
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
