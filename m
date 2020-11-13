@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952112B18FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB4A2B18FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgKMKYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:24:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
+        id S1726429AbgKMKYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:24:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35140 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgKMKYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:24:17 -0500
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7782B2224B;
-        Fri, 13 Nov 2020 10:24:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605263056;
-        bh=ZGh6WSwT91LdBj8NqYM8pLnycQEAmUxFUmkVbW1Te7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JhSVaLk4Srl63vvSkOgatLFtnNdr/Rk4GTjyUQ/vdqOv+gae3sTmZBXKL8D+WxgH2
-         5IzvNqSu4ELWrTp7JXDFBGWCI5edUBDbdvOx2HGSS5nMdKAJa/S+C13/NdW0egflsl
-         UwR2t6GseY3wZruM0g3UqhERzpM/pXxaCQMjn2D0=
-Received: by pali.im (Postfix)
-        id 0159E723; Fri, 13 Nov 2020 11:24:13 +0100 (CET)
-Date:   Fri, 13 Nov 2020 11:24:13 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andre Heider <a.heider@gmail.com>,
-        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add support for LED2
-Message-ID: <20201113102413.tl734v47koqlq6r7@pali>
-References: <20201006124455.16617-1-pali@kernel.org>
- <20201019080408.iv7vmj63cgt2i6vg@pali>
- <20201019122537.GN456889@lunn.ch>
+        id S1726176AbgKMKY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 05:24:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605263067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B+WTkGmdnbMkZJ6lvWOrKglzHqkfUKwJ37Bf3POufS0=;
+        b=hi6ZYCuBy9LTd32MYAOl7/1g6R/j+EPAtoejSTD+03b42sEHINgv7r/acGja+X956WhVPB
+        OG8xUpON2Gg2XkPlKW59eT85WuMPr/U5jjifWsNErS9amquE5QcDuE46lnzL9T7uX7CMmi
+        cDVrha+nhDPvEFgBYw/gisd0ao1PvdI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA748AEFF;
+        Fri, 13 Nov 2020 10:24:27 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 11:24:27 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] kthread_worker: Add
+ flush delayed work func
+Message-ID: <20201113102427.GI20201@alley>
+References: <20201111091355.19476-1-qiang.zhang@windriver.com>
+ <20201112160135.2b5720c66b020472892f2366@linux-foundation.org>
+ <BYAPR11MB263258BCE554A9EFD2F3A8A7FFE60@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201019122537.GN456889@lunn.ch>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <BYAPR11MB263258BCE554A9EFD2F3A8A7FFE60@BYAPR11MB2632.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 October 2020 14:25:37 Andrew Lunn wrote:
-> On Mon, Oct 19, 2020 at 10:04:08AM +0200, Pali Rohár wrote:
-> > Hello! Gregory, I would like to remind you following patch.
+On Fri 2020-11-13 08:59:37, Zhang, Qiang wrote:
 > 
-> Hi Pali
 > 
-> Since the merge window is open at the moment, no new patches will be
-> accepted until it closes.
+> ________________________________________
+> 发件人: Andrew Morton <akpm@linux-foundation.org>
+> 发送时间: 2020年11月13日 8:01
+> 收件人: Zhang, Qiang
+> 抄送: pmladek@suse.com; tj@kernel.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org
+> 主题: Re: [PATCH] kthread_worker: Add flush delayed work func
 > 
-> You should resend once -rc1 is out.
+> [Please note this e-mail is from an EXTERNAL e-mail address]
+> 
+> On Wed, 11 Nov 2020 17:13:55 +0800 qiang.zhang@windriver.com wrote:
+> 
+> > Add 'kthread_flush_delayed_work' func, the principle of
+> > this func is wait for a dwork to finish executing the
+> > last queueing.
+> >
+> >We'd like to see some code which actually uses this new function
+> >please.  Either in this patch or as one or more followup patches.
+> >
+> >btw, we call it "function", not "func".  But neither is really needed -
+> >just use () to identify a function.  ie:
+> 
+> >: Add kthread_flush_delayed_work().  The principle of this is to wait for
+> >: a dwork to finish executing the last queueing.
+> 
+> I don't see it being used in the kernel code so far, and I'm not sure if it's going to be used in subsequent scenarios (it like flush_delayed_work in workqueue )or whether it's currently using "kthread_work" some code needs it.
 
-Hello! -rc1 was already released. And as there are no new changes in
-https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/
-repository since I sent this patch, I guess that I resending it not
-needed.
+I agree with Andrew. It does not make sense to add/maintain new API
+when it is not going to be used.
+
+The kthread_worker API is used only when the kthread needs some special
+scheduling policy or priority. There always will be only few users
+in compare with the workqueues API. It is possible that this function
+will never be necessary.
+
+Best Regards,
+Petr
