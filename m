@@ -2,204 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE872B27E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237372B27EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgKMWJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:09:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgKMWJS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:09:18 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A53C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:09:16 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id q10so8817856pfn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:09:16 -0800 (PST)
+        id S1726200AbgKMWKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:10:11 -0500
+Received: from mail-dm6nam12on2076.outbound.protection.outlook.com ([40.107.243.76]:16896
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725885AbgKMWKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:10:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GfmwH7LUBScNWTJm2qfyr3wnjRuw3XkpvB/epYuDW1KWNnp7iNMh2D4MArlp6s1TEFj2wzPL5bId6y4OE59g+xJ4yozp1egRKuyj38DSi9r2xs884zJ7ggqpta37WrCiyt1gyOc+P3JmN5C+za9cyLa47SVypkTbgGwB2+EY96g5fzdRiSess+M3Pjux/mzd+SE3YTi5r3EKFAJ6tlMBm0qNNkkPp4afdS+73skeMuFDGmxur/iQ8W9Jsxo0kaezjOpwPFq10PwSl9aBm8AARwqOsAngTPzb4pD/+VnBAsWdktjWe0G8Q2be+NRAoaSQoaZDMrW6qPh95OowHIvSUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a81Va9lo7CAN5tIAfIVErNrH13AasOKMKyzK1MXaMP4=;
+ b=RdKCdS1ZBjtsi7Aip6MrjjV3IYMjCFt8q0tjHZK+wBdzDTtFAYi1K+1z/pqYHXl/V2ERrN1HlXJdHW9FsF1pb7OQoml+WPXgXQ3JYjtQ/lzFoXyZ32Ck5HxNwh4/aPHdmmHQlem0jmdIk96OztkPbc2HRuvkkvJ1RfMd8XqHH9ayfNTnA+Nx/hudM0QHzf6OzFjqgwBTmfLr0i8UFr8G3mtZ4Au4vUOczw5FB3noF+HwYI5u+nwbMhZJI1w4MILYyMveMIGmdI8PzTBNf+uEty3W+3osXhkVEliCoTT1pqP+MVzAKCpX1CpgkeQOQCNwBGGL2jt4uOHW04E4459FXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wCU/niw5gKH9uSaGHuyc/s8PWFbeWcZQwsAixcABotQ=;
-        b=h4DH564y1sQbkFEEIzFekevxzv2n54sOrYd0ybebMavAuK+h8bBtHOz7Rt/Z//iMF9
-         nDxV8K6Sa2GSkmUBb6O0n8IQqH3nyVGbll+aqvI97s8E+FZzXwhteSIf7UmXfRTyd4fl
-         CuzLoa2ki36QKe6bVdMAVnzfRd79KAeg/nKv5BDm5fg7PlJXt0ifE0V20oIwAmKb2lde
-         434oPm2yBqAwec452QgU2/h1/h1vOrEXPwRUsTaxUasYreY2e5o3HmqKoH0UrWnoGGTc
-         ZdR7MPhA3g+Lyi1hJQNm1OWDNehycRG19I2DCi1vShwmR3uNTjcq07rG+n9EafWr3031
-         JaJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wCU/niw5gKH9uSaGHuyc/s8PWFbeWcZQwsAixcABotQ=;
-        b=IFp/84OQ0knI9BmDuHsnkcIG279VEga2c8q0WN1f+kdn2jqJZl5MbRB5j1iTYynRUr
-         pOttRhjcHtdMKlEcO0YCfcU9wegqcMRWJxM4tFzIXp1QLkj9bq1Kch9baOGxbwaQJE4k
-         7rXYZQb2EL6V+1T7DVZbO9QOGQve6f5xki642ZdzBBPulOUf1160odRuhR8AJOnwBS7X
-         SXjHoXcAXWSejRCtgCoYuBXhgbF5ZJFvwBz2zsq0wjRMcKv4cm3Z5Msbiz3HlpkL2pQm
-         hG9j7B/Ohwc7gju+5AI6IBcnEGH5S6dv4D4Qd84kJZuIlSfHlhpEAboTuUivNNAwl1CC
-         c/+g==
-X-Gm-Message-State: AOAM531X+DHw4fHGdV9PUe5CC1ZOMUfHFrCLX7Gcr6JmsWE2y3zcouO4
-        pDG8JMz7SCqkWSn+bfckuHFzuVCy7c4zjSlh338Gnw==
-X-Google-Smtp-Source: ABdhPJwNDyQ0s0fwEgAxMSlGaTK5XHEgPSCAbzoxz4XWXQ1W3jKWWhUGwkOT50NGA6EIOeN2N4ZIHu9txXk8HHyo9jk=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr5202110pjj.101.1605305356218;
- Fri, 13 Nov 2020 14:09:16 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a81Va9lo7CAN5tIAfIVErNrH13AasOKMKyzK1MXaMP4=;
+ b=JUqNBjZSgVMIiu6cgsGxS9udaltxOPA2sGAoiyZ5HjPOPNeNwIGUyQm+r3iahUQTG3AZuQuUE13m5Eb/w8Hk7nhIQjZ1/1OB4H13ttghsYQe1xEreasT38d1vNlJn//Nfn7kHbDmZiFfmio0Cg+PuZKyCXLcUhYRzlzwZHlFb4Q=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4384.namprd12.prod.outlook.com (2603:10b6:806:9f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Fri, 13 Nov
+ 2020 22:10:07 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
+ 22:10:07 +0000
+Date:   Fri, 13 Nov 2020 22:10:00 +0000
+From:   Ashish Kalra <ashish.kalra@amd.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com,
+        ssg.sos.patches@amd.com
+Subject: Re: [PATCH v3] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201113221000.GA6850@ashkalra_ubuntu_server>
+References: <20201104220804.21026-1-Ashish.Kalra@amd.com>
+ <20201104221452.GA26079@char.us.oracle.com>
+ <20201104223913.GA25311@ashkalra_ubuntu_server>
+ <20201105174317.GA4294@char.us.oracle.com>
+ <20201105184115.GA25261@ashkalra_ubuntu_server>
+ <20201105190649.GB5366@char.us.oracle.com>
+ <20201105193828.GA25303@ashkalra_ubuntu_server>
+ <20201105202007.GA6370@char.us.oracle.com>
+ <20201105212045.GB25303@ashkalra_ubuntu_server>
+ <20201113211925.GA6096@char.us.oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113211925.GA6096@char.us.oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM5PR21CA0032.namprd21.prod.outlook.com
+ (2603:10b6:3:ed::18) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com>
- <BYAPR11MB32568FEEF4CFA1C20296427B87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOd=qDNnOu1oTeEN+chvfJcQSS5dxREo0JQHC=W0zhpYeLw@mail.gmail.com>
- <BYAPR11MB32564DD5B9D140AFE8C3D1EB87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
- <BYAPR11MB3256E6E37618702C5EA761A087E60@BYAPR11MB3256.namprd11.prod.outlook.com>
- <BYAPR11MB3256DD34C3DABD2CB4FE347D87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256DD34C3DABD2CB4FE347D87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 13 Nov 2020 14:09:04 -0800
-Message-ID: <CAKwvOdmQdH3dARiP9VDPG59sgsqkmvp5AcCKrNNUuNDC5k1BwA@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000083df0d05b404477c"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server (165.204.77.1) by DM5PR21CA0032.namprd21.prod.outlook.com (2603:10b6:3:ed::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.11 via Frontend Transport; Fri, 13 Nov 2020 22:10:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 704cf210-1a1d-4b2c-4e72-08d88820e13b
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4384:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4384BFFDC3F0D8A8B37B85878EE60@SA0PR12MB4384.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9/q4CuYuhOhxJkQjhP1I4NhaakWJzv0UzGQk7INCgi2y7eDM/MuxTkKa6uUav2Ph48cKhfgXEEqTw2BI6u4KCD2OuLwYiktEjJ3r29/K/KtRtHUZKov7We/heGRnavp2uIlOsBJhNfFm7xWaHHAYIKDCaAJRSo8B6duZvvQs5hjQ2xTABmtSpkeJmCTuI8mTffdK9hNWEaMP7g47DO6mEka29ridVA8hxIePzOhfHlWGR0saTSN7d+kKPoqyvJmkctGjxlIrppx6+ABU3dP2Cqr59RnlBDztbQu1Hxl7UxxmSb6sUSsQ0xSeEH1nZuHqIOuJQjaX4Jm3/6pZDBzLCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(396003)(39860400002)(376002)(44832011)(6496006)(316002)(6916009)(4326008)(52116002)(2906002)(16526019)(8676002)(66946007)(7416002)(5660300002)(956004)(55016002)(66476007)(6666004)(86362001)(478600001)(9686003)(8936002)(33716001)(66556008)(186003)(1076003)(33656002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 3qIyDGUOjvs1391qDy3mPl1gYQg9AKbiBvpPQtND92hguoKKlPM4UF1dvRaBjQl+voZmrwtORt0LQOjJl9yTVwymGylwwMZudBTs2f8McwfhALnMvtmeJ+LEg7noSJYKMdrFZsq/qNmQbSQCX7nXUaz/bqQfw9ddih4YbC9Vo3P1yZzl1jrXQBvTS/b1D8FFyM48/P7xBM5zOSD6yvfb9uZQQmexQ/ZS3CwNcYSX58n77CpkjWiONY6G+ktFqvhqFaYzMPj0ivskSdwpWpuL16CuC8D9uGir/EwbqgGZiSpJlqR+oNOz5pxX4JAO/GOXelxs7fi5zTQQMFdj2BGdSLSHu+dVdYyfPSjDc7i1SlPngPcIdTtV+Q34MnD35Y0RmNGviktWyG9X8GAkAudnjiJMee+Cx9PBnIoxFJARUuhh+ghZ7TiwBmlusmKO+c+XX41o1xpiNrRfc+MiNdnAPysFf5zu96mcBekGmCdiEBxclE2UifTgD2ZmYVyxN6ULXYVvjddLHBRChWoqhNWLb/9X14v3C2xTjYk5JM16bCP53eOGqE7hYUHppAGcn8VhhWwDrUZ4Au+fsn2IHGsuK5HoXowPkgNNBGM+pOacg2fnvZJmyjq4orGsanFoQL81V3o6BaxZbDqvdnROAJY9ErcQ6CLorBwGR17qUQu5tOjVKePc2q4DsSw8fVm72uc3lPYAs2S32QppskW//SwMB3/o/Jgz4IVm0Vym5ASBP2x1ktvIvCysbrT0mSkqkN2zWFnpTOChcr6VJ5M1xMZVB3SS4Z4eEpleqwXv2ow4SJ4PujJhr5svUWnaZhlJZGdMBvmHxob3Vpis1epocFWnX/hdUDO+0R7HUJSBNY+71DPwqoCg+uAoFT11dRLBmBDU4Mox4vCslY0ds7nmE/P9vA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 704cf210-1a1d-4b2c-4e72-08d88820e13b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 22:10:07.7403
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2n1wYure6R8xtgLISua+MubYaTcy8wrFF01PupeRB+pxO+lLfCsuYAITtplmxjXxscQdz11L6PXHtWAI+rdDbw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4384
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000083df0d05b404477c
-Content-Type: text/plain; charset="UTF-8"
+Hello Konrad,
 
-On Fri, Nov 13, 2020 at 1:45 PM Moore, Robert <robert.moore@intel.com> wrote:
->
-> BTW, if you can make a pull request for the patch up on github, that would help.
+On Fri, Nov 13, 2020 at 04:19:25PM -0500, Konrad Rzeszutek Wilk wrote:
+> On Thu, Nov 05, 2020 at 09:20:45PM +0000, Ashish Kalra wrote:
+> > On Thu, Nov 05, 2020 at 03:20:07PM -0500, Konrad Rzeszutek Wilk wrote:
+> > > On Thu, Nov 05, 2020 at 07:38:28PM +0000, Ashish Kalra wrote:
+> > > > On Thu, Nov 05, 2020 at 02:06:49PM -0500, Konrad Rzeszutek Wilk wrote:
+> > > > > .
+> > > > > > > Right, so I am wondering if we can do this better.
+> > > > > > > 
+> > > > > > > That is you are never going to get any 32-bit devices with SEV right? That
+> > > > > > > is there is nothing that bounds you to always use the memory below 4GB?
+> > > > > > > 
+> > > > > > 
+> > > > > > We do support 32-bit PCIe passthrough devices with SEV.
+> > > > > 
+> > > > > Ewww..  Which devices would this be?
+> > > > 
+> > > > That will be difficult to predict as customers could be doing
+> > > > passthrough of all kinds of devices.
+> > > 
+> > > But SEV is not on some 1990 hardware. It has PCIe, there is no PCI slots in there.
+> > > 
+> > > Is it really possible to have a PCIe device that can't do more than 32-bit DMA?
+> > > 
+> > > > 
+> > > > > > 
+> > > > > > Therefore, we can't just depend on >4G memory for SWIOTLB bounce buffering
+> > > > > > when there is I/O pressure, because we do need to support device
+> > > > > > passthrough of 32-bit devices.
+> > > > > 
+> > > > > Presumarily there is just a handful of them?
+> > > > >
+> > > > Again, it will be incorrect to assume this.
+> > > > 
+> > > > > > 
+> > > > > > Considering this, we believe that this patch needs to adjust/extend
+> > > > > > boot-allocation of SWIOTLB and we want to keep it simple to do this
+> > > > > > within a range detemined by amount of allocated guest memory.
+> > > > > 
+> > > > > I would prefer to not have to revert this in a year as customers
+> > > > > complain about "I paid $$$ and I am wasting half a gig on something 
+> > > > > I am not using" and giving customers knobs to tweak this instead of
+> > > > > doing the right thing from the start.
+> > > > 
+> > > > Currently, we face a lot of situations where we have to tell our
+> > > > internal teams/external customers to explicitly increase SWIOTLB buffer
+> > > > via the swiotlb parameter on the kernel command line, especially to
+> > > > get better I/O performance numbers with SEV. 
+> > > 
+> > > Presumarily these are 64-bit?
+> > > 
+> > > And what devices do you speak off that are actually affected by 
+> > > this performance? Increasing the SWIOTLB just means we have more
+> > > memory, which in mind means you can have _more_ devices in the guest
+> > > that won't handle the fact that DMA mapping returns an error.
+> > > 
+> > > Not neccessarily that one device suddenly can go faster.
+> > > 
+> > > > 
+> > > > So by having this SWIOTLB size adjustment done implicitly (even using a
+> > > > static logic) is a great win-win situation. In other words, having even
+> > > > a simple and static default increase of SWIOTLB buffer size for SEV is
+> > > > really useful for us.
+> > > > 
+> > > > We can always think of adding all kinds of heuristics to this, but that
+> > > > just adds too much complexity without any predictable performance gain.
+> > > > 
+> > > > And to add, the patch extends the SWIOTLB size as an architecture
+> > > > specific callback, currently it is a simple and static logic for SEV/x86
+> > > > specific, but there is always an option to tweak/extend it with
+> > > > additional logic in the future.
+> > > 
+> > > Right, and that is what I would like to talk about as I think you
+> > > are going to disappear (aka, busy with other stuff) after this patch goes in.
+> > > 
+> > > I need to understand this more than "performance" and "internal teams"
+> > > requirements to come up with a better way going forward as surely other
+> > > platforms will hit the same issue anyhow.
+> > > 
+> > > Lets break this down:
+> > > 
+> > > How does the performance improve for one single device if you increase the SWIOTLB?
+> > > Is there a specific device/driver that you can talk about that improve with this patch?
+> > > 
+> > > 
+> > 
+> > Yes, these are mainly for multi-queue devices such as NICs or even
+> > multi-queue virtio. 
+> > 
+> > This basically improves performance with concurrent DMA, hence,
+> > basically multi-queue devices.
+> 
+> OK, and for _1GB_ guest - what are the "internal teams/external customers" amount 
+> of CPUs they use? Please lets use real use-cases.
 
-https://github.com/acpica/acpica/pull/650
+I will get back to you with some real use-case data for the above guest
+configurations next week.
 
--- 
 Thanks,
-~Nick Desaulniers
-
---00000000000083df0d05b404477c
-Content-Type: text/plain; charset="US-ASCII"; name="0001-ACPICA-fix-Wfallthrough.patch.txt"
-Content-Disposition: attachment; 
-	filename="0001-ACPICA-fix-Wfallthrough.patch.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_khgtcny00>
-X-Attachment-Id: f_khgtcny00
-
-RnJvbSA0NDEzMTQ0ZDA4MDRjMWQ4MGE5Y2M2MjVhMjcxZTdjYzJmYjZkZDM4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBOaWNrIERlc2F1bG5pZXJzIDxuZGVzYXVsbmllcnNAZ29vZ2xl
-LmNvbT4KRGF0ZTogRnJpLCAxMyBOb3YgMjAyMCAxMzo0NjowNCAtMDgwMApTdWJqZWN0OiBbUEFU
-Q0hdIEFDUElDQTogZml4IC1XZmFsbHRocm91Z2gKCkdDQyA3LjEgZ2FpbmVkIC1XaW1wbGljaXQt
-ZmFsbHRocm91Z2ggdG8gd2FybiBvbiBpbXBsaWNpdCBmYWxsdGhyb3VnaCwKYXMgd2VsbCBhcyBf
-X2F0dHJpYnV0ZV9fKChfX2ZhbGx0aHJvdWdoX18pKSBhbmQgY29tbWVudHMgdG8gZXhwbGljaXRs
-eQpkZW5vdGUgdGhhdCBjYXNlcyBvZiBmYWxsdGhyb3VnaCB3ZXJlIGludGVudGlvbmFsLiBDbGFu
-ZyBhbHNvIHN1cHBvcnRzCnRoaXMgd2FybmluZyBhbmQgc3RhdGVtZW50IGF0dHJpYnV0ZSwgYnV0
-IG5vdCB0aGUgY29tbWVudCBmb3JtLgoKUm9iZXJ0IE1vb3JlIHByb3ZpZGVzIGFkZGl0aW9uYWwg
-Y29udGV4dCBhYm91dCB0aGUgbGludCBjb21tZW50cyBiZWluZwpyZW1vdmVkLiBUaGV5IHdlcmUg
-Zm9yICJhbiBvbGQgdmVyc2lvbiBvZiBQQy1MaW50LCB3aGljaCB3ZSBkb24ndCB1c2UKYW55bW9y
-ZS4iIERyb3AgdGhvc2UuCgpTdWdnZXN0ZWQtYnk6IFJvYmVydCBNb29yZSA8cm9iZXJ0Lm1vb3Jl
-QGludGVsLmNvbT4KU2lnbmVkLW9mZi1ieTogTmljayBEZXNhdWxuaWVycyA8bmRlc2F1bG5pZXJz
-QGdvb2dsZS5jb20+Ci0tLQogZHJpdmVycy9hY3BpL2FjcGljYS9kc2NvbnRyb2wuYyB8ICAyICst
-CiBkcml2ZXJzL2FjcGkvYWNwaWNhL2Rzd2V4ZWMuYyAgIHwgIDMgKy0tCiBkcml2ZXJzL2FjcGkv
-YWNwaWNhL2Rzd2xvYWQuYyAgIHwgIDIgKy0KIGRyaXZlcnMvYWNwaS9hY3BpY2EvZHN3bG9hZDIu
-YyAgfCAgMiArLQogZHJpdmVycy9hY3BpL2FjcGljYS9leGZsZGlvLmMgICB8ICAyICstCiBkcml2
-ZXJzL2FjcGkvYWNwaWNhL2V4cmVzb3AuYyAgIHwgIDQgKystLQogZHJpdmVycy9hY3BpL2FjcGlj
-YS9leHN0b3JlLmMgICB8ICA0ICsrLS0KIGRyaXZlcnMvYWNwaS9hY3BpY2EvaHdncGUuYyAgICAg
-fCAgMiArLQogZHJpdmVycy9hY3BpL2FjcGljYS91dGRlbGV0ZS5jICB8ICAyICstCiBpbmNsdWRl
-L2FjcGkvYWN0eXBlcy5oICAgICAgICAgIHwgIDYgKysrKysrCiBpbmNsdWRlL2FjcGkvcGxhdGZv
-cm0vYWNnY2MuaCAgIHwgMTUgKysrKysrKysrKysrKysrCiAxMSBmaWxlcyBjaGFuZ2VkLCAzMiBp
-bnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkv
-YWNwaWNhL2RzY29udHJvbC5jIGIvZHJpdmVycy9hY3BpL2FjcGljYS9kc2NvbnRyb2wuYwppbmRl
-eCA0YjViNmU4NTlmNjIuLmI1OGZmYzdhY2RiOSAxMDA2NDQKLS0tIGEvZHJpdmVycy9hY3BpL2Fj
-cGljYS9kc2NvbnRyb2wuYworKysgYi9kcml2ZXJzL2FjcGkvYWNwaWNhL2RzY29udHJvbC5jCkBA
-IC02Miw3ICs2Miw3IEBAIGFjcGlfZHNfZXhlY19iZWdpbl9jb250cm9sX29wKHN0cnVjdCBhY3Bp
-X3dhbGtfc3RhdGUgKndhbGtfc3RhdGUsCiAJCQl9CiAJCX0KIAotCQkvKmxpbnQgLWZhbGx0aHJv
-dWdoICovCisJCUFDUElfRkFMTFRIUk9VR0g7CiAKIAljYXNlIEFNTF9JRl9PUDoKIAkJLyoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvYWNwaS9hY3BpY2EvZHN3ZXhlYy5jIGIvZHJpdmVycy9hY3BpL2Fj
-cGljYS9kc3dleGVjLmMKaW5kZXggMWQ0ZjhjODEwMjhjLi40YTk3OTkyNDZmYWUgMTAwNjQ0Ci0t
-LSBhL2RyaXZlcnMvYWNwaS9hY3BpY2EvZHN3ZXhlYy5jCisrKyBiL2RyaXZlcnMvYWNwaS9hY3Bp
-Y2EvZHN3ZXhlYy5jCkBAIC01OTgsOCArNTk4LDcgQEAgYWNwaV9zdGF0dXMgYWNwaV9kc19leGVj
-X2VuZF9vcChzdHJ1Y3QgYWNwaV93YWxrX3N0YXRlICp3YWxrX3N0YXRlKQogCQkJCQlicmVhazsK
-IAkJCQl9CiAKLQkJCQkvKiBGYWxsIHRocm91Z2ggKi8KLQkJCQkvKmxpbnQgLWZhbGx0aHJvdWdo
-ICovCisJCQkJQUNQSV9GQUxMVEhST1VHSDsKIAogCQkJY2FzZSBBTUxfSU5UX0VWQUxfU1VCVFJF
-RV9PUDoKIApkaWZmIC0tZ2l0IGEvZHJpdmVycy9hY3BpL2FjcGljYS9kc3dsb2FkLmMgYi9kcml2
-ZXJzL2FjcGkvYWNwaWNhL2Rzd2xvYWQuYwppbmRleCAyNzA2OTMyNWI2ZGUuLmRkOTdjODZmOGU0
-MSAxMDA2NDQKLS0tIGEvZHJpdmVycy9hY3BpL2FjcGljYS9kc3dsb2FkLmMKKysrIGIvZHJpdmVy
-cy9hY3BpL2FjcGljYS9kc3dsb2FkLmMKQEAgLTIyNCw3ICsyMjQsNyBAQCBhY3BpX2RzX2xvYWQx
-X2JlZ2luX29wKHN0cnVjdCBhY3BpX3dhbGtfc3RhdGUgKndhbGtfc3RhdGUsCiAJCQkJYnJlYWs7
-CiAJCQl9CiAKLQkJCS8qbGludCAtZmFsbHRocm91Z2ggKi8KKwkJCUFDUElfRkFMTFRIUk9VR0g7
-CiAKIAkJZGVmYXVsdDoKIApkaWZmIC0tZ2l0IGEvZHJpdmVycy9hY3BpL2FjcGljYS9kc3dsb2Fk
-Mi5jIGIvZHJpdmVycy9hY3BpL2FjcGljYS9kc3dsb2FkMi5jCmluZGV4IGVkYWRiZTE0NjUwNi4u
-ZDlhM2RmY2E3NTU1IDEwMDY0NAotLS0gYS9kcml2ZXJzL2FjcGkvYWNwaWNhL2Rzd2xvYWQyLmMK
-KysrIGIvZHJpdmVycy9hY3BpL2FjcGljYS9kc3dsb2FkMi5jCkBAIC0yMTQsNyArMjE0LDcgQEAg
-YWNwaV9kc19sb2FkMl9iZWdpbl9vcChzdHJ1Y3QgYWNwaV93YWxrX3N0YXRlICp3YWxrX3N0YXRl
-LAogCQkJCWJyZWFrOwogCQkJfQogCi0JCQkvKmxpbnQgLWZhbGx0aHJvdWdoICovCisJCQlBQ1BJ
-X0ZBTExUSFJPVUdIOwogCiAJCWRlZmF1bHQ6CiAKZGlmZiAtLWdpdCBhL2RyaXZlcnMvYWNwaS9h
-Y3BpY2EvZXhmbGRpby5jIGIvZHJpdmVycy9hY3BpL2FjcGljYS9leGZsZGlvLmMKaW5kZXggYWRl
-MzVmZjFjN2JhLi5jZGUyNGUwZmE2YTggMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvYWNwaS9hY3BpY2Ev
-ZXhmbGRpby5jCisrKyBiL2RyaXZlcnMvYWNwaS9hY3BpY2EvZXhmbGRpby5jCkBAIC00MzQsNyAr
-NDM0LDcgQEAgYWNwaV9leF9maWVsZF9kYXR1bV9pbyh1bmlvbiBhY3BpX29wZXJhbmRfb2JqZWN0
-ICpvYmpfZGVzYywKIAkJICogcmVnaW9uX2ZpZWxkIGNhc2UgYW5kIHdyaXRlIHRoZSBkYXR1bSB0
-byB0aGUgT3BlcmF0aW9uIFJlZ2lvbgogCQkgKi8KIAotCQkvKmxpbnQgLWZhbGx0aHJvdWdoICov
-CisJCUFDUElfRkFMTFRIUk9VR0g7CiAKIAljYXNlIEFDUElfVFlQRV9MT0NBTF9SRUdJT05fRklF
-TEQ6CiAJCS8qCmRpZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkvYWNwaWNhL2V4cmVzb3AuYyBiL2Ry
-aXZlcnMvYWNwaS9hY3BpY2EvZXhyZXNvcC5jCmluZGV4IDRkMWIyMjk3MWQ1OC4uNGEwZjhiOGJm
-ZTYyIDEwMDY0NAotLS0gYS9kcml2ZXJzL2FjcGkvYWNwaWNhL2V4cmVzb3AuYworKysgYi9kcml2
-ZXJzL2FjcGkvYWNwaWNhL2V4cmVzb3AuYwpAQCAtMTk4LDcgKzE5OCw3IEBAIGFjcGlfZXhfcmVz
-b2x2ZV9vcGVyYW5kcyh1MTYgb3Bjb2RlLAogCiAJCQkJCXRhcmdldF9vcCA9IEFNTF9ERUJVR19P
-UDsKIAotCQkJCQkvKmxpbnQgLWZhbGx0aHJvdWdoICovCisJCQkJCUFDUElfRkFMTFRIUk9VR0g7
-CiAKIAkJCQljYXNlIEFDUElfUkVGQ0xBU1NfQVJHOgogCQkJCWNhc2UgQUNQSV9SRUZDTEFTU19M
-T0NBTDoKQEAgLTI2NCw3ICsyNjQsNyBAQCBhY3BpX2V4X3Jlc29sdmVfb3BlcmFuZHModTE2IG9w
-Y29kZSwKIAkJCSAqIEVsc2Ugbm90IGEgc3RyaW5nIC0gZmFsbCB0aHJvdWdoIHRvIHRoZSBub3Jt
-YWwgUmVmZXJlbmNlCiAJCQkgKiBjYXNlIGJlbG93CiAJCQkgKi8KLQkJCS8qbGludCAtZmFsbHRo
-cm91Z2ggKi8KKwkJCUFDUElfRkFMTFRIUk9VR0g7CiAKIAkJY2FzZSBBUkdJX1JFRkVSRU5DRToJ
-LyogUmVmZXJlbmNlczogKi8KIAkJY2FzZSBBUkdJX0lOVEVHRVJfUkVGOgpkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9hY3BpL2FjcGljYS9leHN0b3JlLmMgYi9kcml2ZXJzL2FjcGkvYWNwaWNhL2V4c3Rv
-cmUuYwppbmRleCAzYWRjMGEyOWQ4OTAuLjhmZTMzMDUxMjc1ZCAxMDA2NDQKLS0tIGEvZHJpdmVy
-cy9hY3BpL2FjcGljYS9leHN0b3JlLmMKKysrIGIvZHJpdmVycy9hY3BpL2FjcGljYS9leHN0b3Jl
-LmMKQEAgLTk2LDcgKzk2LDcgQEAgYWNwaV9leF9zdG9yZSh1bmlvbiBhY3BpX29wZXJhbmRfb2Jq
-ZWN0ICpzb3VyY2VfZGVzYywKIAkJCXJldHVybl9BQ1BJX1NUQVRVUyhBRV9PSyk7CiAJCX0KIAot
-CQkvKmxpbnQgLWZhbGx0aHJvdWdoICovCisJCUFDUElfRkFMTFRIUk9VR0g7CiAKIAlkZWZhdWx0
-OgogCkBAIC00MjIsNyArNDIyLDcgQEAgYWNwaV9leF9zdG9yZV9vYmplY3RfdG9fbm9kZSh1bmlv
-biBhY3BpX29wZXJhbmRfb2JqZWN0ICpzb3VyY2VfZGVzYywKIAkJCQlicmVhazsKIAkJCX0KIAot
-CQkJLyogRmFsbHRocm91Z2ggKi8KKwkJCUFDUElfRkFMTFRIUk9VR0g7CiAKIAkJY2FzZSBBQ1BJ
-X1RZUEVfREVWSUNFOgogCQljYXNlIEFDUElfVFlQRV9FVkVOVDoKZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvYWNwaS9hY3BpY2EvaHdncGUuYyBiL2RyaXZlcnMvYWNwaS9hY3BpY2EvaHdncGUuYwppbmRl
-eCBiMTNhNGVkNWJjNjMuLjBjODQzMDBlOTE1YyAxMDA2NDQKLS0tIGEvZHJpdmVycy9hY3BpL2Fj
-cGljYS9od2dwZS5jCisrKyBiL2RyaXZlcnMvYWNwaS9hY3BpY2EvaHdncGUuYwpAQCAtMTY3LDcg
-KzE2Nyw3IEBAIGFjcGlfaHdfbG93X3NldF9ncGUoc3RydWN0IGFjcGlfZ3BlX2V2ZW50X2luZm8g
-KmdwZV9ldmVudF9pbmZvLCB1MzIgYWN0aW9uKQogCQkJcmV0dXJuIChBRV9CQURfUEFSQU1FVEVS
-KTsKIAkJfQogCi0JCS8qbGludCAtZmFsbHRocm91Z2ggKi8KKwkJQUNQSV9GQUxMVEhST1VHSDsK
-IAogCWNhc2UgQUNQSV9HUEVfRU5BQkxFOgogCmRpZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkvYWNw
-aWNhL3V0ZGVsZXRlLmMgYi9kcml2ZXJzL2FjcGkvYWNwaWNhL3V0ZGVsZXRlLmMKaW5kZXggNGMw
-ZDRlNDM0MTk2Li42MjRhMjY3OTRkNTUgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvYWNwaS9hY3BpY2Ev
-dXRkZWxldGUuYworKysgYi9kcml2ZXJzL2FjcGkvYWNwaWNhL3V0ZGVsZXRlLmMKQEAgLTExMiw3
-ICsxMTIsNyBAQCBzdGF0aWMgdm9pZCBhY3BpX3V0X2RlbGV0ZV9pbnRlcm5hbF9vYmoodW5pb24g
-YWNwaV9vcGVyYW5kX29iamVjdCAqb2JqZWN0KQogCQkJCQkJICAgICAgIGdwZV9ibG9jayk7CiAJ
-CX0KIAotCQkvKmxpbnQgLWZhbGx0aHJvdWdoICovCisJCUFDUElfRkFMTFRIUk9VR0g7CiAKIAlj
-YXNlIEFDUElfVFlQRV9QUk9DRVNTT1I6CiAJY2FzZSBBQ1BJX1RZUEVfVEhFUk1BTDoKZGlmZiAt
-LWdpdCBhL2luY2x1ZGUvYWNwaS9hY3R5cGVzLmggYi9pbmNsdWRlL2FjcGkvYWN0eXBlcy5oCmlu
-ZGV4IDY0N2NiMTFkMGEwYS4uMmEzMjU5MzY5MWJjIDEwMDY0NAotLS0gYS9pbmNsdWRlL2FjcGkv
-YWN0eXBlcy5oCisrKyBiL2luY2x1ZGUvYWNwaS9hY3R5cGVzLmgKQEAgLTEyODYsNCArMTI4Niwx
-MCBAQCB0eXBlZGVmIGVudW0gewogCiAjZGVmaW5lIEFDUElfT1BUX0VORCAgICAgICAgICAgICAg
-ICAgICAgLTEKIAorLyogRGVmaW5pdGlvbnMgZm9yIGV4cGxpY2l0IGZhbGx0aHJvdWdoICovCisK
-KyNpZm5kZWYgQUNQSV9GQUxMVEhST1VHSAorI2RlZmluZSBBQ1BJX0ZBTExUSFJPVUdIIGRvIHt9
-IHdoaWxlKDApCisjZW5kaWYKKwogI2VuZGlmCQkJCS8qIF9fQUNUWVBFU19IX18gKi8KZGlmZiAt
-LWdpdCBhL2luY2x1ZGUvYWNwaS9wbGF0Zm9ybS9hY2djYy5oIGIvaW5jbHVkZS9hY3BpL3BsYXRm
-b3JtL2FjZ2NjLmgKaW5kZXggN2Q2M2QwM2NmNTA3Li45MWY3YTAyYzc5OGEgMTAwNjQ0Ci0tLSBh
-L2luY2x1ZGUvYWNwaS9wbGF0Zm9ybS9hY2djYy5oCisrKyBiL2luY2x1ZGUvYWNwaS9wbGF0Zm9y
-bS9hY2djYy5oCkBAIC01NCw0ICs1NCwxOSBAQCB0eXBlZGVmIF9fYnVpbHRpbl92YV9saXN0IHZh
-X2xpc3Q7CiAKICNkZWZpbmUgQUNQSV9VU0VfTkFUSVZFX01BVEg2NAogCisvKiBHQ0MgZGlkIG5v
-dCBzdXBwb3J0IF9faGFzX2F0dHJpYnV0ZSB1bnRpbCA1LjEuICovCisKKyNpZm5kZWYgX19oYXNf
-YXR0cmlidXRlCisjZGVmaW5lIF9faGFzX2F0dHJpYnV0ZSh4KSAwCisjZW5kaWYKKworLyoKKyAq
-IEV4cGxpY3RseSBtYXJrIGludGVudGlvbmFsIGV4cGxpY2l0IGZhbGx0aHJvdWdoIHRvIHNpbGVu
-Y2UKKyAqIC1XaW1wbGljaXQtZmFsbHRocm91Z2ggaW4gR0NDIDcuMSsuCisgKi8KKworI2lmIF9f
-aGFzX2F0dHJpYnV0ZShfX2ZhbGx0aHJvdWdoX18pCisjZGVmaW5lIEFDUElfRkFMTFRIUk9VR0gg
-X19hdHRyaWJ1dGVfXygoX19mYWxsdGhyb3VnaF9fKSkKKyNlbmRpZgorCiAjZW5kaWYJCQkJLyog
-X19BQ0dDQ19IX18gKi8KLS0gCjIuMjkuMi4yOTkuZ2RjMTEyMTgyM2MtZ29vZwoK
---00000000000083df0d05b404477c--
+Ashish
