@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1841B2B1D31
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB172B1D3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgKMOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgKMOYf (ORCPT
+        id S1726988AbgKMOY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:24:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52892 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgKMOYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABCAC0613D1;
-        Fri, 13 Nov 2020 06:24:35 -0800 (PST)
-Message-Id: <20201113141734.558782917@linutronix.de>
+        Fri, 13 Nov 2020 09:24:37 -0500
+Message-Id: <20201113141734.660734753@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277474;
+        s=2020; t=1605277475;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=bJK1LO9o5t1YtWfdpnIDn/r1MfJlfGCVMVDvWJrraew=;
-        b=tyt0QkxwI34Q9lW1JnnsRXtivNBFuy/gK+3Wg6p8oacuKn8YRx4hzKHdlinpDrp/pth55z
-        /BAfQMJ9oWB1Hzij2dQW9TnNIt72zNuUSK2q7Y9sitLs8LbSezy690e41NnW6R8l+bjdLt
-        Dy9N0KzC4rjbiZvWJbppzIRBBCJaXY4iwlr6/VDI4DFLjpd+Wid0zoJ5Q8KMUVs9kyP8bn
-        TkcwawJ0a/VM2kifuvxHRxw/fuqLeI5ylL/tFMj9ii+lhwD4TeYdWFVfkRiSMmUrOKnq5i
-        Dd6AOCs0W4DGmkrLSJyCQlgdlvArt+4ylbScr0BlX4BWaQMR0kH/Ya66obWHBg==
+        bh=74sFpsXIvDvQMapG5Pk7sHOAlnsFK2WUN0Z1OZznnHw=;
+        b=QExJdAkfPvDBwGkQeFoFlNrm4JXX8p/fB5MMB0uuiSdagTfMsaVZdXy9G9GBW/pJGeMMhF
+        v2D/rBvzOwa2UI3CLJLGXLp9JbHgnTpigxMvChKOaxUXPDJjvXKV29RXNoCJIM02ssvFoi
+        fAJSXNYmXPoUeZuLpHQOomjC1BPe/vo61ydVsoo44kvswfSQrHrQmBcsQcqiTK7Ntdx/Py
+        xO9hHJhmudd3p/qulzbc5q7cT/UiquVfGqe3gjkh05B6zglrlDkMWKu7yjfwROgKAs1IpI
+        nuG8KFPBmSSMRxwWYbHo6AVIPTGAZ3rfXubf5JvX0QsRdE7Y3QWJo63Q754Rlw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277474;
+        s=2020e; t=1605277475;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=bJK1LO9o5t1YtWfdpnIDn/r1MfJlfGCVMVDvWJrraew=;
-        b=fnUwM9/d5ZyoIg34+qJ50+11yImCVU3JOFQ12wxkKiRXsscC5nDPI2NL/xdAbOB6hy8cm9
-        lNk1ofd0+ZGBajBA==
-Date:   Fri, 13 Nov 2020 15:02:23 +0100
+        bh=74sFpsXIvDvQMapG5Pk7sHOAlnsFK2WUN0Z1OZznnHw=;
+        b=ZH/Vk7tQMxbpxGEvsAm2QgjQRjaIccewrZgX7RMwhumzkvb9r1Yzrpuqulq+HX3l7OQ5+E
+        wyyqEioCc993+MDA==
+Date:   Fri, 13 Nov 2020 15:02:24 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -56,7 +53,8 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 16/19] rcu: Prevent false positive softirq warning on RT
+Subject: [patch 17/19] softirq: Replace barrier() with cpu_relax() in
+ tasklet_unlock_wait()
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,25 +63,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Soft interrupt disabled sections can legitimately be preempted or schedule
-out when blocking on a lock on RT enabled kernels so the RCU preempt check
-warning has to be disabled for RT kernels.
+A barrier() in a tight loop which waits for something to happen on a remote
+CPU is a pointless exercise. Replace it with cpu_relax() which allows HT
+siblings to make progress.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/rcupdate.h |    3 ++-
+ include/linux/interrupt.h |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -319,7 +319,8 @@ static inline void rcu_preempt_sleep_che
- #define rcu_sleep_check()						\
- 	do {								\
- 		rcu_preempt_sleep_check();				\
--		RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))			\
-+		    RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
- 				 "Illegal context switch in RCU-bh read-side critical section"); \
- 		RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),	\
- 				 "Illegal context switch in RCU-sched read-side critical section"); \
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -668,7 +668,8 @@ static inline void tasklet_unlock(struct
+ 
+ static inline void tasklet_unlock_wait(struct tasklet_struct *t)
+ {
+-	while (test_bit(TASKLET_STATE_RUN, &(t)->state)) { barrier(); }
++	while (test_bit(TASKLET_STATE_RUN, &(t)->state))
++		cpu_relax();
+ }
+ #else
+ #define tasklet_trylock(t) 1
 
