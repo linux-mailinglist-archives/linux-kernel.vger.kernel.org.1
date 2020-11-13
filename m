@@ -2,201 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95A22B1A32
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A1C2B1A39
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgKMLk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:40:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:36694 "EHLO foss.arm.com"
+        id S1726827AbgKMLoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:44:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726770AbgKMLfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:35:53 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54DDA14BF;
-        Fri, 13 Nov 2020 03:35:08 -0800 (PST)
-Received: from dell3630.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5DE093F6CF;
-        Fri, 13 Nov 2020 03:35:06 -0800 (PST)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Yun Hsiang <hsiang023167@gmail.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: [PATCH v2] sched/uclamp: Allow to reset a task uclamp constraint value
-Date:   Fri, 13 Nov 2020 12:34:54 +0100
-Message-Id: <20201113113454.25868-1-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726776AbgKMLlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:41:44 -0500
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1724C2224F
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605267678;
+        bh=IKXPZInFuWv5+BduGuX9Ec2McK9C8JFS4284M+7/ykg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lM+vBoKxbv6L6YLuwthIY1oYPPMreS0XXqZP5fQE26ZyswUeF2R1oBIH5N/O7+be4
+         +L4C8tRN4faA93315ZnKT20XFJBfPSM1HW8Mp5GvlVGTGU4uSi4MhrqBwUgblSMqas
+         KA5fkBb2cAIKlsduGofN+tzaO41a4Pg3aOr8iRm4=
+Received: by mail-oo1-f51.google.com with SMTP id c25so2077619ooe.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:41:18 -0800 (PST)
+X-Gm-Message-State: AOAM5309AIluMItgS+Qr2a8ikDcIDnsOk22EyDbBD3JRJ5A4eZ/ahl79
+        rtYP++A6Zh0LIndeESnxscUPScXZMmYIK0tEUks=
+X-Google-Smtp-Source: ABdhPJwKeQwo/74xzJBDAboTV0FH5bd9URhUDHXyRWsprng3fVdbZ6ZVwxb9CrO1o1UUn0txwIG6Cw1GfUnJUFmvq9w=
+X-Received: by 2002:a4a:9806:: with SMTP id y6mr1196261ooi.45.1605267677271;
+ Fri, 13 Nov 2020 03:41:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20201112212457.2042105-1-adrian.ratiu@collabora.com>
+ <20201112212457.2042105-2-adrian.ratiu@collabora.com> <CAMj1kXFbLRTvGuRt5J3-oEuJrrHFV9+SBGFFDNsAftGUbwoTPw@mail.gmail.com>
+ <87mtzljz12.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+In-Reply-To: <87mtzljz12.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 13 Nov 2020 12:41:04 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHQ94ZzoSUg6U70FnRtFs0KeVXT=Zg6ri2+OU_TKQcGfg@mail.gmail.com>
+Message-ID: <CAMj1kXHQ94ZzoSUg6U70FnRtFs0KeVXT=Zg6ri2+OU_TKQcGfg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6 warning
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case the user wants to stop controlling a uclamp constraint value
-for a task, use the magic value -1 in sched_util_{min,max} with the
-appropriate sched_flags (SCHED_FLAG_UTIL_CLAMP_{MIN,MAX}) to indicate
-the reset.
+On Fri, 13 Nov 2020 at 12:05, Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+>
+> Hi Ard,
+>
+> On Fri, 13 Nov 2020, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > On Thu, 12 Nov 2020 at 22:23, Adrian Ratiu
+> > <adrian.ratiu@collabora.com> wrote:
+> >>
+> >> From: Nathan Chancellor <natechancellor@gmail.com>
+> >>
+> >> Drop warning because kernel now requires GCC >= v4.9 after
+> >> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9").
+> >>
+> >> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> >> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> >> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> >
+> > Again, this does not do what it says on the tin.
+> >
+> > If you want to disable the pragma for Clang, call that out in
+> > the commit log, and don't hide it under a GCC version change.
+>
+> I am not doing anything for Clang in this series.
+>
+> The option to auto-vectorize in Clang is enabled by default but
+> doesn't work for some reason (likely to do with how it computes
+> the cost model, so maybe not even a bug at all) and if we enable
+> it explicitely (eg via a Clang specific pragma) we get some
+> warnings we currently do not understand, so I am not changing the
+> Clang behaviour at the recommendation of Nick.
+>
+> So this is only for GCC as the "tin" says :) We can fix clang
+> separately as the Clang bug has always been present and is
+> unrelated.
+>
 
-The advantage over the 'additional flag' approach (i.e. introducing
-SCHED_FLAG_UTIL_CLAMP_RESET) is that no additional flag has to be
-exported via uapi. This avoids the need to document how this new flag
-has be used in conjunction with the existing uclamp related flags.
+But you are adding the IS_GCC check here, no? Is that equivalent? IOW,
+does Clang today identify as GCC <= 4.6?
 
-The following subtle issue is fixed as well. When a uclamp constraint
-value is set on a !user_defined uclamp_se it is currently first reset
-and then set.
-Fix this by AND'ing !user_defined with !SCHED_FLAG_UTIL_CLAMP which
-stands for the 'sched class change' case.
-The related condition 'if (uc_se->user_defined)' moved from
-__setscheduler_uclamp() into uclamp_reset().
+> >
+> > Without the pragma, the generated code is the same as the
+> > generic code, so it makes no sense to build xor-neon.ko at all,
+> > right?
+> >
+>
+> Yes that is correct and that is the reason why in v1 I opted to
+> not build xor-neon.ko for Clang anymore, but that got NACKed, so
+> here I'm fixing the low hanging fruit: the very obvious & clear
+> GCC problems.
+>
+>
 
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
+Fair enough.
 
-v1 [1] -> v2:
-
-1) Removed struct sched_attr (UAPI) change.
-
-2) Use single branch range check in uclamp_validate().
-
-[1] https://lkml.kernel.org/r/f3b59aad-3d5d-039b-205d-024308b609a1@arm.com
-
- include/uapi/linux/sched/types.h |  2 +
- kernel/sched/core.c              | 70 +++++++++++++++++++++++---------
- 2 files changed, 53 insertions(+), 19 deletions(-)
-
-diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/types.h
-index c852153ddb0d..f2c4589d4dbf 100644
---- a/include/uapi/linux/sched/types.h
-+++ b/include/uapi/linux/sched/types.h
-@@ -96,6 +96,8 @@ struct sched_param {
-  * on a CPU with a capacity big enough to fit the specified value.
-  * A task with a max utilization value smaller than 1024 is more likely
-  * scheduled on a CPU with no more capacity than the specified value.
-+ *
-+ * A task utilization boundary can be reset by setting the attribute to -1.
-  */
- struct sched_attr {
- 	__u32 size;
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3dc415f58bd7..a4805747b304 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1413,17 +1413,24 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
- static int uclamp_validate(struct task_struct *p,
- 			   const struct sched_attr *attr)
- {
--	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
--	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-+	int util_min = p->uclamp_req[UCLAMP_MIN].value;
-+	int util_max = p->uclamp_req[UCLAMP_MAX].value;
- 
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
--		lower_bound = attr->sched_util_min;
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
--		upper_bound = attr->sched_util_max;
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-+		util_min = attr->sched_util_min;
- 
--	if (lower_bound > upper_bound)
--		return -EINVAL;
--	if (upper_bound > SCHED_CAPACITY_SCALE)
-+		if (util_min + 1 > SCHED_CAPACITY_SCALE + 1)
-+			return -EINVAL;
-+	}
-+
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-+		util_max = attr->sched_util_max;
-+
-+		if (util_max + 1 > SCHED_CAPACITY_SCALE + 1)
-+			return -EINVAL;
-+	}
-+
-+	if (util_min != -1 && util_max != -1 && util_min > util_max)
- 		return -EINVAL;
- 
- 	/*
-@@ -1438,20 +1445,41 @@ static int uclamp_validate(struct task_struct *p,
- 	return 0;
- }
- 
-+static bool uclamp_reset(const struct sched_attr *attr,
-+			 enum uclamp_id clamp_id,
-+			 struct uclamp_se *uc_se)
-+{
-+	/* Reset on sched class change for a non user-defined clamp value. */
-+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
-+	    !uc_se->user_defined)
-+		return true;
-+
-+	/* Reset on sched_util_{min,max} == -1. */
-+	if (clamp_id == UCLAMP_MIN &&
-+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
-+	    attr->sched_util_min == -1) {
-+		return true;
-+	}
-+
-+	if (clamp_id == UCLAMP_MAX &&
-+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
-+	    attr->sched_util_max == -1) {
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- static void __setscheduler_uclamp(struct task_struct *p,
- 				  const struct sched_attr *attr)
- {
- 	enum uclamp_id clamp_id;
- 
--	/*
--	 * On scheduling class change, reset to default clamps for tasks
--	 * without a task-specific value.
--	 */
- 	for_each_clamp_id(clamp_id) {
- 		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
-+		unsigned int value;
- 
--		/* Keep using defined clamps across class changes */
--		if (uc_se->user_defined)
-+		if (!uclamp_reset(attr, clamp_id, uc_se))
- 			continue;
- 
- 		/*
-@@ -1459,21 +1487,25 @@ static void __setscheduler_uclamp(struct task_struct *p,
- 		 * at runtime.
- 		 */
- 		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
--			__uclamp_update_util_min_rt_default(p);
-+			value = sysctl_sched_uclamp_util_min_rt_default;
- 		else
--			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
-+			value = uclamp_none(clamp_id);
-+
-+		uclamp_se_set(uc_se, value, false);
- 
- 	}
- 
- 	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
- 		return;
- 
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
-+	    attr->sched_util_min != -1) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
- 			      attr->sched_util_min, true);
- 	}
- 
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
-+	    attr->sched_util_max != -1) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
- 			      attr->sched_util_max, true);
- 	}
--- 
-2.17.1
-
+> >> ---
+> >>  arch/arm/lib/xor-neon.c | 9 +--------
+> >>  1 file changed, 1 insertion(+), 8 deletions(-)
+> >>
+> >> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> >> index b99dd8e1c93f..e1e76186ec23 100644
+> >> --- a/arch/arm/lib/xor-neon.c
+> >> +++ b/arch/arm/lib/xor-neon.c
+> >> @@ -19,15 +19,8 @@ MODULE_LICENSE("GPL");
+> >>   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+> >>   * NEON instructions.
+> >>   */
+> >> -#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+> >> +#ifdef CONFIG_CC_IS_GCC
+> >>  #pragma GCC optimize "tree-vectorize"
+> >> -#else
+> >> -/*
+> >> - * While older versions of GCC do not generate incorrect code, they fail to
+> >> - * recognize the parallel nature of these functions, and emit plain ARM code,
+> >> - * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
+> >> - */
+> >> -#warning This code requires at least version 4.6 of GCC
+> >>  #endif
+> >>
+> >>  #pragma GCC diagnostic ignored "-Wunused-variable"
+> >> --
+> >> 2.29.2
+> >>
