@@ -2,223 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BC22B20B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E212F2B20BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgKMQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
+        id S1726502AbgKMQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgKMQpG (ORCPT
+        with ESMTP id S1726270AbgKMQqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:45:06 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741FBC0613D1;
-        Fri, 13 Nov 2020 08:45:04 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id s13so9038339wmh.4;
-        Fri, 13 Nov 2020 08:45:04 -0800 (PST)
+        Fri, 13 Nov 2020 11:46:09 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFF1C0613D1;
+        Fri, 13 Nov 2020 08:46:09 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id l36so9490182ota.4;
+        Fri, 13 Nov 2020 08:46:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=w3tTeimsV7KGyYQSPfv9SeS1lBQXGPjuqYfC+5XH5KI=;
-        b=iyeS1LLDqzvM9Nzps8PD90IxAbzzRzoR5CT+0pS0zuFTgHzaUu+KZrjWfP8nf4S2Bi
-         l9/eAFV507IbALmpVOnFWchGR8VYr/wLxxj2BHQ1b1ZBrPfLIkMobEJUvpsR6S2ejCRq
-         yAaxzYIJSZ5PxuqY/fBLLVkNyre0ALqD6d14ykDgOQXV7Tn6f242FYVjMkDsnHhJHQaJ
-         VifX4MHW3wVNXpVCbcOv6qHz1SSxO1rlZhV/golqJO3ifOOxrnnMBrBK1s94P1SnxHVt
-         lDL5LgyNH3nP7YuwfJDBN1cYQ4PQ80pKsX8y+uZq0kFS2YLEhPUM5fQ59/n4gxa9CLmP
-         oC+g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i7zjvxB8IPM5Mhr2gw8hZWusdq8Z7SVhEwNnCSZ2W0A=;
+        b=gYDpFI0IJFPeUKrMjgO+G5qRDjpWh3koaJ9fER24+4aboghe/I+yzNfbSd5G8+Vt5E
+         ppvi5Q773XiFNeBdZ27zrfu6xbB+PnyV3mr1feJGkfpSxzbN1agJfDSfxiimyWonf3KL
+         LgZl3ZiojfgtlGL4FwUbs6Pk2TyoqGkPtTjE1hC1ao5F+8/zF0EY2MBht3OTRo6ZH0c8
+         s5/YguZ6349pQV2/Lhp26e2nc6ZHE0KjFatzKERbnsPXpFkRkmxztpxvCBfyGp7mpmRs
+         nQl9VSCQafmODOczX0lkwJO0+DWaQ07uXCxVBIF+St8kkfP3dDRwphDnhBEQiiLzDTNE
+         GbpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=w3tTeimsV7KGyYQSPfv9SeS1lBQXGPjuqYfC+5XH5KI=;
-        b=VL7qENfLSQVRgMABPl1GQNZwHgN9Tpk58iSBzcVz0ljiQnnjukTgoP9SdKSHt4Lq3h
-         2eD+4Zrzwqg0XI2JGM7Ch3AEjeo1RaV5E/CDsgCVJyZG5xs+Gry7wnOuJY9mH/7lLIez
-         zBq49yNuJteSL6jhruMnufzNNVpBXHhNXn8hizHv0Q7JWySn4eyEGO40Dn9MVeiQOUJ+
-         CjCUdoUpk0l2q3EGz3uwkd6I3vrQMxYbhypfuJot6Yt1I3DzS++3oqazlnjyPTOpkpv2
-         HfCe7S84CYBGuzOOnmwV6ib0BOI8LmpmS9fjbhJcuKED0qGUW1A351fWETz6jaKZt0ZN
-         UlQw==
-X-Gm-Message-State: AOAM531g0uCkHnU3X+PFTl78nV6ZedfQeZ5QTINA8j46nBYjeRpc0tH9
-        AD90mI/V/LP+FsbXShVVPlY=
-X-Google-Smtp-Source: ABdhPJz5G5ud1mfgz5CSN1RmYNnQ+Xy235w4dA9chcJ0UI8urW/wzporWQvrWq5O71L2s5nPFnI6JQ==
-X-Received: by 2002:a05:600c:218a:: with SMTP id e10mr419285wme.73.1605285898183;
-        Fri, 13 Nov 2020 08:44:58 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id c6sm12442041wrh.74.2020.11.13.08.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:44:56 -0800 (PST)
-Date:   Fri, 13 Nov 2020 17:44:55 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v4 00/16] Tegra XHCI controller ELPG support
-Message-ID: <20201113164455.GG1408970@ulmo>
-References: <20201016130726.1378666-1-jckuo@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i7zjvxB8IPM5Mhr2gw8hZWusdq8Z7SVhEwNnCSZ2W0A=;
+        b=qvJ+6ZeGD4tE65oOp+fSW9Oi4yXZxCQQ1/8qCkMXAiyRXtp9mEMjqDhFKdt2rwSP9l
+         4WcJd6SN3cKV2ie17cQEi/8qyQykcc7kTgyGa3EfDIozhc8GY+XAaQryD5rnjQKxbF30
+         bMpULqX7e590ywfR5p1okcZeQLP2EDeg+hPBF1qkQMcXGLpq2x+VgEMpTP9GuHjMp+Ks
+         XQSl61q+b1i3OBhBEusmqHxnDeKYNwg0V6XygOHaP/G8wRotfOL7EagbP6TUDCGqt/3W
+         wpn4wZMuX/bTUoyrAzaW2f0TShrxsB3mWXMYoU5LBXBDKTbwNAQLZejN7tbnQ2x7TaSd
+         VtEw==
+X-Gm-Message-State: AOAM531qtN0JiyzppgEU9jsUIdNJ0pgMPlnJOT+du3AiZ6TUZy+R/FDD
+        RAOYEDqdGQrqb2OV5ZefgT2G4HaydY8MsKrRMuU=
+X-Google-Smtp-Source: ABdhPJwSYa7zc8BKwHO408gv+VEOzNUP0dG9UPHF3tEBu7A+/LLBxuzIp0SWJji6Bnhi8BKG4R/AxmVIY1OrRQpL1bc=
+X-Received: by 2002:a9d:6207:: with SMTP id g7mr2276252otj.22.1605285964008;
+ Fri, 13 Nov 2020 08:46:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="NPukt5Otb9an/u20"
-Content-Disposition: inline
-In-Reply-To: <20201016130726.1378666-1-jckuo@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
+ <X61rce8GANHW1ysh@kroah.com> <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
+ <X613chtPVIg8kquH@kroah.com> <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
+ <20201112192524.GB287229@rowland.harvard.edu> <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
+ <20201113163449.GB322940@rowland.harvard.edu>
+In-Reply-To: <20201113163449.GB322940@rowland.harvard.edu>
+From:   John Boero <boeroboy@gmail.com>
+Date:   Fri, 13 Nov 2020 16:45:52 +0000
+Message-ID: <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
+Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sorry I wanted to include a pastebin or link but was trying to follow maillist
+guidelines and not include links or exceed wrap guidelines.  Full contents:
+https://paste.centos.org/view/3746bc40
 
---NPukt5Otb9an/u20
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes I understand the return dodges the config dereference.
 
-On Fri, Oct 16, 2020 at 09:07:10PM +0800, JC Kuo wrote:
-> Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
-> state for power saving when all of the connected USB devices are in
-> suspended state. This patch series includes clk, phy and pmc changes
-> that are required for properly place controller in ELPG and bring
-> controller out of ELPG.
->=20
-> JC Kuo (16):
->   clk: tegra: Add PLLE HW power sequencer control
->   clk: tegra: Don't enable PLLE HW sequencer at init
->   phy: tegra: xusb: Move usb3 port init for Tegra210
->   phy: tegra: xusb: tegra210: Do not reset UPHY PLL
->   phy: tegra: xusb: Rearrange UPHY init on Tegra210
->   phy: tegra: xusb: Add Tegra210 lane_iddq operation
->   phy: tegra: xusb: Add sleepwalk and suspend/resume
->   soc/tegra: pmc: Provide USB sleepwalk register map
->   arm64: tegra210: XUSB PADCTL add "nvidia,pmc" prop
->   dt-bindings: phy: tegra-xusb: Add nvidia,pmc prop
->   phy: tegra: xusb: Add wake/sleepwalk for Tegra210
->   phy: tegra: xusb: Tegra210 host mode VBUS control
->   phy: tegra: xusb: Add wake/sleepwalk for Tegra186
->   arm64: tegra210/tegra186/tegra194: XUSB PADCTL irq
->   usb: host: xhci-tegra: Unlink power domain devices
->   xhci: tegra: Enable ELPG for runtime/system PM
->=20
->  .../phy/nvidia,tegra124-xusb-padctl.txt       |    1 +
->  arch/arm64/boot/dts/nvidia/tegra186.dtsi      |    1 +
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi      |    1 +
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi      |    2 +
->  drivers/clk/tegra/clk-pll.c                   |   12 -
->  drivers/clk/tegra/clk-tegra210.c              |   53 +-
->  drivers/phy/tegra/xusb-tegra186.c             |  558 ++++-
->  drivers/phy/tegra/xusb-tegra210.c             | 1889 +++++++++++++----
->  drivers/phy/tegra/xusb.c                      |   92 +-
->  drivers/phy/tegra/xusb.h                      |   22 +-
->  drivers/soc/tegra/pmc.c                       |   94 +
->  drivers/usb/host/xhci-tegra.c                 |  610 ++++--
->  include/linux/clk/tegra.h                     |    4 +-
->  include/linux/phy/tegra/xusb.h                |   10 +-
->  14 files changed, 2785 insertions(+), 564 deletions(-)
+Original line usb.c:281 is the original error:
 
-I've been testing this, but I keep seeing the following oops on suspend
-on a Jetson TX1:
+280| for (i = 0; i < config->desc.bNumInterfaces; i++)
+281|  if (config->interface[i]->altsetting[0]
+282|    .desc.bInterfaceNumber == ifnum)
+283|  return config->interface[i];
 
-[  153.451108] tegra-xusb-padctl phy-usb2.0: > tegra_xusb_padctl_suspend_no=
-irq(dev=3Dffff000080917000)
-[  153.460353] tegra-xusb-padctl phy-usb2.0:   driver: ffff8000114453e0 (te=
-gra_xusb_padctl_driver)
-[  153.469245] tegra-xusb-padctl phy-usb2.0:   padctl: ffff0000829f6480
-[  153.475772] tegra-xusb-padctl phy-usb2.0:     soc: ef7bdd7fffffffff (0xe=
-f7bdd7fffffffff)
-[  153.484061] Unable to handle kernel paging request at virtual address 00=
-7bdd800000004f
-[  153.492132] Mem abort info:
-[  153.495083]   ESR =3D 0x96000004
-[  153.498308]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[  153.503771]   SET =3D 0, FnV =3D 0
-[  153.506979]   EA =3D 0, S1PTW =3D 0
-[  153.510260] Data abort info:
-[  153.513200]   ISV =3D 0, ISS =3D 0x00000004
-[  153.517181]   CM =3D 0, WnR =3D 0
-[  153.520302] [007bdd800000004f] address between user and kernel address r=
-anges
-[  153.527600] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[  153.533231] Modules linked in: nouveau panel_simple tegra_video(C) tegra=
-_drm drm_ttm_helper videobuf2_dma_contig ttm videobuf2_memops cec videobuf2=
-_v4l2 videobuf2_common drm_kms_helper v4l2_fwnode videodev drm mc snd_hda_c=
-odec_hdmi cdc_ether usbnet snd_hda_tegra r8152 crct10dif_ce snd_hda_codec s=
-nd_hda_core tegra_xudc host1x lp855x_bl at24 ip_tables x_tables ipv6
-[  153.566417] CPU: 0 PID: 300 Comm: systemd-sleep Tainted: G         C    =
-    5.10.0-rc3-next-20201113-00019-g5c064d5372b0-dirty #624
-[  153.578283] Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
-[  153.584281] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
-[  153.590381] pc : tegra_xusb_padctl_suspend_noirq+0x88/0x100
-[  153.596016] lr : tegra_xusb_padctl_suspend_noirq+0x80/0x100
-[  153.601632] sp : ffff8000120dbb60
-[  153.604999] x29: ffff8000120dbb60 x28: ffff000080a1df00
-[  153.610430] x27: 0000000000000002 x26: ffff8000106f8540
-[  153.615858] x25: ffff8000113ac4a4 x24: ffff80001148c198
-[  153.621277] x23: ffff800010c4538c x22: 0000000000000002
-[  153.626692] x21: ffff800010ccde80 x20: ffff0000829f6480
-[  153.632107] x19: ffff000080917000 x18: 0000000000000030
-[  153.637521] x17: 0000000000000000 x16: 0000000000000000
-[  153.642933] x15: ffff000080a1e380 x14: 74636461702d6273
-[  153.648346] x13: ffff8000113ad058 x12: 0000000000000f39
-[  153.653759] x11: 0000000000000513 x10: ffff800011405058
-[  153.659176] x9 : 00000000fffff000 x8 : ffff8000113ad058
-[  153.664590] x7 : ffff800011405058 x6 : 0000000000000000
-[  153.670002] x5 : 0000000000000000 x4 : ffff0000fe908bc0
-[  153.675414] x3 : ffff0000fe910228 x2 : 162ef67e0581e700
-[  153.680826] x1 : 162ef67e0581e700 x0 : ef7bdd7fffffffff
-[  153.686241] Call trace:
-[  153.688769]  tegra_xusb_padctl_suspend_noirq+0x88/0x100
-[  153.694077]  __device_suspend_noirq+0x68/0x1cc
-[  153.698594]  dpm_noirq_suspend_devices+0x10c/0x1d0
-[  153.703456]  dpm_suspend_noirq+0x28/0xa0
-[  153.707461]  suspend_devices_and_enter+0x234/0x4bc
-[  153.712314]  pm_suspend+0x1e4/0x270
-[  153.715868]  state_store+0x8c/0x110
-[  153.719440]  kobj_attr_store+0x1c/0x30
-[  153.723259]  sysfs_kf_write+0x4c/0x7c
-[  153.726981]  kernfs_fop_write+0x124/0x240
-[  153.731065]  vfs_write+0xe4/0x204
-[  153.734449]  ksys_write+0x6c/0x100
-[  153.737925]  __arm64_sys_write+0x20/0x30
-[  153.741931]  el0_svc_common.constprop.0+0x78/0x1a0
-[  153.746789]  do_el0_svc+0x24/0x90
-[  153.750181]  el0_sync_handler+0x254/0x260
-[  153.754251]  el0_sync+0x174/0x180
-[  153.757663] Code: aa0303e2 94000f64 f9405680 b40000e0 (f9402803)
-[  153.763826] ---[ end trace 81543a3394cb409d ]---
+Thanks
+John
 
-Note that I've added a bit of debug information there to show what's
-going on. See how tegra_xusb_padctl_suspend_noirq() is being called for
-the phy-usb2.0 device? That's one of the PHYs that's being created for
-the USB2 lanes. Sometimes I do see that padctl->soc ends up being NULL
-for that device and in that case the function just aborts early and then
-tegra_xusb_padctl_suspend_noirq() will get called again for the padctl
-device and succeed.
-
-I can't explain what's happening here. tegra_xusb_padctl_driver never
-binds to the phy-usb2.0 device, so I don't understand how it could end
-up suspending the device with that set of dev_pm_ops. Perhaps this is
-some weird type of corruption somewhere?
-
-Thierry
-
---NPukt5Otb9an/u20
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+uuAcACgkQ3SOs138+
-s6HhJRAAhIzGiht64leNoRXPprKnW6lHKN1r2ajglsfVhD33Vz6ZN7y7Lj4o0vBo
-5KzmMKHASLMs6sCtpCH/8lIsvyh2r78gUg7wAam2XxkEOFbcMJHGXQAwXcwwPZCc
-BjqOULXVOSS4aXpuZN/0KeMmZE3DJ4k7WJ6VuNzfs9zVK9Hain7JKmIILZFQN/V+
-+cUThQtOt11R8f/Bc2Z99sunlJhaH7SXt4mU8jZVTACOh9Z47bQYqAa79VpoFzoC
-PAT1fLqNTDUez30psdqQT/vbbx85OP7dZNJroFhU4m9b/rWXO3dnnTEZ8+Sjq9gk
-KGd1OtJoE4bvhsC0nepyQkOoISP8qZQlqeteDXWSjAEgKskfbz+c1B0DdXHpyXUb
-6kKl3NR5FTWX4P4dF5VNwZlnDfc7rqtKdzSbPRMUQCGo9PvHht9pjriu+Cv8Rc6+
-7+1IqMH2SA2ylFZ0I8/BI5qwrayEKJH9fOEZ9GXCeaTqN96gBnlJMhUZsTdFMUjy
-3uquBOOVOkhUMw1tkdyOYdJ6g9kFZgcZvNSQdoUgBNxf5FxGOcMZWGPq+jtLWtLB
-HG8/w3xMqVqQbNskrdCTpkQJyoej7IvI/rSOtxEmYX8FsEkUwLZENS5NOfnQ8lWL
-4+s3PoH2Buu3Q+W7iojUkHVO+k7sjpjhNBtJvIIuJfPJz7lqKSg=
-=OrSO
------END PGP SIGNATURE-----
-
---NPukt5Otb9an/u20--
+On Fri, Nov 13, 2020 at 4:34 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Fri, Nov 13, 2020 at 01:18:05PM +0000, John Boero wrote:
+> > Thanks for the tips.
+> >
+> > I've spent some more time on this this morning.
+> > It looks like it's not the dev after all.
+>
+> What isn't the dev?
+>
+> > Every interface in the dev is set NULL after init.
+>
+> I can't tell what this means.  Please be more explicit.
+>
+> > Just like in the original Ubuntu bug 1827452 filed by someone else
+> > the device seems to disconnect itself after uvcvideo initialization.
+> > Then there is a 5 second pause before usb_ifnum_to_if tries
+> > to iterate through its 8 interfaces - all of which are null.
+> > It looks like uvc properly locks the dev, so maybe this could
+> > be caused by any device being unplugged after init?
+>
+> More likely there is a bug in the uvcvideo driver.
+>
+> > The WARNING handle preserves USB function though,
+> > and subsequent lsusb behaves fine:
+>
+> No, the WARN only writes a message to the system log.  The "return"
+> statement is what prevented the system from crashing.
+>
+> > $ lsusb | fold -w 80
+> > Bus 002 Device 002: ID 8087:8002 Intel Corp. 8 channel internal hub
+> > Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> > Bus 001 Device 002: ID 8087:800a Intel Corp. Hub
+> > Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> > Bus 004 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
+> > Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+> > Bus 003 Device 005: ID 1ea7:0064 SHARKOON Technologies GmbH 2.4GHz Wireless rech
+> > argeable vertical mouse [More&Better]
+> > Bus 003 Device 004: ID 145f:025c Trust Trust USB Microphone
+> > Bus 003 Device 002: ID 1050:0407 Yubico.com Yubikey 4/5 OTP+U2F+CCID
+> > Bus 003 Device 009: ID 0a5c:21e8 Broadcom Corp. BCM20702A0 Bluetooth 4.0
+> > Bus 003 Device 008: ID 0451:8142 Texas Instruments, Inc. TUSB8041 4-Port Hub
+> > Bus 003 Device 006: ID 062a:4101 MosArt Semiconductor Corp. Wireless Keyboard/Mo
+> > use
+> > Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> > Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+> > Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+> >
+> > 8x (0-7) occurences of the following WARNING:
+> >
+> > [ 140.678756] usb 3-4: USB disconnect, device number 3
+> > [ 145.995855] ------------[ cut here ]------------
+> > [ 145.995863] dev interface is NULL in usb_ifnum_to_if
+> > [ 145.995907] WARNING: CPU: 31 PID: 5617 at drivers/usb/core/usb.c:289
+> > usb_ifnum_to_if+0x58/0x80
+>
+> You removed the most important part of the log message!  What appears
+> below this point?
+>
+> In fact, you should just post the entire log (or put it on a server
+> somewhere and post a URL).
+>
+> Alan Stern
