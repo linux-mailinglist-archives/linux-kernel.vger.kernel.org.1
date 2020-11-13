@@ -2,286 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345742B1424
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E162B1428
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgKMCGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 21:06:36 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7185 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgKMCGg (ORCPT
+        id S1726260AbgKMCHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 21:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKMCHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 21:06:36 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CXMJt6qHYz15Ty2;
-        Fri, 13 Nov 2020 10:06:22 +0800 (CST)
-Received: from [10.67.76.251] (10.67.76.251) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 13 Nov 2020
- 10:06:24 +0800
-Subject: Re: [PATCH v6] lib: optimize cpumask_local_spread()
-To:     Dave Hansen <dave.hansen@intel.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>
-References: <1604410767-55947-1-git-send-email-zhangshaokun@hisilicon.com>
- <3e2e760d-e4b9-8bd0-a279-b23bd7841ae7@intel.com>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <eec4c1b6-8dad-9d07-7ef4-f0fbdcff1785@hisilicon.com>
-Date:   Fri, 13 Nov 2020 10:06:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Thu, 12 Nov 2020 21:07:20 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2DDC0613D1;
+        Thu, 12 Nov 2020 18:07:20 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b63so2681088pfg.12;
+        Thu, 12 Nov 2020 18:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K+5lP+6SdA7Q0aRYAahOsD3pd2nwR+KnPMnUnFXiiTg=;
+        b=YOGIygaB8cxLgsBg7uXYvDplxqDNrLO6pY34KJRQ32bJ6Qi9hdqvw4Q/G8OA5pWHsh
+         nfc7ThN5p4rt6MBaDT5bGUgS1DsgYaWXFGm7KloJsxf8+m0JLRrFzG7MdRHhecFZrOVC
+         AULady90bP24Zn2V14n1LnJIOkbsHMnM1lKCeyWUGhYdp4zGZMGLriQou8/OyIkS/tzo
+         tWKxDHO/mOrTqO1F+2zv9O0KFFNvDCV9pUR3zLfvCyDSaPHaVCe+Djj9lbtJQuiMAIPS
+         0UyWTqsVFDOdGrwbueLQHiT0yESe0htR5/H1UeWK7OiGy819HqpQg2wpHO+5ZIwR2jmq
+         Bdjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K+5lP+6SdA7Q0aRYAahOsD3pd2nwR+KnPMnUnFXiiTg=;
+        b=qFx5Uczam16Q/93eVNsCiINHWI2U7LaAz2GwDKJ3+5ouuLPzdga+TCMRH2IAoQPlSF
+         Lw9/c6YQLoIqPcZhh0wzuJsrCTCi6tzbvwBa3agxmPXaVT/JrzNYdoR/vW8jISRCkXF0
+         0R0W41Xuyy9fdrlzI5iIRKL451JKy6vrSPKmo3UWqV0ajRIn5zIWEfXS7P2W7nPOT9vA
+         L+t5zWJqRcL58PxzcqEZPd1c6HLHn+e0zKMBfrSBuT4I8oPO6YmSnT6I4fqpMo49yo33
+         QaYqgDDe9Sb4iUm9tEzwk2pvUWODHw7CXURtcAN4YsajgeQ+qObTPM3KSlkYHW03PU1j
+         OujA==
+X-Gm-Message-State: AOAM532wikT655HBbkuykbbq9jWMpMZyAzKq52aWsn9ZAvsMbGP8InbQ
+        xi7Gn2DCcTGtm7CFjsofsAw=
+X-Google-Smtp-Source: ABdhPJwsqeWGTTbq2/khGDhkf7n6zBmZicaUyCEeVbYB/uAbuqBXJzEvjBhs90xem+tu1hxV4yj+hQ==
+X-Received: by 2002:a62:5406:0:b029:18c:8dac:4a99 with SMTP id i6-20020a6254060000b029018c8dac4a99mr2076475pfb.19.1605233239540;
+        Thu, 12 Nov 2020 18:07:19 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id a18sm990641pfa.151.2020.11.12.18.07.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 18:07:18 -0800 (PST)
+Date:   Thu, 12 Nov 2020 18:07:16 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     KwangDeok Son <kdson@zinitix.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: add new touchpad driver for Zinitix IC
+Message-ID: <20201113020716.GC356503@dtor-ws>
+References: <20201112204037.502fbae0@zinitix-H370AORUSGAMING3>
 MIME-Version: 1.0
-In-Reply-To: <3e2e760d-e4b9-8bd0-a279-b23bd7841ae7@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.76.251]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112204037.502fbae0@zinitix-H370AORUSGAMING3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+Hi KwangDeok,
 
-在 2020/11/5 0:10, Dave Hansen 写道:
-> On 11/3/20 5:39 AM, Shaokun Zhang wrote:
->> Currently, Intel DDIO affects only local sockets, so its performance
->> improvement is due to the relative difference in performance between the
->> local socket I/O and remote socket I/O.To ensure that Intel DDIO’s
->> benefits are available to applications where they are most useful, the
->> irq can be pinned to particular sockets using Intel DDIO.
->> This arrangement is called socket affinityi. So this patch can help
->> Intel DDIO work. The same I/O stash function for most processors
+On Thu, Nov 12, 2020 at 08:40:37PM +0900, KwangDeok Son wrote:
+> Add new touchpad driver for Zinitix IC
+> Supports five fingers multi-touch and firmware updates.
+> It communicates with the device via an I2C bus.
 > 
-> A great changelog would probably include a bit of context about DDIO.
-> Even being from Intel, I'd heard about this, but I didn't immediately
-> know what the acronym was.
-> 
-> The thing that matters here is that DDIO allows devices to use processor
-> caches instead of having them always do uncached accesses to main
-> memory.  That's a pretty important detail left out of the changelog.
-> 
->> On Huawei Kunpeng 920 server, there are 4 NUMA node(0 - 3) in the 2-cpu
->> system(0 - 1). The topology of this server is followed:
-> 
-> This is with a feature enabled that Intel calls sub-NUMA-clustering
-> (SNC), right?  Explaining *that* feature would also be great context for
+> Signed-off-by : KwangDeok Son <kdson@zinitix.com>
 
-Correct,
+Please run the patch through ./scripts/checkpatch.pl and fix warnings
+from the tool.
 
-> why this gets triggered on your system and not normally on others and
-> why nobody noticed this until now.
+> @@ -0,0 +1,1524 @@
+> +/*
+> + * Zinitics I2C Touchpad driver
+> + *
+> + * Copyright (c) 2020 ZINITIX Co.,Ltd
+> + *
+> + * Author: KwangDeok Son <kdson@zinitix.com>
+> + *
+> + * Based on elan driver:
+> + * Copyright (c) 2011-2013 ELAN Microelectronics Corp.
+> + * copyright (c) 2011-2012 Cypress Semiconductor, Inc.
+> + * copyright (c) 2011-2012 Google, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License version 2 as published
+> + * by the Free Software Foundation.
 
-This is on intel 6248 platform:
-[root@localhost ~]# numactl -H
-available: 4 nodes (0-3)
-node 0 cpus: 0 1 2 5 6 10 11 12 15 16 40 41 42 45 46 50 51 52 55 56
-node 0 size: 46893 MB
-node 0 free: 45982 MB
-node 1 cpus: 3 4 7 8 9 13 14 17 18 19 43 44 47 48 49 53 54 57 58 59
-node 1 size: 48379 MB
-node 1 free: 48235 MB
-node 2 cpus: 20 21 22 25 26 30 31 32 35 36 60 61 62 65 66 70 71 72 75 76
-node 2 size: 48353 MB
-node 2 free: 48022 MB
-node 3 cpus: 23 24 27 28 29 33 34 37 38 39 63 64 67 68 69 73 74 77 78 79
-node 3 size: 48378 MB
-node 3 free: 48196 MB
-node distances:
-node   0   1   2   3
-  0:  10  11  21  21
-  1:  11  10  21  21
-  2:  21  21  10  11
-  3:  21  21  11  10
-[root@localhost ~]#
-When the intel client turns on SNC, the mlx5 network card is used and is located
-in node2, while the number queues of network card is greater than the number of
-cores of node2. When all cores in the node2 has been binded, the core of node0
-will be choosed, resulting in cross-chip and DDIO failure. If applying this patch,
-node3 will be choosed to avoid this cross-chip operation.
+Please drop GPL notice, use SPDX tag instead.
 
-> 
->> The IRQ from 369-392 will be bound from NUMA node0 to NUMA node3 with this
->> patch, before the patch:
->>
->> Euler:/sys/bus/pci # cat /proc/irq/369/smp_affinity_list
->> 0
->> Euler:/sys/bus/pci # cat /proc/irq/370/smp_affinity_list
->> 1
->> ...
->> Euler:/sys/bus/pci # cat /proc/irq/391/smp_affinity_list
->> 22
->> Euler:/sys/bus/pci # cat /proc/irq/392/smp_affinity_list
->> 23
->> After the patch:
-> 
-> I _think_ what you are trying to convey here is that IRQs 369 and 370
-> are from devices plugged in to one socket, but their IRQs are bound to
-> CPUs 0 and 1 which are in the other socket.  Once device traffic leaves
-> the socket, it can no longer use DDIO and performance suffers.
-> 
-> The same situation is true for IRQs 391/392 and CPUs 22/23.
-> 
-> You don't come out and say it, but I assume that the root of this issue
-> is that once we fill up a NUMA node worth of CPUs with an affinitized
-> IRQ per CPU, we go looking for CPUs in other NUMA nodes.  In this case,
-> we have the processor in this weird mode that chops sockets into two
-> NUMA nodes, which makes the device's NUMA node fill up faster.
-> 
-> The current behavior just "wraps around" to find a new node.  But, this
-> wrap around behavior is nasty in this case because it might cross a socket.
-> 
+> + *
+> + * Trademarks are the property of their respective owners.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/kernel.h>
+> +#include <linux/sched.h>
 
-We want to improve the siutation that the card is inserted in second socket,
-but it is binded with the first socket CPU cores, so we want to calcualte
-this distance between different NUMA node and choose the nearesd node, it is
-not a simple wraps arouad.
+Please double-check that all includes are actually needed.
 
->> +static void calc_node_distance(int *node_dist, int node)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < nr_node_ids; i++)
->> +		node_dist[i] = node_distance(node, i);
->> +}
-> 
-> This appears to be the only place node_dist[] is written.  That means it
-> always contains a one-dimensional slice of the two-dimensional data
-> represented by node_distance().
-> 
-> Why is a copy of this data needed?
+> +#include <linux/input.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/completion.h>
+> +#include <linux/of.h>
+> +#include <asm/unaligned.h>
 
-It is used to store the distance with the @node for later, apologies that I
-can't follow your question correctly.
+asm includes should go after linux ones.
 
-> 
->> +static int find_nearest_node(int *node_dist, bool *used)
->> +{
->> +	int i, min_dist = node_dist[0], node_id = -1;
->> +
->> +	/* Choose the first unused node to compare */
->> +	for (i = 0; i < nr_node_ids; i++) {
->> +		if (used[i] == 0) {
->> +			min_dist = node_dist[i];
->> +			node_id = i;
->> +			break;
->> +		}
->> +	}
->> +
->> +	/* Compare and return the nearest node */
->> +	for (i = 0; i < nr_node_ids; i++) {
->> +		if (node_dist[i] < min_dist && used[i] == 0) {
->> +			min_dist = node_dist[i];
->> +			node_id = i;
->> +		}
->> +	}
->> +
->> +	return node_id;
->> +}
->> +
->>  /**
->>   * cpumask_local_spread - select the i'th cpu with local numa cpu's first
->>   * @i: index number
->> @@ -206,7 +238,11 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
->>   */
-> 
-> The diff missed some important context:
-> 
->>  * This function selects an online CPU according to a numa aware policy;
->>  * local cpus are returned first, followed by non-local ones, then it
->>  * wraps around.
-> 
-> This patch changes that behavior but doesn't update the comment.
-> 
+> +
+> +#include <linux/delay.h>
+> +#include <linux/firmware.h>
+> +#include <linux/i2c.h>
+> +#include <linux/input/mt.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/regulator/consumer.h>
+> +#include "zinitix_i2c.h"
 
-Good catch, I will update this.
+We are not going to share any definitions with other modules, so put all
+the constants in this file and drop the .h one.
 
-> 
->>  unsigned int cpumask_local_spread(unsigned int i, int node)
->>  {
->> -	int cpu, hk_flags;
->> +	static DEFINE_SPINLOCK(spread_lock);
->> +	static int node_dist[MAX_NUMNODES];
->> +	static bool used[MAX_NUMNODES];
-> 
-> Not to be *too* picky, but there is a reason we declare nodemask_t as a
-> bitmap and not an array of bools.  Isn't this just wasteful?
-> 
->> +	unsigned long flags;
->> +	int cpu, hk_flags, j, id;
->>  	const struct cpumask *mask;
->>  
->>  	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
->> @@ -220,20 +256,28 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
->>  				return cpu;
->>  		}
->>  	} else {
->> -		/* NUMA first. */
->> -		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
->> -			if (i-- == 0)
->> -				return cpu;
->> -		}
->> +		spin_lock_irqsave(&spread_lock, flags);
->> +		memset(used, 0, nr_node_ids * sizeof(bool));
->> +		calc_node_distance(node_dist, node);
->> +		/* Local node first then the nearest node is used */
-> 
-> Is this comment really correct?  This makes it sound like there is only
+> +int zinitix_i2c_write_reg(struct i2c_client *client, u16 reg, u16 value)
+> +{
+> +        int errno = 0;
+> +        u8 buf[22] = {0x80, 0x01, 0x14, 0x00, 0x06, 0x00, };
 
-I think it is correct, that's what we want to choose the nearest node.
+Please add a #define for 22 constant.
 
-> fallback to a single node.  Doesn't the _code_ fall back basically
-> without limit?
+> +
+> +	buf[6] = reg & 0xFF;
+> +	buf[7] = (reg>>8)&0xFF;
+> +	buf[8] = value & 0xFF;;
+> +	buf[9] = (value>>8)&0xFF;;
+> +		
 
-If I follow your question correctly, without this patch, if the local
-node is used up, one random node will be choosed, right? Now we firstly
-choose the nearest node by the distance, if all nodes has been choosen,
-it will return the initial solution.
+We have cpu_to_le16 and put_unaligned_le16 for this.
 
-> 
->> +		for (j = 0; j < nr_node_ids; j++) {
->> +			id = find_nearest_node(node_dist, used);
->> +			if (id < 0)
->> +				break;
->>  
->> -		for_each_cpu(cpu, mask) {
->> -			/* Skip NUMA nodes, done above. */
->> -			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
->> -				continue;
->> +			for_each_cpu_and(cpu, cpumask_of_node(id), mask)
->> +				if (i-- == 0) {
->> +					spin_unlock_irqrestore(&spread_lock,
->> +							       flags);
->> +					return cpu;
->> +				}
->> +			used[id] = 1;
->> +		}
->> +		spin_unlock_irqrestore(&spread_lock, flags);
-> 
-> The existing code was pretty sparsely commented.  This looks to me to
-> make it more complicated and *less* commented.  Not the best combo.
+> +	errno = zinitix_i2c_write_buf(client, buf, 22);
 
-Apologies for the bad comments, hopefully I describe it clearly by the above
-explantion.
+sizeof(buf) instead of 22
 
-Thanks,
-Shaokun
+> +
+> +	return errno;
+> +}
+> +
+> +int zinitix_i2c_write_data(struct i2c_client *client, u16 reg, 
+> +                                const u8* value, u16 size)
+> +{
+> +        int errno = 0;
+> +        u8 buf[22] = {0x80, 0x01, 0x14, 0x00, 0x06, 0x00, };
+> +	buf[5] = size & 0xFF;
+> +	buf[6] = reg & 0xFF;
+> +	buf[7] = (reg>>8)&0xFF;
+> +	memcpy(&buf[8], value, size);
 
-> 
->> +		for_each_cpu(cpu, mask)
->>  			if (i-- == 0)
->>  				return cpu;
->> -		}
->>  	}
->>  	BUG();
->>  }
->>
-> 
-> .
-> 
+Need to make sure we are not overwriting the buffer.
+
+> +	errno = zinitix_i2c_write_buf(client, buf, 22);	
+> +
+> +	return errno;
+> +}
+> +
+> +int zinitix_i2c_write_fwdata(struct i2c_client *client, u16 reg, 
+> +                                const u8* value, u16 size)
+> +{
+> +        int errno = 0;
+> +        u8 buf[22] = {0x80, 0x01, 0x14, 0x00, 0x06, 0x00, };
+> +	buf[5] = size & 0xFF;
+> +	
+> +	memcpy(&buf[6], value, size);
+
+Need to make sure we are not overwriting the buffer.
+
+> +	
+> +	errno = zinitix_i2c_write_buf(client, buf, 22);	
+> +	
+> +	return errno;
+> +}
+> +
+> +u16 zinitix_i2c_read_reg(struct i2c_client *client, u16 reg, u16* value)
+> +{
+> +	u16 retval = 0;
+> +	u8 outBuf[26] = {0x94, 0x1, 0x26, 0x3, 0x96, 0x1, 0x14, 0, 0x6, 0x1, };
+> +	u8 inBuf[8] = {0, };
+> +	
+> +	//Sample
+
+I prefer C-style comments.
+
+> +	outBuf[10] = reg & 0xFF;
+> +	outBuf[11] = (reg>>8)&0xFF;
+> +	//Send
+> +	retval = (u16)zinitix_i2c_write_buf(client, outBuf, 26);
+
+Error handling?
+
+> +	//Recv
+> +	outBuf[2] = 0x16;
+> +	outBuf[3] = 0x02;
+> +	retval = (u16)zinitix_i2c_read_buf(client, outBuf,6, inBuf, 8);
+> +	if (retval < 0) {
+
+?? You are casing to u16 and then checking for negative value?
+
+> +		dev_err(&client->dev, "reading cmd (0x%04x) fail.\n", reg);
+> +		return retval;
+> +	}
+> +
+> +	*value = (inBuf[6]&0xFF) | ((inBuf[7]<<8)&0xFF00);
+
+le16_to_cpup(). Elsewhere too.
+
+> +
+> +static int get_descriptor(struct i2c_client *client, u8* val)
+> +{
+> +        struct touchpad_data *data = i2c_get_clientdata(client);
+> +        int error;
+> +        //Get HID Descriptor
+> +        error = zinitix_i2c_read(client, ZINITIX_GET_DESC, 
+> +                                val, ZINITIX_DESC_LENGTH);
+
+Is this truly HID descriptor? Is device compatible with I2C HID
+spec/Microsoft Precision point protocol? If so this driver is not needed
+at all and we can use i2c-hid + hid-multitouch to handle the device.
+
+> +
+> +const struct zinitix_transport_ops zinitix_i2c_ops = {
+> +	.initialize		= zinitix_i2c_initialize,
+> +	.sleep_control		= zinitix_sleep_control,
+> +	.reset		        = zinitix_reset,
+> +	.get_max		= zinitix_i2c_get_max,
+> +	.get_num_channel        = zinitix_i2c_get_num_channel,
+> +	.prepare_fw_update	= zinitix_i2c_prepare_fw_update,
+> +	.write_fw_block		= zinitix_i2c_write_fw_block,
+> +	.read_fw_block		= zinitix_i2c_read_fw_block,
+> +	.finish_fw_update	= zinitix_i2c_finish_fw_update,
+> +	.get_report		= zinitix_i2c_get_report,
+> +};
+
+Are you planning on adding additional transports (such as SMB)? If not,
+then this indirection is not needed.
+
+Thanks.
+
+-- 
+Dmitry
