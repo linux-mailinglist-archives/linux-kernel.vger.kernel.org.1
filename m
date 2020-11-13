@@ -2,144 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C852B1E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9DD2B1E8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgKMPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:24:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S1726751AbgKMPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:25:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgKMPYP (ORCPT
+        with ESMTP id S1726432AbgKMPZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:24:15 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCC3C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:24:08 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id o15so10319944wru.6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:24:08 -0800 (PST)
+        Fri, 13 Nov 2020 10:25:50 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F030C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:25:50 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 23so10306172wrc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:25:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RlnsgXAqhx5O+gUIkanOxQMyzGK/8K/9bXQ6x1TuhEw=;
-        b=g4sghMSloA5MoXSp+2EWSlMNkDdD8L0ikVibSCuQeIb9IHT15BSMCi+lOK6+oKEInx
-         AEZ6707+Yxe6+jmtTQATHLh02ny5TwbG4YsZrjQeVvxb903XG1Ii5I2R2DydpzauFvyB
-         WS+N12Etx7ht/fb4YfgfTYD2BcREe+XShSPX+ZwcNeTJ3whhRv/fz12FHgZgiLerOiOA
-         c3okv+J9JCqqCMFSnvmMc2LC1Vz7BkWa2fFspcGPJS90jejtchbCQZTi08u9CVheo1ah
-         5R136pUCqHBEcsmGSJ6G4cLzBofszhR76jjIEfKjOGJsvb9shc88R54seCPjr5qeVDCA
-         aORA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=fh3sdYN4ySXdPD1FQVu1dC99IKskbJzhUsIZcKGht60=;
+        b=s0sKGyNmrJtRczni+Nu+OHhlp+MV89+jp4a4uDTvYiCXoFX/gKAryrs9SHnrzvKw/r
+         VxQ99Xuk8w4VDNr/7alL4kaXMyh7rPEQRsCslHv9on8T5EluVheEEAFzL5shdMbm+YQQ
+         QT8lLkDiYgokmKugcSJQQZoKBUj82R0cBLMYI6r54fvf64H35J2w+pee9qlxQ8ifXpvY
+         KkVksUXxX3JmkQjkgZXvQQbd7NIraiYvDhHEPSC5vo2Av+qV7c3NazQZLUEQureZ0o7H
+         2Fn5h0UsupUIl1eyiR6Fy2c+CXXy0OruErlsoZREyOgQFeqw0G096ePP2xAojI98jVI5
+         7fAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RlnsgXAqhx5O+gUIkanOxQMyzGK/8K/9bXQ6x1TuhEw=;
-        b=VTS1AI3HFqhrx2MI8i3FsTqlNLQe6NpJ+MPNjJ8HOqvF7daFEdIgi8hCCXTK5kiRwT
-         30/78Bkp9TQ6/szFqOgwTmtwoSavJDq2lyRvJ92BplwRrl8IO1Ij4SQ1s3u/inwXlx0r
-         gNP4k7iYJIMu5R92Cdtd4pp226ra4p1Nc1fFiqQ2WlhRykZj75eZOagR9U2FH3bP1NDR
-         c8bGLwkRdNTuxssdST465K//GnjinaBTauZKFgpFQx/9evfWQopMRl8F0fNqC6nWXBEj
-         bq0rrcwubD1Lp3iJmtFn1gnE9demYzXIs8FULGa3oAQ7PLE7WvwnXDxrMfWG/qJxdYqB
-         2VWA==
-X-Gm-Message-State: AOAM532ZI2iSdmJpexJJbDkoy1oXwr4ZNhMSK5kdJ3CR+AVrMUoHxm+w
-        PDtwWFtyq95rFZraxVF3NkU5ntjG7ej46iObuEc=
-X-Google-Smtp-Source: ABdhPJyQZCe7HtPJ3bNlUzGKK0DUuW0GKd3K8ifcOW4D4SiAIXLhs+AM0tGomadQ5bbIShqpKa7/HWeVZ37cFfWJWbg=
-X-Received: by 2002:a5d:6992:: with SMTP id g18mr4084367wru.362.1605281042319;
- Fri, 13 Nov 2020 07:24:02 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=fh3sdYN4ySXdPD1FQVu1dC99IKskbJzhUsIZcKGht60=;
+        b=HzkiLmQ4jxZdtqZLfCNcm6iEXfHH3md+z9T/nlguaBfxL6rQRROSH9nPB4GGcv3jzs
+         VVvfiC8wBAl9qPNEdXzbhYlLBwI3fOzze59IvmQKI6lFR8viLS8eGdYB9yw3STp7gHWX
+         ApoQFKFXOOQJfFzBuX+fPZySe4ruQDGEGsz3XgN+RlfCIRm1GCOo9gXiSmTcEdte/VCW
+         6hw/IL48hthgR/AWiDvZO8/LBjU5DKonjGH0MJbK/uYklBoY5UCRam5VE0tTJaPqpH/A
+         a7taJPvvD5yDPLGwX05a+bN5AOD7XbldawDD8J2UtAYsUougxF06hu9byRBly9fi93+V
+         7zpA==
+X-Gm-Message-State: AOAM5303aBxIPD4s0bpVG28ivZ5CD0s4iZ+TY3NMhrwYZZYp1fMUfJZb
+        fLyZS0dXhwMUpnk9CbbUKU/NeQ==
+X-Google-Smtp-Source: ABdhPJwxconarfbkZMVreTzCgPKy8Q++gyfX3htiuHqgomRWZqBVyLzWlq1KmyWIF2JU2EisYgCWrA==
+X-Received: by 2002:adf:eb4f:: with SMTP id u15mr4103486wrn.165.1605281143931;
+        Fri, 13 Nov 2020 07:25:43 -0800 (PST)
+Received: from localhost (253.35.17.109.rev.sfr.net. [109.17.35.253])
+        by smtp.gmail.com with ESMTPSA id f17sm10738795wmf.41.2020.11.13.07.25.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 07:25:43 -0800 (PST)
+References: <e4e6cc45-bc18-40ec-035e-fdb45b9a8f46@gmail.com>
+ <87o8lf74j5.fsf@nanos.tec.linutronix.de>
+ <CAPDyKFosR2wd=jqADBF_dNd3kCMbM4oDAHyxiYC-5RF=SZ_E5A@mail.gmail.com>
+ <1jzh3p9rs6.fsf@starbuckisacylon.baylibre.com>
+ <CAPDyKFq8dM7Z48uUWHai83avwdhOOGU2NEefM7ifaOUcfW+BsA@mail.gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Brad Harper <bjharper@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
+In-reply-to: <CAPDyKFq8dM7Z48uUWHai83avwdhOOGU2NEefM7ifaOUcfW+BsA@mail.gmail.com>
+Message-ID: <1jft5d1doq.fsf@starbuckisacylon.baylibre.com>
+Date:   Fri, 13 Nov 2020 16:25:41 +0100
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-3-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-3-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 13 Nov 2020 10:23:50 -0500
-Message-ID: <CADnq5_N6iRUWZ=nYqRFWjUjsDL65WXEOg__n+yvbtqqcRSsWgQ@mail.gmail.com>
-Subject: Re: [PATCH 02/40] drm/amd/display/dc/core/dc_link_dp: Move
- DP_VGA_LVDS_CONVERTER_ID_{2, 3} to where they're used
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:49 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> This patch fixes >200 warnings.
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:123:22=
-: warning: =E2=80=98DP_VGA_LVDS_CONVERTER_ID_3=E2=80=99 defined but not use=
-d [-Wunused-const-variable=3D]
->  123 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:121:22=
-: warning: =E2=80=98DP_VGA_LVDS_CONVERTER_ID_2=E2=80=99 defined but not use=
-d [-Wunused-const-variable=3D]
->  121 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
->
-> NB: Repeated ~100 times - snipped for brevity
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c        | 5 +++++
->  drivers/gpu/drm/amd/display/include/ddc_service_types.h | 4 ----
->  2 files changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/g=
-pu/drm/amd/display/dc/core/dc_link_dp.c
-> index 6c60c1fdebdc1..f2023d2b53234 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> @@ -15,6 +15,11 @@
->  #include "dc_dmub_srv.h"
->  #include "dce/dmub_hw_lock_mgr.h"
->
-> +/*Travis*/
-> +static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
-> +/*Nutmeg*/
-> +static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
-> +
->  #define DC_LOGGER \
->         link->ctx->logger
->  #define DC_TRACE_LEVEL_MESSAGE(...) /* do nothing */
-> diff --git a/drivers/gpu/drm/amd/display/include/ddc_service_types.h b/dr=
-ivers/gpu/drm/amd/display/include/ddc_service_types.h
-> index c9be899cd25cd..b453ce5a9bfdb 100644
-> --- a/drivers/gpu/drm/amd/display/include/ddc_service_types.h
-> +++ b/drivers/gpu/drm/amd/display/include/ddc_service_types.h
-> @@ -117,10 +117,6 @@ struct av_sync_data {
->         uint8_t aud_del_ins3;/* DPCD 0002Dh */
->  };
->
-> -/*Travis*/
-> -static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
-> -/*Nutmeg*/
-> -static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
->  /*DP to Dual link DVI converter*/
->  static const uint8_t DP_DVI_CONVERTER_ID_4[] =3D "m2DVIa";
->  static const uint8_t DP_DVI_CONVERTER_ID_5[] =3D "3393N2";
 
-Can we keep all of these strings together?
+On Wed 11 Nov 2020 at 11:47, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-Alex
-
-> --
-> 2.25.1
+> On Tue, 10 Nov 2020 at 16:05, Jerome Brunet <jbrunet@baylibre.com> wrote:
+>>
+>>
+>> On Thu 08 Oct 2020 at 11:08, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>> >
+>> > Thomas, thanks a lot for helping out and looking at this!
+>> >
+>> > It looks like the testing of the patch below went well. Are you
+>> > intending to queue up the patch via your tip tree?
+>> >
+>> > If you need any help, just tell us!
+>> >
+>> > Kind regards
+>> > Uffe
+>> >
+>>
+>> Hi everyone,
+>>
+>> Do we have a plan for this issue ?
+>> I've had Thomas's change in my tree for a month, so far, so good.
 >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Instead of waiting for Thomas, perhaps you can pick up his patch and
+> re-submit it?
+
+TBH, I'm not confortable signing off something when I have no idea about
+the implication, which is the case here.
+
+>
+> From my side, I can of course apply your original fix to the mmc
+> driver, as an intermediate step.
+
+In Thomas first reply, I did not really understand if it was bad from
+the driver to use IRQF_ONESHOT. If it is OK, i'd prefer if things stayed
+as they are. Otherwise, feel free to apply it.
+
+> Is there a hurry?
+>
+
+Absolutely no hurry, at least not for me.
+
+I noticed I still had Thomas's patch on top of the last rc which means
+it had not been applied yet. Fishing for news, that's all.
+
+> Kind regards
+> Uffe
+
