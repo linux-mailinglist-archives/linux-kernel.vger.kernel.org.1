@@ -2,90 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA702B1D85
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC9F2B1D8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgKMOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:32:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34594 "EHLO mail.kernel.org"
+        id S1726820AbgKMOfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:35:00 -0500
+Received: from mga18.intel.com ([134.134.136.126]:36568 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726160AbgKMOck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:32:40 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A52F72078B;
-        Fri, 13 Nov 2020 14:32:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605277953;
-        bh=ibhpij5Sc2832hpGnZRN8WkXc/rD2lRPwkMZgUBmZJQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UJlHQbt0lVVLNbJyblDchr8rEQIkNecaa9sL/ObwF2I3powi0vcRFrglVYj60dpC9
-         DN1lxaPwuoz111B4Y5dxK2ioDwqHxg9u9Yjr1UmniQtz1J9TD8/7MXxvmh9m/lFUw8
-         gnV0oFkwCt0SQmI8Cu12dwtVMbee7QyGyOGNpe2E=
-Date:   Fri, 13 Nov 2020 15:33:29 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sotir Danailov <sndanailov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: staging: small refactor
-Message-ID: <X66ZORk3YvZ2Ufml@kroah.com>
-References: <20201107160106.5367-1-sndanailov@gmail.com>
+        id S1726336AbgKMOfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 09:35:00 -0500
+IronPort-SDR: Vf8f9vJ6S4JFCiLR5P1/o/xj931Wf6zNFFIsXZ+jw89EPq6jg5XdpiIbUT/ea76mxj4UxWKHXx
+ IaucvluCk+Vw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="158256834"
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
+   d="scan'208";a="158256834"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 06:34:59 -0800
+IronPort-SDR: FbNcqzMJ+olQMY5FMx2HHZZl4U87xOT8vpQvk8zw5ozodckLrmrigiE61eV4ds76R6YNmGazX4
+ nVNolGyiNHQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
+   d="scan'208";a="429514883"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 13 Nov 2020 06:34:56 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 13 Nov 2020 16:34:56 +0200
+Date:   Fri, 13 Nov 2020 16:34:56 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@chromium.org>
+Subject: Re: [PATCH v3 2/2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201113143456.GA2084313@kuha.fi.intel.com>
+References: <20201023214328.1262883-1-pmalani@chromium.org>
+ <20201023214328.1262883-2-pmalani@chromium.org>
+ <20201110115453.GI1224435@kuha.fi.intel.com>
+ <20201112024055.GA1367855@google.com>
+ <20201112124345.GS1224435@kuha.fi.intel.com>
+ <CACeCKafKODtbhCinwD=uwDa==atQoJFyXGwMhJEczh2NWq4NMQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201107160106.5367-1-sndanailov@gmail.com>
+In-Reply-To: <CACeCKafKODtbhCinwD=uwDa==atQoJFyXGwMhJEczh2NWq4NMQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 06:01:06PM +0200, Sotir Danailov wrote:
-> Small refactor of 3 files in the staging directory.
+On Thu, Nov 12, 2020 at 08:50:55AM -0800, Prashant Malani wrote:
+> Hi Heikki,
 > 
-> Signed-off-by: Sotir Danailov <sndanailov@gmail.com>
-> ---
->  drivers/staging/mt7621-pci/pci-mt7621.c   |  1 -
->  drivers/staging/rtl8188eu/core/rtw_ap.c   |  4 +++-
->  drivers/staging/rtl8188eu/core/rtw_xmit.c | 25 +++++++++++++++--------
->  3 files changed, 20 insertions(+), 10 deletions(-)
+> On Thu, Nov 12, 2020 at 4:43 AM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > On Wed, Nov 11, 2020 at 06:40:55PM -0800, Prashant Malani wrote:
+> > > Hi Heikki,
+> > >
+> > > On Tue, Nov 10, 2020 at 01:54:53PM +0200, Heikki Krogerus wrote:
+> > > > On Fri, Oct 23, 2020 at 02:43:28PM -0700, Prashant Malani wrote:
+> > > >
+> > > > I've now come to the conclusion that this is not the correct approach.
+> > > > Instead, the whole identity, all six VDOs, should be supplied
+> > > > separately with a "raw" sysfs attribute file after all.
+> > > >
+> > > > The three attribute files that we already have - so id_header,
+> > > > cert_stat and product - can always supply the actual VDO as is,
+> > > > regardless of the product type, so they are fine. But these new
+> > > > attribute files, product_type_vdoX, would behave differently as they
+> > > > supply different information depending on the product type. That just
+> > > > does not feel right to me.
+> > >
+> > > OOI: I'd like to understand the reservations around this approach. Can't
+> > > userspace just read these and then interpret them appropriately according
+> > > to the id_header as well as PD revision (and version number) if that's exposed?
+> > > The only thing I see changing is how we name those product_type_vdoX
+> > > sysfs files, i.e product_type_vdo0 == passive_cable_vdo OR active_cable_vdo1
+> > > depending on the product type.
+> > >
+> > > That said, perhaps I'm missing some aspect of this.
+> >
+> > I don't think the userspace should have to interpret any of these
+> > VDOs. If the userspace has to interpret the information, then the
+> > userspace should interpret everything for the sake of consistency (so
+> > the "raw" attribute file).
+> >
+> > But I still think that defining separate device types for every
+> > product type would be the best way to handle the identity. We could
+> > then have sysfs attribute files that are specific for each product
+> > type. It does not even matter that some of the product types are going
+> > to be removed. We will have to handle all of them in any case,
+> > including the ones that were removed. This way things would be much
+> > more clear for the userspace.
+> >
+> > The only problem IMO with the separate device types for each product
+> > type is that we don't always have access to the Discover Identity
+> > result. It means depending on your system we will claim the
+> > partner device type is "default" (no identity information) or the
+> > actual product type. That is also a bit inconsistent, but is is
+> > acceptable? I would really like to here what Greg thinks about all
+> > this.
+> 
+> Thanks for explaining the rationale.
+> Of course, I defer to Greg & your decision on this :)
+> 
+> I'm yet unable to grasp what benefit userspace gets from having the kernel parse
+> and present this data in appropriately named sysfs files when the userspace has
+> enough info to do so itself.
+> 
+> For that reason and also because the "raw" approach is IMO a bit more
+> resilient to the changes
+> we talk about (some product type VDOs being dropped off across PD spec
+> uprevs [1] etc)
+> the "raw" proposal sounded appealing to me.
 
-Hi,
+I'm not saying no to the "raw" proposal. I would prefer that we parse
+the data for the userspace in this case, but if you guys think that it
+is better to just let the userspace take care of that, then I'm fine
+with that too.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+> > > > So lets just add the "raw" sysfs attribute file. We can think about
+> > > > extracting some other details from the product type VDOs once the
+> > > > specification has settled down a bit and we can be quite certain that
+> > > > those details will always be available.
+> > > >
+> > > > Would this be OK to you? I think we should be able to dump the data to
+> > > > the "raw" sysfs attribute file with something like hex_dump_to_buffer().
+> > >
+> > > FWIW, "raw" option SGTM (the product type VDOs can be parsed from the
+> > > buffer since the format is fixed).
+> >
+> > Well, I'm starting to think that what if we just prepare patches where
+> > we propose separate device type for every product type? Of course, if
+> > they are OK to you?
+> >
+> SG. To clarify, will you prepare these patches?
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+I'll take a look at this. I can prepare something. Let's start with
+the raw dump approach.
 
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
 
 thanks,
 
-greg k-h's patch email bot
+-- 
+heikki
