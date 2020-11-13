@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63142B1E84
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C852B1E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgKMPX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        id S1726731AbgKMPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:24:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgKMPX4 (ORCPT
+        with ESMTP id S1726432AbgKMPYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:23:56 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E94C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:23:56 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id q5so7878981pfk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:23:56 -0800 (PST)
+        Fri, 13 Nov 2020 10:24:15 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCC3C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:24:08 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id o15so10319944wru.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:24:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/WeHfKsKBskJF//nV0gHHSqUsCVNd9uwrdvRUtYIsCQ=;
-        b=UiGMlYnf46lTNVE2g7F/8bxf+FZ4CYFKFxahm7UkJvKVQOlJ3uurv0goMXp5a+dzOL
-         9mExWR637tkf/ZSZWPTzU7CZ6ulwsQa2yhfgZczAeanP3tgZov5w16XSTV0EDpEMZJCZ
-         2lQ8oPHduXeGnYdlZcb4JHdWJFRwxoePaPueQPKTZj35q1q0SCBii0idpJQDGZtiXj9F
-         SF92pFRVlfI2aaCGcKRAx2Dg/JcMsBdFcBsHzkfSG/jsDzQxvxpiIexDrY7+3Xhvs7Yy
-         5+pG6dHXvXPOPC3D84p0bpNqRcGpvjH5BDMP4hiIywErjIaV0uJDIW8G0Th5WDCwGfH1
-         uFLA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RlnsgXAqhx5O+gUIkanOxQMyzGK/8K/9bXQ6x1TuhEw=;
+        b=g4sghMSloA5MoXSp+2EWSlMNkDdD8L0ikVibSCuQeIb9IHT15BSMCi+lOK6+oKEInx
+         AEZ6707+Yxe6+jmtTQATHLh02ny5TwbG4YsZrjQeVvxb903XG1Ii5I2R2DydpzauFvyB
+         WS+N12Etx7ht/fb4YfgfTYD2BcREe+XShSPX+ZwcNeTJ3whhRv/fz12FHgZgiLerOiOA
+         c3okv+J9JCqqCMFSnvmMc2LC1Vz7BkWa2fFspcGPJS90jejtchbCQZTi08u9CVheo1ah
+         5R136pUCqHBEcsmGSJ6G4cLzBofszhR76jjIEfKjOGJsvb9shc88R54seCPjr5qeVDCA
+         aORA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/WeHfKsKBskJF//nV0gHHSqUsCVNd9uwrdvRUtYIsCQ=;
-        b=lLikNpSuj3gIhQndljouGthhowJKEVz7IWr8M0cnNqItyYq5xzKAhQ1i1XUarR4Kb5
-         S33TvGqHDwmtOIUzu6flfcsk+V8d1uIWu55nTXi/ECaayAG7j9a8aBJXYbHYWsfEyuUV
-         xbb/0N7zwn1loy+R9LpSOazRbplEb5JBzQrirQ/aKEogYng7Gqquk5Cdv99FzbDwXpcX
-         ajR/1Mx1MjENu8FXEjLxIwpvopNCf++1TELvg03n7cRyPed5G585Y8w5BLbr51D0wSn7
-         LNISj0CA3hBJLZdPjVhkx9223aM/aYwC0TCCH6ZiFDvC6JE8BJ/9Yby/YnI1JVKiPm8Y
-         oYwA==
-X-Gm-Message-State: AOAM533nTizmUKW3i4aCF8EJhrpvIGmQu+AMmqDX8I+0Uio09DZ1DDmQ
-        F2Fb3DCbp+yN//FeixK1Ein9fGhvpadzSIjo
-X-Google-Smtp-Source: ABdhPJyuYXKPkYLe0VYEYJ5+xB/uMeGHM5J3tb1rSBKR0Y7i8gDSbmSLndBvONsZ/MFhs4DkODNgYQ==
-X-Received: by 2002:a63:c945:: with SMTP id y5mr2490173pgg.118.1605281030623;
-        Fri, 13 Nov 2020 07:23:50 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:6819:f451:9e0a:873f:ed68])
-        by smtp.gmail.com with ESMTPSA id a17sm9391408pga.56.2020.11.13.07.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 07:23:49 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH V3] checkpatch: Fix spelling errors and remove repeated word
-Date:   Fri, 13 Nov 2020 20:53:16 +0530
-Message-Id: <20201113152316.62975-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RlnsgXAqhx5O+gUIkanOxQMyzGK/8K/9bXQ6x1TuhEw=;
+        b=VTS1AI3HFqhrx2MI8i3FsTqlNLQe6NpJ+MPNjJ8HOqvF7daFEdIgi8hCCXTK5kiRwT
+         30/78Bkp9TQ6/szFqOgwTmtwoSavJDq2lyRvJ92BplwRrl8IO1Ij4SQ1s3u/inwXlx0r
+         gNP4k7iYJIMu5R92Cdtd4pp226ra4p1Nc1fFiqQ2WlhRykZj75eZOagR9U2FH3bP1NDR
+         c8bGLwkRdNTuxssdST465K//GnjinaBTauZKFgpFQx/9evfWQopMRl8F0fNqC6nWXBEj
+         bq0rrcwubD1Lp3iJmtFn1gnE9demYzXIs8FULGa3oAQ7PLE7WvwnXDxrMfWG/qJxdYqB
+         2VWA==
+X-Gm-Message-State: AOAM532ZI2iSdmJpexJJbDkoy1oXwr4ZNhMSK5kdJ3CR+AVrMUoHxm+w
+        PDtwWFtyq95rFZraxVF3NkU5ntjG7ej46iObuEc=
+X-Google-Smtp-Source: ABdhPJyQZCe7HtPJ3bNlUzGKK0DUuW0GKd3K8ifcOW4D4SiAIXLhs+AM0tGomadQ5bbIShqpKa7/HWeVZ37cFfWJWbg=
+X-Received: by 2002:a5d:6992:: with SMTP id g18mr4084367wru.362.1605281042319;
+ Fri, 13 Nov 2020 07:24:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-3-lee.jones@linaro.org>
+In-Reply-To: <20201113134938.4004947-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 13 Nov 2020 10:23:50 -0500
+Message-ID: <CADnq5_N6iRUWZ=nYqRFWjUjsDL65WXEOg__n+yvbtqqcRSsWgQ@mail.gmail.com>
+Subject: Re: [PATCH 02/40] drm/amd/display/dc/core/dc_link_dp: Move
+ DP_VGA_LVDS_CONVERTER_ID_{2, 3} to where they're used
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete repeated word in scripts/checkpatch.pl:
-"are are" -> "are"
+On Fri, Nov 13, 2020 at 8:49 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> This patch fixes >200 warnings.
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:123:22=
+: warning: =E2=80=98DP_VGA_LVDS_CONVERTER_ID_3=E2=80=99 defined but not use=
+d [-Wunused-const-variable=3D]
+>  123 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:121:22=
+: warning: =E2=80=98DP_VGA_LVDS_CONVERTER_ID_2=E2=80=99 defined but not use=
+d [-Wunused-const-variable=3D]
+>  121 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
+>
+> NB: Repeated ~100 times - snipped for brevity
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c        | 5 +++++
+>  drivers/gpu/drm/amd/display/include/ddc_service_types.h | 4 ----
+>  2 files changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/g=
+pu/drm/amd/display/dc/core/dc_link_dp.c
+> index 6c60c1fdebdc1..f2023d2b53234 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> @@ -15,6 +15,11 @@
+>  #include "dc_dmub_srv.h"
+>  #include "dce/dmub_hw_lock_mgr.h"
+>
+> +/*Travis*/
+> +static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
+> +/*Nutmeg*/
+> +static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
+> +
+>  #define DC_LOGGER \
+>         link->ctx->logger
+>  #define DC_TRACE_LEVEL_MESSAGE(...) /* do nothing */
+> diff --git a/drivers/gpu/drm/amd/display/include/ddc_service_types.h b/dr=
+ivers/gpu/drm/amd/display/include/ddc_service_types.h
+> index c9be899cd25cd..b453ce5a9bfdb 100644
+> --- a/drivers/gpu/drm/amd/display/include/ddc_service_types.h
+> +++ b/drivers/gpu/drm/amd/display/include/ddc_service_types.h
+> @@ -117,10 +117,6 @@ struct av_sync_data {
+>         uint8_t aud_del_ins3;/* DPCD 0002Dh */
+>  };
+>
+> -/*Travis*/
+> -static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] =3D "sivarT";
+> -/*Nutmeg*/
+> -static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] =3D "dnomlA";
+>  /*DP to Dual link DVI converter*/
+>  static const uint8_t DP_DVI_CONVERTER_ID_4[] =3D "m2DVIa";
+>  static const uint8_t DP_DVI_CONVERTER_ID_5[] =3D "3393N2";
 
-Fix typos:
-"commments" -> "comments"
-"falsly" -> "falsely"
+Can we keep all of these strings together?
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
-Changes in V3:
-- Change subject line
-Changes in V2:
-- Add correction for falsly
+Alex
 
- scripts/checkpatch.pl | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 2749f32dffe9..041b82f6669e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2841,7 +2841,7 @@ sub process {
- 
- 
- 				# stable@vger.kernel.org or stable@kernel.org shouldn't
--				# have an email name. In addition commments should strictly
-+				# have an email name. In addition comments should strictly
- 				# begin with a #
- 				if ($email =~ /^.*stable\@(?:vger\.)?kernel\.org/i) {
- 					if (($comment ne "" && $comment !~ /^#.+/) ||
-@@ -5000,7 +5000,7 @@ sub process {
- ## 		    $line !~ /^.\s*$Type\s+$Ident(?:\s*=[^,{]*)?\s*,\s*$Type\s*$Ident.*/) {
- ##
- ## 			# Remove any bracketed sections to ensure we do not
--## 			# falsly report the parameters of functions.
-+## 			# falsely report the parameters of functions.
- ## 			my $ln = $line;
- ## 			while ($ln =~ s/\([^\(\)]*\)//g) {
- ## 			}
-@@ -7109,7 +7109,7 @@ sub process {
- 		exit(0);
- 	}
- 
--	# This is not a patch, and we are are in 'no-patch' mode so
-+	# This is not a patch, and we are in 'no-patch' mode so
- 	# just keep quiet.
- 	if (!$chk_patch && !$is_patch) {
- 		exit(0);
--- 
-2.27.0
-
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
