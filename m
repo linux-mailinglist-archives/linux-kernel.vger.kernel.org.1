@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8412B22DE
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED272B22DC
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgKMRqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        id S1726495AbgKMRqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:46:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgKMRqa (ORCPT
+        with ESMTP id S1726295AbgKMRq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:46:30 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9715C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:28 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id y9so9229642ilb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:28 -0800 (PST)
+        Fri, 13 Nov 2020 12:46:27 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A46C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:26 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id p10so9222824ile.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pnjFwhD1ZUEdVs3t7oQ4JdNuzVoo2IlWZ/Yay6rugOk=;
-        b=G0uBdFBmBSIt7Q4hkjnaB5+BhNoal5NLTqZCqurZ9nUNh43fMDSwVkUwS949aiiQBx
-         irj7XETNdmeKGX/Pnw36yImo20VLd5WQhB4/YKuw9jx+w3AfTrX6j3wMDtONDFEfQuwT
-         Wo5u3tepJwWenhlEYHAbFMwb4Y1Qfop2fEZBg=
+        bh=lnxakJBWyZTv7gViFJiPoQ17Ra+liBIB6/Qc8djRDnQ=;
+        b=Iw+Cz1C8/FjjBBsYwQ4PaoRi1MJQzPqeeeekWlPOBloGYYwuuaf38hjAsM0nwu5MJN
+         PjX2PVk6DLVDwp15HRcflOAeoNmBuwveoj+au7YPgaZHl/gRAthpVLReZR1tYVUefoa+
+         78KB9ZyiigagZE/isM6XgFTJJ55eRcUx0NpBc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pnjFwhD1ZUEdVs3t7oQ4JdNuzVoo2IlWZ/Yay6rugOk=;
-        b=hcVuCI3K+PImYWA5HJCpmIVeBMvDXmhTIDddGO5wSglzU8YhrCfG1P77ALO3JwcQjQ
-         GW1SdZ7FNG5hdyrnTqHqcwJocfG2dYFejyzH8mNqKcWSS4yBsfvw2S6HlrFz8U1EGPBn
-         6LQ3IVpgm1NWiqYiflf/ziyvzqA+Jd/5rmu+H3yg3ldoGvSxBtoXt7q6/TYHuQVQAXdQ
-         a9HYGiZiux9VL4od8YyjFCSUETMxt/I8k9HEhiCVJHrTNc02FQkqhdyCt5Lk43YcKcat
-         48x0B0wy1nvrLwU/MeTyJN1q+Lk3ppOa7S+MLOce8OYOAjJAhS0z8CEfXivSPZOSAtcg
-         5a4g==
-X-Gm-Message-State: AOAM532iGM5ETQyqt8/DnJ2wtv1i16muY5VbZV0C+/xadHtcXGr0OARm
-        HYJhTwAuvAntJrd2wi+o0ZMLLA==
-X-Google-Smtp-Source: ABdhPJwXN+y7zDnaYOAZj817JZViSxsmQ4O8ZeBbFxAQObysUqaoH2WK0736/UiVJk/6mf9ZN15YoQ==
-X-Received: by 2002:a92:9f17:: with SMTP id u23mr700838ili.280.1605289582505;
-        Fri, 13 Nov 2020 09:46:22 -0800 (PST)
+        bh=lnxakJBWyZTv7gViFJiPoQ17Ra+liBIB6/Qc8djRDnQ=;
+        b=CrX4iw2bmDzVHtShM5ilZCweXSOMyA3FyP7EGIhg8T/RsTKA7icEKd/7a/WyWgYehn
+         ffc0AbsQgUD9DKetmHG1bjTboXdl/L4OadSntKjld36pPs2CFR5DDW9HhXGdBLoDDyvL
+         ocZDuAdIsuYQZeUGozXKpdqHb1F2WMHY2sbTkyn+Msg68yMbA6NXbgG3nMoGu7taX84h
+         hWeklkv9xA9uGBS9PgM/hASwxFFt7uZciARd0sLJ9ZyjATV3sT9echEdzVoUMxB0CHxV
+         ZoT6XKBh+7IE8H7FFPpcPFzUeh+FOpi+n4Q6JNdjX7wH6KEKw8DnsMrCLU4D4Ye8EPs2
+         /DNw==
+X-Gm-Message-State: AOAM532pT+n+YU4mO/ODOeSM0XoEZfaJuIBw+DzHFafoFvd9b3Xjz1YL
+        PUx/dp293qHTPptnYBMKHrb2WQ==
+X-Google-Smtp-Source: ABdhPJzCiusxVUhVKrzguvpxBGJ4w4x0hWvkGr9nwcFAtPNEhkfUbqaFKgsG8ekkc0UCOQCo3F99gQ==
+X-Received: by 2002:a92:ba97:: with SMTP id t23mr750132ill.208.1605289584182;
+        Fri, 13 Nov 2020 09:46:24 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.21
+        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 09:46:22 -0800 (PST)
+        Fri, 13 Nov 2020 09:46:23 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
 To:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
         peterz@infradead.org
 Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/13] seqnum_ops: Introduce Sequence Number Ops
-Date:   Fri, 13 Nov 2020 10:46:03 -0700
-Message-Id: <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 02/13] selftests: lib:test_seqnum_ops: add new test for seqnum_ops
+Date:   Fri, 13 Nov 2020 10:46:04 -0700
+Message-Id: <8e68e98d35c872a3f4b5d56436d1e87dabdc0b57.1605287778.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605287778.git.skhan@linuxfoundation.org>
 References: <cover.1605287778.git.skhan@linuxfoundation.org>
@@ -61,6 +61,10 @@ Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+Add a new selftest for testing seqnum_ops. This test loads test_seqnum_ops
+test module and unloads it. The test module runs tests and prints results
+to dmesg.
 
 Sequence Number api provides interfaces for unsigned atomic up counters
 leveraging atomic_t and atomic64_t ops underneath.
@@ -91,426 +95,93 @@ counting use-cases.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- Documentation/core-api/atomic_ops.rst |   4 +
- Documentation/core-api/index.rst      |   1 +
- Documentation/core-api/seqnum_ops.rst |  80 +++++++++++++++++
- MAINTAINERS                           |   7 ++
- include/linux/seqnum_ops.h            | 116 +++++++++++++++++++++++++
- lib/Kconfig                           |   9 ++
- lib/Makefile                          |   1 +
- lib/test_seqnum_ops.c                 | 119 ++++++++++++++++++++++++++
- 8 files changed, 337 insertions(+)
- create mode 100644 Documentation/core-api/seqnum_ops.rst
- create mode 100644 include/linux/seqnum_ops.h
- create mode 100644 lib/test_seqnum_ops.c
+ Documentation/core-api/seqnum_ops.rst          |  9 +++++++++
+ MAINTAINERS                                    |  1 +
+ include/linux/seqnum_ops.h                     |  2 ++
+ tools/testing/selftests/lib/Makefile           |  1 +
+ tools/testing/selftests/lib/config             |  1 +
+ tools/testing/selftests/lib/test_seqnum_ops.sh | 10 ++++++++++
+ 6 files changed, 24 insertions(+)
+ create mode 100755 tools/testing/selftests/lib/test_seqnum_ops.sh
 
-diff --git a/Documentation/core-api/atomic_ops.rst b/Documentation/core-api/atomic_ops.rst
-index 724583453e1f..762cbc0947e7 100644
---- a/Documentation/core-api/atomic_ops.rst
-+++ b/Documentation/core-api/atomic_ops.rst
-@@ -1,3 +1,7 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. _atomic_ops:
-+
- =======================================================
- Semantics and Behavior of Atomic and Bitmask Operations
- =======================================================
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 69171b1799f2..be958afe757c 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -55,6 +55,7 @@ How Linux keeps everything from happening at the same time.  See
- 
-    atomic_ops
-    refcount-vs-atomic
-+   seqnum_ops
-    irq/index
-    local_ops
-    padata
 diff --git a/Documentation/core-api/seqnum_ops.rst b/Documentation/core-api/seqnum_ops.rst
-new file mode 100644
-index 000000000000..10b775a9ac05
---- /dev/null
+index 10b775a9ac05..f66d796b148e 100644
+--- a/Documentation/core-api/seqnum_ops.rst
 +++ b/Documentation/core-api/seqnum_ops.rst
-@@ -0,0 +1,80 @@
-+.. SPDX-License-Identifier: GPL-2.0
+@@ -78,3 +78,12 @@ Fetched and returns current sequence number value. ::
+ 
+         seqnum32_fetch() --> (u32) atomic_add_return(0, seqnum)
+         seqnum64_fetch() --> (u64) atomic64_add_return(0, seqnum)
 +
-+.. include:: <isonum.txt>
++Where are the seqnum_ops and how to use and test them?
++------------------------------------------------------
 +
-+.. _seqnum_ops:
++.. kernel-doc:: include/linux/seqnum_ops.h
 +
-+==========================
-+Sequence Number Operations
-+==========================
-+
-+:Author: Shuah Khan
-+:Copyright: |copy| 2020, The Linux Foundation
-+:Copyright: |copy| 2020, Shuah Khan <skhan@linuxfoundation.org>
-+
-+Sequence Number api provides interfaces for unsigned up counters
-+leveraging atomic_t and atomic64_t ops underneath.
-+
-+There are a number of atomic_t usages in the kernel where atomic_t api
-+is used for counting sequence numbers and other statistical counters.
-+Several of these usages, convert atomic_read() and atomic_inc_return()
-+return values to unsigned. Introducing sequence number ops supports
-+these use-cases with a standard core-api.
-+
-+The atomic_t api provides a wide range of atomic operations as a base
-+api to implement atomic counters, bitops, spinlock interfaces. The usages
-+also evolved into being used for resource lifetimes and state management.
-+The refcount_t api was introduced to address resource lifetime problems
-+related to atomic_t wrapping. There is a large overlap between the
-+atomic_t api used for resource lifetimes and just counters, stats, and
-+sequence numbers. It has become difficult to differentiate between the
-+atomic_t usages that should be converted to refcount_t and the ones that
-+can be left alone. Introducing seqnum_ops to wrap the usages that are
-+stats, counters, sequence numbers makes it easier for tools that scan
-+for underflow and overflow on atomic_t usages to detect overflow and
-+underflows to scan just the cases that are prone to errors.
-+
-+In addition, to supporting sequence number use-cases, Sequence Number Ops
-+helps differentiate atomic_t counter usages from atomic_t usages that guard
-+object lifetimes, hence prone to overflow and underflow errors from up
-+counting use-cases.
-+
-+Sequence Number Ops
-+===================
-+
-+seqnum32 and seqnum64 types use atomic_t and atomic64_t underneath to
-+leverage atomic_t api, to provide increment by 1 and return new value
-+and fetch current value interfaces necessary to support unsigned up
-+counters. ::
-+
-+        struct seqnum32 { atomic_t seqnum; };
-+        struct seqnum64 { atomic64_t seqnum; };
-+
-+Please see :ref:`Documentation/core-api/atomic_ops.rst <atomic_ops>` for
-+information on the Semantics and Behavior of Atomic operations.
-+
-+Initializers
-+------------
-+
-+Interfaces for initializing sequence numbers are write operations which
-+in turn invoke their ``ATOMIC_INIT() and atomic_set()`` counterparts ::
-+
-+        #define SEQNUM_INIT(i)    { .seqnum = ATOMIC_INIT(i) }
-+        seqnum32_init() --> atomic_set() to 0
-+        seqnum64_init() --> atomic64_set() to 0
-+
-+Increment interface
-+-------------------
-+
-+Increments sequence number and returns the new value. ::
-+
-+        seqnum32_inc_return() --> (u32) atomic_inc_return(seqnum)
-+        seqnum64_inc_return() --> (u64) atomic64_inc_return(seqnum)
-+
-+Fetch interface
-+---------------
-+
-+Fetched and returns current sequence number value. ::
-+
-+        seqnum32_fetch() --> (u32) atomic_add_return(0, seqnum)
-+        seqnum64_fetch() --> (u64) atomic64_add_return(0, seqnum)
++Please see lib/test_seqnum_ops.c for examples usages and test module.
++Please find selftest: testing/selftests/lib/test_seqnum_ops.sh
++Please check dmesg for results after running test_seqnum_ops.sh.
 diff --git a/MAINTAINERS b/MAINTAINERS
-index b516bb34a8d5..c83a6f05610b 100644
+index c83a6f05610b..e6ae131836a5 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -15977,6 +15977,13 @@ S:	Maintained
- F:	Documentation/fb/sm712fb.rst
- F:	drivers/video/fbdev/sm712*
+@@ -15983,6 +15983,7 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	include/linux/seqnum_ops.h
+ F:	lib/test_seqnum_ops.c
++F:	tools/testing/selftests/lib/test_seqnum_ops.sh
  
-+SEQNUM OPS
-+M:	Shuah Khan <skhan@linuxfoundation.org>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	include/linux/seqnum_ops.h
-+F:	lib/test_seqnum_ops.c
-+
  SIMPLE FIRMWARE INTERFACE (SFI)
  S:	Obsolete
- W:	http://simplefirmware.org/
 diff --git a/include/linux/seqnum_ops.h b/include/linux/seqnum_ops.h
-new file mode 100644
-index 000000000000..17d327b78050
---- /dev/null
+index 17d327b78050..bbf724f21e03 100644
+--- a/include/linux/seqnum_ops.h
 +++ b/include/linux/seqnum_ops.h
-@@ -0,0 +1,116 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * seqnum_ops.h - Interfaces for sequential and statistical counters.
-+ *
-+ * Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
-+ * Copyright (c) 2020 The Linux Foundation
-+ *
-+ * Sequence Number functions provide support for unsgined atomic up
-+ * counters.
-+ *
-+ * The interface provides:
-+ * seqnumu32 & seqnumu64 functions:
-+ *	initialization
-+ *	increment and return
-+ *	fetch and return
-+ *
-+ * seqnumu32 and seqnumu64 functions leverage/use atomic*_t ops to
-+ * implement support for unsigned atomic up counters.
-+ *
-+ * Reference and API guide:
-+ *	Documentation/core-api/seqnum_ops.rst for more information.
-+ */
-+
-+#ifndef __LINUX_SEQNUM_OPS_H
-+#define __LINUX_SEQNUM_OPS_H
-+
-+#include <linux/atomic.h>
-+
-+/**
-+ * struct seqnum32 - Sequential/Statistical atomic counter
-+ * @seqnum: atomic_t
-+ *
-+ **/
-+struct seqnum32 {
-+	atomic_t seqnum;
-+};
-+
-+#define SEQNUM_INIT(i)		{ .seqnum = ATOMIC_INIT(i) }
-+
-+/*
-+ * seqnum32_init() - initialize seqnum value
-+ * @seq: struct seqnum32 pointer
-+ *
-+ */
-+static inline void seqnum32_init(struct seqnum32 *seq)
-+{
-+	atomic_set(&seq->seqnum, 0);
-+}
-+
-+/*
-+ * seqnum32_inc_return() - increment seqnum value and return the new value
-+ * @seq: struct seqnum32 pointer
-+ *
-+ * Return u32
-+ */
-+static inline u32 seqnum32_inc_return(struct seqnum32 *seq)
-+{
-+	return (u32) atomic_inc_return(&seq->seqnum);
-+}
-+
-+/*
-+ * seqnum32_fetch() - return the current value
-+ * @seq: struct seqnum32 pointer
-+ *
-+ * Return u32
-+ */
-+static inline u32 seqnum32_fetch(struct seqnum32 *seq)
-+{
-+	return (u32) atomic_add_return(0, &seq->seqnum);
-+}
-+
-+#ifdef CONFIG_64BIT
-+/* atomic64_t is defined in CONFIG_64BIT in include/linux/types.h */
-+/*
-+ * struct seqnum64 - Sequential/Statistical atomic counter
-+ * @seq: atomic64_t
-+ *
-+ */
-+struct seqnum64 {
-+	atomic64_t seqnum;
-+};
-+
-+/*
-+ * seqnum64_init() - initialize seqnum value
-+ * @seq: struct seqnum64 pointer
-+ *
-+ */
-+static inline void seqnum64_init(struct seqnum64 *seq)
-+{
-+	atomic64_set(&seq->seqnum, 0);
-+}
-+
-+/*
-+ * seqnum64_inc() - increment seqnum value and return the new value
-+ * @seq: struct seqnum64 pointer
-+ *
-+ * Return u64
-+ */
-+static inline u64 seqnum64_inc_return(struct seqnum64 *seq)
-+{
-+	return (u64) atomic64_inc_return(&seq->seqnum);
-+}
-+
-+/*
-+ * seqnum64_fetch() - return the current value
-+ * @seq: struct seqnum64 pointer
-+ *
-+ * Return u64
-+ */
-+static inline u64 seqnum64_fetch(struct seqnum64 *seq)
-+{
-+	return (u64) atomic64_add_return(0, &seq->seqnum);
-+}
-+#endif /* CONFIG_64BIT */
-+
-+#endif /* __LINUX_SEQNUM_OPS_H */
-diff --git a/lib/Kconfig b/lib/Kconfig
-index b46a9fd122c8..c362c2713e11 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -663,6 +663,15 @@ config OBJAGG
- config STRING_SELFTEST
- 	tristate "Test string functions"
+@@ -19,6 +19,8 @@
+  *
+  * Reference and API guide:
+  *	Documentation/core-api/seqnum_ops.rst for more information.
++ *	lib/test_seqnum_ops.c - example usages and test module
++ *	tools/testing/selftests/lib/test_seqnum_ops.sh
+  */
  
-+config TEST_SEQNUM_OPS
-+	tristate "Test Sequence Number Ops API"
-+	help
-+	   A test module for Sequence Number Ops API. A corresponding
-+	   selftest can be used to test the Seqnum Ops API. Select this
-+	   for testing Sequence Number Ops API.
-+
-+	   See Documentation/core-api/seqnum_ops.rst
-+
- endmenu
+ #ifndef __LINUX_SEQNUM_OPS_H
+diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
+index a105f094676e..1818444f0e97 100644
+--- a/tools/testing/selftests/lib/Makefile
++++ b/tools/testing/selftests/lib/Makefile
+@@ -5,5 +5,6 @@
+ all:
  
- config GENERIC_IOREMAP
-diff --git a/lib/Makefile b/lib/Makefile
-index ce45af50983a..7d17c25e4d73 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -101,6 +101,7 @@ obj-$(CONFIG_TEST_MEMINIT) += test_meminit.o
- obj-$(CONFIG_TEST_LOCKUP) += test_lockup.o
- obj-$(CONFIG_TEST_HMM) += test_hmm.o
- obj-$(CONFIG_TEST_FREE_PAGES) += test_free_pages.o
-+obj-$(CONFIG_TEST_SEQNUM_OPS) += test_seqnum_ops.o
+ TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
++TEST_PROGS += test_seqnum_ops.sh
  
- #
- # CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
-diff --git a/lib/test_seqnum_ops.c b/lib/test_seqnum_ops.c
-new file mode 100644
-index 000000000000..6e58b6a0a2be
+ include ../lib.mk
+diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
+index b80ee3f6e265..674ed2a2ac82 100644
+--- a/tools/testing/selftests/lib/config
++++ b/tools/testing/selftests/lib/config
+@@ -3,3 +3,4 @@ CONFIG_TEST_BITMAP=m
+ CONFIG_PRIME_NUMBERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_BITOPS=m
++CONFIG_TEST_SEQNUM_OPS=m
+diff --git a/tools/testing/selftests/lib/test_seqnum_ops.sh b/tools/testing/selftests/lib/test_seqnum_ops.sh
+new file mode 100755
+index 000000000000..fdce16b220ba
 --- /dev/null
-+++ b/lib/test_seqnum_ops.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * test_seqnum_ops.c - Kernel module for testing Seqnum API
-+ *
-+ * Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
-+ * Copyright (c) 2020 The Linux Foundation
-+ *
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/module.h>
-+#include <linux/seqnum_ops.h>
-+
-+static inline void
-+test_seqnum32_result(char *msg, u32 start, u32 end, u32 expected)
-+{
-+	pr_info("%s: %u to %u - %s\n",
-+		msg, start, end,
-+		((expected == end) ? "PASS" : "FAIL"));
-+}
-+
-+
-+static void test_seqnum32(void)
-+{
-+	static struct seqnum32 seq = SEQNUM_INIT(0);
-+	u32 start_val = seqnum32_fetch(&seq);
-+	u32 end_val;
-+
-+	end_val = seqnum32_inc_return(&seq);
-+	test_seqnum32_result("Test fetch and increment",
-+			     start_val, end_val, start_val+1);
-+
-+	start_val = seqnum32_fetch(&seq);
-+	seqnum32_init(&seq);
-+	end_val = seqnum32_fetch(&seq);
-+	test_seqnum32_result("Test init", start_val, end_val, 0);
-+
-+}
-+
-+static void test_seqnum32_overflow(void)
-+{
-+	static struct seqnum32 seq = SEQNUM_INIT(UINT_MAX-1);
-+	u32 start_val = seqnum32_fetch(&seq);
-+	u32 end_val = seqnum32_inc_return(&seq);
-+
-+	test_seqnum32_result("Test UINT_MAX limit compare with (val+1)",
-+			     start_val, end_val, start_val+1);
-+
-+	test_seqnum32_result("Test UINT_MAX limit compare with (UINT_MAX)",
-+			     start_val, end_val, UINT_MAX);
-+}
-+
-+#ifdef CONFIG_64BIT
-+static inline void
-+test_seqnum64_result(char *msg, u64 start, u64 end, u64 expected)
-+{
-+	pr_info("%s: %llu to %llu - %s\n",
-+		msg, start, end,
-+		((expected == end) ? "PASS" : "FAIL"));
-+}
-+
-+static void test_seqnum64(void)
-+{
-+	static struct seqnum64 seq = SEQNUM_INIT(0);
-+	u64 start_val = seqnum64_fetch(&seq);
-+	u64 end_val;
-+
-+	end_val = seqnum64_inc_return(&seq);
-+	test_seqnum64_result("Test fetch and increment",
-+			     start_val, end_val, start_val+1);
-+
-+	start_val = seqnum64_fetch(&seq);
-+	seqnum64_init(&seq);
-+	end_val = seqnum64_fetch(&seq);
-+	test_seqnum64_result("Test init", start_val, end_val, 0);
-+}
-+
-+static void test_seqnum64_overflow(void)
-+{
-+	static struct seqnum64 seq = SEQNUM_INIT(UINT_MAX-1);
-+	u64 start_val = seqnum64_fetch(&seq);
-+	u64 end_val = seqnum64_inc_return(&seq);
-+
-+	test_seqnum64_result("Test UINT_MAX limit compare with (val+1)",
-+			     start_val, end_val, start_val+1);
-+	test_seqnum64_result("Test UINT_MAX limit compare with (UINT_MAX)",
-+			     start_val, end_val, UINT_MAX);
-+}
-+#endif /* CONFIG_64BIT */
-+
-+static int __init test_seqnum_ops_init(void)
-+{
-+	pr_info("Start seqnum32_*() interfaces test\n");
-+	test_seqnum32();
-+	test_seqnum32_overflow();
-+	pr_info("End seqnum32_*() interfaces test\n\n");
-+
-+#ifdef CONFIG_64BIT
-+	pr_info("Start seqnum64_*() interfaces test\n");
-+	test_seqnum64();
-+	test_seqnum64_overflow();
-+	pr_info("End seqnum64_*() interfaces test\n\n");
-+#endif /* CONFIG_64BIT */
-+
-+	return 0;
-+}
-+
-+module_init(test_seqnum_ops_init);
-+
-+static void __exit test_seqnum_ops_exit(void)
-+{
-+	pr_info("exiting.\n");
-+}
-+
-+module_exit(test_seqnum_ops_exit);
-+
-+MODULE_AUTHOR("Shuah Khan <skhan@linuxfoundation.org>");
-+MODULE_LICENSE("GPL v2");
++++ b/tools/testing/selftests/lib/test_seqnum_ops.sh
+@@ -0,0 +1,10 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
++# Copyright (c) 2020 The Linux Foundation
++#
++# Tests the Sequence Number Ops interfaces using test_seqnum_ops
++# kernel module
++#
++$(dirname $0)/../kselftest/module.sh "test_seqnum_ops" test_seqnum_ops
 -- 
 2.27.0
 
