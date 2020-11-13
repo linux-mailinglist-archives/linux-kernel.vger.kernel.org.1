@@ -2,107 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0162B15C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 07:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2E02B15BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 07:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgKMGGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 01:06:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbgKMGGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 01:06:20 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B89AB22201;
-        Fri, 13 Nov 2020 06:06:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605247579;
-        bh=5zkiwx4d0DuFFhv97YB0hnk+AeMXazz8WynYQMIwirQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FGg0DF+nIlkyFf8NhXl8jes6nU7IxqbztQgj8eEe6Nua/K+HSdbgucfYdtpu8b8Rv
-         LgbAWJpdLdg91vmAkoY83Yj1muQxYfwnd7nX4yNktZGzKsjSPyDtsqC7MseKhPI9n2
-         VeTJGurn6i0uuDR6495e9+IUE03VTymSnCE/kUrg=
-Received: by mail-oi1-f179.google.com with SMTP id d9so9298434oib.3;
-        Thu, 12 Nov 2020 22:06:19 -0800 (PST)
-X-Gm-Message-State: AOAM533scAFytMYtQZLB35gkqf7tIZv4w0+50Hh1Zot3ehzhSye/YkK3
-        Mx7NmWNWbPbbN1+DPPGKM83nKbt2JIEt6eo9QXg=
-X-Google-Smtp-Source: ABdhPJyLj3/JD15MQYXh3Z2y15k35C5E7/4Y59yOolNEILUpCPY1HJQBptDWUw5mbneU0eTVf2dP1zJfXLqnigSYVs8=
-X-Received: by 2002:aca:d583:: with SMTP id m125mr396725oig.47.1605247578865;
- Thu, 12 Nov 2020 22:06:18 -0800 (PST)
+        id S1726265AbgKMGFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 01:05:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7531 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgKMGFi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 01:05:38 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CXScf3d7jzhl4C;
+        Fri, 13 Nov 2020 14:05:22 +0800 (CST)
+Received: from compute.localdomain (10.175.112.70) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 13 Nov 2020 14:05:21 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <linux@zary.sk>
+CC:     <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] cx82310_eth: fix error return code in cx82310_bind()
+Date:   Fri, 13 Nov 2020 14:07:07 +0800
+Message-ID: <1605247627-15385-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20201112183839.1009297-1-natechancellor@gmail.com>
- <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com> <20201113005347.GA3625030@ubuntu-m3-large-x86>
-In-Reply-To: <20201113005347.GA3625030@ubuntu-m3-large-x86>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 13 Nov 2020 07:06:06 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
-Message-ID: <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jian Cai <jiancai@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 at 01:53, Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Thu, Nov 12, 2020 at 04:44:46PM -0800, Nick Desaulniers wrote:
-> > On Thu, Nov 12, 2020 at 10:41 AM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > Commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker
-> > > script and options") added '-z norelro' to the arm64 Makefile when
-> > > CONFIG_RELOCATABLE was set to help support ld.lld because ld.lld
-> > > defaults to '-z relro' but the kernel does not use program headers or
-> > > adhere to the section layout that is required for RELRO to work.
-> > >
-> > > Commit 3b92fa7485eb ("arm64: link with -z norelro regardless of
-> > > CONFIG_RELOCATABLE") unconditionally added it to LDFLAGS_vmlinux because
-> > > an error occurs with CONFIG_KASAN set even when CONFIG_RELOCATABLE is
-> > > unset.
-> > >
-> > > As it turns out, ARM experiences the same error after CONFIG_KASAN was
-> > > implemented, meaning that '-z norelro' needs to be added to that
-> > > Makefile as well (multi_v7_defconfig + CONFIG_KASAN=y + LD=ld.lld):
-> > >
-> > > $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 zImage
-> > > ld.lld: error: section: .exit.data is not contiguous with other relro sections
-> > >
-> > > To avoid playing whack-a-mole with different architectures over time,
-> > > hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
-> > > because '-z norelro' is the default for it.
-> > >
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1189
-> > > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> >
-> > Why not add it additionally to KBUILD_LDFLAGS_MODULE a la
-> > `--build-id=sha1` a few lines above? (or `LDFLAGS_MODULE`, but that
-> > looks unused?)  We probably don't want this for modules either.  In
-> > that case, you could add -z norelo to the two existing lines with
-> > `--build-id=sha1` above?
->
-> Yes, I can do that. I will send a v2 along tomorrow morning to let
-> others comment.
->
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Modules are partially linked objects, so there is no point in passing
--z options for them.
+Fixes: ca139d76b0d9 ("cx82310_eth: re-enable ethernet mode after router reboot")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/net/usb/cx82310_eth.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/usb/cx82310_eth.c b/drivers/net/usb/cx82310_eth.c
+index ca89d82..c4568a4 100644
+--- a/drivers/net/usb/cx82310_eth.c
++++ b/drivers/net/usb/cx82310_eth.c
+@@ -197,7 +197,8 @@ static int cx82310_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	}
+ 
+ 	/* enable ethernet mode (?) */
+-	if (cx82310_enable_ethernet(dev))
++	ret = cx82310_enable_ethernet(dev);
++	if (ret)
+ 		goto err;
+ 
+ 	/* get the MAC address */
+-- 
+2.9.5
+
