@@ -2,138 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DEC2B20F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC402B20E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgKMQxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        id S1726094AbgKMQwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbgKMQxF (ORCPT
+        with ESMTP id S1726057AbgKMQwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:53:05 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0D9C0613D1;
-        Fri, 13 Nov 2020 08:53:04 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id o20so11498362eds.3;
-        Fri, 13 Nov 2020 08:53:04 -0800 (PST)
+        Fri, 13 Nov 2020 11:52:36 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CF3C0613D1;
+        Fri, 13 Nov 2020 08:52:36 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id k1so9050066ilc.10;
+        Fri, 13 Nov 2020 08:52:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A3shoGVPTfTeSo9qIFJ3MH89QzogQsCpieTVJw1XX5s=;
-        b=ovoPHuwb70D/6RxJYMAFmNGWDZQm4KWTYItMRGH4/h/gtn5F7L8cGqxGrHI/iuJI8/
-         2QBylFfo1gPNE8USYs5G4TEWqICZL2bcA/AyRWe8Vmm2MGbRJPBuT2xDJ52QvxkcsB9Z
-         2nWQlft6AEiiZFnfWthl7/1lsXyEfWNUFbBbDKd40/tcYls/yID9jLXuPFGcmB6rXAcb
-         p5FFHjmnGrhy2O3PwwD6TVVQcHvXDs8y4Eh1rT1PbGfw7gLHXqktIokbIpAE7rLtgq2y
-         ikdMPB+TOmvy+xGC9bKbzQBxmC0sRBtItvZ6zvUIgQjiaSbHLk3iLr0UKKwuSiowhnnh
-         uqZw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yx0+3eC29sVDUQRfGVQWQP2YqTI3HJ256v1HQL/cKuE=;
+        b=aK0wTxi4G00Q+WxwOewNjiNmnOTwmrvb/vVczLp0kbzrKCVsIIwIa1Om33YRcac7bM
+         SdvZqQlMuz9OH5evusQDO8tcZ3sXqGEKpjxW3HTeCnNQ6WvpDc/9RikWjE4O+rdNsy+f
+         Hl3UKTX9CVqXb+/zZjBRpGsvvL/zT9ZFhyfDAE6LgKOilJVvLnciofhKQng3edNAWQ48
+         Kw0d/8iWs3oZo3Hfts5Rs7siaTD6NoSeSku2EValLpT+SbWz/H71yEY9a4WDg8qfF5eJ
+         Vgzu7z9N+9oOQn1rMoCyn1zJIORYKNkRyUd0Xym24djpD2gHGoFRhHgP/kIQFW8S4JZj
+         SfzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A3shoGVPTfTeSo9qIFJ3MH89QzogQsCpieTVJw1XX5s=;
-        b=hMJjNT65EK1S93DSp8vbh5FsZwG7ILOzmr+3L1xDyOtFdZkpX5Ex0MoJW+9C3lqANH
-         y9Jm8j19/ksOvdp4pS6uEMuMMWc/PGdweCMJorietgpJe8algS6A+BRIQYQp8kA7l5R0
-         yEjgR3aUcU6Bmm0HZTI4+TOJCwPp2bhEBj3ECYtEB4bL9IDWbwVF6YbTli4WsScIiP9n
-         xitfLRrSoBaUSUa3+aihIkNbT6HrhoNq7R5QoQLOCOGbDsECUjA7eC+HwTy4+2n6v3/R
-         KUtaDKxzIDH6c4/wFsQ4EY4hsiZgxgquohav3qcx61Hm/SywFRJjdb1HZnmNIp3iyAYn
-         8/Yg==
-X-Gm-Message-State: AOAM53325Er6CZk/f2RizOStnL+yOOacFd0tKzCoxsefwseJfK7TnG9L
-        LaS5CkUBTdtb4e2vO8XSwutnl43p9vzUqA==
-X-Google-Smtp-Source: ABdhPJyhvt4kgI6EtNtAI6MvYKmADCPxHUL3o4mSl0xF4jT45tR4EsYQxPAIhzO1iaUlyFpXlsJ/Fw==
-X-Received: by 2002:a50:bb06:: with SMTP id y6mr3529713ede.278.1605286381524;
-        Fri, 13 Nov 2020 08:53:01 -0800 (PST)
-Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id rp28sm4076570ejb.77.2020.11.13.08.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:53:00 -0800 (PST)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>, Marek Vasut <marex@denx.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH RESEND net-next 10/18] net: phy: nxp-tja11xx: remove the use of .ack_interrupt()
-Date:   Fri, 13 Nov 2020 18:52:18 +0200
-Message-Id: <20201113165226.561153-11-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201113165226.561153-1-ciorneiioana@gmail.com>
-References: <20201113165226.561153-1-ciorneiioana@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yx0+3eC29sVDUQRfGVQWQP2YqTI3HJ256v1HQL/cKuE=;
+        b=OCw8pvc8fjj8kIETc/aSpARss/hLYjkA+F3ONZHf1aQ8eWKZbe9sDpDc8yzJDsNVL4
+         kkA8Si2/V1X/sgMjJC84weBLUtUDdAxuhs6HrTczCkhUBcVw268UXm0eOvMl50ATUNdz
+         NVnckIW5zJh+d6cM6sd1TcjXZI9AOhDW72Wz00cQS00B2PduweWAUeWzKD9Lp9AH54/m
+         kT/saHpmmns56Kd7UzLPQRBmnJ/FcMpClUK/4bpzXHZBnmzV3VPH1CQSLKzItbNQl4Ju
+         Sp5aFj7QYflEXsWfxcwxFwVxVqSL0EUPmsAEF+WP54H+df3CVF2Jtn5KvD6Ws6xwUPTz
+         xxjg==
+X-Gm-Message-State: AOAM532wYFFof0T53RS3g1fl/v4oQQxZeOWFuRK8aDNEGy1uyw3VnVu9
+        yu7MS+amdqcwupHfjIug6ZARoXRiBucgytTWbnY=
+X-Google-Smtp-Source: ABdhPJw/a4KByzgaJwS0pewRoJ7rbUGlzU3faAbcbx2N6ME39o9YcYVdr9mGW+stRWe7tDpq68HxQvD/hFbdwPE+1Yw=
+X-Received: by 2002:a92:5f1a:: with SMTP id t26mr616421ilb.0.1605286350554;
+ Fri, 13 Nov 2020 08:52:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201109134128.GA5596@shinobu> <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
+ <20201109164529.GA28710@syed.domain.name> <20201109171140.GA14045@shinobu>
+ <20201109172220.GI4077@smile.fi.intel.com> <20201109173107.GA14643@shinobu>
+ <fe1cfe4c-e4d7-f9fb-1218-7a1d48e6f68a@xilinx.com> <20201110123538.GA3193@shinobu>
+ <CACG_h5p84sKjDnK5xYRNjGnRzwsbjZ-76P-cC13LKx=7x=4KqQ@mail.gmail.com>
+ <20201110174316.GA12192@shinobu> <20201110220004.GA25801@syed>
+In-Reply-To: <20201110220004.GA25801@syed>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 13 Nov 2020 22:22:18 +0530
+Message-ID: <CACG_h5orr+smPGFdHbEDAgYS=RUJYZCvf10KjGkkvS9rkbzQFA@mail.gmail.com>
+Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
+ and _set_value
+To:     Arnd Bergmann <arnd@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+On Wed, Nov 11, 2020 at 3:30 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 12:43:16PM -0500, William Breathitt Gray wrote:
+> > On Tue, Nov 10, 2020 at 10:52:42PM +0530, Syed Nayyar Waris wrote:
+> > > On Tue, Nov 10, 2020 at 6:05 PM William Breathitt Gray
+> > > <vilhelm.gray@gmail.com> wrote:
+> > > >
+> > > > On Tue, Nov 10, 2020 at 11:02:43AM +0100, Michal Simek wrote:
+> > > > >
+> > > > >
+> > > > > On 09. 11. 20 18:31, William Breathitt Gray wrote:
+> > > > > > On Mon, Nov 09, 2020 at 07:22:20PM +0200, Andy Shevchenko wrote:
+> > > > > >> On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
+> > > > > >>> On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
+> > > > > >>>> On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
+> > > > > >>
+> > > > > >> ...
+> > > > > >>
+> > > > > >>>>  static inline void bitmap_set_value(unsigned long *map,
+> > > > > >>>> -                                    unsigned long value,
+> > > > > >>>> +                                    unsigned long value, const size_t length,
+> > > > > >>>>                                      unsigned long start, unsigned long nbits)
+> > > > > >>>>  {
+> > > > > >>>>          const size_t index = BIT_WORD(start);
+> > > > > >>>> @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
+> > > > > >>>>          } else {
+> > > > > >>>>                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+> > > > > >>>>                  map[index + 0] |= value << offset;
+> > > > > >>>> +
+> > > > > >>>> +               if (index + 1 >= length)
+> > > > > >>>> +                       __builtin_unreachable();
+> > > > > >>>> +
+> > > > > >>>>                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > > > > >>>>                  map[index + 1] |= value >> space;
+> > > > > >>>>          }
+> > > > > >>>
+> > > > > >>> Hi Syed,
+> > > > > >>>
+> > > > > >>> Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
+> > > > > >>> to value_width.
+> > > > > >>
+> > > > > >> length here is in longs. I guess this is the point of entire patch.
+> > > > > >
+> > > > > > Ah yes, this should become 'const unsigned long nbits' and represent the
+> > > > > > length of the bitmap in bits and not longs.
+> > >
+> > > Hi William, Andy and All,
+> > >
+> > > Thank You for reviewing. I was looking into the review comments and I
+> > > have a question on the above.
+> > >
+> > > Actually, in bitmap_set_value(), the intended comparison is to be made
+> > > between 'index + 1' and 'length' (which is now renamed as 'nbits').
+> > > That is, the comparison would look-like as follows:
+> > > if (index + 1 >= nbits)
+> > >
+> > > The 'index' is getting populated with BIT_WORD(start).
+> > > The 'index' variable in above is the actual index of the bitmap array,
+> > > while in previous mail it is suggested to use 'nbits' which represent
+> > > the length of the bitmap in bits and not longs.
+> > >
+> > > Isn't it comparing two different things? index of array (not the
+> > > bit-wise-length) on left hand side and nbits (bit-wise-length) on
+> > > right hand side?
+> > >
+> > > Have I misunderstood something? If yes, request to clarify.
+> > >
+> > > Or do I have to first divide 'nbits' by BITS_PER_LONG and then compare
+> > > it with 'index + 1'? Something like this?
+> > >
+> > > Regards
+> > > Syed Nayyar Waris
+> >
+> > The array elements of the bitmap memory region are abstracted away for
+> > the covenience of the users of the bitmap_* functions; the driver
+> > authors are able to treat their bitmaps as just a set of contiguous bits
+> > and not worry about where the division between array elements happen.
+> >
+> > So to match the interface of the other bitmap_* functions, you should
+> > take in nbits and figure out the actual array length by dividing by
+> > BITS_PER_LONG inside bitmap_set_value(). Then you can use your
+> > conditional check (index + 1 >= length) like you have been doing so far.
+> >
+> > William Breathitt Gray
+>
+> Hi Arnd,
+>
+> Sharing a new version of bitmap_set_value(). Let me know if it looks
+> good and whether it suppresses the compiler warning.
+>
+> The below patch is created against the v12 version of bitmap_set_value().
+>
+> -static inline void bitmap_set_value(unsigned long *map,
+> -                                    unsigned long value,
+> -                                    unsigned long start, unsigned long nbits)
+> +static inline void bitmap_set_value(unsigned long *map, unsigned long nbits,
+> +                                   unsigned long value, unsigned long value_width,
+> +                                   unsigned long start)
+>  {
+> -        const size_t index = BIT_WORD(start);
+> +        const unsigned long index = BIT_WORD(start);
+> +        const unsigned long length = BIT_WORD(nbits);
+>          const unsigned long offset = start % BITS_PER_LONG;
+>          const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
+>          const unsigned long space = ceiling - start;
+>
+> -        value &= GENMASK(nbits - 1, 0);
+> +        value &= GENMASK(value_width - 1, 0);
+>
+> -        if (space >= nbits) {
+> -                map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
+> +        if (space >= value_width) {
+> +                map[index] &= ~(GENMASK(value_width - 1, 0) << offset);
+>                  map[index] |= value << offset;
+>          } else {
+>                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+>                  map[index + 0] |= value << offset;
+> -                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> +
+> +               if (index + 1 >= length)
+> +                       __builtin_unreachable();
+> +
+> +                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + value_width);
+>                  map[index + 1] |= value >> space;
+>          }
+>  }
+>
+>
 
-In preparation of removing the .ack_interrupt() callback, we must replace
-its occurrences (aka phy_clear_interrupt), from the 2 places where it is
-called from (phy_enable_interrupts and phy_disable_interrupts), with
-equivalent functionality.
+Hi Arnd,
 
-This means that clearing interrupts now becomes something that the PHY
-driver is responsible of doing, before enabling interrupts and after
-clearing them. Make this driver follow the new contract.
+What do you think of the above solution ( new version of
+bitmap_set_value() )? Does it look good?
 
-Cc: Marek Vasut <marex@denx.de>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- drivers/net/phy/nxp-tja11xx.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
-index 1c4c5c267fe6..afd7afa1f498 100644
---- a/drivers/net/phy/nxp-tja11xx.c
-+++ b/drivers/net/phy/nxp-tja11xx.c
-@@ -600,11 +600,24 @@ static int tja11xx_ack_interrupt(struct phy_device *phydev)
- static int tja11xx_config_intr(struct phy_device *phydev)
- {
- 	int value = 0;
-+	int err;
-+
-+	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-+		err = tja11xx_ack_interrupt(phydev);
-+		if (err)
-+			return err;
- 
--	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
- 		value = MII_INTEN_LINK_FAIL | MII_INTEN_LINK_UP;
-+		err = phy_write(phydev, MII_INTEN, value);
-+	} else {
-+		err = phy_write(phydev, MII_INTEN, value);
-+		if (err)
-+			return err;
-+
-+		err = tja11xx_ack_interrupt(phydev);
-+	}
- 
--	return phy_write(phydev, MII_INTEN, value);
-+	return err;
- }
- 
- static irqreturn_t tja11xx_handle_interrupt(struct phy_device *phydev)
-@@ -768,7 +781,6 @@ static struct phy_driver tja11xx_driver[] = {
- 		.get_sset_count = tja11xx_get_sset_count,
- 		.get_strings	= tja11xx_get_strings,
- 		.get_stats	= tja11xx_get_stats,
--		.ack_interrupt	= tja11xx_ack_interrupt,
- 		.config_intr	= tja11xx_config_intr,
- 		.handle_interrupt = tja11xx_handle_interrupt,
- 		.cable_test_start = tja11xx_cable_test_start,
-@@ -792,7 +804,6 @@ static struct phy_driver tja11xx_driver[] = {
- 		.get_sset_count = tja11xx_get_sset_count,
- 		.get_strings	= tja11xx_get_strings,
- 		.get_stats	= tja11xx_get_stats,
--		.ack_interrupt	= tja11xx_ack_interrupt,
- 		.config_intr	= tja11xx_config_intr,
- 		.handle_interrupt = tja11xx_handle_interrupt,
- 		.cable_test_start = tja11xx_cable_test_start,
--- 
-2.28.0
-
+Regards
+Syed Nayyar Waris
