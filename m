@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1976D2B1C16
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 904922B1C5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgKMNsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:48:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
+        id S1726810AbgKMNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:48:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgKMNr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:47:58 -0500
+        id S1726692AbgKMNsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 08:48:38 -0500
 Received: from [10.0.0.27] (cpe-70-114-140-30.austin.res.rr.com [70.114.140.30])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3BBB22201;
-        Fri, 13 Nov 2020 13:47:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 315D12222F;
+        Fri, 13 Nov 2020 13:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605275277;
-        bh=Gym7LfdFLwprB43tuvSsVXNBKwRMIyYDLPnbY+rAX34=;
+        s=default; t=1605275317;
+        bh=SY9UCjfhFaHxC0k38bv3cD20pkAd3FJphDsB1kfKwEU=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LSRyuAjS/GwKvW8SMI1YX0BzDPE66OA1ZFm2BZo/HyiiozEcs51xspg2Se+a+qfFx
-         QqQPWd7nhIBlBdPNwx3d3/pRTLAD2JsSW/l2gn79JmPodzfKgnsgHEzTqBf08Bxayz
-         L2HoyE+VvmQ6o9kTqXxP893UJG+qvFYZlOeoOhIs=
-Subject: Re: [PATCH 1/8] arm64: dts: socfpga: Use generic "ngpios" rather than
+        b=BzzkwrWPgqHO74p8zDn/IeGfqTwXIkZFg53v9nyt5BwMKKUaUhP3C7Aa1qVelnFp1
+         9vdFm7p5Dz3F3UNUhh9ZhrbjpCK0yQ4nAeeboZb/fJompJpJWZHL5mK0jemss86LQO
+         xMWMmjv75DiYe9k+xG9nGYcZztvgUr9MHh15xcz4=
+Subject: Re: [PATCH 5/8] arm64: dts: agilex: Use generic "ngpios" rather than
  "snps,nr-gpios"
 To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
@@ -36,7 +36,7 @@ Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         Saravana Kannan <saravanak@google.com>,
         Linus Walleij <linus.walleij@linaro.org>
 References: <20201109170258.4a70c768@xhacker.debian>
- <20201109170335.00a0523b@xhacker.debian>
+ <20201109170556.2e3a173f@xhacker.debian>
 From:   Dinh Nguyen <dinguyen@kernel.org>
 Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
  xsFNBFEnvWwBEAC44OQqJjuetSRuOpBMIk3HojL8dY1krl8T8GJjfgc/Gh97CfVbrqhV5yQ3
@@ -80,12 +80,12 @@ Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
  cJEJNezizexE0dVclt9OS2U9Xwb3VOjs1ITMEYUf8T1j83iiCCFuXqH4U3Eji0nDEiEN5Ac0
  Jn/EGOBG2qGyKZ4uOec9j5ABF7J6hyO7H6LJaX5bLtp0Z7wUbyVaR4UIGdIOchNgNQk4stfm
  JiyuXyoFl/1ihREfvUG/e7+VAAoOBnMjitE5/qUERDoEkkuQkMcAHyEyd+XZMyXY
-Message-ID: <5e05ecfd-4d67-c1b0-36fd-ddb59d2e9061@kernel.org>
-Date:   Fri, 13 Nov 2020 07:47:55 -0600
+Message-ID: <c73fd622-3fa8-2b9c-a772-5fcd69db8079@kernel.org>
+Date:   Fri, 13 Nov 2020 07:48:35 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201109170335.00a0523b@xhacker.debian>
+In-Reply-To: <20201109170556.2e3a173f@xhacker.debian>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -95,7 +95,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/9/20 3:03 AM, Jisheng Zhang wrote:
+On 11/9/20 3:05 AM, Jisheng Zhang wrote:
 > This is to remove similar errors as below:
 > 
 > OF: /.../gpio-port@0: could not find phandle
@@ -106,14 +106,14 @@ On 11/9/20 3:03 AM, Jisheng Zhang wrote:
 > 
 > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 > ---
->  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi | 4 ++--
+>  arch/arm64/boot/dts/intel/socfpga_agilex.dtsi | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
-> index 0f893984c256..d301ac0d406b 100644
-> --- a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
-> +++ b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
-> @@ -203,7 +203,7 @@ porta: gpio-controller@0 {
+> diff --git a/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi b/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
+> index e1c0fcba5c20..2f731e3a7cd7 100644
+> --- a/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
+> +++ b/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
+> @@ -202,7 +202,7 @@ porta: gpio-controller@0 {
 >  				compatible = "snps,dw-apb-gpio-port";
 >  				gpio-controller;
 >  				#gpio-cells = <2>;
@@ -122,7 +122,7 @@ On 11/9/20 3:03 AM, Jisheng Zhang wrote:
 >  				reg = <0>;
 >  				interrupt-controller;
 >  				#interrupt-cells = <2>;
-> @@ -223,7 +223,7 @@ portb: gpio-controller@0 {
+> @@ -222,7 +222,7 @@ portb: gpio-controller@0 {
 >  				compatible = "snps,dw-apb-gpio-port";
 >  				gpio-controller;
 >  				#gpio-cells = <2>;
