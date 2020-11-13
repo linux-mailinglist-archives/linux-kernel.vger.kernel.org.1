@@ -2,159 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4F92B212D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E252D2B2131
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKMQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:57:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725967AbgKMQ5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:57:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605286671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8ZQSCankw5B0QgNiJvLUAMhyn2rU6CiTpgEHp+KAF+c=;
-        b=iGeUkU1LPanzsCpHcrG+QfGdmiGr0mHx1SnyrbUBRsRE/cug/ZcPSpaJFzODYUNHZDHbJd
-        7O2O+ebF7ebsNjm1a1/IyV1qU1K+j+g+eT4W+sF+aTvu4Mw34TSsRdpGEg6ZhVEYfg53xJ
-        9hGKHyaHFDxjes/+5RwWo75t0gICFEI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-Ap9MKAXlO5Om-ym2dbcnUA-1; Fri, 13 Nov 2020 11:57:50 -0500
-X-MC-Unique: Ap9MKAXlO5Om-ym2dbcnUA-1
-Received: by mail-wr1-f69.google.com with SMTP id k1so4140690wrg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 08:57:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8ZQSCankw5B0QgNiJvLUAMhyn2rU6CiTpgEHp+KAF+c=;
-        b=olEHGzTRT+ZXEe/TxpjnB+uOYbbY8T9rvf4GPxYKRE+Hj9rGMJpK6xa0n8RZHiUOC6
-         qYhC7NC0V5JK/st2zSb1JLeCtLuQBwrih+GeAgHbHn888IkAnpNvG6Y9MAWdOEvcwDrI
-         FzLeJADjS9O9xPQZ9mpTu5ywU2M/t87V3RCW3oPMTRKtkCQ9PTju+DyjeXpmvFBf8SSl
-         nsmqsCVDf9FxHSkwXooBmP6fSq0dNiPMgqtZ3jIc9xUMU7UWwxwvXBWQdm0sZmxB0rm5
-         v33DtjEC6GQydspq4eW9fXt7tVnzJL/HTFdlpAE/pwPbtjIcp/v+DBV8uClUoQRknvTe
-         F8HQ==
-X-Gm-Message-State: AOAM531WdVgEoQOtg19HAxnYL7AUhP9WrKqVuJdWAecNbRYBgUuhTyPA
-        OMxkt626g0Yl2/Ny4cDYbZuZEiyxNCVDZdcRcoHaA62KmwOMoqQ2R+OQL9PRiZ6iuqg30n3Szd5
-        ELolY6htWSjjXb/kOGAhP7MBv
-X-Received: by 2002:a05:6000:364:: with SMTP id f4mr4554172wrf.290.1605286663938;
-        Fri, 13 Nov 2020 08:57:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwi/GV6bvhHaDYjQ+i+BKr+EldsibMpe6ecBnpRLJ7GXLQzaZLuUjw5ChknHnxVrvznO18MeQ==
-X-Received: by 2002:a05:6000:364:: with SMTP id f4mr4553781wrf.290.1605286658811;
-        Fri, 13 Nov 2020 08:57:38 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a12sm11508076wrr.31.2020.11.13.08.57.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 08:57:37 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] KVM: SVM: Move asid to vcpu_svm
-To:     Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     vkuznets@redhat.com, wei.huang2@amd.com, mlevitsk@redhat.com
-References: <20201011184818.3609-1-cavery@redhat.com>
- <20201011184818.3609-2-cavery@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <aadb4690-9b2b-4801-f2fc-783cb4ae7f60@redhat.com>
-Date:   Fri, 13 Nov 2020 17:57:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726268AbgKMQ6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:58:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:41464 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbgKMQ6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:58:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08F511042;
+        Fri, 13 Nov 2020 08:58:45 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EB273F718;
+        Fri, 13 Nov 2020 08:58:44 -0800 (PST)
+Date:   Fri, 13 Nov 2020 16:58:43 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: abort counter_read_on_cpu() when irqs_disabled()
+Message-ID: <20201113165843.GA6973@arm.com>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
+ <20201113155328.4194-1-ionela.voinescu@arm.com>
+ <20201113160234.GB44988@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-In-Reply-To: <20201011184818.3609-2-cavery@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113160234.GB44988@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/20 20:48, Cathy Avery wrote:
-> Move asid to svm->asid to allow for vmcb assignment
-> during svm_vcpu_run without regard to which level
-> guest is running.
-
-Slightly more verbose commit message:
-
-KVM does not have separate ASIDs for L1 and L2; either the nested
-hypervisor and nested guests share a single ASID, or on older processor
-the ASID is used only to implement TLB flushing.
-
-Either way, ASIDs are handled at the VM level.  In preparation
-for having different VMCBs passed to VMLOAD/VMRUN/VMSAVE for L1 and
-L2, store the current ASID to struct vcpu_svm and only move it to
-the VMCB in svm_vcpu_run.  This way, TLB flushes can be applied
-no matter which VMCB will be active during the next svm_vcpu_run.
-
-
-> Signed-off-by: Cathy Avery <cavery@redhat.com>
-> ---
->   arch/x86/kvm/svm/svm.c | 4 +++-
->   arch/x86/kvm/svm/svm.h | 1 +
->   2 files changed, 4 insertions(+), 1 deletion(-)
+On Friday 13 Nov 2020 at 16:02:34 (+0000), Mark Rutland wrote:
+> On Fri, Nov 13, 2020 at 03:53:28PM +0000, Ionela Voinescu wrote:
+> > Given that smp_call_function_single() can deadlock when interrupts are
+> > disabled, abort the SMP call if irqs_disabled(). This scenario is
+> > currently not possible given the function's uses, but safeguard this for
+> > potential future uses.
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index d4e18bda19c7..619980a5d540 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1101,6 +1101,7 @@ static void init_vmcb(struct vcpu_svm *svm)
->   		save->cr4 = 0;
->   	}
->   	svm->asid_generation = 0;
-> +	svm->asid = 0;
->   
->   	svm->nested.vmcb = 0;
->   	svm->vcpu.arch.hflags = 0;
-> @@ -1663,7 +1664,7 @@ static void new_asid(struct vcpu_svm *svm, struct svm_cpu_data *sd)
->   	}
->   
->   	svm->asid_generation = sd->asid_generation;
-> -	svm->vmcb->control.asid = sd->next_asid++;
-> +	svm->asid = sd->next_asid++;
->   
->   	vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
->   }
+> Sorry to contradict earlier feedback, but I think this is preferable
+> as-is, since smp_call_function_single() will
+> WARN_ON_ONCE(irqs_disabled())), but this will silently mask any dodgy
+> usage.
 
-This vmcb_mark_dirty must be delayed to svm_vcpu_run as well, because 
-the active VMCB could change:
+Probably it only contradicts the chosen implementation.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 48965bfa3d1e..3b53a7ead04b 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1756,12 +1756,11 @@ static void new_asid(struct vcpu_svm *svm, 
-struct svm_cpu_data *sd)
-  		++sd->asid_generation;
-  		sd->next_asid = sd->min_asid;
-  		svm->vmcb->control.tlb_ctl = TLB_CONTROL_FLUSH_ALL_ASID;
-+		vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
-  	}
+> 
+> If we want a separate check here, I reckon we should wrap it with a
+> WARN_ON_ONCE(), and only relax that if/when we have a legitimate case
+> for calling this with IRQs disabled.
+> 
 
-  	svm->asid_generation = sd->asid_generation;
-  	svm->asid = sd->next_asid++;
--
--	vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
-  }
+That's fair. I'll replace the condition below with:
 
-  static void svm_set_dr6(struct vcpu_svm *svm, unsigned long value)
-@@ -3571,7 +3570,10 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct 
-kvm_vcpu *vcpu)
+	if (!cpu_has_amu_feat(cpu))
+		return -EOPNOTSUPP;
 
-  	sync_lapic_to_cr8(vcpu);
+	if (WARN_ON_ONCE(irqs_disabled())
+		return -EPERM;
 
--	svm->vmcb->control.asid = svm->asid;
-+	if (unlikely(svm->asid != svm->vmcb->control.asid)) {
-+		svm->vmcb->control.asid = svm->asid;
-+		vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
-+	}
-  	svm->vmcb->save.cr2 = vcpu->arch.cr2;
+Thanks for your time,
+Ionela.
 
-  	/*
-
-Queued with this change.
-
-Paolo
-
+> Thanks,
+> Mark.
+> 
+> > 
+> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > ---
+> >  arch/arm64/kernel/topology.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > index 3a083a9a8ef2..e387188741f2 100644
+> > --- a/arch/arm64/kernel/topology.c
+> > +++ b/arch/arm64/kernel/topology.c
+> > @@ -343,7 +343,11 @@ static void cpu_read_constcnt(void *val)
+> >  static inline
+> >  int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> >  {
+> > -	if (!cpu_has_amu_feat(cpu))
+> > +	/*
+> > +	 * Abort call on counterless CPU or when interrupts are
+> > +	 * disabled - can lead to deadlock in smp sync call.
+> > +	 */
+> > +	if (!cpu_has_amu_feat(cpu) || unlikely(irqs_disabled()))
+> >  		return -EOPNOTSUPP;
+> >  
+> >  	smp_call_function_single(cpu, func, val, 1);
+> > -- 
+> > 2.17.1
+> > 
