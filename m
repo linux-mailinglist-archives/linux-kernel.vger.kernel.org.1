@@ -2,98 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C64C2B24B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356BE2B24BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgKMTkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:40:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgKMTkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:40:39 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFBA32223F;
-        Fri, 13 Nov 2020 19:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605296439;
-        bh=c5W3Lz4YalL1OgdsvdkC8zm3nZIXvJ8S0cNNaO/k95I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RDgVcrF2EPWbnoqeTBdHZJI/pmO24hAJYv+vW1tMC/wylTtfEW9lCx9ck4f8tqC8m
-         IMVxZWcIYYTXO8XdYZcHwdlBs2udsQnXhzO4YOqB25kIZSwBCZ0q9O6tOZ1pTuyJ3r
-         a3GPx4OJ0LVvQ1nPpHTmHABjjNJGsXsjX0AlmC5Q=
-Date:   Fri, 13 Nov 2020 11:40:36 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4
- behavior
-Message-ID: <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
-References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
-        <20201107153139.3552-5-andrea.mayer@uniroma2.it>
-        <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
-        <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
-        <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
-        <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
+        id S1726362AbgKMTmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgKMTmQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 14:42:16 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13294C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:42:15 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id v12so8461710pfm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:42:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bpaBEkCKEdHgW1h3duZgowAHWMVwm/wa+XAmGoyCFHI=;
+        b=oFn/RXDyVA1j0y1YQDQOB2ftvc0uvORFJdjpj9LDlBrrNhMvbFReEzpWp24e286756
+         4uT8WsjYCxktEdM0u6GrTe3zP/6MtEsFGCS4cmMGgtjYGJJ4FivdbALYSUP1DDjb73Wq
+         EICO1cd3IrEkLRz/QdnDx+5qAwOofb0VdoEyfxzyPPvf9aDDudrOp8yJmeKdOO1SPZk+
+         aO0NhK5SD16xRb2puDAUjDqglJe/OAjuPVAqxKxXAF0LEycfYydU/hJ7W5yzCKdEXs4B
+         CCjEOXDtRhs4YQMdFVA1O8gksAFUltf/8U126y8IgS1rdV2diGiuqZ4VIE1lehcRpMj/
+         uLCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bpaBEkCKEdHgW1h3duZgowAHWMVwm/wa+XAmGoyCFHI=;
+        b=X3/wKB3c5XbO9lUfIoZ+en9mI4dQu+qWowl4IAxZAfZZH23wLppPFkiBnf6B6/O4td
+         qzIlP3Tt2+KVMPab/Noxc8Aj2jHPQKMYBF0lThRlmwmQvqm2hmgaTnv3i4aBqBPGb5ry
+         tImG5A//oeCpuFW4gq8wJpiQA16U5coyhpnoOy3Ys3QRmg3igWL/8jihYDdiioCsK7O1
+         9smm+13xf+OZxdia9SJW1P8GOcKVy1NoPX84sxk42L9Hlaaq/ygFxV1HJJ8FiP4fDJ3K
+         FklMBwtp4jv0A+rmAYyqGCw7kj0+mejUsksCAIpg9yHuJXTHiiA5jP4u6ru4tQVM+6du
+         qVAg==
+X-Gm-Message-State: AOAM533vPtVkgq9HMJmWRqKB+shnhgF9zV0ukrEltr8tvxDayEx/Lgff
+        6RYxsYN41T5/jw8bn4V8gWXFkV/uI9FsoWXIo63C0Q==
+X-Google-Smtp-Source: ABdhPJxBGruW0CFPMXPkH6jCYQnUWGpwTUjThVpylwpIL+AcMQOGFSV+GJvuRANsp1Q7nkVoV1fQ8L8DYU8vKQJ5bkc=
+X-Received: by 2002:a65:4b81:: with SMTP id t1mr3343357pgq.263.1605296534160;
+ Fri, 13 Nov 2020 11:42:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <202011131146.g8dPLQDD-lkp@intel.com> <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com>
+ <20201113190824.GA1477315@ubuntu-m3-large-x86>
+In-Reply-To: <20201113190824.GA1477315@ubuntu-m3-large-x86>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 13 Nov 2020 11:42:03 -0800
+Message-ID: <CAKwvOdkEtTQhDRFRV_d66FyhQBe536vRbOW=fQjesiHz3dfeBA@mail.gmail.com>
+Subject: Re: Error: invalid switch -me200
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 10:04:44 -0700 David Ahern wrote:
-> On 11/13/20 10:02 AM, Stefano Salsano wrote:
-> > Il 2020-11-13 17:55, Jakub Kicinski ha scritto:  
-> >> On Thu, 12 Nov 2020 18:49:17 -0700 David Ahern wrote:  
-> >>> On 11/12/20 6:28 PM, Andrea Mayer wrote:  
-> >>>> The implementation of SRv6 End.DT4 differs from the the
-> >>>> implementation of SRv6
-> >>>> End.DT6 due to the different *route input* lookup functions. For
-> >>>> IPv6 is it
-> >>>> possible to force the routing lookup specifying a routing table
-> >>>> through the
-> >>>> ip6_pol_route() function (as it is done in the
-> >>>> seg6_lookup_any_nexthop()).  
-> >>>
-> >>> It is unfortunate that the IPv6 variant got in without the VRF piece.  
-> >>
-> >> Should we make it a requirement for this series to also extend the v6
-> >> version to support the preferred VRF-based operation? Given VRF is
-> >> better and we require v4 features to be implemented for v6?  
-> > 
-> > I think it is better to separate the two aspects... adding a missing
-> > feature in IPv4 datapath should not depend on improving the quality of
-> > the implementation of the IPv6 datapath :-)
-> > 
-> > I think that Andrea is willing to work on improving the IPv6
-> > implementation, but this should be considered after this patchset...
++ MPE, PPC
+
+On Fri, Nov 13, 2020 at 11:08 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
 >
-> agreed. The v6 variant has existed for a while. The v4 version is
-> independent.
+> On Fri, Nov 13, 2020 at 09:28:03AM -0800, F=C4=81ng-ru=C3=AC S=C3=B2ng wr=
+ote:
+> > On Thu, Nov 12, 2020 at 7:22 PM kernel test robot <lkp@intel.com> wrote=
+:
+> > >
+> > > Hi Fangrui,
+> > >
+> > > FYI, the error/warning still remains.
+> > >
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linu=
+x.git master
+> > > head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> > > commit: ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 Makefile: Fix GCC_TO=
+OLCHAIN_DIR prefix for Clang cross compilation
+> > > date:   4 months ago
+> > > config: powerpc-randconfig-r031-20201113 (attached as .config)
 
-Okay, I'm not sure what's the right call so I asked DaveM.
+^ randconfig
 
-TBH I wasn't expecting this reaction, we're talking about a 200 LoC
-patch which would probably be 90% reused for v6...
+> > > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project =
+9e0c35655b6e8186baef8840b26ba4090503b554)
+> > > reproduce (this is a W=3D1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master=
+/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # install powerpc cross compiling tool for clang build
+> > >         # apt-get install binutils-powerpc-linux-gnu
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/li=
+nux.git/commit/?id=3Dca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51
+> > >         git remote add linus https://git.kernel.org/pub/scm/linux/ker=
+nel/git/torvalds/linux.git
+> > >         git fetch --no-tags linus master
+> > >         git checkout ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cros=
+s ARCH=3Dpowerpc
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > >    Assembler messages:
+> > > >> Error: invalid switch -me200
+> > > >> Error: unrecognized option -me200
+> > >    clang-12: error: assembler command failed with exit code 1 (use -v=
+ to see invocation)
+> > >    make[2]: *** [scripts/Makefile.build:281: scripts/mod/empty.o] Err=
+or 1
+> > >    make[2]: Target '__build' not remade because of errors.
+> > >    make[1]: *** [Makefile:1174: prepare0] Error 2
+> > >    make[1]: Target 'prepare' not remade because of errors.
+> > >    make: *** [Makefile:185: __sub-make] Error 2
+> > >    make: Target 'prepare' not remade because of errors.
+> > >
+> > > ---
+> > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >
+> > This can be ignored. The LLVM integrated assembler does not recognize
+> > -me200 (-Wa,-me200 in arch/powerpc/Makefile). I guess the GNU as -m
+> > option is similar to .arch or .machine and controls what instructions
+> > are recognized. The integrated assembler tends to support all
+> > instructions (conditional supporting some instructions has some
+> > challenges; in the end I have patched parsing but ignoring `.arch` for
+> > x86-64 and ignoring `.machine ppc64` for ppc64)
+> >
+> > (In addition, e200 is a 32-bit Power ISA microprocessor. 32-bit
+> > support may get less attention in LLVM.)
+>
+> This is also not a clang specific issue, I see the exact same error
+> with GCC 10.2.0 and binutils 2.35.
+>
+> $ make -skj64 ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64-linux- olddefconfi=
+g vmlinux
+
+Does using a non 64b triple produce the same failure?
+
+> ...
+> Error: invalid switch -me200
+> Error: unrecognized option -me200
+
+There's a block in  arch/powerpc/Makefile:
+248 cpu-as-$(CONFIG_40x)    +=3D -Wa,-m405
+249 cpu-as-$(CONFIG_44x)    +=3D -Wa,-m440
+250 cpu-as-$(CONFIG_ALTIVEC)  +=3D $(call
+as-option,-Wa$(comma)-maltivec)
+251 cpu-as-$(CONFIG_E200)   +=3D -Wa,-me200
+252 cpu-as-$(CONFIG_E500)   +=3D -Wa,-me500
+
+Are those all broken configs, or is Kconfig messed up such that
+randconfig can select these when it should not?
+--=20
+Thanks,
+~Nick Desaulniers
