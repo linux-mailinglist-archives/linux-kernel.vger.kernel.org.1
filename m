@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9AD2B1B7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6A92B1B81
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgKMM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:56:50 -0500
-Received: from mail-vi1eur05on2137.outbound.protection.outlook.com ([40.107.21.137]:56992
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726160AbgKMM4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:56:49 -0500
+        id S1726495AbgKMM5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:57:53 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:51758 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726160AbgKMM5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:57:52 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fae82ce0000>; Fri, 13 Nov 2020 20:57:50 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov
+ 2020 12:57:46 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 13 Nov 2020 12:57:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=btMovLxS/siZ6jhnEqRHoAwYQI8uGKAseKOfuOtOcOW5d3vIG+xWcm18DHmSh0kfhqWvYqTfDqwj06acmg9/jhLvgbtWGPQrirQwsQBXZh/MCc2Ls8rokTLoRJ+gywCtwL67nmQx6v8onTaGfAVzuZDDYypMlVffnF2VJzDQPPgbrsdPbPgb+XVmnNZ5IFuFkzT0AFKiUzimAwKEdsOXPsYR3IyhjAwVHarSFjJzVkdsFId1ybVpxfMD1gNUOo/dMjNjTPc+FtEmy1HwTX2Gy17U0XW8YmQwuszFQovpnouscgClI+o+Am9raE9MmJERfWWeLkR4ljzl680+8p7DBw==
+ b=mHflnqkD4g2kVNqyXleBTb55nkrbiNp0y3TyFuqubQeq4jOB0C5oICDWH98+r/raPiCTfBMS3NkTE5BFPdR0WcfzhNCFLOktu8WynPzCtvxPBqYD/SNiDvyBKtqZejvUEINbpXUQRmR4aAQPF6E5rI5lxGeJC4Y8nFQmLPcGfgvbwAwTsDGfQSprREd3IB1Kk6zmz3ei6h6GMNxs/qkYnbRlEz/2osJkUY7XwIv49TasOzgKyiytA/eFXAVGnlyP7GuO58TFtuaJEu8Ag4/GYEuB4RMi+Lt0XSFdNjnmoctUfcXI3Y7VpzWVlUfdn1UoH4HuwgQce0tYowb7ysSyDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P3WaX0FHF5NWqCvTa8sgq21fGljUJOm+jaF57Gk6UK8=;
- b=TJwAvfDx4krmU9PXjN8LOrQqSWItc3Qu5benPttLy3GLY1DegBWdTouRzv7pUNgwWGUDLfSwzJhdT5/sSz8CmLVzsFdGh5xlQeusx6HITHXf3xtALPXW40tPp9TJSUPlMOetL2KLqXu8DB5dBYYOIaqz1lGvdLQF6Uwh1GQWPJsQtQIS0TJGoWa9Tk4t2Mhi7Tg2sCwVPyF/yqeqkVqT0w9mFRFRJ72TQSG1J1XPc6wiD5/qtJMt/HpqNa104qELdDHadvEvhyY1xnpsPpwm6HzD42cf8REHGMcUrZMNxKqsFYFRKPxn0JgFIV5qnrkHDfz5suHpcm89YKsFoCfhtA==
+ bh=88q+NJg8uHj1mjh9JQL6I9Wy/6llGi5MMBDreJZj/Xo=;
+ b=eaWpet8bsENllQOH5RC18udyyBgZCiPPK2SfP/ToZI0lCX/oR7cVhMDhgs4zWKed+3cWCL1hIhupSI5uju5bA4Hr9NIRo55EZXk+mEIViHmaT8pLeG/7CH6aa7jfclL1mZxdZ5kHl2u0f31i2fkHmENvgHmiu0QtFR9wpanB4nKtE56DAmCNmSmJyDmoXolmtxjoDgYuXiqwZ6FqFHApyy9BEak6gnVBDgxCwict5BfKqQugyKscUxsq/mtG6cBE/fqUDcow0dd4YCFmxXfGINmdPypnV6m8SHBD1fVDKU6htPMOSTxld4PJJGAE8WHsfLzFQOygazr8ip27omoFUQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P3WaX0FHF5NWqCvTa8sgq21fGljUJOm+jaF57Gk6UK8=;
- b=ev41EF1kqc+WZ5A8xp8nNBkKJXOwGXRwcfS06Z0trm/X/kfW4+WdePPGJ/V1KTQ15ee8CNhVBIIET0WDJ5BTu2ciBVQ1STq1+0XoX9SwYO5mH7s6QP9tTrR40o9899DvwtMM93vQwYyhaAAzyE925y3LqPf1cEtCztc6S1NjPeI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM0PR07MB6148.eurprd07.prod.outlook.com (2603:10a6:208:11d::18) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4578.namprd12.prod.outlook.com (2603:10b6:5:2a9::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21; Fri, 13 Nov
- 2020 12:56:45 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::d527:e75b:546c:a85b]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::d527:e75b:546c:a85b%6]) with mapi id 15.20.3564.021; Fri, 13 Nov 2020
- 12:56:45 +0000
-Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Serge Semin <fancer.lancer@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
- <20201107094028.GA4918@alpha.franken.de>
- <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
- <20201110095503.GA10357@alpha.franken.de>
- <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
- <20201111145240.lok3q5g3pgcvknqr@mobilestation>
- <4625868b-f845-2f03-c3f2-fc3ff1ccf63d@flygoat.com>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <1973ec3a-82a8-2c4a-20d6-45bc7465120b@nokia.com>
-Date:   Fri, 13 Nov 2020 13:56:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <4625868b-f845-2f03-c3f2-fc3ff1ccf63d@flygoat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [131.228.32.167]
-X-ClientProxiedBy: AM3PR05CA0115.eurprd05.prod.outlook.com
- (2603:10a6:207:2::17) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 13 Nov
+ 2020 12:57:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Fri, 13 Nov 2020
+ 12:57:43 +0000
+Date:   Fri, 13 Nov 2020 08:57:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        "Wilk, Konrad" <konrad.wilk@oracle.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Bjorn Helgaas" <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201113125741.GC917484@nvidia.com>
+References: <874klykc7h.fsf@nanos.tec.linutronix.de>
+ <20201109173034.GG2620339@nvidia.com>
+ <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03>
+ <875z6dik1a.fsf@nanos.tec.linutronix.de> <20201110141323.GB22336@otc-nc-03>
+ <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201112193253.GG19638@char.us.oracle.com>
+ <877dqqmc2h.fsf@nanos.tec.linutronix.de>
+ <MWHPR11MB1645F27808F1F5E79646A3A88CE60@MWHPR11MB1645.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB1645F27808F1F5E79646A3A88CE60@MWHPR11MB1645.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL0PR03CA0032.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::45) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.167) by AM3PR05CA0115.eurprd05.prod.outlook.com (2603:10a6:207:2::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Fri, 13 Nov 2020 12:56:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 20ece6cd-03aa-4594-6f15-08d887d3936f
-X-MS-TrafficTypeDiagnostic: AM0PR07MB6148:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB61482DC362524FF48981AF0D88E60@AM0PR07MB6148.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6lLgCzmUZe0JXz0qs90axKxipjsrqACkGwQF5nWW3hIj/bLko4JyFvVPmsgLOOKh4AXnLoEMFCuW0x2v80R90H+yyEGh238yxuXfJiC97sfKuQB8nHHNc7axq/L9OwGKeoMbS9KKFHh4LMPHRrKtFK0ot8lDzGsw9qmazrn3uFo/wVXfS32ytCyTCRAIsGDFGEzW03SwC3GRRMVWQUOYONBIbSKNWTBHwc9hCh+jNUs7J8f4HdKtF1HTDahxlNRNeClCNCT6qvrUzNB6VcU1ssMPiuk0bKzK2oguj5sckPtbDOLok+/1uiLd3Ac6qS2mbn5+mMtQMTUX231mtltjjUW63C6jCaljBxSECswvu3cSBLk6eu5uNwaO04eHATp9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(136003)(376002)(366004)(186003)(36756003)(4744005)(44832011)(8676002)(478600001)(26005)(2616005)(31696002)(52116002)(53546011)(66946007)(66556008)(86362001)(956004)(54906003)(5660300002)(316002)(16526019)(2906002)(6512007)(6506007)(6486002)(31686004)(110136005)(8936002)(4326008)(66476007)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: KEp3G4o/BHt2GyBXKSeDQd96K9wSpZjVXizxV6eNVbbLowmhizfgYfiAL2Q8jTyK41YHtXv7vZkDw3b/zlXYNOASiIjO27Ay1zWPFF1Lrdrwzq+QcGbyxpkuXItbWSCDV8hSb/uHtRoTv2UceC82qR10qv7AaG//gGHxzp0a42ul3dfS+Y/vNFLRz7eEkFVT9oa5kox+84gZAlViesVb2HY3THU9So4CCA+9Lsk+gaIneHYyq3Wr7oRoUK7tc5JbSPZwW2qSnqIVf+ufdHXKFzkrSQShWVm2VCTdq+uMi5zWiLVngR4iLnj2A1AeTwXqxiwaJRXZ7H+v8R2jkO85fNTI8JDbnT6lNVvZ5vJ48NIq+rqTx4zUhrbyoGTDsv5GzaY8MEBauUwwoL+CIXGaZt8xupSU5o8DaI6ZRluDtGlGT9IFkJcejFmKYbPfK5cbg9BBRFgseGZ7sUrs1+hk2sSn9BfUnYw0Ka8PqE92DFsTcl6ERCiyRjEvQczbg6m3vkIvHRJVYpfNtZCLh6FBiVShpUhgjhPWIBPXraxOnEQnsoT/O4VwbJbwt+B2wTn3oZjH9gki3rBtL+D4PaZUF+pOACqubiLB+fF0i7URezCY6M8F78KTJsGv3+7SasRQEFts1agUrFPPfBgzzaxk6qSPulNo6s2FpL+T6apZWemvcC0j8+/vW8o0CX0iryx6b6LevyF3iPKCAOL/UIWkJ3OXfp08QFmgBKBKOvDRv9KQrZyvgGn2MdD01B+T2YqKAme0IPbhRBIVingkecjMexEGA5Wo1c8H51IYs28L18heiuJR+AcUdq3xZb5ta/rF4QMlrclzXODF3C+k9PA7Yg8EPZfn1+8upoMa+necBPhAwTygNvaCLraVNZQInBBxcIqtuf1b4LK8Kt6sVkbvrg==
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20ece6cd-03aa-4594-6f15-08d887d3936f
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 12:56:45.5585
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RaWXzYDfRp8v8C7YWV91tMMUpZvn45oCavUoQLIBy+hTKTnoGzY4nio3Xwkw//gIK+QiqQ/XaDwFxQJYiECmwuM7sPqwYP79I+0lrnvYB8A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB6148
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR03CA0032.namprd03.prod.outlook.com (2603:10b6:208:2d::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Fri, 13 Nov 2020 12:57:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdYe5-004PSk-67; Fri, 13 Nov 2020 08:57:41 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605272270; bh=88q+NJg8uHj1mjh9JQL6I9Wy/6llGi5MMBDreJZj/Xo=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=T8nzUdlk54dCUyIylx03y9ojHhT1+6tVfO7NoFj2j+DuyA6Fu+Kd3ZdDd4JRQtUkB
+         HzWEhWVRhkx74ICBw7ezSc6lMGOJpi2S+qSV15NVx4LHBJTyplsLXizlkXdz5Nprix
+         Oq+eMYmcctiypw8rx8jARZuWyYuUbR0Kw4cJK07s55Urhq43sgJtwfvjtz3JVrIO84
+         2M1hhB32BipUhQ4ouii8pmHTkNMAcZq7o5YxJc2GDjWaq+J9CSNSZ8YxfTTuH9tkfT
+         HcItI47bYnjNWv8tl2IoRkQEy0n+QkT06IBT83RlhYtZwJQkkCKx67QJz6T6UPzM2e
+         EwZkEI9L/HsHQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
+On Fri, Nov 13, 2020 at 02:42:02AM +0000, Tian, Kevin wrote:
 
-On 13/11/2020 03:30, Jiaxun Yang wrote:
->> 2) The check_kernel_sections_mem() method can be removed. But it
->> should be done carefully. We at least need to try to find all the
->> platforms, which rely on its functionality.
-> It have been more than 10 years since introducing this this check, but
-> I believe there must be a reason at the time.
+> CPUID#1_ECX is a x86 thing. Do we need to figure out probably_on_
+> bare_metal for every architecture altogether, or is it OK to just
+> handle it for x86 arch at this stage? Based on previous discussions 
+> ims is just one piece of multiple technologies to enable SIOV-like
+> scalability. Ideally arch-specific enablement beyond ims (e.g. the 
+> IOMMU part) will be required for such scaled usage thus we 
+> may just leave ims disabled for non-x86 and wait until that time to 
+> figure out arch specific probably_on_bare_metal?
 
-could you maybe share the reason you've submitted it with us?
+At the very least you need to ensure that
+pci_subdevice_msi_create_irq_domain() fails entirely on other
+architectures until they can sort out these sorts of issues..
 
-> Also currently we have some unmaintained platform and it's impossible
-> to test on them for us.
-
-Do you at least know the list of platforms this patch is required for?
-
--- 
-Best regards,
-Alexander Sverdlin.
+Jason
