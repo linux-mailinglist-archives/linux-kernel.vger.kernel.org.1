@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEE02B1942
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFB52B194E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgKMKnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:43:21 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2100 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgKMKnU (ORCPT
+        id S1726353AbgKMKrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKMKrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:43:20 -0500
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CXZl22YsHz67KSS;
-        Fri, 13 Nov 2020 18:41:18 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 13 Nov 2020 11:43:16 +0100
-Received: from [10.47.88.104] (10.47.88.104) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 13 Nov
- 2020 10:43:16 +0000
-Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Improve cmdq lock efficiency
-From:   John Garry <john.garry@huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <maz@kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
- <20200921134324.GK2139@willie-the-truck>
- <b13d0858-e164-4670-a5c6-ab84e81724b7@huawei.com>
-Message-ID: <ca5a0f5f-91fb-4c11-f158-44e16343cdb2@huawei.com>
-Date:   Fri, 13 Nov 2020 10:43:06 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 13 Nov 2020 05:47:13 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75053C0613D1;
+        Fri, 13 Nov 2020 02:47:13 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id d142so7671657wmd.4;
+        Fri, 13 Nov 2020 02:47:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=UnIKmcUVnQcfuz68wvpapsSCJSAR/8vfXGalpq+6JD0=;
+        b=Gx66ynat6q3oOo6SBe/7s1wcRHaAt0iRT6Nb8ivtiyCVPeYQyVsi3CIpIK1YHAlCut
+         E/N3RanbAR4Gs25KTQpNIu8nhK9YOgOOh56K4eFnni13iLCj1mm9aHYKJdae9+3s5AEb
+         oOrQY/Ei4q8Ltre7WRHmxdEMQed9/fjebnK/y+nDyzPuRbRJPkFKK8MevrRv49n9W9bD
+         xkp4O2dI8jvuULNMeYTCVxuX9vbfbHwn/70ktzXtfnd0sOs9GKGiF8nWSsdc040aDpM9
+         5qlJ4tbLsw/FzbeZzY5mDQHEDU+xuYkOh/ebTb2d4o7LYCONFXoVtkx0OeviPneBv5yV
+         B8Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=UnIKmcUVnQcfuz68wvpapsSCJSAR/8vfXGalpq+6JD0=;
+        b=SZtOall52CVqLnSQb+C+1uCHIcACRBkKBPvtOBg8G+wIea86Pmgb6qRCn736ljbwUr
+         k3OmJ29SSBU6eXnnU/NLPfixjPEU75MHZ8R5LiIx7u/KLhy4OPQSZJmWTbVfPD6k2KZ8
+         e63kWfJY+jVANPhC7/CVKKOkNpl8taDtbJM3RrrqHeNysiE/WViBZRUz9togPTVmiHIb
+         qOFixQQvzt+G6vn26gD2YIPW72LmFSQqwo/DynpohWPmwgR4fBl8ZezF0c4whIjZUfAM
+         bwLU1pYsrZd1i+Vy7zmnT+yA1wTLMLHpdulEOFVRjibdBrWmsTvXs83bgUUOlN8hWkEk
+         3WCg==
+X-Gm-Message-State: AOAM531vnqr3HtiO/iSTM9CI5NVLm1UX+8xI3qDrRCV2hTN9Nq9DfBbv
+        xxLgCIaFv14RaWi64hIuuC7IHsZcDzR6Iw==
+X-Google-Smtp-Source: ABdhPJwmo5K+tviYqOpCRn5kx2lh0UvD5M9yE5r4zOHg9ZT8ALr9REkdAY3MF4fLJ7n/1eqc7W2VOw==
+X-Received: by 2002:a1c:1f05:: with SMTP id f5mr1827474wmf.98.1605264432041;
+        Fri, 13 Nov 2020 02:47:12 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:e113:5d8d:7b96:ca98? (p200300ea8f232800e1135d8d7b96ca98.dip0.t-ipconnect.de. [2003:ea:8f23:2800:e113:5d8d:7b96:ca98])
+        by smtp.googlemail.com with ESMTPSA id i6sm9985711wma.42.2020.11.13.02.47.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 02:47:11 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] net: mac80211: use core API for updating TX/RX
+ stats
+To:     Lev Stipakov <lstipakov@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.ke, linux-kernel@vger.kernel.org
+Cc:     Lev Stipakov <lev@openvpn.net>
+References: <44c8b5ae-3630-9d98-1ab4-5f57bfe0886c@gmail.com>
+ <20201113085804.115806-1-lev@openvpn.net>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <ecd9fb3f-ced5-2802-4d69-1d39bf27ef25@gmail.com>
+Date:   Fri, 13 Nov 2020 11:44:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <b13d0858-e164-4670-a5c6-ab84e81724b7@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.88.104]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201113085804.115806-1-lev@openvpn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 14:58, John Garry wrote:
-> On 21/09/2020 14:43, Will Deacon wrote:
->> On Fri, Aug 21, 2020 at 09:54:20PM +0800, John Garry wrote:
->>> As mentioned in [0], the CPU may consume many cycles processing
->>> arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() 
->>> loop to
->>> get space on the queue takes a lot of time once we start getting many
->>> CPUs contending - from experiment, for 64 CPUs contending the cmdq,
->>> success rate is ~ 1 in 12, which is poor, but not totally awful.
->>>
->>> This series removes that cmpxchg() and replaces with an atomic_add,
->>> same as how the actual cmdq deals with maintaining the prod pointer.
->>  > I'm still not a fan of this.
+Am 13.11.2020 um 09:58 schrieb Lev Stipakov:
+> Commits
 > 
-> :(
+>   d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add")
+>   451b05f413d3f ("net: netdevice.h: sw_netstats_rx_add helper)
 > 
->> Could you try to adapt the hacks I sent before,
->> please? I know they weren't quite right (I have no hardware to test 
->> on), but
->> the basic idea is to fall back to a spinlock if the cmpxchg() fails. The
->> queueing in the spinlock implementation should avoid the contention.
+> have added API to update net device per-cpu TX/RX stats.
 > 
-> OK, so if you're asking me to try this again, then I can do that, and 
-> see what it gives us.
+> Use core API instead of ieee80211_tx/rx_stats().
 > 
-
-JFYI, to prove that this is not a problem which affects only our HW, I 
-managed to test an arm64 platform from another vendor. Generally I see 
-the same issue, and this patchset actually helps that platform even more.
-
-		CPUs	Before	After	% Increase
-Huawei D06	8	282K	302K	7%
-Other			379K	420K	11%
-
-Huawei D06	16	115K	193K	68K
-Other			102K	291K	185K
-
-Huawei D06	32	36K	80K	122%
-Other			41K	156K	280%
-
-Huawei D06	64	11K	30K	172%
-Other			6K	47K	683%
-
-I tested with something like [1], so unit is map+unmaps per cpu per 
-second - higher is better.
-
-My D06 is memory poor, so would expect higher results otherwise (with 
-more memory). Indeed, my D05 has memory on all nodes and performs better.
-
-Anyway, I see that the implementation here is not perfect, and I could 
-not get suggested approach to improve performance significantly. So back 
-to the drawing board...
-
-Thanks,
-John
-
-[1] 
-https://lore.kernel.org/linux-iommu/20201102080646.2180-1-song.bao.hua@hisilicon.com/
-
+> Signed-off-by: Lev Stipakov <lev@openvpn.net>
+> ---
+>  v2: also replace ieee80211_rx_stats() with dev_sw_netstats_rx_add()
+> 
+Reviewed-by: Heiner Kallweit <hkallweit1@gmail.com>
