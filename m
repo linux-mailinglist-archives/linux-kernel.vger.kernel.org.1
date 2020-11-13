@@ -2,264 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365372B1C66
+	by mail.lfdr.de (Postfix) with ESMTP id A279D2B1C67
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgKMNtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S1726897AbgKMNtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgKMNto (ORCPT
+        with ESMTP id S1726405AbgKMNtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:49:44 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3680BC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:44 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id j7so9999961wrp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:44 -0800 (PST)
+        Fri, 13 Nov 2020 08:49:45 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDA4C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:45 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so9999394wrx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WyNuXCVQx1RiXbGVlsoSFjQskftsnSEq5QsbaFWLc8c=;
-        b=pUV4xAYSW0aqWu4AgWE4Gu2ONVq/tvb+WU7dXYssWQBu4ISundyt8NUCtc3f8rsBFW
-         Xzm7UqTQy9pLCI/Jxq8tXwTjvV9mAN0N/fYkswK2OI2Gd3vVh4RZq0Q7nx39lnCo67Cp
-         pEYP24JGpSOFpO59d+XKbaCuVBYmcsuh6Ya7jp7hTFthga1+7G1qtIzymeh3egKNH5FQ
-         RCyoD1ye0kCX5gf0nYlh2yzcpQYVHocfXme6+rV2peCwPODI6UKj/W9usL5uEjZfG+i7
-         72xj5tJLfB+E0cwDCs2xg0uE3/2741OYcjK9rE93doNXXcVCb1DVU1qo7MiVcBCdgwGc
-         wpQw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QEthodLp7zvU/usXf0Jd0tX794GA416VlkIhPueoa+8=;
+        b=ZdiNluaSHrfyOSKiCyfIsfzHnN2Ubklqxy5e05xB5noS3l4Qp2ccLJohbanBayWkyC
+         17l2Gw5aDJEX1j23na1uoagh+3/vhv6xyXmvXrqUFgOAHKFxsS6gO7ppNxQICzr6Ztly
+         fMcb/6VgEilAxRWJbIm43gWFxOkYGgTMwCT9z4VjmwDir+B9FHFVw92C0lt6x4cM8Y71
+         fReNNPIb7uOcOWlXVG8Cnp789ThiDLK5Zb7/ymHtcNAzLlzFViRxl/NUOXmC6Faf+bc+
+         vEem3AiLKmDSdwJfIBzEGWAxs9IFWHKBiT0XUAlnCLMEMRcaIghkdkyJ0Do25SxLhS4h
+         x+yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WyNuXCVQx1RiXbGVlsoSFjQskftsnSEq5QsbaFWLc8c=;
-        b=oTPqaQxnMwL65+oR5Vov7sgerNxdZ4F8XTPnQ8zQZisasW/4pDb2xmIHiFyntRddyp
-         Om8FWFCXFdNXTDTzQrn4MgZ32ic39wMSQ0m+74t4L1vflA7s4scPfl9QvWXIaPnop4nQ
-         6PYy/vU0RKIUnJKGLjDsdGAJ6hiPmkLcffL4OtATgo5895S+xN1X6s2nK0xs1BrOt644
-         xVY0uFRtOa8Yy84VHoKGVk1FAmMYxujjYFbhgiKEpy8ogJYEw5N2OpKbVnBzke4qNmTa
-         7tLJxUNlkY6hwNENhTAbpzNAhWgTmUYcBQNZTGE2MkrYY19DoBUz1iuXPIPl5pZMdOF8
-         O09w==
-X-Gm-Message-State: AOAM530leABfhtqX8dSmoReROJbs6UtzJg5HC8PSp+Q6+nQV1+erW7Ip
-        T8FzRZFpEe2qIVm53HVbg8Rp8A==
-X-Google-Smtp-Source: ABdhPJzuhrz0RkDiGvF0LEw8t6raG5YB/yTSg1tZvfa/F31g8zu8pmDVbzFZxyxSqiLSK4ZsfQOcgg==
-X-Received: by 2002:adf:f808:: with SMTP id s8mr3615050wrp.257.1605275382853;
-        Fri, 13 Nov 2020 05:49:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QEthodLp7zvU/usXf0Jd0tX794GA416VlkIhPueoa+8=;
+        b=A/C5dKgYyWN/0NtBfEO4loeajWx+G9THWT9R0JJ/kh13kI93bR0XfZA8GvhnToA6qv
+         +F6SrvPjM6NA89uO0Alpr6rztc/TFzBT/hSm64HMKU93yvyi8DgwVQLHJvZWXU4yTGHo
+         lVIFQ92NmjkQw3LJ4u/8skevu36uxIosBwd0pGJPlvuLKGll2I2DJa2po/ljrRedo12o
+         FPZ0ZpbxBd1GugNCUfAGpxNnq7x41FlrqGUIQuY0sWtyRY/PMcp3znctYqQLdlXJ23Us
+         0tdwXKFHuwE/JdLdYXyXsovpL45CuB9TliArEAj1dHZO6EDAyXLevEwg85iG3j3hKsP/
+         ckdw==
+X-Gm-Message-State: AOAM532rs43vK2uv5c2dcawz8WdDGBitFcWeW5eRZgv9RWK4SOoNDVQb
+        ZNNF4UBd1pjGO4BcXEF48Y4krA==
+X-Google-Smtp-Source: ABdhPJyXQ4SeW1DahMMDXOR8m2v1m6dxEe2eofYoKIAJWDN2RlH6HULuj1K7ZMWUfE2A16rj2Zl0gg==
+X-Received: by 2002:a5d:6946:: with SMTP id r6mr3592679wrw.125.1605275384043;
+        Fri, 13 Nov 2020 05:49:44 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.41
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:49:42 -0800 (PST)
+        Fri, 13 Nov 2020 05:49:43 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org,
-        Andres Rodriguez <andresx7@gmail.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        freedreno@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jie Qiu <jie.qiu@mediatek.com>,
-        John Clements <john.clements@amd.com>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Leo Li <sunpeng.li@amd.com>, lima@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-media@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>, Monk.liu@amd.com,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Qiang Yu <yuq825@gmail.com>, Rob Clark <robdclark@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        YT SHEN <yt.shen@mediatek.com>
-Subject: [PATCH 00/40] [Set 7] Rid W=1 warnings from GPU
-Date:   Fri, 13 Nov 2020 13:48:58 +0000
-Message-Id: <20201113134938.4004947-1-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 01/40] drm/amd/include/vega10_ip_offset: Mark _BASE structs as __maybe_unused
+Date:   Fri, 13 Nov 2020 13:48:59 +0000
+Message-Id: <20201113134938.4004947-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
+References: <20201113134938.4004947-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+This patch fixes nearly 400 warnings!
 
-This brings the running total from 5000 (in v5.9) down to 1400!
+These structures are too widely used in too many varying
+configurations to be split-up into different headers or moved into
+source files.
 
-Hopefully not too much more to go now.
+Instead, we'll mark them as __maybe_unused which tells the compiler
+that we're aware they're being included into source files which do not
+make use of them - but we've looked into it, and it's okay.
 
-Lee Jones (40):
-  drm/amd/include/vega10_ip_offset: Mark _BASE structs as __maybe_unused
-  drm/amd/display/dc/core/dc_link_dp: Move
-    DP_VGA_LVDS_CONVERTER_ID_{2,3} to where they're used
-  drm/amd/display/dc/core/dc_link_ddc: Move DP_DVI_CONVERTER_ID_{4,5} to
-    where they're used
-  drm/amd/amdgpu/amdgpu_drv: Move 'amdgpu_info_ioctl()'s prototype to
-    shared header
-  drm/amd/amdgpu/amdgpu_ring: Fix misnaming of param 'max_dw'
-  drm/msm/adreno/a6xx_gpu: Staticise local function 'a6xx_idle'
-  drm/mediatek/mtk_disp_rdma: Fix formatting and supply missing struct
-    member description
-  drm/amd/amdgpu/amdgpu_ib: Fix some incorrect/incomplete function
-    documentation
-  drm/mediatek/mtk_drm_crtc: Demote seriously out-of-date struct header
-  drm/mediatek/mtk_drm_drv: Staticise local function invoked by
-    reference
-  drm/amd/amdgpu/amdgpu_pll: Fix kernel-doc formatting, missing and
-    extra params
-  drm/pl111/pl111_display: Make local function static
-  drm/panel/panel-tpo-tpg110: Correct misnaming and supply missing param
-    description
-  drm/meson/meson_venc: Make local function
-    'meson_venc_hdmi_get_dmt_vmode' static
-  drm/lima/lima_drv: Demote kernel-doc formatting abuse
-  drm/amd/amdgpu/amdgpu_sync: Fix misnamed, missing and extra param
-    descriptions
-  drm/meson/meson_vclk: Make two local functions static
-  drm/mediatek/mtk_dpi: Remove unused struct definition
-    'mtk_dpi_encoder_funcs'
-  drm/amd/amdgpu/amdgpu_vram_mgr: Add missing descriptions for 'dev' and
-    'dir'
-  drm/pl111/pl111_debugfs: Make local function 'pl111_debugfs_regs()'
-    static
-  drm/amd/amdgpu/amdgpu_virt: Make local function
-    'amdgpu_virt_update_vf2pf_work_item()' static
-  drm/amd/amdgpu/amdgpu_sched: Consume our own header containing
-    prototypes
-  drm/lima/lima_sched: Remove unused and unnecessary variable 'ret'
-  drm/amd/amdgpu/amdgpu_ids: Supply missing docs for 'id' and 'vmhub'
-  drm/amd/amdgpu/amdgpu_debugfs: Demote obvious abuse of kernel-doc
-    formatting
-  drm/amd/amdgpu/amdgpu_gmc: Demote one and fix another function header
-  drm/amd/amdgpu/amdgpu_ras: Remove unused function
-    'amdgpu_ras_error_cure'
-  drm/amd/amdgpu/amdgpu_ras: Make local function
-    'amdgpu_ras_error_status_query' static
-  drm/amd/amdgpu/amdgpu_csa: Remove set but unused variable 'r'
-  drm/amd/amdgpu/amdgpu_vm_cpu: Fix 'amdgpu_vm_cpu_prepare()'s doc-rot
-  drm/amd/amdgpu/amdgpu_vm_sdma: Fix 'amdgpu_vm_sdma_prepare()'s doc-rot
-  drm/msm/disp/mdp5/mdp5_crtc: Make local function
-    'mdp5_crtc_setup_pipeline()' static
-  drm/drm_dp_mst_topology: Remove set but never used variable 'len'
-  drm/msm/disp/mdp5/mdp5_ctl: Demote non-conformant kernel-doc headers
-  drm/msm/disp/mdp5/mdp5_kms: Make local functions 'mdp5_{en,dis}able()'
-    static
-  drm/amd/amdgpu/amdgpu_fw_attestation: Consume our own header
-    containing prototypes
-  drm/amd/amdgpu/smu_v11_0_i2c: Provide descriptions for 'control' and
-    'data' params
-  drm/msm/disp/dpu1/dpu_core_perf: Remove set but unused variable
-    'dpu_cstate'
-  drm/msm/disp/dpu1/dpu_encoder: Remove a bunch of unused variables
-  drm/amd/amdgpu/gfx_v7_0: Remove unused struct definition
+Let's tidy-up whilst were here.  Just alignment stuff.
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c       |  3 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c   |  4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  4 +-
- .../drm/amd/amdgpu/amdgpu_fw_attestation.c    |  3 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c       |  5 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c        |  6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c       |  2 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       |  1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h       | 31 ++++++++
- drivers/gpu/drm/amd/amdgpu/amdgpu_pll.c       | 10 +--
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c       | 11 +--
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c      |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c     |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c      |  4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c      |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm_cpu.c    |  4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm_sdma.c   |  4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c  |  2 +
- drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c         |  9 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v7_0.h         |  1 -
- drivers/gpu/drm/amd/amdgpu/smu_v11_0_i2c.c    |  3 +
- .../gpu/drm/amd/display/dc/core/dc_link_ddc.c |  4 +
- .../gpu/drm/amd/display/dc/core/dc_link_dp.c  |  5 ++
- .../amd/display/include/ddc_service_types.h   |  8 --
- .../gpu/drm/amd/include/vega10_ip_offset.h    | 76 +++++++++----------
- drivers/gpu/drm/drm_dp_mst_topology.c         |  4 +-
- drivers/gpu/drm/lima/lima_drv.c               |  2 +-
- drivers/gpu/drm/lima/lima_sched.c             |  3 +-
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  5 +-
- drivers/gpu/drm/mediatek/mtk_dpi.c            |  9 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c       |  4 +-
- drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  4 +-
- drivers/gpu/drm/meson/meson_vclk.c            |  8 +-
- drivers/gpu/drm/meson/meson_venc.c            |  4 +-
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c         |  2 +-
- drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c |  3 -
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 12 +--
- drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c     |  6 +-
- drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c      |  6 +-
- drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c      |  4 +-
- drivers/gpu/drm/panel/panel-tpo-tpg110.c      |  3 +-
- drivers/gpu/drm/pl111/pl111_debugfs.c         |  2 +-
- drivers/gpu/drm/pl111/pl111_display.c         |  2 +-
- 43 files changed, 147 insertions(+), 142 deletions(-)
- create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_kms.h
+Fixes the following W=1 kernel build warning(s):
+
+ In file included from drivers/gpu/drm/amd/amdgpu/navi14_reg_init.c:27:
+ drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:179:29: warning: ‘USB0_BASE’ defined but not used [-Wunused-const-variable=]
+ 179 | static const struct IP_BASE USB0_BASE ={ { { { 0x0242A800, 0x05B00000, 0, 0, 0 } },
+ | ^~~~~~~~~
+ drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:172:29: warning: ‘UMC_BASE’ defined but not used [-Wunused-const-variable=]
+ 172 | static const struct IP_BASE UMC_BASE ={ { { { 0x00014000, 0x02425800, 0, 0, 0 } },
+ | ^~~~~~~~
+ drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:151:29: warning: ‘SDMA_BASE’ defined but not used [-Wunused-const-variable=]
+ 151 | static const struct IP_BASE SDMA_BASE ={ { { { 0x00001260, 0x0000A000, 0x02402C00, 0, 0 } },
+ | ^~~~~~~~~
+ drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:144:29: warning: ‘PCIE0_BASE’ defined but not used [-Wunused-const-variable=]
+ 144 | static const struct IP_BASE PCIE0_BASE ={ { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0x0241B000 } },
+ | ^~~~~~~~~~
+
+NB: Snipped for brevity
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: Andres Rodriguez <andresx7@gmail.com>
 Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-Cc: freedreno@lists.freedesktop.org
-Cc: Harry Wentland <harry.wentland@amd.com>
-Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Jie Qiu <jie.qiu@mediatek.com>
-Cc: John Clements <john.clements@amd.com>
-Cc: Kalyan Thota <kalyan_t@codeaurora.org>
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Leo Li <sunpeng.li@amd.com>
-Cc: lima@lists.freedesktop.org
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-amlogic@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-arm-msm@vger.kernel.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-media@vger.kernel.org
-Cc: Luben Tuikov <luben.tuikov@amd.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Monk.liu@amd.com
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Qiang Yu <yuq825@gmail.com>
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Sean Paul <sean@poorly.run>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: YT SHEN <yt.shen@mediatek.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ .../gpu/drm/amd/include/vega10_ip_offset.h    | 76 +++++++++----------
+ 1 file changed, 38 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/include/vega10_ip_offset.h b/drivers/gpu/drm/amd/include/vega10_ip_offset.h
+index 976dd2d565ba4..bb5463152f6b0 100644
+--- a/drivers/gpu/drm/amd/include/vega10_ip_offset.h
++++ b/drivers/gpu/drm/amd/include/vega10_ip_offset.h
+@@ -35,177 +35,177 @@ struct IP_BASE
+ };
+ 
+ 
+-static const struct IP_BASE NBIF_BASE			= { { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
++static const struct IP_BASE __maybe_unused NBIF_BASE	= { { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE NBIO_BASE			= { { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
++static const struct IP_BASE __maybe_unused NBIO_BASE	= { { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE DCE_BASE			= { { { { 0x00000012, 0x000000C0, 0x000034C0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DCE_BASE	= { { { { 0x00000012, 0x000000C0, 0x000034C0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE DCN_BASE			= { { { { 0x00000012, 0x000000C0, 0x000034C0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DCN_BASE	= { { { { 0x00000012, 0x000000C0, 0x000034C0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MP0_BASE			= { { { { 0x00016000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused MP0_BASE	= { { { { 0x00016000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MP1_BASE			= { { { { 0x00016000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused MP1_BASE	= { { { { 0x00016000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MP2_BASE			= { { { { 0x00016000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused MP2_BASE	= { { { { 0x00016000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE DF_BASE			= { { { { 0x00007000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DF_BASE	= { { { { 0x00007000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE UVD_BASE			= { { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused UVD_BASE	= { { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };  //note: GLN does not use the first segment
+-static const struct IP_BASE VCN_BASE			= { { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused VCN_BASE	= { { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };  //note: GLN does not use the first segment
+-static const struct IP_BASE DBGU_BASE			= { { { { 0x00000180, 0x000001A0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DBGU_BASE	= { { { { 0x00000180, 0x000001A0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // not exist
+-static const struct IP_BASE DBGU_NBIO_BASE		= { { { { 0x000001C0, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DBGU_NBIO_BASE	= { { { { 0x000001C0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // not exist
+-static const struct IP_BASE DBGU_IO_BASE		= { { { { 0x000001E0, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DBGU_IO_BASE	= { { { { 0x000001E0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // not exist
+-static const struct IP_BASE DFX_DAP_BASE		= { { { { 0x000005A0, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DFX_DAP_BASE	= { { { { 0x000005A0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // not exist
+-static const struct IP_BASE DFX_BASE			= { { { { 0x00000580, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused DFX_BASE	= { { { { 0x00000580, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // this file does not contain registers
+-static const struct IP_BASE ISP_BASE			= { { { { 0x00018000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused ISP_BASE	= { { { { 0x00018000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // not exist
+-static const struct IP_BASE SYSTEMHUB_BASE		= { { { { 0x00000EA0, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused SYSTEMHUB_BASE	= { { { { 0x00000EA0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } }; // not exist
+-static const struct IP_BASE L2IMU_BASE			= { { { { 0x00007DC0, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused L2IMU_BASE	= { { { { 0x00007DC0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE IOHC_BASE			= { { { { 0x00010000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused IOHC_BASE	= { { { { 0x00010000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE ATHUB_BASE			= { { { { 0x00000C20, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused ATHUB_BASE	= { { { { 0x00000C20, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE VCE_BASE			= { { { { 0x00007E00, 0x00048800, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused VCE_BASE	= { { { { 0x00007E00, 0x00048800, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE GC_BASE			= { { { { 0x00002000, 0x0000A000, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused GC_BASE	= { { { { 0x00002000, 0x0000A000, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MMHUB_BASE			= { { { { 0x0001A000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused MMHUB_BASE	= { { { { 0x0001A000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE RSMU_BASE			= { { { { 0x00012000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused RSMU_BASE	= { { { { 0x00012000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE HDP_BASE			= { { { { 0x00000F20, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused HDP_BASE	= { { { { 0x00000F20, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE OSSSYS_BASE		= { { { { 0x000010A0, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused OSSSYS_BASE	 = { { { { 0x000010A0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA0_BASE			= { { { { 0x00001260, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused SDMA0_BASE	= { { { { 0x00001260, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA1_BASE			= { { { { 0x00001460, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused SDMA1_BASE	= { { { { 0x00001460, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE XDMA_BASE			= { { { { 0x00003400, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused XDMA_BASE	= { { { { 0x00003400, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE UMC_BASE			= { { { { 0x00014000, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused UMC_BASE	= { { { { 0x00014000, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE THM_BASE			= { { { { 0x00016600, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused THM_BASE	= { { { { 0x00016600, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SMUIO_BASE			= { { { { 0x00016800, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused SMUIO_BASE	= { { { { 0x00016800, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE PWR_BASE			= { { { { 0x00016A00, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused PWR_BASE	= { { { { 0x00016A00, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE CLK_BASE			= { { { { 0x00016C00, 0, 0, 0, 0 } },
+-									    { { 0x00016E00, 0, 0, 0, 0 } },
++static const struct IP_BASE __maybe_unused CLK_BASE	= { { { { 0x00016C00, 0, 0, 0, 0 } },
++										{ { 0x00016E00, 0, 0, 0, 0 } },
+ 										{ { 0x00017000, 0, 0, 0, 0 } },
+-	                                    { { 0x00017200, 0, 0, 0, 0 } },
+-						                { { 0x00017E00, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE FUSE_BASE			= { { { { 0x00017400, 0, 0, 0, 0 } },
++										{ { 0x00017200, 0, 0, 0, 0 } },
++						                		{ { 0x00017E00, 0, 0, 0, 0 } } } };
++static const struct IP_BASE __maybe_unused FUSE_BASE	= { { { { 0x00017400, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
+ 										{ { 0, 0, 0, 0, 0 } },
 -- 
 2.25.1
 
