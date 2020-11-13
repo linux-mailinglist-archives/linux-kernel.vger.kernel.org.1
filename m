@@ -2,91 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F9D2B21C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519142B21C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKMROj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:14:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726288AbgKMROi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:14:38 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3F1620759;
-        Fri, 13 Nov 2020 17:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605287691;
-        bh=ZWTdlG2/Uq7nJjMxy7LmYwoV97nc8Puua2WfqYC6Knw=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=py+0X5kHTB6MGgfsfyHOlebceejKXd8GHsuChPvJtikw3ddtJDjXiqx9uH827oTk6
-         +7QXG7BOaMZqIjxZjHiZwYCpH5QcIf6AhrWqWChIuwzIsNkHDNGYchCbz+9YwFd5BD
-         WFXNHHf0fZ+Dd12B0u8UYw81/0zDKogNgtpYnch4=
-Date:   Fri, 13 Nov 2020 17:14:35 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     axel.lin@ingics.com, linus.walleij@linaro.org,
-        ttynkkynen@nvidia.com, lgirdwood@gmail.com,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        s.hauer@pengutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <1604656384-827-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1604656384-827-1-git-send-email-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH 0/6] regulator: mcp16502: add support for ramp delay
-Message-Id: <160528765435.56661.15898611465418470617.b4-ty@kernel.org>
+        id S1726352AbgKMROg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726288AbgKMROe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:14:34 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B6EC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:14:48 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id t13so9128297ilp.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:14:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WEvraIZkF0cWOj/dfivLnLiDfbUaBgrjDgBa9dn7IYk=;
+        b=SfXCVk3jKMkxT+wb9NCADz20uvpExJKoj6ofbvkk/mytQFIHyIWzKOFS0lucSZm6CA
+         8rwqErJY0FqKiZpT3Wgg3zB5rc2Mm/0iw6MC3LdpfHHjj5uguVDFYkZKr2JlV6aF1LuY
+         rZ3MXYq4+8Z6AnYlX1OAfwz0WXqatoOVSTaJU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WEvraIZkF0cWOj/dfivLnLiDfbUaBgrjDgBa9dn7IYk=;
+        b=oGW0EPxMgMtWTFLxONLIWqZiKpLyfbU4ELvmskVZrvW+IXif/02b/QoDBG9u0c1tWI
+         ON2RHNoB/H5YJ9b4aqYJyNh/dqjY0sVhYM2GeT08CzZygas4wbgRtjFi8gduRfg+YT63
+         4Bos3exEOgWBR3t6mEltR90EaC7tF6ka/gZiDoUlXb/8Kz86PM9fjOQTkfRoeeoBO6yP
+         7LsqDSE/LeWBOaQBU6EU9kIAOaur34t5BJ0rnaQSNlEGqkNnlZHoRjMSTL8VJ6Mo7eoZ
+         jiQOJZAoEZDGRfM2CzGlVDDyO4tJx8q59WYxK30G9ff1dH8fsWlZXdHJ0q+pKieuBqZH
+         TyOg==
+X-Gm-Message-State: AOAM533YoVgmAh15z02l8PmzRsNYUZQP1kVRIFDMh9+gpA2blaXZAX82
+        bNIsezeZWoUF36i9cDE+TgP73Q==
+X-Google-Smtp-Source: ABdhPJxDT7vfdyRlarefZA6g1kBc2REinV4S7PQFYhdEY1lMsffksjEMeLrdGhhweOqG6KwPjm31qg==
+X-Received: by 2002:a92:a008:: with SMTP id e8mr651660ili.83.1605287682461;
+        Fri, 13 Nov 2020 09:14:42 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k16sm4659185ioc.1.2020.11.13.09.14.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 09:14:41 -0800 (PST)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+Date:   Fri, 13 Nov 2020 10:14:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113120055.11748-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 11:52:58 +0200, Claudiu Beznea wrote:
-> This series adds support for ramp delay on mcp16502. It also adds
-> some cleanup on mcp16502.
+On 11/13/20 5:00 AM, Hillf Danton wrote:
+> Thu, 12 Nov 2020 23:21:26 -0800
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    9dbc1c03 Merge tag 'xfs-5.10-fixes-3' of git://git.kernel...
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=10453034500000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=1735b7978b1c3721
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=95ce4b142579611ef0a9
+>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>> userspace arch: i386
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+
+I would like to see the reproducer for this. I just can't reproduce
+this problem.
+
 > 
-> Apart from that patches 1/6 fixes the selector validation in case
-> the regulator::desc::linear_min_sel is not zero.
+> Fix 96c2737716d5 ("usbip: move usbip kernel code out of staging")
+> by closing the race between readers and writer of ud->tcp_socket on
+> sock shutdown. To do that, add waitqueue for usbip device and make
+> writer wait for all readers to go home before releasing the socket.
 > 
-> Thank you,
-> Claudiu Beznea
 > 
-> [...]
+> --- a/drivers/usb/usbip/usbip_common.h
+> +++ b/drivers/usb/usbip/usbip_common.h
+> @@ -277,6 +277,9 @@ struct usbip_device {
+>   		void (*reset)(struct usbip_device *);
+>   		void (*unusable)(struct usbip_device *);
+>   	} eh_ops;
+> +
+> +	atomic_t sk_shutdown_count;
+> +	wait_queue_head_t sk_shutdown_waitq;
+>   };
+>   
+>   #define kthread_get_run(threadfn, data, namefmt, ...)			   \
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+> @@ -1008,15 +1008,20 @@ static void vhci_shutdown_connection(str
+>   
+>   	/* kill threads related to this sdev */
+>   	if (vdev->ud.tcp_rx) {
+> +		atomic_inc(&ud->sk_shutdown_count);
+>   		kthread_stop_put(vdev->ud.tcp_rx);
+>   		vdev->ud.tcp_rx = NULL;
+>   	}
+>   	if (vdev->ud.tcp_tx) {
+> +		atomic_inc(&ud->sk_shutdown_count);
+>   		kthread_stop_put(vdev->ud.tcp_tx);
+>   		vdev->ud.tcp_tx = NULL;
+>   	}
+>   	pr_info("stop threads\n");
+>   
+> +	wait_event(ud->sk_shutdown_waitq,
+> +			!atomic_read(&ud->sk_shutdown_count));
+> +
+>   	/* active connection is closed */
+>   	if (vdev->ud.tcp_socket) {
+>   		sockfd_put(vdev->ud.tcp_socket);
+> @@ -1104,6 +1109,8 @@ static void vhci_device_init(struct vhci
+>   	vdev->ud.eh_ops.reset = vhci_device_reset;
+>   	vdev->ud.eh_ops.unusable = vhci_device_unusable;
+>   
+> +	init_waitqueue_head(&vdev->ud.sk_shutdown_waitq);
+> +
+>   	usbip_start_eh(&vdev->ud);
+>   }
+>   
+> --- a/drivers/usb/usbip/vhci_rx.c
+> +++ b/drivers/usb/usbip/vhci_rx.c
+> @@ -264,5 +264,8 @@ int vhci_rx_loop(void *data)
+>   		vhci_rx_pdu(ud);
+>   	}
+>   
+> +	if (atomic_dec_and_test(&ud->sk_shutdown_count))
+> +		wake_up(&ud->sk_shutdown_waitq);
+> +
+>   	return 0;
+>   }
+> --- a/drivers/usb/usbip/vhci_tx.c
+> +++ b/drivers/usb/usbip/vhci_tx.c
+> @@ -252,5 +252,8 @@ int vhci_tx_loop(void *data)
+>   		usbip_dbg_vhci_tx("pending urbs ?, now wake up\n");
+>   	}
+>   
+> +	if (atomic_dec_and_test(&ud->sk_shutdown_count))
+> +		wake_up(&ud->sk_shutdown_waitq);
+> +
+>   	return 0;
+>   }
+> 
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Without a reproducer, it is hard to verify the fix.
 
-Thanks!
-
-[1/6] regulator: core: validate selector against linear_min_sel
-      commit: bdcd1177578cd5556f7494da86d5038db8203a16
-[2/6] regulator: core: do not continue if selector match
-      (no commit info)
-[3/6] regulator: mcp16502: add linear_min_sel
-      commit: 478f8089161e9a8f487ef3f560e59d1423b81c05
-[4/6] regulator: mcp16502: adapt for get/set on other registers
-      commit: 3e5532a011b09861abc2da3aa518b9aafc250570
-[5/6] regulator: mcp16502: add support for ramp delay
-      commit: 322eb8666d2f50556e89d73b54cf2dad8703c4e0
-[6/6] regulator: mcp16502: remove void documentation of struct mcp16502
-      commit: 842f44806efaddfae5ecff8f143c2607a4fa65d7
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+thanks,
+-- Shuah
