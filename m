@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD722B1C8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BB52B1C89
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgKMNvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S1727266AbgKMNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727014AbgKMNuX (ORCPT
+        with ESMTP id S1727100AbgKMNuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:50:23 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331F5C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:23 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a3so8547307wmb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:23 -0800 (PST)
+        Fri, 13 Nov 2020 08:50:24 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685D6C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:24 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 23so9966399wrc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=d6lq2kh1bZp3yhcGfeiEHDwnp2cd/bsKGg4wlUbbQco=;
-        b=liXP1wPmh8wR4oCpiWLxjCT2ucLqXmhJW9hBhLmCuS2Dw+DxXfaS3Nhq+rOb69vSw+
-         wua+tblw52CIqa1EEgbkMfUTv51OsuRqFGxnMUXf/FVRJ69Fj1YlCvRUwqIrCAeY8SyV
-         jGDkpGrlt2UsQKML1I6Ztdj0/Y9sZxdmmU4WiYIcOWDf6w8QYcKvAe3ryVMgC5LhnkXS
-         iImRStUf1I50U6tw56MEwasDaAirLNzUTDRUImy927MNB6VA4og5IOp6C8B2QNO6W1df
-         H5FEfc9/OqdcuKLM4Q6qAg4JRSq9mPJgH/Utrlt7d48G7wN+snqKZX1pVytc3fzlrp2a
-         XFGQ==
+        bh=451+tFthAljOAh2f/Wv8bktxEJYp2PVcrpZPPSF00gU=;
+        b=pe6e21nu0qjtMO7L/dhgnVP1pOLq2uLl2Q603f2mIEfsxLZ4RIF5ndrN5ElCTk5gBH
+         qQChgdrqm4R3PWyX5mMgOaxx9OkofEfBCcsS2ylOlDJ7yGlIIK5W9xGGJPcsDPMjho8J
+         0j2P0H2AQeAsAZf+VeoXuXFXESasVb2kJfTC2fFe3IqwTvNbzmL61XTiAJLVbf//ktvE
+         7wgdTtkmRnKSQmwwcqNylRCy7SZdv0M1aolSP2I49SYf0yYufITdguFUZ3pxAGSsFjQ3
+         3Wi/1IjSnNLf+E/nmecH+3SNI7gxA8ulpguIdKsungNlVSzRdzgfEjtTVghmCWTbEB79
+         ZvZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=d6lq2kh1bZp3yhcGfeiEHDwnp2cd/bsKGg4wlUbbQco=;
-        b=WXi7mMFlVQvszuWIXhJ7Gz/mbTOZf1L/Dnwl5u9qDT1nRkyE//vAnpIdd5svxmeDpr
-         dns+RibUMibOf8acNcivU8NEJzjvNXlAbJzkwkl1LicEuv4Wg/gdXOX9Zg+Ew9+G7z/8
-         EQsDtVCbO5Gc9PrcgFZ2N3FW3RkQJd6B8zoyfxDITX4JFxS/3bDGfOMmx+W5OhrMlUAi
-         7c3mXTCUrQQ0mI+uMS/vM8245Q7MB5CVnn5FJPgAh7G9kyx0IdygB+5bBTAUkdMZEG02
-         QwqhMUlLFKhtuUyec4baJpdXLmImIC6EO5Fm5YF3y/lQtZvAk8vgd9fZiN7JKP4XN4ur
-         29Sw==
-X-Gm-Message-State: AOAM533rpDtNvwPqnydq5xwTdNeQAO6jrU/lgz8ijFv+75x5KCXC7obB
-        emXm+Tgyi+8gPdw3sb+Gym1O/A==
-X-Google-Smtp-Source: ABdhPJwPa1pit579Xq6kQ/E4Sbx3I4WTKhrO1w9SYQ9TNstqb4RqB6CPSGlqJPfhNK+IoC4qO99TVg==
-X-Received: by 2002:a1c:66c4:: with SMTP id a187mr2663287wmc.186.1605275421972;
-        Fri, 13 Nov 2020 05:50:21 -0800 (PST)
+        bh=451+tFthAljOAh2f/Wv8bktxEJYp2PVcrpZPPSF00gU=;
+        b=PVBwsGTh5cCpCpWcOx6Oc1LADODp5bbBKBf/Oyg3n6jJ4pCVAGK3/Z6qsG0UDiSeGu
+         qXBOG3NFKsDwhk+CoNNTDfAJKAEe+vm/qadWg/SH4VRaMqyniTU9BKZpKn6kTDkO4YYU
+         9Y1jRunKB9nJ8RAngB+nkqDcVJ9T+tNm7NwrVsGQhMwcp2u3wfqac3vZrv08M8LBBC0y
+         H7FcZTrUrwWvTy6f9l2ixlmLkEvxy7WYjTOd2yMdv9LS+/+OS3EdqDK9kNDpUMRRMe23
+         2NHfcfKH3tJ+AmN8gbQuXe5dY9S7ScRyDmrR981Qca6+BUmF65+KGghRno5WytBKZERO
+         GcaA==
+X-Gm-Message-State: AOAM5338QDJbTyqSKr8fnHEcekSYEEsY8PH193FqGr7f9NTNBDHhQT7X
+        fG3oWIDpMTvi1x3e+VMXpiCQBQ==
+X-Google-Smtp-Source: ABdhPJyjledgKwa6fPP8UYFTcytP7jLttiwL2vQI0keB72vsOIAUvnnP5rtBVPtFkTM4WWb/v+5bVA==
+X-Received: by 2002:adf:f852:: with SMTP id d18mr3466397wrq.232.1605275423174;
+        Fri, 13 Nov 2020 05:50:23 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.20
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:50:21 -0800 (PST)
+        Fri, 13 Nov 2020 05:50:22 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+Cc:     linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: [PATCH 32/40] drm/msm/disp/mdp5/mdp5_crtc: Make local function 'mdp5_crtc_setup_pipeline()' static
-Date:   Fri, 13 Nov 2020 13:49:30 +0000
-Message-Id: <20201113134938.4004947-33-lee.jones@linaro.org>
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 33/40] drm/drm_dp_mst_topology: Remove set but never used variable 'len'
+Date:   Fri, 13 Nov 2020 13:49:31 +0000
+Message-Id: <20201113134938.4004947-34-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
@@ -71,38 +72,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c:581:5: warning: no previous prototype for ‘mdp5_crtc_setup_pipeline’ [-Wmissing-prototypes]
+ drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
+ drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
 
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sean Paul <sean@poorly.run>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: linux-arm-msm@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: freedreno@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-index 79dd56faf3de0..0c8f9f88301fa 100644
---- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-+++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
-@@ -578,9 +578,9 @@ static void mdp5_crtc_atomic_enable(struct drm_crtc *crtc,
- 	mdp5_crtc->enabled = true;
- }
- 
--int mdp5_crtc_setup_pipeline(struct drm_crtc *crtc,
--			     struct drm_crtc_state *new_crtc_state,
--			     bool need_right_mixer)
-+static int mdp5_crtc_setup_pipeline(struct drm_crtc *crtc,
-+				    struct drm_crtc_state *new_crtc_state,
-+				    bool need_right_mixer)
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index e875425336406..0401b2f475002 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -3260,7 +3260,7 @@ int drm_dp_send_query_stream_enc_status(struct drm_dp_mst_topology_mgr *mgr,
  {
- 	struct mdp5_crtc_state *mdp5_cstate =
- 			to_mdp5_crtc_state(new_crtc_state);
+ 	struct drm_dp_sideband_msg_tx *txmsg;
+ 	u8 nonce[7];
+-	int len, ret;
++	int ret;
+ 
+ 	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
+ 	if (!txmsg)
+@@ -3281,7 +3281,7 @@ int drm_dp_send_query_stream_enc_status(struct drm_dp_mst_topology_mgr *mgr,
+ 	 */
+ 	txmsg->dst = mgr->mst_primary;
+ 
+-	len = build_query_stream_enc_status(txmsg, port->vcpi.vcpi, nonce);
++	build_query_stream_enc_status(txmsg, port->vcpi.vcpi, nonce);
+ 
+ 	drm_dp_queue_down_tx(mgr, txmsg);
+ 
 -- 
 2.25.1
 
