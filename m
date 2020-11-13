@@ -2,112 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182DB2B255A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E32D2B255E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgKMU0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:26:16 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:43164 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbgKMU0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:26:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1605299175; x=1636835175;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BsMTPr1uoiD7uSWtC2NTZsYFHWtaa6TVrHx8UkOU+tQ=;
-  b=kjfgFSapsGAbFpp++QrY/JabF4mYF56v7yS38ePXkyD8q9KJOY86CQla
-   2YEfi9gYXwciBQnqSVsaembNyb1/M49MXXh1NWUzMlU4SYjHdCnsFtzkm
-   Faa/ifrim+m4kDAGqbH/+ynWiGJpFg1jp20bsOdR8jKo7dV3DjYG40UkK
-   QfWlUGqU8wp1Zxu53C699rrxBje4GFZ2HINgIE+vuKGSiZjT6dfnb2tpT
-   KGNiWmCxs2xoRmxv/zo2fwC1ublkcRrBuTpZVhXS+GdQvrzd3rTXb2UG0
-   CkqatuhnjeeOdlg7FZfnVu9hk77YBsR+7z53SerdSLPERZ7inNttMzJ+Q
-   w==;
-IronPort-SDR: UMRUlSGvVpITd4NARhFZ0JG6HbpLWA8iaYeDfVJymd2HrzKv6o14jwfASnoWGJRVEuz3hl6qaP
- F7CM83jwDbeNhicfFzSyxMNe4/X3nsm9fuckBlfvhSrMgmWiPvw+EuK8OSlCQAJ1N4iey5ZfUR
- 4xeiiSKRkyvANBG8nry0BcIIl4t+z3ZblpP/DPu+xq2NdS7QoxcDgmeQfednnPtueEUa/H1oXl
- Dp/B0aB9ZIbnUwib1MJRAAh4fn64zReXFAoA4zdnBo3QpF08cmXK0k+utn+VbYyGefsU0tmL/H
- qhc=
-X-IronPort-AV: E=Sophos;i="5.77,476,1596470400"; 
-   d="scan'208";a="157074942"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2020 04:26:13 +0800
-IronPort-SDR: zV4N8o3PYbL3FqiqusMk0Rinq5agj+WEIT/oTKGubLprfCyriKg/YTZYIhOsHemnO8rCP5n5Ly
- F445J9ghA99PXUJwS04idPRX0KpSCmijilqGd5zZs5OcBfoTVFgZoenBOdWU3lwypsxaNZnPmc
- Le5OdZyLvVmr4ho6OtRRtrLH+sYDe2qlR+/akfE+duQg85e3CxmY+IIbXJC148B/IycgnJKq7J
- VtZEv4l04tfnRXhfA22xLZjXU3k7YgJejI3diOqQCnaoXNJq/0DdErB/0oOBEiQyFBhK2sUhDR
- PJDhZ8utRL93gHy1vYYirkp2
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 12:12:10 -0800
-IronPort-SDR: WQtXQjI1u1jqJXD6Sv1H4OJIG4os8y8WaQHEm7RJBJw5K/R+zHrdF8qQ5qhz0MN4Eqf+Nd+vqt
- U7tBX+9yA1foRDd/yjWD6+kDltN7U51VEH7wTi+mihaH4h+RIfsXuwbCsYLaKPQNHNRfoQw8MG
- H2JCuKF+xxvUzzkwCJYl2S/39SzQZkIuis28Bx6w4+yC65F2RW7h/9i/FahuhZ60j8YPR8PPcQ
- Q9iOi3UF4q1mjsTX4GMrbGdK8vRwKOIQPb66bXJFjwqdDFjU6iq3bJhxWeClKT7z8Xe8+cfw/o
- wQ0=
-WDCIronportException: Internal
-Received: from usa003372.ad.shared (HELO jedi-01.hgst.com) ([10.86.61.22])
-  by uls-op-cesaip01.wdc.com with ESMTP; 13 Nov 2020 12:26:14 -0800
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Cyril.Jean@microchip.com, Ivan.Griffin@microchip.com,
-        Conor.Dooley@microchip.com
-Subject: [RFC PATCH v2 4/4] RISC-V: Enable Microchip PolarFire ICICLE SoC
-Date:   Fri, 13 Nov 2020 12:25:50 -0800
-Message-Id: <20201113202550.3693323-5-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201113202550.3693323-1-atish.patra@wdc.com>
-References: <20201113202550.3693323-1-atish.patra@wdc.com>
+        id S1726459AbgKMU0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:26:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726311AbgKMU0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 15:26:21 -0500
+Received: from localhost.localdomain (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 883BC2078B;
+        Fri, 13 Nov 2020 20:26:19 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     will@kernel.org, sudeep.holla@arm.com, mark.rutland@arm.com,
+        Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     morten.rasmussen@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/3] arm64: cppc: add FFH support using AMUs
+Date:   Fri, 13 Nov 2020 20:26:17 +0000
+Message-Id: <160529906735.20198.6590820523478984130.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201106125334.21570-1-ionela.voinescu@arm.com>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable Microchip PolarFire ICICLE soc config in defconfig.
-It allows the default upstream kernel to boot on PolarFire ICICLE board.
+On Fri, 6 Nov 2020 12:53:31 +0000, Ionela Voinescu wrote:
+> Many thanks for everyone's review.
+> 
+> This series adds support for CPPC's delivered and reference performance
+> counters through the FFH methods by using the AMU equivalent core and
+> constant cycle counters.
+> 
+> This support is added in patch 3/3, while the first 2 patches generalise
+> the existing AMU counter read and validation functionality to be reused
+> for this usecase.
+> 
+> [...]
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Reviewed-by: Bin Meng <bin.meng@windriver.com>
----
- arch/riscv/configs/defconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+Applied to arm64 (for-next/cppc-ffh), thanks!
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index d222d353d86d..2660fa05451e 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -16,6 +16,7 @@ CONFIG_EXPERT=y
- CONFIG_BPF_SYSCALL=y
- CONFIG_SOC_SIFIVE=y
- CONFIG_SOC_VIRT=y
-+CONFIG_SOC_MICROCHIP_POLARFIRE=y
- CONFIG_SMP=y
- CONFIG_JUMP_LABEL=y
- CONFIG_MODULES=y
-@@ -79,6 +80,9 @@ CONFIG_USB_OHCI_HCD=y
- CONFIG_USB_OHCI_HCD_PLATFORM=y
- CONFIG_USB_STORAGE=y
- CONFIG_USB_UAS=y
-+CONFIG_SDHCI=y
-+CONFIG_MMC_SDHCI_PLTFM=y
-+CONFIG_MMC_SDHCI_CADENCE=y
- CONFIG_MMC=y
- CONFIG_MMC_SPI=y
- CONFIG_RTC_CLASS=y
+[1/3] arm64: wrap and generalise counter read functions
+      https://git.kernel.org/arm64/c/4b9cf23c179a
+[2/3] arm64: split counter validation function
+      https://git.kernel.org/arm64/c/bc3b6562a1ac
+[3/3] arm64: implement CPPC FFH support using AMUs
+      https://git.kernel.org/arm64/c/68c5debcc06d
+
+I also applied the irq_disabled() abort as per Mark's comments:
+
+      https://git.kernel.org/arm64/c/74490422522d
+
 -- 
-2.25.1
+Catalin
 
