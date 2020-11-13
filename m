@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 611252B1CAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88D12B1CA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKMNxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
+        id S1726457AbgKMNxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:53:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgKMNtw (ORCPT
+        with ESMTP id S1726925AbgKMNt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:49:52 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20327C0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:51 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a65so8576668wme.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:51 -0800 (PST)
+        Fri, 13 Nov 2020 08:49:57 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41570C061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:52 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so9999830wrx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tTwQDvBtnpWbM0srw/EUqdspNhCuLlcukla9ix/INuQ=;
-        b=qrvSVoup3n8u8pYQhoQWokhMcBFhpiN8nyF8qI0HnXLJQlB3KuihkzMOb9FuMYyNKC
-         Kwj2BDP1Qxst46LBOeu4iGuvzAo6b7i+r6auLDVQmLv5NWVIfKerRhDn/m21fMAn3nmj
-         zcBFB3BAmgebJUsvaamTnF/gmJIY7uP3vEWpNG94/YecvIyHFnYNK0fchgmJcb/79T+g
-         FABDe/gxMs5OwehhsHSkiX0/0yrHrd23HLfP36heprsQXK4kWsw5Tzviqg0r1Q3iRi0n
-         rr3FS4f6gFsuvX+xsiobwmul2yiHCGgjSYXFlt8grMLJoxtiWDWJRAMm/JXjlfWJaD9E
-         2ggg==
+        bh=vlKk1bN1CES0mgH+wUmCXkMlZA1CVtbOfxEG6y0GM50=;
+        b=OcVFHvgowhYl0ECvQLfpLorqw2RlulROMnX4KA0JdKlQSLv9mVUpHCZi3/3LowHNyd
+         pPbib+JUF/TZx8WcxyO/ewyRBfjMIKS3UtXxxiapN+aLc3DL3tKjsK1RstnLzU6A7OOu
+         raaPYzUHAk9pQHEX8DdhINPQHyXgCWD+EGqFlUaImR9oRRNSCrg3RwlpBO1rA8gRThur
+         5ufXOxBBG3r/CwQgQ17S2gixxqvFYvcJhY5owIsbOAQnLy+muaiTQpOZiviP7ChJaRsR
+         WQ+DcU7lcgVDScBOZS3SuTdJr7c9G5qztri+ctAZ9PmmnfGvXcyuvz22sG4Ynfu8k5ZR
+         rg3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tTwQDvBtnpWbM0srw/EUqdspNhCuLlcukla9ix/INuQ=;
-        b=sp7Z67eqInIRjCfTGWHWfPUVzYuyl4b6PHBv3oAgmCVlC5yqwjixIRVnquNL5DNXmS
-         XFuNt3+uj9p3QXSGoIcXnT0KSDmgc5yRl50xX/NOEUzZb6JJLtrCLNCbzK5zQA1+Fz8o
-         TlNwFwdxWyKAJWlA3GDvxeQ39Z1TF8ujNuq1Mg8TJpKOrtqRUu/jBgzpp0q9T4kUIC6X
-         HBOguD0pyG4ZwN3ChSCz5MkBUi1qbF0k9LFF5/r45SpqsW7PWDPSvXcWkFGlOgpADZVj
-         Ix3lwhTn/CWlHIYTK80M32xfU1vpw5ZLp/7vQLfjeC+hFylzImFNoT+BnkSpA09IsWeS
-         OeVw==
-X-Gm-Message-State: AOAM5319nkKKON620g0G+ORKOKlHaXVz357YN1emCrhU0Bx/kaPbSbgL
-        B1/hWXrwZEi9Tnwbk3dc338uyw==
-X-Google-Smtp-Source: ABdhPJxYu/+Qfz9qKiqyhGPZDZs5SaWMLz8YE94+9v1Zkz2nvsz0yFKLHotBNMpb1aJZChOAMHP7JA==
-X-Received: by 2002:a7b:c308:: with SMTP id k8mr2620978wmj.76.1605275389843;
-        Fri, 13 Nov 2020 05:49:49 -0800 (PST)
+        bh=vlKk1bN1CES0mgH+wUmCXkMlZA1CVtbOfxEG6y0GM50=;
+        b=U9Zzsm76F+zzo6m/1sB0MwKm8QDiBiCvNRH6MYl+rfws/4x2V5vqmQJsv4ZynFS7X4
+         lZeA/8mFX0VelFNzN6It06YiXIotA1ZO7+VwZyQMOkQ+Qhzu0gnIqD/BFy7GGTDcJuhi
+         4yuxx3D7HPHbEilsmoqHpH+YHwOmF4orxIvcpvg4c8nRwmJqmmzMGyjKQ0DMy6eke9rB
+         usjg3+jTOsbjlJOVnAjefmWH2i4y+smh7yoUY3QRYgLuipZQCgPlknW9RolS+KyeYHXX
+         s1OVen90Jy3PJXjX46JtoS3bbS1K1LYIWzZgmX2FoV2t9m5Z7nyq78/Z35HiiqHrXo4x
+         vQ9A==
+X-Gm-Message-State: AOAM530fmenQ0oiWBxOsTmLlCg+zA4oXJqDELxs+Xufky3Se70tBD5A1
+        DsOLFOltGtTnKTy400mokweaCgz8+6sXySRz
+X-Google-Smtp-Source: ABdhPJyXHSTj58kWv9AHJ2Kd4IYB+cK8mVPoSovQ0Eu/M93IyXpZFI4npYQc9WOZVFn6vm9pr1K9Lg==
+X-Received: by 2002:adf:ead1:: with SMTP id o17mr3629612wrn.396.1605275391038;
+        Fri, 13 Nov 2020 05:49:51 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.48
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:49:49 -0800 (PST)
+        Fri, 13 Nov 2020 05:49:50 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Subject: [PATCH 06/40] drm/msm/adreno/a6xx_gpu: Staticise local function 'a6xx_idle'
-Date:   Fri, 13 Nov 2020 13:49:04 +0000
-Message-Id: <20201113134938.4004947-7-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 07/40] drm/mediatek/mtk_disp_rdma: Fix formatting and supply missing struct member description
+Date:   Fri, 13 Nov 2020 13:49:05 +0000
+Message-Id: <20201113134938.4004947-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,33 +73,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c:33:6: warning: no previous prototype for ‘a6xx_idle’ [-Wmissing-prototypes]
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c:66: warning: Function parameter or member 'ddp_comp' not described in 'mtk_disp_rdma'
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c:66: warning: Function parameter or member 'crtc' not described in 'mtk_disp_rdma'
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c:66: warning: Function parameter or member 'data' not described in 'mtk_disp_rdma'
 
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sean Paul <sean@poorly.run>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-arm-msm@vger.kernel.org
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: freedreno@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index fcb0aabbc9852..03c2f7e0c9497 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -30,7 +30,7 @@ static inline bool _a6xx_check_idle(struct msm_gpu *gpu)
- 		A6XX_RBBM_INT_0_MASK_RBBM_HANG_DETECT);
- }
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+index e04319fedf463..d46b8ae1d0800 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+@@ -56,8 +56,9 @@ struct mtk_disp_rdma_data {
  
--bool a6xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
-+static bool a6xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
- {
- 	/* wait for CP to drain ringbuffer: */
- 	if (!adreno_idle(gpu, ring))
+ /**
+  * struct mtk_disp_rdma - DISP_RDMA driver structure
+- * @ddp_comp - structure containing type enum and hardware resources
+- * @crtc - associated crtc to report irq events to
++ * @ddp_comp: structure containing type enum and hardware resources
++ * @crtc: associated crtc to report irq events to
++ * @data: local driver data
+  */
+ struct mtk_disp_rdma {
+ 	struct mtk_ddp_comp		ddp_comp;
 -- 
 2.25.1
 
