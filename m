@@ -2,106 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2462B17EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F312B17EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgKMJLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:11:31 -0500
-Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:57212
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726255AbgKMJLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:11:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JXYbeGVSduKY6aPNfAfDWSiVyDynIN3v+MmDK4Gr6390l51wOe9jAdsaQvAhZrs48Us1Zv2afnlgLX6g5vHBWQivsfPBM1NhcMboX6aMrKn72oJGZWzb4DD2svJjT4Jqv1wxVe4h3JEePQL0qIXY+sip5hWfKBLcHbb/bly7zIkhn+dnRt2lOQ27Iit+IB2WZ11EEtE3NGxRtUmbrRT6Ut/cDfuD38ZZ/g/CLH/I6UCB18OVAoe2AyWEQyMl7dRtpvTG/WwjRnCtj3r3Rb37IZr0kkev3rs5RjjQapRbpYOwTaXmOFUSjOxk4yj7Mvui7THpyGcxp8QRtIsKN4eOiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d8JJlYNLABXtoepazyn4VfCS/TF1LF5y4FXZjHnymj8=;
- b=G7+2a/Npl28jfQw62B7P90Hs7et612jPqk4C0Pyc5n/zyQDZHvRyt/1S8TtXH5QLgxQTlO+5OiHtP3Sx6Yvo77a5p1yj69t1CuyiZuOQ84XC0ziOoYCQRYYuqEu+DUHK4MhKyAm4pjHlVTslsOmUucnxYBjSZ5NixjF6lSxNYQAkpRXLPdzRY1OjwhO/VjmBhjDma/ErP85Y4/4A6+tWjWTp+TRXv2c/9wXWbCDOHAipLFhXm0ynyp3Dzuz9XU0w5e4nIGPE6/t79tYtYqZcwtCObT8xr6VbkMZP7oQnSe8qoiXCBxBf7A5fpt9ZfrueBlYN5c3ViPHZVjMtpz0LWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d8JJlYNLABXtoepazyn4VfCS/TF1LF5y4FXZjHnymj8=;
- b=STZL11AfW+PakYHbBBXoCMpxkOnE2cJEMuUDdJzmhzqkCpqfNMa9iip/gxhIXPB/wPG850JU9QvVPRhzWuHureNnsDgRW5mwmHKHwttD0SNMBMo0Wlyz/tpLs4gtuq/kj6Z2giWSfWb5yYKPxhUy+9moftGocWOgQnh15/d3nTI=
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
- by DBBPR04MB7595.eurprd04.prod.outlook.com (2603:10a6:10:20d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 13 Nov
- 2020 09:11:22 +0000
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 09:11:22 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: build failure after merge of the usb-chipidea-next
- tree
-Thread-Topic: linux-next: build failure after merge of the usb-chipidea-next
- tree
-Thread-Index: AQHWuX757pEgqtM8+EWdK3f781LMdqnFxtAQ
-Date:   Fri, 13 Nov 2020 09:11:22 +0000
-Message-ID: <DBBPR04MB797922ECBDD15CCA2D89C30D8BE60@DBBPR04MB7979.eurprd04.prod.outlook.com>
-References: <20201113163636.6a034653@canb.auug.org.au>
-In-Reply-To: <20201113163636.6a034653@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3f02bbda-a19c-47d7-f0cb-08d887b416ed
-x-ms-traffictypediagnostic: DBBPR04MB7595:
-x-microsoft-antispam-prvs: <DBBPR04MB7595E54B75097D433BFF9C938BE60@DBBPR04MB7595.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: r5j61m6UJ3AglM4OKnZsMEXl3J86H7g3IvUy4LMnN9kvakAu+e9zuc35xQdezv0wZ4EVy1tEvTHNgPXtfb0+N/KEyQMyDb5S6IAalK/Jtz+y+7RnAImt/zmvllVrlFc/X2zKDU+rJXnX9PhbnsyM4PYghmRucPdbIHB38TaaebISEl29SU2kB3YYbFSi9BmYMRoI124seQLyEekrrKS1vrnJ8ZouWcigu/Ert1gN+GDHnfXdQwNK7A64dqDQz6hv8+ft1U04nGx77AqD6GbpLLspsSY593Bf7dBzTr4fNxGr63UnPk0InCW/XEC+tkewQEICKpklBSaqnQvd0xgQWw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(366004)(39860400002)(66556008)(54906003)(66446008)(4326008)(8676002)(33656002)(86362001)(186003)(316002)(66476007)(64756008)(66946007)(7696005)(2906002)(71200400001)(44832011)(76116006)(8936002)(4744005)(26005)(6506007)(5660300002)(55016002)(478600001)(6916009)(9686003)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: MhLNm6PwjfEUb3elUcZtUJIQ2GgV80WWiPujwr1Si70/BJq9VZTmG3/TP3MTiOMaJg2xgOTTZbCtDCYlkgQH5ISoytj5toS7luv7AVVEwwP6s8LWMfN7SqfASh0MtaNH+J4AsTKzilJH1JzoEXdsU+TZAYXEDSlf/fhFFad/dYgldViukf5c9Jb18/HIa8uzvYuZ0JGtcfuL6WuUr+Wb3kJqEpipfuvPNPbzpyb4VQBcVs2feoPwZMLr9qo/oSy1GkTN0eGn+IVcNJiGifEp749ZYNeGkOVzY7Vs9x+BsNtKvUZsu110GyD3+3pMbq+f+7AFnOar6svvm7557TEYjfjKYonquibxNCGrdYJxk5rqeLWmA5Td8+LUc5PINZSDg++Rbo5tAMS8U2AlgYI3PKTQE68PklS7juxtIIknDkOmdRqlet8WfP+4F4ezqx5MjORKSMUC3cL9vtwm6GDC0gE2ibmmsZa+vQ9kX0UK6V0/BB/POdUxoGkAo0EjPkEAZauypGOLMAOeMxGKf7lQnpnVT8fqrE1mmx5yPXFZ78KcCIpvtjjAAuvFx37gsXCODmwBgyWrT7scKkuIqfNt62zBFiDNKtX6+ZMBysxHgd7tsWGntaxQ2tGQcY8PlrA1C78IEhumN0/b4d0liDxr+g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726477AbgKMJLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:11:44 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:46363 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKMJLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 04:11:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605258696; x=1636794696;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=k7KOilJq4Qoe1sB0NcQtlID2iAhlZGIj58vMSyi4npQ=;
+  b=eXLVb3u6ZZP7kRbwmAbElwW7e6ZcK1+L6usRoRdQplFCrWOO1rqgYwBp
+   hKh+wopUqzsMaXIj6QAzlo6sAAvSbmHM6w6mrU9FJbBi3Vj90U9cfOnTe
+   LV3gv+UQuqlKKs7szm9KrA0ebBFQYwrKcpwyx+I9bRejFZFpIhT6AaDi3
+   zpg8qLe1jGs9qdM3/gCKYFE6ussv/mRFRVE8OJNiSJtjvKzySg9hpwClO
+   mitfLppvQgpbwIaRHOScQ/flpO+OsnfKHsWP5wtvYFvl3RYNygy+iJYmp
+   Ei31srPGWHoG5p30ozdX7revknb670OzyqAfJ26hgUWQrTVPQMosAnn0W
+   Q==;
+IronPort-SDR: 5uBBXILPPP1cLUTarADn81UIsrGsrGEWHkmZK589I5eGgdeAZbO/U7mNt1ecehW1OACSSWZy0r
+ AQpqNGSkYAfIvCBCvOlItZaY3/wyqoiJVIv8AIRvM7EKwhShH/g1wuqz5kizQI+jr22/zSmpq/
+ ASfdGsyW0uQ1tf928TXuYEUTfa1r2q5cF+xqLYhxqC4xFpjUu5Nvs4mp42+BlWDoPxDTYSo1gY
+ V9bIhL+7tJNjcWA6eMOagQ8iELA2JDXhKL1hrOMUSryrRc5/i2s1NtMNTc8PWQTuIiLH6UsBFE
+ n3w=
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
+   d="scan'208";a="33516749"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Nov 2020 02:11:35 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 13 Nov 2020 02:11:34 -0700
+Received: from soft-dev10.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Fri, 13 Nov 2020 02:11:33 -0700
+References: <20201111122454.6240-1-lars.povlsen@microchip.com> <20201111122454.6240-3-lars.povlsen@microchip.com> <CAHp75VfJ7T-ODiyKiMqK-oq5nO3776poSCJag9gvB-aqD3hoMg@mail.gmail.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-arm Mailing List" <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v9 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO
+In-Reply-To: <CAHp75VfJ7T-ODiyKiMqK-oq5nO3776poSCJag9gvB-aqD3hoMg@mail.gmail.com>
+Date:   Fri, 13 Nov 2020 10:11:26 +0100
+Message-ID: <87v9e94o5d.fsf@microchip.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f02bbda-a19c-47d7-f0cb-08d887b416ed
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 09:11:22.1012
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BV/BaLUfXDzbUbHy4sGk/mYqo9sNLZ44J7aQ5ZzckqnFV6ybBr8DtjH7LtoItv8lSn991cz27fhOkdxacUPsTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7595
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-=20
->=20
-> After merging the usb-chipidea-next tree, today's linux-next build (power=
-pc
-> allyesconfig) failed like this:
->=20
-> In file included from drivers/usb/chipidea/trace.h:18,
->                  from drivers/usb/chipidea/trace.c:11:
-> drivers/usb/chipidea/ci.h: In function 'ci_otg_is_fsm_mode':
-> drivers/usb/chipidea/ci.h:440:47: error: invalid use of undefined type 's=
-truct
-> ci_hdrc_platform_data'
->   440 |  struct usb_otg_caps *otg_caps =3D &ci->platdata->ci_otg_caps;
->       |                                               ^~
->=20
+Andy Shevchenko writes:
 
-Thanks, I fixed it today.
+> On Wed, Nov 11, 2020 at 2:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>>
+>> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
+>> (SGPIO) device used in various SoC's.
+>>
+>> The driver is added as a pinctrl driver, albeit only having just GPIO
+>> support currently. The hardware supports other functions that will be
+>> added following.
+>
+> Thanks for an update!
+> Seems closer to the final. My comments below.
 
-Peter
+Well I am certainly glad to hear that!
+
+>
+> ...
+>
+>> + * Author: <lars.povlsen@microchip.com>
+>
+> No First Name Last Name?
+>
+
+I'll add that.
+
+
+> ...
+>
+>> +static int sgpio_output_get(struct sgpio_priv *priv,
+>> +                           struct sgpio_port_addr *addr)
+>> +{
+>> +       u32 val, portval = sgpio_readl(priv, REG_PORT_CONFIG, addr->port);
+>> +       unsigned int bit = SGPIO_SRC_BITS * addr->bit;
+>> +
+>> +       switch (priv->properties->arch) {
+>> +       case SGPIO_ARCH_LUTON:
+>> +               val = FIELD_GET(SGPIO_LUTON_BIT_SOURCE, portval);
+>> +               break;
+>> +       case SGPIO_ARCH_OCELOT:
+>> +               val = FIELD_GET(SGPIO_OCELOT_BIT_SOURCE, portval);
+>> +               break;
+>> +       case SGPIO_ARCH_SPARX5:
+>> +               val = FIELD_GET(SGPIO_SPARX5_BIT_SOURCE, portval);
+>> +               break;
+>> +       default:
+>> +               val = 0;
+>
+> Missed break; statement.
+
+Fine.
+
+>
+>> +       }
+>> +       return !!(val & BIT(bit));
+>> +}
+>
+> ...
+>
+>> +static const struct pinconf_ops sgpio_confops = {
+>> +       .is_generic = true,
+>> +       .pin_config_get = sgpio_pinconf_get,
+>> +       .pin_config_set = sgpio_pinconf_set,
+>
+>> +       .pin_config_config_dbg_show = pinconf_generic_dump_config,
+>
+> Do you need this? I mean isn't it default by pin core?
+
+No, I see other drivers also setting this up explicitly.
+
+>
+>> +};
+>
+> ...
+>
+>> +static int sgpio_gpio_request_enable(struct pinctrl_dev *pctldev,
+>> +                                    struct pinctrl_gpio_range *range,
+>> +                                    unsigned int offset)
+>> +{
+>> +       struct sgpio_bank *bank = pinctrl_dev_get_drvdata(pctldev);
+>> +       struct sgpio_priv *priv = bank->priv;
+>> +       struct sgpio_port_addr addr;
+>> +
+>> +       sgpio_pin_to_addr(priv, offset, &addr);
+>> +
+>> +       if ((priv->ports & BIT(addr.port)) == 0) {
+>> +               dev_warn(priv->dev, "Request port %d.%d: Port is not enabled\n",
+>> +                        addr.port, addr.bit);
+>> +       }
+>> +
+>> +       return 0;
+>
+> I believe this function also does some sanity checks. Perhaps you need
+> to call a generic one.
+> Hence check what should be done in the tear down case.
+>
+
+This checks whether the requested signal is actually enabled in the
+bitstream. If it is not, it will trigger a warning message. I recon it
+should also signal this with the error code, so I'll add that.
+
+Generic code does not have knowledge about the bit stream configuration
+(priv->ports), so it can't check for that.
+
+>> +}
+>
+> ...
+>
+>> +       if (priv->in.gpio.ngpio != priv->out.gpio.ngpio) {
+>> +               dev_err(dev, "Banks must have same GPIO count\n");
+>> +               return -EINVAL;
+>
+> -ERANGE?
+
+We can do that.
+
+>
+>> +       }
+
+Thanks,
+
+---Lars
+
+--
+Lars Povlsen,
+Microchip
