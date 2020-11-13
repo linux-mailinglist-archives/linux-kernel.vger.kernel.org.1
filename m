@@ -2,89 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1242B231C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE9E2B231E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgKMR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgKMR6P (ORCPT
+        id S1726296AbgKMR6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:58:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37959 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725959AbgKMR6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:58:15 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042F8C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:58:15 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id v20so11748283ljk.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=30TzI7YDsCmN8GL0MEWAM7NbBmlMBsWjVdad+EUVtl0=;
-        b=QxEd0Ez4KTMwpbR85OZahXBn1xU7+K+yaP6O54k7seEijrvfl0s7H1wm6TowhV1eek
-         qmNWYGNHk8lXC1rS9kiQSyIdB/6qFXPr07KLxpAimCBLdTGCciYR+if2QNLyO7G2P2uF
-         75pFq4edOUq9gIVs15aIa73B8cFFjiS7s5qfM=
+        Fri, 13 Nov 2020 12:58:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605290327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O5BKgRlDzjTzAb+liqgxWnaX18EKLrQ791MVleM/3MA=;
+        b=DZsgGjWNOP23ucbwG/GuVmy0kKjDfsQhbku1u/McHjdxC3RZNzhh+7+DCrIj5muns1BBk1
+        TPpEvYmPJkFa6txYNTvZzXJMNxF2WDipxe7e2IRMLgBlA3sBWot41Oz2LwMq4b3qxT1XDR
+        Pcip3FyDqmH+0ynU1qF8l5rGxbtRRIU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-5h7uTe1wPYK7XvaKhdNqYA-1; Fri, 13 Nov 2020 12:58:46 -0500
+X-MC-Unique: 5h7uTe1wPYK7XvaKhdNqYA-1
+Received: by mail-wm1-f69.google.com with SMTP id z62so5590684wmb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:58:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=30TzI7YDsCmN8GL0MEWAM7NbBmlMBsWjVdad+EUVtl0=;
-        b=aUlrTZ8qqgGMp0M1jOVT8gmairlAe6wyt5MdgGcjjl53cNkvepjv1TceHSeHwc1l55
-         jdjnEbqC5Flkx0eT+S+zPyuP6l1+wzzl7ph/IQ/96vXxfX+/PXAlrUc+d70JcqX4gRSp
-         xBJGYj+HLPFCWmcATlGzvrqG+V/1eBOM0s/omuGsETNn2pshY9INgFKS2F5ZYQd4FA6P
-         W0OFYp7MQx8B8aulNdCO4ZVajN7VXo8zapNMN11dmm8WkewQ5Ji7V+3zxo0xvSceSgZS
-         KiDuSGvjrUGgsev1mItxZEwZ4501XstTehWnGof0qCVK9qKkKPqEgCyrc6TyBt2YqQJ/
-         a7qQ==
-X-Gm-Message-State: AOAM533aGo9tdL4PoSDEl56njE0QziF4pET5EnlYNG8PZEzJ884gYALm
-        X70Q860v+IduxYGyxUdcqvj3Aw8HwfFczQ==
-X-Google-Smtp-Source: ABdhPJwelzCRouudddL4A7ytIG6W4Y82654OPvJ6i+dUA0DRR+KK3StDEe0N2prO6ddi4hXhtMzNnA==
-X-Received: by 2002:a2e:a0ca:: with SMTP id f10mr1485582ljm.204.1605290291903;
-        Fri, 13 Nov 2020 09:58:11 -0800 (PST)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id n26sm1637072lfi.303.2020.11.13.09.58.11
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O5BKgRlDzjTzAb+liqgxWnaX18EKLrQ791MVleM/3MA=;
+        b=dmQPTMYvwF7jYQmrZGfNCH3c1DXpX2MJOdZHprZRsPqKVEePWsqqDRUqhG0RBCnFP+
+         +n1Z++Oyb8C4Wd8OSom5SlfTnhklz5ZFCpcnhNXkgljZ+6nZQh50XmWwg0AjOfKn7TBS
+         eUsqkBJUgggSARn4MoLhomeX19Acc+mWlttXUeijSLI0MQiTY/soPs+q6JVeYsN7/fLI
+         uVcqOIw9R3PHwR6xb9+iqORMqgw0dhqxVoJzkt5IlEdiSMJEcAZm6bXO77l04WafNeRo
+         r5Zu2VGLBX7XU05pBwHborJcMxpOGTcQMfaVSsQ2i2QZtT9sD8sMWpAZT+VyjYVydikr
+         wAAA==
+X-Gm-Message-State: AOAM532TEQi2zAmteEOhCYnQzUMXAg+zYk93jdchicyktIkekGZIqgWk
+        4YtCdhSzwHsJJxYPo43IHQl37gn21RwiQFagcwxxd/EYFVRUsrJuqozXiccOLkQFVxQW5C4PCr2
+        fd26JtqGKmQPe0moCutfj/Ub8
+X-Received: by 2002:adf:9461:: with SMTP id 88mr4738724wrq.171.1605290324483;
+        Fri, 13 Nov 2020 09:58:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzpyEBuynksW6JDjBXyrJxyes9a4eVuRyvimJYtDo9Ih9P76sqjzmzYU6u4WzI7g3NBf01hXQ==
+X-Received: by 2002:adf:9461:: with SMTP id 88mr4738692wrq.171.1605290323999;
+        Fri, 13 Nov 2020 09:58:43 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id i11sm12198292wro.85.2020.11.13.09.58.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 09:58:11 -0800 (PST)
-Received: by mail-lj1-f174.google.com with SMTP id r17so11754174ljg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:58:11 -0800 (PST)
-X-Received: by 2002:a05:651c:2cb:: with SMTP id f11mr1438802ljo.371.1605290290132;
- Fri, 13 Nov 2020 09:58:10 -0800 (PST)
+        Fri, 13 Nov 2020 09:58:43 -0800 (PST)
+To:     Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com, mlevitsk@redhat.com
+References: <20201011184818.3609-1-cavery@redhat.com>
+ <20201011184818.3609-3-cavery@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 2/2] KVM: SVM: Use a separate vmcb for the nested L2
+ guest
+Message-ID: <80b02c13-dc69-783a-9431-41b4a5188c0b@redhat.com>
+Date:   Fri, 13 Nov 2020 18:58:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201113082930.27da4612@oasis.local.home> <CAHk-=whO3bt9wCFX-v54RYewdAuovVEDx9DHJ0SbhrzCwY3aEA@mail.gmail.com>
- <20201113125419.3656d001@oasis.local.home>
-In-Reply-To: <20201113125419.3656d001@oasis.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Nov 2020 09:57:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjdQ8YFtxsgLx8XCqeiL-2AOoNAx2RwDFcq-C+uowbp9g@mail.gmail.com>
-Message-ID: <CAHk-=wjdQ8YFtxsgLx8XCqeiL-2AOoNAx2RwDFcq-C+uowbp9g@mail.gmail.com>
-Subject: Re: [GIT PULL] bootconfig: Extend the magic check range to the
- preceding 3 bytes
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Chen Yu <yu.chen.surf@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201011184818.3609-3-cavery@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 9:54 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> The issue is that grub padded the end of the ramdisk after loading it
-> into memory. I'm not sure how the bootconfig tool can fix this. Perhaps
-> make sure the ram disk size is 4 bytes aligned?
+On 11/10/20 20:48, Cathy Avery wrote:
+> @@ -432,6 +432,16 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>   	int ret;
+>   
+>   	svm->nested.vmcb = vmcb_gpa;
+> +
+> +	WARN_ON(svm->vmcb == svm->nested.vmcb02);
+> +
+> +	svm->nested.vmcb02->control = svm->vmcb01->control;
 
-Exactly. Since - as far as I can tell - the _only_ thing that actually
-generates that BOOTCONFIG_MAGIC marker is the bootconfig tool, you
-control the vertical and the horizontal. No need for some "heuristic"
-and searching for things.
+This assignment of the control area should be in 
+nested_prepare_vmcb_control, which is already filling in most of 
+vmcb02->control.
 
-And then that thing needs to be documented, so that if somebody else
-starts generating BOOTCONFIG_MAGIC markers, we have a hard rule in
-place that "look, the bootconfig is always aligned".
+Right now, we save a copy_vmcb_control-area in nested_svm_vmexit so it 
+evens out.
 
-Might as well align it more than 4 bytes while at it and make it even stricter.
+Later, it should be possible to remove most of the assignments from 
+nested_prepare_vmcb_control.
 
-               Linus
+> +	svm->nested.vmcb02->save.cr4 = svm->vmcb01->save.cr4;
+
+I cannot understand this statement.
+
+> +	nested_svm_vmloadsave(svm->vmcb01, svm->nested.vmcb02);
+
+This is because the vmsave just after the vmexit has moved the 
+vmloadsave registers from vmcb12 to vmcb01, but the next vmload will use 
+vmcb02.
+
+> +	svm->vmcb = svm->nested.vmcb02;
+> +	svm->vmcb_pa = svm->nested.vmcb02_pa;
+>   	load_nested_vmcb_control(svm, &nested_vmcb->control);
+>   	nested_prepare_vmcb_save(svm, nested_vmcb);
+>   	nested_prepare_vmcb_control(svm);
+
+
+> @@ -628,8 +620,10 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>   	nested_vmcb->control.pause_filter_thresh =
+>   		svm->vmcb->control.pause_filter_thresh;
+>   
+> -	/* Restore the original control entries */
+> -	copy_vmcb_control_area(&vmcb->control, &hsave->control);
+> +	nested_svm_vmloadsave(svm->nested.vmcb02, svm->vmcb01);
+
+Same here: the next vmentry's vmload will move the vmloadsave registers 
+from vmcb01 to vmcb12, but for now they are in vmcb02.
+
+It's 16+16 memory-to-memory u64 copies.  They mostly even out with the 
+14+14 copies that we don't have to do anymore on registers handled by 
+VMRUN (es/cs/ss/ds/gdt/idt/rsp/rax---they don't have to be stashed away 
+in hsave anymore).  Also, we are able to reuse nested_svm_vmloadsave, 
+which makes it overall a fair tradeoff... but it would have been worth a 
+comment or two. :)
+
+> +	svm->nested.vmcb02->control = svm->vmcb01->control;
+> +	svm->nested.vmcb02->save = svm->vmcb01->save;
+> +	svm->vmcb01->save = save;
+
+I would have moved these after the comment, matching the existing 
+copy_vmcb_control_area and save-area assignment.
+
+Also, the first save-area assignment should be (because the WARN_ON 
+below must be removed)
+
+	svm->nested.vmcb02->save = svm->vmcb->save;
+
+or
+
+	if (svm->vmcb == svm->vmcb01)
+		svm->nested.vmcb02->save = svm->vmcb01->save;
+
+I have applied the patch and fixed the conflicts, so when I have some 
+time I will play a bit more with it and/or pass the updated version back 
+to you.
+
+In the meanwhile, perhaps you could write a new selftests testcase that 
+tries to do KVM_SET_NESTED_STATE while in L2.  It can be a simplified 
+version of state-test that invokes KVM_GET_NESTED_STATE + 
+KVM_SET_NESTED_STATE when it gets back to L0.
+
+Paolo
+
