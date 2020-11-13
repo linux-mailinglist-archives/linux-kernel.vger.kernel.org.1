@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F492B220B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734552B21F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgKMRUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:20:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:41896 "EHLO foss.arm.com"
+        id S1726629AbgKMRTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:19:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:41914 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726503AbgKMRT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:19:27 -0500
+        id S1726057AbgKMRT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:19:29 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6B551534;
-        Fri, 13 Nov 2020 09:19:40 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D487F1042;
+        Fri, 13 Nov 2020 09:19:42 -0800 (PST)
 Received: from e121896.arm.com (unknown [10.57.58.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 013FC3F718;
-        Fri, 13 Nov 2020 09:19:38 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0ED093F718;
+        Fri, 13 Nov 2020 09:19:40 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         jolsa@redhat.com
@@ -28,9 +28,9 @@ Cc:     james.clark@arm.com, Peter Zijlstra <peterz@infradead.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Thomas Richter <tmricht@linux.ibm.com>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH 02/13 v3] perf tools: Use allocator for perf_cpu_map
-Date:   Fri, 13 Nov 2020 19:19:12 +0200
-Message-Id: <20201113171923.29721-3-james.clark@arm.com>
+Subject: [PATCH 03/13 v3] perf tools: Add new struct for cpu aggregation
+Date:   Fri, 13 Nov 2020 19:19:13 +0200
+Message-Id: <20201113171923.29721-4-james.clark@arm.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201113171923.29721-1-james.clark@arm.com>
 References: <20201113171923.29721-1-james.clark@arm.com>
@@ -40,9 +40,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the existing allocator for perf_cpu_map to avoid use
-of raw malloc. This could cause an issue in later commits
-where the size of perf_cpu_map is changed.
+This struct currently has only a single int member so that
+it can be used as a drop in replacement for the existing
+behaviour.
+
+Comparison and constructor functions have also been added
+that will replace usages of '==' and '= -1'.
 
 No functional changes.
 
@@ -57,33 +60,60 @@ Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Thomas Richter <tmricht@linux.ibm.com>
 Cc: John Garry <john.garry@huawei.com>
 ---
- tools/perf/util/cpumap.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/perf/util/cpumap.c | 18 ++++++++++++++++++
+ tools/perf/util/cpumap.h |  8 ++++++++
+ 2 files changed, 26 insertions(+)
 
 diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-index dc5c5e6fc502..fd7d0a77a9e6 100644
+index fd7d0a77a9e6..e6b4def17839 100644
 --- a/tools/perf/util/cpumap.c
 +++ b/tools/perf/util/cpumap.c
-@@ -132,15 +132,16 @@ int cpu_map__build_map(struct perf_cpu_map *cpus, struct perf_cpu_map **res,
- 		       int (*f)(struct perf_cpu_map *map, int cpu, void *data),
- 		       void *data)
- {
--	struct perf_cpu_map *c;
- 	int nr = cpus->nr;
-+	struct perf_cpu_map *c = perf_cpu_map__empty_new(nr);
- 	int cpu, s1, s2;
+@@ -587,3 +587,21 @@ const struct perf_cpu_map *cpu_map__online(void) /* thread unsafe */
  
--	/* allocate as much as possible */
--	c = calloc(1, sizeof(*c) + nr * sizeof(int));
- 	if (!c)
- 		return -1;
- 
-+	/* Reset size as it may only be partially filled */
-+	c->nr = 0;
+ 	return online;
+ }
 +
- 	for (cpu = 0; cpu < nr; cpu++) {
- 		s1 = f(cpus, cpu, data);
- 		for (s2 = 0; s2 < c->nr; s2++) {
++bool cpu_map__compare_aggr_cpu_id(struct aggr_cpu_id a, struct aggr_cpu_id b)
++{
++	return a.id == b.id;
++}
++
++bool cpu_map__aggr_cpu_id_is_empty(struct aggr_cpu_id a)
++{
++	return a.id == -1;
++}
++
++struct aggr_cpu_id cpu_map__empty_aggr_cpu_id(void)
++{
++	struct aggr_cpu_id ret = {
++		.id = -1
++	};
++	return ret;
++}
+diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
+index 3a442f021468..1cdccc69cd4b 100644
+--- a/tools/perf/util/cpumap.h
++++ b/tools/perf/util/cpumap.h
+@@ -7,6 +7,10 @@
+ #include <internal/cpumap.h>
+ #include <perf/cpumap.h>
+ 
++struct aggr_cpu_id {
++	int id;
++};
++
+ struct perf_record_cpu_map_data;
+ 
+ struct perf_cpu_map *perf_cpu_map__empty_new(int nr);
+@@ -64,4 +68,8 @@ int cpu_map__build_map(struct perf_cpu_map *cpus, struct perf_cpu_map **res,
+ int cpu_map__cpu(struct perf_cpu_map *cpus, int idx);
+ bool cpu_map__has(struct perf_cpu_map *cpus, int cpu);
+ 
++bool cpu_map__compare_aggr_cpu_id(struct aggr_cpu_id a, struct aggr_cpu_id b);
++bool cpu_map__aggr_cpu_id_is_empty(struct aggr_cpu_id a);
++struct aggr_cpu_id cpu_map__empty_aggr_cpu_id(void);
++
+ #endif /* __PERF_CPUMAP_H */
 -- 
 2.28.0
 
