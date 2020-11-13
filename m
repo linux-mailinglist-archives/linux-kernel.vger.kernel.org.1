@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64062B180E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB602B1813
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgKMJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 04:19:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgKMJTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:19:14 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21D4E217A0;
-        Fri, 13 Nov 2020 09:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605259153;
-        bh=4WfWbAlavSUu5PlR51nGUJzILHY5zJO40KyO7oEp2x0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=v+5H7kN+M6Sx/diM7jt8WdPp+z/ENWnjqo0Mt7jppePx8mOt6BV3zrXRG9C2ULikU
-         h9y7cqmKqm+YjgJ4ZrirPtHXISgCrx9lvuZxQAnqFsHFzVDfJdBD7oFnw9u7vpLI/6
-         EgYK3U+iopdz/Fm1SkJdgZyUFi6bNIhmOz1Og6J8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kdVEc-00AHye-HD; Fri, 13 Nov 2020 09:19:10 +0000
+        id S1726327AbgKMJUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:20:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKMJUb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 04:20:31 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFA8C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:20:31 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id t191so8225544qka.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 01:20:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LXvYg6KNLp5gr8xxXMEAyZN7n6FqtW194Mb8UjTkQ5o=;
+        b=dmhGEkLYm12kWsa+j3THIcb6nTO863pK4iFMmQSh29zlbblAvhiLKHytbhwQVwgHEe
+         WM9Vwvd9uaC+PU1DuKThGpMCrGUFIhlGPCbLuInTKqK2YYM1MO1yAXeQgLKAkbMLvz00
+         7KQLofCJbhM26PUPtDJOEKWY2J+WyEB4cqABYQB22y9wZ72aYAkyxhmzJvu0RuQF2HhP
+         dJJ0+vezSC1OJq40r48vBLIc+uTclSO0CygbQwgUh7tEatL1+I324D5F26onubcXm3c8
+         +qLa9V5tKNbe5AkNgeqdaWm/aQis2qjyhFWB/Qu9UUY0OlF9eU8FZm6hRsa7amlm2b7L
+         hoVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LXvYg6KNLp5gr8xxXMEAyZN7n6FqtW194Mb8UjTkQ5o=;
+        b=Y+GZ36c0/rtiMZ86YlwRFfNiKkFfydjzb4rP6FccGj5vOgRAsKdMdeHQLOfws6jRgO
+         GHz0qgHRUuIkAmnXE9cv8VsnZt49lw2l7i4ltFGPdcELy8DF4/QmKtMarnCjrM1htnnn
+         CpoTddZIbrh7MYFlq0nEhr2AnFapsvOigGE/r2ccFyMpi3CAoAVqSUAAIUqFbBY7+lPF
+         kcxE+I7YxLNqzHI0ZtU85aGGYWar/Rt5jUMRKNwv78yOE2Lhd7yA2W/0RPORZ5Qnup5G
+         bNNqJBlti+sIbmdaEdB1rDxn+DGIr9IyrH4UhVJqcRzQ7fqG5HcO5I08UCxDqnZkMXEW
+         /dUg==
+X-Gm-Message-State: AOAM531ae5c2fQUVad2dptRPwZR5HIHlgayYOt03dsvYcdUt3do7Gd/o
+        p03u59zXiwR03DCC8U1rViCckWJRKkBo8mrLhN8Xbg==
+X-Google-Smtp-Source: ABdhPJwZ4dsscYAKNQlVWp/zM33raHvqS9lPXE2+3m3/w6rueUuevapKLyCoYjUidC4vPUh9JE1qVgGIYzDS44mbpxY=
+X-Received: by 2002:a37:6805:: with SMTP id d5mr1108660qkc.66.1605259230630;
+ Fri, 13 Nov 2020 01:20:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 13 Nov 2020 09:19:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
-In-Reply-To: <87a6vmmf8h.fsf@nanos.tec.linutronix.de>
-References: <20200826111628.794979401@linutronix.de>
- <20201112125531.GA873287@nvidia.com>
- <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
- <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
- <87d00imlop.fsf@nanos.tec.linutronix.de>
- <87a6vmmf8h.fsf@nanos.tec.linutronix.de>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <2196b03a44a15fdc37223040197c4ac5@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, jgg@nvidia.com, ziyadat@nvidia.com, itayav@nvidia.com, moshe@nvidia.com, linux-kernel@vger.kernel.org, x86@kernel.org, joro@8bytes.org, iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org, bhelgaas@google.com, dwmw2@infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201113023355.43406-1-greentime.hu@sifive.com> <CAMpxmJVZ8OHnGrkC_5TZdZUg004p1=90KqOxpOTgi4036BGWfQ@mail.gmail.com>
+In-Reply-To: <CAMpxmJVZ8OHnGrkC_5TZdZUg004p1=90KqOxpOTgi4036BGWfQ@mail.gmail.com>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Fri, 13 Nov 2020 17:20:18 +0800
+Message-ID: <CAHCEeh+zU4_i9eQuZ0nsxd7H5wkCQbsOr28cp-i54Tpf_RbYNw@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: sifive: To get gpio irq offset from device tree data
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-12 21:34, Thomas Gleixner wrote:
-> On Thu, Nov 12 2020 at 20:15, Thomas Gleixner wrote:
->> The recent changes to store the MSI irqdomain pointer in struct device
->> missed that Intel DMAR does not register virtual function devices.  
->> Due to
->> that a VF device gets the plain PCI-MSI domain assigned and then 
->> issues
->> compat MSI messages which get caught by the interrupt remapping unit.
->> 
->> Cure that by inheriting the irq domain from the physical function
->> device.
->> 
->> That's a temporary workaround. The correct fix is to inherit the irq 
->> domain
->> from the bus, but that's a larger effort which needs quite some other
->> changes to the way how x86 manages PCI and MSI domains.
-> 
-> Bah, that's not really going to work with the way how irq remapping
-> works on x86 because at least Intel/DMAR can have more than one DMAR
-> unit on a bus.
-> 
-> So the alternative solution would be to assign the domain per device,
-> but the current ordering creates a hen and egg problem. Looking the
-> domain up in pci_set_msi_domain() does not work because at that point
-> the device is not registered in the IOMMU. That happens from
-> device_add().
-> 
-> Marc, is there any problem to reorder the calls in pci_device_add():
-> 
->       device_add();
->       pci_set_msi_domain();
+Bartosz Golaszewski <bgolaszewski@baylibre.com> =E6=96=BC 2020=E5=B9=B411=
+=E6=9C=8813=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:00=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+>
+> On Fri, Nov 13, 2020 at 3:34 AM Greentime Hu <greentime.hu@sifive.com> wr=
+ote:
+> >
+> > We can get hwirq number of the gpio by its irq_data->hwirq so that we d=
+on't
+> > need to add more macros for different platforms. This patch is tested i=
+n
+> > SiFive Unleashed board and SiFive Unmatched board.
+> >
+> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> > ---
+>
+> Please list the changes between versions of patches. What has changed sin=
+ce v2?
 
-I *think* it works as long as we keep the "match_driver = false" hack.
-Otherwise, we risk binding to a driver early, and game over.
-
-> That would allow to add a irq_find_matching_fwspec() based lookup to
-> pci_msi_get_device_domain().
-
-Just so that I understand the issue: is the core of the problem that
-there is no 1:1 mapping between a PCI bus and a DMAR unit, and no
-firmware topology information to indicate which one to pick?
-
-> Though I'm not yet convinced that the outcome would be less horrible
-> than the hack in the DMAR driver when I'm taking all the other horrors
-> of x86 (including XEN) into account :)
-
-I tried to follow the notifier into the DMAR driver, ended up in the
-IRQ remapping code, and lost the will to live. I have a question though:
-
-In the bus notifier callback, you end-up in dmar_pci_bus_add_dev(),
-which calls intel_irq_remap_add_device(), which tries to set the
-MSI domain. Why isn't that enough? Are we still missing any information
-at that stage?
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+changes in v3:
+  Add 2 newlines
+changes in v2:
+  Use irqd_to_hwirq() instead of d->hwirq and platform_get_irq()
+instead of  irq_of_parse_and_map()
