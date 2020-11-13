@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB792B21BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F9D2B21C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgKMRO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:14:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53540 "EHLO mail.kernel.org"
+        id S1726362AbgKMROj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:14:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgKMRO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:14:27 -0500
+        id S1726288AbgKMROi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:14:38 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56ED320759;
-        Fri, 13 Nov 2020 17:14:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3F1620759;
+        Fri, 13 Nov 2020 17:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605287680;
-        bh=05NwquX4tysFX1vEoWGhJ2DEyQ3PDWUEhSnn9l6x3PI=;
+        s=default; t=1605287691;
+        bh=ZWTdlG2/Uq7nJjMxy7LmYwoV97nc8Puua2WfqYC6Knw=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=0YHriKY/Jo1dOsHUTV5XqDltlX2UszHDxOSqbqZFmQzh2UQ7WchfTqr46EnI1Ki8v
-         FWGZLifHjBr4L9N6fNjzX8z1YtiNHSTrhMtkzqk/pYPI7HBxLRIHa70Auqfgc9kl0d
-         2ctez9QVpTEPATSwEEVy86TJVT2FK7SUFqx2JN28=
-Date:   Fri, 13 Nov 2020 17:14:24 +0000
+        b=py+0X5kHTB6MGgfsfyHOlebceejKXd8GHsuChPvJtikw3ddtJDjXiqx9uH827oTk6
+         +7QXG7BOaMZqIjxZjHiZwYCpH5QcIf6AhrWqWChIuwzIsNkHDNGYchCbz+9YwFd5BD
+         WFXNHHf0fZ+Dd12B0u8UYw81/0zDKogNgtpYnch4=
+Date:   Fri, 13 Nov 2020 17:14:35 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>, lgirdwood@gmail.com
-Cc:     axel.lin@ingics.com, linus.walleij@linaro.org,
-        ttynkkynen@nvidia.com, linux-kernel@vger.kernel.org,
-        s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <1605085578-6783-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1605085578-6783-1-git-send-email-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v2 0/6] regulator: mcp16502: add support for ramp delay
-Message-Id: <160528765435.56661.4517753341786366604.b4-ty@kernel.org>
+To:     axel.lin@ingics.com, linus.walleij@linaro.org,
+        ttynkkynen@nvidia.com, lgirdwood@gmail.com,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        s.hauer@pengutronix.de
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1604656384-827-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1604656384-827-1-git-send-email-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH 0/6] regulator: mcp16502: add support for ramp delay
+Message-Id: <160528765435.56661.15898611465418470617.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,7 +41,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 11:06:12 +0200, Claudiu Beznea wrote:
+On Fri, 6 Nov 2020 11:52:58 +0200, Claudiu Beznea wrote:
 > This series adds support for ramp delay on mcp16502. It also adds
 > some cleanup on mcp16502.
 > 
