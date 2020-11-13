@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1C72B13EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1C22B13F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgKMBiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 20:38:55 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54262 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgKMBiz (ORCPT
+        id S1726167AbgKMBlU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Nov 2020 20:41:20 -0500
+Received: from mo-csw1515.securemx.jp ([210.130.202.154]:44126 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKMBlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 20:38:55 -0500
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F165C20C2893
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:38:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F165C20C2893
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605231535;
-        bh=LHDRWxltoY9Yzek2U2YM/IJ9PiLbIoLYK2g+Xufu3xQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Dr1IhRvvLsfIyqIWK1fIETcbbO7LlYfMZfyabfpj1hO5obDpLmxbdGxrzxnwd3rOt
-         lh7oJ5n6C3mUXboZ2WP5sSQCKYmVj5/yVFhJasVnGejEKSnM65ysMrlM/d9v2H1X2/
-         yP+DLcmYema2ADSbK0lzBlulId5dKBOuVoNuwLvM=
-Received: by mail-qk1-f175.google.com with SMTP id t191so7549087qka.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:38:54 -0800 (PST)
-X-Gm-Message-State: AOAM530rPy1SuVZ2S5ZeUcLtKNWpHgrUN4AF3RJy6tH5lGGajyr96Fp6
-        kDDvi5s/o5gLKn/eG7ybjdtwDhA/mirCxbBcu5E=
-X-Google-Smtp-Source: ABdhPJzcYu0wQ1AlFdTYrzGLHQSHTIRKOYw1wlZRQ7lRvKH7I58kItfx/GiKuejOksHFuThJetq4/EumL3bl4eCg0NA=
-X-Received: by 2002:a05:620a:2106:: with SMTP id l6mr2787457qkl.302.1605231533991;
- Thu, 12 Nov 2020 17:38:53 -0800 (PST)
+        Thu, 12 Nov 2020 20:41:19 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 0AD1evdt031978; Fri, 13 Nov 2020 10:40:57 +0900
+X-Iguazu-Qid: 34trXZNYeNEyzvpCth
+X-Iguazu-QSIG: v=2; s=0; t=1605231656; q=34trXZNYeNEyzvpCth; m=woCVqhSyszefYnXa0h+3xqIDuJphGUkqWVHEK5sBHa8=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1513) id 0AD1etNG000808;
+        Fri, 13 Nov 2020 10:40:55 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 0AD1esrr025901;
+        Fri, 13 Nov 2020 10:40:54 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 0AD1es0E028816;
+        Fri, 13 Nov 2020 10:40:54 +0900
+From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-edac@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v5] cper, apei, mce: Pass x86 CPER through the MCA handling chain
+References: <20201103164952.5126-1-Smita.KoralahalliChannabasappa@amd.com>
+        <87a6vv9hch.fsf@kokedama.swc.toshiba.co.jp>
+        <20201106120950.GC14914@zn.tnic>
+        <874klz9vk9.fsf@kokedama.swc.toshiba.co.jp>
+        <982e0243-b144-f8b6-d69d-45af94ed8bb9@amd.com>
+        <651b7dba-d36a-d4db-4a0f-fd67aa9b985f@amd.com>
+Date:   Fri, 13 Nov 2020 10:40:50 +0900
+In-Reply-To: <651b7dba-d36a-d4db-4a0f-fd67aa9b985f@amd.com> (Smita Koralahalli
+        Channabasappa's message of "Wed, 11 Nov 2020 14:37:29 -0600")
+X-TSB-HOP: ON
+Message-ID: <87361e8259.fsf@kokedama.swc.toshiba.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
- <20201112035023.974748-1-natechancellor@gmail.com> <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
- <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com> <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
-In-Reply-To: <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 13 Nov 2020 02:38:18 +0100
-X-Gmail-Original-Message-ID: <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
-Message-ID: <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
-Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 2:18 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+Smita Koralahalli Channabasappa <skoralah@amd.com> writes:
+
+> Punit,
 >
-> On Fri, 13 Nov 2020 01:20:29 +0100 Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> On 11/9/20 1:05 PM, Smita Koralahalli Channabasappa wrote:
 >
-> > While writing the script I found that in the documentation I left for
-> > 'type' the values from
-> > Documentation/admin-guide/kernel-parameters.txt, which is 'pci' for
-> > cf9_force reboot.
-> > While at it, should we update the doc with the values 'cf9_force' and
-> > 'cf9_safe', or rename to 'pci' and 'pci_safe' to be coherent with the
-> > kernel cmdline?
+>> On 11/8/20 7:18 PM, Punit Agrawal wrote:
+>>> Borislav Petkov <bp@alien8.de> writes:
+>>>> On Fri, Nov 06, 2020 at 02:36:46PM +0900, Punit Agrawal wrote:
+>>>>>> diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
+>>>>>> index 2531de49f56c..438ed9eff6d0 100644
+>>>>>> --- a/drivers/firmware/efi/cper-x86.c
+>>>>>> +++ b/drivers/firmware/efi/cper-x86.c
+>>>>>> @@ -2,6 +2,7 @@
+>>>>>>    // Copyright (C) 2018, Advanced Micro Devices, Inc.
+>>>>>>      #include <linux/cper.h>
+>>>>>> +#include <linux/acpi.h>
+>>>>> Did you mean to include <asm/acpi.h>?
+>>>> Why?
+>>> Because arch_apei_report_x86_error() used in the patch is defined
+>>> there. The indirect include works but pulls in additional definitions
+>>> not needed by the patch.
+>>>
+>>> Do you prefer the more generic include?
+>> I agree, it's generally a good practice to avoid pulling up additional
+>> definitions. I had this when I made the declaration in generic header
+>> file and may be I did not consider it changing initially as my build
+>> didn't break after moving the declaration from generic header to arch
+>> specific header file.
+>> I will take care henceforth and make the changes as required.
 >
-> I looked at Documentation/admin-guide/kernel-parameters.txt's "reboot="
-> section and decided that I don't understand your above words :( Can you
-> please expand on all of this?  Simple akpm-compatible words ;)
+> The asm specific include throws out a warning when I run checkpatch.pl
 >
+> WARNING: Use #include <linux/acpi.h> instead of <asm/acpi.h>
+> #215: FILE: drivers/firmware/efi/cper-x86.c:5:
+> +#include <asm/acpi.h>
+>
+> Should I just keep the generic include?
 
-Heh sorry :)
+Thanks for checking.
 
-I misread the code, I thought that BOOT_CF9_SAFE was user selectable
-because of the enum value:
+I had a quick look at checkpatch to understand the reason for the
+warning. It seems to warn when "asm" includes are used when a suitable
+"linux" include exists[0].
 
-enum reboot_type {
-...
-BOOT_CF9_FORCE = 'p',
-BOOT_CF9_SAFE = 'q',
-};
+I am not convinced that the rationale for that check applies in this
+case as the function being used is indeed an architecture specific one
+but also don't feel strongly enough to object.
 
-But when parsing the cmdline, 'q' is simply ignored, so it's just an
-internal flag.
-It's used only by arch/x86/kernel/reboot.c in the loop which tries to
-reboot in different modes until it succeeds.
+Feel free to pick up the "Reviewed-by" tag in either case.
 
-The doc is right, never mind.
+Thanks,
+Punit
 
-At this point, since 'pci' enables BOOT_CF9_FORCE type and
-BOOT_CF9_SAFE is not user selectable, should I simply leave only
-'pci'?
-This way, we'll have the same set of options for both sysfs and kernel cmdline.
-
--- 
-per aspera ad upstream
+[0] https://github.com/torvalds/linux/blob/master/scripts/checkpatch.pl#L5333
