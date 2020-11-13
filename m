@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E18A2B1F3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E318C2B1F42
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgKMPxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:53:40 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30858 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726336AbgKMPxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:53:39 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADFgQOv001669;
-        Fri, 13 Nov 2020 10:53:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3kL6l2FHVjUYAjyXMCRCHnUHf/ZCbsy2OYnrcqRqQXc=;
- b=PMqvv56aKMWatQCnSnmA09JPKVpDu+3Hf2eTSw3ph0mjwhKI3AXngFs0sZTnMZTQmLMY
- RZm2Z0PmI6hFIFAha3EJh1yR3icOFSSUBM+pdTS1lGXSss3j9IwjYZ04CCyUWeUavpxD
- sBO44i7uLwW8+6Q55Ovxs9Upn9qNr6di4XAo+cfgRjS4XCqCGmR9lPzt/3XtmHPi4p0s
- rS5LQNU3csJSPu6YFrbj8HdTl711fzYZYsz2DZ6R1eVlQRyiuDMeigzB5O1JvW6tfkBj
- IInKlVbdtuV98VN9on2G4NARGK5FvcuFojwlVTWWv9b1RPxn2o4a7Y020OeKGnDO+kSd CA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34sw138axm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 10:53:26 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADFqZxt026344;
-        Fri, 13 Nov 2020 15:53:24 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 34njuh6ut2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 15:53:24 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADFrM9W59900268
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Nov 2020 15:53:22 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02A3911C04A;
-        Fri, 13 Nov 2020 15:53:22 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 91C6E11C052;
-        Fri, 13 Nov 2020 15:53:20 +0000 (GMT)
-Received: from sig-9-65-233-212.ibm.com (unknown [9.65.233.212])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 13 Nov 2020 15:53:20 +0000 (GMT)
-Message-ID: <04d8b0b3876eba71d58295d24e403505d6d77b55.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
-        stable@vger.kernel.org
-Date:   Fri, 13 Nov 2020 10:53:19 -0500
-In-Reply-To: <20201113080132.16591-1-roberto.sassu@huawei.com>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=3 bulkscore=0
- mlxlogscore=627 priorityscore=1501 lowpriorityscore=0 adultscore=0
- impostorscore=0 clxscore=1011 phishscore=0 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011130096
+        id S1726810AbgKMPxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:53:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:40614 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726336AbgKMPxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 10:53:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12CE41042;
+        Fri, 13 Nov 2020 07:53:51 -0800 (PST)
+Received: from e108754-lin.cambridge.arm.com (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E3A483F718;
+        Fri, 13 Nov 2020 07:53:49 -0800 (PST)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     catalin.marinas@arm.com, mark.rutland@arm.com,
+        sudeep.holla@arm.com, will@kernel.org
+Cc:     morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com
+Subject: [PATCH] arm64: abort counter_read_on_cpu() when irqs_disabled()
+Date:   Fri, 13 Nov 2020 15:53:28 +0000
+Message-Id: <20201113155328.4194-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201106125334.21570-1-ionela.voinescu@arm.com>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
+Given that smp_call_function_single() can deadlock when interrupts are
+disabled, abort the SMP call if irqs_disabled(). This scenario is
+currently not possible given the function's uses, but safeguard this for
+potential future uses.
 
-On Fri, 2020-11-13 at 09:01 +0100, Roberto Sassu wrote:
-> Commit a1f9b1c0439db ("integrity/ima: switch to using __kernel_read")
-> replaced the __vfs_read() call in integrity_kernel_read() with
-> __kernel_read(), a new helper introduced by commit 61a707c543e2a ("fs: add
-> a __kernel_read helper").
-> 
-> Since the new helper requires that also the FMODE_CAN_READ flag is set in
-> file->f_mode, this patch saves the original f_mode and sets the flag if the
-> the file descriptor has the necessary file operation. Lastly, it restores
-> the original f_mode at the end of ima_calc_file_hash().
-> 
-> Cc: stable@vger.kernel.org # 5.8.x
-> Fixes: a1f9b1c0439db ("integrity/ima: switch to using __kernel_read")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+---
+ arch/arm64/kernel/topology.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Thanks!  It's now queued in next-integrity-testing.
-
-Mimi
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 3a083a9a8ef2..e387188741f2 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -343,7 +343,11 @@ static void cpu_read_constcnt(void *val)
+ static inline
+ int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+ {
+-	if (!cpu_has_amu_feat(cpu))
++	/*
++	 * Abort call on counterless CPU or when interrupts are
++	 * disabled - can lead to deadlock in smp sync call.
++	 */
++	if (!cpu_has_amu_feat(cpu) || unlikely(irqs_disabled()))
+ 		return -EOPNOTSUPP;
+ 
+ 	smp_call_function_single(cpu, func, val, 1);
+-- 
+2.17.1
 
