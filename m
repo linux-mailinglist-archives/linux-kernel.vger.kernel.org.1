@@ -2,62 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977B32B24ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9B32B24F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgKMTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:52:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKMTwa (ORCPT
+        id S1726300AbgKMTyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:54:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725966AbgKMTyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:52:30 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A85C0613D1;
-        Fri, 13 Nov 2020 11:52:30 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kdf7K-0078t9-PC; Fri, 13 Nov 2020 20:52:19 +0100
-Message-ID: <b8bacbe3488c99b83f335a21c9d2f06fc30ca4a7.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 1/3] net: mac80211: use core API for updating TX/RX
- stats
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Lev Stipakov <lstipakov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Lev Stipakov <lev@openvpn.net>
-Date:   Fri, 13 Nov 2020 20:52:17 +0100
-In-Reply-To: <20201113115118.618f57de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <44c8b5ae-3630-9d98-1ab4-5f57bfe0886c@gmail.com>
-         <20201113085804.115806-1-lev@openvpn.net>
-         <53474f83c4185caf2e7237f023cf0456afcc55cc.camel@sipsolutions.net>
-         <CAGyAFMUrNRAiDZuNa2QCJQ-JuQAUdDq3nOB17+M=wc2xNknqmQ@mail.gmail.com>
-         <20201113115118.618f57de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Fri, 13 Nov 2020 14:54:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605297261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yYOZqfS1DftClANj54I945kAOQfBrrvPepHj2JAwlgE=;
+        b=NeS9DVHzmLAdPHOeNRUQD6EDbKFfbZNU6RSnp3XdKpXlVfskFwjtpUjuvBqyNPm5ukC8YS
+        yct8R3ZLUYRtrAXewF7sSt1EyKBcC+26jkeEzVLxtXp/7TjRxm5mc8x2ALTtjsLRi4Zciq
+        ZhFSTqWB1k1T8cFEZy0px/T8ZPH6VHA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-o3eHZUV6NbaT1cJ-TJ4RWQ-1; Fri, 13 Nov 2020 14:54:18 -0500
+X-MC-Unique: o3eHZUV6NbaT1cJ-TJ4RWQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F5778730A8;
+        Fri, 13 Nov 2020 19:54:15 +0000 (UTC)
+Received: from treble (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54ADF62A16;
+        Fri, 13 Nov 2020 19:54:11 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 13:54:08 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <20201113195408.atbpjizijnhuinzy@treble>
+References: <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
+ <20201020185217.ilg6w5l7ujau2246@treble>
+ <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
+ <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com>
+ <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble>
+ <20201110174606.mp5m33lgqksks4mt@treble>
+ <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-13 at 11:51 -0800, Jakub Kicinski wrote:
-> On Fri, 13 Nov 2020 14:25:25 +0200 Lev Stipakov wrote:
-> > > Seems I should take this through my tree, any objections?
+On Tue, Nov 10, 2020 at 10:59:55AM -0800, Sami Tolvanen wrote:
+> On Tue, Nov 10, 2020 at 9:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Mon, Nov 09, 2020 at 08:29:24PM -0600, Josh Poimboeuf wrote:
+> > > On Mon, Nov 09, 2020 at 03:11:41PM -0800, Sami Tolvanen wrote:
+> > > > CONFIG_XEN
+> > > >
+> > > > __switch_to_asm()+0x0: undefined stack state
+> > > >   xen_hypercall_set_trap_table()+0x0: <=== (sym)
+> >
+> > With your branch + GCC 9 I can recreate all the warnings except this
+> > one.
 > 
-> Go for it, you may need to pull net-next first but that should happen
-> soonish anyway, when I get to your pr.
+> In a gcc build this warning is replaced with a different one:
+> 
+> vmlinux.o: warning: objtool: __startup_secondary_64()+0x7: return with
+> modified stack frame
+> 
+> This just seems to depend on which function is placed right after the
+> code in xen-head.S. With gcc, the disassembly looks like this:
+> 
+> 0000000000000000 <asm_cpu_bringup_and_idle>:
+>        0:       e8 00 00 00 00          callq  5 <asm_cpu_bringup_and_idle+0x5>
+>                         1: R_X86_64_PLT32       cpu_bringup_and_idle-0x4
+>        5:       e9 f6 0f 00 00          jmpq   1000
+> <xen_hypercall_set_trap_table>
+> ...
+> 0000000000001000 <xen_hypercall_set_trap_table>:
+>         ...
+> ...
+> 0000000000002000 <__startup_secondary_64>:
+> 
+> With Clang+LTO, we end up with __switch_to_asm here instead of
+> __startup_secondary_64.
 
-Yeah, I'll fast forward once you have pulled that, and generally I don't
-apply anything while I have open pull requests (in case I have to
-rejigger or whatnot), so all should be well. :)
+I still don't see this warning for some reason.
 
-Thanks!
+Is it fixed by adding cpu_bringup_and_idle() to global_noreturns[] in
+tools/objtool/check.c?
 
-johannes
+-- 
+Josh
 
