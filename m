@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C69F2B19FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E782B1A08
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgKMLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:24:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:36446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbgKMLY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:24:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5479E1042;
-        Fri, 13 Nov 2020 03:24:26 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ED82C3F6CF;
-        Fri, 13 Nov 2020 03:24:23 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Qian Cai <cai@redhat.com>, bigeasy@linutronix.de,
-        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, mgorman@suse.de, mingo@kernel.org,
-        ouwen210@hotmail.com, peterz@infradead.org, qais.yousef@arm.com,
-        rostedt@goodmis.org, swood@redhat.com, tglx@linutronix.de,
-        tj@kernel.org, vincent.donnefort@arm.com,
-        vincent.guittot@linaro.org
-Subject: [PATCH] sched/core: Add missing completion for affine_move_task() waiters
-Date:   Fri, 13 Nov 2020 11:24:14 +0000
-Message-Id: <20201113112414.2569-1-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726498AbgKML1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:27:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgKML0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:26:20 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9E6C0613D1;
+        Fri, 13 Nov 2020 03:26:20 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id o24so10238338ljj.6;
+        Fri, 13 Nov 2020 03:26:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d9BtORohRQssqcZEmJuQti+AVje2Xav6yhqEjMh69G8=;
+        b=fBeRvct2Z3dYw0c28ajh8qJJqmJDD8V4Cmf/d8MKaLD0FKcR4TWPdlWJtkhJQSsJDp
+         AQi9JyDFeadS5klwC+/Q6MhMT7xSItw8MRYQe0CgVPDIo8/l4X7Ig9CPZK8sYZF3R5Q0
+         Kx98CLaXIq132Y0ZVSNdbLpNuuiMmwMyM/Oz1dbfXXYsgi/7zaTPqixfEE9VQcM3hqiT
+         kn/qQr0tr7pTgc7QE0Nwst++n5P5Dqw5gTSnizv2n3GhzYVYddBTL3otcmBOBvYZ9BUT
+         g5r/x+CZDWr9EKqoa/MTZ+5YDDMvm95UwJmZupuY2uNVkMiQ0NI2BOHjNJwagqoQbi0x
+         qTKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d9BtORohRQssqcZEmJuQti+AVje2Xav6yhqEjMh69G8=;
+        b=CkjAZACT03NfPGKubLqro+ftrD7UuFR7EKSkR+tZY8/GK+YCsvVGp8Kkjz+pODlGGs
+         D4XENAd2gOXoWZGRKaWS3NSy9/kafbOxsjRhk3a7+ftTzKUR5uMsSltPkGGo9khgrV1s
+         rNmJFWbRy5GLpJLuBgiYLuiWuZWYjtksQD06QudgB8Xz3+hw/TbMpDMHYnPQXCEkekrX
+         hSkdRp6IDG7edAmYK9ovVKJKw3y30TKKfefIIu7H0Tc0Z3jJu1Rc8YIIl+twlugUztN/
+         3A9qWyUHoBidF7wzbaDHzHu+N5GpFwxSblbzKDO8q7yEikznRm1mYT9SxV/i9yQvzaUs
+         veaA==
+X-Gm-Message-State: AOAM5314Vz/zTBpsyh3VsiifytYsQV+hhUNgA39F3elWNHf77bE2/zmW
+        F+vAL1z/8HrYyTUV0qQskl0ioK5PnJskURQTbM4=
+X-Google-Smtp-Source: ABdhPJwW4VYqcQoCtpQGzUMhORhViySVIWN5LwCEoWVfoD9h1YxmV8VyWB+4ahuA3xAuU0uzIpNgu5k6KFJaqDqDhms=
+X-Received: by 2002:a2e:8682:: with SMTP id l2mr801866lji.218.1605266778484;
+ Fri, 13 Nov 2020 03:26:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200727063354.17031-1-xiaoning.wang@nxp.com> <20201113091800.27469-1-nikita.shubin@maquefel.me>
+In-Reply-To: <20201113091800.27469-1-nikita.shubin@maquefel.me>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Fri, 13 Nov 2020 08:26:07 -0300
+Message-ID: <CAOMZO5AVJjhqEvkiB3mXc24RNy+Ac3VW_CTg6BGNsqfSVLq0Sg@mail.gmail.com>
+Subject: Re: [PATCH] spi: imx: enable runtime pm support
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Clark Wang <xiaoning.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qian reported that some fuzzer issuing sched_setaffinity() ends up stuck on
-a wait_for_completion(). The problematic pattern seems to be:
+Hi Nikita,
 
-  affine_move_task()
-      // task_running() case
-      stop_one_cpu();
-      wait_for_completion(&pending->done);
+On Fri, Nov 13, 2020 at 6:18 AM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+>
+> Hello Clark,
+>
+> This patch breaks spi-imx on imx7d.
+> Toradex Colibri imx7d spi reports with:
+>
+>     [    4.258468] inv-mpu6000-spi spi2.0: I/O Error in PIO
+>     [    4.264269] inv-mpu6000-spi spi2.0: SPI transfer failed: -110
+>     [    4.264305] spi_master spi2: failed to transfer one message from queue
+>
+> We are using spi-imx with dma.
+>
+> Reverting your patch fixes this issue.
+>
+> The baseline commit 951cbbc386ff01b50da4f46387e994e81d9ab431 (tag: v5.9.8, stable/linux-5.9.y)
+>
+> Could you please give some comments on this issue ?
 
-Combined with, on the stopper side:
-
-  migration_cpu_stop()
-    // Task moved between unlocks and scheduling the stopper
-    task_rq(p) != rq &&
-    // task_running() case
-    dest_cpu >= 0
-
-    => no complete_all()
-
-This can happen with both PREEMPT and !PREEMPT, although !PREEMPT should
-be more likely to see this given the targeted task has a much bigger window
-to block and be woken up elsewhere before the stopper runs.
-
-Make migration_cpu_stop() always look at pending affinity requests; signal
-their completion if the stopper hits a rq mismatch but the task is
-still within its allowed mask. When Migrate-Disable isn't involved, this
-matches the previous set_cpus_allowed_ptr() vs migration_cpu_stop()
-behaviour.
-
-Link: https://lore.kernel.org/lkml/8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com
-Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-Reported-by: Qian Cai <cai@redhat.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/core.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 02076e6d3792..fad0a8e62aca 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1923,7 +1923,7 @@ static int migration_cpu_stop(void *data)
- 		else
- 			p->wake_cpu = dest_cpu;
- 
--	} else if (dest_cpu < 0) {
-+	} else if (dest_cpu < 0 || pending) {
- 		/*
- 		 * This happens when we get migrated between migrate_enable()'s
- 		 * preempt_enable() and scheduling the stopper task. At that
-@@ -1933,6 +1933,17 @@ static int migration_cpu_stop(void *data)
- 		 * more likely.
- 		 */
- 
-+		/*
-+		 * The task moved before the stopper got to run. We're holding
-+		 * ->pi_lock, so the allowed mask is stable - if it got
-+		 * somewhere allowed, we're done.
-+		 */
-+		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
-+			p->migration_pending = NULL;
-+			complete = true;
-+			goto out;
-+		}
-+
- 		/*
- 		 * When this was migrate_enable() but we no longer have an
- 		 * @pending, a concurrent SCA 'fixed' things and we should be
--- 
-2.27.0
-
+Could you please try this patch from Sascha?
+https://lkml.org/lkml/2020/10/12/981
