@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D75D2B229D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA7B2B229E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgKMRgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:36:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKMRgB (ORCPT
+        id S1726823AbgKMRgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:36:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23247 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726771AbgKMRgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:36:01 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF549C0613D1;
-        Fri, 13 Nov 2020 09:36:00 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id f38so7657071pgm.2;
-        Fri, 13 Nov 2020 09:36:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WFsk02laB2PDDhAOiODMzXvVIH4r8zq9tMa2KeyB7uA=;
-        b=jqh5zy0G6VIg6y9se75gO+rCuuIvg76Zil/R7l1BFUvapWlGNihGiHAeY9Xuy7Rtlg
-         GDz9kqT9o5xMsuv554cWSJDLLecJlAOJhQx4YZb+rlwsKyJu6Ttkjxa/vmc27zPXKyi8
-         ong4H7vo4lsyWSkZIVqlj2NpAzA11tJ81k2QTDTSaCqM/2VhKfwHSp7m9Nf/WHqg3Bbk
-         DXLDxh9U7K8wh1U46pcoOHXLsW7uTVK9pFrErJGXNQ7AHv9+IMGLjHoJ2dqVZ467zrdo
-         1mOAxh9hB6ey2MQDXmIHJdxEyIt1meyF2VpyZLvsZ+jAcaBwYaKv2xsdQ6Bi3H34hTPH
-         T2XQ==
+        Fri, 13 Nov 2020 12:36:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605288971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NAWOiKNPr7NdH0SfoGuNiXpNKXaZRwcJVJ3a0/q6UEM=;
+        b=YiO0JKczEiBNtIFWPn9YAqI/+lVq8hzwXVZNPNO8oeZj+ri+MMokLbfYphrHDzfvlq1WY1
+        PxiYSz1jiegg42jiOUhEVO1auDYAdMQ9lOeHr/4XgH9vUnMZ/l9H+dF3aZUWrxsuSrq68K
+        flren0lAkpkL8MnQXOOE/jJ5StLf/ug=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-heobo9GqOPy8jsTTUG5krQ-1; Fri, 13 Nov 2020 12:36:09 -0500
+X-MC-Unique: heobo9GqOPy8jsTTUG5krQ-1
+Received: by mail-wr1-f69.google.com with SMTP id w5so1946947wrm.22
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:36:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WFsk02laB2PDDhAOiODMzXvVIH4r8zq9tMa2KeyB7uA=;
-        b=kwDu/XnS4UnLmQty/RTyv0Eo0K7F6vxUsOnkuuE1LL3B9CLVKqst2imSGXeavs5t3F
-         QIo0RPQ3SQfsIPDh6GLy7TtDJTdR4PSruv+3PiQUqY3HGRtrDTQuHHp/PutC9xQK/i4j
-         FSdMfyWtaKzvtHVh+zeeewDL/rsTV6dyMbgF53oTR8GkgAp8bYdmMiSaHZmRK86NVdgP
-         y8oA8xFVJLLWc+5pR5gAOoBvonsh4Auk6UsS0ybRMoO69cIcZqMOufq2VfEkEUBNmsZd
-         hAGSRZOXL+DlmqllclrFx04KLl+z9/Ln+GCU0m0dtkmpFXqJ3Tgd4UCq4Mnt+m7uLKMV
-         JwSw==
-X-Gm-Message-State: AOAM533Psf5PpcYFPb+IU7ZF+tMcfZ7UQ80dUG5D8FUkvF43yraLA9OZ
-        3xNvdI6awu8jQzrrlvliw8UmvVZNWbpoih+IaQg=
-X-Google-Smtp-Source: ABdhPJy+W3bCjZfmVpQsSHdQpUOksuFNhp0ghlUTkyAogGTJrQb9McWj4gcOg9J2GF2E0hkXYXxtbDOf+blwL3UlFow=
-X-Received: by 2002:aa7:83c2:0:b029:156:5ece:98b6 with SMTP id
- j2-20020aa783c20000b02901565ece98b6mr3008556pfn.4.1605288955357; Fri, 13 Nov
- 2020 09:35:55 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NAWOiKNPr7NdH0SfoGuNiXpNKXaZRwcJVJ3a0/q6UEM=;
+        b=cnCE2XoGFuKMII//f+ry35V7gwZXD5aXe515qC4nS3i+x6MSxUoJcwRDGaJfK/Q58J
+         hcQ/k3fOsMwTiqwI3PqN7ld0CmDe21AUZjav3RShD+H08pwwbSrhh1oGsxTqU5EBEHt2
+         KqhtAkAsAVGvdweGQ/nBqV9Fk5oFbSHfJURfbbkBANRi8rNCUwdk5lfiHzOGEPUiz9HX
+         yWyqtpagFx5MI4KepH5v1QFEe6xbH/84yMWrTpcQSGtOwCT1Ry4ULBJsQ3kjDOw3bdw3
+         BMptutxEhYngAkfZiNyVh1EGp5Z9RPn1aBndzXyn4ndSa/mh6oiNwXhIhfh+6jdpHlTc
+         RgBQ==
+X-Gm-Message-State: AOAM531mj0fY9q/d9Db9DWKJqSMdPt9HeChr9HC0M7W0xN/RnyVopAkE
+        0LjBwlMNEMthu4Q3aCuTehQyVIdwqn4kf7wiPhNmAHGeEpxMX/Fc3+ELcFCkqYaWVor7C5B7HBa
+        B8ICLb2OJRfIbUvMO+qt4/tvf
+X-Received: by 2002:adf:fc01:: with SMTP id i1mr4829496wrr.250.1605288964942;
+        Fri, 13 Nov 2020 09:36:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx0vudkfKU4Xydr2EdpA/kzp9pTcHNEHyW7SYCAkCMGeUkCOR26XxFLcWnUl7631MBD2ZKN5A==
+X-Received: by 2002:adf:fc01:: with SMTP id i1mr4829446wrr.250.1605288964464;
+        Fri, 13 Nov 2020 09:36:04 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d63sm10940123wmd.12.2020.11.13.09.36.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 09:36:03 -0800 (PST)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Cathy Avery <cavery@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, wei.huang2@amd.com, mlevitsk@redhat.com
+References: <20201011184818.3609-1-cavery@redhat.com>
+ <20201011184818.3609-3-cavery@redhat.com>
+ <20201013013349.GB10366@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 2/2] KVM: SVM: Use a separate vmcb for the nested L2
+ guest
+Message-ID: <f3268301-6cbd-904e-949c-7ccc4a2e5d36@redhat.com>
+Date:   Fri, 13 Nov 2020 18:36:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <CAJht_EMXvAEtKfivV2K-mC=0=G1n2_yQAZduSt7rxRV+bFUUMQ@mail.gmail.com>
- <ed5b91db-fea9-99ff-59b7-fa0ffb810291@kernel.org> <f3b2c6ea4185226ad4058ed8a70ffb52@dev.tdt.de>
-In-Reply-To: <f3b2c6ea4185226ad4058ed8a70ffb52@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 13 Nov 2020 09:35:44 -0800
-Message-ID: <CAJht_ENUEN3WTcHA3U=oX6bkqE_tkxmpP0Q8QConRvx+z7CO7w@mail.gmail.com>
-Subject: Re: linux-x25 mail list not working
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     "John 'Warthog9' Hawley" <warthog9@kernel.org>,
-        postmaster@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201013013349.GB10366@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 9:28 PM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> On 2020-11-13 03:17, John 'Warthog9' Hawley wrote:
-> > Give it a try now, there was a little wonkiness with the alias setup
-> > for it, and I have no historical context for a 'why', but I adjusted a
-> > couple of things and I was able to subscribe myself.
-> >
-> > - John 'Warthog9' Hawley
->
-> Thanks a lot John! Now it seems to work again.
+On 13/10/20 03:33, Sean Christopherson wrote:
+>> +	svm->vmcb = svm->vmcb01;
+>> +	svm->vmcb_pa = svm->vmcb01_pa;
+> I very highly recommend adding a helper to switch VMCB.  Odds are very good
+> there will be more than just these two lines of boilerplate code for changing
+> the active VMCB.
 
-Thank you John!! I see the mail archive at
-https://www.spinics.net/lists/linux-x25/ is also working again!
+Yes, probably we can make svm->vmcb01 and svm->vmcb02 something like 
+VMX's struct loaded_vmcs:
+
+struct kvm_vmcb {
+	void *vmcb;
+	unsigned long pa;
+}
+
+I don't expect a lot more to happen due to SVM having no need for 
+caching, so for now I think it's okay.
+
+I have other comments for which I'll reply to the patch itself.
+
+Paolo
+
