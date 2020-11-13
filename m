@@ -2,156 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DB42B1784
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 920B62B1783
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKMIs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:48:59 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21632 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726160AbgKMIs7 (ORCPT
+        id S1726387AbgKMIsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 03:48:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKMIs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:48:59 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD8XTTI178842;
-        Fri, 13 Nov 2020 03:48:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=36cbtDi4un8/lEh3q2ASAd6pMgDUdwExHeVKQP5zaTg=;
- b=ERgPGb/jQbM1hYojMW6q/Bl9E6vjV7b9yQsOTKBErYIFacqXM8NvVfuoDrqXw4GT8Hxj
- BBiF57As8tS6X2FGyWEiMhiFNQyKIWnvghKGFVlF+htnK/1H+pDA+OOQt+FO6PmLY2PM
- tUzRUNnoQs+APoboZqolfpzmUeEWA/rCssv98mcJk9OSI/eeyApQe+Z+/9/zV+uaaVJ3
- POPDxfZ4PmO8gS5eLLHgx69QRJk8qRiwLGSqbBKQNSi+P71Vyhel3JXsU83kIkuYSMfQ
- z2nnyaZiIFgG30WTqjbcL/b/IofNLEOp/HzhvIUJqrLncpD5QyXVsVovaa5rsNGinzCx Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sm064d27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 03:48:32 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AD8dtsn005658;
-        Fri, 13 Nov 2020 03:48:31 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sm064d1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 03:48:31 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AD8mImk030589;
-        Fri, 13 Nov 2020 08:48:30 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01dal.us.ibm.com with ESMTP id 34nk7b5n3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 08:48:30 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AD8mTEJ53477702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Nov 2020 08:48:29 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47D567805F;
-        Fri, 13 Nov 2020 08:48:29 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC7F378064;
-        Fri, 13 Nov 2020 08:48:21 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.102.143])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 13 Nov 2020 08:48:21 +0000 (GMT)
-Subject: Re: [PATCH RFC v5 01/13] perf jevents: Add support for an extra
- directory level
-To:     John Garry <john.garry@huawei.com>, acme@kernel.org,
-        will@kernel.org, mark.rutland@arm.com, jolsa@redhat.com,
-        irogers@google.com, leo.yan@linaro.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, mathieu.poirier@linaro.org
-Cc:     linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, qiangqing.zhang@nxp.com,
-        zhangshaokun@hisilicon.com, linux-imx@nxp.com
-References: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
- <1604666153-4187-2-git-send-email-john.garry@huawei.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <61c23ae8-73d4-4616-38f5-f81dafbf5851@linux.ibm.com>
-Date:   Fri, 13 Nov 2020 14:18:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 13 Nov 2020 03:48:29 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719A6C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 00:48:28 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 19so7373497wmf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 00:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:autocrypt:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OXNLGzI568pdIo9vXw49CKPhrcpuIJbWHVRFLUXXX1Y=;
+        b=bwZrPnyqZrci6UeDZHCYSnw/VAGBVtUNSBdLyiPHzVyahUbJtFeRtrWKsfz7x1ovZC
+         UQ+oxsZBvoH+DJuoPleWhP6cZq6avdm+WTq2XdD03M8pfmwUO/jDFESPF0UOHF251Gl9
+         +IRGZkIN1/j9mjevvHtj1miiXZT/z3tiS95GEByU/ZQOEBQXXf3F1sJhKqi1NnHKsBQ+
+         eWqec9XRvt62Eyjxji7JGpZvvTTVgw1vg1Im/Y8eCTIT/Yq36Yt9s6kmGhwsXZxOdeoZ
+         JG9eFG4BlZDJ+HRdYApLoI16ucmucoWr/cOvstFlBYeT3daN1gId6OWV29m02e/+6Qqj
+         7oPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OXNLGzI568pdIo9vXw49CKPhrcpuIJbWHVRFLUXXX1Y=;
+        b=JrAYHR9gzsabiHgkKM6sLnujuenzx/J3sFKB1Ulfrk4U/qwt16WvElsP++CiyeEdlI
+         OkG9XHbF4lj9RZk/CrYtIzDPB23B4wHLnAo4kclnT6Rj2lsvnc/qflTIgEHC6LggSV8z
+         XxemrlgruB0wGrBPjTUzdkUwLgshZE977RtWlO+yIK0VIrbYk7IGzT1D8UdPAHzPlOVZ
+         +Vc+Kcmbf68/2xnIhn+Zk/Ax13gzIEX0tIjtE1GPxvdw9oSke/x+7/0UHZMeDNZjY38x
+         6LtWERb+zUQDBYoR3F5nwC7KGZ5XHjDDXdVKZMabxUbIEdhxkmGmBVNPlmrc4ubukKlZ
+         S8Rw==
+X-Gm-Message-State: AOAM533WhQzaMWsr2M42mlyQc3gLgkpYZjTUdKlsTRryH9RDyDQwGnra
+        GbjBUNPJvMJIjzxZK8jraLsKsA==
+X-Google-Smtp-Source: ABdhPJzk7D0uQ6FoaVTAbiAUaj9wWqVP2TYIpQIU2r/XVYU03ErBlQTzLEANBj+fk+mldiYFxcle5Q==
+X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr1390884wmc.172.1605257307130;
+        Fri, 13 Nov 2020 00:48:27 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id p3sm3924898wrs.50.2020.11.13.00.48.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 00:48:26 -0800 (PST)
+Subject: Re: [PATCH v9 0/5] Exynos: Simple QoS for exynos-bus using
+ interconnect
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>, cw00.choi@samsung.com,
+        inki.dae@samsung.com
+Cc:     krzk@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        sw0312.kim@samsung.com, b.zolnierkie@samsung.com,
+        m.szyprowski@samsung.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+References: <CGME20201112141041eucas1p1a29130955afd4ec1d5d94cf17183920c@eucas1p1.samsung.com>
+ <20201112140931.31139-1-s.nawrocki@samsung.com>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
+ 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
+ KEmKjLDvB0pePJkdTw==
+Message-ID: <b0a8e994-06d2-e04a-579c-40580b71f760@linaro.org>
+Date:   Fri, 13 Nov 2020 10:48:24 +0200
 MIME-Version: 1.0
-In-Reply-To: <1604666153-4187-2-git-send-email-john.garry@huawei.com>
+In-Reply-To: <20201112140931.31139-1-s.nawrocki@samsung.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_05:2020-11-12,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 clxscore=1015
- impostorscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011130051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/12/20 16:09, Sylwester Nawrocki wrote:
+> 
+> This patchset adds interconnect API support for the Exynos SoC "samsung,
+> exynos-bus" compatible devices, which already have their corresponding
+> exynos-bus driver in the devfreq subsystem.  Complementing the devfreq
+> driver with an interconnect functionality allows to ensure the QoS
+> requirements of devices accessing the system memory (e.g. video processing
+> devices) are fulfilled and allows to avoid issues like the one discussed
+> in thread [1].
+> 
+> This patch series adds implementation of the interconnect provider per each
+> "samsung,exynos-bus" compatible DT node, with one interconnect node per
+> provider.  The interconnect code which was previously added as a part of
+> the devfreq driver has been converted to a separate platform driver.
+> In the devfreq a corresponding virtual child platform device is registered.
+> Integration of devfreq and interconnect frameworks is achieved through
+> the PM QoS API.
+> 
+> A sample interconnect consumer for exynos-mixer is added in patch 5/5,
+> it is currently added only for exynos4412 and allows to address the
+> mixer DMA underrun error issues [1].
 
-
-On 11/6/20 6:05 PM, John Garry wrote:
-> Currently only upto a level 2 directory is supported, in form
-> vendor/platform.
-
-Hi John,
-    Just want to check in case of sub directories,
-Will it be good add on/feasible to be able to include events of particular sub-directory for a
-platform? Otherwise with this patch in the end all event will be part of
-same pmu_event structure. So what is the purpose of sub directories? Let me know if I am missing something.
+Good work Sylwester! Thank you and all the reviewers! What would be the merge
+path for this patchset? Looks like there is no build dependency between patches.
+Should i take just patches 2,3 or also patch 1? Chanwoo?
 
 Thanks,
-Kajol Jain
-> 
-> Add support for a further level, to support vendor/platform
-> sub-directories in future.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  tools/perf/pmu-events/jevents.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index 72cfa3b5046d..9022216b1253 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -978,15 +978,20 @@ static int process_one_file(const char *fpath, const struct stat *sb,
->  	int level   = ftwbuf->level;
->  	int err = 0;
->  
-> -	if (level == 2 && is_dir) {
-> +	if (level >= 2 && is_dir) {
-> +		int count = 0;
->  		/*
->  		 * For level 2 directory, bname will include parent name,
->  		 * like vendor/platform. So search back from platform dir
->  		 * to find this.
-> +		 * Something similar for level 3 directory, but we're a PMU
-> +		 * category folder, like vendor/platform/cpu.
->  		 */
->  		bname = (char *) fpath + ftwbuf->base - 2;
->  		for (;;) {
->  			if (*bname == '/')
-> +				count++;
-> +			if (count == level - 1)
->  				break;
->  			bname--;
->  		}
-> @@ -999,13 +1004,13 @@ static int process_one_file(const char *fpath, const struct stat *sb,
->  		 level, sb->st_size, bname, fpath);
->  
->  	/* base dir or too deep */
-> -	if (level == 0 || level > 3)
-> +	if (level == 0 || level > 4)
->  		return 0;
->  
->  
->  	/* model directory, reset topic */
->  	if ((level == 1 && is_dir && is_leaf_dir(fpath)) ||
-> -	    (level == 2 && is_dir)) {
-> +	    (level >= 2 && is_dir && is_leaf_dir(fpath))) {
->  		if (close_table)
->  			print_events_table_suffix(eventsfp);
->  
-> 
+Georgi
