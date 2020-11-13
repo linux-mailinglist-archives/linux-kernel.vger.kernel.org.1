@@ -2,150 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC652B205D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0B52B2064
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgKMQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:25:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgKMQZi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:25:38 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7123EC0613D1;
-        Fri, 13 Nov 2020 08:25:38 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c66so8045829pfa.4;
-        Fri, 13 Nov 2020 08:25:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MnQ23HCE0ZI7qhFXn6nl37F0XxyVN9I61UA+Y02bRi8=;
-        b=lwHPFmdEWRvcdri67q/6P2FbJENUCnCnPl8sdwmtlDeJ1JXCKfT/6wEudf3CYb9+S1
-         0scBTx6ykcEoSBUCbLFzZVLJiJYcxpwE2VECv5KPea1B6YMbg4SIYMlqffdKPO3jjL74
-         a5Q+MHdbniSkaZZwWle6qR8Tlx6Q7d9DsTBU5KINBjJR8Y0XCsZW+e8YtwMU+CoU6ACf
-         cTOmhMkldrbsEZ1aI4Or9hIveA6kti+3wJe3FUT7w2nEMZP0I6tgYuO3pzMeluD7m99Z
-         WbycrDv+DXOzkbsYHecxKzfVOOocCcXr4UHxobvgCVeZWYaKB7AMz5OvSbUVQ0ybWAau
-         HzoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=MnQ23HCE0ZI7qhFXn6nl37F0XxyVN9I61UA+Y02bRi8=;
-        b=TMwND+ZGni0yPrI0USHfh4H04vsygct8Irw0PddGCVtPs0PxCahWQS4Fzn9k9uYRkt
-         XAJgJsWYrk5ySf2D5yCXykXA4QiTu2aLvXfecn1bo/AKlMu6uoeHzE1ukqahtc5b7E4q
-         6+8hpstuAOIowiQE8eLNJYdAJIVxseSyYhN3cE5VZ+6+bPdi9a2P8wTxyyjuLob7ecsd
-         NEymFwiASG4czMnmk29Ss2WvKwfbFogbf1vcnVAioL+3biz7KKk1rp2fml6PW5IvKrtK
-         Xe4KRpx6d7iriGOB1idH9Z8vl5JcCVxA+NDZ6E8CSjpuVwJRYwCp9xoySA2JOr4BArCi
-         kROQ==
-X-Gm-Message-State: AOAM533B3ufmHb6Dwpjhkg2jbvvTqSPOuXZonFmwa9Vk5m2NbDcAWpVr
-        uxj/6LjakPw7mS0R42hnMyXQ4CJqfbs=
-X-Google-Smtp-Source: ABdhPJz+FPzyF4yVbx++2H21xVfP1XR4cB7Li4tsy6vuvvX+vAmSDkShcU+ZR5QhQTk5cPovnPB0tg==
-X-Received: by 2002:a17:90b:784:: with SMTP id l4mr3906651pjz.56.1605284733023;
-        Fri, 13 Nov 2020 08:25:33 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id e10sm9993725pfh.38.2020.11.13.08.25.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:25:31 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 13 Nov 2020 08:25:29 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm/vunmap: add cond_resched() in
- vunmap_pmd_range"
-Message-ID: <20201113162529.GA2378542@google.com>
-References: <20201105170249.387069-1-minchan@kernel.org>
- <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
- <20201107083939.GA1633068@google.com>
- <20201112200101.GC123036@google.com>
- <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
+        id S1726746AbgKMQ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:26:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726276AbgKMQ0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:26:09 -0500
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A761322259;
+        Fri, 13 Nov 2020 16:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605284768;
+        bh=e9Kg0N0+V79NPEkmRr1VHtoLxO9xMFawGTVp2WwFZG8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xRLu99hs0bA+0rqChjOd/SfrFFc7qXSzNMNuGol5lHqKOGxTE80q1jnSNKspJd1Cb
+         iu3H46WJZajXKDmjEVAnUk898xDuUAGug/ZbWkFDt+p75B6J1khVzYXqV4MfDZQmKD
+         uzGxOG0Na6F+nk4WP7TA9qlQoGJcHKPC6z6jgE1s=
+Received: by mail-oi1-f174.google.com with SMTP id w145so10963839oie.9;
+        Fri, 13 Nov 2020 08:26:08 -0800 (PST)
+X-Gm-Message-State: AOAM532A/YcbDwWyRxZ1pCNjZXrY8u62eG3DLAa9A1iVTgKkCoFXYXMk
+        tO0YEEVYRLePhlvWZqIjVTL/SqOXt84GuQzVyew=
+X-Google-Smtp-Source: ABdhPJziioiUwaob4p6eAy4sbQwvJw8r8v+6Za+XFm/VZAPRsPtvntdsb/r8ob9JlSgjIIeTYZPvogHL6QdJfqKAqbk=
+X-Received: by 2002:aca:d583:: with SMTP id m125mr1824494oig.47.1605284762514;
+ Fri, 13 Nov 2020 08:26:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
+References: <5fadef1f.1c69fb81.9166e.093c@mx.google.com> <e16e2ce5-dc21-d159-ecf2-e0a430d772e1@collabora.com>
+ <CAMj1kXFrxYqTARLprws6ja2=C1xZNC+TNr0Vvayr6sReqsUhyg@mail.gmail.com>
+ <ce91a878-5ce3-614d-d10c-569b891b12d0@collabora.com> <20201113155825.GD1551@shell.armlinux.org.uk>
+ <CAMj1kXHMBNK4ke3j0=h-xkxR9sWe3x_D2TLsPtDZv-sWCW4eWQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXHMBNK4ke3j0=h-xkxR9sWe3x_D2TLsPtDZv-sWCW4eWQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 13 Nov 2020 17:25:49 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH6_-tNuhOVDJA4mhEUQBDTDLjJA8CUkb4mRFsAZSy9ig@mail.gmail.com>
+Message-ID: <CAMj1kXH6_-tNuhOVDJA4mhEUQBDTDLjJA8CUkb4mRFsAZSy9ig@mail.gmail.com>
+Subject: Re: rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernelci-results@groups.io,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mike Rapoport <rppt@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:49:19PM -0800, Andrew Morton wrote:
-> On Thu, 12 Nov 2020 12:01:01 -0800 Minchan Kim <minchan@kernel.org> wrote:
-> 
-> > 
-> > On Sat, Nov 07, 2020 at 12:39:39AM -0800, Minchan Kim wrote:
-> > > Hi Andrew,
-> > > 
-> > > On Fri, Nov 06, 2020 at 05:59:33PM -0800, Andrew Morton wrote:
-> > > > On Thu,  5 Nov 2020 09:02:49 -0800 Minchan Kim <minchan@kernel.org> wrote:
-> > > > 
-> > > > > This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
-> > > > > 
-> > > > > While I was doing zram testing, I found sometimes decompression failed
-> > > > > since the compression buffer was corrupted. With investigation,
-> > > > > I found below commit calls cond_resched unconditionally so it could
-> > > > > make a problem in atomic context if the task is reschedule.
-> > > > > 
-> > > > > Revert the original commit for now.
+On Fri, 13 Nov 2020 at 17:15, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Fri, 13 Nov 2020 at 16:58, Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
 > >
-> > How should we proceed this problem?
+> > On Fri, Nov 13, 2020 at 03:43:27PM +0000, Guillaume Tucker wrote:
+> > > On 13/11/2020 10:35, Ard Biesheuvel wrote:
+> > > > On Fri, 13 Nov 2020 at 11:31, Guillaume Tucker
+> > > > <guillaume.tucker@collabora.com> wrote:
+> > > >>
+> > > >> Hi Ard,
+> > > >>
+> > > >> Please see the bisection report below about a boot failure on
+> > > >> RPi-2b.
+> > > >>
+> > > >> Reports aren't automatically sent to the public while we're
+> > > >> trialing new bisection features on kernelci.org but this one
+> > > >> looks valid.
+> > > >>
+> > > >> There's nothing in the serial console log, probably because it's
+> > > >> crashing too early during boot.  I'm not sure if other platforms
+> > > >> on kernelci.org were hit by this in the same way, but there
+> > > >> doesn't seem to be any.
+> > > >>
+> > > >> The same regression can be see on rmk's for-next branch as well
+> > > >> as in linux-next.  It happens with both bcm2835_defconfig and
+> > > >> multi_v7_defconfig.
+> > > >>
+> > > >> Some more details can be found here:
+> > > >>
+> > > >>   https://kernelci.org/test/case/id/5fae44823818ee918adb8864/
+> > > >>
+> > > >> If this looks like a real issue but you don't have a platform at
+> > > >> hand to reproduce it, please let us know if you would like the
+> > > >> KernelCI test to be re-run with earlyprintk or some debug config
+> > > >> turned on, or if you have a fix to try.
+> > > >>
+> > > >> Best wishes,
+> > > >> Guillaume
+> > > >>
+> > > >
+> > > > Hello Guillaume,
+> > > >
+> > > > That patch did have an issue, but it was already fixed by
+> > > >
+> > > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9020/1
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=fc2933c133744305236793025b00c2f7d258b687
+> > > >
+> > > > Could you please double check whether cherry-picking that on top of
+> > > > the first bad commit fixes the problem?
+> > >
+> > > Sadly this doesn't appear to be fixing the issue.  I've
+> > > cherry-picked your patch on top of the commit found by the
+> > > bisection but it still didn't boot, here's the git log
+> > >
+> > > cbb9656e83ca ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+> > > 7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+> > > e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+> > > 3650b228f83a Linux 5.10-rc1
+> > >
+> > > Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-gcbb9656e83ca/
+> > >
+> > > There's no output so it's hard to tell what is going on, but
+> > > reverting the bad commmit does make the board to boot (that's
+> > > what "revert: PASS" means in the bisect report).  So it's
+> > > unlikely that there is another issue causing the boot failure.
 > >
-> 
-> (top-posting repaired - please don't).
-> 
-> Well, we don't want to reintroduce the softlockup reports which
-> e47110e90584a2 fixed, and we certainly don't want to do that on behalf
-> of code which is using the unmap_kernel_range() interface incorrectly.
-> 
-> So I suggest either
-> 
-> a) make zs_unmap_object() stop doing the unmapping from atomic context or
+> > These silent boot failures are precisely what the DEBUG_LL stuff (and
+> > early_printk) is supposed to help with - getting the kernel messages
+> > out when there is an oops before the serial console is initialised.
+> >
+>
+> If this is indeed related to the FDT mapping, I would assume
+> earlycon=... to be usable here.
+>
+> I will try to reproduce this on a RPi3 but I don't have a RPi2 at
+> hand, unfortunately.
+>
+> Would you mind having a quick try whether you can reproduce this on
+> QEMU, using the raspi2 machine model? If so, that would be a *lot*
+> easier to diagnose.
 
-It's not easy since the path already hold several spin_locks as well as
-per-cpu context. I could pursuit the direction but it takes several
-steps to change entire locking scheme in the zsmalloc, which will
-take time(we couldn't leave zsmalloc broken until then) and hard to
-land on stable tree.
-
-> 
-> b) figure out whether the vmalloc unmap code is *truly* unsafe from
->    atomic context - perhaps it is only unsafe from interrupt context,
->    in which case we can rework the vmalloc.c checks to reflect this, or
-
-I don't get the point. I assume your suggestion would be "let's make the
-vunmap code atomic context safe" but how could it solve this problem?
-     
-The point from e47110e90584a2 was softlockup could be triggered if
-vunamp deal with large mapping so need *explict reschedule* point
-for CONFIG_PREEMPT_VOLUNTARY. However, CONFIG_PREEMPT_VOLUNTARY
-doesn't consider peempt count so even though we could make vunamp
-atomic safe to make a call under spin_lock:
-
-spin_lock(&A);
-vunmap
-  vunmap_pmd_range
-    cond_resched <- bang
- 
-Below options would have same problem, too.
-Let me know if I misunderstand something.
-
-> 
-> c) make the vfree code callable from all contexts.  Which is by far
->    the preferred solution, but may be tough.
-> 
-> 
-> Or maybe not so tough - if the only problem in the vmalloc code is the
-> use of mutex_trylock() from irqs then it may be as simple as switching
-> to old-style semaphores and using down_trylock(), which I think is
-> irq-safe.
-> 
-> However old-style semaphores are deprecated.  A hackyish approach might
-> be to use an rwsem always in down_write mode and use
-> down_write_trylock(), which I think is also callable from interrrupt
-> context.
-> 
-> But I have a feeling that there are other reasons why vfree shouldn't
-> be called from atomic context, apart from the mutex_trylock-in-irq
-> issue.
+Also, please have a go with 'earlycon=pl011,0x3f201000' added to the
+kernel command line.
