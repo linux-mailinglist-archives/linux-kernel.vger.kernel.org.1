@@ -2,197 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5FC2B24A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EC52B24AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgKMThD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:37:03 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17905 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgKMTg6 (ORCPT
+        id S1726465AbgKMThp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:37:45 -0500
+Received: from sender11-of-o52.zoho.eu ([31.186.226.238]:21363 "EHLO
+        sender11-of-o52.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgKMThp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:36:58 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5faee0620000>; Fri, 13 Nov 2020 11:37:06 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov
- 2020 19:36:57 +0000
-Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 13 Nov 2020 19:36:57 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/6] ata: ahci_tegra: Add AHCI support for Tegra186
-Date:   Fri, 13 Nov 2020 11:36:58 -0800
-Message-ID: <1605296218-2510-7-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
-References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Fri, 13 Nov 2020 14:37:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1605296225; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=FNV4pC/P6aTOkEWToi4k2RyG2yNkdwmYbK65PmT0hHWIvX9JsCAu4OMAc/rU436R7/cWRdMvVUJPKKOt/dVmbmmju2kcKe25nFAil9gbNZxfptn2l4l2yhkHzRy1ycoiPr1z47skK4KS2MQBgz/RF3hMH99k+ozAst80Nopo/L8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1605296225; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=2yWbf4tBEWXjOjt6h1Q+8iQXX0t8FgiQeHrnTyYSEpo=; 
+        b=dx/Kw/BmXUMS++WIjXTdEh80/s/27I6N7ZstAmtMAHRDjcL9dD7DfacKGKSEyu73XdfUlPUfXiU7QeSaAKrvEjtyCi108CX3PQW1DqTPuU7MHkVbuX52HC4hi9PumLMw3Wng1dECaXn/eFMQuKjyWy5m01l61yFr1SXyZQH0G84=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        dkim=pass  header.i=shytyi.net;
+        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
+        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1605296225;
+        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
+        h=Date:From:To:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=2yWbf4tBEWXjOjt6h1Q+8iQXX0t8FgiQeHrnTyYSEpo=;
+        b=FhCpxschnglYOlt3XQkVxfajfh7tSsBhYZILoo/EKz7HnHGHGd27WmWBIHGgaVv/
+        3UXoDZrWtscOhV4Z2qs+F8A0+Yv3FZLohIPuMHdKcIPykUd2r9YzM01UDs5bKwtucxo
+        Pt6k6RaXTBvFGTZRi6CtJUHoxsj2DcD1S8E7EWJo=
+Received: from mail.zoho.eu by mx.zoho.eu
+        with SMTP id 1605296218722869.2256171651378; Fri, 13 Nov 2020 20:36:58 +0100 (CET)
+Date:   Fri, 13 Nov 2020 20:36:58 +0100
+From:   Dmytro Shytyi <dmytro@shytyi.net>
+To:     "kuba" <kuba@kernel.org>, "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
+In-Reply-To: <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net> <202011110944.7zNVZmvB-lkp@intel.com> <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net> <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
+Subject: [PATCH net-next V5] net: Variable SLAAC: SLAAC with prefixes of
+ arbitrary length in PIO
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605296226; bh=bqvYhM4gfczmD1UkOCBSQi6kCpayixLg2a8u43aYS8U=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=aZ+jQqCxEUboM6XMeiPKoCEOuxVDCK2qK9ZYY91Lrurh0i8Qk0zZIAJxChDhmABuY
-         wXBWGDaWuVwKxEiDZ0UekIUuRxAGfImLtrueFb2MR4UYmvyNsO8N87GzOz+lnWO+95
-         LF+Ei/Mco1X34nwfxN/Mj/pRrRPKWW7Ia8BQn3TXA6w/X4QD74xCSDqcR1twyThBoT
-         ZsHikWXhsfPzIMAv70mHNK6O/KpY/3MSKw73UKsFTBung5xXQAhJUMK+Fl5aiQY0iP
-         Nhk8KOJS5nkhYkoOjf8IQB/xLVfhiB1vB+cWhHCLaTAFPlY30MGEq8KEmW5AaGH7go
-         imu80vOPrKDzg==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for AHCI-compliant Serial ATA controller
-on Tegra186 SoC.
+Variable SLAAC: SLAAC with prefixes of arbitrary length in PIO (randomly
+generated hostID or stable privacy + privacy extensions).
+The main problem is that SLAAC RA or PD allocates a /64 by the Wireless
+carrier 4G, 5G to a mobile hotspot, however segmentation of the /64 via
+SLAAC is required so that downstream interfaces can be further subnetted.
+Example: uCPE device (4G + WI-FI enabled) receives /64 via Wireless, and
+assigns /72 to VNF-Firewall, /72 to WIFI, /72 to VNF-Router, /72 to
+Load-Balancer and /72 to wired connected devices.
+IETF document that defines problem statement:
+draft-mishra-v6ops-variable-slaac-problem-stmt
+IETF document that specifies variable slaac:
+draft-mishra-6man-variable-slaac
 
-Tegra186 does not have sata-oob reset.
-Tegra186 SATA_NVOOB register filed COMMA_CNT position and width are
-different compared to Tegra210 and prior.
-
-So, this patch adds a flag has_sata_oob_rst and tegra_ahci_regs to
-SoC specific strcuture tegra_ahci_soc and updated their implementation
-accordingly.
-
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Dmytro Shytyi <dmytro@shytyi.net>
 ---
- drivers/ata/ahci_tegra.c | 60 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-index cb55ebc1..56612af 100644
---- a/drivers/ata/ahci_tegra.c
-+++ b/drivers/ata/ahci_tegra.c
-@@ -59,8 +59,6 @@
- #define T_SATA0_CFG_PHY_1_PAD_PLL_IDDQ_EN		BIT(22)
+diff -rupN net-next-5.10.0-rc2/include/net/if_inet6.h net-next-patch-5.10.0-rc2/include/net/if_inet6.h
+--- net-next-5.10.0-rc2/include/net/if_inet6.h	2020-11-10 08:46:00.195180579 +0100
++++ net-next-patch-5.10.0-rc2/include/net/if_inet6.h	2020-11-11 18:11:05.627550135 +0100
+@@ -22,6 +22,12 @@
+ #define IF_RS_SENT	0x10
+ #define IF_READY	0x80000000
  
- #define T_SATA0_NVOOB                                   0x114
--#define T_SATA0_NVOOB_COMMA_CNT_MASK                    (0xff << 16)
--#define T_SATA0_NVOOB_COMMA_CNT                         (0x07 << 16)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK          (0x3 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE               (0x1 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK        (0x3 << 26)
-@@ -154,11 +152,18 @@ struct tegra_ahci_ops {
- 	int (*init)(struct ahci_host_priv *hpriv);
- };
- 
-+struct tegra_ahci_regs {
-+	unsigned int nvoob_comma_cnt_mask;
-+	unsigned int nvoob_comma_cnt_val;
-+};
++/* Variable SLAAC (Contact: Dmytro Shytyi)
++ * draft-mishra-6man-variable-slaac
++ * draft-mishra-v6ops-variable-slaac-problem-stmt
++ */
++#define IF_RA_VAR_PLEN	0x08
 +
- struct tegra_ahci_soc {
- 	const char *const		*supply_names;
- 	u32				num_supplies;
- 	bool				supports_devslp;
-+	bool				has_sata_oob_rst;
- 	const struct tegra_ahci_ops	*ops;
-+	const struct tegra_ahci_regs	*regs;
+ /* prefix flags */
+ #define IF_PREFIX_ONLINK	0x01
+ #define IF_PREFIX_AUTOCONF	0x02
+diff -rupN net-next-5.10.0-rc2/include/uapi/linux/icmpv6.h net-next-patch-5.10.0-rc2/include/uapi/linux/icmpv6.h
+--- net-next-5.10.0-rc2/include/uapi/linux/icmpv6.h	2020-11-10 08:46:00.351849525 +0100
++++ net-next-patch-5.10.0-rc2/include/uapi/linux/icmpv6.h	2020-11-11 18:11:05.627550135 +0100
+@@ -42,7 +42,9 @@ struct icmp6hdr {
+                 struct icmpv6_nd_ra {
+ 			__u8		hop_limit;
+ #if defined(__LITTLE_ENDIAN_BITFIELD)
+-			__u8		reserved:3,
++			__u8		reserved:1,
++					slaac_var_plen:1,
++					proxy:1,
+ 					router_pref:2,
+ 					home_agent:1,
+ 					other:1,
+@@ -53,7 +55,9 @@ struct icmp6hdr {
+ 					other:1,
+ 					home_agent:1,
+ 					router_pref:2,
+-					reserved:3;
++					proxy:1,
++					slaac_var_plen:1,
++					reserved:1;
+ #else
+ #error	"Please fix <asm/byteorder.h>"
+ #endif
+@@ -78,9 +82,9 @@ struct icmp6hdr {
+ #define icmp6_addrconf_other	icmp6_dataun.u_nd_ra.other
+ #define icmp6_rt_lifetime	icmp6_dataun.u_nd_ra.rt_lifetime
+ #define icmp6_router_pref	icmp6_dataun.u_nd_ra.router_pref
++#define icmp6_slaac_var_plen	icmp6_dataun.u_nd_ra.slaac_var_plen
  };
  
- struct tegra_ahci_priv {
-@@ -240,11 +245,13 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
- 	if (ret)
- 		return ret;
+-
+ #define ICMPV6_ROUTER_PREF_LOW		0x3
+ #define ICMPV6_ROUTER_PREF_MEDIUM	0x0
+ #define ICMPV6_ROUTER_PREF_HIGH		0x1
+diff -rupN net-next-5.10.0-rc2/net/ipv6/addrconf.c net-next-patch-5.10.0-rc2/net/ipv6/addrconf.c
+--- net-next-5.10.0-rc2/net/ipv6/addrconf.c	2020-11-10 08:46:01.075193379 +0100
++++ net-next-patch-5.10.0-rc2/net/ipv6/addrconf.c	2020-11-13 19:50:04.401227310 +0100
+@@ -11,6 +11,8 @@
+ /*
+  *	Changes:
+  *
++ *	Dmytro Shytyi			:	Variable SLAAC: SLAAC with
++ *	<dmytro@shytyi.net>			prefixes of arbitrary length.
+  *	Janos Farkas			:	delete timer on ifdown
+  *	<chexum@bankinf.banki.hu>
+  *	Andi Kleen			:	kill double kfree on module
+@@ -142,7 +144,11 @@ static int ipv6_count_addresses(const st
+ static int ipv6_generate_stable_address(struct in6_addr *addr,
+ 					u8 dad_count,
+ 					const struct inet6_dev *idev);
+-
++static int ipv6_generate_address_variable_plen(struct in6_addr *address,
++					       u8 dad_count,
++					       const struct inet6_dev *idev,
++					       unsigned int rcvd_prfx_len,
++					       bool stable_privacy_mode);
+ #define IN6_ADDR_HSIZE_SHIFT	8
+ #define IN6_ADDR_HSIZE		(1 << IN6_ADDR_HSIZE_SHIFT)
+ /*
+@@ -1315,10 +1321,11 @@ static int ipv6_create_tempaddr(struct i
+ 	struct ifa6_config cfg;
+ 	long max_desync_factor;
+ 	struct in6_addr addr;
+-	int ret = 0;
++	int ret;
++	struct in6_addr temp;
  
--	ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
--						tegra->sata_clk,
--						tegra->sata_rst);
--	if (ret)
--		goto disable_regulators;
-+	if (!tegra->pdev->dev.pm_domain) {
-+		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
-+							tegra->sata_clk,
-+							tegra->sata_rst);
-+		if (ret)
-+			goto disable_regulators;
+ 	write_lock_bh(&idev->lock);
+-
++	ret = 0;
+ retry:
+ 	in6_dev_hold(idev);
+ 	if (idev->cnf.use_tempaddr <= 0) {
+@@ -1340,9 +1347,16 @@ retry:
+ 		goto out;
+ 	}
+ 	in6_ifa_hold(ifp);
+-	memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
+-	ipv6_gen_rnd_iid(&addr);
+ 
++	if (ifp->prefix_len == 64) {
++		memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
++		ipv6_gen_rnd_iid(&addr);
++	} else if (ifp->prefix_len > 0 && ifp->prefix_len <= 128) {
++		memcpy(addr.s6_addr32, ifp->addr.s6_addr, 16);
++		get_random_bytes(temp.s6_addr32, 16);
++		ipv6_addr_prefix_copy(&temp, &addr, ifp->prefix_len);
++		memcpy(addr.s6_addr, temp.s6_addr, 16);
 +	}
+ 	age = (now - ifp->tstamp) / HZ;
  
- 	reset_control_assert(tegra->sata_oob_rst);
- 	reset_control_assert(tegra->sata_cold_rst);
-@@ -330,10 +337,10 @@ static int tegra_ahci_controller_init(struct ahci_host_priv *hpriv)
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA_CFG_PHY_0);
+ 	regen_advance = idev->cnf.regen_max_retry *
+@@ -2576,9 +2590,42 @@ int addrconf_prefix_rcv_add_addr(struct
+ 				 u32 addr_flags, bool sllao, bool tokenized,
+ 				 __u32 valid_lft, u32 prefered_lft)
+ {
+-	struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1);
++	struct inet6_ifaddr *ifp = NULL;
+ 	int create = 0;
  
- 	val = readl(tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
--	val &= ~(T_SATA0_NVOOB_COMMA_CNT_MASK |
-+	val &= ~(tegra->soc->regs->nvoob_comma_cnt_mask |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK);
--	val |= (T_SATA0_NVOOB_COMMA_CNT |
-+	val |= (tegra->soc->regs->nvoob_comma_cnt_val |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_MODE);
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
-@@ -449,15 +456,35 @@ static const struct tegra_ahci_ops tegra124_ahci_ops = {
- 	.init = tegra124_ahci_init,
- };
- 
-+static const struct tegra_ahci_regs tegra124_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(30, 28),
-+	.nvoob_comma_cnt_val = (7 << 28),
-+};
++	if ((in6_dev->if_flags & IF_RA_VAR_PLEN) == IF_RA_VAR_PLEN &&
++	    in6_dev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
++		struct inet6_ifaddr *result = NULL;
++		struct inet6_ifaddr *result_base = NULL;
++		struct in6_addr curr_net_prfx;
++		struct in6_addr net_prfx;
++		bool prfxs_equal;
 +
- static const struct tegra_ahci_soc tegra124_ahci_soc = {
- 	.supply_names = tegra124_supply_names,
- 	.num_supplies = ARRAY_SIZE(tegra124_supply_names),
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
- 	.ops = &tegra124_ahci_ops,
-+	.regs = &tegra124_ahci_regs,
- };
- 
- static const struct tegra_ahci_soc tegra210_ahci_soc = {
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
-+	.regs = &tegra124_ahci_regs,
-+};
++		result_base = result;
++		rcu_read_lock();
++		list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
++			if (!net_eq(dev_net(ifp->idev->dev), net))
++				continue;
++			ipv6_addr_prefix_copy(&net_prfx, &pinfo->prefix, pinfo->prefix_len);
++			ipv6_addr_prefix_copy(&curr_net_prfx, &ifp->addr, pinfo->prefix_len);
++			prfxs_equal =
++				ipv6_prefix_equal(&net_prfx, &curr_net_prfx, pinfo->prefix_len);
 +
-+static const struct tegra_ahci_regs tegra186_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(23, 16),
-+	.nvoob_comma_cnt_val = (7 << 16),
-+};
-+
-+static const struct tegra_ahci_soc tegra186_ahci_soc = {
-+	.supports_devslp = false,
-+	.has_sata_oob_rst = false,
-+	.regs = &tegra186_ahci_regs,
- };
- 
- static const struct of_device_id tegra_ahci_of_match[] = {
-@@ -469,6 +496,10 @@ static const struct of_device_id tegra_ahci_of_match[] = {
- 		.compatible = "nvidia,tegra210-ahci",
- 		.data = &tegra210_ahci_soc
- 	},
-+	{
-+		.compatible = "nvidia,tegra186-ahci",
-+		.data = &tegra186_ahci_soc
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, tegra_ahci_of_match);
-@@ -518,10 +549,13 @@ static int tegra_ahci_probe(struct platform_device *pdev)
- 		return PTR_ERR(tegra->sata_rst);
- 	}
- 
--	tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev, "sata-oob");
--	if (IS_ERR(tegra->sata_oob_rst)) {
--		dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
--		return PTR_ERR(tegra->sata_oob_rst);
-+	if (tegra->soc->has_sata_oob_rst) {
-+		tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev,
-+							     "sata-oob");
-+		if (IS_ERR(tegra->sata_oob_rst)) {
-+			dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
-+			return PTR_ERR(tegra->sata_oob_rst);
++			if (prfxs_equal && pinfo->prefix_len == ifp->prefix_len) {
++				result = ifp;
++				in6_ifa_hold(ifp);
++				break;
++			}
 +		}
++		rcu_read_unlock();
++		if (result_base != result)
++			ifp = result;
++		else
++			ifp = NULL;
++	} else {
++		ifp = ipv6_get_ifaddr(net, addr, dev, 1);
++	}
++
+ 	if (!ifp && valid_lft) {
+ 		int max_addresses = in6_dev->cnf.max_addresses;
+ 		struct ifa6_config cfg = {
+@@ -2781,9 +2828,34 @@ void addrconf_prefix_rcv(struct net_devi
+ 				dev_addr_generated = true;
+ 			}
+ 			goto ok;
++		} else if (((in6_dev->if_flags & IF_RA_VAR_PLEN) == IF_RA_VAR_PLEN) &&
++			  pinfo->prefix_len > 0 && pinfo->prefix_len <= 128) {
++			/* SLAAC with prefixes of arbitrary length (Variable SLAAC).
++			 * draft-mishra-6man-variable-slaac
++			 * draft-mishra-v6ops-variable-slaac-problem-stmt
++			 * Contact: Dmytro Shytyi.
++			 */
++			memcpy(&addr, &pinfo->prefix, 16);
++			if (in6_dev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
++				if (!ipv6_generate_address_variable_plen(&addr,
++									 0,
++									 in6_dev,
++									 pinfo->prefix_len,
++									 true)) {
++					addr_flags |= IFA_F_STABLE_PRIVACY;
++					goto ok;
++			}
++			} else if (!ipv6_generate_address_variable_plen(&addr,
++									0,
++									in6_dev,
++									pinfo->prefix_len,
++									false)) {
++				goto ok;
++			}
++		} else {
++			net_dbg_ratelimited("IPv6: Prefix with unexpected length %d\n",
++					    pinfo->prefix_len);
+ 		}
+-		net_dbg_ratelimited("IPv6 addrconf: prefix with wrong length %d\n",
+-				    pinfo->prefix_len);
+ 		goto put;
+ 
+ ok:
+@@ -3263,6 +3335,77 @@ retry:
+ 	*address = temp;
+ 	return 0;
+ }
++
++static int ipv6_generate_address_variable_plen(struct in6_addr *address,
++					       u8 dad_count,
++					       const struct inet6_dev *idev,
++					       unsigned int rcvd_prfx_len,
++					       bool stable_privacy_mode)
++{
++	static DEFINE_SPINLOCK(lock);
++	static __u32 digest[SHA1_DIGEST_WORDS];
++	static __u32 workspace[SHA1_WORKSPACE_WORDS];
++
++	static union {
++		char __data[SHA1_BLOCK_SIZE];
++		struct {
++			struct in6_addr secret;
++			__be32 prefix[2];
++			unsigned char hwaddr[MAX_ADDR_LEN];
++			u8 dad_count;
++		} __packed;
++	} data;
++
++	struct in6_addr secret;
++	struct in6_addr temp;
++	struct net *net = dev_net(idev->dev);
++
++	BUILD_BUG_ON(sizeof(data.__data) != sizeof(data));
++
++	if (stable_privacy_mode) {
++		if (idev->cnf.stable_secret.initialized)
++			secret = idev->cnf.stable_secret.secret;
++		else if (net->ipv6.devconf_dflt->stable_secret.initialized)
++			secret = net->ipv6.devconf_dflt->stable_secret.secret;
++		else
++			return -1;
++	}
++
++retry:
++	spin_lock_bh(&lock);
++	if (stable_privacy_mode) {
++		sha1_init(digest);
++		memset(&data, 0, sizeof(data));
++		memset(workspace, 0, sizeof(workspace));
++		memcpy(data.hwaddr, idev->dev->perm_addr, idev->dev->addr_len);
++		data.prefix[0] = address->s6_addr32[0];
++		data.prefix[1] = address->s6_addr32[1];
++		data.secret = secret;
++		data.dad_count = dad_count;
++
++		sha1_transform(digest, data.__data, workspace);
++
++		temp = *address;
++		temp.s6_addr32[0] = (__force __be32)digest[0];
++		temp.s6_addr32[1] = (__force __be32)digest[1];
++		temp.s6_addr32[2] = (__force __be32)digest[2];
++		temp.s6_addr32[3] = (__force __be32)digest[3];
++	} else {
++		temp = *address;
++		get_random_bytes(temp.s6_addr32, 16);
++	}
++	spin_unlock_bh(&lock);
++
++	if (ipv6_reserved_interfaceid(temp)) {
++		dad_count++;
++		if (dad_count > dev_net(idev->dev)->ipv6.sysctl.idgen_retries)
++			return -1;
++		goto retry;
++	}
++	ipv6_addr_prefix_copy(&temp, address, rcvd_prfx_len);
++	*address = temp;
++	return 0;
++}
+ 
+ static void ipv6_gen_mode_random_init(struct inet6_dev *idev)
+ {
+diff -rupN net-next-5.10.0-rc2/net/ipv6/ndisc.c net-next-patch-5.10.0-rc2/net/ipv6/ndisc.c
+--- net-next-5.10.0-rc2/net/ipv6/ndisc.c	2020-11-10 08:46:01.091860289 +0100
++++ net-next-patch-5.10.0-rc2/net/ipv6/ndisc.c	2020-11-11 18:11:05.630883513 +0100
+@@ -1244,6 +1244,8 @@ static void ndisc_router_discovery(struc
+ 		in6_dev->if_flags |= IF_RA_RCVD;
  	}
  
- 	tegra->sata_cold_rst = devm_reset_control_get(&pdev->dev, "sata-cold");
--- 
-2.7.4
-
++	in6_dev->if_flags |= ra_msg->icmph.icmp6_slaac_var_plen ?
++					IF_RA_VAR_PLEN : 0;
+ 	/*
+ 	 * Remember the managed/otherconf flags from most recently
+ 	 * received RA message (RFC 2462) -- yoshfuji
