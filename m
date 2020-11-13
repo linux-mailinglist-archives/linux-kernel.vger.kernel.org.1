@@ -2,75 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865F62B132F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA932B1331
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgKMAUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:20:32 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:7626 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726172AbgKMAUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:20:30 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CXJyj0dJVzSq;
-        Fri, 13 Nov 2020 01:20:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1605226829; bh=GU5qJ1nTeXHIDvDBgFSSbRsT2IkPhz3ghAkGAasa5UQ=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=VSygM+O351lVRtDnV3l8XYihCzo7dw0YmgB/qdfCKlhUgrWMdEdMZoWwaqMrD/P6R
-         GhAAzBtFyYDb7sMWC6owOnye3rI0dqOWdGb0Q4pm5ytwiGo6kCzHa7e9dp+DOq9ejs
-         W9YTW+JOekeAn1RPTEfjfDpApVsbZFeyW+tmK2iHSghSP1MJfs4/R9CVgSUfhOqpWE
-         E1tA96p5tOgeVGZ0iRZiCgj4cMk0pQrpL0BdbRaz2Jim1LYqQZE4ZruSLsEktZhCMx
-         Quc7y6bg7SatLm4TUggkpgE9ORifDGmynlOh9iVx1AE3CARMs/7cqaUC22YkPID8V4
-         IJk5kqlyIfiZQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Fri, 13 Nov 2020 01:20:28 +0100
-Message-Id: <d703acde2a93100c3c7a81059d716c50ad1b1f52.1605226675.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1605226675.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1605226675.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH RESEND 4/4] regulator: workaround self-referent regulators
+        id S1726207AbgKMAVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:21:07 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:44610 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgKMAVH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 19:21:07 -0500
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BD3BB20C2884
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:21:06 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BD3BB20C2884
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605226866;
+        bh=nz9yqF8USSSrlPERDOTsESfQ4zYSnGbwhAj5bwSzo9k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T1Fms8N18/7ISgemHDkQgygUCnbnsqXUBf3qWVP47J+In0cNJn3kxTxT2g4LiSVSs
+         d7emHREfG0rs7vdYNNhDXz17eFXC/83F1MvACQiKAZtKqmXnd+3gYREXE6OY6QnEFK
+         QFA8FNnYkZeimRDKPoT8p/MnSC0LzqM4AGCbNCCc=
+Received: by mail-qv1-f48.google.com with SMTP id r12so3787258qvq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:21:06 -0800 (PST)
+X-Gm-Message-State: AOAM533nYmZW59xwUqZ2zxCQBqz72TW5IqL90opbpDyMgISBlV/QhYHr
+        knv00vcpGTs3iOwpRfWLCN1Bkj3DNmZQF0vt760=
+X-Google-Smtp-Source: ABdhPJzxtgNKZgLQd0qw/4EC1rbVIj3JHrc1hhlJSvSl8FJuKTgHK/MuRAFV/iEsmRA5CJSg+QR6fh9bSEmRjnuSX1M=
+X-Received: by 2002:ad4:490d:: with SMTP id bh13mr2423164qvb.14.1605226865807;
+ Thu, 12 Nov 2020 16:21:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
+ <20201112035023.974748-1-natechancellor@gmail.com> <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
+In-Reply-To: <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 13 Nov 2020 01:20:29 +0100
+X-Gmail-Original-Message-ID: <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
+Message-ID: <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
+Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Workaround regulators whose supply name happens to be the same as its
-own name. This fixes boards that used to work before the early supply
-resolving was removed. The error message is left in place so that
-offending drivers can be detected.
+On Fri, Nov 13, 2020 at 12:13 AM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Wed, 11 Nov 2020 20:50:23 -0700 Nathan Chancellor <natechancellor@gmail.com> wrote:
+>
+> > Clang warns:
+> >
+> > kernel/reboot.c:707:17: warning: implicit conversion from enumeration
+> > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
+> > [-Wenum-conversion]
+> >                 reboot_mode = BOOT_TRIPLE;
+> >                             ~ ^~~~~~~~~~~
+> >
+> > ...
+> >
+> > --- a/kernel/reboot.c
+> > +++ b/kernel/reboot.c
+> > @@ -704,19 +704,19 @@ static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
+> >               return -EPERM;
+> >
+> >       if (!strncmp(buf, BOOT_TRIPLE_STR, strlen(BOOT_TRIPLE_STR)))
+> > -             reboot_mode = BOOT_TRIPLE;
+> > +             reboot_type = BOOT_TRIPLE;
+> >       else if (!strncmp(buf, BOOT_KBD_STR, strlen(BOOT_KBD_STR)))
+> > -             reboot_mode = BOOT_KBD;
+> > +             reboot_type = BOOT_KBD;
+> >       else if (!strncmp(buf, BOOT_BIOS_STR, strlen(BOOT_BIOS_STR)))
+> > -             reboot_mode = BOOT_BIOS;
+> > +             reboot_type = BOOT_BIOS;
+> >       else if (!strncmp(buf, BOOT_ACPI_STR, strlen(BOOT_ACPI_STR)))
+> > -             reboot_mode = BOOT_ACPI;
+> > +             reboot_type = BOOT_ACPI;
+> >       else if (!strncmp(buf, BOOT_EFI_STR, strlen(BOOT_EFI_STR)))
+> > -             reboot_mode = BOOT_EFI;
+> > +             reboot_type = BOOT_EFI;
+> >       else if (!strncmp(buf, BOOT_CF9_FORCE_STR, strlen(BOOT_CF9_FORCE_STR)))
+> > -             reboot_mode = BOOT_CF9_FORCE;
+> > +             reboot_type = BOOT_CF9_FORCE;
+> >       else if (!strncmp(buf, BOOT_CF9_SAFE_STR, strlen(BOOT_CF9_SAFE_STR)))
+> > -             reboot_mode = BOOT_CF9_SAFE;
+> > +             reboot_type = BOOT_CF9_SAFE;
+> >       else
+> >               return -EINVAL;
+>
+> This is a fairly dramatic change to the original patch, but it eyeballs
+> OK.
+>
+> Matteo, could you please comment?  And preferably retest?
+>
 
-Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
-Cc: stable@vger.kernel.org
-Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/regulator/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index ab922ed273f3..38ba579efe2b 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1844,7 +1844,10 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 	if (r == rdev) {
- 		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
- 			rdev->desc->name, rdev->supply_name);
--		return -EINVAL;
-+		if (!have_full_constraints())
-+			return -EINVAL;
-+		r = dummy_regulator_rdev;
-+		get_device(&r->dev);
- 	}
- 
- 	/*
+I reviewed the patch and it looks good to me.
+I tested it with this script which passes now with Nathan's fix:
+
+for i in cold warm hard soft gpio; do
+    echo $i > mode
+    read j <mode
+    [ $i = $j ] || echo "mode $i = $j"
+done
+
+for i in bios acpi kbd triple efi cf9_force cf9_safe; do
+    echo $i > type
+    read j <type
+    [ $i = $j ] || echo "type $i = $j"
+done
+
+for i in $(seq 0 $(nproc --ignore=1)); do
+    echo $i > cpu
+    read j <cpu
+    [ $i = $j ] || echo "cpu $i = $j"
+done
+
+for i in 0 1; do
+    echo $i >force
+    read j <force
+    [ $i = $j ] || echo "force $i = $j"
+done
+
+While writing the script I found that in the documentation I left for
+'type' the values from
+Documentation/admin-guide/kernel-parameters.txt, which is 'pci' for
+cf9_force reboot.
+While at it, should we update the doc with the values 'cf9_force' and
+'cf9_safe', or rename to 'pci' and 'pci_safe' to be coherent with the
+kernel cmdline?
+
+In any case, kernel-parameters.txt doesn't mention that reboot=q does
+the 'cf9_safe' reboot type, so it must be fixed anyway.
+
+Regards,
 -- 
-2.20.1
-
+per aspera ad upstream
