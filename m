@@ -2,67 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F3C2B2891
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64532B2893
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgKMWdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgKMWdR (ORCPT
+        id S1726146AbgKMWe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:34:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29554 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725981AbgKMWe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:33:17 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D89C0613D1;
-        Fri, 13 Nov 2020 14:33:15 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 13 Nov 2020 17:34:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605306866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Rq1SwLUmuk5yTiT3dYLgLhG1v7f4gsVqDXVvnML+kQ=;
+        b=iiW0miU/Wf46LMu701BcvKbeels5SbOrwnq9IVK2WyUG0sfTul2s80mMXeav1KZiogixAb
+        1GL2O1eOhLuxlgAL1LRv12egNL2TX4Nn1wUt7jBZ7D7BBfRGxj2u1pk31uecwKjQP7HKKy
+        EsV6klylq23LXUNU1nAJMpkFcoUmof4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-kgiX0vPEOgWkK_HzwNLmJg-1; Fri, 13 Nov 2020 17:34:24 -0500
+X-MC-Unique: kgiX0vPEOgWkK_HzwNLmJg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 0B0BF734;
-        Fri, 13 Nov 2020 22:33:15 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 15:33:13 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/26] Make reporting-bugs easier to grasp and
- yet more detailed & helpful
-Message-ID: <20201113153313.68ff210c@lwn.net>
-In-Reply-To: <cover.1605203187.git.linux@leemhuis.info>
-References: <cover.1605203187.git.linux@leemhuis.info>
-Organization: LWN.net
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11ACD186DD33;
+        Fri, 13 Nov 2020 22:34:22 +0000 (UTC)
+Received: from treble (ovpn-117-69.rdu2.redhat.com [10.10.117.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71FFA5D707;
+        Fri, 13 Nov 2020 22:34:15 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 16:34:12 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <20201113223412.inono2ekrs7ky7rm@treble>
+References: <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
+ <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com>
+ <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble>
+ <20201110174606.mp5m33lgqksks4mt@treble>
+ <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+ <20201113195408.atbpjizijnhuinzy@treble>
+ <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 18:58:37 +0100
-Thorsten Leemhuis <linux@leemhuis.info> wrote:
-
-> This series rewrites the "how to report bugs to the Linux kernel
-> maintainers" document to make it more straight forward and its essence
-> easier to grasp. At the same time make the text provide a lot more details
-> about the process in form of a reference section, so users that want or
-> need to know them have them at hand.
+On Fri, Nov 13, 2020 at 12:24:32PM -0800, Sami Tolvanen wrote:
+> > I still don't see this warning for some reason.
 > 
-> The goal of this rewrite: improve the quality of the bug reports and
-> reduce the number of reports that get ignored. This was motivated by many
-> reports of poor quality the submitter noticed while looking after Linux
-> kernel regression tracking many moons ago.
+> Do you have CONFIG_XEN enabled? I can reproduce this on ToT master as follows:
+> 
+> $ git rev-parse HEAD
+> 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> $ make defconfig && \
+> ./scripts/config -e HYPERVISOR_GUEST -e PARAVIRT -e XEN && \
+> make olddefconfig && \
+> make -j110
+> ...
+> $ ./tools/objtool/objtool check -arfld vmlinux.o 2>&1 | grep secondary
+> vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with
+> modified stack frame
+> 
+> > Is it fixed by adding cpu_bringup_and_idle() to global_noreturns[] in
+> > tools/objtool/check.c?
+> 
+> No, that didn't fix the warning. Here's what I tested:
 
-So I've not had a chance to try to read through the whole thing again,
-will try to do so in the near future.
+I think this fixes it:
 
-As for how to proceed...getting others to review this is going to be a bit
-of a challenge.  Perhaps the right approach is to just merge the new
-document under a new name - reporting-bugs-the-novel.txt or something -
-then try to get a few people to look at specific parts of it?  Once all
-seems well we can rename it over the old document and call it done.
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] x86/xen: Fix objtool vmlinux.o validation of xen hypercalls
 
-Make sense?
+Objtool vmlinux.o validation is showing warnings like the following:
 
-Thanks,
+  # tools/objtool/objtool check -barfld vmlinux.o
+  vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with modified stack frame
+  vmlinux.o: warning: objtool:   xen_hypercall_set_trap_table()+0x0: <=== (sym)
 
-jon
+Objtool falls through all the empty hypercall text and gets confused
+when it encounters the first real function afterwards.  The empty unwind
+hints in the hypercalls aren't working for some reason.  Replace them
+with a more straightforward use of STACK_FRAME_NON_STANDARD.
+
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ arch/x86/xen/xen-head.S | 9 ++++-----
+ include/linux/objtool.h | 8 ++++++++
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+index 2d7c8f34f56c..3c538b1ff4a6 100644
+--- a/arch/x86/xen/xen-head.S
++++ b/arch/x86/xen/xen-head.S
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/elfnote.h>
+ #include <linux/init.h>
++#include <linux/objtool.h>
+ 
+ #include <asm/boot.h>
+ #include <asm/asm.h>
+@@ -67,14 +68,12 @@ SYM_CODE_END(asm_cpu_bringup_and_idle)
+ .pushsection .text
+ 	.balign PAGE_SIZE
+ SYM_CODE_START(hypercall_page)
+-	.rept (PAGE_SIZE / 32)
+-		UNWIND_HINT_EMPTY
+-		.skip 32
+-	.endr
++	.skip PAGE_SIZE
+ 
+ #define HYPERCALL(n) \
+ 	.equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
+-	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
++	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32; \
++	STACK_FRAME_NON_STANDARD xen_hypercall_##n
+ #include <asm/xen-hypercalls.h>
+ #undef HYPERCALL
+ SYM_CODE_END(hypercall_page)
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 577f51436cf9..746617265236 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -109,6 +109,12 @@ struct unwind_hint {
+ 	.popsection
+ .endm
+ 
++.macro STACK_FRAME_NON_STANDARD func:req
++	.pushsection .discard.func_stack_frame_non_standard
++		.long \func - .
++	.popsection
++.endm
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #else /* !CONFIG_STACK_VALIDATION */
+@@ -123,6 +129,8 @@ struct unwind_hint {
+ .macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
+ .endm
+ #endif
++.macro STACK_FRAME_NON_STANDARD func:req
++.endm
+ 
+ #endif /* CONFIG_STACK_VALIDATION */
+ 
+-- 
+2.25.4
+
