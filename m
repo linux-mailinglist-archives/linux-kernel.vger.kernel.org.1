@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743D32B1F57
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B502B1F62
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKMP5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:57:24 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35612 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726741AbgKMP5X (ORCPT
+        id S1726869AbgKMP6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgKMP6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:57:23 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADFfpe3053436;
-        Fri, 13 Nov 2020 10:57:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=6Bma8JVVvotebU2sHjOCW2Bu+52hzHJBheh7pWVE0Ow=;
- b=tS9sH5Gg7MoMpcQ6luqe//kA0Cl0YCoDfkBP+jHvzeScizXTIa3tLyVD8ajQrmk79BNu
- II5L775mnYNBJ5wmZ6LxO/+G5+W+nAiqXYVhXTd4qbiO5noi9s0e0jEz24CwON7wdR09
- LoVqSqq87rRHa9WdMqY+IADeXmyrCScoXrTAMedcmm+cBaBt4IuSMvoFIriFP1gBj7Q6
- u3Oepq0aOzhWGpJtjYcB0LIPupbDIB064MwhGnFWYNGv4GhVNFal9xkPY6RNng3GXXmQ
- PPlcqUU830UH550O0p6qykFDK0ybLoYcaRM3hA/mZUy/sdKgdaDyQpQdHSF6geUzR1MU tQ== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sw0v8exm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 10:57:20 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADFrVP1012531;
-        Fri, 13 Nov 2020 15:57:19 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 34nk77ug7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 15:57:18 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADFvGnu3670690
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Nov 2020 15:57:16 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 943CCAE04D;
-        Fri, 13 Nov 2020 15:57:16 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 53044AE055;
-        Fri, 13 Nov 2020 15:57:15 +0000 (GMT)
-Received: from sig-9-65-233-212.ibm.com (unknown [9.65.233.212])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 13 Nov 2020 15:57:15 +0000 (GMT)
-Message-ID: <27ecba12eb9f61e73b4b3ecf69310ce3f21bc2e9.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] ima: select ima-buf template for buffer measurement
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 13 Nov 2020 10:57:14 -0500
-In-Reply-To: <20201112203959.3657-1-nramas@linux.microsoft.com>
-References: <20201112203959.3657-1-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=3 mlxscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011130096
+        Fri, 13 Nov 2020 10:58:50 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82819C0613D1;
+        Fri, 13 Nov 2020 07:58:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=f7t3S1jdVSfRsXfQqlo0fUjZRYtsQhFitY7Hjvr6/jM=; b=ceZJidw5MO1m8hdi/JCiZTulG
+        ZV4AdjOWhCHBfKk3vlSov0mmpQ1jGwIg9LcKJK5TR60X1KBZLNSYPXMMTzDH/usbj8l1Yr32uD7rC
+        COfG4i5bBIHHOzfuW9LNphokoTQPlcqQ073HymwCP21TTG4jPNZLB9TqQIwRa1U794m756cM22N6n
+        pAo2vBr2Kk/Xwmzax3vgOAcVm0DH5fNFFKO+qnp+8CbiilWTb3mE9Vwa2SinrWIt+JBdR5lOPOyfD
+        pX+M4khlODgfJ4E8BaAy/XUBG/7DYA4xxtH1hTzscnnMSCfBvPxBxVpIlTGWdTI9mMoosKBsFv1PW
+        8nKLw5f6Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59226)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kdbT3-0004yp-BB; Fri, 13 Nov 2020 15:58:29 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kdbSz-0004Yy-J5; Fri, 13 Nov 2020 15:58:25 +0000
+Date:   Fri, 13 Nov 2020 15:58:25 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernelci-results@groups.io,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mike Rapoport <rppt@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Re: rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
+Message-ID: <20201113155825.GD1551@shell.armlinux.org.uk>
+References: <5fadef1f.1c69fb81.9166e.093c@mx.google.com>
+ <e16e2ce5-dc21-d159-ecf2-e0a430d772e1@collabora.com>
+ <CAMj1kXFrxYqTARLprws6ja2=C1xZNC+TNr0Vvayr6sReqsUhyg@mail.gmail.com>
+ <ce91a878-5ce3-614d-d10c-569b891b12d0@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce91a878-5ce3-614d-d10c-569b891b12d0@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi,
-
-On Thu, 2020-11-12 at 12:39 -0800, Lakshmi Ramasubramanian wrote:
-> The default IMA template used for all policy rules is the value set
-> for CONFIG_IMA_DEFAULT_TEMPLATE if the policy rule does not specify
-> a template. The default IMA template for buffer measurements should be
-> 'ima-buf' - so that the measured buffer is correctly included in the IMA
-> measurement log entry.
+On Fri, Nov 13, 2020 at 03:43:27PM +0000, Guillaume Tucker wrote:
+> On 13/11/2020 10:35, Ard Biesheuvel wrote:
+> > On Fri, 13 Nov 2020 at 11:31, Guillaume Tucker
+> > <guillaume.tucker@collabora.com> wrote:
+> >>
+> >> Hi Ard,
+> >>
+> >> Please see the bisection report below about a boot failure on
+> >> RPi-2b.
+> >>
+> >> Reports aren't automatically sent to the public while we're
+> >> trialing new bisection features on kernelci.org but this one
+> >> looks valid.
+> >>
+> >> There's nothing in the serial console log, probably because it's
+> >> crashing too early during boot.  I'm not sure if other platforms
+> >> on kernelci.org were hit by this in the same way, but there
+> >> doesn't seem to be any.
+> >>
+> >> The same regression can be see on rmk's for-next branch as well
+> >> as in linux-next.  It happens with both bcm2835_defconfig and
+> >> multi_v7_defconfig.
+> >>
+> >> Some more details can be found here:
+> >>
+> >>   https://kernelci.org/test/case/id/5fae44823818ee918adb8864/
+> >>
+> >> If this looks like a real issue but you don't have a platform at
+> >> hand to reproduce it, please let us know if you would like the
+> >> KernelCI test to be re-run with earlyprintk or some debug config
+> >> turned on, or if you have a fix to try.
+> >>
+> >> Best wishes,
+> >> Guillaume
+> >>
+> > 
+> > Hello Guillaume,
+> > 
+> > That patch did have an issue, but it was already fixed by
+> > 
+> > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9020/1
+> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=fc2933c133744305236793025b00c2f7d258b687
+> > 
+> > Could you please double check whether cherry-picking that on top of
+> > the first bad commit fixes the problem?
 > 
-> With the default template format, buffer measurements are added to
-> the measurement list, but do not include the buffer data, making it
-> difficult, if not impossible, to validate. Including 'ima-buf'
-> template records in the measurement list by default, should not impact
-> existing attestation servers without 'ima-buf' template support.
+> Sadly this doesn't appear to be fixing the issue.  I've
+> cherry-picked your patch on top of the commit found by the
+> bisection but it still didn't boot, here's the git log
 > 
-> Initialize a global 'ima-buf' template and select that template,
-> by default, for buffer measurements.
+> cbb9656e83ca ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+> 7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+> e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+> 3650b228f83a Linux 5.10-rc1
 > 
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-gcbb9656e83ca/
+> 
+> There's no output so it's hard to tell what is going on, but
+> reverting the bad commmit does make the board to boot (that's
+> what "revert: PASS" means in the bisect report).  So it's
+> unlikely that there is another issue causing the boot failure.
 
-Thanks!  It's now queued in next-integrity-testing.
+These silent boot failures are precisely what the DEBUG_LL stuff (and
+early_printk) is supposed to help with - getting the kernel messages
+out when there is an oops before the serial console is initialised.
 
-Mimi
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
