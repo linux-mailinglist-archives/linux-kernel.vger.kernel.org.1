@@ -2,141 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981A72B2446
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6402B2448
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKMTJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:09:30 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35272 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgKMTJ3 (ORCPT
+        id S1726310AbgKMTJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:09:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726322AbgKMTJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:09:29 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ADJ9O9w065948;
-        Fri, 13 Nov 2020 13:09:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605294564;
-        bh=vTFMOQepr1ENT3zHa621HEf1PPDSTxsDdGqDVMrAaUI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=hXjVDeVj3T7VCKveabDwoP3NgcVJaPriytdVahjauefig62wCQKQJkDRLtn/WMOEc
-         c/QwPQqJj6/i7lkGfOSoLN8T5lPvk6aJLJoxKcf8T5CcNVc5oQEJ7+BnKWuH5G66av
-         Yf8TQVeRnGy6aF6KdVrbomq55fZvZlWCHJNspavU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ADJ9OUc060020
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 13 Nov 2020 13:09:24 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
- Nov 2020 13:09:24 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 13 Nov 2020 13:09:24 -0600
-Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ADJ9Jlg077626;
-        Fri, 13 Nov 2020 13:09:20 -0600
-Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-j7200-main: Add gpio nodes in main
- domain
-To:     Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>
-CC:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <t-kristo@ti.com>,
-        <robh+dt@kernel.org>, Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vutla, Lokesh" <lokeshvutla@ti.com>
-References: <20201102191120.20380-1-faiz_abbas@ti.com>
- <20201102191120.20380-2-faiz_abbas@ti.com>
- <20201112163953.soia5cje4ry42ujf@kahuna>
- <6ce6de4b-6e4d-1d2d-aa7a-570d1796d668@ti.com>
- <20201113184020.drntugqsnj7dzsnh@ultimatum>
-From:   Sekhar Nori <nsekhar@ti.com>
-Message-ID: <c6267288-581e-3b34-cec5-d5879f3d1283@ti.com>
-Date:   Sat, 14 Nov 2020 00:39:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Fri, 13 Nov 2020 14:09:40 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F1CC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:09:39 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id p1so11203543wrf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=singlestore.com; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=+iOLnrc0hvizg2xwbP3eUh2USfs+s6GfS50BoVNK02I=;
+        b=SWZtNOfZbsiknKP3od9nqZOTwbz9eSLjGStDCTH+KqMjlDoEixkJ+hEqYS6SpCAc6v
+         Pg9cBsboFR+XZmUcAd854qweTHRRTMNa/UnYRxIcy+7P2U1S6WWalcUXF96cbhREVuJc
+         WaNC0ZrG1sUmBP5TTOCjq50cj9lhFoRcgrprcaBnU2K/JZuyzh51gQwTLPJmNVB8xEo+
+         C3K6ZiXrkCS+bs92WjMyXcyqaG9PcsHJPp0UFlOw2c5TA5QofvWMfM2DrNjTxdKe28DX
+         gTDN9o4PCYR1O3yOjzOyAon0XXMfIM/LPvjcVPfXVKZnjWPxJQIZ2JXbsKD8a/Ez5jWE
+         hxuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=+iOLnrc0hvizg2xwbP3eUh2USfs+s6GfS50BoVNK02I=;
+        b=kvS8ds0TFQCE6SMjsRjMYSdYa1CcZNT6ajmGdA/tVNRf0qA/P2dZ8V2208GAzbXi0f
+         tYzWtecnJnM+wYmo7fVA6q15qodorqPvtORRZ8i1RJVfCoD+No3iJL/6GEofhXUB5KEu
+         h6grCNT1LiKznSzapw6WVkHvuuVZXM+QnySE9jndW4ZVort+b5pSctP7MlWV8fcY7RVE
+         I55vZGqNRhQeQBjVz/dkcFEVxKa2LOK2rJu6uqcCJIvMqoC7EjqT18Y/vrl/y8O9ico0
+         88ojhQk0o+AJGqhbWKcHPAbaMoV+BCKq00VnMJqv299FjLPYo05kxnTVaNwz9EhURbQx
+         lsxg==
+X-Gm-Message-State: AOAM532r1xqB09+4k2hxvk1W7HyNqDhCId4jAnaok5wkYl0F+RnjLanS
+        fot7Xg33MbbJ+ztFgex6Or674w==
+X-Google-Smtp-Source: ABdhPJzOkka4AiKQgJ+oE5Uo3yi0uijqy+6QMIyvrW5He2tcKKDVZJiViKin69rCV0SuMZjzPKFDSg==
+X-Received: by 2002:a5d:6411:: with SMTP id z17mr5319266wru.112.1605294578429;
+        Fri, 13 Nov 2020 11:09:38 -0800 (PST)
+Received: from rdias-suse-pc.lan (bl13-26-148.dsl.telepac.pt. [85.246.26.148])
+        by smtp.gmail.com with ESMTPSA id a18sm10638411wmm.22.2020.11.13.11.09.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 11:09:37 -0800 (PST)
+Date:   Fri, 13 Nov 2020 19:09:35 +0000
+From:   Ricardo Dias <rdias@singlestore.com>
+To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] tcp: fix race condition when creating child sockets from
+ syncookies
+Message-ID: <20201113190935.GA106934@rdias-suse-pc.lan>
 MIME-Version: 1.0
-In-Reply-To: <20201113184020.drntugqsnj7dzsnh@ultimatum>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/20 12:10 AM, Nishanth Menon wrote:
-> On 23:59-20201113, Sekhar Nori wrote:
-> [..]
->>> dtbs_check: we added:
->>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@600000: Missing #address-cells in interrupt provider
->>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@610000: Missing #address-cells in interrupt provider
->>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@620000: Missing #address-cells in interrupt provider
->>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@630000: Missing #address-cells in interrupt provider
->>
->> Hmm, running dtbs_check, I did not really see this. These are all the
->> warnings I see for TI platforms: https://pastebin.ubuntu.com/p/m2my62mjQq/
-> 
-> Here is the full list of checks I ran through with kernel_patch_verify
-> (docker)
-> 	https://pastebin.ubuntu.com/p/tcnWw89CMD/
-> 
-> See lines 128 onwards for this series. kernel_patch_verify does'nt
-> complain on existing warnings, but just prints when there are additional
-> ones added in. Also make sure we have the right dtc as well
-> dtc 1.6.0 and dt_schema 2020.8.1 was used.
+When the TCP stack is in SYN flood mode, the server child socket is
+created from the SYN cookie received in a TCP packet with the ACK flag
+set.
 
-I was using the latest schema from master. But I changed to 2020.08.1
-also, and still don't see the warning.
+The child socket is created when the server receives the first TCP
+packet with a valid SYN cookie from the client. Usually, this packet
+corresponds to the final step of the TCP 3-way handshake, the ACK
+packet. But is also possible to receive a valid SYN cookie from the
+first TCP data packet sent by the client, and thus create a child socket
+from that SYN cookie.
 
-$ dt-doc-validate --version
-2020.12.dev1+gab5a73fcef26
+Since a client socket is ready to send data as soon as it receives the
+SYN+ACK packet from the server, the client can send the ACK packet (sent
+by the TCP stack code), and the first data packet (sent by the userspace
+program) almost at the same time, and thus the server will equally
+receive the two TCP packets with valid SYN cookies almost at the same
+instant.
 
-I dont have a system-wide dtc installed. One in kernel tree is updated.
+When such event happens, the TCP stack code has a race condition that
+occurs between the momement a lookup is done to the established
+connections hashtable to check for the existence of a connection for the
+same client, and the moment that the child socket is added to the
+established connections hashtable. As a consequence, this race condition
+can lead to a situation where we add two child sockets to the
+established connections hashtable and deliver two sockets to the
+userspace program to the same client.
 
-$ scripts/dtc/dtc --version
-Version: DTC 1.6.0-gcbca977e
+This patch fixes the race condition by checking if an existing child
+socket exists for the same client when we are adding the second child
+socket to the established connections socket. If an existing child
+socket exists, we return that socket and use it to process the TCP
+packet received, and discard the second child socket to the same client.
 
-Looking at your logs, it looks like you have more patches than just this
-applied. I wonder if thats making a difference. Can you check with just
-these patches applied to linux-next or share your tree which includes
-other patches?
+Signed-off-by: Ricardo Dias <rdias@singlestore.com>
+---
+v4 (2020-11-12):
+  * Added `struct sock **esk) parameter to `inet_ehash_insert`.
+  * Fixed ref count increment in `inet_ehash_insert`.
+  * Fixed callers of inet_ehash_nolisten.
 
-In your logs, you have such error for other interrupt controller nodes
-as well. For example:
+v3 (2020-11-11):
+  * Fixed IPv6 handling in inet_ehash_insert
+  * Removed unecessary comparison while traversing the ehash bucket
+    list.
+ 
+v2 (2020-11-09):
+  * Changed the author's email domain.
+  * Removed the helper function inet_ehash_insert_chk_dup and moved the
+    logic to the existing inet_ehash_insert.
+  * Updated the callers of iner_ehash_nolisten to deal with the new
+    logic.
 
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi:
-/bus@100000/bus@30000000/interrupt-controller1: Missing #address-cells
-in interrupt provider
+ include/net/inet_hashtables.h   |  4 +--
+ net/dccp/ipv4.c                 |  2 +-
+ net/dccp/ipv6.c                 |  2 +-
+ net/ipv4/inet_connection_sock.c |  2 +-
+ net/ipv4/inet_hashtables.c      | 64 ++++++++++++++++++++++++++++-----
+ net/ipv4/syncookies.c           |  5 ++-
+ net/ipv4/tcp_ipv4.c             |  9 ++++-
+ net/ipv6/tcp_ipv6.c             | 16 ++++++++-
+ 8 files changed, 87 insertions(+), 17 deletions(-)
 
-Which I don't see in my logs. My guess is some other patch(es) in your
-patch stack either uncovers this warning or causes it.
+diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+index 92560974ea67..b0abc4dd6d49 100644
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -247,8 +247,8 @@ void inet_hashinfo2_init(struct inet_hashinfo *h, const char *name,
+ 			 unsigned long high_limit);
+ int inet_hashinfo2_init_mod(struct inet_hashinfo *h);
+ 
+-bool inet_ehash_insert(struct sock *sk, struct sock *osk);
+-bool inet_ehash_nolisten(struct sock *sk, struct sock *osk);
++bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk);
++bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, struct sock **esk);
+ int __inet_hash(struct sock *sk, struct sock *osk);
+ int inet_hash(struct sock *sk);
+ void inet_unhash(struct sock *sk);
+diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
+index 9c28c8251125..098bae35ab76 100644
+--- a/net/dccp/ipv4.c
++++ b/net/dccp/ipv4.c
+@@ -427,7 +427,7 @@ struct sock *dccp_v4_request_recv_sock(const struct sock *sk,
+ 
+ 	if (__inet_inherit_port(sk, newsk) < 0)
+ 		goto put_and_exit;
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
+ 	if (*own_req)
+ 		ireq->ireq_opt = NULL;
+ 	else
+diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
+index ef4ab28cfde0..78ee1b5acf1f 100644
+--- a/net/dccp/ipv6.c
++++ b/net/dccp/ipv6.c
+@@ -533,7 +533,7 @@ static struct sock *dccp_v6_request_recv_sock(const struct sock *sk,
+ 		dccp_done(newsk);
+ 		goto out;
+ 	}
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
+ 	/* Clone pktoptions received with SYN, if we own the req */
+ 	if (*own_req && ireq->pktopts) {
+ 		newnp->pktoptions = skb_clone(ireq->pktopts, GFP_ATOMIC);
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index b457dd2d6c75..df26489e4f6c 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -787,7 +787,7 @@ static void reqsk_queue_hash_req(struct request_sock *req,
+ 	timer_setup(&req->rsk_timer, reqsk_timer_handler, TIMER_PINNED);
+ 	mod_timer(&req->rsk_timer, jiffies + timeout);
+ 
+-	inet_ehash_insert(req_to_sk(req), NULL);
++	inet_ehash_insert(req_to_sk(req), NULL, NULL);
+ 	/* before letting lookups find us, make sure all req fields
+ 	 * are committed to memory and refcnt initialized.
+ 	 */
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 239e54474b65..bb2fb9385e83 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -20,6 +20,9 @@
+ #include <net/addrconf.h>
+ #include <net/inet_connection_sock.h>
+ #include <net/inet_hashtables.h>
++#if IS_ENABLED(CONFIG_IPV6)
++#include <net/inet6_hashtables.h>
++#endif
+ #include <net/secure_seq.h>
+ #include <net/ip.h>
+ #include <net/tcp.h>
+@@ -510,17 +513,27 @@ static u32 inet_sk_port_offset(const struct sock *sk)
+ 					  inet->inet_dport);
+ }
+ 
+-/* insert a socket into ehash, and eventually remove another one
+- * (The another one can be a SYN_RECV or TIMEWAIT
++/* Insert a socket into ehash, and eventually remove another one
++ * (The another one can be a SYN_RECV or TIMEWAIT)
++ * If an existing socket already exists, it returns that socket
++ * through the esk parameter.
+  */
+-bool inet_ehash_insert(struct sock *sk, struct sock *osk)
++bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk)
+ {
+ 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
+ 	struct hlist_nulls_head *list;
+ 	struct inet_ehash_bucket *head;
+-	spinlock_t *lock;
++	const struct hlist_nulls_node *node;
++	struct sock *_esk;
++	spinlock_t *lock; /* protects hashinfo socket entry */
++	struct net *net = sock_net(sk);
++	const int dif = sk->sk_bound_dev_if;
++	const int sdif = sk->sk_bound_dev_if;
+ 	bool ret = true;
+ 
++	INET_ADDR_COOKIE(acookie, sk->sk_daddr, sk->sk_rcv_saddr);
++	const __portpair ports = INET_COMBINED_PORTS(sk->sk_dport, sk->sk_num);
++
+ 	WARN_ON_ONCE(!sk_unhashed(sk));
+ 
+ 	sk->sk_hash = sk_ehashfn(sk);
+@@ -532,16 +545,49 @@ bool inet_ehash_insert(struct sock *sk, struct sock *osk)
+ 	if (osk) {
+ 		WARN_ON_ONCE(sk->sk_hash != osk->sk_hash);
+ 		ret = sk_nulls_del_node_init_rcu(osk);
++	} else if (esk) {
++		sk_nulls_for_each_rcu(_esk, node, list) {
++			if (_esk->sk_hash != sk->sk_hash)
++				continue;
++			if (sk->sk_family == AF_INET) {
++				if (unlikely(INET_MATCH(_esk, net, acookie,
++							sk->sk_daddr,
++							sk->sk_rcv_saddr,
++							ports, dif, sdif))) {
++					refcount_inc(&_esk->sk_refcnt);
++					goto found;
++				}
++			}
++#if IS_ENABLED(CONFIG_IPV6)
++			else if (sk->sk_family == AF_INET6) {
++				if (unlikely(INET6_MATCH(_esk, net,
++							 &sk->sk_v6_daddr,
++							 &sk->sk_v6_rcv_saddr,
++							 ports, dif, sdif))) {
++					refcount_inc(&_esk->sk_refcnt);
++					goto found;
++				}
++			}
++#endif
++		}
++
+ 	}
++	_esk = NULL;
+ 	if (ret)
+ 		__sk_nulls_add_node_rcu(sk, list);
++
++found:
+ 	spin_unlock(lock);
++	if (_esk) {
++		*esk = _esk;
++		ret = false;
++	}
+ 	return ret;
+ }
+ 
+-bool inet_ehash_nolisten(struct sock *sk, struct sock *osk)
++bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, struct sock **esk)
+ {
+-	bool ok = inet_ehash_insert(sk, osk);
++	bool ok = inet_ehash_insert(sk, osk, esk);
+ 
+ 	if (ok) {
+ 		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+@@ -585,7 +631,7 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ 	int err = 0;
+ 
+ 	if (sk->sk_state != TCP_LISTEN) {
+-		inet_ehash_nolisten(sk, osk);
++		inet_ehash_nolisten(sk, osk, NULL);
+ 		return 0;
+ 	}
+ 	WARN_ON(!sk_unhashed(sk));
+@@ -681,7 +727,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 		tb = inet_csk(sk)->icsk_bind_hash;
+ 		spin_lock_bh(&head->lock);
+ 		if (sk_head(&tb->owners) == sk && !sk->sk_bind_node.next) {
+-			inet_ehash_nolisten(sk, NULL);
++			inet_ehash_nolisten(sk, NULL, NULL);
+ 			spin_unlock_bh(&head->lock);
+ 			return 0;
+ 		}
+@@ -760,7 +806,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 	inet_bind_hash(sk, tb, port);
+ 	if (sk_unhashed(sk)) {
+ 		inet_sk(sk)->inet_sport = htons(port);
+-		inet_ehash_nolisten(sk, (struct sock *)tw);
++		inet_ehash_nolisten(sk, (struct sock *)tw, NULL);
+ 	}
+ 	if (tw)
+ 		inet_twsk_bind_unhash(tw, hinfo);
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index e03756631541..c4bb895085f0 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -208,7 +208,7 @@ struct sock *tcp_get_cookie_sock(struct sock *sk, struct sk_buff *skb,
+ 
+ 	child = icsk->icsk_af_ops->syn_recv_sock(sk, skb, req, dst,
+ 						 NULL, &own_req);
+-	if (child) {
++	if (child && own_req) {
+ 		refcount_set(&req->rsk_refcnt, 1);
+ 		tcp_sk(child)->tsoffset = tsoff;
+ 		sock_rps_save_rxhash(child, skb);
+@@ -223,6 +223,9 @@ struct sock *tcp_get_cookie_sock(struct sock *sk, struct sk_buff *skb,
+ 
+ 		bh_unlock_sock(child);
+ 		sock_put(child);
++	}  else if (child && !own_req) {
++		__reqsk_free(req);
++		return child;
+ 	}
+ 	__reqsk_free(req);
+ 
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 592c73962723..875b5310fc25 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1501,6 +1501,7 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 	int l3index;
+ #endif
+ 	struct ip_options_rcu *inet_opt;
++	struct sock *esk = NULL;
+ 
+ 	if (sk_acceptq_is_full(sk))
+ 		goto exit_overflow;
+@@ -1565,11 +1566,17 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 
+ 	if (__inet_inherit_port(sk, newsk) < 0)
+ 		goto put_and_exit;
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), &esk);
+ 	if (likely(*own_req)) {
+ 		tcp_move_syn(newtp, req);
+ 		ireq->ireq_opt = NULL;
+ 	} else {
++		if (!req_unhash && esk) {
++			/* This code path should only be executed in the
++			 * syncookie case only
++			 */
++			newsk = esk;
++		}
+ 		newinet->inet_opt = NULL;
+ 	}
+ 	return newsk;
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 305870a72352..dd64ec3b8a43 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1190,6 +1190,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 	struct inet_sock *newinet;
+ 	struct tcp_sock *newtp;
+ 	struct sock *newsk;
++	struct sock *esk = NULL;
+ #ifdef CONFIG_TCP_MD5SIG
+ 	struct tcp_md5sig_key *key;
+ 	int l3index;
+@@ -1206,6 +1207,12 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 
+ 		if (!newsk)
+ 			return NULL;
++		else if (!req_unhash && !own_req) {
++			/* We're returning an existing child socket, probably
++			 * created by a previous syncookie ACK.
++			 */
++			return newsk;
++		}
+ 
+ 		inet_sk(newsk)->pinet6 = tcp_inet6_sk(newsk);
+ 
+@@ -1359,7 +1366,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 		tcp_done(newsk);
+ 		goto out;
+ 	}
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), &esk);
+ 	if (*own_req) {
+ 		tcp_move_syn(newtp, req);
+ 
+@@ -1374,6 +1381,13 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 				skb_set_owner_r(newnp->pktoptions, newsk);
+ 			}
+ 		}
++	} else {
++		if (!req_unhash && esk) {
++			/* This code path should only be executed in the
++			 * syncookie case only
++			 */
++			newsk = esk;
++		}
+ 	}
+ 
+ 	return newsk;
+-- 
+2.25.1
 
-> 
->>
->> The tree I am testing is linux-next of 12th Nov + these three patches
->> applied.
->>
->> Also, #address-cells for interrupt provider being compulsory does not
->> make full sense to me. Nothing in
->> Documentation/devicetree/bindings/interrupt-controller/interrupts.txt or
->> Documentation/devicetree/bindings/gpio/gpio-davinci.txt suggests that as
->> well.
->>
->> Existing GPIO nodes for AM654 or J721E does not have #address-cells as well.
->>
->> Adding Grygorii as well, in case he knows more about this.
-> 
-> 
-> Yes - we need to have this conversation in the community :) I had
-> tagged this internally already during the 5.10 merge cycle that we
-> need to clean up the #address-cells warning and in some cases, maybe
-> the bindings are probably not accurate to attempt an enforcement.
-> I'd really like a conclusion on the topic as I recollect Lokesh and
-> Grygorii had a debate internally, but reached no conclusion, lets get
-> the wisdom of the community to help us here.
-
-Adding Lokesh to cc as well.
-
-Thanks,
-Sekhar
