@@ -2,97 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8372B1B56
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1374C2B1B65
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbgKMMvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S1726612AbgKMMwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgKMMvb (ORCPT
+        with ESMTP id S1726343AbgKMMw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:51:31 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E135FC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 04:51:30 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 10so7543348pfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 04:51:30 -0800 (PST)
+        Fri, 13 Nov 2020 07:52:28 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E99FC0613D1;
+        Fri, 13 Nov 2020 04:52:28 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id 7so13242240ejm.0;
+        Fri, 13 Nov 2020 04:52:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RlSweQC/vbr6vVyH3NIdsAt2yYJjWCSYyoY0OD4IcB8=;
-        b=dwLawQ2R+OOwSH39oYEUA0iMfpYt3lw8v8lDpkj5TykedwuvLf/Qztt0VfKGbkAEEB
-         Gznivr2/m060TEu3G24XrivgpxgsG0uQzwkIGZu6Eu7mmZuNUMVsuIKXwGxVQIqkG98J
-         l6roqTW+fSOCMqmiCgpGo2JgL0HfMLv8p8sK+n+ZlIuckzq9xCHMMmc87ZRU/GpdP95T
-         msLeaiSIaEtj7dLOEPmxl8xtpejQBB6Vgn9kB1jHPrTznciwzJjR4H7om7sc9sptmrvz
-         T1b6gqZlKU3cqJ/5/PdIeD4MeJbb6xsRAu69CupSSrEd+BaDocLySEyud/Lv97wiHyZM
-         /bbg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xuCJcUhyNAetcwF4fPhVBqozu/KcU1Q+RJ08yAHGbAA=;
+        b=hUI0eBfqU0w1yExM6W8SAFrbZ6k1375+aLC32yarSsP7pWi8vwbxjN2MrKYHrGLzWh
+         A5IQmJb/HLQuEe0p465ZG5dqwvOkKQeM5PrkKgI5W0zOimpZqNnCN251hl18Dwf2QE3V
+         JbeBqrI7GWZ0T4Gl/bmfVIga0kQkoE1b3xi7t+Fbux3wl12EHD4PumpTm2pkAImahzF8
+         OmB3nb1X4W48jGQYQlvCw+9OtjtX5FhHPDQqo4qnD5xHfrNevOOKYfUYwgsiEYj03DuT
+         VjkNtIj3l8R9em53upaKiEa7RAsw/o5gpqopIbibrQNBDDrJ68B1rBAXYIZwETpKD0ON
+         hpEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RlSweQC/vbr6vVyH3NIdsAt2yYJjWCSYyoY0OD4IcB8=;
-        b=DPUm8JBTEuxe/tUbJuNn005rl8khdwMaMhH9ZCIvXl1vscOU+KhJmKHQOz/+eUq9VH
-         Sxqn6EnwVcsMytLqZD3ldEJPldhpxP0NT0s/SxlZFCTCZo6KQXCx0aXJYsV80A9+ZvV2
-         LTw2JoBi4wWcg7Gxx04rWvTWEGIiJyvx7ywtvC9gt5hrxbe0ZsX/3AmA8UCyMenod2Gl
-         HZljsYkUlklfz1x0eVki9v4V2Mj8dv9mlc1xE0i8Ach7IekVEln+t+HnklvvIWAYLoL4
-         HOeZddlLd3Sy80TcG49Kn6aUANIAeAqfsx3ddaVHr9gp09pnI0/4kuXY4jUibiWyEL8o
-         l2RA==
-X-Gm-Message-State: AOAM530UENAGznPMKtfDsP7WZ+yWLTz3LJNaz7YofsUqTOOvZxX3rF5/
-        y1SnQzLQOUsVpSiern+zX0iZ2esREWzkGdCLOqYtDw==
-X-Google-Smtp-Source: ABdhPJwlHODXN1Li2PDm3D3teyG41NzlM71F1W15YU+kTJo10kkqtHjKM1w5zGh+JoDND4NYH/NRz+Gu59EF7AM/AlM=
-X-Received: by 2002:a17:90b:300b:: with SMTP id hg11mr1217625pjb.41.1605271890393;
- Fri, 13 Nov 2020 04:51:30 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xuCJcUhyNAetcwF4fPhVBqozu/KcU1Q+RJ08yAHGbAA=;
+        b=HAAhdreGunBkKeCE5CzNpSRftUrTz1HwVzL+zcslgnmvTUzRrd/0rEJaKYY0fMu+Fs
+         rsTIkYzLHsDa0rgZAZOLwMg7I9dxMEpniiflnZVn6lj+TWiy49//lrLJorcDuXYtfSTF
+         x6sRjLQXCTgrrf5/EnYTloJ0xtUIxWEmS+v9KM/cWqQl6dtDCmtNp81dI8TqKWOZEdQK
+         TOjzegaw3K6ChJZRaQHJsNgpqoPDMhu9dKViV6IHw8/xTRd9F+NzQpjpa9EQZsOIdtuB
+         +HJNaSZIGtT/yoXSgr3IsykqfLchYZkFSH0drcnIHaIKmrwp+97aBVelsZ10r3PCaCBh
+         KSOA==
+X-Gm-Message-State: AOAM532AOrNEFElGXknuU625UeQhwTaRFeYINdfnxNxj2aMruKayvOgf
+        fR1M1W4AH9XT5UzhellyA1c=
+X-Google-Smtp-Source: ABdhPJxg2vc9f758PsryEv65PE3xa58lduxKwj8uExD5gj4DBpIMrqU6DL4dO19CHRq1tD864opx2A==
+X-Received: by 2002:a17:907:c05:: with SMTP id ga5mr1710885ejc.212.1605271947174;
+        Fri, 13 Nov 2020 04:52:27 -0800 (PST)
+Received: from ?IPv6:2a02:a44f:d2f0:0:c3b4:9d8c:2c4a:f7c1? (2a02-a44f-d2f0-0-c3b4-9d8c-2c4a-f7c1.fixed6.kpn.net. [2a02:a44f:d2f0:0:c3b4:9d8c:2c4a:f7c1])
+        by smtp.gmail.com with ESMTPSA id i21sm1607937edt.92.2020.11.13.04.52.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 04:52:26 -0800 (PST)
+Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
+ tail in __free_pages_core()"
+To:     Carl Huang <cjhuang@codeaurora.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        ath11k@lists.infradead.org, Vlastimil Babka <vbabka@suse.cz>
+References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
+ <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
+ <87eekz4s04.fsf@codeaurora.org>
+ <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
+ <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com>
+ <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
+ <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
+From:   Pavel Procopiuc <pavel.procopiuc@gmail.com>
+Message-ID: <3e30ac52-6ad4-fa7b-8817-bca35a80d268@gmail.com>
+Date:   Fri, 13 Nov 2020 13:52:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <f3a7a153f0719cb53ec385b16e912798bd3e4cf9.1602856358.git.andreyknvl@google.com>
- <20201113123035.tjllvijjzd54npsf@linutronix.de>
-In-Reply-To: <20201113123035.tjllvijjzd54npsf@linutronix.de>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 13 Nov 2020 13:51:19 +0100
-Message-ID: <CAAeHK+zd0ucaj8EJ8ro+0ekubrxp5GiBMaBULHJB05dDrzpQGw@mail.gmail.com>
-Subject: Re: [PATCH v4] kcov, usb: only collect coverage from
- __usb_hcd_giveback_urb in softirq
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 1:30 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2020-10-16 15:57:45 [+0200], Andrey Konovalov wrote:
-> > --- a/drivers/usb/core/hcd.c
-> > +++ b/drivers/usb/core/hcd.c
-> > @@ -1646,9 +1646,16 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
-> >
-> >       /* pass ownership to the completion handler */
-> >       urb->status = status;
-> > -     kcov_remote_start_usb((u64)urb->dev->bus->busnum);
-> > +     /*
-> > +      * This function can be called in task context inside another remote
-> > +      * coverage collection section, but KCOV doesn't support that kind of
-> > +      * recursion yet. Only collect coverage in softirq context for now.
-> > +      */
-> > +     if (in_serving_softirq())
->
-> Could this in_serving_softirq() usage be replaced, please?
+Op 13.11.2020 om 12:08 schreef Carl Huang:
+> Checked some logs. Looks when the error happens, the physical address are
+> very small. Its' between 20M - 30M.
+> 
+> So could you have a try to reserve the memory starting from 20M?
+> Add "memmap=10M\$20M" to your grub.cfg or edit in kernel parameters. so ath11k
+> can't allocate from these address.
+> 
+> Or you can try to reserve even larger memory starting from 20M.
 
-Hi Sebastian,
+That worked, booting with memmap=12M$20M resulted in the working wifi:
 
-Replaced with what and why?
-
-Thanks!
+$ journalctl -b | grep -iP '05:00|ath11k|Linux version|memmap'
+Nov 13 13:45:34 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34 
+p6) 2.34.0) #1 SMP Fri Nov 13 13:29:48 CET 2020
+Nov 13 13:45:34 razor kernel: Command line: ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2 
+memmap=12M$20M quiet
+Nov 13 13:45:34 razor kernel:   DMA zone: 64 pages used for memmap
+Nov 13 13:45:34 razor kernel:   DMA32 zone: 5165 pages used for memmap
+Nov 13 13:45:34 razor kernel:   Normal zone: 255840 pages used for memmap
+Nov 13 13:45:34 razor kernel: Kernel command line: ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2 
+memmap=12M$20M quiet ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2 memmap=12M$20M quiet
+Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
+Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
+Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
+Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at 
+0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
+Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 32
+Nov 13 13:45:35 razor kernel: mhi 0000:05:00.0: Requested to power ON
+Nov 13 13:45:35 razor kernel: mhi 0000:05:00.0: Power on setup success
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x2100000 524288 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x2180000 524288 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x2200000 524288 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x2280000 294912 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x2300000 524288 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x2380000 524288 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x2400000 458752 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x20c0000 131072 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x2480000 524288 4
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x2500000 360448 4
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x20a4000 16384 1
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
+Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-24 19:50 
+fw_build_id
+Nov 13 13:45:37 razor NetworkManager[782]: <info>  [1605271537.1168] rfkill1: found Wi-Fi radio killswitch (at 
+/sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0/ieee80211/phy0/rfkill1) (driver ath11k_pci)
+Nov 13 13:45:39 razor ModemManager[722]: <info>  Couldn't check support for device 
+'/sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0': not supported by any plugin
+Nov 13 13:45:45 razor kernel: ath11k_pci 0000:05:00.0: failed to enqueue rx buf: -28
