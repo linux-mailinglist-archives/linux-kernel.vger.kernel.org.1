@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519AA2B1FF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85802B200D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKMQUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKMQUy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:20:54 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401AAC0613D1;
-        Fri, 13 Nov 2020 08:20:52 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a3so8947088wmb.5;
-        Fri, 13 Nov 2020 08:20:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=v2BUbjPWELpntgzLOpBZLEM+DZ3TH3PA5zgLm8+iHsk=;
-        b=hE9e18jcFeY/0+UMJlrwakHvcywoP2047ydMiv2s0zCFZoDgVeVjxMbOuszZAQa8UU
-         j9oZMGJKS95LKfVcYGLqbMg9rK2lswj5rG2J5hQOawr6YFJhuODzo9CRAYCNJve+XqGW
-         k7BsyWRlc1O9A8m6+KCGLgYwnDr3U0u841oH9fB+zJHYZoy9FuM5WnYlz5kQ7fieDpx6
-         ou3OuWL6skuKjdsIB3VzWNaCG/fPMND6AgkGuLCYGuX5c5ex6ZYkMmtvdvXdUUzhcgwa
-         WYl5J1qN5sR/bm4ccg05kyGyxoCwAbGEWgVqZUU4Y5lCDJBovYEhs+Rfjk1p0YPJAAZO
-         pJDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=v2BUbjPWELpntgzLOpBZLEM+DZ3TH3PA5zgLm8+iHsk=;
-        b=W93IWirwdKUjoWEi6GEFnkprCwMzlMYInaiwVY9y6qA1NLUsmjvVZqKJ7iAUd5BONN
-         9Rpcdr9+4clDZNJc7SGW7dArCDoYGBOD4B8tlfL8N6Vb9F1kplNPTQb4g/16Iz/oGOYC
-         OuBAqvD5Hcd3pMKKOBB84USIyCHVj+sm0Fee38cROrSGnQT/h0k4ZqJAdeTZkg5g6C99
-         cQfj2tLYTG8VBgb47mBMkYAOzirbNhUZ9CeKhl+4EZZQJT4fc/rphOlcd2FFZylbOyVZ
-         tTxjSmNs1uGDH+cqqzwWaI2hC/CR0jF0IqEucgmYUpKocpiyAOhE1KgiUqiktQ6rqDxW
-         nIrw==
-X-Gm-Message-State: AOAM532rL/GSMjEqoD/E7EzmbiiDbBjYNseI6nVJAQsfFUSRvxTmRr0T
-        SoXOB7b+8NR18+DEZXNTQUM=
-X-Google-Smtp-Source: ABdhPJx+VaVVcgBrjcP58rSFYp3uO7WL0XP+u1djhkotWYhdyQgg/jjOyJGh7Nv+3hYZobg0N0sgjg==
-X-Received: by 2002:a1c:2643:: with SMTP id m64mr3390218wmm.28.1605284446089;
-        Fri, 13 Nov 2020 08:20:46 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id f16sm12072389wrp.66.2020.11.13.08.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 08:20:44 -0800 (PST)
-Date:   Fri, 13 Nov 2020 17:20:43 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     JC Kuo <jckuo@nvidia.com>, gregkh@linuxfoundation.org,
-        jonathanh@nvidia.com, kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v4 10/16] dt-bindings: phy: tegra-xusb: Add nvidia,pmc
- prop
-Message-ID: <20201113162043.GD1408970@ulmo>
-References: <20201016130726.1378666-1-jckuo@nvidia.com>
- <20201016130726.1378666-11-jckuo@nvidia.com>
- <20201019214046.GA3645734@bogus>
+        id S1726900AbgKMQWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:22:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgKMQWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:22:06 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDFCE22242;
+        Fri, 13 Nov 2020 16:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605284526;
+        bh=fX3xdiQYb5V89YurUlsRm+iMzpkNmQF2yX7rst7Fbh4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WECKDcoS7vsSMa1RJbr3KW7rRxPJVn2QAgXKdbwZ8PcOrJuFf7qIa1T/Kf8dNJBNG
+         ggYdFjJ7ZbB4EBQvz5UGIMLtKb+UqvpKphx3fB9LnnNcgV9Iq/+xbfbbTkgZZ3eeQ4
+         kibQFbgOWd/ZwH5PYob1piGQUSZ9Aamr/29psL4M=
+Received: by mail-ot1-f43.google.com with SMTP id n89so9412911otn.3;
+        Fri, 13 Nov 2020 08:22:05 -0800 (PST)
+X-Gm-Message-State: AOAM532wbToRWGkYM82yH7oxfeKJ7DVaAKp/BvCfVhpOwboCaRLNSXwA
+        X7hZOTGWkU823Nif/dH6CIGTdB/jBS06xJgiVmk=
+X-Google-Smtp-Source: ABdhPJwCqtSzy85fgpXARAdUrW5t6a29ygecNGNheUBP2KcmHoZih3Ml3ZyBmBqHbIBYjhjlwcBzoLfz9bK1yx5HaDE=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr1927181oth.251.1605284520141;
+ Fri, 13 Nov 2020 08:22:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bjuZg6miEcdLYP6q"
-Content-Disposition: inline
-In-Reply-To: <20201019214046.GA3645734@bogus>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20201111080027.7830f756@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <AFoANwC7DUvmHhxeg4sBAapD.3.1605143705212.Hmail.wangqing@vivo.com>
+ <CAK8P3a3=eOxE-K25754+fB_-i_0BZzf9a9RfPTX3ppSwu9WZXw@mail.gmail.com>
+ <20201112181954.GD21010@hoboy.vegasvil.org> <CAK8P3a1pHpweXP+2mp7bdg2GvU5kk4NASsu4MQCRPtK-VpuXSA@mail.gmail.com>
+ <20201112232735.GA26605@hoboy.vegasvil.org>
+In-Reply-To: <20201112232735.GA26605@hoboy.vegasvil.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 13 Nov 2020 17:21:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3V98x3s7DvHtutiz97Q=5QjfS6Xn4kH2r2iamY3dzwkw@mail.gmail.com>
+Message-ID: <CAK8P3a3V98x3s7DvHtutiz97Q=5QjfS6Xn4kH2r2iamY3dzwkw@mail.gmail.com>
+Subject: Re: Re: [PATCH V4 net-bugfixs] net/ethernet: Update ret when
+ ptp_clock is ERROR
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 13, 2020 at 12:27 AM Richard Cochran
+<richardcochran@gmail.com> wrote:
+>
+> On Thu, Nov 12, 2020 at 10:21:21PM +0100, Arnd Bergmann wrote:
+> > I agree that the 'imply' keyword in Kconfig is what made this a
+> > lot worse, and it would be best to replace that with normal
+> > dependencies.
+>
+> IIRC, this all started with tinification and wanting dynamic posix
+> clocks to be optional at compile time.
+>
+> I would like to simplify this whole mess:
+>
+> - restore dynamic posix clocks to be always included
+>
+> - make PHC always included when the MAC has that feature (by saying
+>   "select" in the MAC Kconfig) -- I think this is what davem had
+>   wanted back in the day ...
+>
+> I'm not against tinification in principle, but I believe it is a lost
+> cause.
 
---bjuZg6miEcdLYP6q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+My preference would be to avoid both 'select' and 'imply' here,
+both of them cause their own set of problems. The main downside
+of 'select' is that you can't mix it with 'depends on' without risking
+running into circular dependencies and impossible configurations,
+while the main problem with 'imply' is that the behavior is close to
+unpredictable. The original definition still made some sense to me,
+but the new definition of 'imply' seems completely meaningless.
 
-On Mon, Oct 19, 2020 at 04:40:46PM -0500, Rob Herring wrote:
-> On Fri, Oct 16, 2020 at 09:07:20PM +0800, JC Kuo wrote:
-> > This commit describes the "nvidia,pmc" property for Tegra210 tegra-xusb
-> > PHY driver. It is a phandle and specifier referring to the Tegra210
-> > pmc@7000e400 node.
-> >=20
-> > Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> > ---
-> > v4:
-> >    new change to document "nvidia,pmc" prop
-> >=20
-> >  .../devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt      | 1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb=
--padctl.txt b/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-pa=
-dctl.txt
-> > index 38c5fa21f435..ea559baeb546 100644
-> > --- a/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl=
-=2Etxt
-> > +++ b/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl=
-=2Etxt
-> > @@ -54,6 +54,7 @@ For Tegra210:
-> >  - avdd-pll-uerefe-supply: PLLE reference PLL power supply. Must supply=
- 1.05 V.
-> >  - dvdd-pex-pll-supply: PCIe/USB3 PLL power supply. Must supply 1.05 V.
-> >  - hvdd-pex-pll-e-supply: High-voltage PLLE power supply. Must supply 1=
-=2E8 V.
-> > +- nvidia,pmc: phandle and specifier referring to the Tegra210 pmc@7000=
-e400 node.
->=20
-> 'Tegra210 pmc@7000e400' is kind of specific. Going to update this for=20
-> every address and chip?
->=20
-> If there's only one PMC, you can just find the compatible PMC node. Then=
-=20
-> you don't need a DT update.
+I've prototyped a patch that I think makes this more sensible
+again: https://pastebin.com/AQ5nWS9e
 
-I did advise against doing the lookup by compatible string because I
-think it has a couple of downsides. On one hand it's going to create an
-additional maintenance burden on the XUSB pad controller driver because
-the PMC is usually not compatible between SoC versions, so for every new
-SoC generation we'll have to add the PMC compatible string to the XUSB
-pad controller driver.
+This needs testing, but if you think the approach makes sense,
+I can give it a few randconfig builds and submit for wider review.
 
-On the other hand, this is new functionality and we can easily gate that
-on the existence of this phandle, so it doesn't impact DT backwards
-compatibility. That also has the advantage of explicitly listing the
-dependency between the PMC and the XUSB pad controller in DT, so if we
-ever do get around to come up with an even better mechanism to resolve
-these dependencies than deferred probe, we do have the data already
-available.
-
-Thierry
-
---bjuZg6miEcdLYP6q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+uslsACgkQ3SOs138+
-s6HwiQ//dbTTGapD1Ee9Mkr+c2pCCUsfskWRVv9zi0cNuboN9ivtOxVdVH3TXsVk
-j1b/WKqiEVSdhacWRqGwkYwDtYf8FHtfyyS8ljhLYqp5kORoUoZ5hxFQ55BuBCD5
-rA0TA+JgCcbXNA68HRBaZpArj57KjFS/qezrZwXnZl856G6yECN97SKgljS+nn7x
-vSewLEFWuVuiEeANnKxHHWmm1/PuyQzZNtAYhfC6fZJi2nIeGT8+lh9AlehDcurW
-pOpWAvCjJB5GMqfaSsTPV9DRmjSyk2zhvHaFcGKLK4qR/gqGJ3ZYk6Al/yCv3XFI
-84wBd3j+EKiEayA+s0XDxVBddtEBPDckjJB6K9oulU5nrbGub2MQNSQl7piRoT1A
-0vyhKqe6S7ttjOwOnfFexab8XAm2dseX2Wx/6mbjAM/+KRZnF23Kf2bIFvO4wZrw
-SQwo8nWqodBUsr1kkU7ThCN+EJeGaIrQEwpwszwnwdlCSBk84BIAv4tXoI9fx11J
-UrovlWcCdAntOpp0imlNr4hroP+NqZJPR36A8SwdO1fyM9MoBKflXBcZdcfiLOE0
-5Vdlh43sYxkVEuedYGnqHZhNGLD77xWhbbrB86xxW7JmP6L0WC5GMw6oc/McVOAz
-Q5bR1SDsZj5Es9HYlZQNUM0udhd087uBlIW9iSFyUQ981FlexMw=
-=HnYy
------END PGP SIGNATURE-----
-
---bjuZg6miEcdLYP6q--
+       Arnd
