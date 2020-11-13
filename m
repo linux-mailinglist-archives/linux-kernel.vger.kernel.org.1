@@ -2,244 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D4A2B228F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1992B2290
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgKMRey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgKMRex (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:34:53 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37327C0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:34:53 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id i184so11461440ybg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:34:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ZsQdeBNMv7hOETc9fSaUWVVeMIm9t9MNudq+U9YvmqU=;
-        b=X54a4os3itmD5YQrBTHoM5/2Axj5Oh+y4MRUkEe8kEiXGcKlKTdMpz6ijG482PgJAJ
-         E6+9pSELboav2zygBsxNl771+cdUDqS+Pg4C9wj+aXbA1G+ec/xWjOB/07eCM0ER8UEm
-         nrzurd205gkbSWKTpzV9PTTnsZPh61zNMUC1tZdsK4VykBDeo9Ngf/yFypgO0PDVNzHn
-         HPNF0Hlqvt6Ly1oIVqe+FhX3hCaqVOrPf+fCMT6m3Jl8bEwh2RziliVNqBtSLlk4T47T
-         7vzVc4/o5AVAtbJlSxwo9fAFD6RydC3bzlAn/eTO6MOC4O0zMS2Ly3viF7IClIvcrWk4
-         b/CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ZsQdeBNMv7hOETc9fSaUWVVeMIm9t9MNudq+U9YvmqU=;
-        b=oswh8mRmAyETdVGpg3ahVbx0vymHLTFE4BB3xvSLhS8/p+0y8mfn4ZWTOrK+Y/MeQY
-         bWg5w3upF9+Gz9YCtJMkVxbJMyAvKjd8GRECDgGT1FlJxDvaBm3BZOoc2EUfII3LVgIB
-         ubakUpkuLWxybM4rgHO1axstUZJTYR5Z+fWoy+0VfG879+9DT4CRYm5iObkjYo+NZk9E
-         khilRG6NaCCr0jin7DfnXde8s6miVbhxwSPRXlu317t1xCi0tCmPpggrwX0FINuWVE+O
-         /iUYaMAinxMu9Nw+peegZGfglAC1EJH3Sf30dVbKo4xBgqFR8MyGzjkwIt2slkd9pDUf
-         4Aeg==
-X-Gm-Message-State: AOAM533PtyDFcpWITri29QVtYpAhB2UG1n+d4m/aeceoNNNQ3KxeJyWh
-        2Vw57uIE3Df4SnWAGtoGgtlyoHsDxgM=
-X-Google-Smtp-Source: ABdhPJz0e6m8NgCQdlJ9lY/OcnFz+0tvqR2+7WCYCq1mGUncy7h2VBfmZqJioqhT/TIB0FJtbNToj2B5CdE=
-Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
-X-Received: from surenb1.mtv.corp.google.com ([100.98.240.136]) (user=surenb
- job=sendgmr) by 2002:a5b:c08:: with SMTP id f8mr3997350ybq.398.1605288892382;
- Fri, 13 Nov 2020 09:34:52 -0800 (PST)
-Date:   Fri, 13 Nov 2020 09:34:48 -0800
-Message-Id: <20201113173448.1863419-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     surenb@google.com
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        oleg@redhat.com, timmurray@google.com, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
+        id S1726489AbgKMRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:35:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726276AbgKMRfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:35:13 -0500
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E0792222F
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605288912;
+        bh=bxbK8zR8Zhybiw99PztD7lzlkpVqbFB0+PyzeWoW/oo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IJfbQvlcGRX+nN4Qsdb/PuwxppzMSAoeZDVcXOPT24YeoZz+AOlg/ZIp1AtELleQk
+         fH+jio1Qn5MLoH6lpnvujnnO6Y5ywV9WkW/aoFTP35usSjQJYfTMOXebUwwlbVl1xk
+         0eD0+bP2/KLPs7/GZnBikHqjpk3BaQuKVDMTTN7A=
+Received: by mail-wm1-f41.google.com with SMTP id d142so8930640wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:35:12 -0800 (PST)
+X-Gm-Message-State: AOAM533k1w0b2ZDcsJjEX3zBsVe+xG2dhGDj2UwbkuK48MDrJhJzkbj+
+        VwERMtPVGP07Fp0uB7H28Hh4HAiTpCTsruJwJmrg0A==
+X-Google-Smtp-Source: ABdhPJwg2H2IxtNd1m8KyjKcLj/jnkfylVK/GcnrWypJcHPYF9099XrFtknG6tx4F7GcjIe6Cv6xyLcjzk2LWt6UYLA=
+X-Received: by 2002:a1c:9c56:: with SMTP id f83mr3779383wme.49.1605288909975;
+ Fri, 13 Nov 2020 09:35:09 -0800 (PST)
+MIME-Version: 1.0
+References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+ <20201111170536.arx2zbn4ngvjoov7@treble> <20201111174736.GH2628@hirez.programming.kicks-ass.net>
+ <20201111181328.mbxcz2uap2vnqpxq@treble> <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
+ <20201111194206.GK2628@hirez.programming.kicks-ass.net> <20201111195900.2x7kfce2ejkmrzi3@treble>
+ <20201111200730.GM2628@hirez.programming.kicks-ass.net> <20201111201506.bftpmx4svxn376tn@treble>
+ <61b2538f-7be6-8f4a-9395-03071b5cc6f0@citrix.com>
+In-Reply-To: <61b2538f-7be6-8f4a-9395-03071b5cc6f0@citrix.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 13 Nov 2020 09:34:57 -0800
+X-Gmail-Original-Message-ID: <CALCETrXcTKB_j9MQC1mcZobKGt_cZ5ivDPjU3zwRBmj7DAUCsA@mail.gmail.com>
+Message-ID: <CALCETrXcTKB_j9MQC1mcZobKGt_cZ5ivDPjU3zwRBmj7DAUCsA@mail.gmail.com>
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Juergen Gross <jgross@suse.com>, X86 ML <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a process is being killed it might be in an uninterruptible sleep
-which leads to an unpredictable delay in its memory reclaim. In low memory
-situations, when it's important to free up memory quickly, such delay is
-problematic. Kernel solves this problem with oom-reaper thread which
-performs memory reclaim even when the victim process is not runnable.
-Userspace currently lacks such mechanisms and the need and potential
-solutions were discussed before (see links below).
-This patch provides a mechanism to perform memory reclaim in the context
-of the process that sends SIGKILL signal. New SYNC_REAP_MM flag for
-pidfd_send_signal syscall can be used only when sending SIGKILL signal
-and will lead to the caller synchronously reclaiming the memory that
-belongs to the victim and can be easily reclaimed.
+On Wed, Nov 11, 2020 at 12:25 PM Andrew Cooper
+<andrew.cooper3@citrix.com> wrote:
+>
+> On 11/11/2020 20:15, Josh Poimboeuf wrote:
+> > On Wed, Nov 11, 2020 at 09:07:30PM +0100, Peter Zijlstra wrote:
+> >> On Wed, Nov 11, 2020 at 01:59:00PM -0600, Josh Poimboeuf wrote:
+> >>> On Wed, Nov 11, 2020 at 08:42:06PM +0100, Peter Zijlstra wrote:
+> >>>>> Would objtool have an easier time coping if this were implemented in
+> >>>>> terms of a static call?
+> >>>> I doubt it, the big problem is that there is no visibility into the
+> >>>> actual alternative text. Runtime patching fragments into static call
+> >>>> would have the exact same problem.
+> >>>>
+> >>>> Something that _might_ maybe work is trying to morph the immediate
+> >>>> fragments into an alternative. That is, instead of this:
+> >>>>
+> >>>> static inline notrace unsigned long arch_local_save_flags(void)
+> >>>> {
+> >>>>    return PVOP_CALLEE0(unsigned long, irq.save_fl);
+> >>>> }
+> >>>>
+> >>>> Write it something like:
+> >>>>
+> >>>> static inline notrace unsigned long arch_local_save_flags(void)
+> >>>> {
+> >>>>    PVOP_CALL_ARGS;
+> >>>>    PVOP_TEST_NULL(irq.save_fl);
+> >>>>    asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
+> >>>>                                    "PUSHF; POP _ASM_AX",
+> >>>>                                    X86_FEATURE_NATIVE)
+> >>>>                        : CLBR_RET_REG, ASM_CALL_CONSTRAINT
+> >>>>                        : paravirt_type(irq.save_fl.func),
+> >>>>                          paravirt_clobber(PVOP_CALLEE_CLOBBERS)
+> >>>>                        : "memory", "cc");
+> >>>>    return __eax;
+> >>>> }
+> >>>>
+> >>>> And then we have to teach objtool how to deal with conflicting
+> >>>> alternatives...
+> >>>>
+> >>>> That would remove most (all, if we can figure out a form that deals with
+> >>>> the spinlock fragments) of paravirt_patch.c
+> >>>>
+> >>>> Hmm?
+> >>> I was going to suggest something similar.  Though I would try to take it
+> >>> further and replace paravirt_patch_default() with static calls.
+> >> Possible, we just need to be _really_ careful to not allow changing
+> >> those static_call()s. So maybe we need DEFINE_STATIC_CALL_RO() which
+> >> does a __ro_after_init on the whole thing.
+> > But what if you want to live migrate to another hypervisor ;-)
+>
+> The same as what happens currently.  The user gets to keep all the
+> resulting pieces ;)
+>
+> >>> Either way it doesn't make objtool's job much easier.  But it would be
+> >>> nice to consolidate runtime patching mechanisms and get rid of
+> >>> .parainstructions.
+> >> I think the above (combining alternative and paravirt/static_call) does
+> >> make objtool's job easier, since then we at least have the actual
+> >> alternative instructions available to inspect, or am I mis-understanding
+> >> things?
+> > Right, it makes objtool's job a _little_ easier, since it already knows
+> > how to read alternatives.  But it still has to learn to deal with the
+> > conflicting stack layouts.
+>
+> I suppose the needed abstraction is "these blocks will start and end
+> with the same stack layout", while allowing the internals to diverge.
+>
 
-1. https://patchwork.kernel.org/cover/10894999
-2. https://lwn.net/Articles/787217
-3. https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+How much of this stuff is actually useful anymore?  I'm wondering if
+we can move most or all of this crud to
+cpu_feature_enabled(X86_FEATURE_XENPV) and its asm equivalent.  The
+full list, annotated, appears to be:
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- include/linux/oom.h    |  2 ++
- include/linux/signal.h |  7 ++++
- kernel/signal.c        | 73 ++++++++++++++++++++++++++++++++++++++++--
- mm/oom_kill.c          |  2 +-
- 4 files changed, 81 insertions(+), 3 deletions(-)
+        const unsigned char     irq_irq_disable[1];
 
-diff --git a/include/linux/oom.h b/include/linux/oom.h
-index 2db9a1432511..9a8dcabdfdf1 100644
---- a/include/linux/oom.h
-+++ b/include/linux/oom.h
-@@ -111,6 +111,8 @@ bool __oom_reap_task_mm(struct mm_struct *mm);
- long oom_badness(struct task_struct *p,
- 		unsigned long totalpages);
- 
-+extern bool task_will_free_mem(struct task_struct *task);
-+
- extern bool out_of_memory(struct oom_control *oc);
- 
- extern void exit_oom_victim(void);
-diff --git a/include/linux/signal.h b/include/linux/signal.h
-index b256f9c65661..5deafc99035d 100644
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -449,6 +449,13 @@ extern bool unhandled_signal(struct task_struct *tsk, int sig);
- 	(!siginmask(signr, SIG_KERNEL_IGNORE_MASK|SIG_KERNEL_STOP_MASK) && \
- 	 (t)->sighand->action[(signr)-1].sa.sa_handler == SIG_DFL)
- 
-+/*
-+ * Flag values used in pidfd_send_signal:
-+ *
-+ * SYNC_REAP_MM indicates request to reclaim mm after SIGKILL.
-+ */
-+#define SYNC_REAP_MM	0x1
-+
- void signals_init(void);
- 
- int restore_altstack(const stack_t __user *);
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ef8f2a28d37c..15d4be5600a3 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -46,6 +46,7 @@
- #include <linux/livepatch.h>
- #include <linux/cgroup.h>
- #include <linux/audit.h>
-+#include <linux/oom.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/signal.h>
-@@ -3711,6 +3712,63 @@ static struct pid *pidfd_to_pid(const struct file *file)
- 	return tgid_pidfd_to_pid(file);
- }
- 
-+static int reap_mm(struct pid *pid)
-+{
-+	struct task_struct *task;
-+	struct mm_struct *mm;
-+	int ret = 0;
-+
-+	/* Get the task_struct */
-+	task = get_pid_task(pid, PIDTYPE_PID);
-+	if (!task) {
-+		ret = -ESRCH;
-+		goto out;
-+	}
-+
-+	task_lock(task);
-+
-+	/* Check if memory can be easily reclaimed */
-+	if (!task_will_free_mem(task)) {
-+		task_unlock(task);
-+		ret = -EBUSY;
-+		goto release_task;
-+	}
-+
-+	/* Get mm to prevent exit_mmap */
-+	mm = task->mm;
-+	mmget(mm);
-+
-+	/* Ensure no competition with OOM-killer to prevent contention */
-+	if (unlikely(mm_is_oom_victim(mm)) ||
-+	    unlikely(test_bit(MMF_OOM_SKIP, &mm->flags))) {
-+		/* Already being reclaimed */
-+		task_unlock(task);
-+		goto drop_mm;
-+	}
-+	/*
-+	 * Prevent OOM-killer or other pidfd_send_signal from considering
-+	 * this task
-+	 */
-+	set_bit(MMF_OOM_SKIP, &mm->flags);
-+
-+	task_unlock(task);
-+
-+	mmap_read_lock(mm);
-+	if (!__oom_reap_task_mm(mm)) {
-+		/* Failed to reap part of the address space. User can retry */
-+		ret = -EAGAIN;
-+		clear_bit(MMF_OOM_SKIP, &mm->flags);
-+	}
-+	mmap_read_unlock(mm);
-+
-+drop_mm:
-+	mmput(mm);
-+release_task:
-+	put_task_struct(task);
-+out:
-+	return ret;
-+}
-+
- /**
-  * sys_pidfd_send_signal - Signal a process through a pidfd
-  * @pidfd:  file descriptor of the process
-@@ -3737,10 +3795,16 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
- 	struct pid *pid;
- 	kernel_siginfo_t kinfo;
- 
--	/* Enforce flags be set to 0 until we add an extension. */
--	if (flags)
-+	/* Enforce only valid flags. */
-+	if (flags) {
-+		/* Allow SYNC_REAP_MM only with SIGKILL. */
-+		if (flags == SYNC_REAP_MM && sig == SIGKILL)
-+			goto valid;
-+
- 		return -EINVAL;
-+	}
- 
-+valid:
- 	f = fdget(pidfd);
- 	if (!f.file)
- 		return -EBADF;
-@@ -3775,6 +3839,11 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
- 	}
- 
- 	ret = kill_pid_info(sig, &kinfo, pid);
-+	if (unlikely(ret))
-+		goto err;
-+
-+	if (flags & SYNC_REAP_MM)
-+		ret = reap_mm(pid);
- 
- err:
- 	fdput(f);
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 8b84661a6410..66c90bca25bc 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -808,7 +808,7 @@ static inline bool __task_will_free_mem(struct task_struct *task)
-  * Caller has to make sure that task->mm is stable (hold task_lock or
-  * it operates on the current).
-  */
--static bool task_will_free_mem(struct task_struct *task)
-+bool task_will_free_mem(struct task_struct *task)
- {
- 	struct mm_struct *mm = task->mm;
- 	struct task_struct *p;
--- 
-2.29.2.299.gdc1121823c-goog
+This is CLI or CALL, right?
 
+        const unsigned char     irq_irq_enable[1];
+
+STI or CALL.
+
+        const unsigned char     irq_save_fl[2];
+
+PUSHF; POP %r/eax.  I *think* I read the paravirt mess correctly and
+this also turns into CALL.
+
+        const unsigned char     mmu_read_cr2[3];
+        const unsigned char     mmu_read_cr3[3];
+        const unsigned char     mmu_write_cr3[3];
+
+The write CR3 is so slow that I can't imagine us caring.  Reading CR3
+should already be fairly optimized because it's slow on old non-PV
+hypervisors, too.  Reading CR2 is rare and lives in asm.  These also
+appear to just switch between MOV and CALL, anyway.
+
+        const unsigned char     irq_restore_fl[2];
+
+Ugh, this one sucks.  IMO it should be, for native and PV:
+
+if (flags & X86_EFLAGS_IF) {
+  local_irq_enable();  /* or raw? */
+} else {
+  if (some debugging option) {
+    WARN_ON_ONCE(save_fl() & X86_EFLAGS_IF);
+  }
+}
+
+POPF is slooooow.
+
+        const unsigned char     cpu_wbinvd[2];
+
+This is hilariously slow no matter what.  static_call() or even just a
+plain old indirect call should be fine.
+
+        const unsigned char     cpu_usergs_sysret64[6];
+
+This is in the asm and we shouldn't be doing it at all for Xen PV.
+IOW we should just drop this patch site entirely.  I can possibly find
+some time to get rid of it, and maybe someone from Xen land can help.
+I bet that we can gain a lot of perf on Xen PV by cleaning this up,
+and I bet it will simplify everything.
+
+        const unsigned char     cpu_swapgs[3];
+
+This is SWAPGS or nop, unless I've missed some subtlety.
+
+        const unsigned char     mov64[3];
+
+This is some PTE magic, and I haven't deciphered it yet.
+
+So I think there is at most one of these that wants anything more
+complicated than a plain ALTERNATIVE.  Any volunteers to make it so?
+Juergen, if you do all of them except USERGS_SYSRET64, I hereby
+volunteer to do that one.
+
+BTW, if y'all want to live migrate between Xen PV and anything else,
+you are nuts.
