@@ -2,384 +2,924 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DAC2B1BF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560A32B1BF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgKMNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:36:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgKMNgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:36:48 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8783C0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:36:47 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id s25so13439565ejy.6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:36:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=technolu-st.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lMTVGMGhpulPKDDADjkMmu6x2CZGN2Y/K6LjkuQcuj0=;
-        b=R3XQtrLhB99nlHd13qurobJfQnDAF4gG9IQW/VbM0Oc1HxKC9cz6EL84kd5o/K5cZX
-         UlhEwuXzsDcY0VTbE/idjgXtYyh5ftRIkXteE3/EpkcaJZ0eM+LnwTTm+CYGb0PKlCUo
-         sTyroPSUP7uimmyLDyrTjSuo1/gnRjsJtHoMejtXtuj78nfTYmQjaTH3GQrV6M1TeHuw
-         OTMeSBpY8b27LKgJdOSkolZmYoXdSw00fbsHGm2CHWqkiUT4V7HxWTSXL9ISkzincr3r
-         WI+7cZ894DrvjmL/gnbVEUzZDVHQ/ZVpHsK2wmTeCFLKyRvH0YaegJoLeN8QP3hQMGeN
-         8aFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lMTVGMGhpulPKDDADjkMmu6x2CZGN2Y/K6LjkuQcuj0=;
-        b=DQ2EdXI9sUFKAas30e7OI5mUjzzYb/oXluJ4rMxbYIX1dk48IptMOdkOj1lRWe4F5Q
-         EwJNxrdKW/ERc7HcOxYHEowTjxFHLOBC3FzRSseYx/dfSTdyv3ThZnLOHLbZ3FNO2FG2
-         Sc8Oi3GS63B28OV8embgdC2glZ8s+tAiRAQ28XrCzYGq4xzbxsSNeGBGHcBo2hCQL0M+
-         7SmYwwDUUj9GyO6uzGhZv3UBGuN7KVeqlSoEwv7F2BUXQPkKyBJ8ii1PPO2XS4Qh8n9f
-         X3yODfi+XcbGpobeAynddsUZwyMGWeoCJdGt42pNB4vTP9gZeW9GxDQ3CtFNuarci2Ss
-         IlCQ==
-X-Gm-Message-State: AOAM532x7uOn/krIrnufecAuxtaIhpY8mXLZyymVFiT4No/Uv2mbAKZH
-        yjbsDhP71Q4Xg6o5nssYB8BDUhFH+5zuiSJzlb1QuA==
-X-Google-Smtp-Source: ABdhPJwRL4jI/qjAua2cM6o1X+kSqjOszAgHg6nSseCNIXhwTSdO3HTHaiMyiY5CL7XhB56e/jOSrwytLTzG/1oMMxs=
-X-Received: by 2002:a17:906:4c41:: with SMTP id d1mr2004932ejw.485.1605274606226;
- Fri, 13 Nov 2020 05:36:46 -0800 (PST)
+        id S1726611AbgKMNgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:36:55 -0500
+Received: from mx.kolabnow.com ([95.128.36.40]:55224 "EHLO mx.kolabnow.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726324AbgKMNgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 08:36:54 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by ext-mx-out001.mykolab.com (Postfix) with ESMTP id 42067135A;
+        Fri, 13 Nov 2020 14:36:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :message-id:date:date:subject:subject:from:from:received
+        :received:received; s=dkim20160331; t=1605274606; x=1607089007;
+         bh=JQN0RYwDs6e+HKrdiOe7tOryex0oEI0osiuMn9jOxmE=; b=GcFlASrGCq4E
+        4VelU8M1UoZp+D/Aydqfef2PStn0pUJYjEs9cx8CWGIfA9nlUiNZiFETYpFsbXWW
+        ri9+GTmhk8xM3bHt5Trg3lEW5ngFbKtcJP/o3lZWvG+in3rC+NmbFECvH2fCnxqg
+        DXGYXFzmAGS2or+M7/bYn1xYeZUIOfkg8BkAcqfzM1jKRrMJAk8b1ywAZV+JzMEV
+        bYaQR2aiathVuvRMTJ5xe9gNlQLOtlG/F3BrWq0Z2gV66cLigoPKV9Y9WKttbB3h
+        jHCmD9LTbbAxs+WIQYCXfDUJfA0zZnNHqHX9fvji88n4ne43ZMXfUzQ9qguhf1YQ
+        KiQHiDoP7RpzlDkvxGCqNN5Nj0QXTnFgquJrQFyStaWTx42cbyKzXaSwpW0llwVw
+        00H6NrikLikvjxfqYvSslQmqmjBvWWenRn5GzN7DAl6/L6LxRQbf7q1Aryt+tD3Y
+        qFgI5dRPRO1JGfzmT04O0xh0de8ILpo5Wi59C7IXlN1h0SmlYHS+7Yav2cSrVUs6
+        msM9LqYO6bsvV7a+VHg674/FgCIVKEccg00OhxoOapV+v8LqaEULFauwOQf1DT0s
+        Te12fXn+Mi9iFP2gkrOgkaZ2xQzlEhSMercFMkfjq1zWIfKSiaOdWSWw3EaTqDqR
+        GggMz3btFu/7Dq68A0bCSmes+Xmjhh8=
+X-Virus-Scanned: amavisd-new at mykolab.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-10 required=5
+        tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from mx.kolabnow.com ([127.0.0.1])
+        by localhost (ext-mx-out001.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id GjMV7ycQXF3y; Fri, 13 Nov 2020 14:36:46 +0100 (CET)
+Received: from int-mx002.mykolab.com (unknown [10.9.13.2])
+        by ext-mx-out001.mykolab.com (Postfix) with ESMTPS id 1662C1356;
+        Fri, 13 Nov 2020 14:36:45 +0100 (CET)
+Received: from ext-subm002.mykolab.com (unknown [10.9.6.2])
+        by int-mx002.mykolab.com (Postfix) with ESMTPS id A517B2C0E;
+        Fri, 13 Nov 2020 14:36:45 +0100 (CET)
+From:   Federico Vaga <federico.vaga@vaga.pv.it>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Federico Vaga <federico.vaga@vaga.pv.it>
+Subject: [PATCH v2] doc:it_IT: align Italian documentation
+Date:   Fri, 13 Nov 2020 14:36:38 +0100
+Message-Id: <20201113133638.7989-1-federico.vaga@vaga.pv.it>
 MIME-Version: 1.0
-References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz> <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
- <87eekz4s04.fsf@codeaurora.org> <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
- <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com> <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
- <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org> <3e30ac52-6ad4-fa7b-8817-bca35a80d268@gmail.com>
-In-Reply-To: <3e30ac52-6ad4-fa7b-8817-bca35a80d268@gmail.com>
-From:   wi nk <wink@technolu.st>
-Date:   Fri, 13 Nov 2020 14:36:35 +0100
-Message-ID: <CAHUdJJXnSd614ff+GDOAtUQV_vdUnOkVooFAzp_LA6CbbW=NDA@mail.gmail.com>
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Cc:     Carl Huang <cjhuang@codeaurora.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        akpm@linux-foundation.org, ath11k@lists.infradead.org,
-        Kalle Valo <kvalo@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 1:52 PM Pavel Procopiuc
-<pavel.procopiuc@gmail.com> wrote:
->
-> Op 13.11.2020 om 12:08 schreef Carl Huang:
-> > Checked some logs. Looks when the error happens, the physical address are
-> > very small. Its' between 20M - 30M.
-> >
-> > So could you have a try to reserve the memory starting from 20M?
-> > Add "memmap=10M\$20M" to your grub.cfg or edit in kernel parameters. so ath11k
-> > can't allocate from these address.
-> >
-> > Or you can try to reserve even larger memory starting from 20M.
->
-> That worked, booting with memmap=12M$20M resulted in the working wifi:
->
-> $ journalctl -b | grep -iP '05:00|ath11k|Linux version|memmap'
-> Nov 13 13:45:34 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #1 SMP Fri Nov 13 13:29:48 CET 2020
-> Nov 13 13:45:34 razor kernel: Command line: ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2
-> memmap=12M$20M quiet
-> Nov 13 13:45:34 razor kernel:   DMA zone: 64 pages used for memmap
-> Nov 13 13:45:34 razor kernel:   DMA32 zone: 5165 pages used for memmap
-> Nov 13 13:45:34 razor kernel:   Normal zone: 255840 pages used for memmap
-> Nov 13 13:45:34 razor kernel: Kernel command line: ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2
-> memmap=12M$20M quiet ro root=/dev/nvme0n1p2 resume=/dev/nvme1n1p1 zram.num_devices=2 memmap=12M$20M quiet
-> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 13 13:45:34 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: MSI vectors: 32
-> Nov 13 13:45:35 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 13 13:45:35 razor kernel: mhi 0000:05:00.0: Power on setup success
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[0] 0x2100000 524288 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[1] 0x2180000 524288 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[2] 0x2200000 524288 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[3] 0x2280000 294912 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[4] 0x2300000 524288 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[5] 0x2380000 524288 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[6] 0x2400000 458752 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[7] 0x20c0000 131072 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[8] 0x2480000 524288 4
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[9] 0x2500000 360448 4
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: req mem_seg[10] 0x20a4000 16384 1
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
-> Nov 13 13:45:35 razor kernel: ath11k_pci 0000:05:00.0: fw_version 0x101c06cc fw_build_timestamp 2020-06-24 19:50
-> fw_build_id
-> Nov 13 13:45:37 razor NetworkManager[782]: <info>  [1605271537.1168] rfkill1: found Wi-Fi radio killswitch (at
-> /sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0/ieee80211/phy0/rfkill1) (driver ath11k_pci)
-> Nov 13 13:45:39 razor ModemManager[722]: <info>  Couldn't check support for device
-> '/sys/devices/pci0000:00/0000:00:1c.1/0000:05:00.0': not supported by any plugin
-> Nov 13 13:45:45 razor kernel: ath11k_pci 0000:05:00.0: failed to enqueue rx buf: -28
->
-> --
-> ath11k mailing list
-> ath11k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath11k
+Translation for the following patches
 
-When I attempt to boot my 5.10rc2 kernel with that memmap option, my
-machine immediately hangs.  That said, it seems to have done something
-bizarre, as immediately afterwards, if I remove that option and let
-5.10 boot normally, it seems to boot and bring up the wifi adapter ok
-(which didn't happen before).  Now that I've managed to boot 5.10
-twice, the first time after a couple of minutes my video started going
-nuts and displaying all sorts of artifacts[1].  This time things seem
-to be functioning nominally (wifi is online and the machine is
-behaving properly).  I may just never turn it off again :D.
+commit 905705a8fd43 ("docs: programming-languages: refresh blurb on clang support")
+commit 5ff4aa70bf34 ("docs: submitting-patches: use :doc: for references")
+commit 030f066f677f ("docs: submitting-patches: describe preserving review/test tags")
+commit 68e4cd17e218 ("docs: deprecated.rst: Add zero-length and one-element arrays")
+commit 5429ef62bcf3 ("compiler/gcc: Raise minimum GCC version for kernel builds to 4.8")
+commit 5b5bbb8cc51b ("docs: process: Add an example for creating a fixes tag")
+commit 858e6845654d ("docs: dt: convert submitting-patches.txt to ReST format")
+commit cca73e4946c4 ("docs: Correct the release date of 5.2 stable")
+commit c170f2eb9648 ("docs: Document cross-referencing between documentation pages")
+commit 7c8b9e3000f8 ("kernel-doc: Update "cross-referencing from rST" section to use automarkup")
+commit 27def953b63b ("docs: deprecated.rst: Expand str*cpy() replacement notes")
+commit 17dca0502314 ("docs: deprecated.rst: Update zero-length/one-element arrays section")
+commit 3519c4d6e08e ("Documentation: add minimum clang/llvm version")
+commit 0bddd227f3dc ("Documentation: update for gcc 4.9 requirement")
+commit 9f364b605f34 ("submitting-patches.rst: presume git will be used")
+commit 4ebdf7be21d6 ("Documentation/maintainer: rehome sign-off process")
+commit 7433ff33e8ba ("Documentation/process: expand plain-text advice")
+commit eb45fb2fb16d ("docs: process: Add cross-link to security-bugs")
+commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
+commit f67281a72b30 ("Documentation: process: step 2: Link to email list fixed")
 
-[1] - Here is what dmesg reported as that was occuring:
+Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+---
+ .../it_IT/doc-guide/kernel-doc.rst            |  30 +-
+ .../translations/it_IT/doc-guide/sphinx.rst   |  20 ++
+ .../translations/it_IT/process/2.Process.rst  |   4 +-
+ .../translations/it_IT/process/changes.rst    |  18 +-
+ .../it_IT/process/coding-style.rst            |  26 +-
+ .../translations/it_IT/process/deprecated.rst | 147 ++++++++-
+ .../it_IT/process/email-clients.rst           |   5 +
+ .../it_IT/process/programming-language.rst    |   8 +-
+ .../it_IT/process/submitting-patches.rst      | 295 +++++-------------
+ 9 files changed, 292 insertions(+), 261 deletions(-)
 
-[   16.158464] ath11k_pci 0000:55:00.0 wlp85s0: renamed from wlan0
-[   16.266416] bridge: filtering via arp/ip/ip6tables is no longer
-available by default. Update your scripts to load br_netfilter if you
-need this.
-[   16.267385] Bridge firewalling registered
-[   16.415304] Initializing XFRM netlink socket
-[   16.587820] process 'docker/tmp/qemu-check645322819/check' started
-with executable stack
-[   16.806205] Bluetooth: hci0: QCA Downloading qca/htnv20.bin
-[   17.000375] Bluetooth: hci0: QCA setup on UART is completed
-[   17.022058] NET: Registered protocol family 38
-[   18.149182] rfkill: input handler disabled
-[   30.403700] Bluetooth: RFCOMM TTY layer initialized
-[   30.403704] Bluetooth: RFCOMM socket layer initialized
-[   30.403707] Bluetooth: RFCOMM ver 1.11
-[   30.613483] rfkill: input handler enabled
-[   31.928415] rfkill: input handler disabled
-[   45.130209] ath11k_pci 0000:55:00.0: failed to receive scan abort
-comple: timed out
-[   45.130219] ath11k_pci 0000:55:00.0: failed to abort scan: -110
-[   48.202259] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-[   48.202264] ath11k_pci 0000:55:00.0: failed to send WMI_START_SCAN_CMDID
-[   48.202269] ath11k_pci 0000:55:00.0: failed to start hw scan: -11
-[   48.220668] wlp85s0: authenticate with ec:08:6b:27:01:ea
-[   51.274151] ath11k_pci 0000:55:00.0: wmi command 16387 timeout
-[   51.274153] ath11k_pci 0000:55:00.0: failed to send WMI_PDEV_SET_PARAM cmd
-[   51.274155] ath11k_pci 0000:55:00.0: failed to recalc txpower limit
-24 using pdev param 3: -11
-[   54.346271] ath11k_pci 0000:55:00.0: wmi command 20488 timeout
-[   54.346276] ath11k_pci 0000:55:00.0: failed to send WMI_VDEV_SET_PARAM_CMDID
-[   54.346283] ath11k_pci 0000:55:00.0: Failed to set beacon interval
-for VDEV: 0
-[   57.418158] ath11k_pci 0000:55:00.0: wmi command 20488 timeout
-[   57.418161] ath11k_pci 0000:55:00.0: failed to send WMI_VDEV_SET_PARAM_CMDID
-[   57.418163] ath11k_pci 0000:55:00.0: failed to set mgmt tx rate -11
-[   60.490264] ath11k_pci 0000:55:00.0: wmi command 20488 timeout
-[   60.490268] ath11k_pci 0000:55:00.0: failed to send WMI_VDEV_SET_PARAM_CMDID
-[   60.490273] ath11k_pci 0000:55:00.0: failed to set beacon tx rate -11
-[   63.562154] ath11k_pci 0000:55:00.0: wmi command 24577 timeout
-[   63.562157] ath11k_pci 0000:55:00.0: failed to submit WMI_PEER_CREATE cmd
-[   63.562159] ath11k_pci 0000:55:00.0: failed to send peer create
-vdev_id 0 ret -11
-[   63.562161] ath11k_pci 0000:55:00.0: Failed to add peer:
-ec:08:6b:27:01:ea for VDEV: 0
-[   63.562163] ath11k_pci 0000:55:00.0: Failed to add station:
-ec:08:6b:27:01:ea for VDEV: 0
-[   63.562196] wlp85s0: failed to insert STA entry for the AP (error -11)
-[   63.562226] ------------[ cut here ]------------
-[   63.562235] WARNING: CPU: 1 PID: 1036 at
-drivers/net/wireless/ath/ath11k/mac.c:5287
-ath11k_mac_op_unassign_vif_chanctx+0x1e3/0x2e0 [ath11k]
-[   63.562236] Modules linked in: rfcomm cmac algif_hash
-algif_skcipher af_alg xt_conntrack xt_MASQUERADE nf_conntrack_netlink
-xfrm_user xfrm_algo nft_counter xt_addrtype nft_compat nft_chain_nat
-nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables libcrc32c
-nfnetlink br_netfilter bridge stp llc snd_soc_skl_hda_dsp
-snd_soc_hdac_hdmi qrtr_mhi bnep overlay snd_hda_codec_hdmi
-snd_hda_codec_realtek snd_hda_codec_generic snd_soc_dmic snd_sof_pci
-snd_sof_intel_byt snd_sof_intel_ipc snd_sof_intel_hda_common
-snd_soc_hdac_hda snd_sof_xtensa_dsp snd_sof_intel_hda snd_sof
-snd_hda_ext_core snd_soc_acpi_intel_match snd_soc_acpi snd_soc_core
-snd_compress ac97_bus snd_pcm_dmaengine snd_hda_intel snd_intel_dspcfg
-snd_hda_codec snd_hda_core snd_hwdep snd_pcm qrtr ns snd_seq_midi
-ath11k_pci snd_seq_midi_event mhi snd_rawmidi ath11k snd_seq
-nls_iso8859_1 qmi_helpers joydev mei_hdcp dell_laptop snd_seq_device
-snd_timer ledtrig_audio uvcvideo intel_rapl_msr videobuf2_vmalloc
-videobuf2_memops dell_wmi
-[   63.562269]  x86_pkg_temp_thermal intel_powerclamp videobuf2_v4l2
-dell_smm_hwmon mac80211 hci_uart dell_smbios videobuf2_common coretemp
-btqca kvm_intel hid_sensor_als hid_sensor_trigger
-industrialio_triggered_buffer kfifo_buf kvm hid_sensor_iio_common
-mousedev cfg80211 snd dcdbas btrtl input_leds videodev serio_raw
-efi_pstore wmi_bmof intel_cstate dell_wmi_descriptor libarc4 mc
-hid_multitouch industrialio btbcm soundcore 8250_dw btintel bluetooth
-mei_me mei cros_ec_ishtp cros_ec processor_thermal_device ucsi_acpi
-ecdh_generic typec_ucsi intel_rapl_common typec intel_soc_dts_iosf ecc
-int3403_thermal int340x_thermal_zone mac_hid acpi_pad intel_hid
-int3400_thermal acpi_thermal_rel sparse_keymap acpi_tad sch_fq_codel
-parport_pc ppdev lp parport ip_tables x_tables autofs4 dm_crypt
-hid_sensor_hub intel_ishtp_loader intel_ishtp_hid hid_generic
-i2c_designware_platform i2c_designware_core i915 nvme crct10dif_pclmul
-crc32_pclmul i2c_algo_bit rtsx_pci_sdmmc nvme_core ghash_clmulni_intel
-[   63.562306]  drm_kms_helper aesni_intel syscopyarea sysfillrect
-crypto_simd sysimgblt fb_sys_fops cryptd glue_helper cec psmouse
-i2c_i801 rc_core i2c_smbus rtsx_pci intel_lpss_pci drm vmd intel_lpss
-thunderbolt intel_ish_ipc idma64 intel_ishtp virt_dma xhci_pci
-xhci_pci_renesas wmi i2c_hid hid video backlight pinctrl_tigerlake
-[   63.562323] CPU: 1 PID: 1036 Comm: wpa_supplicant Tainted: G
-W I       5.10.0-rc2+ #1
-[   63.562324] Hardware name: Dell Inc. XPS 13 9310/0F7M4C, BIOS 1.1.1
-10/05/2020
-[   63.562328] RIP: 0010:ath11k_mac_op_unassign_vif_chanctx+0x1e3/0x2e0 [ath11k]
-[   63.562329] Code: 8b 83 e0 02 00 00 4c 89 e9 be 10 00 00 00 4c 89
-e7 48 c7 c2 e8 c2 cb c0 e8 2a 5b 01 00 80 bb 98 03 00 00 00 0f 85 6d
-fe ff ff <0f> 0b e9 66 fe ff ff f0 41 80 a6 d8 16 00 00 fe f6 05 16 67
-04 00
-[   63.562330] RSP: 0018:ffffa63580bcf760 EFLAGS: 00010246
-[   63.562331] RAX: 0000000000000000 RBX: ffff8e2c1c891588 RCX: 0000000000000000
-[   63.562332] RDX: ffff8e2c2516dac0 RSI: ffff8e2c1c891588 RDI: ffff8e2c1e3c35f8
-[   63.562332] RBP: ffffa63580bcf798 R08: ffff8e2c1c890980 R09: ffffa63580bcf4f8
-[   63.562333] R10: ffffa63580bcf4f0 R11: ffffffff8d152ca8 R12: ffff8e2c27c60000
-[   63.562333] R13: ffff8e2c1a9214d8 R14: 0000000000000000 R15: ffff8e2c1e3c35f8
-[   63.562334] FS:  00007fa314f19800(0000) GS:ffff8e2c4f440000(0000)
-knlGS:0000000000000000
-[   63.562335] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   63.562336] CR2: 00007f222eefcaf8 CR3: 0000000860cdc001 CR4: 0000000000770ee0
-[   63.562336] PKRU: 55555554
-[   63.562337] Call Trace:
-[   63.562360]  ieee80211_assign_vif_chanctx+0x8f/0x410 [mac80211]
-[   63.562370]  __ieee80211_vif_release_channel+0x54/0x140 [mac80211]
-[   63.562380]  ieee80211_vif_release_channel+0x3e/0x60 [mac80211]
-[   63.562391]  ieee80211_mgd_auth+0x213/0x3e0 [mac80211]
-[   63.562405]  ? cfg80211_get_bss+0x1d9/0x2a0 [cfg80211]
-[   63.562414]  ieee80211_auth+0x18/0x20 [mac80211]
-[   63.562423]  cfg80211_mlme_auth+0x104/0x1e0 [cfg80211]
-[   63.562431]  nl80211_authenticate+0x29d/0x2f0 [cfg80211]
-[   63.562435]  genl_family_rcv_msg_doit+0xe7/0x150
-[   63.562437]  genl_rcv_msg+0xe2/0x1e0
-[   63.562444]  ? nl80211_parse_key+0x310/0x310 [cfg80211]
-[   63.562445]  ? genl_get_cmd+0xd0/0xd0
-[   63.562446]  netlink_rcv_skb+0x55/0x100
-[   63.562447]  genl_rcv+0x29/0x40
-[   63.562448]  netlink_unicast+0x221/0x330
-[   63.562449]  netlink_sendmsg+0x233/0x460
-[   63.562451]  sock_sendmsg+0x65/0x70
-[   63.562452]  ____sys_sendmsg+0x257/0x2a0
-[   63.562454]  ? import_iovec+0x31/0x40
-[   63.562455]  ? sendmsg_copy_msghdr+0x7e/0xa0
-[   63.562456]  ___sys_sendmsg+0x82/0xc0
-[   63.562458]  ? __check_object_size+0x4d/0x150
-[   63.562459]  ? _copy_to_user+0x31/0x50
-[   63.562460]  ? sock_getsockopt+0x1a1/0xcd0
-[   63.562462]  ? unix_ioctl+0x5f/0x70
-[   63.562463]  ? sock_do_ioctl+0x40/0x140
-[   63.562465]  ? __cgroup_bpf_run_filter_setsockopt+0xb8/0x2e0
-[   63.562467]  __sys_sendmsg+0x62/0xb0
-[   63.562468]  __x64_sys_sendmsg+0x1f/0x30
-[   63.562470]  do_syscall_64+0x38/0x90
-[   63.562471]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   63.562472] RIP: 0033:0x7fa31537c777
-[   63.562473] Code: 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7
-0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74
-24 10
-[   63.562474] RSP: 002b:00007ffdcaf17988 EFLAGS: 00000246 ORIG_RAX:
-000000000000002e
-[   63.562475] RAX: ffffffffffffffda RBX: 0000560dc75336e0 RCX: 00007fa31537c777
-[   63.562475] RDX: 0000000000000000 RSI: 00007ffdcaf179c0 RDI: 0000000000000006
-[   63.562476] RBP: 0000560dc75758c0 R08: 0000000000000004 R09: 0000560dc756e760
-[   63.562476] R10: 00007ffdcaf17a94 R11: 0000000000000246 R12: 0000560dc75335f0
-[   63.562477] R13: 00007ffdcaf179c0 R14: 00007ffdcaf17a94 R15: 0000560dc756e760
-[   63.562478] CPU: 1 PID: 1036 Comm: wpa_supplicant Tainted: G
-W I       5.10.0-rc2+ #1
-[   63.562479] Hardware name: Dell Inc. XPS 13 9310/0F7M4C, BIOS 1.1.1
-10/05/2020
-[   63.562479] Call Trace:
-[   63.562481]  dump_stack+0x70/0x8b
-[   63.562485]  ? ath11k_mac_op_unassign_vif_chanctx+0x1e3/0x2e0 [ath11k]
-[   63.562487]  __warn.cold+0x24/0x77
-[   63.562489]  ? ath11k_mac_op_unassign_vif_chanctx+0x1e3/0x2e0 [ath11k]
-[   63.562491]  report_bug+0xa1/0xc0
-[   63.562493]  handle_bug+0x3e/0xa0
-[   63.562494]  exc_invalid_op+0x19/0x70
-[   63.562495]  asm_exc_invalid_op+0x12/0x20
-[   63.562497] RIP: 0010:ath11k_mac_op_unassign_vif_chanctx+0x1e3/0x2e0 [ath11k]
-[   63.562498] Code: 8b 83 e0 02 00 00 4c 89 e9 be 10 00 00 00 4c 89
-e7 48 c7 c2 e8 c2 cb c0 e8 2a 5b 01 00 80 bb 98 03 00 00 00 0f 85 6d
-fe ff ff <0f> 0b e9 66 fe ff ff f0 41 80 a6 d8 16 00 00 fe f6 05 16 67
-04 00
-[   63.562498] RSP: 0018:ffffa63580bcf760 EFLAGS: 00010246
-[   63.562499] RAX: 0000000000000000 RBX: ffff8e2c1c891588 RCX: 0000000000000000
-[   63.562499] RDX: ffff8e2c2516dac0 RSI: ffff8e2c1c891588 RDI: ffff8e2c1e3c35f8
-[   63.562500] RBP: ffffa63580bcf798 R08: ffff8e2c1c890980 R09: ffffa63580bcf4f8
-[   63.562500] R10: ffffa63580bcf4f0 R11: ffffffff8d152ca8 R12: ffff8e2c27c60000
-[   63.562501] R13: ffff8e2c1a9214d8 R14: 0000000000000000 R15: ffff8e2c1e3c35f8
-[   63.562511]  ieee80211_assign_vif_chanctx+0x8f/0x410 [mac80211]
-[   63.562520]  __ieee80211_vif_release_channel+0x54/0x140 [mac80211]
-[   63.562528]  ieee80211_vif_release_channel+0x3e/0x60 [mac80211]
-[   63.562538]  ieee80211_mgd_auth+0x213/0x3e0 [mac80211]
-[   63.562545]  ? cfg80211_get_bss+0x1d9/0x2a0 [cfg80211]
-[   63.562554]  ieee80211_auth+0x18/0x20 [mac80211]
-[   63.562562]  cfg80211_mlme_auth+0x104/0x1e0 [cfg80211]
-[   63.562570]  nl80211_authenticate+0x29d/0x2f0 [cfg80211]
-[   63.562571]  genl_family_rcv_msg_doit+0xe7/0x150
-[   63.562573]  genl_rcv_msg+0xe2/0x1e0
-[   63.562580]  ? nl80211_parse_key+0x310/0x310 [cfg80211]
-[   63.562581]  ? genl_get_cmd+0xd0/0xd0
-[   63.562582]  netlink_rcv_skb+0x55/0x100
-[   63.562583]  genl_rcv+0x29/0x40
-[   63.562583]  netlink_unicast+0x221/0x330
-[   63.562584]  netlink_sendmsg+0x233/0x460
-[   63.562585]  sock_sendmsg+0x65/0x70
-[   63.562586]  ____sys_sendmsg+0x257/0x2a0
-[   63.562587]  ? import_iovec+0x31/0x40
-[   63.562588]  ? sendmsg_copy_msghdr+0x7e/0xa0
-[   63.562589]  ___sys_sendmsg+0x82/0xc0
-[   63.562590]  ? __check_object_size+0x4d/0x150
-[   63.562591]  ? _copy_to_user+0x31/0x50
-[   63.562592]  ? sock_getsockopt+0x1a1/0xcd0
-[   63.562593]  ? unix_ioctl+0x5f/0x70
-[   63.562594]  ? sock_do_ioctl+0x40/0x140
-[   63.562595]  ? __cgroup_bpf_run_filter_setsockopt+0xb8/0x2e0
-[   63.562596]  __sys_sendmsg+0x62/0xb0
-[   63.562597]  __x64_sys_sendmsg+0x1f/0x30
-[   63.562598]  do_syscall_64+0x38/0x90
-[   63.562599]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   63.562600] RIP: 0033:0x7fa31537c777
-[   63.562601] Code: 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7
-0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74
-24 10
-[   63.562601] RSP: 002b:00007ffdcaf17988 EFLAGS: 00000246 ORIG_RAX:
-000000000000002e
-[   63.562602] RAX: ffffffffffffffda RBX: 0000560dc75336e0 RCX: 00007fa31537c777
-[   63.562602] RDX: 0000000000000000 RSI: 00007ffdcaf179c0 RDI: 0000000000000006
-[   63.562603] RBP: 0000560dc75758c0 R08: 0000000000000004 R09: 0000560dc756e760
-[   63.562603] R10: 00007ffdcaf17a94 R11: 0000000000000246 R12: 0000560dc75335f0
-[   63.562604] R13: 00007ffdcaf179c0 R14: 00007ffdcaf17a94 R15: 0000560dc756e760
-[   63.562605] ---[ end trace fa93bfa591439000 ]---
-[   66.634150] ath11k_pci 0000:55:00.0: wmi command 20486 timeout
-[   66.634152] ath11k_pci 0000:55:00.0: failed to submit WMI_VDEV_STOP cmd
-[   66.634155] ath11k_pci 0000:55:00.0: failed to stop WMI vdev 0: -11
-[   66.634156] ath11k_pci 0000:55:00.0: failed to stop vdev 0: -11
-[   69.962250] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-[   69.962255] ath11k_pci 0000:55:00.0: failed to send WMI_START_SCAN_CMDID
-[   69.962259] ath11k_pci 0000:55:00.0: failed to start hw scan: -11
-[   74.058210] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-[   74.058212] ath11k_pci 0000:55:00.0: failed to send WMI_START_SCAN_CMDID
-[   74.058214] ath11k_pci 0000:55:00.0: failed to start hw scan: -11
-[   77.130191] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-[   77.130193] ath11k_pci 0000:55:00.0: failed to send WMI_START_SCAN_CMDID
-[   77.130196] ath11k_pci 0000:55:00.0: failed to start hw scan: -11
-[   80.202147] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-[   80.202148] ath11k_pci 0000:55:00.0: failed to send WMI_START_SCAN_CMDID
-[   80.202150] ath11k_pci 0000:55:00.0: failed to start hw scan: -11
-[   83.274164] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-[   83.274168] ath11k_pci 0000:55:00.0: failed to send WMI_START_SCAN_CMDID
-[   83.274173] ath11k_pci 0000:55:00.0: failed to start hw scan: -11
-[   86.346167] ath11k_pci 0000:55:00.0: wmi command 12289 timeout
-<snip>
+diff --git a/Documentation/translations/it_IT/doc-guide/kernel-doc.rst b/Documentation/translations/it_IT/doc-guide/kernel-doc.rst
+index 524ad86cadbb..009cdac014b6 100644
+--- a/Documentation/translations/it_IT/doc-guide/kernel-doc.rst
++++ b/Documentation/translations/it_IT/doc-guide/kernel-doc.rst
+@@ -419,26 +419,24 @@ del `dominio Sphinx per il C`_.
+ Riferimenti usando reStructuredText
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-Per fare riferimento a funzioni e tipi di dato definiti nei commenti kernel-doc
+-all'interno dei documenti reStructuredText, utilizzate i riferimenti dal
+-`dominio Sphinx per il C`_. Per esempio::
++Nei documenti reStructuredText non serve alcuna sintassi speciale per
++fare riferimento a funzioni e tipi definiti nei commenti
++kernel-doc. Sarà sufficiente terminare i nomi di funzione con ``()``,
++e scrivere ``struct``, ``union``, ``enum``, o ``typedef`` prima di un
++tipo. Per esempio::
+ 
+-  See function :c:func:`foo` and struct/union/enum/typedef :c:type:`bar`.
++  See foo()
++  See struct foo.
++  See union bar.
++  See enum baz.
++  See typedef meh.
+ 
+-Nonostante il riferimento ai tipi di dato funzioni col solo nome,
+-ovvero senza specificare struct/union/enum/typedef, potreste preferire il
+-seguente::
++Tuttavia, la personalizzazione dei collegamenti è possibile solo con
++la seguente sintassi::
+ 
+-  See :c:type:`struct foo <foo>`.
+-  See :c:type:`union bar <bar>`.
+-  See :c:type:`enum baz <baz>`.
+-  See :c:type:`typedef meh <meh>`.
++  See :c:func:`my custom link text for function foo <foo>`.
++  See :c:type:`my custom link text for struct bar <bar>`.
+ 
+-Questo produce dei collegamenti migliori, ed è in linea con il modo in cui
+-kernel-doc gestisce i riferimenti.
+-
+-Per maggiori informazioni, siete pregati di consultare la documentazione
+-del `dominio Sphinx per il C`_.
+ 
+ Commenti per una documentazione generale
+ ----------------------------------------
+diff --git a/Documentation/translations/it_IT/doc-guide/sphinx.rst b/Documentation/translations/it_IT/doc-guide/sphinx.rst
+index f1ad4504b734..090d2949d345 100644
+--- a/Documentation/translations/it_IT/doc-guide/sphinx.rst
++++ b/Documentation/translations/it_IT/doc-guide/sphinx.rst
+@@ -364,6 +364,26 @@ Che verrà rappresentata nel seguente modo:
+ 
+         - column 3
+ 
++Riferimenti incrociati
++----------------------
++
++Per fare dei riferimenti incrociati da una pagina ad un'altra
++specificando il percorso a partire dalla cartella *Documentation*.
++Per esempio, se volete aggiungere un riferimento a questa pagina
++(l'estensione .rst è opzionale)::
++
++    See Documentation/translations/it_IT/doc-guide/sphinx.rst.
++
++Se preferite usare un percorso relative allora vi serve la direttiva
++Sphinx ``doc``.  Per esempio, se volete aggiungere un riferimento a
++questa pagina dalla stessa cartella::
++
++    See :doc:`sphinx`.
++
++Per maggiori informazioni su come aggiungere riferimenti incrociati a
++commenti kernel-doc di funzioni o tipi, leggete
++Documentation/translations/it_IT/doc-guide/sphinx.rst.
++
+ .. _it_sphinx_kfigure:
+ 
+ Figure ed immagini
+diff --git a/Documentation/translations/it_IT/process/2.Process.rst b/Documentation/translations/it_IT/process/2.Process.rst
+index 30dc172f06b0..62826034e0b2 100644
+--- a/Documentation/translations/it_IT/process/2.Process.rst
++++ b/Documentation/translations/it_IT/process/2.Process.rst
+@@ -123,7 +123,7 @@ iniziale, i kernel ricevono aggiornamenti per più di un ciclo di sviluppo.
+ Quindi, per esempio, la storia del kernel 5.2 appare così (anno 2019):
+ 
+ 	==============  ===============================
+-	15 settembre	5.2 rilascio stabile FIXME settembre è sbagliato
++	 7 luglio	5.2 rilascio stabile
+ 	14 luglio	5.2.1
+ 	21 luglio	5.2.2
+ 	26 luglio	5.2.3
+@@ -434,7 +434,7 @@ l'elenco principale lo si trova sul sito:
+ 	http://vger.kernel.org/vger-lists.html
+ 
+ Esistono liste gestite altrove; un certo numero di queste sono in
+-lists.redhat.com.
++redhat.com/mailman/listinfo.
+ 
+ La lista di discussione principale per lo sviluppo del kernel è, ovviamente,
+ linux-kernel.  Questa lista è un luogo ostile dove trovarsi; i volumi possono
+diff --git a/Documentation/translations/it_IT/process/changes.rst b/Documentation/translations/it_IT/process/changes.rst
+index 02da4408983d..cc883f8d96c4 100644
+--- a/Documentation/translations/it_IT/process/changes.rst
++++ b/Documentation/translations/it_IT/process/changes.rst
+@@ -32,7 +32,8 @@ PC Card, per esempio, probabilmente non dovreste preoccuparvi di pcmciautils.
+ ====================== =================  ========================================
+         Programma       Versione minima       Comando per verificare la versione
+ ====================== =================  ========================================
+-GNU C                  4.6                gcc --version
++GNU C                  4.9                gcc --version
++Clang/LLVM (optional)  10.0.1             clang --version
+ GNU make               3.81               make --version
+ binutils               2.23               ld -v
+ flex                   2.5.35             flex --version
+@@ -71,6 +72,16 @@ GCC
+ La versione necessaria di gcc potrebbe variare a seconda del tipo di CPU nel
+ vostro calcolatore.
+ 
++Clang/LLVM (opzionale)
++----------------------
++
++L'ultima versione di clang e *LLVM utils* (secondo `releases.llvm.org
++<https://releases.llvm.org>`_) sono supportati per la generazione del
++kernel. Non garantiamo che anche i rilasci più vecchi funzionino, inoltre
++potremmo rimuovere gli espedienti che abbiamo implementato per farli
++funzionare. Per maggiori informazioni
++:ref:`Building Linux with Clang/LLVM <kbuild_llvm>`.
++
+ Make
+ ----
+ 
+@@ -338,6 +349,11 @@ gcc
+ 
+ - <ftp://ftp.gnu.org/gnu/gcc/>
+ 
++Clang/LLVM
++----------
++
++- :ref:`Getting LLVM <getting_llvm>`.
++
+ Make
+ ----
+ 
+diff --git a/Documentation/translations/it_IT/process/coding-style.rst b/Documentation/translations/it_IT/process/coding-style.rst
+index a346f1f2ce21..c86c4543f249 100644
+--- a/Documentation/translations/it_IT/process/coding-style.rst
++++ b/Documentation/translations/it_IT/process/coding-style.rst
+@@ -92,16 +92,22 @@ delle righe.
+ Lo stile del codice riguarda la leggibilità e la manutenibilità utilizzando
+ strumenti comuni.
+ 
+-Il limite delle righe è di 80 colonne e questo e un limite fortemente
+-desiderato.
+-
+-Espressioni più lunghe di 80 colonne saranno spezzettate in pezzi più piccoli,
+-a meno che eccedere le 80 colonne non aiuti ad aumentare la leggibilità senza
+-nascondere informazioni.  I pezzi derivati sono sostanzialmente più corti degli
+-originali e vengono posizionati più a destra.  Lo stesso si applica, nei file
+-d'intestazione, alle funzioni con una lista di argomenti molto lunga. Tuttavia,
+-non spezzettate mai le stringhe visibili agli utenti come i messaggi di
+-printk, questo perché inibireste la possibilità d'utilizzare grep per cercarle.
++Come limite di riga si preferiscono le 80 colonne.
++
++Espressioni più lunghe di 80 colonne dovrebbero essere spezzettate in
++pezzi più piccoli, a meno che eccedere le 80 colonne non aiuti ad
++aumentare la leggibilità senza nascondere informazioni.
++
++I nuovi pezzi derivati sono sostanzialmente più corti degli originali
++e vengono posizionati più a destra. Uno stile molto comune è quello di
++allineare i nuovi pezzi alla parentesi aperta di una funzione.
++
++Lo stesso si applica, nei file d'intestazione, alle funzioni con una
++lista di argomenti molto lunga.
++
++Tuttavia, non spezzettate mai le stringhe visibili agli utenti come i
++messaggi di printk, questo perché inibireste la possibilità
++d'utilizzare grep per cercarle.
+ 
+ 3) Posizionamento di parentesi graffe e spazi
+ ---------------------------------------------
+diff --git a/Documentation/translations/it_IT/process/deprecated.rst b/Documentation/translations/it_IT/process/deprecated.rst
+index a642ff3fdc8b..07c79d4bafca 100644
+--- a/Documentation/translations/it_IT/process/deprecated.rst
++++ b/Documentation/translations/it_IT/process/deprecated.rst
+@@ -95,6 +95,11 @@ Invece, usate la seguente funzione::
+ 
+ 	header = kzalloc(struct_size(header, item, count), GFP_KERNEL);
+ 
++.. note:: Se per caso state usando struct_size() su una struttura dati che
++	  in coda contiene un array di lunghezza zero o uno, allora siete
++	  invitati a riorganizzare il vostro codice usando il
++	  `flexible array member <#zero-length-and-one-element-arrays>`_.
++
+ Per maggiori dettagli fate riferimento a array_size(),
+ array3_size(), e struct_size(), così come la famiglia di
+ funzioni check_add_overflow() e check_mul_overflow().
+@@ -116,7 +121,11 @@ di destinazione. Questo può portare ad un overflow oltre i limiti del
+ buffer e generare svariati tipi di malfunzionamenti. Nonostante l'opzione
+ `CONFIG_FORTIFY_SOURCE=y` e svariate opzioni del compilatore aiutano
+ a ridurne il rischio, non c'è alcuna buona ragione per continuare ad usare
+-questa funzione. La versione sicura da usare è strscpy().
++questa funzione. La versione sicura da usare è strscpy(), tuttavia va
++prestata attenzione a tutti quei casi dove viene usato il valore di
++ritorno di strcpy().  La funzione strscpy() non ritorna un puntatore
++alla destinazione, ma un contatore dei byte non NUL copiati (oppure
++un errno negativo se la stringa è stata troncata).
+ 
+ strncpy() su stringe terminate con NUL
+ --------------------------------------
+@@ -127,8 +136,12 @@ causati, appunto, dalla mancanza del terminatore. Questa estende la
+ terminazione nel buffer di destinazione quando la stringa d'origine è più
+ corta; questo potrebbe portare ad una penalizzazione delle prestazioni per
+ chi usa solo stringe terminate. La versione sicura da usare è
+-strscpy(). (chi usa strscpy() e necessita di estendere la
+-terminazione con NUL deve aggiungere una chiamata a memset())
++strscpy(), tuttavia va prestata attenzione a tutti quei casi dove
++viene usato il valore di ritorno di strncpy().  La funzione strscpy()
++non ritorna un puntatore alla destinazione, ma un contatore dei byte
++non NUL copiati (oppure un errno negativo se la stringa è stata
++troncata). Tutti i casi che necessitano di estendere la
++terminazione con NUL dovrebbero usare strscpy_pad().
+ 
+ Se il chiamate no usa stringhe terminate con NUL, allore strncpy()
+ può continuare ad essere usata, ma i buffer di destinazione devono essere
+@@ -140,7 +153,10 @@ strlcpy()
+ La funzione strlcpy(), per prima cosa, legge interamente il buffer di
+ origine, magari leggendo più di quanto verrà effettivamente copiato. Questo
+ è inefficiente e può portare a overflow di lettura quando la stringa non è
+-terminata con NUL. La versione sicura da usare è strscpy().
++terminata con NUL. La versione sicura da usare è strscpy(), tuttavia
++va prestata attenzione a tutti quei casi dove viene usato il valore di
++ritorno di strlcpy(), dato che strscpy() ritorna un valore di errno
++negativo quanto la stringa viene troncata.
+ 
+ Segnaposto %p nella stringa di formato
+ --------------------------------------
+@@ -227,3 +243,126 @@ modi:
+ * ``continue;``
+ * ``goto <label>;``
+ * ``return [expression];``
++
++Array di lunghezza zero o con un solo elemento
++----------------------------------------------
++All'interno del kernel ricorre spesso la necessita di avere membri
++di dimensione variabile all'interno di una struttura dati. In questi
++casi il codice del kernel dovrebbe usare sempre i `"flexible array
++member" <https://en.wikipedia.org/wiki/Flexible_array_member>`_. La
++tecnica degli array a lunghezza nulla o di un solo elemento non
++dovrebbe essere più usata.
++
++Nel codice C più vecchio, la dichiarazione di un membro di dimensione
++variabile in coda ad una struttura dati veniva fatto dichiarando un
++array di un solo elemento posizionato alla fine della struttura dati::
++
++        struct something {
++                size_t count;
++                struct foo items[1];
++        };
++
++Questo ha portato ad un calcolo di sizeof() traballante (dovrebbe
++rimuovere la dimensione del singolo elemento in coda per calcolare la
++dimensione esatta dell' "intestazione"). Per evitare questi problemi è
++stata introdotta un' `estensione a GNU C
++<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_ che
++permettesse la dichiarazione di array a lungezza zero::
++
++        struct something {
++                size_t count;
++                struct foo items[0];
++        };
++
++Ma questo ha portato nuovi problemi, e non ha risolto alcuni dei
++problemi che affliggono entrambe le tecniche: per esempio
++l'impossibilità di riconoscere se un array di quel tipo viene usato
++nel mezzo di una struttura dati e _non_ alla fine (potrebbe accadere
++sia direttamente, sia indirettamente quando si usano le unioni o le
++strutture di strutture).
++
++Lo standard C99 introduce i "flexible array members". Questi array non
++hanno una dimensione nella loro dichiarazione::
++
++        struct something {
++                size_t count;
++                struct foo items[];
++        };
++
++Questo è il modo con cui ci si aspetta che vengano dichiarati gli
++elementi di lunghezza variabile in coda alle strutture dati.  Permette
++al compilatore di produrre errori quando gli array flessibili non si
++trovano alla fine della struttura dati, il che permette di prevenire
++alcuni tipi di bachi dovuti a `comportamenti inaspettati
++<https://git.kernel.org/linus/76497732932f15e7323dc805e8ea8dc11bb587cf>`_.
++Inoltre, permette al compilatore di analizzare correttamente le
++dimensioni degli array (attraverso sizeof(), `CONFIG_FORTIFY_SOURCE`,
++e `CONFIG_UBSAN_BOUNDS`). Per esempio, non esiste alcun meccanismo in
++grado di avvisarci che il seguente uso di sizeof() dia sempre come
++zero come risultato::
++
++        struct something {
++                size_t count;
++                struct foo items[0];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
++        instance->count = count;
++
++        size = sizeof(instance->items) * instance->count;
++        memcpy(instance->items, source, size);
++
++Il valore di ``size`` nell'ultima riga sarà ``zero``, quando uno
++invece si aspetterebbe che il suo valore sia la dimensione totale in
++byte dell'allocazione dynamica che abbiamo appena fatto per l'array
++``items``. Qui un paio di esempi reali del problema: `collegamento 1
++<https://git.kernel.org/linus/f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539>`_,
++`collegamento 2
++<https://git.kernel.org/linus/ab91c2a89f86be2898cee208d492816ec238b2cf>`_.
++Invece, `i flexible array members hanno un tipo incompleto, e quindi
++sizeof() non può essere applicato
++<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_; dunque ogni
++uso scorretto di questo operatore verrà identificato immediatamente
++durante la compilazione.
++
++Per quanto riguarda gli array di un solo elemento, bisogna essere
++consapevoli che `questi array occupano almeno quanto lo spazio di un
++singolo oggetti dello stesso tipo
++<https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html>`_, e quindi
++contribuiscono al calcolo della dimensione della struttura che li
++contiene. In questo caso è facile commettere errori quando si vuole
++calcolare la dimensione totale della memoria totale da allocare per
++una struttura dati::
++
++        struct something {
++                size_t count;
++                struct foo items[1];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, items, count - 1), GFP_KERNEL);
++        instance->count = count;
++
++        size = sizeof(instance->items) * instance->count;
++        memcpy(instance->items, source, size);
++
++In questo esempio ci siamo dovuti ricordare di usare ``count - 1`` in
++struct_size(), altrimenti avremmo --inavvertitamente-- allocato
++memoria per un oggetti ``items`` in più. Il modo più pulito e meno
++propenso agli errori è quello di usare i `flexible array member`, in
++combinazione con struct_size() e flex_array_size()::
++
++        struct something {
++                size_t count;
++                struct foo items[];
++        };
++
++        struct something *instance;
++
++        instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
++        instance->count = count;
++
++	memcpy(instance->items, source, flex_array_size(instance, items, instance->count));
+diff --git a/Documentation/translations/it_IT/process/email-clients.rst b/Documentation/translations/it_IT/process/email-clients.rst
+index ccdededb56c6..b792f2f06a74 100644
+--- a/Documentation/translations/it_IT/process/email-clients.rst
++++ b/Documentation/translations/it_IT/process/email-clients.rst
+@@ -32,6 +32,11 @@ impostato come ``text/plain``.  Tuttavia, generalmente gli allegati non sono
+ ben apprezzati perché rende più difficile citare porzioni di patch durante il
+ processo di revisione.
+ 
++Inoltre, è vivamente raccomandato l'uso di puro testo nel corpo del
++messaggio, sia per la patch che per qualsiasi altro messaggio. Il sito
++https://useplaintext.email/ può esservi d'aiuto per configurare il
++vostro programma di posta elettronica.
++
+ I programmi di posta elettronica che vengono usati per inviare le patch per il
+ kernel Linux dovrebbero inviarle senza alterazioni.  Per esempio, non
+ dovrebbero modificare o rimuovere tabulazioni o spazi, nemmeno all'inizio o
+diff --git a/Documentation/translations/it_IT/process/programming-language.rst b/Documentation/translations/it_IT/process/programming-language.rst
+index c4fc9d394c29..41db2598ce11 100644
+--- a/Documentation/translations/it_IT/process/programming-language.rst
++++ b/Documentation/translations/it_IT/process/programming-language.rst
+@@ -11,13 +11,15 @@ Linguaggio di programmazione
+ Il kernel è scritto nel linguaggio di programmazione C [it-c-language]_.
+ Più precisamente, il kernel viene compilato con ``gcc`` [it-gcc]_ usando
+ l'opzione ``-std=gnu89`` [it-gcc-c-dialect-options]_: il dialetto GNU
+-dello standard ISO C90 (con l'aggiunta di alcune funzionalità da C99)
++dello standard ISO C90 (con l'aggiunta di alcune funzionalità da C99).
++Linux supporta anche ``clang`` [it-clang]_, leggete la documentazione
++:ref:`Building Linux with Clang/LLVM <kbuild_llvm>`.
+ 
+ Questo dialetto contiene diverse estensioni al linguaggio [it-gnu-extensions]_,
+ e molte di queste vengono usate sistematicamente dal kernel.
+ 
+-Il kernel offre un certo livello di supporto per la compilazione con ``clang``
+-[it-clang]_ e ``icc`` [it-icc]_ su diverse architetture, tuttavia in questo momento
++Il kernel offre un certo livello di supporto per la compilazione con
++``icc`` [it-icc]_ su diverse architetture, tuttavia in questo momento
+ il supporto non è completo e richiede delle patch aggiuntive.
+ 
+ Attributi
+diff --git a/Documentation/translations/it_IT/process/submitting-patches.rst b/Documentation/translations/it_IT/process/submitting-patches.rst
+index 7c23c08e4401..8aa2865ec6cc 100644
+--- a/Documentation/translations/it_IT/process/submitting-patches.rst
++++ b/Documentation/translations/it_IT/process/submitting-patches.rst
+@@ -16,21 +16,19 @@ vostre patch accettate.
+ 
+ Questo documento contiene un vasto numero di suggerimenti concisi.  Per
+ maggiori dettagli su come funziona il processo di sviluppo del kernel leggete
+-:ref:`Documentation/translations/it_IT/process <it_development_process_main>`.
+-Leggete anche :ref:`Documentation/translations/it_IT/process/submit-checklist.rst <it_submitchecklist>`
+-per una lista di punti da verificare prima di inviare del codice.  Se state
+-inviando un driver, allora leggete anche :ref:`Documentation/translations/it_IT/process/submitting-drivers.rst <it_submittingdrivers>`;
+-per delle patch relative alle associazioni per Device Tree leggete
+-Documentation/devicetree/bindings/submitting-patches.rst.
+-
+-Molti di questi passi descrivono il comportamento di base del sistema di
+-controllo di versione ``git``; se utilizzate ``git`` per preparare le vostre
+-patch molto del lavoro più ripetitivo lo troverete già fatto per voi, tuttavia
+-dovete preparare e documentare un certo numero di patch.  Generalmente, l'uso
+-di ``git`` renderà la vostra vita di sviluppatore del kernel più facile.
+-
+-0) Ottenere i sorgenti attuali
+-------------------------------
++:doc:`development-process`.
++Leggete anche :doc:`submit-checklist` per una lista di punti da
++verificare prima di inviare del codice.  Se state inviando un driver,
++allora leggete anche :doc:`submitting-drivers`; per delle patch
++relative alle associazioni per Device Tree leggete
++:doc:`submitting-patches`.
++
++Questa documentazione assume che sappiate usare ``git`` per preparare le patch.
++Se non siete pratici di ``git``, allora è bene che lo impariate;
++renderà la vostra vita di sviluppatore del kernel molto più semplice.
++
++Ottenere i sorgenti attuali
++---------------------------
+ 
+ Se non avete un repositorio coi sorgenti del kernel più recenti, allora usate
+ ``git`` per ottenerli.  Vorrete iniziare col repositorio principale che può
+@@ -45,69 +43,10 @@ Guardate l'elemento **T:** per un determinato sottosistema nel file MAINTANERS
+ che troverete nei sorgenti, o semplicemente chiedete al manutentore nel caso
+ in cui i sorgenti da usare non siano elencati il quel file.
+ 
+-Esiste ancora la possibilità di scaricare un rilascio del kernel come archivio
+-tar (come descritto in una delle prossime sezioni), ma questa è la via più
+-complicata per sviluppare per il kernel.
+-
+-1) ``diff -up``
+----------------
+-
+-Se dovete produrre le vostre patch a mano, usate ``diff -up`` o ``diff -uprN``
+-per crearle.  Git produce di base le patch in questo formato; se state
+-usando ``git``, potete saltare interamente questa sezione.
+-
+-Tutte le modifiche al kernel Linux avvengono mediate patch, come descritte
+-in :manpage:`diff(1)`.  Quando create la vostra patch, assicuratevi di
+-crearla nel formato "unified diff", come l'argomento ``-u`` di
+-:manpage:`diff(1)`.
+-Inoltre, per favore usate l'argomento ``-p`` per mostrare la funzione C
+-alla quale si riferiscono le diverse modifiche - questo rende il risultato
+-di ``diff`` molto più facile da leggere.  Le patch dovrebbero essere basate
+-sulla radice dei sorgenti del kernel, e non sulle sue sottocartelle.
+-
+-Per creare una patch per un singolo file, spesso è sufficiente fare::
+-
+-	SRCTREE=linux
+-	MYFILE=drivers/net/mydriver.c
+-
+-	cd $SRCTREE
+-	cp $MYFILE $MYFILE.orig
+-	vi $MYFILE	# make your change
+-	cd ..
+-	diff -up $SRCTREE/$MYFILE{.orig,} > /tmp/patch
+-
+-Per creare una patch per molteplici file, dovreste spacchettare i sorgenti
+-"vergini", o comunque non modificati, e fare un ``diff`` coi vostri.
+-Per esempio::
+-
+-	MYSRC=/devel/linux
+-
+-	tar xvfz linux-3.19.tar.gz
+-	mv linux-3.19 linux-3.19-vanilla
+-	diff -uprN -X linux-3.19-vanilla/Documentation/dontdiff \
+-		linux-3.19-vanilla $MYSRC > /tmp/patch
+-
+-``dontdiff`` è una lista di file che sono generati durante il processo di
+-compilazione del kernel; questi dovrebbero essere ignorati in qualsiasi
+-patch generata con :manpage:`diff(1)`.
+-
+-Assicuratevi che la vostra patch non includa file che non ne fanno veramente
+-parte.  Al fine di verificarne la correttezza, assicuratevi anche di
+-revisionare la vostra patch -dopo- averla generata con :manpage:`diff(1)`.
+-
+-Se le vostre modifiche producono molte differenze, allora dovrete dividerle
+-in patch indipendenti che modificano le cose in passi logici;  leggete
+-:ref:`split_changes`.  Questo faciliterà la revisione da parte degli altri
+-sviluppatori, il che è molto importante se volete che la patch venga accettata.
+-
+-Se state utilizzando ``git``, ``git rebase -i`` può aiutarvi nel procedimento.
+-Se non usate ``git``, un'alternativa popolare è ``quilt``
+-<http://savannah.nongnu.org/projects/quilt>.
+-
+ .. _it_describe_changes:
+ 
+-2) Descrivete le vostre modifiche
+----------------------------------
++Descrivete le vostre modifiche
++------------------------------
+ 
+ Descrivete il vostro problema. Esiste sempre un problema che via ha spinto
+ ha fare il vostro lavoro, che sia la correzione di un baco da una riga o una
+@@ -208,10 +147,15 @@ precedente::
+ 	[pretty]
+ 		fixes = Fixes: %h (\"%s\")
+ 
++Un esempio::
++
++       $ git log -1 --pretty=fixes 54a4f0239f2e
++       Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
++
+ .. _it_split_changes:
+ 
+-3) Separate le vostre modifiche
+--------------------------------
++Separate le vostre modifiche
++----------------------------
+ 
+ Separate ogni **cambiamento logico** in patch distinte.
+ 
+@@ -312,7 +256,8 @@ sfruttato, inviatela a security@kernel.org.  Per bachi importanti, un breve
+ embargo potrebbe essere preso in considerazione per dare il tempo alle
+ distribuzioni di prendere la patch e renderla disponibile ai loro utenti;
+ in questo caso, ovviamente, la patch non dovrebbe essere inviata su alcuna
+-lista di discussione pubblica.
++lista di discussione pubblica. Leggete anche
++:doc:`/admin-guide/security-bugs`.
+ 
+ Patch che correggono bachi importanti su un kernel già rilasciato, dovrebbero
+ essere inviate ai manutentori dei kernel stabili aggiungendo la seguente riga::
+@@ -354,8 +299,8 @@ Le patch banali devono rientrare in una delle seguenti categorie:
+   "patch monkey" in modalità ritrasmissione)
+ 
+ 
+-6) Niente: MIME, links, compressione, allegati.  Solo puro testo
+-----------------------------------------------------------------
++Niente: MIME, links, compressione, allegati.  Solo puro testo
++-------------------------------------------------------------
+ 
+ Linus e gli altri sviluppatori del kernel devono poter commentare
+ le modifiche che sottomettete.  Per uno sviluppatore è importante
+@@ -364,7 +309,11 @@ programmi di posta elettronica, cosicché sia possibile commentare
+ una porzione specifica del vostro codice.
+ 
+ Per questa ragione tutte le patch devono essere inviate via e-mail
+-come testo.
++come testo. Il modo più facile, e quello raccomandato, è con ``git
++send-email``.  Al sito https://git-send-email.io è disponibile una
++guida interattiva sull'uso di ``git send-email``.
++
++Se decidete di non usare ``git send-email``:
+ 
+ .. warning::
+ 
+@@ -381,28 +330,20 @@ così la possibilità che il vostro allegato-MIME venga accettato.
+ Eccezione: se il vostro servizio di posta storpia le patch, allora qualcuno
+ potrebbe chiedervi di rinviarle come allegato MIME.
+ 
+-Leggete :ref:`Documentation/translations/it_IT/process/email-clients.rst <it_email_clients>`
++Leggete :doc:`/translations/it_IT/process/email-clients`
+ per dei suggerimenti sulla configurazione del programmi di posta elettronica
+ per l'invio di patch intatte.
+ 
+-7) Dimensione delle e-mail
+---------------------------
+-
+-Le grosse modifiche non sono adatte ad una lista di discussione, e nemmeno
+-per alcuni manutentori.  Se la vostra patch, non compressa, eccede i 300 kB
+-di spazio, allora caricatela in una spazio accessibile su internet fornendo
+-l'URL (collegamento) ad essa.  Ma notate che se la vostra patch eccede i 300 kB
+-è quasi certo che necessiti comunque di essere spezzettata.
+-
+-8) Rispondere ai commenti di revisione
+---------------------------------------
++Rispondere ai commenti di revisione
++-----------------------------------
+ 
+-Quasi certamente i revisori vi invieranno dei commenti su come migliorare
+-la vostra patch.  Dovete rispondere a questi commenti; ignorare i revisori
+-è un ottimo modo per essere ignorati.  Riscontri o domande che non conducono
+-ad una modifica del codice quasi certamente dovrebbero portare ad un commento
+-nel changelog cosicché il prossimo revisore potrà meglio comprendere cosa stia
+-accadendo.
++In risposta alla vostra email, quasi certamente i revisori vi
++invieranno dei commenti su come migliorare la vostra patch.  Dovete
++rispondere a questi commenti; ignorare i revisori è un ottimo modo per
++essere ignorati.  Riscontri o domande che non conducono ad una
++modifica del codice quasi certamente dovrebbero portare ad un commento
++nel changelog cosicché il prossimo revisore potrà meglio comprendere
++cosa stia accadendo.
+ 
+ Assicuratevi di dire ai revisori quali cambiamenti state facendo e di
+ ringraziarli per il loro tempo.  Revisionare codice è un lavoro faticoso e che
+@@ -410,8 +351,12 @@ richiede molto tempo, e a volte i revisori diventano burberi.  Tuttavia, anche
+ in questo caso, rispondete con educazione e concentratevi sul problema che
+ hanno evidenziato.
+ 
+-9) Non scoraggiatevi - o impazientitevi
+----------------------------------------
++Leggete :doc:`/translations/it_IT/process/email-clients` per
++le raccomandazioni sui programmi di posta elettronica e l'etichetta da usare
++sulle liste di discussione.
++
++Non scoraggiatevi - o impazientitevi
++------------------------------------
+ 
+ Dopo che avete inviato le vostre modifiche, siate pazienti e aspettate.
+ I revisori sono persone occupate e potrebbero non ricevere la vostra patch
+@@ -424,17 +369,19 @@ aver inviato le patch correttamente.  Aspettate almeno una settimana prima di
+ rinviare le modifiche o sollecitare i revisori - probabilmente anche di più
+ durante la finestra d'integrazione.
+ 
+-10) Aggiungete PATCH nell'oggetto
+----------------------------------
++Aggiungete PATCH nell'oggetto
++-----------------------------
+ 
+ Dato l'alto volume di e-mail per Linus, e la lista linux-kernel, è prassi
+ prefiggere il vostro oggetto con [PATCH].  Questo permette a Linus e agli
+ altri sviluppatori del kernel di distinguere facilmente le patch dalle altre
+ discussioni.
+ 
++``git send-email`` lo fa automaticamente.
+ 
+-11) Firmate il vostro lavoro - Il certificato d'origine dello sviluppatore
+---------------------------------------------------------------------------
++
++Firmate il vostro lavoro - Il certificato d'origine dello sviluppatore
++----------------------------------------------------------------------
+ 
+ Per migliorare la tracciabilità su "chi ha fatto cosa", specialmente per
+ quelle patch che per raggiungere lo stadio finale passano attraverso
+@@ -477,65 +424,15 @@ poi dovete solo aggiungere una riga che dice::
+ 	Signed-off-by: Random J Developer <random@developer.example.org>
+ 
+ usando il vostro vero nome (spiacenti, non si accettano pseudonimi o
+-contributi anonimi).
++contributi anonimi). Questo verrà fatto automaticamente se usate ``git
++commit -s``.
+ 
+ Alcune persone aggiungono delle etichette alla fine.  Per ora queste verranno
+ ignorate, ma potete farlo per meglio identificare procedure aziendali interne o
+ per aggiungere dettagli circa la firma.
+ 
+-Se siete un manutentore di un sottosistema o di un ramo, qualche volta dovrete
+-modificare leggermente le patch che avete ricevuto al fine di poterle
+-integrare; questo perché il codice non è esattamente lo stesso nei vostri
+-sorgenti e in quelli dei vostri contributori.  Se rispettate rigidamente la
+-regola (c), dovreste chiedere al mittente di rifare la patch, ma questo è
+-controproducente e una totale perdita di tempo ed energia.  La regola (b)
+-vi permette di correggere il codice, ma poi diventa davvero maleducato cambiare
+-la patch di qualcuno e addossargli la responsabilità per i vostri bachi.
+-Per risolvere questo problema dovreste aggiungere una riga, fra l'ultimo
+-Signed-off-by e il vostro, che spiega la vostra modifica.  Nonostante non ci
+-sia nulla di obbligatorio, un modo efficace è quello di indicare il vostro
+-nome o indirizzo email fra parentesi quadre, seguito da una breve descrizione;
+-questo renderà abbastanza visibile chi è responsabile per le modifiche
+-dell'ultimo minuto.  Per esempio::
+-
+-	Signed-off-by: Random J Developer <random@developer.example.org>
+-	[lucky@maintainer.example.org: struct foo moved from foo.c to foo.h]
+-	Signed-off-by: Lucky K Maintainer <lucky@maintainer.example.org>
+-
+-Questa pratica è particolarmente utile se siete i manutentori di un ramo
+-stabile ma al contempo volete dare credito agli autori, tracciare e integrare
+-le modifiche, e proteggere i mittenti dalle lamentele.  Notate che in nessuna
+-circostanza è permessa la modifica dell'identità dell'autore (l'intestazione
+-From), dato che è quella che appare nei changelog.
+-
+-Un appunto speciale per chi porta il codice su vecchie versioni.  Sembra che
+-sia comune l'utile pratica di inserire un'indicazione circa l'origine della
+-patch all'inizio del messaggio di commit (appena dopo la riga dell'oggetto)
+-al fine di migliorare la tracciabilità.  Per esempio, questo è quello che si
+-vede nel rilascio stabile 3.x-stable::
+-
+-  Date:   Tue Oct 7 07:26:38 2014 -0400
+-
+-    libata: Un-break ATA blacklist
+-
+-    commit 1c40279960bcd7d52dbdf1d466b20d24b99176c8 upstream.
+-
+-E qui quello che potrebbe vedersi su un kernel più vecchio dove la patch è
+-stata applicata::
+-
+-    Date:   Tue May 13 22:12:27 2008 +0200
+-
+-        wireless, airo: waitbusy() won't delay
+-
+-        [backport of 2.6 commit b7acbdfbd1f277c1eb23f344f899cfa4cd0bf36a]
+-
+-Qualunque sia il formato, questa informazione fornisce un importante aiuto
+-alle persone che vogliono seguire i vostri sorgenti, e quelle che cercano
+-dei bachi.
+-
+-
+-12) Quando utilizzare Acked-by:, Cc:, e Co-developed-by:
+---------------------------------------------------------
++Quando utilizzare Acked-by:, Cc:, e Co-developed-by:
++----------------------------------------------------
+ 
+ L'etichetta Signed-off-by: indica che il firmatario è stato coinvolto nello
+ sviluppo della patch, o che era nel suo percorso di consegna.
+@@ -604,8 +501,8 @@ Esempio di una patch sottomessa dall'autore Co-developed-by:::
+ 	Co-developed-by: Submitting Co-Author <sub@coauthor.example.org>
+ 	Signed-off-by: Submitting Co-Author <sub@coauthor.example.org>
+ 
+-13) Utilizzare Reported-by:, Tested-by:, Reviewed-by:, Suggested-by: e Fixes:
+------------------------------------------------------------------------------
++Utilizzare Reported-by:, Tested-by:, Reviewed-by:, Suggested-by: e Fixes:
++-------------------------------------------------------------------------
+ 
+ L'etichetta Reported-by da credito alle persone che trovano e riportano i bachi
+ e si spera che questo possa ispirarli ad aiutarci nuovamente in futuro.
+@@ -654,6 +551,13 @@ revisori conosciuti per la loro conoscenza sulla materia in oggetto e per la
+ loro serietà nella revisione, accrescerà le probabilità che la vostra patch
+ venga integrate nel kernel.
+ 
++Quando si riceve una email sulla lista di discussione da un tester o
++un revisore, le etichette Tested-by o Reviewd-by devono essere
++aggiunte dall'autore quando invierà nuovamente la patch. Tuttavia, se
++la patch è cambiata in modo significativo, queste etichette potrebbero
++non avere più senso e quindi andrebbero rimosse. Solitamente si tiene traccia
++della rimozione nel changelog della patch (subito dopo il separatore '---').
++
+ L'etichetta Suggested-by: indica che l'idea della patch è stata suggerita
+ dalla persona nominata e le da credito. Tenete a mente che questa etichetta
+ non dovrebbe essere aggiunta senza un permesso esplicito, specialmente se
+@@ -669,8 +573,8 @@ Questo è il modo suggerito per indicare che un baco è stato corretto nella
+ patch. Per maggiori dettagli leggete :ref:`it_describe_changes`
+ 
+ 
+-14) Il formato canonico delle patch
+------------------------------------
++Il formato canonico delle patch
++-------------------------------
+ 
+ Questa sezione descrive il formato che dovrebbe essere usato per le patch.
+ Notate che se state usando un repositorio ``git`` per salvare le vostre patch
+@@ -788,8 +692,8 @@ Maggiori dettagli sul formato delle patch nei riferimenti qui di seguito.
+ 
+ .. _it_explicit_in_reply_to:
+ 
+-15) Usare esplicitamente In-Reply-To nell'intestazione
+-------------------------------------------------------
++Usare esplicitamente In-Reply-To nell'intestazione
++--------------------------------------------------
+ 
+ Aggiungere manualmente In-Reply-To: nell'intestazione dell'e-mail
+ potrebbe essere d'aiuto per associare una patch ad una discussione
+@@ -802,65 +706,6 @@ giungla di riferimenti all'interno dei programmi di posta.  Se un collegamento
+ ad una versione precedente di una serie di patch (per esempio, potete usarlo
+ per l'email introduttiva alla serie).
+ 
+-16) Inviare richieste ``git pull``
+-----------------------------------
+-
+-Se avete una serie di patch, potrebbe essere più conveniente per un manutentore
+-tirarle dentro al repositorio del sottosistema attraverso l'operazione
+-``git pull``.  Comunque, tenete presente che prendere patch da uno sviluppatore
+-in questo modo richiede un livello di fiducia più alto rispetto a prenderle da
+-una lista di discussione.  Di conseguenza, molti manutentori sono riluttanti
+-ad accettare richieste di *pull*, specialmente dagli sviluppatori nuovi e
+-quindi sconosciuti.  Se siete in dubbio, potete fare una richiesta di *pull*
+-come messaggio introduttivo ad una normale pubblicazione di patch, così
+-il manutentore avrà la possibilità di scegliere come integrarle.
+-
+-Una richiesta di *pull* dovrebbe avere nell'oggetto [GIT] o [PULL].
+-La richiesta stessa dovrebbe includere il nome del repositorio e quello del
+-ramo su una singola riga; dovrebbe essere più o meno così::
+-
+-  Please pull from
+-
+-      git://jdelvare.pck.nerim.net/jdelvare-2.6 i2c-for-linus
+-
+-  to get these changes:
+-
+-Una richiesta di *pull* dovrebbe includere anche un messaggio generico
+-che dica cos'è incluso, una lista delle patch usando ``git shortlog``, e una
+-panoramica sugli effetti della serie di patch con ``diffstat``.  Il modo più
+-semplice per ottenere tutte queste informazioni è, ovviamente, quello di
+-lasciar fare tutto a ``git`` con il comando ``git request-pull``.
+-
+-Alcuni manutentori (incluso Linus) vogliono vedere le richieste di *pull*
+-da commit firmati con GPG; questo fornisce una maggiore garanzia sul fatto
+-che siate stati proprio voi a fare la richiesta.  In assenza di tale etichetta
+-firmata Linus, in particolare, non prenderà alcuna patch da siti pubblici come
+-GitHub.
+-
+-Il primo passo verso la creazione di questa etichetta firmata è quello di
+-creare una chiave GNUPG ed averla fatta firmare da uno o più sviluppatori
+-principali del kernel.  Questo potrebbe essere difficile per i nuovi
+-sviluppatori, ma non ci sono altre vie.  Andare alle conferenze potrebbe
+-essere un buon modo per trovare sviluppatori che possano firmare la vostra
+-chiave.
+-
+-Una volta che avete preparato la vostra serie di patch in ``git``, e volete che
+-qualcuno le prenda, create una etichetta firmata col comando ``git tag -s``.
+-Questo creerà una nuova etichetta che identifica l'ultimo commit della serie
+-contenente una firma creata con la vostra chiave privata.  Avrete anche
+-l'opportunità di aggiungere un messaggio di changelog all'etichetta; questo è
+-il posto ideale per descrivere gli effetti della richiesta di *pull*.
+-
+-Se i sorgenti da cui il manutentore prenderà le patch non sono gli stessi del
+-repositorio su cui state lavorando, allora non dimenticatevi di caricare
+-l'etichetta firmata anche sui sorgenti pubblici.
+-
+-Quando generate una richiesta di *pull*, usate l'etichetta firmata come
+-obiettivo.  Un comando come il seguente farà il suo dovere::
+-
+-  git request-pull master git://my.public.tree/linux.git my-signed-tag
+-
+-
+ Riferimenti
+ -----------
+ 
+-- 
+2.20.1
+
+
