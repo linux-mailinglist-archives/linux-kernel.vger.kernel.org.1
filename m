@@ -2,114 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33DD2B265C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A782B2661
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgKMVOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:14:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKMVOh (ORCPT
+        id S1726382AbgKMVRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:17:02 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49126 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgKMVQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:14:37 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEA9C0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:14:35 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id f11so16088538lfs.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:14:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KviX0rcak+ARccgKrmiOPUL4xxtYUmjKoN9SOQyA0lM=;
-        b=WAUFm6kpKWLUNLFWWPtEeh8AyXuo9ubgQGaxugOKLHZppGH/FvHrzp6xLsLE3WqOGb
-         mE0tmYNDMRvCwecB4a0vPxOEYfF2JvNRy7T188p4baruaXy1fF5uUMo8JbqAclLdCs70
-         8LSAEVfV3Lr9haDHgZnTmtUwFwhbHYXCeswqc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KviX0rcak+ARccgKrmiOPUL4xxtYUmjKoN9SOQyA0lM=;
-        b=enRQiHZc1yPJA65qSiwemi8vvLj7hOJeH9rm6yJUB9wSR5JfohW82W6ChV8ym7TYUt
-         G7Oh2QD6KeY+tllcGSuo64LhErSRAQ3bJAJxNZ8Q1zksla1I3AFZg9HWX8gqVEmiJ9NX
-         ZvaCsQbxoxulRF80i9+EMQNXDH8c6jHOGNcD9AI6r9QmyHVaKaQnsk2z0BGuAEgHto+V
-         dWTlBax1VXZgS0kfoGxaV/B9RBMT0ovds5WRAiLG/GKgSZwcBPG0YD73lvka9vD7ujkC
-         u7mO15UsH9N2+gKqYw9bPteYbjCj+l8dPsk/9ureont1wS5ToeTN8goNygk+Y4HZjH7g
-         n8fw==
-X-Gm-Message-State: AOAM531xZlB8D1wXNZI7qQqt9vFxA33IfrOuBu/o/yKNqX2QRgPyIYRH
-        Zuz002t+9KEaCJB0KgaalcODc7bz9jKznw==
-X-Google-Smtp-Source: ABdhPJwZ1jftg6N6tn3ObC6Qa/ohNzNENzWI1TQY7vYeDCmPNnLBjr277sHMYGhSOq/cjGV04v3oEg==
-X-Received: by 2002:a19:458:: with SMTP id 85mr1464341lfe.249.1605302073711;
-        Fri, 13 Nov 2020 13:14:33 -0800 (PST)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id s5sm1705456lfd.58.2020.11.13.13.14.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 13:14:28 -0800 (PST)
-Received: by mail-lj1-f181.google.com with SMTP id 11so12542578ljf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:14:28 -0800 (PST)
-X-Received: by 2002:a05:651c:2cb:: with SMTP id f11mr1706774ljo.371.1605302068145;
- Fri, 13 Nov 2020 13:14:28 -0800 (PST)
+        Fri, 13 Nov 2020 16:16:43 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADLEpkJ018836;
+        Fri, 13 Nov 2020 21:16:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=yiQW3xIbuJ/MXtrfniRQcRELAFNJ1wL+nY/XFo7u7WM=;
+ b=iNuxfsMLzHuGdBn377/eKwnmHOjPQkH1u9o/cQKLJwV7gZvqIWlwXT2xQqGO44yqQw4H
+ SRGtR+0HGvJ9Aspn0nvvTbaIWetPnyJ7GDhDcsHwrG2CtX7UIIQ542vKU36Q8Qq8SVey
+ JzTisEO85NTDAylWiiFd4yexBYVkr6+h7qCpOR2utqkZ7YsiBjE1fy2yLMtsOb8SW0zt
+ Y4LKfg4bsaCUi/+YfJfssD79D7rKoXbyVy9Glg2E9XtTFzs7V1M2wQtvmtz1kSqMIeCV
+ WWL1z4T/EZi70vNGwegev2lSJrnEr1yiZAGKzyrEnZ8kCv9ako8Z+PgjqDTS0JIuud7t Vg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhmcabh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 21:16:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADLAOn3075937;
+        Fri, 13 Nov 2020 21:16:04 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34rtku9xsx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 21:16:04 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ADLG3oZ021649;
+        Fri, 13 Nov 2020 21:16:03 GMT
+Received: from [192.168.0.190] (/68.201.65.98)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 13 Nov 2020 13:16:03 -0800
+Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+Autocrypt: addr=dave.kleikamp@oracle.com; prefer-encrypt=mutual; keydata=
+ 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
+ rnNNL3zBkwD3nWcTxFnX
+Message-ID: <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com>
+Date:   Fri, 13 Nov 2020 15:16:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <cover.1605134506.git.dxu@dxuuu.xyz> <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
- <20201113170338.3uxdgb4yl55dgto5@ast-mbp> <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
- <20201113191751.rwgv2gyw5dblhe3j@ast-mbp> <CAHk-=whpsK0s8x51rE8fUSfr4r783j09BSqXqi95uHc0WKG7ig@mail.gmail.com>
- <20201113205746.htvdzudtqrw6h7oa@ast-mbp>
-In-Reply-To: <20201113205746.htvdzudtqrw6h7oa@ast-mbp>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Nov 2020 13:14:12 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjLp=6=nu1Zkd3cG4FepUWu2TyrBR1YpLLO8Y_WrrKyTg@mail.gmail.com>
-Message-ID: <CAHk-=wjLp=6=nu1Zkd3cG4FepUWu2TyrBR1YpLLO8Y_WrrKyTg@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9804 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9804 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:57 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> (a) is the only case.
+On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
+> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
+> kernel fuzz.
+> 
+> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
+> 
+> and can reproduce.
+> 
+> the dmtree_t is that
+> typedef union dmtree {
+> struct dmaptree t1;
+> struct dmapctl t2;
+> } dmtree_t;
+> 
+> the dmaptree is that
+> struct dmaptree {
+> __le32 nleafs; /* 4: number of tree leafs */
+> __le32 l2nleafs; /* 4: l2 number of tree leafs */
+> __le32 leafidx; /* 4: index of first tree leaf */
+> __le32 height; /* 4: height of the tree */
+> s8 budmin; /* 1: min l2 tree leaf value to combine */
+> s8 stree[TREESIZE]; /* TREESIZE: tree */
+> u8 pad[2]; /* 2: pad to word boundary */
+> };
+> the TREESIZE is totally 341, but the leafidx type is __le32.
 
-Ok, good.
+Does this patch fix the problem?
 
-The (b) case is certainly valid in theory (and we might even
-traditionaly have had something like that for things like ->comm[]
-accesses, although I think we got rid of it).
+jfs: Fix array index bounds check in dbAdjTree
 
-But the (b) case is _so_ hard to think about and so easy to get wrong
-- readers have to be very careful to only read each byte of the source
-exactly once - that it's much much better to try to avoid it.
+Bounds checking tools can flag a bug in dbAdjTree() for an array index
+out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
+both structures dmaptree and dmapctl, use the larger array to eliminate
+the false positive.
 
-> But I think if glibc's strncpy() did something like this it would
-> probably caused a lot of pain for user space.
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+---
+ fs/jfs/jfs_dmap.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Oh, absolutely. The standard strncpy() function has some very strict
-behavior issues, including that zero-padding of the *whole*
-destination buffer, which would be absolutely horrid for things like
-fetching pathnames from user space (our buffer is generally close to a
-page in size).
+diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
+index 29891fad3f09..aa03a904d5ab 100644
+--- a/fs/jfs/jfs_dmap.h
++++ b/fs/jfs/jfs_dmap.h
+@@ -183,7 +183,7 @@ typedef union dmtree {
+ #define	dmt_leafidx	t1.leafidx
+ #define	dmt_height	t1.height
+ #define	dmt_budmin	t1.budmin
+-#define	dmt_stree	t1.stree
++#define	dmt_stree	t2.stree
+ 
+ /*
+  *	on-disk aggregate disk allocation map descriptor.
+-- 
+2.29.2
 
-In fact, the kernel strncpy() (ie the one that doesn't copy from user)
-does ado the whole "pad all zeroes at the end" exactly because people
-might depend on that. So the _actual_ strncpy() function conforms to
-the standard use - but you generally shouldn't use it, exactly because
-it's such a horrible interface. Only good for very small buffers.
-
-> The hash element example above is typical bpf usage.
-
-The core kernel does have one very common string hash case, but it's
-for path components, and never the whole string - so it already has to
-deal with the fact that the string is very much delimited in place by
-not just NUL at the end, but also '/' characters etc.
-
-So no "copy it as a string from user space, and then use it as a
-block" that I'm aware of.
-
-              Linus
