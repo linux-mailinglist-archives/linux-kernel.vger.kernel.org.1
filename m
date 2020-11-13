@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45812B1904
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3080D2B1909
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgKMK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S1726369AbgKMK2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:28:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKMK0c (ORCPT
+        with ESMTP id S1726237AbgKMK2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:26:32 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED52C0613D1;
-        Fri, 13 Nov 2020 02:26:19 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id j12so9277217iow.0;
-        Fri, 13 Nov 2020 02:26:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OzkmFiHGwyD+I15mtrva81uZcY7HDY5tWPQl2Uj50ck=;
-        b=K+WAle8GcXxw4uPqUL3iF+4TrsgI5rq+lL7lrFVr6yVcAlbePlqv6f7qb6i2dM+FZd
-         E2icUWNakB9SOYmNfM1R+nHqLV1UtP44bsReRVk6nMLaJ6J6MKUufQTVm2FwRgdt2owu
-         DNYQDYbTsw1gNPvKRsJz4vR0tp4YkgQ6rluw2pGXjvw2YCe8JLueyLsIggXiKKIZVmN/
-         L/qay4mlQ8jTALH9QIdPLCT8R+Sb1Q7IvwdXl4e2FcnGEuw2sSqG3jYi8w4OXUox/NKJ
-         HVMNJur/eLs9eK1bOP+D98m0WL8/WcxWxbm+3VAu4mihjfEehI3AFTfZ9t+E2iaw5vAI
-         J8NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OzkmFiHGwyD+I15mtrva81uZcY7HDY5tWPQl2Uj50ck=;
-        b=SHHBoUpRQ9xsa2mOhCiN6pT7hP5aD829PSJ4MaVHUS9J1mMal+2ZJe5cip0fa+8K/J
-         IXEiKMwe7n1L0s5//GIHLMRcs7rJAlKpOgSTawhAK7M2r3Ko4XNS0Pp4+HO1YYQmnOdk
-         YnhAKJ6hNGhRytnl1VETvvE6/nF5RFHDOmpHRPBWDBliX30qm+MvzNk+vVQMICuqV5Rg
-         i4stTcWnv9y7Fd0gwURA7pPEUK7ho/kpgcM404pKVor7vAC8glA9RldBh2pH4wKflzN1
-         w0dsBmCkkKyjET0HIkLCMaNRSdy3F2GPlypWbJDJNPHLdyohos3RvvxFm7FJr9ZNl5Pg
-         +zEg==
-X-Gm-Message-State: AOAM530J6OVwnNklhtseSm6JP+ib6lUnGfRErFSy2qTeKmpKEsBwot6m
-        RGS42a4bkcDjMJatd06fnEc=
-X-Google-Smtp-Source: ABdhPJwmqJZ75L2k+n4eklNHfhcechXRjLvvnn9Ucn/mwP4/Ltjezj6ZgbqFOHkAQCFZzgG7nUZfMg==
-X-Received: by 2002:a6b:7702:: with SMTP id n2mr1238753iom.4.1605263178456;
-        Fri, 13 Nov 2020 02:26:18 -0800 (PST)
-Received: from localhost ([199.241.171.166])
-        by smtp.gmail.com with ESMTPSA id k7sm4632061ilq.48.2020.11.13.02.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 02:26:17 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 13 Nov 2020 05:26:03 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Prateek Sood <prsood@codeaurora.org>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] cpuset: fix race between hotplug work and later CPU
- offline
-Message-ID: <20201113102603.GG7496@mtj.duckdns.org>
-References: <20201112171711.639541-1-daniel.m.jordan@oracle.com>
- <20201113081622.GA2628@hirez.programming.kicks-ass.net>
+        Fri, 13 Nov 2020 05:28:00 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFB0C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:28:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=d/KlS2pzfp8sOne97UF0Zm10zOHX7PS1VzOMej7apbY=; b=OzOcddnySIP6GHq4GAmp22N1jM
+        NxdbA1ix2l/H6Vhjsvmh5GKS/UxInVEUtH4MdnKDhIEdz5OLO6MKDvKKp3cBbCragW++/iee3Eefk
+        eHrlmarf7mgpKQ6RYZYyGtiX4L8XzWAub6Yg/uCqRiKE60RsXET3ms3DSWQmLG72+woIFjxnPbfkh
+        RWv1TJCejM5my7d0WiNQtLj3NrK99qCNAzL24IeCbcqYkO08ncmUdwKwKnCSpUgnlxP6YatiyfYIH
+        ltH/LupG9dLf/DjTUUAX5wN66Ehsi5VeQm5j7WBMdVkmg/idozsRjpjJXf05iPhOhlaMHXhJiyk0Q
+        BdTmRzlQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdWIs-0001vI-D1; Fri, 13 Nov 2020 10:27:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E4B783003E1;
+        Fri, 13 Nov 2020 11:27:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D12CB2BCDBFCC; Fri, 13 Nov 2020 11:27:34 +0100 (CET)
+Date:   Fri, 13 Nov 2020 11:27:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Qian Cai <cai@redhat.com>, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
+        ouwen210@hotmail.com
+Subject: Re: [PATCH v4 10/19] sched: Fix migrate_disable() vs
+ set_cpus_allowed_ptr()
+Message-ID: <20201113102734.GE2628@hirez.programming.kicks-ass.net>
+References: <20201023101158.088940906@infradead.org>
+ <20201023102346.921768277@infradead.org>
+ <8b62fd1ad1b18def27f18e2ee2df3ff5b36d0762.camel@redhat.com>
+ <jhjd00ixz9z.mognet@arm.com>
+ <13786aa5a5fc958708ef1182c885d1a574449d99.camel@redhat.com>
+ <jhja6vmxthb.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113081622.GA2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <jhja6vmxthb.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Nov 12, 2020 at 07:31:12PM +0000, Valentin Schneider wrote:
 
-On Fri, Nov 13, 2020 at 09:16:22AM +0100, Peter Zijlstra wrote:
-> Works for me. TJ, do I take this or do you want it in the cgroup tree?
+> I think what is happening here is:
 > 
-> In that case:
+>   affine_move_task()
+>       // task_running() case
+>       stop_one_cpu()
+>       wait_for_completion(&pending->done);
 > 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> and this is !PREEMPT, so the stopper can very well hit:
+> 
+>   migration_cpu_stop()
+>     // Task moved between unlocks and scheduling the stopper
+>     task_rq(p) != rq &&
+>     // task_running() case
+>     dest_cpu >= 0
+> 
+>     => no complete_all(), ever :(
 
-Please take it through the sched tree, and FWIW
+Damn...
 
- Acked-by: Tejun Heo <tj@kernel.org>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 02076e6d3792..fad0a8e62aca 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1923,7 +1923,7 @@ static int migration_cpu_stop(void *data)
+>  		else
+>  			p->wake_cpu = dest_cpu;
+>  
+> -	} else if (dest_cpu < 0) {
+> +	} else if (dest_cpu < 0 || pending) {
+>  		/*
+>  		 * This happens when we get migrated between migrate_enable()'s
+>  		 * preempt_enable() and scheduling the stopper task. At that
+> @@ -1933,6 +1933,17 @@ static int migration_cpu_stop(void *data)
+>  		 * more likely.
+>  		 */
+>  
+> +		/*
+> +		 * The task moved before the stopper got to run. We're holding
+> +		 * ->pi_lock, so the allowed mask is stable - if it got
+> +		 * somewhere allowed, we're done.
+> +		 */
+> +		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
+> +			p->migration_pending = NULL;
+> +			complete = true;
+> +			goto out;
+> +		}
+> +
+>  		/*
+>  		 * When this was migrate_enable() but we no longer have an
+>  		 * @pending, a concurrent SCA 'fixed' things and we should be
 
-Thank you.
+Agreed, this is very clearly a missing case and the proposed solution
+seems straight forward enough; but I'm struggling to convince my sleep
+deprived brain we're actually complete now.
 
--- 
-tejun
+I'll continue staring at it a little more. Could you make it into a
+proper patch?
