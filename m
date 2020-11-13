@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA76F2B147F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94AB2B1483
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 04:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgKMC70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 21:59:26 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35946 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgKMC70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 21:59:26 -0500
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B95FD20C2890
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 18:59:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B95FD20C2890
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605236365;
-        bh=d5Lc0YjAvi+/83s/MY3Hf9Z6pggitK4YIoSWpqH8sdQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Q/1NFDtOk2u9zbJUN1M1mYI5R5INHgBu5HzXneeuiT9RweZsIpGAjD+H7iqVRF7lL
-         0uau/Odc6v8ir4B/lY/vJDBSYVcxmb3N2n7C3mFm+GcBsiWeqoSgoqkecvGWZJdbCM
-         I2Na0CwEgxd/J6sgU2u2MYr4DB4LfElr/eK+xsB8=
-Received: by mail-qk1-f171.google.com with SMTP id v143so7697206qkb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 18:59:25 -0800 (PST)
-X-Gm-Message-State: AOAM530Q+haLLFPVf+CHpwEN/EZx0I9Rz+rZimgIl4H1wSYxtxI0Kxyq
-        9G+1XFmCB8nlFLPX8u78ky2F8Nc0XpqA9WFyit8=
-X-Google-Smtp-Source: ABdhPJyisSHf/7iHOWNg9mhL9bo5HLigo3UyRMldYg64hQxb4nF9ArQE0p4IBE2DY8J54Qo4SZMn18JBwnWdTGuSLOo=
-X-Received: by 2002:ae9:dcc1:: with SMTP id q184mr166427qkf.436.1605236364820;
- Thu, 12 Nov 2020 18:59:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
- <20201112035023.974748-1-natechancellor@gmail.com> <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
- <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
- <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
- <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com> <20201112184637.de44afedf0ce0dcab36dd0ad@linux-foundation.org>
-In-Reply-To: <20201112184637.de44afedf0ce0dcab36dd0ad@linux-foundation.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 13 Nov 2020 03:58:49 +0100
-X-Gmail-Original-Message-ID: <CAFnufp31YO9yTXVqgKNZGR9XXRKfGKM4Y4NLk+4_uXdoWa+G4w@mail.gmail.com>
-Message-ID: <CAFnufp31YO9yTXVqgKNZGR9XXRKfGKM4Y4NLk+4_uXdoWa+G4w@mail.gmail.com>
-Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726263AbgKMDDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 22:03:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:60202 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725965AbgKMDDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 22:03:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEF0C1042;
+        Thu, 12 Nov 2020 19:03:22 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.79.120])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DFE223F6CF;
+        Thu, 12 Nov 2020 19:03:18 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] arm64/mm: Validate hotplug range before creating linear mapping
+Date:   Fri, 13 Nov 2020 08:32:54 +0530
+Message-Id: <1605236574-14636-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 3:46 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Fri, 13 Nov 2020 02:38:18 +0100 Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> > At this point, since 'pci' enables BOOT_CF9_FORCE type and
-> > BOOT_CF9_SAFE is not user selectable, should I simply leave only
-> > 'pci'?
-> > This way, we'll have the same set of options for both sysfs and kernel cmdline.
->
-> Well, you're the reboot expert ;)
->
+During memory hotplug process, the linear mapping should not be created for
+a given memory range if that would fall outside the maximum allowed linear
+range. Else it might cause memory corruption in the kernel virtual space.
 
-So honored! :)
+Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
+both its ends but excluding PAGE_END. Max physical range that can be mapped
+inside this linear mapping range, must also be derived from its end points.
 
-> But my $0.02 is yes, let's keep the command-line and sysfs interfaces
-> in sync and cover it all in documentation.  It would of course be
-> problematic to change the existing reboot= interface.
->
-> I assume that means doing this?
->
-> - #define BOOT_CF9_FORCE_STR     "cf9_force"
-> + #define BOOT_CF9_FORCE_STR     "pci"
-> - #define BOOT_CF9_SAFE_STR      "cf9_safe"
+When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
+assumption of 52 bits virtual address space. However, if the CPU does not
+support 52 bits, then it falls back using 48 bits instead and the PAGE_END
+is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
+bits [51..48] are ignored by the MMU and remain unchanged, even though the
+effective start address of linear map is now slightly different. Hence, to
+reliably check the physical address range mapped by the linear map, the
+start address should be calculated using vabits_actual. This ensures that
+arch_add_memory() validates memory hot add range for its potential linear
+mapping requirement, before creating it with __create_pgd_mapping().
 
-Either BOOT_PCI_STR or BOOT_CF9_FORCE_STR, I have no strong preference.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on 5.10-rc3
 
-The syntax is 'pci' while the enum BOOT_CF9_FORCE, so we can't please both.
+Changes in V2:
 
-Regards,
+- Replaced (start + size) with (start + size - 1) in the comparison per Ard
+- Dropped parenthesis brackets in the comparison per Ard
+
+Changes in V1: (https://lore.kernel.org/linux-arm-kernel/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/)
+
+ arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 1c0f3e02f731..2dfbf46702cb 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1444,11 +1444,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+ 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+ }
+ 
++static bool inside_linear_region(u64 start, u64 size)
++{
++	/*
++	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
++	 * accommodating both its ends but excluding PAGE_END. Max physical
++	 * range which can be mapped inside this linear mapping range, must
++	 * also be derived from its end points.
++	 *
++	 * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
++	 * the assumption of 52 bits virtual address space. However, if the
++	 * CPU does not support 52 bits, it falls back using 48 bits and the
++	 * PAGE_END is updated to reflect this using the vabits_actual. As
++	 * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
++	 * unchanged, even though the effective start address of linear map
++	 * is now slightly different. Hence, to reliably check the physical
++	 * address range mapped by the linear map, the start address should
++	 * be calculated using vabits_actual.
++	 */
++	return (start >= __pa(_PAGE_OFFSET(vabits_actual)))
++			&& ((start + size - 1) <= __pa(PAGE_END - 1));
++}
++
+ int arch_add_memory(int nid, u64 start, u64 size,
+ 		    struct mhp_params *params)
+ {
+ 	int ret, flags = 0;
+ 
++	if (!inside_linear_region(start, size)) {
++		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
++		return -EINVAL;
++	}
++
+ 	if (rodata_full || debug_pagealloc_enabled())
+ 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ 
 -- 
-per aspera ad upstream
+2.20.1
+
