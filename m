@@ -2,345 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22122B1373
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06C02B1379
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgKMAq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:46:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgKMAq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:46:28 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E11C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:46:28 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id k10so5214166pfh.17
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:46:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=2Y9AwRUZv2sQvKVp60fuIvGKPyOmjJnM85nuQ0M3k7Y=;
-        b=qW5SsT7QXD6IbiVxM8kxi4b8RtMh9bpVz6npiJoTzud9TweCk8/eTZW4o/xEBhB377
-         TIDcT191KU+Kltur2IteBDt1Fi8Fo+jazXUhYp95odpO1l4YTW9Fv/vz79A8ntq3mprp
-         494wQDHEjLVNZ2lArE3C2F24K2siu76uXX62Dw0pxO165FZW5zRVLMQ7LpQ+aIEvqh/Y
-         s4K3vBrz6p0GmNtXIe1G1FBmOweOM7SrJ5qErJrJ3rutbfRtYzxWqPTDlKbjHdk+3O6+
-         aW0ovISjDEzGZWRqAEfLeSev5mtNRLLVQc2jyBtwvTWbFmGxXjV8Kflaz/dLVj2hDeem
-         BjWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=2Y9AwRUZv2sQvKVp60fuIvGKPyOmjJnM85nuQ0M3k7Y=;
-        b=RKr+OJoUUQIFX/Ue6mtsb+yo1kGAKAef2rkEsO2E82ZHuZkMUuSLZUx4nD8zQGpso1
-         31iI1gvGuMIE+NwI590kcqHBIeX6+sdfbHqtYY8JzQhAx90IQ8pgdtuF0JeAgkcDsrUl
-         PYSNrN0EhXdn3lS4N2VL3tYpJL+qpW+xEffAVeI++Abvw263N6PIbKv5P1rPsipAV65s
-         lrALPMuT4+1R7P+oZUi56bpThXDtCAOwYn7V/T0xhADmgiqDJoGjrU04fNU2F8DsLojI
-         qfRQK+rv0ADaBomN65vgMbYnOuKRV/YORhctaG4YcbWTdbGj7rJzRyAJRa8DDujwvf7y
-         uYEA==
-X-Gm-Message-State: AOAM532fRfeoqIyyqGL9h+Amc2o2aomameN4a6TJC/XjjX8BX1kR8zeS
-        kFQMEU2+CaGSfffOWtDK1lqrQ4Lb
-X-Google-Smtp-Source: ABdhPJwZCEPIlAg5LKbcN+c7fmNxUUjuGHM0RwQwjnBB3JfwztoOaO2eA6kV9KOF4Qyo6e4BHoTpObxQ
-Sender: "rkir via sendgmr" <rkir@rkir.kir.corp.google.com>
-X-Received: from rkir.kir.corp.google.com ([2620:15c:29:200:3e52:82ff:fe5f:f95])
- (user=rkir job=sendgmr) by 2002:a17:90a:9b15:: with SMTP id
- f21mr1203789pjp.0.1605228387913; Thu, 12 Nov 2020 16:46:27 -0800 (PST)
-Date:   Thu, 12 Nov 2020 16:46:24 -0800
-Message-Id: <20201113004624.3788573-1-rkir@google.com>
+        id S1726111AbgKMAsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:48:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725929AbgKMAsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 19:48:11 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D58820B80;
+        Fri, 13 Nov 2020 00:48:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605228490;
+        bh=7OZk6DcwLgT8IsYjQ0csYsUk454k7bsiiq3YHgWHlwE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q5ENrItELWyCOqNsZzAcCIo1zUsTIjzSIGNgk7uVex9CzIBS+mEMMQLJsmxxFEek8
+         fI8manXRqSdQieiys9AfoOeMTp441k1/VdsWU6WhtfSSE1kUYHlq3P5j4VBzrSo3nF
+         s+/UXrIU+QtrxLoMYXskkyvwFEUjYxVQvvr8EteY=
+Date:   Thu, 12 Nov 2020 16:48:09 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     <ansuelsmth@gmail.com>
+Cc:     "'Al Viro'" <viro@zeniv.linux.org.uk>,
+        "'Will Deacon'" <will@kernel.org>,
+        "'Catalin Marinas'" <catalin.marinas@arm.com>,
+        "'Mark Rutland'" <mark.rutland@arm.com>,
+        "'Pavel Tatashin'" <pasha.tatashin@soleen.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: R: [PATCH] arm64: fix missing include in asm uaccess.h
+Message-Id: <20201112164809.81f1c14f5d1f1d998f279287@linux-foundation.org>
+In-Reply-To: <000001d6b7c8$bfed23e0$3fc76ba0$@gmail.com>
+References: <20201111004440.8783-1-ansuelsmth@gmail.com>
+        <20201111005826.GY3576660@ZenIV.linux.org.uk>
+        <20201111010910.GZ3576660@ZenIV.linux.org.uk>
+        <000001d6b7c8$bfed23e0$3fc76ba0$@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH] drivers: rtc: retire RTC_DRV_GOLDFISH
-From:   rkir@google.com
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, lfy@google.com,
-        Roman Kiryanov <rkir@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Kiryanov <rkir@google.com>
+On Wed, 11 Nov 2020 02:19:48 +0100 <ansuelsmth@gmail.com> wrote:
 
-The only user of RTC_DRV_GOLDFISH is
-the MIPS flavor of Android Studio Emulator
-(goldfish) which should be also retired.
+> > <asm/uaccess.h> ok ? */
+> > include/linux/uaccess.h:11:#include <asm/uaccess.h>
+> > 
+> > The last one is the only such include that should exist; drivers/s390 one
+> > is obviously a false positive.  And IMO the right thing to do is to
+> > replace the remaining arch/* instances with includes of linux/uaccess.h.
+> > 
+> > All of those are asking for trouble; any change moving e.g. a common
+> > variant of some primitive into linux/uaccess.h might end up breaking
+> > those.
+> 
+> Thx for the quick response. I found this error while working on a qcom
+> driver that
+> use this include. I can confirm that by using linux/uaccess.h the problem is
+> solved.
 
-Signed-off-by: Roman Kiryanov <rkir@google.com>
+Thanks, all.
+
+I queued up the below for sending to Linus Real Soon Now.  Please note
+that I added the cc:stable, because the offending df325e05a6 ("arm64:
+Validate tagged addresses in access_ok() called from kernel threads")
+had a cc:stable.
+
+
+From: Ansuel Smith <ansuelsmth@gmail.com>
+Subject: arm64: fix missing include in asm/uaccess.h
+
+Fix a compilation error as PF_KTHREAD is defined in linux/sched.h and this
+is missing.
+
+[viro@zeniv.linux.org.uk: use linux/uaccess.h]
+  Link: https://lkml.kernel.org/r/20201111005826.GY3576660@ZenIV.linux.org.uk
+Link: https://lkml.kernel.org/r/20201111004440.8783-1-ansuelsmth@gmail.com
+Fixes: df325e05a682 ("arm64: Validate tagged addresses in access_ok() called from kernel threads")
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- arch/riscv/Kconfig.socs    |   1 -
- drivers/rtc/Kconfig        |  10 --
- drivers/rtc/Makefile       |   1 -
- drivers/rtc/rtc-goldfish.c | 216 -------------------------------------
- 4 files changed, 228 deletions(-)
- delete mode 100644 drivers/rtc/rtc-goldfish.c
 
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 8a55f6156661..9c4c2abb2011 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -17,7 +17,6 @@ config SOC_VIRT
- 	select POWER_RESET_SYSCON
- 	select POWER_RESET_SYSCON_POWEROFF
- 	select GOLDFISH
--	select RTC_DRV_GOLDFISH if RTC_CLASS
- 	select SIFIVE_PLIC
- 	help
- 	  This enables support for QEMU Virt Machine.
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 65ad9d0b47ab..e574f24f3b08 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1932,16 +1932,6 @@ config RTC_DRV_HID_SENSOR_TIME
- 	  If this driver is compiled as a module, it will be named
- 	  rtc-hid-sensor-time.
+ arch/arm64/include/asm/uaccess.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm64/include/asm/uaccess.h~arm64-fix-missing-include-in-asm-uaccessh
++++ a/arch/arm64/include/asm/uaccess.h
+@@ -7,6 +7,8 @@
+ #ifndef __ASM_UACCESS_H
+ #define __ASM_UACCESS_H
  
--config RTC_DRV_GOLDFISH
--	tristate "Goldfish Real Time Clock"
--	depends on OF && HAS_IOMEM
--	depends on GOLDFISH || COMPILE_TEST
--	help
--	  Say yes to enable RTC driver for the Goldfish based virtual platform.
--
--	  Goldfish is a code name for the virtual platform developed by Google
--	  for Android emulation.
--
- config RTC_DRV_WILCO_EC
- 	tristate "Wilco EC RTC"
- 	depends on WILCO_EC
-diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index bfb57464118d..1730d0676096 100644
---- a/drivers/rtc/Makefile
-+++ b/drivers/rtc/Makefile
-@@ -71,7 +71,6 @@ obj-$(CONFIG_RTC_DRV_FM3130)	+= rtc-fm3130.o
- obj-$(CONFIG_RTC_DRV_FSL_FTM_ALARM)	+= rtc-fsl-ftm-alarm.o
- obj-$(CONFIG_RTC_DRV_FTRTC010)	+= rtc-ftrtc010.o
- obj-$(CONFIG_RTC_DRV_GENERIC)	+= rtc-generic.o
--obj-$(CONFIG_RTC_DRV_GOLDFISH)	+= rtc-goldfish.o
- obj-$(CONFIG_RTC_DRV_HID_SENSOR_TIME) += rtc-hid-sensor-time.o
- obj-$(CONFIG_RTC_DRV_HYM8563)	+= rtc-hym8563.o
- obj-$(CONFIG_RTC_DRV_IMXDI)	+= rtc-imxdi.o
-diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
-deleted file mode 100644
-index 6349d2cd3680..000000000000
---- a/drivers/rtc/rtc-goldfish.c
-+++ /dev/null
-@@ -1,216 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* drivers/rtc/rtc-goldfish.c
-- *
-- * Copyright (C) 2007 Google, Inc.
-- * Copyright (C) 2017 Imagination Technologies Ltd.
-- */
--
--#include <linux/io.h>
--#include <linux/module.h>
--#include <linux/of.h>
--#include <linux/platform_device.h>
--#include <linux/rtc.h>
--
--#define TIMER_TIME_LOW		0x00	/* get low bits of current time  */
--					/*   and update TIMER_TIME_HIGH  */
--#define TIMER_TIME_HIGH	0x04	/* get high bits of time at last */
--					/*   TIMER_TIME_LOW read         */
--#define TIMER_ALARM_LOW	0x08	/* set low bits of alarm and     */
--					/*   activate it                 */
--#define TIMER_ALARM_HIGH	0x0c	/* set high bits of next alarm   */
--#define TIMER_IRQ_ENABLED	0x10
--#define TIMER_CLEAR_ALARM	0x14
--#define TIMER_ALARM_STATUS	0x18
--#define TIMER_CLEAR_INTERRUPT	0x1c
--
--struct goldfish_rtc {
--	void __iomem *base;
--	int irq;
--	struct rtc_device *rtc;
--};
--
--static int goldfish_rtc_read_alarm(struct device *dev,
--				   struct rtc_wkalrm *alrm)
--{
--	u64 rtc_alarm;
--	u64 rtc_alarm_low;
--	u64 rtc_alarm_high;
--	void __iomem *base;
--	struct goldfish_rtc *rtcdrv;
--
--	rtcdrv = dev_get_drvdata(dev);
--	base = rtcdrv->base;
--
--	rtc_alarm_low = readl(base + TIMER_ALARM_LOW);
--	rtc_alarm_high = readl(base + TIMER_ALARM_HIGH);
--	rtc_alarm = (rtc_alarm_high << 32) | rtc_alarm_low;
--
--	do_div(rtc_alarm, NSEC_PER_SEC);
--	memset(alrm, 0, sizeof(struct rtc_wkalrm));
--
--	rtc_time64_to_tm(rtc_alarm, &alrm->time);
--
--	if (readl(base + TIMER_ALARM_STATUS))
--		alrm->enabled = 1;
--	else
--		alrm->enabled = 0;
--
--	return 0;
--}
--
--static int goldfish_rtc_set_alarm(struct device *dev,
--				  struct rtc_wkalrm *alrm)
--{
--	struct goldfish_rtc *rtcdrv;
--	u64 rtc_alarm64;
--	u64 rtc_status_reg;
--	void __iomem *base;
--
--	rtcdrv = dev_get_drvdata(dev);
--	base = rtcdrv->base;
--
--	if (alrm->enabled) {
--		rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
--		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
--		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
--		writel(1, base + TIMER_IRQ_ENABLED);
--	} else {
--		/*
--		 * if this function was called with enabled=0
--		 * then it could mean that the application is
--		 * trying to cancel an ongoing alarm
--		 */
--		rtc_status_reg = readl(base + TIMER_ALARM_STATUS);
--		if (rtc_status_reg)
--			writel(1, base + TIMER_CLEAR_ALARM);
--	}
--
--	return 0;
--}
--
--static int goldfish_rtc_alarm_irq_enable(struct device *dev,
--					 unsigned int enabled)
--{
--	void __iomem *base;
--	struct goldfish_rtc *rtcdrv;
--
--	rtcdrv = dev_get_drvdata(dev);
--	base = rtcdrv->base;
--
--	if (enabled)
--		writel(1, base + TIMER_IRQ_ENABLED);
--	else
--		writel(0, base + TIMER_IRQ_ENABLED);
--
--	return 0;
--}
--
--static irqreturn_t goldfish_rtc_interrupt(int irq, void *dev_id)
--{
--	struct goldfish_rtc *rtcdrv = dev_id;
--	void __iomem *base = rtcdrv->base;
--
--	writel(1, base + TIMER_CLEAR_INTERRUPT);
--
--	rtc_update_irq(rtcdrv->rtc, 1, RTC_IRQF | RTC_AF);
--
--	return IRQ_HANDLED;
--}
--
--static int goldfish_rtc_read_time(struct device *dev, struct rtc_time *tm)
--{
--	struct goldfish_rtc *rtcdrv;
--	void __iomem *base;
--	u64 time_high;
--	u64 time_low;
--	u64 time;
--
--	rtcdrv = dev_get_drvdata(dev);
--	base = rtcdrv->base;
--
--	time_low = readl(base + TIMER_TIME_LOW);
--	time_high = readl(base + TIMER_TIME_HIGH);
--	time = (time_high << 32) | time_low;
--
--	do_div(time, NSEC_PER_SEC);
--
--	rtc_time64_to_tm(time, tm);
--
--	return 0;
--}
--
--static int goldfish_rtc_set_time(struct device *dev, struct rtc_time *tm)
--{
--	struct goldfish_rtc *rtcdrv;
--	void __iomem *base;
--	u64 now64;
--
--	rtcdrv = dev_get_drvdata(dev);
--	base = rtcdrv->base;
--
--	now64 = rtc_tm_to_time64(tm) * NSEC_PER_SEC;
--	writel((now64 >> 32), base + TIMER_TIME_HIGH);
--	writel(now64, base + TIMER_TIME_LOW);
--
--	return 0;
--}
--
--static const struct rtc_class_ops goldfish_rtc_ops = {
--	.read_time	= goldfish_rtc_read_time,
--	.set_time	= goldfish_rtc_set_time,
--	.read_alarm	= goldfish_rtc_read_alarm,
--	.set_alarm	= goldfish_rtc_set_alarm,
--	.alarm_irq_enable = goldfish_rtc_alarm_irq_enable
--};
--
--static int goldfish_rtc_probe(struct platform_device *pdev)
--{
--	struct goldfish_rtc *rtcdrv;
--	int err;
--
--	rtcdrv = devm_kzalloc(&pdev->dev, sizeof(*rtcdrv), GFP_KERNEL);
--	if (!rtcdrv)
--		return -ENOMEM;
--
--	platform_set_drvdata(pdev, rtcdrv);
--	rtcdrv->base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(rtcdrv->base))
--		return PTR_ERR(rtcdrv->base);
--
--	rtcdrv->irq = platform_get_irq(pdev, 0);
--	if (rtcdrv->irq < 0)
--		return -ENODEV;
--
--	rtcdrv->rtc = devm_rtc_allocate_device(&pdev->dev);
--	if (IS_ERR(rtcdrv->rtc))
--		return PTR_ERR(rtcdrv->rtc);
--
--	rtcdrv->rtc->ops = &goldfish_rtc_ops;
--	rtcdrv->rtc->range_max = U64_MAX / NSEC_PER_SEC;
--
--	err = devm_request_irq(&pdev->dev, rtcdrv->irq,
--			       goldfish_rtc_interrupt,
--			       0, pdev->name, rtcdrv);
--	if (err)
--		return err;
--
--	return rtc_register_device(rtcdrv->rtc);
--}
--
--static const struct of_device_id goldfish_rtc_of_match[] = {
--	{ .compatible = "google,goldfish-rtc", },
--	{},
--};
--MODULE_DEVICE_TABLE(of, goldfish_rtc_of_match);
--
--static struct platform_driver goldfish_rtc = {
--	.probe = goldfish_rtc_probe,
--	.driver = {
--		.name = "goldfish_rtc",
--		.of_match_table = goldfish_rtc_of_match,
--	}
--};
--
--module_platform_driver(goldfish_rtc);
--
--MODULE_LICENSE("GPL v2");
--- 
-2.29.2.299.gdc1121823c-goog
++#include <linux/uaccess.h>
++
+ #include <asm/alternative.h>
+ #include <asm/kernel-pgtable.h>
+ #include <asm/sysreg.h>
+_
 
