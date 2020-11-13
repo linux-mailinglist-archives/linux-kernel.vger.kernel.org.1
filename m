@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88D12B1CA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563CD2B1C6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgKMNxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
+        id S1727007AbgKMNuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgKMNt5 (ORCPT
+        with ESMTP id S1726938AbgKMNt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Nov 2020 08:49:57 -0500
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41570C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:52 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so9999830wrx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C55C061A48
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:53 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id o15so9986821wru.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:49:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vlKk1bN1CES0mgH+wUmCXkMlZA1CVtbOfxEG6y0GM50=;
-        b=OcVFHvgowhYl0ECvQLfpLorqw2RlulROMnX4KA0JdKlQSLv9mVUpHCZi3/3LowHNyd
-         pPbib+JUF/TZx8WcxyO/ewyRBfjMIKS3UtXxxiapN+aLc3DL3tKjsK1RstnLzU6A7OOu
-         raaPYzUHAk9pQHEX8DdhINPQHyXgCWD+EGqFlUaImR9oRRNSCrg3RwlpBO1rA8gRThur
-         5ufXOxBBG3r/CwQgQ17S2gixxqvFYvcJhY5owIsbOAQnLy+muaiTQpOZiviP7ChJaRsR
-         WQ+DcU7lcgVDScBOZS3SuTdJr7c9G5qztri+ctAZ9PmmnfGvXcyuvz22sG4Ynfu8k5ZR
-         rg3g==
+        bh=wz9PYnHV1aU7HpVwR+iBYjW10NIO6mvxzzKOFF06bog=;
+        b=iKoC8B6k4QLo4AWSzbSH0Yrm7UKDvnSV0l7UwGmamQfyeBV2XLjR211KOhMkiXIisO
+         IDz+WNVInujhwmf9aaXfhzFILS7NiSh3vsj5eF+RfyTdnaNmjnhOkPIfyoC1ApUGpwXy
+         WjRZvxDpzJ4UQJA0JvtL3ym5KMN2kwldsYCptf3xhEPtJRtR4XPPDyYl5pqVLSMfUfhq
+         DKcTM3MotgxZzP7gCG+T4LVpjHTH4qh5JMszYbGsrHS6tba1wEO/qGVRjpDHN7gpbP/n
+         +OqfOZ0mM+GGy3ezTwuagbFHABQCfou0M/gz0pVp3T/IYK9BBrP4AQwSBVx84X7GP6hc
+         aWbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vlKk1bN1CES0mgH+wUmCXkMlZA1CVtbOfxEG6y0GM50=;
-        b=U9Zzsm76F+zzo6m/1sB0MwKm8QDiBiCvNRH6MYl+rfws/4x2V5vqmQJsv4ZynFS7X4
-         lZeA/8mFX0VelFNzN6It06YiXIotA1ZO7+VwZyQMOkQ+Qhzu0gnIqD/BFy7GGTDcJuhi
-         4yuxx3D7HPHbEilsmoqHpH+YHwOmF4orxIvcpvg4c8nRwmJqmmzMGyjKQ0DMy6eke9rB
-         usjg3+jTOsbjlJOVnAjefmWH2i4y+smh7yoUY3QRYgLuipZQCgPlknW9RolS+KyeYHXX
-         s1OVen90Jy3PJXjX46JtoS3bbS1K1LYIWzZgmX2FoV2t9m5Z7nyq78/Z35HiiqHrXo4x
-         vQ9A==
-X-Gm-Message-State: AOAM530fmenQ0oiWBxOsTmLlCg+zA4oXJqDELxs+Xufky3Se70tBD5A1
-        DsOLFOltGtTnKTy400mokweaCgz8+6sXySRz
-X-Google-Smtp-Source: ABdhPJyXHSTj58kWv9AHJ2Kd4IYB+cK8mVPoSovQ0Eu/M93IyXpZFI4npYQc9WOZVFn6vm9pr1K9Lg==
-X-Received: by 2002:adf:ead1:: with SMTP id o17mr3629612wrn.396.1605275391038;
-        Fri, 13 Nov 2020 05:49:51 -0800 (PST)
+        bh=wz9PYnHV1aU7HpVwR+iBYjW10NIO6mvxzzKOFF06bog=;
+        b=dGqMRnPj7oMLiwIh8H7GJTQyracpvKo6vvTboNKu7CQO3sDwOH81nlGwyjf39k1U1L
+         fWHOyns6wUHKD49xAR2elJZO8t0diMpgYpq5DKAb3Ornn1GGY6iaCntm+95GK1InDpTN
+         Q+8kJyTRAhj/bHyaj8LeuCU9n6uBWs03SVQukTSScWmUcmEdmtOnuQHVRayny4jIHjaF
+         u7qV5aFbmlC4djByIAToLpZ099v2ErfPicBTXjhky4IPjdHuxXHSf66gc9c53rcJoKX8
+         kRodGWH6yt/NFpWgyaQSpwgaL3QfXbPbPtLyzCgzvKnanYHpi8ZDo50IPCrFRIBcdTk5
+         F4VA==
+X-Gm-Message-State: AOAM531rM+DqQZUJyFMm3LDjXHh+G/lfaxlal5ExQQrCoUuiKC0ROC8a
+        Hn37t/ijNMufvpUehrhRYxDaxR2ADvXxvQLq
+X-Google-Smtp-Source: ABdhPJy2NJmUUpRfSID2bkr8Mb/olrJXjNUbUo9Ig1eRSw/0S7/jC2WzJcmll/j0ffrezB2ZJdrzug==
+X-Received: by 2002:adf:f808:: with SMTP id s8mr3615775wrp.257.1605275392170;
+        Fri, 13 Nov 2020 05:49:52 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.49
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.49.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:49:50 -0800 (PST)
+        Fri, 13 Nov 2020 05:49:51 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 07/40] drm/mediatek/mtk_disp_rdma: Fix formatting and supply missing struct member description
-Date:   Fri, 13 Nov 2020 13:49:05 +0000
-Message-Id: <20201113134938.4004947-8-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 08/40] drm/amd/amdgpu/amdgpu_ib: Fix some incorrect/incomplete function documentation
+Date:   Fri, 13 Nov 2020 13:49:06 +0000
+Message-Id: <20201113134938.4004947-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -73,39 +73,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:66: warning: Function parameter or member 'ddp_comp' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:66: warning: Function parameter or member 'crtc' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:66: warning: Function parameter or member 'data' not described in 'mtk_disp_rdma'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:66: warning: Function parameter or member 'adev' not described in 'amdgpu_ib_get'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:66: warning: Function parameter or member 'vm' not described in 'amdgpu_ib_get'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:66: warning: Function parameter or member 'pool_type' not described in 'amdgpu_ib_get'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:66: warning: Excess function parameter 'ring' description in 'amdgpu_ib_get'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:125: warning: Function parameter or member 'ring' not described in 'amdgpu_ib_schedule'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:125: warning: Function parameter or member 'job' not described in 'amdgpu_ib_schedule'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:125: warning: Excess function parameter 'adev' description in 'amdgpu_ib_schedule'
 
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index e04319fedf463..d46b8ae1d0800 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -56,8 +56,9 @@ struct mtk_disp_rdma_data {
- 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
+index 2f53fa0ae9a62..c69af9b86cc60 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
+@@ -52,8 +52,10 @@
  /**
-  * struct mtk_disp_rdma - DISP_RDMA driver structure
-- * @ddp_comp - structure containing type enum and hardware resources
-- * @crtc - associated crtc to report irq events to
-+ * @ddp_comp: structure containing type enum and hardware resources
-+ * @crtc: associated crtc to report irq events to
-+ * @data: local driver data
-  */
- struct mtk_disp_rdma {
- 	struct mtk_ddp_comp		ddp_comp;
+  * amdgpu_ib_get - request an IB (Indirect Buffer)
+  *
+- * @ring: ring index the IB is associated with
++ * @adev: amdgpu_device pointer
++ * @vm: amdgpu_vm pointer
+  * @size: requested IB size
++ * @pool_type: IB pool type (delayed, immediate, direct)
+  * @ib: IB object returned
+  *
+  * Request an IB (all asics).  IBs are allocated using the
+@@ -101,7 +103,7 @@ void amdgpu_ib_free(struct amdgpu_device *adev, struct amdgpu_ib *ib,
+ /**
+  * amdgpu_ib_schedule - schedule an IB (Indirect Buffer) on the ring
+  *
+- * @adev: amdgpu_device pointer
++ * @ring: ring index the IB is associated with
+  * @num_ibs: number of IBs to schedule
+  * @ibs: IB objects to schedule
+  * @f: fence created during this submission
 -- 
 2.25.1
 
