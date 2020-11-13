@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E452B164B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAD32B164D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgKMHVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:21:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:28234 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKMHVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:21:06 -0500
-IronPort-SDR: w02Uf+WBKzmOeOm1Q0rEteUk2bu1wX3mq8OO3dRepPfmDnw2V2gsKk+Sk9xoi599di8hBucqsF
- 2VTT7ZkkWeLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="234597292"
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="234597292"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:21:01 -0800
-IronPort-SDR: EONXJF7YvBQvv6j5Nm8hLVoWEA4SJGRtIy3wvSNf/su8bmK+TZUrddVSFriM57SurvPJggLmbO
- nBpzcdy8a2xQ==
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="542568340"
-Received: from zhangn1-mobl2.ccr.corp.intel.com (HELO [10.254.209.85]) ([10.254.209.85])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:20:57 -0800
-Cc:     baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
-        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>
-References: <20200826111628.794979401@linutronix.de>
- <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
- <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
- <87d00imlop.fsf@nanos.tec.linutronix.de>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
-Message-ID: <f507c2cf-f628-3b79-6c36-8ad8a10bb69c@linux.intel.com>
-Date:   Fri, 13 Nov 2020 15:20:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <87d00imlop.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726376AbgKMHVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:21:25 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:38274 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726112AbgKMHVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 02:21:25 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowABXapzqM65fmQzMAA--.55224S2;
+        Fri, 13 Nov 2020 15:21:15 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     mchehab@kernel.org, linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] media: cx88: use ARRAY_SIZE
+Date:   Fri, 13 Nov 2020 07:21:11 +0000
+Message-Id: <20201113072111.63734-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowABXapzqM65fmQzMAA--.55224S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GryDZrWxKr47Zr48tF4xWFg_yoW3Zwc_uF
+        ykWFn3Zry5Wr1DtrsIqF1S9342va95Wry8XF1Sqa4ayFZ09F13J3yjqFZ5JrnFkrsFyFW7
+        CryDWFy3XwnxWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbFAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I
+        3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
+        WUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
+        wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcI
+        k0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
+        Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8v_M3UUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAw0TA13qZgnRdwAAsg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Use ARRAY_SIZE instead of dividing sizeof array with sizeof an element
 
-On 2020/11/13 3:15, Thomas Gleixner wrote:
-> The recent changes to store the MSI irqdomain pointer in struct device
-> missed that Intel DMAR does not register virtual function devices.  Due to
-> that a VF device gets the plain PCI-MSI domain assigned and then issues
-> compat MSI messages which get caught by the interrupt remapping unit.
-> 
-> Cure that by inheriting the irq domain from the physical function
-> device.
-> 
-> That's a temporary workaround. The correct fix is to inherit the irq domain
-> from the bus, but that's a larger effort which needs quite some other
-> changes to the way how x86 manages PCI and MSI domains.
-> 
-> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
-> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
->   1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -333,6 +333,11 @@ static void  dmar_pci_bus_del_dev(struct
->   	dmar_iommu_notify_scope_dev(info);
->   }
->   
-> +static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
-> +{
-> +	dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
-> +}
-> +
->   static int dmar_pci_bus_notifier(struct notifier_block *nb,
->   				 unsigned long action, void *data)
->   {
-> @@ -342,8 +347,20 @@ static int dmar_pci_bus_notifier(struct
->   	/* Only care about add/remove events for physical functions.
->   	 * For VFs we actually do the lookup based on the corresponding
->   	 * PF in device_to_iommu() anyway. */
-> -	if (pdev->is_virtfn)
-> +	if (pdev->is_virtfn) {
-> +		/*
-> +		 * Note: This is a horrible hack and needs to be cleaned
-> +		 * up by assigning the domain to the bus, but that's too
-> +		 * big of a change for post rc3.
-> +		 *
-> +		 * Ensure that the VF device inherits the irq domain of the
-> +		 * PF device:
-> +		 */
-> +		if (action == BUS_NOTIFY_ADD_DEVICE)
-> +			vf_inherit_msi_domain(pdev);
->   		return NOTIFY_DONE;
-> +	}
-> +
->   	if (action != BUS_NOTIFY_ADD_DEVICE &&
->   	    action != BUS_NOTIFY_REMOVED_DEVICE)
->   		return NOTIFY_DONE;
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/media/pci/cx88/cx88-mpeg.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-We also encountered this problem in internal testing. This patch can
-solve the problem.
+diff --git a/drivers/media/pci/cx88/cx88-mpeg.c b/drivers/media/pci/cx88/cx88-mpeg.c
+index a57c991b165b..a3edb548afde 100644
+--- a/drivers/media/pci/cx88/cx88-mpeg.c
++++ b/drivers/media/pci/cx88/cx88-mpeg.c
+@@ -524,8 +524,7 @@ static int cx8802_request_acquire(struct cx8802_driver *drv)
+ 		core->last_analog_input = core->input;
+ 		core->input = 0;
+ 		for (i = 0;
+-		     i < (sizeof(core->board.input) /
+-			  sizeof(struct cx88_input));
++		     i < ARRAY_SIZE(core->board.input);
+ 		     i++) {
+ 			if (core->board.input[i].type == CX88_VMUX_DVB) {
+ 				core->input = i;
+-- 
+2.17.1
 
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-
-Best regards,
-baolu
