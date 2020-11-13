@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1A72B23D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D652B23D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 19:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgKMSdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 13:33:15 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56112 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKMSdP (ORCPT
+        id S1726342AbgKMSd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 13:33:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgKMSd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:33:15 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ADIX8tG053755;
-        Fri, 13 Nov 2020 12:33:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605292388;
-        bh=5nvwjV2Nf/9e8nFPiS2sUeR9DHOiIqZW2z1lYO43ALo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=CUoA20STcwKE+tqB2kJKUD9Ia0Ie/M4wPpmSBgbrBV6xhYuHwq42XYlZbSTt/RnyT
-         csD49+o1SAVzlYkJwCIQ+yAayNoII6wPnXO2H7lKLmptBEmgPwyiRfSIMin03nyjoa
-         SovZStqmstfL5DBguoJWXJaFiaH/9BGlpcVr6G2A=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ADIX70L023399
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 13 Nov 2020 12:33:07 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
- Nov 2020 12:33:07 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 13 Nov 2020 12:33:07 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ADIX7oZ057457;
-        Fri, 13 Nov 2020 12:33:07 -0600
-Date:   Fri, 13 Nov 2020 12:33:07 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Sekhar Nori <nsekhar@ti.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>
-Subject: Re: [PATCH v3] arm64: defconfig: Enable GPIO and I2C configs for
- TI's J721e platform
-Message-ID: <20201113183307.koecfbgvskofqeb6@flagship>
-References: <20201113154905.40095-1-nsekhar@ti.com>
- <20201113170441.2hvvqcnscpd7hos7@enigmatic>
- <f0f2056e-a386-40d6-5824-f7657860d41f@ti.com>
+        Fri, 13 Nov 2020 13:33:59 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06F3C0613D1;
+        Fri, 13 Nov 2020 10:33:57 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id l2so9727803qkf.0;
+        Fri, 13 Nov 2020 10:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tTop0L3WKYeLlzcN6n9MVUWYqI+MjrZ5s3ciISRrjWI=;
+        b=rxYBxl6xsCyjd4FwJDuAloDkQzKFN3PNapO7YsvOTsYTOfRewJT0N578wrdbvEGnIl
+         dPtIFJBNT0eWCgO0yd32zHNrR6t/KU44IZbBbMpQ6qdgDSCXLp5gZbqfJdl2AvhdPcxL
+         2zDHHnkdJHPfXKyWUFXBwqYU408nCDD6Pdq9YnyO7D/RYU26LVW//jodotjavOa9S8ee
+         QENFbR/wFm9WZlPz2+ad9bOJNK+tmMsZndWaT1n3JjA8PuekH1ix5kyMM3LNsqDXLGP0
+         e0401NJ5p0FAeU40bxu2r2OvSwb6IfWUP/CEKTr+WywQX5KxnBy7pVctATK189g7s1yP
+         BZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tTop0L3WKYeLlzcN6n9MVUWYqI+MjrZ5s3ciISRrjWI=;
+        b=coFMs4ob20zjUU25iNNaNLRtFQew77Kh3+WFz+D4i5+gueE2ReAfxGMMNTNsi/9cSN
+         voeHOW+t55IErp36ZID1yttrfwG0Z837e26Kn4wVkLPwi+ociWiEKVXq4uvsUDw1XwdA
+         JnAe8Vi/I68Nud7Uas7i8AbmjQGe4LmC+nNnL59xCka3pdxJHKONDIw9fFFe6+9/XWRP
+         Uul7mN7c7jNYvV3pQnYuH90g66glzdQ2O53PO3v0/Zv6qkhU/+ysEfldRm5wfTxQV2z9
+         7/8icOvqPZpQstxGJYEW86ccyqRzhCuckyrvpaXNPseMHJoPSKzvDedNZjzMAoOOS4DW
+         doOw==
+X-Gm-Message-State: AOAM532msbmjcM9mq7GE6d3TGd/yj8Il2VStzoTBf9GP3ZDy2eRMJbMd
+        y4ZwsbKgB9xcM7j9Z00q5Ig=
+X-Google-Smtp-Source: ABdhPJyINnvGblcrdNoVnqkFbBeH/EHFF6e90JDj+uK0oZQEjVkWvfmVDHDCapd/swUXQ17YOyYAgg==
+X-Received: by 2002:a37:991:: with SMTP id 139mr3306876qkj.185.1605292436793;
+        Fri, 13 Nov 2020 10:33:56 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id q1sm7028411qti.95.2020.11.13.10.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 10:33:56 -0800 (PST)
+Date:   Fri, 13 Nov 2020 11:33:54 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Maciej Sosnowski <maciej.sosnowski@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: ioatdma: remove unused function missed during
+ dma_v2 removal
+Message-ID: <20201113183354.GA1435913@ubuntu-m3-large-x86>
+References: <20201113081248.26416-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0f2056e-a386-40d6-5824-f7657860d41f@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201113081248.26416-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22:45-20201113, Sekhar Nori wrote:
-> On 13/11/20 10:34 PM, Nishanth Menon wrote:
-> > On 21:19-20201113, Sekhar Nori wrote:
-> >> From: Faiz Abbas <faiz_abbas@ti.com>
-> >>
-> >> Add configs to help enable regulators that supply power to the SD card
-> >> on TI's J721e platform. These regulators are controlled by either
-> >> SoC gpios or gpios over i2c expander.
-> >>
-> >> vmlinux size before and after patch follow:
-> >>
-> > Sekhar,
-> > 
-> >> Before:
-> >>    text	   data	    bss	    dec	    hex	filename
-> >> 19755448	10376346	 535572	30667366	1d3f266	vmlinux
-> >>
-> >> After:
-> >>    text	   data	    bss	    dec	    hex	filename
-> >> 19769232	10381390	 536212	30686834	1d43e72	vmlinux
-> >>
-> >> difference is 19,468 (dec)
-> >>
-> >> Acked-by: Tero Kristo <t-kristo@ti.com>
-> >> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-> >> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-> >> ---
-> >> changes in v3:
-> >> - add size delta as requested by Nishanth Menon
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git/commit/?h=ti-k3-config-next&id=6b133f475a97a0839f02e3c0b937886b9adc2933
-> > 
-> > https://lore.kernel.org/linux-arm-kernel/20201103190821.30937-1-faiz_abbas@ti.com/
-> > 
-> > 
-> > Is this a duplicate patch?
+On Fri, Nov 13, 2020 at 09:12:48AM +0100, Lukas Bulwahn wrote:
+> Commit 7f832645d0e5 ("dmaengine: ioatdma: remove ioatdma v2 registration")
+> missed to remove dca2_tag_map_valid() during its removal. Hence, since
+> then, dca2_tag_map_valid() is unused and make CC=clang W=1 warns:
 > 
-> Looks like, please discard. For some reason, Faiz's v3 did not show-up
-> in my inbox and v2 applied cleanly to linux-next/master. So I assume it
-> was not refreshed.
+>   drivers/dma/ioat/dca.c:44:19:
+>     warning: unused function 'dca2_tag_map_valid' [-Wunused-function]
+> 
+> So, remove this unused function and get rid of a -Wused-function warning.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-OK. Thanks for confirming - keeping Faiz's version in the tree. :)
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> ---
+> applies cleanly on current master and next-20201112
+> 
+> Maciej, please ack.
+> 
+> Vinod, Dan, please pick this minor non-urgent clean-up patch.
+> 
+>  drivers/dma/ioat/dca.c | 10 ----------
+>  1 file changed, 10 deletions(-)
+> 
+> diff --git a/drivers/dma/ioat/dca.c b/drivers/dma/ioat/dca.c
+> index 0be385587c4c..289c59ed74b9 100644
+> --- a/drivers/dma/ioat/dca.c
+> +++ b/drivers/dma/ioat/dca.c
+> @@ -40,16 +40,6 @@
+>  #define DCA2_TAG_MAP_BYTE3 0x82
+>  #define DCA2_TAG_MAP_BYTE4 0x82
+>  
+> -/* verify if tag map matches expected values */
+> -static inline int dca2_tag_map_valid(u8 *tag_map)
+> -{
+> -	return ((tag_map[0] == DCA2_TAG_MAP_BYTE0) &&
+> -		(tag_map[1] == DCA2_TAG_MAP_BYTE1) &&
+> -		(tag_map[2] == DCA2_TAG_MAP_BYTE2) &&
+> -		(tag_map[3] == DCA2_TAG_MAP_BYTE3) &&
+> -		(tag_map[4] == DCA2_TAG_MAP_BYTE4));
+> -}
+> -
+>  /*
+>   * "Legacy" DCA systems do not implement the DCA register set in the
+>   * I/OAT device.  Software needs direct support for their tag mappings.
+> -- 
+> 2.17.1
+> 
