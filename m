@@ -2,171 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519142B21C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0782B21C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgKMROg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgKMROe (ORCPT
+        id S1726172AbgKMRPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:15:36 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45412 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgKMRPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:14:34 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B6EC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:14:48 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id t13so9128297ilp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:14:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WEvraIZkF0cWOj/dfivLnLiDfbUaBgrjDgBa9dn7IYk=;
-        b=SfXCVk3jKMkxT+wb9NCADz20uvpExJKoj6ofbvkk/mytQFIHyIWzKOFS0lucSZm6CA
-         8rwqErJY0FqKiZpT3Wgg3zB5rc2Mm/0iw6MC3LdpfHHjj5uguVDFYkZKr2JlV6aF1LuY
-         rZ3MXYq4+8Z6AnYlX1OAfwz0WXqatoOVSTaJU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WEvraIZkF0cWOj/dfivLnLiDfbUaBgrjDgBa9dn7IYk=;
-        b=oGW0EPxMgMtWTFLxONLIWqZiKpLyfbU4ELvmskVZrvW+IXif/02b/QoDBG9u0c1tWI
-         ON2RHNoB/H5YJ9b4aqYJyNh/dqjY0sVhYM2GeT08CzZygas4wbgRtjFi8gduRfg+YT63
-         4Bos3exEOgWBR3t6mEltR90EaC7tF6ka/gZiDoUlXb/8Kz86PM9fjOQTkfRoeeoBO6yP
-         7LsqDSE/LeWBOaQBU6EU9kIAOaur34t5BJ0rnaQSNlEGqkNnlZHoRjMSTL8VJ6Mo7eoZ
-         jiQOJZAoEZDGRfM2CzGlVDDyO4tJx8q59WYxK30G9ff1dH8fsWlZXdHJ0q+pKieuBqZH
-         TyOg==
-X-Gm-Message-State: AOAM533YoVgmAh15z02l8PmzRsNYUZQP1kVRIFDMh9+gpA2blaXZAX82
-        bNIsezeZWoUF36i9cDE+TgP73Q==
-X-Google-Smtp-Source: ABdhPJxDT7vfdyRlarefZA6g1kBc2REinV4S7PQFYhdEY1lMsffksjEMeLrdGhhweOqG6KwPjm31qg==
-X-Received: by 2002:a92:a008:: with SMTP id e8mr651660ili.83.1605287682461;
-        Fri, 13 Nov 2020 09:14:42 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k16sm4659185ioc.1.2020.11.13.09.14.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 09:14:41 -0800 (PST)
-Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
-To:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <000000000000647eff05b3f7e0d4@google.com>
- <20201113120055.11748-1-hdanton@sina.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
-Date:   Fri, 13 Nov 2020 10:14:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Fri, 13 Nov 2020 12:15:36 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ADHFcxD127934;
+        Fri, 13 Nov 2020 11:15:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605287738;
+        bh=gBb8CrJsx5928mCSkbAA9gnC9Wr73FmMSmBAA/1lWWs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=jUzLocW1L3vTUgvQ9irOnS4mAmIFNLs7EBxM/eEXebWk1EltjJksac3N8VpLGEgAp
+         7ZmIt7cAzq0kt+NDJASAnCfz2EwSp61/uK8o/O0ZspB9292boiBB4GPV6/eu0vqQE6
+         wGgHWZSByMNE9PaX8kwUmTXcrSwhTUafeOwMtEJ0=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ADHFcpY008119
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 11:15:38 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
+ Nov 2020 11:15:38 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 13 Nov 2020 11:15:37 -0600
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ADHFYrF033418;
+        Fri, 13 Nov 2020 11:15:35 -0600
+Subject: Re: [PATCH v3] arm64: defconfig: Enable GPIO and I2C configs for TI's
+ J721e platform
+To:     Nishanth Menon <nm@ti.com>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>
+References: <20201113154905.40095-1-nsekhar@ti.com>
+ <20201113170441.2hvvqcnscpd7hos7@enigmatic>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <f0f2056e-a386-40d6-5824-f7657860d41f@ti.com>
+Date:   Fri, 13 Nov 2020 22:45:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201113120055.11748-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201113170441.2hvvqcnscpd7hos7@enigmatic>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 5:00 AM, Hillf Danton wrote:
-> Thu, 12 Nov 2020 23:21:26 -0800
->> syzbot found the following issue on:
+On 13/11/20 10:34 PM, Nishanth Menon wrote:
+> On 21:19-20201113, Sekhar Nori wrote:
+>> From: Faiz Abbas <faiz_abbas@ti.com>
 >>
->> HEAD commit:    9dbc1c03 Merge tag 'xfs-5.10-fixes-3' of git://git.kernel...
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=10453034500000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=1735b7978b1c3721
->> dashboard link: https://syzkaller.appspot.com/bug?extid=95ce4b142579611ef0a9
->> compiler:       gcc (GCC) 10.1.0-syz 20200507
->> userspace arch: i386
+>> Add configs to help enable regulators that supply power to the SD card
+>> on TI's J721e platform. These regulators are controlled by either
+>> SoC gpios or gpios over i2c expander.
 >>
->> Unfortunately, I don't have any reproducer for this issue yet.
+>> vmlinux size before and after patch follow:
 >>
-
-I would like to see the reproducer for this. I just can't reproduce
-this problem.
-
+> Sekhar,
 > 
-> Fix 96c2737716d5 ("usbip: move usbip kernel code out of staging")
-> by closing the race between readers and writer of ud->tcp_socket on
-> sock shutdown. To do that, add waitqueue for usbip device and make
-> writer wait for all readers to go home before releasing the socket.
+>> Before:
+>>    text	   data	    bss	    dec	    hex	filename
+>> 19755448	10376346	 535572	30667366	1d3f266	vmlinux
+>>
+>> After:
+>>    text	   data	    bss	    dec	    hex	filename
+>> 19769232	10381390	 536212	30686834	1d43e72	vmlinux
+>>
+>> difference is 19,468 (dec)
+>>
+>> Acked-by: Tero Kristo <t-kristo@ti.com>
+>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+>> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+>> ---
+>> changes in v3:
+>> - add size delta as requested by Nishanth Menon
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git/commit/?h=ti-k3-config-next&id=6b133f475a97a0839f02e3c0b937886b9adc2933
+> 
+> https://lore.kernel.org/linux-arm-kernel/20201103190821.30937-1-faiz_abbas@ti.com/
 > 
 > 
-> --- a/drivers/usb/usbip/usbip_common.h
-> +++ b/drivers/usb/usbip/usbip_common.h
-> @@ -277,6 +277,9 @@ struct usbip_device {
->   		void (*reset)(struct usbip_device *);
->   		void (*unusable)(struct usbip_device *);
->   	} eh_ops;
-> +
-> +	atomic_t sk_shutdown_count;
-> +	wait_queue_head_t sk_shutdown_waitq;
->   };
->   
->   #define kthread_get_run(threadfn, data, namefmt, ...)			   \
-> --- a/drivers/usb/usbip/vhci_hcd.c
-> +++ b/drivers/usb/usbip/vhci_hcd.c
-> @@ -1008,15 +1008,20 @@ static void vhci_shutdown_connection(str
->   
->   	/* kill threads related to this sdev */
->   	if (vdev->ud.tcp_rx) {
-> +		atomic_inc(&ud->sk_shutdown_count);
->   		kthread_stop_put(vdev->ud.tcp_rx);
->   		vdev->ud.tcp_rx = NULL;
->   	}
->   	if (vdev->ud.tcp_tx) {
-> +		atomic_inc(&ud->sk_shutdown_count);
->   		kthread_stop_put(vdev->ud.tcp_tx);
->   		vdev->ud.tcp_tx = NULL;
->   	}
->   	pr_info("stop threads\n");
->   
-> +	wait_event(ud->sk_shutdown_waitq,
-> +			!atomic_read(&ud->sk_shutdown_count));
-> +
->   	/* active connection is closed */
->   	if (vdev->ud.tcp_socket) {
->   		sockfd_put(vdev->ud.tcp_socket);
-> @@ -1104,6 +1109,8 @@ static void vhci_device_init(struct vhci
->   	vdev->ud.eh_ops.reset = vhci_device_reset;
->   	vdev->ud.eh_ops.unusable = vhci_device_unusable;
->   
-> +	init_waitqueue_head(&vdev->ud.sk_shutdown_waitq);
-> +
->   	usbip_start_eh(&vdev->ud);
->   }
->   
-> --- a/drivers/usb/usbip/vhci_rx.c
-> +++ b/drivers/usb/usbip/vhci_rx.c
-> @@ -264,5 +264,8 @@ int vhci_rx_loop(void *data)
->   		vhci_rx_pdu(ud);
->   	}
->   
-> +	if (atomic_dec_and_test(&ud->sk_shutdown_count))
-> +		wake_up(&ud->sk_shutdown_waitq);
-> +
->   	return 0;
->   }
-> --- a/drivers/usb/usbip/vhci_tx.c
-> +++ b/drivers/usb/usbip/vhci_tx.c
-> @@ -252,5 +252,8 @@ int vhci_tx_loop(void *data)
->   		usbip_dbg_vhci_tx("pending urbs ?, now wake up\n");
->   	}
->   
-> +	if (atomic_dec_and_test(&ud->sk_shutdown_count))
-> +		wake_up(&ud->sk_shutdown_waitq);
-> +
->   	return 0;
->   }
-> 
+> Is this a duplicate patch?
 
+Looks like, please discard. For some reason, Faiz's v3 did not show-up
+in my inbox and v2 applied cleanly to linux-next/master. So I assume it
+was not refreshed.
 
-Without a reproducer, it is hard to verify the fix.
-
-thanks,
--- Shuah
+Thanks,
+Sekhar
