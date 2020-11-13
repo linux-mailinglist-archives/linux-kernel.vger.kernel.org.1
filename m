@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B7E2B2248
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 798FD2B2251
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgKMR2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:28:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        id S1726988AbgKMR2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:28:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgKMR14 (ORCPT
+        with ESMTP id S1726939AbgKMR2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:27:56 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD184C0613D1;
-        Fri, 13 Nov 2020 09:27:55 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 23so10747066wrc.8;
-        Fri, 13 Nov 2020 09:27:55 -0800 (PST)
+        Fri, 13 Nov 2020 12:28:19 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C271CC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:28:19 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id c66so8192567pfa.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:28:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Aoo3XC1xgkYP3AILMBs2qRa84a7jg1GfVsNZfCCxg90=;
-        b=r4jQUyvQq8wNfbGuxU+JtPca5mypNLnmvOXEMwng+VCakuiFj8gz9iosMJm7gJUXqy
-         3abfKQCGunVWsmPZBfSVR123NsiqQKdGql142pa6Q4+bWhT1ibLbEnuUQewH0dso5PBX
-         0iJmYnEXsuw9wWmqvRSwbtEXzIsQjdzwOLhy/mx0lyVBUqaV6mujatZH6A8+HDKJfIr/
-         BRl/FMeW0LHfufZhrwCaYEC3SEOfNOIkUd/vTr75+b1fnMEQc7LjnnKPTn7FsXCnK+5R
-         fOxlnuZVM1nQ95LtjzaMUq/RCkw7YtmrNp8VboKMK49R+OYs/bZMBTDTI0aq/rxvFOn3
-         UECA==
+         :cc;
+        bh=gTeG8sIVZdSZyisMOg8nHywKwuHy9ybS7O9fYvpUUN4=;
+        b=Q64Nfq4lTq6iOvUJ2t89GQXGo2O7IBAghtABXAA1TwuptUJJOcbK8z7pTKzyKw7PRn
+         NJZaBRMfe1xa1Lv2jRCK6CvBRq7LxEjd5z+yoWIFYN1dlLs24+D8Pi1Ujpdcl3EY/nTQ
+         mhHG43cDkdWrmDYSobWjAxcUAl+OnIb9KOTH1H1wAWL5WklNXPFjMu8sreZ/f0rQI2hn
+         sMtm/ISNLb9gK9RDAyj+6QVU1/PFE+8vwv8LNach4NvJ9dlrjJwDi1tmsLcRjtz9LV1q
+         8G/bOZ7uZoBr/S7+6ob7ZszLDrVJ1FEZpBxWrny4uPDQeD5w5ZdX6m92dRmhMPkTKaTv
+         H2OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Aoo3XC1xgkYP3AILMBs2qRa84a7jg1GfVsNZfCCxg90=;
-        b=HVYCjrfDO2rjTGf2CyZrU5yY9EvEro10afgc8OK9mLMtyiOcHwuSIOJfGrTv2BJygc
-         sgY6Njc7UXmPdDVK4RbKqII+5Gico4qF+oaT7/zeFCWdD9AfJ4gm/X3u2nIdZS0sqDP2
-         /8msIfF7a2uF79PFH17vgYFqdEsRIBdVlrOuy5XBk0+mm0RQ7jNSca/IgoEZRICfSKZ1
-         cRb9bJuL7jC6TCLg8u8yWeBbVNFIZa4iB8oRgpo3lxzabQoGdEzHrTE/1NKY0G6P0DtK
-         qdMi5UV0tPdMDdIDthMi4GscoOGe/n4rwPhU2k2deZFeEfrcSnzqlYi6JzcbbMUD0n4r
-         7fgg==
-X-Gm-Message-State: AOAM532kUaxjwFt8uOdeWlmEY1WSYQteMYjGL1++QeEh1kDAAOKezxx0
-        B3j0fI5eLhPX8CGCD4tLoZnENwGrXN7HVIhzaRM=
-X-Google-Smtp-Source: ABdhPJyU763L3HQHIS0PPLGIYKDLP9HCwyeqI8Bd+rjzwFY33/WRlgaDonxguETxNniMFVJGuSnI8DtIIg1RJPZiRng=
-X-Received: by 2002:adf:8028:: with SMTP id 37mr4685613wrk.111.1605288469699;
- Fri, 13 Nov 2020 09:27:49 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=gTeG8sIVZdSZyisMOg8nHywKwuHy9ybS7O9fYvpUUN4=;
+        b=P57SbYMUt6p5mplMBbiRcg7ZQjEBaCOGnzRFpKWZryWifgwIPdtzStvyrhHYBlK+wJ
+         7c07KMCmucNQRcb41Zyyvha+VPKIkBnzdm4KvnKG46Iv5wnoLvM6KXNYCNAbmYojG4Ok
+         Za9fRn5v5IcJ6jDLGO6ZtoH2IQEvf+MdNMXh4KMJ7T67A93rLEMuX/lf8m+eljRtwK/+
+         LGgI9t7gY4Fyb1vmFfXOrL2o04D/Z4L1zoQIKXxtuVGGZ5KSyVOyGRxioRJ9Bjaxbow/
+         YLJBdlkq6SlBRDV08VGgSwkOLDeOyegUJqAcnPVzW7cb6Nwz5hf4EZZ6WmlJp72peJwg
+         GfeQ==
+X-Gm-Message-State: AOAM533a7C5SgD0kkBoNAm1D2tWlmvz99K9fe928QPAlVtPImF+rpPHU
+        BdeeNGxPtp2Qg2bogXmCROKk5GPNUlG4pIMP7Nf0gw==
+X-Google-Smtp-Source: ABdhPJwAX7+5Wwn+znXFplPosCyPSFjkzIWgHud87aLAUj30hleU6A5IJPz+2cEX/Vv3IWQMhgNL3kSdhdw9lTeYWao=
+X-Received: by 2002:a62:75c6:0:b029:18a:d510:ff60 with SMTP id
+ q189-20020a6275c60000b029018ad510ff60mr2906568pfc.35.1605288494319; Fri, 13
+ Nov 2020 09:28:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-26-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-26-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 13 Nov 2020 12:27:38 -0500
-Message-ID: <CADnq5_NN81LB=FiwRnALOV3PWZKjicZh93BaBEcO=D_E1wHn0w@mail.gmail.com>
-Subject: Re: [PATCH 25/40] drm/amd/amdgpu/amdgpu_debugfs: Demote obvious abuse
- of kernel-doc formatting
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
+References: <202011131146.g8dPLQDD-lkp@intel.com>
+In-Reply-To: <202011131146.g8dPLQDD-lkp@intel.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Fri, 13 Nov 2020 09:28:03 -0800
+Message-ID: <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com>
+Subject: Re: Error: invalid switch -me200
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:50 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Thu, Nov 12, 2020 at 7:22 PM kernel test robot <lkp@intel.com> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> Hi Fangrui,
 >
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:308: warning: Function param=
-eter or member 'f' not described in 'amdgpu_debugfs_regs_read'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:308: warning: Function param=
-eter or member 'buf' not described in 'amdgpu_debugfs_regs_read'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:308: warning: Function param=
-eter or member 'size' not described in 'amdgpu_debugfs_regs_read'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:308: warning: Function param=
-eter or member 'pos' not described in 'amdgpu_debugfs_regs_read'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:317: warning: Function param=
-eter or member 'f' not described in 'amdgpu_debugfs_regs_write'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:317: warning: Function param=
-eter or member 'buf' not described in 'amdgpu_debugfs_regs_write'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:317: warning: Function param=
-eter or member 'size' not described in 'amdgpu_debugfs_regs_write'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:317: warning: Function param=
-eter or member 'pos' not described in 'amdgpu_debugfs_regs_write'
+> FYI, the error/warning still remains.
 >
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Applied.  Thanks!
-
-Alex
-
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> commit: ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
+> date:   4 months ago
+> config: powerpc-randconfig-r031-20201113 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 9e0c35655b6e8186baef8840b26ba4090503b554)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install powerpc cross compiling tool for clang build
+>         # apt-get install binutils-powerpc-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    Assembler messages:
+> >> Error: invalid switch -me200
+> >> Error: unrecognized option -me200
+>    clang-12: error: assembler command failed with exit code 1 (use -v to see invocation)
+>    make[2]: *** [scripts/Makefile.build:281: scripts/mod/empty.o] Error 1
+>    make[2]: Target '__build' not remade because of errors.
+>    make[1]: *** [Makefile:1174: prepare0] Error 2
+>    make[1]: Target 'prepare' not remade because of errors.
+>    make: *** [Makefile:185: __sub-make] Error 2
+>    make: Target 'prepare' not remade because of errors.
+>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/dr=
-m/amd/amdgpu/amdgpu_debugfs.c
-> index 5c1f3725c7410..a6667a2ca0db3 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> @@ -300,7 +300,7 @@ static int  amdgpu_debugfs_process_reg_op(bool read, =
-struct file *f,
->         return result;
->  }
->
-> -/**
-> +/*
->   * amdgpu_debugfs_regs_read - Callback for reading MMIO registers
->   */
->  static ssize_t amdgpu_debugfs_regs_read(struct file *f, char __user *buf=
-,
-> @@ -309,7 +309,7 @@ static ssize_t amdgpu_debugfs_regs_read(struct file *=
-f, char __user *buf,
->         return amdgpu_debugfs_process_reg_op(true, f, buf, size, pos);
->  }
->
-> -/**
-> +/*
->   * amdgpu_debugfs_regs_write - Callback for writing MMIO registers
->   */
->  static ssize_t amdgpu_debugfs_regs_write(struct file *f, const char __us=
-er *buf,
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+This can be ignored. The LLVM integrated assembler does not recognize
+-me200 (-Wa,-me200 in arch/powerpc/Makefile). I guess the GNU as -m
+option is similar to .arch or .machine and controls what instructions
+are recognized. The integrated assembler tends to support all
+instructions (conditional supporting some instructions has some
+challenges; in the end I have patched parsing but ignoring `.arch` for
+x86-64 and ignoring `.machine ppc64` for ppc64)
+
+(In addition, e200 is a 32-bit Power ISA microprocessor. 32-bit
+support may get less attention in LLVM.)
