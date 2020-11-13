@@ -2,126 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D992B163F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AE32B1645
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKMHRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
+        id S1726336AbgKMHTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgKMHRy (ORCPT
+        with ESMTP id S1726133AbgKMHTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:17:54 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFD8C0613D6;
-        Thu, 12 Nov 2020 23:17:54 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 62so6364714pgg.12;
-        Thu, 12 Nov 2020 23:17:54 -0800 (PST)
+        Fri, 13 Nov 2020 02:19:36 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DBDC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:19:36 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id o15so8567527wru.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:19:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XpJielsbomltdVuB/z23PcsD4Eziba/o/K52gFXVFZk=;
-        b=uNV/kWP+dsjXI+cZgNVlaqPRfkKeRVskzhe/QoisWIqygNxK9KSdrzf/UQMbDbWOXj
-         cDNOcRcKmnSwx2oB6HwROjnUGKm25rgB5AZRO9RJ5ITG96oQVPh0O4OPvyDGFKIUTB85
-         wFEvZT8XRzqWJMG1HJzK0I+bm7FYZvVBMsN9ZPssZgODgL8lunYKldNmpNI0gVv/4QIn
-         CXixMIJLPclON2bXBXeDu8+66whQRFpUjFRsX+VvBkpJ3Zme0JkScUPpcvNX1Je75+bs
-         lGrsL+OgXSDw39H4BEMPz3x5tM15CVAbYIt76ZohQKWudg+pdwN4gbzwoI5dmwqGof3r
-         L7mA==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bnJYl7E+i8htBIliisICLU3QBRLhtKX5V6IRkESXblI=;
+        b=k2FznTBmuBtIdb9vmIsFnefvjPAL49o04oAcgtmRfuhjCi1voMK9DNvTeL35Q98Bhu
+         Fnf3X2PwBuYGCK20FoLEl2g44owGkYJtgK/wfjvrWCE7wV4vO3Qzj4WQmEzejwEMA6Yb
+         kviwwk3HRP1j8xVxthJ+mlkPqqOhNp5S+8BTy3cRjICoDu8VhF+Bou9AyoksJLEbjn9k
+         v4kqsqfHj+s9oOvojGisAZTtWXB0ZNtFBTsgmnUeVXgSUm62p/yO6OThk/S2tB0lfgeL
+         9L7cp5IzV1+lAmgYnDOL0xxue73LP/tMrLwEdt0vAeEv6ZMPSnp/Rtxgq7P0ICuqI0gv
+         2/fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XpJielsbomltdVuB/z23PcsD4Eziba/o/K52gFXVFZk=;
-        b=WnT9ku8C3IiQj0JK6rF4PC4IDoWr1m26r/s2d3wWPCp62LJ1yu3Be9GW8iOTRkIJDw
-         Ucjy5g0zXEqDBStDt1YHqjGxJkbtTe7fMNadgasDlgAEJDub5y7/HEgUD4q/e+Ih2JyG
-         DkTy6uPufNkCkliLWzw3diNF5aRBaqlQINRIeDujKBXGIvTwR6o4GxpUW0l4fXI281Rr
-         XqfruVgRNfh1K4hXZ6Q+4UlyPBTZCgLmkYoRJsmluxbBT59saOO2j2To7D00t/YfScZR
-         4MeIgf1Hl3cAzawQtk2CIMOzGQ53WUL9YTYfjPjB9896vi3SE/KOukvT0jLq0XD3hwkh
-         sfBQ==
-X-Gm-Message-State: AOAM533pnFyIPxVW4Eq94B9N/tmgyjxemRQtVecldMLQdDAsuJAIEcKf
-        I/pnsuhx1OMgzJbNFoN3hRM=
-X-Google-Smtp-Source: ABdhPJzWJ/ZnHZuLCY7A1QRXg1T6LOIn9MfMOo+gbPzT9A9wL/lfaxO7GGPMT1WE8rNM5WLGcxiaNg==
-X-Received: by 2002:a17:90a:1992:: with SMTP id 18mr1470731pji.67.1605251874060;
-        Thu, 12 Nov 2020 23:17:54 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:3e5e:820b:3892:3f80])
-        by smtp.gmail.com with ESMTPSA id 3sm8847259pfv.92.2020.11.12.23.17.52
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bnJYl7E+i8htBIliisICLU3QBRLhtKX5V6IRkESXblI=;
+        b=oEcWb46zcyuuRYfsA1mqNyH3ikvmFd2Th0v68fCst0T5grjIxuS/J3UdkHT65ykenk
+         r8KyxQplB2BKPTo8LTKE4IGynYhs9UcJCGtN+7O97Tz5aziQ275ttAfHDdEC1kkhQoeJ
+         rEkF2vBK6BYKR9jDoLTGLHgS5ymHgii9lkTYdWIBtKblZssnt6NZPhekr3wSf7FJZoF2
+         Z49d0Oo/6mZXSyD0cHZkJocF6bVnrkkyJ5kIxCCqR11xztsLSCXVUHX4Dccyczt+AmnL
+         NYgwGZnPzgUsH013pfji2qOg70gGJt7kWzmqOO+xdFkgxPZWvlyClQ9mdnK1fe41Us7X
+         qDlQ==
+X-Gm-Message-State: AOAM531QqiJtR4IbIlYvTR3pWFC+5bYXUBr3KqmTlcecWoKAONNcY4AY
+        IMs4k17bmMDh51W6AfBpyFodyBoh4KuNBoaX
+X-Google-Smtp-Source: ABdhPJwyloqmRo9bTH+UlgyIYTE0cdzl4YZHqxc71/L1xDZmUoB+GN0sXlank69DctPsSMAdjz0T1Q==
+X-Received: by 2002:adf:fd03:: with SMTP id e3mr1494073wrr.303.1605251974761;
+        Thu, 12 Nov 2020 23:19:34 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id t4sm9631123wmb.20.2020.11.12.23.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 23:17:53 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Xie He <xie.he.0141@gmail.com>,
-        Andrew Hendry <andrew.hendry@gmail.com>
-Subject: [PATCH net-next RFC v2] MAINTAINERS: Add Martin Schiller as a maintainer for the X.25 stack
-Date:   Thu, 12 Nov 2020 23:17:11 -0800
-Message-Id: <20201113071711.29707-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 12 Nov 2020 23:19:34 -0800 (PST)
+Date:   Fri, 13 Nov 2020 07:19:32 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Andy Gross <andy.gross@ti.com>,
+        by <jhartmann@precisioninsight.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
+        Faith <faith@valinux.com>, Gareth Hughes <gareth@valinux.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Jeff Hartmann <jhartmann@valinux.com>,
+        Keith Whitwell <keith@tungstengraphics.com>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>, Rob Clark <rob@ti.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
+Message-ID: <20201113071932.GF2787115@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106214949.2042120-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Martin Schiller is an active developer and reviewer for the X.25 code.
-His company is providing products based on the Linux X.25 stack.
-So he is a good candidate for maintainers of the X.25 code.
+On Fri, 06 Nov 2020, Lee Jones wrote:
 
-The original maintainer of the X.25 network layer (Andrew Hendry) has
-not sent any email to the netdev mail list since 2013. So he is probably
-inactive now.
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> There are 5000 warnings to work through.  It will take a couple more
+> sets.  Although, ("drm/amd/display/dc/basics/fixpt31_32: Move
+> variables to where they're used") does take care of 2000 of them!
+> 
+> Lee Jones (19):
+>   drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
+>   drm/r128/ati_pcigart: Source file headers are not good candidates for
+>     kernel-doc
+>   drm/selftests/test-drm_dp_mst_helper: Move
+>     'sideband_msg_req_encode_decode' onto the heap
+>   drm/mga/mga_dma: Demote kernel-doc abusers to standard comment blocks
+>   drm/mga/mga_state: Remove unused variable 'buf_priv'
+>   drm/radeon/atom: Move prototype into shared location
+>   drm/radeon/radeon_kms: Include header containing our own prototypes
+>   drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
+>   drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
+>   drm/radeon/radeon: Move prototype into shared header
+>   drm/radeon/radeon_drv: Source file headers are not good candidates for
+>     kernel-doc
+>   drm/amd/display/dc/basics/fixpt31_32: Move variables to where they're
+>     used
+>   drm/radeon/radeon_drv: Move prototypes to a shared headerfile
+>   drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr'
+>     params
+>   drm/radeon: Move prototypes to shared header
+>   drm/amd/amdgpu/amdgpu_kms: Remove 'struct drm_amdgpu_info_device
+>     dev_info' from the stack
+>   drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
+>   drm/radeon/atombios_crtc: Remove description of non-existent function
+>     param 'encoder'
+>   drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
+> 
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       | 104 +++++++++---------
+>  .../drm/amd/display/dc/basics/fixpt31_32.c    |   5 +
+>  .../gpu/drm/amd/display/include/fixed31_32.h  |   6 -
+>  drivers/gpu/drm/mga/mga_dma.c                 |  10 +-
+>  drivers/gpu/drm/mga/mga_state.c               |   2 -
+>  drivers/gpu/drm/omapdrm/omap_dmm_tiler.c      |   6 +-
+>  drivers/gpu/drm/omapdrm/omap_gem.c            |   3 +-
+>  drivers/gpu/drm/r128/ati_pcigart.c            |   2 +-
+>  drivers/gpu/drm/radeon/atom.h                 |   6 +
+>  drivers/gpu/drm/radeon/atombios_crtc.c        |   1 -
+>  drivers/gpu/drm/radeon/atombios_encoders.c    |   4 -
+>  drivers/gpu/drm/radeon/radeon.h               |   6 +
+>  drivers/gpu/drm/radeon/radeon_device.c        |   1 +
+>  drivers/gpu/drm/radeon/radeon_device.h        |  32 ++++++
+>  drivers/gpu/drm/radeon/radeon_display.c       |   4 -
+>  drivers/gpu/drm/radeon/radeon_drv.c           |  11 +-
+>  drivers/gpu/drm/radeon/radeon_drv.h           |   7 ++
+>  drivers/gpu/drm/radeon/radeon_kms.c           |   3 +-
+>  .../drm/selftests/test-drm_dp_mst_helper.c    |  11 +-
+>  drivers/gpu/drm/ttm/ttm_range_manager.c       |   2 +-
+>  drivers/gpu/drm/v3d/v3d_drv.c                 |  36 ------
+>  22 files changed, 138 insertions(+), 126 deletions(-)
+>  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
 
-Cc: Martin Schiller <ms@dev.tdt.de>
-Cc: Andrew Hendry <andrew.hendry@gmail.com>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- MAINTAINERS | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+Still no Radeon patches in today's -next.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2a0fde12b650..5adb78cb0d92 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9832,13 +9832,6 @@ S:	Maintained
- F:	arch/mips/lantiq
- F:	drivers/soc/lantiq
- 
--LAPB module
--L:	linux-x25@vger.kernel.org
--S:	Orphan
--F:	Documentation/networking/lapb-module.rst
--F:	include/*/lapb.h
--F:	net/lapb/
--
- LASI 53c700 driver for PARISC
- M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
- L:	linux-scsi@vger.kernel.org
-@@ -18979,12 +18972,18 @@ L:	linux-kernel@vger.kernel.org
- S:	Maintained
- N:	axp[128]
- 
--X.25 NETWORK LAYER
--M:	Andrew Hendry <andrew.hendry@gmail.com>
-+X.25 STACK
-+M:	Martin Schiller <ms@dev.tdt.de>
- L:	linux-x25@vger.kernel.org
--S:	Odd Fixes
-+S:	Maintained
-+F:	Documentation/networking/lapb-module.rst
- F:	Documentation/networking/x25*
-+F:	drivers/net/wan/hdlc_x25.c
-+F:	drivers/net/wan/lapbether.c
-+F:	include/*/lapb.h
- F:	include/net/x25*
-+F:	include/uapi/linux/x25.h
-+F:	net/lapb/
- F:	net/x25/
- 
- X86 ARCHITECTURE (32-BIT AND 64-BIT)
+I really wanted to have had this set rebased by now.
+
+How long do they take to peculate through?
+
 -- 
-2.27.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
