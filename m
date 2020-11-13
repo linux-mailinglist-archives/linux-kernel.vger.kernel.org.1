@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625B82B22E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC90A2B22E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgKMRqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
+        id S1726827AbgKMRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:46:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgKMRqn (ORCPT
+        with ESMTP id S1726734AbgKMRqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:46:43 -0500
+        Fri, 13 Nov 2020 12:46:45 -0500
 Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFFBC0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:43 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id n5so9218155ile.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DAFC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:44 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id k1so9206716ilc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NZOTFdjKMxWDW6EAVCBI0JinrLyj8iSSC/Af1k/3gnI=;
-        b=KheRvfIvjADKYxvwGjJjKm/A6xh7xm10V4N93Y3RtUd+Y0mg0/LlorYo5HC+fc2sK5
-         O7SIaohgeXI9OKtfF9oguSJZvlOuZqJsu1tJ0sfvp0hq9zS2AVRHr/92kx1DSLkR7J9R
-         EfFVewz3LgBxDr9XCK23guEdJ8PbpKf+YhrX4=
+        bh=DkXFGk6I0ftq147+tviBntyoQUaQXSxzVtForeH2b2I=;
+        b=V1eb2WQHPY0ZXpfWOadopbiNfS6oEGnzwvFXzKdyqtIjkiTUCWeai90oC3/G40IqjT
+         rWt3UoZyuBXzrADF2A6e/WZ201YMzY2Cm0EdXiveJCBHn2/BJJLses8QGTNhguWGemE1
+         ZR9W3T3n2qyOWtPivW3OrhLeRZCK1e1JdDaSc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NZOTFdjKMxWDW6EAVCBI0JinrLyj8iSSC/Af1k/3gnI=;
-        b=HxFAZV+Auz77IzM8u1UknNjK5grW26aFXZ1EPSt9rY3REvQi0elrfktzwEyxJrimfP
-         IoNibqJgRPlk7U8myEw2FfHS+D7D7YnAbCKj/4ZsRsfGLxhR81s5L1UpFgBxRvUBSFeq
-         K1RuTifzmxihRWWg5Ns/i1R2jq53oui+pGcjXkizC/LpbkNV9zXSjTa9zpvkIUu/c5P9
-         HqNRT7ucARkPOiutES6eagJqPb5cwIe11iiZluKzGI+f9jyip1XUilbHcI+p8t6P/3MF
-         MWDjNRRKMZPXHbNNRH/yXxQp8PEc1cyr/0zy9bHl+SPiiPQye6h8G8Jq0ZY+xAzD1IJj
-         8jqg==
-X-Gm-Message-State: AOAM530gejJ+hgKFrydzhO5F0CT/JimzLJiCbUDddsKVgKNvacHLfpJQ
-        p0YCnTZC8zWWRTWlNqmmH9ucNA==
-X-Google-Smtp-Source: ABdhPJyWh55lbwwUW7m1OjaCNdAqaIRPhRIe3HVxdc+DBweTcV2FCaPQm11aD+uPc1OtJPOER0MuHQ==
-X-Received: by 2002:a05:6e02:1114:: with SMTP id u20mr771268ilk.226.1605289600737;
-        Fri, 13 Nov 2020 09:46:40 -0800 (PST)
+        bh=DkXFGk6I0ftq147+tviBntyoQUaQXSxzVtForeH2b2I=;
+        b=o78wNhzSKHAMZZduXkdRKyuw5wAaE/NxaXKlzLSq6Eph3Xh26II1hPgWoSE2SwI6UG
+         6vhNzOk6QkeC7+yfrHyp5DB97hqeW20lRUekGLI3a8mtMc2+YgnPQGw71Ear4v5L6eXX
+         Su/Y4CVIftrSZsWqA+JeO+cpNazkKxGczB1mmJ+H+W8r+TyssSTxnhOjC9onzaOXp746
+         wnCO5wEPVVBN0HMpAi+K3+c2DFZeaj2YQl9tlpu/bRe9XndYGZZQfjukYZo5vddnkYjd
+         kvxzpoaZoS4A1zz7MgMrsZfkiD1enFgRx5V9w71bhhSzSGHghAMMTBkHiqDHu4V9svKN
+         8kvQ==
+X-Gm-Message-State: AOAM530bgD9/NdVit0E0QHXRDQr9EunYoPmCElZyq5nz2vQ0MOV2MbMR
+        Uz/+QX5i6grLpLGPu5NrU1MQVA==
+X-Google-Smtp-Source: ABdhPJyvkWLA330BLwQL4aUJ5TeGKR0MUiiIa2fekfvHAE/e+cmZWZrmniX+7CK8UkVVHgTJQinoTw==
+X-Received: by 2002:a92:1f19:: with SMTP id i25mr769862ile.198.1605289602222;
+        Fri, 13 Nov 2020 09:46:42 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.39
+        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 09:46:40 -0800 (PST)
+        Fri, 13 Nov 2020 09:46:41 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rric@kernel.org, gregkh@linuxfoundation.org,
-        keescook@chromium.org, peterz@infradead.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-edac@vger.kernel.org,
+To:     rric@kernel.org, gregkh@linuxfoundation.org, keescook@chromium.org,
+        peterz@infradead.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, oprofile-list@lists.sf.net,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 07/13] drivers/edac: convert pci counters to seqnum_ops
-Date:   Fri, 13 Nov 2020 10:46:09 -0700
-Message-Id: <795814646174c12c68e1624e246e19a61b7ac2e0.1605287778.git.skhan@linuxfoundation.org>
+Subject: [PATCH v2 08/13] drivers/oprofile: convert stats to use seqnum_ops
+Date:   Fri, 13 Nov 2020 10:46:10 -0700
+Message-Id: <648c2fabd395ae22e29cde4b2f8a7716952d28b4.1605287778.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605287778.git.skhan@linuxfoundation.org>
 References: <cover.1605287778.git.skhan@linuxfoundation.org>
@@ -66,165 +65,204 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Sequence Number api provides interfaces for unsigned atomic up counters
 leveraging atomic_t and atomic64_t ops underneath.
 
-atomic_t variables used for pci counters keep track of pci parity and
-non-parity errors. Convert them to use seqnum_ops.
+atomic_t variables used for stats are atomic counters. Convert them
+to use seqnum_ops.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/edac/edac_pci.h       |  5 +++--
- drivers/edac/edac_pci_sysfs.c | 30 +++++++++++++++---------------
- 2 files changed, 18 insertions(+), 17 deletions(-)
+ drivers/oprofile/buffer_sync.c    |  9 +++++----
+ drivers/oprofile/event_buffer.c   |  3 ++-
+ drivers/oprofile/oprof.c          |  3 ++-
+ drivers/oprofile/oprofile_stats.c | 11 ++++++-----
+ drivers/oprofile/oprofile_stats.h | 11 ++++++-----
+ drivers/oprofile/oprofilefs.c     |  3 ++-
+ include/linux/oprofile.h          |  3 ++-
+ 7 files changed, 25 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/edac/edac_pci.h b/drivers/edac/edac_pci.h
-index 5175f5724cfa..33b33e62c37f 100644
---- a/drivers/edac/edac_pci.h
-+++ b/drivers/edac/edac_pci.h
-@@ -30,12 +30,13 @@
- #include <linux/pci.h>
- #include <linux/types.h>
- #include <linux/workqueue.h>
+diff --git a/drivers/oprofile/buffer_sync.c b/drivers/oprofile/buffer_sync.c
+index cc917865f13a..5c10b7d5d076 100644
+--- a/drivers/oprofile/buffer_sync.c
++++ b/drivers/oprofile/buffer_sync.c
+@@ -34,6 +34,7 @@
+ #include <linux/sched/mm.h>
+ #include <linux/sched/task.h>
+ #include <linux/gfp.h>
 +#include <linux/seqnum_ops.h>
  
- #ifdef CONFIG_PCI
- 
- struct edac_pci_counter {
--	atomic_t pe_count;
--	atomic_t npe_count;
-+	struct seqnum32 pe_count;
-+	struct seqnum32 npe_count;
- };
- 
- /*
-diff --git a/drivers/edac/edac_pci_sysfs.c b/drivers/edac/edac_pci_sysfs.c
-index 53042af7262e..08a34ecd2fb7 100644
---- a/drivers/edac/edac_pci_sysfs.c
-+++ b/drivers/edac/edac_pci_sysfs.c
-@@ -23,8 +23,8 @@ static int edac_pci_log_pe = 1;		/* log PCI parity errors */
- static int edac_pci_log_npe = 1;	/* log PCI non-parity error errors */
- static int edac_pci_poll_msec = 1000;	/* one second workq period */
- 
--static atomic_t pci_parity_count = ATOMIC_INIT(0);
--static atomic_t pci_nonparity_count = ATOMIC_INIT(0);
-+static struct seqnum32 pci_parity_count = SEQNUM_INIT(0);
-+static struct seqnum32 pci_nonparity_count = SEQNUM_INIT(0);
- 
- static struct kobject *edac_pci_top_main_kobj;
- static atomic_t edac_pci_sysfs_refcount = ATOMIC_INIT(0);
-@@ -58,13 +58,13 @@ int edac_pci_get_poll_msec(void)
- /**************************** EDAC PCI sysfs instance *******************/
- static ssize_t instance_pe_count_show(struct edac_pci_ctl_info *pci, char *data)
- {
--	return sprintf(data, "%u\n", atomic_read(&pci->counters.pe_count));
-+	return sprintf(data, "%u\n", seqnum32_fetch(&pci->counters.pe_count));
- }
- 
- static ssize_t instance_npe_count_show(struct edac_pci_ctl_info *pci,
- 				char *data)
- {
--	return sprintf(data, "%u\n", atomic_read(&pci->counters.npe_count));
-+	return sprintf(data, "%u\n", seqnum32_fetch(&pci->counters.npe_count));
- }
- 
- #define to_instance(k) container_of(k, struct edac_pci_ctl_info, kobj)
-@@ -553,7 +553,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
- 			edac_printk(KERN_CRIT, EDAC_PCI,
- 				"Signaled System Error on %s\n",
- 				pci_name(dev));
--			atomic_inc(&pci_nonparity_count);
-+			seqnum32_inc_return(&pci_nonparity_count);
+ #include "oprofile_stats.h"
+ #include "event_buffer.h"
+@@ -347,7 +348,7 @@ static void add_data(struct op_entry *entry, struct mm_struct *mm)
+ 		if (cookie == NO_COOKIE)
+ 			offset = pc;
+ 		if (cookie == INVALID_COOKIE) {
+-			atomic_inc(&oprofile_stats.sample_lost_no_mapping);
++			seqnum32_inc_return(&oprofile_stats.sample_lost_no_mapping);
+ 			offset = pc;
  		}
+ 		if (cookie != last_cookie) {
+@@ -391,14 +392,14 @@ add_sample(struct mm_struct *mm, struct op_sample *s, int in_kernel)
+ 	/* add userspace sample */
  
- 		if (status & (PCI_STATUS_PARITY)) {
-@@ -561,7 +561,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
- 				"Master Data Parity Error on %s\n",
- 				pci_name(dev));
- 
--			atomic_inc(&pci_parity_count);
-+			seqnum32_inc_return(&pci_parity_count);
- 		}
- 
- 		if (status & (PCI_STATUS_DETECTED_PARITY)) {
-@@ -569,7 +569,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
- 				"Detected Parity Error on %s\n",
- 				pci_name(dev));
- 
--			atomic_inc(&pci_parity_count);
-+			seqnum32_inc_return(&pci_parity_count);
- 		}
+ 	if (!mm) {
+-		atomic_inc(&oprofile_stats.sample_lost_no_mm);
++		seqnum32_inc_return(&oprofile_stats.sample_lost_no_mm);
+ 		return 0;
  	}
  
-@@ -592,7 +592,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
- 				edac_printk(KERN_CRIT, EDAC_PCI, "Bridge "
- 					"Signaled System Error on %s\n",
- 					pci_name(dev));
--				atomic_inc(&pci_nonparity_count);
-+				seqnum32_inc_return(&pci_nonparity_count);
- 			}
+ 	cookie = lookup_dcookie(mm, s->eip, &offset);
  
- 			if (status & (PCI_STATUS_PARITY)) {
-@@ -600,7 +600,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
- 					"Master Data Parity Error on "
- 					"%s\n", pci_name(dev));
+ 	if (cookie == INVALID_COOKIE) {
+-		atomic_inc(&oprofile_stats.sample_lost_no_mapping);
++		seqnum32_inc_return(&oprofile_stats.sample_lost_no_mapping);
+ 		return 0;
+ 	}
  
--				atomic_inc(&pci_parity_count);
-+				seqnum32_inc_return(&pci_parity_count);
- 			}
- 
- 			if (status & (PCI_STATUS_DETECTED_PARITY)) {
-@@ -608,7 +608,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
- 					"Detected Parity Error on %s\n",
- 					pci_name(dev));
- 
--				atomic_inc(&pci_parity_count);
-+				seqnum32_inc_return(&pci_parity_count);
- 			}
+@@ -556,7 +557,7 @@ void sync_buffer(int cpu)
+ 		/* ignore backtraces if failed to add a sample */
+ 		if (state == sb_bt_start) {
+ 			state = sb_bt_ignore;
+-			atomic_inc(&oprofile_stats.bt_lost_no_mapping);
++			seqnum32_inc_return(&oprofile_stats.bt_lost_no_mapping);
  		}
  	}
-@@ -638,7 +638,7 @@ static inline void edac_pci_dev_parity_iterator(pci_parity_check_fn_t fn)
-  */
- void edac_pci_do_parity_check(void)
- {
--	int before_count;
-+	u32 before_count;
+ 	release_mm(mm);
+diff --git a/drivers/oprofile/event_buffer.c b/drivers/oprofile/event_buffer.c
+index 6c9edc8bbc95..2e2ff87b2a5d 100644
+--- a/drivers/oprofile/event_buffer.c
++++ b/drivers/oprofile/event_buffer.c
+@@ -19,6 +19,7 @@
+ #include <linux/dcookies.h>
+ #include <linux/fs.h>
+ #include <linux/uaccess.h>
++#include <linux/seqnum_ops.h>
  
- 	edac_dbg(3, "\n");
+ #include "oprof.h"
+ #include "event_buffer.h"
+@@ -53,7 +54,7 @@ void add_event_entry(unsigned long value)
+ 	}
  
-@@ -646,7 +646,7 @@ void edac_pci_do_parity_check(void)
- 	if (!check_pci_errors)
+ 	if (buffer_pos == buffer_size) {
+-		atomic_inc(&oprofile_stats.event_lost_overflow);
++		seqnum32_inc_return(&oprofile_stats.event_lost_overflow);
+ 		return;
+ 	}
+ 
+diff --git a/drivers/oprofile/oprof.c b/drivers/oprofile/oprof.c
+index ed2c3ec07024..0f65235fb760 100644
+--- a/drivers/oprofile/oprof.c
++++ b/drivers/oprofile/oprof.c
+@@ -15,6 +15,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/time.h>
+ #include <linux/mutex.h>
++#include <linux/seqnum_ops.h>
+ 
+ #include "oprof.h"
+ #include "event_buffer.h"
+@@ -110,7 +111,7 @@ static void switch_worker(struct work_struct *work)
+ 	if (oprofile_ops.switch_events())
  		return;
  
--	before_count = atomic_read(&pci_parity_count);
-+	before_count = seqnum32_fetch(&pci_parity_count);
- 
- 	/* scan all PCI devices looking for a Parity Error on devices and
- 	 * bridges.
-@@ -658,7 +658,7 @@ void edac_pci_do_parity_check(void)
- 	/* Only if operator has selected panic on PCI Error */
- 	if (edac_pci_get_panic_on_pe()) {
- 		/* If the count is different 'after' from 'before' */
--		if (before_count != atomic_read(&pci_parity_count))
-+		if (before_count != seqnum32_fetch(&pci_parity_count))
- 			panic("EDAC: PCI Parity Error");
- 	}
+-	atomic_inc(&oprofile_stats.multiplex_counter);
++	seqnum32_inc_return(&oprofile_stats.multiplex_counter);
+ 	start_switch_worker();
  }
-@@ -686,7 +686,7 @@ void edac_pci_handle_pe(struct edac_pci_ctl_info *pci, const char *msg)
+ 
+diff --git a/drivers/oprofile/oprofile_stats.c b/drivers/oprofile/oprofile_stats.c
+index 59659cea4582..5ad52a4ba5a2 100644
+--- a/drivers/oprofile/oprofile_stats.c
++++ b/drivers/oprofile/oprofile_stats.c
+@@ -11,6 +11,7 @@
+ #include <linux/smp.h>
+ #include <linux/cpumask.h>
+ #include <linux/threads.h>
++#include <linux/seqnum_ops.h>
+ 
+ #include "oprofile_stats.h"
+ #include "cpu_buffer.h"
+@@ -30,11 +31,11 @@ void oprofile_reset_stats(void)
+ 		cpu_buf->sample_invalid_eip = 0;
+ 	}
+ 
+-	atomic_set(&oprofile_stats.sample_lost_no_mm, 0);
+-	atomic_set(&oprofile_stats.sample_lost_no_mapping, 0);
+-	atomic_set(&oprofile_stats.event_lost_overflow, 0);
+-	atomic_set(&oprofile_stats.bt_lost_no_mapping, 0);
+-	atomic_set(&oprofile_stats.multiplex_counter, 0);
++	seqnum32_init(&oprofile_stats.sample_lost_no_mm);
++	seqnum32_init(&oprofile_stats.sample_lost_no_mapping);
++	seqnum32_init(&oprofile_stats.event_lost_overflow);
++	seqnum32_init(&oprofile_stats.bt_lost_no_mapping);
++	seqnum32_init(&oprofile_stats.multiplex_counter);
+ }
+ 
+ 
+diff --git a/drivers/oprofile/oprofile_stats.h b/drivers/oprofile/oprofile_stats.h
+index 1fc622bd1834..229bcbb16527 100644
+--- a/drivers/oprofile/oprofile_stats.h
++++ b/drivers/oprofile/oprofile_stats.h
+@@ -11,13 +11,14 @@
+ #define OPROFILE_STATS_H
+ 
+ #include <linux/atomic.h>
++#include <linux/seqnum_ops.h>
+ 
+ struct oprofile_stat_struct {
+-	atomic_t sample_lost_no_mm;
+-	atomic_t sample_lost_no_mapping;
+-	atomic_t bt_lost_no_mapping;
+-	atomic_t event_lost_overflow;
+-	atomic_t multiplex_counter;
++	struct seqnum32 sample_lost_no_mm;
++	struct seqnum32 sample_lost_no_mapping;
++	struct seqnum32 bt_lost_no_mapping;
++	struct seqnum32 event_lost_overflow;
++	struct seqnum32 multiplex_counter;
+ };
+ 
+ extern struct oprofile_stat_struct oprofile_stats;
+diff --git a/drivers/oprofile/oprofilefs.c b/drivers/oprofile/oprofilefs.c
+index 0875f2f122b3..c5749b9aca11 100644
+--- a/drivers/oprofile/oprofilefs.c
++++ b/drivers/oprofile/oprofilefs.c
+@@ -17,6 +17,7 @@
+ #include <linux/fs_context.h>
+ #include <linux/pagemap.h>
+ #include <linux/uaccess.h>
++#include <linux/seqnum_ops.h>
+ 
+ #include "oprof.h"
+ 
+@@ -193,7 +194,7 @@ static const struct file_operations atomic_ro_fops = {
+ 
+ 
+ int oprofilefs_create_ro_atomic(struct dentry *root,
+-	char const *name, atomic_t *val)
++	char const *name, struct seqnum32 *val)
  {
- 
- 	/* global PE counter incremented by edac_pci_do_parity_check() */
--	atomic_inc(&pci->counters.pe_count);
-+	seqnum32_inc_return(&pci->counters.pe_count);
- 
- 	if (edac_pci_get_log_pe())
- 		edac_pci_printk(pci, KERN_WARNING,
-@@ -711,7 +711,7 @@ void edac_pci_handle_npe(struct edac_pci_ctl_info *pci, const char *msg)
- {
- 
- 	/* global NPE counter incremented by edac_pci_do_parity_check() */
--	atomic_inc(&pci->counters.npe_count);
-+	seqnum32_inc_return(&pci->counters.npe_count);
- 
- 	if (edac_pci_get_log_npe())
- 		edac_pci_printk(pci, KERN_WARNING,
+ 	return __oprofilefs_create_file(root, name,
+ 					&atomic_ro_fops, 0444, val);
+diff --git a/include/linux/oprofile.h b/include/linux/oprofile.h
+index b2a0f15f11fe..f770254a0c8a 100644
+--- a/include/linux/oprofile.h
++++ b/include/linux/oprofile.h
+@@ -19,6 +19,7 @@
+ #include <linux/errno.h>
+ #include <linux/printk.h>
+ #include <linux/atomic.h>
++#include <linux/seqnum_ops.h>
+  
+ /* Each escaped entry is prefixed by ESCAPE_CODE
+  * then one of the following codes, then the
+@@ -140,7 +141,7 @@ int oprofilefs_create_ro_ulong(struct dentry * root,
+  
+ /** Create a file for read-only access to an atomic_t. */
+ int oprofilefs_create_ro_atomic(struct dentry * root,
+-	char const * name, atomic_t * val);
++	char const *name, struct seqnum32 *val);
+  
+ /** create a directory */
+ struct dentry *oprofilefs_mkdir(struct dentry *parent, char const *name);
 -- 
 2.27.0
 
