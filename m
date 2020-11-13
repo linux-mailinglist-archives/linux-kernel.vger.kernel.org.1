@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C3E2B2597
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0D22B259B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgKMUe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:34:59 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42678 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgKMUe7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:34:59 -0500
-Received: by mail-pf1-f195.google.com with SMTP id x15so7279713pfm.9;
-        Fri, 13 Nov 2020 12:34:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fxjgOhyybNYpZSYX+6Oz1HIqCUNxG8ovneGfaNCfF7M=;
-        b=m28oKwq7QobdmdxuzWY01aXV6BBzuzqqyh3Zt0Gd51yLBAmz0uG0CGVMehKrGrV1sW
-         tJLsmEMRow0lTkTWnR69KbqESdUv8eKoL4JkQWc6R0UhTb44Km4844/faD2xhoRpuT6r
-         OiDtaxx98HfIvog9uGT3EQkzJJlJwAn5HfSfu3kZPqiRrGhqFeUF39vBKp/Lj3vaib0l
-         BRpV4O6lBG+QCl2FUube2SOfTdeqS3ZCFu3UoFSMb+bgEJ7/Mvja3gKtYNaaz0imcRDM
-         D9gZdIE+2Zo3/QwzLb7hjXQKpJM0MvZRUs7jvrIxqadVnZT+Wv9tC2UGofs2O5qh9ajU
-         Ngsw==
-X-Gm-Message-State: AOAM5330anewUGY8DuSo+P1+PHJLtGoPR9hHWx6cx5CJlcBZgqRFi+oT
-        sAvtMSU39+wLD6WZKOTkn5o=
-X-Google-Smtp-Source: ABdhPJy42BorG2pmGsmgyPntSK/vRijj7t5aWnUYg3nJvkgQnbWSa/nNQ4gJ0u4rpJEGYtI1RRcikA==
-X-Received: by 2002:a62:dd16:0:b029:18a:b228:649 with SMTP id w22-20020a62dd160000b029018ab2280649mr3540822pff.33.1605299698294;
-        Fri, 13 Nov 2020 12:34:58 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:be97:ffd:339d:919c? ([2601:647:4802:9070:be97:ffd:339d:919c])
-        by smtp.gmail.com with ESMTPSA id t64sm11036186pfd.36.2020.11.13.12.34.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 12:34:57 -0800 (PST)
-Subject: Re: [PATCH] iosched: Add i10 I/O Scheduler
-To:     Jens Axboe <axboe@kernel.dk>, Rachit Agarwal <rach4x0r@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
-        Qizhe Cai <qc228@cornell.edu>,
-        Midhul Vuppalapati <mvv25@cornell.edu>,
-        Rachit Agarwal <ragarwal@cs.cornell.edu>,
-        Sagi Grimberg <sagi@lightbitslabs.com>,
-        Rachit Agarwal <ragarwal@cornell.edu>
-References: <20201112140752.1554-1-rach4x0r@gmail.com>
- <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <da0c7aea-d917-4f3a-5136-89c30d12ba1f@grimberg.me>
-Date:   Fri, 13 Nov 2020 12:34:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726339AbgKMUfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:35:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726233AbgKMUfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 15:35:11 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9948B2223C;
+        Fri, 13 Nov 2020 20:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605299710;
+        bh=cHeuOuncJHW+8hXxWpYa6tQZVFcKd3qiZmVck+KlPEc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iRXJDAcuHA/br3g74i/3HDAiwIlZmon/0/XANIl4E9OtyDAVKz0YiO3i7lXUsSuhS
+         rBNSGw2DuAEtF2eTlcpwClf59HbtTFf4J4zA1MyYu5numvEUZgKvrgQk+mQub2dWyx
+         qmSqf7iUdvVzQgnnLeJ8Bu7h84537Wfx470wcMx8=
+Date:   Fri, 13 Nov 2020 12:35:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?xYF1a2Fzeg==?= Stelmach <l.stelmach@samsung.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?UTF-8?B?QmFydMWCb21pZWogxbtvbG5pZXJr?= =?UTF-8?B?aWV3aWN6?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v6 3/5] net: ax88796c: ASIX AX88796C SPI Ethernet
+ Adapter Driver
+Message-ID: <20201113123508.3920de4b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201112115106.16224-4-l.stelmach@samsung.com>
+References: <20201112115106.16224-1-l.stelmach@samsung.com>
+        <CGME20201112115108eucas1p22790c6cdec17e5322424e026b3985305@eucas1p2.samsung.com>
+        <20201112115106.16224-4-l.stelmach@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 12 Nov 2020 12:51:04 +0100 =C5=81ukasz Stelmach wrote:
+> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
+> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
+> supports SPI connection.
+>=20
+> The driver has been ported from the vendor kernel for ARTIK5[2]
+> boards. Several changes were made to adapt it to the current kernel
+> which include:
+>=20
+> + updated DT configuration,
+> + clock configuration moved to DT,
+> + new timer, ethtool and gpio APIs,
+> + dev_* instead of pr_* and custom printk() wrappers,
+> + removed awkward vendor power managemtn.
+> + introduced ethtool tunable to control SPI compression
+>=20
+> [1] https://www.asix.com.tw/products.php?op=3DpItemdetail&PItemID=3D104;6=
+5;86&PLine=3D65
+> [2] https://git.tizen.org/cgit/profile/common/platform/kernel/linux-3.10-=
+artik/
+>=20
+> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
+> chips are not compatible. Hence, two separate drivers are required.
+>=20
+> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
 
-> I haven't taken a close look at the code yet so far, but one quick note
-> that patches like this should be against the branches for 5.11. In fact,
-> this one doesn't even compile against current -git, as
-> blk_mq_bio_list_merge is now called blk_bio_list_merge.
+Please make sure the new code builds cleanly with W=3D1 C=3D1
 
-Ugh, I guess that Jaehyun had this patch bottled up and didn't rebase
-before submitting.. Sorry about that.
-
-> In any case, I did run this through some quick peak testing as I was
-> curious, and I'm seeing about 20% drop in peak IOPS over none running
-> this. Perf diff:
-> 
->      10.71%     -2.44%  [kernel.vmlinux]  [k] read_tsc
->       2.33%     -1.99%  [kernel.vmlinux]  [k] _raw_spin_lock
-
-You ran this with nvme? or null_blk? I guess neither would benefit
-from this because if the underlying device will not benefit from
-batching (at least enough for the extra cost of accounting for it) it
-will be counter productive to use this scheduler.
-
-> Also:
-> 
->> [5] https://github.com/i10-kernel/upstream-linux/blob/master/dss-evaluation.pdf
-> 
-> Was curious and wanted to look it up, but it doesn't exist.
-
-I think this is the right one:
-https://github.com/i10-kernel/upstream-linux/blob/master/i10-evaluation.pdf
-
-We had some back and forth around the naming, hence this was probably
-omitted.
+../drivers/net/ethernet/asix/ax88796c_ioctl.c:221:19: warning: initialized =
+field overwritten [-Woverride-init]
+  221 |  .get_msglevel  =3D ax88796c_ethtool_getmsglevel,
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/net/ethernet/asix/ax88796c_ioctl.c:221:19: note: (near initializ=
+ation for =E2=80=98ax88796c_ethtool_ops.get_msglevel=E2=80=99)
+../drivers/net/ethernet/asix/ax88796c_ioctl.c:222:19: warning: initialized =
+field overwritten [-Woverride-init]
+  222 |  .set_msglevel  =3D ax88796c_ethtool_setmsglevel,
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/net/ethernet/asix/ax88796c_ioctl.c:222:19: note: (near initializ=
+ation for =E2=80=98ax88796c_ethtool_ops.set_msglevel=E2=80=99)
+In file included from ../drivers/net/ethernet/asix/ax88796c_main.h:15,
+                 from ../drivers/net/ethernet/asix/ax88796c_ioctl.c:16:
+../drivers/net/ethernet/asix/ax88796c_spi.h:25:17: warning: =E2=80=98tx_cmd=
+_buf=E2=80=99 defined but not used [-Wunused-const-variable=3D]
+   25 | static const u8 tx_cmd_buf[4] =3D {AX_SPICMD_WRITE_TXQ, 0xFF, 0xFF,=
+ 0xFF};
+      |                 ^~~~~~~~~~
