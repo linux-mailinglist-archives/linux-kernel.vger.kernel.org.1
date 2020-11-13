@@ -2,178 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64532B2893
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF9D2B2898
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgKMWe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:34:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29554 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725981AbgKMWe2 (ORCPT
+        id S1726221AbgKMWev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgKMWev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:34:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605306866;
+        Fri, 13 Nov 2020 17:34:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56B6C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:34:50 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605306888;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8Rq1SwLUmuk5yTiT3dYLgLhG1v7f4gsVqDXVvnML+kQ=;
-        b=iiW0miU/Wf46LMu701BcvKbeels5SbOrwnq9IVK2WyUG0sfTul2s80mMXeav1KZiogixAb
-        1GL2O1eOhLuxlgAL1LRv12egNL2TX4Nn1wUt7jBZ7D7BBfRGxj2u1pk31uecwKjQP7HKKy
-        EsV6klylq23LXUNU1nAJMpkFcoUmof4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-kgiX0vPEOgWkK_HzwNLmJg-1; Fri, 13 Nov 2020 17:34:24 -0500
-X-MC-Unique: kgiX0vPEOgWkK_HzwNLmJg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11ACD186DD33;
-        Fri, 13 Nov 2020 22:34:22 +0000 (UTC)
-Received: from treble (ovpn-117-69.rdu2.redhat.com [10.10.117.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71FFA5D707;
-        Fri, 13 Nov 2020 22:34:15 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 16:34:12 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201113223412.inono2ekrs7ky7rm@treble>
-References: <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
- <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com>
- <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble>
- <20201110174606.mp5m33lgqksks4mt@treble>
- <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
- <20201113195408.atbpjizijnhuinzy@treble>
- <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
+        bh=etArIgtLmm2DY3kbR2YVLpGmQ63b4IJwEkWvDE+qacg=;
+        b=x1WARyZRSagvM8rv6/xL4GGdOHLWKyRNMpcPUGbZ4YLOUSfE8QrO8acb3eTYTR2cl+x6ln
+        7C3Vs1ow/H+8o7Y071g58uR1qArI+hEahk18dX5uEhbyQwxC3iFy9AHPsLv1vmUXB0JKED
+        yj8pByn8Uond5XNZ9Mahz4PHtbTG63CZ27GNA3UUz5qF9ZQn6JW0kXe4U/m265MitS/OSN
+        3wGcPpgbpUuixS8pRCgWbB1XJKJ2+EO2cbIACw6CaprHpmCJRVT+M1/kJWYSZnqAQFYhyu
+        rBzmK3tRvQ0UFsoTervRq+KaTip8D3iLxrsuBjcZsRgKx2GWFLuJMiwfJ+a0Qw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605306888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=etArIgtLmm2DY3kbR2YVLpGmQ63b4IJwEkWvDE+qacg=;
+        b=WIJDZw+SuRqkQGe5x2cGDLOybWFkzub2K8iqLGG4Qjs5AUhVRxx0//+2q4/dXvAzKRb8F2
+        KCBfjCHOsB4mUjBg==
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     "open list\:TENSILICA XTENSA PORT \(xtensa\)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] highmem: fix highmem for xtensa
+In-Reply-To: <CAMo8Bf+2kGmg_SvJz8R=qXgPWbYWmf-PSeG71xKe5AB2LeyZ4Q@mail.gmail.com>
+References: <20201113122328.22942-1-jcmvbkbc@gmail.com> <87zh3ll6hw.fsf@nanos.tec.linutronix.de> <CAMo8BfKEr-89awEnV072uWR=4fniDRJ0drWmZrtnyvj-mANk0A@mail.gmail.com> <87sg9dl3xk.fsf@nanos.tec.linutronix.de> <CAMo8Bf+2kGmg_SvJz8R=qXgPWbYWmf-PSeG71xKe5AB2LeyZ4Q@mail.gmail.com>
+Date:   Fri, 13 Nov 2020 23:34:48 +0100
+Message-ID: <87mtzklwc7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:24:32PM -0800, Sami Tolvanen wrote:
-> > I still don't see this warning for some reason.
-> 
-> Do you have CONFIG_XEN enabled? I can reproduce this on ToT master as follows:
-> 
-> $ git rev-parse HEAD
-> 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
-> $ make defconfig && \
-> ./scripts/config -e HYPERVISOR_GUEST -e PARAVIRT -e XEN && \
-> make olddefconfig && \
-> make -j110
-> ...
-> $ ./tools/objtool/objtool check -arfld vmlinux.o 2>&1 | grep secondary
-> vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with
-> modified stack frame
-> 
-> > Is it fixed by adding cpu_bringup_and_idle() to global_noreturns[] in
-> > tools/objtool/check.c?
-> 
-> No, that didn't fix the warning. Here's what I tested:
+Max,
 
-I think this fixes it:
+On Fri, Nov 13 2020 at 08:34, Max Filippov wrote:
+> On Fri, Nov 13, 2020 at 6:36 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> On Fri, Nov 13 2020 at 05:50, Max Filippov wrote:
+>> > On Fri, Nov 13, 2020 at 5:40 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> >> What's wrong with just doing the obvious and making the fixmap defines
+>> >> the other way round?
+>> >
+>> > It becomes really awkward when we get to support high memory with
+>> > aliasing data cache: we must think about the actual virtual addresses
+>> > assigned to pages and it feels much simpler when it's done this way.
+>>
+>> Feeling are not really a technical argument. Is there any functional
+>> difference which matters?
+>
+> arch_kmap_local_map_idx must produce index based on type and
+> pfn that will be translated to virtual address with the same color this
+> page would've had if it was in the low memory. With positive fixmap
+> the formula is: (type * (number of cache colors)) + (color of the pfn).
+> With negative fixmap there must be additional +1 and -1 in it.
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH] x86/xen: Fix objtool vmlinux.o validation of xen hypercalls
+I agree that the top down mechanics is not really intuitive, but that
+does not justify the ifdeffery in the generic code.
 
-Objtool vmlinux.o validation is showing warnings like the following:
+xtensa can just use the generic fix_to_virt/virt_to_fix mechanics. All
+it needs is to adjust the mapping defines and to adjust the color offset
+to
 
-  # tools/objtool/objtool check -barfld vmlinux.o
-  vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with modified stack frame
-  vmlinux.o: warning: objtool:   xen_hypercall_set_trap_table()+0x0: <=== (sym)
+        NR_COLORS - color
+        
+which is not an unreasonable ask. As a side effect all highmem inflicted
+systems which do not have the cache aliasing problem can just use the
+generic code as is. See untested patch below.
 
-Objtool falls through all the empty hypercall text and gets confused
-when it encounters the first real function afterwards.  The empty unwind
-hints in the hypercalls aren't working for some reason.  Replace them
-with a more straightforward use of STACK_FRAME_NON_STANDARD.
+It builds for some configs, but the smp_lx200_defconfig (which has the
+aliasing) it fails to build even without this patch (highmem.o at least
+builds).
 
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Toolchain is the one from https://mirrors.edge.kernel.org/pub/tools/crosstool/
+
+Thanks,
+
+        tglx
 ---
- arch/x86/xen/xen-head.S | 9 ++++-----
- include/linux/objtool.h | 8 ++++++++
- 2 files changed, 12 insertions(+), 5 deletions(-)
+Subject: xtensa/mm/highmem: Make generic kmap_atomic() work correctly
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Fri, 13 Nov 2020 21:25:12 +0100
 
-diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-index 2d7c8f34f56c..3c538b1ff4a6 100644
---- a/arch/x86/xen/xen-head.S
-+++ b/arch/x86/xen/xen-head.S
-@@ -6,6 +6,7 @@
+The conversion to the generic kmap_atomic() implementation missed the fact
+that xtensa's fixmap works bottom up while all other implementations work
+top down. There is no real reason why xtensa needs to work that way.
+
+Cure it by:
+
+  - Using the generic fix_to_virt()/virt_to_fix() functions which work top
+    down
+  - Adjusting the mapping defines
+  - Using the generic index calculation for the non cache aliasing case
+  - Making the cache colour offset reverse so the effective index is correct
+
+While at it, remove the outdated and misleading comment above the fixmap
+enum which originates from the initial copy&pasta of this code from i386.
+
+Reported-by: Max Filippov <jcmvbkbc@gmail.com>
+Fixes: 629ed3f7dad2 ("xtensa/mm/highmem: Switch to generic kmap atomic")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/xtensa/include/asm/fixmap.h  |   55 ++++----------------------------------
+ arch/xtensa/include/asm/highmem.h |   15 ++++++----
+ arch/xtensa/mm/highmem.c          |   18 +++++++-----
+ arch/xtensa/mm/init.c             |    4 +-
+ arch/xtensa/mm/mmu.c              |    3 +-
+ 5 files changed, 31 insertions(+), 64 deletions(-)
+
+--- a/arch/xtensa/include/asm/fixmap.h
++++ b/arch/xtensa/include/asm/fixmap.h
+@@ -17,63 +17,22 @@
+ #include <linux/threads.h>
+ #include <linux/pgtable.h>
+ #include <asm/kmap_size.h>
+-#endif
  
- #include <linux/elfnote.h>
- #include <linux/init.h>
-+#include <linux/objtool.h>
+-/*
+- * Here we define all the compile-time 'special' virtual
+- * addresses. The point is to have a constant address at
+- * compile time, but to set the physical address only
+- * in the boot process. We allocate these special addresses
+- * from the start of the consistent memory region upwards.
+- * Also this lets us do fail-safe vmalloc(), we
+- * can guarantee that these special addresses and
+- * vmalloc()-ed addresses never overlap.
+- *
+- * these 'compile-time allocated' memory buffers are
+- * fixed-size 4k pages. (or larger if used with an increment
+- * higher than 1) use fixmap_set(idx,phys) to associate
+- * physical memory with fixmap indices.
+- */
++/* The map slots for temporary mappings via kmap_atomic/local(). */
+ enum fixed_addresses {
+-#ifdef CONFIG_HIGHMEM
+-	/* reserved pte's for temporary kernel mappings */
+ 	FIX_KMAP_BEGIN,
+ 	FIX_KMAP_END = FIX_KMAP_BEGIN +
+ 		(KM_MAX_IDX * NR_CPUS * DCACHE_N_COLORS) - 1,
+-#endif
+ 	__end_of_fixed_addresses
+ };
  
- #include <asm/boot.h>
- #include <asm/asm.h>
-@@ -67,14 +68,12 @@ SYM_CODE_END(asm_cpu_bringup_and_idle)
- .pushsection .text
- 	.balign PAGE_SIZE
- SYM_CODE_START(hypercall_page)
--	.rept (PAGE_SIZE / 32)
--		UNWIND_HINT_EMPTY
--		.skip 32
--	.endr
-+	.skip PAGE_SIZE
+-#define FIXADDR_TOP     (XCHAL_KSEG_CACHED_VADDR - PAGE_SIZE)
++#define FIXADDR_END     (XCHAL_KSEG_CACHED_VADDR - PAGE_SIZE)
+ #define FIXADDR_SIZE	(__end_of_fixed_addresses << PAGE_SHIFT)
+-#define FIXADDR_START	((FIXADDR_TOP - FIXADDR_SIZE) & PMD_MASK)
+-
+-#define __fix_to_virt(x)	(FIXADDR_START + ((x) << PAGE_SHIFT))
+-#define __virt_to_fix(x)	(((x) - FIXADDR_START) >> PAGE_SHIFT)
++/* Enforce that FIXADDR_START is PMD aligned to handle cache aliasing */
++#define FIXADDR_START	((FIXADDR_END - FIXADDR_SIZE) & PMD_MASK)
++#define FIXADDR_TOP	(FIXADDR_START + FIXADDR_SIZE - PAGE_SIZE)
  
- #define HYPERCALL(n) \
- 	.equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
--	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
-+	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32; \
-+	STACK_FRAME_NON_STANDARD xen_hypercall_##n
- #include <asm/xen-hypercalls.h>
- #undef HYPERCALL
- SYM_CODE_END(hypercall_page)
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index 577f51436cf9..746617265236 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -109,6 +109,12 @@ struct unwind_hint {
- 	.popsection
- .endm
+-#ifndef __ASSEMBLY__
+-/*
+- * 'index to address' translation. If anyone tries to use the idx
+- * directly without translation, we catch the bug with a NULL-deference
+- * kernel oops. Illegal ranges of incoming indices are caught too.
+- */
+-static __always_inline unsigned long fix_to_virt(const unsigned int idx)
+-{
+-	/* Check if this memory layout is broken because fixmap overlaps page
+-	 * table.
+-	 */
+-	BUILD_BUG_ON(FIXADDR_START <
+-		     TLBTEMP_BASE_1 + TLBTEMP_SIZE);
+-	BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
+-	return __fix_to_virt(idx);
+-}
+-
+-static inline unsigned long virt_to_fix(const unsigned long vaddr)
+-{
+-	BUG_ON(vaddr >= FIXADDR_TOP || vaddr < FIXADDR_START);
+-	return __virt_to_fix(vaddr);
+-}
+-
+-#endif
++#include <asm-generic/fixmap.h>
  
-+.macro STACK_FRAME_NON_STANDARD func:req
-+	.pushsection .discard.func_stack_frame_non_standard
-+		.long \func - .
-+	.popsection
-+.endm
-+
- #endif /* __ASSEMBLY__ */
- 
- #else /* !CONFIG_STACK_VALIDATION */
-@@ -123,6 +129,8 @@ struct unwind_hint {
- .macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
- .endm
++#endif /* CONFIG_HIGHMEM */
  #endif
-+.macro STACK_FRAME_NON_STANDARD func:req
-+.endm
+--- a/arch/xtensa/include/asm/highmem.h
++++ b/arch/xtensa/include/asm/highmem.h
+@@ -12,6 +12,7 @@
+ #ifndef _XTENSA_HIGHMEM_H
+ #define _XTENSA_HIGHMEM_H
  
- #endif /* CONFIG_STACK_VALIDATION */
++#ifdef CONFIG_HIGHMEM
+ #include <linux/wait.h>
+ #include <linux/pgtable.h>
+ #include <asm/cacheflush.h>
+@@ -58,6 +59,13 @@ static inline wait_queue_head_t *get_pkm
+ {
+ 	return pkmap_map_wait_arr + color;
+ }
++
++enum fixed_addresses kmap_local_map_idx(int type, unsigned long pfn);
++#define arch_kmap_local_map_idx		kmap_local_map_idx
++
++enum fixed_addresses kmap_local_unmap_idx(int type, unsigned long addr);
++#define arch_kmap_local_unmap_idx	kmap_local_unmap_idx
++
+ #endif
  
--- 
-2.25.4
+ extern pte_t *pkmap_page_table;
+@@ -67,15 +75,10 @@ static inline void flush_cache_kmaps(voi
+ 	flush_cache_all();
+ }
+ 
+-enum fixed_addresses kmap_local_map_idx(int type, unsigned long pfn);
+-#define arch_kmap_local_map_idx		kmap_local_map_idx
+-
+-enum fixed_addresses kmap_local_unmap_idx(int type, unsigned long addr);
+-#define arch_kmap_local_unmap_idx	kmap_local_unmap_idx
+-
+ #define arch_kmap_local_post_unmap(vaddr)	\
+ 	local_flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE)
+ 
+ void kmap_init(void);
+ 
++#endif /* CONFIG_HIGHMEM */
+ #endif
+--- a/arch/xtensa/mm/highmem.c
++++ b/arch/xtensa/mm/highmem.c
+@@ -23,16 +23,16 @@ static void __init kmap_waitqueues_init(
+ 	for (i = 0; i < ARRAY_SIZE(pkmap_map_wait_arr); ++i)
+ 		init_waitqueue_head(pkmap_map_wait_arr + i);
+ }
+-#else
+-static inline void kmap_waitqueues_init(void)
+-{
+-}
+-#endif
+ 
+ static inline enum fixed_addresses kmap_idx(int type, unsigned long color)
+ {
+-	return (type + KM_MAX_IDX * smp_processor_id()) * DCACHE_N_COLORS +
+-		color;
++	int idx = (type + KM_MAX_IDX * smp_processor_id()) * DCACHE_N_COLORS;
++
++	/*
++	 * The fixmap operates top down, so the color offset needs to be
++	 * reverse as well.
++	 */
++	return idx + DCACHE_N_COLORS - color;
+ }
+ 
+ enum fixed_addresses kmap_local_map_idx(int type, unsigned long pfn)
+@@ -45,6 +45,10 @@ enum fixed_addresses kmap_local_unmap_id
+ 	return kmap_idx(type, DCACHE_ALIAS(addr));
+ }
+ 
++#else
++static inline void kmap_waitqueues_init(void) { }
++#endif
++
+ void __init kmap_init(void)
+ {
+ 	/* Check if this memory layout is broken because PKMAP overlaps
+--- a/arch/xtensa/mm/init.c
++++ b/arch/xtensa/mm/init.c
+@@ -147,8 +147,8 @@ void __init mem_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 		PKMAP_BASE, PKMAP_BASE + LAST_PKMAP * PAGE_SIZE,
+ 		(LAST_PKMAP*PAGE_SIZE) >> 10,
+-		FIXADDR_START, FIXADDR_TOP,
+-		(FIXADDR_TOP - FIXADDR_START) >> 10,
++		FIXADDR_START, FIXADDR_END,
++		(FIXADDR_END - FIXADDR_START) >> 10,
+ #endif
+ 		PAGE_OFFSET, PAGE_OFFSET +
+ 		(max_low_pfn - min_low_pfn) * PAGE_SIZE,
+--- a/arch/xtensa/mm/mmu.c
++++ b/arch/xtensa/mm/mmu.c
+@@ -52,7 +52,8 @@ static void * __init init_pmd(unsigned l
+ 
+ static void __init fixedrange_init(void)
+ {
+-	init_pmd(__fix_to_virt(0), __end_of_fixed_addresses);
++	BUILD_BUG_ON(FIXADDR_START < TLBTEMP_BASE_1 + TLBTEMP_SIZE);
++	init_pmd(FIXADDR_START, __end_of_fixed_addresses);
+ }
+ #endif
+ 
+
+
+
+
+
 
