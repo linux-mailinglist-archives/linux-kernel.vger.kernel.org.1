@@ -2,176 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115392B1686
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564A62B1689
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgKMHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKMHgj (ORCPT
+        id S1726430AbgKMHgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:36:46 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:42074 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgKMHgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:36:39 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8688FC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:36:38 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so8576545wrr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 23:36:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=h75klXVcmCdUqgkQ6FTqe7WDEW7XWDLja/aoiNvLvvA=;
-        b=XDxXhtqca6DKFfUR/ZqKAryL+7RB5T3U/piwok/uUO3i3lEYq4wahqq/CgTckFwbE0
-         FqJSLb8ZyaiBHndwkwq6XHm+N3LK+rUqrEJwx4IzlQTIwbxydg2FALf7l5Mggdjtmqtg
-         ePDME5k8cZ8ZW0jRK5ouCvXJCFJdPd9PITB/sktY4lGOOT1CjAdJScXi1RGXFGZCPH0r
-         db83Y+jXtz4qUR+a7MQ05mw6+zspknlWKwjptHvjKijBAiKzRjlAS2us2eX59ChzpXs0
-         h22ELXdErcpdwy7AZ/jDGzAmeQN4/AB0lht7cm5HXnruSocnymj1Y9hz+Yyy/WVH3UCJ
-         Fr5Q==
+        Fri, 13 Nov 2020 02:36:45 -0500
+Received: by mail-ej1-f66.google.com with SMTP id i19so11895462ejx.9;
+        Thu, 12 Nov 2020 23:36:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=h75klXVcmCdUqgkQ6FTqe7WDEW7XWDLja/aoiNvLvvA=;
-        b=rK4CaifJKuU7DNWPdCGzium/Ek8v4mmc18xU3w0iml3pY16rjS6abNaO2IiaZItMPN
-         7lsSF/FITZfm1t4gH95PYgM+l8CtkREaMDuh2TsXIFe8OWgGESaKy+WaS+ImjvbBkFI7
-         YTAfloxj7fefgBRE+ZH2ulueWff5cDAwEsLNlLK8FlC69iqHZKYtfR3GHvjEo6uwzD1s
-         NcPNXMH2p2t66D2ccMeVWCrU7lV6HDktmFWMlmgXUfh2uU3hjx/ia4DEyKU/I9RPvbGc
-         2zwQUzzVh6h8oDdNuYOjJ7heuO5laafFsBTDjcDkbqbAzJdn32dpq5u9+nmBYxEmgphs
-         aMMg==
-X-Gm-Message-State: AOAM532K5Q0BOxU/KXMd0C/ttenZByYRh53MqIJjBNZkgyLt46KSM/5F
-        jEhBGC6i8sMoaPBxcT7L81jUqA==
-X-Google-Smtp-Source: ABdhPJwj2l3oAnuo6QHrM5Iat4Yv7D1oYYIfgkBuiyIm2+e/H9IEYWvHD5BWIHM/ICwOyeusyGOvlQ==
-X-Received: by 2002:adf:dc4c:: with SMTP id m12mr1662187wrj.177.1605252997162;
-        Thu, 12 Nov 2020 23:36:37 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id q2sm9826724wru.76.2020.11.12.23.36.35
+         :mime-version:content-disposition:in-reply-to;
+        bh=lF9F6ulOL21hYHmYnWk/iPK3JjbD1z5cgjWscdLc7o4=;
+        b=Eec7C07MBXFS3dMJFBQq7cQrtn8GYCFk45NMjZVjfEhw5oqcM2ruBZ9BFVBTSmfcUa
+         2ApRrXXvtnBkvfPFR57iDORMCwpwAul7i7LfCXKBV2nxD2c+GAEuFHV/BTh4JySg1i4T
+         /xzRnADOdb/xsno42NBYiIpiBc4zqAQloiBj2sZRq+SY3hTCRx3r4p253kqX37gewPl/
+         JGp6njHx1d1IfGiLdd1vAO24rEZkeVXNE0X/lYXrCgTBUN1E/wryY0PCZcmy/hUkAQt0
+         Y8+2NIfaRpDR4z4y7O6zhnneiyNnA8c/Mdx0pBZOCQcvfD2s5y84coZOsFQOif3mFM6E
+         iT8w==
+X-Gm-Message-State: AOAM5312rO7MwgQ7J3/+0dzAHP+03m6VyDQZn8hv8dnUzj6LtFuNQTq1
+        MbPfH12Do17/DsSi95Mfxa8=
+X-Google-Smtp-Source: ABdhPJyGD5+mmTulDLlgvMkt/TG2cliCNiLEJPvGahMPDQz8KN2r1/II3OoM9LERzf2d1xWkKiHUuw==
+X-Received: by 2002:a17:906:934d:: with SMTP id p13mr693013ejw.245.1605253003489;
+        Thu, 12 Nov 2020 23:36:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id t21sm3154426edy.39.2020.11.12.23.36.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 23:36:36 -0800 (PST)
-Date:   Fri, 13 Nov 2020 07:36:34 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Andy Gross <andy.gross@ti.com>,
-        by <jhartmann@precisioninsight.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Eric Anholt <eric@anholt.net>,
-        Faith <faith@valinux.com>, Gareth Hughes <gareth@valinux.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Jeff Hartmann <jhartmann@valinux.com>,
-        Keith Whitwell <keith@tungstengraphics.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Clark <rob.clark@linaro.org>, Rob Clark <rob@ti.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
-Message-ID: <20201113073634.GG2787115@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201113071932.GF2787115@dell>
- <CADnq5_NnKoOMQCQm0fJnER7mOGgYPvudfbbFOZkPC5Kg6Lp0XA@mail.gmail.com>
+        Thu, 12 Nov 2020 23:36:42 -0800 (PST)
+Date:   Fri, 13 Nov 2020 08:36:41 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linux-clk@vger.kernel.org, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, m.szyprowski@samsung.com, sboyd@kernel.org,
+        mturquette@baylibre.com, b.zolnierkie@samsung.com,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v4] clk: samsung: Prevent potential endless loop in the
+ PLL set_rate ops
+Message-ID: <20201113073641.GA4405@kozik-lap>
+References: <CGME20201110193254eucas1p22e954946d03c07995c73a019e5593ba0@eucas1p2.samsung.com>
+ <20201110193226.20681-1-s.nawrocki@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_NnKoOMQCQm0fJnER7mOGgYPvudfbbFOZkPC5Kg6Lp0XA@mail.gmail.com>
+In-Reply-To: <20201110193226.20681-1-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020, Alex Deucher wrote:
-
-> On Fri, Nov 13, 2020 at 2:19 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Fri, 06 Nov 2020, Lee Jones wrote:
-> >
-> > > This set is part of a larger effort attempting to clean-up W=1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > >
-> > > There are 5000 warnings to work through.  It will take a couple more
-> > > sets.  Although, ("drm/amd/display/dc/basics/fixpt31_32: Move
-> > > variables to where they're used") does take care of 2000 of them!
-> > >
-> > > Lee Jones (19):
-> > >   drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
-> > >   drm/r128/ati_pcigart: Source file headers are not good candidates for
-> > >     kernel-doc
-> > >   drm/selftests/test-drm_dp_mst_helper: Move
-> > >     'sideband_msg_req_encode_decode' onto the heap
-> > >   drm/mga/mga_dma: Demote kernel-doc abusers to standard comment blocks
-> > >   drm/mga/mga_state: Remove unused variable 'buf_priv'
-> > >   drm/radeon/atom: Move prototype into shared location
-> > >   drm/radeon/radeon_kms: Include header containing our own prototypes
-> > >   drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
-> > >   drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
-> > >   drm/radeon/radeon: Move prototype into shared header
-> > >   drm/radeon/radeon_drv: Source file headers are not good candidates for
-> > >     kernel-doc
-> > >   drm/amd/display/dc/basics/fixpt31_32: Move variables to where they're
-> > >     used
-> > >   drm/radeon/radeon_drv: Move prototypes to a shared headerfile
-> > >   drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr'
-> > >     params
-> > >   drm/radeon: Move prototypes to shared header
-> > >   drm/amd/amdgpu/amdgpu_kms: Remove 'struct drm_amdgpu_info_device
-> > >     dev_info' from the stack
-> > >   drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
-> > >   drm/radeon/atombios_crtc: Remove description of non-existent function
-> > >     param 'encoder'
-> > >   drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
-> > >
-> > >  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
-> > >  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       | 104 +++++++++---------
-> > >  .../drm/amd/display/dc/basics/fixpt31_32.c    |   5 +
-> > >  .../gpu/drm/amd/display/include/fixed31_32.h  |   6 -
-> > >  drivers/gpu/drm/mga/mga_dma.c                 |  10 +-
-> > >  drivers/gpu/drm/mga/mga_state.c               |   2 -
-> > >  drivers/gpu/drm/omapdrm/omap_dmm_tiler.c      |   6 +-
-> > >  drivers/gpu/drm/omapdrm/omap_gem.c            |   3 +-
-> > >  drivers/gpu/drm/r128/ati_pcigart.c            |   2 +-
-> > >  drivers/gpu/drm/radeon/atom.h                 |   6 +
-> > >  drivers/gpu/drm/radeon/atombios_crtc.c        |   1 -
-> > >  drivers/gpu/drm/radeon/atombios_encoders.c    |   4 -
-> > >  drivers/gpu/drm/radeon/radeon.h               |   6 +
-> > >  drivers/gpu/drm/radeon/radeon_device.c        |   1 +
-> > >  drivers/gpu/drm/radeon/radeon_device.h        |  32 ++++++
-> > >  drivers/gpu/drm/radeon/radeon_display.c       |   4 -
-> > >  drivers/gpu/drm/radeon/radeon_drv.c           |  11 +-
-> > >  drivers/gpu/drm/radeon/radeon_drv.h           |   7 ++
-> > >  drivers/gpu/drm/radeon/radeon_kms.c           |   3 +-
-> > >  .../drm/selftests/test-drm_dp_mst_helper.c    |  11 +-
-> > >  drivers/gpu/drm/ttm/ttm_range_manager.c       |   2 +-
-> > >  drivers/gpu/drm/v3d/v3d_drv.c                 |  36 ------
-> > >  22 files changed, 138 insertions(+), 126 deletions(-)
-> > >  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
-> >
-> > Still no Radeon patches in today's -next.
-> >
-> > I really wanted to have had this set rebased by now.
-> >
-> > How long do they take to peculate through?
+On Tue, Nov 10, 2020 at 08:32:26PM +0100, Sylwester Nawrocki wrote:
+> The PLL status polling loops in the set_rate callbacks of some PLLs
+> have no timeout detection and may become endless loops when something
+> goes wrong with the PLL.
 > 
-> Usually a day or two, but I was swamped the last couple of days. I
-> pushed an updated -next branch today:
-> https://cgit.freedesktop.org/~agd5f/linux/log/?h=drm-next
+> For some PLLs there is already the ktime API based timeout detection,
+> but it will not work in all conditions when .set_rate gets called.
+> In particular, before the clocksource is initialized or when the
+> timekeeping is suspended.
+> 
+> This patch adds a common helper with the PLL status bit polling and
+> timeout detection. For conditions where the timekeeping API should not
+> be used a simple readl_relaxed/cpu_relax() busy loop is added with the
+> iterations limit derived from measurements of readl_relaxed() execution
+> time for various PLL types and Exynos SoCs variants.
+> 
+> Actual PLL lock time depends on the P divider value, the VCO frequency
+> and a constant PLL type specific LOCK_FACTOR and can be calculated as
+> 
+>  lock_time = Pdiv * LOCK_FACTOR / VCO_freq
+> 
+> For the ktime API use cases a common timeout value of 20 ms is applied
+> for all the PLLs with an assumption that maximum possible value of Pdiv
+> is 64, maximum possible LOCK_FACTOR value is 3000 and minimum VCO
+> frequency is 24 MHz.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> I'm not sure whether we actually need to implement precise timeouts,
+> likely the simple busy loop case would be enough. AFAIK the PLL
+> failures happen very rarely, mostly in early code development stage
+> for given platform.
+> 
+> Changes since v3:
+>  - dropped udelay() from the PLL status bit polling loop as it didn't
+>    work on arm64 at early boot time, before timekeeping was initialized,
+>  - use the timekeeping API in cases when it is already initialized and
+>    not suspended,
+>  - use samsung_pll_lock_wait() also in samsung_pll3xxx_enable() function,
+>    now all potential endless loops are removed.
+> ---
+>  drivers/clk/samsung/clk-pll.c | 147 ++++++++++++++++++++----------------------
+>  1 file changed, 71 insertions(+), 76 deletions(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-pll.c b/drivers/clk/samsung/clk-pll.c
+> index ac70ad7..cefb57e 100644
+> --- a/drivers/clk/samsung/clk-pll.c
+> +++ b/drivers/clk/samsung/clk-pll.c
+> @@ -8,14 +8,17 @@
+>  
+>  #include <linux/errno.h>
+>  #include <linux/hrtimer.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/delay.h>
+>  #include <linux/slab.h>
+> +#include <linux/timekeeping.h>
+>  #include <linux/clk-provider.h>
+>  #include <linux/io.h>
+>  #include "clk.h"
+>  #include "clk-pll.h"
+>  
+> -#define PLL_TIMEOUT_MS		10
+> +#define PLL_TIMEOUT_US		20000U
+> +#define PLL_TIMEOUT_LOOPS	1000000U
+>  
+>  struct samsung_clk_pll {
+>  	struct clk_hw		hw;
+> @@ -63,6 +66,53 @@ static long samsung_pll_round_rate(struct clk_hw *hw,
+>  	return rate_table[i - 1].rate;
+>  }
+>  
+> +static bool __early_timeout = true;
 
-Ah, wonderful.
+Drop the __ prefix and maybe use "pll_early_timeout".
+This looks like __ro_after_init.
 
-I'll rebase all of the sets on Monday and see what we're left with.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best regards,
+Krzysztof
