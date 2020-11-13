@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E6E2B1EA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B50F62B1EAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgKMP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:29:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMP3I (ORCPT
+        id S1726740AbgKMPaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:30:00 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:43208 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726711AbgKMP34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:29:08 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5F1C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:29:08 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1kdb0V-0005ZU-Sx; Fri, 13 Nov 2020 16:28:59 +0100
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1kdb0V-0000zk-2g; Fri, 13 Nov 2020 16:28:59 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] ARM: dts: imx6qdl: specify vcc-supply for NOP USB PHYs
-Date:   Fri, 13 Nov 2020 16:28:55 +0100
-Message-Id: <20201113152856.3758-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
+        Fri, 13 Nov 2020 10:29:56 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201113152943euoutp028a889cd325a3f94087f93cd365bf004f~HGuncv_EP1497214972euoutp02K
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 15:29:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201113152943euoutp028a889cd325a3f94087f93cd365bf004f~HGuncv_EP1497214972euoutp02K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605281383;
+        bh=eXpFxQiDPbPJzGcl99AjzmWcz7lTSBvAvdVyGn0Rj1U=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=SqBWjl+yPbBWSUqdc3OAm9XTsQQaibjG6cbIAla9bwx2zV4iMg1KSnCNjoT3uG3xd
+         TSywEtDAxxZDfF0QeZYsjSrhKCdp5z/yw8ZSHhwRjdBBraLrNpmeGn9MysFZgW7wS1
+         Z4f2DMRz4lL1XaYuMRU6U/gLFhFoXFTtpp63t1Uw=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201113152938eucas1p1b570c141f19acdecb63bfe129c6adb63~HGuin2vpJ2614326143eucas1p1_;
+        Fri, 13 Nov 2020 15:29:38 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id A3.F5.44805.266AEAF5; Fri, 13
+        Nov 2020 15:29:38 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201113152938eucas1p2c8500d9d3d0c892c7c2a2d56b32fedc0~HGuiIvQBl1201512015eucas1p2c;
+        Fri, 13 Nov 2020 15:29:38 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201113152938eusmtrp1fa3d047e86f51e4669042f00c951ff79~HGuiCRAn41760917609eusmtrp1E;
+        Fri, 13 Nov 2020 15:29:38 +0000 (GMT)
+X-AuditID: cbfec7f4-b37ff7000000af05-8c-5faea662d954
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 59.46.16282.166AEAF5; Fri, 13
+        Nov 2020 15:29:38 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201113152937eusmtip2cf56823ab93846d53b49d0f325c5b72d~HGuhhrN3C2784427844eusmtip2D;
+        Fri, 13 Nov 2020 15:29:37 +0000 (GMT)
+Subject: Re: [PATCH net-next v2 RESEND] net/usb/r8153_ecm: support ECM mode
+ for RTL8153
+To:     Hayes Wang <hayeswang@realtek.com>, netdev@vger.kernel.org
+Cc:     nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
+        oliver@neukum.org, linux-usb@vger.kernel.org,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
+Date:   Fri, 13 Nov 2020 16:29:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1394712342-15778-392-Taiwan-albertk@realtek.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBKsWRmVeSWpSXmKPExsWy7djPc7pJy9bFG/zvVrfYOGM9q8W0gz2M
+        FufPb2C3uLxrDpvFjPP7mCwWLWtltji2QMziS+8sVovvlz8xOXB6bFrVyebx+ssDJo/Hbzez
+        e/RtWcXo8XmTXABrFJdNSmpOZllqkb5dAlfG4a5e9oJzfBW3dj9gamD8zN3FyMkhIWAisa3h
+        FmMXIxeHkMAKRombVxZAOV8YJQ4tu8gE4XxmlOie/p8VpmVO82yoxHJGiRPTZ7BAOO8ZJWbf
+        WcAEUiUsECkx81EPI4gtImAnMf3lBbC5zAINTBLTZ7xkAUmwCRhKdL3tYgOxeYGKTvz9BtbM
+        IqAq8aVxHVhcVCBJYvuW7awQNYISJ2c+Aerl4OAEqj9+rg4kzCwgL7H97RxmCFtc4taT+WDX
+        SQi84ZA4uGoBO8TZLhKN+5+yQdjCEq+Ob4GKy0icntzDAtHQzCjx8Nxadginh1HictMMRogq
+        a4k7536xgWxmFtCUWL9LHyLsKPH4zwRGkLCEAJ/EjbeCEEfwSUzaNp0ZIswr0dEmBFGtJjHr
+        +Dq4tQcvXGKewKg0C8lns5C8MwvJO7MQ9i5gZFnFKJ5aWpybnlpslJdarlecmFtcmpeul5yf
+        u4kRmJhO/zv+ZQfj8lcf9Q4xMnEwHmKU4GBWEuFVdlgTL8SbklhZlVqUH19UmpNafIhRmoNF
+        SZw3aQtQSiA9sSQ1OzW1ILUIJsvEwSnVwCRvLLREeH9N+duF2pfXLVqooR3abxhxrnT30WyF
+        E51vefXffbW+pcmZ8k922YOWye7hRllB3vHNayyeVycvMYgrkRe295WacjpjW7Tdomju5Uae
+        GXmfbB+qHFvfc/9pfPCj5JW86rcEP6lJy15qX7lte0yRu9a7OolkmVexOtm8mzTS5kwxTF5p
+        +W71er8Sng83Ohb3REaE/7zgoJ34Lif175aeQyFcoY9lpnwO67WIOvlx6taEz7Ht2X0hpzVs
+        rN6odJfpXHt5i/V0xZVPz5tbvdumTXKa+zvEs+RY7SVDxeBtWgvdv0gYXJ+jWmuw8N7ftt4C
+        tg874v2bbwhVPKuT/L3m/YE756btSvlxVomlOCPRUIu5qDgRAAAzPem7AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRmVeSWpSXmKPExsVy+t/xe7pJy9bFG1zbwmixccZ6VotpB3sY
+        Lc6f38BucXnXHDaLGef3MVksWtbKbHFsgZjFl95ZrBbfL39icuD02LSqk83j9ZcHTB6P325m
+        9+jbsorR4/MmuQDWKD2bovzSklSFjPziElulaEMLIz1DSws9IxNLPUNj81grI1MlfTublNSc
+        zLLUIn27BL2Mw1297AXn+Cpu7X7A1MD4mbuLkZNDQsBEYk7zbKYuRi4OIYGljBLrrj9mh0jI
+        SJyc1sAKYQtL/LnWxQZR9JZR4lzLVLAiYYFIiZmPehhBbBEBO4npLy8wghQxCzQxSXzve8UC
+        khASKJQ49GU+M4jNJmAo0fUWZBInBy9Qw4m/35hAbBYBVYkvjevA4qICSRIzj59lh6gRlDg5
+        8wnQHA4OTqD64+fqQMLMAmYS8zY/ZIaw5SW2v50DZYtL3Hoyn2kCo9AsJN2zkLTMQtIyC0nL
+        AkaWVYwiqaXFuem5xUZ6xYm5xaV56XrJ+bmbGIFxuO3Yzy07GFe++qh3iJGJg/EQowQHs5II
+        r7LDmngh3pTEyqrUovz4otKc1OJDjKZA70xklhJNzgcmgrySeEMzA1NDEzNLA1NLM2MlcV6T
+        I0BNAumJJanZqakFqUUwfUwcnFINTBsu6hYI3Fyzd6nXsWn+Dwvqd4q+E1iu+C+pfItg3o1P
+        +07vZYsVKbxtqjpv08yCRqUPps3euauluN07b3Vc5U+YmRWfrN0s97jB0v2X4bYHV+/6pbXP
+        Pab8aVvqVv7IcGfmN/J7ji92EdOWWfR/2fXYRql73m43DaMfTGWV1fIwFF6+YTp7eYyId1f7
+        iWt7nl8RPRW815VFZ9Ox+IeParK2uT3ojjuwZmdMbvP8Yxs7uC2z0++vTa+MvMuqejbP7/DW
+        NU9V3KxM+Cpt/78pWiq398jFgsZdzIYLub2qvE8+EG7ZrSFxjTX2qrDk3zesUw8+7pjzq6n5
+        XtK+9N0Hv2+4wnF6xQax6DM2dp9O1yixFGckGmoxFxUnAgBm23OcTAMAAA==
+X-CMS-MailID: 20201113152938eucas1p2c8500d9d3d0c892c7c2a2d56b32fedc0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201113152938eucas1p2c8500d9d3d0c892c7c2a2d56b32fedc0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201113152938eucas1p2c8500d9d3d0c892c7c2a2d56b32fedc0
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+        <1394712342-15778-392-Taiwan-albertk@realtek.com>
+        <CGME20201113152938eucas1p2c8500d9d3d0c892c7c2a2d56b32fedc0@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SoC dtsi lists a NOP USB PHY for each of the two HSIC-only USB
-controllers. Their device tree node doesn't indicate a vcc-supply
-resulting in:
+Hi Hayes,
 
-  usb_phy_generic usbphynop1: supply vcc not found, using dummy regulator
-  usb_phy_generic usbphynop2: supply vcc not found, using dummy regulator
+On 04.11.2020 03:19, Hayes Wang wrote:
+> Support ECM mode based on cdc_ether with relative mii functions,
+> when CONFIG_USB_RTL8152 is not set, or the device is not supported
+> by r8152 driver.
+>
+> Both r8152 and r8153_ecm would check the return value of
+> rtl8152_get_version() in porbe(). If rtl8152_get_version()
+> return none zero value, the r8152 is used for the device
+> with vendor mode. Otherwise, the r8153_ecm is used for the
+> device with ECM mode.
+>
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 
-warnings on boot up. The USB IP vcc-supply - separate from the vusb - is
-hardwired to LDO_2P5[1], which we already have a device tree node for.
-Reference it for the dummy "phy" as well.
+This patch landed recently in linux-next and breaks ethernet operation 
+on Samsung Exynos5422 Odroid XU4/HC1 boards when kernel is compiled from 
+arm/configs/multi_v7_defconfig. The main problem is that the hardware is 
+bound to r8153_ecm driver, not to the r8152. Manually switching the 
+drivers by "echo 4-1:2.0 >/sys/bus/usb/drivers/r8153_ecm/unbind && echo 
+4-1:2.0 >/sys/bus/usb/drivers/r8152/bind" fixes ethernet operation.
 
-This will lead to breakage (probe deferment) for kernels that:
-  - Use a HSIC USB controller
-  - Use this new device tree
-  - but have CONFIG_REGULATOR_ANATOP disabled
+This is because in multi_v7_defconfig r8153_ecm driver is built-in (as 
+it is tied to CONFIG_USB_NET_CDCETHER), while the r8152 driver is 
+compiled as module and loaded when r8153_ecm has already bound.
 
-Because while the regulator is always-on, it can't be resolved when
-there is no driver for it.
+I think that r8153_ecm driver should have a separate Kconfig symbol, 
+which matches the r8152 driver (either both are built-in or both as 
+modules), otherwise those 2 drivers cannot properly detect their cases.
 
-As there are
+> ---
+>   drivers/net/usb/Makefile    |   2 +-
+>   drivers/net/usb/r8152.c     |  30 +------
+>   drivers/net/usb/r8153_ecm.c | 162 ++++++++++++++++++++++++++++++++++++
+>   include/linux/usb/r8152.h   |  37 ++++++++
+>   4 files changed, 204 insertions(+), 27 deletions(-)
+>   create mode 100644 drivers/net/usb/r8153_ecm.c
+>   create mode 100644 include/linux/usb/r8152.h
+>
+> > ...
 
-  - no affected upstream device trees
-  - existing device trees are unaffected without recompilation
-  - disabling CONFIG_REGULATOR_ANATOP is explicitly a non-recommended
-    configuration per symbol help text
-
-this potential breakage is deemed acceptable.
-
-[1]: i.MX 6Dual/6Quad Reference Manual, Rev. C,
-     Figure 53-1. Power System Overview
-
-Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
- arch/arm/boot/dts/imx6qdl.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 43edbf1156c7..22e4c142de13 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -131,11 +131,13 @@ pmu: pmu {
- 
- 	usbphynop1: usbphynop1 {
- 		compatible = "usb-nop-xceiv";
-+		vcc-supply = <&reg_vdd2p5>;
- 		#phy-cells = <0>;
- 	};
- 
- 	usbphynop2: usbphynop2 {
- 		compatible = "usb-nop-xceiv";
-+		vcc-supply = <&reg_vdd2p5>;
- 		#phy-cells = <0>;
- 	};
- 
+Best regards
 -- 
-2.28.0
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
