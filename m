@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DF12B12FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63182B12FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgKMAF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:05:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
+        id S1726072AbgKMAGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgKMAF5 (ORCPT
+        with ESMTP id S1725894AbgKMAGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:05:57 -0500
+        Thu, 12 Nov 2020 19:06:17 -0500
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D51C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:05:57 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p8so7877505wrx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:05:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1AAC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:06:16 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id p8so7878107wrx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:06:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=M/DNdhVAn+pj9y0xoI33n3R+K7GRe7kKavsf/Ah+nsk=;
-        b=m0sxsIVG0ByZVmnxTxIO4wIiaZWWiqYENqL3CB0KdB+j6i07uxTXviGjJvMzBwHeTk
-         be2JfgfJIsjWv6Sf8F6KATPB5wwYmLWqrw9nHdbZp43P/NAp/5kbiqINpmM3W1SuIINj
-         Noa0/opEJVYol7p//o/y8VXhdSS9vKRIy9pI6bI0jL7SLj8ls9b3hgtck4FEcSaLXKfg
-         JlS5yg89JjEBKnVOU0ojtvvss9N+42CGN3i4Mg/O45gW0R9sAVCZy2jSR3Imm6lPuHQY
-         OqXu+glLJw0TbiR9tKPVEbNBTdsDV+034/11gpT0+WpXn103N1P62oAiXMtvCNTEQhy0
-         nF4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=SvCqmojrOXPepsO1Q95hNkBgZWVIPjMyxB/8gJJcRy8=;
+        b=eRuvBfW/w0YfQpAsNIggfETPocDNMewqXmrdbtLfYLawNTApaaz3vjA7PFcQiYyjG9
+         dBaxdtuJUg9MvD94wZ1pZgIO5iK27fR6W3rhtr0P6/If0yO5Ixg++OgCzU1y6YuiIYMb
+         RvZT6p6bWEzkirTINIWVSbRKEhpBxs0wCRrXHX+6ENfirp6DHb/QAJGUPG835JL+Hirv
+         r9f4IUXkJGDCv0hWhbNA0Pm+27sLmdQZC8z+QFlDozejv74Mg0tbyowPRl9pSAm0ZWhD
+         TO/mORp1bpQJuaXWlt1mXhXvDxXodpShZoiDAEIPwxEytiZiaJpyvWvGhxxWN6pxeZM6
+         a8Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=M/DNdhVAn+pj9y0xoI33n3R+K7GRe7kKavsf/Ah+nsk=;
-        b=LRS67MX5i++lrGftX3UR65oImb6pSDMVpzzysKdOFpuVJuQ23CRtItF7vY85f/RNHR
-         aoJuyG+lCZbT1xZNA/Ja860sfKtMEpfRqyW8TvmrUjl1LTO+CFoN4633CP90OaEq0SUF
-         /nlRWdEFGZBe9BfnsJTax3/VdGd3aVfIND5jAl+cZ7cf+vEJ7x4ZdogwnYIef1aJFkAK
-         duEX2VroOyT8971jIyDUhT6kgSM/8jJ0IEZ+h81hspHQ+DXz3VPV3QOfYzEDqYeFU4EA
-         MlzXr1Lk9nxfQ7fjil2NJ5s+OiaXIuZv7X4DQzXE6pJx7BX++UMWses3QMbCKe5e/sXK
-         y5bg==
-X-Gm-Message-State: AOAM5319FTFbYLlSa34IpwkKBL0CJfCBPvYkD+GgU87xCdE53C7GL1F9
-        AurYChIxKdXrbhgwxWIVRRSHPg==
-X-Google-Smtp-Source: ABdhPJyOfMhgxUx1TQm9cSxUD6UDuhp2p0OWAe5n5ufvbYsNNIbvJu1hetzgvu2L4r0uzBW0o4MSgQ==
-X-Received: by 2002:a5d:4e07:: with SMTP id p7mr2397929wrt.63.1605225955746;
-        Thu, 12 Nov 2020 16:05:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=SvCqmojrOXPepsO1Q95hNkBgZWVIPjMyxB/8gJJcRy8=;
+        b=PLufJyNvwRa19FbTmTFlMfRPRbCjf3BxvMGHZbWSExt/lAJ83p2Qn0UGD902t0psFv
+         XN4uEX1Je5RPqNfO5UcbSnwy3NYmPXtH2g8aF05y5Zio6CAolWA/qtztGtFqm/lOVgIi
+         9GbkiKKPOXPf6KG26H9l3RdnHj+9RYbq7aRCuBdQJgzmyDUn1eF+mrUic9KxESkJSBia
+         ugXy7XFbLmwhcbvqpbNJWZ1KclApDecKgU6Z4CAiK3MUbkfqZBhy7FRsfsXB2LFJr0vE
+         j7X0PHI9VEQr8oSM8sJuh+9yH4QiNr7k9w1n19acP3tFD0r6T0lcAATA6qQ1XUxJ+mQ/
+         l8Ww==
+X-Gm-Message-State: AOAM532Fw0yBa+JN38GHraRQX30SbyEhdjJKfIkILpA0G2wemD2pmYhl
+        CfCuUoV22pFR+e19CC1WahWwxg==
+X-Google-Smtp-Source: ABdhPJzAFcpXiDgVQFWzpsy/4A2RLg4B3ufujHE7pwk5uARBCcBmbVQ4mOIR9n0l9zMSEXD2xN1i9g==
+X-Received: by 2002:a5d:654c:: with SMTP id z12mr2349004wrv.46.1605225975556;
+        Thu, 12 Nov 2020 16:06:15 -0800 (PST)
 Received: from localhost.localdomain ([2001:861:3a84:7260:5d3c:83d5:8524:33ca])
-        by smtp.googlemail.com with ESMTPSA id t11sm2010114wrm.8.2020.11.12.16.05.53
+        by smtp.googlemail.com with ESMTPSA id t11sm2010114wrm.8.2020.11.12.16.06.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 16:05:54 -0800 (PST)
+        Thu, 12 Nov 2020 16:06:14 -0800 (PST)
 From:   Amjad Ouled-Ameur <aouledameur@baylibre.com>
 To:     Kevin Hilman <khilman@baylibre.com>
 Cc:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
@@ -54,29 +55,28 @@ Cc:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
         Jerome Brunet <jbrunet@baylibre.com>,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org
-Subject: [PATCH 0/3] usb: meson: fix shared reset control use
-Date:   Fri, 13 Nov 2020 01:05:05 +0100
-Message-Id: <20201113000508.14702-1-aouledameur@baylibre.com>
+Subject: [PATCH 1/3] phy: amlogic: phy-meson-gxl-usb2: fix shared reset controller use
+Date:   Fri, 13 Nov 2020 01:05:06 +0100
+Message-Id: <20201113000508.14702-2-aouledameur@baylibre.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201113000508.14702-1-aouledameur@baylibre.com>
+References: <20201113000508.14702-1-aouledameur@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset fixes a usb suspend warning seen on the libretech-cc by
-using reset_control_rearm() call of the reset framework API. 
-This call allows a reset consummer to release the reset line even when 
-just triggered so that it may be triggered again by other reset
-consummers.
+Use reset_control_rearm() call if an error occurs in case
+phy_meson_gxl_usb2_init() fails after reset() has been called ; or in case
+phy_meson_gxl_usb2_exit() is called i.e the resource is no longer used
+and the reset line may be triggered again by other devices.
 
-reset_control_(de)assert() calls are called, in some meson usb drivers, 
-on a shared reset line when reset_control_reset has been used. This is not
-allowed by the reset framework.
+reset_control_rearm() keeps use of triggered_count sane in the reset
+framework. Therefore, use of reset_control_reset() on shared reset line
+should be balanced with reset_control_rearm().
 
-Finally the meson usb drivers are updated to use this new call, which
-solves the suspend issue addressed by the previous reverted 
-commit 7a410953d1fb ("usb: dwc3: meson-g12a: fix shared reset control
-use").
-
+Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
+Reported-by: Jerome Brunet <jbrunet@baylibre.com>
+---
 Important:
 Please DO NOT merge before this patch [0] is merged, it adds 
 reset_control_rearm() call to the reset framework API.
@@ -84,16 +84,33 @@ reset_control_rearm() call to the reset framework API.
 [0] https://lore.kernel.org/lkml/20201112230043.28987-1-aouledameur@baylib
 re.com/
 
-Amjad Ouled-Ameur (3):
-  phy: amlogic: phy-meson-gxl-usb2: fix shared reset controller use
-  usb: dwc3: meson-g12a: fix shared reset control use
-  phy: amlogic: meson8b-usb2: fix shared reset control use
+ drivers/phy/amlogic/phy-meson-gxl-usb2.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- drivers/phy/amlogic/phy-meson-gxl-usb2.c |  5 ++++-
- drivers/phy/amlogic/phy-meson8b-usb2.c   |  4 ++++
- drivers/usb/dwc3/dwc3-meson-g12a.c       | 19 +++++++++++++------
- 3 files changed, 21 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/phy/amlogic/phy-meson-gxl-usb2.c b/drivers/phy/amlogic/phy-meson-gxl-usb2.c
+index 43ec9bf24abf..e366c0b1e339 100644
+--- a/drivers/phy/amlogic/phy-meson-gxl-usb2.c
++++ b/drivers/phy/amlogic/phy-meson-gxl-usb2.c
+@@ -114,8 +114,10 @@ static int phy_meson_gxl_usb2_init(struct phy *phy)
+ 		return ret;
+ 
+ 	ret = clk_prepare_enable(priv->clk);
+-	if (ret)
++	if (ret) {
++		reset_control_rearm(priv->reset);
+ 		return ret;
++	}
+ 
+ 	return 0;
+ }
+@@ -124,6 +126,7 @@ static int phy_meson_gxl_usb2_exit(struct phy *phy)
+ {
+ 	struct phy_meson_gxl_usb2_priv *priv = phy_get_drvdata(phy);
+ 
++	reset_control_rearm(priv->reset);
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	return 0;
 -- 
 2.17.1
 
