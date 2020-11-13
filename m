@@ -2,87 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D862B1E78
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C4A2B1E81
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgKMPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:21:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbgKMPV3 (ORCPT
+        id S1726901AbgKMPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:22:01 -0500
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:35887 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726692AbgKMPV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:21:29 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1C6C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:21:28 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id j19so517891pgg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 07:21:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=hRq5gupgdZ9QFzQ7R7Gj9jMw4zXfd000qEqyyyCrYMI=;
-        b=RRAIf7Dc402cOQVjpfcmIsVhu6ikjT2PBEc4QjcTlrIfpV+DZtlEasPMzO8P7kfO1x
-         TcLpEtiWd9PSwjDCna5EV2jXFRX1txa+8YU6K0X++rQ6CMAqwXmnwvecSC49XN0shANJ
-         4sEezWOHrFR1DdLfwrjc+u5PTI7g54o9XIToz1YBln9zeTac4uOTjjRT972odKOU7xjH
-         6vswg+fP25TGpUwfwIMrIAyAwwd2UQpIA1FoHfTjrmhuWlvWbYPRAQcIgeO0zBFOei47
-         FJH7IuocxxZu+9QfQIWoTownpoiOjq2WHt4lR9jPU/zfIi06mX/2TraWxgTqi+gNeCms
-         YpVQ==
+        Fri, 13 Nov 2020 10:21:59 -0500
+Received: by mail-wr1-f51.google.com with SMTP id j7so10324181wrp.3;
+        Fri, 13 Nov 2020 07:21:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hRq5gupgdZ9QFzQ7R7Gj9jMw4zXfd000qEqyyyCrYMI=;
-        b=qriDrxWKPbpX3B42HWbSzB1B2OTwErZqxGCjCuCPQea5tNZDhojWnbo7Y7Jp7k1NVx
-         w7Fry/bq7Rlkvg6MIE+dq9Uiwdb9IGVg6wrvZ2Le+UCyojyMBJwOcmZyPZqzbO4z3aVr
-         Vp+ozPvHw4TUBY8udaxrUeNWP8+0wS6mrVbaTD4q2dH0A6bwE+xWJZMk6xAkYsYwl9X1
-         /Mbxo684Iq8Oz1LA3qBrqtNKTtYdKeIysDlfOj3pP9uv9r+sCpIU35rdMIatQt3GAJxl
-         vOE0pPECH7X5OhWtLsc6VeBn9bIovp66Wgb/Js9nxolMAk8B086PTwHWJKCXTLtvbxwK
-         usEg==
-X-Gm-Message-State: AOAM530Bm6KsJo/xZsdG5+n0uwb7KSFceOkk/RhR2pAP/xuxsD5o2g25
-        C2c7F84n3zp2ddfbWPolSw==
-X-Google-Smtp-Source: ABdhPJwMInQ4bmHkOc4AUo23Fg63tCg1OzmBaPEfYVqQS1wnqy3iBsty4bydI8c/N/RAqjHU8tfFFw==
-X-Received: by 2002:a17:90b:1011:: with SMTP id gm17mr3409202pjb.73.1605280883746;
-        Fri, 13 Nov 2020 07:21:23 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id h5sm9786615pfn.12.2020.11.13.07.21.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Nov 2020 07:21:23 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH v2] tracing: remove the useless value assignment in test_create_synth_event
-Date:   Fri, 13 Nov 2020 23:21:18 +0800
-Message-Id: <1605280878-6612-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jZZec1UP1XPcIdy5fKYFw1mzad8DvYZuIK/MWVjeSRM=;
+        b=KmL9sj03sEWqqN6nS0jNLOulUUGm4URpZlB5CxQ4r/FAlHcSKxV95Q1hVldHBxoyaG
+         2p6h5fCC2+6ihK2TYtyABFqVj278YRSEVnVdPQyMYFSeNRhXRSMNO1K9S1aK9HU/A1JH
+         3Xnzz9O2DHIO6oRPieCI0oYD1704mAHPcKyTl2UTwURhGjx2Oc9zqMN6NkNv62PbzYX6
+         o/GrY5geSuEXBiVePoPrtstgBuLBWa0v7lIMdWIGcqTxhVbIq4pDihyfgl+kWRn/IIXl
+         SSEpW6T1HJkMMutnNclfRGQKxsDSJeVzc7+RuKZY6jvM8pgUC4ABU2z4K8n9skLnCBN+
+         7lMA==
+X-Gm-Message-State: AOAM532orn0zZugeB4FMXHFVzNwIDEFO6FQnyBGEcqL1IprjamhguE5p
+        ETvSx6/xZRZFaqfH62+1P54=
+X-Google-Smtp-Source: ABdhPJzBdtuPpgt+j2Np+tFFbKUsasVLHBh68MsaUYgv2L7B+Zk/61mo73OVJC/luZPKqb4waQ5eCw==
+X-Received: by 2002:a5d:4b8f:: with SMTP id b15mr4384031wrt.38.1605280914863;
+        Fri, 13 Nov 2020 07:21:54 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id m20sm13924160wrg.81.2020.11.13.07.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 07:21:54 -0800 (PST)
+Date:   Fri, 13 Nov 2020 15:21:52 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH v2 07/17] x86/hyperv: extract partition ID from Microsoft
+ Hypervisor if necessary
+Message-ID: <20201113152152.omo6pljscvlrzpsc@liuwe-devbox-debian-v2>
+References: <20201105165814.29233-1-wei.liu@kernel.org>
+ <20201105165814.29233-8-wei.liu@kernel.org>
+ <877dqqy3yw.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dqqy3yw.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+On Thu, Nov 12, 2020 at 04:44:39PM +0100, Vitaly Kuznetsov wrote:
+[...]
+> > +void __init hv_get_partition_id(void)
+> > +{
+> > +	struct hv_get_partition_id *output_page;
+> > +	u16 status;
+> > +	unsigned long flags;
+> > +
+> > +	local_irq_save(flags);
+> > +	output_page = *this_cpu_ptr(hyperv_pcpu_output_arg);
+> > +	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page) &
+> > +		HV_HYPERCALL_RESULT_MASK;
+> > +	if (status != HV_STATUS_SUCCESS)
+> > +		pr_err("Failed to get partition ID: %d\n", status);
+> > +	else
+> > +		hv_current_partition_id = output_page->partition_id;
+> 
+> Nit: I'd suggest we simplify this to:
+> 
+> 	if (status != HV_STATUS_SUCCESS) {
+> 		pr_err("Failed to get partition ID: %d\n", status);
+> 		BUG();
+> 	}
+> 	hv_current_partition_id = output_page->partition_id;
+> 
+> and drop BUG_ON() below;
+> 
+> > +	local_irq_restore(flags);
+> > +
+> > +	/* No point in proceeding if this failed */
+> > +	BUG_ON(status != HV_STATUS_SUCCESS);
+> > +}
+> > +
+> >  /*
+> >   * This function is to be invoked early in the boot sequence after the
+> >   * hypervisor has been detected.
+> > @@ -430,6 +453,9 @@ void __init hyperv_init(void)
+> >  
+> >  	register_syscore_ops(&hv_syscore_ops);
+> >  
+> > +	if (hv_root_partition)
+> > +		hv_get_partition_id();
+> > +
+> 
+> 
+> We don't seem to check that the partition has AccessPartitionId
+> privilege. While I guess that root partitions always have it, I'd
+> suggest we write this as:
+> 
 
-The value of variable ret is overwritten on the delete branch in the
-test_create_synth_event() and we care more about the above error than
-this delete portion. Remove it.
+Yes. Root should always have that permission. That's my understanding.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- kernel/trace/synth_event_gen_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_ACCESS_PARTITION_ID)
+> 		hv_get_partition_id();
+> 
+> 	BUG_ON(hv_root_partition && !hv_current_partition_id);
+> 
+> for correctness. Also, we need to make sure '0' is not a valid partition
+> id and use e.g. -1 otherwise.
+> 
 
-diff --git a/kernel/trace/synth_event_gen_test.c b/kernel/trace/synth_event_gen_test.c
-index edd912cd14aa..a4b4bbf8c3bf 100644
---- a/kernel/trace/synth_event_gen_test.c
-+++ b/kernel/trace/synth_event_gen_test.c
-@@ -307,7 +307,7 @@ static int __init test_create_synth_event(void)
- 	return ret;
-  delete:
- 	/* We got an error after creating the event, delete it */
--	ret = synth_event_delete("create_synth_test");
-+	synth_event_delete("create_synth_test");
- 
- 	goto out;
- }
--- 
-2.20.0
+I've changed both places.
 
+Wei.
