@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570102B1C97
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7011D2B1C95
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgKMNwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:52:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S1727302AbgKMNwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgKMNuG (ORCPT
+        with ESMTP id S1727011AbgKMNuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:50:06 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58405C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:06 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so8200431wmd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:06 -0800 (PST)
+        Fri, 13 Nov 2020 08:50:08 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D504CC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:07 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p1so9960998wrf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=46jV9p3NGfHHD7RmZzAF9wCbEXnPQwL3oGoQw/6SZqY=;
-        b=jcRc33FqvvXfYZDq2w/hkAOKcF2M6UsYfjQCTBQFmt48Mc/W99snUkSH56/FCyd/sR
-         2Icd+6Ibx5xO76vEda91ScW6Obx+2JGyG53DC8PMv/rJQHZCkXaJ2jV3ZsFYzX47Gr/Y
-         Ydzw+SuXuP0MYCj+U+iC/209+05xF7z+uajdM4hrF7mw9iWqkycWyjqK/OnZ4XgHuNbT
-         s7bFMXSTomsPs8pw3U3BmBp+X+CX8onf+3Wt+M/rszLw4RmUWR4fLEeMphKfw0MltKh4
-         nzOAPpOhj5Vnrsr6KrPvwgDOntRpLtFNJy73zF+W6qs6FQ4HgUtNRQqTrb0LcGOnx9Aw
-         Lazg==
+        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
+        b=GQ2nGnd7ei9cM5vD1JEPCD7VBWcLAZDk9tid5K2m1xB+49husnSK/V/fuJKikI0pJ2
+         jy1I+r7PYWoJlfHHSwpCmz3O8VIJer6bYuPQrIfusLAwvQd/dr+NFAd03BYUpLjj1HCn
+         o/CNud2pA03ra46Eoojnh3roIyHaeUuTCXnuWocrauXB4AjYHI3mBdr2crnYp+ZIRoeW
+         I991Y4euR9IKVcPE3mLFtSxlrrst7X5qViXjT0nOamfVU9oPzPNq3ISGr7T41vitiSGG
+         VxopJOVPIXrdplhprsaLEkD1NXrt1bxBB9Ey97Amfw2JrdELeLoJcp5z3bu8vH6QF04l
+         wQyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=46jV9p3NGfHHD7RmZzAF9wCbEXnPQwL3oGoQw/6SZqY=;
-        b=MKvC4MK7FpvgHbPrnTLyv14I8OyJl+P/gkfQRjFjG8C3v5lZLdB9dczFHh5OeRO9yZ
-         Md9mR0Ato/xPfNo8SKIA/tF6u7oRPWCH7sveIEF9qDCq3gQB9/gybpnBhdOKc90+Y2hV
-         qV49TO3nng2r2+6JlDWcSnGTA1LywtafMlKqemKfiqCLIjIIa3j4qvW4JdNwVgtG5qvz
-         o43HZxcNloe1uFrxKvV0Z0NqUA2pSr5HF8/FHPNKwGg9nlhFLGmUbL9PlxMSmxfW8FVJ
-         43MHmZOG0sgHTL0dLouktM6afoDgFVv+tmEFtX6vfdFygjgsrZYaRGG9JnUpCYZoPQ9+
-         5TaQ==
-X-Gm-Message-State: AOAM533y5r/Dar5/AY4LIBn584XClEGCuA4b8MDpdEK9QePqypgzI3LQ
-        UDOHC/ODYPNIkssE9kOsO2dI/A==
-X-Google-Smtp-Source: ABdhPJzM5M9flHKJZbmEjS7wmST4v4wEJvRBKQxhpv+CufNQVMmQ8o5VuNY71S/H5cFSMz0jXMkYxg==
-X-Received: by 2002:a1c:f31a:: with SMTP id q26mr2635450wmq.178.1605275405100;
-        Fri, 13 Nov 2020 05:50:05 -0800 (PST)
+        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
+        b=ZNtSHGcH4Q+c48v/kp/PPZsGI3UbhhHKMqaYUG28vyI67tq//O9iDmSbKdrFZWpc6E
+         GF69vwyj5sciEdtxd3hanPTzGqTtBKbxfsjBPFojERejQ2QVyY4bDyh5pm/e2D6HDEVe
+         AfCABjOoBg+GZiNnBa0rw8ahD4ku46XM6Nj67naZ8o56uN41ZZbdhDmKpnBio0RtoYJW
+         Q8eFrAknRKN0pK7KMzhYZAGBWQtlMZxfHi4x74Gh9nBlXwLv6zQL2njUU1edOEoMtd94
+         18MP6en1FyIyY4aX+baVZV03XqP9NHorFtIMYgRnLqqZMVgZIj21zVocNopa7RMmwzde
+         qXKA==
+X-Gm-Message-State: AOAM5320cgG3zva72apaHWsXbOLDR0H2zvqfPcxkLEMcExJ5z4CiP2Nv
+        KMOLJSiQbTsaAfz/Q0BU4I5NwQ==
+X-Google-Smtp-Source: ABdhPJxkktgUMZ93Vt2pOU9eROULFhMoiiN6/Qcg7QUfTEQlsQNZFV9mcp77LfG1pzYLuY40XOCt/Q==
+X-Received: by 2002:a5d:488f:: with SMTP id g15mr3566282wrq.151.1605275406578;
+        Fri, 13 Nov 2020 05:50:06 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.04
+        by smtp.gmail.com with ESMTPSA id t11sm4561614wrm.8.2020.11.13.05.50.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 05:50:04 -0800 (PST)
+        Fri, 13 Nov 2020 05:50:05 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 19/40] drm/amd/amdgpu/amdgpu_vram_mgr: Add missing descriptions for 'dev' and 'dir'
-Date:   Fri, 13 Nov 2020 13:49:17 +0000
-Message-Id: <20201113134938.4004947-20-lee.jones@linaro.org>
+Subject: [PATCH 20/40] drm/pl111/pl111_debugfs: Make local function 'pl111_debugfs_regs()' static
+Date:   Fri, 13 Nov 2020 13:49:18 +0000
+Message-Id: <20201113134938.4004947-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113134938.4004947-1-lee.jones@linaro.org>
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
@@ -71,33 +69,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:648: warning: Function parameter or member 'dev' not described in 'amdgpu_vram_mgr_free_sgt'
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:648: warning: Function parameter or member 'dir' not described in 'amdgpu_vram_mgr_free_sgt'
+ drivers/gpu/drm/pl111/pl111_debugfs.c:33:5: warning: no previous prototype for ‘pl111_debugfs_regs’ [-Wmissing-prototypes]
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Eric Anholt <eric@anholt.net>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/pl111/pl111_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index c99c2180785fe..d2de2a720a3d8 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -637,6 +637,8 @@ int amdgpu_vram_mgr_alloc_sgt(struct amdgpu_device *adev,
-  * amdgpu_vram_mgr_free_sgt - allocate and fill a sg table
-  *
-  * @adev: amdgpu device pointer
-+ * @dev: device pointer
-+ * @dir: data direction of resource to unmap
-  * @sgt: sg table to free
-  *
-  * Free a previously allocate sg table.
+diff --git a/drivers/gpu/drm/pl111/pl111_debugfs.c b/drivers/gpu/drm/pl111/pl111_debugfs.c
+index 317f68abf18b0..6744fa16f4644 100644
+--- a/drivers/gpu/drm/pl111/pl111_debugfs.c
++++ b/drivers/gpu/drm/pl111/pl111_debugfs.c
+@@ -30,7 +30,7 @@ static const struct {
+ 	REGDEF(CLCD_PL111_LCUR),
+ };
+ 
+-int pl111_debugfs_regs(struct seq_file *m, void *unused)
++static int pl111_debugfs_regs(struct seq_file *m, void *unused)
+ {
+ 	struct drm_info_node *node = (struct drm_info_node *)m->private;
+ 	struct drm_device *dev = node->minor->dev;
 -- 
 2.25.1
 
