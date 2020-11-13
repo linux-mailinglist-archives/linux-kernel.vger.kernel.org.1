@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7132B285B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A9E2B2858
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgKMWTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
+        id S1726720AbgKMWTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgKMWRb (ORCPT
+        with ESMTP id S1726414AbgKMWRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:17:31 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A23C0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:31 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id g3so3988694wmh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:31 -0800 (PST)
+        Fri, 13 Nov 2020 17:17:51 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5FCC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:33 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id x2so7548189qkd.23
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=JnUxOJIynAj3uI1y+sO3DfMh7ir+WlJGNb++LFrX210=;
-        b=HJ+JRP0S6+eUg+e42XlAvr5+D8XnjnXcbJcnVWKyhHfxILa7L2iAAlvDT5PboLOAMO
-         kG1l/8RNcBki2ToFLLjfQpmCzzWJfCzByewGvOnmF8hNskzssMLs1TFn8KOSfIn4q3mY
-         pqXygbWN2nTDadrTM0bUhB+aN9dG+MTmUm+b7pongo++WW3H8QKIgfaTwo+TKenrmk2i
-         nlD1BSYO4cB+xw7HeTEqdLyArv5S/JBaydVJwVWBSXkRVtHUz7ohI73Tjtfd3g0F9zJF
-         3z/jlNDSL/2mC+BvmIrDgfdJWBSgYJ/3wqqvHcsqOpTgdsaUz3YDT58pfYhLOeacbTJ2
-         pi9w==
+        bh=8wuQS8Ui6lRxf4z6N6Fb3Z17fSYd+0q/Aq0OIY0oU2o=;
+        b=nmTDGdvSIrwGYCxUGHaPrQAsQ2W2CBwqJryIGskg+mWj65n2WgSj2IFrfL2X97+0Mn
+         6475+IfrtPqiOf5BCkXNOtKoBeqqFoPC/pnd3b79iQRoSCj2GiDrsVpJnPFi+i5GMVUk
+         DdVqXzISQaXLCYMqPf3W+z1iS6OxRF5TF45k8DGwfoNHsbRR9beC6FvUQS7ioxxrmnHk
+         3bJMgxuKzw2UYDKPz12ZcAISVuCaM++4QzdeUC7LY1Av6ht1uqoK9jp2d6KEbHGo1hOX
+         9L6Y5vsSboEdPLpy9ABKyUxvu5BQvzyPYGMK7hKJ5OCheKNwPh59OCdZYnts8heG0Fpr
+         LjGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JnUxOJIynAj3uI1y+sO3DfMh7ir+WlJGNb++LFrX210=;
-        b=FA1D2mpMH4XkBbr6A9C273PpGhgMw9VkTbEQgLtCoVdcM5X16g4TXr9wvBcK+bGLUN
-         sEJ7EEaTyk0mp1mabW2tVS0MOGvxB4cpxLQGA+7Pl4pPA6Ky79SGKy8ItkS64OD2dKc6
-         GSCe+aeo7KXmM84vSnWGm5589jUXjOGR4ZLOcKsNZwhv5DMVof+LQD2OX6doGVC3zCaO
-         E9agoFbKTlc5w8CRJOYY1Rncle5JEApXzlZBL8gwyKhbgsi/yGgu9xKEk1yBAE/yq59b
-         VQpKVa65VTpSSjtRBlJD7Tib2rRNUiDX5UUdpJLDNij2EGcuGD3DlFcv4WcasRtLrziQ
-         8f2Q==
-X-Gm-Message-State: AOAM530pfWeF030TNDhgOjAhYde4I36khvvJv6B73ps5KLC9rIIDJQ8u
-        /OyIGKmX1N0BSztFgq1hJo+xAri/WKCP+NYF
-X-Google-Smtp-Source: ABdhPJwDJaLX/cxCmyUXAbVS/RQJ0TrA2KB4sujqSM5M2kIGaUl5fRFE83fHcKShMFNRZpNFvJCZuVmHOB0E6NxM
+        bh=8wuQS8Ui6lRxf4z6N6Fb3Z17fSYd+0q/Aq0OIY0oU2o=;
+        b=cabyq5ro+pUmF++HUYOu7B+HRwIU7546PFhUsfQLKuIhItuWeurXQU1YcqtzkhSzkf
+         dHuCoBVFc2prbzkqAWTAk062ZpQznCohcbTvUPPcSo7oI/cmfKsjYScTwXKlXuYKXsUb
+         ybVGyADdvkcgcZDWHLK2Sb44LMMOzOkpXmrZ3/fibQ1zJ+5qyfgwhQrY8Tp+8RaYVbbW
+         c0QQ+KE7+Lx/AkiwwK2djO+H9zb4mcV4p2XLmdFQpX34vThlZ4W/EABBP+TO4ETdY2fE
+         ebkQs0GmwZ+5CZMuD3gijPgOVDtpP2BMX7T5vYbQbXkrrffqLcNBB6iU3hDAjMoSmk6P
+         yY9A==
+X-Gm-Message-State: AOAM5325/wgvmTXdszXJWuGepFsDocGMaGkEFwjRRcJlhH5n8E5EBQ7D
+        EitIxXIzCwRJeESs4nybPLJz+lhw2zReQPOm
+X-Google-Smtp-Source: ABdhPJwm0ivH+1FvXBRCkLSjJqA80NsTUMDVrQFeZWypxtKlsu/0LKPofR4Agm76uPBYpptr5KeWeCLyPe7q6dQ9
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:1f05:: with SMTP id
- f5mr4382666wmf.98.1605305850004; Fri, 13 Nov 2020 14:17:30 -0800 (PST)
-Date:   Fri, 13 Nov 2020 23:15:59 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a0c:c709:: with SMTP id
+ w9mr4788537qvi.50.1605305852387; Fri, 13 Nov 2020 14:17:32 -0800 (PST)
+Date:   Fri, 13 Nov 2020 23:16:00 +0100
 In-Reply-To: <cover.1605305705.git.andreyknvl@google.com>
-Message-Id: <b167fd21b86e7d728ba3a8e20be4f7e8373bc22c.1605305705.git.andreyknvl@google.com>
+Message-Id: <3d2ffcbffff7cdfe60d10493081f82205c181ba7.1605305705.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1605305705.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH mm v10 31/42] kasan, mm: untag page address in free_reserved_area
+Subject: [PATCH mm v10 32/42] arm64: kasan: Align allocations for HW_TAGS
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -73,40 +73,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Hardware tag-based KASAN uses the memory tagging approach, which requires
+all allocations to be aligned to the memory granule size. Align the
+allocations to MTE_GRANULE_SIZE via ARCH_SLAB_MINALIGN when
+CONFIG_KASAN_HW_TAGS is enabled.
 
-free_reserved_area() memsets the pages belonging to a given memory area.
-As that memory hasn't been allocated via page_alloc, the KASAN tags that
-those pages have are 0x00. As the result the memset might result in a tag
-mismatch.
-
-Untag the address to avoid spurious faults.
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 ---
-Change-Id: If12b4944383575b8bbd7d971decbd7f04be6748b
+Change-Id: I51ebd3f9645e6330e5a92973bf7c86b62d632c2b
 ---
- mm/page_alloc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/include/asm/cache.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 855627e52f81..4a69fef13ac7 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7653,6 +7653,11 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
- 		 * alias for the memset().
- 		 */
- 		direct_map_addr = page_address(page);
-+		/*
-+		 * Perform a kasan-unchecked memset() since this memory
-+		 * has not been initialized.
-+		 */
-+		direct_map_addr = kasan_reset_tag(direct_map_addr);
- 		if ((unsigned int)poison <= 0xFF)
- 			memset(direct_map_addr, poison, PAGE_SIZE);
+diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
+index 63d43b5f82f6..77cbbe3625f2 100644
+--- a/arch/arm64/include/asm/cache.h
++++ b/arch/arm64/include/asm/cache.h
+@@ -6,6 +6,7 @@
+ #define __ASM_CACHE_H
  
+ #include <asm/cputype.h>
++#include <asm/mte-kasan.h>
+ 
+ #define CTR_L1IP_SHIFT		14
+ #define CTR_L1IP_MASK		3
+@@ -51,6 +52,8 @@
+ 
+ #ifdef CONFIG_KASAN_SW_TAGS
+ #define ARCH_SLAB_MINALIGN	(1ULL << KASAN_SHADOW_SCALE_SHIFT)
++#elif defined(CONFIG_KASAN_HW_TAGS)
++#define ARCH_SLAB_MINALIGN	MTE_GRANULE_SIZE
+ #endif
+ 
+ #ifndef __ASSEMBLY__
 -- 
 2.29.2.299.gdc1121823c-goog
 
