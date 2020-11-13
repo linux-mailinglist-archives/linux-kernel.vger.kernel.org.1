@@ -2,165 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710E02B1AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B768C2B1AD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 13:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgKMMKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 07:10:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726237AbgKMMKQ (ORCPT
+        id S1726503AbgKMMKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 07:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgKMMKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:10:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605269414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gjj97w/STGso++xBEvTNfDLZ2EKxcfxUVZlFIiNwyLM=;
-        b=GNRWPBblV+N3PVJc/fu+tBaF+iGOnDV0kQ8Etx58lKYlmcB0wU57gp+YRIb+nZxnb4ZrV8
-        2GmXOOK7QZZvZ3xkmOjeFrvZUwuegH6ygkinWGyOgSsm0+6/JiCWSu/LYHMKqp2m8PPUpF
-        NPjnPgsHJO17cI1kzitfwNqiyUGWJoM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-K56ALU0sO3W_dJbi3eF2qA-1; Fri, 13 Nov 2020 07:10:10 -0500
-X-MC-Unique: K56ALU0sO3W_dJbi3eF2qA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60B6E835B50;
-        Fri, 13 Nov 2020 12:10:08 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 516C060BE2;
-        Fri, 13 Nov 2020 12:10:06 +0000 (UTC)
-Subject: Re: [PATCH v3 3/5] kernel/power: allow hibernation with page_poison
- sanity checking
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Laura Abbott <labbott@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <20201113104033.22907-1-vbabka@suse.cz>
- <20201113104033.22907-4-vbabka@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <751f6a7b-afa3-fe8f-5df2-5a604b762d6a@redhat.com>
-Date:   Fri, 13 Nov 2020 13:10:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 13 Nov 2020 07:10:20 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FAC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 04:10:19 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id ec16so4457781qvb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 04:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iiehXoilaLcjVL9BlBQaNhTaAJDG9nqqIO0TWMbl7mA=;
+        b=B07q5E3cb5/mB7Ld7CNt3Vbvde8zMncRaosaJDlZv6Vt864LjakgIYDon/9ubBonvg
+         MO3dfCIP5RFXoUEuTnK7p8eV0NxSxk1WH1Oa0YEVRaifFQE/SkBLrhNubfN70NR24tVd
+         D9m5jD86WUrSyzE6XiabBxQIrGVN34QmK0s6i0KeMXu+JwDjPh2iF2jRylV3bjBlmq17
+         jge0XZ+wdtj6d0xSME6wxs+eY8E6end4ZX1KPOZSaD6XPoYcKtRYRbKQwwDNnOsKS4p4
+         sGxcLt+g5Kc2UZNxyhcQYCU5nnMlVoyrUE4ilHTXS9cc+ImaVSEHK0wNnztoDxy4E/7H
+         ihnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iiehXoilaLcjVL9BlBQaNhTaAJDG9nqqIO0TWMbl7mA=;
+        b=RIbWyjLGCvkrBFKnZZ5oxDzISxEr4iEunDeVRTSqvKOP5BQXrOsxpcdxRTMdMb/eAH
+         +LhnTct8OdukNl54/Eg4ouOOj1YumerG2uTuFAe7rEkh5cRlVUor5FfpOInyUpj0a1oz
+         f7khTvTGfQ711TDkI3bQG5hlwjcq2GRlSwhNLZA/8iqje8Sy+tEGHCDxWGUra1IErx7d
+         K8bPlqLl2l9GiYG0wO6XwybUKqVv260XguvMLVayZ8AdaNmczL2L7H75LUA1tQAxjAco
+         p5vHyqtjLuByR3UphpsGHKemFMq1vCCG98QLyaAyJKBCNXgFYMVNsyYjRxMN3nCW3B7H
+         u5fA==
+X-Gm-Message-State: AOAM532DuzbENmwxSaaEFfaJINNP53RcsuND3+6fj+AEGHELQU7IX9x9
+        e/jlf+Iz9jCmfakUJA9s1Nv/4wf5F+qSPH+HmV6/JQ==
+X-Google-Smtp-Source: ABdhPJz0bG9vUG7cborAESnk3G+Mfz2v/pDLuOMyNrvdaU6cKXA9OkAgDWAnWlxShWUS3ojvDZ7hgvRtw5w5WSbreCg=
+X-Received: by 2002:a0c:e911:: with SMTP id a17mr2006226qvo.18.1605269418352;
+ Fri, 13 Nov 2020 04:10:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201113104033.22907-4-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <00000000000061316205b0e750fc@google.com> <0000000000004cb88b05b2e8d1b4@google.com>
+ <CACVXFVNk9Os+2Bzht+eoeFZr=E-FCBZg2SSYx5AP_eu_-3zF3w@mail.gmail.com>
+In-Reply-To: <CACVXFVNk9Os+2Bzht+eoeFZr=E-FCBZg2SSYx5AP_eu_-3zF3w@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 13 Nov 2020 13:10:06 +0100
+Message-ID: <CACT4Y+YrLRueFzXqNrWcy5ic-TsAJz393G+fg_4x1zfMo061oQ@mail.gmail.com>
+Subject: Re: INFO: task can't die in nbd_ioctl
+To:     Ming Lei <tom.leiming@gmail.com>
+Cc:     syzbot <syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nbd@other.debian.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.11.20 11:40, Vlastimil Babka wrote:
-> Page poisoning used to be incompatible with hibernation, as the state of
-> poisoned pages was lost after resume, thus enabling CONFIG_HIBERNATION forces
-> CONFIG_PAGE_POISONING_NO_SANITY. For the same reason, the poisoning with zeroes
-> variant CONFIG_PAGE_POISONING_ZERO used to disable hibernation. The latter
-> restriction was removed by commit 1ad1410f632d ("PM / Hibernate: allow
-> hibernation with PAGE_POISONING_ZERO") and similarly for init_on_free by commit
-> 18451f9f9e58 ("PM: hibernate: fix crashes with init_on_free=1") by making sure
-> free pages are cleared after resume.
-> 
-> We can use the same mechanism to instead poison free pages with PAGE_POISON
-> after resume. This covers both zero and 0xAA patterns. Thus we can remove the
-> Kconfig restriction that disables page poison sanity checking when hibernation
-> is enabled.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com> # for hibernation
-> ---
->   include/linux/mm.h       |  1 +
->   kernel/power/hibernate.c |  2 +-
->   kernel/power/power.h     |  2 +-
->   kernel/power/snapshot.c  | 14 +++++++++++---
->   mm/Kconfig.debug         |  1 -
->   5 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 5ab5358be2b3..b15000085ff2 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2891,6 +2891,7 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages)
->   #else
->   static inline bool page_poisoning_enabled(void) { return false; }
->   static inline bool page_poisoning_enabled_static(void) { return false; }
-> +static inline void __kernel_poison_pages(struct page *page, int nunmpages) { }
->   static inline void kernel_poison_pages(struct page *page, int numpages) { }
->   static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
->   #endif
-> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-> index d5d48404db37..559acef3fddb 100644
-> --- a/kernel/power/hibernate.c
-> +++ b/kernel/power/hibernate.c
-> @@ -329,7 +329,7 @@ static int create_image(int platform_mode)
->   
->   	if (!in_suspend) {
->   		events_check_enabled = false;
-> -		clear_free_pages();
-> +		clear_or_poison_free_pages();
->   	}
->   
->   	platform_leave(platform_mode);
-> diff --git a/kernel/power/power.h b/kernel/power/power.h
-> index 24f12d534515..778bf431ec02 100644
-> --- a/kernel/power/power.h
-> +++ b/kernel/power/power.h
-> @@ -106,7 +106,7 @@ extern int create_basic_memory_bitmaps(void);
->   extern void free_basic_memory_bitmaps(void);
->   extern int hibernate_preallocate_memory(void);
->   
-> -extern void clear_free_pages(void);
-> +extern void clear_or_poison_free_pages(void);
->   
->   /**
->    *	Auxiliary structure used for reading the snapshot image data and
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index af534982062d..64b7aab9aee4 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -1178,7 +1178,15 @@ void free_basic_memory_bitmaps(void)
->   	pr_debug("Basic memory bitmaps freed\n");
->   }
->   
-> -void clear_free_pages(void)
-> +static void clear_or_poison_free_page(struct page *page)
-> +{
-> +	if (page_poisoning_enabled_static())
-> +		__kernel_poison_pages(page, 1);
-> +	else if (want_init_on_free())
-> +		clear_highpage(page);
-> +}
-> +
-> +void clear_or_poison_free_pages(void)
->   {
->   	struct memory_bitmap *bm = free_pages_map;
->   	unsigned long pfn;
-> @@ -1186,12 +1194,12 @@ void clear_free_pages(void)
->   	if (WARN_ON(!(free_pages_map)))
->   		return;
->   
-> -	if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
-> +	if (page_poisoning_enabled() || want_init_on_free()) {
+On Tue, Nov 3, 2020 at 8:21 AM Ming Lei <tom.leiming@gmail.com> wrote:
+>
+> On Sat, Oct 31, 2020 at 4:01 AM syzbot
+> <syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    4e78c578 Add linux-next specific files for 20201030
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=158c1798500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=69a90a5e8f6b59086b2a
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e051a8500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bf75b8500000
+>
+> Not reproduce this issue by above C reproducer with the kernel config
+> in hours running
+> on linus tree.
 
-Any reason why not to use the static version here?
+Let's see how reproducible this is by syzbot:
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git
+4e78c578
