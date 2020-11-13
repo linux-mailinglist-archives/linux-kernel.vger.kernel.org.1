@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41B82B218B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF952B21A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgKMRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:08:07 -0500
-Received: from smtprelay0212.hostedemail.com ([216.40.44.212]:59902 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726094AbgKMRIH (ORCPT
+        id S1726202AbgKMRM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgKMRM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:08:07 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id E490918224956;
-        Fri, 13 Nov 2020 17:08:19 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:2890:3138:3139:3140:3141:3142:3354:3421:3622:3865:3866:3867:3868:3870:3872:3873:3874:4042:4250:4321:4361:5007:9108:10004:10400:10471:10848:11026:11232:11658:11914:12043:12114:12295:12297:12438:12740:12895:13161:13229:13255:13439:13618:13894:14093:14097:14180:14181:14659:14721:21080:21450:21451:21627:30001:30029:30030:30054:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: back79_4308f9c27310
-X-Filterd-Recvd-Size: 3298
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 13 Nov 2020 17:08:18 +0000 (UTC)
-Message-ID: <70cc9c74785937695c795b5a655f3ab894b14141.camel@perches.com>
-Subject: Re: [PATCH 3/2] checkpatch: document the function renaming and
- deprecation around devm_ioremap_resource
-From:   Joe Perches <joe@perches.com>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Date:   Fri, 13 Nov 2020 09:08:17 -0800
-In-Reply-To: <20201113170043.osr63jash7anc3xn@pengutronix.de>
-References: <20201113085327.125041-1-u.kleine-koenig@pengutronix.de>
-         <20201113091157.125766-1-u.kleine-koenig@pengutronix.de>
-         <fe5ad7c72eadac32eda6a41b61feaa42c04392b0.camel@perches.com>
-         <20201113170043.osr63jash7anc3xn@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 13 Nov 2020 12:12:27 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB41C0613D1;
+        Fri, 13 Nov 2020 09:12:41 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id d12so10673238wrr.13;
+        Fri, 13 Nov 2020 09:12:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RFeIJyuMJoX5jkxaoyIf1M57XnlhipuyBs/EiEAXNDg=;
+        b=Edt20aWM/GTZS0j+p4iJJG+xhPOzKGOiq/M8V1o0dubAmMdID+a6BSbtfMNYY8+x2j
+         PtSKRuy+4wihXMxE97tpQoYpcGlWDoiV1VY0yq0aThkpxtEnjZZKUtLsPylK2FP2coHU
+         Ygjr4amtmztLBeBOuhETkhPXhjbclQWYHD/p0dlO3pg23CcFWqNs0cm2eBP5GQR3fdRf
+         ACIDw/fujzboEeohVVEwUMNUx7Cuyb/tjxPPQ43fwbmLWqe4xrfSRBitLTYNwvTBaRgQ
+         t5lLQeBPuBhJKgOIcF3776IwcKkYqeSH2CuM4WhmEWOacrNjcsEbuAfqOuQYx6jH0SZc
+         olzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RFeIJyuMJoX5jkxaoyIf1M57XnlhipuyBs/EiEAXNDg=;
+        b=Rf1iQn8LI7CaRMg056juNwQtvNmc3kZ67Bu+O3CIUAIulCPh2G5ReX93BDzv5Micsf
+         IkTJ+j5e2BsZyRk2FC2Xzn0M4mpvjAmG3UvDqh5c8/nK8cyi3PPv/+r8yUgn0arzji3z
+         P8nRRGtomk+AYR9AcRW2zj4AcXhFWJU1UsSUamEuAWZ5PeRPAr3YTDLxSd2JCgihWy/+
+         tgh0iN9FOq2ugkzamEkcRA25OhZ9bhJfj/jLNQpRPpUEOBbFrSlUE/uuuJhL97v8xUVQ
+         Rf8IN8nH4mXrRrykZokoeT95/mJImmoD58VTVyzhb4uIArpXxInO5NOdC62IXcvsy9eC
+         kOeQ==
+X-Gm-Message-State: AOAM533Hs6yB4gqWLjNILWm1TGRTPVLicZnEtm6jRcnpYJcajzumwDr2
+        4/G711/lUYAX2msLlym7QsV6Rd/nLR0eAHQpF9Y=
+X-Google-Smtp-Source: ABdhPJxmLhtueDSS0HzPw4NvpZjQwREZvykaIIaVnhzTfOWyWePuIu+wL7J6Na0KjWPp16C+fo97YAxlKYRbCuBjAMM=
+X-Received: by 2002:a5d:6992:: with SMTP id g18mr4661453wru.362.1605287556673;
+ Fri, 13 Nov 2020 09:12:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-6-lee.jones@linaro.org>
+In-Reply-To: <20201113134938.4004947-6-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 13 Nov 2020 12:12:25 -0500
+Message-ID: <CADnq5_MPKD-Pewn9qfnOMgHE=x34zntux=NdhoimORPtkb8zbQ@mail.gmail.com>
+Subject: Re: [PATCH 05/40] drm/amd/amdgpu/amdgpu_ring: Fix misnaming of param 'max_dw'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-13 at 18:00 +0100, Uwe Kleine-König wrote:
-> On Fri, Nov 13, 2020 at 08:36:44AM -0800, Joe Perches wrote:
-> > On Fri, 2020-11-13 at 10:11 +0100, Uwe Kleine-König wrote:
-> > > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > > ---
-> > > Hello,
-> > > 
-> > > this can also be squashed into the respective patches instead.
-> > > 
-> > > Best regards
-> > > Uwe
-> > > 
-> > >  scripts/checkpatch.pl | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -615,6 +615,11 @@ our %deprecated_apis = (
-> > >  	"rcu_barrier_sched"			=> "rcu_barrier",
-> > >  	"get_state_synchronize_sched"		=> "get_state_synchronize_rcu",
-> > >  	"cond_synchronize_sched"		=> "cond_synchronize_rcu",
-> > > +	"devm_platform_get_and_ioremap_resource" => "devm_platform_get_request_and_ioremap_resource",
-> > 
-> > Do we really need 46 character length function names?
-> 
-> I can drop the "_and" and maybe "_get", so we're down to 38 "only".
-> Other than that I think all name parts are relevant.
-> 
-> > > +	"devm_platform_ioremap_resource"	=> "devm_platform_request_ioremap_resource",
-> > > +	"devm_platform_ioremap_resource_wc"	=> "devm_platform_request_ioremap_resource_wc",
-> > > +	"devm_ioremap_resource"			=> "devm_request_ioremap_resource",
-> > > +	"devm_ioremap_resource_wc"		=> "devm_request_ioremap_resource_wc",
-> > >  );
-> > >  
-> > > 
-> > >  #Create a search pattern for all these strings to speed up a loop below
-> > 
-> > And do please send your proposed patches to the appropriate maintainers.
-> 
-> Yes, sure. This patch 3/2 was only a quick shot and it was already clear
-> to me that I have to redo it. I want to squash this change in the patch
-> that does the actual renaming, I assume that's fine for you?!
+On Fri, Nov 13, 2020 at 8:50 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:168: warning: Function paramete=
+r or member 'max_dw' not described in 'amdgpu_ring_init'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:168: warning: Excess function p=
+arameter 'max_ndw' description in 'amdgpu_ring_init'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Sure.
+Applied.  Thanks!
 
-But please do take Thierry Reding's comment about overall
-API complexity into account.
+Alex
 
-All wrapper macro/functions aren't always obviously good.
-
-They can be useful, but can make knowing which of many
-possible wrappers to use and when to use them appropriately
-difficult.
-
-Wrappers also add complexity to documentation.
-
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_ring.c
+> index a23b2079696a1..1a612f51ecd9e 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+> @@ -154,7 +154,7 @@ void amdgpu_ring_undo(struct amdgpu_ring *ring)
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @ring: amdgpu_ring structure holding ring information
+> - * @max_ndw: maximum number of dw for ring alloc
+> + * @max_dw: maximum number of dw for ring alloc
+>   * @irq_src: interrupt source to use for this ring
+>   * @irq_type: interrupt type to use for this ring
+>   * @hw_prio: ring priority (NORMAL/HIGH)
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
