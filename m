@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D709E2B1C82
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C397E2B1C98
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgKMNvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727220AbgKMNvK (ORCPT
+        id S1727337AbgKMNwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:52:33 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52062 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbgKMNw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:51:10 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C27CC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:51:10 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id f23so13560412ejk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 05:51:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vsGn3bem5nMvAjLpbhwxfUdSF/h2bPF70W9wumlMdBw=;
-        b=vTj9XGocJsDdmxBbt4qvs70XHcdNB4X0t9XGIS9bRj5oZgDO51fyrmXi2eSkzPyUT/
-         yPXNJOHKchrYIh9qAUn4o4XvvgqC0GoNl7cOm1DJc6B6qZhE5wrTGHwjCQAseBp2QyHC
-         xOHyRA5qmm/6z5keXX0/3qygnFDCJBZ95sOLbcXHzKchx2NQFVX0IjtjKXahZbGyedNl
-         btE8eks/8p4GHVeGdXywzorxmEPS+t8V+KYsSWRZMw8g7uFOiQ4j9CxBBB4qyhRDYqT4
-         Jd3WY995w2J6MoJbc1cCqtLEplzJ+x6s5hQaRE6WYlfpzfCxGZ19EtjV6ZJw1uqdp1qL
-         D0Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vsGn3bem5nMvAjLpbhwxfUdSF/h2bPF70W9wumlMdBw=;
-        b=P37n225fSqvboSuc7RDb/1OHp/FkxtwIHA5vzf+SJ3LpbMQz2CklN5pvq3P+il0eYM
-         oP9nHMIt8mGu7koeDfW5hpI2vFiqdTOk6bCJJWRHk9sOxgOqNAwzvE/Td/YaOLF83iBA
-         vXLJ87VAenZkNBip7j5Yj37MUXWEXWu05cxMI4NBTgH1jJYS3wunBhZONGRMXfVxyPrj
-         Z/gij/ZSboWlWIipgZFhcMHh3v7vZgMWvNI0Mhjweqjy3ClQsZq8TSOa7NVvJ5F3tUwE
-         rTGTQOQMXH7ZBw3Hq2C2cmw3NW+bb3nAUO+DaXXjdibeKPqvnqhGD5SYCTw+xPGOJR8x
-         S7Fw==
-X-Gm-Message-State: AOAM531oH+wbiKkhoFLWOnf4mpjyN6RZjjihnxXPXl9xZWR9ANjLuo9u
-        s72TBQsDHF0D9MvzLEnCAhZBE4LTrMJhf/UrBELcluR6rSs=
-X-Google-Smtp-Source: ABdhPJzzVV+FAd8BWTU2Ot2l+Gih+TBQaZIdRURXY5UDRKWxoFyTNbwm0NZESZUUZppVU3psiS8BGqd/OnHtJIi4QCY=
-X-Received: by 2002:a17:906:16d6:: with SMTP id t22mr2136557ejd.376.1605275468961;
- Fri, 13 Nov 2020 05:51:08 -0800 (PST)
+        Fri, 13 Nov 2020 08:52:29 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605275547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xsSnKN0Y2j/jQ2IRBao4uClTn5UrQq6Zg7g/UkqX+lo=;
+        b=ayNoDTQA8qN45li0yGYUyxDleZJkOg5NfkWvLrESAsBTP7HmGH+rsHryn2bNTDxixwa5H7
+        UmIPAIT1Hacp/6y9T8dmqEt6Bvhspdyb06B6qG0TOEECmj+hlLfGqkOdQvfb0iSc5gak4J
+        oBcUXRxTY2W9ABYeWH0ECE7h42DLdDApf+ow7Sr2U7HVZy3kXUWcoZKEOgJQc61hJyygFC
+        C86gRbCf9R81w17QQmbm1X0bphCgaakqz4VhVEEMeRTKnFFXH2m4zJHkVapUcojXJDSDzf
+        5/MGaf2atprYOuKwQopa03uoDwZi7/7blEcq2I7a1OeY9rFD7gqjfVXM8NQvFw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605275547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xsSnKN0Y2j/jQ2IRBao4uClTn5UrQq6Zg7g/UkqX+lo=;
+        b=X8h7nBkZIVQfOzZvoYR42UafxIu8Yci8xE9VWP/nM/wn3IGE5v2RPyiosOcb53/JPb8fNi
+        m1VFqaGW00FwpFDw==
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Ziyad Atiyyeh <ziyadat@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
+In-Reply-To: <2196b03a44a15fdc37223040197c4ac5@kernel.org>
+References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de> <87k0uqmwn4.fsf@nanos.tec.linutronix.de> <87d00imlop.fsf@nanos.tec.linutronix.de> <87a6vmmf8h.fsf@nanos.tec.linutronix.de> <2196b03a44a15fdc37223040197c4ac5@kernel.org>
+Date:   Fri, 13 Nov 2020 14:52:27 +0100
+Message-ID: <87wnypl5yc.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201113122328.22942-1-jcmvbkbc@gmail.com> <87zh3ll6hw.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87zh3ll6hw.fsf@nanos.tec.linutronix.de>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Fri, 13 Nov 2020 05:50:57 -0800
-Message-ID: <CAMo8BfKEr-89awEnV072uWR=4fniDRJ0drWmZrtnyvj-mANk0A@mail.gmail.com>
-Subject: Re: [PATCH] highmem: fix highmem for xtensa
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-On Fri, Nov 13, 2020 at 5:40 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Fri, Nov 13 2020 at 04:23, Max Filippov wrote:
-> > Fixmap on xtensa grows upwards, i.e. bigger fixmap entry index
-> > corresponds to a higher virtual address. This was lost in highmem
-> > generalization resulting in the following runtime warnings:
+On Fri, Nov 13 2020 at 09:19, Marc Zyngier wrote:
+> On 2020-11-12 21:34, Thomas Gleixner wrote:
+>> That would allow to add a irq_find_matching_fwspec() based lookup to
+>> pci_msi_get_device_domain().
 >
-> Sorry for not noticing.
->
-> > Fix it by adding __ARCH_HAS_POSITIVE_FIXMAP macro and implementing
-> > vaddr_in_fixmap and fixmap_pte primitives differently depending on
-> > whether it is defined or not.
->
-> What's wrong with just doing the obvious and making the fixmap defines
-> the other way round?
+> Just so that I understand the issue: is the core of the problem that
+> there is no 1:1 mapping between a PCI bus and a DMAR unit, and no
+> firmware topology information to indicate which one to pick?
 
-It becomes really awkward when we get to support high memory with
-aliasing data cache: we must think about the actual virtual addresses
-assigned to pages and it feels much simpler when it's done this way.
+Yes, we don't have a 1:1 mapping and there is some info, but that's all
+a horrible mess.
 
--- 
-Thanks.
--- Max
+>> Though I'm not yet convinced that the outcome would be less horrible
+>> than the hack in the DMAR driver when I'm taking all the other horrors
+>> of x86 (including XEN) into account :)
+>
+> I tried to follow the notifier into the DMAR driver, ended up in the
+> IRQ remapping code, and lost the will to live.
+
+Please just don't look at that and stay alive :)
+
+> I have a question though:
+>
+> In the bus notifier callback, you end-up in dmar_pci_bus_add_dev(),
+> which calls intel_irq_remap_add_device(), which tries to set the MSI
+> domain. Why isn't that enough? Are we still missing any information at
+> that stage?
+
+That works, but this code is not reached for VF devices ... See the
+patch which cures that.
+
+If we want to get rid of that mess we'd need to rewrite the DMAR IOMMU
+device registration completely. I'll leave it as is for now. My will to
+live is more important :)
+
+Thanks
+
+        tglx
+
