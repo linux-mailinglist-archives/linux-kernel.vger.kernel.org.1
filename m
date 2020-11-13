@@ -2,122 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245E42B1501
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 05:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEF82B1504
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 05:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgKMEIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 23:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
+        id S1726172AbgKMELO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 23:11:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726054AbgKMEIh (ORCPT
+        with ESMTP id S1726083AbgKMELO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 23:08:37 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8062C0613D1;
-        Thu, 12 Nov 2020 20:08:36 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id i17so7944298ljd.3;
-        Thu, 12 Nov 2020 20:08:36 -0800 (PST)
+        Thu, 12 Nov 2020 23:11:14 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F82AC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 20:11:14 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id j14so7859397ots.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 20:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AZbl5qbJ0BQUlrCyYeuRH2WHBnTTfBroCA0v71gGPzM=;
-        b=EAwjbLbLZtio+We3R3VZRYvj8d2ngKxaxveWpWwYrnIPLKEbhUj/0vqLWp5jnUYW+K
-         cVDEscUOGKWvkEYFY9uhr2jSdDq63oW0LI5gNdQmWW32+K8JRM0PYphZUGBqSL7UGY4h
-         vULs8BPfNjVBoconwBuxls9FBcRDCuTkW6N42c6oEiqFu+JFbxPOr1ma1jX9Yf1MuNch
-         r7WOaw8GfAC6fmCG9KaDBXDGs9yooxLs2rAcITKbQKh+gawvPYDmmNZEKMNVPlepDaRO
-         8hgGhJRxKj2i9pNPdj3vA37kKT2po4d/CbXci9GlI3kx+13ohgyL3632NnFDamlYw5tz
-         my/w==
+        bh=6Vp6Ye4zHAsO/1lQb1hLWokRekpvOJV+o7NCMb8DaaE=;
+        b=Qa6e0o2MTNxSR2x/AFXIeXFa9hK0PgyN0HPuzIbYkqXlUhzXTcd42lvLDfl92BI87T
+         aIG6cAKsR801xekG10xVjR8pNXAInC8Mj7VxvmuNBZIVlr5uyyUsEo0+fkFqDAkTnTGm
+         Dl7xfWLCMwh6LRKGfbZpJ5GVM5D9xke19iuC1hIP71lvZwLmxM2wrNR0PdByMFuxvYGZ
+         gn1l5J53ObjDwhRdGoWLS8LIH+x6LR/aB+SbwWHTWr5K2VgoG44J5h7CUeOArBxT+cJ/
+         FGqN4YkzrS3Tam6VJOJn9MrLxdY+j4uv/UBugOelPcSjJ8Gl4ZmBgTEzvZ8Fzrb1YK4C
+         HfDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AZbl5qbJ0BQUlrCyYeuRH2WHBnTTfBroCA0v71gGPzM=;
-        b=clBT98iKKL2/uut+5bCrgiPT8CEiZshNniXBqAyiws7g0bH5zXsFnk35jTHYZoHjvi
-         NoPh5bg37v9dQVn3y5i60MMgmUwBawMo1yF7TLrIiJE928Kr4GXTPcdlhZbMwABsduRt
-         r8cjcERhyYQR6K1upOIjUVAPCY8r1yavl77DZmOVUmYPuu41ik0FGl5JFw64HbKamuEf
-         8/vsd5FOxoN8xDWhdZJpzCtYebrnsIlD38Q49D0kDBzEU27MQrspjy+yj7UgqvGOJZbO
-         bbGy19go0ChuFr28s3ta6UUcE9tbr/L1qXWPz7zJr/FFJf9Fgz+DHdleBuiuHuvzPtTu
-         sOuw==
-X-Gm-Message-State: AOAM532Af6ueC+xQlP5ziFaRYARkhIgdN+49Uv0tFnz3jjfL+2oiGUWK
-        ziaqDvfGVbE4tOBlGGngZD5lcqiIqcpgAyn2mM4=
-X-Google-Smtp-Source: ABdhPJzn7EMs1Itqci9FPcfCt6upEFH2ibkruLV6wZMffSYb9PRpRtA0Cdmdo18qJ8tzhz+H0mO+bfL6S2Reiaq5dhs=
-X-Received: by 2002:a2e:86c5:: with SMTP id n5mr213289ljj.450.1605240513968;
- Thu, 12 Nov 2020 20:08:33 -0800 (PST)
+        bh=6Vp6Ye4zHAsO/1lQb1hLWokRekpvOJV+o7NCMb8DaaE=;
+        b=rpuXrNvD/LfdYqnOTSwfVC3o9UNxv4UJxEgHZMaufkIk3yes6I5Lv3dLbFfQu7aMiI
+         GXy+EWyT/ckg1ik+Rmndy23VjrEGzsfB4mFqL5t0npCPT2t+IdHO7RiAuPhyKQnvSXaz
+         Ck+Sok3RDhU560th94H3oJwoozaXP4cGTI+UlHj4AoIRpaPHEvjd9xlx+emz8ihGb+u0
+         iyJrGJYJp095qsV563Z6lbpwr70t16cVaGNYaeury7kKyo+BHv+j/6JjYzxxL9OYu0iB
+         Nxre0k4KVtmFXtp3UGdLTrQFtC9NxuIJTAX/DvluCO4LvEZCQp7QZxk4J6kgG5od4VGv
+         lsEw==
+X-Gm-Message-State: AOAM531QOsW+H5pjjhXNnnlHHQEvfo4N0ApmXLUZU94D6fR2HeJIRy6U
+        WRtxAwnXE3UbtUMvuyodbhGRFfvP9h/XWNYcwD1A2A==
+X-Google-Smtp-Source: ABdhPJwYCP/b4fCtGjK0atPBYVGM7yxdt7QQana5Wms11v6t39DNuoV/FkT8WBcUzB5I3nvIYQcrrnB4RNL88x5zbeU=
+X-Received: by 2002:a9d:64ce:: with SMTP id n14mr229095otl.352.1605240673557;
+ Thu, 12 Nov 2020 20:11:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112221543.3621014-1-guro@fb.com> <20201112221543.3621014-2-guro@fb.com>
- <20201113095632.489e66e2@canb.auug.org.au> <20201113002610.GB2934489@carbon.dhcp.thefacebook.com>
- <20201113030456.drdswcndp65zmt2u@ast-mbp> <20201112191825.1a7c3e0d50cc5e375a4e887c@linux-foundation.org>
- <CAADnVQ+evkBCakrfEUqEvZ2Th=6xUGA2uTzdb_hwpaU9CPdj8Q@mail.gmail.com> <20201112194047.ea7c95e2876931fc57ae1cee@linux-foundation.org>
-In-Reply-To: <20201112194047.ea7c95e2876931fc57ae1cee@linux-foundation.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 12 Nov 2020 20:08:22 -0800
-Message-ID: <CAADnVQJ43nehf_KHeVFp7Ef2Fzu5xuWj4UMUMAbr+4dAE+qSdg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 01/34] mm: memcontrol: use helpers to read
- page's memcg data
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>
+References: <20201110034934.70898-1-john.stultz@linaro.org>
+ <CAO_48GHNE6AyKv4k=3=2EVjfSZsgz4pjuMJ1xJojbuFU9a90EQ@mail.gmail.com> <20201112093237.GS401619@phenom.ffwll.local>
+In-Reply-To: <20201112093237.GS401619@phenom.ffwll.local>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 12 Nov 2020 20:11:02 -0800
+Message-ID: <CALAqxLWWBaOc3W1s3xBe-innHZ0pAon7UCfumjjQftPqf7bO0Q@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] dma-buf: Performance improvements for system heap
+ & a system-uncached implementation
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:40 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Thu, 12 Nov 2020 19:25:48 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > On Thu, Nov 12, 2020 at 7:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+On Thu, Nov 12, 2020 at 1:32 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Thu, Nov 12, 2020 at 11:09:04AM +0530, Sumit Semwal wrote:
+> > On Tue, 10 Nov 2020 at 09:19, John Stultz <john.stultz@linaro.org> wrote:
 > > >
-> > > On Thu, 12 Nov 2020 19:04:56 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > > On Thu, Nov 12, 2020 at 04:26:10PM -0800, Roman Gushchin wrote:
-> > > > >
-> > > > > These patches are not intended to be merged through the bpf tree.
-> > > > > They are included into the patchset to make bpf selftests pass and for
-> > > > > informational purposes.
-> > > > > It's written in the cover letter.
-> > > > ...
-> > > > > Maybe I had to just list their titles in the cover letter. Idk what's
-> > > > > the best option for such cross-subsystem dependencies.
-> > > >
-> > > > We had several situations in the past releases where dependent patches
-> > > > were merged into multiple trees. For that to happen cleanly from git pov
-> > > > one of the maintainers need to create a stable branch/tag and let other
-> > > > maintainers pull that branch into different trees. This way the sha-s
-> > > > stay the same and no conflicts arise during the merge window.
-> > > > In this case sounds like the first 4 patches are in mm tree already.
-> > > > Is there a branch/tag I can pull to get the first 4 into bpf-next?
-> > >
-> > > Not really, at present.  This is largely by design, although it does cause
-> > > this problem once or twice a year.
-> > >
-> > > These four patches:
-> > >
-> > > mm-memcontrol-use-helpers-to-read-pages-memcg-data.patch
-> > > mm-memcontrol-slab-use-helpers-to-access-slab-pages-memcg_data.patch
-> > > mm-introduce-page-memcg-flags.patch
-> > > mm-convert-page-kmemcg-type-to-a-page-memcg-flag.patch
-> > >
-> > > are sufficiently reviewed - please pull them into the bpf tree when
-> > > convenient.  Once they hit linux-next, I'll drop the -mm copies and the
-> > > bpf tree maintainers will then be responsible for whether & when they
-> > > get upstream.
+> > > Hey All,
+> > >   So just wanted to send my last revision of my patch series
+> > > of performance optimizations to the dma-buf system heap.
 > >
-> > That's certainly an option if they don't depend on other patches in the mm tree.
-> > Roman probably knows best ?
+> > Thanks very much for your patches - I think the first 5 patches look good to me.
+> >
+> > I know there was a bit of discussion over adding a new system-uncached
+> > heap v/s using a flag to identify that; I think I prefer the separate
+> > heap idea, but lets ask one last time if any one else has any real
+> > objections to it.
+> >
+> > Daniel, Christian: any comments from your side on this?
 >
-> That should be OK.  They apply and compile ;)
+> I do wonder a bit where the userspace stack for this all is, since tuning
+> allocators without a full stack is fairly pointless. dma-buf heaps is a
+> bit in a limbo situation here it feels like.
 
-Awesome. Thank you both for confirming.
-Will take them as soon as the rest of the set is reviewed.
+As mentioned in the system-uncached patch:
+Pending opensource users of this code include:
+* AOSP HiKey960 gralloc:
+  - https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
+  - Visibly improves performance over the system heap
+* AOSP Codec2 (possibly, needs more review):
+  - https://android-review.googlesource.com/c/platform/frameworks/av/+/1360640/17/media/codec2/vndk/C2DmaBufAllocator.cpp#325
+
+Additionally both the HiKey, HiKey960 grallocs  and Codec2 are already
+able to use the current dmabuf heaps instead of ION.
+
+So I'm not sure what you mean by limbo, other than it being in a
+transition state where the interface is upstream and we're working on
+moving vendors to it from ION (which is staged to be dropped in 5.11).
+Part of that work is making sure we don't regress the performance
+expectations.
+
+> Plus I'm vary of anything related to leaking this kind of stuff beyond the
+> dma-api because dma api maintainers don't like us doing that. But
+> personally no concern on that front really, gpus need this. It's just that
+> we do need solid justification I think if we land this. Hence back to
+> first point.
+>
+> Ideally first point comes in the form of benchmarking on android together
+> with a mesa driver (or mesa + some v4l driver or whatever it takes to
+> actually show the benefits, I have no idea).
+
+Tying it with mesa is a little tough as the grallocs for mesa devices
+usually use gbm (gralloc.gbm or gralloc.minigbm). Swapping the
+allocation path for dmabuf heaps there gets a little complex as last I
+tried that (when trying to get HiKey working with Lima graphics, as
+gbm wouldn't allocate the contiguous buffers required by the display),
+I ran into issues with the drm_hwcomposer and mesa expecting the gbm
+private handle metadata in the buffer when it was passed in.
+
+But I might take a look at it again. I got a bit lost digging through
+the mesa gbm allocation paths last time.
+
+I'll also try to see if I can find a benchmark for the codec2 code
+(using dmabuf heaps with and without the uncached heap) on on db845c
+(w/ mesa), as that is already working and I suspect that might be
+close to what you're looking for.
+
+thanks
+-john
