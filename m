@@ -2,102 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE9B2B2630
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D382B2635
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgKMVEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:04:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKMVEV (ORCPT
+        id S1726527AbgKMVGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:06:34 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54890 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725981AbgKMVGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:04:21 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BDEC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:04:19 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id v12so8628797pfm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:04:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bu54NTDDzZAvafBN0qstmnnIgcbv3/RJ0zdchAkmdlc=;
-        b=gtpsQ8e6BmSuHGCtSgJt6cRIMSJyxWRCuyI5kmjzmoZHHt5LtjxXmRbyq2hXcDaI+Z
-         +Vza2NlXxsuTtuRSt9dseQT4WA+dosVLoiJ5TOHnLumpOe9X6rTVCo+qgNgSe0iRMM4x
-         1lhcNQK8J790mRL0lPjReVBKLOn0QIUU5iTPXdxHYEZVBMQulHCxk/OurFaT7LwrCwcC
-         /o2KuWvflZWIAVAK9ryx9bdXkLImM8xBe9PMmqABqIV3IXA+8Sk870erD4tRgEkgo4XT
-         YNUO4MYxH18OpTDP5S7EBXRexL6Yw8xw0g7p5LNnEV1sPG7uGm53NXt3FMxIejR+fBvn
-         SkTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bu54NTDDzZAvafBN0qstmnnIgcbv3/RJ0zdchAkmdlc=;
-        b=YClGLcCuw5RtViI5vz8sxtM7V93IKJ4yHgIDzCwiymY7oVM6hHDBbIMncG7rObgk6y
-         b8nMQ7h/IYvgKPddPGMX2TBtiVlK+UEtDNhdk/q9pmEUZns/RUgspqluU01veVs2CA0e
-         /KSl8kexBr48a53zeCw5Kip/lAolvNMkWkM450B5E5F6V1EMqBu1RRUJtA69sZA8S8E5
-         RafV1D+HWxg1m00zWuVPguPUYDm+m+42b0r1UDEpHXclKEyUaaP0b5Cp4fPFCv0HljOt
-         GU+ExZGv1HU9bLIS4XVUvAUfPsCMuGMM/RKpFqLAgDB9LmJjSW2sLBMPsg6V8ArOr2Gx
-         XSdQ==
-X-Gm-Message-State: AOAM5337uynyJ50v2S4djdS/NPusvf89Em5yRGrVYVpal1Sno6Idtcq6
-        7L9Q0sdAVZUKXAXZnh+LCMTJbVIUbgpxCOU7whZgxQ==
-X-Google-Smtp-Source: ABdhPJyYajVZOWzH6XOD0g2LgooZ85ku860FshnMKczmtJTjFknjDFRERcSwd5flqJyyMpLuOpG0bXDD9h50VJKcG3E=
-X-Received: by 2002:a63:b55e:: with SMTP id u30mr3314262pgo.381.1605301459249;
- Fri, 13 Nov 2020 13:04:19 -0800 (PST)
+        Fri, 13 Nov 2020 16:06:34 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADL2UPW007740;
+        Fri, 13 Nov 2020 16:06:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bZcV74Uia22ODAVbadbhWk4gKJDekDGniQvx3ed1vcw=;
+ b=L1yTVX4MSBFHtqUPj/zC9HclI6qudQXVqonV0s1q8GWf2yT2ncX9+8meuejiYugloWFx
+ 3iz8Ve825C95TICbvL+3aBsfG3zL3SYVwCyLKHIXGB5oFflnUtU1SeyVmoa/VtqXg/Pc
+ zy6iqL6RifrJ+tojYUOLwh6YnqKXTtYFBWyXKjmCZC4EUErX9NN7hzQuzTqV9wwQWNli
+ uXdmmqBa+0Ium/PgaYPIR+W+dXRi1g7+8TSiW1R+cN32bTI270l8VbDcRedVWQLzZbOM
+ sZ5mkxnG1wUUe9jC8xKk5pi+EQZ1wL4chQQrKIdQdVwpCtg95PUAzWQuL/us/nggAuQj xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34t0jr21n9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 16:06:31 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ADL3ov8017669;
+        Fri, 13 Nov 2020 16:06:31 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34t0jr21mv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 16:06:31 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADL3WgS004380;
+        Fri, 13 Nov 2020 21:06:30 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma03dal.us.ibm.com with ESMTP id 34nk7ak82j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 21:06:30 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADL6T477996090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 21:06:29 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 023596A054;
+        Fri, 13 Nov 2020 21:06:29 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD4C36A04F;
+        Fri, 13 Nov 2020 21:06:27 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.152.80])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Nov 2020 21:06:27 +0000 (GMT)
+Subject: Re: [PATCH v11 12/14] s390/vfio-ap: handle host AP config change
+ notification
+To:     kernel test robot <lkp@intel.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pasic@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com
+References: <20201022171209.19494-13-akrowiak@linux.ibm.com>
+ <202011031740.6Uu0Z5yG-lkp@intel.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <7507e3aa-699b-05a7-1a45-d9c0b8a40003@linux.ibm.com>
+Date:   Fri, 13 Nov 2020 16:06:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com>
- <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
- <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com>
- <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
- <CAKwvOdnYpmf=ydFVWSqVkWeUpn+M2v9PfdQd71T3oqQ9_1WQaQ@mail.gmail.com>
- <CANiq72k13K_zA5aH5hameoe4TSf2o5cA294bA4UEZG0M6S3DXQ@mail.gmail.com>
- <61039da395c8a28444e2f3958d29deda4c0d49b3.camel@perches.com> <BYAPR11MB3256ECDE31F1900EE1D9254687E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256ECDE31F1900EE1D9254687E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 13 Nov 2020 13:04:08 -0800
-Message-ID: <CAKwvOdn4-CYtszj324JoOL6GBtUAeieTocc3cQyVUJJvd9AG6w@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202011031740.6Uu0Z5yG-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-13_17:2020-11-13,2020-11-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 1:01 PM Moore, Robert <robert.moore@intel.com> wrote:
->
-> I can do it this way:
->
-> In the global header actypes.h:
->
-> #ifndef ACPI_FALLTHROUGH
-> #define ACPI_FALLTHROUGH
-> #endif
->
-> In the gcc-specific header (acgcc.h):
->
-> #define ACPI_FALLTHROUGH        __attribute__((__fallthrough__))
->
-> This would not be #defined in the MSVC-specific header (acmsvc.h) -- thus using the default (null) in actypes.h (The per-environment headers are always included first).
->
-> (We do all macros in upper case, prefixed with "ACPI_")
->
-> If you can update your patch to use ACPI_FALLTHROUGH, I can do the rest (above).
+Fixed the errors.
 
-Sure, I can do that.  I'd need to wrap it in a little more logic for
-__has_attribute to support old GCC versions, but that should be
-doable.
--- 
-Thanks,
-~Nick Desaulniers
+On 11/3/20 4:48 AM, kernel test robot wrote:
+> Hi Tony,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on s390/features]
+> [also build test ERROR on linus/master v5.10-rc2 next-20201103]
+> [cannot apply to kvms390/next linux/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Tony-Krowiak/s390-vfio-ap-dynamic-configuration-support/20201023-011543
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
+> config: s390-allmodconfig (attached as .config)
+> compiler: s390-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://github.com/0day-ci/linux/commit/32786ef6d4ba3703d993a8894ea1d763785fd3a4
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review Tony-Krowiak/s390-vfio-ap-dynamic-configuration-support/20201023-011543
+>          git checkout 32786ef6d4ba3703d993a8894ea1d763785fd3a4
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>     drivers/s390/crypto/vfio_ap_ops.c:1316:5: warning: no previous prototype for 'vfio_ap_mdev_reset_queue' [-Wmissing-prototypes]
+>      1316 | int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
+>           |     ^~~~~~~~~~~~~~~~~~~~~~~~
+>     drivers/s390/crypto/vfio_ap_ops.c:1568:6: warning: no previous prototype for 'vfio_ap_mdev_hot_unplug_queue' [-Wmissing-prototypes]
+>      1568 | void vfio_ap_mdev_hot_unplug_queue(struct vfio_ap_queue *q)
+>           |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     drivers/s390/crypto/vfio_ap_ops.c: In function 'vfio_ap_mdev_on_cfg_remove':
+>     drivers/s390/crypto/vfio_ap_ops.c:1777:7: warning: variable 'unassigned' set but not used [-Wunused-but-set-variable]
+>      1777 |  bool unassigned = false;
+>           |       ^~~~~~~~~~
+>     drivers/s390/crypto/vfio_ap_ops.c: At top level:
+>     drivers/s390/crypto/vfio_ap_ops.c:1813:6: warning: no previous prototype for 'vfio_ap_mdev_on_cfg_add' [-Wmissing-prototypes]
+>      1813 | void vfio_ap_mdev_on_cfg_add(void)
+>           |      ^~~~~~~~~~~~~~~~~~~~~~~
+>     In file included from drivers/s390/crypto/vfio_ap_ops.c:11:
+>     In function 'memcpy',
+>         inlined from 'vfio_ap_mdev_unassign_apids' at drivers/s390/crypto/vfio_ap_ops.c:1655:3,
+>         inlined from 'vfio_ap_mdev_on_cfg_remove' at drivers/s390/crypto/vfio_ap_ops.c:1800:8,
+>         inlined from 'vfio_ap_on_cfg_changed' at drivers/s390/crypto/vfio_ap_ops.c:1836:2:
+>>> include/linux/string.h:402:4: error: call to '__read_overflow2' declared with attribute error: detected read beyond size of object passed as 2nd parameter
+>       402 |    __read_overflow2();
+>           |    ^~~~~~~~~~~~~~~~~~
+>
+> vim +/__read_overflow2 +402 include/linux/string.h
+>
+> 6974f0c4555e285 Daniel Micay  2017-07-12  393
+> 6974f0c4555e285 Daniel Micay  2017-07-12  394  __FORTIFY_INLINE void *memcpy(void *p, const void *q, __kernel_size_t size)
+> 6974f0c4555e285 Daniel Micay  2017-07-12  395  {
+> 6974f0c4555e285 Daniel Micay  2017-07-12  396  	size_t p_size = __builtin_object_size(p, 0);
+> 6974f0c4555e285 Daniel Micay  2017-07-12  397  	size_t q_size = __builtin_object_size(q, 0);
+> 6974f0c4555e285 Daniel Micay  2017-07-12  398  	if (__builtin_constant_p(size)) {
+> 6974f0c4555e285 Daniel Micay  2017-07-12  399  		if (p_size < size)
+> 6974f0c4555e285 Daniel Micay  2017-07-12  400  			__write_overflow();
+> 6974f0c4555e285 Daniel Micay  2017-07-12  401  		if (q_size < size)
+> 6974f0c4555e285 Daniel Micay  2017-07-12 @402  			__read_overflow2();
+> 6974f0c4555e285 Daniel Micay  2017-07-12  403  	}
+> 6974f0c4555e285 Daniel Micay  2017-07-12  404  	if (p_size < size || q_size < size)
+> 6974f0c4555e285 Daniel Micay  2017-07-12  405  		fortify_panic(__func__);
+> 47227d27e2fcb01 Daniel Axtens 2020-06-03  406  	return __underlying_memcpy(p, q, size);
+> 6974f0c4555e285 Daniel Micay  2017-07-12  407  }
+> 6974f0c4555e285 Daniel Micay  2017-07-12  408
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
