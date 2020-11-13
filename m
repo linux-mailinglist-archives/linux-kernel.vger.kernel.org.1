@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E992B22ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E05932B22F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgKMRrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:47:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        id S1726949AbgKMRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgKMRqx (ORCPT
+        with ESMTP id S1726759AbgKMRqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:46:53 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8C5C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:51 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id h6so5574433ilj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:51 -0800 (PST)
+        Fri, 13 Nov 2020 12:46:49 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0CAC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:48 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id y18so1945106ilp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:46:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Qd1eMF3Snx/S44vJhI0lvR0izYUd0pJkDl8pUTw476M=;
-        b=hnfllv1gN4r7GNagxEOwgUdFDGtSCe/tY5l8KidnnPeysqSCyDBndquy0gCJuKbJq/
-         jaZcRjjNqLMlX+YmeiyD0jd5t/Os9nPnfPdNb6q3Ch76GtVI+LYxELHsGq/D+rAXDLnX
-         /74wwP+gRr977rJiLuZJFnov7dAPAFZJF1bAw=
+        bh=XEtz35TwaMOmtP7wZDty93xaU0e4wII3qI7ntzR/4WQ=;
+        b=MBLRtdNVXvb371vssRTTQIGlMBWRZWFOky+eOrsFPSWIyGwIFrbO3WCfYTXFCxtesk
+         BQ3sUk+dJLBKLpYxajlh97iZOUIZiE3EWWVA4Ux2agGHurqQDjaq0+bm/exeIrN+GlhP
+         YkxXbuynzH+IpN0i116JxOb+1sDrgFHgO6W2s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Qd1eMF3Snx/S44vJhI0lvR0izYUd0pJkDl8pUTw476M=;
-        b=fuffJ+GEgwuff6i6k2x7NTJdryoUBQjcbtcPB8sI64mgyhqvlyr7KkIAC83QUyFKbZ
-         5YatDN12deu5jAy7iwBm+UWkRKloBBnfzRLSuIOU/JJLI3wQpCkyyybaibsL1FrSvU74
-         wyEq0d8SFZhvUfGd/e+mqshkEyxz6Sb8aUJkTw7LcaGT7fcvgT8TPjrmyiml3yjYXgjq
-         Ds6rvsEzLMrIi9VVkOEcvGRUkzCC1ydGEJKjK/GYHdMQktLiTbiXPKuGS5lHFkwOqOiN
-         rb6CZXB4mG8OGgxy2vVDJO5OOm/OTkSCQRAQoNnKKQ+SdGDtSo/S1g589xz+FxiTmKlU
-         Nzvg==
-X-Gm-Message-State: AOAM533aeedU++6L6tfAGTIckq1FG5J9f/vnoBC+3pX4PXUl77mm8WjL
-        MiaMZNxHWu0c/575Zl7AR+PG6A==
-X-Google-Smtp-Source: ABdhPJyFLtVZS22Hy3GIumYaSmQAg9OWpbhsIVkMZRkDcO/qSiEIaFmQze9v57BiyqDlDSgejUn3Ug==
-X-Received: by 2002:a92:600e:: with SMTP id u14mr660525ilb.221.1605289606467;
-        Fri, 13 Nov 2020 09:46:46 -0800 (PST)
+        bh=XEtz35TwaMOmtP7wZDty93xaU0e4wII3qI7ntzR/4WQ=;
+        b=n2RQ/SAy9c/asMXC6VRCbcO5Y/dLQRvuLSny1TQsUSCOiUMETVRY2x2Dj9/y08B26k
+         y1a1DoJyEaDbUzWvVYBi0KmJq65UeGymXMn9EJhQp/PocO/zDcEwAHndaQBywZEnTuNM
+         zqZ4seoH6E6fYkR9shwnw1c5Duen/tLbEG8KjCHQ2y2hNNEHiVMGVnuU20I/t0TZXRDh
+         ElU1DbHNZbQhvVdAxXkIWKwde+TA3/WxCBN7zEQ3tf13SOTLAByo0xBN/Ajmqz9uLt7g
+         LpCSyjIhP+qHa8ATu75fkOCUmyg+DntJcNAUkVWIkSXd3zeOYDluRTCo6ONQfpx8mao6
+         xECw==
+X-Gm-Message-State: AOAM532hsoJWTKxQ7evixB7Mbb2UHsrH6HTYL7Q92t4BwMLdRBks4fmH
+        OhRR1M21ROw+u/k8g9Jtx4KJXaxKN3+TxA==
+X-Google-Smtp-Source: ABdhPJzOuUC15iLMQufTNIo7HdP2XkphHFvteCLyXwmLRGJvWU3Jror9urZyYDx8rK37OJlqrdLoAA==
+X-Received: by 2002:a05:6e02:1313:: with SMTP id g19mr748344ilr.177.1605289607715;
+        Fri, 13 Nov 2020 09:46:47 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.45
+        by smtp.gmail.com with ESMTPSA id y14sm4772585ilb.66.2020.11.13.09.46.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 09:46:45 -0800 (PST)
+        Fri, 13 Nov 2020 09:46:47 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     gregkh@linuxfoundation.org, keescook@chromium.org,
-        peterz@infradead.org
+To:     david.kershner@unisys.com, gregkh@linuxfoundation.org,
+        keescook@chromium.org, peterz@infradead.org
 Cc:     Shuah Khan <skhan@linuxfoundation.org>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/13] drivers/staging/rtl8188eu: convert stats to use seqnum_ops
-Date:   Fri, 13 Nov 2020 10:46:13 -0700
-Message-Id: <9862cdd72a54d11dc0d08489df4c19902aab3785.1605287778.git.skhan@linuxfoundation.org>
+Subject: [PATCH v2 12/13] drivers/staging/unisys/visorhba: convert stats to use seqnum_ops
+Date:   Fri, 13 Nov 2020 10:46:14 -0700
+Message-Id: <948df30739a497922bafa4637f63218e9ec44e61.1605287778.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605287778.git.skhan@linuxfoundation.org>
 References: <cover.1605287778.git.skhan@linuxfoundation.org>
@@ -66,112 +66,88 @@ Sequence Number api provides interfaces for unsigned atomic up counters
 leveraging atomic_t and atomic64_t ops underneath. Convert it to use
 seqnum_ops.
 
-atomic_t variables used for stats are atomic counters. Convert them to
+atomic_t variable used for error_count are atomic counters. Convert it to
 use seqnum_ops.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 23 ++++++++++++++-----
- .../staging/rtl8188eu/include/rtw_mlme_ext.h  |  3 ++-
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ .../staging/unisys/visorhba/visorhba_main.c   | 21 ++++++++++---------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-index b3eddcb83cd0..d8b5ab1dac26 100644
---- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-@@ -7,6 +7,7 @@
- #define _RTW_MLME_EXT_C_
- 
- #include <linux/ieee80211.h>
+diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
+index 7ae5306b92fe..7837eca83758 100644
+--- a/drivers/staging/unisys/visorhba/visorhba_main.c
++++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+@@ -10,6 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/seq_file.h>
+ #include <linux/visorbus.h>
 +#include <linux/seqnum_ops.h>
- #include <asm/unaligned.h>
+ #include <scsi/scsi.h>
+ #include <scsi/scsi_host.h>
+ #include <scsi/scsi_cmnd.h>
+@@ -42,7 +43,7 @@ struct visordisk_info {
+ 	struct scsi_device *sdev;
+ 	u32 valid;
+ 	atomic_t ios_threshold;
+-	atomic_t error_count;
++	struct seqnum32 error_count;
+ 	struct visordisk_info *next;
+ };
  
- #include <osdep_service.h>
-@@ -3860,7 +3861,7 @@ static void init_mlme_ext_priv_value(struct adapter *padapter)
- 		_12M_RATE_, _24M_RATE_, 0xff,
- 	};
+@@ -374,8 +375,8 @@ static int visorhba_abort_handler(struct scsi_cmnd *scsicmd)
  
--	atomic_set(&pmlmeext->event_seq, 0);
-+	seqnum32_init(&pmlmeext->event_seq);
- 	pmlmeext->mgnt_seq = 0;/* reset to zero when disconnect at client mode */
+ 	scsidev = scsicmd->device;
+ 	vdisk = scsidev->hostdata;
+-	if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
+-		atomic_inc(&vdisk->error_count);
++	if (seqnum32_fetch(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
++		seqnum32_inc_return(&vdisk->error_count);
+ 	else
+ 		atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
+ 	rtn = forward_taskmgmt_command(TASK_MGMT_ABORT_TASK, scsidev);
+@@ -401,8 +402,8 @@ static int visorhba_device_reset_handler(struct scsi_cmnd *scsicmd)
  
- 	pmlmeext->cur_channel = padapter->registrypriv.channel;
-@@ -4189,7 +4190,9 @@ void report_survey_event(struct adapter *padapter,
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct survey_event);
- 	pc2h_evt_hdr->ID = _Survey_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
- 
- 	psurvey_evt = (struct survey_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 
-@@ -4239,7 +4242,9 @@ void report_surveydone_event(struct adapter *padapter)
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct surveydone_event);
- 	pc2h_evt_hdr->ID = _SurveyDone_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
- 
- 	psurveydone_evt = (struct surveydone_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	psurveydone_evt->bss_cnt = pmlmeext->sitesurvey_res.bss_cnt;
-@@ -4283,7 +4288,9 @@ void report_join_res(struct adapter *padapter, int res)
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct joinbss_event);
- 	pc2h_evt_hdr->ID = _JoinBss_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
- 
- 	pjoinbss_evt = (struct joinbss_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	memcpy((unsigned char *)(&pjoinbss_evt->network.network), &pmlmeinfo->network, sizeof(struct wlan_bssid_ex));
-@@ -4333,7 +4340,9 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr,
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct stadel_event);
- 	pc2h_evt_hdr->ID = _DelSTA_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
- 
- 	pdel_sta_evt = (struct stadel_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	ether_addr_copy((unsigned char *)(&pdel_sta_evt->macaddr), MacAddr);
-@@ -4386,7 +4395,9 @@ void report_add_sta_event(struct adapter *padapter, unsigned char *MacAddr,
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct stassoc_event);
- 	pc2h_evt_hdr->ID = _AddSTA_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc_return(&pmlmeext->event_seq);
- 
- 	padd_sta_evt = (struct stassoc_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	ether_addr_copy((unsigned char *)(&padd_sta_evt->macaddr), MacAddr);
-diff --git a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
-index b11a6886a083..09b7e3bb2738 100644
---- a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
-@@ -7,6 +7,7 @@
- #ifndef __RTW_MLME_EXT_H_
- #define __RTW_MLME_EXT_H_
- 
-+#include <linux/seqnum_ops.h>
- #include <osdep_service.h>
- #include <drv_types.h>
- #include <wlan_bssdef.h>
-@@ -393,7 +394,7 @@ struct p2p_oper_class_map {
- struct mlme_ext_priv {
- 	struct adapter	*padapter;
- 	u8	mlmeext_init;
--	atomic_t	event_seq;
-+	struct	seqnum32 event_seq;
- 	u16	mgnt_seq;
- 
- 	unsigned char	cur_channel;
+ 	scsidev = scsicmd->device;
+ 	vdisk = scsidev->hostdata;
+-	if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
+-		atomic_inc(&vdisk->error_count);
++	if (seqnum32_fetch(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
++		seqnum32_inc_return(&vdisk->error_count);
+ 	else
+ 		atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
+ 	rtn = forward_taskmgmt_command(TASK_MGMT_LUN_RESET, scsidev);
+@@ -429,8 +430,8 @@ static int visorhba_bus_reset_handler(struct scsi_cmnd *scsicmd)
+ 	scsidev = scsicmd->device;
+ 	shost_for_each_device(scsidev, scsidev->host) {
+ 		vdisk = scsidev->hostdata;
+-		if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
+-			atomic_inc(&vdisk->error_count);
++		if (seqnum32_fetch(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
++			seqnum32_inc_return(&vdisk->error_count);
+ 		else
+ 			atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
+ 	}
+@@ -803,8 +804,8 @@ static void do_scsi_linuxstat(struct uiscmdrsp *cmdrsp,
+ 		return;
+ 	/* Okay see what our error_count is here.... */
+ 	vdisk = scsidev->hostdata;
+-	if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT) {
+-		atomic_inc(&vdisk->error_count);
++	if (seqnum32_fetch(&vdisk->error_count) < VISORHBA_ERROR_COUNT) {
++		seqnum32_inc_return(&vdisk->error_count);
+ 		atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
+ 	}
+ }
+@@ -884,7 +885,7 @@ static void do_scsi_nolinuxstat(struct uiscmdrsp *cmdrsp,
+ 		if (atomic_read(&vdisk->ios_threshold) > 0) {
+ 			atomic_dec(&vdisk->ios_threshold);
+ 			if (atomic_read(&vdisk->ios_threshold) == 0)
+-				atomic_set(&vdisk->error_count, 0);
++				seqnum32_init(&vdisk->error_count);
+ 		}
+ 	}
+ }
 -- 
 2.27.0
 
