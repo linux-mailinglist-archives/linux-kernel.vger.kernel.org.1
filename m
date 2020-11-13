@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF012B21CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51272B21D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgKMRQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:16:46 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:57705 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726028AbgKMRQp (ORCPT
+        id S1726395AbgKMRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:17:21 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:53310 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgKMRRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:16:45 -0500
-Received: (qmail 327091 invoked by uid 1000); 13 Nov 2020 12:16:58 -0500
-Date:   Fri, 13 Nov 2020 12:16:58 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     John Boero <boeroboy@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
-Message-ID: <20201113171658.GF322940@rowland.harvard.edu>
-References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
- <X61rce8GANHW1ysh@kroah.com>
- <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
- <X613chtPVIg8kquH@kroah.com>
- <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
- <20201112192524.GB287229@rowland.harvard.edu>
- <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
- <20201113163449.GB322940@rowland.harvard.edu>
- <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
+        Fri, 13 Nov 2020 12:17:20 -0500
+Received: by mail-il1-f198.google.com with SMTP id c9so6995127ilu.20
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:17:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=AoVMm0F0BfO3BX7DOFKEUiRvpD+PX2QeLVOvFi7bkcM=;
+        b=quWUCEcB6rvn3ZvR8e5DmPSjHmA+82fbR4PxJCOb2uLbpH61LorgEzdIeZBljsM9Tg
+         kQWGZ/uIOGkyIXKzPxEge2f2jPmnf/0RVZE4i8nR2WHH6/6M8+7jnLQTVK8QExGqLBh7
+         YDkaFjranWauLpjpXA2KmL0SEnIjmUdIhB8kIdbJJKW9qZ+l1IB6hI05Qdtd0+PjB6Dn
+         TNrc0H6t7QVqYH6cwSGLvbk8C+RWPvPTcBlJfBBxLLAS25zB45bgxfqfKqdRpvlYNGOt
+         DqUnKHs+vp2XJvDXAOxXOCagywnuAzYsbboFyovD8wP8baYJJSTh9V6OOH2u4GzJNYQ4
+         DcCA==
+X-Gm-Message-State: AOAM532cqLA2eaeaxZEDa8kV4GFirqDVcgB/5MqGnwXN7hQ28o7Yzy4K
+        0X18DZ0aQFwsc4m05/ShScPlE+h35ROCQ6qpM+UPlQJQ3PI1
+X-Google-Smtp-Source: ABdhPJypk6Mtb4JhlkbUSWPQMaAGnlH+/9mixnEt5vFWHVLIpKop1ODS3gSu6+q8vsEchftOxQ2/+1UhED8lELPES0ZXN6qO9ZV5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a92:cf51:: with SMTP id c17mr641766ilr.113.1605287851739;
+ Fri, 13 Nov 2020 09:17:31 -0800 (PST)
+Date:   Fri, 13 Nov 2020 09:17:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002a530d05b400349b@google.com>
+Subject: memory leak in generic_parse_monolithic
+From:   syzbot <syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 04:45:52PM +0000, John Boero wrote:
-> Sorry I wanted to include a pastebin or link but was trying to follow maillist
-> guidelines and not include links or exceed wrap guidelines.  Full contents:
-> https://paste.centos.org/view/3746bc40
-> 
-> Yes I understand the return dodges the config dereference.
-> 
-> Original line usb.c:281 is the original error:
-> 
-> 280| for (i = 0; i < config->desc.bNumInterfaces; i++)
-> 281|  if (config->interface[i]->altsetting[0]
-> 282|    .desc.bInterfaceNumber == ifnum)
-> 283|  return config->interface[i];
+Hello,
 
-Okay.  Without having looked at the code, I would guess that uvcvideo's 
-uvc_ioctl_streamon() handler -- or some routine beneath it -- either 
-doesn't lock the USB interface while starting I/O, or doesn't check 
-(while holding the lock) to see whether the driver has been unbound.
+syzbot found the following issue on:
 
-This sort of error (config->interface[i] == NULL) is what you expect to 
-see if a driver tries to carry out I/O to a device that has been 
-unplugged and that it has been unbound from.
+HEAD commit:    af5043c8 Merge tag 'acpi-5.10-rc4' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13e8c906500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
+dashboard link: https://syzkaller.appspot.com/bug?extid=86dc6632faaca40133ab
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102a57dc500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129ca3d6500000
 
-Alan Stern
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com
+
+Warning: Permanently added '10.128.0.84' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff888111f15a80 (size 32):
+  comm "syz-executor841", pid 8507, jiffies 4294942125 (age 14.070s)
+  hex dump (first 32 bytes):
+    25 5e 5d 24 5b 2b 25 5d 28 24 7b 3a 0f 6b 5b 29  %^]$[+%](${:.k[)
+    2d 3a 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -:..............
+  backtrace:
+    [<000000005c6f565d>] kmemdup_nul+0x2d/0x70 mm/util.c:151
+    [<0000000054985c27>] vfs_parse_fs_string+0x6e/0xd0 fs/fs_context.c:155
+    [<0000000077ef66e4>] generic_parse_monolithic+0xe0/0x130 fs/fs_context.c:201
+    [<00000000d4d4a652>] do_new_mount fs/namespace.c:2871 [inline]
+    [<00000000d4d4a652>] path_mount+0xbbb/0x1170 fs/namespace.c:3205
+    [<00000000f43f0071>] do_mount fs/namespace.c:3218 [inline]
+    [<00000000f43f0071>] __do_sys_mount fs/namespace.c:3426 [inline]
+    [<00000000f43f0071>] __se_sys_mount fs/namespace.c:3403 [inline]
+    [<00000000f43f0071>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+    [<00000000dc5fffd5>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000004e665669>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
