@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C472B271B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433A42B272F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgKMVgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:36:20 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:42935 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKMVgU (ORCPT
+        id S1726158AbgKMVie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:38:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgKMVia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:36:20 -0500
-Received: by mail-pg1-f196.google.com with SMTP id i13so8141108pgm.9;
-        Fri, 13 Nov 2020 13:36:20 -0800 (PST)
+        Fri, 13 Nov 2020 16:38:30 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDA3C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:38:29 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id t191so10380564qka.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:38:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M8zBXFSjIZOK9hwx4MM/Gbo/B/5HKQYO+MnrHW6YcPQ=;
+        b=b81L7k86NKedHCptv4GYQ9yylINiHwfIIvGHNE+UbT1+t9LQb0M5hINKYk5nbaEwQ0
+         YAAJtkz7jqhLXDQHNYGLiNsjPxXdgYsi6VCZlsu6ZJ2eKWwYK7tgmV0pUirLAr2BYYeN
+         pKxY6WUmGncC7atMhzrOE5X52NVLbAfkst4vI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jm0UQg+mdszuwGSP+rSGtDVxYjXFAKTIf/hP3qOCt5s=;
-        b=n1oMl71ey4nw84qSa7Ff98YjFNCQwsWUwhOZTLM63m8M73DuV2EvqBjkrydDnmyMVD
-         h2CsDIdBsAlkIB7yjPsmzqUfkOcjJWtJWn4F6gsOGgmToST+LBkEjtl0lElUKmbB36qh
-         Zatwxwpy1S9GDG/6Xssvg/5kUNvrC6JiMXT0fH0r6Wv9HMOyz+ESMrAWGJAG+5IB/5lS
-         Bs8BJJlFldHyy9TxpOhsBM2oPLuyqp5bvnWbpeSATvvJhs6aF7CrcH7As4DQpEYy5hkq
-         7lfC/+VytOqglMxFgeHIJpgQR0cFtCbgY1xu4PzNm1bLPvQfiQgDE4DR8AD+tnK2uxKV
-         s0yQ==
-X-Gm-Message-State: AOAM531l2XrxsMnnP/Vo1nfw3tAzYdrSaBdQ9h/EUo/5Mtl2OCoqzG0F
-        pMfpN1f+b0vwpxNae5aUA64=
-X-Google-Smtp-Source: ABdhPJyd2mq3CcH87fe4TuuOQePNIWrpkvt9hnJ7sQTx3mTF7rd18fMqO1nNSZ6lKYfYZ9gwY9KR7A==
-X-Received: by 2002:a62:8cd6:0:b029:18b:ad92:503b with SMTP id m205-20020a628cd60000b029018bad92503bmr3670399pfd.77.1605303379651;
-        Fri, 13 Nov 2020 13:36:19 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:be97:ffd:339d:919c? ([2601:647:4802:9070:be97:ffd:339d:919c])
-        by smtp.gmail.com with ESMTPSA id a84sm10727208pfa.53.2020.11.13.13.36.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 13:36:18 -0800 (PST)
-Subject: Re: [PATCH] iosched: Add i10 I/O Scheduler
-To:     Jens Axboe <axboe@kernel.dk>, Rachit Agarwal <rach4x0r@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
-        Qizhe Cai <qc228@cornell.edu>,
-        Midhul Vuppalapati <mvv25@cornell.edu>,
-        Rachit Agarwal <ragarwal@cs.cornell.edu>,
-        Sagi Grimberg <sagi@lightbitslabs.com>,
-        Rachit Agarwal <ragarwal@cornell.edu>
-References: <20201112140752.1554-1-rach4x0r@gmail.com>
- <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
- <da0c7aea-d917-4f3a-5136-89c30d12ba1f@grimberg.me>
- <fd12993a-bcb7-7b45-5406-61da1979d49d@kernel.dk>
- <10993ce4-7048-a369-ea44-adf445acfca7@grimberg.me>
- <c4cb66f6-8a66-7973-dc03-0f4f61d0a1e4@kernel.dk>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <cbe18a3d-8a6b-e775-81bb-3b3f11045183@grimberg.me>
-Date:   Fri, 13 Nov 2020 13:36:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M8zBXFSjIZOK9hwx4MM/Gbo/B/5HKQYO+MnrHW6YcPQ=;
+        b=gA1Tn9DW5ou+FWdyL/iGF3n2KCmh5kZov8MNdh2ep2qdgnp4gD1yKpxXT5+FeIgQuq
+         cXkN7MjPTN5fYKpN6hENbVbiGaufk61rj5v2Ozx97xV8qKx4P89q5RSgZ8Br0bjfthbA
+         2Loq3zN94qABmsSfpuTQVVKoPBzV0PYymeg1KW4IGHkMXpYAROXKICxAlJ0q//vLAqaF
+         m82RN91ugsqpW68IXi/tMEXZkXiw138rMbPgrutpFwWGqwgh8BVvLMY1jLHFcqE3N3yV
+         15Iyjg8yfe0yUA9UE2c7PkQ1gpa/vYiwS6wkeGSYfPDbx+NzIOhFQZQkBHR/GTqTi+s0
+         wOiw==
+X-Gm-Message-State: AOAM533la/FLHQiiyOzndqj6dMnZWVt3dQJMZevcuuOIN/v31uCtdQQH
+        Yf1bIeF8PfUnEG8O0/rzjdCaIde+dBZqSR3m3gXetQ==
+X-Google-Smtp-Source: ABdhPJzRnvmVib+xlIuKfefCefWqNoIa67f+sJv+wJjeoRl4VZanoAEP503Co7KJt5SuWqq6SOBZY3KXtDb1p+B18Ow=
+X-Received: by 2002:a37:4185:: with SMTP id o127mr4130185qka.442.1605303509007;
+ Fri, 13 Nov 2020 13:38:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c4cb66f6-8a66-7973-dc03-0f4f61d0a1e4@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201112012329.1364975-1-pmalani@chromium.org> <X66Uo83dTGS2dMcx@kroah.com>
+In-Reply-To: <X66Uo83dTGS2dMcx@kroah.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Fri, 13 Nov 2020 13:38:17 -0800
+Message-ID: <CACeCKacBbYgkRx_BnYYgLOYiBHK+XSAu72+u=pCRZPnA6mntRg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] platform/chrome: cros_ec_typec: Add plug and plug altmodes
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
->> But if you think this has a better home, I'm assuming that the guys
->> will be open to that.
-> 
-> Also see the reply from Ming. It's a balancing act - don't want to add
-> extra overhead to the core, but also don't want to carry an extra
-> scheduler if the main change is really just variable dispatch batching.
-> And since we already have a notion of that, seems worthwhile to explore
-> that venue.
+On Fri, Nov 13, 2020 at 6:13 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Nov 11, 2020 at 05:23:25PM -0800, Prashant Malani wrote:
+> > This patch series add plug registration support to the cros-ec-typec
+> > driver. It also adds support for registering alternate modes for the
+> > registered plug. These features utilize the API provided by the Type C
+> > connector class framework.
+> >
+> > The first patch adds support to the connector class framework for the
+> > number_of_alternate_modes attribute (along with the relevant ABI
+> > documentation).
+> >
+> > The next two patches add plug registration, and then altmode
+> > registration for the plugs. The latter of these two patches utilizes the
+> > new function for plug number_of_alternate_modes introduced in the first patch.
+> >
+> > This series is based on top of the following branch and other patch
+> > series (applied in the order specified):
+> > - Branch: chrome-platform for-next [1], which is currently set to the
+> >   "Linux 5.10-rc1" tag.
+> > - cros-ec-typec: Patch series to register PD identity information + partner altmodes[2]
+> > - cros-ec-typec: Patch series to register cable[3]
+> > - cros-ec-typec: Patch series to add partner number_of_altmodes[4]
+> >
+> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git/log/?h=for-next
+> > [2]: https://lore.kernel.org/lkml/20201029222738.482366-1-pmalani@chromium.org/
+> > [3]: https://lore.kernel.org/lkml/20201106184104.939284-1-pmalani@chromium.org/
+> > [4]: https://lore.kernel.org/lkml/20201110061535.2163599-1-pmalani@chromium.org/
+>
+> Ok, I'm confused.  This is not the first submission of this series, as
+> you sent out a v2 a few days before this one.
 
-I agree,
+Sorry for confusing you. To clarify, this is the first version of this
+series particular set
+of patches. A few more related series of patches have been sent
+regarding this earlier
+(see [2], [3] & [4]) and I've not done a resend of those.
 
-The main difference is that this balancing is not driven from device
-resource pressure, but rather from an assumption of device specific
-optimization (and also with a specific optimization target), hence a
-scheduler a user would need to opt-in seemed like a good compromise.
+This series depends on those earlier series.
 
-But maybe Ming has some good ideas on a different way to add it..
+>
+> And am I supposed to suck in the chrome-platform branch into the
+> usb-next tree?
+>
+> What should I do here, ignore these?  Merge them?
+
+TBH I'm a little confused about how these get in myself. Across all
+these patches, there are probably
+3 patches (1 USB PD VDO header, two drivers/usb/typec/class.c patches)
+which belong to usb-next
+whereas everything else is chrome-platform.
+
+>
+> I see the USB change lost the reviewer's ack as well, why?
+
+I'm sorry but I didn't follow. As I mentioned above this is the first
+version of this
+series (which deals with cable plug and it's altmodes) and AFAIK it
+hasn't received any acks till now.
+
+All the previous series have not had any re-uploads, so they should
+still have all their review tags.
+
+>
+> I'm going to delete all of these patches from my review queue now and
+> wait for a resend with some clarity as to what I should do with it :)
+
+Enric, could you kindly help suggest a way I can upload things?
+Should I just merge everything into one big set of patches (RIght from
+[2] to this series) ?
+Or just let all the series go through chrome-platform?
+
+BR,
+
+-Prashant
