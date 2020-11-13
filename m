@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3392E2B169A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDE32B16B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 08:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKMHkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 02:40:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        id S1726352AbgKMHrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 02:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKMHkb (ORCPT
+        with ESMTP id S1726277AbgKMHq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:40:31 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE69C0613D1;
-        Thu, 12 Nov 2020 23:40:31 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w14so6917947pfd.7;
-        Thu, 12 Nov 2020 23:40:31 -0800 (PST)
+        Fri, 13 Nov 2020 02:46:59 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773A4C0613D6;
+        Thu, 12 Nov 2020 23:46:58 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id y17so6313595ejh.11;
+        Thu, 12 Nov 2020 23:46:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Kc4zpgCIo7TfpbXs93lzsYdWhQWRL3/bt5FKJ8OT6Ok=;
-        b=c5iRV+TVxkKb9WaqrpRn5rf4JeUYhg6cMZouSz9pd7SrGfWawMgxs1ep9lTG3LNjd5
-         Xp5Wuzp+X1Z0ex6e+tF9/TI5jWe7KURr8Qyg1jP8yP5SoIARvrZaO8Ze9L6EqxwGOow+
-         jwXTXm/XsPQQ2iIokiAIT82rS942qPJXkWaf6jzti1jV70T1o58J99UdO8dQeoeKrXG3
-         cvo1LKBdhWeFnsR0siDcbthi3WU6eRxYocpShJI1uN52J5GGzyYnfJpX0glXcq8Z2bpy
-         jH88jgnJwfnSmDOKydkp8VLjSV1AfPs9ck6FcEbFGYdJ60tsdw9168ichWmE8Uf6y7W3
-         cfGQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=7ArUtVEP6mH/0212zhITA5CWAlaYP+gUpK58Tfsw8Rg=;
+        b=Aef1hoF3OZjRI1EyFrCMiqe6PeCO8u4S3ocmj7J7Al78F7+CptXpWFIJqegfWtMjSL
+         uEGT4bGqlR/p7rzL92pY9q2RAfKcc+LM5ykNm2pVy+r+FAJ/csCvKtTEeTOUs1oCnkIR
+         Mm/3ocqGWe0m6naEzDOiDOk/cW7JR6Ys1XDMhyOFqhDLqhPxONPS4EZWyhsTiy75AP5G
+         TBvACUTrH5tqRnVBkB1XPnjszRn1HZqF0QgV5XNCpbzD2LrCt79SRZVOm+rh9iydBCUz
+         jOUOhPqtYXBA7yAEiZ8BNqo1u+Eup+JBBNn+CWAFCHMPnQ/43KVqKbChGg22rGwm8/A5
+         iCRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Kc4zpgCIo7TfpbXs93lzsYdWhQWRL3/bt5FKJ8OT6Ok=;
-        b=TZyDQ/RmV6K9BWmPMuMETGrQzA5F9NCYk89s1inrzQ24980Gtyc55c1ZkPsP1TT938
-         90Pucf4PtGBGJzEN/VnA82IOOkO/AMRwr5jV3MMWaLC72fGrfsbS0v3ixTf4ELpY6IzS
-         /agiCZhpeEG65i1yds2UXPwqK33qbRDDkkRZnML6d3jbDkZzRmdBwjvmmcf+a4ek6ahq
-         rHOiQbRbqMYFzltctAUZ8970EggZDHoeDJu0ltN29G1+KvlZhXCOPETwRIf/T1KuV9b2
-         gsq62ogT1oaF1xqh3fMfDJ8p9d5tUb5phgfai6/sx5jKnsWi5swxSCU860NKlLvQ0V5p
-         n65Q==
-X-Gm-Message-State: AOAM530ENyNdvZM2K5/Z367c9NvT3Re7/SBCM0cedsnbc6GZlq0fCESC
-        /xZooCiTOraYsqlr/bVl+UDp7P0OXTw=
-X-Google-Smtp-Source: ABdhPJxS7sM9wBhoU4SnE3Wbnq9NyDqSYDIvLWXd+gJMpezdIifAVvYeUD5nePM1SIGfmvbBX+8AFw==
-X-Received: by 2002:a63:5d04:: with SMTP id r4mr1054276pgb.165.1605253231281;
-        Thu, 12 Nov 2020 23:40:31 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id i29sm8067234pgb.10.2020.11.12.23.40.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 23:40:30 -0800 (PST)
-Date:   Thu, 12 Nov 2020 23:40:28 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Benjamin Tissoires <benjamin.tissoires@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH 08/15] input: touchscreen: surface3_spi: Remove set but
- unused variable 'timestamp'
-Message-ID: <20201113074028.GI356503@dtor-ws>
-References: <20201112110204.2083435-1-lee.jones@linaro.org>
- <20201112110204.2083435-9-lee.jones@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=7ArUtVEP6mH/0212zhITA5CWAlaYP+gUpK58Tfsw8Rg=;
+        b=ENj0KZCHfozUvbHzr7VUYtd7DaeBDB4BZsfj0Up8FoLM6hZyv7sYsO/T5aR78Knx+A
+         Ewv0e/rKMLmH6+9L4/q419YesVNYkoWISfO2OXpZjLRH47A+4AFyG1cTY0l6tuJNqUBI
+         9KU1ldBFvSZ3ThRQ1fXADb8koizRvyqR6TAzn1xubtuBwAPDp6nIYpje4s7UC/3d/oVp
+         O5u998XGfeitxM1SzA0Zjz3253xUZ9nYLH/BUxB15cCsG44kgI/kysag/JtVWQQiMuif
+         G2d/jDZljolXQyrIajblSEsJMYz0I1q8yhZHyJKyynbiAy1ewJxmHq5f2rtFOqI5R01F
+         nUUQ==
+X-Gm-Message-State: AOAM531wVbOeNEaX63c1/lLgPbuOz+jIjdxXERYk0RJIBYUbj3mdeTlP
+        yH3WdfQlzeVfOVwjFe6nB6k=
+X-Google-Smtp-Source: ABdhPJxUTI3Izgzl563ouqY1bntHlNqDEvlZuNB8h+OBvKvgIwmmw/LHak4pmNnWWe6ymDWvfPw/Zg==
+X-Received: by 2002:a17:906:ae52:: with SMTP id lf18mr807273ejb.9.1605253617103;
+        Thu, 12 Nov 2020 23:46:57 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:e113:5d8d:7b96:ca98? (p200300ea8f232800e1135d8d7b96ca98.dip0.t-ipconnect.de. [2003:ea:8f23:2800:e113:5d8d:7b96:ca98])
+        by smtp.googlemail.com with ESMTPSA id m27sm3051455eji.64.2020.11.12.23.46.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 23:46:56 -0800 (PST)
+Subject: Re: [PATCH 2/3] net: openvswitch: use core API for updating TX stats
+To:     Lev Stipakov <lstipakov@gmail.com>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org
+Cc:     Lev Stipakov <lev@openvpn.net>
+References: <20201112111150.34361-1-lev@openvpn.net>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <598c779c-fb0b-a9a6-43be-3a7cd5b38946@gmail.com>
+Date:   Fri, 13 Nov 2020 08:40:42 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
+In-Reply-To: <20201112111150.34361-1-lev@openvpn.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112110204.2083435-9-lee.jones@linaro.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:01:57AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+Am 12.11.2020 um 12:11 schrieb Lev Stipakov:
+> Commit d3fd65484c781 ("net: core: add dev_sw_netstats_tx_add") has added
+> function "dev_sw_netstats_tx_add()" to update net device per-cpu TX
+> stats.
 > 
->  drivers/input/touchscreen/surface3_spi.c: In function ‘surface3_spi_process_touch’:
->  drivers/input/touchscreen/surface3_spi.c:97:6: warning: variable ‘timestamp’ set but not used [-Wunused-but-set-variable]
+> Use this function instead of own code. While on it, replace
+> "len" variable with "skb->len".
 > 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Henrik Rydberg <rydberg@bitmath.org>
-> Cc: Benjamin Tissoires <benjamin.tissoires@gmail.com>
-> Cc: linux-input@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Using dev_sw_netstats_tx_add() is fine, however you have to keep
+variable len, see remark in the code.
+
+In addition you can replace internal_get_stats() with dev_get_tstats64().
+
+> Signed-off-by: Lev Stipakov <lev@openvpn.net>
 > ---
->  drivers/input/touchscreen/surface3_spi.c | 2 --
->  1 file changed, 2 deletions(-)
+>  net/openvswitch/vport-internal_dev.c | 16 +++++-----------
+>  1 file changed, 5 insertions(+), 11 deletions(-)
 > 
-> diff --git a/drivers/input/touchscreen/surface3_spi.c b/drivers/input/touchscreen/surface3_spi.c
-> index ce4828b1415a8..72dc4c562a4e1 100644
-> --- a/drivers/input/touchscreen/surface3_spi.c
-> +++ b/drivers/input/touchscreen/surface3_spi.c
-> @@ -94,9 +94,7 @@ static void surface3_spi_report_touch(struct surface3_ts_data *ts_data,
->  
->  static void surface3_spi_process_touch(struct surface3_ts_data *ts_data, u8 *data)
+> diff --git a/net/openvswitch/vport-internal_dev.c b/net/openvswitch/vport-internal_dev.c
+> index 1e30d8df3ba5..116738d36e02 100644
+> --- a/net/openvswitch/vport-internal_dev.c
+> +++ b/net/openvswitch/vport-internal_dev.c
+> @@ -33,23 +33,17 @@ static struct internal_dev *internal_dev_priv(struct net_device *netdev)
+>  static netdev_tx_t
+>  internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
 >  {
-> -	u16 timestamp;
->  	unsigned int i;
-> -	timestamp = get_unaligned_le16(&data[15]);
-
-Benjamin, should we pass timing data on to userspace instead?
-
+> -	int len, err;
+> +	int err;
 >  
->  	for (i = 0; i < 13; i++) {
->  		struct surface3_ts_data_finger *finger;
-> -- 
-> 2.25.1
+> -	len = skb->len;
+>  	rcu_read_lock();
+>  	err = ovs_vport_receive(internal_dev_priv(netdev)->vport, skb, NULL);
+
+We would have a well-hidden problem here. ovs_vport_receive() calls function
+ovs_dp_process_packet() that frees the skb under certain circumstances.
+Note that the skb can be freed even if ovs_vport_receive() returns OK.
+Using skb->len after calling ovs_vport_receive() could result in a
+use-after-free therefore. So you have to keep variable len.
+
+>  	rcu_read_unlock();
+>  
+> -	if (likely(!err)) {
+> -		struct pcpu_sw_netstats *tstats = this_cpu_ptr(netdev->tstats);
+> -
+> -		u64_stats_update_begin(&tstats->syncp);
+> -		tstats->tx_bytes += len;
+> -		tstats->tx_packets++;
+> -		u64_stats_update_end(&tstats->syncp);
+> -	} else {
+> +	if (likely(!err))
+> +		dev_sw_netstats_tx_add(netdev, 1, skb->len);
+> +	else
+>  		netdev->stats.tx_errors++;
+> -	}
+> +
+>  	return NETDEV_TX_OK;
+>  }
+>  
 > 
 
-Thanks.
-
--- 
-Dmitry
