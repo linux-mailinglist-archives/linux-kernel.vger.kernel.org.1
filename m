@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDBD2B278F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4312B2795
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKMVxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:53:48 -0500
-Received: from ms.lwn.net ([45.79.88.28]:50848 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgKMVxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:53:48 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 285EC4FA;
-        Fri, 13 Nov 2020 21:53:48 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 14:53:47 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Federico Vaga <federico.vaga@vaga.pv.it>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] doc:it_IT: align Italian documentation
-Message-ID: <20201113145347.01fea824@lwn.net>
-In-Reply-To: <20201113133638.7989-1-federico.vaga@vaga.pv.it>
-References: <20201113133638.7989-1-federico.vaga@vaga.pv.it>
-Organization: LWN.net
+        id S1726125AbgKMV4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:56:13 -0500
+Received: from mail-pg1-f174.google.com ([209.85.215.174]:39730 "EHLO
+        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgKMV4M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 16:56:12 -0500
+Received: by mail-pg1-f174.google.com with SMTP id i7so8187709pgh.6;
+        Fri, 13 Nov 2020 13:56:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SHSbzMcVfeIHaoE+yOJYMuqSia/Ry07Es4s6O7UdW3A=;
+        b=H6HnASWCs2E6oPHUjmT7Kv3rN45BC+QdC8s+Q6mA9H199j6qxzpgL0x17ne62cFIgM
+         SAAeGksCg6RMIEh7lnji2ijWkN4GCz5VUKFmlq/LlwUM9i+1W89r4Pze0+lixys5Pf8a
+         HSiNPD9hZXdR+GLfEHIzGFwlEETv83tZgYsVxsRDjtAhMZtVK2prK5Fg1PN4SeZZuh80
+         E/cBGjJZjMxC9sdLG0G/ar0ZBJuRxpptCPrES3NRd34Qb41ITXknJoMnsLFgThffMnej
+         5WE89nvvcK5iyQBENxXI9IeCeuOgPnVxH19zLI8XYZoJ52bklXAQa5WhYD8pF+9053Ds
+         sFMg==
+X-Gm-Message-State: AOAM531WYrPHpy0DHDThUtgV8lgcLvBr1nZubNoBVA2nd02FkF4Q0lbW
+        4YQPGmej3hGD69Aca78tWYw=
+X-Google-Smtp-Source: ABdhPJwTOoAtJr0iibtmigs2tAP2l7L6yRVJViK+rRXstuLrzMg8yCn899CSRJZaTSbCG6DVghICrw==
+X-Received: by 2002:a62:1ccf:0:b029:18b:c80f:cf0c with SMTP id c198-20020a621ccf0000b029018bc80fcf0cmr3717378pfc.24.1605304571302;
+        Fri, 13 Nov 2020 13:56:11 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:be97:ffd:339d:919c? ([2601:647:4802:9070:be97:ffd:339d:919c])
+        by smtp.gmail.com with ESMTPSA id r73sm10903169pfc.20.2020.11.13.13.56.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 13:56:10 -0800 (PST)
+Subject: Re: [PATCH] iosched: Add i10 I/O Scheduler
+To:     Jens Axboe <axboe@kernel.dk>, Rachit Agarwal <rach4x0r@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
+        Qizhe Cai <qc228@cornell.edu>,
+        Midhul Vuppalapati <mvv25@cornell.edu>,
+        Rachit Agarwal <ragarwal@cs.cornell.edu>,
+        Sagi Grimberg <sagi@lightbitslabs.com>,
+        Rachit Agarwal <ragarwal@cornell.edu>
+References: <20201112140752.1554-1-rach4x0r@gmail.com>
+ <5a954c4e-aa84-834d-7d04-0ce3545d45c9@kernel.dk>
+ <da0c7aea-d917-4f3a-5136-89c30d12ba1f@grimberg.me>
+ <fd12993a-bcb7-7b45-5406-61da1979d49d@kernel.dk>
+ <10993ce4-7048-a369-ea44-adf445acfca7@grimberg.me>
+ <c4cb66f6-8a66-7973-dc03-0f4f61d0a1e4@kernel.dk>
+ <cbe18a3d-8a6b-e775-81bb-3b3f11045183@grimberg.me>
+ <26a1cd20-6b25-eaa6-7ab6-ba7f5afaf6dd@kernel.dk>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <81cdcb58-9a23-8192-6213-7f2408a3b8ee@grimberg.me>
+Date:   Fri, 13 Nov 2020 13:56:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <26a1cd20-6b25-eaa6-7ab6-ba7f5afaf6dd@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 14:36:38 +0100
-Federico Vaga <federico.vaga@vaga.pv.it> wrote:
 
-> Translation for the following patches
+>>>> But if you think this has a better home, I'm assuming that the guys
+>>>> will be open to that.
+>>>
+>>> Also see the reply from Ming. It's a balancing act - don't want to add
+>>> extra overhead to the core, but also don't want to carry an extra
+>>> scheduler if the main change is really just variable dispatch batching.
+>>> And since we already have a notion of that, seems worthwhile to explore
+>>> that venue.
+>>
+>> I agree,
+>>
+>> The main difference is that this balancing is not driven from device
+>> resource pressure, but rather from an assumption of device specific
+>> optimization (and also with a specific optimization target), hence a
+>> scheduler a user would need to opt-in seemed like a good compromise.
+>>
+>> But maybe Ming has some good ideas on a different way to add it..
 > 
-> commit 905705a8fd43 ("docs: programming-languages: refresh blurb on clang support")
-> commit 5ff4aa70bf34 ("docs: submitting-patches: use :doc: for references")
-> commit 030f066f677f ("docs: submitting-patches: describe preserving review/test tags")
-> commit 68e4cd17e218 ("docs: deprecated.rst: Add zero-length and one-element arrays")
-> commit 5429ef62bcf3 ("compiler/gcc: Raise minimum GCC version for kernel builds to 4.8")
-> commit 5b5bbb8cc51b ("docs: process: Add an example for creating a fixes tag")
-> commit 858e6845654d ("docs: dt: convert submitting-patches.txt to ReST format")
-> commit cca73e4946c4 ("docs: Correct the release date of 5.2 stable")
-> commit c170f2eb9648 ("docs: Document cross-referencing between documentation pages")
-> commit 7c8b9e3000f8 ("kernel-doc: Update "cross-referencing from rST" section to use automarkup")
-> commit 27def953b63b ("docs: deprecated.rst: Expand str*cpy() replacement notes")
-> commit 17dca0502314 ("docs: deprecated.rst: Update zero-length/one-element arrays section")
-> commit 3519c4d6e08e ("Documentation: add minimum clang/llvm version")
-> commit 0bddd227f3dc ("Documentation: update for gcc 4.9 requirement")
-> commit 9f364b605f34 ("submitting-patches.rst: presume git will be used")
-> commit 4ebdf7be21d6 ("Documentation/maintainer: rehome sign-off process")
-> commit 7433ff33e8ba ("Documentation/process: expand plain-text advice")
-> commit eb45fb2fb16d ("docs: process: Add cross-link to security-bugs")
-> commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
-> commit f67281a72b30 ("Documentation: process: step 2: Link to email list fixed")
-> 
-> Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+> So here's another case - virtualized nvme. The commit overhead is
+> suitably large there that performance suffers quite a bit, similarly to
+> your remote storage case. If we had suitable logic in the core, then we
+> could easily propagate this knowledge when setting up the queue. Then it
+> could happen automatically, without needing a configuration to switch to
+> a specific scheduler.
 
-This doesn't apply to docs-next, not quite sure why.
+Yes, these use-cases share characteristics. I'm not at all opposed to
+placing this in the core. I do think that in order to put something like
+this in the core, the bar needs to be higher such that an optimization
+target cannot be biased towards a workload (i.e. needs to be adaptive).
 
-Also...what changed with v2?  Please always include that information under
-the "---" line.
+I'm still not sure how we would build this on top of what we already
+have as it is really centered around device being busy (which is not
+the case for nvme), but I didn't put enough thought into it yet.
 
-Thanks,
-
-jon
