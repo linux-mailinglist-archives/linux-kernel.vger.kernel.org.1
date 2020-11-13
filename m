@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A782B2661
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741F12B2660
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgKMVRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:17:02 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49126 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKMVQn (ORCPT
+        id S1726352AbgKMVQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:16:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgKMVQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:16:43 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADLEpkJ018836;
-        Fri, 13 Nov 2020 21:16:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=yiQW3xIbuJ/MXtrfniRQcRELAFNJ1wL+nY/XFo7u7WM=;
- b=iNuxfsMLzHuGdBn377/eKwnmHOjPQkH1u9o/cQKLJwV7gZvqIWlwXT2xQqGO44yqQw4H
- SRGtR+0HGvJ9Aspn0nvvTbaIWetPnyJ7GDhDcsHwrG2CtX7UIIQ542vKU36Q8Qq8SVey
- JzTisEO85NTDAylWiiFd4yexBYVkr6+h7qCpOR2utqkZ7YsiBjE1fy2yLMtsOb8SW0zt
- Y4LKfg4bsaCUi/+YfJfssD79D7rKoXbyVy9Glg2E9XtTFzs7V1M2wQtvmtz1kSqMIeCV
- WWL1z4T/EZi70vNGwegev2lSJrnEr1yiZAGKzyrEnZ8kCv9ako8Z+PgjqDTS0JIuud7t Vg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34nkhmcabh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 13 Nov 2020 21:16:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADLAOn3075937;
-        Fri, 13 Nov 2020 21:16:04 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34rtku9xsx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Nov 2020 21:16:04 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ADLG3oZ021649;
-        Fri, 13 Nov 2020 21:16:03 GMT
-Received: from [192.168.0.190] (/68.201.65.98)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 13 Nov 2020 13:16:03 -0800
-Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
-To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-Autocrypt: addr=dave.kleikamp@oracle.com; prefer-encrypt=mutual; keydata=
- mQINBE7VCEMBEAC3kywrdIxxL/I9maTCxaWTBiHZFNhT5K8QZGLUfW3uFrW89PdAtloSEc1W
- ScC9O+D2Ygqwx46ZVA7qMXHxpNQ6IZp8he88gQ9lilWD8OJ/T3OKyT6ITdkmsgv6G08QdGCP
- 0+mCpETv79kcj+Z4pzKLN5QyKW40R3LGcJ6a+0AG5As5/ZkmhceSffdSyDS6zKff3c6cgfQH
- zl+ugygdKItr3UGIfxuzF3b9uYicsVStwIxyuyzY8i1yYYnnXZtWkI9ZwxT+00PqjCvfVioy
- xswoscukLQntlkfd4gwM8t56RIxqEo4iNmFwmBYHlSd7C+8SrvPAOgvOtr1vjzJhEsJ2uJNW
- O2pgZc8xMxe8vhyZK1Nih67hbtzSIpFij06zHwAt4AY3sCbWslOExb8JboINWhI89QcgNmMK
- uwLHag3D/zZQXQIBvC5H27T49NA6scA92j2qFO6Beks3n/HW6TJni/S9sUXRghRiGDdc/pFr
- 20R3ivRzKyYBoSWl/3Syo0JcWdEpqq6ti/5MTRFZ+HQjwgUGZ5w+Xu2ttq/q9MyjD4odfKuF
- WoXk3bF+9LozDNkRi+JxCNT9+D4lsm3kdFTUXHf/qU/iHTPjwYZd6UQeCHJPN6fpjiXolF+u
- qIwOed8g8nXEXKGafIl3zsAzXBeXKZwECi9VPOxT4vrGHnlTHwARAQABtDZEYXZpZCBLbGVp
- a2FtcCAoQUtBIFNoYWdneSkgPGRhdmUua2xlaWthbXBAb3JhY2xlLmNvbT6JAjgEEwECACIF
- Ak7VCEMCGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEDaohF61QIxkpSsP/3DtjVT0
- 4vPPB7WWGWapnIb8INUvMJX84y4jziAk9dSESdPavYguES9KLOTXmAGIVwuZj5UtUNie4Q3V
- fZp7Mc7Lb3sf9r2fIlVJXVhQwMFjPYkPLbQBAtHlnt8TClkF2te47tVWuDqI4R0pwACKhUht
- lQRXpJy7/8pHdNfHyBLOqw6ica8R+On9KkcEJCE+e8XiveAC+2+YcZyRwrj0dTfWEQI6CNwW
- kax4AtXo/+NigwdU0OXopLDpyro7wIVt3gWLPV99Bo387PPyeWUSZOH6kHIXyYky51zzoZF3
- 1XuX3UvObx7i/f3uH0jd3O/0/h2iHB9QxmykJBG7AJcF5KiunAL+91a0bqr9IHiffDo0oAme
- 9JFKOrkcODnnWuHABB6U4pT2JQRF199/Vt4qR+kvuo+xy0eO+0CHEhQWfyFyxz8nQJlizq9p
- jnzaWe8tAbJz2WqB2CNBhLI7Qn8cAEM66v2aRCnJZ4Uty7HRDnIbQ0ixUxLNIAWM8N4C6w2I
- RxLfIfNqTTqEcz2m2fg8wSiNuFh17HfzFM/ltXs4wJ610IhwXuPPsA2V/j2pT8GDhn/rMAGN
- IbO8iEbDO+gKpN47r+OVjxq3fWbRc2ouqRN+fHgvLYt1xcZnPD/sGyLJpMdSHlpCpgKr3ijA
- y16pnepPaVCTY1FTvNCkZ6hmGvuDuQINBE7VCEMBEADEsrKHN4cTmb0Lz4//ah9WMCvZXWD3
- 2EWhMh+Pqr+yin7Ga77K5FtgirKjYOtymXeMw640cqp6DaIo+N6KPWM2bsos12nIfN9BWisb
- XhPMmYZtoYALMjn3CYvE01N+Ym/SDFsfjAu3WtbefEC/Hjw2hlCfPMotU1wkfGEgapkFcGsG
- MxDjdZN7dSkBH1dKkG3Cx7Cni8qn0Q3oJzSfR6H2KZZZWiJGV70WKWE01yQCYLHfbPMQKS1u
- qTEaCND/iDjZvbungBUR1kg43CpbzpWlY28AuZrNmGpar4h5YwbiJO2fR7WgiDYmXqxQ8DXY
- uxndrmTOQqj8EizkOifINWQvouMaasKLIK+U38YCG5stImSmKfjBxrICgXITp/YS4/i1yR3r
- HthdQ5hZVfCDxKjR8knv+6A37588mYE6DTBpFh9To4baNo3N4ikkg4+bAcO/5v3QiFsCdh3H
- hR9zlBgy2jOUFYSdSxhXx2y0NUxQSUOpw59sqgBFmgTi2FscchgBraujpu7JE8TdOdSMPSNG
- Dqx8G5a1g3Ot6+HxgQM8LsZ5qq3BGUDB0DLHtMVu3r9x2327QSp/q2CgwPn2XzelQ0yNolAt
- 6wjbQwZXTGIGQGlpAFk7UOED/je8ANKYCkE0ZdqQigyoQFEZtyjYxzIzJRWLl4lJjhBSar1v
- TiSreQARAQABiQIfBBgBAgAJBQJO1QhDAhsMAAoJEDaohF61QIxk/DsP/RjCZHGEsiX0uHxu
- JzPglNp9mjgG5dGmgYn0ERSat4bcTQV5iJN2Qcn1hP5fJxKg55T8+cFYhFJ1dSvyBVvatee7
- /A2IcNAIBBTYCPYcBC771KAU/JOokYu2lkrGM2SXq4XxpfDzohOS3LDGif47TYpEKWbP4AHq
- vcIl9CYvnhnbV+B/SxqhH7iYB6q2bqY6ki7fsk2lK65FFhlkkgsKyeOiuaVNEv3tmPCMAY/v
- oMAsCTLK63Wsd9pUY2SGt2ACIy7pTq+k1b09cqlTM2vux8/R0HNzQBXNcFiKKz+JNVObP30N
- /hsLs0+Ko9f/2OcixfkGjdih8I+FnRdS6wAO7k6g+tTBOj/sbSbH+eZbxWwANkiFkykOASGA
- /4RzIDie72NiM8lKzpyrlaruSFxuj9/wZuCT7jaYIaiOMPy7Y0Lpisy/hRhwDCNlKU6Hcr7k
- hQ1cIx4CB40fwqjbK61tWrqZR47pDKShl5DBRdeX/1a+WHXzDLVE4sfax5xL2wjiCUfEyH7x
- 9YJoKXbnOlKuzjsm9lZIwVwqw07Qi1uFmzJopHW0H3P6zUlujM0buDmaio+Q8znJchizOrQ3
- 58pn7BNKx3mmswoyZlDtukab9QGF7BZBMjwmafn1RuEVGdlSB52F8TShLgKUM+0dkFmI2yf/
- rnNNL3zBkwD3nWcTxFnX
-Message-ID: <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com>
-Date:   Fri, 13 Nov 2020 15:16:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 13 Nov 2020 16:16:38 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899D9C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:16:37 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 10so11050807wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q6kjYbgKJcp03AAAsASkHgYE4dtYS5rkSqZBjH66POE=;
+        b=Hs2/WAl/6nZID7yAvDh2H4mY+z2Lmu3VAdpuIoceIWU5YRZM95mUCkWugom5d2eZ8+
+         fWCgab7nhig+gnERUVjIseX8uZ4AfFZp2Fl2gdUR+N6kRTOBrUPZd1fWJuoFAC88c0Ry
+         wEVgLwijyjFrPMUP/lQCi7HFT/V1KaOVX0Ai4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Q6kjYbgKJcp03AAAsASkHgYE4dtYS5rkSqZBjH66POE=;
+        b=r7abLZa+GDIKq2/j1BoRVnmKUjUEj0uuVMoMero9NaBJVmuNpp1QsT3k0vVW2PUgeq
+         R21JbTOtsf32BYXPHpmIeuEw3jxJmmIluqCOvQ2JVImVgnWrMDPNj6Wjc4puDrtMgy26
+         5zIpmla4iUwrxjzTTCcLCG5+DgV8xtGjDRNk++AGpNxItvJ2ZTnT5VWcnxYkbGeR4pub
+         noeh59IAdsuDQb17J9btGCTcAekjwNasf8E6wJjDSatsR5EZ7CEd/iKReuUYXhPchkkW
+         pW9jd3ozliJvgqdtjIDRtxXDnsfm/O77vlKecsVBnarykLEuxF6w44Y7FWbQhQuFJBU2
+         kgYA==
+X-Gm-Message-State: AOAM531+AFuIG7XFy/xITS2I3gHIvblpZjHZSlhXeN2Yl7mxVF7NzQ6s
+        MitgNzV1O25vd4xjwR2e2INHow==
+X-Google-Smtp-Source: ABdhPJx+SYVMOuL6LoOwhFnjptjOKNpAGoEAEWAxuJYZeg/O2xYMiWs31OtHTx1woOxKZxaZ5KRq/A==
+X-Received: by 2002:a1c:bc08:: with SMTP id m8mr4603342wmf.137.1605302196203;
+        Fri, 13 Nov 2020 13:16:36 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id l3sm12960816wmf.0.2020.11.13.13.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 13:16:35 -0800 (PST)
+Date:   Fri, 13 Nov 2020 22:16:33 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
+ FNTCHARCNT() in fbcon.c
+Message-ID: <20201113211633.GY401619@phenom.ffwll.local>
+Mail-Followup-To: Peilin Ye <yepeilin.cs@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9804 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011130134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9804 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011130135
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1605169912.git.yepeilin.cs@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
-> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
-> kernel fuzz.
+On Thu, Nov 12, 2020 at 07:02:21AM -0500, Peilin Ye wrote:
+> Hi all,
 > 
-> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
+> This is a collection of some miscellaneous clean-ups for fbcon and some
+> console drivers. Since v2, I rebased them on linux-next, added some
+> Reviewed-by: tags from Daniel and Greg, and rewrote the commit messages as
+> suggested by Jiri. See [1] for v2 links.
 > 
-> and can reproduce.
+> It does the following:
 > 
-> the dmtree_t is that
-> typedef union dmtree {
-> struct dmaptree t1;
-> struct dmapctl t2;
-> } dmtree_t;
+>   - Garbage collect KD_FONT_OP_COPY callbacks since we disabled it
+>     recently. Mark it as obsolete.
+>   - Delete dummy con_font_op() callbacks. (Reviewed by Greg)
 > 
-> the dmaptree is that
-> struct dmaptree {
-> __le32 nleafs; /* 4: number of tree leafs */
-> __le32 l2nleafs; /* 4: l2 number of tree leafs */
-> __le32 leafidx; /* 4: index of first tree leaf */
-> __le32 height; /* 4: height of the tree */
-> s8 budmin; /* 1: min l2 tree leaf value to combine */
-> s8 stree[TREESIZE]; /* TREESIZE: tree */
-> u8 pad[2]; /* 2: pad to word boundary */
-> };
-> the TREESIZE is totally 341, but the leafidx type is __le32.
+>   - Add a charcount field to our new font descriptor, `struct font_desc`.
+>     (Reviewed by Daniel)
+>   - Do not use a hard-coded 256 for built-in font charcount in
+>     console/sticore.c, use the new charcount field of `struct font_desc`
+>     instead. (Reviewed by Daniel)
+>   - Similarly, in fbcon.c, avoid using the magic negative-indexing macro,
+>     FNTCHARCNT(). Set `vc->vc_font.charcount` properly and always use that
+>     instead.
+> 
+> Daniel, hopefully [5/5] removes FNTCHARCNT() for ever, but I have not
+> tested it sufficiently yet. I remember you mentioned elsewhere that
+> "fbtest.c" is insufficient for framebuffer testing, then how should we
+> test it? The first 4 patches should be fine.
+> 
+> Please reference commit messages for more information. Thank you!
+> 
+> [1] v2 links:
+> 
+> 2/5: https://lore.kernel.org/lkml/c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com/
+> 3/5: https://lore.kernel.org/lkml/20201028060533.1206307-1-yepeilin.cs@gmail.com/
+> 4/5: https://lore.kernel.org/lkml/c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com/
+> 5/5: https://lore.kernel.org/lkml/20201028155139.1220549-1-yepeilin.cs@gmail.com/
+> 
+> Peilin Ye (5):
+>   console: Delete unused con_font_copy() callback implementations
+>   console: Delete dummy con_font_set() and con_font_default() callback implementations
+>   Fonts: Add charcount field to font_desc
+>   parisc/sticore: Avoid hard-coding built-in font charcount
+>   fbcon: Avoid using FNTCHARCNT() and hard-coded built-in font charcount
 
-Does this patch fix the problem?
+Patches all look good to me, if Greg is ok with me applying the entire
+pile to drm-misc-next I'll do that next week.
 
-jfs: Fix array index bounds check in dbAdjTree
+Thanks, Daniel
 
-Bounds checking tools can flag a bug in dbAdjTree() for an array index
-out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
-both structures dmaptree and dmapctl, use the larger array to eliminate
-the false positive.
+> 
+>  drivers/usb/misc/sisusbvga/sisusb_con.c | 21 --------
+>  drivers/video/console/dummycon.c        | 20 --------
+>  drivers/video/console/sticore.c         |  8 +--
+>  drivers/video/fbdev/core/fbcon.c        | 68 ++++++++-----------------
+>  drivers/video/fbdev/core/fbcon_rotate.c |  3 +-
+>  drivers/video/fbdev/core/tileblit.c     |  4 +-
+>  include/linux/console.h                 |  1 -
+>  include/linux/font.h                    |  1 +
+>  include/uapi/linux/kd.h                 |  2 +-
+>  lib/fonts/font_10x18.c                  |  1 +
+>  lib/fonts/font_6x10.c                   |  1 +
+>  lib/fonts/font_6x11.c                   |  1 +
+>  lib/fonts/font_6x8.c                    |  1 +
+>  lib/fonts/font_7x14.c                   |  1 +
+>  lib/fonts/font_8x16.c                   |  1 +
+>  lib/fonts/font_8x8.c                    |  1 +
+>  lib/fonts/font_acorn_8x8.c              |  1 +
+>  lib/fonts/font_mini_4x6.c               |  1 +
+>  lib/fonts/font_pearl_8x8.c              |  1 +
+>  lib/fonts/font_sun12x22.c               |  1 +
+>  lib/fonts/font_sun8x16.c                |  1 +
+>  lib/fonts/font_ter16x32.c               |  1 +
+>  22 files changed, 42 insertions(+), 99 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
 
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
----
- fs/jfs/jfs_dmap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
-index 29891fad3f09..aa03a904d5ab 100644
---- a/fs/jfs/jfs_dmap.h
-+++ b/fs/jfs/jfs_dmap.h
-@@ -183,7 +183,7 @@ typedef union dmtree {
- #define	dmt_leafidx	t1.leafidx
- #define	dmt_height	t1.height
- #define	dmt_budmin	t1.budmin
--#define	dmt_stree	t1.stree
-+#define	dmt_stree	t2.stree
- 
- /*
-  *	on-disk aggregate disk allocation map descriptor.
 -- 
-2.29.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
