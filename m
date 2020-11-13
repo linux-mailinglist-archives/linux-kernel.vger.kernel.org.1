@@ -2,47 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7CE2B27D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB6C2B27D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgKMWGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:06:46 -0500
-Received: from ms.lwn.net ([45.79.88.28]:50952 "EHLO ms.lwn.net"
+        id S1726300AbgKMWIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:08:18 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:40667 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgKMWGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:06:46 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725981AbgKMWIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:08:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605305297; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=v38VIvvqFPW9T8r0lWGRdQ5SsoAKhs1w4NYwSBxeq3U=; b=P+vzFwx0ny4yfqGQS7Q4qr6WLtbHWy7XeqgRokCMpAVFSfXi9kySfNMFPDGT1QHD57ak9p5i
+ xGwilv9/ca/kTkGeVkwoyyUkW3xEyNqnEytWVm1DItfDs/5dejOIeKuaYcbgYLaWXYmD9d74
+ 4JR4yZ5dSw+HEBz37DLwZvd+GwI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5faf03d08e090a8886a80c43 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 22:08:16
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8CAB6C433F0; Fri, 13 Nov 2020 22:08:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B08AE734;
-        Fri, 13 Nov 2020 22:06:45 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 15:06:44 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH] documentation: arm: sunxi: add Allwinner H616 documents
-Message-ID: <20201113150644.6e404a98@lwn.net>
-In-Reply-To: <20201108150104.GA66507@monster.powergraphx.local>
-References: <20201108150104.GA66507@monster.powergraphx.local>
-Organization: LWN.net
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EBF2C433C6;
+        Fri, 13 Nov 2020 22:08:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0EBF2C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] fix dp link training failed at irq_hpd request
+Date:   Fri, 13 Nov 2020 14:08:00 -0800
+Message-Id: <20201113220803.15033-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Nov 2020 16:01:04 +0100
-Wilken Gottwalt <wilken.gottwalt@posteo.net> wrote:
+Some dongle require link training be done at irq_hpd request. This serial
+patches address the issues so that DP/HDMI display can be lit up properlly.
+This serial Patch also fixes clock stuck at "off" state error caused by
+previous link training failed.
 
-> Add the current and cleaned Allwinner H616 datasheet and user manual.
-> 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> ---
->  Documentation/arm/sunxi.rst | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+Kuogee Hsieh (3):
+  drm/msm/dp: deinitialize mainlink if link training failed
+  drm/msm/dp: skip checking LINK_STATUS_UPDATED bit
+  drm/msm/dp: promote irq_hpd handle to handle link training correctly
 
-Applied, thanks.
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  2 +-
+ drivers/gpu/drm/msm/dp/dp_catalog.h |  2 +-
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 60 +++++++++++++++++++++--------
+ drivers/gpu/drm/msm/dp/dp_display.c | 40 ++++++++++++++++---
+ drivers/gpu/drm/msm/dp/dp_link.c    | 29 +++++++-------
+ drivers/gpu/drm/msm/dp/dp_panel.c   |  2 +-
+ 6 files changed, 96 insertions(+), 39 deletions(-)
 
-jon
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
