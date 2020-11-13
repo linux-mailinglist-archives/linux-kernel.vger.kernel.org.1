@@ -2,184 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CDC2B1737
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718B02B173A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 09:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgKMI2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 03:28:45 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:10350 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725866AbgKMI2p (ORCPT
+        id S1726275AbgKMIaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 03:30:00 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34613 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725866AbgKMI37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 03:28:45 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD8R67D030468;
-        Fri, 13 Nov 2020 09:28:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : references
- : from : message-id : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding; s=STMicroelectronics;
- bh=kNfsi7ZtmZxFM4ZtJQvG2R+5IFYOpR6oyz11MxeQh0U=;
- b=Xx156703FE+Jx/MC4tXWCC6Do/CaKcNA2hA4ZOOOK/lPFTL34zHv/RRsUHgiD2FUN05c
- HAwrn0Gk86r7YqX6cWRStD+a1i6isnGMla4D6J7L4KiF+OIDso3TdgdmI9DEyBC+v7pz
- H4B/qIFQ1WO435KQcFR7N32G6vZlJW3XFwTZLyBsWjia+3qosHH2Zp/OnE5GoqiO7NtR
- d9JoxOSbeZiUx3rBHxGVlD1yGlMRH/JBNVIx40v/ikv9fRj9NgMYqSX6HpoCrMAoAs8R
- 6W3ErPosprCZrDdmqKP+ldYV6kbqXAT54eMYqKEb7JxVDhjwV1P5CD2GcN4+G2aKC06v 1g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nj819krb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 09:28:17 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3047F10002A;
-        Fri, 13 Nov 2020 09:28:09 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node2.st.com [10.75.127.2])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 19C0222A4C0;
-        Fri, 13 Nov 2020 09:28:09 +0100 (CET)
-Received: from lmecxl1060.lme.st.com (10.75.127.46) by SFHDAG1NODE2.st.com
- (10.75.127.2) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 13 Nov
- 2020 09:28:05 +0100
-Subject: Re: [PATCH] [v2] i2c: stm32f7: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "kjlu@umn.edu" <kjlu@umn.edu>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200527013853.30252-1-dinghao.liu@zju.edu.cn>
- <20200601055634.GB17269@gnbcxd0016.gnb.st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@st.com>
-Message-ID: <22cad188-c13c-207d-ad8e-fac9d7277346@st.com>
-Date:   Fri, 13 Nov 2020 09:27:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 13 Nov 2020 03:29:59 -0500
+X-UUID: ecd4d68091624f2cb8b08da4dbbc4a69-20201113
+X-UUID: ecd4d68091624f2cb8b08da4dbbc4a69-20201113
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1776010858; Fri, 13 Nov 2020 16:29:55 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 13 Nov 2020 16:29:54 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 13 Nov 2020 16:29:54 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>,
+        Owen Chen <owen.chen@mediatek.com>
+Subject: [PATCH v3] clk: mediatek: Make mtk_clk_register_mux() a static function
+Date:   Fri, 13 Nov 2020 16:29:52 +0800
+Message-ID: <1605256192-31307-1-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <20200601055634.GB17269@gnbcxd0016.gnb.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG1NODE2.st.com
- (10.75.127.2)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_05:2020-11-12,2020-11-13 signatures=0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+mtk_clk_register_mux() should be a static function
 
-Looks good to me
+Fixes: a3ae549917f16 ("clk: mediatek: Add new clkmux register API")
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+---
+ drivers/clk/mediatek/clk-mux.c | 2 +-
+ drivers/clk/mediatek/clk-mux.h | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
+diff --git a/drivers/clk/mediatek/clk-mux.c b/drivers/clk/mediatek/clk-mux.c
+index 14e127e..dcc1352 100644
+--- a/drivers/clk/mediatek/clk-mux.c
++++ b/drivers/clk/mediatek/clk-mux.c
+@@ -155,7 +155,7 @@ static int mtk_clk_mux_set_parent_setclr_lock(struct clk_hw *hw, u8 index)
+ 	.set_parent = mtk_clk_mux_set_parent_setclr_lock,
+ };
+ 
+-struct clk *mtk_clk_register_mux(const struct mtk_mux *mux,
++static struct clk *mtk_clk_register_mux(const struct mtk_mux *mux,
+ 				 struct regmap *regmap,
+ 				 spinlock_t *lock)
+ {
+diff --git a/drivers/clk/mediatek/clk-mux.h b/drivers/clk/mediatek/clk-mux.h
+index f5625f4..8e2f927 100644
+--- a/drivers/clk/mediatek/clk-mux.h
++++ b/drivers/clk/mediatek/clk-mux.h
+@@ -77,10 +77,6 @@ struct mtk_mux {
+ 			_width, _gate, _upd_ofs, _upd,			\
+ 			CLK_SET_RATE_PARENT)
+ 
+-struct clk *mtk_clk_register_mux(const struct mtk_mux *mux,
+-				 struct regmap *regmap,
+-				 spinlock_t *lock);
+-
+ int mtk_clk_register_muxes(const struct mtk_mux *muxes,
+ 			   int num, struct device_node *node,
+ 			   spinlock_t *lock,
+-- 
+1.8.1.1.dirty
 
-Thx
-Regards
-
-
-On 6/1/20 7:56 AM, Alain Volmat wrote:
-> Hi,
-> 
-> Reviewed-by: Alain Volmat <alain.volmat@st.com>
-> 
-> Thanks,
-> Alain
-> 
-> On Wed, May 27, 2020 at 01:38:53AM +0000, Dinghao Liu wrote:
->> pm_runtime_get_sync() increments the runtime PM usage counter even
->> the call returns an error code. Thus a pairing decrement is needed
->> on the error handling path to keep the counter balanced.
->>
->> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
->> ---
->>
->> Changelog:
->>
->> v2: - Use pm_runtime_put_noidle() instead of
->>       pm_runtime_put_autosuspend(). Fix 5 more
->>       similar cases within this dirver.
->> ---
->>  drivers/i2c/busses/i2c-stm32f7.c | 24 ++++++++++++++++++------
->>  1 file changed, 18 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
->> index 330ffed011e0..822fd1f5b5ae 100644
->> --- a/drivers/i2c/busses/i2c-stm32f7.c
->> +++ b/drivers/i2c/busses/i2c-stm32f7.c
->> @@ -1620,8 +1620,10 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
->>  	f7_msg->smbus = false;
->>  
->>  	ret = pm_runtime_get_sync(i2c_dev->dev);
->> -	if (ret < 0)
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(i2c_dev->dev);
->>  		return ret;
->> +	}
->>  
->>  	ret = stm32f7_i2c_wait_free_bus(i2c_dev);
->>  	if (ret)
->> @@ -1666,8 +1668,10 @@ static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
->>  	f7_msg->smbus = true;
->>  
->>  	ret = pm_runtime_get_sync(dev);
->> -	if (ret < 0)
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(dev);
->>  		return ret;
->> +	}
->>  
->>  	ret = stm32f7_i2c_wait_free_bus(i2c_dev);
->>  	if (ret)
->> @@ -1767,8 +1771,10 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
->>  		return ret;
->>  
->>  	ret = pm_runtime_get_sync(dev);
->> -	if (ret < 0)
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(dev);
->>  		return ret;
->> +	}
->>  
->>  	if (!stm32f7_i2c_is_slave_registered(i2c_dev))
->>  		stm32f7_i2c_enable_wakeup(i2c_dev, true);
->> @@ -1837,8 +1843,10 @@ static int stm32f7_i2c_unreg_slave(struct i2c_client *slave)
->>  	WARN_ON(!i2c_dev->slave[id]);
->>  
->>  	ret = pm_runtime_get_sync(i2c_dev->dev);
->> -	if (ret < 0)
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(i2c_dev->dev);
->>  		return ret;
->> +	}
->>  
->>  	if (id == 0) {
->>  		mask = STM32F7_I2C_OAR1_OA1EN;
->> @@ -2182,8 +2190,10 @@ static int stm32f7_i2c_regs_backup(struct stm32f7_i2c_dev *i2c_dev)
->>  	struct stm32f7_i2c_regs *backup_regs = &i2c_dev->backup_regs;
->>  
->>  	ret = pm_runtime_get_sync(i2c_dev->dev);
->> -	if (ret < 0)
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(i2c_dev->dev);
->>  		return ret;
->> +	}
->>  
->>  	backup_regs->cr1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_CR1);
->>  	backup_regs->cr2 = readl_relaxed(i2c_dev->base + STM32F7_I2C_CR2);
->> @@ -2204,8 +2214,10 @@ static int stm32f7_i2c_regs_restore(struct stm32f7_i2c_dev *i2c_dev)
->>  	struct stm32f7_i2c_regs *backup_regs = &i2c_dev->backup_regs;
->>  
->>  	ret = pm_runtime_get_sync(i2c_dev->dev);
->> -	if (ret < 0)
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(i2c_dev->dev);
->>  		return ret;
->> +	}
->>  
->>  	cr1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_CR1);
->>  	if (cr1 & STM32F7_I2C_CR1_PE)
->> -- 
->> 2.17.1
->>
