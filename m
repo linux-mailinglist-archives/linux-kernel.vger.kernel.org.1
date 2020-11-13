@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5852B15E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 07:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DFC2B15E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 07:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgKMGfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 01:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        id S1726200AbgKMGjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 01:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgKMGfi (ORCPT
+        with ESMTP id S1725999AbgKMGjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 01:35:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42983C0613D1;
-        Thu, 12 Nov 2020 22:35:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=G6RtqFfqrHffqPSTAr1sy7qZDytGoAeAFWB5/2KH9jI=; b=KDNSwbmjSKN34SqQ/TZz8pduVs
-        6Ydn11YPQUpUZ3L0+OYO9+xhEN1G8J+7Ky7AhYV/iGuIasKDJqjd3s7WTVsMASgNZFAm1g+XJUbJr
-        dgdaX96m5sV+ZgRnb7FA5/Ssmtyx0HZCCwyHI5TQCK+dSsxvyvlluCfD+VgkXPoR12b+DwbA3Md+C
-        2pgcqg4IWckbwclxa+0Ze47hqg/MDVZX1hjE+IOPNcIXx7Ym7wOfO4c6PpfTj0zzyQ1KXjejp4uUY
-        bMuhyViEn3QrHoEvm56m3c5709PfUcw6faBvMOQ6UOIWhBKqDrcoPEngc3JK1kquNKh8mydb1DQvs
-        zwXb/+KA==;
-Received: from [2601:1c0:6280:3f0::662d]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdSgF-0001Mg-PI; Fri, 13 Nov 2020 06:35:32 +0000
-Subject: Re: mmotm 2020-11-12-20-01 uploaded (mm/secretmem.c)
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        Mike Rapoport <rppt@kernel.org>
-References: <20201113040226.fZi_OALm7%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fde20745-96fc-4e89-51e5-1f1620cb9ce3@infradead.org>
-Date:   Thu, 12 Nov 2020 22:35:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 13 Nov 2020 01:39:52 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE65C0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 22:39:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i26so6318007pgl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 22:39:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fBdbvlXFQzyqe/RetyLdTLSpJsN6xlr7oVFkeGNYL8E=;
+        b=wK/n6ptdCYVWY9J0DxMYKBRJdvhY46aaoKnluOTHhB7ZC4++q8bBHLq1dNm2VNPyI/
+         dO/P9mjAXtWLqMqJ6y4hAhdJrjGasVyV5SAdSYK2jf12QTzSw7tumwb8UxGFuxmyQF5p
+         75dIxIRyIXinfeq+Zz95gTGCRQv1U0W8J7M/XB+lyQEr5X8UC918CYZolQmaZwbbxSxS
+         6HJTapPzoDV+Y+Vjq6UK7srpW87sxyc1aIAeHHXV37RaGrHtaUjraX0Z9XFPt46yQN8J
+         koN8CWlAPXZng4EqaB7cFCbM//4Z8wAj9UQUNnvq1fOHIka988X3+8arSuXKmlGItaS9
+         QXYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fBdbvlXFQzyqe/RetyLdTLSpJsN6xlr7oVFkeGNYL8E=;
+        b=nzdNdcgLn26JsuTyIltywqRqsrbrK7sLi796AHvV6o7YxnwgveJBrjuji0CyBIJg1e
+         WA1R8TOIq/2IcbQzYr6retCMHINqe5eJObxNNeO3X3LRlYadfOpWXJjGNjFJ1wcGhATl
+         u+gYS84p3uA6v3kuammP+NqM0CoV7MaNAWx5J3DBxL1rpJ4TW9BiutP6jAJSrkb/gUZB
+         mMCcw33hubLIz2uZ5wqDylaLiT9EWrA+ZjMZAgplHNxiBp0eV2RdL+dT+c08tZ39i5BY
+         Lz2mjQgX10ZbNSNAJKgpUJuKqcer4EP6f1aBnUbymXb1cpCQ5lCDr4kCvEb1vsHe4OSe
+         Yccg==
+X-Gm-Message-State: AOAM531cknZ8hCNguS3dYzhmVJ5gL/qipWOWrEzg1BxDlaILQcHLKd6x
+        ZrulGXti+T/PKS3V3DDmSX8tkyU6JslskQ==
+X-Google-Smtp-Source: ABdhPJywSABAJEM3p2Mw87QiOmTgAww+KbLyxWYNVFW8gwZz+654heI9thbF1zEb3FyDgnLWYy+nLA==
+X-Received: by 2002:a17:90a:a609:: with SMTP id c9mr1324145pjq.124.1605249580402;
+        Thu, 12 Nov 2020 22:39:40 -0800 (PST)
+Received: from [192.168.10.88] (124-171-134-245.dyn.iinet.net.au. [124.171.134.245])
+        by smtp.gmail.com with UTF8SMTPSA id w10sm7729027pgj.91.2020.11.12.22.39.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 22:39:39 -0800 (PST)
+Subject: Re: [PATCH] panic: Avoid dump_stack() twice
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+References: <20201113054747.177919-1-wangkefeng.wang@huawei.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <40b1b70f-16d9-01c4-c045-508cde14f4c2@ozlabs.ru>
+Date:   Fri, 13 Nov 2020 17:39:35 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
+ Thunderbird/83.0
 MIME-Version: 1.0
-In-Reply-To: <20201113040226.fZi_OALm7%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201113054747.177919-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 8:02 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2020-11-12-20-01 has been uploaded to
-> 
->    https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
+Fixed already
 
-Lots of build errors like this:
+https://ozlabs.org/~akpm/mmots/broken-out/panic-dont-dump-stack-twice-on-warn.patch
 
-when CONFIG_MEMCG is not set/enabled:
+Sorry for breaking this :(
 
-../mm/secretmem.c:72:4: error: ‘struct page’ has no member named ‘memcg_data’
-../mm/secretmem.c:72:23: error: ‘struct page’ has no member named ‘memcg_data’
-../mm/secretmem.c:86:4: error: ‘struct page’ has no member named ‘memcg_data’
 
+On 13/11/2020 16:47, Kefeng Wang wrote:
+> stacktrace will be dumped twice on ARM64 after commit 3f388f28639f
+> ("panic: dump registers on panic_on_warn"), will not dump_stack
+> when no regs as before.
+> 
+> Fixes: 3f388f28639f ("panic: dump registers on panic_on_warn")
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   kernel/panic.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/panic.c b/kernel/panic.c
+> index 396142ee43fd..332736a72a58 100644
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -605,7 +605,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+>   		panic("panic_on_warn set ...\n");
+>   	}
+>   
+> -	dump_stack();
+> +	if (!regs)
+> +		dump_stack();
+>   
+>   	print_irqtrace_events(current);
+>   
+> 
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Alexey
