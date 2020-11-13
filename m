@@ -2,142 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327572B25D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7784D2B25D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgKMUt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:49:29 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:42309 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725959AbgKMUt2 (ORCPT
+        id S1726479AbgKMUuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgKMUuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:49:28 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 87F8BC3C;
-        Fri, 13 Nov 2020 15:49:27 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 13 Nov 2020 15:49:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=kqEAbuX6RFEOm
-        aBUZA4rnZqet7oQcQH598nORrV3rOE=; b=Lut6A8xIvD2R9Pp/ze3zg9ohRqRBV
-        N0jDcUyvieYDpyVsrGzfrEJnZusl/g20xTaMPxHhHp44aqtsLj2NPAu6ktHCskte
-        8SoQoDAVzDzd02kCkFpISFNvPjIbU84If5eyU7W1XKd6z3PtwzPqKqWrfLIgM8lZ
-        TDsUC4QtA9fu+Ns6e9ZWDE/FAB7YoRniqKJA8a7lL/tukGv8atNJAlJz7bL1hIpi
-        9yKuvm7EuwBoPaYD5Urx2lrnEqxaY1d2oI3oXhA9lhhYoAmhAUeNi/X3g8UIX07i
-        JwE0kpn91vWvo0GofiGsz0DRXqWCnqzMRzPFYDfUiZWP/OrYS5Br3xK1Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=kqEAbuX6RFEOmaBUZA4rnZqet7oQcQH598nORrV3rOE=; b=QnVLINfJ
-        wEEKv1i64HHIztKGfiYXpW6qH5B2gQ3+LwomQS12q59F2cJbmeD9jzOIbauaRdsZ
-        kYVLi+epnV218aChRMGINRsZhiVHk2TbDhM4l2j7/J7c3B36KUhY14sbeSIIcA/o
-        4gsM6vO/nOr4HKIwc4RmIaFEHZf8fRmrm0mQ0/WqAm0neSG7SZfMUPkDkjRHyzfv
-        dSKjJYfr4JL/2YDdqvgBgoy6ChtjvB2lDxkl1Dkp8scUbIksVwmq51FqQUVJRyhn
-        xKrBJNmKqfq8CajNovP72y6FvLqdWdbYQZFrU/b55MYPmH1xIAfS90ZjJx+kD5u8
-        fas+S4vuuLDleg==
-X-ME-Sender: <xms:VvGuX9wVkkCWve4XN8H1bHgoId7y_WihmJzdT8m9hJy8EuznWBeCKw>
-    <xme:VvGuX9QSnfToiO1u-J3e_KEHktqXGlCzCx0i9hf59UT-3Uj19PjeB31dl6G-9KfgA
-    GZVTrGXnQ-ZKy_6oQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvhedgudegvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepkedvleetffdviefgffekhedvgfdtgefhledtffeukeefkeetffevvdej
-    hfethfffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepieejrdduiedtrd
-    dvudejrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomheprghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:VvGuX3XUm3AWrwMVF12Vu8sO2tMZU4dt52Vv_BVLklTrCk9NJSnSrQ>
-    <xmx:VvGuX_j_-YmbhIKJPrMwQg6oc--Z2StzvqaVJWXlZ2zFPOBSZeS5HA>
-    <xmx:VvGuX_CQTqDgpJ1CRLEETVc9x9l_t696djBJVnPoBx-_VNc1-qYZqQ>
-    <xmx:V_GuX68pDRSpIqulq2aOXPpVkN76JtWBdtOBIL7oB576tCFVVupVvQ>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 92B993280060;
-        Fri, 13 Nov 2020 15:49:26 -0500 (EST)
-From:   Andres Freund <andres@anarazel.de>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Andres Freund <andres@anarazel.de>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg PCH.
-Date:   Fri, 13 Nov 2020 12:49:16 -0800
-Message-Id: <20201113204916.1144907-1-andres@anarazel.de>
-X-Mailer: git-send-email 2.28.0.651.g306ee63a70
-In-Reply-To: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
-References: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
+        Fri, 13 Nov 2020 15:50:05 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC8FC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:50:03 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r17so11601519wrw.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:50:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=eOXlZj0XPFWz7dlYa6NqKCzhJqTiZPBQkJ27S51Z/uw=;
+        b=lQXAKOz+VF1cNFLuf+oV/VqV7EySOBNChHjZD8juvCYoc+YJU+joPVRZEjC1j1jKph
+         pgxq+cfxmcr+te3hKWQm6LbDC5iqTyGMX/WldcyDMkh5yr2Ih1qyqDi5HkXv+fn5uUci
+         TxOcKlvgL5iDdjE8oZ2JRtkkdy2BMxoU3/H60=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=eOXlZj0XPFWz7dlYa6NqKCzhJqTiZPBQkJ27S51Z/uw=;
+        b=dTs0oY9KIsn+SiUBiG9hsMqyNtDD/D7Eu5S2MBmBk/1RcPH5s/zfRvQlckElzY3466
+         mfuHpQpa+MsJVUDopuAfO8J2w1HrDmaPK9mnkZZib9UxazjPWE6lhLRPgxvbNtabGSFh
+         Y1i6GGj+QwqUIAavjzS483mSGoHr8WnCmOZTeCON9PmWdkcqYlfhAFLtfHxfOGICIUiT
+         5lZVI0uzdzZszPVPjWIgvSwH//c91WvLKX5h2ABifRXZnWMHfgBEhYdDoAr/G5anMYNA
+         XWriJGTxuGXO+zGiekoFWwRNUF3gvtGA23k5Eib8wXvWfhkHDJL2tr2t8QuvvRHmJyT9
+         o9rg==
+X-Gm-Message-State: AOAM53353H096Ct2EZTjK5LJHoUbKex0lm3kf5UNES0lSLgbj159eJq3
+        tELfGFVJs+r6IwEMFb115i5W2Q==
+X-Google-Smtp-Source: ABdhPJzkFfexeDsoa+Wk0hm/w8ujcFMdDiRRJOkwPpoJBqXarBaFF2qtiom4zSV7Fshbzm+lULW3Tw==
+X-Received: by 2002:adf:a40c:: with SMTP id d12mr5851835wra.154.1605300602644;
+        Fri, 13 Nov 2020 12:50:02 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c2sm11589328wmf.47.2020.11.13.12.50.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 12:50:01 -0800 (PST)
+Date:   Fri, 13 Nov 2020 21:49:59 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 02/30] include: drm: drm_atomic: Artificially use 'crtc'
+ to avoid 'not used' warning
+Message-ID: <20201113204959.GW401619@phenom.ffwll.local>
+Mail-Followup-To: Sam Ravnborg <sam@ravnborg.org>,
+        Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20201112190039.2785914-1-lee.jones@linaro.org>
+ <20201112190039.2785914-3-lee.jones@linaro.org>
+ <20201112202516.GA3340631@ravnborg.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112202516.GA3340631@ravnborg.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed that I couldn't read the PCH temperature on my workstation
-(C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but had to go
-through IPMI. Looking at the data sheet, it looks to me like the
-existing intel PCH thermal driver should work without changes for
-Lewisburg.
+On Thu, Nov 12, 2020 at 09:25:16PM +0100, Sam Ravnborg wrote:
+> Hi Lee,
+> 
+> On Thu, Nov 12, 2020 at 07:00:11PM +0000, Lee Jones wrote:
+> > The precedent has already been set by other macros in the same file.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/vkms/vkms_drv.c:55:19: warning: variable ‘crtc’ set but not used [-Wunused-but-set-variable]
+> >  55 | struct drm_crtc *crtc;
+> >  | ^~~~
+> > 
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Maxime Ripard <mripard@kernel.org>
+> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Rob Clark <robdclark@gmail.com>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Also applied to drm-misc-next.
+> This was the last patch from this batch I will process.
+> The others are left for the maintainers to pick up.
 
-I suspect there's some other PCI IDs missing. But I hope somebody at
-Intel would have an easier time figuring that out than I...
+btw for patches that maintainers don't pick up, the usual process is that
+we give them 2 weeks, then just mass apply. Now you're producing a lot of
+patches, too much for me to keep track, so please just ping me with a
+resend for those that expired and I'll go through and pick them all up.
 
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Tushar Dave <tushar.n.dave@intel.com>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Cc: linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Link: https://lore.kernel.org/lkml/20200115184415.1726953-1-andres@anarazel.de/
-Signed-off-by: Andres Freund <andres@anarazel.de>
----
- drivers/thermal/intel/intel_pch_thermal.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Cheers, Daniel
 
-diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
-index 3b813ebb6ca1..7785e05f46f0 100644
---- a/drivers/thermal/intel/intel_pch_thermal.c
-+++ b/drivers/thermal/intel/intel_pch_thermal.c
-@@ -26,6 +26,7 @@
- #define PCH_THERMAL_DID_CNL_H	0xA379 /* CNL-H PCH */
- #define PCH_THERMAL_DID_CNL_LP	0x02F9 /* CNL-LP PCH */
- #define PCH_THERMAL_DID_CML_H	0X06F9 /* CML-H PCH */
-+#define PCH_THERMAL_DID_LWB	0xA1B1 /* Lewisburg PCH */
- 
- /* Wildcat Point-LP  PCH Thermal registers */
- #define WPT_TEMP	0x0000	/* Temperature */
-@@ -276,6 +277,7 @@ enum board_ids {
- 	board_skl,
- 	board_cnl,
- 	board_cml,
-+	board_lwb,
- };
- 
- static const struct board_info {
-@@ -301,7 +303,11 @@ static const struct board_info {
- 	[board_cml] = {
- 		.name = "pch_cometlake",
- 		.ops = &pch_dev_ops_wpt,
--	}
-+	},
-+	[board_lwb] = {
-+		.name = "pch_lewisburg",
-+		.ops = &pch_dev_ops_wpt,
-+	},
- };
- 
- static int intel_pch_thermal_probe(struct pci_dev *pdev,
-@@ -415,6 +421,8 @@ static const struct pci_device_id intel_pch_thermal_id[] = {
- 		.driver_data = board_cnl, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_CML_H),
- 		.driver_data = board_cml, },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_LWB),
-+		.driver_data = board_lwb, },
- 	{ 0, },
- };
- MODULE_DEVICE_TABLE(pci, intel_pch_thermal_id);
+> 
+> 	Sam
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.28.0.651.g306ee63a70
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
