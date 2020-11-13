@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679172B1A11
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5072B1A19
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgKML3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726611AbgKMLal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726662AbgKML3F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Nov 2020 06:29:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbgKML1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:27:50 -0500
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D947022240;
-        Fri, 13 Nov 2020 11:27:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605266868;
-        bh=1zomMHvWXcdsFEpY4sbXNcY1W66L8ptaoK6dS+ccIoE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=an66mwndtupBdyKycEKWTmObkunIbRrerl5BGTN98MB9my5eCUcIfj7adhLNxHtJK
-         msfwqP2bauhj2rsMGFDV7X2OOa2HY57rUERf+iaDB9p1AaMcy6nPivgirr3vgOkisR
-         +a1SZflwyZuFCDOGNkxnJC7uQNoAjWkxFJL9cLnc=
-From:   Will Deacon <will@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        phone-devel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        linux-kernel@vger.kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        martin.botka@somainline.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Marc Zyngier <maz@kernel.org>, marijn.suijten@somainline.org,
-        Mark Brown <broonie@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Andrew Scull <ascull@google.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 0/4] Add KRYO2XX Errata / mitigations data
-Date:   Fri, 13 Nov 2020 11:27:36 +0000
-Message-Id: <160526082925.1979134.2091241052935700050.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201104232218.198800-1-konrad.dybcio@somainline.org>
-References: <20201104232218.198800-1-konrad.dybcio@somainline.org>
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C4CC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:29:05 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id p12so10233196ljc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DDegh8tRLZdZUaOxApIDHKwtV2S/hfTSpd/mCcBDwW4=;
+        b=t1yUwGoLWVYLzwXirBRjAFli99u0/JjI5HW88vpBo44ajQgw8rGXBa3Rym6FUrLWEs
+         Gad2D6WOvtoCyC8L6bzfwXJ+9PR+aqk20wiJu6+YFOmURknmSHMY2aC/QwmMw1Tz93eX
+         Sk+BYNMjddf5nD7NJgIUmS0vsd/CORMj2xYqV6/1YCGC5inZKYKpQwzXsbam0HlYCw/a
+         d4Z9evWyY0aCXHwrKuh+kBJah4Kj0FYBvww3GvorpzKW+jjAj62VbD/5h4vet4DM9grj
+         GPWFzS+JecEG+vfWCTacdPYojPhMOkSQltXLS8Ww8XU7z6sPbREMvQ/kPWtATvzgt38N
+         urgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DDegh8tRLZdZUaOxApIDHKwtV2S/hfTSpd/mCcBDwW4=;
+        b=jBRCSZqm/8S3W5WbcQLANh9elEvtMw6ZSekWvmxs0LfA2clVxJS+zSNUrUd18NFLAb
+         7PAmonE/LkgH9xWrYkB4nX4lWqkN4bncN7yL97XNl50XJx75/6mia4i2sATfmLtQyrRB
+         Jd56q6pXLwaTxZw56jyAAUdUZuJB8dhdN2Td0ASSRcc9H++LYTxT3xPCeGNbWsdhZjTb
+         Tqt2tKrASqru8oW8VFLdkzWmWAC5HX5pRknofBl1LznMCBbQMhFLDVoxYheMjxM4EhJc
+         KZC11VpcUexJ4dixeqOBZ9XA7hmLrSzVHLv644DeBur/EzBXVd7vG1FHiNWFE/sJLbk7
+         Jw9A==
+X-Gm-Message-State: AOAM530nwtrpXubMcwpF23R656BxtSbzzSwKo4cOsIuARMRrGPS10+f4
+        sXlW1YdBwSFp0k91zG0esfNr/rdP/y40nmBn
+X-Google-Smtp-Source: ABdhPJz8u1vcpX+I/3oC0Ia+nllHrxbYvLOw7/xfaciFUsCmH/A+YktO/CLU3soY3+P+HZ3W+Vyiqw==
+X-Received: by 2002:a05:651c:2005:: with SMTP id s5mr850242ljo.36.1605266943945;
+        Fri, 13 Nov 2020 03:29:03 -0800 (PST)
+Received: from localhost.localdomain (h-155-4-131-134.NA.cust.bahnhof.se. [155.4.131.134])
+        by smtp.gmail.com with ESMTPSA id q4sm1609517ljh.38.2020.11.13.03.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 03:29:02 -0800 (PST)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC fixes for v5.10-rc4
+Date:   Fri, 13 Nov 2020 12:29:01 +0100
+Message-Id: <20201113112901.292826-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 00:22:09 +0100, Konrad Dybcio wrote:
-> This series adds Spectre mitigations and errata data for
-> Qualcomm KRYO2XX Gold (big) and Silver (LITTLE) series of
-> CPU cores, used for example in MSM8998 and SDM660-series SoCs.
-> 
-> Konrad Dybcio (4):
->   arm64: Add MIDR value for KRYO2XX gold/silver CPU cores
->   arm64: kpti: Add KRYO2XX gold/silver CPU cores to kpti safelist
->   arm64: proton-pack: Add KRYO2XX silver CPUs to spectre-v2 safe-list
->   arm64: cpu_errata: Apply Erratum 845719 to KRYO2XX Silver
-> 
-> [...]
+Hi Linus,
 
-Applied to arm64 (for-next/fixes), thanks!
+Here's a PR with a couple of MMC fixes intended for v5.10-rc4. Details about the
+highlights are as usual found in the signed tag.
 
-[1/4] arm64: Add MIDR value for KRYO2XX gold/silver CPU cores
-      https://git.kernel.org/arm64/c/77473cffef21
-[2/4] arm64: kpti: Add KRYO2XX gold/silver CPU cores to kpti safelist
-      https://git.kernel.org/arm64/c/e3dd11a9f252
-[3/4] arm64: proton-pack: Add KRYO2XX silver CPUs to spectre-v2 safe-list
-      https://git.kernel.org/arm64/c/38328d401167
-[4/4] arm64: cpu_errata: Apply Erratum 845719 to KRYO2XX Silver
-      https://git.kernel.org/arm64/c/23c216416056
+Please pull this in!
 
-Cheers,
--- 
-Will
+Kind regards
+Ulf Hansson
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+
+The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
+
+  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc3
+
+for you to fetch changes up to 03d80e042a8e3248163a38f74b43809f8079d652:
+
+  Revert "mmc: renesas_sdhi: workaround a regression when reinserting SD cards" (2020-11-10 13:58:01 +0100)
+
+----------------------------------------------------------------
+MMC host:
+ - tmio: Fixup support for reset
+ - sdhci-of-esdhc: Extend erratum for pulse width to more broken HWs
+ - renesas_sdhi: Fix re-binding of drivers
+
+----------------------------------------------------------------
+Wolfram Sang (3):
+      mmc: tmio: when resetting, reset DMA controller, too
+      mmc: tmio: bring tuning HW to a sane state with MMC_POWER_OFF
+      Revert "mmc: renesas_sdhi: workaround a regression when reinserting SD cards"
+
+Yangbo Lu (1):
+      mmc: sdhci-of-esdhc: Handle pulse width detection erratum for more SoCs
+
+Yoshihiro Shimoda (1):
+      mmc: renesas_sdhi_core: Add missing tmio_mmc_host_free() at remove
+
+ drivers/mmc/host/renesas_sdhi_core.c | 14 +-------------
+ drivers/mmc/host/sdhci-of-esdhc.c    |  2 ++
+ drivers/mmc/host/tmio_mmc_core.c     |  7 +++++--
+ 3 files changed, 8 insertions(+), 15 deletions(-)
