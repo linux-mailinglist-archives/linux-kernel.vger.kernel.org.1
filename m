@@ -2,135 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81972B28FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8268A2B28FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725866AbgKMXMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgKMXMT (ORCPT
+        id S1726181AbgKMXNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:13:04 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65336 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726061AbgKMXNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:12:19 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201D5C0613D1;
-        Fri, 13 Nov 2020 15:12:19 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id q5so8893501pfk.6;
-        Fri, 13 Nov 2020 15:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AF4G86fxq4KAr1ejj8w29L+AVAPShQCYdW+P5+1JvHg=;
-        b=Phm2nPVRSyCJcRztukv3oe93m7Z0oVR1/YVkNkFJOXMsNoGIcCkUKPDHuB3SWOzHgV
-         CrJgZi5+LiW4vEsu7ddsT8cyIg/5tRVR5D4o+btkwlo161OKc0OW8SPX0oeMHhJ6TOVY
-         cMZYNBLms++xR+wmHL5XDRFOvK1yO6Za80Xo1h8GhAUu8DfiFhGMpMUQcgbm9Zm9VkXK
-         jzAzKbw4Xyvf/trTRzQNQKbpraWxPcM54VA9+h1mu+pbzCmBguSkWhH1QHkWA3mp1ejr
-         LzZI00w2cY+MI0pvKV9K96NB2tw9ebP/z979p/yicKQIAHTnBPCAjW+/SYtxQDQIw+uf
-         Ik+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AF4G86fxq4KAr1ejj8w29L+AVAPShQCYdW+P5+1JvHg=;
-        b=pPpKkUxsvhaTbaRfx5lkDa+wEOvy8T2XQJJLUiX2SnyfN3X4xRfq+0NYmWIKfaHdoi
-         ejxL5lMrN5XbgD/9TH1idpeONThIEgesxPzHd7OCFVm2TG1EhgIZwL8WlHN/qWICwIBq
-         scy536JrIVLdSuzU064v4n/IH8BwvmH12dv7isOIj+gxONbtxkRHJSV7d56zUMhXR4Jz
-         tjs6MTCzpdDJBdydYOhUylza0kZpAj6ABTK2gv7OVyDAlbbat68JFV/3E48Z3ZZ68l+p
-         zG31LdA24FzTlkmWJMfDBm45apGS6+td+dMP52xtQgoASXwOQ3Jq3ZJXXHA/uCPUWOZv
-         aA5w==
-X-Gm-Message-State: AOAM530X0hIGk2xI1BzKr5+K5KepAy8ZhSafO4nCBJx/+SEW7rhMJ1Ap
-        4cgvIkQhVYhteOMIpTSXyYcmVEq76Ys=
-X-Google-Smtp-Source: ABdhPJz3WjSnInv6njYk2hlE4zcOwY588ZwiQtweFGTWUeOQOZJqBrYqbkfNtzqPkGf1WC0QzTTCmw==
-X-Received: by 2002:a17:90b:512:: with SMTP id r18mr5490024pjz.149.1605309138349;
-        Fri, 13 Nov 2020 15:12:18 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id r6sm10607370pfh.166.2020.11.13.15.12.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 15:12:17 -0800 (PST)
-Subject: Re: [PATCH] rtc: brcmstb-waketimer: Remove redundant null check
- before clk_disable_unprepare
-To:     Xu Wang <vulab@iscas.ac.cn>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-rtc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20201113074538.65028-1-vulab@iscas.ac.cn>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <a54f1c10-dda6-eb77-a707-7a3af81dd5a7@gmail.com>
-Date:   Fri, 13 Nov 2020 15:12:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 13 Nov 2020 18:13:04 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADN1RKu002820;
+        Fri, 13 Nov 2020 18:12:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VPXL3sfSTyvYzjoDD7YxBypjIls2SIk04S7hPFAqFus=;
+ b=mfXsPJ0tvOaw/MbqjI4Mkm/khVigjwn577vrVzpPHIJEVnXomSF0dzgSecuRNcnh7FKT
+ Bc4YVDeTVCxGzZuoTbm8JbazNQUQewuKrHigKeaYvNb7hVFgVsqNA0p2ftpqUTZ0RjWQ
+ twr/aZEqJAxNY/a4i/PxSNewmUVDArRArO7pSfhseSdstjlV04x3Jp+xK2HaCJBj0Pp+
+ jdsFZz/0SwWFVB1jgOpebzgutAQuQImuAwjl3SyN5Xc0xKCxEt8+RxRFyyRjSsvzWObX
+ KledDxDxsPdAwt6RJd9LFsCO6EH6oZwO4eMHXbBsJe0AFZ6ndwvUbYyCHhkCiZ+5voel AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34sxs2ghay-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 18:12:56 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ADN2IvA008361;
+        Fri, 13 Nov 2020 18:12:56 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34sxs2gha9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 18:12:56 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADN7SI4005941;
+        Fri, 13 Nov 2020 23:12:54 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 34nk78bp5e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Nov 2020 23:12:54 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ADNCpeY3080816
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 23:12:51 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5AAF64C040;
+        Fri, 13 Nov 2020 23:12:51 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A20834C044;
+        Fri, 13 Nov 2020 23:12:50 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.46.164])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 13 Nov 2020 23:12:50 +0000 (GMT)
+Date:   Sat, 14 Nov 2020 00:12:48 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v11 07/14] s390/vfio-ap: sysfs attribute to display the
+ guest's matrix
+Message-ID: <20201114001248.3b397c8c.pasic@linux.ibm.com>
+In-Reply-To: <b96fe876-c67a-fe6c-0e3a-7b4948edeef4@linux.ibm.com>
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+        <20201022171209.19494-8-akrowiak@linux.ibm.com>
+        <20201028091758.73aa77a3.pasic@linux.ibm.com>
+        <b96fe876-c67a-fe6c-0e3a-7b4948edeef4@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201113074538.65028-1-vulab@iscas.ac.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-13_21:2020-11-13,2020-11-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 suspectscore=0 mlxlogscore=999
+ adultscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011130145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 11:45 PM, Xu Wang wrote:
-> Because clk_disable_unprepare() already checked NULL clock parameter,
-> so the additional check is unnecessary, just remove it.
-> 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+On Fri, 13 Nov 2020 12:27:32 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> 
+> 
+> On 10/28/20 4:17 AM, Halil Pasic wrote:
+> > On Thu, 22 Oct 2020 13:12:02 -0400
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >
+> >> +static ssize_t guest_matrix_show(struct device *dev,
+> >> +				 struct device_attribute *attr, char *buf)
+> >> +{
+> >> +	ssize_t nchars;
+> >> +	struct mdev_device *mdev = mdev_from_dev(dev);
+> >> +	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+> >> +
+> >> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
+> >> +		return -ENODEV;
+> > I'm wondering, would it make sense to have guest_matrix display the would
+> > be guest matrix when we don't have a KVM? With the filtering in
+> > place, the question in what guest_matrix would my (assign) matrix result
+> > right now if I were to hook up my vfio_ap_mdev to a guest seems a
+> > legitimate one.
+> 
+> A couple of thoughts here:
+> * The ENODEV informs the user that there is no guest running
+>     which makes sense to me given this interface displays the
+>     guest matrix. The alternative, which I considered, was to
+>     display an empty matrix (i.e., nothing).
+> * This would be a pretty drastic change to the design because
+>     the shadow_apcb - which is what is displayed via this interface - is
+>     only updated when the guest is started and while it is running (i.e.,
+>     hot plug of new adapters/domains). Making this change would
+>     require changing that entire design concept which I am reluctant
+>     to do at this point in the game.
+> 
+> 
+
+No problem. My thinking was, that, because we can do the
+assign/unassing ops also for the running guest, that we also have
+the code to do the maintenance on the shadow_apcb. In this
+series this code is conditional with respect to vfio_ap_mdev_has_crycb().
+E.g. 
+
+static ssize_t assign_adapter_store(struct device *dev,                         
+                                    struct device_attribute *attr,              
+                                    const char *buf, size_t count)              
+{                                                                               
+[..]                                                                                
+        if (vfio_ap_mdev_has_crycb(matrix_mdev))                                
+                if (vfio_ap_mdev_filter_guest_matrix(matrix_mdev, true))        
+                        vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+
+If one were to move the 
+vfio_ap_mdev_has_crycb() check into vfio_ap_mdev_commit_shadow_apcb()
+then we would have an always up to date shatdow_apcb, we could display.
+
+I don't feel strongly about this. Was just an idea, because if the result
+of the filtering is surprising, currently the only to see, without
+knowing the algorithm, and possibly the state, and the history of the
+system, is to actually start a guest.
+
+Regards,
+Halil
+
