@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A1C2B1A39
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B912B1A42
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgKMLoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:44:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
+        id S1726721AbgKMLqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:46:47 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:11825 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726776AbgKMLlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:41:44 -0500
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726821AbgKMLob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:44:31 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605267865; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8D/P2NUOwr9dXGs1xXx6ou3TEUU+cru+7sF8Q++MqwY=;
+ b=Li9DKNdQ2R4dI1KjMPtmRWjWMoLe7nAWkVQ7pEURZJtvvv2QckaPYws+UPNpdy9+PyllNlGD
+ jB6rIdG9F2uFK7DA3bZ8FtFgNBtMWvIPcXZEEdZDB7T2Lsp6DhnN0B6eMjhQjerihjJwq0L7
+ f/S7WRfP2Lad/3JUD1DaaoaQkdo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fae718df34fcfd5e57e8ab2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 11:44:13
+ GMT
+Sender: cjhuang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D4ECC433C9; Fri, 13 Nov 2020 11:44:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        LOTS_OF_MONEY autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1724C2224F
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605267678;
-        bh=IKXPZInFuWv5+BduGuX9Ec2McK9C8JFS4284M+7/ykg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lM+vBoKxbv6L6YLuwthIY1oYPPMreS0XXqZP5fQE26ZyswUeF2R1oBIH5N/O7+be4
-         +L4C8tRN4faA93315ZnKT20XFJBfPSM1HW8Mp5GvlVGTGU4uSi4MhrqBwUgblSMqas
-         KA5fkBb2cAIKlsduGofN+tzaO41a4Pg3aOr8iRm4=
-Received: by mail-oo1-f51.google.com with SMTP id c25so2077619ooe.13
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:41:18 -0800 (PST)
-X-Gm-Message-State: AOAM5309AIluMItgS+Qr2a8ikDcIDnsOk22EyDbBD3JRJ5A4eZ/ahl79
-        rtYP++A6Zh0LIndeESnxscUPScXZMmYIK0tEUks=
-X-Google-Smtp-Source: ABdhPJwKeQwo/74xzJBDAboTV0FH5bd9URhUDHXyRWsprng3fVdbZ6ZVwxb9CrO1o1UUn0txwIG6Cw1GfUnJUFmvq9w=
-X-Received: by 2002:a4a:9806:: with SMTP id y6mr1196261ooi.45.1605267677271;
- Fri, 13 Nov 2020 03:41:17 -0800 (PST)
+        (Authenticated sender: cjhuang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB530C433C6;
+        Fri, 13 Nov 2020 11:44:11 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201112212457.2042105-1-adrian.ratiu@collabora.com>
- <20201112212457.2042105-2-adrian.ratiu@collabora.com> <CAMj1kXFbLRTvGuRt5J3-oEuJrrHFV9+SBGFFDNsAftGUbwoTPw@mail.gmail.com>
- <87mtzljz12.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
-In-Reply-To: <87mtzljz12.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 13 Nov 2020 12:41:04 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHQ94ZzoSUg6U70FnRtFs0KeVXT=Zg6ri2+OU_TKQcGfg@mail.gmail.com>
-Message-ID: <CAMj1kXHQ94ZzoSUg6U70FnRtFs0KeVXT=Zg6ri2+OU_TKQcGfg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6 warning
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 13 Nov 2020 19:44:11 +0800
+From:   Carl Huang <cjhuang@codeaurora.org>
+To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
+        akpm@linux-foundation.org, ath11k@lists.infradead.org,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
+ tail in __free_pages_core()"
+In-Reply-To: <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
+References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
+ <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
+ <87eekz4s04.fsf@codeaurora.org>
+ <9d307c40-5ea1-8938-819d-f1742cb99945@gmail.com>
+ <cd8d1b1d-a646-b9b1-ed2a-4aa7070efe00@redhat.com>
+ <dd24598f-7635-c2e2-9c6d-f320770e3b9e@gmail.com>
+ <f1f471905ea99ad9b9c8a8eeae616ff9@codeaurora.org>
+Message-ID: <056b74d48fb735c69a6268b18184d7e8@codeaurora.org>
+X-Sender: cjhuang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 at 12:05, Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
->
-> Hi Ard,
->
-> On Fri, 13 Nov 2020, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > On Thu, 12 Nov 2020 at 22:23, Adrian Ratiu
-> > <adrian.ratiu@collabora.com> wrote:
-> >>
-> >> From: Nathan Chancellor <natechancellor@gmail.com>
-> >>
-> >> Drop warning because kernel now requires GCC >= v4.9 after
-> >> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9").
-> >>
-> >> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> >> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> >
-> > Again, this does not do what it says on the tin.
-> >
-> > If you want to disable the pragma for Clang, call that out in
-> > the commit log, and don't hide it under a GCC version change.
->
-> I am not doing anything for Clang in this series.
->
-> The option to auto-vectorize in Clang is enabled by default but
-> doesn't work for some reason (likely to do with how it computes
-> the cost model, so maybe not even a bug at all) and if we enable
-> it explicitely (eg via a Clang specific pragma) we get some
-> warnings we currently do not understand, so I am not changing the
-> Clang behaviour at the recommendation of Nick.
->
-> So this is only for GCC as the "tin" says :) We can fix clang
-> separately as the Clang bug has always been present and is
-> unrelated.
->
-
-But you are adding the IS_GCC check here, no? Is that equivalent? IOW,
-does Clang today identify as GCC <= 4.6?
-
-> >
-> > Without the pragma, the generated code is the same as the
-> > generic code, so it makes no sense to build xor-neon.ko at all,
-> > right?
-> >
->
-> Yes that is correct and that is the reason why in v1 I opted to
-> not build xor-neon.ko for Clang anymore, but that got NACKed, so
-> here I'm fixing the low hanging fruit: the very obvious & clear
-> GCC problems.
->
->
-
-Fair enough.
-
-> >> ---
-> >>  arch/arm/lib/xor-neon.c | 9 +--------
-> >>  1 file changed, 1 insertion(+), 8 deletions(-)
-> >>
-> >> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-> >> index b99dd8e1c93f..e1e76186ec23 100644
-> >> --- a/arch/arm/lib/xor-neon.c
-> >> +++ b/arch/arm/lib/xor-neon.c
-> >> @@ -19,15 +19,8 @@ MODULE_LICENSE("GPL");
-> >>   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
-> >>   * NEON instructions.
-> >>   */
-> >> -#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-> >> +#ifdef CONFIG_CC_IS_GCC
-> >>  #pragma GCC optimize "tree-vectorize"
-> >> -#else
-> >> -/*
-> >> - * While older versions of GCC do not generate incorrect code, they fail to
-> >> - * recognize the parallel nature of these functions, and emit plain ARM code,
-> >> - * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
-> >> - */
-> >> -#warning This code requires at least version 4.6 of GCC
-> >>  #endif
-> >>
-> >>  #pragma GCC diagnostic ignored "-Wunused-variable"
-> >> --
-> >> 2.29.2
-> >>
+On 2020-11-13 19:08, Carl Huang wrote:
+> On 2020-11-13 16:17, Pavel Procopiuc wrote:
+>> Op 12.11.2020 om 11:48 schreef David Hildenbrand:
+>>> Trying to understand the code, it looks like there are always two 
+>>> rounds of reqests. The first one always fails ("requesting one big 
+>>> chunk of DMA memory"), the second one (providing multiple chunks of 
+>>> DMA memory) is supposed to work - and we do allocate memory.
+>>> 
+>>> 
+>>> In the *working* cases we have
+>>> 
+>>> Respond mem req failed, result: 1, err: 0
+>>> qmi failed to respond fw mem req:-22
+>>> ...
+>>> chip_id 0x0 chip_family 0xb board_id 0xff soc_id 0xffffffff
+>>> 
+>>> We don't fail in qmi_txn_wait() - second request w
+>>> 
+>>> 
+>>> In the *non-working* cases we have
+>>> 
+>>> Respond mem req failed, result: 1, err: 0
+>>> qmi failed to respond fw mem req:-22
+>>> ...
+>>> qmi failed memory request, err = -110
+>>> qmi failed to respond fw mem req:-110
+>>> 
+>>> We fail in qmi_txn_wait(). We run into a timeout (ETIMEDOUT).
+>>> 
+>>> Can we bump up the timeout limit and see if things change? Maybe FW 
+>>> needs more time with other addresses.
+>> 
+>> I tried increasing ATH11K_QMI_WLANFW_TIMEOUT_MS 20 times to 100000
+>> (i.e. 100 seconds) and it didn't have any positive effect, the second
+>> error (-110) just came 100 seconds later and not 5.
+>> 
+> Checked some logs. Looks when the error happens, the physical address 
+> are
+> very small. Its' between 20M - 30M.
+> 
+> So could you have a try to reserve the memory starting from 20M?
+> Add "memmap=10M\$20M" to your grub.cfg or edit in kernel parameters. so 
+> ath11k
+> can't allocate from these address.
+> 
+> Or you can try to reserve even larger memory starting from 20M.
+> 
+To guarantee ath11k doesn't get physical address below 32M, reserve some 
+more, for
+example "memmap=12M\$20M".
