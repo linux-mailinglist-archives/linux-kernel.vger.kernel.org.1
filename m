@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0772B2736
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FB82B2738
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgKMVjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKMVjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:39:44 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA065C0613D1;
-        Fri, 13 Nov 2020 13:39:42 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id v22so12454080edt.9;
-        Fri, 13 Nov 2020 13:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GY3sxkg3pkqNwc0wL90fxKYZ45EqrlmAu69mRryF7BM=;
-        b=QsOQMrz4ShhUlES7isqspW1o38dZdZLYZ3bnw/pYncm8p7NSiCAur8hXoz+MgjoiuC
-         oUETvqL8Opp+A5mRL77tkDmyeoUJNPzhRbwP6sXK/suo4a30oJdLx9sJeV/3wK4idJTP
-         JWktnT9+kU1yb9FdiQ/6HgFNF9DgVoDBa7gNEMmUojuVjHGxxC4GinQVDn682o7A6doU
-         9HDipvWp0f8ln8xzFQsMcUyd+GdzzOBg6okpdp3D6gkxDVaD0AOEeSGzPgyS0+PK7z9i
-         z6o6KrTmsKKq/6t5c+vWvRpnBrCbo1pzb9ZmO3VXiQIddCjjIxW4yiu+iaU0/Wh0veSb
-         ZhBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GY3sxkg3pkqNwc0wL90fxKYZ45EqrlmAu69mRryF7BM=;
-        b=sfSHKQldyK/Yx1/IokCI+jLf5SsgleKXhcFYLU6nzDHCr8po7JtRO3XaV6L1XOTTgS
-         a6piG2rIwtfYrqud/gm7EbRiD6KI1EKbN8A2Nv+rjDP5aYFJoBqO5ibh+FIBi4C2KZJa
-         B9fEKtIj3p24/cjeeMmrYApqLYnRos6gpa+7yXeHt+ynq3dIdxwA7d/t6GTmqWNL3Qjz
-         yNcTi/XLwp6DsEhV+VDIMHc/r/sZDHU0HUZcbkuPZdg1gNqGBC/vVtoqrPbVq1B37e8m
-         8sNYExgfkYe1Yt2A55D28WQomzTdlFdjZyrqndCmxzfNn5Jk0+r3K9Gwy1Nni2vXaQKR
-         I3Sg==
-X-Gm-Message-State: AOAM532p7tplJdcHBt7IZRt2IKxt2Tl3yOT7blRDRuo+spxH2V0bn4pd
-        jcZrh5AMliszDg+IcucqiW8=
-X-Google-Smtp-Source: ABdhPJxvP333YF/+k+Gwi+3JjsWYJs7f8n+Vq0nNrbugFBnqg0LfQdeG/4azufOrmOGtRssqLNnT9Q==
-X-Received: by 2002:a50:f392:: with SMTP id g18mr4798636edm.140.1605303581324;
-        Fri, 13 Nov 2020 13:39:41 -0800 (PST)
-Received: from andrea (host-82-51-6-75.retail.telecomitalia.it. [82.51.6.75])
-        by smtp.gmail.com with ESMTPSA id p26sm3095853eja.13.2020.11.13.13.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 13:39:40 -0800 (PST)
-Date:   Fri, 13 Nov 2020 22:39:33 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v9 2/3] scsi: storvsc: Use vmbus_requestor to generate
- transaction IDs for VMBus hardening
-Message-ID: <20201113213933.GA4937@andrea>
-References: <20201109100402.8946-1-parri.andrea@gmail.com>
- <20201109100402.8946-3-parri.andrea@gmail.com>
- <20201113113327.dmium67e32iadqbz@liuwe-devbox-debian-v2>
- <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
+        id S1726273AbgKMVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:40:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726116AbgKMVkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 16:40:18 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09E072224D;
+        Fri, 13 Nov 2020 21:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605303612;
+        bh=pf0MdFZhP8Aj54kdy6uq7vt6cJ6OOnUVf8F2IYcfu/M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iIU9cfzDtTWwA56hSwS/zc0hNN+ueC+ELU29QqmZiW8pSKYpd5MBI4UiSM7LL9VbR
+         eQYKmsGDlkNs51TFmXwi8fnq7Ia268z/uAuaVC6SO+VJkH9/yOKck9OaxyP+PThnHQ
+         vHd65SbYD0Jx/+E1Dp17ltbfmAhOOMq3zeD1Rj8c=
+Date:   Fri, 13 Nov 2020 13:40:10 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4
+ behavior
+Message-ID: <20201113134010.5eb2a154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
+        <20201107153139.3552-5-andrea.mayer@uniroma2.it>
+        <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
+        <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
+        <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
+        <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
+        <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 06:54:24PM +0000, Wei Liu wrote:
-> On Fri, Nov 13, 2020 at 11:33:27AM +0000, Wei Liu wrote:
-> > On Mon, Nov 09, 2020 at 11:04:01AM +0100, Andrea Parri (Microsoft) wrote:
-> > > From: Andres Beltran <lkmlabelt@gmail.com>
-> > > 
-> > > Currently, pointers to guest memory are passed to Hyper-V as
-> > > transaction IDs in storvsc. In the face of errors or malicious
-> > > behavior in Hyper-V, storvsc should not expose or trust the transaction
-> > > IDs returned by Hyper-V to be valid guest memory addresses. Instead,
-> > > use small integers generated by vmbus_requestor as requests
-> > > (transaction) IDs.
-> > > 
-> > > Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-> > > Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> > > Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> > > Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> > > Cc: linux-scsi@vger.kernel.org
-> > 
-> > Reviewed-by: Wei Liu <wl@xen.org>
+On Fri, 13 Nov 2020 11:40:36 -0800 Jakub Kicinski wrote:
+> > agreed. The v6 variant has existed for a while. The v4 version is
+> > independent.  
 > 
-> Martin already gave his ack back in July. I guess nothing substantial
-> changed so it should have been carried over?
+> Okay, I'm not sure what's the right call so I asked DaveM.
 
-The only change here happened in v7 and consisted in moving the
-allocation of the request IDs from the VSC code down into the core
-vmbus_sendpacket()&co functions.  As mentioned in v7 cover letter,
-this change was applied to ensure that the allocation in question
-is performed after the packet is copied into the ring buffer.  On
-a positive note, this change greatly reduced the diff of this and
-the following (NetVSC) patches.
+DaveM raised a concern that unless we implement v6 now we can't be sure
+the interface we create for v4 is going to fit there.
 
-  Andrea
+So Andrea unless it's a major hurdle, could you take a stab at the v6
+version with VRFs as part of this series?
