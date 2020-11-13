@@ -2,113 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B732B1EB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C034F2B1EB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKMPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:30:15 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:12302 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbgKMPaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:30:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605281414; h=In-Reply-To: Content-Transfer-Encoding:
- Content-Type: MIME-Version: References: Message-ID: Subject: Cc: To:
- From: Date: Sender; bh=nDk50TXEgsLL4aVwI48GMSE/ZkJsBvYxBRxqXrym8CI=; b=apKnv5L6S4G7zCf1vWykNrBio226m91euSpOiAys4owv+OVdTPn4XciCLbYrmwiS43EDC6L0
- C9iS3u3C0EZij6MyuQhduywmfHoETr4VhAzcDBbQy5nPHko9WAVTE+NP4kV63LTq5DinsDfP
- n2i44Jcqh9H39L9f8Lw6F5/GCIY=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5faea683e9dd187f5372f1a4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 15:30:11
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9C86CC433CB; Fri, 13 Nov 2020 15:30:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CF8A5C433CB;
-        Fri, 13 Nov 2020 15:30:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CF8A5C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Fri, 13 Nov 2020 08:30:06 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-Subject: Re: [Freedreno] [PATCH 06/40] drm/msm/adreno/a6xx_gpu: Staticise
- local function 'a6xx_idle'
-Message-ID: <20201113153006.GD2661@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-7-lee.jones@linaro.org>
+        id S1726754AbgKMPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726324AbgKMPas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 10:30:48 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B045C0613D1;
+        Fri, 13 Nov 2020 07:30:32 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id 11so9109917qkd.5;
+        Fri, 13 Nov 2020 07:30:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jRN0hd985rUTcBLLds2xuSjiDPNKj9RzyzM/Mhj8NMI=;
+        b=iXs3myPmcsn+JNsD9rW6++x0sJAJkwPzx+KYmmbvVzyTs/hkhEQ1EYs8Xt1lD0pvzB
+         e27hl/5seZ1H94hzEwZUWXBa0oWKxP2sDCMQxqRsMo0PURLHZ71na6860nyYahaTx5Dm
+         OlM1mBCEtlbDt+DXSAzRNsK7RLacWQzIo+S/gKEogR73ySKGoi7G6ugJsYOwKUFEA8z3
+         pUDn9c/jAxk/4UAzj0SC4/H4jVGDIIH12mxfFZJ0izijUXVsJ7Khdhhlo9Zvf9K6Z44d
+         rpCkVkhY2o1Fb36rtnpIl4+MJ3lrgoRfqm8YlCN3gL/13M+B2YqUScVDiDfGb1pQApMe
+         56oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jRN0hd985rUTcBLLds2xuSjiDPNKj9RzyzM/Mhj8NMI=;
+        b=FOEQ08PhXkfdzCJDVzRIgVeUZDyJsOvtxHh8RlWXZJJIZP9+gaC6LsQsVTwS3/9sxY
+         HZBHG4hlCpDid/KvpH0pyOHZ5ltYJTqzdEHou2FPNRBQUfY2+q5MYQOd81wdd1Ifep7q
+         ovrC/XepI/MaZ3tbD1unwerTSMrlQ+inFEfzCjHfXvH9Lm0Vm6AsBzhuEGaaUCcopwDx
+         5FQTV6ZwSTcUmG2mIWAHWkyefhq1sUTdis/xarwdPP0tCI2gU4JYxzdD1bXv+doNTxFG
+         FReRqDr57z+NrKCWcIQyuGfoEjG+Wbs097G9FHNYTbBWzLOgC4I5h+mQk7VXnMskRJH+
+         sBZQ==
+X-Gm-Message-State: AOAM531k1y7oDygUL8J2wlguAuls728Q/veNhbM/Lv1Zn1Pz9R6uRrCJ
+        3ATHlf03l6lzy1NWmwz4aKE=
+X-Google-Smtp-Source: ABdhPJz9IFOBRh+GQN79NayXafDuzKDzSjycL/UYvkBhej4K/KihNofuVRAU1bciSleHPD3TSVWAWA==
+X-Received: by 2002:a37:8703:: with SMTP id j3mr2585373qkd.5.1605281426758;
+        Fri, 13 Nov 2020 07:30:26 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id f56sm7183778qta.49.2020.11.13.07.30.25
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Nov 2020 07:30:25 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 6E30927C0054;
+        Fri, 13 Nov 2020 10:30:23 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 13 Nov 2020 10:30:23 -0500
+X-ME-Sender: <xms:iqauXxD7CorhV411lS0DRxUtpE6dxHigoXSXOJFN3X6Q0IETxaGs8g>
+    <xme:iqauX_hh8z5oK2K4ru4sgFyVmrxdb3O4f9Oq-4dgfuVnH8-T7AHkoJLfJWf8JLXrB
+    1ur8ykZK4pa-kgU-Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvhedgjeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:i6auX8nepc_qc6aTmAu8fkAIGIpWlsIMqp4Gbj785dy_z53wED4SBQ>
+    <xmx:i6auX7zd92O6G5taKXavsAbxTXK6Wfn49QS_aWUBy2iYwuFAiwyVHA>
+    <xmx:i6auX2QVVO-wK7rbNuV4TsYIeZUK_Igua833D-SW3axbtPcjaIaQGA>
+    <xmx:j6auX5ELno9Ne22A8_qAbV0iB2xEN1c1I95ZhrmOYiQ6HGqIZ4RjNJBBVJE>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B80083064AB5;
+        Fri, 13 Nov 2020 10:30:18 -0500 (EST)
+Date:   Fri, 13 Nov 2020 23:30:12 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 3/3] powerpc: rewrite atomics to use ARCH_ATOMIC
+Message-ID: <20201113153012.GD286534@boqun-archlinux>
+References: <20201111110723.3148665-1-npiggin@gmail.com>
+ <20201111110723.3148665-4-npiggin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201113134938.4004947-7-lee.jones@linaro.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201111110723.3148665-4-npiggin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 01:49:04PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c:33:6: warning: no previous prototype for ‘a6xx_idle’ [-Wmissing-prototypes]
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Hi Nicholas,
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Nov 11, 2020 at 09:07:23PM +1000, Nicholas Piggin wrote:
+> All the cool kids are doing it.
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index fcb0aabbc9852..03c2f7e0c9497 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -30,7 +30,7 @@ static inline bool _a6xx_check_idle(struct msm_gpu *gpu)
->  		A6XX_RBBM_INT_0_MASK_RBBM_HANG_DETECT);
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>  arch/powerpc/include/asm/atomic.h  | 681 ++++++++++-------------------
+>  arch/powerpc/include/asm/cmpxchg.h |  62 +--
+>  2 files changed, 248 insertions(+), 495 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
+> index 8a55eb8cc97b..899aa2403ba7 100644
+> --- a/arch/powerpc/include/asm/atomic.h
+> +++ b/arch/powerpc/include/asm/atomic.h
+> @@ -11,185 +11,285 @@
+>  #include <asm/cmpxchg.h>
+>  #include <asm/barrier.h>
+>  
+> +#define ARCH_ATOMIC
+> +
+> +#ifndef CONFIG_64BIT
+> +#include <asm-generic/atomic64.h>
+> +#endif
+> +
+>  /*
+>   * Since *_return_relaxed and {cmp}xchg_relaxed are implemented with
+>   * a "bne-" instruction at the end, so an isync is enough as a acquire barrier
+>   * on the platform without lwsync.
+>   */
+>  #define __atomic_acquire_fence()					\
+> -	__asm__ __volatile__(PPC_ACQUIRE_BARRIER "" : : : "memory")
+> +	asm volatile(PPC_ACQUIRE_BARRIER "" : : : "memory")
+>  
+>  #define __atomic_release_fence()					\
+> -	__asm__ __volatile__(PPC_RELEASE_BARRIER "" : : : "memory")
+> +	asm volatile(PPC_RELEASE_BARRIER "" : : : "memory")
+>  
+> -static __inline__ int atomic_read(const atomic_t *v)
+> -{
+> -	int t;
+> +#define __atomic_pre_full_fence		smp_mb
+>  
+> -	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m"(v->counter));
+> +#define __atomic_post_full_fence	smp_mb
+>  
+
+Do you need to define __atomic_{pre,post}_full_fence for PPC? IIRC, they
+are default smp_mb__{before,atomic}_atomic(), so are smp_mb() defautly
+on PPC.
+
+> -	return t;
+> +#define arch_atomic_read(v)			__READ_ONCE((v)->counter)
+> +#define arch_atomic_set(v, i)			__WRITE_ONCE(((v)->counter), (i))
+> +#ifdef CONFIG_64BIT
+> +#define ATOMIC64_INIT(i)			{ (i) }
+> +#define arch_atomic64_read(v)			__READ_ONCE((v)->counter)
+> +#define arch_atomic64_set(v, i)			__WRITE_ONCE(((v)->counter), (i))
+> +#endif
+> +
+[...]
+>  
+> +#define ATOMIC_FETCH_OP_UNLESS_RELAXED(name, type, dtype, width, asm_op) \
+> +static inline int arch_##name##_relaxed(type *v, dtype a, dtype u)	\
+
+I don't think we have atomic_fetch_*_unless_relaxed() at atomic APIs,
+ditto for:
+
+	atomic_fetch_add_unless_relaxed()
+	atomic_inc_not_zero_relaxed()
+	atomic_dec_if_positive_relaxed()
+
+, and we don't have the _acquire() and _release() variants for them
+either, and if you don't define their fully-ordered version (e.g.
+atomic_inc_not_zero()), atomic-arch-fallback.h will use read and cmpxchg
+to implement them, and I think not what we want.
+
+[...]
+>  
+>  #endif /* __KERNEL__ */
+>  #endif /* _ASM_POWERPC_ATOMIC_H_ */
+> diff --git a/arch/powerpc/include/asm/cmpxchg.h b/arch/powerpc/include/asm/cmpxchg.h
+> index cf091c4c22e5..181f7e8b3281 100644
+> --- a/arch/powerpc/include/asm/cmpxchg.h
+> +++ b/arch/powerpc/include/asm/cmpxchg.h
+> @@ -192,7 +192,7 @@ __xchg_relaxed(void *ptr, unsigned long x, unsigned int size)
+>       		(unsigned long)_x_, sizeof(*(ptr))); 			     \
+>    })
+>  
+> -#define xchg_relaxed(ptr, x)						\
+> +#define arch_xchg_relaxed(ptr, x)					\
+>  ({									\
+>  	__typeof__(*(ptr)) _x_ = (x);					\
+>  	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
+> @@ -448,35 +448,7 @@ __cmpxchg_relaxed(void *ptr, unsigned long old, unsigned long new,
+>  	return old;
 >  }
 >  
-> -bool a6xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
-> +static bool a6xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
->  {
->  	/* wait for CP to drain ringbuffer: */
->  	if (!adreno_idle(gpu, ring))
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+> -static __always_inline unsigned long
+> -__cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
+> -		  unsigned int size)
+> -{
+> -	switch (size) {
+> -	case 1:
+> -		return __cmpxchg_u8_acquire(ptr, old, new);
+> -	case 2:
+> -		return __cmpxchg_u16_acquire(ptr, old, new);
+> -	case 4:
+> -		return __cmpxchg_u32_acquire(ptr, old, new);
+> -#ifdef CONFIG_PPC64
+> -	case 8:
+> -		return __cmpxchg_u64_acquire(ptr, old, new);
+> -#endif
+> -	}
+> -	BUILD_BUG_ON_MSG(1, "Unsupported size for __cmpxchg_acquire");
+> -	return old;
+> -}
+> -#define cmpxchg(ptr, o, n)						 \
+> -  ({									 \
+> -     __typeof__(*(ptr)) _o_ = (o);					 \
+> -     __typeof__(*(ptr)) _n_ = (n);					 \
+> -     (__typeof__(*(ptr))) __cmpxchg((ptr), (unsigned long)_o_,		 \
+> -				    (unsigned long)_n_, sizeof(*(ptr))); \
+> -  })
+> -
+> -
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+If you remove {atomic_}_cmpxchg_{,_acquire}() and use the version
+provided by atomic-arch-fallback.h, then a fail cmpxchg or
+cmpxchg_acquire() will still result into a full barrier or a acquire
+barrier after the RMW operation, the barrier is not necessary and
+probably this is not what we want?
+
+Regards,
+Boqun
+
+> -#define cmpxchg_local(ptr, o, n)					 \
+> +#define arch_cmpxchg_local(ptr, o, n)					 \
+>    ({									 \
+>       __typeof__(*(ptr)) _o_ = (o);					 \
+>       __typeof__(*(ptr)) _n_ = (n);					 \
+> @@ -484,7 +456,7 @@ __cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
+>  				    (unsigned long)_n_, sizeof(*(ptr))); \
+>    })
+>  
+> -#define cmpxchg_relaxed(ptr, o, n)					\
+> +#define arch_cmpxchg_relaxed(ptr, o, n)					\
+>  ({									\
+>  	__typeof__(*(ptr)) _o_ = (o);					\
+>  	__typeof__(*(ptr)) _n_ = (n);					\
+> @@ -493,38 +465,20 @@ __cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
+>  			sizeof(*(ptr)));				\
+>  })
+>  
+> -#define cmpxchg_acquire(ptr, o, n)					\
+> -({									\
+> -	__typeof__(*(ptr)) _o_ = (o);					\
+> -	__typeof__(*(ptr)) _n_ = (n);					\
+> -	(__typeof__(*(ptr))) __cmpxchg_acquire((ptr),			\
+> -			(unsigned long)_o_, (unsigned long)_n_,		\
+> -			sizeof(*(ptr)));				\
+> -})
+>  #ifdef CONFIG_PPC64
+> -#define cmpxchg64(ptr, o, n)						\
+> -  ({									\
+> -	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+> -	cmpxchg((ptr), (o), (n));					\
+> -  })
+> -#define cmpxchg64_local(ptr, o, n)					\
+> +#define arch_cmpxchg64_local(ptr, o, n)					\
+>    ({									\
+>  	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+> -	cmpxchg_local((ptr), (o), (n));					\
+> +	arch_cmpxchg_local((ptr), (o), (n));				\
+>    })
+> -#define cmpxchg64_relaxed(ptr, o, n)					\
+> -({									\
+> -	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+> -	cmpxchg_relaxed((ptr), (o), (n));				\
+> -})
+> -#define cmpxchg64_acquire(ptr, o, n)					\
+> +#define arch_cmpxchg64_relaxed(ptr, o, n)				\
+>  ({									\
+>  	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+> -	cmpxchg_acquire((ptr), (o), (n));				\
+> +	arch_cmpxchg_relaxed((ptr), (o), (n));				\
+>  })
+>  #else
+>  #include <asm-generic/cmpxchg-local.h>
+> -#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
+> +#define arch_cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
+>  #endif
+>  
+>  #endif /* __KERNEL__ */
+> -- 
+> 2.23.0
+> 
