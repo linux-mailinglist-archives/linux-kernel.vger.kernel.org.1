@@ -2,57 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687702B2923
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C8D2B2925
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgKMX2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:28:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgKMX2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:28:09 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 728D12224F;
-        Fri, 13 Nov 2020 23:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605310089;
-        bh=TyTNr6dthjSmkZgrgaf8DURMMkJ5WSgZO7w2kKVizns=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0NuvOODFEs7x0wHsurYcpaupbyC173TRYg/DSPerMt305c9MJYwTGwxJKvqCBKIfs
-         mnkUHJSk5Bajjl8shD83gYA90o+tfu9FKyCSV25EFWIsV6i2VS+TyqDP1sE9rs99yQ
-         +J0sRBRmPQT3lUVVtxoqA4PnAm302h9GkaxMbEsE=
-Date:   Fri, 13 Nov 2020 15:28:07 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Wang Qing <wangqing@vivo.com>, Sekhar Nori <nsekhar@ti.com>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH v5] net: ethernet: ti: am65-cpts: update ret when
- ptp_clock is ERROR
-Message-ID: <20201113152807.649e49d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201112164541.3223-1-grygorii.strashko@ti.com>
-References: <20201112164541.3223-1-grygorii.strashko@ti.com>
+        id S1726158AbgKMX2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:28:43 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:39085 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKMX2m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 18:28:42 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id C00EE240004;
+        Fri, 13 Nov 2020 23:28:39 +0000 (UTC)
+Date:   Sat, 14 Nov 2020 00:28:39 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Olof Johansson <olof@lixom.net>, kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: ./include/generated/autoconf.h:1601:33: fatal error:
+ mach/debug-macro.S: No such file or directory
+Message-ID: <20201113232839.GA6117@piout.net>
+References: <202011111443.lt7V48Ig-lkp@intel.com>
+ <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 18:45:41 +0200 Grygorii Strashko wrote:
-> From: Wang Qing <wangqing@vivo.com>
+On 11/11/2020 09:51:26+0100, Linus Walleij wrote:
+> On Wed, Nov 11, 2020 at 7:18 AM kernel test robot <lkp@intel.com> wrote:
 > 
-> We always have to update the value of ret, otherwise the
->  error value may be the previous one.
+> >    In file included from include/linux/kconfig.h:7,
+> >                     from <command-line>:
+> > >> ./include/generated/autoconf.h:1601:33: fatal error: mach/debug-macro.S: No such file or directory
+> >     1601 | #define CONFIG_DEBUG_LL_INCLUDE "mach/debug-macro.S"
+> >          |                                 ^~~~~~~~~~~~~~~~~~~~
+> >    compilation terminated.
 > 
-> Fixes: f6bd59526ca5 ("net: ethernet: ti: introduce am654 common platform time sync driver")
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> [grygorii.strashko@ti.com: fix build warn, subj add fixes tag]
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
+> This is an interesting one!
+> 
+> It happens when CONFIG_DEBUG_LL_INCLUDE does not have a custom
+> debug header for the platform under arch/arm/include/debug and the
+> KConfig falls through to the default value, which is <mach/debug-macro.S>.
+> 
+> Only that the majority is not using <mach/*> anymore.
+> 
+> I feel a bit like setting the default to debug/8250.S or something.
+> 
+> Suggestions?
+> 
+> Then the actual bug exposed:
+> 
+> The config tested by the robot is using
+> CONFIG_ARCH_AT91=y
+> CONFIG_SOC_SAMV7=y
+> 
+> When I look into Kconfig.debug it seems that this will define
+> DEBUG_AT91_SAMV7_USART1 but only a physical address,
+> no virtual address and and actually no debug header. It seems
+> LL_DEBUG is broken on SAMV7 and never really worked
+> so now that crops up.
+> 
+> Nicolas, something that should be fixed, I think?
+> 
 
-Thanks for handling this, applied!
+This is what the platforms without an MMU are doing. I don't think there
+is anything platform specific to fix.
