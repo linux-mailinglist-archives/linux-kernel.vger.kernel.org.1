@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5362B1F0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C706E2B1F16
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 16:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgKMPqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 10:46:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgKMPqs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:46:48 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94924C0617A6;
-        Fri, 13 Nov 2020 07:46:47 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id d12so10360096wrr.13;
-        Fri, 13 Nov 2020 07:46:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g0CHHJRFLkJgpWDc0kWpwLPadBEpgRbUEt1rTCDH2OM=;
-        b=WE/2sCiUyHHpl2DCayvAvp1Q9QJYgwqI4FwsibXZlztfRyBbUpMrNWkHA3z6iwQqkR
-         HoddFL2fOr54FKpcRYZzcb//tSZXbgohEG9DJJFenYRMymUytedCM67GQtsdvKgpE8Sr
-         zN9YASR+Ako77qHf0zkdHPSTu2BAlHEr0k2JTvela1wbnEu30dmFgZOyKpYbejoW2iGv
-         tR7Qwrz+Gf5XbNNN3ECnJqtWnBa/W5r5SaIga5n9y31XWV47MFF668u5CMIsh70Y4Zaw
-         yH6EPuFgXrQCxD1Lc0BvD8HwK1ifUIX2KP8zn09Sx5eoBhM2EIAur3xbnBW9U5fZUesQ
-         s0hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g0CHHJRFLkJgpWDc0kWpwLPadBEpgRbUEt1rTCDH2OM=;
-        b=jTdGLiP38WZN63CgI99FyRW26b47ClqiDCXOtHTcM9CdVHUej61FbnNHPRvjic99cq
-         U+0VCzgSP76xuoRS5FrBXCQYt9fKlOx8vNL797IHPqaV/pAAz2h+7Plx6aZWmA6gdLKc
-         PGY3a2Mo69KG5Lr7MyReXXyfqWZvkGPjqDBqzzXJQ5HFPj9c2vngKCYNJ0uqU1cWjH8R
-         bWHgRGdHqXz0V1xznpoldkLtxnnB0GYW2VC+v8+Do0dcvYfmoLH1APasblNGLVSrJ1qC
-         saYen5+K944xL1uIfcBUltKCJq07p9aVZsk8WFR5OehWZ+/GN6NAMSbAd6YWO5reUDc6
-         A+Fg==
-X-Gm-Message-State: AOAM531bWmxGsOAUnc0Mu7XBNKNs8YRdlo8ta8Msi1fAepMY175B3SDd
-        rkS9SKWec7tzdSark6HFRhQ=
-X-Google-Smtp-Source: ABdhPJz9j68J/Z6s0zkPSGiUQMUc6/sZUF+65tbax/nZ6bjF8k29PJm5B+vvORjHAu8OtqGiGTUuXA==
-X-Received: by 2002:adf:f083:: with SMTP id n3mr4231239wro.391.1605282401419;
-        Fri, 13 Nov 2020 07:46:41 -0800 (PST)
-Received: from localhost.localdomain (245.red-79-158-78.dynamicip.rima-tde.net. [79.158.78.245])
-        by smtp.gmail.com with ESMTPSA id n15sm11727978wrq.48.2020.11.13.07.46.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Nov 2020 07:46:40 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     mturquette@baylibre.com
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, tsbogend@alpha.franken.de,
-        john@phrozen.org, gregkh@linuxfoundation.org, gch981213@gmail.com,
-        hackpascal@gmail.com, jiaxun.yang@flygoat.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name
-Subject: [PATCH v3 5/5] MAINTAINERS: add MT7621 CLOCK maintainer
-Date:   Fri, 13 Nov 2020 16:46:32 +0100
-Message-Id: <20201113154632.24973-6-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
-References: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
+        id S1726904AbgKMPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 10:47:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37904 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726777AbgKMPqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 10:46:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B05B7ABD9;
+        Fri, 13 Nov 2020 15:46:41 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     chris.packham@alliedtelesis.co.nz, linux-kernel@vger.kernel.org
+Cc:     andy.shevchenko@gmail.com, broonie@kernel.org,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        mark.rutland@arm.com, robh+dt@kernel.org
+Subject: Re: [PATCH v5 2/2] spi: Add generic SPI multiplexer
+Date:   Fri, 13 Nov 2020 16:46:33 +0100
+Message-Id: <20201113154633.21542-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20200204032838.20739-3-chris.packham@alliedtelesis.co.nz>
+References: <20200204032838.20739-3-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as maintainer for mt7621 clock driver.
+Upon registering spi-mux's devices through spi_add_device() the kernel gets
+stuck waiting for the 'spi_add_lock' mutex to be released. The mutex happens to
+be held by spi-mux's parent SPI bus, which unluckily, is waiting for spi-mux's
+probe to finish before releasing it.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+I might aswell be doing something wrong. But so far I trust my DT
+implementation:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f1f088a29bc2..30822ad6837c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11142,6 +11142,12 @@ L:	linux-wireless@vger.kernel.org
- S:	Maintained
- F:	drivers/net/wireless/mediatek/mt7601u/
- 
-+MEDIATEK MT7621 CLOCK DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-+F:	drivers/clk/ralink/clk-mt7621.c
-+
- MEDIATEK MT7621/28/88 I2C DRIVER
- M:	Stefan Roese <sr@denx.de>
- L:	linux-i2c@vger.kernel.org
--- 
-2.25.1
+	&spi {
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&spi0_gpio7>;
 
+		spi@0 {
+			compatible = "spi-mux";
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			spi-max-frequency = <100000000>;
+
+			mux-controls = <&gpio_mux>;
+
+			w5500@0 {
+				compatible = "wiznet,w5500";
+				reg = <0>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&eth1_pins>;
+				interrupt-parent = <&gpio>;
+				interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
+				spi-max-frequency = <30000000>;
+			};
+
+			spi-flash@1 {
+				compatible = "jedec,spi-nor";
+				reg = <1>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <16000000>;
+			};
+		};
+	};
+
+Regards,
+Nicolas
