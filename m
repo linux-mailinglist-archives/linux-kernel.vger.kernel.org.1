@@ -2,132 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADB52B292E
+	by mail.lfdr.de (Postfix) with ESMTP id C946D2B292F
 	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKMXbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:31:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S1726230AbgKMXbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:31:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgKMXbL (ORCPT
+        with ESMTP id S1725866AbgKMXbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:31:11 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B785C0613D1;
-        Fri, 13 Nov 2020 15:31:11 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605310269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xc3rTvoMmqA9/0bADmRAVBpeW9tL0Jxl2wS+CPsu+a4=;
-        b=0Qu1Q0UZ/BxKCQd6wellIwDfTCdCpY0dyXxfGNsgiQNZ61XEy8DaMw+FNB/lFd7jvsmzqO
-        O2gGNgPakh5wigR+iXi7rAISWU7J7psOdOSYEfeVrBBkYCuYOwRpO6LU3aJj9sqoHptZbT
-        b9ptYVl5cX6LGeTPAA+qQv7n7yKe/YDt7XQLdhKS/bZYmOJjPawx+q5yCX73PShhHk5p+1
-        TpYGBO2dBhuhQnutENm3+rep6iPMe5zSkrcwxBWn6XxQ/Q9+39yuqiaZ2p26fI2KDUZ3LQ
-        mkHHYQfvACx/pRKLpblbNYWe4jriVHoXhZS4xZ9S0ATeDvirU8YO4s/mEU8ImQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605310269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xc3rTvoMmqA9/0bADmRAVBpeW9tL0Jxl2wS+CPsu+a4=;
-        b=2oZMmbkzYFkgGooi4AKbzJ3C1mo3gBtfBj5w6I48soQbwLPQlSxET8mO0yIHUynv029650
-        z/9ha1MSbiwnxXBQ==
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Cc:     linux-pci@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
-        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
-        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
-        ddstreet@canonical.com, gavin.guo@canonical.com,
-        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
-        shan.gavin@linux.alibaba.com
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-In-Reply-To: <20201113164638.GA1019448@bjorn-Precision-5520>
-References: <20201113164638.GA1019448@bjorn-Precision-5520>
-Date:   Sat, 14 Nov 2020 00:31:09 +0100
-Message-ID: <87ft5cltqa.fsf@nanos.tec.linutronix.de>
+        Fri, 13 Nov 2020 18:31:47 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D484C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 15:31:47 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id u24so6091889vsl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 15:31:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AJStHOY5Qh2DGFTroegyQhWYQ1MmCmTEUHWIJvas+7M=;
+        b=jSNVZO0K7wzWNgivPRsTS23unTlL5xu3JAtfH6tP3wTtqKXHTFxKLDpXglVNKVogCS
+         6GN3EBqfM/ZUBQPh9/KXRac8yN3VH0HlBG3quWK6QtaxtiL1rK8O5VK7VVHqo6J7Rt/X
+         pLPxkZTYuxt9e7KMQUlSjLI7JuuwGE0+gzwfrHa+KQQiFj8lluSMbarMau3hHsSH1/Ly
+         I1ayeKXU+HZyBmmdWsN2DNObwSk0A53WftOV1KjCprrJHCY1GRvxqs5hu+HPHBc4Mr91
+         nRjSltnInqcTuCWkLRcwZA5Rf8Mmi9P0lK2FChkaNPICHq6O3gumsgzJMmBvO66F5HQu
+         PNWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AJStHOY5Qh2DGFTroegyQhWYQ1MmCmTEUHWIJvas+7M=;
+        b=jl7ikCC2WiugPtboi4JO5xWxv12q9PGcWiAZrkunqqmHU3XoGp7OI7CjU2/Iu2EsmP
+         CmXB+Az5n3l+gxwluvQQ2HdZuVBBk/v2X+23bMzBr1YeZ/J9uJi5TGcGH+gpaG1ca84S
+         MttB9E7phbxbvu4Va9pn0DtCcvPPnVtkbKbUPFjF0FEnDaIR9tqyfAXcSlagBMp1pUH9
+         AvPckN/tlMk2jIIrUfH+TRNLr3ktIwSZ1W/zux9Sa9IJOYkarPp5ePVoL8kC7x998z3c
+         pmIbT7/PYescHpLWZycav9BY83nkm8tvRwWRkUSrFt9/PBsdAB15U0b9hmVsbOyNT1R/
+         bCeg==
+X-Gm-Message-State: AOAM532q9saUCpfIejTnf+NJ+tGhpehsRe+DBp0Sv+iO0goOK5RjBFQ+
+        tCAVAVIf6uRfJXl6i2WPvO96pYdHydMq7IRCb3KxHw==
+X-Google-Smtp-Source: ABdhPJxSW9RODWqSRFIxVh02sljFGIxaFmVwff0K0MDsmxDUSocAvDQCNoKIe2vb8EcMsPSHfR3I4Mur2BV/pt3dnso=
+X-Received: by 2002:a67:ee93:: with SMTP id n19mr3267175vsp.36.1605310306224;
+ Fri, 13 Nov 2020 15:31:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble> <20201110174606.mp5m33lgqksks4mt@treble>
+ <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+ <20201113195408.atbpjizijnhuinzy@treble> <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
+ <20201113223412.inono2ekrs7ky7rm@treble>
+In-Reply-To: <20201113223412.inono2ekrs7ky7rm@treble>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 13 Nov 2020 15:31:34 -0800
+Message-ID: <CABCJKueeL+1ydcZsm2BS4qrX4Wxy7zY7FUQdoN_WLuUxFfqcmQ@mail.gmail.com>
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn,
-
-On Fri, Nov 13 2020 at 10:46, Bjorn Helgaas wrote:
-> On Fri, Nov 06, 2020 at 10:14:14AM -0300, Guilherme G. Piccoli wrote:
->> On 23/10/2018 14:03, Bjorn Helgaas wrote:
-> I guess Thomas' patch [2] (from thread [1]) doesn't solve this
-> problem?
-
-No. As I explained in [1] patch from [2] cannot solve it because the
-patch from [2] which is what Liu was trying to solve requires that there
-is a registered interrupt handler which knows how to shut up the
-interrupt.
-
-> I think [0] proposes using early_quirks() to disable MSIs at
-> boot-time.  That doesn't seem like a robust solution because (a) the
-> problem affects all arches but early_quirks() is x86-specific and (b)
-> even on x86 early_quirks() only works for PCI segment 0 because it
-> relies on the 0xCF8/0xCFC I/O ports.
+On Fri, Nov 13, 2020 at 2:34 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> If I understand Thomas' email correctly, the IRQ storm occurs here:
+> On Fri, Nov 13, 2020 at 12:24:32PM -0800, Sami Tolvanen wrote:
+> > > I still don't see this warning for some reason.
+> >
+> > Do you have CONFIG_XEN enabled? I can reproduce this on ToT master as follows:
+> >
+> > $ git rev-parse HEAD
+> > 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> > $ make defconfig && \
+> > ./scripts/config -e HYPERVISOR_GUEST -e PARAVIRT -e XEN && \
+> > make olddefconfig && \
+> > make -j110
+> > ...
+> > $ ./tools/objtool/objtool check -arfld vmlinux.o 2>&1 | grep secondary
+> > vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with
+> > modified stack frame
+> >
+> > > Is it fixed by adding cpu_bringup_and_idle() to global_noreturns[] in
+> > > tools/objtool/check.c?
+> >
+> > No, that didn't fix the warning. Here's what I tested:
 >
->   start_kernel
->     setup_arch
->       early_quirks               # x86-only
->         ...
->           read_pci_config_16(num, slot, func, PCI_VENDOR_ID)
->             outl(..., 0xcf8)     # PCI segment 0 only
->             inw(0xcfc)
->     local_irq_enable
->       ...
->         native_irq_enable
->           asm("sti")             # <-- enable IRQ, storm occurs
+> I think this fixes it:
 >
-> native_irq_enable() happens long before we discover PCI host bridges
-> and run the normal PCI quirks, so those would be too late to disable
-> MSIs.
+> From: Josh Poimboeuf <jpoimboe@redhat.com>
+> Subject: [PATCH] x86/xen: Fix objtool vmlinux.o validation of xen hypercalls
+>
+> Objtool vmlinux.o validation is showing warnings like the following:
+>
+>   # tools/objtool/objtool check -barfld vmlinux.o
+>   vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with modified stack frame
+>   vmlinux.o: warning: objtool:   xen_hypercall_set_trap_table()+0x0: <=== (sym)
+>
+> Objtool falls through all the empty hypercall text and gets confused
+> when it encounters the first real function afterwards.  The empty unwind
+> hints in the hypercalls aren't working for some reason.  Replace them
+> with a more straightforward use of STACK_FRAME_NON_STANDARD.
+>
+> Reported-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+>  arch/x86/xen/xen-head.S | 9 ++++-----
+>  include/linux/objtool.h | 8 ++++++++
+>  2 files changed, 12 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+> index 2d7c8f34f56c..3c538b1ff4a6 100644
+> --- a/arch/x86/xen/xen-head.S
+> +++ b/arch/x86/xen/xen-head.S
+> @@ -6,6 +6,7 @@
+>
+>  #include <linux/elfnote.h>
+>  #include <linux/init.h>
+> +#include <linux/objtool.h>
+>
+>  #include <asm/boot.h>
+>  #include <asm/asm.h>
+> @@ -67,14 +68,12 @@ SYM_CODE_END(asm_cpu_bringup_and_idle)
+>  .pushsection .text
+>         .balign PAGE_SIZE
+>  SYM_CODE_START(hypercall_page)
+> -       .rept (PAGE_SIZE / 32)
+> -               UNWIND_HINT_EMPTY
+> -               .skip 32
+> -       .endr
+> +       .skip PAGE_SIZE
+>
+>  #define HYPERCALL(n) \
+>         .equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
+> -       .type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
+> +       .type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32; \
+> +       STACK_FRAME_NON_STANDARD xen_hypercall_##n
+>  #include <asm/xen-hypercalls.h>
+>  #undef HYPERCALL
+>  SYM_CODE_END(hypercall_page)
+> diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+> index 577f51436cf9..746617265236 100644
+> --- a/include/linux/objtool.h
+> +++ b/include/linux/objtool.h
+> @@ -109,6 +109,12 @@ struct unwind_hint {
+>         .popsection
+>  .endm
+>
+> +.macro STACK_FRAME_NON_STANDARD func:req
+> +       .pushsection .discard.func_stack_frame_non_standard
+> +               .long \func - .
+> +       .popsection
+> +.endm
+> +
+>  #endif /* __ASSEMBLY__ */
+>
+>  #else /* !CONFIG_STACK_VALIDATION */
+> @@ -123,6 +129,8 @@ struct unwind_hint {
+>  .macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
+>  .endm
+>  #endif
+> +.macro STACK_FRAME_NON_STANDARD func:req
+> +.endm
 
-Correct.
+This macro needs to be before the #endif, so it's defined only for
+assembly code. This breaks my arm64 builds even though x86 curiously
+worked just fine.
 
-> It doesn't seem practical to disable MSIs in the kdump kernel at the
-> PCI level.  I was hoping we could disable them somewhere in the IRQ
-> code, e.g., at IOAPICs, but I think Thomas is saying that's not
-> feasible.
-
-MSIs are not even going near the IOAPIC and as long as the interrupt
-core does not have an interrupt set up for the device is has no idea
-where to look at to shut it down. Actually it does not even reach the
-interrupt core. The raised vector arrives at the CPU and the low level
-code sees: No handler associated, ignore it. We cannot do anything from
-the low level code because all we know is that the vector was raised,
-but we have absolutely zero clue where that came from. At that point the
-IO-APIC interrupts are definitely not the problem because they are all
-disabled.
-
-> It seems like the only option left is to disable MSIs before the
-> kexec.  We used to clear the MSI/MSI-X Enable bits in
-> pci_device_shutdown(), but that broke console devices that relied on
-> MSI and caused "nobody cared" warnings when the devices fell back to
-> using INTx, so fda78d7a0ead ("PCI/MSI: Stop disabling MSI/MSI-X in
-> pci_device_shutdown()") left them unchanged.
-
-That might be solvable because INTx arrives at the IO-APIC and we could
-mask all the INTx related IO-APIC lines, but that's icky because of
-this:
-
-> pci_device_shutdown() still clears the Bus Master Enable bit if we're
-> doing a kexec and the device is in D0-D3hot, which should also disable
-> MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
-> device causing the storm was in PCI_UNKNOWN state?
-
-That's indeed a really good question.
-
-Thanks,
-
-        tglx
+Sami
