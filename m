@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394D02B13E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1C72B13EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 02:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgKMBfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 20:35:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKMBfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 20:35:14 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C4A3216C4;
-        Fri, 13 Nov 2020 01:35:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605231303;
-        bh=7IlWDoYFw6qKRjH3BOF82R+49xhuW2KtSCCfIWH1mkI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p0qhu8FlLRBehX3rgLy1uFImTw0miiTwEZpreJOS2JwqBOK7aypH/FXHF7H7cSQaJ
-         99y8LK9p6OmIEjarwU8D+b4yDZG1JvcRwCGKSU23kxdHuvZhv3MoS/AuK35nuazPZd
-         cG0gF1kwLqiFd64IeHBis7a9eoZv0ffsedBM0C8A=
-Date:   Thu, 12 Nov 2020 17:35:00 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v8 6/9] secretmem: add memcg accounting
-Message-Id: <20201112173500.2556342ceefdbe0d66347ecd@linux-foundation.org>
-In-Reply-To: <20201110151444.20662-7-rppt@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
-        <20201110151444.20662-7-rppt@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726146AbgKMBiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 20:38:55 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54262 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgKMBiz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 20:38:55 -0500
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+        by linux.microsoft.com (Postfix) with ESMTPSA id F165C20C2893
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:38:54 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F165C20C2893
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605231535;
+        bh=LHDRWxltoY9Yzek2U2YM/IJ9PiLbIoLYK2g+Xufu3xQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Dr1IhRvvLsfIyqIWK1fIETcbbO7LlYfMZfyabfpj1hO5obDpLmxbdGxrzxnwd3rOt
+         lh7oJ5n6C3mUXboZ2WP5sSQCKYmVj5/yVFhJasVnGejEKSnM65ysMrlM/d9v2H1X2/
+         yP+DLcmYema2ADSbK0lzBlulId5dKBOuVoNuwLvM=
+Received: by mail-qk1-f175.google.com with SMTP id t191so7549087qka.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 17:38:54 -0800 (PST)
+X-Gm-Message-State: AOAM530rPy1SuVZ2S5ZeUcLtKNWpHgrUN4AF3RJy6tH5lGGajyr96Fp6
+        kDDvi5s/o5gLKn/eG7ybjdtwDhA/mirCxbBcu5E=
+X-Google-Smtp-Source: ABdhPJzcYu0wQ1AlFdTYrzGLHQSHTIRKOYw1wlZRQ7lRvKH7I58kItfx/GiKuejOksHFuThJetq4/EumL3bl4eCg0NA=
+X-Received: by 2002:a05:620a:2106:: with SMTP id l6mr2787457qkl.302.1605231533991;
+ Thu, 12 Nov 2020 17:38:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
+ <20201112035023.974748-1-natechancellor@gmail.com> <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
+ <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com> <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
+In-Reply-To: <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 13 Nov 2020 02:38:18 +0100
+X-Gmail-Original-Message-ID: <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
+Message-ID: <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
+Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 17:14:41 +0200 Mike Rapoport <rppt@kernel.org> wrote:
+On Fri, Nov 13, 2020 at 2:18 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 13 Nov 2020 01:20:29 +0100 Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> > While writing the script I found that in the documentation I left for
+> > 'type' the values from
+> > Documentation/admin-guide/kernel-parameters.txt, which is 'pci' for
+> > cf9_force reboot.
+> > While at it, should we update the doc with the values 'cf9_force' and
+> > 'cf9_safe', or rename to 'pci' and 'pci_safe' to be coherent with the
+> > kernel cmdline?
+>
+> I looked at Documentation/admin-guide/kernel-parameters.txt's "reboot="
+> section and decided that I don't understand your above words :( Can you
+> please expand on all of this?  Simple akpm-compatible words ;)
+>
 
-> Account memory consumed by secretmem to memcg. The accounting is updated
-> when the memory is actually allocated and freed.
+Heh sorry :)
 
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: secretmem-add-memcg-accounting-fix
+I misread the code, I thought that BOOT_CF9_SAFE was user selectable
+because of the enum value:
 
-fix CONFIG_MEMCG=n build
+enum reboot_type {
+...
+BOOT_CF9_FORCE = 'p',
+BOOT_CF9_SAFE = 'q',
+};
 
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+But when parsing the cmdline, 'q' is simply ignored, so it's just an
+internal flag.
+It's used only by arch/x86/kernel/reboot.c in the loop which tries to
+reboot in different modes until it succeeds.
 
- mm/filemap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The doc is right, never mind.
 
---- a/mm/filemap.c~secretmem-add-memcg-accounting-fix
-+++ a/mm/filemap.c
-@@ -844,7 +844,7 @@ static noinline int __add_to_page_cache_
- 	page->mapping = mapping;
- 	page->index = offset;
- 
--	if (!huge && !page->memcg_data) {
-+	if (!huge && !page_memcg(page)) {
- 		error = mem_cgroup_charge(page, current->mm, gfp);
- 		if (error)
- 			goto error;
-_
+At this point, since 'pci' enables BOOT_CF9_FORCE type and
+BOOT_CF9_SAFE is not user selectable, should I simply leave only
+'pci'?
+This way, we'll have the same set of options for both sysfs and kernel cmdline.
 
+-- 
+per aspera ad upstream
