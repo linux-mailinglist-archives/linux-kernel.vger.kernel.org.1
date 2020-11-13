@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C582B1468
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF2B2B146B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 03:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgKMCqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 21:46:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgKMCqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 21:46:39 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 431DF204EF;
-        Fri, 13 Nov 2020 02:46:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605235598;
-        bh=ctaQ3C6ggnwKYCfwEzYPswDn+1kfv0MOILMIiYSgbZI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U/1UCbozzNbr0RF+VQOf1xGEEgdfVNrcviaWlWEMw7QS3jTtVZ8PAqn7P4mFldPrN
-         GWKMMKUXdIhBGveD+FCTXm1ghWd+1oUl97fxCUReNzOlSf3wrDlSBTNN3xluZj38xd
-         7TFINNL3dsMPQlJjX5NobcDO0lK/mRqFfExFCW5Y=
-Date:   Thu, 12 Nov 2020 18:46:37 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
-Message-Id: <20201112184637.de44afedf0ce0dcab36dd0ad@linux-foundation.org>
-In-Reply-To: <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
-References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
-        <20201112035023.974748-1-natechancellor@gmail.com>
-        <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
-        <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
-        <20201112171826.0fa3c6158f3c2780f90faafe@linux-foundation.org>
-        <CAFnufp1OrGeGgUn9_2V9HMtfb-7GwuEwz4+Co_W8ehcVOQVscw@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726134AbgKMCr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 21:47:27 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37902 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgKMCr1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 21:47:27 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AD2lBnU088609;
+        Thu, 12 Nov 2020 20:47:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605235631;
+        bh=mXOBY88yCzIHkzYycwE6md040NSVKNk02mMoFqwUsBo=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=eLkfwSyaKSwdCeti1CvgYlbjQkhgSpMEuZo0IAmNpS4NzMq6e2jyc3dgArXB5hy3V
+         ewwQ/up7jTcEmp/vWkbiQGr1p+j42rCHzbCDRrDdYXGRN/gd8BxHCnyVEgxKHeAv/y
+         SlltV8EqBBZUysP2mQLeMRHu6qMJFg1yfdYhDlQw=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AD2lBns067736
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 20:47:11 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 20:47:11 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 20:47:11 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AD2lApF012334;
+        Thu, 12 Nov 2020 20:47:11 -0600
+Date:   Thu, 12 Nov 2020 20:47:10 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     <santosh.shilimkar@oracle.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        Jyri Sarha <jsarha@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
+Message-ID: <20201113024710.kinhetju4iumhpq4@anaerobic>
+References: <20201026170624.24241-1-nm@ti.com>
+ <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
+ <20201026190808.im4nb32jn4rd3xhu@crayon>
+ <20201112215600.npr4g24gt4tvc5tm@kahuna>
+ <4b23cb5b-b1c9-34b9-2bdf-4f9c2df9ad0d@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4b23cb5b-b1c9-34b9-2bdf-4f9c2df9ad0d@oracle.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 02:38:18 +0100 Matteo Croce <mcroce@linux.microsoft.com> wrote:
+On 13:59-20201112, santosh.shilimkar@oracle.com wrote:
+[...]
+> > 
+> 
+> I can apply SOC kconfig patch [1] to my soc branch. That branch with
+> some additional patches am going to send up, so it should
+> work. Let me know.
 
-> At this point, since 'pci' enables BOOT_CF9_FORCE type and
-> BOOT_CF9_SAFE is not user selectable, should I simply leave only
-> 'pci'?
-> This way, we'll have the same set of options for both sysfs and kernel cmdline.
-
-Well, you're the reboot expert ;)
-
-But my $0.02 is yes, let's keep the command-line and sysfs interfaces
-in sync and cover it all in documentation.  It would of course be
-problematic to change the existing reboot= interface.
-
-I assume that means doing this?
-
-- #define BOOT_CF9_FORCE_STR     "cf9_force"
-+ #define BOOT_CF9_FORCE_STR     "pci"
-- #define BOOT_CF9_SAFE_STR      "cf9_safe"
+I think that should work, thanks.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
