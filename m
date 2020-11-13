@@ -2,215 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FD82B18BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B2A2B18C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgKMKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgKMKCd (ORCPT
+        id S1726310AbgKMKJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:09:25 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:45084 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKMKJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:02:33 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E157C0613D6;
-        Fri, 13 Nov 2020 02:02:33 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id p22so7559361wmg.3;
-        Fri, 13 Nov 2020 02:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=HmAKJnzLRDGQT9lrEjqyhcR6xxTYalmQb8B6doUQFf4=;
-        b=LiJahYM4xd7pAijHr/t505nhNXri8oohrMEaBg0pjZepyb5Ce/9eT33Jv0gy9z9cLd
-         wqzNFuQzeUgktFSh88utzZdFXeI0f24ug7MinHjupvPV6Zg1O60rWGCsMF1vg9Rz/whp
-         PPTdIH81tRt6YIqbei9IOQpNqdStas5ATHmVBxYz0UzfKSyim81qTLdaSMwuG6emP8tw
-         rDbXyW0XRM1Ivm85TRp49tEh7VGXIEYLsz6O0eOiEJ9xqRSVSnIQHNHj26IF3C/HMzmZ
-         bLvr3o836TfGVvfTqTrztQTv0Gd/WGYUHzYxQRBctAQyp0dZFNBYLYZHfOptd0zimZEt
-         WlRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HmAKJnzLRDGQT9lrEjqyhcR6xxTYalmQb8B6doUQFf4=;
-        b=JIJub+e+MWfeQj+HH27pW4UZF+7UcMo4zo+cWQ7ka16OSQpnCcUoMRS8CBzIrfHjdi
-         mh+yumMXJWpfDImPcOemb3l6LiOqH6tqZ6ErvMbFwNW0hNxFXlskKoWK6DgRBsdrqQhu
-         sZsSRjaOP484NN11bBvKxgIa6TyJHIBzBf10t+OmpoRVLbCiI6aAmt7Yqz3JnXhq6Imw
-         DY6xh9Ond52sU5nqpZPhgjZpSdVCp0lSXMMErI9BI2SlEUJf3xw3cy4mKwhMYfVtzVIW
-         wl6E4sR3+uZzFSssjxvlZgmXdVMooUFPTTQ3qDC+O6pYrAQCjuRJgZfKduv9gs4qy5Nf
-         AKuw==
-X-Gm-Message-State: AOAM533ILeFkPIIaaQuzRaATdQwWQbcapznTd2B5Ua8u/m9S/OFMWjfB
-        OrNHznRvrNorhBPaf6RyO8o=
-X-Google-Smtp-Source: ABdhPJwVhlJ0m4LfbIbiIkT1M4UL6WL78WAkI/U9538v2GWxhnwckXg5OThECJCTO/95iZ3D++QQ4Q==
-X-Received: by 2002:a7b:c841:: with SMTP id c1mr1667969wml.31.1605261752042;
-        Fri, 13 Nov 2020 02:02:32 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.225.98])
-        by smtp.gmail.com with ESMTPSA id c129sm9954778wmd.7.2020.11.13.02.02.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 02:02:31 -0800 (PST)
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-10-djrscally@gmail.com>
- <20201024012411.GT5979@pendragon.ideasonboard.com>
- <d188f8b5-ed3b-f91b-171a-26afeb7d213e@gmail.com>
- <20201024093702.GA3939@pendragon.ideasonboard.com>
- <20201026161050.GQ4077@smile.fi.intel.com>
- <20201029201918.GD15024@pendragon.ideasonboard.com>
- <CAHp75Vc9uYVvhBe3OyCJzCsU0EY9yi62hsxt3pAwppSfjB+jDg@mail.gmail.com>
- <20201029212930.GE15024@pendragon.ideasonboard.com>
- <20201029222215.GI4077@smile.fi.intel.com>
- <20201029225124.GI15024@pendragon.ideasonboard.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <60b36af2-ad57-000b-76e4-379e1b58a3a0@gmail.com>
-Date:   Fri, 13 Nov 2020 10:02:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 13 Nov 2020 05:09:23 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADA44We195662;
+        Fri, 13 Nov 2020 10:09:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=CmOkNnoq4aouIzIKH5BdnPNOjPDxlp5PbgvCa+MCvGk=;
+ b=dI57/+8hQXv2he9Ovg5TnVAUuFuHYAM82lFIXcQbjrtLPV7GerAapaQ4Z5wj6gIZUA5J
+ 02MituRHDV5X2aTmzaLiekpz0kBe35D1QMLql5cjsnS7DhN5gCd5otHEHBghGj4D0yt1
+ tlcAqHg9lT2x53EUUUwVSqwIGHR2PPO82BtGShXH8WNJVzj158EV3F2DfkQOb4PvGPIN
+ w40wsZcCk6rzf7vWGFJVw5KWFAlRxy/9zergNwvCyc41Bzhxh6T/1eJArspl29WcVmyn
+ eArnpahUzu1ng5OYO48vULf6UTTq/VCFaxjgC/JmKIKQB8nfeiJnU8erSPeskB7jeh/1 Xg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhm9rnh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 10:09:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADA6HoS164926;
+        Fri, 13 Nov 2020 10:09:05 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 34rtktbk6j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 10:09:05 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ADA8vq3027309;
+        Fri, 13 Nov 2020 10:08:57 GMT
+Received: from mwanda (/10.175.206.108)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 13 Nov 2020 02:08:56 -0800
+Date:   Fri, 13 Nov 2020 13:08:50 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, Tom Rix <trix@redhat.com>,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] soc: aspeed: Fix a reference leak in aspeed_socinfo_init()
+Message-ID: <20201113100850.GA168908@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20201029225124.GI15024@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130060
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/2020 22:51, Laurent Pinchart wrote:
-> Hi Andy,
->
-> On Fri, Oct 30, 2020 at 12:22:15AM +0200, Andy Shevchenko wrote:
->> On Thu, Oct 29, 2020 at 11:29:30PM +0200, Laurent Pinchart wrote:
->>> On Thu, Oct 29, 2020 at 10:26:56PM +0200, Andy Shevchenko wrote:
->>>> On Thu, Oct 29, 2020 at 10:21 PM Laurent Pinchart wrote:
->>>>> On Mon, Oct 26, 2020 at 06:10:50PM +0200, Andy Shevchenko wrote:
->>>>>> On Sat, Oct 24, 2020 at 12:37:02PM +0300, Laurent Pinchart wrote:
->>>>>>> On Sat, Oct 24, 2020 at 09:50:07AM +0100, Dan Scally wrote:
->>>>>>>> On 24/10/2020 02:24, Laurent Pinchart wrote:
->>>>>>>>> On Mon, Oct 19, 2020 at 11:59:03PM +0100, Daniel Scally wrote:
->>>>>>>>>> +              adev = acpi_dev_get_first_match_dev(supported_devices[i], NULL, -1);
->>>>>>>>> What if there are multiple sensor of the same model ?
->>>>>>>> Hmm, yeah, that would be a bit of a pickle. I guess the newer
->>>>>>>> smartphones have multiple sensors on the back, which I presume are the
->>>>>>>> same model. So that will probably crop up at some point. How about
->>>>>>>> instead I use bus_for_each_dev() and in the applied function check if
->>>>>>>> the _HID is in the supported list?
->>>>>>> Sounds good to me.
->>>>>>>
->>>>>>>>>> +              if (!adev)
->>>>>>>>>> +                      continue;
->>>>>> Please, don't.
->>>>>>
->>>>>> If we have so weird ACPI tables it must be w/a differently. The all, even badly
->>>>>> formed, ACPI tables I have seen so far are using _UID to distinguish instance
->>>>>> of the device (see second parameter to the above function).
->>>>>>
->>>>>> If we meet the very broken table I would like rather to know about, then
->>>>>> silently think ahead what could be best.
->>>>>>
->>>>>> I.o.w. don't change this until we will have a real example of the problematic
->>>>>> firmware.
->>>>> I'm not sure to follow you. Daniel's current code loops over all the
->>>>> supported HID (as stored in the supported_devices table), and then gets
->>>>> the first ACPI device for each of them. If multiple ACPI devices exist
->>>>> with the same HID, we need to handle them all, so enumerating all ACPI
->>>>> devices and checking whether their HID is one we handle seems to be the
->>>>> right option to me.
->>>> Devices with the same HID should be still different by another
->>>> parameter in ACPI. The above mentioned call just uses the rough
->>>> estimation for relaxed conditions. If you expect more than one device
->>>> with the same HID how do you expect to distinguish them? The correct
->>>> way is to use _UID. It may be absent, or set to a value. And this
->>>> value should be unique (as per U letter in UID abbreviation). That
->>>> said, the above is good enough till we find the firmware with the
->>>> above true (several devices with the same HID). Until then the code is
->>>> fine.
->>> I expect those devices with the same _HID to have different _UID values,
->>> yes. On the systems I've seen so far, that assumption is not violated,
->>> and I don't think we need to already plan how we will support systems
->>> where multiple devices would have the same _HID and _UID (within the
->>> same scope). There's no disagreement there.
->>>
->>> My point is that supported_devices stores HID values, and doesn't care
->>> about UID. The code loops over supported_devices, and for each entry,
->>> calls acpi_dev_get_first_match_dev() and process the ACPI devices
->>> returned by that call. We thus process at most one ACPI device per HID,
->>> which isn't right.
->> In this case we probably need something like
->>
->> struct acpi_device *
->> acpi_dev_get_next_match_dev(struct acpi_device *adev,
->> 			    const char *hid, const char *uid, s64 hrv)
->> {
->> 	struct device *start = adev ? &adev->dev : NULL;
->> 	...
->> 	dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
->> 	...
->> }
->>
->> in drivers/acpi/utils.c and
->>
->> static inline struct acpi_device *
->> acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
->> {
->> 	return acpi_dev_get_next_match_dev(NULL, hid, uid, hrv);
->> }
->>
->> in include/linux/acpi.h.
->>
->> Then we may add
->>
->> #define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
->> 	for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);	\
->> 	     adev;							\
->> 	     adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
-> What the cio2-bridge code needs is indeed
->
-> 	for each hid in supported hids:
-> 		for each acpi device that is compatible with hid:
-> 			...
->
-> which could also be expressed as
->
-> 	for each acpi device:
-> 		if acpi device hid is in supported hids:
-> 			...
->
-> I don't mind either option, I'll happily follow the preference of the
-> ACPI maintainers.
->
-Does this need raising elsewhere then? The original idea of just
-bus_for_each_dev(&acpi_bus_type...) I have now tested and it works fine,
-but it does mean that I need to export acpi_bus_type (currently that
-symbol's not available)...that seems much simpler to me but I'm not sure
-whether that's something to avoid, and if so whether Andy's approach is
-better.
+This needs to call of_node_put(np) before returning if of_iomap() fails.
 
+Fixes: e0218dca5787 ("soc: aspeed: Add soc info driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/soc/aspeed/aspeed-socinfo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thoughts?
+diff --git a/drivers/soc/aspeed/aspeed-socinfo.c b/drivers/soc/aspeed/aspeed-socinfo.c
+index 20a1d4aeb051..773930e0cb10 100644
+--- a/drivers/soc/aspeed/aspeed-socinfo.c
++++ b/drivers/soc/aspeed/aspeed-socinfo.c
+@@ -74,8 +74,10 @@ static int __init aspeed_socinfo_init(void)
+ 	}
+ 
+ 	reg = of_iomap(np, 0);
+-	if (!reg)
++	if (!reg) {
++		of_node_put(np);
+ 		return -ENODEV;
++	}
+ 	siliconid = readl(reg);
+ 	iounmap(reg);
+ 
+-- 
+2.28.0
 
