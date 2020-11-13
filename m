@@ -2,206 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A932B1317
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D55F2B131E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgKMAP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:15:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:6296 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725929AbgKMAP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:15:57 -0500
-IronPort-SDR: w0Kgdr6q0IBIQ56Z38KV0PmRiDGJ4Efd3o0zFMxaRrvnOH6mryHCoolD+Z72F52Lnwnvbi+ExV
- rRMvRdm8LfmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="150253899"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="150253899"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 16:15:56 -0800
-IronPort-SDR: z6tP3cVLEPxR3P8+JGjUdgzornhADxmcU0H2+qkos2C5iZsNmZZ61yu5EQksq2GkGBuRVxCEFH
- WvZffnkOGucw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="532372494"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Nov 2020 16:15:55 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 16:15:55 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 16:15:55 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 12 Nov 2020 16:15:55 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 12 Nov 2020 16:15:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iry7EIFexKhDRrFKukX/InvQFgYAAixzok+qkuM16tDhywBTsW+uFR6J4QYTQgVxGY160GxXbNUKjSV948qYa8l9VlK13AjqhlRmYkwN/i4sUwlhoHr516x/n470NkE/ni2zecgMCmGPQe0Z+MfmsZ9l4czPdSI7EJTY3HGCQ/kBDSgpkEY5qHdoKa8VtLr9Av0lRcAUGBT70iYV+BC4m1X+fuvoTzMypU2uG3cWYCZ873CTLGv2JNLH2l22hFqYF8lcGvxjh8TJMQW8HNi8c4IoUPpHlQJNzHayGT1E0GJoZr/Wx4wlKSeqg+ICdZI2+SGivHx+gHBUeRppVF5qpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bKUD+pEXB1gI63iXFdv2jW2BQM7UX2fbbPNf6R+zSJM=;
- b=M6cQzkWiC65ubqULrsxNhjVfY5NnJpsW6i9PryU53yviGHElU3ujy7lDiqD948D+tfwh7UUhQR9wgwuWPpnvd1RIaL+0zeOdgqoWMgwGV8ixQkFfkrdkFLq3EnjLsdbCazT06XbzicSiQ4KZd+s9qNSLeEUatlqSEsRG8+nGXv3PdJnmx4iJLRw1KpEpWFg0gB+vw9yIIWRkBuGhguoKrJf6qXWWS/1BIs6JoSYaMXjKBhWOniDjtxTOhuH+ye7OdxLKQlxWRhy3oTy0071wRr67Y0FFS3iZ0peuzYibi+A83JWzx1Ukehhn0jTzRmk/2wmnfY5qmkRlQD28qhK4cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bKUD+pEXB1gI63iXFdv2jW2BQM7UX2fbbPNf6R+zSJM=;
- b=NSuNcP7ivc/O1WX1Gy8js6CvH61imCy7ALgs6Z4uqy/pkoeKzp77mIYfUEV9xoTd3K/jcPvER9HOXVP+L/P6Pfog0r8d1tWDRyPYGjo8kLwmXsoqawF87L+YRk+GWskqnm/0VQjukNdTs5Pk+SBU3SqE1M1ZGoAcXWX3pRmV8pU=
-Received: from DM6PR11MB2876.namprd11.prod.outlook.com (2603:10b6:5:c1::16) by
- DM6PR11MB2937.namprd11.prod.outlook.com (2603:10b6:5:62::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3541.21; Fri, 13 Nov 2020 00:15:50 +0000
-Received: from DM6PR11MB2876.namprd11.prod.outlook.com
- ([fe80::c85a:d98e:fbf3:9f8c]) by DM6PR11MB2876.namprd11.prod.outlook.com
- ([fe80::c85a:d98e:fbf3:9f8c%5]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 00:15:50 +0000
-From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-To:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        "david.e.box@linux.intel.com" <david.e.box@linux.intel.com>
-Subject: RE: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
- Bay SOC
-Thread-Topic: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
- Bay SOC
-Thread-Index: AQHWs/K3a7OdWbCL/0u2ZlSWuFDlTKnEkdJQgACp7ACAAACHwA==
-Date:   Fri, 13 Nov 2020 00:15:50 +0000
-Message-ID: <DM6PR11MB28762806866F82885FF428CFB8E60@DM6PR11MB2876.namprd11.prod.outlook.com>
-References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
- <DM6PR11MB28761F437576935AFC60328FB8E70@DM6PR11MB2876.namprd11.prod.outlook.com>
- <DM6PR11MB28767CEEAD0FA1E20614B797B8E60@DM6PR11MB2876.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB28767CEEAD0FA1E20614B797B8E60@DM6PR11MB2876.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.201]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4e7a28cc-cb5d-4399-dd6b-08d8876946e2
-x-ms-traffictypediagnostic: DM6PR11MB2937:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB2937AD9C2659494AF47C377EB8E60@DM6PR11MB2937.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hWe2J73wjk2TA9NxxofHjIA0NzJL/ZxmHTshuEPJR7VzaBqhGt0bcec67qXkewzbuWWIUnqDHj9DiqyAujl11f8UcJ8FcQZGaTt+TzEyFxRB+EV6J50JWkhGZgQdB3aBmEMQDmZ7mAgvnshkDPN3aNenZBTfnFbOzGEOAI4svKYItg4np9zsjJZ9boIDiKmcoeKvTucwjS4Ql31AjpaTnffECMWa86DHtS2N0BmD4nAlX1J3h5jnWGwazKawRP7HuAm+2BLkZnLwY2HKNq1aw3NcpJSYXEM8AnBDthCYbyHcxZlX9qdmuH/KXD7jeY9sTagqcgcolr82LXQbQJjkMyaKgdgxPbVL5MQ+9O8y4IYDDn+EZ9a8KwGaC+b9A4Sh
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2876.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(4326008)(8676002)(66946007)(2940100002)(86362001)(478600001)(9686003)(6506007)(83380400001)(2906002)(76116006)(8936002)(55016002)(66446008)(316002)(5660300002)(64756008)(66556008)(33656002)(26005)(7696005)(186003)(110136005)(71200400001)(52536014)(66476007)(54906003)(142923001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: vPOrG2FBKTLL2TDdoWLoO1vabIUDE7Ijd1B1n3K1M6RERksCAXJWf7qUNp1NTLg1LhEJ9pfspQZ8TZcutsspYPqScGJtBkPwCBAvbKOPXcmzAdE6R/FhuwCrT5UZdlUKl5df06Uy/ZwKpaJLf0+3uPBQ9JxICj94VvWriqSMLf1pKvHJ5SvpfkzGwYfMjqPfyflo/XpkHV5i4yulAi88x4dikfFGHrQtiz35UPbXNtNIorYTluKKoT9q8UC1iefdx/FN8opUaczH6aoXNtrwPU35pC/o876qqCN1zyqoLJWgJmSEf4NeX3IJKHRjM3G4sFAPKkN6chaCCYexkmU/XnM3k49KtY1uLLEJXORZ6q+dQ34v9xbBb8d0APzEvt0H4bQq7SwXba+j9+5VwYC70IwCtnQ1We3jY/x/n6x6/UnXCGOMFu5CyaWtv43U49yAa28B5FRMo0+Gx9GoKZZvhrSM0Ha7RAi01RAbRtf7qhNl31qUX7OXAlaPp9H3vVh7ebBUnVQAsT1h3AHb2PhTaulYlj1IuFwcSXLrsl1ikmokd+tS5rb5FfiPCJuNtnybKlQG+vvBpqCU61T6ZfXZPHxrz1CWU/6AKoSqIqhnOKbR+BIGhVxQL01WHVf1hVTMFN+jkAft8BfyzhFiwadE+w5MmPZ2KcneD+/vAEIocsWWkww1oKysxmUYxo1G6tFnp//KCnPewK4cPjoDyhttmjtXb9/Oa0JdCy3ro19DAnzVr4BDchMdqgfs7He+UtlYjwN06FMxB2+qb92uQ2elu/mR99AHyUxc8jEE3Lzy7c90n/2jAia0faIGmejuxjWP1jDGSZ+2jOr+oEE5jNbfYYXAdPISDQ1i7jqqAW3Epu+IVRFL2ZB4s6FyJmNXFeEqXb1LJ7RkTy0nz4opKWM3sQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2876.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e7a28cc-cb5d-4399-dd6b-08d8876946e2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 00:15:50.3194
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SbzSfbnnTq34fNASPUYU2WW7WovuSHZCjZ6lmvtTkavZmbb8nnkJvK9i1TZrJKHX8ELl3VMheH27BDKpBnM3kU4NlHBNGPdYQiIZ+Yx1ifLjVNSY3h3DKzX9w3VYKvP2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2937
-X-OriginatorOrg: intel.com
+        id S1726210AbgKMARB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:17:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgKMAQ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 19:16:56 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AAFC0613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:16:56 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id q25so5511249qkm.17
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=SF2/0cBD4SDXrx4kSO5jpkw3cm1P8On8XdzbrxLvYHc=;
+        b=eSV+mjSXgJcCb1CVnnrLnnD0ABu+pRfHzud1Sn/xHVeRS4cxxt3tssKBrDRO+fvBNl
+         0ZI6atxrCJKqLTib4fLCMfKcyXqzMMxqRmGwZB6kZV3d713uwHTsAWiAPQ3BP8h1qrKb
+         TU/OoojdIdLIvGZ2Q9zoAbQNUsq5rpuuqHYWv0yEp01ATsqJ0+fOGFjYxlzCgCIpJtE1
+         0dYhn80pwsJbwuLdnT6UhKvH87Q9JzkmnPKU1YYnmaiZ4hVkpGoABNePD8RMumgQqvJ0
+         Mm01M3GvVx8X6GiaFUjEvzf+UinZIO31niJV0uM+tFxVRvcEMyUkRi8RADxJxfiEJzOO
+         3QYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=SF2/0cBD4SDXrx4kSO5jpkw3cm1P8On8XdzbrxLvYHc=;
+        b=jPtKDHX08nNrFcvuF9bXrjfVKpI1XGJikPT/QQB/I+BWyv24xeoyK+SXhaxpFsreok
+         AsJHsuJsVI7eYE2ZKFkq2aXOOIyoUtgy41MLEYIuSQTbKhoC0xwan8INwz5tr1d3AqXr
+         4YgCFnqS2zllgDMBUvA12kyncNAryWnUh03E3WV+lgtk+hfACZU+xwWgB8c3qzq8IXv1
+         oRJ90Mk1rAKB5JkBhux/ShWVM2IVGrxjJ3wFCuj5s3pLu8D/igIOY/UZnC9YN2deKpHQ
+         v+PpbSpEUm6FMuGgrThHjikmNvODWPF1OZhpS/OmgUDsNibIgDYtGFTQzJJumgZYRgPN
+         LazQ==
+X-Gm-Message-State: AOAM530pH5geQ4A4i1gXjk0Gf6YDiz6TlvH3V76vpk81Tu3mtDhjBMa+
+        ricznZEuMKht6tgxCa3LTZVBVNUzQG4E
+X-Google-Smtp-Source: ABdhPJwyboO74LHKP98PlInQeAm3Rn2ncH8TrzT9NTK5yWDR5AbUSz+LT4KC0pVNzuUBfniZGLxyJE9p1S3T
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a0c:c18a:: with SMTP id
+ n10mr2475691qvh.54.1605226615225; Thu, 12 Nov 2020 16:16:55 -0800 (PST)
+Date:   Thu, 12 Nov 2020 16:16:46 -0800
+Message-Id: <20201113001651.544348-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH 0/5] Don't compute events that won't be used in a metric.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>
+Cc:     Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>,
+        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+    
+For a metric like:
+  EVENT1 if #smt_on else EVENT2
+    
+currently EVENT1 and EVENT2 will be measured and then when the metric
+is reported EVENT1 or EVENT2 will be printed depending on the value
+from smt_on() during the expr parsing. Computing both events is
+unnecessary and can lead to multiplexing as discussed in this thread:
+https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
 
+This change modifies expression parsing so that constants are
+considered when building the set of ids (events) and only events not
+contributing to a constant value are measured.
 
->-----Original Message-----
->From: Zulkifli, Muhammad Husaini
->Sent: Friday, November 13, 2020 8:14 AM
->To: 'linux-mmc@vger.kernel.org' <linux-mmc@vger.kernel.org>; 'linux-arm-
->kernel@lists.infradead.org' <linux-arm-kernel@lists.infradead.org>; 'linux=
--
->kernel@vger.kernel.org' <linux-kernel@vger.kernel.org>; 'Ulf Hansson
-><ulf.hansson@linaro.org>' <Ulf Hansson <ulf.hansson@linaro.org>>
->Cc: Hunter, Adrian <adrian.hunter@intel.com>; Raja Subramanian, Lakshmi
->Bai <lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
->Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>;
->'david.e.box@linux.intel.com' <david.e.box@linux.intel.com>
->Subject: RE: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for Kee=
-m
->Bay SOC
->
->++ Ulf
->
->>-----Original Message-----
->>From: Zulkifli, Muhammad Husaini
->>Sent: Thursday, November 12, 2020 10:15 PM
->>To: linux-mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
->>linux- kernel@vger.kernel.org
->>Cc: Hunter, Adrian <adrian.hunter@intel.com>; Raja Subramanian, Lakshmi
->>Bai <lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan
->Ahmad
->>Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>;
->>david.e.box@linux.intel.com
->>Subject: RE: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for
->>Keem Bay SOC
->>
->>Hi,
->>
->>I would appreciate hearing your opinion/review  on this patch.
->>
->>Thanks
->>
->>>-----Original Message-----
->>>From: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
->>>Sent: Friday, November 6, 2020 8:10 PM
->>>To: linux-mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
->>>linux- kernel@vger.kernel.org
->>>Cc: Hunter, Adrian <adrian.hunter@intel.com>; Raja Subramanian,
->>>Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad,
->Wan
->>Ahmad
->>>Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Zulkifli, Muhammad
->>>Husaini <muhammad.husaini.zulkifli@intel.com>;
->>>david.e.box@linux.intel.com
->>>Subject: [PATCH v1 0/1] mmc: sdhci-of-arasan: Specify .clk_ops for
->>>Keem Bay SOC
->>>
->>>From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
->>>
->>>Hi.
->>>
->>>This patch declares the .clk_ops for Keem Bay SOC due to the
->>>introduction of new clock operations handling.
->>>
->>>This was tested with Keem Bay evaluation module board.
->>>
->>>Kindly help to review it.
->>>
->>>Thank you.
->>>
->>>Muhammad Husaini Zulkifli (1):
->>>  mmc: sdhci-of-arasan: Specify .clk_ops for Keem Bay SOC
->>>
->>> drivers/mmc/host/sdhci-of-arasan.c | 3 +++
->>> 1 file changed, 3 insertions(+)
->>>
->>>--
->>>2.17.1
+Ian Rogers (5):
+  perf metric: Restructure struct expr_parse_ctx.
+  perf metric: Use NAN for missing event IDs.
+  perf metric: Rename expr__find_other.
+  perf metric: Add utilities to work on ids map.
+  perf metric: Don't compute unused events.
+
+ tools/perf/tests/expr.c       | 148 ++++++++++-----
+ tools/perf/tests/pmu-events.c |  42 +++--
+ tools/perf/util/expr.c        | 136 ++++++++++++--
+ tools/perf/util/expr.h        |  17 +-
+ tools/perf/util/expr.l        |   9 -
+ tools/perf/util/expr.y        | 343 +++++++++++++++++++++++++++-------
+ tools/perf/util/metricgroup.c |  44 +++--
+ tools/perf/util/stat-shadow.c |  54 ++++--
+ 8 files changed, 586 insertions(+), 207 deletions(-)
+
+-- 
+2.29.2.299.gdc1121823c-goog
 
