@@ -2,118 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95FA2B2222
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3382B2224
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgKMRYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        id S1726374AbgKMRY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:24:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKMRYu (ORCPT
+        with ESMTP id S1726310AbgKMRYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:24:50 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFF6C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:25:04 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 33so10751132wrl.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:25:04 -0800 (PST)
+        Fri, 13 Nov 2020 12:24:52 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F0BC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:25:05 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id e18so11613441edy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 09:25:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uBRhPERLFwM9kVQueXTDW4VzWLQKorMvtcJ1DKfFCr8=;
-        b=gbibu0MT1eCJuXVDo5/wiV3XKB65YBnbQ1ZN+z8148AhZ+PoypqBMpT/ghUmb5r6uF
-         VEb8iLpHG7oZw7PTew5daLieAieoISp/P9NhxPZdI5hJC/Dgq8/6vwcF0ZRXnTYYjfgC
-         /ZS+DuxHiONLTjpX2BNn3PJFShJfck9CZLqlw/PvtmvFLFcJR8Ao+CXaafdfGoS/Parm
-         6luXFr/SxpPzLRjcX0MAbFIouieeFFC1VOQtH8JE3RaS0qEdKGHeS8EBx470tyxjMlW6
-         5YQAIVbd/MF3AAq3ApGHpZ8dqaevXSzq6M9jQX13whxrx34ARrURpJYO1EQ8UO6vYhR8
-         qb2Q==
+         :cc;
+        bh=ZRAv773AauQlPj37bIolalfBh6Hg8ILAp3KKULUZAFg=;
+        b=IE/C2tKUGAUF8UPbLre88YkW1gLKYURTdxPTB+itE3CoQTT6SL0Q2J5aC4lfNwizS3
+         552WnXhblQGrrv1zwBjTQ7qbI0qUZQcgcX9Ru8iDTgn/rGjMeDLNJzrog363juEzuowl
+         sms99QcEgcxOJHVPNuGAuR5rZNOG4FF6lQ6zA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uBRhPERLFwM9kVQueXTDW4VzWLQKorMvtcJ1DKfFCr8=;
-        b=TEPtgWf96c4Ow5IQxypT/us3GcrfQM7FbbguOtWSR0zHN/FiDO95FdggixsrsDATG6
-         x1OxLWvMu4p89DoFUt4pp2hkFLERvumQiIJuTBH4LYn4htOX+Imf5wkWzLbr9a9kqDxu
-         +9rPYEQVj8ppQneUXmspxvkA2xYnWqRWFFnAKiYbOaPt5lD+w1MuIbeJam//BVSMNSL6
-         yCEuw2xeNqK0262A8ZOYR3wQiMMMxB6ZK+vYU6AYymF+2wbUz0fzeVB3NlUejSod1pWZ
-         1hXlilpLGK9vwv0KvZbm1Y+7eh+KJJhvQF2IIrjaCAeW0IRQUMYagUi4LiavDDD/WcfO
-         +GMw==
-X-Gm-Message-State: AOAM530yGcIzATFJQhNloT0f42UKvryNxHPUTrymGdN2SkWhtk7hZ16E
-        aEQTJx+Dt9DxSJ5qk6G4/YK3mu4FN3CMejSxj20=
-X-Google-Smtp-Source: ABdhPJxtNQRZV0jj9joYdWfh3kfNhGsqnXi4N5xFBsTJ5f47wweNLoUMzJSeS0o2sdUa4Fnt9rH9xeb73/U4vUysprM=
-X-Received: by 2002:adf:e9c9:: with SMTP id l9mr5043675wrn.124.1605288298092;
- Fri, 13 Nov 2020 09:24:58 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=ZRAv773AauQlPj37bIolalfBh6Hg8ILAp3KKULUZAFg=;
+        b=s3f7rb8i06L6UiMt53pDP27BSslyYmEKX7J/ZWjuumRuJdpdIqm1gczda8kO3B1Y99
+         aPN56ifAeywUzx9mSUCg+cz4P0MRT4Ur1wkOvmutxxrSy/2UXNb4HKrbU2zk79wasJve
+         oJDXaNdlefLHWH5dr47FIQL7+4UcjXrRHoNAhdgZoK9Av2WhfaEjOoy/Jc/F+j/rUT2A
+         G7K5LoSsdl5AQ/mJX10+toOqD8IARSh8SVG98ZH+HzIczAi2TFsGJg6CNzi2wB9p5b+h
+         mPp1Bg6XB4qeKjYonwLtWQ7bjkXAbA6szBB9AJ3dSXXcq8Ko0QDzRhyWQ5FANPMrIS0H
+         3y7w==
+X-Gm-Message-State: AOAM531I+7XIc32FDEvv80Uj+kPQToSSt3ipiISyk9tQBKB3Th14wTBj
+        WC3cDa/MU81pa6p+0tFlnbb8rTSGrnEo87/1ZVTlYA==
+X-Google-Smtp-Source: ABdhPJz5liQNmaCTsPZh432DE27TFkLIAbTBhDuuYtsF/3Oa1a93aAe6zHSwUyUHNQtJ0GNTfgHoGLepg44E24eqo5k=
+X-Received: by 2002:a50:b584:: with SMTP id a4mr3587919ede.301.1605288299675;
+ Fri, 13 Nov 2020 09:24:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-23-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-23-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 13 Nov 2020 12:24:46 -0500
-Message-ID: <CADnq5_OmY=tfLL9zsr9wMrMjTkHBWeeRvkui4wqEut=UUwyNBg@mail.gmail.com>
-Subject: Re: [PATCH 22/40] drm/amd/amdgpu/amdgpu_sched: Consume our own header
- containing prototypes
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Andres Rodriguez <andresx7@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
+ <20201112175852.21572-1-vikas.gupta@broadcom.com> <96436cba-88e3-ddb6-36d6-000929b86979@redhat.com>
+In-Reply-To: <96436cba-88e3-ddb6-36d6-000929b86979@redhat.com>
+From:   Vikas Gupta <vikas.gupta@broadcom.com>
+Date:   Fri, 13 Nov 2020 22:54:47 +0530
+Message-ID: <CAHLZf_uAp-CzA-rkvFF70wT5zoB98OvErXxFthoBHyvzwTRxAQ@mail.gmail.com>
+Subject: Re: [RFC, v1 0/3] msi support for platform devices
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikram Prakash <vikram.prakash@broadcom.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000002c9b5205b4004f08"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:50 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c:35:5: warning: no previous pro=
-totype for =E2=80=98amdgpu_to_sched_priority=E2=80=99 [-Wmissing-prototypes=
-]
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c:122:5: warning: no previous pr=
-ototype for =E2=80=98amdgpu_sched_ioctl=E2=80=99 [-Wmissing-prototypes]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Luben Tuikov <luben.tuikov@amd.com>
-> Cc: Andres Rodriguez <andresx7@gmail.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+--0000000000002c9b5205b4004f08
+Content-Type: text/plain; charset="UTF-8"
 
-Applied.  Thanks!
+Hi Eric,
 
-Alex
+On Fri, Nov 13, 2020 at 12:10 AM Auger Eric <eric.auger@redhat.com> wrote:
+>
+> Hi Vikas,
+>
+> On 11/12/20 6:58 PM, Vikas Gupta wrote:
+> > This RFC adds support for MSI for platform devices.
+> > a) MSI(s) is/are added in addition to the normal interrupts.
+> > b) The vendor specific MSI configuration can be done using
+> >    callbacks which is implemented as msi module.
+> > c) Adds a msi handling module for the Broadcom platform devices.
+> >
+> > Changes from:
+> > -------------
+> >  v0 to v1:
+> >    i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
+> >    ii) Add MSI(s) at the end of the irq list of platform IRQs.
+> >        MSI(s) with first entry of MSI block has count and flag
+> >        information.
+> >        IRQ list: Allocation for IRQs + MSIs are allocated as below
+> >        Example: if there are 'n' IRQs and 'k' MSIs
+> >        -------------------------------------------------------
+> >        |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
+> >        -------------------------------------------------------
+> I have not taken time yet to look at your series, but to me you should have
+> |IRQ-0|IRQ-1|....|IRQ-n|MSI|MSIX
+> then for setting a given MSIX (i) you would select the MSIx index and
+> then set start=i count=1.
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+As per your suggestion, we should have, if there are n-IRQs, k-MSIXs
+and m-MSIs, allocation of IRQs should be done as below
+
+|IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX|
+                                             |        |
+                                             |
+|MSIX0||MSIX1||MSXI2|....|MSIX-(k-1)|
+                                             |MSI0||MSI1||MSI2|....|MSI-(m-1)|
+With this implementation user space can know that, at indexes n and
+n+1, edge triggered interrupts are present.
+   We may add an element in vfio_platform_irq itself to allocate MSIs/MSIXs
+   struct vfio_platform_irq{
+   .....
+   .....
+   struct vfio_platform_irq *block; => this points to the block
+allocation for MSIs/MSIXs and all msi/msix are type of IRQs.
+   };
+                         OR
+Another structure can be defined in 'vfio_pci_private.h'
+struct vfio_msi_ctx {
+        struct eventfd_ctx      *trigger;
+        char                    *name;
+};
+and
+struct vfio_platform_irq {
+  .....
+  .....
+  struct vfio_msi_ctx *block; => this points to the block allocation
+for MSIs/MSIXs
+};
+Which of the above two options sounds OK to you? Please suggest.
+
+> to me individual MSIs are encoded in the subindex and not in the index.
+> The index just selects the "type" of interrupt.
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c b/drivers/gpu/drm/=
-amd/amdgpu/amdgpu_sched.c
-> index 0da0a0d986720..b7d861ed52849 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c
-> @@ -29,7 +29,7 @@
->  #include <drm/amdgpu_drm.h>
+> For PCI you just have:
+>         VFIO_PCI_INTX_IRQ_INDEX,
+>         VFIO_PCI_MSI_IRQ_INDEX, -> MSI index and then you play with
+> start/count
+>         VFIO_PCI_MSIX_IRQ_INDEX,
+>         VFIO_PCI_ERR_IRQ_INDEX,
+>         VFIO_PCI_REQ_IRQ_INDEX,
 >
->  #include "amdgpu.h"
-> -
-> +#include "amdgpu_sched.h"
->  #include "amdgpu_vm.h"
+> (include/uapi/linux/vfio.h)
+
+In pci case, type of interrupts is fixed so they can be 'indexed' by
+these enums but for VFIO platform user space will need to iterate all
+(num_irqs) indexes to know at which indexes edge triggered interrupts
+are present.
+
+Thanks,
+Vikas
 >
->  int amdgpu_to_sched_priority(int amdgpu_priority,
-> --
-> 2.25.1
+> Thanks
 >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Eric
+> >        MSI-0 will have count=k set and flags set accordingly.
+> >
+> > Vikas Gupta (3):
+> >   vfio/platform: add support for msi
+> >   vfio/platform: change cleanup order
+> >   vfio/platform: add Broadcom msi module
+> >
+> >  drivers/vfio/platform/Kconfig                 |   1 +
+> >  drivers/vfio/platform/Makefile                |   1 +
+> >  drivers/vfio/platform/msi/Kconfig             |   9 +
+> >  drivers/vfio/platform/msi/Makefile            |   2 +
+> >  .../vfio/platform/msi/vfio_platform_bcmplt.c  |  74 ++++++
+> >  drivers/vfio/platform/vfio_platform_common.c  |  86 ++++++-
+> >  drivers/vfio/platform/vfio_platform_irq.c     | 238 +++++++++++++++++-
+> >  drivers/vfio/platform/vfio_platform_private.h |  23 ++
+> >  8 files changed, 419 insertions(+), 15 deletions(-)
+> >  create mode 100644 drivers/vfio/platform/msi/Kconfig
+> >  create mode 100644 drivers/vfio/platform/msi/Makefile
+> >  create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
+> >
+>
+
+--0000000000002c9b5205b4004f08
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
+o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
+b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
+bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
+OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
+Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
+FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
+FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
+yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
+JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
+WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
+Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgJBjwWKhlMzV90v+l
+JNfbXe80T1vxE5uG50c4QpXNHrkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjAxMTEzMTcyNTA0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFIEGX8b/IUQgeO4HffcYqqa9UvdOA6TU3a5
+Z1JoBFYnGU2aaw/1XkRWB3w32IgI5RTZ/LYb/HrDHH0Qfr2nhi2FZguBVXL3sR3QnAFmG8DFcSlp
+MkRNdVOQpUgcE99kF5kUtkWkswE4yZY6tQqA5cGXQaNehv08t02ZF1cIKEnP1SCmLj1clGuSv/hs
+hsuCFX3zOFXCjs1fu5K5CSqaz7EvfUfeOlRF7XqfHrr9JZ6jsepv0qUeoK088YCcW77n5Nv78nuF
+1olh3MoGb2Wnoxs/9+YPnJJu/nF/iKVpAMyN/gHY1LZfQvbtY+IW5mxTbAl4kyDS1qC5A2DNnvn4
+ZjE=
+--0000000000002c9b5205b4004f08--
