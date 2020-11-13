@@ -2,131 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A3D2B18B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189512B18B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 11:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgKMKAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 05:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S1726411AbgKMKB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 05:01:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgKMKAo (ORCPT
+        with ESMTP id S1726222AbgKMKBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:00:44 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123D4C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:00:44 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 33so9098384wrl.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:00:44 -0800 (PST)
+        Fri, 13 Nov 2020 05:01:55 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B444DC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:01:36 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id s13so7830533wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 02:01:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gfGG55MYx5Em6+fmajJntheaXUGzBYWWUIU2DPCN/2E=;
-        b=Nsqotxgqw+nXjVTG6Pll+N6eN4hXM9zJlaTuEdtmKdE3SMZX201tfacPSHyO6osoV+
-         YsM025vYYHGLbJuZA7mGm8oWQ+QSVKjw5fD+6h8mmHeyyMAmdvPMqRQxL4RWyU+sT3gv
-         dynJRRaXX6vCUiJknEzxPcrza4pjeijhjKxsMkvbiGfTfivRCrYtdG29sCWOZEA8nMSp
-         5c5JE9g55K58ux6GGDmy5n+Uma4I1jWlIQYGYDPTuYVSsZUyRGZLUN41aqEUXRiP2RSx
-         /Bam2QyCTN81RDg8XHBw0Q4kgQX9q4IA4yh65R+iEto9QDrPx5oG2QO2BcW+MmsoOohU
-         khZg==
+        bh=w58OruVFvZaEir64Cdqc3z6Um6BYdUEMJpA4uLf04rE=;
+        b=DhgvozdTuMFbf2Qq/nw/6CMQwter5OmfvHU5SrkR8Zd+FmWEAiosRsxbL1oCrSSdHL
+         NurkTyKSchUdEaDOyFzYdO4ac4Ffz1rwLzqPggC1xSDBM5UuZi+AuMBmYaTvJ65kbvVy
+         Ceex/4hlFwEE7giOTQaOQZ54fPxsEKMQvOkDr9xWLOv6OzpRnizfvS/xK8zT5MJVe+jD
+         lhnY+wGKKEfGBSMdMqT7Ytr5wMh3hihthMnEyg3zXPTl5CHd6vKV0TJ+HibPA0zF9yy2
+         OP5qivPSwAQ79GQ1syWd6fcXbofFgkHHEUbZG2RWQCj0BMcGEhB/7eCRALVPJrWHkYVP
+         qcTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=gfGG55MYx5Em6+fmajJntheaXUGzBYWWUIU2DPCN/2E=;
-        b=LPZpDEF9s/BHifZ/VhZBFaRiqwhmnM89ZQQ3DnoUeAr2LlRE8iIvEpLMng0XN5hcBG
-         w4boDtTeGAEydBt7B4C4j7TdawNjwKFJ9EbV1RlMhA3LCTCazXpKLgqxAZJHvpghZNR5
-         dIpBn0qrKKypIA3i+ev3eklwBWBMVPJZyrRxcML/D9KmKkG0FJki5S3S1ArnBV8knDcz
-         WZFEToGniAjU0qG9uf9sSm9Y72i8BqYb7jiI1EYvBiN61uM35QEa/6HJf9Lk4oIMJfSA
-         LdeguRQV7oKzLvzXRKa3ZTVa+2hMHIHZYmYu13YxdpmhM/XJuxP9GbqFMU6QJha0UCFE
-         DIcQ==
-X-Gm-Message-State: AOAM5337ksvTcDR73xxUXDCTuTCXC01koHYowtUIgAYcGH/llaRswwBW
-        emJ4Vu+IMMzpg9Q84Nw2fzOs4w==
-X-Google-Smtp-Source: ABdhPJxIBxKcZ6fteiaLZ99964aqasLi0g5Me2aMNFGVHS6R79054WT8nqkmlPUNeZcrX/zAsLnHZg==
-X-Received: by 2002:a05:6000:4c:: with SMTP id k12mr2421023wrx.59.1605261642691;
-        Fri, 13 Nov 2020 02:00:42 -0800 (PST)
+        bh=w58OruVFvZaEir64Cdqc3z6Um6BYdUEMJpA4uLf04rE=;
+        b=U8Iv/P4FRL5yGe/SYJy7XrRr1XKcMHohQaegA2e2yZLKfB7LwBsGmKyjCuAQj5+TlS
+         3pvAE6FhUYLCZfaIhTF4Z+zBWeMZJzdK7nKyKqKqHYtNygYTfKdrq5G+a16cq2/rjCkE
+         87ijKCuGKlfezi1pJ5kwiHE2d1CGsrePDfJ6fwLO3iKy7Fd+drjAbWFoLLea/XHyK2FD
+         nc8dT9ovtZ8jG4XK7vhSQg2pKnEJlIpqfQeUV6+0Ll5b72RY8eocYmZFS7BYndPfAdn3
+         WUremqleBqAtXFbG32LZm6cbJpDc6QwO+FZnhK1ZTtdQLe8zEXbEZ7rZUWYHTmwMRdh2
+         +rUQ==
+X-Gm-Message-State: AOAM532xZhzKNJYXFSbyD3k8yOs0I/cqtClnrQ5XViEjMH+Rot+fMEbo
+        OSVir6M0o5aaoxSyPEY/vyo6Ng==
+X-Google-Smtp-Source: ABdhPJzo16ZjEH7/M3EW3rY6dkx98RWlSc6fx09X9y+orOylikrKX+LjaU2uwv15YxH0B+m9zJwB7g==
+X-Received: by 2002:a1c:97:: with SMTP id 145mr1659512wma.72.1605261695451;
+        Fri, 13 Nov 2020 02:01:35 -0800 (PST)
 Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id y63sm9228465wmg.28.2020.11.13.02.00.41
+        by smtp.gmail.com with ESMTPSA id p3sm4150911wrs.50.2020.11.13.02.01.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 02:00:41 -0800 (PST)
-Date:   Fri, 13 Nov 2020 10:00:40 +0000
+        Fri, 13 Nov 2020 02:01:34 -0800 (PST)
+Date:   Fri, 13 Nov 2020 10:01:33 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v2 16/25] arch: arm: mach-at91: pm: Move prototypes to
- mutually included header
-Message-ID: <20201113100040.GA3718728@dell>
-References: <20200713144930.1034632-1-lee.jones@linaro.org>
- <20200713144930.1034632-17-lee.jones@linaro.org>
- <20201112093918.GV2063125@dell>
- <20201112100731.GC4556@piout.net>
- <20201112104810.GH1997862@dell>
- <20201113093924.GI4556@piout.net>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/5] dt-binding: mfd: syscon: add Rockchip QoS
+ register compatibles
+Message-ID: <20201113100133.GB3718728@dell>
+References: <20201107170103.25608-1-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201113093924.GI4556@piout.net>
+In-Reply-To: <20201107170103.25608-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020, Alexandre Belloni wrote:
+On Sat, 07 Nov 2020, Johan Jonker wrote:
 
-> On 12/11/2020 10:48:10+0000, Lee Jones wrote:
-> > On Thu, 12 Nov 2020, Alexandre Belloni wrote:
-> > 
-> > > Hi,
-> > > 
-> > > On 12/11/2020 09:39:18+0000, Lee Jones wrote:
-> > > > Both the caller and the supplier's source file should have access to
-> > > > the include file containing the prototypes.
-> > > > 
-> > > > Fixes the following W=1 kernel build warning(s):
-> > > > 
-> > > >  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
-> > > >  1637 | void at91_pinctrl_gpio_suspend(void)
-> > > >  | ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
-> > > >  1661 | void at91_pinctrl_gpio_resume(void)
-> > > >  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> > > > 
-> > > > Cc: Russell King <linux@armlinux.org.uk>
-> > > > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> > > > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > > > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > 
-> > [...]
-> > 
-> > > > diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
-> > > > new file mode 100644
-> > > > index 0000000000000..0fd5093f7f73a
-> > > > --- /dev/null
-> > > > +++ b/include/soc/at91/pm.h
-> > > > @@ -0,0 +1,9 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > > +/*
-> > > > + * atmel platform data
-> > > > + */
-> > > > +
-> > > > +#ifdef CONFIG_PINCTRL_AT91
-> > > 
-> > > Shouldn't that be a header guard instead of depending on PINCTRL_AT91 ?
-> > 
-> > I copied the same semantics from the header it was taken from.
-> > 
-> > Happy to turn it into a proper header file too.
+> With the conversion of syscon.yaml minItems for compatibles
+> was set to 2. Current Rockchip dtsi files only use "syscon" for
+> QoS registers. Add Rockchip QoS compatibles to reduce notifications
+> produced with:
 > 
-> I guess that would be better. How do you expect this patch to be merged?
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/syscon.yaml
+> 
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/syscon.yaml
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-I'll fix it.
-
-No expectations.  Whatever's easiest.
+Applied, thanks.
 
 -- 
 Lee Jones [李琼斯]
