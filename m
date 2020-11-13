@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720622B28BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15502B28CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgKMWq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:46:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725981AbgKMWqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:46:55 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AC852222F;
-        Fri, 13 Nov 2020 22:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605307614;
-        bh=mrL0p+Bsz9/fxM2HbgiWUgT1fPwu1dJyQ2h/5u3OJNk=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=NYryAWT6CwWzB1rPlCYpRNJsYOJjneOQ3BeqQ+F/7LBwWIzlj9y6vK7yK0Lw7JCDQ
-         5C3PKfustD80DXUx38QvAHi7mtwK5Sbpszv1XDpSUIRqZjJLv38IclNxTHFqA1K+do
-         XKIj8zbvM5EUHLzGnJZ9XyKa65Fk3N85HDbjw48Y=
-Date:   Fri, 13 Nov 2020 23:47:51 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <X68NFzaAuImemnqh@kroah.com>
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
+        id S1726270AbgKMWwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKMWwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:52:37 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F66C0613D1;
+        Fri, 13 Nov 2020 14:52:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=pjJwRKUevFcY0ivt/D6u+qhWzbAvgz4cA1cjYy+mCI4=; b=pPtVgLW969ym6HVeW9Y9TLiSs8
+        0wAHmEwcl6t1eRw4ONQwsU2SMznXI+TezADpnjxFrC6+bo4s7mS2BFda3Pl0LdAcVRGJYGxKPAkOu
+        jdP7xZW+inEIElaMv12sSbeWEK75c4dlb/2iQq08T0XXaHgcM+XEEIysbO549VLwPjPvdksq+sjdV
+        6icdaIiQP0opKVJ+QW+3Ec7Rm93cqntpR+Ps1VydaPDkOQfoVWRUoPovpa3n1M8WqlSwIF+Q2aTkD
+        8TUHdNVt13uLEugB10Gcnen2dsvrnOsICBuAftWE7U34ZfDWXxQl6ozysqkwnI77izZ2xv+ZotkXq
+        tAfkEeYg==;
+Received: from [2601:1c0:6280:3f0::662d] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdhvl-0006gG-Qf; Fri, 13 Nov 2020 22:52:34 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: [PATCH] md: dm-writeback: add __noreturn to BUG-ging function
+Date:   Fri, 13 Nov 2020 14:52:28 -0800
+Message-Id: <20201113225228.20563-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113211633.GY401619@phenom.ffwll.local>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:16:33PM +0100, Daniel Vetter wrote:
-> On Thu, Nov 12, 2020 at 07:02:21AM -0500, Peilin Ye wrote:
-> > Hi all,
-> > 
-> > This is a collection of some miscellaneous clean-ups for fbcon and some
-> > console drivers. Since v2, I rebased them on linux-next, added some
-> > Reviewed-by: tags from Daniel and Greg, and rewrote the commit messages as
-> > suggested by Jiri. See [1] for v2 links.
-> > 
-> > It does the following:
-> > 
-> >   - Garbage collect KD_FONT_OP_COPY callbacks since we disabled it
-> >     recently. Mark it as obsolete.
-> >   - Delete dummy con_font_op() callbacks. (Reviewed by Greg)
-> > 
-> >   - Add a charcount field to our new font descriptor, `struct font_desc`.
-> >     (Reviewed by Daniel)
-> >   - Do not use a hard-coded 256 for built-in font charcount in
-> >     console/sticore.c, use the new charcount field of `struct font_desc`
-> >     instead. (Reviewed by Daniel)
-> >   - Similarly, in fbcon.c, avoid using the magic negative-indexing macro,
-> >     FNTCHARCNT(). Set `vc->vc_font.charcount` properly and always use that
-> >     instead.
-> > 
-> > Daniel, hopefully [5/5] removes FNTCHARCNT() for ever, but I have not
-> > tested it sufficiently yet. I remember you mentioned elsewhere that
-> > "fbtest.c" is insufficient for framebuffer testing, then how should we
-> > test it? The first 4 patches should be fine.
-> > 
-> > Please reference commit messages for more information. Thank you!
-> > 
-> > [1] v2 links:
-> > 
-> > 2/5: https://lore.kernel.org/lkml/c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com/
-> > 3/5: https://lore.kernel.org/lkml/20201028060533.1206307-1-yepeilin.cs@gmail.com/
-> > 4/5: https://lore.kernel.org/lkml/c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com/
-> > 5/5: https://lore.kernel.org/lkml/20201028155139.1220549-1-yepeilin.cs@gmail.com/
-> > 
-> > Peilin Ye (5):
-> >   console: Delete unused con_font_copy() callback implementations
-> >   console: Delete dummy con_font_set() and con_font_default() callback implementations
-> >   Fonts: Add charcount field to font_desc
-> >   parisc/sticore: Avoid hard-coding built-in font charcount
-> >   fbcon: Avoid using FNTCHARCNT() and hard-coded built-in font charcount
-> 
-> Patches all look good to me, if Greg is ok with me applying the entire
-> pile to drm-misc-next I'll do that next week.
+Building on arch/s390/ flags this as an error, so add the
+__noreturn attribute modifier to prevent the build error.
 
-Yes, please do!
+cc1: some warnings being treated as errors
+../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
+../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 48debafe4f2f ("dm: add writecache target")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@redhat.com>
+Cc: dm-devel@redhat.com
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: linux-s390@vger.kernel.org
+---
+ drivers/md/dm-writecache.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20201113.orig/drivers/md/dm-writecache.c
++++ linux-next-20201113/drivers/md/dm-writecache.c
+@@ -317,7 +317,7 @@ err1:
+ 	return r;
+ }
+ #else
+-static int persistent_memory_claim(struct dm_writecache *wc)
++static int __noreturn persistent_memory_claim(struct dm_writecache *wc)
+ {
+ 	BUG();
+ }
