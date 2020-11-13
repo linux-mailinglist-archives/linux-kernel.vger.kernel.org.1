@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3F62B2945
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9672B2944
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 00:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKMXkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 18:40:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726042AbgKMXkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 18:40:08 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605310805;
-        bh=j8MvHDQWSQ78A3stNi/OAK+xDFDcfVUCJVBtmDWG68I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tfWvGL+roiSRWy+KRU2XG/KGmtyJO0p2duebVX5l+J5dp1zBxEYMwknb7Ht77lM5+
-         AMR4vIxA9zXsI5P3Zp/ZUchHv8kLRNhcB0/bwlSOJIEokZVvhidzUgz2lXddSwS/iy
-         x7uHGbYnRVlhq/WCqwhuEL2uFsw2wB15K6FCXvE4=
+        id S1726230AbgKMXkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 18:40:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55938 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726042AbgKMXkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 18:40:12 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605310810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eV1maNi6vuGWhMNE13VARkM72eq295CJo6jJCk4UikM=;
+        b=kCv0ezlJIzNFkY80MPj+DrD+sB2GSaqpvpOpo3Qd7FEjJJ3stu9HGrjahGb5qzIE0h03Qn
+        iS3AvDg13mQNgctLX2MnuY8QIdfj+BCL9pAxf1EmuX16S6OJ9BLqiYnMh4RLmLct24ZHsQ
+        QG9ApUt/6q75848TCgS0Hle14hA2o7LhyAvEyoRW6jqVkStWa4quLj5oQlYQWeXSs7ofJa
+        yLi5xcp0NVZg/YQOcUMBhwdwLqUU/kDzzsjmga8tHoMgwe1LEX4wDC4BTimeGAsMdPaOb4
+        CgbWm+rE5ajbumm9iBWYVf93LpSR94p/IWA/XjV8biVp/xO/X9DQrQSrmenB1Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605310810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eV1maNi6vuGWhMNE13VARkM72eq295CJo6jJCk4UikM=;
+        b=TNqY+jtvCWIkSpk+1qI+9rFlsVm6anlCNRixUaxIDKTrlNdl0Z5Z7JnbJxlI86vPTXbw9V
+        joxm4GO3bLoFETCQ==
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Cc:     linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
+        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
+        ddstreet@canonical.com, gavin.guo@canonical.com,
+        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
+        shan.gavin@linux.alibaba.com,
+        Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+In-Reply-To: <87ft5cltqa.fsf@nanos.tec.linutronix.de>
+References: <20201113164638.GA1019448@bjorn-Precision-5520> <87ft5cltqa.fsf@nanos.tec.linutronix.de>
+Date:   Sat, 14 Nov 2020 00:40:10 +0100
+Message-ID: <87d00gltb9.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] net: ipa: two fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160531080582.10871.8898055303919120485.git-patchwork-notify@kernel.org>
-Date:   Fri, 13 Nov 2020 23:40:05 +0000
-References: <20201112121157.19784-1-elder@linaro.org>
-In-Reply-To: <20201112121157.19784-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
-        subashab@codeaurora.org, cpratapa@codeaurora.org,
-        bjorn.andersson@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Bjorn,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+On Sat, Nov 14 2020 at 00:31, Thomas Gleixner wrote:
+> On Fri, Nov 13 2020 at 10:46, Bjorn Helgaas wrote:
+>> pci_device_shutdown() still clears the Bus Master Enable bit if we're
+>> doing a kexec and the device is in D0-D3hot, which should also disable
+>> MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
+>> device causing the storm was in PCI_UNKNOWN state?
+>
+> That's indeed a really good question.
 
-On Thu, 12 Nov 2020 06:11:55 -0600 you wrote:
-> This small series makes two fixes to the IPA code:
->   - While reviewing something else I found that one of the resource
->     limits on the SDM845 used the wrong value.  The first patch
->     fixes this.  The correct value allocates more resources of this
->     type for IPA to use, and otherwise does not change behavior.
->   - When the IPA-resident microcontroller starts up it generates an
->     event, which triggers an AP interrupt.  The event merely
->     provides some information for logging, which we don't support.
->     We already ignore the event, and that's harmless.  So this
->     patch explicitly ignores it rather than issuing a warning when
->     it occurs.
-> 
-> [...]
+So we do that on kexec, but is that true when starting a kdump kernel
+from a kernel crash? I doubt it.
 
-Here is the summary with links:
-  - [net-next,1/2] net: ipa: fix source packet contexts limit
-    https://git.kernel.org/netdev/net-next/c/3ce6da1b2e47
-  - [net-next,2/2] net: ipa: ignore the microcontroller log event
-    https://git.kernel.org/netdev/net-next/c/0a5096ec2a35
+Thanks,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+        tglx
 
