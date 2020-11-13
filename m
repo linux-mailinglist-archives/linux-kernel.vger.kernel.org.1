@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C459A2B1D23
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B672B1D28
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgKMOY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:24:28 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52496 "EHLO
+        id S1726893AbgKMOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:24:32 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52544 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgKMOY1 (ORCPT
+        with ESMTP id S1726852AbgKMOY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:27 -0500
-Message-Id: <20201113141733.737377332@linutronix.de>
+        Fri, 13 Nov 2020 09:24:28 -0500
+Message-Id: <20201113141733.864469886@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277465;
+        s=2020; t=1605277466;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=S06QIqfNWoqS9gVbzzc2YmE/3ZeyYSj3ENqKW66z6Fk=;
-        b=oKGHrc6ngr7pniRBz0GCkmv8BaYBF1FeplvyjX2vJwsAUgrYdz4cnmB3wC6mJfdcpJ40/H
-        ux+ye5dfkWJDyog2W1IQX301wYzlzg7uWVTZrs75VYHHBnURdhLltHVQmJsjpqa9J9Hqgr
-        RvCdcuEChzRjZQ8L7ZVwtW5/vwPvKRX3p4g3WHLxCUiZgLizT+s06zATCfIPpMAgpHOek2
-        blevGecPsXV46jkSksH8VB2aY8+xrd0r+z1CmOkz77H4397toGWI/IsDpiSW1Qb0CCsW1q
-        vz+nLMNGXJ53AFfra+OdwJruy0uePrpJBb5PcFI3scSV7vN2wUJUtoHsTtiJVg==
+        bh=nizsG88oO/X3MAUujrJwkAWDoWXjRvd/hu62TCrMv00=;
+        b=MgbURSwOdt2u2AfAXuvt5e3xI+wad7mH9+9w+LH8RtRgcvyiuie/7z3Ircx4qNNKtyXNxN
+        n/qTUFL91x5E4rqamZQEE6AwvSWsBlClV89x7y5/02KhBULAPFYoxOqqgJaeAUoAuY9OV2
+        ILnN2zBb5V4sCj91YMROOwHtddlh/gcxyp6g5IUS0Im7gU79gdvprs3rL8QhGARB/G64ot
+        qMr1gQ9jLMyp2aUmt1nAAHReLBbqwKkiOjB1kJ3i5n/+bMDBAJFy4DazZM9tpYBsn72mMC
+        5pIZSXRya7s/NB9Rmvl2uZ4Ga6Vrl3ooi24lEOubx3YblZfMP84/7fqdt+6VCw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277465;
+        s=2020e; t=1605277466;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=S06QIqfNWoqS9gVbzzc2YmE/3ZeyYSj3ENqKW66z6Fk=;
-        b=IPeONiRzhIvWN0gM+Ny+HdS5Bcn9NO+HpkoDUkh8pXwqmmyh85sM7Nl+LVtoPIFtKmYPWZ
-        LACjWnVzSBcd/0BA==
-Date:   Fri, 13 Nov 2020 15:02:16 +0100
+        bh=nizsG88oO/X3MAUujrJwkAWDoWXjRvd/hu62TCrMv00=;
+        b=U31sNj/t2lOnt0NAoJOjrAxdod3h1s384ukHOPLY/KJc+CvGOTBvXvkWlC460hGxUiLJaZ
+        vD3C6rVE+MxoNCDQ==
+Date:   Fri, 13 Nov 2020 15:02:17 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -53,7 +53,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 09/19] irqstat: Move declaration into asm-generic/hardirq.h
+Subject: [patch 10/19] preempt: Cleanup the macro maze a bit
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,52 +62,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the declaration of the irq_cpustat per cpu variable to
-asm-generic/hardirq.h and remove the now empty linux/irq_cpustat.h header.
+Make the macro maze consistent and prepare it for adding the RT variant for
+BH accounting.
+
+ - Use nmi_count() for the NMI portion of preempt count
+ - Introduce in_hardirq() to make the naming consistent and non-ambiguos
+ - Use the macros to create combined checks (e.g. in_task()) so the
+   softirq representation for RT just falls into place.
+ - Update comments and move the deprecated macros aside
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/asm-generic/hardirq.h |    3 ++-
- include/linux/irq_cpustat.h   |   24 ------------------------
- 2 files changed, 2 insertions(+), 25 deletions(-)
+ include/linux/preempt.h |   30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
---- a/include/asm-generic/hardirq.h
-+++ b/include/asm-generic/hardirq.h
-@@ -12,7 +12,8 @@ typedef struct {
- #endif
- } ____cacheline_aligned irq_cpustat_t;
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -77,31 +77,33 @@
+ /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
+ #include <asm/preempt.h>
  
--#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
-+DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);
++#define nmi_count()	(preempt_count() & NMI_MASK)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+ #define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
+-#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
+-				 | NMI_MASK))
++#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ 
+ /*
+- * Are we doing bottom half or hardware interrupt processing?
++ * Macros to retrieve the current execution context:
+  *
+- * in_irq()       - We're in (hard) IRQ context
++ * in_nmi()		- We're in NMI context
++ * in_hardirq()		- We're in hard IRQ context
++ * in_serving_softirq()	- We're in softirq context
++ * in_task()		- We're in task context
++ */
++#define in_nmi()		(nmi_count())
++#define in_hardirq()		(hardirq_count())
++#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
++#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
 +
- #include <linux/irq.h>
- 
- #ifndef ack_bad_irq
---- a/include/linux/irq_cpustat.h
-+++ /dev/null
-@@ -1,24 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __irq_cpustat_h
--#define __irq_cpustat_h
--
--/*
-- * Contains default mappings for irq_cpustat_t, used by almost every
-- * architecture.  Some arch (like s390) have per cpu hardware pages and
-- * they define their own mappings for irq_stat.
++/*
++ * The following macros are deprecated and should not be used in new code:
++ * in_irq()       - Obsolete version of in_hardirq()
+  * in_softirq()   - We have BH disabled, or are processing softirqs
+  * in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+- * in_serving_softirq() - We're in softirq context
+- * in_nmi()       - We're in NMI context
+- * in_task()	  - We're in task context
 - *
-- * Keith Owens <kaos@ocs.com.au> July 2000.
-- */
--
--
--/*
-- * Simple wrappers reducing source bloat.  Define all irq_stat fields
-- * here, even ones that are arch dependent.  That way we get common
-- * definitions instead of differing sets for each arch.
-- */
--
--#ifndef __ARCH_IRQ_STAT
--DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);	/* defined in asm/hardirq.h */
--#endif
--
--#endif	/* __irq_cpustat_h */
+- * Note: due to the BH disabled confusion: in_softirq(),in_interrupt() really
+- *       should not be used in new code.
+  */
+ #define in_irq()		(hardirq_count())
+ #define in_softirq()		(softirq_count())
+ #define in_interrupt()		(irq_count())
+-#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+-#define in_nmi()		(preempt_count() & NMI_MASK)
+-#define in_task()		(!(preempt_count() & \
+-				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+ 
+ /*
+  * The preempt_count offset after preempt_disable();
 
