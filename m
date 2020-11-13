@@ -2,138 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51C22B2441
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981A72B2446
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 20:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgKMTI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 14:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKMTI3 (ORCPT
+        id S1726205AbgKMTJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 14:09:30 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35272 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgKMTJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 14:08:29 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896D7C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:08:27 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id v143so9836314qkb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:08:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=s+DP0hsscuvVJP4FCb9JX2LW5UPLPQY316PjTDF9ajE=;
-        b=m0/mbnDs0eW+RwJhCYGSOJhO4qnh9ux1mkYjo2p/A3l6vkqBpaP/IZGz/vkLTDYoki
-         24PK4mAtY/uJ1fVSKuWGTYK5O/mwdIpunUFUNDCiKWEUpKuaSfdqEK+dVy4S85AEuI7p
-         nuC9S7CCem4tOeUY5+0FPJRRYOEip97VNxDJU6XJ+aviFFUY3wfj+fGl5HNuJua16y/k
-         ZtTTOhgdrCW1SGDlVj8+P/d2RWhHTfQPRQ79S6ynlWM4978cuDviQQIlvRP02afAi2pJ
-         jHUnqUzhH3yCBifJSOkCbTFzHijYAux5Jh0TJrq+pv5bIxf0CaDgfspbblIqhGYiSKxd
-         n0Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=s+DP0hsscuvVJP4FCb9JX2LW5UPLPQY316PjTDF9ajE=;
-        b=GYsednefTAvHe++9cDXqTsW49d5GNIJKNZOLDXctlTautdGgn6my4mx5prwMTJLOEa
-         fXv5QDFjtcJ2cvccuy0zAi1q1fzPpoN0+mad4m5LIP3Wr9knw/FzROryKCRHPTDLDcEy
-         3qu4/k7DzauStHdaEt0GKlfJeXIkUSPmS/cNRqV0KBXcJifnyyzdgii1FTTdpTOYR74V
-         xrnsNrk0qs7Flyxt5g7yOCJEdIgFeaLoDH4DGOhjSocpkIQtlZipiYDrT4GJ7vIcncOj
-         nirViiQF17HduQ3GZP/s01KPk6XZXFodEnq/xb/hPwc4eA/sWAk4gwfO+ZOx/9pRuHGB
-         To2Q==
-X-Gm-Message-State: AOAM532DaivaNbjK9e13JqU7w1Du0G6Lu0GmrEQG6e+P+W258wCYJHHa
-        7HzwzQIZHTawQ1dYAd3FOSI=
-X-Google-Smtp-Source: ABdhPJwhTdTk5ImNfDdmo7cbVP35pFaX+kpTuKwAvujbAxFm+jY4PlYXdcXHMpOYeBC6uzpNRwrhbw==
-X-Received: by 2002:a37:4489:: with SMTP id r131mr3351024qka.485.1605294506613;
-        Fri, 13 Nov 2020 11:08:26 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id j63sm7358525qke.67.2020.11.13.11.08.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 11:08:25 -0800 (PST)
-Date:   Fri, 13 Nov 2020 12:08:24 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: Error: invalid switch -me200
-Message-ID: <20201113190824.GA1477315@ubuntu-m3-large-x86>
-References: <202011131146.g8dPLQDD-lkp@intel.com>
- <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com>
+        Fri, 13 Nov 2020 14:09:29 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ADJ9O9w065948;
+        Fri, 13 Nov 2020 13:09:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605294564;
+        bh=vTFMOQepr1ENT3zHa621HEf1PPDSTxsDdGqDVMrAaUI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hXjVDeVj3T7VCKveabDwoP3NgcVJaPriytdVahjauefig62wCQKQJkDRLtn/WMOEc
+         c/QwPQqJj6/i7lkGfOSoLN8T5lPvk6aJLJoxKcf8T5CcNVc5oQEJ7+BnKWuH5G66av
+         Yf8TQVeRnGy6aF6KdVrbomq55fZvZlWCHJNspavU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ADJ9OUc060020
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 13:09:24 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
+ Nov 2020 13:09:24 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 13 Nov 2020 13:09:24 -0600
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ADJ9Jlg077626;
+        Fri, 13 Nov 2020 13:09:20 -0600
+Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-j7200-main: Add gpio nodes in main
+ domain
+To:     Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>
+CC:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <t-kristo@ti.com>,
+        <robh+dt@kernel.org>, Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Vutla, Lokesh" <lokeshvutla@ti.com>
+References: <20201102191120.20380-1-faiz_abbas@ti.com>
+ <20201102191120.20380-2-faiz_abbas@ti.com>
+ <20201112163953.soia5cje4ry42ujf@kahuna>
+ <6ce6de4b-6e4d-1d2d-aa7a-570d1796d668@ti.com>
+ <20201113184020.drntugqsnj7dzsnh@ultimatum>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <c6267288-581e-3b34-cec5-d5879f3d1283@ti.com>
+Date:   Sat, 14 Nov 2020 00:39:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com>
+In-Reply-To: <20201113184020.drntugqsnj7dzsnh@ultimatum>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 09:28:03AM -0800, Fāng-ruì Sòng wrote:
-> On Thu, Nov 12, 2020 at 7:22 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Hi Fangrui,
-> >
-> > FYI, the error/warning still remains.
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
-> > commit: ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
-> > date:   4 months ago
-> > config: powerpc-randconfig-r031-20201113 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 9e0c35655b6e8186baef8840b26ba4090503b554)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install powerpc cross compiling tool for clang build
-> >         # apt-get install binutils-powerpc-linux-gnu
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    Assembler messages:
-> > >> Error: invalid switch -me200
-> > >> Error: unrecognized option -me200
-> >    clang-12: error: assembler command failed with exit code 1 (use -v to see invocation)
-> >    make[2]: *** [scripts/Makefile.build:281: scripts/mod/empty.o] Error 1
-> >    make[2]: Target '__build' not remade because of errors.
-> >    make[1]: *** [Makefile:1174: prepare0] Error 2
-> >    make[1]: Target 'prepare' not remade because of errors.
-> >    make: *** [Makefile:185: __sub-make] Error 2
-> >    make: Target 'prepare' not remade because of errors.
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On 14/11/20 12:10 AM, Nishanth Menon wrote:
+> On 23:59-20201113, Sekhar Nori wrote:
+> [..]
+>>> dtbs_check: we added:
+>>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@600000: Missing #address-cells in interrupt provider
+>>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@610000: Missing #address-cells in interrupt provider
+>>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@620000: Missing #address-cells in interrupt provider
+>>> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi: /bus@100000/gpio@630000: Missing #address-cells in interrupt provider
+>>
+>> Hmm, running dtbs_check, I did not really see this. These are all the
+>> warnings I see for TI platforms: https://pastebin.ubuntu.com/p/m2my62mjQq/
 > 
-> This can be ignored. The LLVM integrated assembler does not recognize
-> -me200 (-Wa,-me200 in arch/powerpc/Makefile). I guess the GNU as -m
-> option is similar to .arch or .machine and controls what instructions
-> are recognized. The integrated assembler tends to support all
-> instructions (conditional supporting some instructions has some
-> challenges; in the end I have patched parsing but ignoring `.arch` for
-> x86-64 and ignoring `.machine ppc64` for ppc64)
+> Here is the full list of checks I ran through with kernel_patch_verify
+> (docker)
+> 	https://pastebin.ubuntu.com/p/tcnWw89CMD/
 > 
-> (In addition, e200 is a 32-bit Power ISA microprocessor. 32-bit
-> support may get less attention in LLVM.)
+> See lines 128 onwards for this series. kernel_patch_verify does'nt
+> complain on existing warnings, but just prints when there are additional
+> ones added in. Also make sure we have the right dtc as well
+> dtc 1.6.0 and dt_schema 2020.8.1 was used.
 
-This is also not a clang specific issue, I see the exact same error
-with GCC 10.2.0 and binutils 2.35.
+I was using the latest schema from master. But I changed to 2020.08.1
+also, and still don't see the warning.
 
-$ make -skj64 ARCH=powerpc CROSS_COMPILE=powerpc64-linux- olddefconfig vmlinux
-...
-Error: invalid switch -me200
-Error: unrecognized option -me200
-...
+$ dt-doc-validate --version
+2020.12.dev1+gab5a73fcef26
 
-Cheers,
-Nathan
+I dont have a system-wide dtc installed. One in kernel tree is updated.
+
+$ scripts/dtc/dtc --version
+Version: DTC 1.6.0-gcbca977e
+
+Looking at your logs, it looks like you have more patches than just this
+applied. I wonder if thats making a difference. Can you check with just
+these patches applied to linux-next or share your tree which includes
+other patches?
+
+In your logs, you have such error for other interrupt controller nodes
+as well. For example:
+
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi:
+/bus@100000/bus@30000000/interrupt-controller1: Missing #address-cells
+in interrupt provider
+
+Which I don't see in my logs. My guess is some other patch(es) in your
+patch stack either uncovers this warning or causes it.
+
+> 
+>>
+>> The tree I am testing is linux-next of 12th Nov + these three patches
+>> applied.
+>>
+>> Also, #address-cells for interrupt provider being compulsory does not
+>> make full sense to me. Nothing in
+>> Documentation/devicetree/bindings/interrupt-controller/interrupts.txt or
+>> Documentation/devicetree/bindings/gpio/gpio-davinci.txt suggests that as
+>> well.
+>>
+>> Existing GPIO nodes for AM654 or J721E does not have #address-cells as well.
+>>
+>> Adding Grygorii as well, in case he knows more about this.
+> 
+> 
+> Yes - we need to have this conversation in the community :) I had
+> tagged this internally already during the 5.10 merge cycle that we
+> need to clean up the #address-cells warning and in some cases, maybe
+> the bindings are probably not accurate to attempt an enforcement.
+> I'd really like a conclusion on the topic as I recollect Lokesh and
+> Grygorii had a debate internally, but reached no conclusion, lets get
+> the wisdom of the community to help us here.
+
+Adding Lokesh to cc as well.
+
+Thanks,
+Sekhar
