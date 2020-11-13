@@ -2,149 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA932B1331
+	by mail.lfdr.de (Postfix) with ESMTP id EC2382B1332
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 01:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbgKMAVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Nov 2020 19:21:07 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:44610 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgKMAVH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:21:07 -0500
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BD3BB20C2884
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:21:06 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BD3BB20C2884
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605226866;
-        bh=nz9yqF8USSSrlPERDOTsESfQ4zYSnGbwhAj5bwSzo9k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T1Fms8N18/7ISgemHDkQgygUCnbnsqXUBf3qWVP47J+In0cNJn3kxTxT2g4LiSVSs
-         d7emHREfG0rs7vdYNNhDXz17eFXC/83F1MvACQiKAZtKqmXnd+3gYREXE6OY6QnEFK
-         QFA8FNnYkZeimRDKPoT8p/MnSC0LzqM4AGCbNCCc=
-Received: by mail-qv1-f48.google.com with SMTP id r12so3787258qvq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Nov 2020 16:21:06 -0800 (PST)
-X-Gm-Message-State: AOAM533nYmZW59xwUqZ2zxCQBqz72TW5IqL90opbpDyMgISBlV/QhYHr
-        knv00vcpGTs3iOwpRfWLCN1Bkj3DNmZQF0vt760=
-X-Google-Smtp-Source: ABdhPJzxtgNKZgLQd0qw/4EC1rbVIj3JHrc1hhlJSvSl8FJuKTgHK/MuRAFV/iEsmRA5CJSg+QR6fh9bSEmRjnuSX1M=
-X-Received: by 2002:ad4:490d:: with SMTP id bh13mr2423164qvb.14.1605226865807;
- Thu, 12 Nov 2020 16:21:05 -0800 (PST)
+        id S1726196AbgKMAV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Nov 2020 19:21:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725894AbgKMAV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Nov 2020 19:21:57 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 120CF20A8B;
+        Fri, 13 Nov 2020 00:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605226917;
+        bh=pHNSUZkUxEccH8VL2y1wGZr7S0hV9rs65Z7xLJFB4Dg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1uEVnUFHZ9Wakhohe3qWMPvY2hZXCjzE2sj6SVIHUsYicyN/7L3pZiTV1UwfTCV6q
+         4oxKdOT65kIQwEQ1qvDTFrLI2hjn+cueS7PTkUGgHSBEVaIpCoIFAsBNvX0UPXdEEZ
+         XtAl1NRlbUaCAUNln6DqXiuC1x0Bu7l+Sb9lkKKQ=
+Date:   Thu, 12 Nov 2020 16:21:56 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dmytro Shytyi <dmytro@shytyi.net>
+Cc:     "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next V3] net: Variable SLAAC: SLAAC with prefixes of
+ arbitrary length in PIO
+Message-ID: <20201112162156.211cad4e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
+        <202011110944.7zNVZmvB-lkp@intel.com>
+        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
 MIME-Version: 1.0
-References: <20201110202746.9690-1-mcroce@linux.microsoft.com>
- <20201112035023.974748-1-natechancellor@gmail.com> <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
-In-Reply-To: <20201112151320.e0153ace2f2eb5b59eabbdcb@linux-foundation.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 13 Nov 2020 01:20:29 +0100
-X-Gmail-Original-Message-ID: <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
-Message-ID: <CAFnufp1j6ZzxLJA2x28BdxbTtnN_KtnXB49ibPcbze=B2ru3aA@mail.gmail.com>
-Subject: Re: [PATCH] reboot: Fix variable assignments in type_store
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:13 AM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Wed, 11 Nov 2020 20:50:23 -0700 Nathan Chancellor <natechancellor@gmail.com> wrote:
->
-> > Clang warns:
-> >
-> > kernel/reboot.c:707:17: warning: implicit conversion from enumeration
-> > type 'enum reboot_type' to different enumeration type 'enum reboot_mode'
-> > [-Wenum-conversion]
-> >                 reboot_mode = BOOT_TRIPLE;
-> >                             ~ ^~~~~~~~~~~
-> >
-> > ...
-> >
-> > --- a/kernel/reboot.c
-> > +++ b/kernel/reboot.c
-> > @@ -704,19 +704,19 @@ static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
-> >               return -EPERM;
-> >
-> >       if (!strncmp(buf, BOOT_TRIPLE_STR, strlen(BOOT_TRIPLE_STR)))
-> > -             reboot_mode = BOOT_TRIPLE;
-> > +             reboot_type = BOOT_TRIPLE;
-> >       else if (!strncmp(buf, BOOT_KBD_STR, strlen(BOOT_KBD_STR)))
-> > -             reboot_mode = BOOT_KBD;
-> > +             reboot_type = BOOT_KBD;
-> >       else if (!strncmp(buf, BOOT_BIOS_STR, strlen(BOOT_BIOS_STR)))
-> > -             reboot_mode = BOOT_BIOS;
-> > +             reboot_type = BOOT_BIOS;
-> >       else if (!strncmp(buf, BOOT_ACPI_STR, strlen(BOOT_ACPI_STR)))
-> > -             reboot_mode = BOOT_ACPI;
-> > +             reboot_type = BOOT_ACPI;
-> >       else if (!strncmp(buf, BOOT_EFI_STR, strlen(BOOT_EFI_STR)))
-> > -             reboot_mode = BOOT_EFI;
-> > +             reboot_type = BOOT_EFI;
-> >       else if (!strncmp(buf, BOOT_CF9_FORCE_STR, strlen(BOOT_CF9_FORCE_STR)))
-> > -             reboot_mode = BOOT_CF9_FORCE;
-> > +             reboot_type = BOOT_CF9_FORCE;
-> >       else if (!strncmp(buf, BOOT_CF9_SAFE_STR, strlen(BOOT_CF9_SAFE_STR)))
-> > -             reboot_mode = BOOT_CF9_SAFE;
-> > +             reboot_type = BOOT_CF9_SAFE;
-> >       else
-> >               return -EINVAL;
->
-> This is a fairly dramatic change to the original patch, but it eyeballs
-> OK.
->
-> Matteo, could you please comment?  And preferably retest?
->
+On Thu, 12 Nov 2020 16:44:54 +0100 Dmytro Shytyi wrote:
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Hi,
-
-I reviewed the patch and it looks good to me.
-I tested it with this script which passes now with Nathan's fix:
-
-for i in cold warm hard soft gpio; do
-    echo $i > mode
-    read j <mode
-    [ $i = $j ] || echo "mode $i = $j"
-done
-
-for i in bios acpi kbd triple efi cf9_force cf9_safe; do
-    echo $i > type
-    read j <type
-    [ $i = $j ] || echo "type $i = $j"
-done
-
-for i in $(seq 0 $(nproc --ignore=1)); do
-    echo $i > cpu
-    read j <cpu
-    [ $i = $j ] || echo "cpu $i = $j"
-done
-
-for i in 0 1; do
-    echo $i >force
-    read j <force
-    [ $i = $j ] || echo "force $i = $j"
-done
-
-While writing the script I found that in the documentation I left for
-'type' the values from
-Documentation/admin-guide/kernel-parameters.txt, which is 'pci' for
-cf9_force reboot.
-While at it, should we update the doc with the values 'cf9_force' and
-'cf9_safe', or rename to 'pci' and 'pci_safe' to be coherent with the
-kernel cmdline?
-
-In any case, kernel-parameters.txt doesn't mention that reboot=q does
-the 'cf9_safe' reboot type, so it must be fixed anyway.
-
-Regards,
--- 
-per aspera ad upstream
+You don't have to add the reported by tag just because the bot pointed
+out issues in the previous version.
