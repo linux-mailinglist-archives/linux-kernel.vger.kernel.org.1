@@ -2,153 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51DF2B2857
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B43A02B27F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgKMWS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgKMWRv (ORCPT
+        id S1726088AbgKMWQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:16:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33512 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725866AbgKMWQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:17:51 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575FAC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:35 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id z14so6625029qto.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=03ZVTANVMndAKxBTmMPKTeOd5fHJJQ7JXgAuJEAynpY=;
-        b=Irv9DM0UsFmGy7ycpfksKZPxPunSrUwyrgROaAlP4JHh1CM806pobQwjXPDjkjMLYu
-         Tq/jrkTfcZROzhXczIWaV8Elw+J8z3dnSxYlgf7ODC6FqBVoKUU1EJufDopynxdzUMXX
-         oEG9EQkz35isWhsi7GBMbioHHVtQhZYN/ML9dSwXuFOI+0OyXJYQb7rnYHnAV/vLtcZo
-         crDYrcmb69AOdmR0kt0n0AYZsNVctwb/jrkqOfxQ2ZzmXKTMSK2ckFl7Cpfd1Ml9ZdDV
-         130EiUyc0IZt1GuTRPtIFMomwkDMm1fpFt6wCA1ZZscVlA4SrxOzpEklei1UrZLTYuFT
-         Mg0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=03ZVTANVMndAKxBTmMPKTeOd5fHJJQ7JXgAuJEAynpY=;
-        b=i/cNhKTpzxkYntW13hYKN39fsUw+UQDwl/Dsibo66DRIJiIiK8hANATSP+rhjZI7Wa
-         Z320ctuKOwdVZ9D6H4FoI6+6VJtjPmgdy4UKmvR0VNQZGptZvGsIjOLlzk9RnfW0D69v
-         glG671dSVtOpIa3M87evQIdbPR/x6PILko52WLMct5TZa0lpz7fCEzwBikZiQt9f6yU2
-         9vWVSHzjx1JYl4KWoNc5efLqkbjrPQmNdYXrTroaroQSZCCxAXEECJTs0ut5JYrcOnAD
-         iZMC0Pz5/plV5G6EPHT4+mfHX5EgLpfXm9OvaDcWX49Pn+K3fL6QZf0pOdqEaviuQuYc
-         6V0Q==
-X-Gm-Message-State: AOAM5304YQlK0mrL+UuXWDMyI/Lnqi5VNUiYvRfVaytLP1gO9DBTc+a/
-        1mxYEKl8oal2IXHWwp2gUCUiswu4xYD+uALY
-X-Google-Smtp-Source: ABdhPJxPrdklPOIoefBKRwfkTEjY5SIiFeAp3x6m0FK3ZXk20c36zYo+UiCHZufgZlMbZaHRuOFGyD9W4i9Te5n/
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ad4:56ee:: with SMTP id
- cr14mr4795372qvb.15.1605305854497; Fri, 13 Nov 2020 14:17:34 -0800 (PST)
+        Fri, 13 Nov 2020 17:16:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605305771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RU/SSy/zKQ6WuVt0KMSkbVTJl5tSXBXiAe6IqFkcJeg=;
+        b=EMqGkpH3Vt/07VPADfh5wudyH4z8bUFTy/d2XSI7nkTy4zrpO52WIu+CBKmHc9pG2XPyf8
+        eqWZAVTFFW///7J46HsUqtb7tuL2hZ72EClxCLZpc7G+KxkLweBLCM39C+Z0vaf2CiJLtS
+        5yXat7UKvBJk7xYNjkZhMahcBfcKbSU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-mqBnpqnRNyagKiVGVM6Uuw-1; Fri, 13 Nov 2020 17:16:07 -0500
+X-MC-Unique: mqBnpqnRNyagKiVGVM6Uuw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81BEA188C122;
+        Fri, 13 Nov 2020 22:16:05 +0000 (UTC)
+Received: from krava (unknown [10.40.195.79])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C2A8627BA9;
+        Fri, 13 Nov 2020 22:16:02 +0000 (UTC)
 Date:   Fri, 13 Nov 2020 23:16:01 +0100
-In-Reply-To: <cover.1605305705.git.andreyknvl@google.com>
-Message-Id: <69ccb75b7fc7ec766e05ac62335e14e5bf0c50e2.1605305705.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1605305705.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH mm v10 33/42] arm64: kasan: Add arch layer for memory tagging helpers
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>, Sam Xi <xyzsam@google.com>
+Subject: Re: [PATCH] perf stat: Use proper cpu for shadow stats
+Message-ID: <20201113221601.GE842058@krava>
+References: <20201113050236.175141-1-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113050236.175141-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a set of arch_*() memory tagging helpers currently only
-defined for arm64 when hardware tag-based KASAN is enabled. These helpers
-will be used by KASAN runtime to implement the hardware tag-based mode.
+On Fri, Nov 13, 2020 at 02:02:36PM +0900, Namhyung Kim wrote:
+> Currently perf stat shows some metrics (like IPC) for defined events.
+> But when no aggregation mode is used (-A option), it shows incorrect
+> values since it used a value from a different cpu.
+> 
+> Before:
+> 
+>   $ perf stat -aA -e cycles,instructions sleep 1
+> 
+>    Performance counter stats for 'system wide':
+> 
+>   CPU0      116,057,380      cycles
+>   CPU1       86,084,722      cycles
+>   CPU2       99,423,125      cycles
+>   CPU3       98,272,994      cycles
+>   CPU0       53,369,217      instructions      #    0.46  insn per cycle
+>   CPU1       33,378,058      instructions      #    0.29  insn per cycle
+>   CPU2       58,150,086      instructions      #    0.50  insn per cycle
+>   CPU3       40,029,703      instructions      #    0.34  insn per cycle
+> 
+>        1.001816971 seconds time elapsed
+> 
+> So the IPC for CPU1 should be 0.38 (= 33,378,058 / 86,084,722)
+> but it was 0.29 (= 33,378,058 / 116,057,380) and so on.
+> 
+> After:
+> 
+>   $ perf stat -aA -e cycles,instructions sleep 1
+> 
+>    Performance counter stats for 'system wide':
+> 
+>   CPU0      109,621,384      cycles
+>   CPU1      159,026,454      cycles
+>   CPU2       99,460,366      cycles
+>   CPU3      124,144,142      cycles
+>   CPU0       44,396,706      instructions      #    0.41  insn per cycle
+>   CPU1      120,195,425      instructions      #    0.76  insn per cycle
+>   CPU2       44,763,978      instructions      #    0.45  insn per cycle
+>   CPU3       69,049,079      instructions      #    0.56  insn per cycle
+> 
+>        1.001910444 seconds time elapsed
+> 
+> Reported-by: Sam Xi <xyzsam@google.com>
+> Fixes: 44d49a600259 ("perf stat: Support metrics in --per-core/socket mode")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-The arch-level indirection level is introduced to simplify adding hardware
-tag-based KASAN support for other architectures in the future by defining
-the appropriate arch_*() macros.
+nice catch! would be great to have test for this
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
----
-Change-Id: I42b0795a28067872f8308e00c6f0195bca435c2a
----
- arch/arm64/include/asm/memory.h |  9 +++++++++
- mm/kasan/kasan.h                | 26 ++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+)
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index 556cb2d62b5b..3bc08e6cf82e 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -230,6 +230,15 @@ static inline const void *__tag_set(const void *addr, u8 tag)
- 	return (const void *)(__addr | __tag_shifted(tag));
- }
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+#define arch_enable_tagging()			mte_enable_kernel()
-+#define arch_init_tags(max_tag)			mte_init_tags(max_tag)
-+#define arch_get_random_tag()			mte_get_random_tag()
-+#define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
-+#define arch_set_mem_tag_range(addr, size, tag)	\
-+			mte_set_mem_tag_range((addr), (size), (tag))
-+#endif /* CONFIG_KASAN_HW_TAGS */
-+
- /*
-  * Physical vs virtual RAM address space conversion.  These are
-  * private definitions which should NOT be used outside memory.h
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 3b349a6e799d..bc4f28156157 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -243,6 +243,32 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- #define reset_tag(addr)		((void *)arch_kasan_reset_tag(addr))
- #define get_tag(addr)		arch_kasan_get_tag(addr)
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+
-+#ifndef arch_enable_tagging
-+#define arch_enable_tagging()
-+#endif
-+#ifndef arch_init_tags
-+#define arch_init_tags(max_tag)
-+#endif
-+#ifndef arch_get_random_tag
-+#define arch_get_random_tag()	(0xFF)
-+#endif
-+#ifndef arch_get_mem_tag
-+#define arch_get_mem_tag(addr)	(0xFF)
-+#endif
-+#ifndef arch_set_mem_tag_range
-+#define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
-+#endif
-+
-+#define hw_enable_tagging()			arch_enable_tagging()
-+#define hw_init_tags(max_tag)			arch_init_tags(max_tag)
-+#define hw_get_random_tag()			arch_get_random_tag()
-+#define hw_get_mem_tag(addr)			arch_get_mem_tag(addr)
-+#define hw_set_mem_tag_range(addr, size, tag)	arch_set_mem_tag_range((addr), (size), (tag))
-+
-+#endif /* CONFIG_KASAN_HW_TAGS */
-+
- /*
-  * Exported functions for interfaces called from assembly or from generated
-  * code. Declarations here to avoid warning about missing declarations.
--- 
-2.29.2.299.gdc1121823c-goog
+thanks,
+jirka
+
+> ---
+>  tools/perf/util/stat-display.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> index 4b57c0c07632..a963b5b8eb72 100644
+> --- a/tools/perf/util/stat-display.c
+> +++ b/tools/perf/util/stat-display.c
+> @@ -324,13 +324,10 @@ static int first_shadow_cpu(struct perf_stat_config *config,
+>  	struct evlist *evlist = evsel->evlist;
+>  	int i;
+>  
+> -	if (!config->aggr_get_id)
+> -		return 0;
+> -
+>  	if (config->aggr_mode == AGGR_NONE)
+>  		return id;
+>  
+> -	if (config->aggr_mode == AGGR_GLOBAL)
+> +	if (!config->aggr_get_id)
+>  		return 0;
+>  
+>  	for (i = 0; i < evsel__nr_cpus(evsel); i++) {
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
 
