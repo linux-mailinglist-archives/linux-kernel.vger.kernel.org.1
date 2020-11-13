@@ -2,162 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A07D2B17F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCEA2B17FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 10:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgKMJNf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Nov 2020 04:13:35 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54883 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726181AbgKMJNe (ORCPT
+        id S1726303AbgKMJOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 04:14:42 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:46564 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKMJOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 04:13:34 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-220-PqFSW9A9PH2BcaJY30TEYQ-1; Fri, 13 Nov 2020 09:13:25 +0000
-X-MC-Unique: PqFSW9A9PH2BcaJY30TEYQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 13 Nov 2020 09:13:24 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 13 Nov 2020 09:13:24 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nathan Chancellor' <natechancellor@gmail.com>,
-        Christian Lamparter <chunkeey@gmail.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR in
- crypto4xx_build_pd
-Thread-Topic: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR
- in crypto4xx_build_pd
-Thread-Index: AQHWuT2oUlZMOSIiOk6Ynob79/7MV6nFxI1w
-Date:   Fri, 13 Nov 2020 09:13:24 +0000
-Message-ID: <a163bb51881149eaa13461a93b3e45bd@AcuMS.aculab.com>
-References: <20201112200702.1664905-1-natechancellor@gmail.com>
- <1f5e8575-ab7e-59ea-6be7-0340df4d31c5@gmail.com>
- <20201112214904.GA3194701@ubuntu-m3-large-x86>
-In-Reply-To: <20201112214904.GA3194701@ubuntu-m3-large-x86>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 13 Nov 2020 04:14:40 -0500
+Received: by mail-lj1-f195.google.com with SMTP id h23so9785491ljg.13;
+        Fri, 13 Nov 2020 01:14:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i2w2/Ou2JCNs3YSFT/BVsQjj58MQc88VDrIE6nWMPHU=;
+        b=QePoGAnPV2XQBFg1uyppSdAnFgxJfGHChMVj/oHITpb0PJqbBitftZLQ9mQx6Yl9Wq
+         QGt3wRzE1gl0BFZpKWUyinwUpvPeo7CtNA975Yd8Vdda5x5YvmYoo8JWvqNPZt2uHt/i
+         601g5ePL6z99kPYm0OsyY6iHdZywt6WHCTjvJY8EB58Vh7bvvz9zIZEgeOWcv+AicvcQ
+         9B/Xpra2RmFonoS20JpTz0BNY6h25ByTMqwGaaLzxsYDTPovJ0jM9Na7ZPmjGmYmtHmD
+         jSW+gFwT9k96cEU0pzkZM5cgv110AUwUgyaqWa4gjYKptgF4SmD5rX5cr675UBCOloD8
+         Oh2Q==
+X-Gm-Message-State: AOAM532XQw7y4YNCRx71fErIL763qLKtE5xl6Ag8ZmHq18Y9Iue+I4v4
+        RTO3FMrE53ARiSxicoa/X5SsXX3IL08=
+X-Google-Smtp-Source: ABdhPJxQbU7VoYBwntk0kSvfxWbBydYgtlhNduOMrHgB7MnYYJNGHkdIAI8VIlIlp3VKA1//wyDzyw==
+X-Received: by 2002:a2e:300a:: with SMTP id w10mr732722ljw.62.1605258876349;
+        Fri, 13 Nov 2020 01:14:36 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id f1sm1569086ljp.65.2020.11.13.01.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 01:14:35 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kdVAJ-0001DN-LM; Fri, 13 Nov 2020 10:14:43 +0100
+Date:   Fri, 13 Nov 2020 10:14:43 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] usb/mos7720: process deferred urbs in a workqueue
+Message-ID: <20201113091443.GI4085@localhost>
+References: <20201102211450.5722-1-dave@stgolabs.net>
+ <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
+ <20201104110657.GW4085@localhost>
+ <20201104162534.GY4085@localhost>
+ <20201105001307.lelve65nif344cfs@linux-p48b.lan>
+ <20201105082540.GA4085@localhost>
+ <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor
-> Sent: 12 November 2020 21:49
-> 
-> On Thu, Nov 12, 2020 at 10:21:35PM +0100, Christian Lamparter wrote:
-> > Hello,
+Sorry about the late reply.
+
+On Thu, Nov 05, 2020 at 10:17:13PM -0800, Davidlohr Bueso wrote:
+> On Thu, 05 Nov 2020, Johan Hovold wrote:
+> >On Wed, Nov 04, 2020 at 04:13:07PM -0800, Davidlohr Bueso wrote:
+> >> Also, but not strictly related to this. What do you think of deferring all
+> >> work in write_parport_reg_nonblock() unconditionally? I'd like to avoid
+> >> that mutex_trylock() because eventually I'll be re-adding a warn in the
+> >> locking code, but that would also simplify the code done here in the
+> >> nonblocking irq write. I'm not at all familiar with parport, but I would
+> >> think that restore_state context would not care.
 > >
-> > On 12/11/2020 21:07, Nathan Chancellor wrote:
-> > > Clang warns:
-> > >
-> > > drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
-> > > lower precedence than '|'; '|' will be evaluated first
-> > > [-Wbitwise-conditional-parentheses]
-> > >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> > >                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
-> > > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
-> > > around the '|' expression to silence this warning
-> > >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> > >                                                                           ^
-> > >                                                                          )
-> > > drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
-> > > around the '?:' expression to evaluate it first
-> > >                   (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
-> > >                                                                           ^
-> > >                   (
-> > > 1 warning generated.
-> > >
-> > > It looks like this should have been a logical OR so that
-> > > PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
-> > > is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD.
-> > Yes. This probably wasn't spotted earlier since the driver doesn't make
-> > use of CRYPTO_ALG_TYPE_AHASH (yet). This is because the hash accelerator
-> > setup cost was never worth it.
-> >
-> > > Change the operator so that everything works properly.
-> > I'm curious if this is true. Is there a way to break this somehow on purpose?
+> >Sounds good to me. As long as the state is restored before submitting
+> >further requests we should be fine. That would even allow getting rid of
+> >write_parport_reg_nonblock() as you can restore the state using
+> >synchronous calls from the worker thread. Should simplify things quite a
+> >bit.
 > 
-> I do not really have a way to validate that statement, I just figured
-> that the operator being wrong meant that something could go wrong that
-> was not intended.
+> What about something like the below (probably buggy)? I avoided messing with
+> the completion in the work callback, like what prologue/epilogue does for all
+> other synchronous calls, because when releasing we sync the work anyway and we
+> need to account for scenarios where the work is scheduled but yet not running,
+> so it would not be the best fit. And this also makes the flush_work() always
+> wait for both writes, otherwise I was having the thread locklessly busy-wait
+> on a flag that was set until both write_parport_reg_nonblock() calls returned
+> before the flush such that all potential scheduled work was observed. Unless
+> I missed something, the cleanup is considerable.
+
+Yeah, I wouldn't bother with the completion, looks broken anyway as
+nothing prevent two parport calls from interfering with each other it
+seems.
+
+[...]
+
+>  /*
+>   * This is the the common top part of all parallel port callback operations that
+>   * send synchronous messages to the device.  This implements convoluted locking
+> @@ -458,6 +281,10 @@ static int parport_prologue(struct parport *pp)
+> 	reinit_completion(&mos_parport->syncmsg_compl);
+> 	spin_unlock(&release_lock);
 > 
-> > I've extracted the code from line 921 and added the defines
-> > (the CRYPTO_ALG_... from the current 5.10-rc3 crypto.h and the PD_CTL_
-> > from crypto4xx_reg_def.h) and replaced the u32 with uint32_t
-> > so it runs in userspace too:
-> >
-> > --- crypto4xx_test.c ---
-> > /* test study - is it possible to break the | vs || in crypto4xx's code */
-> >
-> > #include <stdio.h>
-> > #include <stdint.h>
-> >
-> > #define CRYPTO_ALG_TYPE_AEAD 	0x00000003
-> > #define CRYPTO_ALG_TYPE_AHASH	0x0000000f
-> > #define PD_CTL_HASH_FINAL	(1<<4) /* Stand-in for BIT(4) */
-> > #define PD_CTL_HOST_READY	(1<<0) /* BIT(0) */
-> >
-> > uint32_t func_with_bitwise_or(uint32_t alg_type)
-> > {
-> > 	return PD_CTL_HOST_READY |
-> > 		((alg_type == CRYPTO_ALG_TYPE_AHASH) |
-> > 		 (alg_type == CRYPTO_ALG_TYPE_AEAD) ?
-> > 			PD_CTL_HASH_FINAL : 0);
-> > }
+> +	/* ensure writes from restore are submitted before new requests */
+> +	if (work_pending(&mos_parport->work))
+> +		flush_work(&mos_parport->work);
+> +
+> 	mutex_lock(&mos_parport->serial->disc_mutex);
+> 	if (mos_parport->serial->disconnected) {
+> 		/* device disconnected */
+> @@ -482,6 +309,28 @@ static inline void parport_epilogue(struct parport *pp)
+> 	complete(&mos_parport->syncmsg_compl);
+>  }
 > 
-> Looking at this more, I think the only reason that the code works as is
-> is because PD_CTL_HOST_READY is 1 AND CRYPTO_ALG_TYPE_AHASH is not used.
+> +static void deferred_restore_writes(struct work_struct *work)
+> +{
+> +	struct mos7715_parport *mos_parport;
+> +
+> +	mos_parport = container_of(work, struct mos7715_parport, work);
+> +
+> +	mutex_lock(&mos_parport->serial->disc_mutex);
+> +
+> +	/* if device disconnected, game over */
+> +	if (mos_parport->serial->disconnected) {
+> +		mutex_unlock(&mos_parport->serial->disc_mutex);
+> +		return;
+> +	}
+> +
+> +	write_mos_reg(mos_parport->serial, dummy, MOS7720_DCR,
+> +		      mos_parport->shadowDCR);
+> +	write_mos_reg(mos_parport->serial, dummy, MOS7720_ECR,
+> +		      mos_parport->shadowECR);
+> +	kref_put(&mos_parport->ref_count, destroy_mos_parport);
+> +	mutex_unlock(&mos_parport->serial->disc_mutex);
+> +}
+> +
+>  static void parport_mos7715_write_data(struct parport *pp, unsigned char d)
+>  {
+> 	struct mos7715_parport *mos_parport = pp->private_data;
+> @@ -639,12 +488,12 @@ static void parport_mos7715_restore_state(struct parport *pp,
+> 		spin_unlock(&release_lock);
+> 		return;
+> 	}
+> +	kref_get(&mos_parport->ref_count);
+
+I think can do away with the reference count too as you flush the work
+before dropping the final reference in release().
+
+> 	mos_parport->shadowDCR = s->u.pc.ctr;
+> 	mos_parport->shadowECR = s->u.pc.ecr;
+> -	write_parport_reg_nonblock(mos_parport, MOS7720_DCR,
+> -				   mos_parport->shadowDCR);
+> -	write_parport_reg_nonblock(mos_parport, MOS7720_ECR,
+> -				   mos_parport->shadowECR);
+> +
+> +	/* defer synchronous writes outside of irq */
+> +	schedule_work(&mos_parport->work);
+> 	spin_unlock(&release_lock);
+>  }
 > 
-> (alg_type == CRYPTO_ALG_TYPE_AEAD) ? PD_CTL_HASH_FINAL : 0 is evaluated
-> first, which results in either PD_CTL_HASH_FINAL or 0.
+> @@ -714,12 +563,9 @@ static int mos7715_parport_init(struct usb_serial *serial)
 > 
-> Then (alg_type == CRYPTO_ALG_TYPE_AHASH) is evaluated, which is
-> evaluated to either 0 or 1.
+> 	mos_parport->msg_pending = false;
+> 	kref_init(&mos_parport->ref_count);
+> -	spin_lock_init(&mos_parport->listlock);
+> -	INIT_LIST_HEAD(&mos_parport->active_urbs);
+> -	INIT_LIST_HEAD(&mos_parport->deferred_urbs);
+> 	usb_set_serial_data(serial, mos_parport); /* hijack private pointer */
+> 	mos_parport->serial = serial;
+> -	tasklet_setup(&mos_parport->urb_tasklet, send_deferred_urbs);
+> +	INIT_WORK(&mos_parport->work, deferred_restore_writes);
+> 	init_completion(&mos_parport->syncmsg_compl);
 > 
-> Then we mask everything together:
+> 	/* cycle parallel port reset bit */
+> @@ -1869,8 +1715,6 @@ static void mos7720_release(struct usb_serial *serial)
 > 
-> PD_CTL_HOST_READY | (0 || 1) | (PD_CTL_HOST_READY || 0)
+> 	if (le16_to_cpu(serial->dev->descriptor.idProduct)
+> 	    == MOSCHIP_DEVICE_ID_7715) {
+> -		struct urbtracker *urbtrack;
+> -		unsigned long flags;
+> 		struct mos7715_parport *mos_parport =
+> 			usb_get_serial_data(serial);
+> 
+> @@ -1888,16 +1732,8 @@ static void mos7720_release(struct usb_serial *serial)
+> 		usb_set_serial_data(serial, NULL);
+> 		mos_parport->serial = NULL;
+> 
+> -		/* if tasklet currently scheduled, wait for it to complete */
+> -		tasklet_kill(&mos_parport->urb_tasklet);
+> -
+> -		/* unlink any urbs sent by the tasklet  */
+> -		spin_lock_irqsave(&mos_parport->listlock, flags);
+> -		list_for_each_entry(urbtrack,
+> -				    &mos_parport->active_urbs,
+> -				    urblist_entry)
+> -			usb_unlink_urb(urbtrack->urb);
+> -		spin_unlock_irqrestore(&mos_parport->listlock, flags);
+> +		/* if work is currently scheduled, wait for it to complete */
+> +		cancel_work_sync(&mos_parport->work);
 
-The result is the same for both | and || as they are both higher
-priority than ?: (which is only higher priority than ,).
+But this must be done before clearing mos_parport->serial above or you
+can hit a NULL deref in the worker. Cancel, or flush as Oliver
+suggested, after deregistering the port.
 
-The () around the == aren't needed (except to stop the compiler
-bleating). The bitwise | is lower priority than == because it
-existed before || and K&R didn't change the priority when they
-added || (I think they've said later they wished they had.)
+> 		parport_del_port(mos_parport->pp);
+> 
+> 		kref_put(&mos_parport->ref_count, destroy_mos_parport);
 
-The () around the entire ?: clause are needed.
+Very nice to see this cleaned up.
 
-So the code is the same as:
-	rval = PD_CTL_HOST_READY;
-	if (alg_type == CRYPTO_ALG_TYPE_AHASH | alg_type == CRYPTO_ALG_TYPE_AEAD)
-		rval |= PD_CTL_HASH_FINAL;
-	return rval;
-
-Using | may well generate faster code (no branches).
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Johan
