@@ -2,271 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249FE2B26F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35452B26FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 22:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgKMVdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 16:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgKMVdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:33:02 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F10C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:33:02 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id w11so5160452pll.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 13:33:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pQ75ikH05XshXgYTR+1qs3C6oeVcKGNvq/PDg+cf54w=;
-        b=q44b+tCOb9LhKXqaP1OKadV9TQZN+nwLolKx6idUlzOFWwN8324zPTIVUHU84GMUtI
-         24KN8n1PRKlq6GMfcAuiLnr8vueA/J/QpxktkmZWqmG4PaXMy9fhP+6wNg2rCtdl3WfA
-         fxvj9NlDVxe9uGT15tL93GcwwJijZ0wUZau29QA3IQ58j5Upf8tKyVXbPpAcKn2B8m2h
-         pL574MvEreWQ7fIRgHQqpoCmmWkbzeQfL8V4ZsPHbCNoDNRTvEPiZO6TKkqUM74kw0Ne
-         6hsqB/o6LhQb/yp5/AcQIvJOAnc+W5nmNA4gxAW0mao4UN8+ZnDv+CAH0oWa1gzzKtDg
-         c9Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pQ75ikH05XshXgYTR+1qs3C6oeVcKGNvq/PDg+cf54w=;
-        b=JOLkVosC+XUrJzUwE8ic1XmyJQi5QVebahw/0CI7nLDA8qWpfNkXkUhXtHyl/1vG6n
-         qexT9nztzTuUcfubgf77x+KpzmkxaaAjbnUz3xAF8k2G7cJmwRCoXZPUDK4VIgcjsju6
-         W6LXDNGxHLieNcqR1DGPq9cD74sWRS84R98bU1o2VQRQPjg9o8G2p2eBZabL1DUAxmXy
-         UBwH8yLoflySqSS7hCDHtW0+0abXEM53QEsln551m3FsFamiGnQIiLAjfKOv23iKmmDP
-         pfi2YLNk5Uhha6GZ+QzfaITO+K9pKmpVffSnHSeYGiZI3STBy0lvJ7TLKO9Z0HyY2hXN
-         JO9A==
-X-Gm-Message-State: AOAM532lD15TeClSYhoax5mqtIlpDd+PoCCQmuy1sBo63JCXGb500Cjd
-        zpqfoBlQjnOqMO0INL3dbpa5CkkxfckhU75cZtVmEA==
-X-Google-Smtp-Source: ABdhPJzzKJ76NScSPNdZh0EB7QaYXyC7/M0AQzLWLPfoOLggAF8m3EikKM6IDAg2kPnqmQxbo1VH4L1LcHdB4pOO3Mw=
-X-Received: by 2002:a17:902:d309:b029:d7:cc2d:1ee7 with SMTP id
- b9-20020a170902d309b02900d7cc2d1ee7mr3737792plc.10.1605303181615; Fri, 13 Nov
- 2020 13:33:01 -0800 (PST)
+        id S1726343AbgKMVe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 16:34:28 -0500
+Received: from smtp.uniroma2.it ([160.80.6.22]:45022 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725981AbgKMVeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 16:34:11 -0500
+Received: from smtpauth-2019-1.uniroma2.it (smtpauth.uniroma2.it [160.80.5.46])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0ADLWu0Y030268;
+        Fri, 13 Nov 2020 22:33:01 +0100
+Received: from [192.168.1.89] (93-36-192-249.ip61.fastwebnet.it [93.36.192.249])
+        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id 4D830120069;
+        Fri, 13 Nov 2020 22:32:51 +0100 (CET)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
+        s=ed201904; t=1605303172; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+X1G+Lkp2b1Tv0qjhUw8wbwmH/D+bzvKppCVUgLA64c=;
+        b=cIvmJxm4rdbD5fYD5qqR4x9DjIGvUrLFhi6Ted4ndJjdDTyv334gsYvhPGaD6lZfR2/C+l
+        Y+iz+I6O/TyklgCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
+        t=1605303172; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+X1G+Lkp2b1Tv0qjhUw8wbwmH/D+bzvKppCVUgLA64c=;
+        b=q3/B3UTtgMCzojE7tWK4X1j6wkMVAzHwveZjmc8rSbs4Sr1h0nETkNMYBhsPirqtRDzqJk
+        wZaLjBQmenT01zO6eczJ5Wqiy3dxgLdwzuki/KmbGlAEYV8O/Fw3mh+OuXcTzBAjcoc616
+        QHuJbHHm1JhiNAmfqW61+6rqzs5VZ0TAI++ejSeR0mUUEtWqrOabfBVhw5JmGlDM0KDGzG
+        5E33RhsKonvORiw71R3e/HjxPuSR4UMG8JBNNzB0c6Bg6bGI4rDCjq3M11oghNR3eDt92/
+        WZEGK6hE2wD2x0vLGp8soW+DRd7bI5ItyoKxCkai+YzWjUpRdjkYwanzIBmzZw==
+Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4 behavior
+To:     Jakub Kicinski <kuba@kernel.org>, David Ahern <dsahern@gmail.com>
+Cc:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
+ <20201107153139.3552-5-andrea.mayer@uniroma2.it>
+ <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
+ <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
+ <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
+ <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
+ <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Stefano Salsano <stefano.salsano@uniroma2.it>
+Message-ID: <fbc0fc5f-fb78-dcf0-7535-2119389ec8e2@uniroma2.it>
+Date:   Fri, 13 Nov 2020 22:32:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com> <BYAPR11MB32568FEEF4CFA1C20296427B87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB32568FEEF4CFA1C20296427B87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 13 Nov 2020 13:32:50 -0800
-Message-ID: <CAKwvOd=qDNnOu1oTeEN+chvfJcQSS5dxREo0JQHC=W0zhpYeLw@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: it-IT
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 1:27 PM Moore, Robert <robert.moore@intel.com> wrote:
->
->
->
-> -----Original Message-----
-> From: ndesaulniers via sendgmr <ndesaulniers@ndesaulniers1.mtv.corp.google.com> On Behalf Of Nick Desaulniers
-> Sent: Tuesday, November 10, 2020 6:12 PM
-> To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; Gustavo A . R . Silva <gustavoars@kernel.org>
-> Cc: clang-built-linux@googlegroups.com; Nick Desaulniers <ndesaulniers@google.com>; Len Brown <lenb@kernel.org>; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH] ACPICA: fix -Wfallthrough
->
-> The "fallthrough" pseudo-keyword was added as a portable way to denote intentional fallthrough. This code seemed to be using a mix of fallthrough comments that GCC recognizes, and some kind of lint marker.
-> I'm guessing that linter hasn't been run in a while from the mixed use of the marker vs comments.
->
-> /*lint -fallthrough */
->
-> This is the lint marker
+Il 2020-11-13 20:40, Jakub Kicinski ha scritto:
+> On Fri, 13 Nov 2020 10:04:44 -0700 David Ahern wrote:
+>> On 11/13/20 10:02 AM, Stefano Salsano wrote:
+>>> Il 2020-11-13 17:55, Jakub Kicinski ha scritto:
+>>>> On Thu, 12 Nov 2020 18:49:17 -0700 David Ahern wrote:
+>>>>> On 11/12/20 6:28 PM, Andrea Mayer wrote:
+>>>>>> The implementation of SRv6 End.DT4 differs from the the
+>>>>>> implementation of SRv6
+>>>>>> End.DT6 due to the different *route input* lookup functions. For
+>>>>>> IPv6 is it
+>>>>>> possible to force the routing lookup specifying a routing table
+>>>>>> through the
+>>>>>> ip6_pol_route() function (as it is done in the
+>>>>>> seg6_lookup_any_nexthop()).
+>>>>>
+>>>>> It is unfortunate that the IPv6 variant got in without the VRF piece.
+>>>>
+>>>> Should we make it a requirement for this series to also extend the v6
+>>>> version to support the preferred VRF-based operation? Given VRF is
+>>>> better and we require v4 features to be implemented for v6?
+>>>
+>>> I think it is better to separate the two aspects... adding a missing
+>>> feature in IPv4 datapath should not depend on improving the quality of
+>>> the implementation of the IPv6 datapath :-)
+>>>
+>>> I think that Andrea is willing to work on improving the IPv6
+>>> implementation, but this should be considered after this patchset...
+>>
+>> agreed. The v6 variant has existed for a while. The v4 version is
+>> independent.
+> 
+> Okay, I'm not sure what's the right call so I asked DaveM.
+> 
+> TBH I wasn't expecting this reaction, we're talking about a 200 LoC
+> patch which would probably be 90% reused for v6...
+> 
 
-Yes; but from my patch, the hunk modifying
-acpi_ex_store_object_to_node() and vsnprintf() seem to indicate that
-maybe the linter hasn't been run in a while.
+Jakub, we've considered the possibility to extend the v6 version to 
+support the preferred VRF-based operation as you suggested
 
-Which linter is that?  I'm curious whether I should leave those be,
-and whether we're going to have an issue between compilers and linters
-as to which line/order these would need to appear on.
+at first glance, it would break the uAPI compatibility with existing 
+scripts that use SRv6 DT6, currently we configure the decap operation in 
+this way
 
->
-> BTW, what version of gcc added -Wfallthrough?
+ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 
+dev eth0
 
-GCC 7.1 added -Wimplicit-fallthrough.
+if the v6 version is extended to support the VRF-based operation, in 
+order to configure the decap operation we have to do (like we do in the 
+v4 version)
 
->
->
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  drivers/acpi/acpica/dscontrol.c | 3 +--
->  drivers/acpi/acpica/dswexec.c   | 4 +---
->  drivers/acpi/acpica/dswload.c   | 3 +--
->  drivers/acpi/acpica/dswload2.c  | 3 +--
->  drivers/acpi/acpica/exfldio.c   | 3 +--
->  drivers/acpi/acpica/exresop.c   | 5 ++---
->  drivers/acpi/acpica/exstore.c   | 6 ++----
->  drivers/acpi/acpica/hwgpe.c     | 3 +--
->  drivers/acpi/acpica/utdelete.c  | 3 +--
->  drivers/acpi/acpica/utprint.c   | 2 +-
->  10 files changed, 12 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19 100644
-> --- a/drivers/acpi/acpica/dscontrol.c
-> +++ b/drivers/acpi/acpica/dscontrol.c
-> @@ -61,8 +61,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
->                                 break;
->                         }
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case AML_IF_OP:
->                 /*
-> diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f 100644
-> --- a/drivers/acpi/acpica/dswexec.c
-> +++ b/drivers/acpi/acpica/dswexec.c
-> @@ -597,9 +597,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
->                                 if (ACPI_FAILURE(status)) {
->                                         break;
->                                 }
-> -
-> -                               /* Fall through */
-> -                               /*lint -fallthrough */
-> +                               fallthrough;
->
->                         case AML_INT_EVAL_SUBTREE_OP:
->
-> diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d 100644
-> --- a/drivers/acpi/acpica/dswload.c
-> +++ b/drivers/acpi/acpica/dswload.c
-> @@ -223,8 +223,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_state,
->                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
->                                 break;
->                         }
-> -
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 default:
->
-> diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072 100644
-> --- a/drivers/acpi/acpica/dswload2.c
-> +++ b/drivers/acpi/acpica/dswload2.c
-> @@ -213,8 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
->                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
->                                 break;
->                         }
-> -
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 default:
->
-> diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9 100644
-> --- a/drivers/acpi/acpica/exfldio.c
-> +++ b/drivers/acpi/acpica/exfldio.c
-> @@ -433,8 +433,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
->                  * Now that the Bank has been selected, fall through to the
->                  * region_field case and write the datum to the Operation Region
->                  */
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_TYPE_LOCAL_REGION_FIELD:
->                 /*
-> diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551 100644
-> --- a/drivers/acpi/acpica/exresop.c
-> +++ b/drivers/acpi/acpica/exresop.c
-> @@ -197,8 +197,7 @@ acpi_ex_resolve_operands(u16 opcode,
->                                 case ACPI_REFCLASS_DEBUG:
->
->                                         target_op = AML_DEBUG_OP;
-> -
-> -                                       /*lint -fallthrough */
-> +                                       fallthrough;
->
->                                 case ACPI_REFCLASS_ARG:
->                                 case ACPI_REFCLASS_LOCAL:
-> @@ -264,7 +263,7 @@ acpi_ex_resolve_operands(u16 opcode,
->                          * Else not a string - fall through to the normal Reference
->                          * case below
->                          */
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 case ARGI_REFERENCE:    /* References: */
->                 case ARGI_INTEGER_REF:
-> diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120 100644
-> --- a/drivers/acpi/acpica/exstore.c
-> +++ b/drivers/acpi/acpica/exstore.c
-> @@ -95,8 +95,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
->                 if (dest_desc->common.flags & AOPOBJ_AML_CONSTANT) {
->                         return_ACPI_STATUS(AE_OK);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         default:
->
-> @@ -421,8 +420,7 @@ acpi_ex_store_object_to_node(union acpi_operand_object *source_desc,
->                                 }
->                                 break;
->                         }
-> -
-> -                       /* Fallthrough */
-> +                       fallthrough;
->
->                 case ACPI_TYPE_DEVICE:
->                 case ACPI_TYPE_EVENT:
-> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c index b13a4ed5bc63..fbfad80c8a53 100644
-> --- a/drivers/acpi/acpica/hwgpe.c
-> +++ b/drivers/acpi/acpica/hwgpe.c
-> @@ -166,8 +166,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
->                 if (!(register_bit & gpe_register_info->enable_mask)) {
->                         return (AE_BAD_PARAMETER);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_GPE_ENABLE:
->
-> diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585 100644
-> --- a/drivers/acpi/acpica/utdelete.c
-> +++ b/drivers/acpi/acpica/utdelete.c
-> @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
->                         (void)acpi_ev_delete_gpe_block(object->device.
->                                                        gpe_block);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_TYPE_PROCESSOR:
->         case ACPI_TYPE_THERMAL:
-> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2 100644
-> --- a/drivers/acpi/acpica/utprint.c
-> +++ b/drivers/acpi/acpica/utprint.c
-> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
->                 case 'X':
->
->                         type |= ACPI_FORMAT_UPPER;
-> -                       /* FALLTHROUGH */
-> +                       fallthrough;
->
->                 case 'x':
->
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+ip link add vrf0 type vrf table 100
+sysctl -w net.vrf.strict_mode=1
+ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 
+dev eth0
 
+(of course the sysctl is needed globally once... while the "ip link 
+add..." command is needed once for every table X that is used in a script)
+
+considering how much we care of not breaking existing functionality... 
+it is not clear IMO if we should go into this direction or we should 
+think twice... and maybe look for another design to introduce VRFs into v6
+
+so I would prefer finalizing the DT4 patchset and then start discussing 
+the VRF support in v6 version
 
 -- 
-Thanks,
-~Nick Desaulniers
+*******************************************************************
+Stefano Salsano
+Professore Associato
+Dipartimento Ingegneria Elettronica
+Universita' di Roma Tor Vergata
+Viale Politecnico, 1 - 00133 Roma - ITALY
+
+http://netgroup.uniroma2.it/Stefano_Salsano/
+
+E-mail  : stefano.salsano@uniroma2.it
+Cell.   : +39 320 4307310
+Office  : (Tel.) +39 06 72597770 (Fax.) +39 06 72597435
+*******************************************************************
+
