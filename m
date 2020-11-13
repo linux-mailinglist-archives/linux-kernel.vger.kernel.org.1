@@ -2,160 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE912B22A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F0F2B22AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 18:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgKMRis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 12:38:48 -0500
-Received: from mga05.intel.com ([192.55.52.43]:3880 "EHLO mga05.intel.com"
+        id S1726336AbgKMRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 12:40:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:42758 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726070AbgKMRir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:38:47 -0500
-IronPort-SDR: Uj9oh9jS+PtkILYfAkOvBcRkoF8QhkfQtqf7BCFMhLW0klZ1FgXLUoAw2/E1aPRXxOyXreCZ85
- xOMre2FPSftQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="255216823"
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="255216823"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 09:38:47 -0800
-IronPort-SDR: 8YZt70b5Kok964sqPXYAd2YuJ8I69VgCBCLM9LupaRtam992OkvRrHqLdrX5WeFkzZ3qtU7ymG
- bCYIE6b55efw==
-X-IronPort-AV: E=Sophos;i="5.77,476,1596524400"; 
-   d="scan'208";a="328941426"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 09:38:46 -0800
-Date:   Fri, 13 Nov 2020 09:38:45 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Wilk, Konrad" <konrad.wilk@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>, andrew.cooper3@citrix.com
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201113173845.GA53733@otc-nc-03>
-References: <87pn4mi23u.fsf@nanos.tec.linutronix.de>
- <20201110051412.GA20147@otc-nc-03>
- <875z6dik1a.fsf@nanos.tec.linutronix.de>
- <20201110141323.GB22336@otc-nc-03>
- <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201112193253.GG19638@char.us.oracle.com>
- <877dqqmc2h.fsf@nanos.tec.linutronix.de>
- <MWHPR11MB1645F27808F1F5E79646A3A88CE60@MWHPR11MB1645.namprd11.prod.outlook.com>
- <874kltmlfr.fsf@nanos.tec.linutronix.de>
- <30928722afe64104b5abba09de4f74dd@intel.com>
+        id S1726070AbgKMRkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:40:52 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D6711042;
+        Fri, 13 Nov 2020 09:40:51 -0800 (PST)
+Received: from [10.57.53.43] (unknown [10.57.53.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6B8C3F718;
+        Fri, 13 Nov 2020 09:40:42 -0800 (PST)
+Subject: Re: About devm_platform_ioremap_resource [Was: Re: [PATCH 01/32] pwm:
+ sun4i: convert to devm_platform_ioremap_resource]
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     alexandre.belloni@bootlin.com, heiko@sntech.de,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-riscv@lists.infradead.org, festevam@gmail.com,
+        f.fainelli@gmail.com, shc_work@mail.ru,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        khilman@baylibre.com, wens@csie.org, jonathanh@nvidia.com,
+        linux-rockchip@lists.infradead.org,
+        ludovic.desroches@microchip.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-imx@nxp.com,
+        slemieux.tyco@gmail.com, linux-pwm@vger.kernel.org,
+        rjui@broadcom.com, s.hauer@pengutronix.de, mripard@kernel.org,
+        vz@mleia.com, linux-mediatek@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, paul.walmsley@sifive.com,
+        matthias.bgg@gmail.com, linux-amlogic@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, sbranden@broadcom.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        nicolas.ferre@microchip.com, palmer@dabbelt.com,
+        kernel@pengutronix.de, shawnguo@kernel.org,
+        claudiu.beznea@microchip.com, nsaenzjulienne@suse.de
+References: <20191229080610.7597-1-tiny.windzz@gmail.com>
+ <20201112161346.gp5nenuagx5wmwl2@pengutronix.de>
+ <20201112190649.GA908613@ulmo>
+ <20201112211429.kfyqzkmmchjo6pll@pengutronix.de>
+ <20201113070343.lhcsbyvi5baxn3lq@pengutronix.de>
+ <20201113161153.GB1408970@ulmo>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6cddd32c-50eb-4399-02bc-d4377237134c@arm.com>
+Date:   Fri, 13 Nov 2020 17:40:41 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30928722afe64104b5abba09de4f74dd@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201113161153.GB1408970@ulmo>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 08:12:39AM -0800, Luck, Tony wrote:
-> > Of course is this not only an x86 problem. Every architecture which
-> > supports virtualization has the same issue. ARM(64) has no way to tell
-> > for sure whether the machine runs bare metal either. No idea about the
-> > other architectures.
+On 2020-11-13 16:11, Thierry Reding wrote:
+> On Fri, Nov 13, 2020 at 08:03:43AM +0100, Uwe Kleine-König wrote:
+>> Hello,
+>>
+>> [Added lkml and the people involved in commit 7945f929f1a7
+>> ("drivers: provide devm_platform_ioremap_resource()") to Cc:. For the
+>> new readers: This is about patches making use of
+>> devm_platform_ioremap_resource() instead of open coding it. Full context
+>> at https://lore.kernel.org/r/20201112190649.GA908613@ulmo]
+>>
+>> On Thu, Nov 12, 2020 at 10:14:29PM +0100, Uwe Kleine-König wrote:
+>>> On Thu, Nov 12, 2020 at 08:06:49PM +0100, Thierry Reding wrote:
+>>>> I also think that it's overly narrow is scope, so you can't actually
+>>>> "blindly" use this helper and I've seen quite a few cases where this was
+>>>> unknowingly used for cases where it shouldn't have been used and then
+>>>> broke things (because some drivers must not do the request_mem_region()
+>>>> for example).
+>>>
+>>> You have a link to such an accident?
+>>
+>> I got a hint in private here: https://lore.kernel.org/r/1555670144-24220-1-git-send-email-aisheng.dong@nxp.com
+>>
+>> devm_platform_ioremap_resource() is platform_get_resource() +
+>> devm_ioremap_resource() and here it was used to replace
+>> platform_get_resource() + devm_ioremap().
+>>
+>> IMHO the unlucky thing in this situation is that devm_ioremap_resource()
+>> and devm_ioremap() are different by more than just how they get the area
+>> to remap. (i.e. devm_ioremap_resource() also does
+>> devm_request_mem_region().)
+>>
+>> So the problem is not the added wrapper, but unclear semantics in the
+>> functions it uses.
 > 
-> Sounds like a hypervisor problem. If the VMM provides perfect emulation
-> of every weird quirk of h/w, then it is OK to let the guest believe that it is
-> running on bare metal.
-
-That's true, which is why there isn't an immutable bit in cpuid or
-otherwise telling you are running under a hypervisor. Providing something
-like that would make certain features not virtualizable. Apparently before we
-had faulting cpuid, what you had in guest was the real raw cpuid. 
-
-Waiver: I'm not saying this is perfect, I'm just replaying the reason
-behind it. Not trying to defend it... flames > /dev/null
+> The semantics aren't unclear. It's just that the symbol name doesn't
+> spell out every detail that the function implements, which, frankly, no
+> function name ever does, at least not for anything beyond simple
+> instructional examples. That's what we have documentation for and why
+> people should read the documentation before they use a function and make
+> (potentially wrong) assumption about what it does.
 > 
-> If it isn't perfect, then it should make sure the guest knows *for sure*, so that
-> the guest can take appropriate actions to avoid the sharp edges.
+>>                     In my eyes devm_ioremap() and
+>> devm_platform_ioremap_resource() should better be named
+>> devm_request_ioremap() and devm_platform_request_ioremap_resource()
+>> respectively. Is it worth to rename these for clearity?
 > 
+> I think function names are always a compromise between giving you the
+> gist of what the implementation does and being short enough so it
+> doesn't become difficult to read or use.
+> 
+> One of the reasons why I dislike the addition of helpers for every
+> common special case (like devm_platform_ioremap_resource()) is because
+> it doesn't (always) actually make things easier for developers and/or
+> maintainers. Replacing three lines of code with one is a minor
+> improvement, even though there may be many callsites and therefore in
+> the sum this being a fairly sizeable reduction. The flip side is that
+> now we've got an extra symbol with an unwieldy name that people need
+> to become familiar with, and then, like the link above shows, it doesn't
+> work in all cases, so you either need to fall back to the open-coded
+> version or you keep adding helpers until you've covered all cases. And
+> then we end up with a bunch of helpers that you actually have to go and
+> read the documentation for in order to find out which one exactly fits
+> your use-case.
+> 
+> Without the helpers it's pretty simple to write, even if a little
+> repetitive:
+> 
+>    1) get the resource you want to map
+>    2) request the resource
+>    3) map the resource
+> 
+> 2) & 3) are very commonly done together, so it makes sense to have a
+> generic helper for them. If you look at the implementation, the
+> devm_ioremap_request() implementation does quite a bit of things in
+> addition to just requesting and remapping, and that's the reason why
+> that helper makes sense.
+> 
+> For me personally, devm_platform_ioremap_resource() is just not adding
+> enough value to justify its existence. And then we get all these other
+> variants that operate on the resource name (_byname) and those which
+> remap write-combined (_wc). But don't we also need a _byname_wc()
+> variant for the combination? Where does it stop?
 
-There are indeed 2 problems to solve.
+Arguably the worst thing about devm_platform_ioremap_resource() is that 
+it was apparently the gateway drug to a belief that 
+devm_platform_get_and_ioremap_resource() is anything other than a 
+hideous way to obfuscate an assignment...
 
-1. How does device driver know if device is IMS capable.
-
-   IMS is a device attribute. Each vendor can provide its own method to
-   provide that indication. One such mechanism is the DVSEC.SIOV.IMS
-   property. Some might believe this is for use only by Intel. For DVSEC I
-   don't believe there is such a connection as in device vendor id in
-   standard header. TBH, there are other device vendors using the exact
-   same method to indicate SIOV and IMS propeties. What a DVSEC vendor ID
-   states is "As defined by Vendor X". 
-
-   Why we choose a config vs something in device specific mmio is because
-   today VFIO being that one common mechanism, it only exposes known
-   standard and some extended headers to guest. When we expose a full PF,
-   the guest doens't see the DVSEC, so drivers know this isn't available.
-
-   This is our mechanism to stop drivers from calling
-   pci_ims_array_create_msi_irq_domain(). It may not be perfect for all
-   devices, it is a device specific mechanism. For devices under
-   consideration following the SIOV spec it meets the sprit of the
-   requirement even without #2 below. When devices have no way to detect
-   this, #2 is required as a second way to block IMS.
-
-2. How does platform component (IOMMU) inform if they can support all forms
-   of IMS. (On device, or in memory). 
-   
-   On device would require some form trap/emulate. Legacy MSIx already has
-   that solved, but for device specific store you need some additional
-   work.
-
-   When its system memory (say IMS is in GPA space), you need some form of
-   hypercall. There is no way around it since we can't intercept. Yes, you
-   can maybe map those as RO and trap, but its not pretty.
-
-   To solve this rather than a generic platform capability, maybe we should
-   flip this to IOMMU instead, because that's the one that offers this
-   capability today.
-
-   iommu_ims_supported() 
-   	When platform has no IOMMU or no hypervisor calls, it returns
-	false. So device driver can tell, even if it supports IMS
-	capability deduction, does the platform support IMS.
-   
-        On platforms where iommu supports capability.
-
-	Either there is a vIOMMU with a Virtual Command Register that can
-	provide a way to get the interrupt handle similar to what you would
-	get from an hypercall for instance. Or there is a real hypercall
-	that supports giving the guest OS the physical IRTE handle. 
-
-
--- 
-Cheers,
-Ashok
-
-[Forgiveness is the attribute of the STRONG - Gandhi]
+Robin.
