@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CAB2B1BC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2077A2B1BC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 14:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbgKMNTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 08:19:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726267AbgKMNTo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:19:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605273582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YnoPLyOX/h7MCaXrXZHC7dyhMFH1QSsetRdYcwZkmYM=;
-        b=dMiEW8Z2FbjSYgf8eZr+9kCUiDDd16b6n1czQZINlWeZsiYi1XFnHXjAKL4Oq/30JvDyBy
-        WlvvflUBt8cDvZFRy6mALAXcH8c4mKhiMtHLWub/pnqESueO8TfQ0H+r7GwKo1EpXZFu4B
-        AHxOmYfHorQN35SGeoFqbHX11Yzv1tg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-nfKeUujtOrapViKJpY9fCw-1; Fri, 13 Nov 2020 08:19:40 -0500
-X-MC-Unique: nfKeUujtOrapViKJpY9fCw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E847564157;
-        Fri, 13 Nov 2020 13:19:38 +0000 (UTC)
-Received: from [10.36.113.83] (ovpn-113-83.ams2.redhat.com [10.36.113.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CDFF19930;
-        Fri, 13 Nov 2020 13:19:33 +0000 (UTC)
-Subject: Re: ERROR: modpost: "mac_pton" undefined!
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <202011131937.7Fy1Jnv1-lkp@intel.com>
- <71f5ec23-a1a7-8981-b924-412f4bbed9f6@redhat.com>
- <CAHp75Ve14rt_xDS40-bE2PGzo9JGKzqU0nPz_kbwngkn-upGVw@mail.gmail.com>
-From:   Laurent Vivier <lvivier@redhat.com>
-Message-ID: <87d01fe1-1746-d31b-80aa-6adf286884c8@redhat.com>
-Date:   Fri, 13 Nov 2020 14:19:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726487AbgKMNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 08:22:00 -0500
+Received: from m12-15.163.com ([220.181.12.15]:57723 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726160AbgKMNV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 08:21:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=63OUI
+        zw2aUGnCBaiNypesrO/7WLRAJafkbBWFnu57xE=; b=To8U5WSUNc+3g+D02xeTj
+        QQk5oWBhGada7BIenBO5D/67dG7aAbnLcoj5kD812M9zxi6rDZsNigiaQJx1fPRR
+        8Z+ssH0aLFKbf1+fYN1lGz4hjgJM36mq3vBYvQ+RJ6NHA/HgfXkR7tF8ugYkZTTc
+        hEbAVUssYlzz8Ku0yiImOg=
+Received: from localhost (unknown [101.86.208.122])
+        by smtp11 (Coremail) with SMTP id D8CowACHSz1niK5fnjh5Aw--.40599S2;
+        Fri, 13 Nov 2020 21:21:43 +0800 (CST)
+Date:   Fri, 13 Nov 2020 21:21:43 +0800
+From:   Hui Su <sh_def@163.com>
+To:     gregkh@linuxfoundation.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sh_def@163.com
+Subject: [PATCH] fs/kernfs: remove the double check of dentry->inode
+Message-ID: <20201113132143.GA119541@rlk>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Ve14rt_xDS40-bE2PGzo9JGKzqU0nPz_kbwngkn-upGVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: D8CowACHSz1niK5fnjh5Aw--.40599S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruryDZryDZw1DJr13Kw43Awb_yoW3Cwb_CF
+        18XrZakrW7Xr1xJrs8C39Iqr4av3Z8ur1vka1rJayUta4qywn8G3Z5J3Z8XryxW34fGr95
+        AF1DA34vyryUtjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1fOzPUUUUU==
+X-Originating-IP: [101.86.208.122]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitwfbX1aEGYqtAAAAsY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2020 14:12, Andy Shevchenko wrote:
-> On Fri, Nov 13, 2020 at 2:42 PM Laurent Vivier <lvivier@redhat.com> wrote:
-> 
-> ...
-> 
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>, old ones prefixed by <<):
->>>
->>>>> ERROR: modpost: "mac_pton" [drivers/vdpa/vdpa_sim/vdpa_sim.ko] undefined!
->>
->> I think something like this might fix the problem.
-> 
-> ...
-> 
->> +       select NET
->>         default n
-> 
-> You may also drop 'default n' :-)
-> 
-> But what I want to say is that API is under NET_UTILS, I dunno if the
-> driver requires full NET to be selected. And IIRC NET_UTILS is
-> selected by NET.
+In both kernfs_node_from_dentry() and in
+kernfs_dentry_node(), we will check the dentry->inode
+is NULL or not, which is superfluous.
 
-I think GENERIC_NET_UTILS might be enough.
+So remove the check in kernfs_node_from_dentry().
 
-The problem I have for the moment is to find or1k-linux-gcc for my Fedora 33...
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ fs/kernfs/dir.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks,
-Laurent
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 9aec80b9d7c6..b062c666df05 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -604,8 +604,7 @@ const struct dentry_operations kernfs_dops = {
+  */
+ struct kernfs_node *kernfs_node_from_dentry(struct dentry *dentry)
+ {
+-	if (dentry->d_sb->s_op == &kernfs_sops &&
+-	    !d_really_is_negative(dentry))
++	if (dentry->d_sb->s_op == &kernfs_sops)
+ 		return kernfs_dentry_node(dentry);
+ 	return NULL;
+ }
+-- 
+2.29.0
+
 
