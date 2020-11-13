@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEA92B1D43
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A42062B1D42
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 15:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgKMOZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 09:25:10 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52496 "EHLO
+        id S1727034AbgKMOZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 09:25:07 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52700 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbgKMOYa (ORCPT
+        with ESMTP id S1726830AbgKMOYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:30 -0500
-Message-Id: <20201113141733.974214480@linutronix.de>
+        Fri, 13 Nov 2020 09:24:31 -0500
+Message-Id: <20201113141734.096224353@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277467;
+        s=2020; t=1605277469;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=0UTeqwKc93bYeYTKZ9eNkJ81wNDHGHkvSAl8j8+Yj5Q=;
-        b=jv2EEflphEE3CebcE72q1RNivrgP3cY6CABEy6b2ZgZLZDSvbL+oeMi5wEZugM4xGCuqu7
-        iA1kifAro0LVNSxg7SiHdTE4/VJI8sHguJCBvTJoX3AfamxiI8P7XO1BHBKk/yTWSS/Lhn
-        SwwaIxFQ2VxUKsJMvA4DG6XeplBDsVoiQFOT/ceQWIaU/pKJr7zagt96VnJrFHNQxNvihF
-        kAEReD5i/Fx180ZHUtX/TWNbSqTV/8OF/HEfMjOnDHgs4pz85Q5Rg1CD63euT6nGQbFfsi
-        EN8ORThOKeZm4WBytizPIltx9HExbUBbfnT3JCYNTd8gjAileLVA9vl7kainFw==
+        bh=7FMqhKuhnVJot7gugFY0sIHhr7C/a6J/+QfyYVD8emw=;
+        b=hWAB3oHVAGiodkIZKWVA/wHw+8lM5Yf9xpgH9yZCucVDL3PA3DKYbCR3kxRj/aEeniifps
+        SvXIhCS5yN18DxJrcFdOTteQ2XNq1ZARAhc5AarZf3NcZ0kofmD9ndFAw0sUyGz1vOgi3M
+        oMVOOhtMW5aIGAqGQR59uudOHtzseVzzr9CoU+VBu4W8O1apSYzc8GzsrimvBjLt3Wohq1
+        i6D2Tz8z7RzK1Pc1+GcoMLAr9Hxps0/mCwXgE3NWa3ScwqRpsrCTHaSPntIYLa/typVLWO
+        VfSUZ51CyDHAhDEau2h/yeF2NcU4eMjCmTAFJ/HouWZlfSRj9nF7INS1SDWjrw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277467;
+        s=2020e; t=1605277469;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=0UTeqwKc93bYeYTKZ9eNkJ81wNDHGHkvSAl8j8+Yj5Q=;
-        b=9fpm5+miuJxrT+jze0aGitkbirAatyttDigNLtfzZs+AU5LOUy0Evsyi9vnWdaCR1KDuYI
-        Vmu6Q7I4ArxJjlBQ==
-Date:   Fri, 13 Nov 2020 15:02:18 +0100
+        bh=7FMqhKuhnVJot7gugFY0sIHhr7C/a6J/+QfyYVD8emw=;
+        b=kNX4csPHdXBz2VCKmQeCbwIwI3e4E8fGLYskNFO77kKPXf4ZoefJQdRB+pZU7ZYJcXn8Hq
+        Dfon13Yv89lSSnDQ==
+Date:   Fri, 13 Nov 2020 15:02:19 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -53,7 +53,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 11/19] softirq: Move related code into one section
+Subject: [patch 12/19] softirq: Add RT specific softirq accounting
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,159 +62,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prepare for adding a RT aware variant of softirq serialization and
-processing move related code into one section so the necessary #ifdeffery
-is reduced to one.
+RT requires the softirq to be preemptible and uses a per CPU local lock to
+protect BH disabled sections and softirq processing. Therefore RT cannot
+use the preempt counter to keep track of BH disabled/serving.
+
+Add a RT only counter to task struct and adjust the relevant macros in
+preempt.h.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/softirq.c |  107 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 54 insertions(+), 53 deletions(-)
+ include/linux/hardirq.h |    1 +
+ include/linux/preempt.h |    6 +++++-
+ include/linux/sched.h   |    3 +++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -92,6 +92,13 @@ static bool ksoftirqd_running(unsigned l
- 		!__kthread_should_park(tsk);
- }
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -6,6 +6,7 @@
+ #include <linux/preempt.h>
+ #include <linux/lockdep.h>
+ #include <linux/ftrace_irq.h>
++#include <linux/sched.h>
+ #include <linux/vtime.h>
+ #include <asm/hardirq.h>
  
-+#ifdef CONFIG_TRACE_IRQFLAGS
-+DEFINE_PER_CPU(int, hardirqs_enabled);
-+DEFINE_PER_CPU(int, hardirq_context);
-+EXPORT_PER_CPU_SYMBOL_GPL(hardirqs_enabled);
-+EXPORT_PER_CPU_SYMBOL_GPL(hardirq_context);
-+#endif
-+
- /*
-  * preempt_count and SOFTIRQ_OFFSET usage:
-  * - preempt_count is changed by SOFTIRQ_OFFSET on entering or leaving
-@@ -102,17 +109,11 @@ static bool ksoftirqd_running(unsigned l
-  * softirq and whether we just have bh disabled.
-  */
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -79,7 +79,11 @@
  
-+#ifdef CONFIG_TRACE_IRQFLAGS
- /*
-- * This one is for softirq.c-internal use,
-- * where hardirqs are disabled legitimately:
-+ * This is for softirq.c-internal use, where hardirqs are disabled
-+ * legitimately:
-  */
--#ifdef CONFIG_TRACE_IRQFLAGS
--
--DEFINE_PER_CPU(int, hardirqs_enabled);
--DEFINE_PER_CPU(int, hardirq_context);
--EXPORT_PER_CPU_SYMBOL_GPL(hardirqs_enabled);
--EXPORT_PER_CPU_SYMBOL_GPL(hardirq_context);
--
- void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
- {
- 	unsigned long flags;
-@@ -203,6 +204,50 @@ void __local_bh_enable_ip(unsigned long
- }
- EXPORT_SYMBOL(__local_bh_enable_ip);
- 
-+static inline void invoke_softirq(void)
-+{
-+	if (ksoftirqd_running(local_softirq_pending()))
-+		return;
-+
-+	if (!force_irqthreads) {
-+#ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
-+		/*
-+		 * We can safely execute softirq on the current stack if
-+		 * it is the irq stack, because it should be near empty
-+		 * at this stage.
-+		 */
-+		__do_softirq();
+ #define nmi_count()	(preempt_count() & NMI_MASK)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+-#define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
++#ifdef CONFIG_PREEMPT_RT
++# define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
 +#else
-+		/*
-+		 * Otherwise, irq_exit() is called on the task stack that can
-+		 * be potentially deep already. So call softirq in its own stack
-+		 * to prevent from any overrun.
-+		 */
-+		do_softirq_own_stack();
++# define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
 +#endif
-+	} else {
-+		wakeup_softirqd();
-+	}
-+}
-+
-+asmlinkage __visible void do_softirq(void)
-+{
-+	__u32 pending;
-+	unsigned long flags;
-+
-+	if (in_interrupt())
-+		return;
-+
-+	local_irq_save(flags);
-+
-+	pending = local_softirq_pending();
-+
-+	if (pending && !ksoftirqd_running(pending))
-+		do_softirq_own_stack();
-+
-+	local_irq_restore(flags);
-+}
-+
+ #define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ 
  /*
-  * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
-  * but break the loop if need_resched() is set or after 2 ms.
-@@ -327,24 +372,6 @@ asmlinkage __visible void __softirq_entr
- 	current_restore_flags(old_flags, PF_MEMALLOC);
- }
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1004,6 +1004,9 @@ struct task_struct {
+ 	int				softirq_context;
+ 	int				irq_config;
+ #endif
++#ifdef CONFIG_PREEMPT_RT
++	int				softirq_disable_cnt;
++#endif
  
--asmlinkage __visible void do_softirq(void)
--{
--	__u32 pending;
--	unsigned long flags;
--
--	if (in_interrupt())
--		return;
--
--	local_irq_save(flags);
--
--	pending = local_softirq_pending();
--
--	if (pending && !ksoftirqd_running(pending))
--		do_softirq_own_stack();
--
--	local_irq_restore(flags);
--}
--
- /**
-  * irq_enter_rcu - Enter an interrupt context with RCU watching
-  */
-@@ -371,32 +398,6 @@ void irq_enter(void)
- 	irq_enter_rcu();
- }
- 
--static inline void invoke_softirq(void)
--{
--	if (ksoftirqd_running(local_softirq_pending()))
--		return;
--
--	if (!force_irqthreads) {
--#ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
--		/*
--		 * We can safely execute softirq on the current stack if
--		 * it is the irq stack, because it should be near empty
--		 * at this stage.
--		 */
--		__do_softirq();
--#else
--		/*
--		 * Otherwise, irq_exit() is called on the task stack that can
--		 * be potentially deep already. So call softirq in its own stack
--		 * to prevent from any overrun.
--		 */
--		do_softirq_own_stack();
--#endif
--	} else {
--		wakeup_softirqd();
--	}
--}
--
- static inline void tick_irq_exit(void)
- {
- #ifdef CONFIG_NO_HZ_COMMON
+ #ifdef CONFIG_LOCKDEP
+ # define MAX_LOCK_DEPTH			48UL
 
