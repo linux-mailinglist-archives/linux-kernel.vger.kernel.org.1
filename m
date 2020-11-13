@@ -2,100 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F8C2B19C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF032B1974
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 12:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgKMLOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 06:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbgKMLGG (ORCPT
+        id S1726392AbgKMLBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 06:01:10 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:45000 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726237AbgKMLAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:06:06 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F13FC061A49
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:04:57 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id k7so4401424plk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 03:04:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l9UdRDVTVA9p+ZXsVGnKTJDsCrdBiTFetvlG+i4H0yc=;
-        b=AS+sztqaorePlJ6XZc9emmP6jtL7Eyohp2JdsVut2PX0qLCIhzXU6ZdcJNpPT2gjOe
-         +Upw+iEiBZHarM+fDYKJ24SteIFOnAxkt0PnoSN9xIN+zKMt6XsBfFJst8vLxfPbvaaZ
-         3HckQ+Q1gdNF7ujCbFtJv3uZ663GT/F+DlFdAGfuCDSDhUdo39cI2ocg9Zbk7PC+8S6R
-         SF+j5BdZAwEeaifFMgIKWevLMFqE5W82s4o+s3+i3M2wJ2su6gKMyxDi2HGeX2RgZMFQ
-         JI3/Zs3B81JEDn9BoL/g6z8C02w7I8hiSmC6NUvWLgQjb2XHmALoyUA1IvWAVASMiGKR
-         usWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l9UdRDVTVA9p+ZXsVGnKTJDsCrdBiTFetvlG+i4H0yc=;
-        b=fSIP+RAL4si5bDfNZ7JC0C5Kl+mKJrzK4D13GVACO4h7GSKePzjvc21eSbqm2k4kSZ
-         Ay6QCzbZcH6Efq2DGgpF1YcvPZO7HLhN29jmXrC6PFbHjbQnnq9IoyrLJ9MnDLLMIdRm
-         mQWp7uh3Lj6hzNbbpXDP+Gxk4e/pAV/dAUop6YW4A9RvFsIDW59dSemmC+E/vJvMHFQF
-         nuRhx1za/2AYatFuNdv3UvXM1lO8uhiFXaKxa9ffI27IhSAQQXBeLMy/V8hcm8AaU68d
-         JiKuUl9CvdfpFAH/LXR+Q0FKG8al5hvOUnxVtQSQNT6r9ht1qTbQr6PJgTxAZaiWVUR2
-         k4Og==
-X-Gm-Message-State: AOAM53284/fntXQEqjiEV0uFUm8dLwCFgKjyRgQC3c5cWU2ynnKXV6rT
-        GOG2IxmEN5TcstygVZc1P9Acig==
-X-Google-Smtp-Source: ABdhPJxzUgobcNi9dq/vlyFNji/6h++fpZQcRbnQtl2TuCezjK46BhKasiCuxIhitc0mAP75n+y8iw==
-X-Received: by 2002:a17:902:9a48:b029:d6:e0ba:f301 with SMTP id x8-20020a1709029a48b02900d6e0baf301mr1794976plv.30.1605265496908;
-        Fri, 13 Nov 2020 03:04:56 -0800 (PST)
-Received: from localhost.localdomain ([61.120.150.78])
-        by smtp.gmail.com with ESMTPSA id f1sm8909959pfc.56.2020.11.13.03.04.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Nov 2020 03:04:56 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 21/21] mm/hugetlb: Disable freeing vmemmap if struct page size is not power of two
-Date:   Fri, 13 Nov 2020 18:59:52 +0800
-Message-Id: <20201113105952.11638-22-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201113105952.11638-1-songmuchun@bytedance.com>
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
+        Fri, 13 Nov 2020 06:00:45 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201113110034euoutp029a0ac65e261970a311393ccdac0f4d30~HDDnC1D5W1646716467euoutp02h
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 11:00:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201113110034euoutp029a0ac65e261970a311393ccdac0f4d30~HDDnC1D5W1646716467euoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605265234;
+        bh=7odYSbGs70MQycT7i1R6gEMJa7Kr2avIugtbNw4LTII=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=cDqJYpRLKytyLpzzS1uZcSAjmX/x1q2ZYrac7Y+8gWDVkqqAsuywnuvx6GP5seGnH
+         bN3j7W+N3Ezluy0VrBywDSDaTgYYGcYUbfMCg3ecqy7dD9eALKh5Q5hDF+zseRFtbW
+         YzDhV7Bv5vOEikkXuS+8eNcKrYjizY70QDD8cIsM=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201113110034eucas1p196f6567f8033230ee9b1feca13212d43~HDDmsnRkB0710707107eucas1p11;
+        Fri, 13 Nov 2020 11:00:34 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 38.C9.44805.1576EAF5; Fri, 13
+        Nov 2020 11:00:33 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201113110033eucas1p1eaa1d1bd8944d8abc509ded03f45aeef~HDDmCvC6l1771217712eucas1p1c;
+        Fri, 13 Nov 2020 11:00:33 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201113110033eusmtrp257062263f757e3ca08119cd5e9c0f6a2~HDDl-blPy2309123091eusmtrp2l;
+        Fri, 13 Nov 2020 11:00:33 +0000 (GMT)
+X-AuditID: cbfec7f4-b4fff7000000af05-f1-5fae6751f9d4
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 31.6E.16282.1576EAF5; Fri, 13
+        Nov 2020 11:00:33 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201113110032eusmtip2db1dd7ac887b957aee7f5b534b222540~HDDlLe4P61664016640eusmtip2-;
+        Fri, 13 Nov 2020 11:00:32 +0000 (GMT)
+Subject: Re: [PATCH v9 0/5] Exynos: Simple QoS for exynos-bus using
+ interconnect
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>, inki.dae@samsung.com
+Cc:     krzk@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        sw0312.kim@samsung.com, b.zolnierkie@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <2e4f8aa1-7be0-f65c-da7c-277327626812@samsung.com>
+Date:   Fri, 13 Nov 2020 12:00:32 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6687cdd3-6e5b-f3c1-f784-33cc7c0d589a@samsung.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7djP87qB6eviDY5Ns7S4P6+V0WLjjPWs
+        Fte/PGe1mH/kHKvFla/v2Sym793EZjHp/gQWi/PnN7BbbHp8jdXi8q45bBafe48wWsw4v4/J
+        4nbjCjaL1r1H2C0Ov2lntZgx+SWbg4DHplWdbB53ru1h87jffZzJY/OSeo++LasYPT5vkgtg
+        i+KySUnNySxLLdK3S+DKWPh1NXvBT+6K7TPbWBoYj3N2MXJySAiYSMx6vIwFxBYSWMEo8X6/
+        bRcjF5D9hVHi1bsVbBDOZ0aJ5Q/XssB0LL73iREisZxR4ubaJ0wQzntGiVsz3rODVAkLBElM
+        vH+EHSQhIjCTUeLvzp1gLcwC55kkFv68B1bFJmAo0fW2iw3E5hWwk7i2YQpQnIODRUBV4tnF
+        UpCwqECSxPYt21khSgQlTs58AnYGp4C9xMd9fWBxZgF5ie1v5zBD2OISt57MB7tIQmAxp0Tf
+        x19MEHe7SLyas5AVwhaWeHV8CzuELSPxfydMQzOjxMNza9khnB5GictNMxghqqwl7pz7xQZy
+        HbOApsT6XfogpoSAo8TurWYQJp/EjbeCEDfwSUzaNp0ZIswr0dEmBDFDTWLW8XVwWw9euMQ8
+        gVFpFpLPZiH5ZhaSb2YhrF3AyLKKUTy1tDg3PbXYKC+1XK84Mbe4NC9dLzk/dxMjMM2d/nf8
+        yw7G5a8+6h1iZOJgPMQowcGsJMKr7LAmXog3JbGyKrUoP76oNCe1+BCjNAeLkjhv0haglEB6
+        YklqdmpqQWoRTJaJg1OqgYnh2H4baQezqV+unVo9+65F95Lda96+XqS3uffFrn3XN7cIeVyP
+        CtnKr619NuVw9Pm04w0snfe2MNt2MDw9EyXawrPYooWH6WPI3x8xLFMF0rq33HfnkN2pt3jx
+        Za0Eda2lD8OTHNkZJ3E83Mdh3iDDZx++3yk10Vv0aV2KFe9X23kbHd3ljvdaCeStPcD+8OD6
+        ND7GXXvnXnE9t6dQ9Fud2IR3R2zVijeVyG0wy+XWMbpX9WPdvhufVi+IclpdkGbiyRGqdL2n
+        9ePJhKTHD95dZDpo/2H5x42MBTdSov0Pv36XGWMUP/OB3YoDb/3uuU69YTT799+ARN+rMlfV
+        5RrfxnXlucXHcRqtDpu1N0+JpTgj0VCLuag4EQDdZUi44gMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsVy+t/xe7qB6eviDc5e47a4P6+V0WLjjPWs
+        Fte/PGe1mH/kHKvFla/v2Sym793EZjHp/gQWi/PnN7BbbHp8jdXi8q45bBafe48wWsw4v4/J
+        4nbjCjaL1r1H2C0Ov2lntZgx+SWbg4DHplWdbB53ru1h87jffZzJY/OSeo++LasYPT5vkgtg
+        i9KzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLWPh1
+        NXvBT+6K7TPbWBoYj3N2MXJySAiYSCy+94mxi5GLQ0hgKaPEwTP7WSESMhInpzVA2cISf651
+        sYHYQgJvGSW+P6sFsYUFgiQm3j/CDtIsIjCTUeLq8v9gDrPAeSaJg2/Os0OMXcsksejrZrBR
+        bAKGEl1vIUbxCthJXNswBaiIg4NFQFXi2cVSkLCoQJLEzONn2SFKBCVOznzCAmJzCthLfNzX
+        BzaGWcBMYt7mh8wQtrzE9rdzoGxxiVtP5jNNYBSahaR9FpKWWUhaZiFpWcDIsopRJLW0ODc9
+        t9hIrzgxt7g0L10vOT93EyMwsrcd+7llB+PKVx/1DjEycTAeYpTgYFYS4VV2WBMvxJuSWFmV
+        WpQfX1Sak1p8iNEU6J2JzFKiyfnA1JJXEm9oZmBqaGJmaWBqaWasJM5rcgSoSSA9sSQ1OzW1
+        ILUIpo+Jg1Oqgcn3n9PCom2iqV0SeSE/vnubqCTKzfinbuPweeY3y7qPATJrr990EEyQ7Xr7
+        OfP+b5mqhWKvFWfqMYaq8P1krv3kvHrJShu1C2psrQbdN7ncYh5mNFrXKepenC/6bkfh9Knc
+        y0yM2ldbX1VzUaxX1E65vzp2denDMskDUfvON2ssTv/utfS3woSzVcfNp81dmryJ8ceOuQtn
+        q5f778oyPabuvMk+99EhNVOD4u3L9F5vnyR45p9N9flbrZdPFHLYlVdvjCjaKeqxfY3Duri8
+        8uSqCQWbUtL5k2csb2ZR7bgtVdfpuP22ypVgAY2X8Rz3ephWbFXmPnPO/Iqi3+prSpahov9M
+        eiK7HFd52bbLKLEUZyQaajEXFScCAOQMj1x1AwAA
+X-CMS-MailID: 20201113110033eucas1p1eaa1d1bd8944d8abc509ded03f45aeef
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201112141041eucas1p1a29130955afd4ec1d5d94cf17183920c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201112141041eucas1p1a29130955afd4ec1d5d94cf17183920c
+References: <CGME20201112141041eucas1p1a29130955afd4ec1d5d94cf17183920c@eucas1p1.samsung.com>
+        <20201112140931.31139-1-s.nawrocki@samsung.com>
+        <b0a8e994-06d2-e04a-579c-40580b71f760@linaro.org>
+        <9cb7e3a6-2a3f-8f46-2bf1-d6d8ea01613b@samsung.com>
+        <6687cdd3-6e5b-f3c1-f784-33cc7c0d589a@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only can free the unused vmemmap to the buddy system when the
-size of struct page is a power of two.
+Hi Sylwester,
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/hugetlb_vmemmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 13.11.2020 11:32, Sylwester Nawrocki wrote:
+> On 13.11.2020 10:07, Chanwoo Choi wrote:
+>> On 11/13/20 5:48 PM, Georgi Djakov wrote:
+>>> On 11/12/20 16:09, Sylwester Nawrocki wrote:
+> [...]
+>>> Good work Sylwester! Thank you and all the reviewers! What would be the merge
+>>> path for this patchset? Looks like there is no build dependency between patches.
+>>> Should i take just patches 2,3 or also patch 1? Chanwoo?
+>> Hi Georgi,
+>>
+>> If you take the patch 2,3, I'll apply patch 1,4 to devfreq.git.
+>> Hi Sylwester,
+>> First of all, thanks for your work to finish it for a long time.
+>> I'm very happy about finishing this work. It is very necessary feature
+>> for the QoS. Once again, thank for your work.
+> I would also like to thank everyone for provided feedback!
+>
+> As far as building is concerned the patches could be applied in any
+> order. I think we could also apply the drm/exynos patch in same
+> merge window. There could be runtime (or git bisect) regression
+> only in case when INTERCONNECT is enabled and only (or as first)
+> the dts and drm/exynos patches are applied.
+>
+> Hmm, maybe it's better to hold on with the drm patch, INTERCONNECT
+> is disabled in arch/arm/configs/{multi_v7_defconfig, exynos_defconfig}
+> but it is enabled in arch/arm64/configs/defconfig.
 
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index f67aec6e3bb1..a0a5df9dba6b 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -635,7 +635,8 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
- 	unsigned int order = huge_page_order(h);
- 	unsigned int vmemmap_pages;
- 
--	if (hugetlb_free_vmemmap_disabled) {
-+	if (hugetlb_free_vmemmap_disabled ||
-+	    !is_power_of_2(sizeof(struct page))) {
- 		h->nr_free_vmemmap_pages = 0;
- 		pr_info("disable free vmemmap pages for %s\n", h->name);
- 		return;
+I don't think we need to delay DRM patch. Exynos DRM mixer is not 
+available on ARM64 SoCs, so this won't be an issue.
+
+Best regards
 -- 
-2.11.0
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
