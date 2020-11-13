@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E252D2B2131
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDD52B2135
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgKMQ6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:58:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:41464 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgKMQ6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:58:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08F511042;
-        Fri, 13 Nov 2020 08:58:45 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EB273F718;
-        Fri, 13 Nov 2020 08:58:44 -0800 (PST)
-Date:   Fri, 13 Nov 2020 16:58:43 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: abort counter_read_on_cpu() when irqs_disabled()
-Message-ID: <20201113165843.GA6973@arm.com>
-References: <20201106125334.21570-1-ionela.voinescu@arm.com>
- <20201113155328.4194-1-ionela.voinescu@arm.com>
- <20201113160234.GB44988@C02TD0UTHF1T.local>
+        id S1726219AbgKMQ7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgKMQ7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:59:38 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572CCC0613D1;
+        Fri, 13 Nov 2020 08:59:38 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id z21so14823039lfe.12;
+        Fri, 13 Nov 2020 08:59:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rcenlUNh1MwQCSSwTkurwYvPsdLt/CgENRdcvcJRBes=;
+        b=p3d04h9Kj38R+B1kBqoK8MeDc9w6BayJmCdiJnoetuMwZ8TsW/2lxOeIFHUCTM/ZPD
+         lkIw79lCjiUIJOwLuNWcf9i3tb2IR3s7jHZiKyAXYn2hBVvhMOH24OBXa+PEPuk09uqQ
+         2iwlkNcQWY0ihVnQQzlSyC3GImel51O1eAOKy77tF32su+kcafzp4aDJZHWykO94JKvF
+         r5Yhl3PM0pMGLuIFKzrxP0LNa9mwP/X2E9XWssYgrIxDIwzazAn0KA/NNnbADjbCJDpD
+         BbEt1L/nGZpE44twQCjKWBzzfm0CJ+Voq0eWVLGpVI4ZlZFl4L5R7FdGPhCJI0ZHLaw6
+         QtQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rcenlUNh1MwQCSSwTkurwYvPsdLt/CgENRdcvcJRBes=;
+        b=SndACf+bcF+vXI4BAOyjwoTow/nmu3eHMlFtoDcLrkU1niMO+F/le+eY8hq4H20FKi
+         G5m1slRsvbBLiW5hnFskJ8sgkpOlox+a71FZjMcNem6zRdo/If1xidOo0/Dcm8/+dWWi
+         v4tW2aGdy3gurS4fiAs3zEBdGiPPJd4Hjly1BCkknwtTTYRPflP8zZoWX3C/aaFhTbtl
+         OEWNF6uOCvngDmBcddAceiRiTIzNqfBQ/dQ4CfHdjIKZgvizFhaXSRFFFbWBTxlHR2Z0
+         SqmV5PPMCGC2qsaOX05kaeCXVTKonRh63GQKOQYWst2UEkEMJKDw8MmzpQ5GmU+SBjPo
+         ckzg==
+X-Gm-Message-State: AOAM530SS/kH421Ymk1J7HKxDd+PQCfvTl99JIYJaWJozCPZi+ehlij1
+        qwL0QyT4U+uCadBlXer1eBs=
+X-Google-Smtp-Source: ABdhPJxbm9i/CgUHRtwu+iuI9UUW98q77BKXF8mR9O2q+WVjlqmtLWhMTdCofQaeaX5qS3B3vv3CFA==
+X-Received: by 2002:ac2:5462:: with SMTP id e2mr1342770lfn.552.1605286771975;
+        Fri, 13 Nov 2020 08:59:31 -0800 (PST)
+Received: from [192.168.15.127] ([194.152.46.38])
+        by smtp.gmail.com with ESMTPSA id h2sm1559790ljm.44.2020.11.13.08.59.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 08:59:31 -0800 (PST)
+Subject: Re: [PATCH] s5p-jpeg: hangle error condition in s5p_jpeg_probe
+To:     Baskov Evgeiny <baskov@ispras.ru>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+References: <20201113160625.1281-1-baskov@ispras.ru>
+From:   Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+Message-ID: <1246b424-eaf7-8d32-c151-7e101a127753@gmail.com>
+Date:   Fri, 13 Nov 2020 17:59:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113160234.GB44988@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201113160625.1281-1-baskov@ispras.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 13 Nov 2020 at 16:02:34 (+0000), Mark Rutland wrote:
-> On Fri, Nov 13, 2020 at 03:53:28PM +0000, Ionela Voinescu wrote:
-> > Given that smp_call_function_single() can deadlock when interrupts are
-> > disabled, abort the SMP call if irqs_disabled(). This scenario is
-> > currently not possible given the function's uses, but safeguard this for
-> > potential future uses.
+Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+
+W dniu 13.11.2020 o 17:06, Baskov Evgeiny pisze:
+> If an error happens in jpeg_get_drv_data(), i.e. match fails,
+> jpeg->variant field is NULL, so we cannot access it.
 > 
-> Sorry to contradict earlier feedback, but I think this is preferable
-> as-is, since smp_call_function_single() will
-> WARN_ON_ONCE(irqs_disabled())), but this will silently mask any dodgy
-> usage.
-
-Probably it only contradicts the chosen implementation.
-
+> Consider device probe failed if jpeg->variant is NULL.
 > 
-> If we want a separate check here, I reckon we should wrap it with a
-> WARN_ON_ONCE(), and only relax that if/when we have a legitimate case
-> for calling this with IRQs disabled.
+> Found by Linux Driver Verification project (linuxtesting.org).
 > 
-
-That's fair. I'll replace the condition below with:
-
-	if (!cpu_has_amu_feat(cpu))
-		return -EOPNOTSUPP;
-
-	if (WARN_ON_ONCE(irqs_disabled())
-		return -EPERM;
-
-Thanks for your time,
-Ionela.
-
-> Thanks,
-> Mark.
+> Signed-off-by: Baskov Evgeiny <baskov@ispras.ru>
+> ---
+>   drivers/media/platform/s5p-jpeg/jpeg-core.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> > 
-> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > ---
-> >  arch/arm64/kernel/topology.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> > index 3a083a9a8ef2..e387188741f2 100644
-> > --- a/arch/arm64/kernel/topology.c
-> > +++ b/arch/arm64/kernel/topology.c
-> > @@ -343,7 +343,11 @@ static void cpu_read_constcnt(void *val)
-> >  static inline
-> >  int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
-> >  {
-> > -	if (!cpu_has_amu_feat(cpu))
-> > +	/*
-> > +	 * Abort call on counterless CPU or when interrupts are
-> > +	 * disabled - can lead to deadlock in smp sync call.
-> > +	 */
-> > +	if (!cpu_has_amu_feat(cpu) || unlikely(irqs_disabled()))
-> >  		return -EOPNOTSUPP;
-> >  
-> >  	smp_call_function_single(cpu, func, val, 1);
-> > -- 
-> > 2.17.1
-> > 
+> diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> index 9b22dd8e34f4..026111505f5a 100644
+> --- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> +++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> @@ -2862,6 +2862,8 @@ static int s5p_jpeg_probe(struct platform_device *pdev)
+>   		return -ENOMEM;
+>   
+>   	jpeg->variant = jpeg_get_drv_data(&pdev->dev);
+> +	if (!jpeg->variant)
+> +		return -ENODEV;
+>   
+>   	mutex_init(&jpeg->lock);
+>   	spin_lock_init(&jpeg->slock);
+> 
