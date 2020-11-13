@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844E42B289A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176F62B289C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 23:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgKMWfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 17:35:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50168 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725986AbgKMWff (ORCPT
+        id S1726202AbgKMWhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 17:37:35 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56096 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726042AbgKMWhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:35:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605306934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OxJxP1oE2Cla0I1OPN4NdLIp1AOD5ygh5VOrDf70gp4=;
-        b=bY3OfxgJiQR5I+LiZ20Sxtsg2iw22E4mQC81ARdK9Ob+FqtxCJRGmzznNdbAA3CkX5vqQg
-        /bJWgQ3t8//696WWWNwVP/FrNvpxnO3gQ7c5J7QZA1tTNGKzoXfoRqxbfyTnIoRI1hfWmS
-        M2TfMkQmxKha7zwjVU0IetWLNtfMZsQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-7GLq8PRFNcKvw05hwBrivg-1; Fri, 13 Nov 2020 17:35:32 -0500
-X-MC-Unique: 7GLq8PRFNcKvw05hwBrivg-1
-Received: by mail-wr1-f69.google.com with SMTP id v5so4716418wrr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 14:35:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OxJxP1oE2Cla0I1OPN4NdLIp1AOD5ygh5VOrDf70gp4=;
-        b=BBwM0EPbQKmyK8jLAP82Mkq98WYBsfZgOnfCnn6S+Sg6Ij5k8/BbbXkbWFv+O+eNb8
-         8XjLBQxQxqZu0Qe2YUESLZ1JHVZA+ab2ZJXfsJIC2pTR8s5a7RrMIFmx9RwgmzkAosTe
-         EljxbWb8HCqOypkOPYjzlWSyuE5mi1uCGZOpu0CKz8MF80/7sXQklv2sgSBzvpFzUVrA
-         BGdwTTm0szzumECeTVSRD19iBmKM8pPd58llprkKPo7kecVeqO2rD0gap6qIfVLtOvmu
-         mwC5VOxBGRzcldKFcQtMgrwboJQjAUt5UvtfFnY9YhGVgWnQwzGy+qDCoIZqIY3vlmQP
-         JPhQ==
-X-Gm-Message-State: AOAM533OhmwnVZlMLat31waIaXPY3PEWHQM3Hm0uaIKi9egC+jxBsHz6
-        X1Fg/NkUACJU8bgP/8t+8lKukLxf4pI5xNwLK6E67nsKTaZ75GcV6Z7A46vA7cThkeTkmoosZgX
-        imecpvCLJ2YyrMQ2OjXWT0+pj
-X-Received: by 2002:a1c:6302:: with SMTP id x2mr4646097wmb.56.1605306930818;
-        Fri, 13 Nov 2020 14:35:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx16goPmTkQI33BXjPuhsGv1l1ZNJDXKJH2RZQichX2X24coMGN7jfwISuAuamqZjVj9g86Ww==
-X-Received: by 2002:a1c:6302:: with SMTP id x2mr4646082wmb.56.1605306930644;
-        Fri, 13 Nov 2020 14:35:30 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id g20sm11435472wmh.20.2020.11.13.14.35.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 14:35:29 -0800 (PST)
-Subject: Re: [PATCH 2/2] kernel-doc: Handle function typedefs without
- asterisks
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Eduardo Habkost <ehabkost@redhat.com>
-References: <20201030144713.201372-1-pbonzini@redhat.com>
- <20201030144713.201372-3-pbonzini@redhat.com>
- <20201113152106.7b4a07ee@lwn.net>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0b42c1b4-e730-5403-dc28-303b32622727@redhat.com>
-Date:   Fri, 13 Nov 2020 23:35:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201113152106.7b4a07ee@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 13 Nov 2020 17:37:33 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 219AD40461;
+        Fri, 13 Nov 2020 22:37:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1605307050; bh=jjkOVwgDQT6TA0CdHPVWIovLMbPvZdCCS0xgiauS52c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NhVuex5bcOfR4Fb0kZDp4b+3vLXu6139yYIyeGqed66ruvf/SHZqnJOx5Bbh+Sddr
+         9rrDQuBNPYm7RdoB5+rea1KlFdkJnVclwW0nisvyJNp0QWe0BuhMkNaMopJfXeuDr6
+         kLBuwoqll84UStVSAgAB0ykqoWefQCqTd1etSV4TaxRIQCwljY5YU++HQF1dIuyrnW
+         nCQRytX8Hgoo1mIUycfQOqTWx7B0xpKA2Rzi6HKZ1mCtfthMW4y3qPYi1/s+dWxkNQ
+         o5FAkHuBtAkRKxq1zaGl2aOF/vfCzQM5YBvFqTLs+hAPpNUp83FHkiMJeaoLynIots
+         /SY/KtExiRtvw==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 873D2A005D;
+        Fri, 13 Nov 2020 22:37:27 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-pci@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] misc: Add Add Synopsys DesignWare xData IP driver
+Date:   Fri, 13 Nov 2020 23:37:11 +0100
+Message-Id: <cover.1605306931.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/20 23:21, Jonathan Corbet wrote:
->>
->> Signed-off-by: Eduardo Habkost<ehabkost@redhat.com>
->> Signed-off-by: Paolo Bonzini<pbonzini@redhat.com>
-> So as you've undoubtedly noticed, reading those kernel-doc regexes is ... a
-> wee bit on the painful side.  Trying to compare two of them in a patch to
-> figure out what you have done is even worse.  I suspect we want these
-> patches, but can you please supply a changelog that describes the change?
-> 
+This patch series adds a new driver called xData-pcie for the Synopsys
+DesignWare PCIe prototype.
 
-Seems like some of Mauro's recent patches take care of the same thing. 
-I'm going to update QEMU's kernel-doc, and if there's anything left to 
-do I'll resend.
+The driver configures and enables the Synopsys DesignWare PCIe traffic
+generator IP inside of prototype Endpoint which will generate upstream
+and downstream PCIe traffic. This allows to quickly test the PCIe link
+throughput speed and check is the prototype solution has some limitation
+or not.
 
-Thanks,
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-pci@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-Paolo
+Changes:
+ V2: Rework driver according to Greg Kroah-Hartman feedback 
+
+Gustavo Pimentel (5):
+  misc: Add Synopsys DesignWare xData IP driver
+  misc: Add Synopsys DesignWare xData IP driver to Makefile
+  misc: Add Synopsys DesignWare xData IP driver to Kconfig
+  Documentation: misc-devices: Add Documentation for dw-xdata-pcie
+    driver
+  MAINTAINERS: Add Synopsys xData IP driver maintainer
+
+ Documentation/misc-devices/dw-xdata-pcie.rst |  40 +++
+ MAINTAINERS                                  |   7 +
+ drivers/misc/Kconfig                         |  11 +
+ drivers/misc/Makefile                        |   1 +
+ drivers/misc/dw-xdata-pcie.c                 | 390 +++++++++++++++++++++++++++
+ 5 files changed, 449 insertions(+)
+ create mode 100644 Documentation/misc-devices/dw-xdata-pcie.rst
+ create mode 100644 drivers/misc/dw-xdata-pcie.c
+
+-- 
+2.7.4
 
