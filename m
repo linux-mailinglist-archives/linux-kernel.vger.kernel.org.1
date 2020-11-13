@@ -2,152 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2A92B254F
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4F12B254E
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 21:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgKMUYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 15:24:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgKMUYp (ORCPT
+        id S1726182AbgKMUYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 15:24:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgKMUYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:24:45 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A994C0617A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:24:45 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id q68so3406487uaq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:24:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mU6UeGOfRQMRJwnHmGX5EKrd3fAZtibGBHai3RFBnJQ=;
-        b=SBgav/T3VzzEtf+XcGk0y2urSrYRSMZdZ/BSprOQYF07imi1ADQ6+bP8NVgkFIS13j
-         c29etEZPIosU9Ccq+aDvjNmW4gtV+RXjaLR5/iYKTteik7fkjmDnPZ3rLCzlNv2EYSEP
-         /f9Rq5iUQR0o7S1G9L2SZCAv7mAGSkXEUI5hN3rLrtsdHgPlxnpAG0v3MFSAKPbkQrae
-         WLoVYBLPEP79v4Y7OA8gXbcs08GtIihODPoDAmO+6mtoQqiccreuY2GcpYzaDeYkNLlF
-         n1WMuVFyGng50eB9Mmqa/6aQz5eygw2tOZp8M/jD01KJFVb5k1ymIpwXFEcj8xVZxzyy
-         nZxQ==
+        Fri, 13 Nov 2020 15:24:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605299084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=26k5Ykpq8ko3cdeDg3z0O22hPlAwcLFHBPMuuARRqmQ=;
+        b=bRU/AGSvsQfoyKAdAAO0tWpwx066psFImCR/HreSJ0MbXcwhBvLrQqUttHhHCfkzHySLsO
+        49sPx560J0OuoPfSNmnBWCuAjML3QetE/y05JHrIUulIM63X2stxS9pFWRxcZ/cm8Dmk43
+        ArIOTotI5SY7e7dT0wVWY9Sol6HA/cU=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-5AHZ2R42OYaj2qrSFvyvpg-1; Fri, 13 Nov 2020 15:24:42 -0500
+X-MC-Unique: 5AHZ2R42OYaj2qrSFvyvpg-1
+Received: by mail-qk1-f197.google.com with SMTP id t64so7440348qkd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 12:24:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mU6UeGOfRQMRJwnHmGX5EKrd3fAZtibGBHai3RFBnJQ=;
-        b=ZL4AFvbNrE1j/ULkh4jBSi8XKB5SnHZlMk25al78sEVcqyQ33hA7IFvr6DQ65QZnzd
-         WPa28A83UdOaSsFed+7k/IhoVWg1vLoMWm7+GGBW5ckRJkoAePUwLXZokPzT6a6ydDx7
-         uv8yEZHjSUMuMYrQyKYKHLvd/iOqzKgSAeC4Y3tB/rY8/6UnrHIO813A9FY5+a9Z1mdp
-         V4wZuUpcSlP1i0XlrZ2v/bWYR1FUZGHdghcdCzoeoL+ocB062d5aJfka7HpnsJOdSDW4
-         Jx6LdzWOK69OBU58MpgeUYxtxfX9+BCF9Gq4IVwyapujezUrY3rfoyJ0tYJDCkvx1NFx
-         VMKg==
-X-Gm-Message-State: AOAM531WS1KldvWhTQ1xM4JbK1ZvfGUoLFy3+CdJMjZartnWmm4dbAt6
-        ko57Z1Rk+vpcdaZQMhkDKfZCuSJDI7HC0K43svelEQ==
-X-Google-Smtp-Source: ABdhPJxQo6DF9jUnA2YJFoBq8ll7fJYetoimM/TRDoFpxZhBeNyAnbeYafJONZ4hmtReCz/v9xa11p0ayWmu2zwdpXo=
-X-Received: by 2002:ab0:6156:: with SMTP id w22mr2653091uan.122.1605299084290;
- Fri, 13 Nov 2020 12:24:44 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=26k5Ykpq8ko3cdeDg3z0O22hPlAwcLFHBPMuuARRqmQ=;
+        b=XXeGZ3fuOWs8s1OR6JsvbRMLr2fAm1AF0oCKDfX4sapmuGSgkDzTXhVGY8egoqK4BC
+         l85Ygf8SH9xBPKJ7JH2wRLEe/rfe4/CoJ7rQE2/KklMSQelXclkX9QHdZw+0L1ZPayUn
+         N5MafH0RE02HMPck2E6xFFAdRuZYT8bUqdqHXzd8NJclJSMNmZ6PvK8JaPSGVt/VMusb
+         qfJRu8Cext+7z2jB5nMlzNuZlMxiaGYeljkOcC+Rct4eYhpOhlIkUIx+GycsxIMoVg3M
+         VBkCLy1z3zseiEfTepelQq7TxzHCh/gxHPEVf+bPsdB4BHHhcTZFSuds9+UdYoE5fRfB
+         cg0Q==
+X-Gm-Message-State: AOAM530NAP40xuuL4CQfHEP6GOMitSakGSFNtWcMaFFrgXiF/VVamZeG
+        hBWuU7Jzg+hiGRP/FM2abP3RxAX+pB/Xplo139ne7RiaX8NHbkuJLx/O9iu0kZ5ASBJdRQHKvuk
+        TqUBAGyc+K8zAg/mse3vE0jcQ
+X-Received: by 2002:a37:8203:: with SMTP id e3mr3674940qkd.322.1605299081792;
+        Fri, 13 Nov 2020 12:24:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz9VtR5u9OEAdfJGf71wRkZbn+TKbR8B8G43J5F/vkrkkVrmN6Bai+XBRI8YFkBi+3+1bBubg==
+X-Received: by 2002:a37:8203:: with SMTP id e3mr3674913qkd.322.1605299081414;
+        Fri, 13 Nov 2020 12:24:41 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l79sm7706734qke.1.2020.11.13.12.24.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 12:24:40 -0800 (PST)
+Subject: Re: [PATCHv1 1/4] fpga: fpga-mgr: add
+ FPGA_MGR_BITSTREM_AUTHENTICATION flag
+To:     richard.gong@linux.intel.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+ <1605204403-6663-2-git-send-email-richard.gong@linux.intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <a71b7a9c-effa-ad01-4fde-3e1a1e517e2d@redhat.com>
+Date:   Fri, 13 Nov 2020 12:24:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble> <20201110174606.mp5m33lgqksks4mt@treble>
- <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com> <20201113195408.atbpjizijnhuinzy@treble>
-In-Reply-To: <20201113195408.atbpjizijnhuinzy@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 13 Nov 2020 12:24:32 -0800
-Message-ID: <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1605204403-6663-2-git-send-email-richard.gong@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:54 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+On 11/12/20 10:06 AM, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
 >
-> On Tue, Nov 10, 2020 at 10:59:55AM -0800, Sami Tolvanen wrote:
-> > On Tue, Nov 10, 2020 at 9:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > On Mon, Nov 09, 2020 at 08:29:24PM -0600, Josh Poimboeuf wrote:
-> > > > On Mon, Nov 09, 2020 at 03:11:41PM -0800, Sami Tolvanen wrote:
-> > > > > CONFIG_XEN
-> > > > >
-> > > > > __switch_to_asm()+0x0: undefined stack state
-> > > > >   xen_hypercall_set_trap_table()+0x0: <=== (sym)
-> > >
-> > > With your branch + GCC 9 I can recreate all the warnings except this
-> > > one.
-> >
-> > In a gcc build this warning is replaced with a different one:
-> >
-> > vmlinux.o: warning: objtool: __startup_secondary_64()+0x7: return with
-> > modified stack frame
-> >
-> > This just seems to depend on which function is placed right after the
-> > code in xen-head.S. With gcc, the disassembly looks like this:
-> >
-> > 0000000000000000 <asm_cpu_bringup_and_idle>:
-> >        0:       e8 00 00 00 00          callq  5 <asm_cpu_bringup_and_idle+0x5>
-> >                         1: R_X86_64_PLT32       cpu_bringup_and_idle-0x4
-> >        5:       e9 f6 0f 00 00          jmpq   1000
-> > <xen_hypercall_set_trap_table>
-> > ...
-> > 0000000000001000 <xen_hypercall_set_trap_table>:
-> >         ...
-> > ...
-> > 0000000000002000 <__startup_secondary_64>:
-> >
-> > With Clang+LTO, we end up with __switch_to_asm here instead of
-> > __startup_secondary_64.
+> Add FPGA_MGR_BITSTREM_AUTHENTICATION flag for FPGA bitstream
+> authentication.
+
+Should improve this commit so explain what you mean authentication.
+
+it could mean 'it wrote correctly' or 'it was signed correctly' or something else.
+
 >
-> I still don't see this warning for some reason.
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> ---
+>  include/linux/fpga/fpga-mgr.h | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+> index 2bc3030..1d65814 100644
+> --- a/include/linux/fpga/fpga-mgr.h
+> +++ b/include/linux/fpga/fpga-mgr.h
+> @@ -67,12 +67,15 @@ enum fpga_mgr_states {
+>   * %FPGA_MGR_BITSTREAM_LSB_FIRST: SPI bitstream bit order is LSB first
+>   *
+>   * %FPGA_MGR_COMPRESSED_BITSTREAM: FPGA bitstream is compressed
+> + *
+> + * %FPGA_MGR_BITSTREM_AUTHENTICATION: do FPGA bitstream authentication
+>   */
+>  #define FPGA_MGR_PARTIAL_RECONFIG	BIT(0)
+>  #define FPGA_MGR_EXTERNAL_CONFIG	BIT(1)
+>  #define FPGA_MGR_ENCRYPTED_BITSTREAM	BIT(2)
+>  #define FPGA_MGR_BITSTREAM_LSB_FIRST	BIT(3)
+>  #define FPGA_MGR_COMPRESSED_BITSTREAM	BIT(4)
+> +#define FPGA_MGR_BITSTREM_AUTHENTICATION BIT(5)
 
-Do you have CONFIG_XEN enabled? I can reproduce this on ToT master as follows:
+A whitespace issue, the new BIT(5) should align with the others, so add two spaces to the others.
 
-$ git rev-parse HEAD
-585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
-$ make defconfig && \
-./scripts/config -e HYPERVISOR_GUEST -e PARAVIRT -e XEN && \
-make olddefconfig && \
-make -j110
-...
-$ ./tools/objtool/objtool check -arfld vmlinux.o 2>&1 | grep secondary
-vmlinux.o: warning: objtool: __startup_secondary_64()+0x2: return with
-modified stack frame
+Tom
 
-> Is it fixed by adding cpu_bringup_and_idle() to global_noreturns[] in
-> tools/objtool/check.c?
+>  
+>  /**
+>   * struct fpga_image_info - information specific to a FPGA image
 
-No, that didn't fix the warning. Here's what I tested:
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab44543c92..f1f65f5688cf 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -156,6 +156,7 @@ static bool __dead_end_function(struct
-objtool_file *file, struct symbol *func,
-                "machine_real_restart",
-                "rewind_stack_do_exit",
-                "kunit_try_catch_throw",
-+               "cpu_bringup_and_idle",
-        };
-
-        if (!func)
-
-Sami
