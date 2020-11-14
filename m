@@ -2,62 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8FB2B3024
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 135862B3030
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgKNT1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:27:45 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:56072 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKNT1o (ORCPT
+        id S1726286AbgKNT2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 14:28:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgKNT2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:27:44 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 76A93804B4;
-        Sat, 14 Nov 2020 20:27:42 +0100 (CET)
-Date:   Sat, 14 Nov 2020 20:27:41 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH 13/40] drm/panel/panel-tpo-tpg110: Correct misnaming and
- supply missing param description
-Message-ID: <20201114192741.GC3797389@ravnborg.org>
-References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-14-lee.jones@linaro.org>
+        Sat, 14 Nov 2020 14:28:30 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2282C0613D1;
+        Sat, 14 Nov 2020 11:28:30 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id d17so4604490plr.5;
+        Sat, 14 Nov 2020 11:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AFQ+O37FNhcW/Av1cdzRedXy1kVAe5xo2SMJ3+HW4OM=;
+        b=tudOwl5k0DEf1JMf54FAh1NRxuvSxaazL8VdkjdApqPV45SwUXJhYIyJsPdsxtVBpf
+         hgDV43HjAAGCuB2G4meVH7M4PeXQmowKYNyOTMAFQM2BIAn3EYum5smmbnLL525Nnrm1
+         mcf1+VRnINeySCvgR+63WsBnQK5zaPiQggNkMLP9WVwgnNnt7BC8iQ4zDjzgyP9TvOU+
+         fzRW9/HCvwY/G8a561RSboBba48456HSDIjvejQVIWyW3eZyf3IW0OKAG34zfuQY+BAQ
+         cuHlnTxbyXyCFaIKxkZlIYWVTb+pnrrkrO8bqHgz650rwMxn4Npdm+VvzxavjDpIWpzY
+         6dQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AFQ+O37FNhcW/Av1cdzRedXy1kVAe5xo2SMJ3+HW4OM=;
+        b=uAn8VBik5TSwOpgNoBer8KpijLR/2GQzK3Pw5pKr5RHFPJKUGXuQi/lwzlctRcA7bP
+         XuA7GFdjw0OKWMcWHll3m3xt91ZoMtT6+lkRfSoH9Xto/zvVa+iS4frCsRqdDtdm6X7D
+         8LoSiblTZRrf1h7NNH8LTqq7ytIcoK38dxYSR2qLQgFIm3wkX26WlPruCsPHfT6jBkmw
+         +W7nzP7HIasvodfPdnWsDFZCf0vFtXUSajk4EYZucUijmALlsW4cZXAVc94Yh0oRaGN6
+         iNYLZ/vO7g+wCPDIy9VqNw5IO2LD6MYcHp3Dp+SLPRRbSE+6MEW4FR0uTc+big2mPcxJ
+         5kPg==
+X-Gm-Message-State: AOAM533RNgvYvY9eEPasZpMQePepfbis7RkpK/b40Qd2uOGlsP/T+Lqo
+        5nS2yCKRLLP0YIi3dDxup0c=
+X-Google-Smtp-Source: ABdhPJz97OgwKrxTObJzEQUlL24OvH7R1dO5YeQlR3R2sYUOneSNlt1UEShKzMlvCtFXdJejagJqtg==
+X-Received: by 2002:a17:90a:d495:: with SMTP id s21mr8950511pju.30.1605382110209;
+        Sat, 14 Nov 2020 11:28:30 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id z7sm13794282pfq.214.2020.11.14.11.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 11:28:29 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), Jordan Crouse <jcrouse@codeaurora.org>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 0/3] drm/msm: Shrinker fixes and opts
+Date:   Sat, 14 Nov 2020 11:30:07 -0800
+Message-Id: <20201114193010.753355-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113134938.4004947-14-lee.jones@linaro.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=KKAkSRfTAAAA:8 a=pGLkceISAAAA:8 a=7gkXJVJtAAAA:8
-        a=e5mUnYsNAAAA:8 a=w_2A2TIFj400J4mqsGYA:9 a=CjuIK1q_8ugA:10
-        a=cvBusfyB2V15izCimMoJ:22 a=E9Po1WZjFZOl8hwRPBS3:22
-        a=Vxmtnl_E_bksehYqCbjh:22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-On Fri, Nov 13, 2020 at 01:49:11PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/panel/panel-tpo-tpg110.c:94: warning: Function parameter or member 'panel_mode' not described in 'tpg110'
->  drivers/gpu/drm/panel/panel-tpo-tpg110.c:372: warning: Function parameter or member 'connector' not described in 'tpg110_get_modes'
-> 
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Thanks, applied to drm-misc-next. Only one warning left in drm/panel/,
-which I will submit a patch for in a minute.
+From: Rob Clark <robdclark@chromium.org>
 
-	Sam
+The last patch is the main thing, motivated by some cases where we would
+spend a lot of time in msm_gem_shrinker_count().  First two are fixes I
+noticed along the way.
+
+Rob Clark (3):
+  drm/msm: Protect obj->active_count under obj lock
+  drm/msm/shrinker: We can vmap shrink active_list too
+  drm/msm/shrinker: Only iterate dontneed objs
+
+ drivers/gpu/drm/msm/msm_debugfs.c      |  3 +-
+ drivers/gpu/drm/msm/msm_drv.c          |  3 +-
+ drivers/gpu/drm/msm/msm_drv.h          |  8 ++--
+ drivers/gpu/drm/msm/msm_gem.c          | 45 ++++++++++++++++------
+ drivers/gpu/drm/msm/msm_gem.h          |  5 ++-
+ drivers/gpu/drm/msm/msm_gem_shrinker.c | 52 +++++++++++++++++++-------
+ drivers/gpu/drm/msm/msm_gpu.c          | 10 +++--
+ 7 files changed, 89 insertions(+), 37 deletions(-)
+
+-- 
+2.28.0
+
