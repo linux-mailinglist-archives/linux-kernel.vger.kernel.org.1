@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65ADF2B2ACA
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03882B2ABF
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgKNCQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 21:16:04 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:34598 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725981AbgKNCQD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 21:16:03 -0500
-X-Greylist: delayed 1490 seconds by postgrey-1.27 at vger.kernel.org; Fri, 13 Nov 2020 21:16:03 EST
-Received: from CMGW (unknown [10.9.0.13])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 74146215D9A
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:51:13 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id dkiekipKri1lMdkifkjRLj; Fri, 13 Nov 2020 18:51:13 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.2 cv=RKzDJ8q+ c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=nNwsprhYR40A:10 a=evQFzbml-YQA:10
- a=VwQbUJbxAAAA:8 a=wBqY6jgYEW0BGQsa698A:9 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=Message-Id:Date:Subject:Cc:To:From:Sender:
-        Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZgDKlMPjpd9wyV6iWCzRhHgPc4WOdicWTvdhxomrLcs=; b=Hp7NfLlQ4aBt807E1OVJTriJrn
-        pkqtvAwvauw8VOg7x9L3FLPPMTOBlhbOUjE1H+ng/8t5Ujez/ABwvvMpWI3EECz7sTB6LGvSpQnRX
-        95qVWt9naySUC3UIKztu4olOJdFwsCfqNVjdF0ayQqUYD7sLnRA8K+CfIJI36lpymPMkPUTydrgB1
-        8/+ZuOLN3DMODuNy6iwI631ysRDrjWOHYU5+YzZiFAhuD2t/YUiUpKEbGb9IJPU5WA91tjyvaQNs6
-        B4Gxisk/IbgP19H0SVbV4aKp3StTMyKV5ZtYGlnTNSUp53iK+kbRu1o3pN3U0WYpHLvan9xQ3hYW8
-        TebVuquQ==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:55376 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kdkie-0032Zd-GW; Sat, 14 Nov 2020 01:51:12 +0000
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hwmon fixes for v5.10-rc4
-Date:   Fri, 13 Nov 2020 17:51:11 -0800
-Message-Id: <20201114015111.55792-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kdkie-0032Zd-GW
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:55376
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 1
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+        id S1726327AbgKNCB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 21:01:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725981AbgKNCB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 21:01:28 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3EC22225D;
+        Sat, 14 Nov 2020 02:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605319287;
+        bh=fyjpN/Va4J4KYGHi7KfiJSuLtnzhTFBdvx03iFIiX/8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=arEx7zYeIRjBS9Pd0O0ZrZG2bioB7/jWDvlDhfgsHOsKXrYHpjdmnofJH2hsPcgQj
+         JDqoKAT7wA70uF2HfTRJ9zRdm3PINCVJLJOoTFGqEcB5PcDamdawXhx9YdDmguFrYW
+         YkXva60+SdiAyouhpOEar50RxQUr1Lbc+HTE/5U4=
+Date:   Fri, 13 Nov 2020 18:01:26 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     David Ahern <dsahern@gmail.com>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4
+ behavior
+Message-ID: <20201113180126.33bc1045@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201114025058.25ae815024ba77d59666a7ab@uniroma2.it>
+References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
+        <20201107153139.3552-5-andrea.mayer@uniroma2.it>
+        <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
+        <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
+        <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
+        <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
+        <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201113134010.5eb2a154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201114000024.614c6c097050188abc87a7ff@uniroma2.it>
+        <20201113155437.7d82550b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201114025058.25ae815024ba77d59666a7ab@uniroma2.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, 14 Nov 2020 02:50:58 +0100 Andrea Mayer wrote:
+> Hi Jakub,
+> Please see my responses inline:
+> 
+> On Fri, 13 Nov 2020 15:54:37 -0800
+> Jakub Kicinski <kuba@kernel.org> wrote:
+> 
+> > On Sat, 14 Nov 2020 00:00:24 +0100 Andrea Mayer wrote:  
+> > > On Fri, 13 Nov 2020 13:40:10 -0800
+> > > Jakub Kicinski <kuba@kernel.org> wrote:
+> > > 
+> > > I can tackle the v6 version but how do we face the compatibility issue raised
+> > > by Stefano in his message?
+> > > 
+> > > if it is ok to implement a uAPI that breaks the existing scripts, it is relatively
+> > > easy to replicate the VRF-based approach also in v6.  
+> > 
+> > We need to keep existing End.DT6 as is, and add a separate
+> > implementation.  
+> 
+> ok
+> 
+> >
+> > The way to distinguish between the two could be either by  
+> 
+> > 1) passing via
+> > netlink a flag attribute (which would request use of VRF in both
+> > cases);  
+> 
+> yes, feasible... see UAPI solution 1
+> 
+> > 2) using a different attribute than SEG6_LOCAL_TABLE for the
+> > table id (or perhaps passing VRF's ifindex instead), e.g.
+> > SEG6_LOCAL_TABLE_VRF;  
+> 
+> yes, feasible... see UAPI solution 2
+> 
+> > 3) or adding a new command
+> > (SEG6_LOCAL_ACTION_END_DT6_VRF) which would behave like End.DT4.  
+> 
+> no, we prefer not to add a new command, because it is better to keep a 
+> semantic one-to-one relationship between these commands and the SRv6 
+> behaviors defined in the draft.
+> 
+> 
+> UAPI solution 1
+> 
+> we add a new parameter "vrfmode". DT4 can only be used with the 
+> vrfmode parameter (hence it is a required parameter for DT4).
+> DT6 can be used with "vrfmode" (new vrf based mode) or without "vrfmode" 
+> (legacy mode)(hence "vrfmode" is an optional parameter for DT6)
+> 
+> UAPI solution 1 examples:
+> 
+> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT4 vrfmode table 100 dev eth0
+> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 vrfmode table 100 dev eth0
+> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 dev eth0
+> 
+> UAPI solution 2
+> 
+> we turn "table" into an optional parameter and we add the "vrftable" optional
+> parameter. DT4 can only be used with the "vrftable" (hence it is a required
+> parameter for DT4).
+> DT6 can be used with "vrftable" (new vrf mode) or with "table" (legacy mode)
+> (hence it is an optional parameter for DT6).
+> 
+> UAPI solution 2 examples:
+> 
+> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT4 vrftable 100 dev eth0
+> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 vrftable 100 dev eth0
+> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 dev eth0
+> 
+> IMO solution 2 is nicer from UAPI POV because we always have only one 
+> parameter, maybe solution 1 is slightly easier to implement, all in all 
+> we prefer solution 2 but we can go for 1 if you prefer.
 
-Please pull hwmon fixes for Linux v5.10-rc4 from signed tag:
+Agreed, 2 looks better to me as well. But let's not conflate uABI with
+iproute2's command line. I'm more concerned about the kernel ABI.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.10-rc4
-
-Thanks,
-Guenter
-------
-
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.10-rc4
-
-for you to fetch changes up to 60268b0e8258fdea9a3c9f4b51e161c123571db3:
-
-  hwmon: (amd_energy) modify the visibility of the counters (2020-11-13 06:46:20 -0800)
-
-----------------------------------------------------------------
-hwmon fixes for v5.10-rc4
-
-Fix potential bufer overflow in pmbus/max20730 driver
-Fix locking issue in pmbus core
-Fix regression causing timeouts in applesmc driver
-Fix RPM calculation in pwm-fan driver
-Restrict counter visibility in amd_energy driver
-
-----------------------------------------------------------------
-Brad Campbell (1):
-      hwmon: (applesmc) Re-work SMC comms
-
-Dan Carpenter (1):
-      hwmon: (pmbus/max20730) use scnprintf() instead of snprintf()
-
-Naveen Krishna Chatradhi (1):
-      hwmon: (amd_energy) modify the visibility of the counters
-
-Paul Barker (1):
-      hwmon: (pwm-fan) Fix RPM calculation
-
-Robert Hancock (1):
-      hwmon: (pmbus) Add mutex locking for sysfs reads
-
- drivers/hwmon/amd_energy.c       |   2 +-
- drivers/hwmon/applesmc.c         | 130 ++++++++++++++++++++++++---------------
- drivers/hwmon/pmbus/max20730.c   |  26 ++++----
- drivers/hwmon/pmbus/pmbus_core.c |  13 +++-
- drivers/hwmon/pwm-fan.c          |  16 ++---
- 5 files changed, 115 insertions(+), 72 deletions(-)
+BTW you prefer to operate on tables (and therefore require
+net.vrf.strict_mode=1) because that's closer to the spirit of the RFC,
+correct? As I said from the implementation perspective passing any VRF
+ifindex down from user space to the kernel should be fine?
