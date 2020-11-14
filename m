@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4442B2D39
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906CF2B2D3C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgKNMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbgKNMzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:55:52 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A149221EB;
-        Sat, 14 Nov 2020 12:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605358551;
-        bh=HCbruWEYiz+X+jHd1lETN3LqMLkj5XSplNUFQhbcOs0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pbeWEVEth40MQOYEUSrHWHvwpzUVF3JD3Y3eP1r1wUUyfJrSPdjak5Nby6fh2ykUc
-         MgDH0lg24eDO+t4AvDYs0LCjJl3wO5ZlV+4COPlwAPfJweiyCI0vJjBgy5VnlDrJ5/
-         wjjAZbDhOkBkAjOtXCW4NwWKwhJclCn6/QQ9kWHQ=
-Date:   Sat, 14 Nov 2020 13:56:46 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lucas Tanure <tanure@linux.com>
-Cc:     Bastien Nocera <hadess@hadess.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: apple-mfi-fastcharge: Use devm_kzalloc and simplify
- the code
-Message-ID: <X6/UDpZRDAGDZydT@kroah.com>
-References: <20201114124249.634234-1-tanure@linux.com>
+        id S1726865AbgKNM5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:57:21 -0500
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:58861 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726591AbgKNM5V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 07:57:21 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id dv7CkXYra6t6Hdv7Gk3t1q; Sat, 14 Nov 2020 13:57:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1605358638; bh=RsSQn2DamVaMOaw0wvH1ixJbCSWSXZMja/t/L3GxxDg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Fiff2m4YzCm2nxRNwrYKaFrFI4iiW/o6tvY1Dr+jCxnxXWh369T4ZN9nvFKnz5wRF
+         mipAJxEcUtdtIdbEQPqimg0B8s04OH/YRDOMBaGMtwe5QGFtzJBpXzGHUi4JoRJ07H
+         uLjBeXG4uohuNgw392wfNagyfMUKzUOCRYedl9vVmxDYXHjkI6MvFqXp56qgPI4WDM
+         +fDKfQBhMJWK+3n69nVA9ogFnfcrW1UIGE5fU1ZG91ttI2xm80zy5hfjt+DlXY6PUT
+         fYTadV7HbWqUpeTbk9GgQdpk0nRf36kNgbp71wThL9D2fmXeXccRBFL1kRjeHDyHC4
+         bdc0BdVLdxBOw==
+Subject: Re: [PATCH v2 9/9] media: docs: Move the H264 stateless codec uAPI
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20201113215121.505173-1-ezequiel@collabora.com>
+ <20201113215121.505173-10-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <df05d7ea-45be-76d6-78a0-47b1a6846ad4@xs4all.nl>
+Date:   Sat, 14 Nov 2020 13:57:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201114124249.634234-1-tanure@linux.com>
+In-Reply-To: <20201113215121.505173-10-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCWjAIUz60bBsmUKHmsxzZulSPf39ECNiJm/w7O2sw1elwKxhXZXf3Dj5q0+jyF6A6gOQoKIhlhoYJenVmyE6WBUkolGTvCmhR4lOv8pExxUqmGy5nrv
+ TyDyiJ8Rm41/0RR+GLtoRV3IiES+U6oZalnZEnC4U1rl0mgQeuYq8coQNuVXKepXabfEs71v8kDTuEIEChOOF3u9VfULCuLwebUIePik4fjsnYUsEUTAwI/m
+ Mr8yOsLFvV03xmYdf1uTAxfyDQe9C9ZgNBgv7G0JNJXt7UD5bQLu6QSM6/qpnThlgZqN1ljLfoAUhj7xQYj8CGEHyvTMrxjh2fL6Nx5WwHCeHhMv7Pu/ANNf
+ wp0QDKXMtRB/FcKhRVvbvfAjzQSft/eBCHXbGvnrBdnBwC83EBSXa9AhdlORnzMLJkyWyHPAL7AMMVbto4LC6ApcYIPhNCa5DViKoouuoFek60EQnliWQqFC
+ zW3gxSF+qoIueJbJgCpClr/hGZsBALsDZb9I/3MVYcprDYxEdUgs2rujWWs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 12:42:49PM +0000, Lucas Tanure wrote:
-> Signed-off-by: Lucas Tanure <tanure@linux.com>
-
-I can't take patches without any changelog text, sorry.
-
-> ---
->  drivers/usb/misc/apple-mfi-fastcharge.c | 17 +++++------------
->  1 file changed, 5 insertions(+), 12 deletions(-)
+On 13/11/2020 22:51, Ezequiel Garcia wrote:
+> Now that we've destaged the H264 stateless codec controls,
+> and with all the pieces in place, update the documentation
+> and move it to its own section.
 > 
-> diff --git a/drivers/usb/misc/apple-mfi-fastcharge.c b/drivers/usb/misc/apple-mfi-fastcharge.c
-> index 9de0171b5177..de86e389a008 100644
-> --- a/drivers/usb/misc/apple-mfi-fastcharge.c
-> +++ b/drivers/usb/misc/apple-mfi-fastcharge.c
-> @@ -178,16 +178,13 @@ static int mfi_fc_probe(struct usb_device *udev)
->  {
->  	struct power_supply_config battery_cfg = {};
->  	struct mfi_device *mfi = NULL;
-> -	int err;
->  
->  	if (!mfi_fc_match(udev))
->  		return -ENODEV;
->  
-> -	mfi = kzalloc(sizeof(struct mfi_device), GFP_KERNEL);
-> -	if (!mfi) {
-> -		err = -ENOMEM;
-> -		goto error;
-> -	}
-> +	mfi = devm_kzalloc(&udev->dev, sizeof(*mfi), GFP_KERNEL);
-> +	if (!mfi)
-> +		return -ENOMEM;
->  
->  	battery_cfg.drv_data = mfi;
->  
-> @@ -197,8 +194,7 @@ static int mfi_fc_probe(struct usb_device *udev)
->  						&battery_cfg);
->  	if (IS_ERR(mfi->battery)) {
->  		dev_err(&udev->dev, "Can't register battery\n");
-> -		err = PTR_ERR(mfi->battery);
-> -		goto error;
-> +		return PTR_ERR(mfi->battery);
->  	}
->  
->  	mfi->udev = usb_get_dev(udev);
-> @@ -206,9 +202,6 @@ static int mfi_fc_probe(struct usb_device *udev)
->  
->  	return 0;
->  
-> -error:
-> -	kfree(mfi);
-> -	return err;
->  }
->  
->  static void mfi_fc_disconnect(struct usb_device *udev)
-> @@ -220,7 +213,7 @@ static void mfi_fc_disconnect(struct usb_device *udev)
->  		power_supply_unregister(mfi->battery);
->  	dev_set_drvdata(&udev->dev, NULL);
->  	usb_put_dev(mfi->udev);
-> -	kfree(mfi);
-> +	devm_kfree(&udev->dev, mfi);
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  .../userspace-api/media/v4l/common.rst        |   1 +
+>  .../media/v4l/ext-ctrls-codec-stateless.rst   | 674 +++++++++++++++++
+>  .../media/v4l/ext-ctrls-codec.rst             | 692 ------------------
+>  .../media/v4l/pixfmt-compressed.rst           |  14 +-
+>  4 files changed, 682 insertions(+), 699 deletions(-)
+>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+> 
 
-Are you sure about this?
+<snip>
 
-And what's wrong with the existing code?  Using the devm_*() variants
-seems like a "cleanup", but it's not always the case.
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst b/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
+> index d585909bc4e2..32b91ce0f0d9 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
+> @@ -59,14 +59,14 @@ Compressed Formats
+>  	This format is adapted for stateless video decoders that implement an
+>  	H264 pipeline (using the :ref:`mem2mem` and :ref:`media-request-api`).
+>  	This pixelformat has two modifiers that must be set at least once
+> -	through the ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE``
+> -        and ``V4L2_CID_MPEG_VIDEO_H264_START_CODE`` controls.
+> +	through the ``V4L2_CID_STATELESS_H264_DECODE_MODE``
+> +        and ``V4L2_CID_STATELESS_H264_START_CODE`` controls.
+>  	In addition, metadata associated with the frame to decode are
+> -	required to be passed through the ``V4L2_CID_MPEG_VIDEO_H264_SPS``,
+> -	``V4L2_CID_MPEG_VIDEO_H264_PPS``,
+> -	``V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX``,
+> -	``V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS`` and
+> -	``V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS`` controls.  See the
+> +	required to be passed through the ``V4L2_CID_STATELESS_H264_SPS``,
+> +	``V4L2_CID_STATELESS_H264_PPS``,
+> +	``V4L2_CID_STATELESS_H264_SCALING_MATRIX``,
+> +	``V4L2_CID_STATELESS_H264_SLICE_PARAMS`` and
+> +	``V4L2_CID_STATELESS_H264_DECODE_PARAMS`` controls.  See the
+>  	:ref:`associated Codec Control IDs <v4l2-mpeg-h264>`.  Exactly
+>  	one output and one capture buffer must be provided for use
+>  	with this pixel format. The output buffer must contain the
+> 
 
-thanks,
+There is a note about this 'format not yet part of the public API' that
+needs to be deleted as well.
 
-greg k-h
+Regards,
+
+	Hans
