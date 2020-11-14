@@ -2,98 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7537C2B2E5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 17:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A722B2E6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 17:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgKNQHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 11:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726884AbgKNQHm (ORCPT
+        id S1727175AbgKNQWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 11:22:06 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:44418 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbgKNQWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 11:07:42 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CE5C0613D1;
-        Sat, 14 Nov 2020 08:07:41 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y16so14645154ljk.1;
-        Sat, 14 Nov 2020 08:07:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hePRxHDakR/FcZyNIlFOEo3Qbzz67PaHshF+EOjWLkA=;
-        b=XXs7p+h1mogL2MliSrvN22602c6BFIY9gc8y8MWvJNn65MKIUaQdPcaqhg/Mzpmbkz
-         z8VC9Rt1jDw4uIXxX03C8plIhpo6FXuK/fKB8CkwrhB1afyOM7Cu18npXrmOx9omImGa
-         bxvv9QishP68DnAd3+oL4nNSC04Pbgq4p6WoYfJLaaQqR4l5tKdOheuW4lTuee1x3fUg
-         LzSHWgW4dXu8pTWoZWcpjUdoRNeHIojC4KfeJKJJCIV0HqjR/FShSUvJV30zXS8QtPXS
-         AroEsn/84teC1yzU477BkNEcbUshfeo1GNlYBiWcyhcPKlZiGzGx9czLGj+QGjG5Lx0p
-         oXEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hePRxHDakR/FcZyNIlFOEo3Qbzz67PaHshF+EOjWLkA=;
-        b=SBML/JwTZpwKUPJzz0+kFLELQGeZaxM3dsH846XWeuvbOHFGxh/mfd/NF2lwaRk+OU
-         U1tAbL6OyYC8d+/0szo93pp4y8aT7XsxYC0ogQHk2Nhm0yAOvVfqdbOOik1CsM1wjjhQ
-         76e4trWk59PGwCRf/GcGu2hZpfXHfP6f5KWFDJCKif9AuVHZitpMpfAMURZKhYbQaLtO
-         dLD+WKgYZkr8iAXbvclB8L9p2f3DJp0L+ciZ27UZApExU33N1z7nMNXVmhCm6wrxQUwp
-         zpdaqHcPqS1XPVjUF+0L2B53468yPDJgyXDWVpV7HJw+06YIYPyQ3E/zp4M/GdzGSSwD
-         SJrA==
-X-Gm-Message-State: AOAM533vb2YSsuqAupRp3QW/ajF3LAwRWFzWiWp5nMhhmk4w4C1TVnme
-        nogazvDDWgNJnF+iEpCmkCJ958uJWMHi1OjgtVI=
-X-Google-Smtp-Source: ABdhPJzOHGxXwjEZqemBP3a+UVSh0Vab4/4cUDv/2CNW8VKwOJp8IhUlYjy+JRu1p/Bz41h96gfWfAyTlIcaUEhAgvo=
-X-Received: by 2002:a05:651c:1205:: with SMTP id i5mr3254426lja.283.1605370060517;
- Sat, 14 Nov 2020 08:07:40 -0800 (PST)
+        Sat, 14 Nov 2020 11:22:05 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AEGBawC091327;
+        Sat, 14 Nov 2020 16:17:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=QG6AJniyjE85cjX6qgKMlQNz5oY29GaFUq46uOmSAhE=;
+ b=EcKl9mg6qXRgM+Ygr6kfZ8D2Vs9KlK4JBJBmdbQX8+YkIhxvoVtnyl7pqegVhyAxilvS
+ O6UUHTHfovM43rAOYrVun5rQudKYAg9SYz5H31fRmbAyruDwbACPJudRC1PW29h1IOst
+ uks6CcIhACAM0ETMk7eXAbCLUYTFmKNBB94IaCLLXYg5GY16aSVFfBEDyokLNiE89P87
+ UO/joqrh2jY8bpd4vKDaes1sRZF4srtKrIFAYzhft0LrYuM7kF1ET3EGrX0FgC3iwvBr
+ iS5pWbOkJ2WQSX2Ddla04w5AYWQAfOZPo4mGrJaViTF/Pge6daaIObSIXnHnpJXd++UI vQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34t76kgxhb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 14 Nov 2020 16:17:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AEGBPNu145504;
+        Sat, 14 Nov 2020 16:14:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 34t8bu6huy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 14 Nov 2020 16:14:59 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AEGEwxG012514;
+        Sat, 14 Nov 2020 16:14:58 GMT
+Received: from [192.168.0.190] (/68.201.65.98)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 14 Nov 2020 08:14:58 -0800
+Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
+ <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com>
+ <CAFcO6XMhrhJXWjRymKUWgFUov6OV7fTk-Nu9Tq=kOyPTMRnTug@mail.gmail.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+Autocrypt: addr=dave.kleikamp@oracle.com; prefer-encrypt=mutual; keydata=
+ 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
+ rnNNL3zBkwD3nWcTxFnX
+Message-ID: <298485e2-01de-048d-5515-44ac254167e4@oracle.com>
+Date:   Sat, 14 Nov 2020 10:14:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201114135126.29462-1-dev@der-flo.net>
-In-Reply-To: <20201114135126.29462-1-dev@der-flo.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 14 Nov 2020 08:07:29 -0800
-Message-ID: <CAADnVQL4zBmS5Yo3skoA32YjFXz5qu0q9LuJ5Z-61EGwZzgD6Q@mail.gmail.com>
-Subject: Re: [PATCH bpf,perf]] bpf,perf: return EOPNOTSUPP for attaching bpf
- handler on PERF_COUNT_SW_DUMMY
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFcO6XMhrhJXWjRymKUWgFUov6OV7fTk-Nu9Tq=kOyPTMRnTug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9805 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011140108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9805 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011140108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 5:53 AM Florian Lehner <dev@der-flo.net> wrote:
->
-> At the moment it is not possible to attach a bpf handler to a perf event
-> of type PERF_TYPE_SOFTWARE with a configuration of PERF_COUNT_SW_DUMMY.
+Thanks for reporting and testing this!
 
-It is possible or it is not possible?
+Shaggy
 
-Such "commit log as an abstract statement" patches are a mystery to a reader.
-Please explain what problem you're trying to solve and how it's being addressed.
-
-> Signed-off-by: Florian Lehner <dev@der-flo.net>
-> ---
->  kernel/events/core.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index da467e1dd49a..4e8846b7ceda 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9668,6 +9668,10 @@ static int perf_event_set_bpf_handler(struct perf_event *event, u32 prog_fd)
->         if (event->prog)
->                 return -EEXIST;
->
-> +       if (event->attr.type == PERF_TYPE_SOFTWARE &&
-> +           event->attr.config == PERF_COUNT_SW_DUMMY)
-> +               return -EOPNOTSUPP;
-
-Is it a fix or a feature?
-If it is a fix please add 'Fixes:' tag.
+On 11/14/20 7:55 AM, butt3rflyh4ck wrote:
+> Yes, I have tested the patch, it seem to fix the problem.
+> 
+> Regard,
+>  butt3rflyh4ck.
+> 
+> On Sat, Nov 14, 2020 at 5:16 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
+>>
+>> On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
+>>> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
+>>> kernel fuzz.
+>>>
+>>> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
+>>>
+>>> and can reproduce.
+>>>
+>>> the dmtree_t is that
+>>> typedef union dmtree {
+>>> struct dmaptree t1;
+>>> struct dmapctl t2;
+>>> } dmtree_t;
+>>>
+>>> the dmaptree is that
+>>> struct dmaptree {
+>>> __le32 nleafs; /* 4: number of tree leafs */
+>>> __le32 l2nleafs; /* 4: l2 number of tree leafs */
+>>> __le32 leafidx; /* 4: index of first tree leaf */
+>>> __le32 height; /* 4: height of the tree */
+>>> s8 budmin; /* 1: min l2 tree leaf value to combine */
+>>> s8 stree[TREESIZE]; /* TREESIZE: tree */
+>>> u8 pad[2]; /* 2: pad to word boundary */
+>>> };
+>>> the TREESIZE is totally 341, but the leafidx type is __le32.
+>>
+>> Does this patch fix the problem?
+>>
+>> jfs: Fix array index bounds check in dbAdjTree
+>>
+>> Bounds checking tools can flag a bug in dbAdjTree() for an array index
+>> out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
+>> both structures dmaptree and dmapctl, use the larger array to eliminate
+>> the false positive.
+>>
+>> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+>> ---
+>>  fs/jfs/jfs_dmap.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
+>> index 29891fad3f09..aa03a904d5ab 100644
+>> --- a/fs/jfs/jfs_dmap.h
+>> +++ b/fs/jfs/jfs_dmap.h
+>> @@ -183,7 +183,7 @@ typedef union dmtree {
+>>  #define        dmt_leafidx     t1.leafidx
+>>  #define        dmt_height      t1.height
+>>  #define        dmt_budmin      t1.budmin
+>> -#define        dmt_stree       t1.stree
+>> +#define        dmt_stree       t2.stree
+>>
+>>  /*
+>>   *     on-disk aggregate disk allocation map descriptor.
+>> --
+>> 2.29.2
+>>
