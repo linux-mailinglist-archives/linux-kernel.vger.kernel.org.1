@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B1E2B207B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704872B1FA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Nov 2020 17:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgKMQ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 11:29:57 -0500
-Received: from smtprelay0075.hostedemail.com ([216.40.44.75]:47578 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726352AbgKMQ34 (ORCPT
+        id S1726823AbgKMQJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 11:09:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7238 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgKMQJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 11:29:56 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 1CE8118224D75;
-        Fri, 13 Nov 2020 16:29:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2561:2564:2682:2685:2689:2691:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4559:5007:6117:6742:7576:7903:7904:7974:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12679:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:21939:30012:30041:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: wren57_400b39e27310
-X-Filterd-Recvd-Size: 3413
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 13 Nov 2020 16:29:53 +0000 (UTC)
-Message-ID: <61039da395c8a28444e2f3958d29deda4c0d49b3.camel@perches.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Moore, Robert" <robert.moore@intel.com>,
-        "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, Len Brown <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Fri, 13 Nov 2020 08:29:52 -0800
-In-Reply-To: <CANiq72k13K_zA5aH5hameoe4TSf2o5cA294bA4UEZG0M6S3DXQ@mail.gmail.com>
-References: <20201111021131.822867-1-ndesaulniers@google.com>
-         <BYAPR11MB3256E0C1DCB4F01D18DF709F87E80@BYAPR11MB3256.namprd11.prod.outlook.com>
-         <CAKwvOdk2U5+DcXYyMoBAhyaa67EukhB6QMEUbRPcOF7P3Sz21w@mail.gmail.com>
-         <BYAPR11MB3256C9711620932685C368F887E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-         <CAKwvOdnu07S8ZtGVe0eVFP=6hLSRa58EtDYOJUK_zGWFaqUboA@mail.gmail.com>
-         <BYAPR11MB3256BEF30840D4AB440A359C87E70@BYAPR11MB3256.namprd11.prod.outlook.com>
-         <CAKwvOdnYpmf=ydFVWSqVkWeUpn+M2v9PfdQd71T3oqQ9_1WQaQ@mail.gmail.com>
-         <CANiq72k13K_zA5aH5hameoe4TSf2o5cA294bA4UEZG0M6S3DXQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 13 Nov 2020 11:09:41 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CXk1b1Mtfzkk74;
+        Sat, 14 Nov 2020 00:09:23 +0800 (CST)
+Received: from huawei.com (10.151.151.249) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Sat, 14 Nov 2020
+ 00:09:34 +0800
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     <vkoul@kernel.org>, <robh+dt@kernel.org>,
+        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
+Date:   Sat, 14 Nov 2020 00:34:08 +0000
+Message-ID: <20201114003409.36406-1-gengdongjiu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.151.151.249]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-13 at 09:14 +0100, Miguel Ojeda wrote:
-> On Fri, Nov 13, 2020 at 1:09 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> > 
-> > Thank you for the explicit diagnostics observed.  Something fishy is
-> > going on though, https://godbolt.org/z/Gbxbxa is how I expect MSVC to
-> > handle include/linux/compiler_attributes.h.
-> > 
-> > The C preprocessor should make it such that MSVC never sees
-> > `__attribute__` or `__fallthrough__`; that it does begs the question.
-> > That would seem to imply that `#if __has_attribute(__fallthrough__)`
-> > somehow evaluates to true on MSVC, but my godbolt link shows it does
-> > not.
-> > 
-> > Could the upstream ACPICA project be #define'ing something that could
-> > be altering this? (Or not #define'ing something?)
-> > 
-> > Worst case, we could do as Joe Perches suggested and disable
-> > -Wfallthrough for drivers/acpi/acpica/.
-> 
-> I agree, something is fishy. MSVC has several flags for conformance
-> and extensions support, including two full C preprocessors in newer
-> versions; which means we might be missing something, but I don't see
-> how the code in compiler_attributes.h could be confusing MSVC even in
-> older non-conforming versions.
+The Hiedma Controller v310 Provides eight DMA channels, each
+channel can be configured for one-way transfer. The data can
+be transferred in 8-bit, 16-bit, 32-bit, or 64-bit mode. This
+documentation describes DT bindings of this controller.
 
-I believe this has nothing to do with linux and only
-to do with compiling acpica for other environments
-like Windows.
+Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
+---
+ .../bindings/dma/hisilicon,hiedmacv310.yaml   | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
 
-From: https://acpica.org/
-
-The ACPI Component Architecture (ACPICA) project provides an
-operating system (OS)-independent reference implementation of the
-Advanced Configuration and Power Interface Specification (ACPI).
-
-It can be easily adapted to execute under any host OS.
-
+diff --git a/Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml b/Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
+new file mode 100644
+index 000000000000..c04603316b40
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dma/hisilicon,hiedmacv310.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: HiSilicon Hiedma Controller v310 Device Tree Bindings
++
++description: |
++  These bindings describe the DMA engine included in the HiSilicon Hiedma
++  Controller v310 Device.
++
++maintainers:
++  - Dongjiu Geng <gengdongjiu@huawei.com>
++
++allOf:
++  - $ref: "dma-controller.yaml#"
++
++properties:
++  "#dma-cells":
++    const: 2
++
++  compatible:
++    const: hisilicon,hiedmacv310_n
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: apb clock
++      - description: axi clock
++
++  clock-names:
++    items:
++      - const: apb_pclk
++      - const: axi_aclk
++
++required:
++  - "#dma-cells"
++  - "#clock-cells"
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - resets
++  - reset-names
++  - dma-requests
++  - dma-channels
++  - devid
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/hi3559av100-clock.h>
++
++    dma: dma-controller@10040000 {
++      compatible = "hisilicon,hiedmacv310_n";
++      reg = <0x10040000 0x1000>;
++      misc_regmap = <&misc_ctrl>;
++      misc_ctrl_base = <0x144>;
++      interrupts = <0 82 4>;
++      clocks = <&clock HI3559AV100_EDMAC1_CLK>, <&clock HI3559AV100_EDMAC1_AXICLK>;
++      clock-names = "apb_pclk", "axi_aclk";
++      #clock-cells = <2>;
++      resets = <&clock 0x16c 7>;
++      reset-names = "dma-reset";
++      dma-requests = <32>;
++      dma-channels = <8>;
++      devid = <1>;
++      #dma-cells = <2>;
++    };
++
++...
+-- 
+2.17.1
 
