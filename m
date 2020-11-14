@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9752B2D32
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3D52B2D34
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgKNMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:47:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKNMrX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:47:23 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85878C0613D1;
-        Sat, 14 Nov 2020 04:47:23 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id f12so1595249pjp.4;
-        Sat, 14 Nov 2020 04:47:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/alDDGu77kr1jyJS2Dgo0f8lEWMLifOcaqhyEonywU8=;
-        b=aZZUKtrUI7FUZgNGTm6DhtaXCamioS0bcVM4yFOgeZ+hB3mXPddqxnr31T1x6L9cUR
-         MWquPRrsz+r8KdnHNpo23GDU1SPGYQ+vxFD3gzNIm15BlwfVU7/+Q/Hqt6qG1jgRGplg
-         R75u0DD9C2uGSJj+wOvc8R9h97myHYN0cywbq8d0Wg1qglgQ6ELvlpKqYORyUQOW/Y7o
-         G5zBMMdU2blRUi2RtuFa4x/SW6tllf97FApPk2ItQlc9+UQdy1ljwxYr/STw5eW9g4a8
-         WFmU+f13dm0rNIwTUURrUGfbfVZpqQOm6rHy0nJdoFYUWBQvIXMSwaFo0wBQSs/X6hAD
-         Xi9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/alDDGu77kr1jyJS2Dgo0f8lEWMLifOcaqhyEonywU8=;
-        b=fTeADznYJ5MBJ9jVt4DkYtQTNO6ulag8v7h27NnTTuFXErPeg9fb/zD4/ORH5lBh/r
-         bNH/M2hJrtuYgzOFPbRphbSSOJgqsyeC03i14gTqoBkdQIPMhyHhLUcfJYgsR0Gy7K+l
-         /CfNu2kw07wVQ5ZWgNvMcQqQ3BqW+rdpvLy4uHvn7J79t2qWgcoUJZqVzektUJNfr1he
-         snxefKtzmOs6iNHEcZ4E3EwBpeFl3u/Z8xkBX9FyXJ3g1QeBWK03qQYNzA0RV9QsOewW
-         pbjFaGLiBSDoooOemIvdEhQUTB+U7WHlQUKHNTy5QHaePLYMvzQESLSl/ENtbBptxP/W
-         iXuw==
-X-Gm-Message-State: AOAM531Hj9r7PM2YhtczQ9kpYwk/z+RbGIXrGzS68FMRA6Lz3GxGusWz
-        XDN84S3syWZJmZs9DUBv2SQkur/SNUrTDsQ=
-X-Google-Smtp-Source: ABdhPJxSMdYyDAOZ38fW7UFYncbtCKRMWFct9sclLFI+IJLblPh6HQkyy4+V8bEkfe5qfFkLISAaeA==
-X-Received: by 2002:a17:90a:5884:: with SMTP id j4mr7589631pji.7.1605358043132;
-        Sat, 14 Nov 2020 04:47:23 -0800 (PST)
-Received: from PWN ([221.124.243.27])
-        by smtp.gmail.com with ESMTPSA id s9sm12522743pfs.89.2020.11.14.04.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 04:47:22 -0800 (PST)
-Date:   Sat, 14 Nov 2020 07:47:16 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <20201114124716.GA12895@PWN>
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com>
- <20201114081021.GA11811@PWN>
- <X6/K/S9V7rj2hI5p@kroah.com>
- <X6/L/lE2pA7csBwd@kroah.com>
+        id S1726774AbgKNMsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:48:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgKNMsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 07:48:01 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 804B82222C;
+        Sat, 14 Nov 2020 12:47:58 +0000 (UTC)
+Date:   Sat, 14 Nov 2020 12:47:56 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm v10 28/42] arm64: kasan: Allow enabling in-kernel MTE
+Message-ID: <20201114124755.GD2837@gaia>
+References: <cover.1605305705.git.andreyknvl@google.com>
+ <123c654a82018611d38af8c83d1e90c16558ce52.1605305705.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X6/L/lE2pA7csBwd@kroah.com>
+In-Reply-To: <123c654a82018611d38af8c83d1e90c16558ce52.1605305705.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Nov 14, 2020 at 01:18:06PM +0100, Greg Kroah-Hartman wrote:
-> > On Sat, Nov 14, 2020 at 03:10:21AM -0500, Peilin Ye wrote:
-> > > Thanks for reviewing!  Questions about the last patch [5/5] though, it
-> > > depends on the following assumption:
-> > > 
-> > > """
-> > > For each console `idx`, `vc_cons[idx].d->vc_font.data` and
-> > > `fb_display[idx].fontdata` always point to the same buffer.
-> > > """
-> > > 
-> > > Is this true?  I think it is true by grepping for `fontdata`.  I also
-> > > noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
-> > > interchangeably, see fbcon_get_requirement():
-> > > 
-> > > 		vc = vc_cons[fg_console].d;
-> > > 		[...]
-> > > 			p = &fb_display[fg_console];
-> > > 			caps->x = 1 << (vc->vc_font.width - 1);
-> > > 					^^^^^^^^^^^
-> > > 			caps->y = 1 << (vc->vc_font.height - 1);
-> > > 					^^^^^^^^^^^
-> > > 			caps->len = (p->userfont) ?
-> > > 				FNTCHARCNT(p->fontdata) : 256;
-> > > 					   ^^^^^^^^^^^
-> > > 
-> > > If it is true, then what is the point of using `fontdata` in `struct
-> > > fbcon_display`?  Just for the `userfont` flag?  Should we delete
-> > > `fontdata`, when we no longer need the `userfont` flag?
-> > 
-> > Yes, after a quick look, I think your analysis here is correct.  So if
-> > you can delete that, it would be nice if possible.
-
-I see, at the moment we still need `userfont` for refcount handling, I
-will try to delete both `fontdata` and `userfont` after refcount is
-taken care of.
-
-> > > In this sense I think [5/5] needs more testing.  Do we have test files
-> > > for fbcon, or should I try to write some tests from scratch?
-> > 
-> > I don't know of any direct tests, I usually just booted into that mode
-> > and saw if everything looked like it did before.  There must be some
-> > tool that you can use to change the current font, as it seems to happen
-> > at boot time on some distros.  I can't remember what it's called at the
-> > moment...
+On Fri, Nov 13, 2020 at 11:15:56PM +0100, Andrey Konovalov wrote:
+> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > 
-> Ah, here's a hint:
-> 	https://wiki.archlinux.org/index.php/Linux_console#Fonts
+> Hardware tag-based KASAN relies on Memory Tagging Extension (MTE)
+> feature and requires it to be enabled. MTE supports
 > 
-> The setfont tool should help you out here.
+> This patch adds a new mte_enable_kernel() helper, that enables MTE in
+> Synchronous mode in EL1 and is intended to be called from KASAN runtime
+> during initialization.
+> 
+> The Tag Checking operation causes a synchronous data abort as
+> a consequence of a tag check fault when MTE is configured in
+> synchronous mode.
+> 
+> As part of this change enable match-all tag for EL1 to allow the
+> kernel to access user pages without faulting. This is required because
+> the kernel does not have knowledge of the tags set by the user in a
+> page.
+> 
+> Note: For MTE, the TCF bit field in SCTLR_EL1 affects only EL1 in a
+> similar way as TCF0 affects EL0.
+> 
+> MTE that is built on top of the Top Byte Ignore (TBI) feature hence we
+> enable it as part of this patch as well.
+> 
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Oh, I didn't know about this one.  I'll go experimenting with it,
-thank you!
-
-Peilin Ye
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
