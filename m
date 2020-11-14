@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B416F2B2ED7
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585872B2EEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbgKNRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 12:21:05 -0500
-Received: from fallback20.mail.ru ([185.5.136.252]:46682 "EHLO
-        fallback20.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgKNRVE (ORCPT
+        id S1726172AbgKNRYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 12:24:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55570 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726102AbgKNRYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 12:21:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=orpaltech.com; s=mailru;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To; bh=G/BdR6N4HNBGJKWNkGFVZJEUjGXgvcgZ3hZ24g4Fswk=;
-        b=l25iHuO/pTJrmbUv2DA1/Z8PruKz26DZPTbIWKqHjaDKzW6x34Gel3jkzlmYbh1ZgEKTR6Hfq92cyvE4ENDCxl+g1Hza9E+QniAJ2snIbgE4kII/TqucsTHGkc8Wg4pYAXBtxrzkkM/HlKAgrIr03Wvuur40tHm+5eQlwcbVo6Y=;
-Received: from [10.161.55.49] (port=44170 helo=smtpng1.m.smailru.net)
-        by fallback20.m.smailru.net with esmtp (envelope-from <ssuloev@orpaltech.com>)
-        id 1kdzES-0004Xh-RN; Sat, 14 Nov 2020 20:21:01 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=orpaltech.com; s=mailru;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=G/BdR6N4HNBGJKWNkGFVZJEUjGXgvcgZ3hZ24g4Fswk=;
-        b=kZVHPrJUsH/wsaY5BW9HNyDud1H1PqIuNealPrFp5zyDLrwhe/HUfZV0nW54BpDNaNhPaWmh/5gc8lwvhgu5HbY99AHL6pCPsQ/uoVOpVAkocKq0A5mt5/yDhVZFCSNv9pyAu1kDLAERJGocalkgvfx2s7lolS+VaDo8F1GjHMM=;
-Received: by smtpng1.m.smailru.net with esmtpa (envelope-from <ssuloev@orpaltech.com>)
-        id 1kdzEN-0001GK-D4; Sat, 14 Nov 2020 20:20:56 +0300
-To:     mripard@kernel.org, wens@csie.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-From:   Sergey Suloev <ssuloev@orpaltech.com>
-Organization: ORPALTECH
-Subject: BananaPi M2 support
-Message-ID: <9436b07d-7704-6a21-dfdb-b6aa9211d456@orpaltech.com>
-Date:   Sat, 14 Nov 2020 20:20:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 14 Nov 2020 12:24:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605374686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tGjC8d/Gtl161IJEFKhLiCdSuVyrzrzC+QaeU1bUZhw=;
+        b=YXFHkw23alViSzLkPnhj4xbhH2Sb80gIhQfnYKWwAvhgfLivPJJ6+3JEVpbYywlG6+JXKr
+        g3Yn5Q+KGlcu8wA9ObhN62ulUog/j+oseAd0ifbFg6P3b+BdWxJAjx1nomKJ2OqKYblFPi
+        OlhqAj5FMCoT4R/N1WSqrLwCzbAq1vQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-GPJcN5GfMRKQ11st8ebCdg-1; Sat, 14 Nov 2020 12:24:43 -0500
+X-MC-Unique: GPJcN5GfMRKQ11st8ebCdg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D355810866A1;
+        Sat, 14 Nov 2020 17:24:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EADB25B4B3;
+        Sat, 14 Nov 2020 17:24:40 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix afs_write_end() when called with copied == 0 [ver
+ #2]
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 14 Nov 2020 17:24:40 +0000
+Message-ID: <160537468016.3082569.17243477803724537224.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD911112A01BCD94C8790FF3BBA24F9ECB0ACDD9039095C161A182A05F53808504097B2D7426C3A9E7319EF1908A2138CAB7512D08E210AF9CFBD18DB83BCE98C94
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7DB84ED444C624799EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637FACF2191C0719DEE8638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FCDD28E1BEF72F7724C1FE0A871767B2FAC4AF8444C5CB0CC8389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C0D9442B0B5983000E8941B15DA834481FCF19DD082D7633A0E7DDDDC251EA7DABA471835C12D1D977725E5C173C3A84C317B107DEF921CE79117882F4460429728AD0CFFFB425014E324EE88A153DDB72089D37D7C0E48F6CA18204E546F3947C1FC58B5115ECA9A257739F23D657EF2BC8A9BA7A39EFB7666BA297DBC24807EA089D37D7C0E48F6C8AA50765F79006373FCCEAA2B7826EB1EFF80C71ABB335746BA297DBC24807EA27F269C8F02392CD20465B3A5AADEC6827F269C8F02392CD5571747095F342E88FB05168BE4CE3AF
-X-C8649E89: BAD636CA74F250DFB4E0B2B11223328664F14695FF13E11ADA8021B375409EEAD5C5CDAB41E961B0
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojDRL4qZGo9BfYtnxR/V41kg==
-X-Mailru-Sender: 689FA8AB762F73937240DDB2502DDB70B90C6A088BDE3E613871FEC7B9856449778B5FB1219D8779F6BCD4B1DE95BF653AE5922765F965CDF1D7D1B96E5495AE10FCEA6DFE3E0A150D4ABDE8C577C2ED
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4F0F7332D917A15D0B8B936D8213160641EC77EBFF543984D68F3CF0E9FE49B6981039C19B711C3F922E1C5CD0E150AD30A68E8201A02D54E581C906419DDB188
-X-7FA49CB5: 0D63561A33F958A588C14C289D91B5E8B6D10490F703066A3D1DE252A3B763268941B15DA834481FA18204E546F3947CB645AEB2D65EEA52117882F4460429724CE54428C33FAD30A8DF7F3B2552694A4A5EC4583E1CDF108941B15DA834481F8AA50765F7900637DC24B783B16D3BB1389733CBF5DBD5E9B5C8C57E37DE458B9CE521CEE623D0CE67F23339F89546C55F5C1EE8F4F765FC21B5D9033E1BE8D175ECD9A6C639B01BBD4B6F7A4D31EC0BC0CAF46E325F83A522CA9DD8327EE493B89ED3C7A6281781F65A62F6C9828292C4224003CC836476C0CAF46E325F83A50BF2EBBBDD9D6B0F05F538519369F3743B503F486389A921A5CC5B56E945C8DA
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojDRL4qZGo9BcL8XWnNabY4w==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C900538CFDDA562D7B4DA5F359A5051613CA553D7BA8E26094894D0CB07E3EF90B1CB5FC78D3D9DFD682EC77752E0C033A69E3DF03E4AFE169B847187F6D0DA2124709F6F601AB1435FA63CDA0F3B3F5B9367
-X-Mras: Ok
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When afs_write_end() is called with copied == 0, it tries to set the dirty
+region, but there's no way to actually encode a 0-length region in the
+encoding in page->private.  "0,0", for example, indicates a 1-byte region
+at offset 0.  The maths miscalculates this and sets it incorrectly.
 
-I noticed that BananaPi M2 (A31 SoC) does not boot anymore on modern 
-kernels. The problem arises somewhere between 5.7.19 - 5.8.18. I have 
-saved boot logs for both versions https://pastebin.com/DTRZi8R7  and  
-https://pastebin.com/PS2hq07A. Logs have been taken on clean/non-patched 
-kernel with default config, u-boot v2020.10.
+Fix it to just do nothing but unlock and put the page in this case.  We
+don't actually need to mark the page dirty as nothing presumably changed.
 
-The kernel versions 5.7.x and below work well (I tried 5.5.19 and 
-5.6.19). The versions 5.8.18 and above all fail (5.9 and 5.10).
+Fixes: 65dd2d6072d3 ("afs: Alter dirty range encoding in page->private")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Could you look at the problem or provide an advice about further 
-investigation, please ?
+ fs/afs/write.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 50371207f327..07f29c5be771 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -169,11 +169,14 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 	unsigned int f, from = pos & (PAGE_SIZE - 1);
+ 	unsigned int t, to = from + copied;
+ 	loff_t i_size, maybe_i_size;
+-	int ret;
++	int ret = 0;
+ 
+ 	_enter("{%llx:%llu},{%lx}",
+ 	       vnode->fid.vid, vnode->fid.vnode, page->index);
+ 
++	if (copied == 0)
++		goto out;
++
+ 	maybe_i_size = pos + copied;
+ 
+ 	i_size = i_size_read(&vnode->vfs_inode);
+@@ -196,7 +199,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 			if (ret < 0)
+ 				goto out;
+ 		}
+-		SetPageUptodate(page);
++		SetPageUptoodate(page);
+ 	}
+ 
+ 	if (PagePrivate(page)) {
 
-Thank you
 
