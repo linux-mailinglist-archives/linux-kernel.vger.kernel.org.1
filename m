@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC712B2E32
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F012B2E37
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgKNPnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 10:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727029AbgKNPnx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 10:43:53 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D314CC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 07:43:52 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id y73so6825611vsc.5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 07:43:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KTX8imKrpeZUnkCQT3x5PhotuxL5M6giZ29gKkm/azk=;
-        b=I/X3NLpZjQWj+fZ76eNMU4NH/BTXCxI4IDxr4bZ8gQ16IbBkt76wMNG/kucVIaiSzq
-         bL5EfL8RP31Z0zZMiH2RDhD0EJIDsAFeb8I4WTmUiaAxKcCs9R7JRD+wsFKV0jdFengX
-         5ihgG6CEj1pm7bWbTEBRBZyzjUDGs5wbEqiakGJM6xmYbYJDhoKZsQ924wSsgcG+w52X
-         j3PjuRw09un2/Gute9b7hWauEYN6jq23CP/59OBhMg1PLkkFB8p8UBc4GYUdgdifH6H+
-         iExqFfQKRG6PKevEMijP1zjWdAYs71C6vWgQ0rcFl/ach3XxcvYFuorjQ+sJ7+VHNoMx
-         EiUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KTX8imKrpeZUnkCQT3x5PhotuxL5M6giZ29gKkm/azk=;
-        b=FuyN4MzZXQXIM/4SSQp1Sa/f2MEp6MMC/N7ftwftiWEJWTZK44ceD+4bCjqvvEbNHb
-         q1qyjhOgj0/WaknrxyF2DqDBKWCiFWeVMmP/q6r92ZPBHV8udF+c+Jha0qfXnp8cFKm1
-         XoKI3rtBLdij+4djOCOW8WfB5ONDjmqMBWGZqSAsxpecY2So6rxcutxp5K83Q20huueL
-         DgU6f2k8dr01mVpr9MJvkUVD2TtEExSt6u+1Nql9mtiG+JTwagPhlu5q7YMkvWlar4qG
-         PEvqWNyKWtBUHW7aLeRBqeoeqjKYJEuSvTobJ1A6mlorfsDIuKeR+7Go4s7CxPSFEDlx
-         DV/w==
-X-Gm-Message-State: AOAM531xeqzEXmMyVYdmXLlHEeDwZnrbKZoBedt3144oSnHrH309Z8de
-        t22Bltpmpcy84SkqBqShJVzj4boC5NCbX44NxGE=
-X-Google-Smtp-Source: ABdhPJySxe46Gwz5dgz40QSz/C7vbXUUBytJeiYiPjXou93dzy4uK1W8yQ0+4HiEqpyPnOi3+Ml5/yhpZdb++LkTVf4=
-X-Received: by 2002:a05:6102:3203:: with SMTP id r3mr4283347vsf.21.1605368632042;
- Sat, 14 Nov 2020 07:43:52 -0800 (PST)
+        id S1727181AbgKNPqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 10:46:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727023AbgKNPqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 10:46:46 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69B4522254;
+        Sat, 14 Nov 2020 15:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605368806;
+        bh=goHaolbjw30a+EKdHtSQX6pyt5XC1BydKi65tudi8MU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TwG4XwTitBBCcrpR8+kmM/0aTv9tvgTIRPnygVP4/I5RGNYKJKN0Tf+yP5idzt2aR
+         HqYVW1XDcVYksnkogG7/mUPcwya8GXjbPxTQ/hhe6GnekdZ/Y0LTpaXZob8uiLnWrr
+         1TYS+w1rkbhw/yDwc3O3iZjxCHLspQQVYarqU250=
+Date:   Sat, 14 Nov 2020 15:46:41 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 1/4] device: provide devm_krealloc_array()
+Message-ID: <20201114154641.0258f4ee@archlinux>
+In-Reply-To: <20201102142228.14949-2-brgl@bgdev.pl>
+References: <20201102142228.14949-1-brgl@bgdev.pl>
+        <20201102142228.14949-2-brgl@bgdev.pl>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a67:fe94:0:0:0:0:0 with HTTP; Sat, 14 Nov 2020 07:43:51
- -0800 (PST)
-Reply-To: elizabethedward042@gmail.com
-From:   Elizabeth Edward <alimanibrahim770@gmail.com>
-Date:   Sat, 14 Nov 2020 15:43:51 +0000
-Message-ID: <CAGPE3s4Cg-D864SMbsnZsrVjpbWU9Gu-AssqL3igCE-qxg7zfA@mail.gmail.com>
-Subject: REPLY ME URGENTLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greeting
+On Mon,  2 Nov 2020 15:22:25 +0100
+Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-Please forgive me for stressing you with my predicaments and I sorry
-to approach you through this media it is because it serves the fastest
-means of communication. I came across your E-mail from my personal
-search and I decided to contact you believing you will be honest to
-fulfill my final wish before I die.
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> When allocating an array of elements, users should check for
+> multiplication overflow or preferably use one of the provided helpers
+> like: devm_kmalloc_array().
+> 
+> This provides devm_krealloc_array() for users who want to reallocate
+> managed arrays.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
++CC Greg KH. 
 
-I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
-am suffering from a pro-long critical cancer, my doctors confirmed I
-may not live beyond two months from now as my ill health has defiled
-all forms of medical treatment.
+As this is going into a very generic place I'd like a relevant ack.
+That file is a bit of a wild west for acks, but Greg seems most
+appropriate person.
 
+So Greg, any comments on this one?
 
-Since my days are numbered, I have decided willingly to fulfill my
-long-time promise to donate you the sum ($5.000.000.00) million
-dollars I inherited from my late husband Mr. Edward Herbart, foreign
-bank account over years. I need a very honest person who can assist in
-transfer of this money to his or her account and use the funds for
-charities work of God while you use 50% for yourself. I want you to
-know there are no risk involved, it is 100% hitch free & safe. If you
-will be interesting to assist in getting this fund into your account
-for charity project to fulfill my promise before I die please let me
-know immediately. I will appreciate your utmost confidentiality as I
-wait for your reply.
+Thanks,
 
+Jonathan
 
-Best Regard,
+> ---
+>  include/linux/device.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 5ed101be7b2e..e77203faea55 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -226,6 +226,17 @@ static inline void *devm_kmalloc_array(struct device *dev,
+>  
+>  	return devm_kmalloc(dev, bytes, flags);
+>  }
+> +static inline void *
+> +devm_krealloc_array(struct device *dev, void *ptr, size_t new_n,
+> +		    size_t new_size, gfp_t gfp)
+> +{
+> +	size_t bytes;
+> +
+> +	if (unlikely(check_mul_overflow(new_n, new_size, &bytes)))
+> +		return NULL;
+> +
+> +	return devm_krealloc(dev, ptr, bytes, gfp);
+> +}
+>  static inline void *devm_kcalloc(struct device *dev,
+>  				 size_t n, size_t size, gfp_t flags)
+>  {
 
-
-Mrs. Elizabeth Edward
