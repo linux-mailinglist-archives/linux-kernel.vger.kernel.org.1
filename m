@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772D32B2A63
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3859D2B2A66
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbgKNBRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 20:17:40 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:59560 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgKNBRk (ORCPT
+        id S1726322AbgKNBR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 20:17:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgKNBR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 20:17:40 -0500
-Received: by linux.microsoft.com (Postfix, from userid 1046)
-        id 6B85E20B71B7; Fri, 13 Nov 2020 17:17:39 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6B85E20B71B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605316659;
-        bh=yUF3L6bAkQSx57oUz6pPfzc487YJPjSYBv9gnynSNRc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nyIdzzSJoZHNLbkf+LBkN/YUO6dxnk6BDkVtbkFafsayjDjlVxKzhLONudEhqYDv6
-         D9npTEhjg/JOevaU0Q36G00on/hick+/lKyn+OmBYn2kIr5iL7JudDm1y/04WskFz2
-         eX/flqr4sjvmhvP3OTEHutoRn+qE7jFScyau/vkU=
-From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
-To:     ray.jui@broadcom.com
-Cc:     andriy.shevchenko@linux.intel.com,
-        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
-        dphadke@linux.microsoft.com, f.fainelli@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lori.hikichi@broadcom.com,
-        rayagonda.kokatanur@broadcom.com, rjui@broadcom.com,
-        sbranden@broadcom.com, wsa@kernel.org
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-Date:   Fri, 13 Nov 2020 17:17:39 -0800
-Message-Id: <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
-References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
+        Fri, 13 Nov 2020 20:17:59 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4CCC0613D1;
+        Fri, 13 Nov 2020 17:17:58 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdkCQ-005Ux6-Bf; Sat, 14 Nov 2020 01:17:54 +0000
+Date:   Sat, 14 Nov 2020 01:17:54 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201114011754.GL3576660@ZenIV.linux.org.uk>
+References: <20201104082738.1054792-1-hch@lst.de>
+ <20201104082738.1054792-2-hch@lst.de>
+ <20201110213253.GV3576660@ZenIV.linux.org.uk>
+ <20201110213511.GW3576660@ZenIV.linux.org.uk>
+ <20201110232028.GX3576660@ZenIV.linux.org.uk>
+ <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
+ <20201111215220.GA3576660@ZenIV.linux.org.uk>
+ <20201111222116.GA919131@ZenIV.linux.org.uk>
+ <20201113235453.GA227700@ubuntu-m3-large-x86>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113235453.GA227700@ubuntu-m3-large-x86>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 11:24:36 -0800, Ray Jui wrote:
+On Fri, Nov 13, 2020 at 04:54:53PM -0700, Nathan Chancellor wrote:
 
->>>> Yes it's true that for master write-read events both
->>>> IS_S_RD_EVENT_SHIFT and IS_S_RX_EVENT_SHIFT  are coming together.
->>>> So before the slave starts transmitting data to the master, it should
->>>> first read all data from rx-fifo i.e. complete master write and then
->>>> process master read.
->>>>
->>>> To minimise interrupt overhead, we are batching 64bytes.
->>>> To keep isr running for less time, we are using a tasklet.
->>>> Again to keep the tasklet not running for more than 20u, we have set
->>>> max of 10 bytes data read from rx-fifo per tasklet run.
->>>>
->>>> If we start processing everything in isr and using rx threshold
->>>> interrupt, then isr will run for a longer time and this may hog the
->>>> system.
->>>> For example, to process 10 bytes it takes 20us, to process 30 bytes it
->>>> takes 60us and so on.
->>>> So is it okay to run isr for so long ?
->>>>
->>>> Keeping all this in mind we thought a tasklet would be a good option
->>>> and kept max of 10 bytes read per tasklet.
->>>>
->>>> Please let me know if you still feel we should not use a tasklet and
->>>> don't batch 64 bytes.
->>>
->>> Deferring to tasklet is OK, could use a kernel thread (i.e. threaded_irq)
->>> as i2c rate is quite low.
->>>
->
->kernel thread was proposed in the internal review. I don't see much
->benefit of using tasklet. If a thread is blocked from running for more
->than several tenth of ms, that's really a system-level issue than an
->issue with this driver.
->
->IMO, it's an overkill to use tasklet here but we can probably leave it
->as it is since it does not have a adverse effect and the code ran in
->tasklet is short.
->
->How much time is expected to read 64 bytes from an RX FIFO? Even with
->APB bus each register read is expected to be in the tenth or hundreds of
->nanosecond range. Reading the entire FIFO of 64 bytes should take less
->than 10 us. The interrupt context switch overhead is probably longer
->than that. It's much more effective to read all of them in a single
->batch than breaking them into multiple batches.
+> This patch in -next (6a9f696d1627bacc91d1cebcfb177f474484e8ba) breaks
+> WSL2's interoperability feature, where Windows paths automatically get
+> added to PATH on start up so that Windows binaries can be accessed from
+> within Linux (such as clip.exe to pipe output to the clipboard). Before,
+> I would see a bunch of Linux + Windows folders in $PATH but after, I
+> only see the Linux folders (I can give you the actual PATH value if you
+> care but it is really long).
+> 
+> I am not at all familiar with the semantics of this patch or how
+> Microsoft would be using it to inject folders into PATH (they have some
+> documentation on it here:
+> https://docs.microsoft.com/en-us/windows/wsl/interop) and I am not sure
+> how to go about figuring that out to see why this patch breaks something
+> (unless you have an idea). I have added the Hyper-V maintainers and list
+> to CC in case they know someone who could help.
 
-OK, there's a general discussions towards removing tasklets, if this
-fix works with threaded isr, strongly recommend that route.
-
-This comment in the code suggested that register reads take long time to
-drain 64 bytes.
-
->+/*
->+ * It takes ~18us to reading 10bytes of data, hence to keep tasklet
->+ * running for less time, max slave read per tasklet is set to 10
->bytes.
-
-@Rayagonda, please take care of hand-off mentioned below, once the tasklet
-is scheduled, isr should just return and clear status at the end of tasklet.
-
->>
->> Few other comments -
->>
->>> +              /* schedule tasklet to read data later */
->>> +              tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
->>> +
->>> +              /* clear only IS_S_RX_EVENT_SHIFT interrupt */
->>> +              iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
->>> +                               BIT(IS_S_RX_EVENT_SHIFT));
->>> +      }
->>
->> Why clearing one rx interrupt bit here after scheduling tasklet? Should all that
->> be done by tasklet? Also should just return after scheduling tasklet?
-
-Regards,
-Dhananjay
+Out of curiosity: could you slap WARN_ON(!iov_iter_count(iter)); right in
+the beginning of seq_read_iter() and see if that triggers?
