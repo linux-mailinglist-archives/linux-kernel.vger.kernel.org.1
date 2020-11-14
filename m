@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DD22B2D4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 14:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C962B2D45
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 14:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgKNNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 08:16:43 -0500
-Received: from vultr.net.flygoat.com ([149.28.68.211]:49248 "EHLO
-        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgKNNQm (ORCPT
+        id S1726593AbgKNNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 08:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKNNJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 08:16:42 -0500
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 79E461FEB5;
-        Sat, 14 Nov 2020 13:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1605359381; bh=kOdxqmTeFNrIu40ucROytLRPFSIT56o9VQ3JPCTlUeU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hYLAsYvwOQlPdCFH8kdxJ8TIwTI5SlK1PshKwQpI9AZ9Izn5bC4en/GmeSM531N4x
-         rm9/pxZTaXIMJgPNk+SSySNAXzyIertzGuVc9cSen0P9Z3lcMWxRb6WxiXeGwKfZLB
-         +XVrlrCsJoZCH2Z0EM2Q9v3V2X4Ooc/RBkp47Zg4eIaNRCM/aM42GgfKY/ywr1brei
-         npYih3I025r9GaiR2R/qz7rwBYFBOPZQyZkFtYgmN+cPOir9rcFV0xinKMFQdsECEx
-         F00ijTlRR+2Csjdrls34QUw86eVBpr/MTwUwQ3Z1m15Q6PlDrqouAQlv16wjJa+ccC
-         Y84E8ItfUyYZQ==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Miodrag Dinic <Miodrag.Dinic@syrmia.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH 2/2] MAINTAINERS: Set myself as Goldfish RTC maintainer
-Date:   Sat, 14 Nov 2020 21:09:21 +0800
-Message-Id: <20201114130921.651882-3-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
-References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
+        Sat, 14 Nov 2020 08:09:42 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A12C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 05:09:42 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id r17so13399039wrw.1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 05:09:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=ixoSNZJA8kWzV6CZde+dNOcySgZ4SNZUkpq4lvDcoHTNRLclSMehM/+hr3GuiSHjP9
+         MKzrsPyWNmpUQ1Z9HgjTUYXH8I/MZIq/WRkIsuhw0l2axOxnh1XKQKEtY0rc+fwNo0O4
+         tox6pi7q8n4BgYc5eMwRh+eyV1gLku35Sx2tCGVeOkPZ60wNEfYYXip0XhoN8KQsCBWL
+         UB7cAoKmgOL5JNhexBxHcNokH2iWvauBxpWoDrXQVfk7cVrl4DcSS+s8XU5Ppn8USlBa
+         CPt3+nMzW7ni895pwF+bDRRQQwIqS11xQe9/QpOSKsLmUCV6ooTqKNOApMH9SSgao+YF
+         w1WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=prQsvJmwcCho1RAgcxVb6Aop3K1stnOVR9UxiVEN6waqn06VS2ZBwYBL+MI9bsXyjY
+         jPq3wTZTTw6SL9DNjHnSC8EalD7YYHvfCjP3bVnerjFmgAmJyy4PIY4nrlHiHqyyI/Z1
+         iNjDdk8Y1Mv1hpoXPwjeYsdd25SSqMhskulnbIqPJOvQsFhcwtkyTXedyIxAehjKfzgf
+         Yc0AJ9DvM6eZTPhsoQeleZ2ZnhDBGLcYLF0VTGfyIkwPOCrhP1v9WHB/EM8Qe0K9UmXp
+         HWBRXjTSx7FQ5tVUrVsNwEl5JisFsVOD7qiOCz0Ot+WxSAAHCQTlRDuLzmOdhDg2Vk5J
+         JD9w==
+X-Gm-Message-State: AOAM533R7f2Pn3ll+Td5Dmrjd5UGNC4WR2jtjprVVlhmLe58lPkfdxao
+        oQboxAKBOhX6X9pWZeX18hCSWd7oayqj78MX/dU=
+X-Google-Smtp-Source: ABdhPJw8FDTb1/n/s4RgELRvAm7duU2ybTLGPBh3bHtgo3sK0Xd44E75KKqDFuK15HLMdLwgKFdorbw/sW9eG2DnBfw=
+X-Received: by 2002:adf:ea47:: with SMTP id j7mr9456796wrn.126.1605359381209;
+ Sat, 14 Nov 2020 05:09:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:adf:fdcd:0:0:0:0:0 with HTTP; Sat, 14 Nov 2020 05:09:40
+ -0800 (PST)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <edohkossibrice@gmail.com>
+Date:   Sat, 14 Nov 2020 14:09:40 +0100
+Message-ID: <CAPn8y9JFX5kXjB035z89yDJaxwmDwnDLUgZXKFMmvBwXu7WT3w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While Gildfish platform is dusted, the RTC driver remains
-valuable for us.
+Hallo
 
-I'm volunteering to maintain goldfish RTC driver onward.
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Miodrag Dinic <Miodrag.Dinic@syrmia.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7031@gmail.com
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b75f29..b576544264e6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1168,7 +1168,7 @@ F:	Documentation/devicetree/bindings/interrupt-controller/google,goldfish-pic.tx
- F:	drivers/irqchip/irq-goldfish-pic.c
- 
- ANDROID GOLDFISH RTC DRIVER
--M:	Miodrag Dinic <miodrag.dinic@mips.com>
-+M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
- S:	Supported
- F:	Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
- F:	drivers/rtc/rtc-goldfish.c
--- 
-2.29.2
-
+Vielen Dank im Voraus,
+Mr. George Mike,
