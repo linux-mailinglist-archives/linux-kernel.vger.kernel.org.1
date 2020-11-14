@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3C32B2C4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA142B2C53
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgKNIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 03:55:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgKNIzC (ORCPT
+        id S1726599AbgKNI7u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 14 Nov 2020 03:59:50 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:43624 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgKNI7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 03:55:02 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60383C0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:55:02 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id l14so6862310ybq.3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:55:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zwKm/hKuMkhye7s1kt8ShQ5e/i85Z/4lZbGtkzeX7oE=;
-        b=ne6AKiZeI0W1LxIk9a/cBbrGQR1zULUQ89PKj0UVmq+vm16kxkPI1nzDL00BEsyOjp
-         NHjwN9HL0OXszSNQVV1llrSRQJ/C56WUws+27ndSWlDdTGdGeaN5hTHR+vRgkFN7qse/
-         OtEuPL9bOfhQo6XNPAwIBSI6gyKqF2htzlCjDEDL3l2PtlWsG1MQ1WSS22Y1Yq54z+Cn
-         MFYpcrzbb4UnKHsrtqKs1wXYd02cTWATcc5gCf/sNZ7UHTQoKgBFAs7nJccd2auHbWyY
-         LKNc7mXC3rSzQpkQfoLwtxTHI/y0XkxfpVofqBRrxJtOpUgRnZbNlQigR6L6DI+t5StE
-         p86A==
+        Sat, 14 Nov 2020 03:59:50 -0500
+Received: by mail-il1-f194.google.com with SMTP id k1so10661895ilc.10
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:59:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zwKm/hKuMkhye7s1kt8ShQ5e/i85Z/4lZbGtkzeX7oE=;
-        b=GieYJo93fe1z00yMF8OecaVLfB3FRUlK28YTMyJM2wDR1kiHwvRSt4lyMLiLqhonC4
-         K+TORELgqbVVAG6fXu4QbSjjqZgehMXMdssg5igUmYeAaBYT3695aC+p6zAjFOmP4QBZ
-         hL7bEJZZCKXcHav/+sBY+hqha3E4o75ipyvgggdEUPj0CiSoX/BBjdnLblM7lRcAaoQ6
-         I1PG9uqt0fAg9nMbKvEkJuwuu9TTkzwSTafwPmRD9CP0hWXzC2qXGPMzbc0a1vYhVVCm
-         JllrBMmfYuQoFxCfyiFgugzOO6Ozp5IlQ1m5lHfeC6N5WwjvRsU/GzZzVJi50Uv1jvG0
-         VKyw==
-X-Gm-Message-State: AOAM532HwWSN2PVPhGvTNE93e2qFlkLWQrLTtI0FLQUeS+38l1fMaDpu
-        5QsEb+f9i8EHFg9h8hqUheXGUEiS8G8TrrXzeW4=
-X-Google-Smtp-Source: ABdhPJxn+CXKSv6XVAOHa7fpo8I/rm3XSHFgCgmfvkHwfCU0RmrGxTTlpAcap9u3IexVQEYIejrgfmii8rcKtxXnAV0=
-X-Received: by 2002:a25:2e0d:: with SMTP id u13mr1260389ybu.247.1605344101581;
- Sat, 14 Nov 2020 00:55:01 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lnRBIXl3Fe3njvQOAu3kkDy57kGIeRkfxE4PMnJy5a4=;
+        b=oHm9h4LnG4Ubgts8448zwE3X0dxQTV+LKdlBI0q6xO3XSJdiWpypNNhHfKiwUIgRmR
+         pDPlWbU9a6l6ovBcKBlTFccGQ4lMDWpbuTXgWiWQ1mqX+D7lrriZXeVW2Fdm3dCJTDtY
+         qaSZJEcauY7gtIijPi3bejq6mp0PEcgDYWWiQPCcgBNDolvM5Yz3Ae/xYALtVE4Gopir
+         Y3DlvkvSLBvn7wobT5jJRNNd8GfLNX6f2jxuENLjU+Qc51NuzahlOOFwcOkoonzxnt+R
+         Iafq/2NM21kFMJT1l+ujFE5Y6/ufkuhZd6UYtK8sXyYk2CCllTJBrRfCMW23V5FJRBaQ
+         Z2TQ==
+X-Gm-Message-State: AOAM530rH5j8to0l7k+2hM27uY2igdHogqFQ719/wTs88zhnzJKPBSXa
+        1jCa4vqu1fg9u2DoU7CHQuZYE2hEtGZnYXoC+9w=
+X-Google-Smtp-Source: ABdhPJx/h9R0+oiwa6YZNLylbIIVmwTkg0ApqupNp6akgXvsLBljLGIzrmaLvjBE2+uZZsbI2NLqMT3FYw0tR/kwhy0=
+X-Received: by 2002:a92:85c5:: with SMTP id f188mr2823212ilh.173.1605344389441;
+ Sat, 14 Nov 2020 00:59:49 -0800 (PST)
 MIME-Version: 1.0
-References: <202011111755.9Uwp2gF6-lkp@intel.com> <20201111092559.GA67395@c88ae2e89e59>
-In-Reply-To: <20201111092559.GA67395@c88ae2e89e59>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 14 Nov 2020 09:54:50 +0100
-Message-ID: <CANiq72=_XwBuNVsYi9VV4NxXOtg=eginh_c3XxZ1v09Psr3YRQ@mail.gmail.com>
-Subject: Re: [PATCH] auxdisplay: fix platform_no_drv_owner.cocci warnings
-To:     kernel test robot <lkp@intel.com>
-Cc:     Lars Poeschel <poeschel@lemonage.de>, kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201113205233.827493-1-rkir@google.com> <20201113210730.GA1992396@bogus>
+ <CAOGAQeq29S06+6M58qF0e4ivjzkZDg4+M7ffSK+FapbgmCBrLQ@mail.gmail.com>
+ <CAL_Jsq+QjQxDh3_KDhgE_2A6DjA+gSyvknjrVfRFLMLz-p_M9A@mail.gmail.com>
+ <CAOGAQepCsj63yZzJJHKCdHTenkWNLc_v=Ab6PgvS3hzqZMwH8A@mail.gmail.com>
+ <CAOGAQepW3pbbjK9KpPZR1BwGY-CGF7V_pTY_9dw98XPgUKYFHg@mail.gmail.com>
+ <X68aZ/Dgm7CObQmH@kroah.com> <tencent_3801BEAE39670E174105E007@qq.com> <X6+SP0RGUUAL40ty@kroah.com>
+In-Reply-To: <X6+SP0RGUUAL40ty@kroah.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Sat, 14 Nov 2020 16:59:37 +0800
+Message-ID: <CAAhV-H5uak2Txvj3-yZz5HJxiE8tUKyGEibVa8LkqJOYn2+ACQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers: rtc: retire RTC_DRV_GOLDFISH
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Roman Kiryanov <rkir@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lingfeng Yang <lfy@google.com>, Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 10:26 AM kernel test robot <lkp@intel.com> wrote:
->
-> From: kernel test robot <lkp@intel.com>
->
-> drivers/auxdisplay/lcd2s.c:373:3-8: No need to set .owner here. The core will do it.
->
->  Remove .owner field if calls are used which set it automatically
->
-> Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
->
-> Fixes: 8c9108d014c5 ("auxdisplay: add a driver for lcd2s character display")
-> CC: Lars Poeschel <poeschel@lemonage.de>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
+Hi, Greg,
 
-Lars, I am picking this one, just so that you know.
+On Sat, Nov 14, 2020 at 4:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Nov 14, 2020 at 04:06:24PM +0800, 陈华才 wrote:
+> > Hi, All,
+> >
+> > Goldfish RTC works well on MIPS, and QEMU RISC-V emulator use Goldfish
+> > as well, so I think  we should keep it in kernel.
+>
+> And more importantly, if you rely on this, are you willing to maintain
+> it?
+I think it will break the booting of MIPS/RISCV QEMU virtual machines,
+because RTC is an necessary device.
 
-Cheers,
-Miguel
+For the maintenance, I don't know whether Goldfish RTC depends on the
+code under drivers/platform/goldfish. If not, I think I can maintain
+it (I think other parts of Goldfish will be removed, I'm able to
+maintain RTC but I'm not able to maintain the whole).
+
+Huacai
+
+>
+> thanks,
+>
+> gre gk-h
