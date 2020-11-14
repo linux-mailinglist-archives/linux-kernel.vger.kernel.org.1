@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7DE2B2C0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 550642B2C11
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgKNIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 03:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgKNIK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 03:10:28 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C05AC0613D1;
-        Sat, 14 Nov 2020 00:10:28 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id f38so8895813pgm.2;
-        Sat, 14 Nov 2020 00:10:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UjoM/Jb9YzMDUNLXPrC2c7aiTcht0/xGNSfdesVAVqI=;
-        b=IGiUSEBZx9/TmLfHHpK3pQ7GSrhfMQFNSfGAC1pbY2Ge/tO189H8uPBwgsjiUksNnA
-         j8Ndu+iaMovK3CgVOmlPYgIj7a2okENhx0LNMOjoJ9I49pmMbyrGBLDrvnzipOKZszP+
-         5m9NTEoCxkjkCEznH0MTgdqoqEYERxY36mFXnGHG4SJQsLogUrAbkT4p8CdUO8XPBrR/
-         2AQERdbw1QMl7UijRsIkesKRf96Xe3T7FiPOnUy0Dslpsvy4lxQm6m8btQMU0Ij1CY+c
-         Mz1wpWy4yLvc5zXBIHwW2N7c85QpN90wx4Eb8minXiKj7+IAqJWA6yyEFXGmMawl7GWT
-         4qCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UjoM/Jb9YzMDUNLXPrC2c7aiTcht0/xGNSfdesVAVqI=;
-        b=ptXLjLJzXZOkCypx2pctB531mQj+Uvecj9DJnYBVLcDngXZixI5P+U5Y6eaiuIMim+
-         ptrNoXSu+4DRb0rgVqLzWe/pgIzLfMbcPAlbssllQys/ssE6n/nxj2VWpEKhST5sxfee
-         EJlVZX36HgAT54vVXLP0/wlYKpKszlxz/w0wqgUpEcb+kirCrHzS0v6CXpN++F8by5Ew
-         uRYnQLNRvL42TR2Om53ycgOKz8rpKowIsgvw1AaERTixwVgo2zWQDXErHBJc8HIgm1Og
-         gUnzl0dY7zTcPQk8gRQNOWpinXzSfZE0Y7K0jvGvBamObvvIdMJDSM3Tg8cHY5Z0OOFC
-         K7kA==
-X-Gm-Message-State: AOAM5320lNrIbBkDHUdrg7mCwC61T5cE07jRco9v9hEOn5dWv+v5PU3z
-        3IBYLGmK0lKI9tdpRxSLog==
-X-Google-Smtp-Source: ABdhPJwBZoL847JBlahwrxY8TlcxOqmdTrJsXnzO985GLU/rubIRHIugmq6wYmm4RUzNOKzyfzkQ7A==
-X-Received: by 2002:a62:1c47:0:b029:18b:9e22:593e with SMTP id c68-20020a621c470000b029018b9e22593emr5691287pfc.42.1605341427792;
-        Sat, 14 Nov 2020 00:10:27 -0800 (PST)
-Received: from PWN ([221.124.243.27])
-        by smtp.gmail.com with ESMTPSA id t32sm11314155pgl.0.2020.11.14.00.10.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 00:10:27 -0800 (PST)
-Date:   Sat, 14 Nov 2020 03:10:21 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <20201114081021.GA11811@PWN>
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com>
+        id S1726635AbgKNINC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 03:13:02 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:53953 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgKNINC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 03:13:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605341581; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=EcGr7jPbsIV016J8qpPWQhkLnpm44nvrJJGdYGx4j2I=; b=tUC+OKlpfuagRwbb7XxpGaK+adQ4bzvTM+6s2rPvzbphUDwaMfzuO2SQGW/BsJI7DfvVuuUJ
+ F4besLpzNRIuz8fT0s5VY3+cZMYWGYJRn1Wvetubkoe411WS+gwHfpN65SprAngkHlFr82jB
+ N4K6FRHSb5LzIl+zjtFa3w7lc1g=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5faf9184e9dd187f531564c1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 14 Nov 2020 08:12:52
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C9005C433FF; Sat, 14 Nov 2020 08:12:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D80CCC433C6;
+        Sat, 14 Nov 2020 08:12:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D80CCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH 0/3] Add vbus draw support to DWC3
+Date:   Sat, 14 Nov 2020 00:12:44 -0800
+Message-Id: <20201114081247.25063-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X68NFzaAuImemnqh@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Nov 13, 2020 at 10:16:33PM +0100, Daniel Vetter wrote:
-> > On Thu, Nov 12, 2020 at 07:02:21AM -0500, Peilin Ye wrote:
-> > > Peilin Ye (5):
-> > >   console: Delete unused con_font_copy() callback implementations
-> > >   console: Delete dummy con_font_set() and con_font_default() callback implementations
-> > >   Fonts: Add charcount field to font_desc
-> > >   parisc/sticore: Avoid hard-coding built-in font charcount
-> > >   fbcon: Avoid using FNTCHARCNT() and hard-coded built-in font charcount
-> > 
-> > Patches all look good to me, if Greg is ok with me applying the entire
-> > pile to drm-misc-next I'll do that next week.
+Some devices are connected to standard downstream ports (SDP) and draw current
+from them.  The current rates are defined in the BC1.2 specification, and
+highlights the different charge rates depending on the device state.  The DWC3
+gadget does not currently have a mechanism to notify external drivers about
+how much current can be drawn.
 
-On Fri, Nov 13, 2020 at 11:47:51PM +0100, Greg Kroah-Hartman wrote:
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The current rates are notified by the USB gadget layer, and the DWC3 gadget will
+propagate this potentially to external charger drivers.  Also, the USB gadget
+needs to be fixed to only allow 100mA current draw when receiving a bus reset
+from the host, as the BC1.2 specification states that this is the max current
+draw possible when in the connected and unconfigured state.
 
-Thanks for reviewing!  Questions about the last patch [5/5] though, it
-depends on the following assumption:
+Wesley Cheng (3):
+  usb: dwc3: gadget: Introduce a DWC3 VBUS draw callback
+  usb: gadget: composite: Split composite reset and disconnect
+  usb: gadget: configfs: Add a specific configFS reset callback
 
-"""
-For each console `idx`, `vc_cons[idx].d->vc_font.data` and
-`fb_display[idx].fontdata` always point to the same buffer.
-"""
+ drivers/usb/dwc3/gadget.c      | 11 +++++++++++
+ drivers/usb/gadget/composite.c | 21 +++++++++++++++++++--
+ drivers/usb/gadget/configfs.c  | 24 +++++++++++++++++++++++-
+ include/linux/usb/composite.h  |  2 ++
+ 4 files changed, 55 insertions(+), 3 deletions(-)
 
-Is this true?  I think it is true by grepping for `fontdata`.  I also
-noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
-interchangeably, see fbcon_get_requirement():
-
-		vc = vc_cons[fg_console].d;
-		[...]
-			p = &fb_display[fg_console];
-			caps->x = 1 << (vc->vc_font.width - 1);
-					^^^^^^^^^^^
-			caps->y = 1 << (vc->vc_font.height - 1);
-					^^^^^^^^^^^
-			caps->len = (p->userfont) ?
-				FNTCHARCNT(p->fontdata) : 256;
-					   ^^^^^^^^^^^
-
-If it is true, then what is the point of using `fontdata` in `struct
-fbcon_display`?  Just for the `userfont` flag?  Should we delete
-`fontdata`, when we no longer need the `userfont` flag?
-
-In this sense I think [5/5] needs more testing.  Do we have test files
-for fbcon, or should I try to write some tests from scratch?
-
-Thank you,
-Peilin Ye
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
