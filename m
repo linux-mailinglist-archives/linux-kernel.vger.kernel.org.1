@@ -2,261 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FAB2B3036
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641592B3038
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgKNT2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S1726231AbgKNTbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 14:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbgKNT2i (ORCPT
+        with ESMTP id S1726189AbgKNTbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:28:38 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AECC0613D1;
-        Sat, 14 Nov 2020 11:28:38 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id w20so2011356pjh.1;
-        Sat, 14 Nov 2020 11:28:38 -0800 (PST)
+        Sat, 14 Nov 2020 14:31:38 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD4FC0613D2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 11:31:36 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id i12so9824676qtj.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 11:31:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9hezsjWfUVXluAEwjCPGwpO8neX5yHhAITTPqDFV4Hc=;
-        b=b9JJUGK5EQcoxGFImr6syPvDAS66+zFg8jRWKbuPuCg2nOuwOq51LLSPn7lTbz7ES4
-         jYCpvK/b90aDHteksvHiPnnARkf5lB9soHRVNVInkLd3HmYOeA+7maXTg/d+t0wufJkO
-         C9146wSbvisv8NL82EJIjrlF6LJuYHqv0KNhadJAWezc8TOWLfztlf9IwRDJFcpzRasX
-         ulhWfgJP6USoLSwL8ee2brNjGv3x+F9AWVbD7MN5hDzdVCrNSi1owlojyyCde8QusGHv
-         OEw37IMpoZZQ2zMBWvYrUcOzucFgXQELWkTVVjmzwQb/GMLxVpLQqTG8wYGOG78aUaVq
-         y+7w==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fHELGlfHs7ktNTVhZjDhOUh5Vt3OVvcTTYV2WfzR6PY=;
+        b=n9176qsGx5gx8cPqre6GKbp7G55Pgxrq+EabtDHR8bphiv9onj9dmloltA/6RSbt9G
+         23mfg/2uyTUGFl04acYe8K0L/gQe2GbNpzxQo/lJ2kDtMjxI7Iw6Z6g7Ff+0rJbzb2rc
+         sPDI1fPMEZJtjSX/FsiyLxbp9Qg/dac3Pc7EM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9hezsjWfUVXluAEwjCPGwpO8neX5yHhAITTPqDFV4Hc=;
-        b=qfP70o4DGVN/o7cQmPJMr+0ob0LNr8gVm13iVCPEbKrezZP4tTI+bUJv0+hMBax0H3
-         qs19kFi0WamgvJl3tfB8DLhiJ3jJ7C5Her+aa0Dj/mFXdKGaoU9cJ/BboucrB+sM+Vcx
-         HUcuZIp80tNSjySARUma9E4Vap6NpT3W29ssZ64e8U/E2yQ36R5NK//1hegs/vzI6AUE
-         24DqUPJpiFZB2tWmCHTmnX3QotiG6gZVX2U1+EZQDPXPocWicHVb48g5A8OLD3o7OYOw
-         Pe1hvPIvHa8WClCIgn2BZUXUANvYK/9SuIxp0e3YrEuILOjSAld7s4bDLxHhLGPWp70S
-         QuNg==
-X-Gm-Message-State: AOAM532SWOfceAVcVPZSZv9Erifw5tCqA2W9CYaN1MR77M3Nf7suYtLY
-        4jLqHzaIBtfxMfUxqnSzyMo=
-X-Google-Smtp-Source: ABdhPJzo1p9Z7jUL1jsTRNURdpjV+smWTpP/PDEWIwAEUVTl7BBj2+AxfCz8ceYIAi6FLNrYngVqog==
-X-Received: by 2002:a17:902:b283:b029:d6:b2a7:3913 with SMTP id u3-20020a170902b283b02900d6b2a73913mr6911494plr.54.1605382118251;
-        Sat, 14 Nov 2020 11:28:38 -0800 (PST)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id k73sm11683356pga.88.2020.11.14.11.28.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fHELGlfHs7ktNTVhZjDhOUh5Vt3OVvcTTYV2WfzR6PY=;
+        b=en9bOPVevavZ1OvrHWvQUauisQMFe06l8aYiy8rUb2PqeHUaRmoQaP0O4B5MQGbnP0
+         piO/pLlsjad58nLXoh+vS0N5LEHhzXC2PVxHwJW7fHijrmXlI2qC7oleQhbAvdXM18bh
+         Wiqanxr72oiORLuxWwlsjYCNWBbjxRrNiput7QAijQXkmzim5NuuG1biCtESCna35Oz2
+         AKOrhYXXIIwbB32WmVLSHSQKioKYMBpnXQSG2X9qq7LHWU/D9g+lT/CgWj6awMWg/nWz
+         eKEuqtN/ugqE/ZoiJ0g704gPb+PdsA+S4wjlfbwuf4ZzPyYxGciYpLnCP5kjGZaKR+FR
+         Hghw==
+X-Gm-Message-State: AOAM53058Xek5MAaJHTnTJskzhWeJ7DHzXtujJathf9ypTZI+LdVVNVy
+        Zsp3twEbnNSViZb4rGCUF7+jQjjXW/CmsQ==
+X-Google-Smtp-Source: ABdhPJxXcoOC+A31GOYw9y9qr17sxmQLDa7RRQ49PTkCbtsgsv+0/Nmkp0A3ZD/rozMDQw27bfhbTA==
+X-Received: by 2002:ac8:5ac4:: with SMTP id d4mr7261848qtd.113.1605382295226;
+        Sat, 14 Nov 2020 11:31:35 -0800 (PST)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id u16sm9819314qth.42.2020.11.14.11.31.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 11:28:37 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/3] drm/msm/shrinker: Only iterate dontneed objs
-Date:   Sat, 14 Nov 2020 11:30:10 -0800
-Message-Id: <20201114193010.753355-4-robdclark@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201114193010.753355-1-robdclark@gmail.com>
-References: <20201114193010.753355-1-robdclark@gmail.com>
+        Sat, 14 Nov 2020 11:31:34 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: [PATCH rcu-dev] rcu/trace: Add tracing for how segcb list changes
+Date:   Sat, 14 Nov 2020 14:31:32 -0500
+Message-Id: <20201114193132.2660464-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Track how the segcb list changes before/after acceleration, during
+queuing and during dequeuing.
 
-In situations where the GPU is mostly idle, all or nearly all buffer
-objects will be in the inactive list.  But if the system is under memory
-pressure (from something other than GPU), we could still get a lot of
-shrinker calls.  Which results in traversing a list of thousands of objs
-and in the end finding nothing to shrink.  Which isn't so efficient.
+This has proved useful to discover an optimization to avoid unwanted GP
+requests when there are no callbacks accelerated. The overhead is minimal as
+each segment's length is now stored in the respective segment.
 
-Instead split the inactive_list into two lists, one inactive objs which
-are shrinkable, and a second one for those that are not.  This way we
-can avoid traversing objs which we know are not shrinker candidates.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- drivers/gpu/drm/msm/msm_debugfs.c      |  3 ++-
- drivers/gpu/drm/msm/msm_drv.c          |  3 ++-
- drivers/gpu/drm/msm/msm_drv.h          |  8 +++---
- drivers/gpu/drm/msm/msm_gem.c          | 34 ++++++++++++++++++++------
- drivers/gpu/drm/msm/msm_gem_shrinker.c |  7 +++---
- 5 files changed, 40 insertions(+), 15 deletions(-)
+ include/trace/events/rcu.h | 26 ++++++++++++++++++++++++++
+ kernel/rcu/tree.c          |  9 +++++++++
+ 2 files changed, 35 insertions(+)
 
-diff --git a/drivers/gpu/drm/msm/msm_debugfs.c b/drivers/gpu/drm/msm/msm_debugfs.c
-index 64afbed89821..85ad0babc326 100644
---- a/drivers/gpu/drm/msm/msm_debugfs.c
-+++ b/drivers/gpu/drm/msm/msm_debugfs.c
-@@ -124,7 +124,8 @@ static int msm_gem_show(struct drm_device *dev, struct seq_file *m)
- 	}
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 155b5cb43cfd..5fc29400e1a2 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -505,6 +505,32 @@ TRACE_EVENT_RCU(rcu_callback,
+ 		  __entry->qlen)
+ );
  
- 	seq_printf(m, "Inactive Objects:\n");
--	msm_gem_describe_objects(&priv->inactive_list, m);
-+	msm_gem_describe_objects(&priv->inactive_dontneed, m);
-+	msm_gem_describe_objects(&priv->inactive_willneed, m);
- 
- 	mutex_unlock(&priv->mm_lock);
- 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 4d808769e6ed..39a54f364aa8 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -465,7 +465,8 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
- 
- 	priv->wq = alloc_ordered_workqueue("msm", 0);
- 
--	INIT_LIST_HEAD(&priv->inactive_list);
-+	INIT_LIST_HEAD(&priv->inactive_willneed);
-+	INIT_LIST_HEAD(&priv->inactive_dontneed);
- 	mutex_init(&priv->mm_lock);
- 
- 	/* Teach lockdep about lock ordering wrt. shrinker: */
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index f869ed67b5da..ed18c5bed10f 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -175,8 +175,9 @@ struct msm_drm_private {
- 	struct msm_perf_state *perf;
- 
- 	/*
--	 * List of inactive GEM objects.  Every bo is either in the inactive_list
--	 * or gpu->active_list (for the gpu it is active on[1])
-+	 * Lists of inactive GEM objects.  Every bo is either in one of the
-+	 * inactive lists (depending on whether or not it is shrinkable) or
-+	 * gpu->active_list (for the gpu it is active on[1])
- 	 *
- 	 * These lists are protected by mm_lock.  If struct_mutex is involved, it
- 	 * should be aquired prior to mm_lock.  One should *not* hold mm_lock in
-@@ -185,7 +186,8 @@ struct msm_drm_private {
- 	 * [1] if someone ever added support for the old 2d cores, there could be
- 	 *     more than one gpu object
- 	 */
--	struct list_head inactive_list;
-+	struct list_head inactive_willneed;  /* inactive + !shrinkable */
-+	struct list_head inactive_dontneed;  /* inactive +  shrinkable */
- 	struct mutex mm_lock;
- 
- 	struct workqueue_struct *wq;
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 2795288b0a95..de8d2cfada24 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -17,6 +17,7 @@
- #include "msm_gpu.h"
- #include "msm_mmu.h"
- 
-+static void update_inactive(struct msm_gem_object *msm_obj);
- 
- static dma_addr_t physaddr(struct drm_gem_object *obj)
- {
-@@ -678,6 +679,12 @@ int msm_gem_madvise(struct drm_gem_object *obj, unsigned madv)
- 
- 	madv = msm_obj->madv;
- 
-+	/* If the obj is inactive, we might need to move it
-+	 * between inactive lists
-+	 */
-+	if (msm_obj->active_count == 0)
-+		update_inactive(msm_obj);
++TRACE_EVENT_RCU(rcu_segcb_stats,
 +
- 	msm_gem_unlock(obj);
++		TP_PROTO(struct rcu_segcblist *rs, const char *ctx),
++
++		TP_ARGS(rs, ctx),
++
++		TP_STRUCT__entry(
++			__field(const char *, ctx)
++			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
++			__array(long, seglen, RCU_CBLIST_NSEGS)
++		),
++
++		TP_fast_assign(
++			__entry->ctx = ctx;
++			memcpy(__entry->seglen, rs->seglen, RCU_CBLIST_NSEGS * sizeof(long));
++			memcpy(__entry->gp_seq, rs->gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
++
++		),
++
++		TP_printk("%s seglen: (DONE=%ld, WAIT=%ld, NEXT_READY=%ld, NEXT=%ld) "
++			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
++			  __entry->seglen[0], __entry->seglen[1], __entry->seglen[2], __entry->seglen[3],
++			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
++
++);
++
+ /*
+  * Tracepoint for the registration of a single RCU callback of the special
+  * kvfree() form.  The first argument is the RCU type, the second argument
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 413831b48648..b96d26d0d44a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+ 	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+ 		return false;
  
- 	return (madv != __MSM_MADV_PURGED);
-@@ -781,19 +788,31 @@ void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu)
- void msm_gem_active_put(struct drm_gem_object *obj)
- {
- 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
--	struct msm_drm_private *priv = obj->dev->dev_private;
++	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
++
+ 	/*
+ 	 * Callbacks are often registered with incomplete grace-period
+ 	 * information.  Something about the fact that getting exact
+@@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+ 	else
+ 		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
  
- 	might_sleep();
- 	WARN_ON(!msm_gem_is_locked(obj));
- 
- 	if (--msm_obj->active_count == 0) {
--		mutex_lock(&priv->mm_lock);
--		list_del_init(&msm_obj->mm_list);
--		list_add_tail(&msm_obj->mm_list, &priv->inactive_list);
--		mutex_unlock(&priv->mm_lock);
-+		update_inactive(msm_obj);
- 	}
++	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
++
+ 	return ret;
  }
  
-+static void update_inactive(struct msm_gem_object *msm_obj)
-+{
-+	struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
+@@ -2473,11 +2477,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+ 	if (offloaded)
+ 		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
 +
-+	mutex_lock(&priv->mm_lock);
-+	WARN_ON(msm_obj->active_count != 0);
++	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 
+ 	/* Invoke callbacks. */
+ 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+ 	rhp = rcu_cblist_dequeue(&rcl);
 +
-+	list_del_init(&msm_obj->mm_list);
-+	if (msm_obj->madv == MSM_MADV_DONTNEED)
-+		list_add_tail(&msm_obj->mm_list, &priv->inactive_willneed);
-+	else
-+		list_add_tail(&msm_obj->mm_list, &priv->inactive_dontneed);
+ 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+ 		rcu_callback_t f;
+ 
+@@ -2989,6 +2996,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		trace_rcu_callback(rcu_state.name, head,
+ 				   rcu_segcblist_n_cbs(&rdp->cblist));
+ 
++	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
 +
-+	mutex_unlock(&priv->mm_lock);
-+}
-+
- int msm_gem_cpu_prep(struct drm_gem_object *obj, uint32_t op, ktime_t *timeout)
- {
- 	bool write = !!(op & MSM_PREP_WRITE);
-@@ -1099,7 +1118,8 @@ static struct drm_gem_object *_msm_gem_new(struct drm_device *dev,
- 	}
- 
- 	mutex_lock(&priv->mm_lock);
--	list_add_tail(&msm_obj->mm_list, &priv->inactive_list);
-+	/* Initially obj is idle, obj->madv == WILLNEED: */
-+	list_add_tail(&msm_obj->mm_list, &priv->inactive_willneed);
- 	mutex_unlock(&priv->mm_lock);
- 
- 	return obj;
-@@ -1169,7 +1189,7 @@ struct drm_gem_object *msm_gem_import(struct drm_device *dev,
- 	msm_gem_unlock(obj);
- 
- 	mutex_lock(&priv->mm_lock);
--	list_add_tail(&msm_obj->mm_list, &priv->inactive_list);
-+	list_add_tail(&msm_obj->mm_list, &priv->inactive_willneed);
- 	mutex_unlock(&priv->mm_lock);
- 
- 	return obj;
-diff --git a/drivers/gpu/drm/msm/msm_gem_shrinker.c b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-index 9d51c1eb808d..81dfa57b6a0d 100644
---- a/drivers/gpu/drm/msm/msm_gem_shrinker.c
-+++ b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-@@ -19,7 +19,7 @@ msm_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
- 
- 	mutex_lock(&priv->mm_lock);
- 
--	list_for_each_entry(msm_obj, &priv->inactive_list, mm_list) {
-+	list_for_each_entry(msm_obj, &priv->inactive_dontneed, mm_list) {
- 		if (!msm_gem_trylock(&msm_obj->base))
- 			continue;
- 		if (is_purgeable(msm_obj))
-@@ -42,7 +42,7 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
- 
- 	mutex_lock(&priv->mm_lock);
- 
--	list_for_each_entry(msm_obj, &priv->inactive_list, mm_list) {
-+	list_for_each_entry(msm_obj, &priv->inactive_dontneed, mm_list) {
- 		if (freed >= sc->nr_to_scan)
- 			break;
- 		if (!msm_gem_trylock(&msm_obj->base))
-@@ -96,7 +96,8 @@ msm_gem_shrinker_vmap(struct notifier_block *nb, unsigned long event, void *ptr)
- 	struct msm_drm_private *priv =
- 		container_of(nb, struct msm_drm_private, vmap_notifier);
- 	struct list_head *mm_lists[] = {
--		&priv->inactive_list,
-+		&priv->inactive_dontneed,
-+		&priv->inactive_willneed,
- 		priv->gpu ? &priv->gpu->active_list : NULL,
- 		NULL,
- 	};
+ 	/* Go handle any RCU core processing required. */
+ 	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+ 		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
 -- 
-2.28.0
+2.29.2.299.gdc1121823c-goog
 
