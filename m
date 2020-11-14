@@ -2,347 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F257B2B2D26
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAF22B2D25
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgKNMi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgKNMiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:38:25 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03C5C0613D1;
-        Sat, 14 Nov 2020 04:38:23 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id b3so5799492pls.11;
-        Sat, 14 Nov 2020 04:38:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uWtnBe6zf3rDL/cmbZ7kBTpq82w5L6H7f6kIRwMwNPE=;
-        b=YedoWX1gGXiUP4fQMtD+wXeRJCtiM5SgqYbCYPvSQC28VwRafeeYIIbdx9/H/i3HUe
-         1/hIWSIEStihhoIB/yW1cZkhldZj8eP1bov1AaYlC8cEeP1J1qjJgPImIvUZNrQbu0wR
-         +BFmS801gzZx38rMuVdfAoA/BAnPDzVQwmAh7swC2i/x5V876kAfImwMVSmXQUhHQBvL
-         EPFO1ZdnGf5wFWBxG5O4F4Vg97lMwUkcdxoPIwgTBs0UIWH/Ig1NC/F1CUCBekLdG4av
-         gJe+AHvoaBa8sl59SnHUclrlEv/G4U2I2vjioMwNDcHqgi1DB2ljJWB4PvUZrGNyJjgy
-         hvVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uWtnBe6zf3rDL/cmbZ7kBTpq82w5L6H7f6kIRwMwNPE=;
-        b=n/6QNbQJrtDplFa767vRIAKe0Ftstr2g6GBB4So7f3yFGEMA/R6lYEwNRj3iQ3RDmQ
-         V8s9SdAAnt8zNAovZVCON84xFegRiq+XSvYSp8OIgHQ8iSRlqcTkypNXEf7K2Ic1Sy5z
-         mckIjFYRD0n1D7tciw6VELRtotjT5TBhtMuhNgvHI4CXHxMGwVA8QWw6MbdWLqvQeCbW
-         Z5jxmAW/fuMoK96pIyLi9zRa29djLuOCwcUF6RQtUCM6veHy3piLeAmhDFzMaUTVA9rx
-         namgfGnAw82qdGfvsFU0ZVy8057xXZGXIukPpC09C5HOWXXCUawjrkd7+G3dzQiEUJaL
-         ydTg==
-X-Gm-Message-State: AOAM530N0VfxhfkIiuUUGrRis/H2EWGeynHKlzRg1GYkkhNLpdjx9Rf2
-        VM32DXUwtqDmMdooSoYnbDxyNT3/sojS6w==
-X-Google-Smtp-Source: ABdhPJyrwkFvu6P/k//Ck+Q6TTY5zM+uRRtLRtofbCmfb5/wlmdYGnK+LF9v01dzbFQHZM3SQxrOrA==
-X-Received: by 2002:a17:90a:80c6:: with SMTP id k6mr7577358pjw.73.1605357503053;
-        Sat, 14 Nov 2020 04:38:23 -0800 (PST)
-Received: from arpitha-Inspiron-7570.lan ([106.51.242.81])
-        by smtp.gmail.com with ESMTPSA id y129sm11016945pgy.84.2020.11.14.04.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 04:38:22 -0800 (PST)
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        elver@google.com, yzaikin@google.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, Tim.Bird@sony.com, davidgow@google.com
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH v7 1/2] kunit: Support for Parameterized Testing
-Date:   Sat, 14 Nov 2020 18:06:48 +0530
-Message-Id: <20201114123648.97857-1-98.arpi@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726827AbgKNMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:38:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgKNMif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 07:38:35 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09E91206F9;
+        Sat, 14 Nov 2020 12:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605357514;
+        bh=zWXg7qJz+2Sg2saXECILVeerquBsEIlBLdhabO0MzaY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FM9lC0CAEnQNPpIUCiz8iiNcJ/e7wL642Xk/pn9ths1/bJk5ecpOswdqegpS4Cz4y
+         8vTGz2ZeiS3GSQi2U1CuPX2llkz0tfX8bOcfON/Lzwv4Ulwahf/ZyOj8pgEmF/zf50
+         +2i2v8/jkJGdR+XZUcpv6/Hl9e47HcpykBxJ19EE=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, Alon Mizrahi <amizrahi@habana.ai>
+Subject: [PATCH] habanalabs: firmware returns 64bit argument
+Date:   Sat, 14 Nov 2020 14:38:28 +0200
+Message-Id: <20201114123828.20817-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implementation of support for parameterized testing in KUnit. This
-approach requires the creation of a test case using the
-KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+From: Alon Mizrahi <amizrahi@habana.ai>
 
-This generator function should return the next parameter given the
-previous parameter in parameterized tests. It also provides a macro to
-generate common-case generators based on arrays. Generators may also
-optionally provide a human-readable description of parameters, which is
-displayed where available.
+F/W message returns 64bit value but up until now we casted it to
+a 32bit variable, instead of receiving 64bit in the first place.
 
-Note, currently the result of each parameter run is displayed in
-diagnostic lines, and only the overall test case output summarizes
-TAP-compliant success or failure of all parameter runs. In future, when
-supported by kunit-tool, these can be turned into subsubtest outputs.
-
-Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-Co-developed-by: Marco Elver <elver@google.com>
-Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Alon Mizrahi <amizrahi@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
-Changes v6->v7:
-- Clarify commit message.
-- Introduce ability to optionally generate descriptions for parameters;
-  if no description is provided, we'll still print 'param-N'.
-- Change diagnostic line format to:
-        # <test-case-name>: <ok|not ok> N - [<param description>]
+ drivers/misc/habanalabs/common/debugfs.c     |  5 +++-
+ drivers/misc/habanalabs/common/firmware_if.c | 26 ++++++++++----------
+ drivers/misc/habanalabs/common/habanalabs.h  |  4 +--
+ drivers/misc/habanalabs/common/hwmon.c       | 25 +++++++++++++++----
+ drivers/misc/habanalabs/common/sysfs.c       | 10 ++++----
+ drivers/misc/habanalabs/gaudi/gaudi.c        |  2 +-
+ drivers/misc/habanalabs/goya/goya.c          |  6 ++---
+ drivers/misc/habanalabs/goya/goyaP.h         |  2 +-
+ 8 files changed, 49 insertions(+), 31 deletions(-)
 
-Changes v5->v6:
-- Fix alignment to maintain consistency
-
-Changes v4->v5:
-- Update kernel-doc comments.
-- Use const void* for generator return and prev value types.
-- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-- Rework parameterized test case execution strategy: each parameter is executed
-  as if it was its own test case, with its own test initialization and cleanup
-  (init and exit are called, etc.). However, we cannot add new test cases per TAP
-  protocol once we have already started execution. Instead, log the result of
-  each parameter run as a diagnostic comment.
-
-Changes v3->v4:
-- Rename kunit variables
-- Rename generator function helper macro
-- Add documentation for generator approach
-- Display test case name in case of failure along with param index
-
-Changes v2->v3:
-- Modifictaion of generator macro and method
-
-Changes v1->v2:
-- Use of a generator method to access test case parameters
-Changes v6->v7:
-- Clarify commit message.
-- Introduce ability to optionally generate descriptions for parameters;
-  if no description is provided, we'll still print 'param-N'.
-- Change diagnostic line format to:
-        # <test-case-name>: <ok|not ok> N - [<param description>]
-- Before execution of parameterized test case, count number of
-  parameters and display number of parameters. Currently also as a
-  diagnostic line, but this may be used in future to generate a subsubtest
-  plan. A requirement of this change is that generators must generate a
-  deterministic number of parameters.
-
-Changes v5->v6:
-- Fix alignment to maintain consistency
-
-Changes v4->v5:
-- Update kernel-doc comments.
-- Use const void* for generator return and prev value types.
-- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-- Rework parameterized test case execution strategy: each parameter is executed
-  as if it was its own test case, with its own test initialization and cleanup
-  (init and exit are called, etc.). However, we cannot add new test cases per TAP
-  protocol once we have already started execution. Instead, log the result of
-  each parameter run as a diagnostic comment.
-
-Changes v3->v4:
-- Rename kunit variables
-- Rename generator function helper macro
-- Add documentation for generator approach
-- Display test case name in case of failure along with param index
-
-Changes v2->v3:
-- Modifictaion of generator macro and method
-
-Changes v1->v2:
-- Use of a generator method to access test case parameters
-
- include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
- lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
- 2 files changed, 97 insertions(+), 13 deletions(-)
-
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index db1b0ae666c4..cf5f33b1c890 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -94,6 +94,9 @@ struct kunit;
- /* Size of log associated with test. */
- #define KUNIT_LOG_SIZE	512
- 
-+/* Maximum size of parameter description string. */
-+#define KUNIT_PARAM_DESC_SIZE 64
-+
- /*
-  * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
-  * sub-subtest.  See the "Subtests" section in
-@@ -107,6 +110,7 @@ struct kunit;
-  *
-  * @run_case: the function representing the actual test case.
-  * @name:     the name of the test case.
-+ * @generate_params: the generator function for parameterized tests.
-  *
-  * A test case is a function with the signature,
-  * ``void (*)(struct kunit *)``
-@@ -141,6 +145,7 @@ struct kunit;
- struct kunit_case {
- 	void (*run_case)(struct kunit *test);
- 	const char *name;
-+	const void* (*generate_params)(const void *prev, char *desc);
- 
- 	/* private: internal use only. */
- 	bool success;
-@@ -163,6 +168,27 @@ static inline char *kunit_status_to_string(bool status)
-  */
- #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
- 
-+/**
-+ * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_case
-+ *
-+ * @test_name: a reference to a test case function.
-+ * @gen_params: a reference to a parameter generator function.
-+ *
-+ * The generator function::
-+ *
-+ *	const void* gen_params(const void *prev, char *desc)
-+ *
-+ * is used to lazily generate a series of arbitrarily typed values that fit into
-+ * a void*. The argument @prev is the previously returned value, which should be
-+ * used to derive the next value; @prev is set to NULL on the initial generator
-+ * call. When no more values are available, the generator must return NULL.
-+ * Optionally write a string into @desc (size of KUNIT_PARAM_DESC_SIZE)
-+ * describing the parameter.
-+ */
-+#define KUNIT_CASE_PARAM(test_name, gen_params)			\
-+		{ .run_case = test_name, .name = #test_name,	\
-+		  .generate_params = gen_params }
-+
- /**
-  * struct kunit_suite - describes a related collection of &struct kunit_case
-  *
-@@ -208,6 +234,10 @@ struct kunit {
- 	const char *name; /* Read only after initialization! */
- 	char *log; /* Points at case log after initialization */
- 	struct kunit_try_catch try_catch;
-+	/* param_value is the current parameter value for a test case. */
-+	const void *param_value;
-+	/* param_index stores the index of the parameter in parameterized tests. */
-+	int param_index;
- 	/*
- 	 * success starts as true, and may only be set to false during a
- 	 * test case; thus, it is safe to update this across multiple
-@@ -1742,4 +1772,25 @@ do {									       \
- 						fmt,			       \
- 						##__VA_ARGS__)
- 
-+/**
-+ * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
-+ * @name:  prefix for the test parameter generator function.
-+ * @array: array of test parameters.
-+ * @get_desc: function to convert param to description; NULL to use default
-+ *
-+ * Define function @name_gen_params which uses @array to generate parameters.
-+ */
-+#define KUNIT_ARRAY_PARAM(name, array, get_desc)						\
-+	static const void *name##_gen_params(const void *prev, char *desc)			\
-+	{											\
-+		typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
-+		if (__next - (array) < ARRAY_SIZE((array))) {					\
-+			void (*__get_desc)(typeof(__next), char *) = get_desc;			\
-+			if (__get_desc)								\
-+				__get_desc(__next, desc);					\
-+			return __next;								\
-+		}										\
-+		return NULL;									\
-+	}
-+
- #endif /* _KUNIT_TEST_H */
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 750704abe89a..ec9494e914ef 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -325,39 +325,72 @@ static void kunit_catch_run_case(void *data)
-  * occur in a test case and reports them as failures.
-  */
- static void kunit_run_case_catch_errors(struct kunit_suite *suite,
--					struct kunit_case *test_case)
-+					struct kunit_case *test_case,
-+					struct kunit *test)
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index 1db804de45ba..b47a62da0b41 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -22,6 +22,7 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ 				u8 i2c_reg, long *val)
  {
- 	struct kunit_try_catch_context context;
- 	struct kunit_try_catch *try_catch;
--	struct kunit test;
+ 	struct cpucp_packet pkt;
++	u64 result;
+ 	int rc;
  
--	kunit_init_test(&test, test_case->name, test_case->log);
--	try_catch = &test.try_catch;
-+	kunit_init_test(test, test_case->name, test_case->log);
-+	try_catch = &test->try_catch;
+ 	if (!hl_device_operational(hdev, NULL))
+@@ -36,7 +37,9 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ 	pkt.i2c_reg = i2c_reg;
  
- 	kunit_try_catch_init(try_catch,
--			     &test,
-+			     test,
- 			     kunit_try_run_case,
- 			     kunit_catch_run_case);
--	context.test = &test;
-+	context.test = test;
- 	context.suite = suite;
- 	context.test_case = test_case;
- 	kunit_try_catch_run(try_catch, &context);
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, val);
++						0, &result);
++
++	*val = (long) result;
  
--	test_case->success = test.success;
--
--	kunit_print_ok_not_ok(&test, true, test_case->success,
--			      kunit_test_case_num(suite, test_case),
--			      test_case->name);
-+	test_case->success = test->success;
+ 	if (rc)
+ 		dev_err(hdev->dev, "Failed to read from I2C, error %d\n", rc);
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index e37d451e6415..8f70d0bbe5e1 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -88,7 +88,7 @@ int hl_fw_send_pci_access_msg(struct hl_device *hdev, u32 opcode)
  }
  
- int kunit_run_tests(struct kunit_suite *suite)
+ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
+-				u16 len, u32 timeout, long *result)
++				u16 len, u32 timeout, u64 *result)
  {
-+	char param_desc[KUNIT_PARAM_DESC_SIZE];
- 	struct kunit_case *test_case;
+ 	struct cpucp_packet *pkt;
+ 	dma_addr_t pkt_dma_addr;
+@@ -143,7 +143,7 @@ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
+ 						>> CPUCP_PKT_CTL_OPCODE_SHIFT);
+ 		rc = -EIO;
+ 	} else if (result) {
+-		*result = (long) le64_to_cpu(pkt->result);
++		*result = le64_to_cpu(pkt->result);
+ 	}
  
- 	kunit_print_subtest_start(suite);
+ out:
+@@ -157,7 +157,7 @@ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
+ int hl_fw_unmask_irq(struct hl_device *hdev, u16 event_type)
+ {
+ 	struct cpucp_packet pkt;
+-	long result;
++	u64 result;
+ 	int rc;
  
--	kunit_suite_for_each_test_case(suite, test_case)
--		kunit_run_case_catch_errors(suite, test_case);
-+	kunit_suite_for_each_test_case(suite, test_case) {
-+		struct kunit test = { .param_value = NULL, .param_index = 0 };
-+		bool test_success = true;
-+
-+		if (test_case->generate_params) {
-+			/* Get initial param. */
-+			param_desc[0] = '\0';
-+			test.param_value = test_case->generate_params(NULL, param_desc);
-+		}
-+
-+		do {
-+			kunit_run_case_catch_errors(suite, test_case, &test);
-+			test_success &= test_case->success;
-+
-+			if (test_case->generate_params) {
-+				if (param_desc[0] == '\0') {
-+					snprintf(param_desc, sizeof(param_desc),
-+						 "param-%d", test.param_index);
-+				}
-+
-+				kunit_log(KERN_INFO, &test,
-+					  KUNIT_SUBTEST_INDENT
-+					  "# %s: %s %d - %s",
-+					  test_case->name,
-+					  kunit_status_to_string(test.success),
-+					  test.param_index + 1, param_desc);
-+
-+				/* Get next param. */
-+				param_desc[0] = '\0';
-+				test.param_value = test_case->generate_params(test.param_value, param_desc);
-+				test.param_index++;
-+			}
-+		} while (test.param_value);
-+
-+		kunit_print_ok_not_ok(&test, true, test_success,
-+				      kunit_test_case_num(suite, test_case),
-+				      test_case->name);
-+	}
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -180,7 +180,7 @@ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
+ {
+ 	struct cpucp_unmask_irq_arr_packet *pkt;
+ 	size_t total_pkt_size;
+-	long result;
++	u64 result;
+ 	int rc;
  
- 	kunit_print_subtest_end(suite);
+ 	total_pkt_size = sizeof(struct cpucp_unmask_irq_arr_packet) +
+@@ -219,7 +219,7 @@ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
+ int hl_fw_test_cpu_queue(struct hl_device *hdev)
+ {
+ 	struct cpucp_packet test_pkt = {};
+-	long result;
++	u64 result;
+ 	int rc;
  
+ 	test_pkt.ctl = cpu_to_le32(CPUCP_PACKET_TEST <<
+@@ -232,7 +232,7 @@ int hl_fw_test_cpu_queue(struct hl_device *hdev)
+ 	if (!rc) {
+ 		if (result != CPUCP_PACKET_FENCE_VAL)
+ 			dev_err(hdev->dev,
+-				"CPU queue test failed (0x%08lX)\n", result);
++				"CPU queue test failed (%#08llx)\n", result);
+ 	} else {
+ 		dev_err(hdev->dev, "CPU queue test failed, error %d\n", rc);
+ 	}
+@@ -263,7 +263,7 @@ void hl_fw_cpu_accessible_dma_pool_free(struct hl_device *hdev, size_t size,
+ int hl_fw_send_heartbeat(struct hl_device *hdev)
+ {
+ 	struct cpucp_packet hb_pkt = {};
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	hb_pkt.ctl = cpu_to_le32(CPUCP_PACKET_TEST <<
+@@ -285,7 +285,7 @@ int hl_fw_cpucp_info_get(struct hl_device *hdev)
+ 	struct cpucp_packet pkt = {};
+ 	void *cpucp_info_cpu_addr;
+ 	dma_addr_t cpucp_info_dma_addr;
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	cpucp_info_cpu_addr =
+@@ -336,7 +336,7 @@ int hl_fw_get_eeprom_data(struct hl_device *hdev, void *data, size_t max_size)
+ 	struct cpucp_packet pkt = {};
+ 	void *eeprom_info_cpu_addr;
+ 	dma_addr_t eeprom_info_dma_addr;
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	eeprom_info_cpu_addr =
+@@ -379,7 +379,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
+ 		struct hl_info_pci_counters *counters)
+ {
+ 	struct cpucp_packet pkt = {};
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PCIE_THROUGHPUT_GET <<
+@@ -426,7 +426,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
+ int hl_fw_cpucp_total_energy_get(struct hl_device *hdev, u64 *total_energy)
+ {
+ 	struct cpucp_packet pkt = {};
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_TOTAL_ENERGY_GET <<
+@@ -452,7 +452,7 @@ int hl_fw_cpucp_pll_info_get(struct hl_device *hdev,
+ 		u32 *pll_info)
+ {
+ 	struct cpucp_packet pkt;
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -467,7 +467,7 @@ int hl_fw_cpucp_pll_info_get(struct hl_device *hdev,
+ 	if (rc)
+ 		dev_err(hdev->dev, "Failed to read PLL info, error %d\n", rc);
+ 
+-	*pll_info = result;
++	*pll_info = (u32) result;
+ 
+ 	return rc;
+ }
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index b8ad5bfa6359..43aa8cbd8969 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -925,7 +925,7 @@ struct hl_asic_funcs {
+ 	int (*get_eeprom_data)(struct hl_device *hdev, void *data,
+ 				size_t max_size);
+ 	int (*send_cpu_message)(struct hl_device *hdev, u32 *msg,
+-				u16 len, u32 timeout, long *result);
++				u16 len, u32 timeout, u64 *result);
+ 	int (*pci_bars_map)(struct hl_device *hdev);
+ 	int (*init_iatu)(struct hl_device *hdev);
+ 	u32 (*rreg)(struct hl_device *hdev, u32 reg);
+@@ -2178,7 +2178,7 @@ int hl_fw_load_fw_to_device(struct hl_device *hdev, const char *fw_name,
+ 				void __iomem *dst, u32 src_offset, u32 size);
+ int hl_fw_send_pci_access_msg(struct hl_device *hdev, u32 opcode);
+ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
+-				u16 len, u32 timeout, long *result);
++				u16 len, u32 timeout, u64 *result);
+ int hl_fw_unmask_irq(struct hl_device *hdev, u16 event_type);
+ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
+ 		size_t irq_arr_size);
+diff --git a/drivers/misc/habanalabs/common/hwmon.c b/drivers/misc/habanalabs/common/hwmon.c
+index ab96401c3752..6b421d76b311 100644
+--- a/drivers/misc/habanalabs/common/hwmon.c
++++ b/drivers/misc/habanalabs/common/hwmon.c
+@@ -312,6 +312,7 @@ int hl_get_temperature(struct hl_device *hdev,
+ 			int sensor_index, u32 attr, long *value)
+ {
+ 	struct cpucp_packet pkt;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -322,7 +323,9 @@ int hl_get_temperature(struct hl_device *hdev,
+ 	pkt.type = __cpu_to_le16(attr);
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, value);
++						0, &result);
++
++	*value = (long) result;
+ 
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+@@ -363,6 +366,7 @@ int hl_get_voltage(struct hl_device *hdev,
+ 			int sensor_index, u32 attr, long *value)
+ {
+ 	struct cpucp_packet pkt;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -373,7 +377,9 @@ int hl_get_voltage(struct hl_device *hdev,
+ 	pkt.type = __cpu_to_le16(attr);
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, value);
++						0, &result);
++
++	*value = (long) result;
+ 
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+@@ -389,6 +395,7 @@ int hl_get_current(struct hl_device *hdev,
+ 			int sensor_index, u32 attr, long *value)
+ {
+ 	struct cpucp_packet pkt;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -399,7 +406,9 @@ int hl_get_current(struct hl_device *hdev,
+ 	pkt.type = __cpu_to_le16(attr);
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, value);
++						0, &result);
++
++	*value = (long) result;
+ 
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+@@ -415,6 +424,7 @@ int hl_get_fan_speed(struct hl_device *hdev,
+ 			int sensor_index, u32 attr, long *value)
+ {
+ 	struct cpucp_packet pkt;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -425,7 +435,9 @@ int hl_get_fan_speed(struct hl_device *hdev,
+ 	pkt.type = __cpu_to_le16(attr);
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, value);
++						0, &result);
++
++	*value = (long) result;
+ 
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+@@ -441,6 +453,7 @@ int hl_get_pwm_info(struct hl_device *hdev,
+ 			int sensor_index, u32 attr, long *value)
+ {
+ 	struct cpucp_packet pkt;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -451,7 +464,9 @@ int hl_get_pwm_info(struct hl_device *hdev,
+ 	pkt.type = __cpu_to_le16(attr);
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, value);
++						0, &result);
++
++	*value = (long) result;
+ 
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
+index 94ca68e62000..4366d8f93842 100644
+--- a/drivers/misc/habanalabs/common/sysfs.c
++++ b/drivers/misc/habanalabs/common/sysfs.c
+@@ -12,7 +12,7 @@
+ long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
+ {
+ 	struct cpucp_packet pkt;
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -32,10 +32,10 @@ long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
+ 		dev_err(hdev->dev,
+ 			"Failed to get frequency of PLL %d, error %d\n",
+ 			pll_index, rc);
+-		result = rc;
++		return rc;
+ 	}
+ 
+-	return result;
++	return (long) result;
+ }
+ 
+ void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
+@@ -62,7 +62,7 @@ void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
+ u64 hl_get_max_power(struct hl_device *hdev)
+ {
+ 	struct cpucp_packet pkt;
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+@@ -75,7 +75,7 @@ u64 hl_get_max_power(struct hl_device *hdev)
+ 
+ 	if (rc) {
+ 		dev_err(hdev->dev, "Failed to get max power, error %d\n", rc);
+-		result = rc;
++		return (u64) rc;
+ 	}
+ 
+ 	return result;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index f1b8d20cf2ce..9c9df5f020a6 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -4572,7 +4572,7 @@ static void *gaudi_get_int_queue_base(struct hl_device *hdev,
+ }
+ 
+ static int gaudi_send_cpu_message(struct hl_device *hdev, u32 *msg,
+-				u16 len, u32 timeout, long *result)
++				u16 len, u32 timeout, u64 *result)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+ 
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 3398b4cc1298..55d174d3cac8 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -2954,7 +2954,7 @@ static int goya_send_job_on_qman0(struct hl_device *hdev, struct hl_cs_job *job)
+ }
+ 
+ int goya_send_cpu_message(struct hl_device *hdev, u32 *msg, u16 len,
+-				u32 timeout, long *result)
++				u32 timeout, u64 *result)
+ {
+ 	struct goya_device *goya = hdev->asic_specific;
+ 
+@@ -4540,7 +4540,7 @@ static int goya_unmask_irq_arr(struct hl_device *hdev, u32 *irq_arr,
+ {
+ 	struct cpucp_unmask_irq_arr_packet *pkt;
+ 	size_t total_pkt_size;
+-	long result;
++	u64 result;
+ 	int rc;
+ 	int irq_num_entries, irq_arr_index;
+ 	__le32 *goya_irq_arr;
+@@ -4599,7 +4599,7 @@ static int goya_soft_reset_late_init(struct hl_device *hdev)
+ static int goya_unmask_irq(struct hl_device *hdev, u16 event_type)
+ {
+ 	struct cpucp_packet pkt;
+-	long result;
++	u64 result;
+ 	int rc;
+ 
+ 	memset(&pkt, 0, sizeof(pkt));
+diff --git a/drivers/misc/habanalabs/goya/goyaP.h b/drivers/misc/habanalabs/goya/goyaP.h
+index ef4298f84a0a..8b3408211af6 100644
+--- a/drivers/misc/habanalabs/goya/goyaP.h
++++ b/drivers/misc/habanalabs/goya/goyaP.h
+@@ -192,7 +192,7 @@ int goya_test_queue(struct hl_device *hdev, u32 hw_queue_id);
+ int goya_test_queues(struct hl_device *hdev);
+ int goya_test_cpu_queue(struct hl_device *hdev);
+ int goya_send_cpu_message(struct hl_device *hdev, u32 *msg, u16 len,
+-				u32 timeout, long *result);
++				u32 timeout, u64 *result);
+ 
+ long goya_get_temperature(struct hl_device *hdev, int sensor_index, u32 attr);
+ long goya_get_voltage(struct hl_device *hdev, int sensor_index, u32 attr);
 -- 
-2.25.1
+2.17.1
 
