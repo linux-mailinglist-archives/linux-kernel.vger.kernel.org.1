@@ -2,178 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927932B3110
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52A52B3113
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgKNVow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 16:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKNVov (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 16:44:51 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA833C0613D1;
-        Sat, 14 Nov 2020 13:44:50 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ke3LZ-0063sy-Tb; Sat, 14 Nov 2020 21:44:38 +0000
-Date:   Sat, 14 Nov 2020 21:44:37 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201114214437.GQ3576660@ZenIV.linux.org.uk>
-References: <20201104082738.1054792-1-hch@lst.de>
- <20201104082738.1054792-2-hch@lst.de>
- <20201110213253.GV3576660@ZenIV.linux.org.uk>
- <20201110213511.GW3576660@ZenIV.linux.org.uk>
- <20201110232028.GX3576660@ZenIV.linux.org.uk>
- <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
- <20201111215220.GA3576660@ZenIV.linux.org.uk>
- <20201111222116.GA919131@ZenIV.linux.org.uk>
- <20201113235453.GA227700@ubuntu-m3-large-x86>
+        id S1726265AbgKNVxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 16:53:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgKNVxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 16:53:32 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134B7222C4;
+        Sat, 14 Nov 2020 21:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605390811;
+        bh=WdC99Ui7j78TQnjRKV46T0si0K88h60EbmiXZrTtfqw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DQ894+DXIkElALKvr/Wo3J8IJFzLm8ZL/N/VlrXTg+Bgmk1su4AYNWiP1m74RViU9
+         CHgV2hCGqz2NKvjNL72SQAQXMiQMaQ+sU5eu38E7YOFZXaXksK29BTwPF1zK7mLPQL
+         jwVABdx73y0v9PdVATI6pVxbqBZeOB1VkQ1vcE8Q=
+Date:   Sat, 14 Nov 2020 15:53:29 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        linux-pci@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH][V2] PCI: Fix a potential uninitentional integer overflow
+ issue
+Message-ID: <20201114215329.GA1197070@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113235453.GA227700@ubuntu-m3-large-x86>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201110221048.3411288-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 04:54:53PM -0700, Nathan Chancellor wrote:
-> Hi Al,
-> 
-> On Wed, Nov 11, 2020 at 10:21:16PM +0000, Al Viro wrote:
-> > On Wed, Nov 11, 2020 at 09:52:20PM +0000, Al Viro wrote:
-> > 
-> > > That can be done, but I would rather go with
-> > > 		n = copy_to_iter(m->buf + m->from, m->count, iter);
-> > > 		m->count -= n;
-> > > 		m->from += n;
-> > >                 copied += n;
-> > >                 if (!size)
-> > >                         goto Done;
-> > > 		if (m->count)
-> > > 			goto Efault;
-> > > if we do it that way.  Let me see if I can cook something
-> > > reasonable along those lines...
-> > 
-> > Something like below (build-tested only):
-> > 
-> > diff --git a/fs/seq_file.c b/fs/seq_file.c
-> > index 3b20e21604e7..07b33c1f34a9 100644
-> > --- a/fs/seq_file.c
-> > +++ b/fs/seq_file.c
-> > @@ -168,7 +168,6 @@ EXPORT_SYMBOL(seq_read);
-> >  ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  {
-> >  	struct seq_file *m = iocb->ki_filp->private_data;
-> > -	size_t size = iov_iter_count(iter);
-> >  	size_t copied = 0;
-> >  	size_t n;
-> >  	void *p;
-> > @@ -208,14 +207,11 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  	}
-> >  	/* if not empty - flush it first */
-> >  	if (m->count) {
-> > -		n = min(m->count, size);
-> > -		if (copy_to_iter(m->buf + m->from, n, iter) != n)
-> > -			goto Efault;
-> > +		n = copy_to_iter(m->buf + m->from, m->count, iter);
-> >  		m->count -= n;
-> >  		m->from += n;
-> > -		size -= n;
-> >  		copied += n;
-> > -		if (!size)
-> > +		if (!iov_iter_count(iter) || m->count)
-> >  			goto Done;
-> >  	}
-> >  	/* we need at least one record in buffer */
-> > @@ -249,6 +245,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  	goto Done;
-> >  Fill:
-> >  	/* they want more? let's try to get some more */
-> > +	/* m->count is positive and there's space left in iter */
-> >  	while (1) {
-> >  		size_t offs = m->count;
-> >  		loff_t pos = m->index;
-> > @@ -263,7 +260,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  			err = PTR_ERR(p);
-> >  			break;
-> >  		}
-> > -		if (m->count >= size)
-> > +		if (m->count >= iov_iter_count(iter))
-> >  			break;
-> >  		err = m->op->show(m, p);
-> >  		if (seq_has_overflowed(m) || err) {
-> > @@ -273,16 +270,14 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  		}
-> >  	}
-> >  	m->op->stop(m, p);
-> > -	n = min(m->count, size);
-> > -	if (copy_to_iter(m->buf, n, iter) != n)
-> > -		goto Efault;
-> > +	n = copy_to_iter(m->buf, m->count, iter);
-> >  	copied += n;
-> >  	m->count -= n;
-> >  	m->from = n;
-> >  Done:
-> > -	if (!copied)
-> > -		copied = err;
-> > -	else {
-> > +	if (unlikely(!copied)) {
-> > +		copied = m->count ? -EFAULT : err;
-> > +	} else {
-> >  		iocb->ki_pos += copied;
-> >  		m->read_pos += copied;
-> >  	}
-> > @@ -291,9 +286,6 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  Enomem:
-> >  	err = -ENOMEM;
-> >  	goto Done;
-> > -Efault:
-> > -	err = -EFAULT;
-> > -	goto Done;
-> >  }
-> >  EXPORT_SYMBOL(seq_read_iter);
-> >  
-> 
-> This patch in -next (6a9f696d1627bacc91d1cebcfb177f474484e8ba) breaks
-> WSL2's interoperability feature, where Windows paths automatically get
-> added to PATH on start up so that Windows binaries can be accessed from
-> within Linux (such as clip.exe to pipe output to the clipboard). Before,
-> I would see a bunch of Linux + Windows folders in $PATH but after, I
-> only see the Linux folders (I can give you the actual PATH value if you
-> care but it is really long).
-> 
-> I am not at all familiar with the semantics of this patch or how
-> Microsoft would be using it to inject folders into PATH (they have some
-> documentation on it here:
-> https://docs.microsoft.com/en-us/windows/wsl/interop) and I am not sure
-> how to go about figuring that out to see why this patch breaks something
-> (unless you have an idea). I have added the Hyper-V maintainers and list
-> to CC in case they know someone who could help.
+[+cc Dan]
 
-FWIW, just to make sure:
-	1) does reverting just that commit recover the desired behaviour?
-	2) could you verify that your latest tests had been done with
-the incremental I'd posted (shifting the if (....) goto Done; out of the if
-body)?
-	3) does the build with that commit reverted produce any warnings
-related to mountinfo?
-	4) your posted log with WARN_ON unfortunately starts *after*
-the mountinfo accesses; could you check which process had been doing those?
-The Comm: ... part in there, that is.
-	5) in the "I don't believe that could happen, but let's make sure"
-department: turn the
-        /* m->count is positive and there's space left in iter */
-comment in seq_read_iter() into an outright
-	BUG_ON(!m->count || !iov_iter_count(iter));
+On Tue, Nov 10, 2020 at 10:10:48PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The shift of 1 by align_order is evaluated using 32 bit arithmetic
+> and the result is assigned to a resource_size_t type variable that
+> is a 64 bit unsigned integer on 64 bit platforms. Fix an overflow
+> before widening issue by making the 1 a ULL.
+> 
+> Addresses-Coverity: ("Unintentional integer overflow")
+> Fixes: 07d8d7e57c28 ("PCI: Make specifying PCI devices in kernel parameters reusable")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Applied to pci/misc for v5.11 with Logan's Reviewed-by and also the
+Fixes: correction.
+
+I first applied the patch below to bounds-check the alignment as noted
+by Dan.
+
+> ---
+> 
+> V2: Use ULL instead of BIT_ULL(), fix spelling mistake and capitalize first
+>     word of patch subject.
+> 
+> ---
+>  drivers/pci/pci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 3ef63a101fa1..248044a7ef8c 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -6214,7 +6214,7 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+>  			if (align_order == -1)
+>  				align = PAGE_SIZE;
+>  			else
+> -				align = 1 << align_order;
+> +				align = 1ULL << align_order;
+>  			break;
+>  		} else if (ret < 0) {
+>  			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
+
+commit d6ca242c448f ("PCI: Bounds-check command-line resource alignment requests")
+Author: Bjorn Helgaas <bhelgaas@google.com>
+Date:   Thu Nov 5 14:51:36 2020 -0600
+
+    PCI: Bounds-check command-line resource alignment requests
+    
+    32-bit BARs are limited to 2GB size (2^31).  By extension, I assume 64-bit
+    BARs are limited to 2^63 bytes.  Limit the alignment requested by the
+    "pci=resource_alignment=" command-line parameter to 2^63.
+    
+    Link: https://lore.kernel.org/r/20201007123045.GS4282@kadam
+    Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 8b9bea8ba751..26c1b2d0bacd 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -6197,19 +6197,21 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+ 	while (*p) {
+ 		count = 0;
+ 		if (sscanf(p, "%d%n", &align_order, &count) == 1 &&
+-							p[count] == '@') {
++		    p[count] == '@') {
+ 			p += count + 1;
++			if (align_order > 63) {
++				pr_err("PCI: Invalid requested alignment (order %d)\n",
++				       align_order);
++				align_order = PAGE_SHIFT;
++			}
+ 		} else {
+-			align_order = -1;
++			align_order = PAGE_SHIFT;
+ 		}
+ 
+ 		ret = pci_dev_str_match(dev, p, &p);
+ 		if (ret == 1) {
+ 			*resize = true;
+-			if (align_order == -1)
+-				align = PAGE_SIZE;
+-			else
+-				align = 1 << align_order;
++			align = 1 << align_order;
+ 			break;
+ 		} else if (ret < 0) {
+ 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
