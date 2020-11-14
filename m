@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C62C2B2E3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FF92B2E3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgKNPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 10:49:42 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46400 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgKNPtl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 10:49:41 -0500
-Received: by mail-wr1-f67.google.com with SMTP id d12so13616977wrr.13;
-        Sat, 14 Nov 2020 07:49:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EQ8r5pJttfECMbi7klz393g0n/5XRY+5UKG5qivG/ww=;
-        b=sXber1hQ1I+ikfblM9m7n0uIIAA4KRFIvE4nTME14ul0C2v2OS24Etm7DOhyo0h4P/
-         sw8PIPvkJZl0KzPlDlqEHcJyUo8VhArg0JXX4fT15u55wE6csvY9yl75xY9s3g86BB2W
-         dPGTefgwvhjy821O38gTX4wIfHU7YEOM2fjkGNIolFj9zYh0rbywDatky9wt7I3b1Pop
-         gjKGlmaq+m0I9ihw50BF1bkS8BMSYZ7tN43TLNGUYysM4QoeZI4hvyr/J23LjBPkAypT
-         vxE7rPnpDAcFiuOPSIBawQrxDAS7lOO7yRJC3R9JZJ0ILl1+EoUU1vHP5vaLR2eSBpin
-         v0bw==
-X-Gm-Message-State: AOAM532mMKuy0QEs/mi2PnuwP3ilZsp6GxJmSZRJAGp3ycua3kW/N5kU
-        pwnXHVkR19xGRTtsTMxznbk=
-X-Google-Smtp-Source: ABdhPJxrJddT5J8YjMMsQDwJ9FyUwP9ykncQpw8kMv9gUdf9CRy0f46zk3qwOMdEViRo40kcUlKWqA==
-X-Received: by 2002:adf:e607:: with SMTP id p7mr9885500wrm.93.1605368979245;
-        Sat, 14 Nov 2020 07:49:39 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id w186sm14037275wmb.26.2020.11.14.07.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 07:49:38 -0800 (PST)
-Date:   Sat, 14 Nov 2020 16:49:36 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     xiakaixu1987@gmail.com
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: Re: [PATCH] ASoC: samsung: remove the unused variable value
- assignment
-Message-ID: <20201114154936.GC14208@kozik-lap>
-References: <1605279079-6416-1-git-send-email-kaixuxia@tencent.com>
+        id S1726997AbgKNPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 10:52:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726356AbgKNPwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 10:52:35 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A65CE22254;
+        Sat, 14 Nov 2020 15:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605369154;
+        bh=xk91UWzq0VQNigupjrFtq1zJtnXg2NTOQlVQGJW9XxE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Y71MEsMaltBMne/YYlSsmvOHnpYMiIbXL5MWltokzPlSW5tvCelbCR/ppwJEF/xoD
+         IbWoeWqTUi61ZZ5yxAJe001/c0wqZGA71Vq77tsm8a4+3EmqL3YjRT2yBtO1mKhl0H
+         0oVVPd+1LiyEL+l86LWtiLlJROk9UQ7zAV45N45E=
+Date:   Sat, 14 Nov 2020 15:52:28 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Fabrice Gasnier <fabrice.gasnier@st.com>
+Cc:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <alexandre.torgue@st.com>,
+        <olivier.moysan@st.com>, <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH] iio: adc: stm32-adc: adapt clock duty cycle for proper
+ operation
+Message-ID: <20201114155228.5b78b7d6@archlinux>
+In-Reply-To: <0d7c4b81-3f4e-e952-892f-35296c87f987@st.com>
+References: <1604681846-31234-1-git-send-email-fabrice.gasnier@st.com>
+        <20201108151835.5d78ebca@archlinux>
+        <0d7c4b81-3f4e-e952-892f-35296c87f987@st.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1605279079-6416-1-git-send-email-kaixuxia@tencent.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:51:19PM +0800, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
+On Fri, 13 Nov 2020 09:27:03 +0100
+Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
+
+> On 11/8/20 4:18 PM, Jonathan Cameron wrote:
+> > On Fri, 6 Nov 2020 17:57:26 +0100
+> > Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
+> >   
+> >> For proper operation, STM32 ADC should be used with a clock duty cycle
+> >> of 50%, in the range of 49% to 51%. Depending on the clock tree, divider
+> >> can be used in case clock duty cycle is out of this range.
+> >> In case clk_get_scaled_duty_cycle() returns an error, kindly apply a
+> >> divider by default (don't make the probe fail).
+> >>
+> >> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>  
+> > Hi Fabrice,
+> > 
+> > This sounds like it's a fix for a situation in which the device is not
+> > currently working?  If so, please let me know a fixes tag.  
 > 
-> The value of variable ret is overwritten by the following call
-> devm_snd_soc_register_card(), so here the value assignment is useless.
-> Remove it.
+> Hi Jonathan,
 > 
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-
-Where can we find the report?
-
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
->  sound/soc/samsung/smdk_wm8994.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> That's a good point. I also thought about adding a fixes tag. Currently
+> I think this can't be hit upstream, as clock tree is tuned to fit duty
+> cycle constraints. So far, nobody seems to complain about it. So this
+> can probably go through the normal tree.
 > 
-> diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-> index 64a1a64..1db5b59 100644
-> --- a/sound/soc/samsung/smdk_wm8994.c
-> +++ b/sound/soc/samsung/smdk_wm8994.c
-> @@ -160,11 +160,9 @@ static int smdk_audio_probe(struct platform_device *pdev)
->  		smdk_dai[0].cpus->dai_name = NULL;
->  		smdk_dai[0].cpus->of_node = of_parse_phandle(np,
->  				"samsung,i2s-controller", 0);
-> -		if (!smdk_dai[0].cpus->of_node) {
-> +		if (!smdk_dai[0].cpus->of_node)
->  			dev_err(&pdev->dev,
->  			   "Property 'samsung,i2s-controller' missing or invalid\n");
-> -			ret = -EINVAL;
+Applied.  Will be interesting to see if the bot finds this one as a possible
+candidate for backports.  I'll keep an eye on those coming through and suggest
+this isn't backported if it does show up.
 
-This should jump to out/return instead.
+Thanks,
 
-Please use script get_maintainers.pl to get the list of people and
-mailing lists to Cc. No one would apply this patch otherwise...
+Jonathan
+> Thanks,
+> Fabrice
+> 
+> > 
+> > Thanks,
+> > 
+> > Jonathan
+> >   
+> >> ---
+> >>  drivers/iio/adc/stm32-adc-core.c | 21 ++++++++++++++++++++-
+> >>  1 file changed, 20 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+> >> index cd870c0..d64a9e8 100644
+> >> --- a/drivers/iio/adc/stm32-adc-core.c
+> >> +++ b/drivers/iio/adc/stm32-adc-core.c
+> >> @@ -202,7 +202,7 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
+> >>  {
+> >>  	u32 ckmode, presc, val;
+> >>  	unsigned long rate;
+> >> -	int i, div;
+> >> +	int i, div, duty;
+> >>  
+> >>  	/* stm32h7 bus clock is common for all ADC instances (mandatory) */
+> >>  	if (!priv->bclk) {
+> >> @@ -226,6 +226,11 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
+> >>  			return -EINVAL;
+> >>  		}
+> >>  
+> >> +		/* If duty is an error, kindly use at least /2 divider */
+> >> +		duty = clk_get_scaled_duty_cycle(priv->aclk, 100);
+> >> +		if (duty < 0)
+> >> +			dev_warn(&pdev->dev, "adc clock duty: %d\n", duty);
+> >> +
+> >>  		for (i = 0; i < ARRAY_SIZE(stm32h7_adc_ckmodes_spec); i++) {
+> >>  			ckmode = stm32h7_adc_ckmodes_spec[i].ckmode;
+> >>  			presc = stm32h7_adc_ckmodes_spec[i].presc;
+> >> @@ -234,6 +239,13 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
+> >>  			if (ckmode)
+> >>  				continue;
+> >>  
+> >> +			/*
+> >> +			 * For proper operation, clock duty cycle range is 49%
+> >> +			 * to 51%. Apply at least /2 prescaler otherwise.
+> >> +			 */
+> >> +			if (div == 1 && (duty < 49 || duty > 51))
+> >> +				continue;
+> >> +
+> >>  			if ((rate / div) <= priv->max_clk_rate)
+> >>  				goto out;
+> >>  		}
+> >> @@ -246,6 +258,10 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
+> >>  		return -EINVAL;
+> >>  	}
+> >>  
+> >> +	duty = clk_get_scaled_duty_cycle(priv->bclk, 100);
+> >> +	if (duty < 0)
+> >> +		dev_warn(&pdev->dev, "bus clock duty: %d\n", duty);
+> >> +
+> >>  	for (i = 0; i < ARRAY_SIZE(stm32h7_adc_ckmodes_spec); i++) {
+> >>  		ckmode = stm32h7_adc_ckmodes_spec[i].ckmode;
+> >>  		presc = stm32h7_adc_ckmodes_spec[i].presc;
+> >> @@ -254,6 +270,9 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
+> >>  		if (!ckmode)
+> >>  			continue;
+> >>  
+> >> +		if (div == 1 && (duty < 49 || duty > 51))
+> >> +			continue;
+> >> +
+> >>  		if ((rate / div) <= priv->max_clk_rate)
+> >>  			goto out;
+> >>  	}  
+> >   
 
-Best regards,
-Krzysztof
