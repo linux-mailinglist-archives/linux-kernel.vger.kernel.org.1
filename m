@@ -2,177 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14EB2B2AE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FD62B2AE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgKNCvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 21:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
+        id S1726433AbgKNCwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 21:52:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgKNCvu (ORCPT
+        with ESMTP id S1726116AbgKNCwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 21:51:50 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266B0C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:51:49 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 19so14315882wmf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:51:49 -0800 (PST)
+        Fri, 13 Nov 2020 21:52:15 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F698C0613D1;
+        Fri, 13 Nov 2020 18:52:15 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id z2so10223889ilh.11;
+        Fri, 13 Nov 2020 18:52:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/pF82g4ci3xp6pW4O0nO7ylMYBzowQiQ/mlbHUCZjYM=;
-        b=lfdqtHmEO2B3dirgmxVeOVkreCFY8yc6AV6c/Po/ambopcg50qfTbxC6PX8k70WymB
-         yWIzqfHgvKtagwRTwkF1qfCLQsNtGJdnc99FLtZ0JFvpH7IlNFicfVEvzsxq52rG2kCN
-         uhHpV7F4a4CrHmHrASuaAOgkvPwi6tFTO2CAMZ8+63nRrui9J9NYT1wFE/asvtGsfy9s
-         AkVZ1B1S9baz3knpYDgLBcqt2A8MMbxm+e7Y4bluSFFpCcg2j7qBtLsOwkNHn7ZJp/Og
-         ab0ZZM0EjYC+ESFVkW0iWTnTxhXd60ZuC+2gAxUT8ibRXXhgyZY8VZh6dNQBjCyHXf3G
-         /xpQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ycIyPMDjkSS7PdzQwF+KR5TdpC11byyZf5kQwCB3Uww=;
+        b=YTQx+SsiKyBIRWywtlSXtPw1Aa1ndy7wddrYsevbLv3qEpfat6e6H0iZoMqJv6SbBk
+         Nxo1p3uSbAIWSBxssTRzwVlZHkeV3Ek87bGcKhKhMTTSqGv5rCGZkaYLj+FCqmulnFqt
+         pUe98HjK2bxEHQKmGvvtPKYasNzdfMpwmUfgJKWMK2HsjVtrkIGrJwmPsCCme13koneS
+         MSkZ9W5oT7Ypavl25QxwocQ7ieOBXYNn92FDUrpmrTpEWblY53D57Lf5AhESBpcn4Ha7
+         V9ShbIHz1ZnvM/iZsrgabkzA5tL6PTUxbBh6Ul7LteJzjb5uF/kVVjUxyphJj4tPPLzE
+         +95Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/pF82g4ci3xp6pW4O0nO7ylMYBzowQiQ/mlbHUCZjYM=;
-        b=N3rQMSTkbfpCcqjiMwyahv00nTaS9aqRxwW75umoMWUGWjOs/DqF9Z8WEoETTKLFOk
-         tuGjjS++l+nmLvOEkWC7tnuKAD7mGk9Du7czsmjeE1E0fgAvQmryz/Kj7PJCRu2iHuCJ
-         xQhUDd666tm0HZ192Ahcq0n5Ddi/+OJ1WWvucPlXA4FG+9GN84PkeXWPdK9zlMsTIBMz
-         Z5BUmzRX2C0bFw0bg3DzdQdzmQ+ENFOgR0k6siVBM1XgmO8iU6APbwfO9qT8CgjhKGYj
-         Dnlfc2QrDcFvJjJDGPNMmtN2zRVE+x8eokRtvd18RhAA+P3TTZFKs1ntWCtJ6UQ5xXbC
-         xrwA==
-X-Gm-Message-State: AOAM5313AfoSmzIVOwvAVQQtmLhEoyrVRiE3I9uZDnl+ZZfgcp9b8ODU
-        Q+U0QJqZ4qz8EUZ3w5SAaJzZm7pWUH1mLzpPIH/eEQ==
-X-Google-Smtp-Source: ABdhPJwl3dK1Pst00k61vPihAcc18qxn5bQRviOKf/y8pjdzr3R0jjOBDf+WXIe5huKKNi3014n6lFP3HK6wVxHoZZo=
-X-Received: by 2002:a1c:9c0e:: with SMTP id f14mr5192682wme.22.1605322307590;
- Fri, 13 Nov 2020 18:51:47 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ycIyPMDjkSS7PdzQwF+KR5TdpC11byyZf5kQwCB3Uww=;
+        b=NW8bDPWjg/OLcBss0OYj+UKjve3MMXKr8fvPy2vGnduY9w8roP3Ow5IKGNGvRUPP5q
+         RrNriHXFVkkaJmmCeAo6aGA94pZeoYp8fn+1II9gYfWazIY3iEsJ4zUHzlOBm2pjEMVx
+         vKM54bDQkxLv4h/ABa+X1LdbvNHe1kEnHDj6nW/O3gVL4GrRpOO5l23Qq4EcRfUeg7fB
+         FnqXN6UltOuMqtWh3gwIhAMSOAit/U11OkBUj68lrG9KSOXlQa8mMoo06PsGm4ZJZWi3
+         fjIjAg7mOuu6SFI2EdJBiwZtZXzW6I5ByGhqB1HPYvi684XBWxEroDOx1w2KVkh19Byi
+         q8Gg==
+X-Gm-Message-State: AOAM531sNWVPMYX8R6Gs3kd7vpHAeDnKAoX1dcYhcAZGsNhWqjNLIJ2p
+        ntcLEsIBmXFeA8IZ13ThC4Q=
+X-Google-Smtp-Source: ABdhPJxs2blg1UPLBx8x5sB7WrDxyuLggjwojuwo7PZGH8HuErJjf7rf8jKIoCxIwzRtsmV99luHnQ==
+X-Received: by 2002:a92:1599:: with SMTP id 25mr2099167ilv.271.1605322334605;
+        Fri, 13 Nov 2020 18:52:14 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:99e7:10e8:ee93:9a3d])
+        by smtp.googlemail.com with ESMTPSA id z18sm5254773iol.32.2020.11.13.18.52.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 18:52:13 -0800 (PST)
+Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4 behavior
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
+ <20201107153139.3552-5-andrea.mayer@uniroma2.it>
+ <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
+ <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
+ <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
+ <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
+ <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201113134010.5eb2a154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201114000024.614c6c097050188abc87a7ff@uniroma2.it>
+ <20201113155437.7d82550b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201114025058.25ae815024ba77d59666a7ab@uniroma2.it>
+ <20201113180126.33bc1045@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201114032948.895abbf4d9a12758fc702ce6@uniroma2.it>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <1303ab2b-e165-43e5-d16b-ade5eb0fc87d@gmail.com>
+Date:   Fri, 13 Nov 2020 19:52:09 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
- <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
- <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
- <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
- <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
- <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com> <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
-In-Reply-To: <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 13 Nov 2020 18:51:36 -0800
-Message-ID: <CAJuCfpExoi-+TC1cR8mJMg_e+T6apoJj9x8DjTM01rw725XpQw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Minchan Kim <minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201114032948.895abbf4d9a12758fc702ce6@uniroma2.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 6:16 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Fri, 13 Nov 2020 17:57:02 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
->
-> > On Fri, Nov 13, 2020 at 5:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > >
-> > > On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > > > > > Seems to me that the ability to reap another process's memory is a
-> > > > > > > generally useful one, and that it should not be tied to delivering a
-> > > > > > > signal in this fashion.
-> > > > > > >
-> > > > > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
-> > > > > > > few changes and tweaks, but can't that be used to solve this problem?
-> > > > > >
-> > > > > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
-> > > > > > one of the options recently discussed in
-> > > > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > > > > > . The thread describes some of the issues with that approach but if we
-> > > > > > limit it to processes with pending SIGKILL only then I think that
-> > > > > > would be doable.
-> > > > >
-> > > > > Why would it be necessary to read /proc/pid/maps?  I'd have thought
-> > > > > that a starting effort would be
-> > > > >
-> > > > >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
-> > > > >
-> > > > > (after translation into process_madvise() speak).  Which is equivalent
-> > > > > to the proposed process_madvise(MADV_DONTNEED_MM)?
-> > > >
-> > > > Yep, this is very similar to option #3 in
-> > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > > > and I actually have a tested prototype for that.
-> > >
-> > > Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
-> > > which spans the whole address range?
-> >
-> > That would be the option #4 from the same discussion and the issues
-> > noted there are "process_madvise return value can't handle such a
-> > large number of bytes and there is MAX_RW_COUNT limit on max number of
-> > bytes one process_madvise call can handle". In my prototype I have a
-> > special handling for such "bulk operation" to work around the
-> > MAX_RW_COUNT limitation.
->
-> Ah, OK, return value.  Maybe process_madvise() shouldn't have done that
-> and should have simply returned 0 on success, like madvise().
->
-> I guess a special "nuke whole address space" command is OK.  But, again
-> in the search for generality, the ability to nuke very large amounts of
-> address space (but not the entire address space) would be better.
->
-> The process_madvise() return value issue could be addressed by adding a
-> process_madvise() mode which return 0 on success.
->
-> And I guess the MAX_RW_COUNT issue is solvable by adding an
-> import_iovec() arg to say "don't check that".  Along those lines.
->
-> It's all sounding a bit painful (but not *too* painful).  But to
-> reiterate, I do think that adding the ability for a process to shoot
-> down a large amount of another process's memory is a lot more generally
-> useful than tying it to SIGKILL, agree?
+On 11/13/20 7:29 PM, Andrea Mayer wrote:
+> Hi Jakub,
+> 
+> On Fri, 13 Nov 2020 18:01:26 -0800
+> Jakub Kicinski <kuba@kernel.org> wrote:
+> 
+>>> UAPI solution 2
+>>>
+>>> we turn "table" into an optional parameter and we add the "vrftable" optional
+>>> parameter. DT4 can only be used with the "vrftable" (hence it is a required
+>>> parameter for DT4).
+>>> DT6 can be used with "vrftable" (new vrf mode) or with "table" (legacy mode)
+>>> (hence it is an optional parameter for DT6).
+>>>
+>>> UAPI solution 2 examples:
+>>>
+>>> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT4 vrftable 100 dev eth0
+>>> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 vrftable 100 dev eth0
+>>> ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 dev eth0
+>>>
+>>> IMO solution 2 is nicer from UAPI POV because we always have only one 
+>>> parameter, maybe solution 1 is slightly easier to implement, all in all 
+>>> we prefer solution 2 but we can go for 1 if you prefer.
+>>
+>> Agreed, 2 looks better to me as well. But let's not conflate uABI with
+>> iproute2's command line. I'm more concerned about the kernel ABI.
+> 
+> Sorry I was a little imprecise here. I reported only the user command perspective.
+> From the kernel point of view in solution 2 the vrftable will be a new
+> [SEG6_LOCAL_VRFTABLE] optional parameter.
+> 
+>> BTW you prefer to operate on tables (and therefore require
+>> net.vrf.strict_mode=1) because that's closer to the spirit of the RFC,
+>> correct? As I said from the implementation perspective passing any VRF
+>> ifindex down from user space to the kernel should be fine?
+> 
+> Yes, I definitely prefer to operate on tables (and so on the table ID) due to
+> the spirit of the RFC. We have discussed in depth this design choice with
+> David Ahern when implementing the DT4 patch and we are confident that operating
+> with VRF strict mode is a sound approach also for DT6. 
+> 
 
-I see. So you are suggesting a mode where process_madvise() can
-operate on large areas spanning multiple VMAs. This slightly differs
-from option 4 in the previous RFC which suggested a special mode that
-operates on the *entire* mm of the process. I agree, your suggestion
-is more generic.
-
->
-> > >
-> > > > If that's the
-> > > > preferred method then I can post it quite quickly.
-> > >
-> > > I assume you've tested that prototype.  How did its usefulness compare
-> > > with this SIGKILL-based approach?
-> >
-> > Just to make sure I understand correctly your question, you are asking
-> > about performance comparison of:
-> >
-> > // approach in this RFC
-> > pidfd_send_signal(SIGKILL, SYNC_REAP_MM)
-> >
-> > vs
-> >
-> > // option #4 in the previous RFC
-> > kill(SIGKILL); process_madvise(vector=NULL, MADV_DONTNEED);
-> >
-> > If so, I have results for the current RFC approach but the previous
-> > approach was testing on an older device, so don't have
-> > apples-to-apples comparison results at the moment. I can collect the
-> > data for fair comparison if desired, however I don't expect a
-> > noticeable performance difference since they both do pretty much the
-> > same thing (even on different devices my results are quite close). I
-> > think it's more a question of which API would be more appropriate.
->
-> OK.  I wouldn't expect performance to be very different (and things can
-> be sped up if so), but the API usefulness might be an issue.  Using
-> process_madvise() (or similar) makes it a two-step operation, whereas
-> tying it to SIGKILL&&TASK_UNINTERRUPTIBLE provides a more precise tool.
-> Any thoughts on this?
->
+I like the vrftable option. Straightforward extension from current table
+argument.
