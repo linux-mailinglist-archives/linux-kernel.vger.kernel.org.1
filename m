@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CC02B2E85
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 17:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381D32B2E8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 17:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgKNQp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 11:45:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgKNQp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 11:45:26 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 200FD20709;
-        Sat, 14 Nov 2020 16:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605372325;
-        bh=lqmUdGXvXeFpV1VchJqGcV78YmFZYTBbB0Vd5Oq4PhY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=smiogYkvmgXcLweGt9e6gO4uAkR4UsBxjNbzwoIKSNGjnBV/qrRB8TeXQOVTcdjkP
-         gxIMZEFdbCZbIKJvOQQjYpEZLBlvo7dd9TeeQUwMdnffqgQqvN7cDSBu3Wk1cm9JGg
-         6uprmVUZTsEc+KKJ39pcQUpkuMwEz2r9nWibQ6a8=
-Date:   Sat, 14 Nov 2020 16:45:17 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: adc: ad7887: convert probe to device-managed
- functions
-Message-ID: <20201114164517.31796bef@archlinux>
-In-Reply-To: <20201113091648.148589-1-alexandru.ardelean@analog.com>
-References: <20201113091648.148589-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726618AbgKNQtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 11:49:25 -0500
+Received: from mail-mw2nam12on2069.outbound.protection.outlook.com ([40.107.244.69]:43233
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726265AbgKNQtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 11:49:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ABkpmdJ4qYNvlN5F/loOeYKWl/RrAdspf4nnlzU9fhaI1F7lMWsUoYLpHYUWUEhCo0L8u53ClNiKosrqBrKK9aRLgppUea4U8eubmk4g9gxqggOh82AjT2XReAQe2nwxVTM6nZJEAujpkHlaDmdvL9r5Cu6sDAQ10T1rrEEEeOgbuEwcDl1LAvZHgpeYEvpe832V8xbgYFUN60/CeBPGbUUppaDcynQERQSyqR/diPHjUrUamkn5yoXbrxtqhKiU7dEvMq7tt4/jZKgjKt+TotSwshXeD4RlviYQ+d0alIzQhW/gTZ6UbE7Z4ncGCNvziLQRR5+SvMajwRoaLShxAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB1BET5OrzqxM/2rFMEzxNkG6MsW8cwwPBZR1R4KSRA=;
+ b=NrT90o15Z3vAbnPUcarlVypAIh1PguTAYymcBKRDX1Uq6CdH50fdTSucMUgrqD/juKS6Fr8PkIr/uI0OQZJQkYT1hPVHTrV55AjsBR3LBAIOH5OwlWUcQdPAXAimTPgasmca1oam4FAedGJJQv0L67WpZ5wcGyGniTyoOq26/7ySQuqJBqgPJsQmIzyyoyqr13PYMo9otmzmh/VY/G3Dv3xLUgxLCvvATMPCM9LCpI/atRt0AU9G97JdKC4cc7sZLILyRjwdTxmf/U0FlIfFnxUPqjiOuD95u98oTU2+5tGn1GuSTvac/VlUt5eWWWtF0cXnHqGPueWHZqaTLBkszw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB1BET5OrzqxM/2rFMEzxNkG6MsW8cwwPBZR1R4KSRA=;
+ b=SNY91hPsPmv/4jiXWBl3wkyIWbOrWGVc33HvqgR0TAN67hMxo3qx4HFEHS+HGohadamt78d+PS2DRhlam8fQwn2Hh03HTaXnhggED0qru2VaRh7+m5JAe5TrKFf6TX36aBUoUT8vG5O7WAZ1+ovhDYQVdqxa892eKPnISc96K7g=
+Received: from SA9PR10CA0018.namprd10.prod.outlook.com (2603:10b6:806:a7::23)
+ by SJ0PR02MB7597.namprd02.prod.outlook.com (2603:10b6:a03:319::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Sat, 14 Nov
+ 2020 16:49:22 +0000
+Received: from SN1NAM02FT009.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:a7:cafe::dc) by SA9PR10CA0018.outlook.office365.com
+ (2603:10b6:806:a7::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend
+ Transport; Sat, 14 Nov 2020 16:49:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT009.mail.protection.outlook.com (10.152.73.32) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3564.22 via Frontend Transport; Sat, 14 Nov 2020 16:49:22 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Sat, 14 Nov 2020 08:49:21 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Sat, 14 Nov 2020 08:49:21 -0800
+Envelope-to: mathieu.poirier@linaro.org,
+ devicetree@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Received: from [172.19.2.206] (port=38914 helo=xsjblevinsk50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kdyjp-0007Ai-A6; Sat, 14 Nov 2020 08:49:21 -0800
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     <mathieu.poirier@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v23 0/5] Provide basic driver to control Arm R5 co-processor found on Xilinx ZynqMP
+Date:   Sat, 14 Nov 2020 08:49:16 -0800
+Message-ID: <20201114164921.14573-1-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3560a453-7b90-40bc-a3de-08d888bd3cc0
+X-MS-TrafficTypeDiagnostic: SJ0PR02MB7597:
+X-Microsoft-Antispam-PRVS: <SJ0PR02MB759757F1492C44693BA82056B5E50@SJ0PR02MB7597.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3UhK/V/M9t/yoTPXgnGEm8NCGYtLEKgK2wGLRdSCPWLSnnOb2/0duwgcCnYgQIDBxjCZGyyncQoms8v0ea1tHZ0zwRpWRGOn1imlYgH3H612krLo+ZAKx1E8pfG5QGREB4b2HLoUv3IZTREJXSH5zUtDIKIabhXPZJYAOFrebHImzDUanTBVdUT3Zh9lS+8OGQ4M+jCieNl4HeTdTk5QmQJRvMNBzDDTssxpjVQE2EA50CREAm/j9qN2mZb6Hp6nHNPXQ5wdyzkceTPGYL894zSkpZPnx6AkGOGBCAno2iSosAzzYTpWFqeW4N0zgEBeK7MKu7zF4oNL3wl6C6L7RawEs3gwqL4Is4gK8OislNSaX/fuv6H69zkWqCn2sZQ2h9ap5wYRVip/UpSJvmbV1t13iepvGbpi8YJAw3zB2vfHM/kVlYvGLnSUpWD36F/YkEhbJEbRjQYEZTAeWDZSYKcvKN+y3P1tUeB6qXKA0sKG/JgfdttuOLVbbbhJFtsM
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39850400004)(46966005)(5660300002)(8936002)(54906003)(47076004)(4326008)(8676002)(6666004)(26005)(186003)(7696005)(82310400003)(7636003)(426003)(1076003)(36756003)(44832011)(6916009)(316002)(356005)(336012)(82740400003)(2906002)(70586007)(36906005)(83380400001)(966005)(478600001)(9786002)(70206006)(2616005)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2020 16:49:22.1569
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3560a453-7b90-40bc-a3de-08d888bd3cc0
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT009.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7597
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 11:16:48 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+v23:
+- add TCM Nodes to xlnx-zynqmp.h to be used in R5 Remoteproc Driver
+- Update grammar and capitalization in device tree bindings and R5 remoteproc driver comments
+- Update device tree bindings and driver to align with TI Remoteproc R5 driver
+- fix minor comments in v22 review
 
-> This is conversion of the driver to use device-managed functions.
-> The IIO registration and triggered buffer setup both have device-managed
-> versions.
-> The regulator disable needs to be handled via an action_or_reset handler.
-> 
-> With these changes, the remove hook is removed, and the error path is
-> cleaned up in probe.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Applied.
+Previous version:
+https://patchwork.kernel.org/project/linux-remoteproc/list/?series=376801
 
-Thanks,
 
-Jonathan
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
 
-> ---
->  drivers/iio/adc/ad7887.c | 43 ++++++++++++++--------------------------
->  1 file changed, 15 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
-> index 99a480ad3985..4f6f0e0e03ee 100644
-> --- a/drivers/iio/adc/ad7887.c
-> +++ b/drivers/iio/adc/ad7887.c
-> @@ -232,6 +232,13 @@ static const struct iio_info ad7887_info = {
->  	.read_raw = &ad7887_read_raw,
->  };
->  
-> +static void ad7887_reg_disable(void *data)
-> +{
-> +	struct regulator *reg = data;
-> +
-> +	regulator_disable(reg);
-> +}
-> +
->  static int ad7887_probe(struct spi_device *spi)
->  {
->  	struct ad7887_platform_data *pdata = spi->dev.platform_data;
-> @@ -258,6 +265,10 @@ static int ad7887_probe(struct spi_device *spi)
->  		ret = regulator_enable(st->reg);
->  		if (ret)
->  			return ret;
-> +
-> +		ret = devm_add_action_or_reset(&spi->dev, ad7887_reg_disable, st->reg);
-> +		if (ret)
-> +			return ret;
->  	}
->  
->  	st->chip_info =
-> @@ -316,36 +327,13 @@ static int ad7887_probe(struct spi_device *spi)
->  		indio_dev->num_channels = st->chip_info->num_channels;
->  	}
->  
-> -	ret = iio_triggered_buffer_setup(indio_dev, &iio_pollfunc_store_time,
-> +	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
-> +			&iio_pollfunc_store_time,
->  			&ad7887_trigger_handler, &ad7887_ring_setup_ops);
->  	if (ret)
-> -		goto error_disable_reg;
-> -
-> -	ret = iio_device_register(indio_dev);
-> -	if (ret)
-> -		goto error_unregister_ring;
-> -
-> -	return 0;
-> -error_unregister_ring:
-> -	iio_triggered_buffer_cleanup(indio_dev);
-> -error_disable_reg:
-> -	if (st->reg)
-> -		regulator_disable(st->reg);
-> -
-> -	return ret;
-> -}
-> -
-> -static int ad7887_remove(struct spi_device *spi)
-> -{
-> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> -	struct ad7887_state *st = iio_priv(indio_dev);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	iio_triggered_buffer_cleanup(indio_dev);
-> -	if (st->reg)
-> -		regulator_disable(st->reg);
-> +		return ret;
->  
-> -	return 0;
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
->  }
->  
->  static const struct spi_device_id ad7887_id[] = {
-> @@ -359,7 +347,6 @@ static struct spi_driver ad7887_driver = {
->  		.name	= "ad7887",
->  	},
->  	.probe		= ad7887_probe,
-> -	.remove		= ad7887_remove,
->  	.id_table	= ad7887_id,
->  };
->  module_spi_driver(ad7887_driver);
+ .../xilinx,zynqmp-r5-remoteproc.yaml          | 238 +++++
+ drivers/firmware/xilinx/zynqmp.c              |  96 ++
+ drivers/remoteproc/Kconfig                    |   8 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c     | 872 ++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |  64 ++
+ 6 files changed, 1279 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
+
+-- 
+2.17.1
 
