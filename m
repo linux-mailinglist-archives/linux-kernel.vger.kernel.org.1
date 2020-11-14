@@ -2,100 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B752B30D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498AC2B30DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKNU6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:58:12 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60582 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgKNU6L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:58:11 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605387489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AgmO+ovXS0H7Vz5OGOh347PfWQu+2lZpnKeHesuoCow=;
-        b=ZKD0Ij3HgOCb3u6Q/mbn8OHp2fgVYQAOJfF6A922uc6bzYnZxpw687nnt6anZvCZokEsyX
-        KfgVW2WX9Uqm7IXFqlC5w14q4xLIJIY3j/XS4rQBT2IRMdgd/WnOsCCJlUkXQQPOAZ0IPt
-        f+pxLgdqaR05gsaUP9Mq1VOl/U80rVeErHz1C1g9r/NJr2p2eInbNJ4/g1aWnVXJmhXKY7
-        8Rrb9zgmfbQjbf20cdi7dYxhmr+bhbAckMaez6MT/jEhT2c4N+X2rCNgYgmqdqJ80Z1Sty
-        f5bnufQLUsefIUiXSQIr6Rq5cWMzaTJt2Ka4hVfEOgc5A03P8z/HJykm2PUcqA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605387489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AgmO+ovXS0H7Vz5OGOh347PfWQu+2lZpnKeHesuoCow=;
-        b=3oZ5BSjO6nypbaQiWCHWpwDRjhngAoRaslwLtC/9AuSl8rLOdS2X9/Lef9/i4AldUOTw5h
-        4W5C2SBXlNc68dAg==
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
-        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
-        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
-        ddstreet@canonical.com, gavin.guo@canonical.com,
-        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
-        shan.gavin@linux.alibaba.com,
-        Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-In-Reply-To: <20201114203925.GA1182595@bjorn-Precision-5520>
-References: <20201114203925.GA1182595@bjorn-Precision-5520>
-Date:   Sat, 14 Nov 2020 21:58:08 +0100
-Message-ID: <87h7prac67.fsf@nanos.tec.linutronix.de>
+        id S1726494AbgKNU64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:58:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgKNU6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 15:58:55 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11A632242E;
+        Sat, 14 Nov 2020 20:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605387535;
+        bh=Y51KJWly+cXvpdfsPzX2sOULAb0WXaebfYYmoq5wEOA=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=j7B8L37k1Hx9ysm2Mqzh+LVzR4vYo6t1U6QXfo55+xSCyxbtxzyu75YYloVFZSD70
+         YTKWDlVE+wksQ8ecDl9NVNs56irYwwpaYfeJ2R3uYUTzGFYMAdcqLUCl6szaoPUf+I
+         Eo0WmSTFGiLmriNuAeOFcwa+GmuNw9bfcfD2vObI=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201021163847.595189-2-jbrunet@baylibre.com>
+References: <20201021163847.595189-1-jbrunet@baylibre.com> <20201021163847.595189-2-jbrunet@baylibre.com>
+Subject: Re: [PATCH 1/2] clk: add devm variant of clk_notifier_register
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Date:   Sat, 14 Nov 2020 12:58:53 -0800
+Message-ID: <160538753380.60232.3216881025872069497@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn,
+Quoting Jerome Brunet (2020-10-21 09:38:46)
+> Add a memory managed variant of clk_notifier_register() to make life easi=
+er
+> on clock consumers using notifiers
+>=20
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
 
-On Sat, Nov 14 2020 at 14:39, Bjorn Helgaas wrote:
-> On Sat, Nov 14, 2020 at 12:40:10AM +0100, Thomas Gleixner wrote:
->> On Sat, Nov 14 2020 at 00:31, Thomas Gleixner wrote:
->> > On Fri, Nov 13 2020 at 10:46, Bjorn Helgaas wrote:
->> >> pci_device_shutdown() still clears the Bus Master Enable bit if we're
->> >> doing a kexec and the device is in D0-D3hot, which should also disable
->> >> MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
->> >> device causing the storm was in PCI_UNKNOWN state?
->> >
->> > That's indeed a really good question.
->> 
->> So we do that on kexec, but is that true when starting a kdump kernel
->> from a kernel crash? I doubt it.
->
-> Ah, right, I bet that's it, thanks.  The kdump path is basically this:
->
->   crash_kexec
->     machine_kexec
->
-> while the usual kexec path is:
->
->   kernel_kexec
->     kernel_restart_prepare
->       device_shutdown
->         while (!list_empty(&devices_kset->list))
->           dev->bus->shutdown
->             pci_device_shutdown            # pci_bus_type.shutdown
->     machine_kexec
->
-> So maybe we need to explore doing some or all of device_shutdown() in
-> the crash_kexec() path as well as in the kernel_kexec() path.
-
-The problem is that if the machine crashed anything you try to attempt
-before starting the crash kernel is reducing the chance that the crash
-kernel actually starts.
-
-Is there something at the root bridge level which allows to tell the
-underlying busses to shut up, reset or go into a defined state? That
-might avoid chasing lists which might be already unreliable.
-
-Thanks,
-
-        tglx
+Applied to clk-next
