@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905E32B2C08
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016E52B2C0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgKNIB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 03:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgKNIB7 (ORCPT
+        id S1726557AbgKNILM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 03:11:12 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7899 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgKNILM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 03:01:59 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000CDC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:01:58 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id v22so13480884edt.9
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:01:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/fqG7c8M3pBdJnkPgVTe7wcFahJJ+uSB2RsTpRZEnLs=;
-        b=dSzJvr3+fQAI4NT1Xr9rD6kEQgLMdvSeMpOimThvCfAeMFNlkjhhR5vIumbSSh4sH4
-         8pDNgiWLKGF2XVLuQ85dtv5kg/RF+3IMLTqgsKNIudE7qhqx0E/hl8C2Kzq1a7DWWv56
-         ELCG9ZtUjFrlH9U/7AhDlH1QP7djLp7pL3ur/cw/kV/aUuhoom+eTKVQZ9Hj4y+OdqP6
-         0vTBbFGPxhhwMEfPsuD2VNuIECrJ8ihloBGWNzr5GlFFIV3KdvVhWnwDoI3rESqp/8Ny
-         psoVinFGq8Hytl3uMJsMPRUAw1OVfGFu6q5z6NF2Y2srYnvhfJAIYDFbxpv6izcn2EgJ
-         Cbig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/fqG7c8M3pBdJnkPgVTe7wcFahJJ+uSB2RsTpRZEnLs=;
-        b=SYmo2LpU3osYWF27r+g40Y119HjWvZK1rXdWsZZmz7Rn2riTVeAHZ4hNXYda2/Oddt
-         trnbK0akDxyJEKG7zr1n1f+oeuA6TqQBZLhn2asKKp5gIYxVVeRt5e4rex2Wv7u+Zjx9
-         NJA1WzAuQZEEm123h+6WL2vVtGFxyHMhvtDGOYw+mSIsKLyH68FuJtMhxN19rQWrqjUz
-         T3Q/32JnSK2XM8siWQgjiPZLwDI983W/73ljb9yFnpGoclktulAWK6y45zrYBOed3B0v
-         y9y9nOzxpHV73Gbo86q2AqYeLbXPUmm4nTm6c6dr9oFsAJ7DRcj3Hgnn1O1WfFVg2M5t
-         7fRQ==
-X-Gm-Message-State: AOAM533EOVmzYolfPZ+QbLBjRzXFTjFY5J+MUvJq/BTCegnKb/AnEBr4
-        1V0BfSMPPfjBdZX/KzhGasrkhQ==
-X-Google-Smtp-Source: ABdhPJx/d6nrUq1YXjq87J3UuKPgmYDeIcWSxawnxMko26410wivJfg4UwLLWhjZcKSlNseXvHGhbQ==
-X-Received: by 2002:aa7:d591:: with SMTP id r17mr6738881edq.274.1605340916276;
-        Sat, 14 Nov 2020 00:01:56 -0800 (PST)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:2233:3093:edf2:af28])
-        by smtp.gmail.com with ESMTPSA id j9sm5791221ejf.105.2020.11.14.00.01.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Nov 2020 00:01:55 -0800 (PST)
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-next@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201114011110.21906-1-rdunlap@infradead.org>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH net-next] net: linux/skbuff.h: combine NET + KCOV handling
-Message-ID: <52502fe4-8f41-0630-5b9c-be2e07b6932c@tessares.net>
-Date:   Sat, 14 Nov 2020 09:01:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Sat, 14 Nov 2020 03:11:12 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CY7Lt2sNFz761H;
+        Sat, 14 Nov 2020 16:10:46 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 14 Nov 2020 16:10:48 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <viro@zeniv.linux.org.uk>, <akpm@linux-foundation.org>,
+        <David.Laight@ACULAB.COM>, <linux-fsdevel@vger.kernel.org>
+CC:     <akinobu.mita@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <prime.zeng@huawei.com>,
+        <yangyicong@hisilicon.com>
+Subject: [PATCH v3] libfs: fix error cast of negative value in simple_attr_write()
+Date:   Sat, 14 Nov 2020 16:09:16 +0800
+Message-ID: <1605341356-11872-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20201114011110.21906-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+The attr->set() receive a value of u64, but simple_strtoll() is used
+for doing the conversion. It will lead to the error cast if user inputs
+a negative value.
 
-On 14/11/2020 02:11, Randy Dunlap wrote:
-> The previous Kconfig patch led to some other build errors as
-> reported by the 0day bot and my own overnight build testing.
+Use kstrtoull() instead of simple_strtoll() to convert a string got
+from the user to an unsigned value. The former will return '-EINVAL' if
+it gets a negetive value, but the latter can't handle the situation
+correctly. Make 'val' unsigned long long as what kstrtoull() takes, this
+will eliminate the compile warning on no 64-bit architectures.
 
-Thank you for looking at that!
+Fixes: f7b88631a897 ("fs/libfs.c: fix simple_attr_write() on 32bit machines")
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+Change since v1:
+- address the compile warning for non-64 bit platform.
+Change since v2:
+Link: https://lore.kernel.org/linux-fsdevel/1605000324-7428-1-git-send-email-yangyicong@hisilicon.com/
+- make 'val' unsigned long long and mentioned in the commit
+Link: https://lore.kernel.org/linux-fsdevel/1605261369-551-1-git-send-email-yangyicong@hisilicon.com/
 
-I had the same issue and I was going to propose a similar fix with one 
-small difference, please see below.
+ fs/libfs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> --- linux-next-20201113.orig/include/linux/skbuff.h
-> +++ linux-next-20201113/include/linux/skbuff.h
-> @@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
->   #endif
->   }
->   
-> -#ifdef CONFIG_KCOV
-> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_NET)
->   static inline void skb_set_kcov_handle(struct sk_buff *skb,
-Should we have here CONFIG_SKB_EXTENSIONS instead of CONFIG_NET?
-
-It is valid to use NET thanks to your commit 85ce50d337d1 ("net: kcov: 
-don't select SKB_EXTENSIONS when there is no NET") that links 
-SKB_EXTENSIONS with NET for KCOV but it looks strange to me to use a 
-"non direct" dependence :)
-I mean: here below, skb_ext_add() and skb_ext_find() are called but they 
-are defined only if SKB_EXTENSIONS is enabled, not only NET.
-
-But as I said, this patch fixes the issue. It's fine for me if we prefer 
-to use CONFIG_NET.
-
-> @@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
->   static inline void skb_set_kcov_handle(struct sk_buff *skb,
->   				       const u64 kcov_handle) { }
->   static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
-> -#endif /* CONFIG_KCOV */
-> +#endif /* CONFIG_KCOV &&  CONFIG_NET */
-
-(Small detail if you post a v2: there is an extra space between "&&" and 
-"CONFIG_NET")
-
-Cheers,
-Matt
+diff --git a/fs/libfs.c b/fs/libfs.c
+index fc34361..7124c2e 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -959,7 +959,7 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
+ 			  size_t len, loff_t *ppos)
+ {
+ 	struct simple_attr *attr;
+-	u64 val;
++	unsigned long long val;
+ 	size_t size;
+ 	ssize_t ret;
+ 
+@@ -977,7 +977,9 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
+ 		goto out;
+ 
+ 	attr->set_buf[size] = '\0';
+-	val = simple_strtoll(attr->set_buf, NULL, 0);
++	ret = kstrtoull(attr->set_buf, 0, &val);
++	if (ret)
++		goto out;
+ 	ret = attr->set(attr->data, val);
+ 	if (ret == 0)
+ 		ret = len; /* on success, claim we got the whole input */
 -- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+2.8.1
+
