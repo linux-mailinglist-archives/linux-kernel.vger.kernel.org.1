@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810572B3130
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 23:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CBD2B3132
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 23:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgKNWgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 17:36:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60962 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKNWga (ORCPT
+        id S1726348AbgKNWhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 17:37:25 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:49893 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbgKNWhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 17:36:30 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605393388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=yzAUr8F/qvv0SbzuApNQRQ/+Feyqjj5P+GI1CLFSiQs=;
-        b=24kQplwoSlPxbZqisHO6h5YHruF967rKQ+zmydChrC9egwS/xir5n87M+gRc8uVNCjaDUE
-        oD6PDNSJQYWA9Ws3DIZQ2O1lqZNFNg0Vms/uKD1aO41dc6/Eya8y/1ZIfCeUCJqjCaoUbu
-        Db5ozIdZKki7p5woZ22Is/xZvMSQzDNltt1iW2nKVBvGYFQYIrp9FxWJtcRlOJyYmrD7BT
-        V1KGqnf8ZitzOLatj6Lrx6bNo7OyxlauufjE/psYQQ83bDeEEd12Z4JXf1Ulfzl9RFTlJU
-        leXiiosmqqWi2vL4yQNk1hcvrJJjxMhL65sT3dmOC8x1UwXHP1zfSa+4EseGww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605393388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=yzAUr8F/qvv0SbzuApNQRQ/+Feyqjj5P+GI1CLFSiQs=;
-        b=3zpN1YdaWuzaIDEYtHUSdCm6tfPNB1Vqt/3afccx7XbSHfcjxdWaUSlzTVcWFgivBuEv+5
-        Lq6Blu6dCdZBzKDg==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>
-Subject: genirq/irqdomain: Make irq_domain_disassociate() static
-Date:   Sat, 14 Nov 2020 23:36:28 +0100
-Message-ID: <87a6vja7mb.fsf@nanos.tec.linutronix.de>
+        Sat, 14 Nov 2020 17:37:25 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 1390360002;
+        Sat, 14 Nov 2020 22:37:22 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Alessandro Zummo <a.zummo@towertech.it>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        kernel@collabora.com, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v2] rtc: hym8563: enable wakeup when applicable
+Date:   Sat, 14 Nov 2020 23:37:21 +0100
+Message-Id: <160539337060.848153.7453047020568943030.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <1ea023e2ba50a4dab6e39be93d7de3146af71a60.1604653374.git.guillaume.tucker@collabora.com>
+References: <1ea023e2ba50a4dab6e39be93d7de3146af71a60.1604653374.git.guillaume.tucker@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No users outside of the core code.
+On Fri, 6 Nov 2020 09:06:31 +0000, Guillaume Tucker wrote:
+> Enable wakeup in the hym8563 driver if the IRQ was successfully
+> requested or if wakeup-source is set in the devicetree.
+> 
+> As per the description of device_init_wakeup(), it should be enabled
+> for "devices that everyone expects to be wakeup sources".  One would
+> expect this to be the case with a real-time clock.
+> 
+> [...]
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/irqdomain.h |    2 --
- kernel/irq/irqdomain.c    |    2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+Applied, thanks!
 
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -387,8 +387,6 @@ extern int irq_domain_associate(struct i
- extern void irq_domain_associate_many(struct irq_domain *domain,
- 				      unsigned int irq_base,
- 				      irq_hw_number_t hwirq_base, int count);
--extern void irq_domain_disassociate(struct irq_domain *domain,
--				    unsigned int irq);
- 
- extern unsigned int irq_create_mapping(struct irq_domain *host,
- 				       irq_hw_number_t hwirq);
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -496,7 +496,7 @@ static void irq_domain_set_mapping(struc
- 	}
- }
- 
--void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
-+static void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
- {
- 	struct irq_data *irq_data = irq_get_irq_data(irq);
- 	irq_hw_number_t hwirq;
+[1/1] rtc: hym8563: enable wakeup when applicable
+      commit: c56ac7a0f468ceb38d24db41f4446d98ab94da2d
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
