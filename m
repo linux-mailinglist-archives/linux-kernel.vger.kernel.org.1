@@ -2,57 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED022B30F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021E22B30F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgKNVRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 16:17:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38246 "EHLO mail.kernel.org"
+        id S1726397AbgKNVSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 16:18:42 -0500
+Received: from mga04.intel.com ([192.55.52.120]:48977 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKNVRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 16:17:00 -0500
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6F592240B;
-        Sat, 14 Nov 2020 21:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605388619;
-        bh=FqEZUpen8Y29V5HXU1LOgkt0OaBJZycKxqoK60URRsI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=xwh72D0WhxzeKQQjDromAM80fRybC/ACJJO7GBdUQI3Ra5YxrHHWNhvSpWZoY7hgG
-         e8QjNnW15JtUM7zaBF9++qzAmvMHap7VwHPBov1QhstlUyH70BHH51FsA3AzfqLMCv
-         sSBu7i1KcJ0W/lI7boP2TaNJjO6SlpfJPzuDHyBE=
-Content-Type: text/plain; charset="utf-8"
+        id S1726182AbgKNVSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 16:18:42 -0500
+IronPort-SDR: RpTANA/y6l8jtiUNhPkYq70jfMKBYviL656tSgR8UYwStWT4AZlnH5p0jXbeqgrkuFdXtkmK7r
+ /UxlrDu7e+jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9805"; a="168023215"
+X-IronPort-AV: E=Sophos;i="5.77,479,1596524400"; 
+   d="scan'208";a="168023215"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2020 13:18:40 -0800
+IronPort-SDR: ExfAj2ZqQvzsSiNuKMtVo6WieFeeXJ168W7jZs9Qdz4+f3GfpjUoT5EJ2RTRob4+CIraLP6pnb
+ PP9+UvpuOieg==
+X-IronPort-AV: E=Sophos;i="5.77,479,1596524400"; 
+   d="scan'208";a="475070935"
+Received: from araj-mobl1.jf.intel.com ([10.251.4.217])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2020 13:18:39 -0800
+Date:   Sat, 14 Nov 2020 13:18:37 -0800
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201114211837.GB12197@araj-mobl1.jf.intel.com>
+References: <874klykc7h.fsf@nanos.tec.linutronix.de>
+ <20201109173034.GG2620339@nvidia.com>
+ <87pn4mi23u.fsf@nanos.tec.linutronix.de>
+ <20201110051412.GA20147@otc-nc-03>
+ <875z6dik1a.fsf@nanos.tec.linutronix.de>
+ <20201110141323.GB22336@otc-nc-03>
+ <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201112193253.GG19638@char.us.oracle.com>
+ <877dqqmc2h.fsf@nanos.tec.linutronix.de>
+ <20201114103430.GA9810@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201104134810.21026-1-digetx@gmail.com>
-References: <20201104134810.21026-1-digetx@gmail.com>
-Subject: Re: [PATCH v1] clk: tegra30: Use 300MHz for video decoder by default
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Date:   Sat, 14 Nov 2020 13:16:58 -0800
-Message-ID: <160538861846.60232.2236874455363048014@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114103430.GA9810@infradead.org>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Osipenko (2020-11-04 05:48:10)
-> The 600MHz is a too high clock rate for some SoC versions for the video
-> decoder hardware and this may cause stability issues. Use 300MHz for the
-> video decoder by default, which is supported by all hardware versions.
->=20
-> Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation=
-")
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
+On Sat, Nov 14, 2020 at 10:34:30AM +0000, Christoph Hellwig wrote:
+> On Thu, Nov 12, 2020 at 11:42:46PM +0100, Thomas Gleixner wrote:
+> > DMI vendor name is pretty good final check when the bit is 0. The
+> > strings I'm aware of are:
+> > 
+> > QEMU, Bochs, KVM, Xen, VMware, VMW, VMware Inc., innotek GmbH, Oracle
+> > Corporation, Parallels, BHYVE, Microsoft Corporation
+> > 
+> > which is not complete but better than nothing ;)
+> 
+> Which is why I really think we need explicit opt-ins for "native"
+> SIOV handling and for paravirtualized SIOV handling, with the kernel
+> not offering support at all without either or a manual override on
+> the command line.
 
-Should this go to clk-fixes? Thierry?
+opt-in by device or kernel? The way we are planning to support this is:
+
+Device support for IMS - Can discover in device specific means
+Kernel support for IMS. - Supported by IOMMU driver.
+
+each driver can check 
+
+if (dev_supports_ims() && iommu_supports_ims()) {
+	/* Then IMS is supported in the platform.*/
+}
+
+
+until we have vIOMMU support or a hypercall, iommu_supports_ims() will
+check if X86_FEATURE_HYPERVISOR in addition to the platform id's Thomas
+mentioned. or on intel platform check for cap.caching_mode=1 and return false.
+
+When we add support for getting a native interrupt handle then we will plumb that
+appropriately.
+
+Does this match what you wanted?
