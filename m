@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73E82B2B4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 05:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684542B2B4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 05:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgKNEQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 23:16:08 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58486 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgKNEQI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 23:16:08 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AE4Fx1q117260;
-        Fri, 13 Nov 2020 22:15:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605327359;
-        bh=MEcIuiLefxnDfFM03IZ6KtnSfpToThng1+Csig20+Lg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=EmR3NKILOxJD6w7Kqmr2UF2WA6Bsb824waEhjd9DffoYt4dt4LZrAHG+efT5uxzgi
-         hw31wwbdwc9+spzF52s2NqtegxjveGFFDmBxsDR9Jd3c7oypn4Od/UMKhMURLTGzfY
-         E1VgohmqmHTzr8EDAjKYR4k61t1/n9UrV0lUsfMM=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AE4Fxxd062998
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 13 Nov 2020 22:15:59 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
- Nov 2020 22:15:59 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 13 Nov 2020 22:15:59 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AE4Fuwq122450;
-        Fri, 13 Nov 2020 22:15:57 -0600
-Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-j7200-main: Add gpio nodes in main
- domain
-To:     Nishanth Menon <nm@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        <robh+dt@kernel.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <t-kristo@ti.com>
-References: <20201102191120.20380-1-faiz_abbas@ti.com>
- <20201102191120.20380-2-faiz_abbas@ti.com>
- <20201112163953.soia5cje4ry42ujf@kahuna>
- <6ce6de4b-6e4d-1d2d-aa7a-570d1796d668@ti.com>
- <20201113184020.drntugqsnj7dzsnh@ultimatum>
- <c6267288-581e-3b34-cec5-d5879f3d1283@ti.com>
- <20201113205552.p63u2gxgw4pfxil5@stunning>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <7ee0261c-c6c7-96f2-a15c-587becb28b06@ti.com>
-Date:   Sat, 14 Nov 2020 06:15:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201113205552.p63u2gxgw4pfxil5@stunning>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1726489AbgKNESe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 23:18:34 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37982 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726228AbgKNESe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 23:18:34 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKtCOWq9fbCEOAA--.21682S2;
+        Sat, 14 Nov 2020 12:18:22 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: Fix memleak in sun6i_rtc_clk_init
+Date:   Sat, 14 Nov 2020 12:18:21 +0800
+Message-Id: <1605327501-15110-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxKtCOWq9fbCEOAA--.21682S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF4rCr1rGr4fCr4fuF17ZFb_yoW8XrW8p3
+        yrZrWYkrs7Ka1Fg34ktFyUAF15K3Z7GFyI9r15C3Z5WrnavFykGF42ka40kFy5ArWfX3y5
+        ZF4jyry5uF4UCaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8XwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
+        AIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SfOUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+When rtc->base or rtc->int_osc or rtc->losc or rtc->ext_losc is NULL,
+we should free clk_data and rtc before the function returns to prevent
+memleak.
 
-On 13/11/2020 22:55, Nishanth Menon wrote:
-> On 00:39-20201114, Sekhar Nori wrote:
->>
->> I was using the latest schema from master. But I changed to 2020.08.1
->> also, and still don't see the warning.
->>
->> $ dt-doc-validate --version
->> 2020.12.dev1+gab5a73fcef26
->>
->> I dont have a system-wide dtc installed. One in kernel tree is updated.
->>
->> $ scripts/dtc/dtc --version
->> Version: DTC 1.6.0-gcbca977e
->>
->> Looking at your logs, it looks like you have more patches than just this
->> applied. I wonder if thats making a difference. Can you check with just
->> these patches applied to linux-next or share your tree which includes
->> other patches?
->>
->> In your logs, you have such error for other interrupt controller nodes
->> as well. For example:
->>
->>   arch/arm64/boot/dts/ti/k3-j7200-main.dtsi:
->> /bus@100000/bus@30000000/interrupt-controller1: Missing #address-cells
->> in interrupt provider
->>
->> Which I don't see in my logs. My guess is some other patch(es) in your
->> patch stack either uncovers this warning or causes it.
-> 
-> Oh boy! I sent you and myself on wild goose chase! Really sorry about
-> messing up in the report of bug.
-> 
-> It is not dtbs_check, it is building dtbs with W=2 that generates this
-> warning. dtc 1.6.0 is sufficient to reproduce this behavior.
-> 
-> Using v5.10-rc1 as baseline (happens the same with next-20201113 as
-> 		well.
-> 
-> v5.10-rc1: https://pastebin.ubuntu.com/p/Pn9HDqRjQ4/ (recording:
->      https://asciinema.org/a/55YVpql9Bq8rh8fePTxI2xObO)
-> 
-> v5.10-rc1 + 1st patch in the series(since we are testing):
-> 	https://pastebin.ubuntu.com/p/QWQRMSv565/ (recording:
-> https://asciinema.org/a/ZSKZkOY13l4lmZ2xWH34jMlM1)
-> 
-> Diff: https://pastebin.ubuntu.com/p/239sYYT2QY/
-> 
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ drivers/rtc/rtc-sun6i.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-This warning come from scripts/dtc/checks.c
-and was introduced by commit 3eb619b2f7d8 ("scripts/dtc: Update to upstream version v1.6.0-11-g9d7888cbf19c").
-
-In my opinion it's false warning as there is no requirement to have  #address-cells in interrupt provider node.
-by the way, above commit description says: "The interrupt_provider check is noisy, so turn it off for now."
-
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index e2b8b15..84ff1e6 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -272,7 +272,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 								300000000);
+ 	if (IS_ERR(rtc->int_osc)) {
+ 		pr_crit("Couldn't register the internal oscillator\n");
+-		return;
++		goto err;
+ 	}
+ 
+ 	parents[0] = clk_hw_get_name(rtc->int_osc);
+@@ -290,7 +290,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 	rtc->losc = clk_register(NULL, &rtc->hw);
+ 	if (IS_ERR(rtc->losc)) {
+ 		pr_crit("Couldn't register the LOSC clock\n");
+-		return;
++		goto err;
+ 	}
+ 
+ 	of_property_read_string_index(node, "clock-output-names", 1,
+@@ -301,7 +301,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 					  &rtc->lock);
+ 	if (IS_ERR(rtc->ext_losc)) {
+ 		pr_crit("Couldn't register the LOSC external gate\n");
+-		return;
++		goto err;
+ 	}
+ 
+ 	clk_data->num = 2;
+@@ -316,6 +316,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 
+ err:
+ 	kfree(clk_data);
++	kfree(rtc);
+ }
+ 
+ static const struct sun6i_rtc_clk_data sun6i_a31_rtc_data = {
 -- 
-Best regards,
-grygorii
+2.1.0
+
