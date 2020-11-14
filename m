@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B3F2B29E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8051A2B2A01
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgKNAcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:32:09 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:38309 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgKNAcI (ORCPT
+        id S1726087AbgKNAhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgKNAhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:32:08 -0500
-Received: by mail-lf1-f66.google.com with SMTP id 74so16719267lfo.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:32:07 -0800 (PST)
+        Fri, 13 Nov 2020 19:37:51 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF03C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:37:50 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id f38so8458095pgm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:37:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d2NjKbZuVprfurSTRWSrDJU/we/C3Nu5LpJ6PGwglq8=;
+        b=Z9oKPZ575c3gDcwmpE6oh7tqhsVlvfXcKkQMjqIEyhqafJEH0arJjzt6HKxTOeKdIZ
+         PJDW9MBWH0bSqoz2543b1j9wEaLcnziidUio4lVlQAKMszkkwEMUmzxaYcN3AIyy4KIJ
+         tB7ZVdIpP4PJX3shsLfgYGV7OHoLGHRiPCHK0kSVOt9mIC6i0Wa8bPLJggU+L08ru9PR
+         4QiNO+z93vUcvFANoWM8AruWch8OlZsBNAXXetYjh9UXbrkyxyVvTKmvdMkPmvkFkjyI
+         gBEAAhWYww7IXW+H5mqqVkkbS0caX87g4Ntp4fPWB/fUaCkE6vxqGz+hfRG4hVvAVhdS
+         2pbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hOLzg0ZSt4/KhJ2kIXr2eXLSfzX9WXSjA/Uf7QZ42gs=;
-        b=byf91IWL86woUEOFQMzifoLf6HyD/BBuI6ZZOgONmzr1XUZYZPpU+Uf0xA7GJ02XsD
-         xKxKuK8GZN3HGvg61qzymMBG0VkSE1zzuMty8Be1pNZ63uVSeu1n5qfhJnfgS1oWdhwd
-         t6ri06PZ5ya1wnP5g4A9i5Ihq4bvI8QlHfMoQziWnjJua/WA+IUe+KYNxHsl2sGkH45H
-         8vwnY/slhF7ElSp3rO/W3dX8xle9Sx6r0rdYUjF0Qijazpgl1TwukdFkP2EiWT+1kl2N
-         RPNsVApHByyrKqE9EUzVRv5KuM4rYk/rNcX7lqagyo7/mrrvJTCci1YxXY2RxjLY4/F8
-         dY3Q==
-X-Gm-Message-State: AOAM532dxIwncRZ0qJm6Zyk/E8UpOwPp8Th55DrZtAbUMb/wMXlro3HC
-        yWfMJDmSmFjuE1elhbzT+vAXAwPwbB9hno8UREg=
-X-Google-Smtp-Source: ABdhPJySVFSQpAPkse4bLkBD6mYDg4bmJPGwGilx7jyQ+dy95Urb/4ydPiVSSMxlbs5+uzrOw0SUgpiHNcVajSLUMv0=
-X-Received: by 2002:a19:8b84:: with SMTP id n126mr1735391lfd.555.1605313926395;
- Fri, 13 Nov 2020 16:32:06 -0800 (PST)
+        bh=d2NjKbZuVprfurSTRWSrDJU/we/C3Nu5LpJ6PGwglq8=;
+        b=YAhGgbGgI776TQzkUHIB2uvInoCZotwzfDYFsVu2lNZT+RSW17gX6N/1No7HjTzyx+
+         lIcKQEGGKtvNPNDiJl6XHcwA0AO7zru83FABgWjKFiTjrXHCmbKqobMdLzpoKx/FPi/s
+         4xOHEAms2i68E9XhWbAmjj7zUEQonHaEoBeWV6gSufpPISVsC6xRxvzcgzp+qv/rc5vR
+         kSSXdZrr8EY85LSDvWhmQ0v958yuLFdg0djB2X6YT/BdzrWgrsfbCiNZwaaFV7SXX+KC
+         gT4WsVRsrbgyOKLMqjK8UGc3Cir0Qvu78bAPAM+lOHjRdJ9POm9zmQs6MPvDRDQEhMNe
+         aj2w==
+X-Gm-Message-State: AOAM532uXvfEAgEDDOl6vq3XEvRN6f6lONzAAWQm0/Rt1malJEXcmwMP
+        19Nlewd+Z7Q6btDEd60CFJswa2P4dpNI5voe0bJJ+w==
+X-Google-Smtp-Source: ABdhPJytitMVpnlRtstqvDugqyzwNtoNHgcEDb1V+JzjIwJS/H4JKIOfdjbk7bK5aRUy7ob8mKVI6yaK4ULDekZMgyo=
+X-Received: by 2002:a62:75c6:0:b029:18a:d510:ff60 with SMTP id
+ q189-20020a6275c60000b029018ad510ff60mr4179679pfc.35.1605314269534; Fri, 13
+ Nov 2020 16:37:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109215415.400153-1-jolsa@kernel.org> <20201109215415.400153-25-jolsa@kernel.org>
- <20201113044000.GC167797@google.com> <20201113110926.GE753418@krava>
-In-Reply-To: <20201113110926.GE753418@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 14 Nov 2020 09:31:56 +0900
-Message-ID: <CAM9d7chgFfJXXtfUMVVbzLNvhLL2xHAomZjdf-DhPmdn5E2Omg@mail.gmail.com>
-Subject: Re: [PATCH 24/24] perf record: Add --buildid-mmap option to enable
- mmap's build id
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
+References: <202011131146.g8dPLQDD-lkp@intel.com> <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com>
+ <20201113190824.GA1477315@ubuntu-m3-large-x86> <CAKwvOdkEtTQhDRFRV_d66FyhQBe536vRbOW=fQjesiHz3dfeBA@mail.gmail.com>
+ <20201113200444.GA1496675@ubuntu-m3-large-x86> <CAKwvOdkBSGPaKmQY1nERVe4_n19Q=MUtuwdond=FJAAF9N9Zhg@mail.gmail.com>
+ <20201114002037.GW2672@gate.crashing.org>
+In-Reply-To: <20201114002037.GW2672@gate.crashing.org>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Fri, 13 Nov 2020 16:37:38 -0800
+Message-ID: <CAFP8O3+NowYwhMAywd=R23HgOYnroWV9ZRkdyAejd08qsOF=6w@mail.gmail.com>
+Subject: Re: Error: invalid switch -me200
+To:     Alan Modra <amodra@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 8:09 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Nov 13, 2020 at 4:23 PM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
 >
-> On Fri, Nov 13, 2020 at 01:40:00PM +0900, Namhyung Kim wrote:
-> > On Mon, Nov 09, 2020 at 10:54:15PM +0100, Jiri Olsa wrote:
-> > > Adding --buildid-mmap option to enable build id in mmap2 events.
-> > > It will only work if there's kernel support for that and it disables
-> > > build id cache (implies --no-buildid).
+> On Fri, Nov 13, 2020 at 12:14:18PM -0800, Nick Desaulniers wrote:
+> > > > > Error: invalid switch -me200
+> > > > > Error: unrecognized option -me200
+> > > >
+> > > > 251 cpu-as-$(CONFIG_E200)   += -Wa,-me200
+> > > >
+> > > > Are those all broken configs, or is Kconfig messed up such that
+> > > > randconfig can select these when it should not?
 > > >
-> > > It's also possible to enable it permanently via config option
-> > > in ~.perfconfig file:
+> > > Hmmm, looks like this flag does not exist in mainline binutils? There is
+> > > a thread in 2010 about this that Segher commented on:
 > > >
-> > >   [record]
-> > >   build-id=mmap
-> >
-> > You also need to update the documentation.
->
-> right, forgot doc for the config option
->
-> SNIP
->
-> > >                 "append timestamp to output filename"),
-> > >     OPT_BOOLEAN(0, "timestamp-boundary", &record.timestamp_boundary,
-> > > @@ -2657,6 +2662,21 @@ int cmd_record(int argc, const char **argv)
+> > > https://lore.kernel.org/linuxppc-dev/9859E645-954D-4D07-8003-FFCD2391AB6E@kernel.crashing.org/
 > > >
-> > >     }
-> > >
-> > > +   if (rec->buildid_mmap) {
-> > > +           if (!perf_can_record_build_id()) {
-> > > +                   pr_err("Failed: no support to record build id in mmap events, update your kernel.\n");
-> > > +                   err = -EINVAL;
-> > > +                   goto out_opts;
-> > > +           }
-> > > +           pr_debug("Enabling build id in mmap2 events.\n");
-> > > +           /* Enable mmap build id synthesizing. */
-> > > +           symbol_conf.buildid_mmap2 = true;
-> > > +           /* Enable perf_event_attr::build_id bit. */
-> > > +           rec->opts.build_id = true;
-> > > +           /* Disable build id cache. */
-> > > +           rec->no_buildid = true;
-> >
-> > I'm afraid this can make it miss some build-id in the end because of
-> > the possibility of the failure.
+> > > Guess this config should be eliminated?
 >
-> with following fix (already merged):
->   b33164f2bd1c bpf: Iterate through all PT_NOTE sections when looking for build id
+> The help text for this config options says that e200 is used in 55xx,
+> and there *is* an -me5500 GAS flag (which probably does this same
+> thing, too).  But is any of this tested, or useful, or wanted?
 >
-> I could see high rate of build id being retrieved
+> Maybe Christophe knows, cc:ed.
 >
-> I'll make new numbers for next version, but I think we can neglect
-> the failure, considering that we pick only 'hit' objects out of all
-> of them
 >
-> also enabling the build id cache for this would go against the
-> purpose why I'd like to have this.. so hopefuly the numbers
-> will be convincing ;-)
+> Segher
 
-Yeah, I think it'd be ok for most cases but we cannot guarantee..
-What about checking the dso list at the end of a record session
-and check all of them having build-id?  Then we can safely skip
-the build-id collecting stage.  Hmm.. but it won't work for the pipe.
+CC Alan Modra, a binutils global maintainer.
 
-Thanks,
-Namhyung
+Alan, can the few -Wa,-m* options deleted from arch/powerpc/Makefile ?
+The topic started at
+http://lore.kernel.org/r/202011131146.g8dPLQDD-lkp@intel.com and
+people would like to get rid of some options (if possible).
