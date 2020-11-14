@@ -2,470 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548BD2B2B28
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 04:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906182B2B2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 04:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgKND4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 22:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKND4C (ORCPT
+        id S1726465AbgKND5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 22:57:09 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60856 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgKND5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 22:56:02 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91E6C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 19:56:00 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id b3so5477336pls.11
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 19:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MjXwxwDm0QkPZbs2Ao8BfF+C22/gZiB+kMK1TCZXYig=;
-        b=1jbgkUUTOFo2DwI81Tp0J6uwq0ZYj28iOsNzLAZOSXKBIPkV7nEYYQyn7IEmuxNeDh
-         R4YJ4Vm+s4MynUb+xtTA2SdGMXsxK3MoiFgekYL4WSaAhtHyj4ioc3u0q9aCHZVBNXfW
-         YceyIQB1wGl0aFhLxuTp/H1jRzsVKachMerUmGh9rawNFJtxJEPQcv1ovvllApZuxD86
-         RgmHPy8zx+HTOQ2JwbSosQybgkkjEXrhKbtF+O7mAIEovl5VrPsvz//JipgXWhCGGw1o
-         TwDWFnC5TvanGkTvnc/MM5lREmNWnwEKiktVWPOXC4EMD4/02+u3oBr4hLafMunBGoMa
-         fRrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MjXwxwDm0QkPZbs2Ao8BfF+C22/gZiB+kMK1TCZXYig=;
-        b=L02Jb6zxKildaXxCQWT0K5aTPdakpidNUv+NDFf/xfaCd3D6pTKKfXF23S4I1KQgkf
-         G6DewDBKMbFlqgr5HuV4qnda+f1c9VQCHvQFQq6v6hZHaiI7xpKw3DqRcfFG5dJsO487
-         nqx6NZTeHUS1YCzAzEiWZ3XUNdc60K202l60xMCKirxUaOI6bcD+CBYIcRjtECuUCCAV
-         ZaImaEmjwN8+NZQpW98asAG7dhO6GAXcdNoA9wuIVSoes3XEkH84xQS7EVOCWGeQG9X9
-         2JqADC0xmcpJAnvECb/LdvQUFIi+8+EjjCQ+vDdWpvJtq6+4RKYqo7PDlfL/xig08R1c
-         EVkQ==
-X-Gm-Message-State: AOAM531VJKRvPjOhZRO/1WpFRdb7g0jrJdRns8JTF+fbpcQFh326bnV7
-        NoenYGSdj/fi8mmVjEYRypIXEw==
-X-Google-Smtp-Source: ABdhPJwkPel017gWUhDicHiaMcINv0yLe5NqktiVY3mVaJySwk/GTM1pMX6w9YtIDrjm+ZfUyiRuaQ==
-X-Received: by 2002:a17:90a:ab91:: with SMTP id n17mr6541737pjq.23.1605326160463;
-        Fri, 13 Nov 2020 19:56:00 -0800 (PST)
-Received: from [192.168.10.85] (124-171-134-245.dyn.iinet.net.au. [124.171.134.245])
-        by smtp.gmail.com with UTF8SMTPSA id 6sm11282932pfb.22.2020.11.13.19.55.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 19:55:59 -0800 (PST)
-Subject: Re: [PATCH kernel v3] genirq/irqdomain: Add reference counting to
- IRQs
-To:     =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>, Qian Cai <cai@lca.pw>,
-        Rob Herring <robh@kernel.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
-References: <20201109094646.71565-1-aik@ozlabs.ru>
- <befc829d-82ac-3ae8-025d-eb9eb7b4a1b6@kaod.org>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <bab7c70a-f279-ac6c-9b23-f8ca97b9f17d@ozlabs.ru>
-Date:   Sat, 14 Nov 2020 14:55:54 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
+        Fri, 13 Nov 2020 22:57:09 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AE3v3lM082107;
+        Fri, 13 Nov 2020 21:57:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605326223;
+        bh=RQnAC+ZkevKf4QoHaxeqePnrgbvyAt6LyHW3yRnles8=;
+        h=From:To:CC:Subject:Date;
+        b=vHkEPOMnzRCybhJ2Fj6htxpxzBYBsDIw7nsx8cG8rqPg8/Nj6GRjTVqNV6Q0eJdR/
+         xQhoSt7abehypY0y/2+QJ3lauP+hNWH1faiK3Tj2omMLqBK05IP/eLYOa7mQ33YbOJ
+         CV1MVYyjul5nB5IzCKloXMXXXYIVrZFP0OilGmEQ=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AE3v2wv127189
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 21:57:03 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 13
+ Nov 2020 21:57:02 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 13 Nov 2020 21:57:02 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AE3v1ts005268;
+        Fri, 13 Nov 2020 21:57:02 -0600
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next 0/3] net: ethernet: ti: cpsw: enable broadcast/multicast rate limit support
+Date:   Sat, 14 Nov 2020 05:56:51 +0200
+Message-ID: <20201114035654.32658-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <befc829d-82ac-3ae8-025d-eb9eb7b4a1b6@kaod.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
 
+This series first adds supports for the ALE feature to rate limit number ingress
+broadcast(BC)/multicast(MC) packets per/sec which main purpose is BC/MC storm
+prevention.
 
-On 14/11/2020 05:19, Cédric Le Goater wrote:
-> On 11/9/20 10:46 AM, Alexey Kardashevskiy wrote:
->> PCI devices share 4 legacy INTx interrupts from the same PCI host bridge.
->> Device drivers map/unmap hardware interrupts via irq_create_mapping()/
->> irq_dispose_mapping(). The problem with that these interrupts are
->> shared and when performing hot unplug, we need to unmap the interrupt
->> only when the last device is released.
-> 
-> The background context for such a need is that the POWER9 and POWER10
-> processors have a new XIVE interrupt controller which uses MMIO pages
-> for interrupt management. Each interrupt has a pair of pages which are
-> required to be unmapped in some environment, like PHB removal. And so,
-> all interrupts need to be unmmaped.
-> 
->>
->> This reuses already existing irq_desc::kobj for this purpose.
->> The refcounter is naturally 1 when the descriptor is allocated already;
->> this adds kobject_get() in places where already existing mapped virq
->> is returned.
->>
->> This reorganizes irq_dispose_mapping() to release the kobj and let
->> the release callback do the cleanup.
->>
->> As kobject_put() is called directly now (not via RCU), it can also handle
->> the early boot case (irq_kobj_base==NULL) with the help of
->> the kobject::state_in_sysfs flag and without additional irq_sysfs_del().
-> 
-> Could this change be done in a following patch ?
+And then enables corresponding support for ingress broadcast(BC)/multicast(MC)
+rate limiting for TI CPSW switchdev and AM65x/J221E CPSW_NUSS drivers by
+implementing HW offload for simple tc-flower policer with matches on dst_mac:
+ - ff:ff:ff:ff:ff:ff has to be used for BC rate limiting
+ - 01:00:00:00:00:00 fixed value has to be used for MC rate limiting
 
-No. Before this patch, we remove from sysfs -  call kobject_del() - 
-before calling kobject_put() which we do via RCU. After the patch, this 
-kobject_del() is called from the very last kobject_put() and when we get 
-to this release handler - the sysfs node is already removed and we get a 
-message about the missing parent.
+Hence tc policer defines rate limit in terms of bits per second, but the
+ALE supports limiting in terms of packets per second - the rate limit
+bits/sec is converted to number of packets per second assuming minimum
+Ethernet packet size ETH_ZLEN=60 bytes.
 
+The solution inspired patch from Vladimir Oltean [1].
 
->> While at this, clean up the comment at where irq_sysfs_del() was called.>
->> Quick grep shows no sign of irq reference counting in drivers. Drivers
->> typically request mapping when probing and dispose it when removing;
-> 
-> Some ARM drivers call directly irq_alloc_descs() and irq_free_descs().
-> Is  that a problem ?
+Examples:
+- BC rate limit to 1000pps:
+  tc qdisc add dev eth0 clsact
+  tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
+  action police rate 480kbit burst 64k
 
-Kind of, I'll need to go through these places and replace 
-irq_free_descs() with kobject_put() (may be some wrapper or may be 
-change irq_free_descs() to do kobject_put()).
+  rate 480kbit - 1000pps * 60 bytes * 8, burst - not used.
 
+- MC rate limit to 20000pps:
+  tc qdisc add dev eth0 clsact
+  tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
+  action police rate 9600kbit burst 64k
 
->> platforms tend to dispose only if setup failed and the rest seems
->> calling one dispose per one mapping. Except (at least) PPC/pseries
->> which needs https://lkml.org/lkml/2020/10/27/259
->>
->> Cc: Cédric Le Goater <clg@kaod.org>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Qian Cai <cai@lca.pw>
->> Cc: Rob Herring <robh@kernel.org>
->> Cc: Frederic Barrat <fbarrat@linux.ibm.com>
->> Cc: Michal Suchánek <msuchanek@suse.de>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> 
-> I used this patch and the ppc one doing the LSI removal:
-> 
->    http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20201027090655.14118-3-aik@ozlabs.ru/
-> 
-> on different P10 and P9 systems, on a large system (>1K HW theads),
-> KVM guests and pSeries machines. Checked that PHB removal was OK.
->   
-> Tested-by: Cédric Le Goater <clg@kaod.org>
-> 
-> But IRQ subsystem covers much more than these systems.
+  rate 9600kbit - 20000pps * 60 bytes * 8, burst - not used.
 
-Indeed. But doing our own powerpc-only reference counting on top of 
-irs_desc is just ugly.
+- show: tc filter show dev eth0 ingress
+filter protocol all pref 49151 flower chain 0
+filter protocol all pref 49151 flower chain 0 handle 0x1
+  dst_mac ff:ff:ff:ff:ff:ff
+  skip_sw
+  in_hw in_hw_count 1
+        action order 1:  police 0x2 rate 480Kbit burst 64Kb mtu 2Kb action reclassify overhead 0b
+        ref 1 bind 1
 
+filter protocol all pref 49152 flower chain 0
+filter protocol all pref 49152 flower chain 0 handle 0x1
+  dst_mac 01:00:00:00:00:00
+  skip_sw
+  in_hw in_hw_count 1
+        action order 1:  police 0x1 rate 9600Kbit burst 64Kb mtu 2Kb action reclassify overhead 0b
+        ref 1 bind
 
-> 
-> Some comments below,
-> 
->> ---
->>
->> This is what it is fixing for powerpc:
->>
->> There was a comment about whether hierarchical IRQ domains should
->> contribute to this reference counter and I need some help here as
->> I cannot see why.
->> It is reverse now - IRQs contribute to domain->mapcount and
->> irq_domain_associate/irq_domain_disassociate take necessary steps to
->> keep this counter in order. What might be missing is that if we have
->> cascade of IRQs (as in the IOAPIC example from
->> Documentation/core-api/irq/irq-domain.rst ), then a parent IRQ should
->> contribute to the children IRQs and it is up to
->> irq_domain_ops::alloc/free hooks, and they all seem to be eventually
->> calling irq_domain_alloc_irqs_xxx/irq_domain_free_irqs_xxx which seems
->> right.
->>
->> Documentation/core-api/irq/irq-domain.rst also suggests there is a lot
->> to see in debugfs about IRQs but on my thinkpad there nothing about
->> hierarchy.
->>
->> So I'll ask again :)
->>
->> What is the easiest way to get irq-hierarchical hardware?
->> I have a bunch of powerpc boxes (no good) but also a raspberry pi,
->> a bunch of 32/64bit orange pi's, an "armada" arm box,
->> thinkpads - is any of this good for the task?
->>
->>
->>
->> ---
->> Changes:
->> v3:
->> * removed very wrong kobject_get/_put from irq_domain_associate/
->> irq_domain_disassociate as these are called from kobject_release so
->> irq_descs were never actually released
->> * removed irq_sysfs_del as 1) we do not seem to need it with changed
->> counting  2) produces a "no parent" warning as it would be called from
->> kobject_release which removes sysfs nodes itself
->>
->> v2:
->> * added more get/put, including irq_domain_associate/irq_domain_disassociate
->> ---
->>   kernel/irq/irqdesc.c   | 55 ++++++++++++++++++------------------------
->>   kernel/irq/irqdomain.c | 37 ++++++++++++++++------------
->>   2 files changed, 46 insertions(+), 46 deletions(-)
->>
->> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
->> index 1a7723604399..79c904ebfd5c 100644
->> --- a/kernel/irq/irqdesc.c
->> +++ b/kernel/irq/irqdesc.c
->> @@ -295,18 +295,6 @@ static void irq_sysfs_add(int irq, struct irq_desc *desc)
->>   	}
->>   }
->>   
->> -static void irq_sysfs_del(struct irq_desc *desc)
->> -{
->> -	/*
->> -	 * If irq_sysfs_init() has not yet been invoked (early boot), then
->> -	 * irq_kobj_base is NULL and the descriptor was never added.
->> -	 * kobject_del() complains about a object with no parent, so make
->> -	 * it conditional.
->> -	 */
->> -	if (irq_kobj_base)
->> -		kobject_del(&desc->kobj);
->> -}
->> -
->>   static int __init irq_sysfs_init(void)
->>   {
->>   	struct irq_desc *desc;
->> @@ -337,7 +325,6 @@ static struct kobj_type irq_kobj_type = {
->>   };
->>   
->>   static void irq_sysfs_add(int irq, struct irq_desc *desc) {}
->> -static void irq_sysfs_del(struct irq_desc *desc) {}
->>   
->>   #endif /* CONFIG_SYSFS */
->>   
->> @@ -419,20 +406,40 @@ static struct irq_desc *alloc_desc(int irq, int node, unsigned int flags,
->>   	return NULL;
->>   }
->>   
->> +static void delayed_free_desc(struct rcu_head *rhp);
-> 
-> Can you move delayed_free_desc() here ? It is small.
+Testing MC with iperf:
+- client
+  -- setup tc-flower as per above
+  route add -host 239.255.1.3 eth0
+  iperf -s -B 239.255.1.3 -u -f m &
+  cat /sys/class/net/eth0/statistics/rx_packets
 
-Yes, I kept it this way to make review slightly easier.
+- server
+  route add -host 239.255.1.3 eth0
+  iperf -c 239.255.1.3 -u -f m -i 5 -t 30 -l1472  -b121760000 -t1 //~10000pps
 
-> 
->>   static void irq_kobj_release(struct kobject *kobj)
->>   {
->>   	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
->> +#ifdef CONFIG_IRQ_DOMAIN
-> 
-> may be, we could use IS_ENABLED(CONFIG_IRQ_DOMAIN) and add a specific routine
-> for the domain case.
+[1] https://lore.kernel.org/patchwork/patch/1217254/
 
-May be.
+Grygorii Strashko (3):
+  drivers: net: cpsw: ale: add broadcast/multicast rate limit support
+  net: ethernet: ti: cpsw_new: enable broadcast/multicast rate limit
+    support
+  net: ethernet: ti: am65-cpsw: enable broadcast/multicast rate limit
+    support
 
->> +	struct irq_domain *domain;
->> +	unsigned int virq = desc->irq_data.irq;
->>   
->> -	free_masks(desc);
->> -	free_percpu(desc->kstat_irqs);
->> -	kfree(desc);
->> +	domain = desc->irq_data.domain;
->> +	if (domain) {
->> +		if (irq_domain_is_hierarchy(domain)) {
->> +			irq_domain_free_irqs(virq, 1);
->> +		} else {
->> +			irq_domain_disassociate(domain, virq);
->> +			irq_free_desc(virq);
->> +		}
->> +	}
->> +#endif
->> +	/*
->> +	 * We free the descriptor, masks and stat fields via RCU. That
->> +	 * allows demultiplex interrupts to do rcu based management of
->> +	 * the child interrupts.
->> +	 * This also allows us to use rcu in kstat_irqs_usr().
->> +	 */
->> +	call_rcu(&desc->rcu, delayed_free_desc);
->>   }
->>   
->>   static void delayed_free_desc(struct rcu_head *rhp)
->>   {
->>   	struct irq_desc *desc = container_of(rhp, struct irq_desc, rcu);
->>   
->> -	kobject_put(&desc->kobj);
->> +	free_masks(desc);
->> +	free_percpu(desc->kstat_irqs);
->> +	kfree(desc);
->>   }
->>   
->>   static void free_desc(unsigned int irq)>
->> @@ -443,24 +450,10 @@ static void free_desc(unsigned int irq)
->>   	unregister_irq_proc(irq, desc);
->>   
->>   	/*
->> -	 * sparse_irq_lock protects also show_interrupts() and
->> -	 * kstat_irq_usr(). Once we deleted the descriptor from the
->> -	 * sparse tree we can free it. Access in proc will fail to
->> -	 * lookup the descriptor.
->> -	 *
->>   	 * The sysfs entry must be serialized against a concurrent
->>   	 * irq_sysfs_init() as well.
->>   	 */
->> -	irq_sysfs_del(desc);
-> 
-> I would leave that change in another patch.
-
-Explained above.
-
-> 
->>   	delete_irq_desc(irq);
->> -
->> -	/*
->> -	 * We free the descriptor, masks and stat fields via RCU. That
->> -	 * allows demultiplex interrupts to do rcu based management of
->> -	 * the child interrupts.
->> -	 * This also allows us to use rcu in kstat_irqs_usr().
->> -	 */
->> -	call_rcu(&desc->rcu, delayed_free_desc);
->>   }
->>   
->>   static int alloc_descs(unsigned int start, unsigned int cnt, int node,
->> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
->> index cf8b374b892d..d79d679bec35 100644
->> --- a/kernel/irq/irqdomain.c
->> +++ b/kernel/irq/irqdomain.c
->> @@ -638,6 +638,7 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
->>   {
->>   	struct device_node *of_node;
->>   	int virq;
->> +	struct irq_desc *desc;
->>   
->>   	pr_debug("irq_create_mapping(0x%p, 0x%lx)\n", domain, hwirq);
->>   
->> @@ -655,7 +656,9 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
->>   	/* Check if mapping already exists */
->>   	virq = irq_find_mapping(domain, hwirq);
->>   	if (virq) {
->> +		desc = irq_to_desc(virq);
->>   		pr_debug("-> existing mapping on virq %d\n", virq);
->> +		kobject_get(&desc->kobj);
-> 
-> Could we have an inline helper irq_desc_get() to do :
-> 
-> 	struct irq_desc *desc = irq_to_desc(virq);
-> 	kobject_get(&desc->kobj);
-> 
-> It will remove quite a few lines.
-> 
-> Whether it takes a 'struct irq_desc' or 'int virq' as a parameter, is up to
-> you I guess.
-> 
-> It's good way to hide the mapping counter used to get a mapping reference
-> also. We might change it to its own variable if we find issues.
-> 
->>   		return virq;
->>   	}
->>   
->> @@ -751,6 +754,7 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
->>   	irq_hw_number_t hwirq;
->>   	unsigned int type = IRQ_TYPE_NONE;
->>   	int virq;
->> +	struct irq_desc *desc;
->>   
->>   	if (fwspec->fwnode) {
->>   		domain = irq_find_matching_fwspec(fwspec, DOMAIN_BUS_WIRED);
->> @@ -787,8 +791,11 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
->>   		 * current trigger type then we are done so return the
->>   		 * interrupt number.
->>   		 */
->> -		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq))
->> +		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq)) {
->> +			desc = irq_to_desc(virq);
->> +			kobject_get(&desc->kobj);
->>   			return virq;
->> +		}
->>   
->>   		/*
->>   		 * If the trigger type has not been set yet, then set
->> @@ -800,6 +807,8 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
->>   				return 0;
->>   
->>   			irqd_set_trigger_type(irq_data, type);
->> +			desc = irq_to_desc(virq);
->> +			kobject_get(&desc->kobj);
->>   			return virq;
->>   		}
->>   
->> @@ -852,22 +861,12 @@ EXPORT_SYMBOL_GPL(irq_create_of_mapping);
->>    */
->>   void irq_dispose_mapping(unsigned int virq)
->>   {
->> -	struct irq_data *irq_data = irq_get_irq_data(virq);
->> -	struct irq_domain *domain;
->> +	struct irq_desc *desc = irq_to_desc(virq);
->>   
->> -	if (!virq || !irq_data)
->> +	if (!virq || !desc)
->>   		return;
->>   
->> -	domain = irq_data->domain;
->> -	if (WARN_ON(domain == NULL))
->> -		return;
->> -
->> -	if (irq_domain_is_hierarchy(domain)) {
->> -		irq_domain_free_irqs(virq, 1);
->> -	} else {
->> -		irq_domain_disassociate(domain, virq);
->> -		irq_free_desc(virq);
->> -	}
->> +	kobject_put(&desc->kobj);
->>   }
->>   EXPORT_SYMBOL_GPL(irq_dispose_mapping);
->>   
->> @@ -1413,6 +1412,7 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
->>   			    bool realloc, const struct irq_affinity_desc *affinity)
->>   {
->>   	int i, ret, virq;
->> +	bool get_ref = false;
-> 
-> This needs a comment on why we are not always getting a ref and
-> anyhow this looks hacky.
-> 
->>   
->>   	if (domain == NULL) {
->>   		domain = irq_default_domain;
->> @@ -1422,6 +1422,7 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
->>   
->>   	if (realloc && irq_base >= 0) {
->>   		virq = irq_base;
->> +		get_ref = true;
-> 
-> The realloc flag is only used for old x86 HW and the IRQ IPI API.
-> 
-> Could we make special IRQ routines for these callers and let them
-> handle the get ref ?
-
-I'll try this. Thanks for the review!
-
-
-> 
-> C.
-> 
-> 
->>   	} else {
->>   		virq = irq_domain_alloc_descs(irq_base, nr_irqs, 0, node,
->>   					      affinity);
->> @@ -1453,8 +1454,14 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
->>   		}
->>   	}
->>   	
->> -	for (i = 0; i < nr_irqs; i++)
->> +	for (i = 0; i < nr_irqs; i++) {
->>   		irq_domain_insert_irq(virq + i);
->> +		if (get_ref) {
->> +			struct irq_desc *desc = irq_to_desc(virq + i);
->> +
->> +			kobject_get(&desc->kobj);
->> +		}
->> +	}
->>   	mutex_unlock(&irq_domain_mutex);
->>   
->>   	return virq;
->>
-> 
+ drivers/net/ethernet/ti/am65-cpsw-qos.c | 148 ++++++++++++++++++++
+ drivers/net/ethernet/ti/am65-cpsw-qos.h |   8 ++
+ drivers/net/ethernet/ti/cpsw_ale.c      |  66 +++++++++
+ drivers/net/ethernet/ti/cpsw_ale.h      |   2 +
+ drivers/net/ethernet/ti/cpsw_new.c      |   4 +-
+ drivers/net/ethernet/ti/cpsw_priv.c     | 171 ++++++++++++++++++++++++
+ drivers/net/ethernet/ti/cpsw_priv.h     |   8 ++
+ 7 files changed, 406 insertions(+), 1 deletion(-)
 
 -- 
-Alexey
+2.17.1
+
