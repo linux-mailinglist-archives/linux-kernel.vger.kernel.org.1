@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3859D2B2A66
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252B32B2A69
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgKNBR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 20:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgKNBR7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 20:17:59 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4CCC0613D1;
-        Fri, 13 Nov 2020 17:17:58 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdkCQ-005Ux6-Bf; Sat, 14 Nov 2020 01:17:54 +0000
-Date:   Sat, 14 Nov 2020 01:17:54 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201114011754.GL3576660@ZenIV.linux.org.uk>
-References: <20201104082738.1054792-1-hch@lst.de>
- <20201104082738.1054792-2-hch@lst.de>
- <20201110213253.GV3576660@ZenIV.linux.org.uk>
- <20201110213511.GW3576660@ZenIV.linux.org.uk>
- <20201110232028.GX3576660@ZenIV.linux.org.uk>
- <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
- <20201111215220.GA3576660@ZenIV.linux.org.uk>
- <20201111222116.GA919131@ZenIV.linux.org.uk>
- <20201113235453.GA227700@ubuntu-m3-large-x86>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113235453.GA227700@ubuntu-m3-large-x86>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S1726376AbgKNBSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 20:18:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgKNBSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 20:18:13 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE51F22261;
+        Sat, 14 Nov 2020 01:18:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605316691;
+        bh=uXpBMD7/3ZId9Cgo0JGEfZTnwcfVEbN6QzkoH7cWI8Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zxlg/VaU83wqoKZ51iKRh8GpONjw13R13IY5RSHC6EK5QCSz0OOoyTSYf49uxKT6U
+         3nIzTyS52dgcSNVsTtonHBnarvphseyiPprIMgSDUe0aPRNvOyQ34wlzIULqH1WGq3
+         PAmhHwN8STrTtJh50/O+VNUWTYp/lou0WK54cI6w=
+Date:   Fri, 13 Nov 2020 17:18:10 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+Message-Id: <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
+In-Reply-To: <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
+References: <20201113173448.1863419-1-surenb@google.com>
+        <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+        <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
+        <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+        <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 04:54:53PM -0700, Nathan Chancellor wrote:
+On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
 
-> This patch in -next (6a9f696d1627bacc91d1cebcfb177f474484e8ba) breaks
-> WSL2's interoperability feature, where Windows paths automatically get
-> added to PATH on start up so that Windows binaries can be accessed from
-> within Linux (such as clip.exe to pipe output to the clipboard). Before,
-> I would see a bunch of Linux + Windows folders in $PATH but after, I
-> only see the Linux folders (I can give you the actual PATH value if you
-> care but it is really long).
+> > > > Seems to me that the ability to reap another process's memory is a
+> > > > generally useful one, and that it should not be tied to delivering a
+> > > > signal in this fashion.
+> > > >
+> > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
+> > > > few changes and tweaks, but can't that be used to solve this problem?
+> > >
+> > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
+> > > one of the options recently discussed in
+> > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > > . The thread describes some of the issues with that approach but if we
+> > > limit it to processes with pending SIGKILL only then I think that
+> > > would be doable.
+> >
+> > Why would it be necessary to read /proc/pid/maps?  I'd have thought
+> > that a starting effort would be
+> >
+> >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
+> >
+> > (after translation into process_madvise() speak).  Which is equivalent
+> > to the proposed process_madvise(MADV_DONTNEED_MM)?
 > 
-> I am not at all familiar with the semantics of this patch or how
-> Microsoft would be using it to inject folders into PATH (they have some
-> documentation on it here:
-> https://docs.microsoft.com/en-us/windows/wsl/interop) and I am not sure
-> how to go about figuring that out to see why this patch breaks something
-> (unless you have an idea). I have added the Hyper-V maintainers and list
-> to CC in case they know someone who could help.
+> Yep, this is very similar to option #3 in
+> https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> and I actually have a tested prototype for that.
 
-Out of curiosity: could you slap WARN_ON(!iov_iter_count(iter)); right in
-the beginning of seq_read_iter() and see if that triggers?
+Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
+which spans the whole address range?
+
+> If that's the
+> preferred method then I can post it quite quickly.
+
+I assume you've tested that prototype.  How did its usefulness compare
+with this SIGKILL-based approach?
+
