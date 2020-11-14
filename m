@@ -2,107 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37682B29C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1862B29CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgKNASF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:18:05 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:56106 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKNASE (ORCPT
+        id S1726221AbgKNAUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:20:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgKNAUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:18:04 -0500
-Date:   Sat, 14 Nov 2020 00:18:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605313082;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Y6QUSct+LSWBUOXnsqzWhiWVdRDh6X544dsTtmbEFI=;
-        b=O05S74/JLuq8kZLHAatrUTEPod+VAklV67nBtVF9999r1K3AkdTGoyXzddhCqAbssdvFHd
-        DF0ADv0SyOCWjiTjaQ9Tcx4NodDScxQZnXZ3OjWRDbYn8tBpmGJiZVoyXTqiJKbofyksw+
-        h6ahduLL1A0yKiNlquOnTWiSgeHqw6Q45tgt9sVzL7ORGsBja4gVRxYjGNAVptBPun3+3j
-        dBR/My6dUZueOPuuQpb9IWf9tqpwR4uFBiAVOduUBr56xk0lOBRxLXs53hciYn0kA+dNU4
-        tARu4K/ZpLOmNkzgWTkVgcXBLrDamVTrqneCe03WYI7O+ZlEQQBGgJynYso/Kg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605313082;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Y6QUSct+LSWBUOXnsqzWhiWVdRDh6X544dsTtmbEFI=;
-        b=n88a1WXiueK3i5bVOc2FNT3UgAK1MYE9VxpcBrF1Mb1xYn/vYesuAphM0LlOaLtFtini1G
-        tubk8GsKmtS4+TDg==
-From:   "tip-bot2 for Lukas Bulwahn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] futex: Remove unused empty compat_exit_robust_list()
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Chancellor <natechancellor@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201113172012.27221-1-lukas.bulwahn@gmail.com>
-References: <20201113172012.27221-1-lukas.bulwahn@gmail.com>
+        Fri, 13 Nov 2020 19:20:16 -0500
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9518BC0613D1;
+        Fri, 13 Nov 2020 16:20:16 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6077412802B1;
+        Fri, 13 Nov 2020 16:20:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1605313214;
+        bh=hCiFpbtu4tRe/21UE+k4vBaDJWTKnUi1s/8pkffq9H0=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=nyh/KyKoBEGTNQgn7iCO5JCYecxuFRZFN0XH9SF4MawxqB3HtsMr4O0xRbYf+6BcG
+         RDe8VMEbGfsbV9Pe8hGjBWV0kX/MVZhdW17XSSEpIxfwaH3+3scMW35nIGscNf1d3s
+         4nToU/tpCARp8zUG7056LkLmOhzUtNYG+fa40H98=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id D6g80Y8BxA6x; Fri, 13 Nov 2020 16:20:14 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0FB06128029E;
+        Fri, 13 Nov 2020 16:20:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1605313214;
+        bh=hCiFpbtu4tRe/21UE+k4vBaDJWTKnUi1s/8pkffq9H0=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=nyh/KyKoBEGTNQgn7iCO5JCYecxuFRZFN0XH9SF4MawxqB3HtsMr4O0xRbYf+6BcG
+         RDe8VMEbGfsbV9Pe8hGjBWV0kX/MVZhdW17XSSEpIxfwaH3+3scMW35nIGscNf1d3s
+         4nToU/tpCARp8zUG7056LkLmOhzUtNYG+fa40H98=
+Message-ID: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.10-rc3
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 13 Nov 2020 16:20:13 -0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Message-ID: <160531308152.11244.2917354987036179379.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Three small fixes, all in the embedded ufs driver subsystem.
 
-Commit-ID:     932f8c64d38bb08f69c8c26a2216ba0c36c6daa8
-Gitweb:        https://git.kernel.org/tip/932f8c64d38bb08f69c8c26a2216ba0c36c6daa8
-Author:        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-AuthorDate:    Fri, 13 Nov 2020 18:20:12 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 14 Nov 2020 01:15:35 +01:00
+The patch is available here:
 
-futex: Remove unused empty compat_exit_robust_list()
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-Commit ba31c1a48538 ("futex: Move futex exit handling into futex code")
-introduced compat_exit_robust_list() with a full-fledged implementation for
-CONFIG_COMPAT, and an empty-body function for !CONFIG_COMPAT.
+The short changelog is:
 
-However, compat_exit_robust_list() is only used in futex_mm_release() under
-#ifdef CONFIG_COMPAT.
+Can Guo (2):
+      scsi: ufs: Try to save power mode change and UIC cmd completion timeout
+      scsi: ufs: Fix unbalanced scsi_block_reqs_cnt caused by ufshcd_hold()
 
-Hence for !CONFIG_COMPAT, make CC=clang W=1 warns:
+Qinglang Miao (1):
+      scsi: ufshcd: Fix missing destroy_workqueue()
 
-  kernel/futex.c:314:20:
-    warning: unused function 'compat_exit_robust_list' [-Wunused-function]
+And the diffstat:
 
-There is no need to declare the unused empty function for !CONFIG_COMPAT.
+ drivers/scsi/ufs/ufshcd.c | 34 +++++++++++++++++++++++++++++-----
+ drivers/scsi/ufs/ufshcd.h |  2 ++
+ 2 files changed, 31 insertions(+), 5 deletions(-)
 
-Simply remove it.
+With full diff below.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Link: https://lore.kernel.org/r/20201113172012.27221-1-lukas.bulwahn@gmail.com
+James
 
 ---
- kernel/futex.c | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index ac32887..aee6ce2 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -310,8 +310,6 @@ static inline bool should_fail_futex(bool fshared)
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b8f573a02713..7a160b86adc6 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1627,12 +1627,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
+ 		 */
+ 		fallthrough;
+ 	case CLKS_OFF:
+-		ufshcd_scsi_block_requests(hba);
+ 		hba->clk_gating.state = REQ_CLKS_ON;
+ 		trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 					hba->clk_gating.state);
+-		queue_work(hba->clk_gating.clk_gating_workq,
+-			   &hba->clk_gating.ungate_work);
++		if (queue_work(hba->clk_gating.clk_gating_workq,
++			       &hba->clk_gating.ungate_work))
++			ufshcd_scsi_block_requests(hba);
+ 		/*
+ 		 * fall through to check if we should wait for this
+ 		 * work to be done or not.
+@@ -2115,10 +2115,20 @@ ufshcd_wait_for_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
+ 	unsigned long flags;
  
- #ifdef CONFIG_COMPAT
- static void compat_exit_robust_list(struct task_struct *curr);
--#else
--static inline void compat_exit_robust_list(struct task_struct *curr) { }
- #endif
+ 	if (wait_for_completion_timeout(&uic_cmd->done,
+-					msecs_to_jiffies(UIC_CMD_TIMEOUT)))
++					msecs_to_jiffies(UIC_CMD_TIMEOUT))) {
+ 		ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
+-	else
++	} else {
+ 		ret = -ETIMEDOUT;
++		dev_err(hba->dev,
++			"uic cmd 0x%x with arg3 0x%x completion timeout\n",
++			uic_cmd->command, uic_cmd->argument3);
++
++		if (!uic_cmd->cmd_active) {
++			dev_err(hba->dev, "%s: UIC cmd has been completed, return the result\n",
++				__func__);
++			ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
++		}
++	}
  
- /*
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	hba->active_uic_cmd = NULL;
+@@ -2150,6 +2160,7 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
+ 	if (completion)
+ 		init_completion(&uic_cmd->done);
+ 
++	uic_cmd->cmd_active = 1;
+ 	ufshcd_dispatch_uic_cmd(hba, uic_cmd);
+ 
+ 	return 0;
+@@ -3807,10 +3818,18 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
+ 		dev_err(hba->dev,
+ 			"pwr ctrl cmd 0x%x with mode 0x%x completion timeout\n",
+ 			cmd->command, cmd->argument3);
++
++		if (!cmd->cmd_active) {
++			dev_err(hba->dev, "%s: Power Mode Change operation has been completed, go check UPMCRS\n",
++				__func__);
++			goto check_upmcrs;
++		}
++
+ 		ret = -ETIMEDOUT;
+ 		goto out;
+ 	}
+ 
++check_upmcrs:
+ 	status = ufshcd_get_upmcrs(hba);
+ 	if (status != PWR_LOCAL) {
+ 		dev_err(hba->dev,
+@@ -4902,11 +4921,14 @@ static irqreturn_t ufshcd_uic_cmd_compl(struct ufs_hba *hba, u32 intr_status)
+ 			ufshcd_get_uic_cmd_result(hba);
+ 		hba->active_uic_cmd->argument3 =
+ 			ufshcd_get_dme_attr_val(hba);
++		if (!hba->uic_async_done)
++			hba->active_uic_cmd->cmd_active = 0;
+ 		complete(&hba->active_uic_cmd->done);
+ 		retval = IRQ_HANDLED;
+ 	}
+ 
+ 	if ((intr_status & UFSHCD_UIC_PWR_MASK) && hba->uic_async_done) {
++		hba->active_uic_cmd->cmd_active = 0;
+ 		complete(hba->uic_async_done);
+ 		retval = IRQ_HANDLED;
+ 	}
+@@ -8906,6 +8928,7 @@ void ufshcd_remove(struct ufs_hba *hba)
+ 	blk_mq_free_tag_set(&hba->tmf_tag_set);
+ 	blk_cleanup_queue(hba->cmd_queue);
+ 	scsi_remove_host(hba->host);
++	destroy_workqueue(hba->eh_wq);
+ 	/* disable interrupts */
+ 	ufshcd_disable_intr(hba, hba->intr_mask);
+ 	ufshcd_hba_stop(hba);
+@@ -9206,6 +9229,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
+ exit_gating:
+ 	ufshcd_exit_clk_scaling(hba);
+ 	ufshcd_exit_clk_gating(hba);
++	destroy_workqueue(hba->eh_wq);
+ out_disable:
+ 	hba->is_irq_enabled = false;
+ 	ufshcd_hba_exit(hba);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 47eb1430274c..e0f00a42371c 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -64,6 +64,7 @@ enum dev_cmd_type {
+  * @argument1: UIC command argument 1
+  * @argument2: UIC command argument 2
+  * @argument3: UIC command argument 3
++ * @cmd_active: Indicate if UIC command is outstanding
+  * @done: UIC command completion
+  */
+ struct uic_command {
+@@ -71,6 +72,7 @@ struct uic_command {
+ 	u32 argument1;
+ 	u32 argument2;
+ 	u32 argument3;
++	int cmd_active;
+ 	struct completion done;
+ };
+ 
+
