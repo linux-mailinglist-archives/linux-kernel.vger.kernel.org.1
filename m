@@ -2,226 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AF02B2ECE
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30F72B2ED0
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgKNRPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 12:15:09 -0500
-Received: from saturn.retrosnub.co.uk ([46.235.226.198]:52130 "EHLO
-        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgKNRPI (ORCPT
+        id S1726205AbgKNRP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 12:15:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33659 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726094AbgKNRP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 12:15:08 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id ADA619E0090;
-        Sat, 14 Nov 2020 17:15:03 +0000 (GMT)
-Date:   Sat, 14 Nov 2020 17:15:02 +0000
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] iio: adc: at91_adc: merge at91_adc_probe_dt back in
- at91_adc_probe
-Message-ID: <20201114171502.02fcd603@archlinux>
-In-Reply-To: <20201114170804.4b51c84b@archlinux>
-References: <20201113212650.507680-1-alexandre.belloni@bootlin.com>
-        <20201113212650.507680-6-alexandre.belloni@bootlin.com>
-        <20201114170804.4b51c84b@archlinux>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sat, 14 Nov 2020 12:15:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605374156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YQLowdxGlMEyZdFvJbR1bzJYwIvZNLk9X1xruKsNhMI=;
+        b=b6L49ADagHr6dxbhJad1tGF+5Fj9yxsnNZbmz9ijzCQYfl+sIH/srTYPeZBXDzTUhMTKjR
+        cFpSoVKX+IB+jnudGyEkdhCCJ+hlCyVRMsh8mJhvqjaqa9TTBhb38GE1BtuGn8mtiOOb8w
+        mhO9qA24jy0rxi6T/TIIDKWnJvf2j+Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-if28wJAQMB2-_D8HdYYYRg-1; Sat, 14 Nov 2020 12:15:54 -0500
+X-MC-Unique: if28wJAQMB2-_D8HdYYYRg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DC9157052;
+        Sat, 14 Nov 2020 17:15:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 348802C31E;
+        Sat, 14 Nov 2020 17:15:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix afs_write_end() when called with copied == 0
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 14 Nov 2020 17:15:51 +0000
+Message-ID: <160537415141.3024088.7100009150583164795.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Nov 2020 17:08:04 +0000
-Jonathan Cameron <jic23@kernel.org> wrote:
+When afs_write_end() is called with copied == 0, it tries to set the dirty
+region, but there's no way to actually encode a 0-length region in the
+encoding in page->private.  "0,0", for example, indicates a 1-byte region
+at offset 0.  The maths miscalculates this and sets it incorrectly.
 
-> On Fri, 13 Nov 2020 22:26:46 +0100
-> Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> 
-> > at91_adc_probe_dt is now small enough to be merged back in at91_adc_probe.
-> > 
-> > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>  
-> Minor largely unrelated suggestion inline as we are touching this code.
-> 
-Ignore that, you do it in the next patch which is better anyway :)
+Fix it to just do nothing but unlock and put the page in this case.  We
+don't actually need to mark the page dirty as nothing presumably changed.
 
-Jonathan
+Fixes: 65dd2d6072d3 ("afs: Alter dirty range encoding in page->private")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/iio/adc/at91_adc.c | 118 +++++++++++++++----------------------
-> >  1 file changed, 49 insertions(+), 69 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> > index 83539422b704..9f05eb722f5e 100644
-> > --- a/drivers/iio/adc/at91_adc.c
-> > +++ b/drivers/iio/adc/at91_adc.c
-> > @@ -833,70 +833,6 @@ static int at91_adc_probe_dt_ts(struct device_node *node,
-> >  	}
-> >  }
-> >  
-> > -static int at91_adc_probe_dt(struct iio_dev *idev,
-> > -			     struct platform_device *pdev)
-> > -{
-> > -	struct at91_adc_state *st = iio_priv(idev);
-> > -	struct device_node *node = pdev->dev.of_node;
-> > -	int ret;
-> > -	u32 prop;
-> > -	char *s;
-> > -
-> > -	st->caps = (struct at91_adc_caps *)
-> > -		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
-> > -
-> > -	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
-> > -
-> > -	if (of_property_read_u32(node, "atmel,adc-channels-used", &prop)) {
-> > -		dev_err(&idev->dev, "Missing adc-channels-used property in the DT.\n");
-> > -		ret = -EINVAL;
-> > -		goto error_ret;
-> > -	}
-> > -	st->channels_mask = prop;
-> > -
-> > -	st->sleep_mode = of_property_read_bool(node, "atmel,adc-sleep-mode");
-> > -
-> > -	if (of_property_read_u32(node, "atmel,adc-startup-time", &prop)) {
-> > -		dev_err(&idev->dev, "Missing adc-startup-time property in the DT.\n");
-> > -		ret = -EINVAL;
-> > -		goto error_ret;
-> > -	}
-> > -	st->startup_time = prop;
-> > -
-> > -	prop = 0;
-> > -	of_property_read_u32(node, "atmel,adc-sample-hold-time", &prop);
-> > -	st->sample_hold_time = prop;
-> > -
-> > -	if (of_property_read_u32(node, "atmel,adc-vref", &prop)) {
-> > -		dev_err(&idev->dev, "Missing adc-vref property in the DT.\n");
-> > -		ret = -EINVAL;
-> > -		goto error_ret;
-> > -	}
-> > -	st->vref_mv = prop;
-> > -
-> > -	st->res = st->caps->high_res_bits;
-> > -	if (st->caps->low_res_bits &&
-> > -	    !of_property_read_string(node, "atmel,adc-use-res", (const char **)&s)
-> > -	    && !strcmp(s, "lowres"))
-> > -		st->res = st->caps->low_res_bits;
-> > -
-> > -	dev_info(&idev->dev, "Resolution used: %u bits\n", st->res);
-> > -
-> > -	st->registers = &st->caps->registers;
-> > -	st->num_channels = st->caps->num_channels;
-> > -
-> > -	/* Check if touchscreen is supported. */
-> > -	if (st->caps->has_ts)
-> > -		return at91_adc_probe_dt_ts(node, st, &idev->dev);
-> > -	else
-> > -		dev_info(&idev->dev, "not support touchscreen in the adc compatible string.\n");
-> > -
-> > -	return 0;
-> > -
-> > -error_ret:
-> > -	return ret;
-> > -}
-> > -
-> >  static const struct iio_info at91_adc_info = {
-> >  	.read_raw = &at91_adc_read_raw,
-> >  };
-> > @@ -1062,10 +998,12 @@ static void at91_ts_unregister(struct at91_adc_state *st)
-> >  static int at91_adc_probe(struct platform_device *pdev)
-> >  {
-> >  	unsigned int prsc, mstrclk, ticks, adc_clk, adc_clk_khz, shtim;
-> > +	struct device_node *node = pdev->dev.of_node;
-> >  	int ret;
-> >  	struct iio_dev *idev;
-> >  	struct at91_adc_state *st;
-> > -	u32 reg;
-> > +	u32 reg, prop;
-> > +	char *s;
-> >  
-> >  	idev = devm_iio_device_alloc(&pdev->dev, sizeof(struct at91_adc_state));
-> >  	if (!idev)
-> > @@ -1073,9 +1011,52 @@ static int at91_adc_probe(struct platform_device *pdev)
-> >  
-> >  	st = iio_priv(idev);
-> >  
-> > -	ret = at91_adc_probe_dt(idev, pdev);
-> > -	if (ret)
-> > -		return ret;
-> > +	st->caps = (struct at91_adc_caps *)
-> > +		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;  
-> 
-> of_device_get match_data  - obviously an unrelated change but trivial enough
-> I'd just slip it in this patch (unless you have it a later one!)
-> 
-> That returns a void * so no need for the cast.
-> 
-> > +
-> > +	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
-> > +
-> > +	if (of_property_read_u32(node, "atmel,adc-channels-used", &prop)) {
-> > +		dev_err(&idev->dev, "Missing adc-channels-used property in the DT.\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	st->channels_mask = prop;
-> > +
-> > +	st->sleep_mode = of_property_read_bool(node, "atmel,adc-sleep-mode");
-> > +
-> > +	if (of_property_read_u32(node, "atmel,adc-startup-time", &prop)) {
-> > +		dev_err(&idev->dev, "Missing adc-startup-time property in the DT.\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	st->startup_time = prop;
-> > +
-> > +	prop = 0;
-> > +	of_property_read_u32(node, "atmel,adc-sample-hold-time", &prop);
-> > +	st->sample_hold_time = prop;
-> > +
-> > +	if (of_property_read_u32(node, "atmel,adc-vref", &prop)) {
-> > +		dev_err(&idev->dev, "Missing adc-vref property in the DT.\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	st->vref_mv = prop;
-> > +
-> > +	st->res = st->caps->high_res_bits;
-> > +	if (st->caps->low_res_bits &&
-> > +	    !of_property_read_string(node, "atmel,adc-use-res", (const char **)&s)
-> > +	    && !strcmp(s, "lowres"))
-> > +		st->res = st->caps->low_res_bits;
-> > +
-> > +	dev_info(&idev->dev, "Resolution used: %u bits\n", st->res);
-> > +
-> > +	st->registers = &st->caps->registers;
-> > +	st->num_channels = st->caps->num_channels;
-> > +
-> > +	/* Check if touchscreen is supported. */
-> > +	if (st->caps->has_ts) {
-> > +		ret = at91_adc_probe_dt_ts(node, st, &idev->dev);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> >  
-> >  	platform_set_drvdata(pdev, idev);
-> >  
-> > @@ -1091,7 +1072,6 @@ static int at91_adc_probe(struct platform_device *pdev)
-> >  	if (IS_ERR(st->reg_base))
-> >  		return PTR_ERR(st->reg_base);
-> >  
-> > -  
-> Stray change that shouldn't be in this patch ideally but not that important.
-> 
-> >  	/*
-> >  	 * Disable all IRQs before setting up the handler
-> >  	 */  
-> 
+ fs/afs/write.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 50371207f327..f34d13d294fa 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -174,6 +174,9 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 	_enter("{%llx:%llu},{%lx}",
+ 	       vnode->fid.vid, vnode->fid.vnode, page->index);
+ 
++	if (copied == 0)
++		goto out;
++
+ 	maybe_i_size = pos + copied;
+ 
+ 	i_size = i_size_read(&vnode->vfs_inode);
+
 
