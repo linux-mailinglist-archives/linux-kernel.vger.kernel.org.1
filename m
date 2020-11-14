@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150E12B2FC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F032B2FCD
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKNSlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 13:41:31 -0500
-Received: from mga03.intel.com ([134.134.136.65]:5211 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgKNSl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 13:41:29 -0500
-IronPort-SDR: 5ey5BDiLXUIcmMeHR1EG7+94kihFVKGQ6l2+LVm2C1UBmjnDWwwN7VNf1/dc1zMweNg1cI2QcU
- PN+Fipruf6WA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9805"; a="170696362"
-X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
-   d="scan'208";a="170696362"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2020 10:41:29 -0800
-IronPort-SDR: drCe00QhedDF28lBQs2q3CRMtIpqUSH/e1VccXVKPiAYBcW4Wm8fgLtrxm2KTtSRzSm3o9//nR
- nBjvXO8YF67A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
-   d="scan'208";a="340095375"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga002.jf.intel.com with ESMTP; 14 Nov 2020 10:41:29 -0800
-Received: from shsmsx604.ccr.corp.intel.com (10.109.6.214) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 14 Nov 2020 10:41:28 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- SHSMSX604.ccr.corp.intel.com (10.109.6.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 15 Nov 2020 02:41:25 +0800
-Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
- ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.1713.004;
- Sat, 14 Nov 2020 10:41:23 -0800
-From:   "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
-To:     "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "andres@anarazel.de" <andres@anarazel.de>
-CC:     "Zhang, Rui" <rui.zhang@intel.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-Thread-Topic: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-Thread-Index: AQHWurXAiZ2S27JbI0KcWWP3JmxpAw==
-Date:   Sat, 14 Nov 2020 18:41:23 +0000
-Message-ID: <58f71764994d5f2ea5dda231605cfe046c3050c8.camel@intel.com>
-References: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
-         <20201113204916.1144907-1-andres@anarazel.de>
-In-Reply-To: <20201113204916.1144907-1-andres@anarazel.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <93C16CF009B3414DAD716BEBCCF7F25D@intel.com>
-Content-Transfer-Encoding: base64
+        id S1726150AbgKNSpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 13:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgKNSpN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 13:45:13 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEEFC0613D1;
+        Sat, 14 Nov 2020 10:45:12 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s8so13957469wrw.10;
+        Sat, 14 Nov 2020 10:45:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mwaTQ8CRNOisIPpv1s2Kuarb/aJwOV+xZelk78899p4=;
+        b=eXiaXE1zpOF7soDIe0ZFrZUhZudhtfvkavxwo7+c1rjBg6fbIMTMta9ZYySZcwoPQe
+         j2t5qXqq9r/wzUv6z90z6kNo/pyMXXX8EMqj1ZI6n1IMeiAigipzXVLcLe5AqoKNypTT
+         wWJuJmM9ELwq9sjFlLSmnRO0omO1ovv8j0bG1tkZnO66B9XP3JoCL9isxCfVD9AmwVyl
+         ty9Eza2J0fhyjcrDnK6yt0eyH6vMY+vBXpoGN29/O2/Q6lGoJdVQfXtaaCUHL6REcjsO
+         3TS/FWSUTCT//JIJVamaVqDmnA8X5tz6uUqfMXYaS+7rx5UBddXU2n1tJiUGslRZZcg5
+         TbTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mwaTQ8CRNOisIPpv1s2Kuarb/aJwOV+xZelk78899p4=;
+        b=iCCN+aiLKS3Q/ifw91TJ9KfR6Xk6h1BJ/h/1/FH6dYEegc51DZRPUFMpfOgJ2yEfOx
+         Af/CSMOYcQEGpeDE9SyUSGfhzzbePdBitNGC0Q1c5crJdSRwO+J5cC/7/em/X7Ouqp3D
+         cZJtzuF5CDRnLjej2jZIzNUsn2nHZcQ56VNVxp3LPnkilNrktSCs/pNyuSvwD7WBfF7F
+         6OIkZZ9Ig2PI9WxsQO0dGoXaOBYh4k+TZafFFSLCvb6FzKS0wAssUoqmHV+HRUYxyU9l
+         v6NWUl4eESM2t6Yx8vWBANQdQJuAELwaWr6nq/IwOkup2ZIZoQcKCF7fGPzfttqoFlqp
+         hmSg==
+X-Gm-Message-State: AOAM531gh+7BWi2w4XQjurNM6s1vLU9FBjxgr00ocICdwganQKvRm2zA
+        i5fKX/CTHTOpegMRqD2D+ZTi0LSsH2vozRDmODg=
+X-Google-Smtp-Source: ABdhPJzzVqEbJpQptFAswg6i7BE/EPfAuddQpxmWjHIdbT4+CANyjD8wZ1iz67UV4WIHafY4RUG8eMwCcs6AqW3aROE=
+X-Received: by 2002:adf:f04b:: with SMTP id t11mr10162129wro.147.1605379511355;
+ Sat, 14 Nov 2020 10:45:11 -0800 (PST)
 MIME-Version: 1.0
+References: <20201114151717.5369-1-jonathan@marek.ca> <20201114151717.5369-5-jonathan@marek.ca>
+ <20201114162406.GC24411@lst.de>
+In-Reply-To: <20201114162406.GC24411@lst.de>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Sat, 14 Nov 2020 10:46:55 -0800
+Message-ID: <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for
+ non-coherent cache maintenance
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTExLTEzIGF0IDEyOjQ5IC0wODAwLCBBbmRyZXMgRnJldW5kIHdyb3RlOg0K
-PiBJIG5vdGljZWQgdGhhdCBJIGNvdWxkbid0IHJlYWQgdGhlIFBDSCB0ZW1wZXJhdHVyZSBvbiBt
-eSB3b3Jrc3RhdGlvbg0KPiAoQzYyMCBzZXJpZXMgY2hpcHNldCwgdy8gMnggWGVvbiBHb2xkIDUy
-MTUgQ1BVcykgZGlyZWN0bHksIGJ1dCBoYWQgdG8NCj4gZ28NCj4gdGhyb3VnaCBJUE1JLiBMb29r
-aW5nIGF0IHRoZSBkYXRhIHNoZWV0LCBpdCBsb29rcyB0byBtZSBsaWtlIHRoZQ0KPiBleGlzdGlu
-ZyBpbnRlbCBQQ0ggdGhlcm1hbCBkcml2ZXIgc2hvdWxkIHdvcmsgd2l0aG91dCBjaGFuZ2VzIGZv
-cg0KPiBMZXdpc2J1cmcuDQo+IA0KPiBJIHN1c3BlY3QgdGhlcmUncyBzb21lIG90aGVyIFBDSSBJ
-RHMgbWlzc2luZy4gQnV0IEkgaG9wZSBzb21lYm9keSBhdA0KPiBJbnRlbCB3b3VsZCBoYXZlIGFu
-IGVhc2llciB0aW1lIGZpZ3VyaW5nIHRoYXQgb3V0IHRoYW4gSS4uLg0KPiANCj4gQ2M6IERhbmll
-bCBMZXpjYW5vIDxkYW5pZWwubGV6Y2Fub0BsaW5hcm8ub3JnPg0KPiBDYzogU3Jpbml2YXMgUGFu
-ZHJ1dmFkYSA8c3Jpbml2YXMucGFuZHJ1dmFkYUBsaW51eC5pbnRlbC5jb20+DQo+IENjOiBUdXNo
-YXIgRGF2ZSA8dHVzaGFyLm4uZGF2ZUBpbnRlbC5jb20+DQo+IENjOiBaaGFuZyBSdWkgPHJ1aS56
-aGFuZ0BpbnRlbC5jb20+DQo+IENjOiBsaW51eC1wbUB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gTGluazogDQo+IGh0dHBzOi8vbG9yZS5rZXJu
-ZWwub3JnL2xrbWwvMjAyMDAxMTUxODQ0MTUuMTcyNjk1My0xLWFuZHJlc0BhbmFyYXplbC5kZS8N
-Cj4gU2lnbmVkLW9mZi1ieTogQW5kcmVzIEZyZXVuZCA8YW5kcmVzQGFuYXJhemVsLmRlPg0KUmV2
-aWV3ZWQtYnk6IFBhbmRydXZhZGEsIFNyaW5pdmFzIDxzcmluaXZhcy5wYW5kcnV2YWRhQGxpbnV4
-LmludGVsLmNvbT4NCg0KPiAtLS0NCj4gIGRyaXZlcnMvdGhlcm1hbC9pbnRlbC9pbnRlbF9wY2hf
-dGhlcm1hbC5jIHwgMTAgKysrKysrKysrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9u
-cygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdGhlcm1hbC9p
-bnRlbC9pbnRlbF9wY2hfdGhlcm1hbC5jDQo+IGIvZHJpdmVycy90aGVybWFsL2ludGVsL2ludGVs
-X3BjaF90aGVybWFsLmMNCj4gaW5kZXggM2I4MTNlYmI2Y2ExLi43Nzg1ZTA1ZjQ2ZjAgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvdGhlcm1hbC9pbnRlbC9pbnRlbF9wY2hfdGhlcm1hbC5jDQo+ICsr
-KyBiL2RyaXZlcnMvdGhlcm1hbC9pbnRlbC9pbnRlbF9wY2hfdGhlcm1hbC5jDQo+IEBAIC0yNiw2
-ICsyNiw3IEBADQo+ICAjZGVmaW5lIFBDSF9USEVSTUFMX0RJRF9DTkxfSAkweEEzNzkgLyogQ05M
-LUggUENIICovDQo+ICAjZGVmaW5lIFBDSF9USEVSTUFMX0RJRF9DTkxfTFAJMHgwMkY5IC8qIENO
-TC1MUCBQQ0ggKi8NCj4gICNkZWZpbmUgUENIX1RIRVJNQUxfRElEX0NNTF9ICTBYMDZGOSAvKiBD
-TUwtSCBQQ0ggKi8NCj4gKyNkZWZpbmUgUENIX1RIRVJNQUxfRElEX0xXQgkweEExQjEgLyogTGV3
-aXNidXJnIFBDSCAqLw0KPiAgDQo+ICAvKiBXaWxkY2F0IFBvaW50LUxQICBQQ0ggVGhlcm1hbCBy
-ZWdpc3RlcnMgKi8NCj4gICNkZWZpbmUgV1BUX1RFTVAJMHgwMDAwCS8qIFRlbXBlcmF0dXJlICov
-DQo+IEBAIC0yNzYsNiArMjc3LDcgQEAgZW51bSBib2FyZF9pZHMgew0KPiAgCWJvYXJkX3NrbCwN
-Cj4gIAlib2FyZF9jbmwsDQo+ICAJYm9hcmRfY21sLA0KPiArCWJvYXJkX2x3YiwNCj4gIH07DQo+
-ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYm9hcmRfaW5mbyB7DQo+IEBAIC0zMDEsNyArMzAz
-LDExIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYm9hcmRfaW5mbyB7DQo+ICAJW2JvYXJkX2NtbF0g
-PSB7DQo+ICAJCS5uYW1lID0gInBjaF9jb21ldGxha2UiLA0KPiAgCQkub3BzID0gJnBjaF9kZXZf
-b3BzX3dwdCwNCj4gLQl9DQo+ICsJfSwNCj4gKwlbYm9hcmRfbHdiXSA9IHsNCj4gKwkJLm5hbWUg
-PSAicGNoX2xld2lzYnVyZyIsDQo+ICsJCS5vcHMgPSAmcGNoX2Rldl9vcHNfd3B0LA0KPiArCX0s
-DQo+ICB9Ow0KPiAgDQo+ICBzdGF0aWMgaW50IGludGVsX3BjaF90aGVybWFsX3Byb2JlKHN0cnVj
-dCBwY2lfZGV2ICpwZGV2LA0KPiBAQCAtNDE1LDYgKzQyMSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3QgcGNpX2RldmljZV9pZA0KPiBpbnRlbF9wY2hfdGhlcm1hbF9pZFtdID0gew0KPiAgCQkuZHJp
-dmVyX2RhdGEgPSBib2FyZF9jbmwsIH0sDQo+ICAJeyBQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURf
-SU5URUwsIFBDSF9USEVSTUFMX0RJRF9DTUxfSCksDQo+ICAJCS5kcml2ZXJfZGF0YSA9IGJvYXJk
-X2NtbCwgfSwNCj4gKwl7IFBDSV9ERVZJQ0UoUENJX1ZFTkRPUl9JRF9JTlRFTCwgUENIX1RIRVJN
-QUxfRElEX0xXQiksDQo+ICsJCS5kcml2ZXJfZGF0YSA9IGJvYXJkX2x3YiwgfSwNCj4gIAl7IDAs
-IH0sDQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShwY2ksIGludGVsX3BjaF90aGVybWFs
-X2lkKTsNCg==
+On Sat, Nov 14, 2020 at 8:24 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Sat, Nov 14, 2020 at 10:17:12AM -0500, Jonathan Marek wrote:
+> > +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
+> > +             size_t range_start, size_t range_end)
+> > +{
+> > +     struct msm_gem_object *msm_obj = to_msm_bo(obj);
+> > +     struct device *dev = msm_obj->base.dev->dev;
+> > +
+> > +     /* exit early if get_pages() hasn't been called yet */
+> > +     if (!msm_obj->pages)
+> > +             return;
+> > +
+> > +     /* TODO: sync only the specified range */
+> > +
+> > +     if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
+> > +             dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
+> > +                             msm_obj->sgt->nents, DMA_TO_DEVICE);
+> > +     }
+> > +
+> > +     if (flags & MSM_GEM_SYNC_FOR_CPU) {
+> > +             dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
+> > +                             msm_obj->sgt->nents, DMA_FROM_DEVICE);
+> > +     }
+>
+> Splitting this helper from the only caller is rather strange, epecially
+> with the two unused arguments.  And I think the way this is specified
+> to take a range, but ignoring it is actively dangerous.  User space will
+> rely on it syncing everything sooner or later and then you are stuck.
+> So just define a sync all primitive for now, and if you really need a
+> range sync and have actually implemented it add a new ioctl for that.
+
+We do already have a split of ioctl "layer" which enforces valid ioctl
+params, etc, and gem (or other) module code which is called by the
+ioctl func.  So I think it is fine to keep this split here.  (Also, I
+think at some point there will be a uring type of ioctl alternative
+which would re-use the same gem func.)
+
+But I do agree that the range should be respected or added later..
+drm_ioctl() dispatch is well prepared for extending ioctls.
+
+And I assume there should be some validation that the range is aligned
+to cache-line?  Or can we flush a partial cache line?
+
+BR,
+-R
