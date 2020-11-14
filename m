@@ -2,376 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E122B2B59
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 05:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34522B2B58
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 05:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgKNEuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 23:50:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48512 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726414AbgKNEuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 23:50:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ACB79ABDE;
-        Sat, 14 Nov 2020 04:50:02 +0000 (UTC)
-Date:   Fri, 13 Nov 2020 20:27:25 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>, dave@stgolabs.net
-Subject: [PATCH] USB: serial: mos7720: defer state restore to a workqueue
-Message-ID: <20201114042725.ofs7zbzmxg32tbbi@linux-p48b.lan>
-References: <20201102211450.5722-1-dave@stgolabs.net>
- <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
- <20201104110657.GW4085@localhost>
- <20201104162534.GY4085@localhost>
- <20201105001307.lelve65nif344cfs@linux-p48b.lan>
- <20201105082540.GA4085@localhost>
- <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
- <20201113091443.GI4085@localhost>
+        id S1726411AbgKNEmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 23:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgKNEmO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 23:42:14 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2346C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 20:42:14 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id l14so6541270ybq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 20:42:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IG5+uwMaJpYsJGyx0OR6KbwT48lJzpuz3Wuqu6d3xAA=;
+        b=GeYzLJCvNVHV/I0uXIaB8CRLYYHZbL6R3USS9bCeaK67NUjoBxj4mQ7UC70hyeUUJX
+         bn6gkMZRFE+7x7MYY50K/ac7ariAtdPgnia9m/VjvooLRgUr+r+ocDuLIvcogwITyLxP
+         hAocRkUhe3oPkrNBQmgJxbEOqWc+i6Yj5A+iO12hYXEP+v/nLiF/sclg1QC3LkwUmeX1
+         JOg2+kGM7yuLiB1BhIUTez28wLQDTUjVyQpBtA/nKEO3qbAMnRMl63NOtmPXOzmd1dM7
+         d1QqQzLkAD36Gir5S7UIFCzcYTaaUlMkY7UyO7rVxBHiNuz3q7Y7Bd7vlD3Oy7TgRd6h
+         kAsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IG5+uwMaJpYsJGyx0OR6KbwT48lJzpuz3Wuqu6d3xAA=;
+        b=N/f9qkRrGyeW7UXgaiKlzpR0yettcT/HuDYvVc9S6Y65MgUW/BJy08scLFuFalxb4G
+         m+vG96PFLISH5oj7/hsr+Sma1OM4whSzsmJJ+DAHI3Ik8HAXtvks2SsLhHnJlG6qZXOT
+         MPPhE+qKBMsUntM7H26WwAVYhKPN3ehPP0P7D+yzejliGkazVZNsT7zCx96VLt8nEKa7
+         3C8gl5AFPtU43+Lig8dtNj4gStIKvQU2ZUcmNLix1YOY3oEJ7LfdCdyz+c6KlxE59CyY
+         8ZTRbJI7PE0T2X6SmNCYUxkjRzZREZFXZw9nBtBu2Y62UdI4eQI1Qde56KZIGOpY7lBJ
+         Y9yA==
+X-Gm-Message-State: AOAM533qto9wYMrj+i1zl373NTiLf5uZrzWDzlJdLacBmRTYW3qzLn8N
+        86ywjCvrlMRHSbfdrHPQY0F2JUIzSm/vwdXDxDU=
+X-Google-Smtp-Source: ABdhPJzUvsS1E0yixjiSXgJxozsfAQMPDmA7tdEg3jG4oEW7j81WrASpUHBYeQ0BZ8cky0mr4Pe8udsDG87IcaqxUNk=
+X-Received: by 2002:a25:a065:: with SMTP id x92mr10895643ybh.94.1605328933843;
+ Fri, 13 Nov 2020 20:42:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201113091443.GI4085@localhost>
-User-Agent: NeoMutt/20180716
+References: <20201114001417.155093-1-lyude@redhat.com> <20201114001417.155093-2-lyude@redhat.com>
+In-Reply-To: <20201114001417.155093-2-lyude@redhat.com>
+From:   Ben Skeggs <skeggsb@gmail.com>
+Date:   Sat, 14 Nov 2020 14:42:02 +1000
+Message-ID: <CACAvsv6NismE+G8DgZX6YZPcM1+onnYgxOdkOkX6gKu=obM9Fw@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH 1/8] drm/nouveau/kms/nv50-: Use atomic encoder
+ callbacks everywhere
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.de>, Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parallel port restore operation currently defers writes
-to a tasklet, if it sees a locked disconnect mutex. The
-driver goes to a lot of trouble to ensure writes happen
-in a non-blocking context, but things can be greatly
-simplified if it's done in regular process context and
-this is not a system performance critical path. As such,
-instead of doing the async state restore writes in irq
-context, use a workqueue and just do regular synchronous
-writes.
+I've merged all of these.  Sent the first to 5.10-fixes for the
+regression there, the rest will go in with a later -next pull request.
 
-In addition to the cleanup, this also imposes less on the
-overall system as tasklets have been deprecated because
-of it's BH implications, potentially blocking a higher
-priority task from running. We also get rid of hacks
-such as trylocking a mutex in irq, something which does
-not play nice with priority boosting in PREEMPT_RT.
+Thanks,
+Ben.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- drivers/usb/serial/mos7720.c | 235 ++++++-----------------------------
- 1 file changed, 36 insertions(+), 199 deletions(-)
-
-diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
-index 5a5d2a95070e..d36aaa4a13de 100644
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -79,14 +79,6 @@ MODULE_DEVICE_TABLE(usb, id_table);
- #define DCR_INIT_VAL       0x0c	/* SLCTIN, nINIT */
- #define ECR_INIT_VAL       0x00	/* SPP mode */
-
--struct urbtracker {
--	struct mos7715_parport  *mos_parport;
--	struct list_head        urblist_entry;
--	struct kref             ref_count;
--	struct urb              *urb;
--	struct usb_ctrlrequest	*setup;
--};
--
- enum mos7715_pp_modes {
-	SPP = 0<<5,
-	PS2 = 1<<5,      /* moschip calls this 'NIBBLE' mode */
-@@ -96,12 +88,9 @@ enum mos7715_pp_modes {
- struct mos7715_parport {
-	struct parport          *pp;	       /* back to containing struct */
-	struct kref             ref_count;     /* to instance of this struct */
--	struct list_head        deferred_urbs; /* list deferred async urbs */
--	struct list_head        active_urbs;   /* list async urbs in flight */
--	spinlock_t              listlock;      /* protects list access */
-	bool                    msg_pending;   /* usb sync call pending */
-	struct completion       syncmsg_compl; /* usb sync call completed */
--	struct tasklet_struct   urb_tasklet;   /* for sending deferred urbs */
-+	struct work_struct      work;          /* restore deferred writes */
-	struct usb_serial       *serial;       /* back to containing struct */
-	__u8			shadowECR;     /* parallel port regs... */
-	__u8			shadowDCR;
-@@ -265,174 +254,8 @@ static void destroy_mos_parport(struct kref *kref)
-	kfree(mos_parport);
- }
-
--static void destroy_urbtracker(struct kref *kref)
--{
--	struct urbtracker *urbtrack =
--		container_of(kref, struct urbtracker, ref_count);
--	struct mos7715_parport *mos_parport = urbtrack->mos_parport;
--
--	usb_free_urb(urbtrack->urb);
--	kfree(urbtrack->setup);
--	kfree(urbtrack);
--	kref_put(&mos_parport->ref_count, destroy_mos_parport);
--}
--
- /*
-- * This runs as a tasklet when sending an urb in a non-blocking parallel
-- * port callback had to be deferred because the disconnect mutex could not be
-- * obtained at the time.
-- */
--static void send_deferred_urbs(struct tasklet_struct *t)
--{
--	int ret_val;
--	unsigned long flags;
--	struct mos7715_parport *mos_parport = from_tasklet(mos_parport, t,
--							   urb_tasklet);
--	struct urbtracker *urbtrack, *tmp;
--	struct list_head *cursor, *next;
--	struct device *dev;
--
--	/* if release function ran, game over */
--	if (unlikely(mos_parport->serial == NULL))
--		return;
--
--	dev = &mos_parport->serial->dev->dev;
--
--	/* try again to get the mutex */
--	if (!mutex_trylock(&mos_parport->serial->disc_mutex)) {
--		dev_dbg(dev, "%s: rescheduling tasklet\n", __func__);
--		tasklet_schedule(&mos_parport->urb_tasklet);
--		return;
--	}
--
--	/* if device disconnected, game over */
--	if (unlikely(mos_parport->serial->disconnected)) {
--		mutex_unlock(&mos_parport->serial->disc_mutex);
--		return;
--	}
--
--	spin_lock_irqsave(&mos_parport->listlock, flags);
--	if (list_empty(&mos_parport->deferred_urbs)) {
--		spin_unlock_irqrestore(&mos_parport->listlock, flags);
--		mutex_unlock(&mos_parport->serial->disc_mutex);
--		dev_dbg(dev, "%s: deferred_urbs list empty\n", __func__);
--		return;
--	}
--
--	/* move contents of deferred_urbs list to active_urbs list and submit */
--	list_for_each_safe(cursor, next, &mos_parport->deferred_urbs)
--		list_move_tail(cursor, &mos_parport->active_urbs);
--	list_for_each_entry_safe(urbtrack, tmp, &mos_parport->active_urbs,
--			    urblist_entry) {
--		ret_val = usb_submit_urb(urbtrack->urb, GFP_ATOMIC);
--		dev_dbg(dev, "%s: urb submitted\n", __func__);
--		if (ret_val) {
--			dev_err(dev, "usb_submit_urb() failed: %d\n", ret_val);
--			list_del(&urbtrack->urblist_entry);
--			kref_put(&urbtrack->ref_count, destroy_urbtracker);
--		}
--	}
--	spin_unlock_irqrestore(&mos_parport->listlock, flags);
--	mutex_unlock(&mos_parport->serial->disc_mutex);
--}
--
--/* callback for parallel port control urbs submitted asynchronously */
--static void async_complete(struct urb *urb)
--{
--	struct urbtracker *urbtrack = urb->context;
--	int status = urb->status;
--	unsigned long flags;
--
--	if (unlikely(status))
--		dev_dbg(&urb->dev->dev, "%s - nonzero urb status received: %d\n", __func__, status);
--
--	/* remove the urbtracker from the active_urbs list */
--	spin_lock_irqsave(&urbtrack->mos_parport->listlock, flags);
--	list_del(&urbtrack->urblist_entry);
--	spin_unlock_irqrestore(&urbtrack->mos_parport->listlock, flags);
--	kref_put(&urbtrack->ref_count, destroy_urbtracker);
--}
--
--static int write_parport_reg_nonblock(struct mos7715_parport *mos_parport,
--				      enum mos_regs reg, __u8 data)
--{
--	struct urbtracker *urbtrack;
--	int ret_val;
--	unsigned long flags;
--	struct usb_serial *serial = mos_parport->serial;
--	struct usb_device *usbdev = serial->dev;
--
--	/* create and initialize the control urb and containing urbtracker */
--	urbtrack = kmalloc(sizeof(struct urbtracker), GFP_ATOMIC);
--	if (!urbtrack)
--		return -ENOMEM;
--
--	urbtrack->urb = usb_alloc_urb(0, GFP_ATOMIC);
--	if (!urbtrack->urb) {
--		kfree(urbtrack);
--		return -ENOMEM;
--	}
--	urbtrack->setup = kmalloc(sizeof(*urbtrack->setup), GFP_ATOMIC);
--	if (!urbtrack->setup) {
--		usb_free_urb(urbtrack->urb);
--		kfree(urbtrack);
--		return -ENOMEM;
--	}
--	urbtrack->setup->bRequestType = (__u8)0x40;
--	urbtrack->setup->bRequest = (__u8)0x0e;
--	urbtrack->setup->wValue = cpu_to_le16(get_reg_value(reg, dummy));
--	urbtrack->setup->wIndex = cpu_to_le16(get_reg_index(reg));
--	urbtrack->setup->wLength = 0;
--	usb_fill_control_urb(urbtrack->urb, usbdev,
--			     usb_sndctrlpipe(usbdev, 0),
--			     (unsigned char *)urbtrack->setup,
--			     NULL, 0, async_complete, urbtrack);
--	kref_get(&mos_parport->ref_count);
--	urbtrack->mos_parport = mos_parport;
--	kref_init(&urbtrack->ref_count);
--	INIT_LIST_HEAD(&urbtrack->urblist_entry);
--
--	/*
--	 * get the disconnect mutex, or add tracker to the deferred_urbs list
--	 * and schedule a tasklet to try again later
--	 */
--	if (!mutex_trylock(&serial->disc_mutex)) {
--		spin_lock_irqsave(&mos_parport->listlock, flags);
--		list_add_tail(&urbtrack->urblist_entry,
--			      &mos_parport->deferred_urbs);
--		spin_unlock_irqrestore(&mos_parport->listlock, flags);
--		tasklet_schedule(&mos_parport->urb_tasklet);
--		dev_dbg(&usbdev->dev, "tasklet scheduled\n");
--		return 0;
--	}
--
--	/* bail if device disconnected */
--	if (serial->disconnected) {
--		kref_put(&urbtrack->ref_count, destroy_urbtracker);
--		mutex_unlock(&serial->disc_mutex);
--		return -ENODEV;
--	}
--
--	/* add the tracker to the active_urbs list and submit */
--	spin_lock_irqsave(&mos_parport->listlock, flags);
--	list_add_tail(&urbtrack->urblist_entry, &mos_parport->active_urbs);
--	spin_unlock_irqrestore(&mos_parport->listlock, flags);
--	ret_val = usb_submit_urb(urbtrack->urb, GFP_ATOMIC);
--	mutex_unlock(&serial->disc_mutex);
--	if (ret_val) {
--		dev_err(&usbdev->dev,
--			"%s: submit_urb() failed: %d\n", __func__, ret_val);
--		spin_lock_irqsave(&mos_parport->listlock, flags);
--		list_del(&urbtrack->urblist_entry);
--		spin_unlock_irqrestore(&mos_parport->listlock, flags);
--		kref_put(&urbtrack->ref_count, destroy_urbtracker);
--		return ret_val;
--	}
--	return 0;
--}
--
--/*
-- * This is the the common top part of all parallel port callback operations that
-+ * This is the common top part of all parallel port callback operations that
-  * send synchronous messages to the device.  This implements convoluted locking
-  * that avoids two scenarios: (1) a port operation is called after usbserial
-  * has called our release function, at which point struct mos7715_parport has
-@@ -458,6 +281,10 @@ static int parport_prologue(struct parport *pp)
-	reinit_completion(&mos_parport->syncmsg_compl);
-	spin_unlock(&release_lock);
-
-+	/* ensure writes from restore are submitted before new requests */
-+	if (work_pending(&mos_parport->work))
-+		flush_work(&mos_parport->work);
-+
-	mutex_lock(&mos_parport->serial->disc_mutex);
-	if (mos_parport->serial->disconnected) {
-		/* device disconnected */
-@@ -482,6 +309,26 @@ static inline void parport_epilogue(struct parport *pp)
-	complete(&mos_parport->syncmsg_compl);
- }
-
-+static void deferred_restore_writes(struct work_struct *work)
-+{
-+	struct mos7715_parport *mos_parport;
-+
-+	mos_parport = container_of(work, struct mos7715_parport, work);
-+
-+	mutex_lock(&mos_parport->serial->disc_mutex);
-+
-+	/* if device disconnected, game over */
-+	if (mos_parport->serial->disconnected)
-+		goto done;
-+
-+	write_mos_reg(mos_parport->serial, dummy, MOS7720_DCR,
-+		      mos_parport->shadowDCR);
-+	write_mos_reg(mos_parport->serial, dummy, MOS7720_ECR,
-+		      mos_parport->shadowECR);
-+done:
-+	mutex_unlock(&mos_parport->serial->disc_mutex);
-+}
-+
- static void parport_mos7715_write_data(struct parport *pp, unsigned char d)
- {
-	struct mos7715_parport *mos_parport = pp->private_data;
-@@ -641,10 +488,9 @@ static void parport_mos7715_restore_state(struct parport *pp,
-	}
-	mos_parport->shadowDCR = s->u.pc.ctr;
-	mos_parport->shadowECR = s->u.pc.ecr;
--	write_parport_reg_nonblock(mos_parport, MOS7720_DCR,
--				   mos_parport->shadowDCR);
--	write_parport_reg_nonblock(mos_parport, MOS7720_ECR,
--				   mos_parport->shadowECR);
-+
-+	/* defer synchronous writes outside of irq */
-+	schedule_work(&mos_parport->work);
-	spin_unlock(&release_lock);
- }
-
-@@ -714,12 +560,9 @@ static int mos7715_parport_init(struct usb_serial *serial)
-
-	mos_parport->msg_pending = false;
-	kref_init(&mos_parport->ref_count);
--	spin_lock_init(&mos_parport->listlock);
--	INIT_LIST_HEAD(&mos_parport->active_urbs);
--	INIT_LIST_HEAD(&mos_parport->deferred_urbs);
-	usb_set_serial_data(serial, mos_parport); /* hijack private pointer */
-	mos_parport->serial = serial;
--	tasklet_setup(&mos_parport->urb_tasklet, send_deferred_urbs);
-+	INIT_WORK(&mos_parport->work, deferred_restore_writes);
-	init_completion(&mos_parport->syncmsg_compl);
-
-	/* cycle parallel port reset bit */
-@@ -1869,8 +1712,6 @@ static void mos7720_release(struct usb_serial *serial)
-
-	if (le16_to_cpu(serial->dev->descriptor.idProduct)
-	    == MOSCHIP_DEVICE_ID_7715) {
--		struct urbtracker *urbtrack;
--		unsigned long flags;
-		struct mos7715_parport *mos_parport =
-			usb_get_serial_data(serial);
-
-@@ -1883,21 +1724,17 @@ static void mos7720_release(struct usb_serial *serial)
-		if (mos_parport->msg_pending)
-			wait_for_completion_timeout(&mos_parport->syncmsg_compl,
-					    msecs_to_jiffies(MOS_WDR_TIMEOUT));
-+		/*
-+		 * If delayed work is currently scheduled, wait for it to
-+		 * complete. This also implies barriers that ensure the
-+		 * below serial clearing is not hoisted above the ->work.
-+		 */
-+		cancel_work_sync(&mos_parport->work);
-
-		parport_remove_port(mos_parport->pp);
-		usb_set_serial_data(serial, NULL);
-		mos_parport->serial = NULL;
-
--		/* if tasklet currently scheduled, wait for it to complete */
--		tasklet_kill(&mos_parport->urb_tasklet);
--
--		/* unlink any urbs sent by the tasklet  */
--		spin_lock_irqsave(&mos_parport->listlock, flags);
--		list_for_each_entry(urbtrack,
--				    &mos_parport->active_urbs,
--				    urblist_entry)
--			usb_unlink_urb(urbtrack->urb);
--		spin_unlock_irqrestore(&mos_parport->listlock, flags);
-		parport_del_port(mos_parport->pp);
-
-		kref_put(&mos_parport->ref_count, destroy_mos_parport);
---
-2.26.2
+On Sat, 14 Nov 2020 at 10:14, Lyude Paul <lyude@redhat.com> wrote:
+>
+> It turns out that I forgot to go through and make sure that I converted all
+> encoder callbacks to use atomic_enable/atomic_disable(), so let's go and
+> actually do that.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> Fixes: 09838c4efe9a ("drm/nouveau/kms: Search for encoders' connectors properly")
+> ---
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 29 ++++++++++++-------------
+>  1 file changed, 14 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index b111fe24a06b..36d6b6093d16 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -455,7 +455,7 @@ nv50_outp_get_old_connector(struct nouveau_encoder *outp,
+>   * DAC
+>   *****************************************************************************/
+>  static void
+> -nv50_dac_disable(struct drm_encoder *encoder)
+> +nv50_dac_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+>         struct nv50_core *core = nv50_disp(encoder->dev)->core;
+> @@ -467,7 +467,7 @@ nv50_dac_disable(struct drm_encoder *encoder)
+>  }
+>
+>  static void
+> -nv50_dac_enable(struct drm_encoder *encoder)
+> +nv50_dac_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+>         struct nouveau_crtc *nv_crtc = nouveau_crtc(encoder->crtc);
+> @@ -525,8 +525,8 @@ nv50_dac_detect(struct drm_encoder *encoder, struct drm_connector *connector)
+>  static const struct drm_encoder_helper_funcs
+>  nv50_dac_help = {
+>         .atomic_check = nv50_outp_atomic_check,
+> -       .enable = nv50_dac_enable,
+> -       .disable = nv50_dac_disable,
+> +       .atomic_enable = nv50_dac_enable,
+> +       .atomic_disable = nv50_dac_disable,
+>         .detect = nv50_dac_detect
+>  };
+>
+> @@ -1055,7 +1055,7 @@ nv50_dp_bpc_to_depth(unsigned int bpc)
+>  }
+>
+>  static void
+> -nv50_msto_enable(struct drm_encoder *encoder)
+> +nv50_msto_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nv50_head *head = nv50_head(encoder->crtc);
+>         struct nv50_head_atom *armh = nv50_head_atom(head->base.base.state);
+> @@ -1101,7 +1101,7 @@ nv50_msto_enable(struct drm_encoder *encoder)
+>  }
+>
+>  static void
+> -nv50_msto_disable(struct drm_encoder *encoder)
+> +nv50_msto_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nv50_msto *msto = nv50_msto(encoder);
+>         struct nv50_mstc *mstc = msto->mstc;
+> @@ -1118,8 +1118,8 @@ nv50_msto_disable(struct drm_encoder *encoder)
+>
+>  static const struct drm_encoder_helper_funcs
+>  nv50_msto_help = {
+> -       .disable = nv50_msto_disable,
+> -       .enable = nv50_msto_enable,
+> +       .atomic_disable = nv50_msto_disable,
+> +       .atomic_enable = nv50_msto_enable,
+>         .atomic_check = nv50_msto_atomic_check,
+>  };
+>
+> @@ -1645,8 +1645,7 @@ nv50_sor_disable(struct drm_encoder *encoder,
+>  }
+>
+>  static void
+> -nv50_sor_enable(struct drm_encoder *encoder,
+> -               struct drm_atomic_state *state)
+> +nv50_sor_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+>         struct nouveau_crtc *nv_crtc = nouveau_crtc(encoder->crtc);
+> @@ -1873,7 +1872,7 @@ nv50_pior_atomic_check(struct drm_encoder *encoder,
+>  }
+>
+>  static void
+> -nv50_pior_disable(struct drm_encoder *encoder)
+> +nv50_pior_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+>         struct nv50_core *core = nv50_disp(encoder->dev)->core;
+> @@ -1885,7 +1884,7 @@ nv50_pior_disable(struct drm_encoder *encoder)
+>  }
+>
+>  static void
+> -nv50_pior_enable(struct drm_encoder *encoder)
+> +nv50_pior_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+>  {
+>         struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+>         struct nouveau_crtc *nv_crtc = nouveau_crtc(encoder->crtc);
+> @@ -1921,14 +1920,14 @@ nv50_pior_enable(struct drm_encoder *encoder)
+>         }
+>
+>         core->func->pior->ctrl(core, nv_encoder->or, ctrl, asyh);
+> -       nv_encoder->crtc = encoder->crtc;
+> +       nv_encoder->crtc = &nv_crtc->base;
+>  }
+>
+>  static const struct drm_encoder_helper_funcs
+>  nv50_pior_help = {
+>         .atomic_check = nv50_pior_atomic_check,
+> -       .enable = nv50_pior_enable,
+> -       .disable = nv50_pior_disable,
+> +       .atomic_enable = nv50_pior_enable,
+> +       .atomic_disable = nv50_pior_disable,
+>  };
+>
+>  static void
+> --
+> 2.28.0
+>
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
