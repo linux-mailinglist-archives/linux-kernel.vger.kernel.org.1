@@ -2,151 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934C72B3090
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832382B3094
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgKNUKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
+        id S1726313AbgKNUQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKNUKh (ORCPT
+        with ESMTP id S1726121AbgKNUQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:10:37 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AB8C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 12:10:37 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id y11so6731793qvu.10
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 12:10:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=67JIrhUexBLk+euYcRPybCUujGZ256Wpe49XxF/Od8o=;
-        b=itpMD3coD5rHj6pDvemIHpnPf4BB39MY7jtbuBua/ljNHEQhqlwauoK9p3NxrAmPlH
-         tM1OmSMW5cPdEWV8j5GRMzgTXEvw7OF8+koGttFDhDJAEvy/nEVWtPGba1Pfxkf6rqQA
-         xoh67VBTeWFhcjmWz6O70tbT6C91O+JHHO1RwL0HN1pYW2tm265UH57Gr2xCb7jwZ/MW
-         91omkj8gLtx3SEJVzCYmCQ3uR6lAX5pD6eGbrv1MVSQZBhvUKuGwljJ4D0JvsGXAMN/I
-         1Ogm4wRS+XrQ8Riey+hd9ziYiYF1dr7cWHeYsI40B5poW8sQE5wNRX4wp+ma3w9yVACI
-         npZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=67JIrhUexBLk+euYcRPybCUujGZ256Wpe49XxF/Od8o=;
-        b=XK/5JIr3KzXkiGWDpO4YyCR1qluieQ6pbqTxyW29YKoMSyTySTiP4favxVTaV22AJb
-         8rGC+Nwr9NzoCztGPFfujFApwlReF7Y1NE6DEyndbITwYL+MhCCJqpIoaUGNFXTnV3yK
-         KmgIEfGsLn4VeE0hfsEShER8DAMQSKKG3lFW9wK+cUg9cFkd0XJiZCl/LDIWBpaKhh3a
-         cdQkCphkxMb5CrZdTdXq8jMROSFYYJIxahU3eMB21n+lRHLJOcyut8A960cVKiLIZ6jc
-         gwUz6alZzPyyZ7rBk1szXeGiCFF7tJ/2NvR1iWTSHfcB3stvJoLoaF6R/fLWxgnbHwgu
-         Q6Ow==
-X-Gm-Message-State: AOAM530nvS3eb2sxTSszFZKG+hDc7U5VPiuGMyNLimqsOWCiaIFKU7BW
-        G/7pHT1RENSxdH8n3Dt8dMlldFiEr39kZ2E1yYY=
-X-Google-Smtp-Source: ABdhPJzft9OhFBtteOqZhLQn7egjWtZlERvOrzafk6j36LTCmNIxc3fnqX7jB1KikEADIQ4Qg6oRJA==
-X-Received: by 2002:ad4:4bb2:: with SMTP id i18mr8530477qvw.52.1605384635788;
-        Sat, 14 Nov 2020 12:10:35 -0800 (PST)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id k31sm8923935qtd.40.2020.11.14.12.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Nov 2020 12:10:35 -0800 (PST)
-Subject: Re: [RESEND PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for
- non-coherent cache maintenance
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201114151717.5369-1-jonathan@marek.ca>
- <20201114151717.5369-5-jonathan@marek.ca> <20201114162406.GC24411@lst.de>
- <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
- <50ddcadb-c630-2ef6-cdc4-724d9823fba7@marek.ca>
- <CAF6AEGsH5Wk=J+HxHnRqTMLZscjErjKq2v0Rms7Td=W7icZ3sw@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <b6e4f167-871a-5f26-46bd-d914476af519@marek.ca>
-Date:   Sat, 14 Nov 2020 15:07:20 -0500
+        Sat, 14 Nov 2020 15:16:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBBEC0613D1;
+        Sat, 14 Nov 2020 12:16:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=pe7tFvBv1g4PMKXTwwbxmGziSUNNmw4hslJpP7t6A1g=; b=BfHJnKj218BveLTnZUcr/58FGX
+        FKwsMppg7fNZVpo83kMewCQfCzy8wHa725c5rRBkOTVf1LR3iDdiYmbEDFJWAPCxb4XsacN9bzLLj
+        GDsTleha9//trDxwq5HAFCjXzR1cwutpBh4Dz5EhY4BszxDM4hlSGbBkqqmdSyquxv4HnAjkN+Kid
+        07/TIonBMDlm1K8x8lOe+qabymhFANqK+tZS6XJ+xy27oEXinOioJToCHn7MfGuRJ+aCvBsBR2DaX
+        1s84ETCkA5DuhOu730jlboLiRx+5EeQLqPbDypCUz38pLa0z1NnHCzAkjgaBa1WHegz0fPLqpI65m
+        FwnXa2uw==;
+Received: from [2601:1c0:6280:3f0::f32]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ke1y1-0005z9-0M; Sat, 14 Nov 2020 20:16:13 +0000
+Subject: Re: [PATCH net-next v2] net: linux/skbuff.h: combine SKB_EXTENSIONS +
+ KCOV handling
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-next@vger.kernel.org, netdev@vger.kernel.org
+References: <20201114174618.24471-1-rdunlap@infradead.org>
+ <20201114115437.55eed094@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <eab5982c-c03e-5001-abf7-052588dfa089@infradead.org>
+Date:   Sat, 14 Nov 2020 12:16:08 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGsH5Wk=J+HxHnRqTMLZscjErjKq2v0Rms7Td=W7icZ3sw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201114115437.55eed094@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/20 2:39 PM, Rob Clark wrote:
-> On Sat, Nov 14, 2020 at 10:58 AM Jonathan Marek <jonathan@marek.ca> wrote:
+On 11/14/20 11:54 AM, Jakub Kicinski wrote:
+> On Sat, 14 Nov 2020 09:46:18 -0800 Randy Dunlap wrote:
+>> The previous Kconfig patch led to some other build errors as
+>> reported by the 0day bot and my own overnight build testing.
 >>
->> On 11/14/20 1:46 PM, Rob Clark wrote:
->>> On Sat, Nov 14, 2020 at 8:24 AM Christoph Hellwig <hch@lst.de> wrote:
->>>>
->>>> On Sat, Nov 14, 2020 at 10:17:12AM -0500, Jonathan Marek wrote:
->>>>> +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
->>>>> +             size_t range_start, size_t range_end)
->>>>> +{
->>>>> +     struct msm_gem_object *msm_obj = to_msm_bo(obj);
->>>>> +     struct device *dev = msm_obj->base.dev->dev;
->>>>> +
->>>>> +     /* exit early if get_pages() hasn't been called yet */
->>>>> +     if (!msm_obj->pages)
->>>>> +             return;
->>>>> +
->>>>> +     /* TODO: sync only the specified range */
->>>>> +
->>>>> +     if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
->>>>> +             dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
->>>>> +                             msm_obj->sgt->nents, DMA_TO_DEVICE);
->>>>> +     }
->>>>> +
->>>>> +     if (flags & MSM_GEM_SYNC_FOR_CPU) {
->>>>> +             dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
->>>>> +                             msm_obj->sgt->nents, DMA_FROM_DEVICE);
->>>>> +     }
->>>>
->>>> Splitting this helper from the only caller is rather strange, epecially
->>>> with the two unused arguments.  And I think the way this is specified
->>>> to take a range, but ignoring it is actively dangerous.  User space will
->>>> rely on it syncing everything sooner or later and then you are stuck.
->>>> So just define a sync all primitive for now, and if you really need a
->>>> range sync and have actually implemented it add a new ioctl for that.
->>>
->>> We do already have a split of ioctl "layer" which enforces valid ioctl
->>> params, etc, and gem (or other) module code which is called by the
->>> ioctl func.  So I think it is fine to keep this split here.  (Also, I
->>> think at some point there will be a uring type of ioctl alternative
->>> which would re-use the same gem func.)
->>>
->>> But I do agree that the range should be respected or added later..
->>> drm_ioctl() dispatch is well prepared for extending ioctls.
->>>
->>> And I assume there should be some validation that the range is aligned
->>> to cache-line?  Or can we flush a partial cache line?
->>>
+>> These are all in <linux/skbuff.h> when KCOV is enabled but
+>> SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
+>> in the header file.
 >>
->> The range is intended to be "sync at least this range", so that
->> userspace doesn't have to worry about details like that.
->>
+>> Fixes: 6370cc3bbd8a ("net: add kcov handle to skb extensions")
+>> Fixes: 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Aleksandr Nogikh <nogikh@google.com>
+>> Cc: Willem de Bruijn <willemb@google.com>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: linux-next@vger.kernel.org
+>> Cc: netdev@vger.kernel.org
+>> ---
+>> v2: (as suggested by Matthieu Baerts <matthieu.baerts@tessares.net>)
+>>   drop an extraneous space in a comment;
+>>   use CONFIG_SKB_EXTENSIONS instead of CONFIG_NET;
 > 
-> I don't think userspace can *not* worry about details like that.
-> Consider a case where the cpu and gpu are simultaneously accessing
-> different parts of a buffer (for ex, sub-allocation).  There needs to
-> be cache-line separation between the two.
+> Thanks for the fix Randy!
+> 
+>> --- linux-next-20201113.orig/include/linux/skbuff.h
+>> +++ linux-next-20201113/include/linux/skbuff.h
+>> @@ -4151,7 +4151,7 @@ enum skb_ext_id {
+>>  #if IS_ENABLED(CONFIG_MPTCP)
+>>  	SKB_EXT_MPTCP,
+>>  #endif
+>> -#if IS_ENABLED(CONFIG_KCOV)
+>> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
+> 
+> I don't think this part is necessary, this is already under an ifdef:
+> 
+> #ifdef CONFIG_SKB_EXTENSIONS
+> enum skb_ext_id {
+> 
+> if I'm reading the code right.
+
+Oops, you are correct. Sorry I missed that.
+
+
+> That said I don't know why the enum is under CONFIG_SKB_EXTENSIONS in
+> the first place.
+> 
+> If extensions are not used doesn't matter if we define the enum and with
+> how many entries.
+> 
+> At the same time if we take the enum from under the ifdef and add stubs
+> for skb_ext_add() and skb_ext_find() we could actually remove the stubs
+> for kcov-related helpers. That seems cleaner and less ifdefy to me.
+> 
+> WDYT?
+
+Good thing I am on my third cup of coffee.
+
+OK, it looks like that should work -- with less #ifdef-ery.
+
+I'll work at it...
+
+
+>>  	SKB_EXT_KCOV_HANDLE,
+>>  #endif
+>>  	SKB_EXT_NUM, /* must be last */
+>> @@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
+>>  #endif
+>>  }
+>>  
+>> -#ifdef CONFIG_KCOV
+>> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
+>>  static inline void skb_set_kcov_handle(struct sk_buff *skb,
+>>  				       const u64 kcov_handle)
+>>  {
+>> @@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
+>>  static inline void skb_set_kcov_handle(struct sk_buff *skb,
+>>  				       const u64 kcov_handle) { }
+>>  static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
+>> -#endif /* CONFIG_KCOV */
+>> +#endif /* CONFIG_KCOV && CONFIG_SKB_EXTENSIONS */
+>>  
+>>  #endif	/* __KERNEL__ */
+>>  #endif	/* _LINUX_SKBUFF_H */
 > 
 
-Right.. and it also seems like we can't get away with just 
-flushing/invalidating the whole thing.
+thanks.
+-- 
+~Randy
 
-qcom's vulkan driver has nonCoherentAtomSize=1, and it looks like 
-dma_sync_single_for_cpu() does deal in some way with the partial cache 
-line case, although I'm not sure that means we can have a 
-nonCoherentAtomSize=1.
-
-> BR,
-> -R
-> 
