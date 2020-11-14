@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F032B2FCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982442B2FDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgKNSpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 13:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgKNSpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 13:45:13 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEEFC0613D1;
-        Sat, 14 Nov 2020 10:45:12 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so13957469wrw.10;
-        Sat, 14 Nov 2020 10:45:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mwaTQ8CRNOisIPpv1s2Kuarb/aJwOV+xZelk78899p4=;
-        b=eXiaXE1zpOF7soDIe0ZFrZUhZudhtfvkavxwo7+c1rjBg6fbIMTMta9ZYySZcwoPQe
-         j2t5qXqq9r/wzUv6z90z6kNo/pyMXXX8EMqj1ZI6n1IMeiAigipzXVLcLe5AqoKNypTT
-         wWJuJmM9ELwq9sjFlLSmnRO0omO1ovv8j0bG1tkZnO66B9XP3JoCL9isxCfVD9AmwVyl
-         ty9Eza2J0fhyjcrDnK6yt0eyH6vMY+vBXpoGN29/O2/Q6lGoJdVQfXtaaCUHL6REcjsO
-         3TS/FWSUTCT//JIJVamaVqDmnA8X5tz6uUqfMXYaS+7rx5UBddXU2n1tJiUGslRZZcg5
-         TbTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mwaTQ8CRNOisIPpv1s2Kuarb/aJwOV+xZelk78899p4=;
-        b=iCCN+aiLKS3Q/ifw91TJ9KfR6Xk6h1BJ/h/1/FH6dYEegc51DZRPUFMpfOgJ2yEfOx
-         Af/CSMOYcQEGpeDE9SyUSGfhzzbePdBitNGC0Q1c5crJdSRwO+J5cC/7/em/X7Ouqp3D
-         cZJtzuF5CDRnLjej2jZIzNUsn2nHZcQ56VNVxp3LPnkilNrktSCs/pNyuSvwD7WBfF7F
-         6OIkZZ9Ig2PI9WxsQO0dGoXaOBYh4k+TZafFFSLCvb6FzKS0wAssUoqmHV+HRUYxyU9l
-         v6NWUl4eESM2t6Yx8vWBANQdQJuAELwaWr6nq/IwOkup2ZIZoQcKCF7fGPzfttqoFlqp
-         hmSg==
-X-Gm-Message-State: AOAM531gh+7BWi2w4XQjurNM6s1vLU9FBjxgr00ocICdwganQKvRm2zA
-        i5fKX/CTHTOpegMRqD2D+ZTi0LSsH2vozRDmODg=
-X-Google-Smtp-Source: ABdhPJzzVqEbJpQptFAswg6i7BE/EPfAuddQpxmWjHIdbT4+CANyjD8wZ1iz67UV4WIHafY4RUG8eMwCcs6AqW3aROE=
-X-Received: by 2002:adf:f04b:: with SMTP id t11mr10162129wro.147.1605379511355;
- Sat, 14 Nov 2020 10:45:11 -0800 (PST)
+        id S1726352AbgKNSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 13:50:55 -0500
+Received: from mx.der-flo.net ([193.160.39.236]:51822 "EHLO mx.der-flo.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgKNSuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 13:50:54 -0500
+Received: by mx.der-flo.net (Postfix, from userid 110)
+        id 884C8439A7; Sat, 14 Nov 2020 19:50:49 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.der-flo.net (Postfix) with ESMTPSA id B7D00413E7;
+        Sat, 14 Nov 2020 19:49:36 +0100 (CET)
+Date:   Sat, 14 Nov 2020 19:49:31 +0100
+From:   Florian Lehner <dev@der-flo.net>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     acme@kernel.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org, peterz@infradead.org
+Subject: Re: [PATCH bpf,perf]] bpf,perf: return EOPNOTSUPP for attaching bpf
+ handler on PERF_COUNT_SW_DUMMY
+Message-ID: <20201114184931.GA2747@der-flo.net>
+References: <20201114135126.29462-1-dev@der-flo.net>
+ <CAADnVQL4zBmS5Yo3skoA32YjFXz5qu0q9LuJ5Z-61EGwZzgD6Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201114151717.5369-1-jonathan@marek.ca> <20201114151717.5369-5-jonathan@marek.ca>
- <20201114162406.GC24411@lst.de>
-In-Reply-To: <20201114162406.GC24411@lst.de>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 14 Nov 2020 10:46:55 -0800
-Message-ID: <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for
- non-coherent cache maintenance
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAADnVQL4zBmS5Yo3skoA32YjFXz5qu0q9LuJ5Z-61EGwZzgD6Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 8:24 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Sat, Nov 14, 2020 at 10:17:12AM -0500, Jonathan Marek wrote:
-> > +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-> > +             size_t range_start, size_t range_end)
-> > +{
-> > +     struct msm_gem_object *msm_obj = to_msm_bo(obj);
-> > +     struct device *dev = msm_obj->base.dev->dev;
-> > +
-> > +     /* exit early if get_pages() hasn't been called yet */
-> > +     if (!msm_obj->pages)
-> > +             return;
-> > +
-> > +     /* TODO: sync only the specified range */
-> > +
-> > +     if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
-> > +             dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
-> > +                             msm_obj->sgt->nents, DMA_TO_DEVICE);
-> > +     }
-> > +
-> > +     if (flags & MSM_GEM_SYNC_FOR_CPU) {
-> > +             dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
-> > +                             msm_obj->sgt->nents, DMA_FROM_DEVICE);
-> > +     }
->
-> Splitting this helper from the only caller is rather strange, epecially
-> with the two unused arguments.  And I think the way this is specified
-> to take a range, but ignoring it is actively dangerous.  User space will
-> rely on it syncing everything sooner or later and then you are stuck.
-> So just define a sync all primitive for now, and if you really need a
-> range sync and have actually implemented it add a new ioctl for that.
+On Sat, Nov 14, 2020 at 08:07:29AM -0800, Alexei Starovoitov wrote:
+> On Sat, Nov 14, 2020 at 5:53 AM Florian Lehner <dev@der-flo.net> wrote:
+> >
+> > At the moment it is not possible to attach a bpf handler to a perf event
+> > of type PERF_TYPE_SOFTWARE with a configuration of PERF_COUNT_SW_DUMMY.
+> 
+> It is possible or it is not possible?
+> 
+> Such "commit log as an abstract statement" patches are a mystery to a reader.
+> Please explain what problem you're trying to solve and how it's being addressed.
 
-We do already have a split of ioctl "layer" which enforces valid ioctl
-params, etc, and gem (or other) module code which is called by the
-ioctl func.  So I think it is fine to keep this split here.  (Also, I
-think at some point there will be a uring type of ioctl alternative
-which would re-use the same gem func.)
+Perf events of type software/dummy are just placeholder events and don't
+require a counting event. So attaching the bpf handler to the
+overflow_handler of this event does not trigger the execution of the bpf
+handler.
+So the idea of this fix was to indicate to the user that attaching a bpf
+handler to such a perf event is not (yet) supported.
 
-But I do agree that the range should be respected or added later..
-drm_ioctl() dispatch is well prepared for extending ioctls.
+> > Signed-off-by: Florian Lehner <dev@der-flo.net>
+> > ---
+> >  kernel/events/core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index da467e1dd49a..4e8846b7ceda 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -9668,6 +9668,10 @@ static int perf_event_set_bpf_handler(struct perf_event *event, u32 prog_fd)
+> >         if (event->prog)
+> >                 return -EEXIST;
+> >
+> > +       if (event->attr.type == PERF_TYPE_SOFTWARE &&
+> > +           event->attr.config == PERF_COUNT_SW_DUMMY)
+> > +               return -EOPNOTSUPP;
+> 
+> Is it a fix or a feature?
+> If it is a fix please add 'Fixes:' tag.
 
-And I assume there should be some validation that the range is aligned
-to cache-line?  Or can we flush a partial cache line?
-
-BR,
--R
+I was not sure how to address it and so I have chosen PATCH. As bpf
+handlers are still not executed on such events, I also would not call it
+a feature.
