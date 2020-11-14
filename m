@@ -2,150 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9EC2B30E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246AF2B30E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgKNVBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 16:01:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60632 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgKNVBs (ORCPT
+        id S1726277AbgKNVGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 16:06:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28090 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726121AbgKNVGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 16:01:48 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605387706;
+        Sat, 14 Nov 2020 16:06:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605387979;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=2A0cy+kJbvQjzVnwHknJh5VJweiz4wWIjgPTNXjz/Fc=;
-        b=E0Pkuenp6m9IzF08Xi8EDY/WV/Ht0TCGhFq1hSbl057vUcXtMdA9bJbb7dsUvQ5Xm1G+1W
-        cbLSBEV7Gi05GJxctFPoIKgP+wU6TqByd+/wVh2lRr3D9dCUJwXKQ1KY8USUQB5GutwpLm
-        fctbuXUKivu4GoqOHkQmyXln2gk/nic8+PxOqPGCA31YPSEmneiwfDj/tGLLxLxcUYHfuy
-        FkuWhz4FJBvhX5+2OQgNz7HT7lSpErDo9ntzn74kpqeCicTyOCoc4MajZ8LLB5FgKHw4nb
-        vMBHtfz4wz02+iTSd2oSAF6DLys6O8FbJMf8Ga/tm6u/IR77LoVPDT3g7DVamQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605387706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=2A0cy+kJbvQjzVnwHknJh5VJweiz4wWIjgPTNXjz/Fc=;
-        b=brQdzKIJVFXcmQv9Qn8Kf8/lbzEhOSxNlg0RVtL1+C54F56FgTtudytSSkGCZoqEbcxpa0
-        YHiXaPHd1gp2WFAg==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Marc Zyngier <maz@kernel.org>
-Subject: genirq: Remove GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
-Date:   Sat, 14 Nov 2020 22:01:45 +0100
-Message-ID: <87eekvac06.fsf@nanos.tec.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iDqPoFmTP4ds0d2GMoMz+XMW5r3umHX/Yp3qFx9m9x0=;
+        b=e/Svq4/3xclFvazUGN62rZOaBsQ3kyXFswib5wHsvLbld9jS3EGGOMjDJtyVPi+vfJrC7s
+        Dk742dm2x3zk1kaZEFrLlw5iELvyA60+0UseTnOXyZE+vos5tZQhpUZoHgtarJRlYnoouh
+        jvf2UT2uSLhwjaw7vXp+p0EMN0YYeFE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-Yi7BwOQyMGafghng6LQrYA-1; Sat, 14 Nov 2020 16:06:15 -0500
+X-MC-Unique: Yi7BwOQyMGafghng6LQrYA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E0A3804024;
+        Sat, 14 Nov 2020 21:06:13 +0000 (UTC)
+Received: from krava (unknown [10.40.192.25])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E1CAD6B8D4;
+        Sat, 14 Nov 2020 21:06:10 +0000 (UTC)
+Date:   Sat, 14 Nov 2020 22:06:09 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf test: Fix dwarf unwind for optimized builds.
+Message-ID: <20201114210609.GC903902@krava>
+References: <20201114000803.909530-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114000803.909530-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit bb9d812643d8 ("arch: remove tile port") removed the last user of
-this cruft two years ago...
+On Fri, Nov 13, 2020 at 04:08:03PM -0800, Ian Rogers wrote:
+> To ensure the stack frames are on the stack tail calls optimizations
+> need to be inhibited. If your compiler supports an attribute use it,
+> otherwise use an asm volatile barrier.
+> 
+> The barrier fix was suggested here:
+> https://lore.kernel.org/lkml/20201028081123.GT2628@hirez.programming.kicks-ass.net/
+> 
+> Fixes: 9ae1e990f1ab ("perf tools: Remove broken __no_tail_call
+>        attribute")
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/irq.h  |   15 ---------------
- kernel/irq/Kconfig   |    5 -----
- kernel/irq/irqdesc.c |   51 ---------------------------------------------------
- 3 files changed, 71 deletions(-)
+missing SOB
 
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -954,21 +954,6 @@ static inline void irq_free_desc(unsigne
- 	irq_free_descs(irq, 1);
- }
- 
--#ifdef CONFIG_GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
--unsigned int irq_alloc_hwirqs(int cnt, int node);
--static inline unsigned int irq_alloc_hwirq(int node)
--{
--	return irq_alloc_hwirqs(1, node);
--}
--void irq_free_hwirqs(unsigned int from, int cnt);
--static inline void irq_free_hwirq(unsigned int irq)
--{
--	return irq_free_hwirqs(irq, 1);
--}
--int arch_setup_hwirq(unsigned int irq, int node);
--void arch_teardown_hwirq(unsigned int irq);
--#endif
--
- #ifdef CONFIG_GENERIC_IRQ_LEGACY
- void irq_init_desc(unsigned int irq);
- #endif
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -26,11 +26,6 @@ config GENERIC_IRQ_SHOW_LEVEL
- config GENERIC_IRQ_EFFECTIVE_AFF_MASK
-        bool
- 
--# Facility to allocate a hardware interrupt. This is legacy support
--# and should not be used in new code. Use irq domains instead.
--config GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
--       bool
--
- # Support for delayed migration from interrupt context
- config GENERIC_PENDING_IRQ
- 	bool
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -810,57 +810,6 @@ int __ref
- }
- EXPORT_SYMBOL_GPL(__irq_alloc_descs);
- 
--#ifdef CONFIG_GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
--/**
-- * irq_alloc_hwirqs - Allocate an irq descriptor and initialize the hardware
-- * @cnt:	number of interrupts to allocate
-- * @node:	node on which to allocate
-- *
-- * Returns an interrupt number > 0 or 0, if the allocation fails.
-- */
--unsigned int irq_alloc_hwirqs(int cnt, int node)
--{
--	int i, irq = __irq_alloc_descs(-1, 0, cnt, node, NULL, NULL);
--
--	if (irq < 0)
--		return 0;
--
--	for (i = irq; cnt > 0; i++, cnt--) {
--		if (arch_setup_hwirq(i, node))
--			goto err;
--		irq_clear_status_flags(i, _IRQ_NOREQUEST);
--	}
--	return irq;
--
--err:
--	for (i--; i >= irq; i--) {
--		irq_set_status_flags(i, _IRQ_NOREQUEST | _IRQ_NOPROBE);
--		arch_teardown_hwirq(i);
--	}
--	irq_free_descs(irq, cnt);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(irq_alloc_hwirqs);
--
--/**
-- * irq_free_hwirqs - Free irq descriptor and cleanup the hardware
-- * @from:	Free from irq number
-- * @cnt:	number of interrupts to free
-- *
-- */
--void irq_free_hwirqs(unsigned int from, int cnt)
--{
--	int i, j;
--
--	for (i = from, j = cnt; j > 0; i++, j--) {
--		irq_set_status_flags(i, _IRQ_NOREQUEST | _IRQ_NOPROBE);
--		arch_teardown_hwirq(i);
--	}
--	irq_free_descs(from, cnt);
--}
--EXPORT_SYMBOL_GPL(irq_free_hwirqs);
--#endif
--
- /**
-  * irq_get_next_irq - get next allocated irq number
-  * @offset:	where to start the search
+LGTM and test is passing for me ;-)
+
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+
+jirka
+
+> ---
+>  tools/perf/tests/dwarf-unwind.c | 39 +++++++++++++++++++++++++++------
+>  1 file changed, 32 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
+> index 83638097c3bc..c8ce86bceea8 100644
+> --- a/tools/perf/tests/dwarf-unwind.c
+> +++ b/tools/perf/tests/dwarf-unwind.c
+> @@ -24,6 +24,23 @@
+>  /* For bsearch. We try to unwind functions in shared object. */
+>  #include <stdlib.h>
+>  
+> +/*
+> + * The test will assert frames are on the stack but tail call optimizations lose
+> + * the frame of the caller. Clang can disable this optimization on a called
+> + * function but GCC currently (11/2020) lacks this attribute. The barrier is
+> + * used to inhibit tail calls in these cases.
+> + */
+> +#ifdef __has_attribute
+> +#if __has_attribute(disable_tail_calls)
+> +#define NO_TAIL_CALL_ATTRIBUTE __attribute__((disable_tail_calls))
+> +#define NO_TAIL_CALL_BARRIER
+> +#endif
+> +#endif
+> +#ifndef NO_TAIL_CALL_ATTRIBUTE
+> +#define NO_TAIL_CALL_ATTRIBUTE
+> +#define NO_TAIL_CALL_BARRIER __asm__ __volatile__("" : : : "memory");
+> +#endif
+> +
+>  static int mmap_handler(struct perf_tool *tool __maybe_unused,
+>  			union perf_event *event,
+>  			struct perf_sample *sample,
+> @@ -95,7 +112,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
+>  	return strcmp((const char *) symbol, funcs[idx]);
+>  }
+>  
+> -noinline int test_dwarf_unwind__thread(struct thread *thread)
+> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__thread(struct thread *thread)
+>  {
+>  	struct perf_sample sample;
+>  	unsigned long cnt = 0;
+> @@ -126,7 +143,7 @@ noinline int test_dwarf_unwind__thread(struct thread *thread)
+>  
+>  static int global_unwind_retval = -INT_MAX;
+>  
+> -noinline int test_dwarf_unwind__compare(void *p1, void *p2)
+> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__compare(void *p1, void *p2)
+>  {
+>  	/* Any possible value should be 'thread' */
+>  	struct thread *thread = *(struct thread **)p1;
+> @@ -145,7 +162,7 @@ noinline int test_dwarf_unwind__compare(void *p1, void *p2)
+>  	return p1 - p2;
+>  }
+>  
+> -noinline int test_dwarf_unwind__krava_3(struct thread *thread)
+> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_3(struct thread *thread)
+>  {
+>  	struct thread *array[2] = {thread, thread};
+>  	void *fp = &bsearch;
+> @@ -164,14 +181,22 @@ noinline int test_dwarf_unwind__krava_3(struct thread *thread)
+>  	return global_unwind_retval;
+>  }
+>  
+> -noinline int test_dwarf_unwind__krava_2(struct thread *thread)
+> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_2(struct thread *thread)
+>  {
+> -	return test_dwarf_unwind__krava_3(thread);
+> +	int ret;
+> +
+> +	ret =  test_dwarf_unwind__krava_3(thread);
+> +	NO_TAIL_CALL_BARRIER;
+> +	return ret;
+>  }
+>  
+> -noinline int test_dwarf_unwind__krava_1(struct thread *thread)
+> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_1(struct thread *thread)
+>  {
+> -	return test_dwarf_unwind__krava_2(thread);
+> +	int ret;
+> +
+> +	ret =  test_dwarf_unwind__krava_2(thread);
+> +	NO_TAIL_CALL_BARRIER;
+> +	return ret;
+>  }
+>  
+>  int test__dwarf_unwind(struct test *test __maybe_unused, int subtest __maybe_unused)
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+
