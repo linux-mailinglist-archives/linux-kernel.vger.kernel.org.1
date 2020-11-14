@@ -2,216 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120DF2B2A60
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C732B2A52
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgKNBQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 20:16:17 -0500
-Received: from wforward1-smtp.messagingengine.com ([64.147.123.30]:60307 "EHLO
-        wforward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgKNBQQ (ORCPT
+        id S1726301AbgKNBJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 20:09:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgKNBJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 20:16:16 -0500
-X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Fri, 13 Nov 2020 20:16:16 EST
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailforward.west.internal (Postfix) with ESMTP id 9FFC9F86;
-        Fri, 13 Nov 2020 20:09:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 13 Nov 2020 20:09:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=Y41m9SOkbuzfVtRo7ChuSg0M++MjP3b9rJdYUbpZ5
-        io=; b=XaO6EhDEQ17kwxCAxwC28phYHP604Mixwe9wVGjehb9izYOzk4uYXJmAB
-        xBXOrrSmesjiAyxPHfUwX57z0LqCbmEAUNsqzu9plp74yopAKEX+6a432LmIzJzW
-        AqaBRuKEtzTPmPetN4kiC0agKfafCu2dyiOPxsWvLKiLDf8JOAWlcLgPvFRuqkXL
-        Uj3f0foQevb+801JfKiKvFDqTrhndqPx8pTCck7Iac6BVcLSqS0u6geJKQLZNpTl
-        ekf99sP017VfoaRMAmeSpqct/FXY625/svr5krw/7LuBV2SkEEsRuq3KnbO4nPOx
-        rc06zA757Q6iavnFfAflw5OM2bLEQ==
-X-ME-Sender: <xms:LC6vX_Ixi57RYg39AcxmOuoyXM-NP5M1zSY8c76SWdeUq8dVgQDmhQ>
-    <xme:LC6vXzLMMb8e1PIYGKw6CZqR2m1RFBq6tNMW-rOsQqVjPUi_kv_LKj6nIEli8eAyR
-    2qclhwnHmfpTDv5tw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddviedgfedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffoffkjghfgggtgfesthekmhdtredtjeenucfhrhhomhepfdgkihcu
-    jggrnhdfuceoiihihiesnhhvihguihgrrdgtohhmqeenucggtffrrghtthgvrhhnpeeigf
-    eutdegjefgleejheeugeffheegfffggedthfeifeegjeegkeffiefgueethfenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecukfhppeejhedrieejrdelrddutdefnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihihiesnhhvihgu
-    ihgrrdgtohhm
-X-ME-Proxy: <xmx:LC6vX3s1Ibeq3c5C5u-qFDg0DAO26dOH1KMElQ2tCCUJx95-m1VtQQ>
-    <xmx:LC6vX4azdwsErf3tYykGXfMD6NNmrfKHjZGhuKsAgnrBkAUAnefCNQ>
-    <xmx:LC6vX2aYDV2iOMDQDUEpAx2JDxTv5Pmj9P3pF07oT41zk4wJK75QTg>
-    <xmx:LS6vX4CmiiskaYCVebm2XtrH9wznQqc-4wzPrb5lU3p5DA0mt5hardhdU7rzcYcG>
-Received: from [10.2.162.52] (c-75-67-9-103.hsd1.ma.comcast.net [75.67.9.103])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B354E328005E;
-        Fri, 13 Nov 2020 20:08:59 -0500 (EST)
-From:   "Zi Yan" <ziy@nvidia.com>
-To:     "Roman Gushchin" <guro@fb.com>,
-        "Matthew Wilcox" <willy@infradead.org>
-Cc:     linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        "Yang Shi" <shy828301@gmail.com>,
-        "Michal Hocko" <mhocko@kernel.org>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        "Ralph Campbell" <rcampbell@nvidia.com>,
-        "David Nellans" <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Date:   Fri, 13 Nov 2020 20:08:58 -0500
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <F55878E8-22B1-443E-9CC8-E97B3DAA7EA4@nvidia.com>
-In-Reply-To: <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-4-zi.yan@sent.com>
- <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
+        Fri, 13 Nov 2020 20:09:51 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C171CC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:09:49 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b6so12200596wrt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+6uJPHVHZjnBVdYWG8pwd50i/TCRQ3PDiM6P81LC9MM=;
+        b=b+5IzEVN7OejNiE+T/N86sZGs8yRU5yd0TTcbfR8EjeaFJuUrNJORujGZE+btEBN51
+         LvI7gFJtqeQ+kiDR76okbOA4a0IrezJxY+sUFgOTXZCU3ccVJGuw3FM3JUkm6FvxqEXs
+         BO9jvTrp4OOvXi5icvmcWbfr9Lx1TgGb/Cve1HvT2MFGnFDg5nIS0Afd1M6SahTPyg2w
+         DgChod3vM3xBd/lhUWXP5KeWoCggDIJxIf4WurxOaQ1gSaPkaC0BYDQLqL2dpuC5Vvdi
+         Pu33gRB6maWbKqiHg1dKp3vkjKQGWRb+mtDdBJpPHR0sdwPIT5rPltZO6YhZt3IkQSiR
+         TIFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+6uJPHVHZjnBVdYWG8pwd50i/TCRQ3PDiM6P81LC9MM=;
+        b=LIowvIxJvDQQBoeRap15bcj3Cj2EfINNL2G5omL8bFOS/bqzNIzZ2/TdZj45Tf+MZk
+         as2ZskWaWFBf7AnqE/zo8+D6Hp3n5lzoirb6TyYvMJVdgWgwOcVJ433PMIslEqVj/Hhg
+         whZogrXm/y7Zb5/aCdwaNzYE64Lq1ykb44HjQjXJOV8M6pKipgNiJBaxVPWTB5oAxm7t
+         zKacZpUWGNwtrVslBx97Q1KFHu1C0BGdS/SiXiph8XlvUspJrNSgyIf9OhFDzpfBT3F1
+         Ulh0/SuJPXzBLQtyJzxhV6HY+js6Z4+BHH/4BIxEVLlkNHaEcxX5NCCYyFheWmddPeWy
+         vcMw==
+X-Gm-Message-State: AOAM533XRoNBjBCvAnyD9nn4DfvF3TmFQsh2W3hawbT/6VdY6CaM1vJ4
+        1XU8nJ1lcRb2dh7Flo4b084BWQZ9Z2MZDapfPQR0y22g1LLFxi2Y
+X-Google-Smtp-Source: ABdhPJyDit7AsJHRIbjweR6pAqFyWC08iFm6LoUnZQFrvW1I7c0TBuVVH7MLkeKW1h4KCvmp8DYfa57x34fuVXOFbt8=
+X-Received: by 2002:a5d:4a50:: with SMTP id v16mr6801270wrs.106.1605316188293;
+ Fri, 13 Nov 2020 17:09:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+ <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com> <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+In-Reply-To: <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 13 Nov 2020 17:09:37 -0800
+Message-ID: <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13 Nov 2020, at 19:15, Roman Gushchin wrote:
-
-> On Wed, Nov 11, 2020 at 03:40:05PM -0500, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> It adds a new_order parameter to set new page order in page owner.
->> It prepares for upcoming changes to support split huge page to any 
->> lower
->> order.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> ---
->>  include/linux/page_owner.h | 7 ++++---
->>  mm/huge_memory.c           | 2 +-
->>  mm/page_alloc.c            | 2 +-
->>  mm/page_owner.c            | 6 +++---
->>  4 files changed, 9 insertions(+), 8 deletions(-)
->>
->> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
->> index 3468794f83d2..215cbb159568 100644
->> --- a/include/linux/page_owner.h
->> +++ b/include/linux/page_owner.h
->> @@ -31,10 +31,11 @@ static inline void set_page_owner(struct page 
->> *page,
->>  		__set_page_owner(page, order, gfp_mask);
->>  }
->>
->> -static inline void split_page_owner(struct page *page, unsigned int 
->> nr)
->> +static inline void split_page_owner(struct page *page, unsigned int 
->> nr,
->> +			unsigned int new_order)
->>  {
->>  	if (static_branch_unlikely(&page_owner_inited))
->> -		__split_page_owner(page, nr);
->> +		__split_page_owner(page, nr, new_order);
->>  }
->>  static inline void copy_page_owner(struct page *oldpage, struct page 
->> *newpage)
->>  {
->> @@ -60,7 +61,7 @@ static inline void set_page_owner(struct page 
->> *page,
->>  {
->>  }
->>  static inline void split_page_owner(struct page *page,
->> -			unsigned int order)
->> +			unsigned int nr, unsigned int new_order)
+On Fri, Nov 13, 2020 at 5:00 PM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> With the addition of the new argument it's a bit hard to understand
-> what the function is supposed to do. It seems like nr == 
-> page_order(page),
-> is it right? Maybe we can pass old_order and new_order? Or just the 
-> page
-> and the new order?
+> On Fri, 13 Nov 2020 16:06:25 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > On Fri, Nov 13, 2020 at 3:55 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > >
+> > > On Fri, 13 Nov 2020 09:34:48 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > > When a process is being killed it might be in an uninterruptible sleep
+> > > > which leads to an unpredictable delay in its memory reclaim. In low memory
+> > > > situations, when it's important to free up memory quickly, such delay is
+> > > > problematic. Kernel solves this problem with oom-reaper thread which
+> > > > performs memory reclaim even when the victim process is not runnable.
+> > > > Userspace currently lacks such mechanisms and the need and potential
+> > > > solutions were discussed before (see links below).
+> > > > This patch provides a mechanism to perform memory reclaim in the context
+> > > > of the process that sends SIGKILL signal. New SYNC_REAP_MM flag for
+> > > > pidfd_send_signal syscall can be used only when sending SIGKILL signal
+> > > > and will lead to the caller synchronously reclaiming the memory that
+> > > > belongs to the victim and can be easily reclaimed.
+> > >
+> > > hm.
+> > >
+> > > Seems to me that the ability to reap another process's memory is a
+> > > generally useful one, and that it should not be tied to delivering a
+> > > signal in this fashion.
+> > >
+> > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
+> > > few changes and tweaks, but can't that be used to solve this problem?
+> >
+> > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
+> > one of the options recently discussed in
+> > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > . The thread describes some of the issues with that approach but if we
+> > limit it to processes with pending SIGKILL only then I think that
+> > would be doable.
+>
+> Why would it be necessary to read /proc/pid/maps?  I'd have thought
+> that a starting effort would be
+>
+>         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
+>
+> (after translation into process_madvise() speak).  Which is equivalent
+> to the proposed process_madvise(MADV_DONTNEED_MM)?
 
-Yeah, it is a bit confusing. Please see more below.
+Yep, this is very similar to option #3 in
+https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+and I actually have a tested prototype for that. If that's the
+preferred method then I can post it quite quickly.
 
 >
->>  {
->>  }
->>  static inline void copy_page_owner(struct page *oldpage, struct page 
->> *newpage)
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index f599f5b9bf7f..8b7d771ee962 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -2459,7 +2459,7 @@ static void __split_huge_page(struct page 
->> *page, struct list_head *list,
->>
->>  	ClearPageCompound(head);
->>
->> -	split_page_owner(head, nr);
->> +	split_page_owner(head, nr, 1);
->>
->>  	/* See comment in __split_huge_page_tail() */
->>  	if (PageAnon(head)) {
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index d77220615fd5..a9eead0e091a 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -3284,7 +3284,7 @@ void split_page(struct page *page, unsigned int 
->> order)
->>
->>  	for (i = 1; i < (1 << order); i++)
->>  		set_page_refcounted(page + i);
->> -	split_page_owner(page, 1 << order);
->> +	split_page_owner(page, 1 << order, 1);
->>  }
->>  EXPORT_SYMBOL_GPL(split_page);
->>
->> diff --git a/mm/page_owner.c b/mm/page_owner.c
->> index b735a8eafcdb..2b7f7e9056dc 100644
->> --- a/mm/page_owner.c
->> +++ b/mm/page_owner.c
->> @@ -204,7 +204,7 @@ void __set_page_owner_migrate_reason(struct page 
->> *page, int reason)
->>  	page_owner->last_migrate_reason = reason;
->>  }
->>
->> -void __split_page_owner(struct page *page, unsigned int nr)
->> +void __split_page_owner(struct page *page, unsigned int nr, unsigned 
->> int new_order)
->>  {
->>  	int i;
->>  	struct page_ext *page_ext = lookup_page_ext(page);
->> @@ -213,9 +213,9 @@ void __split_page_owner(struct page *page, 
->> unsigned int nr)
->>  	if (unlikely(!page_ext))
->>  		return;
->>
->> -	for (i = 0; i < nr; i++) {
->> +	for (i = 0; i < nr; i += (1 << new_order)) {
->>  		page_owner = get_page_owner(page_ext);
->> -		page_owner->order = 0;
->> +		page_owner->order = new_order;
->>  		page_ext = page_ext_next(page_ext);
->
-> I believe there cannot be any leftovers because nr is always a power 
-> of 2.
-> Is it true? Converting nr argument to order (if it's possible) will 
-> make it obvious.
-
-Right. nr = thp_nr_pages(head), which is a power of 2. There would not 
-be any
-leftover.
-
-Matthew recently converted split_page_owner to take nr instead of 
-order.[1] But I am not
-sure why, since it seems to me that two call sites (__split_huge_page in
-mm/huge_memory.c and split_page in mm/page_alloc.c) can pass the order 
-information.
-
-
-[1]https://lore.kernel.org/linux-mm/20200908195539.25896-4-willy@infradead.org/
-
-
-—
-Best Regards,
-Yan Zi
+> There may be things which trip this up, such as mlocked regions or
+> whatever, but we could add another madvise `advice' mode to handle
+> this?
