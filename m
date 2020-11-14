@@ -2,372 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79232B2A28
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6AD2B2A2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgKNAxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:53:06 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40928 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725866AbgKNAxF (ORCPT
+        id S1726210AbgKNAy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKNAy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:53:05 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AE0pjDk007982;
-        Fri, 13 Nov 2020 16:52:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Ky1+bqTc5fCMh4rnMC2UQ8OlnhFItalNO6VL/LO/9bY=;
- b=DUFpOMc8sk3PxjBkNwJ6lCCSzy2vXWhf20+/wd97LeUsUzVxGdpPxg5TJtLowAgdP7Cj
- DYHiUX3Why+GpWgCG8v7d8+SzDDOS4I/4Ce+7uR9ncK7/wilC2KFq3AoV4BssHBngad4
- 0lkkKWvPnuEAYB5PZqxvQW3LaYS3aZLlKaY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34s7dt1a15-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 13 Nov 2020 16:52:56 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 13 Nov 2020 16:52:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nnGRWAJIvPT7yubTrc+i1SIbm2c7eFMbj5KftM00YZBb3D3TlA65kkmkbs/quKuSu3lCR/7OmA35FddhE35AQgm8Wugg76wgFDGoXog2X7TI1+IIXLOxUkscTiVA19ybVwqcguePvrYcC4vp4P5L6dwXXqkRBWHkOQfL/z+phv/8KjJ10y8y8CTUd3Q4+hsQtZZheTlv8yY6Ip/lz+ScHTEmh+JzJxfXAf130z1PzkbQSFZDvpsLELoj8tuw9qtBE3CSNUu65S007cIco07Xyz1DKT6zt7T877yQ3KyCNHg2mGTAQGlnjXcMFoGXM9UirOlL4xg8qffxRsvYrUqc3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ky1+bqTc5fCMh4rnMC2UQ8OlnhFItalNO6VL/LO/9bY=;
- b=VAHDQqmxtKhtolNK2YYYG+J3yZjH4lBTmplXjRddypLPmy8bewZgK0FWFaaesc2ASVwOVsLEpDM2e5zVEqPTKf/09ibPDLSrPUIoaudKabdnfxnQCUSnduoEmwtGKYTDD2RajuJCq7FnhrQlFRVY2akv3rdHEMq1S2YO/zSFaBwAULZc3/ioH0zgBzt9ixDL9TuVb1dXxYA2QYAavNbEMMGSMxEt1GeQ8qqjSzI4YDSWVMW0/Szttp+hyuFRL21zZe+NnQknf9PZtHHFJjAc45A7/dbkeAiAPuD+iGBPS88wRBju1jsgo7zDqC9wflmj5YUtm/LJxedzzQ86z2WPsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ky1+bqTc5fCMh4rnMC2UQ8OlnhFItalNO6VL/LO/9bY=;
- b=JVpsfHeIU1nTNW2qJ32omEz3NRfDNbxEjI/q+bHMuLx9+daJr4Fh+pVH5BXxTXKnEJueYtKN0EflF8szErp/Hp78XvJNpmdYGADaXpiN8/wzVZF4bsk3eFGz/dgLJ68Nl3UM2T5FmzWGEap2X1vDSlcP9bZ1rAFgyRaNkXK0HoA=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3522.namprd15.prod.outlook.com (2603:10b6:a03:1b5::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Sat, 14 Nov
- 2020 00:52:54 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3564.025; Sat, 14 Nov 2020
- 00:52:54 +0000
-Date:   Fri, 13 Nov 2020 16:52:49 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Zi Yan <ziy@nvidia.com>
-CC:     <linux-mm@kvack.org>, Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 4/6] mm: thp: add support for split huge page to any
- lower order pages.
-Message-ID: <20201114005249.GC3047204@carbon.dhcp.thefacebook.com>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-5-zi.yan@sent.com>
+        Fri, 13 Nov 2020 19:54:58 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1105CC0613D1;
+        Fri, 13 Nov 2020 16:54:58 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o9so16399611ejg.1;
+        Fri, 13 Nov 2020 16:54:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zYDEJkVFc0RWkkgZhCNMA5qq/JVYdMxhqD9EnHngA7w=;
+        b=YtBALwGbe8cVc5s69SPiRdd5CNohEOuq87jBI7WZq7ungyXsyqMuG4KraGwFAvRU4T
+         ABPdKineUW1Sq8PTzQm/l1ItZx2Njdjhm8Z3SM/jfVfcKmgkMs9iA54c/6IR5mzZR5Y5
+         kI5F6Bj8Fo0aPp+GeTsdWU/0Abv9ogkvbXpI+dqtbxi56PAsu7c1Gn9uICKOHZbXNjuM
+         W2KTQuv2F+KnwjIVkGtvnj906tU1Uc0TDUTeab2Ykj9vwM94rWVERzRorc8w3oLk1o8K
+         u5e4eZehd8K2/90L+QtQBgQ8sJZyzraOGE2UA/H47XhvIySp6ocksKORIDEVBJkjftAC
+         w1QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zYDEJkVFc0RWkkgZhCNMA5qq/JVYdMxhqD9EnHngA7w=;
+        b=B+/RsQ5uBxZ6bl5U5x+TQRsj3TYyajQNAz0Ij6mIyKjL9bYqyr6LLb6n8M8gAfBx3Q
+         4gJk61X57/Jn1X/fV9QsrQluV5Uorw6mkb6kJKR/FoN4QJZaODBwxT4e2HnhqjuMJueL
+         xTtoGh6d43pXO8Wor5wrlBJZtgrMDehHxKRikEid6KbK9TPDfigEjkehRldpxziHj+9L
+         yKeT4NOkzJYLWTcC8MdPM0FwmDJSXYDESd1hO++dBs3ZLOT7LRR2FUYfaXIAzSXOFNZg
+         wj+UbbjwGPPhX9qSYIpVqwrbCA1GO9ODfdg17CMgT5bkFkRunV8jMCiomdXqLOUFynR9
+         aZmA==
+X-Gm-Message-State: AOAM532DBE9IDdBRRgr6t3TsRP6V66BiIw9t8EEcKfoKZ9OKS4dE5KvE
+        plXVoKxWl6A/DHMtdDKJ/5E=
+X-Google-Smtp-Source: ABdhPJw7+/Ijax+bGZqknn2xBFKkyP6f8pzwfkypevpU247mRy/YSDCxLomXDtvLkc8K4wxPfT5/kA==
+X-Received: by 2002:a17:906:7247:: with SMTP id n7mr4759822ejk.174.1605315296651;
+        Fri, 13 Nov 2020 16:54:56 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id f16sm5297552edc.44.2020.11.13.16.54.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 16:54:55 -0800 (PST)
+Date:   Sat, 14 Nov 2020 02:54:54 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 09/11] net: dsa: microchip: ksz9477: add
+ hardware time stamping support
+Message-ID: <20201114005454.jdmt3ixhwseamcv6@skbuf>
+References: <20201112153537.22383-1-ceggers@arri.de>
+ <20201112153537.22383-10-ceggers@arri.de>
+ <20201113024020.ixzrpjxjfwme3wur@skbuf>
+ <4328015.hLoEoa8eMr@n95hx1g2>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111204008.21332-5-zi.yan@sent.com>
-X-Originating-IP: [2620:10d:c090:400::5:a33]
-X-ClientProxiedBy: MW2PR16CA0018.namprd16.prod.outlook.com (2603:10b6:907::31)
- To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a33) by MW2PR16CA0018.namprd16.prod.outlook.com (2603:10b6:907::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25 via Frontend Transport; Sat, 14 Nov 2020 00:52:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd6e7738-b6e4-4e9f-7e42-08d888379ecd
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3522:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB35228366629B1C77B0623FE7BEE50@BY5PR15MB3522.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HmJl0i3cRRuhgWQgsz0wQ+OheKPoqj7GhF0JF3xxtsPBXH29QjRRtvgl+E73VWgJG1tyHrtKOJpusBNUPgMmWkjrSdlBFzEvxKtaO3TsakotJlOqpz0pcB9o10tF3fAwvFHatJVEyCTn/H9OS8A/3bf57U6eocYmJ6aIhc9CI62cSAUu4mo7++4ksIx3jrJgNJvzo/a/pX2/eP7k/fDMSIajxnDgf4/tJMv0MbRz+eZ3/Yv8uAlFkNI27Ua0EEhcXmCZTuK2y4eJFnQQg9qFr1FM6w3eK7Z554OesFFkbEeOWEB7TGJFSBsEWdOATXwSuCrFob+RGzqPdZD5+1skGvk+04PvT5fbv/gHPl43+ueRSH8hhivm/yLXmObWGWMt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(39860400002)(396003)(366004)(478600001)(4326008)(55016002)(6666004)(1076003)(86362001)(9686003)(7696005)(66556008)(52116002)(5660300002)(66476007)(6916009)(66946007)(83380400001)(2906002)(8676002)(33656002)(186003)(8936002)(6506007)(54906003)(7416002)(16526019)(316002)(14583001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Ur3CpYcFAlKcf66yYLvZaipT2deGnDkrrc5tIqRpOVY6GrgLqBWkJyLqiJ5VsDvpeOzrjbETFijuT28ADFu4oquxNHLzyVHm8NxGaT9k4Hidl99ao+3XgHVC4KHJNK4dnLMqcGQ5AJyPSNEPyTq6bAFesWnmFx0xtmhhsxfC5x5FCJY3uMLtw4DxahGC4JkFiUIDzyQsHqEuRbcYbWHQ4PVIxfVcgu39UUrl1vJCkiEHWXEOLjlqq38wZ29yq16n/l1FVP1mPsORQjMI/9+3/uhJ4k1YPrWyReVTI8dNiJiABw2F+IBZUmiSQVV1Cj3pXbkbfJtYyPQEFpCpjCbmMoJrxY6wtwkoU1HM0/vrHh3Uvx8JNGT63L5TZydoprtoJUC4Ar+Y3S/jxE1ontwW4yDAEQwlt7xMUpjAB4TAWmlf6Y2DTX0GyxNLKlsjmt5Nt/jq0UhrQjlKSM30LSLZ8xSbJsaGayukNauZ6+HaiB74bkoSke66S23t1b3S6dX+c/7AThk60VoMIpBIMbFWBMsd4qPZ9XcE3jFx4U2yFNarF1AWkwSOLbFc+LqTgcArRyHBw1ntC2K2vBAGmeNDS/Gxdrxr37dbgOKFytOQHDKXMl23rLduVbgOEafv3+NALsU2MsP3g6yUV2cCU55NgU7FiXtQtzJU2chGSdKuEi4=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd6e7738-b6e4-4e9f-7e42-08d888379ecd
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2020 00:52:54.4849
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /jXtdfJ/3YPGlO9FOKnBRB5p5zRDVkGmAk4uLIl8BEv1l4WthKpiq1iS9QKfQ9y+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3522
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_21:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 phishscore=0 suspectscore=1 spamscore=0 clxscore=1015
- mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011140002
-X-FB-Internal: deliver
+In-Reply-To: <4328015.hLoEoa8eMr@n95hx1g2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 03:40:06PM -0500, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> To split a THP to any lower order pages, we need to reform THPs on
-> subpages at given order and add page refcount based on the new page
-> order. Also we need to reinitialize page_deferred_list after removing
-> the page from the split_queue, otherwise a subsequent split will see
-> list corruption when checking the page_deferred_list again.
-> 
-> It has many uses, like minimizing the number of pages after
-> truncating a pagecache THP. For anonymous THPs, we can only split them
-> to order-0 like before until we add support for any size anonymous THPs.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  include/linux/huge_mm.h |  8 +++++
->  mm/huge_memory.c        | 78 +++++++++++++++++++++++++++++------------
->  mm/swap.c               |  1 -
->  3 files changed, 63 insertions(+), 24 deletions(-)
-> 
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index 60a907a19f7d..9819cd9b4619 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -189,6 +189,8 @@ bool is_transparent_hugepage(struct page *page);
->  
->  bool can_split_huge_page(struct page *page, int *pextra_pins);
->  int split_huge_page_to_list(struct page *page, struct list_head *list);
-> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
-> +		unsigned int new_order);
->  static inline int split_huge_page(struct page *page)
->  {
->  	return split_huge_page_to_list(page, NULL);
-> @@ -396,6 +398,12 @@ split_huge_page_to_list(struct page *page, struct list_head *list)
->  {
->  	return 0;
->  }
-> +static inline int
-> +split_huge_page_to_order_to_list(struct page *page, struct list_head *list,
-> +		unsigned int new_order)
+On Fri, Nov 13, 2020 at 07:57:32PM +0100, Christian Eggers wrote:
+> On Friday, 13 November 2020, 03:40:20 CET, Vladimir Oltean wrote:
+> > On Thu, Nov 12, 2020 at 04:35:35PM +0100, Christian Eggers wrote:
+> [...]
+> > > @@ -103,6 +108,10 @@ static int ksz9477_ptp_adjtime(struct ptp_clock_info
+> > > *ptp, s64 delta)>
+> > >     if (ret)
+> > >
+> > >             goto error_return;
+> > >
+> > > +   spin_lock_irqsave(&dev->ptp_clock_lock, flags);
+> >
+> > I believe that spin_lock_irqsave is unnecessary, since there is no code
+> > that runs in hardirq context.
+> I'll check this again. Originally I had only a mutex for everything, but later
+> it turned out that for ptp_clock_time a spinlock is required. Maybe this has
+> changed since starting of my work on the driver.
 
-It was
-int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
-		unsigned int new_order);
-above.
+Yes, it's called from the networking softirq.
+The typical assumption is that the networking data path can run in
+both hardirq and softirq context (or, well, in process context if it
+gets picked up by ksoftirqd), so one would think that _irqsave would be
+justified. But the hardirq stuff is only used by netpoll, for
+netconsole. So you would never hit that condition for PTP timestamping.
 
+> >
+> > > +   dev->ptp_clock_time = timespec64_add(dev->ptp_clock_time, delta64);
+> > > +   spin_unlock_irqrestore(&dev->ptp_clock_lock, flags);
+> > > +
+>
+> [...]
+>
+> > Could we make this line shorter?
+> ...
+> > Additionally, you exceed the 80 characters limit.
+> ...
+> > Also, you exceeded 80 characters by quite a bit.
+> ...
+> > In networking we still have the 80-characters rule, please follow it.
+> Can this be added to the netdev-FAQ (just below the section about
+> "comment style convention")?
+>
+> > > +static void ksz9477_ptp_ports_deinit(struct ksz_device *dev)
+> > > +{
+> > > +   int port;
+> > > +
+> > > +   for (port = dev->port_cnt - 1; port >= 0; --port)
+> >
+> > Nice, but also probably not worth the effort?
+> What do you mean. Shall I used forward direction?
 
-> +{
-> +	return 0;
-> +}
->  static inline int split_huge_page(struct page *page)
->  {
->  	return 0;
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 8b7d771ee962..88f50da40c9b 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2327,11 +2327,14 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
->  static void unmap_page(struct page *page)
->  {
->  	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS |
-> -		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
-> +		TTU_RMAP_LOCKED;
->  	bool unmap_success;
->  
->  	VM_BUG_ON_PAGE(!PageHead(page), page);
->  
-> +	if (thp_order(page) >= HPAGE_PMD_ORDER)
-> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
-> +
->  	if (PageAnon(page))
->  		ttu_flags |= TTU_SPLIT_FREEZE;
->  
-> @@ -2339,21 +2342,22 @@ static void unmap_page(struct page *page)
->  	VM_BUG_ON_PAGE(!unmap_success, page);
->  }
->  
-> -static void remap_page(struct page *page, unsigned int nr)
-> +static void remap_page(struct page *page, unsigned int nr, unsigned int new_nr)
->  {
->  	int i;
-> -	if (PageTransHuge(page)) {
-> +	if (thp_nr_pages(page) == nr) {
->  		remove_migration_ptes(page, page, true);
->  	} else {
-> -		for (i = 0; i < nr; i++)
-> +		for (i = 0; i < nr; i += new_nr)
->  			remove_migration_ptes(page + i, page + i, true);
->  	}
->  }
->  
->  static void __split_huge_page_tail(struct page *head, int tail,
-> -		struct lruvec *lruvec, struct list_head *list)
-> +		struct lruvec *lruvec, struct list_head *list, unsigned int new_order)
->  {
->  	struct page *page_tail = head + tail;
-> +	unsigned long compound_head_flag = new_order ? (1L << PG_head) : 0;
->  
->  	VM_BUG_ON_PAGE(atomic_read(&page_tail->_mapcount) != -1, page_tail);
->  
-> @@ -2377,6 +2381,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
->  #ifdef CONFIG_64BIT
->  			 (1L << PG_arch_2) |
->  #endif
-> +			 compound_head_flag |
->  			 (1L << PG_dirty)));
->  
->  	/* ->mapping in first tail page is compound_mapcount */
-> @@ -2395,10 +2400,15 @@ static void __split_huge_page_tail(struct page *head, int tail,
->  	 * which needs correct compound_head().
->  	 */
->  	clear_compound_head(page_tail);
-> +	if (new_order) {
-> +		prep_compound_page(page_tail, new_order);
-> +		thp_prep(page_tail);
-> +	}
->  
->  	/* Finally unfreeze refcount. Additional reference from page cache. */
-> -	page_ref_unfreeze(page_tail, 1 + (!PageAnon(head) ||
-> -					  PageSwapCache(head)));
-> +	page_ref_unfreeze(page_tail, 1 + ((!PageAnon(head) ||
-> +					   PageSwapCache(head)) ?
-> +						thp_nr_pages(page_tail) : 0));
->  
->  	if (page_is_young(head))
->  		set_page_young(page_tail);
-> @@ -2416,7 +2426,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
->  }
->  
->  static void __split_huge_page(struct page *page, struct list_head *list,
-> -		pgoff_t end, unsigned long flags)
-> +		pgoff_t end, unsigned long flags, unsigned int new_order)
->  {
->  	struct page *head = compound_head(page);
->  	pg_data_t *pgdat = page_pgdat(head);
-> @@ -2424,12 +2434,13 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  	struct address_space *swap_cache = NULL;
->  	unsigned long offset = 0;
->  	unsigned int nr = thp_nr_pages(head);
-> +	unsigned int new_nr = 1 << new_order;
->  	int i;
->  
->  	lruvec = mem_cgroup_page_lruvec(head, pgdat);
->  
->  	/* complete memcg works before add pages to LRU */
-> -	mem_cgroup_split_huge_fixup(head, 1);
-> +	mem_cgroup_split_huge_fixup(head, new_nr);
->  
->  	if (PageAnon(head) && PageSwapCache(head)) {
->  		swp_entry_t entry = { .val = page_private(head) };
-> @@ -2439,14 +2450,14 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  		xa_lock(&swap_cache->i_pages);
->  	}
->  
-> -	for (i = nr - 1; i >= 1; i--) {
-> -		__split_huge_page_tail(head, i, lruvec, list);
-> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
-> +		__split_huge_page_tail(head, i, lruvec, list, new_order);
->  		/* Some pages can be beyond i_size: drop them from page cache */
->  		if (head[i].index >= end) {
->  			ClearPageDirty(head + i);
->  			__delete_from_page_cache(head + i, NULL);
->  			if (IS_ENABLED(CONFIG_SHMEM) && PageSwapBacked(head))
-> -				shmem_uncharge(head->mapping->host, 1);
-> +				shmem_uncharge(head->mapping->host, new_nr);
->  			put_page(head + i);
->  		} else if (!PageAnon(page)) {
->  			__xa_store(&head->mapping->i_pages, head[i].index,
-> @@ -2457,28 +2468,31 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  		}
->  	}
->  
-> -	ClearPageCompound(head);
-> +	if (!new_order)
-> +		ClearPageCompound(head);
-> +	else
-> +		set_compound_order(head, new_order);
->  
-> -	split_page_owner(head, nr, 1);
-> +	split_page_owner(head, nr, new_nr);
->  
->  	/* See comment in __split_huge_page_tail() */
->  	if (PageAnon(head)) {
->  		/* Additional pin to swap cache */
->  		if (PageSwapCache(head)) {
-> -			page_ref_add(head, 2);
-> +			page_ref_add(head, 1 + new_nr);
->  			xa_unlock(&swap_cache->i_pages);
->  		} else {
->  			page_ref_inc(head);
->  		}
->  	} else {
->  		/* Additional pin to page cache */
-> -		page_ref_add(head, 2);
-> +		page_ref_add(head, 1 + new_nr);
->  		xa_unlock(&head->mapping->i_pages);
->  	}
->  
->  	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
->  
-> -	remap_page(head, nr);
-> +	remap_page(head, nr, new_nr);
->  
->  	if (PageSwapCache(head)) {
->  		swp_entry_t entry = { .val = page_private(head) };
-> @@ -2486,7 +2500,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  		split_swap_cluster(entry);
->  	}
->  
-> -	for (i = 0; i < nr; i++) {
-> +	for (i = 0; i < nr; i += new_nr) {
->  		struct page *subpage = head + i;
->  		if (subpage == page)
->  			continue;
-> @@ -2620,21 +2634,39 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
->   * us.
->   */
->  int split_huge_page_to_list(struct page *page, struct list_head *list)
-> +{
-> +	return split_huge_page_to_list_to_order(page, list, 0);
-> +}
-> +
-> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
-> +				     unsigned int new_order)
->  {
->  	struct page *head = compound_head(page);
->  	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
->  	struct deferred_split *ds_queue = get_deferred_split_queue(head);
-> -	XA_STATE(xas, &head->mapping->i_pages, head->index);
-> +	/* reset xarray order to new order after split */
-> +	XA_STATE_ORDER(xas, &head->mapping->i_pages, head->index, new_order);
->  	struct anon_vma *anon_vma = NULL;
->  	struct address_space *mapping = NULL;
->  	int count, mapcount, extra_pins, ret;
->  	unsigned long flags;
->  	pgoff_t end;
->  
-> +	VM_BUG_ON(thp_order(head) <= new_order);
->  	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
->  	VM_BUG_ON_PAGE(!PageLocked(head), head);
->  	VM_BUG_ON_PAGE(!PageCompound(head), head);
->  
-> +	if (new_order == 1) {
-> +		WARN_ONCE(1, "Cannot split THP to order-1 (no order-1 THPs)");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (PageAnon(head) && new_order) {
-> +		WARN_ONCE(1, "Split anonymous THP to non-zero order not support");
-> +		return -EINVAL;
-> +	}
+Yes, that's what I meant.
 
-I'd convert those into VM_BUG_ON()'s. Unlikely they will be hit at arbitrary moments
-by random users.
+> > > +
+> > > +   /* Should already been tested in dsa_skb_tx_timestamp()? */
+> > > +   if (!(skb_shinfo(clone)->tx_flags & SKBTX_HW_TSTAMP))
+> > > +           return false;
+> >
+> > Yeah, should have...
+> > What do you think about this one though:
+> > https://lore.kernel.org/netdev/20201104015834.mcn2eoibxf6j3ksw@skbuf/
+> I am not an expert for performance stuff. But for me it looks obvious that
+> cheaper checks should be performed first. What about also moving checking
+> for ops->port_txtstamp above ptp_classify_raw()?
 
-Thanks!
+I am no expert either. Also, it looks like I'm not even keeping on top
+of things lately. I'll try to return to that investigation during this
+weekend.
+
+>
+> Is there any reason why this isn't already applied?
+
+Probably because nobody sent a patch for it?
+
+> > case in which you'll need an skb_queue and a process context
+> > to wait for the TX timestamp of the previous PTP message before calling
+> > dsa_enqueue_skb for the next PTP event message. There are already
+> > implementations of both models in DSA that you can look at.
+> In the past I got sometimes a "timeout waiting for hw timestamp" (or similar)
+> message from ptp4l. I am not sure whether this is still the case, but this may
+> explain this type of problems.
+
+Yeah, well, the default tx_timestamp_timeout value of 1 ms chosen by
+ptp4l is not going to be enough in general for DSA. If you schedule a
+workqueue for timestamping, that delay will only get worse, but luckily
+you can increase the timestamp timeout value and all should be fine.
+
+> > So good for you that you can use a function so simple for timestamp
+> > reconstruction.
+> You already told me that another hardware has much less budget than 4 seconds.
+
+sja1105 has 24 bits of partial timestamp (and 1 bit measures 8 ns). So
+it wraps around in 135 ms. You can imagine that periodically reading the
+PTP clock over SPI is not an option there :)
+
+> How is timestamp reconstruction done there? Is there any code which I should
+> reuse?
+
+No, I wasn't suggesting you reuse that logic, since it's very
+error-prone. If you can get away with reconstruction done on-the-fly,
+great. But just for reference:
+- In drivers/net/dsa/sja1105/, the actual transmission of the PTP
+  packets is done synchronously, from process context, and an interrupt
+  is not even used. See sja1105_ptp_txtstamp_skb and
+  sja1105_tstamp_reconstruct. Actually, more interesting would be the RX
+  timestamping case, since we have a worse problem there: the partial
+  PTP timestamp is obtained in softirq context, and we need process
+  context for the current PTP time. For that, see sja1105_port_rxtstamp
+  and sja1105_rxtstamp_work.
+- In drivers/net/dsa/ocelot/, the reconstruction is done in IRQ context,
+  since it is a memory-mapped switch and therefore, reading the PTP time
+  is "cheap". See ocelot_get_txtstamp and ocelot_get_hwtimestamp.
+The point is that both these drivers read the full PTP current time
+_after_ the partial timestamp was obtained. That's what gives you a
+solid guarantee that the "partial_timestamp > current_ptp_time & lower_bits"
+condition means "wraparound occurred" and not something else.
+
+> > > +static void ksz9477_rcv_timestamp(struct sk_buff *skb __maybe_unused, u8
+> > > *tag __maybe_unused, +                                struct net_device *dev __maybe_unused,
+> > > +                             unsigned int port __maybe_unused)
+> >
+> > Where did you see __maybe_unused being utilized in this way? And what's
+> > so "maybe" about it? They are absolutely unused, and the compiler should
+> > not complain. Please remove these variable attributes.
+> ok, __always_unused would fit.
+>
+> I added the attributes due to Documentation/process/4.Coding.rst:
+>
+> "Code submitted for review should, as a rule, not produce any compiler
+> warnings." [...] "Note that not all compiler warnings are enabled by default.  Build the
+> kernel with "make EXTRA_CFLAGS=-W" to get the full set."
+>
+> I assumed that reducing the number of warnings raised by "-W" should be reduced
+> as a long term goal. Is this wrong.
+
+Uhm, I don't know of any compiler flag that would cause warnings for
+unused arguments of a function. And the kernel uses this stub function
+scheme for so many things, that even if that flag existed, the chance of
+it getting enabled in the kernel's Makefile would be zero. It would
+flood everybody in useless warning messages.
+
+So please don't add __maybe_unused or __always_unused or whatever. Just
+do what everybody else does.
+
+> Side note: Documentation/kbuild/makefiles.rst declares usage of EXTRA_CFLAGS as
+> deprecated.
+
+Yeah, if you can build-test with "make W=1" and "make W=2" you should be
+safe, no need to overthink anything. Beware though, there's going to be
+a lot of output coming your way... There's also "make C=1" for sparse,
+if you want to be proactive and avoid later patches from the static
+analysis crew. But you'll need to use a source-built sparse binary
+there, the one packaged by typical distributions won't cut it, and will
+give up saying "error: too many
+errors".
