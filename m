@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BAD2B2D36
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4442B2D39
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgKNMx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:53:57 -0500
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:53891 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726307AbgKNMx4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:53:56 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id dv3tkXY6H6t6Hdv3wk3sk7; Sat, 14 Nov 2020 13:53:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1605358433; bh=T70DtHo2iBiGwHo0jUxq3RCSLEWiH4Ay/V26m4E2cto=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=FUm8vHzz4mp5UbTbGLVmoyNyxlRgN7a1khwdRD9ib9A4lSuj+sgzHWSS+9uLwhrjM
-         Cr2htUZ8F1EBL9yxf32cBrWWG4dkhn1SrPe9J3HzIorav6HvtFxPhWCDv8ZPY5bSjB
-         n4X7gpVAtmp4jscJ2MP9/kf4mg9qbZGq2TszLi6l8p17CtRfXIIckvXtM4HuM6WXSn
-         pGGwRoZNOzx4rr8eDSg6leREdsURJcUpLoa74kqkDBY8LfsLZumpI5RmnrD+GN7vEq
-         hx20bzJxp12xU4ax9kRYXSsk2w9pIzVMbmfPvswY72LUToImZDvK2rxcqUPQy9qBUG
-         65Dq5kdL6kL0Q==
-Subject: Re: [PATCH v2 3/9] media: Rename stateful codec control macros
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-References: <20201113215121.505173-1-ezequiel@collabora.com>
- <20201113215121.505173-4-ezequiel@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <5b563695-bb40-8309-042b-10c6910d773c@xs4all.nl>
-Date:   Sat, 14 Nov 2020 13:53:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726853AbgKNMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:55:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726725AbgKNMzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 07:55:52 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A149221EB;
+        Sat, 14 Nov 2020 12:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605358551;
+        bh=HCbruWEYiz+X+jHd1lETN3LqMLkj5XSplNUFQhbcOs0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pbeWEVEth40MQOYEUSrHWHvwpzUVF3JD3Y3eP1r1wUUyfJrSPdjak5Nby6fh2ykUc
+         MgDH0lg24eDO+t4AvDYs0LCjJl3wO5ZlV+4COPlwAPfJweiyCI0vJjBgy5VnlDrJ5/
+         wjjAZbDhOkBkAjOtXCW4NwWKwhJclCn6/QQ9kWHQ=
+Date:   Sat, 14 Nov 2020 13:56:46 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lucas Tanure <tanure@linux.com>
+Cc:     Bastien Nocera <hadess@hadess.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: apple-mfi-fastcharge: Use devm_kzalloc and simplify
+ the code
+Message-ID: <X6/UDpZRDAGDZydT@kroah.com>
+References: <20201114124249.634234-1-tanure@linux.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113215121.505173-4-ezequiel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKm5LnN/KOfNQQGdTw9ZYz5VhLH3n81dICk98F+Inncup6t8G5s9Fzm6QMmOCLvxb3tWaI51xgS0wyJXgTbL9cdRaiB6XBTzv81blTd69Jp/2vlxSB+n
- 1REtsP84FxRgEd92Jg2EF6CWsV0UN1/H0wSCL/AoKIWe8NXP0vz1aA51OgS0P2ukuVGJthqa8LnDPJQ6zmcURiOCbqlemP32RSsX+CraQecmjwKIs3WQQ7B3
- I5pQrVmb8RkAVgJPaQqTzifuIscN3xht8vdnIb1ItjlLkLI7HpAy96Wq920RbeWHoJo4DAMsX2V53SRd1Ec1Fg9rTQJOSEMi+sdfES59EKPqiUEco8O2azN/
- 5wiaXMEVpULomc1JI6mFyFJwugplnKmTUldyDuxevQG7VEF0Z1JNS8N7Dix2pymQm/1Wbjl23S7WCn+fymVXziqlUDo42edcK02XnxQquNKKSn1sEqekFhQC
- H9QsH7cMJdQbRR8Og7RQDq/HUu3zcjRWN8OaX1mCyKFhkuG7Kg26PVVlrvg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114124249.634234-1-tanure@linux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2020 22:51, Ezequiel Garcia wrote:
-> For historical reasons, stateful codec controls are named
-> as {}_MPEG_{}. While we can't at this point sanely
-> change all control IDs (such as V4L2_CID_MPEG_VIDEO_VP8_FRAME_HEADER),
-> we can least change the more meaningful macros such as classes
-> macros.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+On Sat, Nov 14, 2020 at 12:42:49PM +0000, Lucas Tanure wrote:
+> Signed-off-by: Lucas Tanure <tanure@linux.com>
+
+I can't take patches without any changelog text, sorry.
+
 > ---
->  .../userspace-api/media/v4l/dev-mem2mem.rst   |   2 +-
->  .../media/v4l/ext-ctrls-codec.rst             |   4 +-
->  .../media/v4l/extended-controls.rst           |   8 +-
->  .../media/v4l/vidioc-g-ext-ctrls.rst          |   6 +-
->  drivers/media/common/cx2341x.c                |   4 +-
->  drivers/media/platform/s5p-mfc/s5p_mfc_dec.c  |   2 +-
->  drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |   2 +-
->  drivers/media/v4l2-core/v4l2-ctrls.c          |   4 +-
->  include/media/fwht-ctrls.h                    |   2 +-
->  include/media/h264-ctrls.h                    |  16 +-
->  include/media/hevc-ctrls.h                    |  10 +-
->  include/media/mpeg2-ctrls.h                   |   4 +-
->  include/media/vp8-ctrls.h                     |   2 +-
->  include/uapi/linux/v4l2-controls.h            | 409 +++++++++---------
->  14 files changed, 242 insertions(+), 233 deletions(-)
+>  drivers/usb/misc/apple-mfi-fastcharge.c | 17 +++++------------
+>  1 file changed, 5 insertions(+), 12 deletions(-)
 > 
-
-<snip>
-
-> @@ -1177,4 +1177,13 @@ enum v4l2_detect_md_mode {
->  #define V4L2_CID_DETECT_MD_THRESHOLD_GRID	(V4L2_CID_DETECT_CLASS_BASE + 3)
->  #define V4L2_CID_DETECT_MD_REGION_GRID		(V4L2_CID_DETECT_CLASS_BASE + 4)
+> diff --git a/drivers/usb/misc/apple-mfi-fastcharge.c b/drivers/usb/misc/apple-mfi-fastcharge.c
+> index 9de0171b5177..de86e389a008 100644
+> --- a/drivers/usb/misc/apple-mfi-fastcharge.c
+> +++ b/drivers/usb/misc/apple-mfi-fastcharge.c
+> @@ -178,16 +178,13 @@ static int mfi_fc_probe(struct usb_device *udev)
+>  {
+>  	struct power_supply_config battery_cfg = {};
+>  	struct mfi_device *mfi = NULL;
+> -	int err;
 >  
-> +/* MPEG-compression definitions kept for backwards compatibility */
-> +#ifndef __KERNEL__
-> +#define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
-> +#define V4L2_CID_MPEG_CLASS             (V4L2_CTRL_CLASS_MPEG | 1)
-> +#define V4L2_CID_MPEG_BASE              (V4L2_CTRL_CLASS_MPEG | 0x900)
-> +#define V4L2_CID_MPEG_CX2341X_BASE	(V4L2_CTRL_CLASS_MPEG | 0x1000)
-> +#define V4L2_CID_MPEG_MFC51_BASE	(V4L2_CTRL_CLASS_MPEG | 0x1100)
+>  	if (!mfi_fc_match(udev))
+>  		return -ENODEV;
+>  
+> -	mfi = kzalloc(sizeof(struct mfi_device), GFP_KERNEL);
+> -	if (!mfi) {
+> -		err = -ENOMEM;
+> -		goto error;
+> -	}
+> +	mfi = devm_kzalloc(&udev->dev, sizeof(*mfi), GFP_KERNEL);
+> +	if (!mfi)
+> +		return -ENOMEM;
+>  
+>  	battery_cfg.drv_data = mfi;
+>  
+> @@ -197,8 +194,7 @@ static int mfi_fc_probe(struct usb_device *udev)
+>  						&battery_cfg);
+>  	if (IS_ERR(mfi->battery)) {
+>  		dev_err(&udev->dev, "Can't register battery\n");
+> -		err = PTR_ERR(mfi->battery);
+> -		goto error;
+> +		return PTR_ERR(mfi->battery);
+>  	}
+>  
+>  	mfi->udev = usb_get_dev(udev);
+> @@ -206,9 +202,6 @@ static int mfi_fc_probe(struct usb_device *udev)
+>  
+>  	return 0;
+>  
+> -error:
+> -	kfree(mfi);
+> -	return err;
+>  }
+>  
+>  static void mfi_fc_disconnect(struct usb_device *udev)
+> @@ -220,7 +213,7 @@ static void mfi_fc_disconnect(struct usb_device *udev)
+>  		power_supply_unregister(mfi->battery);
+>  	dev_set_drvdata(&udev->dev, NULL);
+>  	usb_put_dev(mfi->udev);
+> -	kfree(mfi);
+> +	devm_kfree(&udev->dev, mfi);
 
-Don't copy the offset value here, just keep this as a straight aliases, e.g.:
+Are you sure about this?
 
-#define V4L2_CID_MPEG_MFC51_BASE	V4L2_CID_CODEC_MFC51_BASE
+And what's wrong with the existing code?  Using the devm_*() variants
+seems like a "cleanup", but it's not always the case.
 
-It's safer that way.
+thanks,
 
-Regards,
-
-	Hans
-
-> +#endif
-> +
->  #endif
-> 
-
+greg k-h
