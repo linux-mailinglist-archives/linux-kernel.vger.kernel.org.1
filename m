@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907F22B2DB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 15:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2034E2B2DAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 15:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgKNOzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 09:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgKNOzu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 09:55:50 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53683C0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 06:55:50 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id w7so1680333pjy.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 06:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=mgJIHW42nsS/z1sx4fpJMJA9O5TioT77D/sOkRQHJ6I=;
-        b=eM6/M3MtrZoK/j86rf2ujJ0wFEdmBqQlzia+W3Afmbgl2xZdotx8I46PWtKPM71gRh
-         j7iyaXuREmKlED7M8o35n2eyqTMUPQe34SeH3ur42rqIBANhrorxIhkYLlpau0eFgA1O
-         1lh3D8Obfjd+4N1EGGNLaL8/TmXgjHjLAnfD8KUF+k6iDXFWh5iEj9P5m8V2K/v9kteW
-         jQWZRDAileAXs43EM1I8hR4Pea2HvmfQByajr3e0RFgV8e2TvdtmyvW4pDI4SccBtZzm
-         7jssxa2rdNLznSF/2mlD0vR7FhWZDDNPB7uDglRctEduTp/81xdEMZGkoiNDFGcJ4UPV
-         mjsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mgJIHW42nsS/z1sx4fpJMJA9O5TioT77D/sOkRQHJ6I=;
-        b=DftqT5akq+axJkhlQw6z2lvZ+lVPWcFxtMk3T3ojYneuM5rFTX14Y0IjRLATnsW8yu
-         Y0oXVXtxTRc3hHN071WQIJdg50yyF0wtIYRTALuL5pZakMQ05/TueBe6nmBYBKDYN/tq
-         buPn0z5UBqwgUAIKs149jpZGuZ5LgWBT3Hdn+WZWugv1D7SnMjQ3DFrb8AIqIcP4Y9re
-         koTV4t3UvSDEBp/8Rz7QMAD1iHnvfCjKKLv46boCBU/YnWTnLpNyV3s8valOPlypLIl8
-         LEN9eiC0lQuQzd8t3ts2g3Ko5qoQTnxFcKrkw2MfazTEvOD9mxhbbgoguQIB4l63Klve
-         6UDA==
-X-Gm-Message-State: AOAM533GzzncyUy33jaC6nDBjGk2NirCtKKgzNaQSpJwHk1UosNqwScM
-        Nw79ho4TOvRHgxNrpTC5Yw==
-X-Google-Smtp-Source: ABdhPJxt82qXTu1pgZeffQyBTbkYCfV2KjvHuUI8000CDfN07Y29L3+AV6GGO9VotwUzvRSQAdDG4w==
-X-Received: by 2002:a17:90b:1496:: with SMTP id js22mr2213683pjb.140.1605365749965;
-        Sat, 14 Nov 2020 06:55:49 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id v191sm12753669pfc.19.2020.11.14.06.55.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 14 Nov 2020 06:55:48 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com
-Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] i40e: remove the useless value assignment in i40e_clean_adminq_subtask
-Date:   Sat, 14 Nov 2020 22:55:39 +0800
-Message-Id: <1605365739-11642-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726865AbgKNOes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 09:34:48 -0500
+Received: from mga02.intel.com ([134.134.136.20]:64967 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgKNOer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 09:34:47 -0500
+IronPort-SDR: t9hiBMKz+9PTl9Dqf/UpMIHkdhnmVWj14h0pN4XSDmJ94bCdQU+inmKlHvHtBbjg0k/TpdDdbD
+ WxIMiTPKipMw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="157602708"
+X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
+   d="scan'208";a="157602708"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2020 06:34:47 -0800
+IronPort-SDR: yJ7JU88zcYyAw1ufi+xlJsgMY/2IZwCz24IAgY+/GfJBynjZxcYDJ95BRa687+q1at2G+Y4MrC
+ L8tQsbIkZ6fA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
+   d="scan'208";a="324307226"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by orsmga003.jf.intel.com with ESMTP; 14 Nov 2020 06:34:46 -0800
+Subject: Re: [PATCHv1 4/4] fpga: stratix10-soc: entend driver for bitstream
+ authentication
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+ <1605204403-6663-5-git-send-email-richard.gong@linux.intel.com>
+ <9bb29416-65fe-85e8-b960-23abc49352f2@redhat.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <6ec8b5ee-9505-7863-fcb6-7e5bbe2aa963@linux.intel.com>
+Date:   Sat, 14 Nov 2020 08:55:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <9bb29416-65fe-85e8-b960-23abc49352f2@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
 
-The variable ret is overwritten by the following call
-i40e_clean_arq_element() and the assignment is useless, so remove it.
+Hi Tom.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/13/20 2:31 PM, Tom Rix wrote:
+> 
+> On 11/12/20 10:06 AM, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Exten FPGA manager driver to support FPGA bitstream authentication on
+>> Intel SocFPGA platforms.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>>   drivers/fpga/stratix10-soc.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+>> index 657a70c..8a59365 100644
+>> --- a/drivers/fpga/stratix10-soc.c
+>> +++ b/drivers/fpga/stratix10-soc.c
+>> @@ -185,7 +185,10 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+>>   	ctype.flags = 0;
+>>   	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
+>>   		dev_dbg(dev, "Requesting partial reconfiguration.\n");
+>> -		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
+>> +		ctype.flags |= FPGA_MGR_PARTIAL_RECONFIG;
+> 
+> The change does not match the commit log.
+> 
+> Add some comment like..
+> 
+> 'Cleanup setting of partial reconfig flag'
+> 
+> to cover the change.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 4f8a2154b93f..7d59fc2eded6 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -9356,7 +9356,7 @@ static void i40e_clean_adminq_subtask(struct i40e_pf *pf)
- 			dev_dbg(&pf->pdev->dev, "ARQ: Update LLDP MIB event received\n");
- #ifdef CONFIG_I40E_DCB
- 			rtnl_lock();
--			ret = i40e_handle_lldp_event(pf, &event);
-+			i40e_handle_lldp_event(pf, &event);
- 			rtnl_unlock();
- #endif /* CONFIG_I40E_DCB */
- 			break;
--- 
-2.20.0
+I will make the cleanup change separately in a different patch.
 
+Regards,
+Richard
+
+
+> 
+> Tom
+> 
+>> +	} else if (info->flags & FPGA_MGR_BITSTREM_AUTHENTICATION) {
+>> +		dev_dbg(dev, "Requesting bitstream authentication.\n");
+>> +		ctype.flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
+>>   	} else {
+>>   		dev_dbg(dev, "Requesting full reconfiguration.\n");
+>>   	}
+> 
