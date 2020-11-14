@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF46F2B2C66
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC06F2B2C68
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgKNJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 04:24:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60954 "EHLO mail.kernel.org"
+        id S1726719AbgKNJY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 04:24:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726625AbgKNJYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 04:24:23 -0500
+        id S1726625AbgKNJYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 04:24:25 -0500
 Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 289ED22254;
-        Sat, 14 Nov 2020 09:24:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3E852224F;
+        Sat, 14 Nov 2020 09:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605345863;
-        bh=U3nup5XbP1pjxnq+2s17x952RznDuwTkPkOChvEHv4k=;
+        s=default; t=1605345864;
+        bh=3rgwLGVc3ifTM2lqoJQqA5YqQU0yDqOuiwpd+GglZZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OXOt0IOT9zE6WS/sPR43HvcVjJSq8DyRmXLbVuo04ndnvI1XdkkokR7VhOKZR9vcj
-         CuqGGqzAU1aYjjSRLOk/TNUA2nNkTaHKsgqLeqE44tIsVjVs+HJ4nJRzivSsTVxna7
-         adIIhV1qfammJez72i8HFLK4PT/o3es8uVDopynY=
+        b=qWIAnA30qspCdunjnK7zQo1aWYLmVRjwzTl2r5WakBMKiivUd4+ChDQhk2znZD/Vr
+         U32ycalAhCbAm+plvURD1KFwV4E454qjsP0D1qCe5s5vVTFv5PrO0V1USWzMLBU4F0
+         Qd5mYAzUPe60xLtFwEZLMw9fjlrnSkgCD5sL2LuY=
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Moti Haimovski <mhaimovski@habana.ai>
-Subject: [PATCH] habanalabs: share a single ctx-mutex between all MMUs
-Date:   Sat, 14 Nov 2020 11:24:13 +0200
-Message-Id: <20201114092414.12244-3-ogabbay@kernel.org>
+Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH] habanalabs: support reserving aligned va block
+Date:   Sat, 14 Nov 2020 11:24:14 +0200
+Message-Id: <20201114092414.12244-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201114092414.12244-1-ogabbay@kernel.org>
 References: <20201114092414.12244-1-ogabbay@kernel.org>
@@ -36,67 +36,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moti Haimovski <mhaimovski@habana.ai>
+From: Ofir Bitton <obitton@habana.ai>
 
-Multiple locks are usually a source of problems, which in the MMU
-case can be avoided since it is relatively rare that both MMU
-tables are updated at the same time.
+Add support for reserving va block with alignment different than
+page size. This is a pre-requisite for allocations needed in future
+ASICs
 
-Therefore, use a single shared lock instead of two separate ones.
-
-Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/mmu.c    | 4 ++++
- drivers/misc/habanalabs/common/mmu_v1.c | 4 ----
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/misc/habanalabs/common/habanalabs.h | 4 +++-
+ drivers/misc/habanalabs/common/memory.c     | 8 +++++---
+ drivers/misc/habanalabs/gaudi/gaudi.c       | 3 ++-
+ 3 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/mmu.c b/drivers/misc/habanalabs/common/mmu.c
-index 6f535c81478d..f4b3d02fe0d8 100644
---- a/drivers/misc/habanalabs/common/mmu.c
-+++ b/drivers/misc/habanalabs/common/mmu.c
-@@ -81,6 +81,8 @@ int hl_mmu_ctx_init(struct hl_ctx *ctx)
- 	if (!hdev->mmu_enable)
- 		return 0;
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index eeb78381177b..76ab9741895d 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -303,6 +303,8 @@ enum hl_device_hw_state {
+ 	HL_DEVICE_HW_STATE_DIRTY
+ };
  
-+	mutex_init(&ctx->mmu_lock);
++#define HL_MMU_VA_ALIGNMENT_NOT_NEEDED 0
 +
- 	if (hdev->mmu_func[MMU_DR_PGT].ctx_init != NULL) {
- 		rc = hdev->mmu_func[MMU_DR_PGT].ctx_init(ctx);
- 		if (rc)
-@@ -115,6 +117,8 @@ void hl_mmu_ctx_fini(struct hl_ctx *ctx)
+ /**
+  * struct hl_mmu_properties - ASIC specific MMU address translation properties.
+  * @start_addr: virtual start address of the memory region.
+@@ -2112,7 +2114,7 @@ int hl_vm_init(struct hl_device *hdev);
+ void hl_vm_fini(struct hl_device *hdev);
  
- 	if (hdev->mmu_func[MMU_HR_PGT].ctx_fini != NULL)
- 		hdev->mmu_func[MMU_HR_PGT].ctx_fini(ctx);
-+
-+	mutex_destroy(&ctx->mmu_lock);
- }
- 
- /*
-diff --git a/drivers/misc/habanalabs/common/mmu_v1.c b/drivers/misc/habanalabs/common/mmu_v1.c
-index 5f62cb158eef..92b22298bb5c 100644
---- a/drivers/misc/habanalabs/common/mmu_v1.c
-+++ b/drivers/misc/habanalabs/common/mmu_v1.c
-@@ -481,9 +481,7 @@ static void hl_mmu_v1_fini(struct hl_device *hdev)
+ u64 hl_reserve_va_block(struct hl_device *hdev, struct hl_ctx *ctx,
+-		enum hl_va_range_type type, u32 size);
++		enum hl_va_range_type type, u32 size, u32 alignment);
+ int hl_unreserve_va_block(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		u64 start_addr, u64 size);
+ int hl_pin_host_memory(struct hl_device *hdev, u64 addr, u64 size,
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index f27ca80d3c3c..351c9927151f 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -626,18 +626,20 @@ static u64 get_va_block(struct hl_device *hdev, struct hl_va_range *va_range,
+  * @ctx: current context
+  * @type: virtual addresses range type.
+  * @size: requested block size.
++ * @alignment: required alignment in bytes of the virtual block start address,
++ *             0 means no alignment.
+  *
+  * This function does the following:
+  * - Iterate on the virtual block list to find a suitable virtual block for the
+- *   given size.
++ *   given size and alignment.
+  * - Reserve the requested block and update the list.
+  * - Return the start address of the virtual block.
   */
- static int hl_mmu_v1_ctx_init(struct hl_ctx *ctx)
+ u64 hl_reserve_va_block(struct hl_device *hdev, struct hl_ctx *ctx,
+-		enum hl_va_range_type type, u32 size)
++		enum hl_va_range_type type, u32 size, u32 alignment)
  {
--	mutex_init(&ctx->mmu_lock);
- 	hash_init(ctx->mmu_shadow_hash);
--
- 	return dram_default_mapping_init(ctx);
+ 	return get_va_block(hdev, ctx->va_range[type], size, 0,
+-			ctx->va_range[type]->page_size);
++			max(alignment, ctx->va_range[type]->page_size));
  }
  
-@@ -516,8 +514,6 @@ static void hl_mmu_v1_ctx_fini(struct hl_ctx *ctx)
- 			pgt_info->phys_addr, ctx->asid, pgt_info->num_of_ptes);
- 		_free_hop(ctx, pgt_info);
+ /**
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index bf34ca29e42b..f1b8d20cf2ce 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -7802,7 +7802,8 @@ static int gaudi_internal_cb_pool_init(struct hl_device *hdev,
  	}
--
--	mutex_destroy(&ctx->mmu_lock);
- }
  
- static int _hl_mmu_v1_unmap(struct hl_ctx *ctx,
+ 	hdev->internal_cb_va_base = hl_reserve_va_block(hdev, ctx,
+-			HL_VA_RANGE_TYPE_HOST, HOST_SPACE_INTERNAL_CB_SZ);
++			HL_VA_RANGE_TYPE_HOST, HOST_SPACE_INTERNAL_CB_SZ,
++			HL_MMU_VA_ALIGNMENT_NOT_NEEDED);
+ 
+ 	if (!hdev->internal_cb_va_base)
+ 		goto destroy_internal_cb_pool;
 -- 
 2.17.1
 
