@@ -2,295 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C348F2B2AE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14EB2B2AE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgKNCuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 21:50:54 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:35942 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgKNCuy (ORCPT
+        id S1726394AbgKNCvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 21:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbgKNCvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 21:50:54 -0500
-Received: by mail-lf1-f68.google.com with SMTP id f11so17041792lfs.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:50:50 -0800 (PST)
+        Fri, 13 Nov 2020 21:51:50 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266B0C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:51:49 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 19so14315882wmf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:51:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/pF82g4ci3xp6pW4O0nO7ylMYBzowQiQ/mlbHUCZjYM=;
+        b=lfdqtHmEO2B3dirgmxVeOVkreCFY8yc6AV6c/Po/ambopcg50qfTbxC6PX8k70WymB
+         yWIzqfHgvKtagwRTwkF1qfCLQsNtGJdnc99FLtZ0JFvpH7IlNFicfVEvzsxq52rG2kCN
+         uhHpV7F4a4CrHmHrASuaAOgkvPwi6tFTO2CAMZ8+63nRrui9J9NYT1wFE/asvtGsfy9s
+         AkVZ1B1S9baz3knpYDgLBcqt2A8MMbxm+e7Y4bluSFFpCcg2j7qBtLsOwkNHn7ZJp/Og
+         ab0ZZM0EjYC+ESFVkW0iWTnTxhXd60ZuC+2gAxUT8ibRXXhgyZY8VZh6dNQBjCyHXf3G
+         /xpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fKIZDENAZH5jg01SbaZDXnOTH1Mu5Q2TuRdOVL8Q/bk=;
-        b=FDq+2jOb8wUz9T9O+F29q7WJkv+1kC/BXZLGbt++jycM/F+q9qipeU87op/UQyR1lP
-         5bcxcAX3zQ5CmRgNwCdlD0iHsj1kUgbV1nRWUEK6UaGazDBHU2qwFVVYLzTib/We03Yo
-         6C6gpXdDTrA2JTRRWcbmhpB48Z4tNKcL/QcUX8A73hL5E/WaLTVFFouwoMfzhrPyBVkH
-         qCR1zCAvmjO0BPTBItll2vG7wvJwEc0Pi2l9ZAXkcaHLLIVMdMQMEycE3XZwzm9HJq2h
-         nY61rqATNFvtRfa3jbUqJmrlyyk+tiKtRhBiNlbxk+Pcxk/EQk4tKNoxSBgT4jC8xCkW
-         F1DQ==
-X-Gm-Message-State: AOAM531831gZh0+TB14fN9wlUKYPDNH582+5fxU5P2BZBb5BF6ZnWCnz
-        PAbAJHirkBeeas/PymHaGWQZRlJArlwlhPgkDI4=
-X-Google-Smtp-Source: ABdhPJx+5HBICw+z7N81xJ7kA5kBMw2tADxpoIU2XvSB1LSNt+o1aHz9MPZJolm+IEX9028ZYSpNl4iAncrHO/OML/8=
-X-Received: by 2002:a19:838c:: with SMTP id f134mr1894114lfd.540.1605322249475;
- Fri, 13 Nov 2020 18:50:49 -0800 (PST)
+        bh=/pF82g4ci3xp6pW4O0nO7ylMYBzowQiQ/mlbHUCZjYM=;
+        b=N3rQMSTkbfpCcqjiMwyahv00nTaS9aqRxwW75umoMWUGWjOs/DqF9Z8WEoETTKLFOk
+         tuGjjS++l+nmLvOEkWC7tnuKAD7mGk9Du7czsmjeE1E0fgAvQmryz/Kj7PJCRu2iHuCJ
+         xQhUDd666tm0HZ192Ahcq0n5Ddi/+OJ1WWvucPlXA4FG+9GN84PkeXWPdK9zlMsTIBMz
+         Z5BUmzRX2C0bFw0bg3DzdQdzmQ+ENFOgR0k6siVBM1XgmO8iU6APbwfO9qT8CgjhKGYj
+         Dnlfc2QrDcFvJjJDGPNMmtN2zRVE+x8eokRtvd18RhAA+P3TTZFKs1ntWCtJ6UQ5xXbC
+         xrwA==
+X-Gm-Message-State: AOAM5313AfoSmzIVOwvAVQQtmLhEoyrVRiE3I9uZDnl+ZZfgcp9b8ODU
+        Q+U0QJqZ4qz8EUZ3w5SAaJzZm7pWUH1mLzpPIH/eEQ==
+X-Google-Smtp-Source: ABdhPJwl3dK1Pst00k61vPihAcc18qxn5bQRviOKf/y8pjdzr3R0jjOBDf+WXIe5huKKNi3014n6lFP3HK6wVxHoZZo=
+X-Received: by 2002:a1c:9c0e:: with SMTP id f14mr5192682wme.22.1605322307590;
+ Fri, 13 Nov 2020 18:51:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20201030054742.87740-1-namhyung@kernel.org>
-In-Reply-To: <20201030054742.87740-1-namhyung@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 14 Nov 2020 11:50:38 +0900
-Message-ID: <CAM9d7ci2LY7TjukVJEme8BT_WqsoRCtXD3JSKTYjBskfZmzv3w@mail.gmail.com>
-Subject: Re: [PATCH v2] perf data: Allow to use stdio functions for pipe mode
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+ <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
+ <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+ <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
+ <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
+ <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com> <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
+In-Reply-To: <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 13 Nov 2020 18:51:36 -0800
+Message-ID: <CAJuCfpExoi-+TC1cR8mJMg_e+T6apoJj9x8DjTM01rw725XpQw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        kernel-team <kernel-team@android.com>,
+        Minchan Kim <minchan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping! :)
+On Fri, Nov 13, 2020 at 6:16 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 13 Nov 2020 17:57:02 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > On Fri, Nov 13, 2020 at 5:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > >
+> > > On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > > > > > Seems to me that the ability to reap another process's memory is a
+> > > > > > > generally useful one, and that it should not be tied to delivering a
+> > > > > > > signal in this fashion.
+> > > > > > >
+> > > > > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
+> > > > > > > few changes and tweaks, but can't that be used to solve this problem?
+> > > > > >
+> > > > > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
+> > > > > > one of the options recently discussed in
+> > > > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > > > > > . The thread describes some of the issues with that approach but if we
+> > > > > > limit it to processes with pending SIGKILL only then I think that
+> > > > > > would be doable.
+> > > > >
+> > > > > Why would it be necessary to read /proc/pid/maps?  I'd have thought
+> > > > > that a starting effort would be
+> > > > >
+> > > > >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
+> > > > >
+> > > > > (after translation into process_madvise() speak).  Which is equivalent
+> > > > > to the proposed process_madvise(MADV_DONTNEED_MM)?
+> > > >
+> > > > Yep, this is very similar to option #3 in
+> > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > > > and I actually have a tested prototype for that.
+> > >
+> > > Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
+> > > which spans the whole address range?
+> >
+> > That would be the option #4 from the same discussion and the issues
+> > noted there are "process_madvise return value can't handle such a
+> > large number of bytes and there is MAX_RW_COUNT limit on max number of
+> > bytes one process_madvise call can handle". In my prototype I have a
+> > special handling for such "bulk operation" to work around the
+> > MAX_RW_COUNT limitation.
+>
+> Ah, OK, return value.  Maybe process_madvise() shouldn't have done that
+> and should have simply returned 0 on success, like madvise().
+>
+> I guess a special "nuke whole address space" command is OK.  But, again
+> in the search for generality, the ability to nuke very large amounts of
+> address space (but not the entire address space) would be better.
+>
+> The process_madvise() return value issue could be addressed by adding a
+> process_madvise() mode which return 0 on success.
+>
+> And I guess the MAX_RW_COUNT issue is solvable by adding an
+> import_iovec() arg to say "don't check that".  Along those lines.
+>
+> It's all sounding a bit painful (but not *too* painful).  But to
+> reiterate, I do think that adding the ability for a process to shoot
+> down a large amount of another process's memory is a lot more generally
+> useful than tying it to SIGKILL, agree?
 
+I see. So you are suggesting a mode where process_madvise() can
+operate on large areas spanning multiple VMAs. This slightly differs
+from option 4 in the previous RFC which suggested a special mode that
+operates on the *entire* mm of the process. I agree, your suggestion
+is more generic.
 
-On Fri, Oct 30, 2020 at 2:47 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> When perf data is in a pipe, it reads each event separately using
-> read(2) syscall.  This is a huge performance bottleneck when
-> processing large data like in perf inject.  Also perf inject needs to
-> use write(2) syscall for the output.
+> > >
+> > > > If that's the
+> > > > preferred method then I can post it quite quickly.
+> > >
+> > > I assume you've tested that prototype.  How did its usefulness compare
+> > > with this SIGKILL-based approach?
+> >
+> > Just to make sure I understand correctly your question, you are asking
+> > about performance comparison of:
+> >
+> > // approach in this RFC
+> > pidfd_send_signal(SIGKILL, SYNC_REAP_MM)
+> >
+> > vs
+> >
+> > // option #4 in the previous RFC
+> > kill(SIGKILL); process_madvise(vector=NULL, MADV_DONTNEED);
+> >
+> > If so, I have results for the current RFC approach but the previous
+> > approach was testing on an older device, so don't have
+> > apples-to-apples comparison results at the moment. I can collect the
+> > data for fair comparison if desired, however I don't expect a
+> > noticeable performance difference since they both do pretty much the
+> > same thing (even on different devices my results are quite close). I
+> > think it's more a question of which API would be more appropriate.
 >
-> So convert it to use buffer I/O functions in stdio library for pipe
-> data.  This makes inject-build-id bench time drops from 20ms to 8ms.
->
->   $ perf bench internals inject-build-id
->   # Running 'internals/inject-build-id' benchmark:
->     Average build-id injection took: 8.074 msec (+- 0.013 msec)
->     Average time per event: 0.792 usec (+- 0.001 usec)
->     Average memory usage: 8328 KB (+- 0 KB)
->     Average build-id-all injection took: 5.490 msec (+- 0.008 msec)
->     Average time per event: 0.538 usec (+- 0.001 usec)
->     Average memory usage: 7563 KB (+- 0 KB)
->
-> This patch enables it just for perf inject when used with pipe (it's a
-> default behavior).  Maybe we could do it for perf record and/or report
-> later..
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
-> v2: check result of fdopen()
->
->  tools/perf/builtin-inject.c |  2 ++
->  tools/perf/util/data.c      | 41 ++++++++++++++++++++++++++++++++++---
->  tools/perf/util/data.h      | 11 +++++++++-
->  tools/perf/util/header.c    |  8 ++++----
->  tools/perf/util/session.c   |  7 ++++---
->  5 files changed, 58 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 452a75fe68e5..14d6c88fed76 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -853,10 +853,12 @@ int cmd_inject(int argc, const char **argv)
->                 .output = {
->                         .path = "-",
->                         .mode = PERF_DATA_MODE_WRITE,
-> +                       .use_stdio = true,
->                 },
->         };
->         struct perf_data data = {
->                 .mode = PERF_DATA_MODE_READ,
-> +               .use_stdio = true,
->         };
->         int ret;
->
-> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> index c47aa34fdc0a..05bbcb663c41 100644
-> --- a/tools/perf/util/data.c
-> +++ b/tools/perf/util/data.c
-> @@ -174,8 +174,21 @@ static bool check_pipe(struct perf_data *data)
->                         is_pipe = true;
->         }
->
-> -       if (is_pipe)
-> -               data->file.fd = fd;
-> +       if (is_pipe) {
-> +               if (data->use_stdio) {
-> +                       const char *mode;
-> +
-> +                       mode = perf_data__is_read(data) ? "r" : "w";
-> +                       data->file.fptr = fdopen(fd, mode);
-> +
-> +                       if (data->file.fptr == NULL) {
-> +                               data->file.fd = fd;
-> +                               data->use_stdio = false;
-> +                       }
-> +               } else {
-> +                       data->file.fd = fd;
-> +               }
-> +       }
->
->         return data->is_pipe = is_pipe;
->  }
-> @@ -334,6 +347,9 @@ int perf_data__open(struct perf_data *data)
->         if (check_pipe(data))
->                 return 0;
->
-> +       /* currently it allows stdio for pipe only */
-> +       data->use_stdio = false;
-> +
->         if (!data->path)
->                 data->path = "perf.data";
->
-> @@ -353,7 +369,21 @@ void perf_data__close(struct perf_data *data)
->                 perf_data__close_dir(data);
->
->         zfree(&data->file.path);
-> -       close(data->file.fd);
-> +
-> +       if (data->use_stdio)
-> +               fclose(data->file.fptr);
-> +       else
-> +               close(data->file.fd);
-> +}
-> +
-> +ssize_t perf_data__read(struct perf_data *data, void *buf, size_t size)
-> +{
-> +       if (data->use_stdio) {
-> +               if (fread(buf, size, 1, data->file.fptr) == 1)
-> +                       return size;
-> +               return feof(data->file.fptr) ? 0 : -1;
-> +       }
-> +       return readn(data->file.fd, buf, size);
->  }
->
->  ssize_t perf_data_file__write(struct perf_data_file *file,
-> @@ -365,6 +395,11 @@ ssize_t perf_data_file__write(struct perf_data_file *file,
->  ssize_t perf_data__write(struct perf_data *data,
->                               void *buf, size_t size)
->  {
-> +       if (data->use_stdio) {
-> +               if (fwrite(buf, size, 1, data->file.fptr) == 1)
-> +                       return size;
-> +               return -1;
-> +       }
->         return perf_data_file__write(&data->file, buf, size);
->  }
->
-> diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
-> index 75947ef6bc17..c563fcbb0288 100644
-> --- a/tools/perf/util/data.h
-> +++ b/tools/perf/util/data.h
-> @@ -2,6 +2,7 @@
->  #ifndef __PERF_DATA_H
->  #define __PERF_DATA_H
->
-> +#include <stdio.h>
->  #include <stdbool.h>
->
->  enum perf_data_mode {
-> @@ -16,7 +17,10 @@ enum perf_dir_version {
->
->  struct perf_data_file {
->         char            *path;
-> -       int              fd;
-> +       union {
-> +               int      fd;
-> +               FILE    *fptr;
-> +       };
->         unsigned long    size;
->  };
->
-> @@ -26,6 +30,7 @@ struct perf_data {
->         bool                     is_pipe;
->         bool                     is_dir;
->         bool                     force;
-> +       bool                     use_stdio;
->         enum perf_data_mode      mode;
->
->         struct {
-> @@ -62,11 +67,15 @@ static inline bool perf_data__is_single_file(struct perf_data *data)
->
->  static inline int perf_data__fd(struct perf_data *data)
->  {
-> +       if (data->use_stdio)
-> +               return fileno(data->file.fptr);
-> +
->         return data->file.fd;
->  }
->
->  int perf_data__open(struct perf_data *data);
->  void perf_data__close(struct perf_data *data);
-> +ssize_t perf_data__read(struct perf_data *data, void *buf, size_t size);
->  ssize_t perf_data__write(struct perf_data *data,
->                               void *buf, size_t size);
->  ssize_t perf_data_file__write(struct perf_data_file *file,
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index be850e9f8852..d9a70154426b 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -3652,7 +3652,8 @@ static int perf_file_section__process(struct perf_file_section *section,
->  }
->
->  static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
-> -                                      struct perf_header *ph, int fd,
-> +                                      struct perf_header *ph,
-> +                                      struct perf_data* data,
->                                        bool repipe)
->  {
->         struct feat_fd ff = {
-> @@ -3661,7 +3662,7 @@ static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
->         };
->         ssize_t ret;
->
-> -       ret = readn(fd, header, sizeof(*header));
-> +       ret = perf_data__read(data, header, sizeof(*header));
->         if (ret <= 0)
->                 return -1;
->
-> @@ -3684,8 +3685,7 @@ static int perf_header__read_pipe(struct perf_session *session)
->         struct perf_header *header = &session->header;
->         struct perf_pipe_file_header f_header;
->
-> -       if (perf_file_header__read_pipe(&f_header, header,
-> -                                       perf_data__fd(session->data),
-> +       if (perf_file_header__read_pipe(&f_header, header, session->data,
->                                         session->repipe) < 0) {
->                 pr_debug("incompatible file format\n");
->                 return -EINVAL;
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 7a5f03764702..f901a09a58e4 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1923,7 +1923,6 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->  {
->         struct ordered_events *oe = &session->ordered_events;
->         struct perf_tool *tool = session->tool;
-> -       int fd = perf_data__fd(session->data);
->         union perf_event *event;
->         uint32_t size, cur_size = 0;
->         void *buf = NULL;
-> @@ -1943,7 +1942,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->         ordered_events__set_copy_on_queue(oe, true);
->  more:
->         event = buf;
-> -       err = readn(fd, event, sizeof(struct perf_event_header));
-> +       err = perf_data__read(session->data, event,
-> +                             sizeof(struct perf_event_header));
->         if (err <= 0) {
->                 if (err == 0)
->                         goto done;
-> @@ -1975,7 +1975,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->         p += sizeof(struct perf_event_header);
->
->         if (size - sizeof(struct perf_event_header)) {
-> -               err = readn(fd, p, size - sizeof(struct perf_event_header));
-> +               err = perf_data__read(session->data, p,
-> +                                     size - sizeof(struct perf_event_header));
->                 if (err <= 0) {
->                         if (err == 0) {
->                                 pr_err("unexpected end of event stream\n");
-> --
-> 2.29.1.341.ge80a0c044ae-goog
+> OK.  I wouldn't expect performance to be very different (and things can
+> be sped up if so), but the API usefulness might be an issue.  Using
+> process_madvise() (or similar) makes it a two-step operation, whereas
+> tying it to SIGKILL&&TASK_UNINTERRUPTIBLE provides a more precise tool.
+> Any thoughts on this?
 >
