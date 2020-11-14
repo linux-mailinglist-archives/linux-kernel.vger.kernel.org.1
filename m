@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEF22B30B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3192B30BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKNUsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:48:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        id S1726278AbgKNUuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:50:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKNUs3 (ORCPT
+        with ESMTP id S1726150AbgKNUuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:48:29 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED689C0613D1;
-        Sat, 14 Nov 2020 12:48:28 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id o15so14164169wru.6;
-        Sat, 14 Nov 2020 12:48:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5kxdW0BGmya6+iac4PEbXw/SdeDVo3PvponWz/JT0D0=;
-        b=YBzvbEClpZhjQV4W5jQm7JKHQrD1GEqBjbjGovBWVvKh1I7A2YgZtR3k0YGZ2dY+Sh
-         YPSU0nRuJmrWZ4sqAuPt7ty6CwPEeVelxR9YPjRZUaHA1JltUCcFNyGszHqEX8R2TIad
-         AyK/AIfDybRoc4OL6FwYv6XFfkceWyHvVUPDvWcv3uLZatmgxTwl/qcii78FyXTyjwbD
-         iV68Ul9QUA8qQKIz4shJX9YuH0Db07fRudbra129wztYUa4+WDjfeWYwlAhJuX+swdtH
-         QkCLTvjcrqtRWB2sggjJ0I2B1WlrNEmeOW8+np5+4OAWFC6c73t/S3udxdUTEKDNCKoh
-         inlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5kxdW0BGmya6+iac4PEbXw/SdeDVo3PvponWz/JT0D0=;
-        b=mX+16lurJDWB+SEuua0k/BHhaJGKKtLx+DItjvTClwLXTnxSDdL+eVxn5MkaZNWJ8b
-         EUxCLmL2E2XYd6ly4HdreJ2B1PT1TuqGPzMdAv/oZ7onSX0oczcqSzMo1SeGUuL/x0jn
-         cV2ZTJNtEUGvJs2cXoAwe3PIaTDmVkMdWO6ByfFYC6fTQvz919JTV+YS/4IJsARjD1Ot
-         0e4vroZnS6M717jMSc1tHdhzajSk0IqKAtkeFBNrATSSCImug+SCzRju2/rKuftLmp2P
-         n/0ywUdmEEBx6gSxwZmuqTUMx3V0bJaxv0uiWKRjUVnnwdXYCHI9yQg1PwePlzHcYhTT
-         HQHQ==
-X-Gm-Message-State: AOAM532l0jRU4XWKjrTkjG2SaERWEonGR0YSNpzdFZMZuyMCvFMgxeAR
-        +J4Fdvrplc/PcwUS8eMAxf/irgli64Xsr2QlfcY=
-X-Google-Smtp-Source: ABdhPJwr/t/g2wfdy6h1Iuz8dqJ8uKKA5Jp/prFloAxEH8BmClb9cm6EBJO7JAHC5gZ7svYddzH/IOL7mFlzUktzT4Q=
-X-Received: by 2002:adf:a54d:: with SMTP id j13mr11557917wrb.132.1605386907608;
- Sat, 14 Nov 2020 12:48:27 -0800 (PST)
+        Sat, 14 Nov 2020 15:50:12 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E48DC0613D1;
+        Sat, 14 Nov 2020 12:50:12 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ke2Ui-0061hp-LP; Sat, 14 Nov 2020 20:50:01 +0000
+Date:   Sat, 14 Nov 2020 20:50:00 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201114205000.GP3576660@ZenIV.linux.org.uk>
+References: <20201111215220.GA3576660@ZenIV.linux.org.uk>
+ <20201111222116.GA919131@ZenIV.linux.org.uk>
+ <20201113235453.GA227700@ubuntu-m3-large-x86>
+ <20201114011754.GL3576660@ZenIV.linux.org.uk>
+ <20201114030124.GA236@Ryzen-9-3900X.localdomain>
+ <20201114035453.GM3576660@ZenIV.linux.org.uk>
+ <20201114041420.GA231@Ryzen-9-3900X.localdomain>
+ <20201114055048.GN3576660@ZenIV.linux.org.uk>
+ <20201114061934.GA658@Ryzen-9-3900X.localdomain>
+ <20201114070025.GO3576660@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-References: <20201114151717.5369-1-jonathan@marek.ca> <20201114151717.5369-5-jonathan@marek.ca>
- <20201114162406.GC24411@lst.de> <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
- <50ddcadb-c630-2ef6-cdc4-724d9823fba7@marek.ca> <CAF6AEGsH5Wk=J+HxHnRqTMLZscjErjKq2v0Rms7Td=W7icZ3sw@mail.gmail.com>
- <b6e4f167-871a-5f26-46bd-d914476af519@marek.ca>
-In-Reply-To: <b6e4f167-871a-5f26-46bd-d914476af519@marek.ca>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 14 Nov 2020 12:48:15 -0800
-Message-ID: <CAF6AEGv7fXGVVWcTcSXF6EGB2LOi_wvQP6h6hcX8yNvAZRDbVg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for
- non-coherent cache maintenance
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114070025.GO3576660@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 12:10 PM Jonathan Marek <jonathan@marek.ca> wrote:
->
-> On 11/14/20 2:39 PM, Rob Clark wrote:
-> > On Sat, Nov 14, 2020 at 10:58 AM Jonathan Marek <jonathan@marek.ca> wrote:
-> >>
-> >> On 11/14/20 1:46 PM, Rob Clark wrote:
-> >>> On Sat, Nov 14, 2020 at 8:24 AM Christoph Hellwig <hch@lst.de> wrote:
-> >>>>
-> >>>> On Sat, Nov 14, 2020 at 10:17:12AM -0500, Jonathan Marek wrote:
-> >>>>> +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-> >>>>> +             size_t range_start, size_t range_end)
-> >>>>> +{
-> >>>>> +     struct msm_gem_object *msm_obj = to_msm_bo(obj);
-> >>>>> +     struct device *dev = msm_obj->base.dev->dev;
-> >>>>> +
-> >>>>> +     /* exit early if get_pages() hasn't been called yet */
-> >>>>> +     if (!msm_obj->pages)
-> >>>>> +             return;
-> >>>>> +
-> >>>>> +     /* TODO: sync only the specified range */
-> >>>>> +
-> >>>>> +     if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
-> >>>>> +             dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
-> >>>>> +                             msm_obj->sgt->nents, DMA_TO_DEVICE);
-> >>>>> +     }
-> >>>>> +
-> >>>>> +     if (flags & MSM_GEM_SYNC_FOR_CPU) {
-> >>>>> +             dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
-> >>>>> +                             msm_obj->sgt->nents, DMA_FROM_DEVICE);
-> >>>>> +     }
-> >>>>
-> >>>> Splitting this helper from the only caller is rather strange, epecially
-> >>>> with the two unused arguments.  And I think the way this is specified
-> >>>> to take a range, but ignoring it is actively dangerous.  User space will
-> >>>> rely on it syncing everything sooner or later and then you are stuck.
-> >>>> So just define a sync all primitive for now, and if you really need a
-> >>>> range sync and have actually implemented it add a new ioctl for that.
-> >>>
-> >>> We do already have a split of ioctl "layer" which enforces valid ioctl
-> >>> params, etc, and gem (or other) module code which is called by the
-> >>> ioctl func.  So I think it is fine to keep this split here.  (Also, I
-> >>> think at some point there will be a uring type of ioctl alternative
-> >>> which would re-use the same gem func.)
-> >>>
-> >>> But I do agree that the range should be respected or added later..
-> >>> drm_ioctl() dispatch is well prepared for extending ioctls.
-> >>>
-> >>> And I assume there should be some validation that the range is aligned
-> >>> to cache-line?  Or can we flush a partial cache line?
-> >>>
-> >>
-> >> The range is intended to be "sync at least this range", so that
-> >> userspace doesn't have to worry about details like that.
-> >>
-> >
-> > I don't think userspace can *not* worry about details like that.
-> > Consider a case where the cpu and gpu are simultaneously accessing
-> > different parts of a buffer (for ex, sub-allocation).  There needs to
-> > be cache-line separation between the two.
-> >
->
-> Right.. and it also seems like we can't get away with just
-> flushing/invalidating the whole thing.
->
-> qcom's vulkan driver has nonCoherentAtomSize=1, and it looks like
-> dma_sync_single_for_cpu() does deal in some way with the partial cache
-> line case, although I'm not sure that means we can have a
-> nonCoherentAtomSize=1.
->
+On Sat, Nov 14, 2020 at 07:00:25AM +0000, Al Viro wrote:
+> On Fri, Nov 13, 2020 at 11:19:34PM -0700, Nathan Chancellor wrote:
+> 
+> > Assuming so, I have attached the output both with and without the
+> > WARN_ON. Looks like mountinfo is what is causing the error?
+> 
+> Cute...  FWIW, on #origin + that commit with fix folded in I don't
+> see anything unusual in reads from mountinfo ;-/  OTOH, they'd
+> obviously been... creative with readv(2) arguments, so it would
+> be very interesting to see what it is they are passing to it.
+> 
+> I'm half-asleep right now; will try to cook something to gather
+> that information tomorrow morning.  'Later...
 
-flush/inv the whole thing could be a useful first step, or at least I
-can think of some uses for it.  But if it isn't useful for how vk sees
-the world, then maybe we should just implement the range properly from
-the get-go.  (And I *think* requiring the range to be aligned to
-cacheline boundaries.. it is always easy from a kernel uabi PoV to
-loosen restrictions later, than the other way around.)
+OK, so let's do this: fix in seq_read_iter() + in do_loop_readv_writev()
+(on entry) the following (racy as hell, but will do for debugging):
 
-BR,
--R
+	bool weird = false;
+
+	if (unlikely(memcmp(file->f_path.dentry->d_name.name, "mountinfo", 10))) {
+		int i;
+
+		for (i = 0; i < iter->nr_segs; i++)
+			if (!iter->iov[i].iov_len)
+				weird = true;
+		if (weird) {
+			printk(KERN_ERR "[%s]: weird readv on %p4D (%ld) ",
+				current->comm, filp, (long)filp->f_pos);
+			for (i = 0; i < iter->nr_segs; i++)
+				printk(KERN_CONT "%c%zd", i ? ':' : '<',
+					iter->iov[i].iov_len);
+			printk(KERN_CONT "> ");
+		}
+	}
+and in the end (just before return)
+	if (weird)
+		printk(KERN_CONT "-> %zd\n", ret);
+
+Preferably along with the results of cat /proc/<whatever it is>/mountinfo both
+on that and on the working kernel...
