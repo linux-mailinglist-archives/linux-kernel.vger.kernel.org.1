@@ -2,141 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791D32B2AB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65ADF2B2ACA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 03:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgKNB5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 20:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKNB5O (ORCPT
+        id S1726228AbgKNCQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 21:16:04 -0500
+Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:34598 "EHLO
+        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725981AbgKNCQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 20:57:14 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81434C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:57:14 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id o15so12270944wru.6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:57:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aAt0y4BONkE4qAf0vKXaFTXwB4ZFsnt5S+RuI0jP7I0=;
-        b=ed7NqWQne82b4CGLxKKyy40f2AtEDak0uE2vEFG0Eg45fsFvqzucto15OoBmGMcffH
-         eCmMx6p4CbPjbJNtXw4hA1XqGxNSWvKhZ3MUkh8mXF6oVpyK1k3jReyT19EPA2ytP5lx
-         U5vvLq2u3KQZv0N4RU+9z0WSEEC8D0xmgmG8ltLYw2xPp/JAD/0V80adsjygNw7S6v8H
-         uU9/TJsJohTb7QVz8fw8jXdBnk5xbNFrjX+6+64MjkDWrL6ibdOFH08eUnlaPTROXsTy
-         ZRARIgSzlfxFT1+3g5kSqOD/eJPung8kpqou4ldSK3ZSY0e40DJiyXH9M7op5k8DWPJG
-         +1GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aAt0y4BONkE4qAf0vKXaFTXwB4ZFsnt5S+RuI0jP7I0=;
-        b=f5FO1J9NMWu4QcUu1GoTEJwi5A4qilla3uOtbsW/RsH0cUIJsXNqHucmHQcq5VGuzo
-         oTvdnXxdQc3j7TRXsio1PucnifR48z55X44rkOhWxkxtp1msotzqlr+2hFtsm+e2PNaM
-         9gJvhh+pSHvhcd6lM31Y6DnYpODZS1s2sHGsUWWzAYC61poIXfZNd44uRr6GAs/QLxLA
-         DAV6fMr4oFs03uGyUcp6OblA/akvZhXlpW02Sbk4897EnQlQYW1s8er9rRz02MSk4Ppb
-         P4msSC858Owhw6IDeTSLxgRp5L7jKvPX9ylFQ0Q/QcAlj2W/IDDIljNQxBdTqT3j0Gpr
-         HvjQ==
-X-Gm-Message-State: AOAM531Njs0ljQxHoMlh9vX4R3hIk9QjENFlCjmsn/zsVfWVWaTkuG9M
-        0rENa1iFG0wk+XpLW0GqExMyQgsyzR5RYhBAftNPxw==
-X-Google-Smtp-Source: ABdhPJwjEBEJE7QwHh8r8eJ/Dr/QpuyVP5uaIDwltg3aDAOCe0B4f3/m8hgpvfE9jUit9zlrGz89Vmb3ppScDtAYkS0=
-X-Received: by 2002:adf:cf0b:: with SMTP id o11mr6715761wrj.162.1605319033090;
- Fri, 13 Nov 2020 17:57:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
- <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
- <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
- <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com> <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
-In-Reply-To: <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 13 Nov 2020 17:57:02 -0800
-Message-ID: <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Minchan Kim <minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 13 Nov 2020 21:16:03 -0500
+X-Greylist: delayed 1490 seconds by postgrey-1.27 at vger.kernel.org; Fri, 13 Nov 2020 21:16:03 EST
+Received: from CMGW (unknown [10.9.0.13])
+        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 74146215D9A
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 18:51:13 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id dkiekipKri1lMdkifkjRLj; Fri, 13 Nov 2020 18:51:13 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.2 cv=RKzDJ8q+ c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=nNwsprhYR40A:10 a=evQFzbml-YQA:10
+ a=VwQbUJbxAAAA:8 a=wBqY6jgYEW0BGQsa698A:9 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=Message-Id:Date:Subject:Cc:To:From:Sender:
+        Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZgDKlMPjpd9wyV6iWCzRhHgPc4WOdicWTvdhxomrLcs=; b=Hp7NfLlQ4aBt807E1OVJTriJrn
+        pkqtvAwvauw8VOg7x9L3FLPPMTOBlhbOUjE1H+ng/8t5Ujez/ABwvvMpWI3EECz7sTB6LGvSpQnRX
+        95qVWt9naySUC3UIKztu4olOJdFwsCfqNVjdF0ayQqUYD7sLnRA8K+CfIJI36lpymPMkPUTydrgB1
+        8/+ZuOLN3DMODuNy6iwI631ysRDrjWOHYU5+YzZiFAhuD2t/YUiUpKEbGb9IJPU5WA91tjyvaQNs6
+        B4Gxisk/IbgP19H0SVbV4aKp3StTMyKV5ZtYGlnTNSUp53iK+kbRu1o3pN3U0WYpHLvan9xQ3hYW8
+        TebVuquQ==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:55376 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kdkie-0032Zd-GW; Sat, 14 Nov 2020 01:51:12 +0000
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hwmon fixes for v5.10-rc4
+Date:   Fri, 13 Nov 2020 17:51:11 -0800
+Message-Id: <20201114015111.55792-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kdkie-0032Zd-GW
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:55376
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 1
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 5:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
->
-> > > > > Seems to me that the ability to reap another process's memory is a
-> > > > > generally useful one, and that it should not be tied to delivering a
-> > > > > signal in this fashion.
-> > > > >
-> > > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
-> > > > > few changes and tweaks, but can't that be used to solve this problem?
-> > > >
-> > > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
-> > > > one of the options recently discussed in
-> > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > > > . The thread describes some of the issues with that approach but if we
-> > > > limit it to processes with pending SIGKILL only then I think that
-> > > > would be doable.
-> > >
-> > > Why would it be necessary to read /proc/pid/maps?  I'd have thought
-> > > that a starting effort would be
-> > >
-> > >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
-> > >
-> > > (after translation into process_madvise() speak).  Which is equivalent
-> > > to the proposed process_madvise(MADV_DONTNEED_MM)?
-> >
-> > Yep, this is very similar to option #3 in
-> > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > and I actually have a tested prototype for that.
->
-> Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
-> which spans the whole address range?
+Hi Linus,
 
-That would be the option #4 from the same discussion and the issues
-noted there are "process_madvise return value can't handle such a
-large number of bytes and there is MAX_RW_COUNT limit on max number of
-bytes one process_madvise call can handle". In my prototype I have a
-special handling for such "bulk operation" to work around the
-MAX_RW_COUNT limitation.
+Please pull hwmon fixes for Linux v5.10-rc4 from signed tag:
 
->
-> > If that's the
-> > preferred method then I can post it quite quickly.
->
-> I assume you've tested that prototype.  How did its usefulness compare
-> with this SIGKILL-based approach?
+    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.10-rc4
 
-Just to make sure I understand correctly your question, you are asking
-about performance comparison of:
+Thanks,
+Guenter
+------
 
-// approach in this RFC
-pidfd_send_signal(SIGKILL, SYNC_REAP_MM)
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-vs
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-// option #4 in the previous RFC
-kill(SIGKILL); process_madvise(vector=NULL, MADV_DONTNEED);
+are available in the Git repository at:
 
-If so, I have results for the current RFC approach but the previous
-approach was testing on an older device, so don't have
-apples-to-apples comparison results at the moment. I can collect the
-data for fair comparison if desired, however I don't expect a
-noticeable performance difference since they both do pretty much the
-same thing (even on different devices my results are quite close). I
-think it's more a question of which API would be more appropriate.
+  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.10-rc4
 
->
+for you to fetch changes up to 60268b0e8258fdea9a3c9f4b51e161c123571db3:
+
+  hwmon: (amd_energy) modify the visibility of the counters (2020-11-13 06:46:20 -0800)
+
+----------------------------------------------------------------
+hwmon fixes for v5.10-rc4
+
+Fix potential bufer overflow in pmbus/max20730 driver
+Fix locking issue in pmbus core
+Fix regression causing timeouts in applesmc driver
+Fix RPM calculation in pwm-fan driver
+Restrict counter visibility in amd_energy driver
+
+----------------------------------------------------------------
+Brad Campbell (1):
+      hwmon: (applesmc) Re-work SMC comms
+
+Dan Carpenter (1):
+      hwmon: (pmbus/max20730) use scnprintf() instead of snprintf()
+
+Naveen Krishna Chatradhi (1):
+      hwmon: (amd_energy) modify the visibility of the counters
+
+Paul Barker (1):
+      hwmon: (pwm-fan) Fix RPM calculation
+
+Robert Hancock (1):
+      hwmon: (pmbus) Add mutex locking for sysfs reads
+
+ drivers/hwmon/amd_energy.c       |   2 +-
+ drivers/hwmon/applesmc.c         | 130 ++++++++++++++++++++++++---------------
+ drivers/hwmon/pmbus/max20730.c   |  26 ++++----
+ drivers/hwmon/pmbus/pmbus_core.c |  13 +++-
+ drivers/hwmon/pwm-fan.c          |  16 ++---
+ 5 files changed, 115 insertions(+), 72 deletions(-)
