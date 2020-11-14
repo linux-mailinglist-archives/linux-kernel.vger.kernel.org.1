@@ -2,100 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188732B2F37
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E972B2F3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgKNRq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 12:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726088AbgKNRq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 12:46:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAF7C0613D1;
-        Sat, 14 Nov 2020 09:46:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=zFmbG7lUGEssA2TGxTf3U7GjLMkFXLzG9VOoFN4dDxg=; b=NaUnrjYu1zoWsuyoRbah1k4MUm
-        +wtvix9eB59O0WyyPG4u6xAhJVkbEbfJPTzc/PgbzC58UeCZ194ShmokVJLiTSYYeqHugsS6IfuCX
-        0+94Us5i0XxrJ+45YsWl5Rd5Ebf0vm1ykzpdIzK7Tl4Ra48DhhP55rqtLBkTdhJcaBLlGTBqylXUh
-        dMygVWZNT2joP8QU+WgMTXUMOP8Kx/Wht0GcDW//w3Tu8Cko0g5jZqzaiJYfgtjUFxGnUVAWk2Wuc
-        UkratnAyV2uZQOaaHsq8WQa3vGuP3/+8yHQapANjkKZmnQZ4SdaEMq+1yCi/76G+NrTRLu7uSXd8l
-        Ye7AFfCw==;
-Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdzd0-0000Ys-IA; Sat, 14 Nov 2020 17:46:23 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-next@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next v2] net: linux/skbuff.h: combine SKB_EXTENSIONS + KCOV handling
-Date:   Sat, 14 Nov 2020 09:46:18 -0800
-Message-Id: <20201114174618.24471-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726210AbgKNRuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 12:50:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726150AbgKNRuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 12:50:16 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEDAA22252;
+        Sat, 14 Nov 2020 17:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605376215;
+        bh=SWL+ZL/QchtfDwjUMZodHvzkWbW19llhLzd7xEw15z8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eXkJ/JG/lb8AHgkwSG1/YYNwVsROtJ2Ib1RDHuDO2fcFmOO6Szur85ri6Et2qy1iZ
+         a+I5boo0OZro7KlX/QafbTO6LweuSI+3l08NAZDypYbLfdrQmfgtV06VMEGhjHtfjU
+         HgxgCXinhQWkEqNMX+YVKkqggbmW87p0a9NRQw1E=
+Date:   Sat, 14 Nov 2020 09:50:14 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     <vishal@chelsio.com>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] cxgb4: Remove unused variable ret
+Message-ID: <20201114095014.4b3fc7c6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1605346706-23782-1-git-send-email-zou_wei@huawei.com>
+References: <1605346706-23782-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous Kconfig patch led to some other build errors as
-reported by the 0day bot and my own overnight build testing.
+On Sat, 14 Nov 2020 17:38:26 +0800 Zou Wei wrote:
+> This patch fixes below warning reported by coccicheck:
+> 
+> ./drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:3284:5-8: Unneeded variable: "ret". Return "0" on line 3301
+> 
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-These are all in <linux/skbuff.h> when KCOV is enabled but
-SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
-in the header file.
-
-Fixes: 6370cc3bbd8a ("net: add kcov handle to skb extensions")
-Fixes: 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Aleksandr Nogikh <nogikh@google.com>
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-next@vger.kernel.org
-Cc: netdev@vger.kernel.org
----
-v2: (as suggested by Matthieu Baerts <matthieu.baerts@tessares.net>)
-  drop an extraneous space in a comment;
-  use CONFIG_SKB_EXTENSIONS instead of CONFIG_NET;
-
- include/linux/skbuff.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- linux-next-20201113.orig/include/linux/skbuff.h
-+++ linux-next-20201113/include/linux/skbuff.h
-@@ -4151,7 +4151,7 @@ enum skb_ext_id {
- #if IS_ENABLED(CONFIG_MPTCP)
- 	SKB_EXT_MPTCP,
- #endif
--#if IS_ENABLED(CONFIG_KCOV)
-+#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
- 	SKB_EXT_KCOV_HANDLE,
- #endif
- 	SKB_EXT_NUM, /* must be last */
-@@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
- #endif
- }
- 
--#ifdef CONFIG_KCOV
-+#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
- static inline void skb_set_kcov_handle(struct sk_buff *skb,
- 				       const u64 kcov_handle)
- {
-@@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
- static inline void skb_set_kcov_handle(struct sk_buff *skb,
- 				       const u64 kcov_handle) { }
- static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
--#endif /* CONFIG_KCOV */
-+#endif /* CONFIG_KCOV && CONFIG_SKB_EXTENSIONS */
- 
- #endif	/* __KERNEL__ */
- #endif	/* _LINUX_SKBUFF_H */
+Some macro uses it implicitly, this breaks the build.
