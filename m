@@ -2,58 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88802B3074
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3CD2B3078
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgKNT7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:59:35 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:58396 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgKNT7f (ORCPT
+        id S1726375AbgKNUBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:01:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgKNUBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:59:35 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 6DB808054C;
-        Sat, 14 Nov 2020 20:59:32 +0100 (CET)
-Date:   Sat, 14 Nov 2020 20:59:31 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] dt-bindings: panel-simple-dsi: add samsung panels
- for OnePlus 6/T
-Message-ID: <20201114195931.GB3900471@ravnborg.org>
-References: <20201112161920.2671430-1-caleb@connolly.tech>
- <20201112161920.2671430-3-caleb@connolly.tech>
+        Sat, 14 Nov 2020 15:01:49 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A85C0613D1;
+        Sat, 14 Nov 2020 12:01:49 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id r17so14131211wrw.1;
+        Sat, 14 Nov 2020 12:01:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CO7SJxq4xCCXF7MiAurxIxONv6JAjuDmnI0VaDmeaSY=;
+        b=mZ208ne/cgkgeirQzC1ZM3yDSeRFywmIefOYEVimaDcj0icBErG9hI84KCC40tIT4Z
+         F0iKXDOcEuONGchiq6+JUaunec2BlPzJgSfgojQhxoS8yv4vt7pRUli+iJjlAufEh1e6
+         di/XUU+8/Fj3tVQbh15CSsyHNYlxS/l+mqiEGOXHxigWFqz37nYF2n2YvbRTQHJStQhx
+         pflIJzyuDY8t9mlCT6AOW8mXoXECdihNcqoeY0LJ0Jioc82een+jt0BNnnBlygtQ6gSl
+         Lt0DFG9e7FZSA+VzPkaI2XWRLl70aCwNLAnyaaccfeL++iq5dX6C0y+nWb38i+U3U6LB
+         wlyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CO7SJxq4xCCXF7MiAurxIxONv6JAjuDmnI0VaDmeaSY=;
+        b=qXw03xn0099GsiXKU+KqXuiex6yvGGa2gTn+3yP6/awKtlFxwKrHLb5n2QgBCVaT8B
+         qeLSLRtEsNUXYX93HSCBp4mrdIkyZyuwk+0M/fxOr8PteTIPleeagkwatO3S8Zqp9KQ5
+         J3+k6lQzazmfssfT72o7XIp6otbWqRPLQEd8I9MZEjDcr9B7NZVqZHFr/iSjnlvc62+s
+         aQnlzfDVIQUdxQk24jc2f9OTnmMFV1qN4In4v2EfNQ3kPr8MUpbpd99Lfg5FLWm71JeF
+         Op5jG48QT24SLWVP9oKGkEkjuyPqTGPW56Sl0UI/pFNCUUQq4MKDAXG701p5fh02naMC
+         0cuQ==
+X-Gm-Message-State: AOAM530EhLSY087egUHQ07BL87Qo44aI4egV5sXOMPz2n/0qZs56FjqG
+        hty3rHWAT2PrKFPixtN7UZxOiMBBCc0nWA==
+X-Google-Smtp-Source: ABdhPJxdQdqpaxnvhf4cnXaJblB5+GkW0sO35dANXa7fHfdT2yqmvR9/oyK2vuJwQl9DiCNrKdhv3Q==
+X-Received: by 2002:a5d:66d2:: with SMTP id k18mr10458016wrw.327.1605384107969;
+        Sat, 14 Nov 2020 12:01:47 -0800 (PST)
+Received: from localhost.localdomain (p4fc3ea77.dip0.t-ipconnect.de. [79.195.234.119])
+        by smtp.googlemail.com with ESMTPSA id g138sm14342953wme.39.2020.11.14.12.01.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 12:01:47 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     davem@davemloft.net, kuba@kernel.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     jianxin.pan@amlogic.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com, andrew@lunn.ch,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH RFC v1 0/4] dwmac-meson8b: picosecond precision RX delay support
+Date:   Sat, 14 Nov 2020 21:01:00 +0100
+Message-Id: <20201114200104.4148283-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112161920.2671430-3-caleb@connolly.tech>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=f9cxcILiNMCIw7iZS7cA:9 a=CjuIK1q_8ugA:10
-        a=Ab_k19QNQqsA:10
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Caleb,
-On Thu, Nov 12, 2020 at 04:21:30PM +0000, Caleb Connolly wrote:
-> Add compatibles for the samsung,sofef00 and samsung,s6e3fc2x01 panels
-> used in the OnePlus 6 & 6T respectively.
-> 
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+Hello,
 
-Thansk, applied to drm-misc-next.
-Fixed so entries are sorted alphabetically when applying.
+with the help of Jianxin Pan (many thanks!) the meaning of the "new"
+PRG_ETH1[19:16] register bits on Amlogic Meson G12A, G12B and SM1 SoCs
+are finally known. These SoCs allow fine-tuning the RGMII RX delay in
+200ps steps (contrary to what I have thought in the past [0] these are
+not some "calibration" values).
 
-	Sam
+The vendor u-boot has code to automatically detect the best RX/TX delay
+settings. For now we keep it simple and add a device-tree property with
+200ps precision to select the "right" RX delay for each board.
+
+While here, deprecate the "amlogic,rx-delay-ns" property as it's not
+used on any upstream .dts (yet). The driver is backwards compatible.
+
+I have tested this on an X96 Air 4GB board (not upstream yet). Testing
+with iperf3 gives 938 Mbits/sec in both directions (RX and TX). The
+following network settings were used in the .dts (2ns TX delay
+generated by the PHY, 800ps RX delay generated by the MAC as the PHY
+only supports 0ns or 2ns RX delays):
+	&ext_mdio {
+		external_phy: ethernet-phy@0 {
+			/* Realtek RTL8211F (0x001cc916) */
+			reg = <0>;
+			eee-broken-1000t;
+
+			reset-assert-us = <10000>;
+			reset-deassert-us = <30000>;
+			reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW |
+						GPIO_OPEN_DRAIN)>;
+
+			interrupt-parent = <&gpio_intc>;
+			/* MAC_INTR on GPIOZ_14 */
+			interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
+		};
+	};
+
+	&ethmac {
+		status = "okay";
+
+		pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
+		pinctrl-names = "default";
+
+		phy-mode = "rgmii-txid";
+		phy-handle = <&external_phy>;
+
+		amlogic,rgmii-rx-delay-ps = <800>;
+	};
+
+
+[0] https://lore.kernel.org/netdev/CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com/
+
+
+
+Martin Blumenstingl (4):
+  dt-bindings: net: dwmac-meson: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: move RGMII delays into a separate function
+  net: stmmac: dwmac-meson8b: add support for the RGMII RX delay on G12A
+
+ .../bindings/net/amlogic,meson-dwmac.yaml     | 52 ++++++++++-
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 92 +++++++++++++++----
+ 2 files changed, 123 insertions(+), 21 deletions(-)
+
+-- 
+2.29.2
+
