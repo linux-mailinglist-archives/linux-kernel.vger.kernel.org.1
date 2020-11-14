@@ -2,64 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0C82B3001
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311702B3002
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgKNTMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:12:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        id S1726310AbgKNTMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 14:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKNTMI (ORCPT
+        with ESMTP id S1726112AbgKNTML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:12:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DC1C0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 11:12:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WxkHg606XkyvNta0/g/LnAPObU1iotZ1sOfBfOHWffc=; b=jmZpwLSiLutZKV2fkbiPqmxFEn
-        iS47AQF/5TyY8mMIqGDEzaBXMaFhv9xBeUePelOl+MiVGz7+pRcdQLzhxCFKY3a0WGGn+wzbzm6Sa
-        d9scRAX8mKrEsABz70XIkQbBypiyaL453USpeyrVnG7lDVUVlXB7IwoGAAF1ToIxKUzVpDJjt6ESC
-        EiMby6+nEQMurMn9/XHn0p8FBB2NxqB2uLdx3KsMtqxPbsAfJSP4MApvjEx0NUBocUhwQ7EHixsQl
-        JHsDi8W57QWbncdnklLQ+RuhvCQeRSChQEiPo4UucxxkMU4y1KpDQxkoD0eyXmL/drkNQ0W9w6eix
-        rVtvhY8w==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ke0xq-0004sf-75; Sat, 14 Nov 2020 19:11:58 +0000
-Date:   Sat, 14 Nov 2020 19:11:58 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hui Su <sh_def@163.com>, hughd@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, pankaj.gupta.linux@gmail.com,
-        lkp@intel.com
-Subject: Re: [PATCH v2] mm/shmem.c: make shmem_mapping() inline
-Message-ID: <20201114191158.GN17076@casper.infradead.org>
-References: <20201114055134.GA186011@rlk>
- <20201114105039.4d44e3036e22e10c9a70912c@linux-foundation.org>
+        Sat, 14 Nov 2020 14:12:11 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DCFC0613D1;
+        Sat, 14 Nov 2020 11:12:11 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id f20so18666040ejz.4;
+        Sat, 14 Nov 2020 11:12:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u5WJiirRKNDUV5O3yKO2RQW3GzVNyUWzALcJgmi9qD8=;
+        b=FSu31JSKLbwJZm8SKdIl9tHJVYSdoso0nbNX1WyZSqU7bJ+f3/mhAJKWP98OxztFvq
+         GpqqwY1QxIJK9hRA4qjpD6KncuahjDOHrbayfw9KPlE/heg7r1R0rfDAJTbIAQJNuDr9
+         IkJpuOQ2tuj/r96z41WusH70BMbCVlaD5vYOlEq3JiUbLmXUbNaOk2uJ8Xyka56OpZz3
+         TEcOnoZkXQGGRi1idfvtDrP0MeDZR1wA40ED1SpzLXak4V5sPvxsBG7RJ5PDXD4JcD00
+         dhRUSf3jZI7yX4WlK1PEEq6k83ONo5c19SPdweZAaQFGS8s0k7AW9ApQg34JKmOigg5w
+         7NWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u5WJiirRKNDUV5O3yKO2RQW3GzVNyUWzALcJgmi9qD8=;
+        b=cC1uwZXIxZoQsSN/8mCvM4nY29Z+XG7QqGGwnpkPRC/R2MFPOcubuc4aUcZzkO/TL7
+         MCu49sZIXrMYjv0keNGzbi4YJW+yV2PlFI/JwCA2899r+qkDLFkspYKgp9Hj9AD+WWXn
+         /rfJG9tP8UtuzPkvmD+MPAq+weXJHs7PFv40DzNj7svjJGxQp++klVXZBuo/qpXlINkK
+         BMoAcYc9Otd1VlSlFZpgqcLCcFbYnz9bp6oUaNksAUseID8b1awAzB8OuLQfLcNyeumc
+         32TVdVmdCKVE1YfYqjjTyfq8XYTyGEQN7jGYRtTlVL22hYe08lUUeW4gAxzgu+Gdge0t
+         aqNw==
+X-Gm-Message-State: AOAM531A7RSKLRLJxtTyC+gSQ+HTHKbPiN1B59zMkSlbdob9hvtHoLxG
+        wAMUoC3HLj57jnoThE1VTNVag3vHQM/dOpXuxbw=
+X-Google-Smtp-Source: ABdhPJzdMCUsv64szJ8LAp46qliACxg7P6fS8+B9EpwGZnNi0pnsgtbqLjudhNZQ7G9Q6urZlSQdUGypFLEZRpTpiTA=
+X-Received: by 2002:a17:906:fa1b:: with SMTP id lo27mr7560682ejb.216.1605381129975;
+ Sat, 14 Nov 2020 11:12:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201114105039.4d44e3036e22e10c9a70912c@linux-foundation.org>
+References: <20201113000508.14702-1-aouledameur@baylibre.com> <20201113000508.14702-4-aouledameur@baylibre.com>
+In-Reply-To: <20201113000508.14702-4-aouledameur@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 14 Nov 2020 20:11:59 +0100
+Message-ID: <CAFBinCA6_Cei5QdiVRTX14S5QFoyDgAOhFUXtnx5uiAxuTRs9A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] phy: amlogic: meson8b-usb2: fix shared reset control use
+To:     Amjad Ouled-Ameur <aouledameur@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-amlogic@lists.infradead.org,
+        Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 10:50:39AM -0800, Andrew Morton wrote:
-> But really, shmem_mapping() isn't worth an out-of-line call from any
-> callsite - it would be best to make it inlined everywhere.
-> 
-> - make shmem_aops global
-> - declare shmem_aops in shmem_fs.h
-> - export shmem_aops to modules for drivers/dma-buf/udmabuf.c
-> - include linux/fs.h in shmem_fs.h for address_space_operations (we already
->   include fs.h via swap.h, but we shouldn't depend on that)
-> - make shmem_mapping() a static inline in shmem_fs.h.
+Hi Amjad,
 
-... or use an AS_ bit to make shmem_mapping() global inline without
-exposing the shmem_aops symbol.  We're not short of AS_ bits, and it's
-probably even cheaper than a pointer comparison.
+On Fri, Nov 13, 2020 at 1:07 AM Amjad Ouled-Ameur
+<aouledameur@baylibre.com> wrote:
+[...]
+>         ret = clk_prepare_enable(priv->clk_usb);
+>         if (ret) {
+>                 dev_err(&phy->dev, "Failed to enable USB DDR clock\n");
+> +               reset_control_rearm(priv->reset);
+this should come after reset_control_rearm so we're cleaning up in
+reverse order of initializing things
+(in this case it probably makes no difference since
+reset_control_rearm is not touching any registers, but I'd still have
+it in the correct order to not confuse future developers)
 
-A really good changelog would explain why we need shmem_mapping()
-everywhere that we currently use it.  It's not immediately obvious why
-so many places need to know.
+>                 clk_disable_unprepare(priv->clk_usb_general);
+>                 return ret;
+>         }
+> @@ -197,6 +199,7 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
+>                         regmap_read(priv->regmap, REG_ADP_BC, &reg);
+>                         if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+>                                 dev_warn(&phy->dev, "USB ID detect failed!\n");
+> +                               reset_control_rearm(priv->reset);
+same here, reset_control_rearm should be after clk_disable_unprepare
+
+>                                 clk_disable_unprepare(priv->clk_usb);
+>                                 clk_disable_unprepare(priv->clk_usb_general);
+>                                 return -EINVAL;
+> @@ -216,6 +219,7 @@ static int phy_meson8b_usb2_power_off(struct phy *phy)
+>                                    REG_DBG_UART_SET_IDDQ,
+>                                    REG_DBG_UART_SET_IDDQ);
+>
+> +       reset_control_rearm(priv->reset);
+same here, reset_control_rearm should be after clk_disable_unprepare
+
+>         clk_disable_unprepare(priv->clk_usb);
+>         clk_disable_unprepare(priv->clk_usb_general);
+
+
+Best regards,
+Martin
