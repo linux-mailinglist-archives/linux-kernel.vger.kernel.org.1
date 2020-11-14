@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263BB2B2E68
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 17:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196AB2B2E6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 17:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgKNQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 11:21:14 -0500
-Received: from verein.lst.de ([213.95.11.211]:50538 "EHLO verein.lst.de"
+        id S1727162AbgKNQWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 11:22:02 -0500
+Received: from verein.lst.de ([213.95.11.211]:50548 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgKNQVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 11:21:13 -0500
+        id S1726716AbgKNQWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 11:22:01 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5B36B67373; Sat, 14 Nov 2020 17:21:10 +0100 (CET)
-Date:   Sat, 14 Nov 2020 17:21:09 +0100
+        id B112867373; Sat, 14 Nov 2020 17:21:59 +0100 (CET)
+Date:   Sat, 14 Nov 2020 17:21:59 +0100
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jonathan Marek <jonathan@marek.ca>
 Cc:     freedreno@lists.freedesktop.org, hch@lst.de,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH v2 2/5] dma-direct: add dma_direct_bypass() to
- force direct ops
-Message-ID: <20201114162109.GA24411@lst.de>
-References: <20201114151717.5369-1-jonathan@marek.ca> <20201114151717.5369-3-jonathan@marek.ca>
+Subject: Re: [RESEND PATCH v2 3/5] drm/msm: call dma_direct_bypass()
+Message-ID: <20201114162159.GB24411@lst.de>
+References: <20201114151717.5369-1-jonathan@marek.ca> <20201114151717.5369-4-jonathan@marek.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201114151717.5369-3-jonathan@marek.ca>
+In-Reply-To: <20201114151717.5369-4-jonathan@marek.ca>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 10:17:10AM -0500, Jonathan Marek wrote:
-> Add a function to force direct ops and disable swiotlb for a deivce.
+On Sat, Nov 14, 2020 at 10:17:11AM -0500, Jonathan Marek wrote:
+> Always use direct dma ops and no swiotlb.
+> 
+> Note: arm-smmu-qcom already avoids creating iommu dma ops, but not
+> everything uses arm-smmu-qcom and this also sets the dma mask.
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/gpu/drm/msm/Kconfig   | 1 +
+>  drivers/gpu/drm/msm/msm_drv.c | 8 +++++---
+>  2 files changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index e5816b498494..07c50405970a 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -20,6 +20,7 @@ config DRM_MSM
+>  	select SND_SOC_HDMI_CODEC if SND_SOC
+>  	select SYNC_FILE
+>  	select PM_OPP
+> +	select DMA_OPS_BYPASS
+>  	help
+>  	  DRM/KMS driver for MSM/snapdragon.
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 49685571dc0e..bae48afca82e 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/dma-mapping.h>
+> +#include <linux/dma-direct.h>
+>  #include <linux/kthread.h>
+>  #include <linux/uaccess.h>
+>  #include <uapi/linux/sched/types.h>
+> @@ -1288,10 +1289,11 @@ static int msm_pdev_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto fail;
+>  
+> -	/* on all devices that I am aware of, iommu's which can map
+> -	 * any address the cpu can see are used:
+> +	/* always use direct dma ops and no swiotlb
 
-s/deivce/device/
-
-> +#if IS_ENABLED(CONFIG_DMA_OPS_BYPASS) && !IS_ENABLED(CONFIG_ARCH_HAS_FORCE_DMA_UNENCRYPTED)
-
-overly long line.
-
-> +#if IS_ENABLED(CONFIG_DMA_OPS_BYPASS) && !IS_ENABLED(CONFIG_ARCH_HAS_FORCE_DMA_UNENCRYPTED)
-
-Again.
-
-> +int dma_direct_bypass(struct device *dev)
-> +{
-> +	int ret;
-> +
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev->bus_dma_limit = DMA_BIT_MASK(64);
-> +	dev->dma_ops_bypass = true;
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(dma_direct_bypass);
-
-But more importantly ARCH_HAS_FORCE_DMA_UNENCRYPTED is just a compile
-time flag.  With this you disable the functionality for all the usual
-x86, s390 and powerpc configs, while only a tiny number of systems
-for bounce buffering.  But I think you can just trivialy check
-force_dma_unencrypted instead.  We do not need an extra Kconfig symbol
-symbol for this trivial helper.
-
-Also the helper is misnamed and misplaced.  The semantics have nothing
-to do with dma-direct, the fact that is uses the ops bypass is an
-implementation detail.   It really fits into the iommu code, as it
-allows the driver to use the IOMMU API for IOVA management, while using
-the DMA API for cache management.  So it should be named to reflect
-that, and also grow a kerneldoc comment explaining how it will be used.
+Again, and implementation detail.  Comments should not explain details
+obvious from the code (especially layers away) but the intent.
