@@ -2,99 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075C22B313D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 23:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280552B313F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 23:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgKNWvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 17:51:16 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:43355 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgKNWvQ (ORCPT
+        id S1726278AbgKNWwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 17:52:54 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:29541 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKNWwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 17:51:16 -0500
+        Sat, 14 Nov 2020 17:52:54 -0500
 X-Originating-IP: 86.194.74.19
 Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0182CFF802;
-        Sat, 14 Nov 2020 22:51:13 +0000 (UTC)
-Date:   Sat, 14 Nov 2020 23:51:13 +0100
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E1B00240003;
+        Sat, 14 Nov 2020 22:52:50 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: Re: [PATCH] counter: microchip-tcb-capture: Fix CMR value check
-Message-ID: <20201114225113.GR4556@piout.net>
-References: <20201111163807.10201-1-vilhelm.gray@gmail.com>
- <20201114224827.GQ4556@piout.net>
+To:     bcm-kernel-feedback-list@broadcom.com, a.zummo@towertech.it,
+        linux-arm-kernel@lists.infradead.org, f.fainelli@gmail.com,
+        Xu Wang <vulab@iscas.ac.cn>, linux-rtc@vger.kernel.org
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: brcmstb-waketimer: Remove redundant null check before clk_disable_unprepare
+Date:   Sat, 14 Nov 2020 23:52:45 +0100
+Message-Id: <160539432950.849809.8243938283788159741.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201113074538.65028-1-vulab@iscas.ac.cn>
+References: <20201113074538.65028-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201114224827.GQ4556@piout.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/2020 23:48:28+0100, Alexandre Belloni wrote:
-> On 11/11/2020 11:38:07-0500, William Breathitt Gray wrote:
-> > The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
-> > for CMR. This patch fixes the action_get() callback to properly check
-> > for these values rather than mask them.
-> > 
-> > Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
-> > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> 
-> > ---
-> >  drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
-> >  1 file changed, 10 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-> > index 039c54a78aa5..142b389fc9db 100644
-> > --- a/drivers/counter/microchip-tcb-capture.c
-> > +++ b/drivers/counter/microchip-tcb-capture.c
-> > @@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
-> >  
-> >  	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
-> >  
-> > -	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
-> > -
-> > -	if (cmr & ATMEL_TC_ETRGEDG_NONE)
-> > +	switch (cmr & ATMEL_TC_ETRGEDG_BOTH) {
+On Fri, 13 Nov 2020 07:45:38 +0000, Xu Wang wrote:
+> Because clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
 
-BTW, this could be simply ATMEL_TC_ETRGEDG which is the mask.
+Applied, thanks!
 
-> > +	default:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
-> > -	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
-> > +		break;
-> > +	case ATMEL_TC_ETRGEDG_RISING:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
-> > -	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
-> > +		break;
-> > +	case ATMEL_TC_ETRGEDG_FALLING:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
-> > -	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
-> > +		break;
-> > +	case ATMEL_TC_ETRGEDG_BOTH:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
-> > +		break;
-> > +	}
-> >  
-> >  	return 0;
-> >  }
-> > -- 
-> > 2.29.2
-> > 
-> 
-> -- 
-> Alexandre Belloni, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+[1/1] rtc: brcmstb-waketimer: Remove redundant null check before clk_disable_unprepare
+      commit: 910d002d84df21da61cadba92dd510ece5e46312
 
+Best regards,
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Alexandre Belloni <alexandre.belloni@bootlin.com>
