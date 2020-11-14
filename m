@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016E52B2C0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7DE2B2C0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgKNILM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 03:11:12 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7899 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgKNILM (ORCPT
+        id S1726514AbgKNIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 03:10:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgKNIK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 03:11:12 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CY7Lt2sNFz761H;
-        Sat, 14 Nov 2020 16:10:46 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 14 Nov 2020 16:10:48 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <viro@zeniv.linux.org.uk>, <akpm@linux-foundation.org>,
-        <David.Laight@ACULAB.COM>, <linux-fsdevel@vger.kernel.org>
-CC:     <akinobu.mita@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <prime.zeng@huawei.com>,
-        <yangyicong@hisilicon.com>
-Subject: [PATCH v3] libfs: fix error cast of negative value in simple_attr_write()
-Date:   Sat, 14 Nov 2020 16:09:16 +0800
-Message-ID: <1605341356-11872-1-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
+        Sat, 14 Nov 2020 03:10:28 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C05AC0613D1;
+        Sat, 14 Nov 2020 00:10:28 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f38so8895813pgm.2;
+        Sat, 14 Nov 2020 00:10:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UjoM/Jb9YzMDUNLXPrC2c7aiTcht0/xGNSfdesVAVqI=;
+        b=IGiUSEBZx9/TmLfHHpK3pQ7GSrhfMQFNSfGAC1pbY2Ge/tO189H8uPBwgsjiUksNnA
+         j8Ndu+iaMovK3CgVOmlPYgIj7a2okENhx0LNMOjoJ9I49pmMbyrGBLDrvnzipOKZszP+
+         5m9NTEoCxkjkCEznH0MTgdqoqEYERxY36mFXnGHG4SJQsLogUrAbkT4p8CdUO8XPBrR/
+         2AQERdbw1QMl7UijRsIkesKRf96Xe3T7FiPOnUy0Dslpsvy4lxQm6m8btQMU0Ij1CY+c
+         Mz1wpWy4yLvc5zXBIHwW2N7c85QpN90wx4Eb8minXiKj7+IAqJWA6yyEFXGmMawl7GWT
+         4qCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UjoM/Jb9YzMDUNLXPrC2c7aiTcht0/xGNSfdesVAVqI=;
+        b=ptXLjLJzXZOkCypx2pctB531mQj+Uvecj9DJnYBVLcDngXZixI5P+U5Y6eaiuIMim+
+         ptrNoXSu+4DRb0rgVqLzWe/pgIzLfMbcPAlbssllQys/ssE6n/nxj2VWpEKhST5sxfee
+         EJlVZX36HgAT54vVXLP0/wlYKpKszlxz/w0wqgUpEcb+kirCrHzS0v6CXpN++F8by5Ew
+         uRYnQLNRvL42TR2Om53ycgOKz8rpKowIsgvw1AaERTixwVgo2zWQDXErHBJc8HIgm1Og
+         gUnzl0dY7zTcPQk8gRQNOWpinXzSfZE0Y7K0jvGvBamObvvIdMJDSM3Tg8cHY5Z0OOFC
+         K7kA==
+X-Gm-Message-State: AOAM5320lNrIbBkDHUdrg7mCwC61T5cE07jRco9v9hEOn5dWv+v5PU3z
+        3IBYLGmK0lKI9tdpRxSLog==
+X-Google-Smtp-Source: ABdhPJwBZoL847JBlahwrxY8TlcxOqmdTrJsXnzO985GLU/rubIRHIugmq6wYmm4RUzNOKzyfzkQ7A==
+X-Received: by 2002:a62:1c47:0:b029:18b:9e22:593e with SMTP id c68-20020a621c470000b029018b9e22593emr5691287pfc.42.1605341427792;
+        Sat, 14 Nov 2020 00:10:27 -0800 (PST)
+Received: from PWN ([221.124.243.27])
+        by smtp.gmail.com with ESMTPSA id t32sm11314155pgl.0.2020.11.14.00.10.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 00:10:27 -0800 (PST)
+Date:   Sat, 14 Nov 2020 03:10:21 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
+ FNTCHARCNT() in fbcon.c
+Message-ID: <20201114081021.GA11811@PWN>
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
+ <20201113211633.GY401619@phenom.ffwll.local>
+ <X68NFzaAuImemnqh@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X68NFzaAuImemnqh@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The attr->set() receive a value of u64, but simple_strtoll() is used
-for doing the conversion. It will lead to the error cast if user inputs
-a negative value.
+> On Fri, Nov 13, 2020 at 10:16:33PM +0100, Daniel Vetter wrote:
+> > On Thu, Nov 12, 2020 at 07:02:21AM -0500, Peilin Ye wrote:
+> > > Peilin Ye (5):
+> > >   console: Delete unused con_font_copy() callback implementations
+> > >   console: Delete dummy con_font_set() and con_font_default() callback implementations
+> > >   Fonts: Add charcount field to font_desc
+> > >   parisc/sticore: Avoid hard-coding built-in font charcount
+> > >   fbcon: Avoid using FNTCHARCNT() and hard-coded built-in font charcount
+> > 
+> > Patches all look good to me, if Greg is ok with me applying the entire
+> > pile to drm-misc-next I'll do that next week.
 
-Use kstrtoull() instead of simple_strtoll() to convert a string got
-from the user to an unsigned value. The former will return '-EINVAL' if
-it gets a negetive value, but the latter can't handle the situation
-correctly. Make 'val' unsigned long long as what kstrtoull() takes, this
-will eliminate the compile warning on no 64-bit architectures.
+On Fri, Nov 13, 2020 at 11:47:51PM +0100, Greg Kroah-Hartman wrote:
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: f7b88631a897 ("fs/libfs.c: fix simple_attr_write() on 32bit machines")
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
-Change since v1:
-- address the compile warning for non-64 bit platform.
-Change since v2:
-Link: https://lore.kernel.org/linux-fsdevel/1605000324-7428-1-git-send-email-yangyicong@hisilicon.com/
-- make 'val' unsigned long long and mentioned in the commit
-Link: https://lore.kernel.org/linux-fsdevel/1605261369-551-1-git-send-email-yangyicong@hisilicon.com/
+Thanks for reviewing!  Questions about the last patch [5/5] though, it
+depends on the following assumption:
 
- fs/libfs.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+"""
+For each console `idx`, `vc_cons[idx].d->vc_font.data` and
+`fb_display[idx].fontdata` always point to the same buffer.
+"""
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index fc34361..7124c2e 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -959,7 +959,7 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
- 			  size_t len, loff_t *ppos)
- {
- 	struct simple_attr *attr;
--	u64 val;
-+	unsigned long long val;
- 	size_t size;
- 	ssize_t ret;
- 
-@@ -977,7 +977,9 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
- 		goto out;
- 
- 	attr->set_buf[size] = '\0';
--	val = simple_strtoll(attr->set_buf, NULL, 0);
-+	ret = kstrtoull(attr->set_buf, 0, &val);
-+	if (ret)
-+		goto out;
- 	ret = attr->set(attr->data, val);
- 	if (ret == 0)
- 		ret = len; /* on success, claim we got the whole input */
--- 
-2.8.1
+Is this true?  I think it is true by grepping for `fontdata`.  I also
+noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
+interchangeably, see fbcon_get_requirement():
+
+		vc = vc_cons[fg_console].d;
+		[...]
+			p = &fb_display[fg_console];
+			caps->x = 1 << (vc->vc_font.width - 1);
+					^^^^^^^^^^^
+			caps->y = 1 << (vc->vc_font.height - 1);
+					^^^^^^^^^^^
+			caps->len = (p->userfont) ?
+				FNTCHARCNT(p->fontdata) : 256;
+					   ^^^^^^^^^^^
+
+If it is true, then what is the point of using `fontdata` in `struct
+fbcon_display`?  Just for the `userfont` flag?  Should we delete
+`fontdata`, when we no longer need the `userfont` flag?
+
+In this sense I think [5/5] needs more testing.  Do we have test files
+for fbcon, or should I try to write some tests from scratch?
+
+Thank you,
+Peilin Ye
 
