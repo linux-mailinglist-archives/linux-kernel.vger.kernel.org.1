@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B942B30AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BE22B30AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgKNUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:44:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53644 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726189AbgKNUoe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:44:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605386673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p1WDI73qmGI0DsbBcCGMG7Ea4nfKcBZVtW/kE1GC25s=;
-        b=hp9ZxSXWUvk80ij1gO5r3atG4bEcECnt1Iyjax9HubGpd8gWCT+T+Cx7uw7A5qztEgBtWU
-        lJ6pOzT6rtzMPPZbcDQP8VdLzf5gGv0zTBX71KJ92yoOhZwBuXCKhPZ7wVUgWQzbxqs5hO
-        3JdpJm5ZGpQDskhFk01ZV+ZAYwHOv6Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-8S4OxrQUPySDJFptN3f07Q-1; Sat, 14 Nov 2020 15:44:30 -0500
-X-MC-Unique: 8S4OxrQUPySDJFptN3f07Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726301AbgKNUpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:45:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726136AbgKNUpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 15:45:08 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF9CF809DC3;
-        Sat, 14 Nov 2020 20:44:28 +0000 (UTC)
-Received: from krava (unknown [10.40.192.25])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 216955576C;
-        Sat, 14 Nov 2020 20:44:24 +0000 (UTC)
-Date:   Sat, 14 Nov 2020 21:44:24 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 24/24] perf record: Add --buildid-mmap option to enable
- mmap's build id
-Message-ID: <20201114204424.GA903902@krava>
-References: <20201109215415.400153-1-jolsa@kernel.org>
- <20201109215415.400153-25-jolsa@kernel.org>
- <20201113044000.GC167797@google.com>
- <20201113110926.GE753418@krava>
- <CAM9d7chgFfJXXtfUMVVbzLNvhLL2xHAomZjdf-DhPmdn5E2Omg@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E31922245;
+        Sat, 14 Nov 2020 20:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605386708;
+        bh=55zxoyo1mw5dFVi7p+0C1p3Xc0RC5j9O+Cjwpd28/ws=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ckAxn0Pt2y0h2Lt0+FbrNqdH6Du3v4N1NoglM7MmQ3sJfy5ol4xd2jl2BHcP8sA4w
+         xYvXpui1Y4e6m6f5ofe+Dqwv9Kgy1Tb0f4wmI1lnsfE4lt8DfSAGR8lMRK8FR0h7Ul
+         fLU/rFawQBFiJRPnQ7K/QDpubI/U2bqdjnqt8ot8=
+Date:   Sat, 14 Nov 2020 12:45:06 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wong Vee Khee <vee.khee.wong@intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Christophe ROULLIER <christophe.roullier@st.com>
+Subject: Re: [PATCH net 1/1] net: stmmac: Use rtnl_lock/unlock on
+ netif_set_real_num_rx_queues() call
+Message-ID: <20201114124506.13847db4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201112144948.3042-1-vee.khee.wong@intel.com>
+References: <20201112144948.3042-1-vee.khee.wong@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7chgFfJXXtfUMVVbzLNvhLL2xHAomZjdf-DhPmdn5E2Omg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 09:31:56AM +0900, Namhyung Kim wrote:
-> On Fri, Nov 13, 2020 at 8:09 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Fri, Nov 13, 2020 at 01:40:00PM +0900, Namhyung Kim wrote:
-> > > On Mon, Nov 09, 2020 at 10:54:15PM +0100, Jiri Olsa wrote:
-> > > > Adding --buildid-mmap option to enable build id in mmap2 events.
-> > > > It will only work if there's kernel support for that and it disables
-> > > > build id cache (implies --no-buildid).
-> > > >
-> > > > It's also possible to enable it permanently via config option
-> > > > in ~.perfconfig file:
-> > > >
-> > > >   [record]
-> > > >   build-id=mmap
-> > >
-> > > You also need to update the documentation.
-> >
-> > right, forgot doc for the config option
-> >
-> > SNIP
-> >
-> > > >                 "append timestamp to output filename"),
-> > > >     OPT_BOOLEAN(0, "timestamp-boundary", &record.timestamp_boundary,
-> > > > @@ -2657,6 +2662,21 @@ int cmd_record(int argc, const char **argv)
-> > > >
-> > > >     }
-> > > >
-> > > > +   if (rec->buildid_mmap) {
-> > > > +           if (!perf_can_record_build_id()) {
-> > > > +                   pr_err("Failed: no support to record build id in mmap events, update your kernel.\n");
-> > > > +                   err = -EINVAL;
-> > > > +                   goto out_opts;
-> > > > +           }
-> > > > +           pr_debug("Enabling build id in mmap2 events.\n");
-> > > > +           /* Enable mmap build id synthesizing. */
-> > > > +           symbol_conf.buildid_mmap2 = true;
-> > > > +           /* Enable perf_event_attr::build_id bit. */
-> > > > +           rec->opts.build_id = true;
-> > > > +           /* Disable build id cache. */
-> > > > +           rec->no_buildid = true;
-> > >
-> > > I'm afraid this can make it miss some build-id in the end because of
-> > > the possibility of the failure.
-> >
-> > with following fix (already merged):
-> >   b33164f2bd1c bpf: Iterate through all PT_NOTE sections when looking for build id
-> >
-> > I could see high rate of build id being retrieved
-> >
-> > I'll make new numbers for next version, but I think we can neglect
-> > the failure, considering that we pick only 'hit' objects out of all
-> > of them
-> >
-> > also enabling the build id cache for this would go against the
-> > purpose why I'd like to have this.. so hopefuly the numbers
-> > will be convincing ;-)
+On Thu, 12 Nov 2020 22:49:48 +0800 Wong Vee Khee wrote:
+> Fix an issue where dump stack is printed on suspend resume flow due to
+> netif_set_real_num_rx_queues() is not called with rtnl_lock held().
 > 
-> Yeah, I think it'd be ok for most cases but we cannot guarantee..
-> What about checking the dso list at the end of a record session
-> and check all of them having build-id?  Then we can safely skip
-> the build-id collecting stage.  Hmm.. but it won't work for the pipe.
+> Fixes: 686cff3d7022 ("net: stmmac: Fix incorrect location to set real_num_rx|tx_queues")
+> Reported-by: Christophe ROULLIER <christophe.roullier@st.com>
+> Tested-by: Christophe ROULLIER <christophe.roullier@st.com>
+> Cc: Alexandre TORGUE <alexandre.torgue@st.com>
+> Reviewed-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index ba855465a2db..33e280040000 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -5278,7 +5278,10 @@ int stmmac_resume(struct device *dev)
+>  
+>  	stmmac_clear_descriptors(priv);
+>  
+> +	rtnl_lock();
+>  	stmmac_hw_setup(ndev, false);
+> +	rtnl_unlock();
+> +
+>  	stmmac_init_coalesce(priv);
+>  	stmmac_set_rx_mode(ndev);
+>  
 
-how about inject command that would add missing buildids
-to mmap2 events
+Doesn't look quite right. This is under the priv->lock which is
+sometimes taken under rtnl_lock. So theoretically there could be
+a deadlock.
 
-jirka
+You should probably take rtnl_lock() before priv->lock and release 
+it after. It's pretty common for drivers to hold rtnl_lock around 
+most of the resume method.
 
+With larger context:
+ 
+
+        mutex_lock(&priv->lock);
+ 
+        stmmac_reset_queues_param(priv);
+ 
+        stmmac_clear_descriptors(priv);
+ 
++       rtnl_lock();
+        stmmac_hw_setup(ndev, false);
++       rtnl_unlock();
++
+        stmmac_init_coalesce(priv);
+        stmmac_set_rx_mode(ndev);
+ 
+        stmmac_restore_hw_vlan_rx_fltr(priv, ndev, priv->hw);
+ 
+        stmmac_enable_all_queues(priv);
+ 
+        mutex_unlock(&priv->lock);
+ 
