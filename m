@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1142C2B2D9E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 15:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766512B2DB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 15:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgKNOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 09:09:45 -0500
-Received: from mga18.intel.com ([134.134.136.126]:45068 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKNOJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 09:09:45 -0500
-IronPort-SDR: uwa6VSrk/3ZwiCnOokEQVVcuk+BxJGAzjjgNcQpl8mhulGG5BiJTyVlWXb4pD49meRJ4AipW2S
- COTifjCRMtDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="158356870"
-X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
-   d="scan'208";a="158356870"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2020 06:09:43 -0800
-IronPort-SDR: zooRDkVrUhPS8aNedLDU0wkZEuJyiCERpRuI90+Q/8fD5kCH9bX01c6KPHaoD4yonH9F46G98j
- PeMOKbhi7s1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
-   d="scan'208";a="324301841"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by orsmga003.jf.intel.com with ESMTP; 14 Nov 2020 06:09:43 -0800
-Subject: Re: [PATCHv1 1/4] fpga: fpga-mgr: add
- FPGA_MGR_BITSTREM_AUTHENTICATION flag
-To:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
- <1605204403-6663-2-git-send-email-richard.gong@linux.intel.com>
- <a71b7a9c-effa-ad01-4fde-3e1a1e517e2d@redhat.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <4dd9a747-05f3-1cca-22a6-35681677223d@linux.intel.com>
-Date:   Sat, 14 Nov 2020 08:30:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726807AbgKNOmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 09:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKNOmJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 09:42:09 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BA5C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 06:42:08 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id d38so5118898qvc.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 06:42:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/bFkAwvvqi3q0otrB3Dod9Fx9vaczXbmmZ2zfJ4oQKA=;
+        b=vt7NKvHYNiIrG9yiILF1mUGM++rmh/wIyOpU4q1QBv0sSJdsGSnVbrex17MBNlMLIu
+         1qlvO4PWaapapJ8q3rLypOIECQBLQ0/lHAR1e0U3bkqWgt+nmpZ8f3dtFfm1SWr85/B7
+         NEX0idcSJmPuuSt+W89FFf/DWd41HfdbxAJCyMWLoCW1G+nETt+mOaBZE8vdY9zvuewk
+         fpAU8hgBYSUpZEk0OuBfJaO4zOJ4qZLsgbqMiPy+fArG3gqH48S8F7gOF4anLIn6Op9w
+         wUqu3lpnmwT+dzGkJCT3KCHbNmjtPVSlUoTImgUIldlow0g7ScE+dHkDm9z9rHdT/nsB
+         TBEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/bFkAwvvqi3q0otrB3Dod9Fx9vaczXbmmZ2zfJ4oQKA=;
+        b=UuzVhjHtNu9B1dsG9/+5w+LctunNTrkVqSMmbtHNWx0y98sU6mMS8MH7cO4lQ95hwF
+         rs6PgzgC0faBrozQDwk0Ftd96Cbf/Cero915ce8OCWSRGDCl5m/5B1RPBkqfAQT/G4Wz
+         7YBtm6tKbKvkb3WDBubaj/432oCuyf00Tc/1WBg6xMxGJv78Ol//nGnNXt2zj4Rg5EFV
+         R7qoqr4LBl7ROXTE+iu60sHRyzcTPSFOIwhceKcwndzsCUUZ63utFcOlidWUgrNH2AOB
+         fvDFLHkHtatpMS4BXQtoJ5TECp4IyKkpF07nllXYm/J/O34z/la5/1Ra3aWFRjf1Irn7
+         RG8w==
+X-Gm-Message-State: AOAM533braR78Pa2/nR2wADxVMXNMqvu3FmLZJ9UYUkWUkjTdphgyjq8
+        4dmpe7JjurvwxBomcJhe0vTJuLLXx14tEJ8dTJ+CSA==
+X-Google-Smtp-Source: ABdhPJxk5r43DAmJDSrFhSpq4tpiJg2MdbsMie16Z4zaHsDKab8OWtliq094SlHS0Ys6gte+N9HLIjsIHgJCdThAoO8=
+X-Received: by 2002:a0c:e911:: with SMTP id a17mr7558779qvo.18.1605364927202;
+ Sat, 14 Nov 2020 06:42:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a71b7a9c-effa-ad01-4fde-3e1a1e517e2d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0000000000004740cd05ac444126@google.com> <00000000000005d94d05b4118980@google.com>
+In-Reply-To: <00000000000005d94d05b4118980@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 14 Nov 2020 15:41:55 +0100
+Message-ID: <CACT4Y+Ya+VbfXC6vn0cFJ0R6geg124vjxNzVo-g83iUV=gapdA@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Write in afs_manage_cell
+To:     syzbot <syzbot+f59c67285cb61166a0cf@syzkaller.appspotmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Hillf Danton <hdanton@sina.com>, linux-afs@lists.infradead.org,
+        linux-cachefs-bounces@redhat.com, linux-cachefs@redhat.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On Sat, Nov 14, 2020 at 2:58 PM syzbot
+<syzbot+f59c67285cb61166a0cf@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
+> Author: David Howells <dhowells@redhat.com>
+> Date:   Fri Oct 16 12:21:14 2020 +0000
+>
+>     afs: Fix cell removal
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15b78dba500000
+> start commit:   da690031 Merge branch 'i2c/for-current' of git://git.kerne..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f59c67285cb61166a0cf
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10960a8b900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e938cf900000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: afs: Fix cell removal
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Thanks for review!
-
-On 11/13/20 2:24 PM, Tom Rix wrote:
-> 
-> On 11/12/20 10:06 AM, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> Add FPGA_MGR_BITSTREM_AUTHENTICATION flag for FPGA bitstream
->> authentication.
-> 
-> Should improve this commit so explain what you mean authentication.
-> 
-> it could mean 'it wrote correctly' or 'it was signed correctly' or something else.
-> 
-
-Authentication = make sure a signed bitstream has valid signatures 
-before committing it to QSPI memory. I will update the commit messages 
-in version 2.
-
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->>   include/linux/fpga/fpga-mgr.h | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
->> index 2bc3030..1d65814 100644
->> --- a/include/linux/fpga/fpga-mgr.h
->> +++ b/include/linux/fpga/fpga-mgr.h
->> @@ -67,12 +67,15 @@ enum fpga_mgr_states {
->>    * %FPGA_MGR_BITSTREAM_LSB_FIRST: SPI bitstream bit order is LSB first
->>    *
->>    * %FPGA_MGR_COMPRESSED_BITSTREAM: FPGA bitstream is compressed
->> + *
->> + * %FPGA_MGR_BITSTREM_AUTHENTICATION: do FPGA bitstream authentication
->>    */
->>   #define FPGA_MGR_PARTIAL_RECONFIG	BIT(0)
->>   #define FPGA_MGR_EXTERNAL_CONFIG	BIT(1)
->>   #define FPGA_MGR_ENCRYPTED_BITSTREAM	BIT(2)
->>   #define FPGA_MGR_BITSTREAM_LSB_FIRST	BIT(3)
->>   #define FPGA_MGR_COMPRESSED_BITSTREAM	BIT(4)
->> +#define FPGA_MGR_BITSTREM_AUTHENTICATION BIT(5)
-> 
-> A whitespace issue, the new BIT(5) should align with the others, so add two spaces to the others.
-> 
-
-There is only one space, also I ran checkpatch with strict option and 
-didn't see any whitespace issue.
-
-In the original patch, BIT(0) to BIT(4) align themselves. I am not sure 
-why we see differently in email.
-
-  #define FPGA_MGR_PARTIAL_RECONFIG      BIT(0)
-  #define FPGA_MGR_EXTERNAL_CONFIG       BIT(1)
-  #define FPGA_MGR_ENCRYPTED_BITSTREAM   BIT(2)
-  #define FPGA_MGR_BITSTREAM_LSB_FIRST   BIT(3)
-  #define FPGA_MGR_COMPRESSED_BITSTREAM  BIT(4)
-+#define FPGA_MGR_BITSTREM_AUTHENTICATION BIT(5)
-
-To align BIT(5) with others, I have to use additional tab to BIT(0) to 
-BIT(4). But I don't think I should make such change on them, agree?
-
-Regards,
-Richard
-
-> Tom
-> 
->>   
->>   /**
->>    * struct fpga_image_info - information specific to a FPGA image
-> 
+#syz fix: afs: Fix cell removal
