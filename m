@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6722B2C43
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B059D2B2C45
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgKNIqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 03:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
+        id S1726774AbgKNIqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 03:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbgKNIqp (ORCPT
+        with ESMTP id S1726513AbgKNIqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 03:46:45 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72931C061A04
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:46:45 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id o24so13838112ljj.6
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:46:45 -0800 (PST)
+        Sat, 14 Nov 2020 03:46:50 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA16C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:46:50 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 10so9514390pfp.5
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:46:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OCYSuNi1JCYOWWFaprqNxn30Bt1Uq8l9kVTd9Q510R8=;
-        b=ejcL9da7O8w5FN5tmzIGzQwAWtWpetZ/vbghzoH05lEbeuN/mcOxM8FGs9i2qAW4EE
-         flv1xiKWnScN8Ms6/cZSXFMp5sMfgowpz+opFHNCGk4cqLGy9gdtFjVEBnQyQlZ/Ldsy
-         /i/oY1l3khXDOtKKRzXfCSX/hrL8+KYNZVSH2JLZvDJDrZRQO7A8GhxLxa8I3GStmNn/
-         vW0krurjjgGfyb6ue6YXqp71viqOeoFZylV3KliWcnB+4+bGyY9ay1BtKu84dhuZ4628
-         yWlYNp+S1jGYZcyhFTZSUznE8CpevKxG0NfY+MEQhI0VYlqlJBPtG/brRZUWprZHVonz
-         1AtA==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=iVDXSUolNf1aSG/cRPID7ugjmyDKjii5+fjm3qpmHvA=;
+        b=L/32NAF+QJxn2tJ82tPhBlzcqqD8xjhCMkdqtFbss5+tbLJrF4EaTuzrTu/ig8GLf0
+         rZm8tLF6fYEAzXObcGtEBQg3Uj/14B1Ski0SlqWdlqXox+av+WMkrEPJ0hOFwWWPnx8u
+         +lnkZ7pHfVaDJoV5409s7TAdz5FZfMzYi7dXPt4BdIgY8WRGGiAyteqW9UnqKFOpE9N2
+         qDyNTcxTToJ/nTzaWscMNWorqVrp7yAOkbE0gMMq6Wvuz4OnKBvLOOnEZuxMLfdt+l0h
+         cY4vFDMl2rUfVNzXnstiZrFdk4mxH8Ve4rAUjRZWgbwNB3pO1dm3EWWLcRKbGENLGbQB
+         /EtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OCYSuNi1JCYOWWFaprqNxn30Bt1Uq8l9kVTd9Q510R8=;
-        b=uMQcg+0APDr6riuseyUpgoL4kIy6/5HQ0OshFRKRaQrqHqj+S3r2DDDm+ok+RsJV2N
-         EfTOQsfIU7oEaelZyU+FC/8mb5SyisgAIBVvaMP8lPSoaf+dViDGqeW4PjppMpCywFC6
-         /HWlFWBwlrgBIQOpZ6+Id3w7ln+eO86mS5bzjOv7MXt/qldFX6jMGvkK+6rul13Jnsp3
-         pQAaTdZVCV59l+Y83wiKHueHNgazYh+KI7BpT0WkS+U6b4hVNZuN1tepofZecf24kqX5
-         /ymR9gJyt0fJeZkH+X4rzhDf9iHw/tPn5kBlilRIxJcdmA1Sf1gXbjgsjxVldN5IU3dw
-         wx8g==
-X-Gm-Message-State: AOAM531heLTVteoTqzjyh84n0oEptwk8a+ZLLgn9lpEXjEjh/cJdU74M
-        hivYP0yduexUMqDb8hjMYPxlwA==
-X-Google-Smtp-Source: ABdhPJxOCtOaBNVaLtUp3RGqQhAgkWE3qbunetNHx3xw/RfWPbTg0Qw5bYgXFZmv7fFat7Ga2SKy3g==
-X-Received: by 2002:a2e:2f0f:: with SMTP id v15mr2594592ljv.402.1605343603946;
-        Sat, 14 Nov 2020 00:46:43 -0800 (PST)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id f62sm1870081lfd.144.2020.11.14.00.46.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 14 Nov 2020 00:46:43 -0800 (PST)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
-        robh+dt@kernel.org, lee.jones@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        praneeth@ti.com, rogerq@ti.com
-Subject: [PATCH 6/6] remoteproc/pru: Add support for various PRU cores on K3 J721E SoCs
-Date:   Sat, 14 Nov 2020 09:46:13 +0100
-Message-Id: <20201114084613.13503-7-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201114084613.13503-1-grzegorz.jaszczyk@linaro.org>
-References: <20201114084613.13503-1-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=iVDXSUolNf1aSG/cRPID7ugjmyDKjii5+fjm3qpmHvA=;
+        b=AeNR5qXuHh67AlSKHy7xjmh6GDbHK43qvOedkuV31xu04ymjuawPqawKpw/x7jxSGX
+         fP7RHr01d+CZNXZuIG9FhysMVXRPuMDkIqyjxHWpp+qSxgeuQo/0F9GKEIf/UllqUWyT
+         L+EIlouxSvd9BLSHre/sFp0XlL8efnu8fm1kjQiIziV84IbApMjk+o+iL1Z8v0duoT48
+         LIRUlG9kj/6UNLfg7dXIx02wWmhzhUG3bjWFGfZH4+x3GUxq/7IpUujgrimpKrOHJcTM
+         aoIuKpEqlI8s5Nc9QwTh73yKjAkNabH6bMVS78mXEYmdWRiBZDf+CG4nWy3aK55RpSIM
+         eovg==
+X-Gm-Message-State: AOAM531/jrKXJRpsfqpDrI1dVfUU+I0nO+qpDcVO6Vi2molstf9dzRJp
+        0NnIGfYvDNUy5l4LRNGcQYZtNrl7tFyt1W6gCCU=
+X-Google-Smtp-Source: ABdhPJyXImFK7iHprBHcLTOcEZSVz1MCO0H2k+46OhlX9cLYeSPN9l+o3beoFY/yZt6vRsji5AlPpjafpEuZftnxcOQ=
+X-Received: by 2002:a63:574a:: with SMTP id h10mr5067008pgm.209.1605343609668;
+ Sat, 14 Nov 2020 00:46:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a10:b655:0:0:0:0 with HTTP; Sat, 14 Nov 2020 00:46:49
+ -0800 (PST)
+From:   Ibrahim Alpha <ibrahimalpha0@gmail.com>
+Date:   Sat, 14 Nov 2020 08:46:49 +0000
+Message-ID: <CANvM_Mo_uFLfyowreXOoUBdaEFVJ90bhKECUVeEjPVPaHZ_idA@mail.gmail.com>
+Subject: Seasons of greetings to you and your family?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
+Dear Friend,
+My Seasons of greetings to you and your family.
 
-The K3 J721E family of SoCs have a revised version of the AM65x ICSSG IP
-and contains two instances of this newer ICSSG IP. Each ICSSG processor
-subsystem contains 2 primary PRU cores, 2 auxiliary PRU cores called RTUs,
-and 2 new auxiliary cores called Transmit PRUs (Tx_PRUs).
+First, I am Mr. Ibrahim ALPHA, a banker working with Bank of Africa
+here in my country Burkina Faso West Africa, I have a business
+transaction that will benefit both of us, and want to know if you can
+handle it and claim the fund to your country's account. The amount is
+($10.5Million). After the transfer, we have to share it, 50% for me,
+and 50% for you. Please let me know if you can assist me, for more
+details information regarding the transfer. I hope you will work with
+me honestly?
 
-Enhance the existing PRU remoteproc driver to support these new PRU
-and RTU cores by using specific compatibles. The cores have the same
-memory copying limitations as on AM65x, so reuses the custom memcpy
-function within the driver's ELF loader implementation. The initial
-names for the firmware images for each PRU core are retrieved from
-DT nodes, and can be adjusted through sysfs if required.
+This is legal, risk free and will be 100% successful, because I work
+in the same bank and have arranged for it properly before contacting
+you.
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
- drivers/remoteproc/pru_rproc.c | 3 +++
- 1 file changed, 3 insertions(+)
+If yes, update me with your personal information such as;
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index 04c9f07799e2..98f9c598993f 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -855,6 +855,9 @@ static const struct of_device_id pru_rproc_match[] = {
- 	{ .compatible = "ti,am654-pru",		.data = &k3_pru_data },
- 	{ .compatible = "ti,am654-rtu",		.data = &k3_rtu_data },
- 	{ .compatible = "ti,am654-tx-pru",	.data = &k3_tx_pru_data },
-+	{ .compatible = "ti,j721e-pru",		.data = &k3_pru_data },
-+	{ .compatible = "ti,j721e-rtu",		.data = &k3_rtu_data },
-+	{ .compatible = "ti,j721e-tx-pru",	.data = &k3_tx_pru_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, pru_rproc_match);
--- 
-2.29.0
+1. Your name in Full:
+2. Your House Address:
+3. Your Occupation:
+4. Your Age:
+5. Your direct phone number;
 
+Regards.
+Mr. Ibrahim ALPHA
