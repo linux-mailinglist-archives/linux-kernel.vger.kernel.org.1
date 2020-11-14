@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7FA2B2A1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CDA2B2A41
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgKNAtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:49:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgKNAtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:49:25 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4DAC0613D1;
-        Fri, 13 Nov 2020 16:49:25 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x15so7732169pfm.9;
-        Fri, 13 Nov 2020 16:49:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8fCnEYw1oV7LYGWU3hhuAXtv4iuMCupq08ToJfobOTs=;
-        b=vGbFosuzMtNJCB5p8qKkpMyY9vviFRm6epxalqJiINlvJa/r99W2WK4+/lULIgTp8k
-         LnljURBVZSnkIsm0XCI+JNX4M4sKRb0tjEfsRX5qVkBVxrDOCKoGUwTKx6S6DEgvQVvf
-         tTNsFGzD3FSQ+fMJoz80bUCbZPQvC6pa5ofUIkaNZ6Zc5FDA6RF3QSwJZY9dnGrZaWuT
-         LWvI28OD+Ham0txe5x9AqCJXgNNIdtAjurhDj/XBNPsaJP4O6GGlJ74bD2fQTDb8OffF
-         FzP+dgQ7MfrDvP+FH68if5PhpIDNaSAHGfH5g0NDuJ1akIYM9cmeyMjNr8v34VIqDs1u
-         nEeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8fCnEYw1oV7LYGWU3hhuAXtv4iuMCupq08ToJfobOTs=;
-        b=D68IgdCcYCCRD3iNW0TnJYrp0lsmI6q4TkAprMVML/i//V/2OmZkTGjw/bC3VUo+cV
-         LmRthfuBWOs+zwHc28wOygzokXXK3fQjlhajb1mABPKR4Fqro/bF4Zr2CVMOQ026aWec
-         eDicQ0F6x0R6fncilLEB6lc5HMLKsimEELx+vI546nCbuLcGgfWet5+QIRB6czU0uiG+
-         rTvieWwaV0eMXEiOS7yl1/R9mWSl+RfzDifOWtB4mseNod1hQ8vcvwu+IYjpGmMhxzsl
-         i5SNaH5OgSBDnch0J9idux9nCx3VwWvm50+nj6K7QKN/pLnJX75LTyxaMTPcOdxMmIeR
-         6jmw==
-X-Gm-Message-State: AOAM530X7zmb1CRwBJ78aWI+njBaIY4ZkGh2HvbyFZahX1T6hzdB2btQ
-        hGX5FnCw3rZrguUJTFxzR4s=
-X-Google-Smtp-Source: ABdhPJw5ODUOSdKxFPuZb9IfCQekD2tk6ovIv289KAqVk4cLb5qLtf1/Vj7JmmTWduVRkrCgIupdjA==
-X-Received: by 2002:a17:90a:8a:: with SMTP id a10mr5511232pja.39.1605314964587;
-        Fri, 13 Nov 2020 16:49:24 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
-        by smtp.gmail.com with ESMTPSA id z8sm10563959pfn.181.2020.11.13.16.49.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 16:49:23 -0800 (PST)
-Date:   Sat, 14 Nov 2020 09:49:21 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Rui Salvaterra <rsalvaterra@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, ngupta@vflare.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] zram: break the strict dependency from lzo
-Message-ID: <20201114004921.GA1875489@google.com>
-References: <20201028115921.848-1-rsalvaterra@gmail.com>
- <20201028185927.GB128655@google.com>
- <20201103212847.GA1631979@google.com>
- <CALjTZvZpjgSqT8fRF90yooTV6S5eoz+PBJn7BfesT=y2uW8nmA@mail.gmail.com>
- <20201104204152.GB3544305@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726143AbgKNA6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:58:41 -0500
+Received: from gate.crashing.org ([63.228.1.57]:57961 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726028AbgKNA6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 19:58:41 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AE0oGe8007957;
+        Fri, 13 Nov 2020 18:50:16 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AE0oFOi007956;
+        Fri, 13 Nov 2020 18:50:15 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Fri, 13 Nov 2020 18:50:15 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Alan Modra <amodra@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: Error: invalid switch -me200
+Message-ID: <20201114005015.GZ2672@gate.crashing.org>
+References: <202011131146.g8dPLQDD-lkp@intel.com> <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com> <20201113190824.GA1477315@ubuntu-m3-large-x86> <CAKwvOdkEtTQhDRFRV_d66FyhQBe536vRbOW=fQjesiHz3dfeBA@mail.gmail.com> <20201113200444.GA1496675@ubuntu-m3-large-x86> <CAKwvOdkBSGPaKmQY1nERVe4_n19Q=MUtuwdond=FJAAF9N9Zhg@mail.gmail.com> <20201114002037.GW2672@gate.crashing.org> <CAFP8O3+NowYwhMAywd=R23HgOYnroWV9ZRkdyAejd08qsOF=6w@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201104204152.GB3544305@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFP8O3+NowYwhMAywd=R23HgOYnroWV9ZRkdyAejd08qsOF=6w@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/04 12:41), Minchan Kim wrote:
-> On Wed, Nov 04, 2020 at 02:12:35PM +0000, Rui Salvaterra wrote:
-> > Hi, Minchan,
-> > 
-> > On Tue, 3 Nov 2020 at 21:29, Minchan Kim <minchan@kernel.org> wrote:
-> > >
-> > > Can't we just provide choice/endchoice in Kconfig to select default
-> > > comp algorithm from admin?
-> > 
-> > I'm fine with whatever you guys decide, just let me know what works
-> > best for everyone.
+On Fri, Nov 13, 2020 at 04:37:38PM -0800, Fāng-ruì Sòng wrote:
+> On Fri, Nov 13, 2020 at 4:23 PM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+> > On Fri, Nov 13, 2020 at 12:14:18PM -0800, Nick Desaulniers wrote:
+> > > > > > Error: invalid switch -me200
+> > > > > > Error: unrecognized option -me200
+> > > > >
+> > > > > 251 cpu-as-$(CONFIG_E200)   += -Wa,-me200
+> > > > >
+> > > > > Are those all broken configs, or is Kconfig messed up such that
+> > > > > randconfig can select these when it should not?
+> > > >
+> > > > Hmmm, looks like this flag does not exist in mainline binutils? There is
+> > > > a thread in 2010 about this that Segher commented on:
+> > > >
+> > > > https://lore.kernel.org/linuxppc-dev/9859E645-954D-4D07-8003-FFCD2391AB6E@kernel.crashing.org/
+> > > >
+> > > > Guess this config should be eliminated?
+> >
+> > The help text for this config options says that e200 is used in 55xx,
+> > and there *is* an -me5500 GAS flag (which probably does this same
+> > thing, too).  But is any of this tested, or useful, or wanted?
+> >
+> > Maybe Christophe knows, cc:ed.
 > 
-> Thanks. Sergey, if you don't mined, I'd like to approach more explict
-> way to select default compressor algorithm in Kconfig.
+> CC Alan Modra, a binutils global maintainer.
 > 
-> Do you have any suggestion?
+> Alan, can the few -Wa,-m* options deleted from arch/powerpc/Makefile ?
 
-No objections. Some people tend to dislike new Kconfig options,
-but we probably can live with that.
+All the others work fine (and are needed afaics), it is only -me200 that
+doesn't exist (in mainline binutils).  Perhaps -me5500 will work for it
+instead.
 
-	-ss
+
+Segher
