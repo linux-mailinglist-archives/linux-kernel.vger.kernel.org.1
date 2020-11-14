@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F012B2E37
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C62C2B2E3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727181AbgKNPqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 10:46:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727023AbgKNPqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 10:46:46 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69B4522254;
-        Sat, 14 Nov 2020 15:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605368806;
-        bh=goHaolbjw30a+EKdHtSQX6pyt5XC1BydKi65tudi8MU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TwG4XwTitBBCcrpR8+kmM/0aTv9tvgTIRPnygVP4/I5RGNYKJKN0Tf+yP5idzt2aR
-         HqYVW1XDcVYksnkogG7/mUPcwya8GXjbPxTQ/hhe6GnekdZ/Y0LTpaXZob8uiLnWrr
-         1TYS+w1rkbhw/yDwc3O3iZjxCHLspQQVYarqU250=
-Date:   Sat, 14 Nov 2020 15:46:41 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 1/4] device: provide devm_krealloc_array()
-Message-ID: <20201114154641.0258f4ee@archlinux>
-In-Reply-To: <20201102142228.14949-2-brgl@bgdev.pl>
-References: <20201102142228.14949-1-brgl@bgdev.pl>
-        <20201102142228.14949-2-brgl@bgdev.pl>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727112AbgKNPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 10:49:42 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46400 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726885AbgKNPtl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 10:49:41 -0500
+Received: by mail-wr1-f67.google.com with SMTP id d12so13616977wrr.13;
+        Sat, 14 Nov 2020 07:49:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EQ8r5pJttfECMbi7klz393g0n/5XRY+5UKG5qivG/ww=;
+        b=sXber1hQ1I+ikfblM9m7n0uIIAA4KRFIvE4nTME14ul0C2v2OS24Etm7DOhyo0h4P/
+         sw8PIPvkJZl0KzPlDlqEHcJyUo8VhArg0JXX4fT15u55wE6csvY9yl75xY9s3g86BB2W
+         dPGTefgwvhjy821O38gTX4wIfHU7YEOM2fjkGNIolFj9zYh0rbywDatky9wt7I3b1Pop
+         gjKGlmaq+m0I9ihw50BF1bkS8BMSYZ7tN43TLNGUYysM4QoeZI4hvyr/J23LjBPkAypT
+         vxE7rPnpDAcFiuOPSIBawQrxDAS7lOO7yRJC3R9JZJ0ILl1+EoUU1vHP5vaLR2eSBpin
+         v0bw==
+X-Gm-Message-State: AOAM532mMKuy0QEs/mi2PnuwP3ilZsp6GxJmSZRJAGp3ycua3kW/N5kU
+        pwnXHVkR19xGRTtsTMxznbk=
+X-Google-Smtp-Source: ABdhPJxrJddT5J8YjMMsQDwJ9FyUwP9ykncQpw8kMv9gUdf9CRy0f46zk3qwOMdEViRo40kcUlKWqA==
+X-Received: by 2002:adf:e607:: with SMTP id p7mr9885500wrm.93.1605368979245;
+        Sat, 14 Nov 2020 07:49:39 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id w186sm14037275wmb.26.2020.11.14.07.49.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 07:49:38 -0800 (PST)
+Date:   Sat, 14 Nov 2020 16:49:36 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     xiakaixu1987@gmail.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] ASoC: samsung: remove the unused variable value
+ assignment
+Message-ID: <20201114154936.GC14208@kozik-lap>
+References: <1605279079-6416-1-git-send-email-kaixuxia@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1605279079-6416-1-git-send-email-kaixuxia@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  2 Nov 2020 15:22:25 +0100
-Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Fri, Nov 13, 2020 at 10:51:19PM +0800, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 > 
-> When allocating an array of elements, users should check for
-> multiplication overflow or preferably use one of the provided helpers
-> like: devm_kmalloc_array().
+> The value of variable ret is overwritten by the following call
+> devm_snd_soc_register_card(), so here the value assignment is useless.
+> Remove it.
 > 
-> This provides devm_krealloc_array() for users who want to reallocate
-> managed arrays.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
 
-+CC Greg KH. 
+Where can we find the report?
 
-As this is going into a very generic place I'd like a relevant ack.
-That file is a bit of a wild west for acks, but Greg seems most
-appropriate person.
-
-So Greg, any comments on this one?
-
-Thanks,
-
-Jonathan
-
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 > ---
->  include/linux/device.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  sound/soc/samsung/smdk_wm8994.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 5ed101be7b2e..e77203faea55 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -226,6 +226,17 @@ static inline void *devm_kmalloc_array(struct device *dev,
->  
->  	return devm_kmalloc(dev, bytes, flags);
->  }
-> +static inline void *
-> +devm_krealloc_array(struct device *dev, void *ptr, size_t new_n,
-> +		    size_t new_size, gfp_t gfp)
-> +{
-> +	size_t bytes;
-> +
-> +	if (unlikely(check_mul_overflow(new_n, new_size, &bytes)))
-> +		return NULL;
-> +
-> +	return devm_krealloc(dev, ptr, bytes, gfp);
-> +}
->  static inline void *devm_kcalloc(struct device *dev,
->  				 size_t n, size_t size, gfp_t flags)
->  {
+> diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+> index 64a1a64..1db5b59 100644
+> --- a/sound/soc/samsung/smdk_wm8994.c
+> +++ b/sound/soc/samsung/smdk_wm8994.c
+> @@ -160,11 +160,9 @@ static int smdk_audio_probe(struct platform_device *pdev)
+>  		smdk_dai[0].cpus->dai_name = NULL;
+>  		smdk_dai[0].cpus->of_node = of_parse_phandle(np,
+>  				"samsung,i2s-controller", 0);
+> -		if (!smdk_dai[0].cpus->of_node) {
+> +		if (!smdk_dai[0].cpus->of_node)
+>  			dev_err(&pdev->dev,
+>  			   "Property 'samsung,i2s-controller' missing or invalid\n");
+> -			ret = -EINVAL;
 
+This should jump to out/return instead.
+
+Please use script get_maintainers.pl to get the list of people and
+mailing lists to Cc. No one would apply this patch otherwise...
+
+Best regards,
+Krzysztof
