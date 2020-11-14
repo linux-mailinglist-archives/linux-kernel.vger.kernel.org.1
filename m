@@ -2,206 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1862B29CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408012B29E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgKNAUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:20:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgKNAUQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:20:16 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9518BC0613D1;
-        Fri, 13 Nov 2020 16:20:16 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6077412802B1;
-        Fri, 13 Nov 2020 16:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1605313214;
-        bh=hCiFpbtu4tRe/21UE+k4vBaDJWTKnUi1s/8pkffq9H0=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=nyh/KyKoBEGTNQgn7iCO5JCYecxuFRZFN0XH9SF4MawxqB3HtsMr4O0xRbYf+6BcG
-         RDe8VMEbGfsbV9Pe8hGjBWV0kX/MVZhdW17XSSEpIxfwaH3+3scMW35nIGscNf1d3s
-         4nToU/tpCARp8zUG7056LkLmOhzUtNYG+fa40H98=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id D6g80Y8BxA6x; Fri, 13 Nov 2020 16:20:14 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0FB06128029E;
-        Fri, 13 Nov 2020 16:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1605313214;
-        bh=hCiFpbtu4tRe/21UE+k4vBaDJWTKnUi1s/8pkffq9H0=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=nyh/KyKoBEGTNQgn7iCO5JCYecxuFRZFN0XH9SF4MawxqB3HtsMr4O0xRbYf+6BcG
-         RDe8VMEbGfsbV9Pe8hGjBWV0kX/MVZhdW17XSSEpIxfwaH3+3scMW35nIGscNf1d3s
-         4nToU/tpCARp8zUG7056LkLmOhzUtNYG+fa40H98=
-Message-ID: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.10-rc3
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 13 Nov 2020 16:20:13 -0800
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726156AbgKNA3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:29:09 -0500
+Received: from gate.crashing.org ([63.228.1.57]:52833 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725866AbgKNA3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 19:29:08 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AE0Kdnt005533;
+        Fri, 13 Nov 2020 18:20:39 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AE0KbKx005528;
+        Fri, 13 Nov 2020 18:20:37 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Fri, 13 Nov 2020 18:20:37 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: Error: invalid switch -me200
+Message-ID: <20201114002037.GW2672@gate.crashing.org>
+References: <202011131146.g8dPLQDD-lkp@intel.com> <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com> <20201113190824.GA1477315@ubuntu-m3-large-x86> <CAKwvOdkEtTQhDRFRV_d66FyhQBe536vRbOW=fQjesiHz3dfeBA@mail.gmail.com> <20201113200444.GA1496675@ubuntu-m3-large-x86> <CAKwvOdkBSGPaKmQY1nERVe4_n19Q=MUtuwdond=FJAAF9N9Zhg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkBSGPaKmQY1nERVe4_n19Q=MUtuwdond=FJAAF9N9Zhg@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three small fixes, all in the embedded ufs driver subsystem.
+On Fri, Nov 13, 2020 at 12:14:18PM -0800, Nick Desaulniers wrote:
+> > > > Error: invalid switch -me200
+> > > > Error: unrecognized option -me200
+> > >
+> > > 251 cpu-as-$(CONFIG_E200)   += -Wa,-me200
+> > >
+> > > Are those all broken configs, or is Kconfig messed up such that
+> > > randconfig can select these when it should not?
+> >
+> > Hmmm, looks like this flag does not exist in mainline binutils? There is
+> > a thread in 2010 about this that Segher commented on:
+> >
+> > https://lore.kernel.org/linuxppc-dev/9859E645-954D-4D07-8003-FFCD2391AB6E@kernel.crashing.org/
+> >
+> > Guess this config should be eliminated?
 
-The patch is available here:
+The help text for this config options says that e200 is used in 55xx,
+and there *is* an -me5500 GAS flag (which probably does this same
+thing, too).  But is any of this tested, or useful, or wanted?
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+Maybe Christophe knows, cc:ed.
 
-The short changelog is:
 
-Can Guo (2):
-      scsi: ufs: Try to save power mode change and UIC cmd completion timeout
-      scsi: ufs: Fix unbalanced scsi_block_reqs_cnt caused by ufshcd_hold()
-
-Qinglang Miao (1):
-      scsi: ufshcd: Fix missing destroy_workqueue()
-
-And the diffstat:
-
- drivers/scsi/ufs/ufshcd.c | 34 +++++++++++++++++++++++++++++-----
- drivers/scsi/ufs/ufshcd.h |  2 ++
- 2 files changed, 31 insertions(+), 5 deletions(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b8f573a02713..7a160b86adc6 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1627,12 +1627,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
- 		 */
- 		fallthrough;
- 	case CLKS_OFF:
--		ufshcd_scsi_block_requests(hba);
- 		hba->clk_gating.state = REQ_CLKS_ON;
- 		trace_ufshcd_clk_gating(dev_name(hba->dev),
- 					hba->clk_gating.state);
--		queue_work(hba->clk_gating.clk_gating_workq,
--			   &hba->clk_gating.ungate_work);
-+		if (queue_work(hba->clk_gating.clk_gating_workq,
-+			       &hba->clk_gating.ungate_work))
-+			ufshcd_scsi_block_requests(hba);
- 		/*
- 		 * fall through to check if we should wait for this
- 		 * work to be done or not.
-@@ -2115,10 +2115,20 @@ ufshcd_wait_for_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
- 	unsigned long flags;
- 
- 	if (wait_for_completion_timeout(&uic_cmd->done,
--					msecs_to_jiffies(UIC_CMD_TIMEOUT)))
-+					msecs_to_jiffies(UIC_CMD_TIMEOUT))) {
- 		ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
--	else
-+	} else {
- 		ret = -ETIMEDOUT;
-+		dev_err(hba->dev,
-+			"uic cmd 0x%x with arg3 0x%x completion timeout\n",
-+			uic_cmd->command, uic_cmd->argument3);
-+
-+		if (!uic_cmd->cmd_active) {
-+			dev_err(hba->dev, "%s: UIC cmd has been completed, return the result\n",
-+				__func__);
-+			ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
-+		}
-+	}
- 
- 	spin_lock_irqsave(hba->host->host_lock, flags);
- 	hba->active_uic_cmd = NULL;
-@@ -2150,6 +2160,7 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
- 	if (completion)
- 		init_completion(&uic_cmd->done);
- 
-+	uic_cmd->cmd_active = 1;
- 	ufshcd_dispatch_uic_cmd(hba, uic_cmd);
- 
- 	return 0;
-@@ -3807,10 +3818,18 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
- 		dev_err(hba->dev,
- 			"pwr ctrl cmd 0x%x with mode 0x%x completion timeout\n",
- 			cmd->command, cmd->argument3);
-+
-+		if (!cmd->cmd_active) {
-+			dev_err(hba->dev, "%s: Power Mode Change operation has been completed, go check UPMCRS\n",
-+				__func__);
-+			goto check_upmcrs;
-+		}
-+
- 		ret = -ETIMEDOUT;
- 		goto out;
- 	}
- 
-+check_upmcrs:
- 	status = ufshcd_get_upmcrs(hba);
- 	if (status != PWR_LOCAL) {
- 		dev_err(hba->dev,
-@@ -4902,11 +4921,14 @@ static irqreturn_t ufshcd_uic_cmd_compl(struct ufs_hba *hba, u32 intr_status)
- 			ufshcd_get_uic_cmd_result(hba);
- 		hba->active_uic_cmd->argument3 =
- 			ufshcd_get_dme_attr_val(hba);
-+		if (!hba->uic_async_done)
-+			hba->active_uic_cmd->cmd_active = 0;
- 		complete(&hba->active_uic_cmd->done);
- 		retval = IRQ_HANDLED;
- 	}
- 
- 	if ((intr_status & UFSHCD_UIC_PWR_MASK) && hba->uic_async_done) {
-+		hba->active_uic_cmd->cmd_active = 0;
- 		complete(hba->uic_async_done);
- 		retval = IRQ_HANDLED;
- 	}
-@@ -8906,6 +8928,7 @@ void ufshcd_remove(struct ufs_hba *hba)
- 	blk_mq_free_tag_set(&hba->tmf_tag_set);
- 	blk_cleanup_queue(hba->cmd_queue);
- 	scsi_remove_host(hba->host);
-+	destroy_workqueue(hba->eh_wq);
- 	/* disable interrupts */
- 	ufshcd_disable_intr(hba, hba->intr_mask);
- 	ufshcd_hba_stop(hba);
-@@ -9206,6 +9229,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- exit_gating:
- 	ufshcd_exit_clk_scaling(hba);
- 	ufshcd_exit_clk_gating(hba);
-+	destroy_workqueue(hba->eh_wq);
- out_disable:
- 	hba->is_irq_enabled = false;
- 	ufshcd_hba_exit(hba);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 47eb1430274c..e0f00a42371c 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -64,6 +64,7 @@ enum dev_cmd_type {
-  * @argument1: UIC command argument 1
-  * @argument2: UIC command argument 2
-  * @argument3: UIC command argument 3
-+ * @cmd_active: Indicate if UIC command is outstanding
-  * @done: UIC command completion
-  */
- struct uic_command {
-@@ -71,6 +72,7 @@ struct uic_command {
- 	u32 argument1;
- 	u32 argument2;
- 	u32 argument3;
-+	int cmd_active;
- 	struct completion done;
- };
- 
-
+Segher
