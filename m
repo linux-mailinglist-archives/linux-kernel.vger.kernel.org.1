@@ -2,112 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DD72B2FFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408832B3000
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKNTJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgKNTJM (ORCPT
+        id S1726260AbgKNTLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 14:11:32 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:54958 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgKNTLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:09:12 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A40CC0613D1;
-        Sat, 14 Nov 2020 11:09:12 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id cq7so14555730edb.4;
-        Sat, 14 Nov 2020 11:09:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JLdVN6GMW4s0rGfQ0nFt90uzelbVnIK4dvXuxZ/UCVo=;
-        b=PsnG9ZF4pKG/q067PVFPFgRV4zYYE+9OGlh7Unwf8/Ze0/TYCd9Bxzw0XogLZG3aSD
-         IwZGWBph8ltxVS8HYjammbB30r60oO/veumVCgb+8BFnVHe+bK88DHoQbhPt+5f6fn/U
-         3395IIdrHKm6wEdkeIiyfBIn2Z3QPJ/V9I0vE735MreH3Z/k0r+lR6guacIP+rum74ui
-         PqLDxSg0HSlJWb3kyF+ITOA2hQJTZT/fa+o5J+8DI26RMOOrJ+T4nxnlhoJaiRqRM65E
-         G2ADkESjzQmzwNbofZR+9yV50B5/7XGGlc5E1fTkvudQ2tWCzD6B9Q6evX/wFjy+JjLz
-         uDJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JLdVN6GMW4s0rGfQ0nFt90uzelbVnIK4dvXuxZ/UCVo=;
-        b=G3ubtgmPOExvgyatJ5Ucn/h6RbYCkzaCYPWyp3zQeIklXyOgS8eja64goZ7+oNsiZL
-         hufTKz3VD8Q0sGoJwkrqLyfWD15wHhfkmUURX/566+2WpbysFTJ5LboTx2tYMDH7gA6Z
-         /mfz6ytm0YPH/hMrttB2OsUNH80w5EMR9roru0zaGM9a8OmOwI3fxGcNU3oLQds4v+Xt
-         J4LHESX00im6YdvhvkRolby9CTocT1Wnvr3iJA9L1RmrTTayjQAO1CGnfY+/QnmwzvRw
-         /e7sSuFaIMiQSSDhoj0VEHfEBPeiMNf3iuffuoO/H2yDne0LXjJhJFl30cBmzDINqZ2f
-         OQFQ==
-X-Gm-Message-State: AOAM531v/OAlU+s96WEOHeEn404PnO0E1oakVVMa4VbJcjwLSuu5gmeN
-        ZIPBpHIYfWEB43mVlXTxGXk=
-X-Google-Smtp-Source: ABdhPJz16mpu8mrBnCF4wgeqBuVm67aMKdWo7tP19Y5QpF8IFMwoYQFzEp/RM5sHyav43ENAeWkYGQ==
-X-Received: by 2002:a05:6402:1542:: with SMTP id p2mr8372047edx.298.1605380950855;
-        Sat, 14 Nov 2020 11:09:10 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id o20sm7264552eja.34.2020.11.14.11.09.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 11:09:10 -0800 (PST)
-Date:   Sat, 14 Nov 2020 21:09:09 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH net-next 2/3] net: ethernet: ti: cpsw_new: enable
- broadcast/multicast rate limit support
-Message-ID: <20201114190909.cc3rlnvom6wf2zkg@skbuf>
-References: <20201114035654.32658-1-grygorii.strashko@ti.com>
- <20201114035654.32658-3-grygorii.strashko@ti.com>
+        Sat, 14 Nov 2020 14:11:31 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id D60F080560;
+        Sat, 14 Nov 2020 20:11:28 +0100 (CET)
+Date:   Sat, 14 Nov 2020 20:11:27 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lee Jones <lee.jones@linaro.org>, Eric Anholt <eric@anholt.net>
+Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/40] drm/pl111/pl111_display: Make local function static
+Message-ID: <20201114191127.GB3797389@ravnborg.org>
+References: <20201113134938.4004947-1-lee.jones@linaro.org>
+ <20201113134938.4004947-13-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201114035654.32658-3-grygorii.strashko@ti.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113134938.4004947-13-lee.jones@linaro.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=IkcTkHD0fZMA:10 a=-VAfIpHNAAAA:8 a=e5mUnYsNAAAA:8 a=KKAkSRfTAAAA:8
+        a=Cwvp4g05kwjmXd1pErQA:9 a=QEXdDO2ut3YA:10 a=srlwD-8ojaedGGhPAyx8:22
+        a=Vxmtnl_E_bksehYqCbjh:22 a=cvBusfyB2V15izCimMoJ:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 05:56:53AM +0200, Grygorii Strashko wrote:
-> This patch enables support for ingress broadcast(BC)/multicast(MC) rate limiting
-> in TI CPSW switchdev driver (the corresponding ALE support was added in previous
-> patch) by implementing HW offload for simple tc-flower policer with matches
-> on dst_mac:
->  - ff:ff:ff:ff:ff:ff has to be used for BC rate limiting
->  - 01:00:00:00:00:00 fixed value has to be used for MC rate limiting
+Hi Lee,
+On Fri, Nov 13, 2020 at 01:49:10PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Hence tc policer defines rate limit in terms of bits per second, but the
-> ALE supports limiting in terms of packets per second - the rate limit
-> bits/sec is converted to number of packets per second assuming minimum
-> Ethernet packet size ETH_ZLEN=60 bytes.
+>  drivers/gpu/drm/pl111/pl111_display.c:356:6: warning: no previous prototype for ‘pl111_display_disable’ [-Wmissing-prototypes]
 > 
-> Examples:
-> - BC rate limit to 1000pps:
->   tc qdisc add dev eth0 clsact
->   tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
->   action police rate 480kbit burst 64k
-> 
->   rate 480kbit - 1000pps * 60 bytes * 8, burst - not used.
-> 
-> - MC rate limit to 20000pps:
->   tc qdisc add dev eth0 clsact
->   tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
->   action police rate 9600kbit burst 64k
-> 
->   rate 9600kbit - 20000pps * 60 bytes * 8, burst - not used.
-> 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Cc: Eric Anholt <eric@anholt.net>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Eric's was not copied on this or the other pl111 patch.
+Added Eric so he can be aware of this fix.
+
+	Sam
+
 > ---
-
-Your example for multicast would actually be correct if you specified
-the mask as well. Like this:
-
-tc filter add dev eth0 ingress flower skip_sw \
-	dst_mac 01:00:00:00:00:00/01:00:00:00:00:00 \
-	action police rate 9600kbit burst 64k
-
-But as things stand, the flow rule would have a certain meaning in
-software (rate-limit only that particular multicast MAC address) and a
-different meaning in hardware. Please modify the driver code to also
-match on the mask.
+>  drivers/gpu/drm/pl111/pl111_display.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/pl111/pl111_display.c b/drivers/gpu/drm/pl111/pl111_display.c
+> index b3e8697cafcf1..69c02e7c82b7e 100644
+> --- a/drivers/gpu/drm/pl111/pl111_display.c
+> +++ b/drivers/gpu/drm/pl111/pl111_display.c
+> @@ -353,7 +353,7 @@ static void pl111_display_enable(struct drm_simple_display_pipe *pipe,
+>  		drm_crtc_vblank_on(crtc);
+>  }
+>  
+> -void pl111_display_disable(struct drm_simple_display_pipe *pipe)
+> +static void pl111_display_disable(struct drm_simple_display_pipe *pipe)
+>  {
+>  	struct drm_crtc *crtc = &pipe->crtc;
+>  	struct drm_device *drm = crtc->dev;
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
