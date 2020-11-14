@@ -2,256 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4422B2D2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9752B2D32
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgKNMpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        id S1726844AbgKNMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbgKNMpU (ORCPT
+        with ESMTP id S1726112AbgKNMrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:45:20 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC2BC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 04:45:20 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605357918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AwHqBJ1A0pSeDB52pzpfXWyhp1imACv42f9AV+4q3Js=;
-        b=aq10CgPaijfLuI0NJN8nwZdIW2OwWxCQDDAfuiB//dADb2WDTlDja6q+nHVPB3TOKDkery
-        ByrtJBcopCZ8Qu/D1V1byIjBMFHVyw2t74fQv/UPeL+yuABr2gdraK5dlFSrSrlM7vX61Y
-        biF3+JOFa9Y9h/pDosdYTB5xi08nlKf3LSXmLgXGulbeMXQZ687N/+TlTLcosqevJKAfnw
-        fN/NI0W5R6J1DBE4ptk3lgMW+uCkxsuXNj9gt3II80k42fxLtk/z9WQNG7lrYxwj6FmR3v
-        LKzhqCpdPGMKC2ACbBJqwiQ/Jm+wPp1abmGcwuY7y9XFhoAXFnWGaND8oqq7WQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605357918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AwHqBJ1A0pSeDB52pzpfXWyhp1imACv42f9AV+4q3Js=;
-        b=b0bx2a4UYahvxeh+WrFhQcEFNnv9qBUov+dgXwWyYPDNadYXfJLNYNiSS1GWAInugMxox6
-        3zmGIBSETp9+uxAQ==
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-kernel@vger.kernel.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Marc Zyngier <maz@kernel.org>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, Qian Cai <cai@lca.pw>,
-        Rob Herring <robh@kernel.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
-Subject: Re: [PATCH kernel v3] genirq/irqdomain: Add reference counting to IRQs
-In-Reply-To: <20201109094646.71565-1-aik@ozlabs.ru>
-References: <20201109094646.71565-1-aik@ozlabs.ru>
-Date:   Sat, 14 Nov 2020 13:45:18 +0100
-Message-ID: <87a6vkayzl.fsf@nanos.tec.linutronix.de>
+        Sat, 14 Nov 2020 07:47:23 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85878C0613D1;
+        Sat, 14 Nov 2020 04:47:23 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id f12so1595249pjp.4;
+        Sat, 14 Nov 2020 04:47:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/alDDGu77kr1jyJS2Dgo0f8lEWMLifOcaqhyEonywU8=;
+        b=aZZUKtrUI7FUZgNGTm6DhtaXCamioS0bcVM4yFOgeZ+hB3mXPddqxnr31T1x6L9cUR
+         MWquPRrsz+r8KdnHNpo23GDU1SPGYQ+vxFD3gzNIm15BlwfVU7/+Q/Hqt6qG1jgRGplg
+         R75u0DD9C2uGSJj+wOvc8R9h97myHYN0cywbq8d0Wg1qglgQ6ELvlpKqYORyUQOW/Y7o
+         G5zBMMdU2blRUi2RtuFa4x/SW6tllf97FApPk2ItQlc9+UQdy1ljwxYr/STw5eW9g4a8
+         WFmU+f13dm0rNIwTUURrUGfbfVZpqQOm6rHy0nJdoFYUWBQvIXMSwaFo0wBQSs/X6hAD
+         Xi9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/alDDGu77kr1jyJS2Dgo0f8lEWMLifOcaqhyEonywU8=;
+        b=fTeADznYJ5MBJ9jVt4DkYtQTNO6ulag8v7h27NnTTuFXErPeg9fb/zD4/ORH5lBh/r
+         bNH/M2hJrtuYgzOFPbRphbSSOJgqsyeC03i14gTqoBkdQIPMhyHhLUcfJYgsR0Gy7K+l
+         /CfNu2kw07wVQ5ZWgNvMcQqQ3BqW+rdpvLy4uHvn7J79t2qWgcoUJZqVzektUJNfr1he
+         snxefKtzmOs6iNHEcZ4E3EwBpeFl3u/Z8xkBX9FyXJ3g1QeBWK03qQYNzA0RV9QsOewW
+         pbjFaGLiBSDoooOemIvdEhQUTB+U7WHlQUKHNTy5QHaePLYMvzQESLSl/ENtbBptxP/W
+         iXuw==
+X-Gm-Message-State: AOAM531Hj9r7PM2YhtczQ9kpYwk/z+RbGIXrGzS68FMRA6Lz3GxGusWz
+        XDN84S3syWZJmZs9DUBv2SQkur/SNUrTDsQ=
+X-Google-Smtp-Source: ABdhPJxSMdYyDAOZ38fW7UFYncbtCKRMWFct9sclLFI+IJLblPh6HQkyy4+V8bEkfe5qfFkLISAaeA==
+X-Received: by 2002:a17:90a:5884:: with SMTP id j4mr7589631pji.7.1605358043132;
+        Sat, 14 Nov 2020 04:47:23 -0800 (PST)
+Received: from PWN ([221.124.243.27])
+        by smtp.gmail.com with ESMTPSA id s9sm12522743pfs.89.2020.11.14.04.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 04:47:22 -0800 (PST)
+Date:   Sat, 14 Nov 2020 07:47:16 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
+ FNTCHARCNT() in fbcon.c
+Message-ID: <20201114124716.GA12895@PWN>
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
+ <20201113211633.GY401619@phenom.ffwll.local>
+ <X68NFzaAuImemnqh@kroah.com>
+ <20201114081021.GA11811@PWN>
+ <X6/K/S9V7rj2hI5p@kroah.com>
+ <X6/L/lE2pA7csBwd@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6/L/lE2pA7csBwd@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09 2020 at 20:46, Alexey Kardashevskiy wrote:
-> PCI devices share 4 legacy INTx interrupts from the same PCI host bridge.
-> Device drivers map/unmap hardware interrupts via irq_create_mapping()/
-> irq_dispose_mapping(). The problem with that these interrupts are
-> shared and when performing hot unplug, we need to unmap the interrupt
-> only when the last device is released.
->
-> There was a comment about whether hierarchical IRQ domains should
-> contribute to this reference counter and I need some help here as
-> I cannot see why.
-> It is reverse now - IRQs contribute to domain->mapcount and
-> irq_domain_associate/irq_domain_disassociate take necessary steps to
-> keep this counter in order.
+On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
+> On Sat, Nov 14, 2020 at 01:18:06PM +0100, Greg Kroah-Hartman wrote:
+> > On Sat, Nov 14, 2020 at 03:10:21AM -0500, Peilin Ye wrote:
+> > > Thanks for reviewing!  Questions about the last patch [5/5] though, it
+> > > depends on the following assumption:
+> > > 
+> > > """
+> > > For each console `idx`, `vc_cons[idx].d->vc_font.data` and
+> > > `fb_display[idx].fontdata` always point to the same buffer.
+> > > """
+> > > 
+> > > Is this true?  I think it is true by grepping for `fontdata`.  I also
+> > > noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
+> > > interchangeably, see fbcon_get_requirement():
+> > > 
+> > > 		vc = vc_cons[fg_console].d;
+> > > 		[...]
+> > > 			p = &fb_display[fg_console];
+> > > 			caps->x = 1 << (vc->vc_font.width - 1);
+> > > 					^^^^^^^^^^^
+> > > 			caps->y = 1 << (vc->vc_font.height - 1);
+> > > 					^^^^^^^^^^^
+> > > 			caps->len = (p->userfont) ?
+> > > 				FNTCHARCNT(p->fontdata) : 256;
+> > > 					   ^^^^^^^^^^^
+> > > 
+> > > If it is true, then what is the point of using `fontdata` in `struct
+> > > fbcon_display`?  Just for the `userfont` flag?  Should we delete
+> > > `fontdata`, when we no longer need the `userfont` flag?
+> > 
+> > Yes, after a quick look, I think your analysis here is correct.  So if
+> > you can delete that, it would be nice if possible.
 
-I'm not yet convinced that this change is correct under all
-circumstances. See below.
+I see, at the moment we still need `userfont` for refcount handling, I
+will try to delete both `fontdata` and `userfont` after refcount is
+taken care of.
 
-> What might be missing is that if we have cascade of IRQs (as in the
-> IOAPIC example from Documentation/core-api/irq/irq-domain.rst ), then
-> a parent IRQ should contribute to the children IRQs and it is up to
+> > > In this sense I think [5/5] needs more testing.  Do we have test files
+> > > for fbcon, or should I try to write some tests from scratch?
+> > 
+> > I don't know of any direct tests, I usually just booted into that mode
+> > and saw if everything looked like it did before.  There must be some
+> > tool that you can use to change the current font, as it seems to happen
+> > at boot time on some distros.  I can't remember what it's called at the
+> > moment...
+> 
+> Ah, here's a hint:
+> 	https://wiki.archlinux.org/index.php/Linux_console#Fonts
+> 
+> The setfont tool should help you out here.
 
-No. Hierarchical irq domains handle ONE interrupt and have nothing to do
-with parent/child interrupts. They represent the various layers of
-hardware involved in delivering one particular interrupt. Just looking
-at this example:
+Oh, I didn't know about this one.  I'll go experimenting with it,
+thank you!
 
-  Device --> IOAPIC -> Interrupt remapping Controller -> Local APIC -> CPU
+Peilin Ye
 
-There are 3 interrupt chips involved: IOAPIC - REMAP - APIC and each of
-them has to do configuration and/or resource allocation when setting up
-an interrupt. Also during handling the various chip levels might be
-involved.
-
-So now if you remove interrupt remapping (config, commandline, lack of
-HW) the delivery chain looks like this:
-
-  Device --> IOAPIC -> Local APIC -> CPU
-
-So we only have two chips involved.
-
-Hierarchical domains handle that at boot time by associating the
-relevant parent domains to the involved chips.
-
-> Documentation/core-api/irq/irq-domain.rst also suggests there is a lot
-> to see in debugfs about IRQs but on my thinkpad there nothing about
-> hierarchy.
-
-Enable GENERIC_IRQ_DEBUGFS and surf around in
-/sys/kernel/debug/irq/domains.
-
-cat /sys/kernel/debug/irq/domains/IO-APIC-240 
-name:   IO-APIC-240
- size:   24
- mapped: 15
- flags:  0x00000003
- parent: AMD-IR-3
-    name:   AMD-IR-3
-     size:   0
-     mapped: 28
-     flags:  0x00000003
-     parent: VECTOR
-        name:   VECTOR
-         size:   0
-         mapped: 295
-         flags:  0x00000003
-
-You will find something like this on your thinkpad as well. It might be
-a two level hierarchy if there is no remapping unit.
-
-name:   IO-APIC-240
- size:   24
- mapped: 15
- flags:  0x00000003
- parent: VECTOR
-    name:   VECTOR
-     size:   0
-     mapped: 292
-     flags:  0x00000003
-
-and if you look at an interrupt:
-
-# cat /sys/kernel/debug/irq/irqs/4
-handler:  handle_edge_irq
-device:   (null)
-status:   0x00004000
-istate:   0x00000000
-ddepth:   0
-wdepth:   0
-dstate:   0x35408200
-            IRQD_ACTIVATED
-            IRQD_IRQ_STARTED
-            IRQD_SINGLE_TARGET
-            IRQD_MOVE_PCNTXT
-            IRQD_AFFINITY_ON_ACTIVATE
-            IRQD_CAN_RESERVE
-            IRQD_HANDLE_ENFORCE_IRQCTX
-node:     0
-affinity: 0-63,128-191
-effectiv: 130
-pending:  
-domain:  IO-APIC-240
- hwirq:   0x4
- chip:    IR-IO-APIC
-  flags:   0x10
-             IRQCHIP_SKIP_SET_WAKE
- parent:
-    domain:  AMD-IR-3
-     hwirq:   0xa00000
-     chip:    AMD-IR
-      flags:   0x0
-     parent:
-        domain:  VECTOR
-         hwirq:   0x4
-         chip:    APIC
-          flags:   0x0
-         Vector:    33
-         Target:   130
-         move_in_progress: 0
-         is_managed:       0
-         can_reserve:      1
-         has_reserved:     0
-         cleanup_pending:  0
-
-you can see the domain hierarchy as well and the relevant information
-per domain. So on the IO-APIC it's hwirq 4, i.e. PIN 4. In the remap
-domain it's 0xa00000 which is the relevant table IIRC and the vector
-domain has extra information about the target vector (33) and the target
-CPU (130).
-
-> So I'll ask again :)
->
-> What is the easiest way to get irq-hierarchical hardware?
-> I have a bunch of powerpc boxes (no good) but also a raspberry pi,
-> a bunch of 32/64bit orange pi's, an "armada" arm box,
-> thinkpads - is any of this good for the task?
-
-You have it already. Everything you listed except PPC uses hierarchical
-interrupt domains.
-
-> +static void delayed_free_desc(struct rcu_head *rhp);
->  static void irq_kobj_release(struct kobject *kobj)
->  {
->  	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
-> +#ifdef CONFIG_IRQ_DOMAIN
-> +	struct irq_domain *domain;
-> +	unsigned int virq = desc->irq_data.irq;
->  
-> -	free_masks(desc);
-> -	free_percpu(desc->kstat_irqs);
-> -	kfree(desc);
-> +	domain = desc->irq_data.domain;
-> +	if (domain) {
-> +		if (irq_domain_is_hierarchy(domain)) {
-> +			irq_domain_free_irqs(virq, 1);
-> +		} else {
-> +			irq_domain_disassociate(domain, virq);
-> +			irq_free_desc(virq);
-> +		}
-> +	}
-> +#endif
-
-This is really a layering violation. While it's smart to reuse the kobj
-inside the irq descriptor, you're bolting the refcounting which is
-required for handling this irqdomain multi-association case into the irq
-descriptor code and invoking stuff from within the irq descriptor code
-which absolutely does not belong there at all.
-
-Thereby breaking hierarchical irqdomains completely. Just look at
-the following callchain as one example (there are way more):
-
-pci_disable_msi()
-  pci_msi_teardown_msi_irqs()
-    msi_domain_free_irqs()
-      msi_domain->ops->domain_free_irqs()
-        __msi_domain_free_irqs()
-           irq_domain_free_irqs()
-             irq_domain_free_irqs_hierarchy()
-               irq_free_descs()
-                 free_descs()
-
-Sorry, but it's really not rocket science to find the call chains leading
-up to free_desc().
-
-And once you found all of them you'll end up with lots of ugly
-constructs like conditional refcounting which is wrong to begin with:
-
-> +		if (get_ref) {
-> +			struct irq_desc *desc = irq_to_desc(virq + i);
-
-This is an alarm sign in the first place.
-
-I'm not saying, that reusing the irqdesc::kobj is bad per se, but this
-needs way more thought than just moving stuff into the release function
-and slapping kobj_get()/put() pairs all over the place.
-
-If at all this needs to be done in small incremental steps and not as a
-wholesale rewrite which is pretty much impossible to review.
-
-Thanks,
-
-        tglx
