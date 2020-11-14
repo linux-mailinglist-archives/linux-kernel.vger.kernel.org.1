@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2034E2B2DAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 15:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECDB2B2DBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 15:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgKNOes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 09:34:48 -0500
-Received: from mga02.intel.com ([134.134.136.20]:64967 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKNOer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 09:34:47 -0500
-IronPort-SDR: t9hiBMKz+9PTl9Dqf/UpMIHkdhnmVWj14h0pN4XSDmJ94bCdQU+inmKlHvHtBbjg0k/TpdDdbD
- WxIMiTPKipMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="157602708"
-X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
-   d="scan'208";a="157602708"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2020 06:34:47 -0800
-IronPort-SDR: yJ7JU88zcYyAw1ufi+xlJsgMY/2IZwCz24IAgY+/GfJBynjZxcYDJ95BRa687+q1at2G+Y4MrC
- L8tQsbIkZ6fA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,478,1596524400"; 
-   d="scan'208";a="324307226"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by orsmga003.jf.intel.com with ESMTP; 14 Nov 2020 06:34:46 -0800
-Subject: Re: [PATCHv1 4/4] fpga: stratix10-soc: entend driver for bitstream
- authentication
-To:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
- <1605204403-6663-5-git-send-email-richard.gong@linux.intel.com>
- <9bb29416-65fe-85e8-b960-23abc49352f2@redhat.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <6ec8b5ee-9505-7863-fcb6-7e5bbe2aa963@linux.intel.com>
-Date:   Sat, 14 Nov 2020 08:55:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726920AbgKNO4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 09:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgKNO4J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 09:56:09 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DE0C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 06:56:08 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id d18so1230419edt.7
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 06:56:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=irvAfDqJe1hQB3fJxlaJ3x9w9qp/XEy9b8ACpfP/PLU=;
+        b=kILGEDJiwUUgzXwwPB8YPdnmUs+dYehC0DmSEY+aEUyoje6tnSe9xH+nRXpOMUV3Ti
+         vlC6vh8U8rgiJpm1S9NwMYGC32dKMdTb+YH427pvUAPQxnrD9CG5zsPDIQVHu/jRCYb+
+         pJxSd6qp7focHUw8mvfogO9RqpesJw2/H9L+5nEFSRw94mjJ25oZUl4clO5TubXPI/ew
+         F2UWxd2Z5DsHkfkJNhLnSUUx8w+iZrIHacxuTXDNvaSL2N3shMeZAZc3NCgiWzK1wy6j
+         qk3kwaWsrjYxUmKc8Y/WC0hJpUztg/cH0Nhpzlqr1YPR/MkUKOo1rgfTB1l4T9RFf517
+         q58g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=irvAfDqJe1hQB3fJxlaJ3x9w9qp/XEy9b8ACpfP/PLU=;
+        b=tFoeYpc0OUKt0gyoFKJfdtqhMdVh0P7rIvIErPHNc32SKMccHMTGKgihcQFXGO3Uv0
+         5vxkvdzzDQa25fGhPSPU5E2sIOt72Xk1oVJH2tBNsXJ65AldTtH3GOL1p135uSo6E+f9
+         DRmHXg5h45WXQqldw/Z2+9/3VHMKe1zuZvf/7A4wgCE5bGUXokOP25rzIG+jctf1Psoo
+         D5ua6Xr1DrrgbI0Q0vktaTyEyVhtiLNKsQ86EAxT1oz9AmNCOfX8HVgho2lCG8EeAYhV
+         MWTJ7oc3nuUasd8Gx/dnzWkQFVb2AlPV2/jf1ppcSUGbznhK4cPsHlMiOxaSCmmSmQZU
+         zxAg==
+X-Gm-Message-State: AOAM5300/od2aSZ5gJNwEEDocZYegXVKZ9clsjU7yrFpfi/My+/jjpu+
+        vnKL/tNphhm9R5Y58sJWPcxXK/bnnJE+XLaNA5E=
+X-Google-Smtp-Source: ABdhPJyC/oza841o+z0Ejl/L5nmVtFrZxGczU1dzsEQoEvSD+26O18QpsmXL1+3b8BTZDkJhmA8YO7DIJH2XLAHqFsM=
+X-Received: by 2002:a50:ab5e:: with SMTP id t30mr7692919edc.314.1605365767481;
+ Sat, 14 Nov 2020 06:56:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9bb29416-65fe-85e8-b960-23abc49352f2@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:906:3145:0:0:0:0 with HTTP; Sat, 14 Nov 2020 06:56:06
+ -0800 (PST)
+Reply-To: LishaHaman225@gmail.com
+From:   Miss Lisha Haman <mohamadimustafa303@gmail.com>
+Date:   Sat, 14 Nov 2020 06:56:06 -0800
+Message-ID: <CAGKiKh-SL=bN2BbGMfhKy2Webf8oL7rNvEggJrqBhzF_rNjVTQ@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+My dear I am Miss Lisha Haman 23 years of age , I am the only daughter
+to Dr Abdul Haman from France-Paris who work with (SEMAFO) the biggest
+Canadian gold producer here in West Africa Burkina Faso,
 
-Hi Tom.
+Unfortunately my father was a victim on the deadliest attack by the
+jihadist On the 6 November 2019 when gunmen ambushed a convoy
+transporting workers of the Canadian mining firm Semafo, it is my sad
+moment each time I think about this, but the reason why I contacted
+you is that I have my late father receipt of deposit he made with a
+bank in abroad with my name as next of kin, The total amount deposited
+was 3.7 million United Stated dollars,
 
-On 11/13/20 2:31 PM, Tom Rix wrote:
-> 
-> On 11/12/20 10:06 AM, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> Exten FPGA manager driver to support FPGA bitstream authentication on
->> Intel SocFPGA platforms.
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->>   drivers/fpga/stratix10-soc.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->> index 657a70c..8a59365 100644
->> --- a/drivers/fpga/stratix10-soc.c
->> +++ b/drivers/fpga/stratix10-soc.c
->> @@ -185,7 +185,10 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
->>   	ctype.flags = 0;
->>   	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
->>   		dev_dbg(dev, "Requesting partial reconfiguration.\n");
->> -		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
->> +		ctype.flags |= FPGA_MGR_PARTIAL_RECONFIG;
-> 
-> The change does not match the commit log.
-> 
-> Add some comment like..
-> 
-> 'Cleanup setting of partial reconfig flag'
-> 
-> to cover the change.
+Now I decided to travel for the money but embassy here deny me visa
+due to the Corona virus outbreak,
 
-I will make the cleanup change separately in a different patch.
+I talk to the bank regarding my visa problem and they advise me to
+look for my relative trusted bank account so that they will transfer
+the total fund in there, But I am the only daughter of my father and
+have no relative to present, that is why I want to present you to the
+bank as my relative who will receive the total fund on my behalf and
+also take care of me as well,
 
-Regards,
-Richard
+I attached my picture  with this mail please send me your complete
+full details such as, Your Full Name:
 
+Home and Office Addresses:
 
-> 
-> Tom
-> 
->> +	} else if (info->flags & FPGA_MGR_BITSTREM_AUTHENTICATION) {
->> +		dev_dbg(dev, "Requesting bitstream authentication.\n");
->> +		ctype.flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
->>   	} else {
->>   		dev_dbg(dev, "Requesting full reconfiguration.\n");
->>   	}
-> 
+Telephone Number:
+
+Occupation:
+
+Country of Residence:
+
+Your Bank account number where the bank will remit the fund
+
+Once I received your details, I will give you the bank contact so that
+you can contact them directly to discuss how they can transfer the
+total fund in your bank account so that you can relocate me to join
+you over there in your country,
+
+Sincerely
+
+Lisha Haman
