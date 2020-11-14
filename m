@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481AE2B2E25
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4EE2B2E29
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgKNPj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 10:39:58 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:55538 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgKNPj5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 10:39:57 -0500
-Received: by mail-wm1-f68.google.com with SMTP id c9so19075946wml.5;
-        Sat, 14 Nov 2020 07:39:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2epbZ3+UnndJ7TIcZlKuCPOVDuT8GqG7Cpc8DUIEdTs=;
-        b=CC1LhKtyV+6JwjJLGkaVY1Ssx3ncbbtMHqqKAyg3FdtpKloKBgWFmNP3g6VNkTR9XE
-         tWcxqzXLKlAMKjpk+LTx58qQEhoR/J46WGDgpL1GGAI+/Xbu9gPoV5gtY1DxYdRHv7ca
-         +dV//Y1t5ON6dyzPHxVHx7j29r7Na/UeDZKvPBVRjSMca8a/0zaMHw49dSAOOs1pQfEv
-         ux+mCK/yD/mffTmxkwEBCLpgW5hdNDYSsA5Q+hVFMEQ50jkp2ZscwDJr1mKA3yjtu7XE
-         vwEp/mYP6e8CvZivMigd1ZXdK+79vK8bNJFvE9wr5cvnjwvgKB0Q7wJwDtsHPwFunJW2
-         yp9g==
-X-Gm-Message-State: AOAM533/USgNQOhZOrjas0ljwL2NJ7hUCskuSM+uewGd/MrI8QhFGjqA
-        0a+3cFSEzGtoL1QhTD7Drcc=
-X-Google-Smtp-Source: ABdhPJykOlHO4MbKp8wxNIyMEoiv/tohAotAvK9fvlbalM9OUcEQMMQezZ0QLYuDEpRm/iiCeDsBkg==
-X-Received: by 2002:a7b:c00b:: with SMTP id c11mr7305741wmb.122.1605368395400;
-        Sat, 14 Nov 2020 07:39:55 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id s8sm15757236wrn.33.2020.11.14.07.39.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 07:39:54 -0800 (PST)
-Date:   Sat, 14 Nov 2020 16:39:52 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v8 06/26] memory: tegra30: Add FIFO sizes to memory
- clients
-Message-ID: <20201114153952.GF4106@kozik-lap>
-References: <20201111011456.7875-1-digetx@gmail.com>
- <20201111011456.7875-7-digetx@gmail.com>
+        id S1727131AbgKNPkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 10:40:40 -0500
+Received: from mout.gmx.net ([212.227.15.19]:59003 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727084AbgKNPkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 10:40:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605368438;
+        bh=Yy9l8U0I4AcfUNHl5mNY6+eY2n0gQ9V+P/E7vqhJH1Q=;
+        h=X-UI-Sender-Class:Subject:From:To:Date;
+        b=guOZhMRF/dHA7sMDMZM1GpiCL2/ZHDlctIZbMUSB6R7fOniYFh7JftOtBqGfryeyt
+         Ih9k2eM0yl/gdbsLd6zfpmpUx6VXa5KYb7OZuZXrcciScu2jLIhdn8TCxHValWbv72
+         /85IOmiFNPzZOvSpvXSHniO9Pc63Xe8cauwneFGs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.100] ([185.6.148.154]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MBDnI-1kRGsS1cAo-00Cmed for
+ <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 16:40:38 +0100
+Message-ID: <17c526d0c5f8ed8584f7bee9afe1b73753d1c70b.camel@gmx.com>
+Subject: Suggestion: Lengthen the review period for stable releases from 48
+ hours to 7 days.
+From:   Hussam Al-Tayeb <ht990332@gmx.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sat, 14 Nov 2020 17:40:36 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201111011456.7875-7-digetx@gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:FWrWt7CbA/82EYRdcLnQ62O4+aRXP7xtLB1tsfDdarlZGF1TTo6
+ 2QRtTe2n34Ry7NjyFHvQoM2mE2Y5WDbYBAgZcxlcDiK35QdDIe1crCDLo15EG2UE1lj7PWi
+ SWXgQsskhtPTghgUGnwb8qpL7Em4lE5CUSachtx05IERs6E/DAkIo/Bhaat/z0j9W0Wah7V
+ KhbhYDGXvw4IuJFprUl+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d0r1VrjaY7Q=:xVSJ/Go8SCbmOhUU+3GNg5
+ sBVYaa4advGQc7dHBvRr5uDjkmAYR6/oKXP10bMb+CJYi/m/RBhyFGsoho+yFR7AhmsezkC1f
+ 2RrRfySTarXjumSo0mhex/AvnYzBpz4gW3mqolKB1ud0VYfD5BPxoQhunUhR7pyHNLiKLPo4+
+ h7+qibbyedueqwxNN+YgR974SFiOcDL6sLQnh3tDLV2qbAdUUIn2bS+TZnCAnGyKF0ZD7OD2J
+ zGJ1DrCzZ4eRHdwNyfr+m6gZZzoW3SEs/C1hhN4eSfYwGiRH2cPsVPlw6rU1ELp0feaNqoa6s
+ GPGnQafMHomVUL79Nv4p2tppUvdFH1JMfnJRHJtC+DkEgnRY+GMTEitCqMLSk2OKwlh2tF5Or
+ vcBWM6VJ3juDGv5dXtCWtU5VzmQBOScUWQU6euDf5c6EgRmEh9xVVl96gFhMFTyJrl9u10ZgC
+ qYTwbCoaJbh2QqJD5JR/1OXv6umtIfKM/iAHw1soJZz5skHraX3G3LZy15B1RyPbUkcMRVqbl
+ jtg61C893v/jKv9AOdsfErvkBQn/8b1XEDtpOoBcTtDpP49LNyoVeqtBf6D1oqUk63o1floBC
+ bG3jQO7M6SyhEBcmz9QkS36OHEFsU9QuSMgW5UPA1wO0B4j+TFp+9GqQ21hneqQyIYpD2fQFA
+ 1yRs4zVkm0fk2O9P8WdXQT52jK0eelFeGry34j8Wlf1WjJc3HlWiZxPVSFAJralDSijHNc6SS
+ Ze/phsAvxsuIgAfS7TRkjRINYal1DGjlHdvWtLbFA6j17jHwK3ezUq9UoznEoKh4Cz0KHqtlK
+ ZgRgaAscqLJvA2J2dCvjO4HoS4L/tjeMGVGk7o1p0PWGv1QNpOMN1Gx0L1+tli/RMTjhQeLqm
+ MuFkDs7vDfN1Hmgr7QMsgytbO3MQoOMuu+86pMLfo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 04:14:36AM +0300, Dmitry Osipenko wrote:
-> The latency allowness is calculated based on buffering capabilities of
-> memory clients. Add FIFO sizes to the Tegra30 memory clients.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/tegra30.c | 66 ++++++++++++++++++++++++++++++++++
->  1 file changed, 66 insertions(+)
+Hello. I would like to suggest lengthening the review period for stable
+releases from 48 hours to 7 days.
+The rationale is that 48 hours is not enough for people to test those
+stable releases and make sure there are no regressions for particular
+workflows.
+This is especially important for companies deploying those kernels in
+production machines. Often those releases are on weekends as well
+further limiting the ability to test.
+It is of course possible to skip stable updates that have large numbers
+of patches and only update once a month but I feel a longer testing
+period will work best for everyone.
+It is, of course, always possible to exempt urgent security releases
+from the waiting period.
 
-Thanks, applied.
-
-Best regards,
-Krzysztof
+Thank you.
+Hussam.
 
