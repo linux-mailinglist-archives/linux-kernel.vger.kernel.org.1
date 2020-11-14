@@ -2,151 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF792B2F8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1992B2FA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgKNSUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 13:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
+        id S1726172AbgKNSZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 13:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgKNSUX (ORCPT
+        with ESMTP id S1726070AbgKNSZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 13:20:23 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30B8C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 10:20:22 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id l12so11469491ilo.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 10:20:22 -0800 (PST)
+        Sat, 14 Nov 2020 13:25:36 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D50C0613D1;
+        Sat, 14 Nov 2020 10:25:35 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l11so6840737lfg.0;
+        Sat, 14 Nov 2020 10:25:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9XsF4YnrL1fCg1nVpbLuSpPZByDdOIuOUok90OTewKQ=;
-        b=V2Ed7Phwa84huYB0Bk4VP0nIxfnmsd1r51ji2HH1REPRc3ytHG2b8icwyTAfGIaWms
-         MoDFhhEFJ1ORSLEL+TTSLuUG+a/xAdk36quIOiK7a3jJqsU4amfzwTyLF5FZj6teDvnG
-         JoI+es3GcCyTp/JmIsi2u5QrO0AaZeS6MNTgLGJP5JYjUhZ0PvbBgyC5kIXwgySXZpal
-         7QTuHul4Rs22YbSELzePEMzLvCrte5UKwkI8P0dvOxnQ7aT2hL0C2abyLASj0/lg8bJt
-         mTIOdCcntVcwF7++qdD66qha7MuZDcsYsjhci5v5UT/jBqRO/227dhIO8xgB+M0ynHYw
-         lypA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sADNNqeti4uK70pBgtaD+SgpD+B/8/G1XqY/+iUb/i4=;
+        b=O2tVMQNEzKXzJWXZAXT+FGuFehNg51hOosvO+53wXJhcBEeVQrtUZvyNVytrtDHxtU
+         PGNtKRQMb83d5kZMD9HAqChcILKXF6hQOzjLBilHPYYvSZs3v9hSBgOoqOGrMA9Bz+DH
+         idrOcv8kzIRPJsdt6OiHoxeBGOs83AvUqvnOv/VoHp2gTClDT65phe4dqNT2tX/9FWxR
+         X/+bNW4Ma1exbtrO86xszL1lbrt7R0FT567PIzZJv7QhxKTAY96Pnfio7cLaKcnVe5Lm
+         cMUV/fXjzdDgPsHndWsKGQzdA+BiYsr2+Y/F45YeWIUy1/UOXMvZ5XLz4ZSPPaFEfTH+
+         ieEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9XsF4YnrL1fCg1nVpbLuSpPZByDdOIuOUok90OTewKQ=;
-        b=DGLWbf7JvMYExB/fS+Og9kLu545g3ArqZ149CnaYCvOmt9RRL0NQHtF5j2/2BhPvb3
-         nRINv6PaBGT76DLaB+cAOoqEHUWM8TapWHpgYqAFMtlihgvXWYfWBOaM/Shez6l0g8BO
-         f2KFpJMCg8hdPxTNSVrfHBJ3fzFu1AAViDQim3EDplnUYNbxRFFSI13qRgn/prmONyaK
-         YvbKkpPx9Zmk7g5+XLok+oyv/AFg+h/vAviT5eQ2Ctoo6HIWWIsKeHWDTnLU455s5o+g
-         UXS7Ro/JJmSXJUsBrC9KKaeEZ2C6clmg2PItTviZkQFsQtzbPQB+soRSbb7QGBx4Q+/E
-         Wc6w==
-X-Gm-Message-State: AOAM532NRr4YjaTka3mUNGhmHPMoh3e+gyAHnK7ATT/caAN4J02bbkv/
-        QCVxYH3le/noGZPFOovGoj/IF5zm7I9w4Jgb
-X-Google-Smtp-Source: ABdhPJx+jIFI8dxjhjnqyZw4e+qofknbijIx+sxBJ1rbpcXB/ZGIC23rFIkd21ZOnY2T6w820MGJqg==
-X-Received: by 2002:a92:2c06:: with SMTP id t6mr3728618ile.125.1605378021915;
-        Sat, 14 Nov 2020 10:20:21 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id n10sm6504653iom.36.2020.11.14.10.20.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 10:20:21 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH net] net: ipa: lock when freeing transaction
-Date:   Sat, 14 Nov 2020 12:20:17 -0600
-Message-Id: <20201114182017.28270-1-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        bh=sADNNqeti4uK70pBgtaD+SgpD+B/8/G1XqY/+iUb/i4=;
+        b=K9JDdrwgIm/ilmJ4bdBvlIDO56cWjLna2w300lMiPREQJMvFqSv+kV+F8BzWEold72
+         u6bbLGOXpdBcvdrXjW11zjbHRUyXWdd3dJh7kbsSHrGajFQKyOKEVya8axvV3eZWFc0m
+         e9/yPXO0rveeuTYpey4dQ8E5fKFRUjRLdUF5MnzsZ8tW4D6y8wOpsDd76KAHB/UcrTmJ
+         69UHdt9V5gpefDfnT29erAAowKBXX7C8gpazYwVjsvXC34NkCow0nuUk9UiQ6QY8+p/k
+         S9Wz33FkV6l731/078WkmvqodLhzJkM0B9UlcCoQNaGr13cHpF0hnq6ey7iH++3DNAi4
+         uLgg==
+X-Gm-Message-State: AOAM5336Vd+uYNxDR5hJXihKsC3rUugg1S5cuzye6vjtJsj13FP9O5wK
+        Bu2A3IJLAYxjrLDPZASjp8lONVfkZTo=
+X-Google-Smtp-Source: ABdhPJyFs9HMe9D0ZqCz/JRLRfBiaU3NkKPYI05KLudJRj5vp8HcGkSozS69wEs7YfHwtTF4F5Vr+g==
+X-Received: by 2002:a19:915c:: with SMTP id y28mr2691321lfj.173.1605378333668;
+        Sat, 14 Nov 2020 10:25:33 -0800 (PST)
+Received: from ?IPv6:2a00:1fa0:486f:632f:b75d:4f91:4b03:d7f3? ([2a00:1fa0:486f:632f:b75d:4f91:4b03:d7f3])
+        by smtp.gmail.com with ESMTPSA id t6sm1714695lfe.81.2020.11.14.10.25.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Nov 2020 10:25:33 -0800 (PST)
+Subject: Re: [PATCH 2/2] MAINTAINERS: Set myself as Goldfish RTC maintainer
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     Miodrag Dinic <Miodrag.Dinic@syrmia.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
+References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
+ <20201114130921.651882-3-jiaxun.yang@flygoat.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <6bcbba2a-5a75-9b07-1816-edf6fb77a664@gmail.com>
+Date:   Sat, 14 Nov 2020 21:25:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201114130921.651882-3-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Transactions sit on one of several lists, depending on their state
-(allocated, pending, complete, or polled).  A spinlock protects
-against concurrent access when transactions are moved between these
-lists.
+Hello!
 
-Transactions are also reference counted.  A newly-allocated
-transaction has an initial count of 1; a transaction is released in
-gsi_trans_free() only if its decremented reference count reaches 0.
-Releasing a transaction includes removing it from the polled (or if
-unused, allocated) list, so the spinlock is acquired when we release
-a transaction.
+On 11/14/20 4:09 PM, Jiaxun Yang wrote:
 
-The reference count is used to allow a caller to synchronously wait
-for a committed transaction to complete.  In this case, the waiter
-takes an extra reference to the transaction *before* committing it
-(so it won't be freed), and releases its reference (calls
-gsi_trans_free()) when it is done with it.
+> While Gildfish platform is dusted, the RTC driver remains
 
-Similarly, gsi_channel_update() takes an extra reference to ensure a
-transaction isn't released before the function is done operating on
-it.  Until the transaction is moved to the completed list (by this
-function) it won't be freed, so this reference is taken "safely."
+   Goldfish. :-)
 
-But in the quiesce path, we want to wait for the "last" transaction,
-which we find in the completed or polled list.  Transactions on
-these lists can be freed at any time, so we (try to) prevent that
-by taking the reference while holding the spinlock.
+> valuable for us.
+> 
+> I'm volunteering to maintain goldfish RTC driver onward.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: Miodrag Dinic <Miodrag.Dinic@syrmia.com>
+[...]
 
-Currently gsi_trans_free() decrements a transaction's reference
-count unconditionally, acquiring the lock to remove the transaction
-from its list *only* when the count reaches 0.  This does not
-protect the quiesce path, which depends on the lock to ensure its
-extra reference prevents release of the transaction.
-
-Fix this by only dropping the last reference to a transaction
-in gsi_trans_free() while holding the spinlock.
-
-Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi_trans.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ipa/gsi_trans.c b/drivers/net/ipa/gsi_trans.c
-index 92642030e7356..e8599bb948c08 100644
---- a/drivers/net/ipa/gsi_trans.c
-+++ b/drivers/net/ipa/gsi_trans.c
-@@ -362,22 +362,31 @@ struct gsi_trans *gsi_channel_trans_alloc(struct gsi *gsi, u32 channel_id,
- 	return trans;
- }
- 
--/* Free a previously-allocated transaction (used only in case of error) */
-+/* Free a previously-allocated transaction */
- void gsi_trans_free(struct gsi_trans *trans)
- {
-+	refcount_t *refcount = &trans->refcount;
- 	struct gsi_trans_info *trans_info;
-+	bool last;
- 
--	if (!refcount_dec_and_test(&trans->refcount))
-+	/* We must hold the lock to release the last reference */
-+	if (refcount_dec_not_one(refcount))
- 		return;
- 
- 	trans_info = &trans->gsi->channel[trans->channel_id].trans_info;
- 
- 	spin_lock_bh(&trans_info->spinlock);
- 
--	list_del(&trans->links);
-+	/* Reference might have been added before we got the lock */
-+	last = refcount_dec_and_test(refcount);
-+	if (last)
-+		list_del(&trans->links);
- 
- 	spin_unlock_bh(&trans_info->spinlock);
- 
-+	if (!last)
-+		return;
-+
- 	ipa_gsi_trans_release(trans);
- 
- 	/* Releasing the reserved TREs implicitly frees the sgl[] and
--- 
-2.20.1
-
+MBR, Sergei
