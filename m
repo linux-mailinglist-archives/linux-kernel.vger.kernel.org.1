@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA852B2C4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3C32B2C4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 09:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgKNItc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 03:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
+        id S1726554AbgKNIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 03:55:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgKNItb (ORCPT
+        with ESMTP id S1726479AbgKNIzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 03:49:31 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4213CC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:49:30 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id s8so10943609yba.13
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:49:30 -0800 (PST)
+        Sat, 14 Nov 2020 03:55:02 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60383C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:55:02 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id l14so6862310ybq.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 00:55:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LHC7TLjMuv0Bqsc9YInmu+Sq1aO1znxsOq7zjGv5yxQ=;
-        b=E8zk5pYq73uLas2lesfyYQxN8ybnFwu924J7/cw4fK+yQH4xLWGM67r3fgI3pp+i9R
-         kpATtTG1U8FalvvEhSwE61yrcBbbNlwvTlcqtY71k6pLMTb6tlZgc4y08/13Guzsr0v3
-         3Y7YNgX3D7YLKxlUhu/lTbBgjOaTG6PsUr1BoSC52YsbeSc1qhJAMs/yswreRVRC/ufL
-         +cAQAu2cn5cqorcDitOv9iGLlLyGbTxxtIjRQWrdN5cirW9whpO0ffVxMCIHHp5uIrC/
-         kOAJXjgv1isFDpQUxDPoP+pN3pHV2C9bCmnTLrNMWOCC3tJ3zayaweAeBBSHn+ruzB8m
-         3NBA==
+        bh=zwKm/hKuMkhye7s1kt8ShQ5e/i85Z/4lZbGtkzeX7oE=;
+        b=ne6AKiZeI0W1LxIk9a/cBbrGQR1zULUQ89PKj0UVmq+vm16kxkPI1nzDL00BEsyOjp
+         NHjwN9HL0OXszSNQVV1llrSRQJ/C56WUws+27ndSWlDdTGdGeaN5hTHR+vRgkFN7qse/
+         OtEuPL9bOfhQo6XNPAwIBSI6gyKqF2htzlCjDEDL3l2PtlWsG1MQ1WSS22Y1Yq54z+Cn
+         MFYpcrzbb4UnKHsrtqKs1wXYd02cTWATcc5gCf/sNZ7UHTQoKgBFAs7nJccd2auHbWyY
+         LKNc7mXC3rSzQpkQfoLwtxTHI/y0XkxfpVofqBRrxJtOpUgRnZbNlQigR6L6DI+t5StE
+         p86A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LHC7TLjMuv0Bqsc9YInmu+Sq1aO1znxsOq7zjGv5yxQ=;
-        b=Z9XHCBIe6s6yywZwKkZGFBBXoiBapGWXmNuwIihIca8vZXdCmYvszoxjf2DcpQ9ER2
-         OPkqYG/mRC3JmNrRklGBCY/nFwdvxSJU6cjgUKA+f3j8NVyq1Isx+9wkqJDyuVtNBIp/
-         XgOWi5xU8lIvnSf4QcRuc+Z6LcAsJAF3+0zFN/zb89xecLa6T3oF0g+ZVbkKJkLehh5v
-         Lm7ozANhY2YaZfpOiHDI89Awxbt6vu+KbDRQnnpVlNH3noe8VomHsDIA1h0B+/Pe3jmA
-         /DBlzo241uskNvR7tX3hm/ldJRmNxampGTWyXudGbja9RW78/TZPIexhvtElk7VuqYsm
-         wlrg==
-X-Gm-Message-State: AOAM532Wo5HRch9x5KDoWjoLP0EjrjGy+atTtJkKcUf3oIoRsCbmdNNL
-        KY3W+Jxu2xsaxbEIIZIxItgVrj5K4eXkmRqXvlx1gnEhb1g=
-X-Google-Smtp-Source: ABdhPJym/VohNf3+KXSVFf5hlwLIcW0WGncOf2MKB3JrhWTKquM6Gc3sLMXbfxy4sDqyKQRmiHeeuNDDi+nEcPPSVGs=
-X-Received: by 2002:a25:b792:: with SMTP id n18mr9004847ybh.93.1605343769525;
- Sat, 14 Nov 2020 00:49:29 -0800 (PST)
+        bh=zwKm/hKuMkhye7s1kt8ShQ5e/i85Z/4lZbGtkzeX7oE=;
+        b=GieYJo93fe1z00yMF8OecaVLfB3FRUlK28YTMyJM2wDR1kiHwvRSt4lyMLiLqhonC4
+         K+TORELgqbVVAG6fXu4QbSjjqZgehMXMdssg5igUmYeAaBYT3695aC+p6zAjFOmP4QBZ
+         hL7bEJZZCKXcHav/+sBY+hqha3E4o75ipyvgggdEUPj0CiSoX/BBjdnLblM7lRcAaoQ6
+         I1PG9uqt0fAg9nMbKvEkJuwuu9TTkzwSTafwPmRD9CP0hWXzC2qXGPMzbc0a1vYhVVCm
+         JllrBMmfYuQoFxCfyiFgugzOO6Ozp5IlQ1m5lHfeC6N5WwjvRsU/GzZzVJi50Uv1jvG0
+         VKyw==
+X-Gm-Message-State: AOAM532HwWSN2PVPhGvTNE93e2qFlkLWQrLTtI0FLQUeS+38l1fMaDpu
+        5QsEb+f9i8EHFg9h8hqUheXGUEiS8G8TrrXzeW4=
+X-Google-Smtp-Source: ABdhPJxn+CXKSv6XVAOHa7fpo8I/rm3XSHFgCgmfvkHwfCU0RmrGxTTlpAcap9u3IexVQEYIejrgfmii8rcKtxXnAV0=
+X-Received: by 2002:a25:2e0d:: with SMTP id u13mr1260389ybu.247.1605344101581;
+ Sat, 14 Nov 2020 00:55:01 -0800 (PST)
 MIME-Version: 1.0
-References: <1605342178-22796-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1605342178-22796-1-git-send-email-zou_wei@huawei.com>
+References: <202011111755.9Uwp2gF6-lkp@intel.com> <20201111092559.GA67395@c88ae2e89e59>
+In-Reply-To: <20201111092559.GA67395@c88ae2e89e59>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 14 Nov 2020 09:49:18 +0100
-Message-ID: <CANiq72m+V8RxrFmt_hxV3uPYW5d60kxSiB-uiE63YYkURV_4Hg@mail.gmail.com>
-Subject: Re: [PATCH -next] auxdisplay: fix platform_no_drv_owner.cocci warning
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>
+Date:   Sat, 14 Nov 2020 09:54:50 +0100
+Message-ID: <CANiq72=_XwBuNVsYi9VV4NxXOtg=eginh_c3XxZ1v09Psr3YRQ@mail.gmail.com>
+Subject: Re: [PATCH] auxdisplay: fix platform_no_drv_owner.cocci warnings
+To:     kernel test robot <lkp@intel.com>
+Cc:     Lars Poeschel <poeschel@lemonage.de>, kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zou,
-
-On Sat, Nov 14, 2020 at 9:11 AM Zou Wei <zou_wei@huawei.com> wrote:
+On Wed, Nov 11, 2020 at 10:26 AM kernel test robot <lkp@intel.com> wrote:
 >
-> ./drivers/auxdisplay/lcd2s.c:373:3-8: No need to set .owner here. The core will do it.
+> From: kernel test robot <lkp@intel.com>
+>
+> drivers/auxdisplay/lcd2s.c:373:3-8: No need to set .owner here. The core will do it.
+>
+>  Remove .owner field if calls are used which set it automatically
+>
+> Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
+>
+> Fixes: 8c9108d014c5 ("auxdisplay: add a driver for lcd2s character display")
+> CC: Lars Poeschel <poeschel@lemonage.de>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 
-Thanks a lot for the patch. This patch was already submitted by the
-kernel test bot, please see
-https://lore.kernel.org/lkml/20201111092559.GA67395@c88ae2e89e59/
+Lars, I am picking this one, just so that you know.
 
 Cheers,
 Miguel
