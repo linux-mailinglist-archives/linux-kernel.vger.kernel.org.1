@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6952B307C
+	by mail.lfdr.de (Postfix) with ESMTP id E8A8A2B307D
 	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgKNUBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S1726481AbgKNUBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgKNUBw (ORCPT
+        with ESMTP id S1726439AbgKNUBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:01:52 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56685C0613D2;
-        Sat, 14 Nov 2020 12:01:52 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 33so14087565wrl.7;
-        Sat, 14 Nov 2020 12:01:52 -0800 (PST)
+        Sat, 14 Nov 2020 15:01:53 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CB2C0613D2;
+        Sat, 14 Nov 2020 12:01:53 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id d142so19822129wmd.4;
+        Sat, 14 Nov 2020 12:01:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fVMUgeyZKuWrvaXuwrPFfDV9ehe24R8AloJfk4H/7KE=;
-        b=T3RFYqK91Z9IiHxLhucv8O/w7eZKfuCJNvkpEmhrzlWUroBUdgQJ07Vo8dg2yDtTuB
-         mn1T8IE3KzgsfaH5p3LAjPNLMFPccmbj7uOtlj6w6pXq7ktcXjiKmiRO+e9V9s4z8Y+p
-         o4Scu4nPdkYdsN+gSOpcrZn7tc3B9JV+Ntr9cThyukXkbGM0cRhycBtYB0Z64VhY8QZT
-         igf/9QTpIWQBjEiwJksxbt8CpEcU3A09nczW2MsePb33jtaDDrWbYgMF26M87Zj7T7Ah
-         e76GaI2iMUqbXxDxqT2dVoCKBz1MfPDDyy8zZR6Wzc4CuRAv2irRB1JZ4fzVwJtgfxnS
-         vwFA==
+        bh=w4KSCu27l61jUmMvpofG000bGUgTYBDrDcAVkMbuCyA=;
+        b=df1iiyg4RObmAz6QqEy/oZPHW8DWWG/RColzjhlKYrQg7ZJLAafNl84K5Ci7Gg8mEY
+         t0RzAt9YobM37tHebL1M6oVNF9sjMKtuT4BmuEZmzaZW9RTUigUC7dhR085dOTAWZcbq
+         6GjIskkHp3my2xaxquushjDsVSeP5XW7o0QElyVPXaqea8GuE38jQJzasvgT52jupqOK
+         AlyILAVDOaONhl7FWFzhz/gxU4n7JX/zQLZyK0I/5xCK5l1IQxTiQHsrwEizO0W6sUL6
+         kxGrQUJ5MaqCLTaLwK3MMWF/2mgJ9/hQWvRaHTN3llRg8PBc59T6md65s/a2nmYY2q5L
+         QMZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fVMUgeyZKuWrvaXuwrPFfDV9ehe24R8AloJfk4H/7KE=;
-        b=AbVWAUY/Ok4YxYRzCGp6mdHZq1qHDaLYOsGRXleAPtOAomTnzAd6tzSEfG511JFkg9
-         rR2Vt9SEDWGEQJLDSWQaPJvu285Nj5q/RMjP2FAx1f38pb9uW4Y1fMk1Lt/J/EUV64ju
-         0KzHo4uZLmKmRi5ltvdqa/fz3DNC/eJ2cq8Ov83Nr2+fNc/xVhV0BbULx7W9TofVNwFg
-         CycxBW52MVwfWUie5xzWi6mGJQ68wdIir+K/pS52dOStA8Ur1GhtmmVdxGjJXDOh3GFp
-         JLaxL7mMKC9r2jM0XMeC6379+OPn0TpFMJQfZ9CuYqIpyyIe7FJigvRXd+CA3+jRZDDQ
-         fBWQ==
-X-Gm-Message-State: AOAM532P8Ad9aHjyMFiuiAoQbmq4b0orFIdTIzdI4APHy+PMCx/AA0qh
-        izbUi8NnZibqzaWuZwIgMs+ewMw1nthDzA==
-X-Google-Smtp-Source: ABdhPJyMtw9Jp1TkxZvWYEt21lqHXG31OvFS/02u+jppFkJOIZYIc26e4dd0MCeg/UYqHovxE/dlVw==
-X-Received: by 2002:a5d:448a:: with SMTP id j10mr10454761wrq.33.1605384111112;
-        Sat, 14 Nov 2020 12:01:51 -0800 (PST)
+        bh=w4KSCu27l61jUmMvpofG000bGUgTYBDrDcAVkMbuCyA=;
+        b=oUe/AgMcntvQZapv/w6YPVXzjwoL3ggQm7EPpKPurX4aNa3vfH+bjYimxgtZJfZ2d4
+         u5MQKz6FYBv5GJIMQfcQY2+PHw605RoCBexmnjGaJ6ZGL+Ji1nPGj7IIUGDYEsHVEVzz
+         9lRUl2nzoUZNS1lQABJolTP5D95sHexk4Qt/qgvxF8YC+KLdhT5M29aWrrOnroOBmPzZ
+         EZH9gB7NbyfCdz5PQSMf0W9v+uGZgxWAnyk3LoEIDTA7ddBb2dttl+M688h5czjSuTwr
+         GS9TOBN7FfEGVvOJ5oP+Rwk+bSLD8zp8kxuZwGRtF3CVzcGfEJlrEsIlJP4VDe0tcoYJ
+         FWJQ==
+X-Gm-Message-State: AOAM532BZqUxtkRtETihF2MCsv7tjQXQ7E+U75CFVDzZmQpE0sp4Iml6
+        mNNSYKxGivHfrEp4/r7kLVKoBy/qLkD0SQ==
+X-Google-Smtp-Source: ABdhPJxx3Gum24To/Or5CD3liT8L73i8srmistHejB729Rq0H7lIKKJ92dirWgs92RWgZMy+WiwwLg==
+X-Received: by 2002:a7b:c5c6:: with SMTP id n6mr8276033wmk.131.1605384112102;
+        Sat, 14 Nov 2020 12:01:52 -0800 (PST)
 Received: from localhost.localdomain (p4fc3ea77.dip0.t-ipconnect.de. [79.195.234.119])
-        by smtp.googlemail.com with ESMTPSA id g138sm14342953wme.39.2020.11.14.12.01.50
+        by smtp.googlemail.com with ESMTPSA id g138sm14342953wme.39.2020.11.14.12.01.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 12:01:50 -0800 (PST)
+        Sat, 14 Nov 2020 12:01:51 -0800 (PST)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     davem@davemloft.net, kuba@kernel.org,
         linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     jianxin.pan@amlogic.com, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, khilman@baylibre.com,
         narmstrong@baylibre.com, jbrunet@baylibre.com, andrew@lunn.ch,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH RFC v1 3/4] net: stmmac: dwmac-meson8b: move RGMII delays into a separate function
-Date:   Sat, 14 Nov 2020 21:01:03 +0100
-Message-Id: <20201114200104.4148283-4-martin.blumenstingl@googlemail.com>
+Subject: [PATCH RFC v1 4/4] net: stmmac: dwmac-meson8b: add support for the RGMII RX delay on G12A
+Date:   Sat, 14 Nov 2020 21:01:04 +0100
+Message-Id: <20201114200104.4148283-5-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201114200104.4148283-1-martin.blumenstingl@googlemail.com>
 References: <20201114200104.4148283-1-martin.blumenstingl@googlemail.com>
@@ -68,55 +68,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Newer SoCs starting with the Amlogic Meson G12A have more a precise
-RGMII RX delay configuration register. This means more complexity in the
-code. Extract the existing RGMII delay configuration code into a
-separate function to make it easier to read/understand even when adding
-more logic in the future.
+Amlogic Meson G12A (and newer: G12B, SM1) SoCs have a more advanced RX
+delay logic. Instead of fine-tuning the delay in the nanoseconds range
+it now allows tuning in 200 picosecond steps. This support comes with
+new bits in the PRG_ETH1[19:16] register.
+
+Add support for validating the RGMII RX delay as well as configuring the
+register accordingly on these platforms.
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 63 ++++++++++++++-----
+ 1 file changed, 49 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-index 465eaf000da1..a6e2077ed871 100644
+index a6e2077ed871..ae081fbc0552 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-@@ -268,7 +268,7 @@ static int meson8b_devm_clk_prepare_enable(struct meson8b_dwmac *dwmac,
- 	return 0;
- }
+@@ -69,10 +69,21 @@
+  */
+ #define PRG_ETH0_ADJ_SKEW		GENMASK(24, 20)
  
--static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
-+static int meson8b_init_rgmii_delays(struct meson8b_dwmac *dwmac)
++#define PRG_ETH1			0x4
++
++/* Defined for adding a delay to the input RX_CLK for better timing.
++ * Each step is 200ps. These bits are used with external RGMII PHYs
++ * because RGMII RX only has the small window. cfg_rxclk_dly can
++ * adjust the window between RX_CLK and RX_DATA and improve the stability
++ * of "rx data valid".
++ */
++#define PRG_ETH1_CFG_RXCLK_DLY		GENMASK(19, 16)
++
+ struct meson8b_dwmac;
+ 
+ struct meson8b_dwmac_data {
+ 	int (*set_phy_mode)(struct meson8b_dwmac *dwmac);
++	bool has_prg_eth1_rgmii_rx_delay;
+ };
+ 
+ struct meson8b_dwmac {
+@@ -270,30 +281,35 @@ static int meson8b_devm_clk_prepare_enable(struct meson8b_dwmac *dwmac,
+ 
+ static int meson8b_init_rgmii_delays(struct meson8b_dwmac *dwmac)
  {
- 	u32 tx_dly_config, rx_dly_config, delay_config;
+-	u32 tx_dly_config, rx_dly_config, delay_config;
++	u32 tx_dly_config, rx_adj_config, cfg_rxclk_dly, delay_config;
  	int ret;
-@@ -323,6 +323,13 @@ static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
+ 
++	rx_adj_config = 0;
++	cfg_rxclk_dly = 0;
+ 	tx_dly_config = FIELD_PREP(PRG_ETH0_TXDLY_MASK,
+ 				   dwmac->tx_delay_ns >> 1);
+ 
+-	if (dwmac->rx_delay_ps == 2000)
+-		rx_dly_config = PRG_ETH0_ADJ_ENABLE | PRG_ETH0_ADJ_SETUP;
+-	else
+-		rx_dly_config = 0;
++	if (dwmac->data->has_prg_eth1_rgmii_rx_delay)
++		cfg_rxclk_dly = FIELD_PREP(PRG_ETH1_CFG_RXCLK_DLY,
++					   dwmac->rx_delay_ps / 200);
++	else if (dwmac->rx_delay_ps == 2000)
++		rx_adj_config = PRG_ETH0_ADJ_ENABLE | PRG_ETH0_ADJ_SETUP;
+ 
+ 	switch (dwmac->phy_mode) {
+ 	case PHY_INTERFACE_MODE_RGMII:
+-		delay_config = tx_dly_config | rx_dly_config;
++		delay_config = tx_dly_config | rx_adj_config;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII_RXID:
+ 		delay_config = tx_dly_config;
++		cfg_rxclk_dly = 0;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII_TXID:
+-		delay_config = rx_dly_config;
++		delay_config = rx_adj_config;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII_ID:
+ 	case PHY_INTERFACE_MODE_RMII:
+ 		delay_config = 0;
++		cfg_rxclk_dly = 0;
+ 		break;
+ 	default:
+ 		dev_err(dwmac->dev, "unsupported phy-mode %s\n",
+@@ -301,7 +317,7 @@ static int meson8b_init_rgmii_delays(struct meson8b_dwmac *dwmac)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (rx_dly_config & PRG_ETH0_ADJ_ENABLE) {
++	if (rx_adj_config & PRG_ETH0_ADJ_ENABLE) {
+ 		if (!dwmac->timing_adj_clk) {
+ 			dev_err(dwmac->dev,
+ 				"The timing-adjustment clock is mandatory for the RX delay re-timing\n");
+@@ -323,6 +339,9 @@ static int meson8b_init_rgmii_delays(struct meson8b_dwmac *dwmac)
  				PRG_ETH0_ADJ_DELAY | PRG_ETH0_ADJ_SKEW,
  				delay_config);
  
-+	return 0;
-+}
++	meson8b_dwmac_mask_bits(dwmac, PRG_ETH1, PRG_ETH1_CFG_RXCLK_DLY,
++				cfg_rxclk_dly);
 +
-+static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
-+{
-+	int ret;
-+
- 	if (phy_interface_mode_is_rgmii(dwmac->phy_mode)) {
- 		/* only relevant for RMII mode -> disable in RGMII mode */
- 		meson8b_dwmac_mask_bits(dwmac, PRG_ETH0,
-@@ -431,6 +438,10 @@ static int meson8b_dwmac_probe(struct platform_device *pdev)
- 		goto err_remove_config_dt;
+ 	return 0;
+ }
+ 
+@@ -424,11 +443,20 @@ static int meson8b_dwmac_probe(struct platform_device *pdev)
+ 			dwmac->rx_delay_ps *= 1000;
  	}
  
-+	ret = meson8b_init_rgmii_delays(dwmac);
-+	if (ret)
-+		goto err_remove_config_dt;
+-	if (dwmac->rx_delay_ps != 0 && dwmac->rx_delay_ps != 2000) {
+-		dev_err(&pdev->dev,
+-			"The only allowed RX delays values are: 0ps, 2000ps");
+-		ret = -EINVAL;
+-		goto err_remove_config_dt;
++	if (dwmac->data->has_prg_eth1_rgmii_rx_delay) {
++		if (dwmac->rx_delay_ps != 0 && dwmac->rx_delay_ps != 2000) {
++			dev_err(dwmac->dev,
++				"The only allowed RGMII RX delays values are: 0ps, 2000ps");
++			ret = -EINVAL;
++			goto err_remove_config_dt;
++		}
++	} else {
++		if (dwmac->rx_delay_ps > 3000 || dwmac->rx_delay_ps % 200) {
++			dev_err(dwmac->dev,
++				"The RGMII RX delay range is 0..3000ps in 200ps steps");
++			ret = -EINVAL;
++			goto err_remove_config_dt;
++		}
+ 	}
+ 
+ 	dwmac->timing_adj_clk = devm_clk_get_optional(dwmac->dev,
+@@ -470,10 +498,17 @@ static int meson8b_dwmac_probe(struct platform_device *pdev)
+ 
+ static const struct meson8b_dwmac_data meson8b_dwmac_data = {
+ 	.set_phy_mode = meson8b_set_phy_mode,
++	.has_prg_eth1_rgmii_rx_delay = false,
+ };
+ 
+ static const struct meson8b_dwmac_data meson_axg_dwmac_data = {
+ 	.set_phy_mode = meson_axg_set_phy_mode,
++	.has_prg_eth1_rgmii_rx_delay = false,
++};
 +
- 	ret = meson8b_init_rgmii_tx_clk(dwmac);
- 	if (ret)
- 		goto err_remove_config_dt;
++static const struct meson8b_dwmac_data meson_g12a_dwmac_data = {
++	.set_phy_mode = meson_axg_set_phy_mode,
++	.has_prg_eth1_rgmii_rx_delay = true,
+ };
+ 
+ static const struct of_device_id meson8b_dwmac_match[] = {
+@@ -495,7 +530,7 @@ static const struct of_device_id meson8b_dwmac_match[] = {
+ 	},
+ 	{
+ 		.compatible = "amlogic,meson-g12a-dwmac",
+-		.data = &meson_axg_dwmac_data,
++		.data = &meson_g12a_dwmac_data,
+ 	},
+ 	{ }
+ };
 -- 
 2.29.2
 
