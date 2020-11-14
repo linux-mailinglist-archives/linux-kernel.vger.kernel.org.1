@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982442B2FDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF612B2FD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 19:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgKNSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 13:50:55 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:51822 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgKNSuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 13:50:54 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id 884C8439A7; Sat, 14 Nov 2020 19:50:49 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id B7D00413E7;
-        Sat, 14 Nov 2020 19:49:36 +0100 (CET)
-Date:   Sat, 14 Nov 2020 19:49:31 +0100
-From:   Florian Lehner <dev@der-flo.net>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     acme@kernel.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, netdev@vger.kernel.org, peterz@infradead.org
-Subject: Re: [PATCH bpf,perf]] bpf,perf: return EOPNOTSUPP for attaching bpf
- handler on PERF_COUNT_SW_DUMMY
-Message-ID: <20201114184931.GA2747@der-flo.net>
-References: <20201114135126.29462-1-dev@der-flo.net>
- <CAADnVQL4zBmS5Yo3skoA32YjFXz5qu0q9LuJ5Z-61EGwZzgD6Q@mail.gmail.com>
+        id S1726198AbgKNSue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 13:50:34 -0500
+Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:51136 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726070AbgKNSuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 13:50:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 66D15837F24D;
+        Sat, 14 Nov 2020 18:50:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:541:973:988:989:1260:1311:1314:1345:1437:1515:1534:1540:1711:1730:1747:1777:1792:2393:2559:2562:2895:3138:3139:3140:3141:3142:3352:3865:3866:3867:3868:3870:4605:5007:6261:10004:10848:11026:11658:11914:12043:12291:12296:12297:12438:12679:12683:12895:13069:13095:13311:13357:13894:14095:14096:14384:14394:14721:21080:21433:21451:21627:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bit08_130d4de27319
+X-Filterd-Recvd-Size: 1734
+Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 14 Nov 2020 18:50:29 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 0/5] mm: Convert sysfs sprintf family to sysfs_emit
+Date:   Sat, 14 Nov 2020 10:50:21 -0800
+Message-Id: <cover.1605376435.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQL4zBmS5Yo3skoA32YjFXz5qu0q9LuJ5Z-61EGwZzgD6Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 08:07:29AM -0800, Alexei Starovoitov wrote:
-> On Sat, Nov 14, 2020 at 5:53 AM Florian Lehner <dev@der-flo.net> wrote:
-> >
-> > At the moment it is not possible to attach a bpf handler to a perf event
-> > of type PERF_TYPE_SOFTWARE with a configuration of PERF_COUNT_SW_DUMMY.
-> 
-> It is possible or it is not possible?
-> 
-> Such "commit log as an abstract statement" patches are a mystery to a reader.
-> Please explain what problem you're trying to solve and how it's being addressed.
+Use the new sysfs_emit family and not the sprintf family.
 
-Perf events of type software/dummy are just placeholder events and don't
-require a counting event. So attaching the bpf handler to the
-overflow_handler of this event does not trigger the execution of the bpf
-handler.
-So the idea of this fix was to indicate to the user that attaching a bpf
-handler to such a perf event is not (yet) supported.
+V2: Correct missing page test defect in mm/slub.c slabs_cpu_partial_show()
+    Trivial update to commit message in mm: shmem
 
-> > Signed-off-by: Florian Lehner <dev@der-flo.net>
-> > ---
-> >  kernel/events/core.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index da467e1dd49a..4e8846b7ceda 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -9668,6 +9668,10 @@ static int perf_event_set_bpf_handler(struct perf_event *event, u32 prog_fd)
-> >         if (event->prog)
-> >                 return -EEXIST;
-> >
-> > +       if (event->attr.type == PERF_TYPE_SOFTWARE &&
-> > +           event->attr.config == PERF_COUNT_SW_DUMMY)
-> > +               return -EOPNOTSUPP;
-> 
-> Is it a fix or a feature?
-> If it is a fix please add 'Fixes:' tag.
+Joe Perches (5):
+  mm: Use sysfs_emit for struct kobject * uses
+  mm: huge_memory: Convert remaining use of sprintf to sysfs_emit and
+    neatening
+  mm:backing-dev: Use sysfs_emit in macro defining functions
+  mm: shmem: Convert shmem_enabled_show to use sysfs_emit_at
+  mm: slub: Convert sysfs sprintf family to sysfs_emit/sysfs_emit_at
 
-I was not sure how to address it and so I have chosen PATCH. As bpf
-handlers are still not executed on such events, I also would not call it
-a feature.
+ mm/backing-dev.c |   8 +--
+ mm/huge_memory.c |  56 +++++++++++-------
+ mm/hugetlb.c     |  13 ++--
+ mm/khugepaged.c  |  22 +++----
+ mm/ksm.c         |  32 +++++-----
+ mm/shmem.c       |  21 ++++---
+ mm/slub.c        | 150 ++++++++++++++++++++++++-----------------------
+ mm/swap_state.c  |   3 +-
+ 8 files changed, 164 insertions(+), 141 deletions(-)
+
+-- 
+2.26.0
+
