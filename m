@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E862B30C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069042B30BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgKNUvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:51:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35060 "EHLO mail.kernel.org"
+        id S1726339AbgKNUvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:51:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgKNUvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:51:10 -0500
-Subject: Re: [GIT PULL] SELinux fixes for v5.10 (#1)
+        id S1726291AbgKNUvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 15:51:11 -0500
+Subject: Re: [GIT PULL] SCSI fixes for 5.10-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1605387070;
-        bh=Jyh8xtofEGhNJn7rbMmW5xm0qu/vehYTr+0u9RH6PiE=;
+        bh=7m8xNhtGjkjWPUEfXbeoGZcvGAuC+jPU2z7/UOdN3B8=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=xafOFXa3RpIGGeD1U+3b6BycnrJQbMJXsSSRj3OdzuM3QdYXaG3+7KOqqqvkRSqRd
-         IqZC5pw0M5qd+YrTAiNIjWXgBW7uPRcBv0X2Xt+7E3te8GSliFGy//l7rEiJv6MAaL
-         yyUOyJCwKmhY9cuktDxJ8XN8rlcVjKqLZCrGdk+s=
+        b=ishXo/DXUS59s1Y2lBIhxYerieYDZneQMXJOKo9sCSNitDSNWrTcNeMp/EcMCVFQE
+         avx6n9kTvy7EwxeWLebKCa+rYTExp2yRgKz3EvtDrb4kghhSrkagfaxGn7GZp07l9S
+         bihmx0F2O7eRMOFRaPT15zA4+F6Q9gJyLgjvUw8M=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAHC9VhSrJLtasTbE+smvHYMxD3B018TCLx74y9RQ0pk8jDaX4w@mail.gmail.com>
-References: <CAHC9VhSrJLtasTbE+smvHYMxD3B018TCLx74y9RQ0pk8jDaX4w@mail.gmail.com>
+In-Reply-To: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
+References: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAHC9VhSrJLtasTbE+smvHYMxD3B018TCLx74y9RQ0pk8jDaX4w@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20201113
-X-PR-Tracked-Commit-Id: c350f8bea271782e2733419bd2ab9bf4ec2051ef
+X-PR-Tracked-Message-Id: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 2e6f11a797a24d1e2141a214a6dd6dfbe709f55d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 30636a59f4c1a40720156079cabcad60351949f2
-Message-Id: <160538707042.24878.8206734712012963156.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 0c0451112b629946c93ed2102b7ae47d4d1dc0bc
+Message-Id: <160538707067.24878.9576594385078780770.pr-tracker-bot@kernel.org>
 Date:   Sat, 14 Nov 2020 20:51:10 +0000
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Nov 2020 18:29:23 -0500:
+The pull request you sent on Fri, 13 Nov 2020 16:20:13 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20201113
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/30636a59f4c1a40720156079cabcad60351949f2
+https://git.kernel.org/torvalds/c/0c0451112b629946c93ed2102b7ae47d4d1dc0bc
 
 Thank you!
 
