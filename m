@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B722B315E
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 00:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BA72B3164
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 00:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgKNXTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 18:19:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgKNXTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 18:19:10 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B425524102;
-        Sat, 14 Nov 2020 23:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605395950;
-        bh=ehgWnI06o9R35nT4rZ/7ncnW5naNXaQhZJQ9o2x2Ubc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sAlff0d8j+1cS4sq6GLJo56bONRqYbCXjiWbcelL0ORnkzsDfLINDEgr7MqgMPRbN
-         tTqfdNuz55j/cbIuijS4ZjkyuZzfZedqDNjwzmGxLgT54WUCnPfUT5/ncQqmwJJ2a4
-         bU5QIzn2sT6SIs8tuVk09m4quKdP4HltYYBmJI9s=
-Date:   Sat, 14 Nov 2020 15:19:08 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v1] lan743x: fix issue causing intermittent kernel
- log warnings
-Message-ID: <20201114151908.7e7a05b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201112185949.11315-1-TheSven73@gmail.com>
-References: <20201112185949.11315-1-TheSven73@gmail.com>
+        id S1726319AbgKNX2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 18:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbgKNX2Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 18:28:24 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C54EC0613D1;
+        Sat, 14 Nov 2020 15:28:24 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id p12so10109107qtp.7;
+        Sat, 14 Nov 2020 15:28:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pEEvmIH+xLHYOZ5QQR7HSpYTdM1EvSRmH2wXZTi8hzE=;
+        b=UbZRIwROaDs4ijKnxts5kDfUPWEXHMA8ejCVABuoIwxuCxnglLfjsfpMc27bhaB5Cn
+         6u/Pv/nLNiWiOgF7CIET1SOSjlQEZU3oNQ7k59UiF/GkpTY+c4l5DraPTDb53F1Y3IXP
+         I4aNHL2ZbZU5l4Wsh05tpzmyN338vcXLlXm17ZXeveE1iTZz8HEnxaITnulNh5z5empS
+         qeuAfgtfhi0FwdVC7zFNzVEFYUs/htAaKdv9hHzXTD+ijj8Jo0sfVA2olIQAyJBwn6Nb
+         k37Npz5qY+r1N/0bHO/pbBqVt5O14Bb5tyP9ZxuYggvEoD9wAmPsXmrVXMGrFKa/2Wnk
+         Ypbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pEEvmIH+xLHYOZ5QQR7HSpYTdM1EvSRmH2wXZTi8hzE=;
+        b=VZF8jlqSzYqymkHvBEFZIbgl4EeqK65ui3TYny1fldE46+jSuUjHUIhf1hOHsndVGZ
+         wbx/PxYRbbbAhH1qpsXgnApHZ+2SeSdhbc3Tv0VYpRojiB5tI6yB6Jmcq6RiEsAlR6Cu
+         pCjaFB0hR+CY4L1+WhhbXOr3i01szErlG4aN+xG5fTYZL4tOwXaRhAjJd+i5WK/EKmfj
+         JgmKi9DkzYqdcnVNu5WegsiBNYaNVVskxL0aL7JSbMqn9nBHW9v7A21IewRt0gfxfDOr
+         kO/J+/yNXD+whKQ0VybKKBrxCdatCFtLP5QMhcP60cEQGFULwSt+Wf8sMl9pEIyyoK9W
+         08Mw==
+X-Gm-Message-State: AOAM5316D185cWL911TXaAjFT+tMI9jAObl74osVWyhUMnmnW1/8nbap
+        ifrf/XP9FuqgdPSAiiY3PA0=
+X-Google-Smtp-Source: ABdhPJz/Nm2vZQnKSMQPtQdgh8a7vdzmisfu6umiOzujJEmgdGL/Tu0tWzLcLzH2IcuwJpc7WHLEkg==
+X-Received: by 2002:a05:622a:86:: with SMTP id o6mr8106003qtw.147.1605396503546;
+        Sat, 14 Nov 2020 15:28:23 -0800 (PST)
+Received: from localhost.localdomain (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id h125sm9630656qkc.36.2020.11.14.15.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 15:28:22 -0800 (PST)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     robh+dt@kernel.org, alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Subject: [PATCH v2] counter: microchip-tcb-capture: Fix CMR value check
+Date:   Sat, 14 Nov 2020 18:28:05 -0500
+Message-Id: <20201114232805.253108-1-vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 13:59:49 -0500 Sven Van Asbroeck wrote:
-> From: Sven Van Asbroeck <thesven73@gmail.com>
-> 
-> When running this chip on arm imx6, we intermittently observe
-> the following kernel warning in the log, especially when the
-> system is under high load:
+The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
+for CMR. This patch fixes the action_get() callback to properly check
+for these values rather than mask them.
 
-> The driver is calling dev_kfree_skb() from code inside a spinlock,
-> where h/w interrupts are disabled. This is forbidden, as documented
-> in include/linux/netdevice.h. The correct function to use
-> dev_kfree_skb_irq(), or dev_kfree_skb_any().
-> 
-> Fix by using the correct dev_kfree_skb_xxx() functions:
-> 
-> in lan743x_tx_release_desc():
->   called by lan743x_tx_release_completed_descriptors()
->     called by in lan743x_tx_napi_poll()
->     which holds a spinlock
->   called by lan743x_tx_release_all_descriptors()
->     called by lan743x_tx_close()
->     which can-sleep
-> conclusion: use dev_kfree_skb_any()
-> 
-> in lan743x_tx_xmit_frame():
->   which holds a spinlock
-> conclusion: use dev_kfree_skb_irq()
-> 
-> in lan743x_tx_close():
->   which can-sleep
-> conclusion: use dev_kfree_skb()
-> 
-> in lan743x_rx_release_ring_element():
->   called by lan743x_rx_close()
->     which can-sleep
->   called by lan743x_rx_open()
->     which can-sleep
-> conclusion: use dev_kfree_skb()
-> 
-> Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
+Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+---
+ drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Applied, thanks.
+diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+index 039c54a78aa5..710acc0a3704 100644
+--- a/drivers/counter/microchip-tcb-capture.c
++++ b/drivers/counter/microchip-tcb-capture.c
+@@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
+ 
+ 	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
+ 
+-	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+-
+-	if (cmr & ATMEL_TC_ETRGEDG_NONE)
++	switch (cmr & ATMEL_TC_ETRGEDG) {
++	default:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+-	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
++		break;
++	case ATMEL_TC_ETRGEDG_RISING:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
+-	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
++		break;
++	case ATMEL_TC_ETRGEDG_FALLING:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
+-	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
++		break;
++	case ATMEL_TC_ETRGEDG_BOTH:
+ 		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
++		break;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.29.2
 
-The _irq() cases look a little strange, are you planning a refactor in
-net-next? Seems like the freeing can be moved outside the lock.
-
-Also the driver could stop the queue when there is less than
-MAX_SKB_FRAGS + 2 descriptors left, so it doesn't need the
-"overflow_skb" thing.
