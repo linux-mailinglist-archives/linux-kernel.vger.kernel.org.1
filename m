@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101332B2F29
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188732B2F37
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgKNRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 12:44:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726088AbgKNRoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 12:44:10 -0500
-Received: from mail.kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D9272222C;
-        Sat, 14 Nov 2020 17:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605375849;
-        bh=UTKc5AmDz2O8mWHUg53Nzuej7AFXGlvaUvHgaxeLrRE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EdlGltP56R90EiGnFfJizvt72PDW2Dn6Vsy7JJWU+DsXKnEFztALwNOjnFSmvkayG
-         U+l/Xbu175YkOKNXvPXlXjO8qJMihYq+KwRYacZ2KVLcbp8lmZAIAV4MFgVjhBBx+Z
-         gO2mrBGK5/FtoxtI0CrBSkCCY39p0D9aWeTUQEEk=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Taniya Das <tdas@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH] clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones
-Date:   Sat, 14 Nov 2020 09:44:08 -0800
-Message-Id: <20201114174408.579047-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+        id S1726249AbgKNRq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 12:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726088AbgKNRq0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 12:46:26 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAF7C0613D1;
+        Sat, 14 Nov 2020 09:46:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=zFmbG7lUGEssA2TGxTf3U7GjLMkFXLzG9VOoFN4dDxg=; b=NaUnrjYu1zoWsuyoRbah1k4MUm
+        +wtvix9eB59O0WyyPG4u6xAhJVkbEbfJPTzc/PgbzC58UeCZ194ShmokVJLiTSYYeqHugsS6IfuCX
+        0+94Us5i0XxrJ+45YsWl5Rd5Ebf0vm1ykzpdIzK7Tl4Ra48DhhP55rqtLBkTdhJcaBLlGTBqylXUh
+        dMygVWZNT2joP8QU+WgMTXUMOP8Kx/Wht0GcDW//w3Tu8Cko0g5jZqzaiJYfgtjUFxGnUVAWk2Wuc
+        UkratnAyV2uZQOaaHsq8WQa3vGuP3/+8yHQapANjkKZmnQZ4SdaEMq+1yCi/76G+NrTRLu7uSXd8l
+        Ye7AFfCw==;
+Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdzd0-0000Ys-IA; Sat, 14 Nov 2020 17:46:23 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH net-next v2] net: linux/skbuff.h: combine SKB_EXTENSIONS + KCOV handling
+Date:   Sat, 14 Nov 2020 09:46:18 -0800
+Message-Id: <20201114174618.24471-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's call pm_runtime_get() here instead of calling the PM clk APIs
-directly. This avoids a compilation problem on CONFIG_PM=n where the
-pm_clk_runtime_{resume,suspend}() functions don't exist and covers the
-intent, i.e. enable the clks for this device so we can program PLL
-settings.
+The previous Kconfig patch led to some other build errors as
+reported by the 0day bot and my own overnight build testing.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Taniya Das <tdas@codeaurora.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+These are all in <linux/skbuff.h> when KCOV is enabled but
+SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
+in the header file.
+
+Fixes: 6370cc3bbd8a ("net: add kcov handle to skb extensions")
+Fixes: 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Aleksandr Nogikh <nogikh@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-next@vger.kernel.org
+Cc: netdev@vger.kernel.org
 ---
- drivers/clk/qcom/camcc-sc7180.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+v2: (as suggested by Matthieu Baerts <matthieu.baerts@tessares.net>)
+  drop an extraneous space in a comment;
+  use CONFIG_SKB_EXTENSIONS instead of CONFIG_NET;
 
-diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7180.c
-index f51bf5b6decc..dbac5651ab85 100644
---- a/drivers/clk/qcom/camcc-sc7180.c
-+++ b/drivers/clk/qcom/camcc-sc7180.c
-@@ -1669,16 +1669,14 @@ static int cam_cc_sc7180_probe(struct platform_device *pdev)
- 		goto disable_pm_runtime;
- 	}
- 
--	ret = pm_clk_runtime_resume(&pdev->dev);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "pm runtime resume failed\n");
-+	ret = pm_runtime_get(&pdev->dev);
-+	if (ret)
- 		goto destroy_pm_clk;
--	}
- 
- 	regmap = qcom_cc_map(pdev, &cam_cc_sc7180_desc);
- 	if (IS_ERR(regmap)) {
- 		ret = PTR_ERR(regmap);
--		pm_clk_runtime_suspend(&pdev->dev);
-+		pm_runtime_put(&pdev->dev);
- 		goto destroy_pm_clk;
- 	}
- 
-@@ -1688,9 +1686,7 @@ static int cam_cc_sc7180_probe(struct platform_device *pdev)
- 	clk_fabia_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
- 
- 	ret = qcom_cc_really_probe(pdev, &cam_cc_sc7180_desc, regmap);
--
--	pm_clk_runtime_suspend(&pdev->dev);
--
-+	pm_runtime_put(&pdev->dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register CAM CC clocks\n");
- 		goto destroy_pm_clk;
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+ include/linux/skbuff.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+--- linux-next-20201113.orig/include/linux/skbuff.h
++++ linux-next-20201113/include/linux/skbuff.h
+@@ -4151,7 +4151,7 @@ enum skb_ext_id {
+ #if IS_ENABLED(CONFIG_MPTCP)
+ 	SKB_EXT_MPTCP,
+ #endif
+-#if IS_ENABLED(CONFIG_KCOV)
++#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
+ 	SKB_EXT_KCOV_HANDLE,
+ #endif
+ 	SKB_EXT_NUM, /* must be last */
+@@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
+ #endif
+ }
+ 
+-#ifdef CONFIG_KCOV
++#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
+ static inline void skb_set_kcov_handle(struct sk_buff *skb,
+ 				       const u64 kcov_handle)
+ {
+@@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
+ static inline void skb_set_kcov_handle(struct sk_buff *skb,
+ 				       const u64 kcov_handle) { }
+ static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
+-#endif /* CONFIG_KCOV */
++#endif /* CONFIG_KCOV && CONFIG_SKB_EXTENSIONS */
+ 
+ #endif	/* __KERNEL__ */
+ #endif	/* _LINUX_SKBUFF_H */
