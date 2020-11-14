@@ -2,166 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CEF2B2AAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791D32B2AB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgKNBwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 20:52:16 -0500
-Received: from smtp.uniroma2.it ([160.80.6.22]:48882 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgKNBwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 20:52:15 -0500
-Received: from smtpauth-2019-1.uniroma2.it (smtpauth.uniroma2.it [160.80.5.46])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0AE1p4m7032763;
-        Sat, 14 Nov 2020 02:51:09 +0100
-Received: from lubuntu-18.04 (unknown [160.80.103.126])
-        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id AB44A12005F;
-        Sat, 14 Nov 2020 02:50:58 +0100 (CET)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
-        s=ed201904; t=1605318659; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oK6t0eGA+ruC5HbNeaHODPDeco0lBrxmpa9spNCcLcg=;
-        b=tqvIpEcz6oeUL/Z28O+CCT0/e1V05n3VJL4eMFIYRGZtVU2FZGau6YehzX0OeJKn1n9Dnv
-        GhRGZXwpr1R5YuBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
-        t=1605318659; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oK6t0eGA+ruC5HbNeaHODPDeco0lBrxmpa9spNCcLcg=;
-        b=Z0AsAAdMP1zuLZI9ETRjXGiQsfgXXouUMzWu7ExrnzzjXhvlib7WvXIyo9uzM+UT++Bssw
-        nv7LkIQFpDlFh3ZNnZOK4nLKw53WpyZLE63rF69Q9WLRxoxbEieecolA8tOjZShYQVtvTf
-        jWl740EJWkr2Egawede+y6xS7ii35dT5OggohBbfQCX9243dfHXyBVEBzdgfs4FI1ah1Ln
-        W5JlfBsc0kV6n77cMrrqWd4A6BKROSSmLl4dCGCX/12swmPPE8p5tFg0uqU0IfxeL3GesD
-        duamvYAVXXLYX8Kygt514oydB/MaMXL9F53T4Kgv6+MUhjEhQOiWm02GBJU0OA==
-Date:   Sat, 14 Nov 2020 02:50:58 +0100
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4
- behavior
-Message-Id: <20201114025058.25ae815024ba77d59666a7ab@uniroma2.it>
-In-Reply-To: <20201113155437.7d82550b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
-        <20201107153139.3552-5-andrea.mayer@uniroma2.it>
-        <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201113022848.dd40aa66763316ac4f4ffd56@uniroma2.it>
-        <34d9b96f-a378-4817-36e8-3d9287c5b76b@gmail.com>
-        <20201113085547.68e04931@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bd3712b6-110b-acce-3761-457a6d2b4463@uniroma2.it>
-        <09381c96-42a3-91cd-951b-f970cd8e52cb@gmail.com>
-        <20201113114036.18e40b32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201113134010.5eb2a154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201114000024.614c6c097050188abc87a7ff@uniroma2.it>
-        <20201113155437.7d82550b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+        id S1726288AbgKNB5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 20:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgKNB5O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 20:57:14 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81434C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:57:14 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id o15so12270944wru.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:57:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aAt0y4BONkE4qAf0vKXaFTXwB4ZFsnt5S+RuI0jP7I0=;
+        b=ed7NqWQne82b4CGLxKKyy40f2AtEDak0uE2vEFG0Eg45fsFvqzucto15OoBmGMcffH
+         eCmMx6p4CbPjbJNtXw4hA1XqGxNSWvKhZ3MUkh8mXF6oVpyK1k3jReyT19EPA2ytP5lx
+         U5vvLq2u3KQZv0N4RU+9z0WSEEC8D0xmgmG8ltLYw2xPp/JAD/0V80adsjygNw7S6v8H
+         uU9/TJsJohTb7QVz8fw8jXdBnk5xbNFrjX+6+64MjkDWrL6ibdOFH08eUnlaPTROXsTy
+         ZRARIgSzlfxFT1+3g5kSqOD/eJPung8kpqou4ldSK3ZSY0e40DJiyXH9M7op5k8DWPJG
+         +1GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aAt0y4BONkE4qAf0vKXaFTXwB4ZFsnt5S+RuI0jP7I0=;
+        b=f5FO1J9NMWu4QcUu1GoTEJwi5A4qilla3uOtbsW/RsH0cUIJsXNqHucmHQcq5VGuzo
+         oTvdnXxdQc3j7TRXsio1PucnifR48z55X44rkOhWxkxtp1msotzqlr+2hFtsm+e2PNaM
+         9gJvhh+pSHvhcd6lM31Y6DnYpODZS1s2sHGsUWWzAYC61poIXfZNd44uRr6GAs/QLxLA
+         DAV6fMr4oFs03uGyUcp6OblA/akvZhXlpW02Sbk4897EnQlQYW1s8er9rRz02MSk4Ppb
+         P4msSC858Owhw6IDeTSLxgRp5L7jKvPX9ylFQ0Q/QcAlj2W/IDDIljNQxBdTqT3j0Gpr
+         HvjQ==
+X-Gm-Message-State: AOAM531Njs0ljQxHoMlh9vX4R3hIk9QjENFlCjmsn/zsVfWVWaTkuG9M
+        0rENa1iFG0wk+XpLW0GqExMyQgsyzR5RYhBAftNPxw==
+X-Google-Smtp-Source: ABdhPJwjEBEJE7QwHh8r8eJ/Dr/QpuyVP5uaIDwltg3aDAOCe0B4f3/m8hgpvfE9jUit9zlrGz89Vmb3ppScDtAYkS0=
+X-Received: by 2002:adf:cf0b:: with SMTP id o11mr6715761wrj.162.1605319033090;
+ Fri, 13 Nov 2020 17:57:13 -0800 (PST)
+MIME-Version: 1.0
+References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+ <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
+ <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+ <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com> <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
+In-Reply-To: <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 13 Nov 2020 17:57:02 -0800
+Message-ID: <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
-Please see my responses inline:
+On Fri, Nov 13, 2020 at 5:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > > > > Seems to me that the ability to reap another process's memory is a
+> > > > > generally useful one, and that it should not be tied to delivering a
+> > > > > signal in this fashion.
+> > > > >
+> > > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
+> > > > > few changes and tweaks, but can't that be used to solve this problem?
+> > > >
+> > > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
+> > > > one of the options recently discussed in
+> > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > > > . The thread describes some of the issues with that approach but if we
+> > > > limit it to processes with pending SIGKILL only then I think that
+> > > > would be doable.
+> > >
+> > > Why would it be necessary to read /proc/pid/maps?  I'd have thought
+> > > that a starting effort would be
+> > >
+> > >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
+> > >
+> > > (after translation into process_madvise() speak).  Which is equivalent
+> > > to the proposed process_madvise(MADV_DONTNEED_MM)?
+> >
+> > Yep, this is very similar to option #3 in
+> > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > and I actually have a tested prototype for that.
+>
+> Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
+> which spans the whole address range?
 
-On Fri, 13 Nov 2020 15:54:37 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Sat, 14 Nov 2020 00:00:24 +0100 Andrea Mayer wrote:
-> > On Fri, 13 Nov 2020 13:40:10 -0800
-> > Jakub Kicinski <kuba@kernel.org> wrote:
-> > 
-> > I can tackle the v6 version but how do we face the compatibility issue raised
-> > by Stefano in his message?
-> > 
-> > if it is ok to implement a uAPI that breaks the existing scripts, it is relatively
-> > easy to replicate the VRF-based approach also in v6.
-> 
-> We need to keep existing End.DT6 as is, and add a separate
-> implementation.
-
-ok
+That would be the option #4 from the same discussion and the issues
+noted there are "process_madvise return value can't handle such a
+large number of bytes and there is MAX_RW_COUNT limit on max number of
+bytes one process_madvise call can handle". In my prototype I have a
+special handling for such "bulk operation" to work around the
+MAX_RW_COUNT limitation.
 
 >
-> The way to distinguish between the two could be either by
+> > If that's the
+> > preferred method then I can post it quite quickly.
+>
+> I assume you've tested that prototype.  How did its usefulness compare
+> with this SIGKILL-based approach?
 
-> 1) passing via
-> netlink a flag attribute (which would request use of VRF in both
-> cases);
+Just to make sure I understand correctly your question, you are asking
+about performance comparison of:
 
-yes, feasible... see UAPI solution 1
+// approach in this RFC
+pidfd_send_signal(SIGKILL, SYNC_REAP_MM)
 
-> 2) using a different attribute than SEG6_LOCAL_TABLE for the
-> table id (or perhaps passing VRF's ifindex instead), e.g.
-> SEG6_LOCAL_TABLE_VRF;
+vs
 
-yes, feasible... see UAPI solution 2
+// option #4 in the previous RFC
+kill(SIGKILL); process_madvise(vector=NULL, MADV_DONTNEED);
 
-> 3) or adding a new command
-> (SEG6_LOCAL_ACTION_END_DT6_VRF) which would behave like End.DT4.
+If so, I have results for the current RFC approach but the previous
+approach was testing on an older device, so don't have
+apples-to-apples comparison results at the moment. I can collect the
+data for fair comparison if desired, however I don't expect a
+noticeable performance difference since they both do pretty much the
+same thing (even on different devices my results are quite close). I
+think it's more a question of which API would be more appropriate.
 
-no, we prefer not to add a new command, because it is better to keep a 
-semantic one-to-one relationship between these commands and the SRv6 
-behaviors defined in the draft.
-
-
-UAPI solution 1
-
-we add a new parameter "vrfmode". DT4 can only be used with the 
-vrfmode parameter (hence it is a required parameter for DT4).
-DT6 can be used with "vrfmode" (new vrf based mode) or without "vrfmode" 
-(legacy mode)(hence "vrfmode" is an optional parameter for DT6)
-
-UAPI solution 1 examples:
-
-ip -6 route add 2001:db8::1/128 encap seg6local action End.DT4 vrfmode table 100 dev eth0
-ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 vrfmode table 100 dev eth0
-ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 dev eth0
-
-UAPI solution 2
-
-we turn "table" into an optional parameter and we add the "vrftable" optional
-parameter. DT4 can only be used with the "vrftable" (hence it is a required
-parameter for DT4).
-DT6 can be used with "vrftable" (new vrf mode) or with "table" (legacy mode)
-(hence it is an optional parameter for DT6).
-
-UAPI solution 2 examples:
-
-ip -6 route add 2001:db8::1/128 encap seg6local action End.DT4 vrftable 100 dev eth0
-ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 vrftable 100 dev eth0
-ip -6 route add 2001:db8::1/128 encap seg6local action End.DT6 table 100 dev eth0
-
-IMO solution 2 is nicer from UAPI POV because we always have only one 
-parameter, maybe solution 1 is slightly easier to implement, all in all 
-we prefer solution 2 but we can go for 1 if you prefer.
-
-Waiting for your advice!
-
-Thanks,
-Andrea
+>
