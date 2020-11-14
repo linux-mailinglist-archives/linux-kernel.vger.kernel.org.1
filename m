@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAF22B2EF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101332B2F29
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgKNR2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 12:28:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23929 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726140AbgKNR2D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 12:28:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605374882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yUMNWuTzcp6lgo8BaPHSOcXsQblkWlhKvdzAMy4JmaU=;
-        b=Z7RS3bV8jtEgGSNDxdQCQjiXL/McMhJpYgHYZ9sS64iQlrzcrU6dTyQ8rIpP6Cr7Wc3Ng1
-        06rRwDIFLxWeEMPBsU4aDDKokIerrdV35lPOebxE3zFLEhVng/4hggQLNKXxWhgE0BuYTg
-        kt5vlZWZyHihk6daqzXT9T3k9gzLtqc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-l2S-yheAPe2DDlEtxI6nGQ-1; Sat, 14 Nov 2020 12:28:00 -0500
-X-MC-Unique: l2S-yheAPe2DDlEtxI6nGQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726202AbgKNRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 12:44:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726088AbgKNRoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 12:44:10 -0500
+Received: from mail.kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFA8A8E79E7;
-        Sat, 14 Nov 2020 17:27:58 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE61360C13;
-        Sat, 14 Nov 2020 17:27:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix afs_write_end() when called with copied == 0 [ver
- #3]
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 14 Nov 2020 17:27:57 +0000
-Message-ID: <160537487717.3083111.4734306195916947822.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D9272222C;
+        Sat, 14 Nov 2020 17:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605375849;
+        bh=UTKc5AmDz2O8mWHUg53Nzuej7AFXGlvaUvHgaxeLrRE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EdlGltP56R90EiGnFfJizvt72PDW2Dn6Vsy7JJWU+DsXKnEFztALwNOjnFSmvkayG
+         U+l/Xbu175YkOKNXvPXlXjO8qJMihYq+KwRYacZ2KVLcbp8lmZAIAV4MFgVjhBBx+Z
+         gO2mrBGK5/FtoxtI0CrBSkCCY39p0D9aWeTUQEEk=
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Taniya Das <tdas@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH] clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones
+Date:   Sat, 14 Nov 2020 09:44:08 -0800
+Message-Id: <20201114174408.579047-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When afs_write_end() is called with copied == 0, it tries to set the dirty
-region, but there's no way to actually encode a 0-length region in the
-encoding in page->private.  "0,0", for example, indicates a 1-byte region
-at offset 0.  The maths miscalculates this and sets it incorrectly.
+Let's call pm_runtime_get() here instead of calling the PM clk APIs
+directly. This avoids a compilation problem on CONFIG_PM=n where the
+pm_clk_runtime_{resume,suspend}() functions don't exist and covers the
+intent, i.e. enable the clks for this device so we can program PLL
+settings.
 
-Fix it to just do nothing but unlock and put the page in this case.  We
-don't actually need to mark the page dirty as nothing presumably changed.
-
-Fixes: 65dd2d6072d3 ("afs: Alter dirty range encoding in page->private")
-Signed-off-by: David Howells <dhowells@redhat.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Taniya Das <tdas@codeaurora.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
+ drivers/clk/qcom/camcc-sc7180.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
- fs/afs/write.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 50371207f327..c9195fc67fd8 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -169,11 +169,14 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 	unsigned int f, from = pos & (PAGE_SIZE - 1);
- 	unsigned int t, to = from + copied;
- 	loff_t i_size, maybe_i_size;
--	int ret;
-+	int ret = 0;
+diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7180.c
+index f51bf5b6decc..dbac5651ab85 100644
+--- a/drivers/clk/qcom/camcc-sc7180.c
++++ b/drivers/clk/qcom/camcc-sc7180.c
+@@ -1669,16 +1669,14 @@ static int cam_cc_sc7180_probe(struct platform_device *pdev)
+ 		goto disable_pm_runtime;
+ 	}
  
- 	_enter("{%llx:%llu},{%lx}",
- 	       vnode->fid.vid, vnode->fid.vnode, page->index);
+-	ret = pm_clk_runtime_resume(&pdev->dev);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "pm runtime resume failed\n");
++	ret = pm_runtime_get(&pdev->dev);
++	if (ret)
+ 		goto destroy_pm_clk;
+-	}
  
-+	if (copied == 0)
-+		goto out;
-+
- 	maybe_i_size = pos + copied;
+ 	regmap = qcom_cc_map(pdev, &cam_cc_sc7180_desc);
+ 	if (IS_ERR(regmap)) {
+ 		ret = PTR_ERR(regmap);
+-		pm_clk_runtime_suspend(&pdev->dev);
++		pm_runtime_put(&pdev->dev);
+ 		goto destroy_pm_clk;
+ 	}
  
- 	i_size = i_size_read(&vnode->vfs_inode);
-
+@@ -1688,9 +1686,7 @@ static int cam_cc_sc7180_probe(struct platform_device *pdev)
+ 	clk_fabia_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
+ 
+ 	ret = qcom_cc_really_probe(pdev, &cam_cc_sc7180_desc, regmap);
+-
+-	pm_clk_runtime_suspend(&pdev->dev);
+-
++	pm_runtime_put(&pdev->dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Failed to register CAM CC clocks\n");
+ 		goto destroy_pm_clk;
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 
