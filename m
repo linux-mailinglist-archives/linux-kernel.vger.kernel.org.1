@@ -2,80 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEBC2B3119
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 23:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054EE2B311C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 23:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgKNWDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 17:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgKNWDV (ORCPT
+        id S1726230AbgKNWKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 17:10:01 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42181 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgKNWKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 17:03:21 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A1FC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 14:03:20 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id d17so19330920lfq.10
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 14:03:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tw519QnQqGiK6rupN/NcEfOuWk4WM7fN7+syGC2XjjA=;
-        b=iRILio44OnjOmHzJbJnSRFvxcXfEg4UAb+d90OWmiWRGzN5lWl10mUvVXSv1ekhfFg
-         g+c1PWrUK0ZEiZGHXqLPLpC4XPEqpZbhje+5ZSoLxHFCv6axPBQfGb38bu5sfBj4tXwJ
-         0Ad7VqeKTxbRYDZ0b2jvnRFXDSV02KjcrxelUQYdb/diEONb1incflBsfMi5Lqq7f9A8
-         QzxHwmW9vbAgMEeMGMfpIk0/DOK5rZMGWoiANcIbJOsK+LCIu6RMxUg+ZFIoCO10elaS
-         qEPbCIY6ZSy0T+Lxc5Z4K7KwVPD2tT78sH+jmGAfosWwETu6bFgl4QbIOwgelHw83PaQ
-         SncA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tw519QnQqGiK6rupN/NcEfOuWk4WM7fN7+syGC2XjjA=;
-        b=JMWleAntuIpTv6Xhkoj2H5vckzmb96rwvTf+UFTc5SI3iOC3126LX7hAkWXgwYAJlF
-         hrQYDEL78QOjkePA1tmrIBhriyOVu5oZV+fB7MNgwX4QAuEvvN1mqz8gzAJWoD5L4wFR
-         6D4S90Z06U4aZFhLAprJP5JcP7fTlnLMxRHGJ/+jKEaONIU5YlngJEaUfWw+FqLFr/fu
-         4taj6HbzF0f5Kqu6zj9IB6jztla2h+O/UR8f4w2L+oTXsH1yd0YJB7aCuxm0vKL629zd
-         lPC+7wUTX4faqBleIQhL4tmxgnq6kqTfosuy/vsr12pSMA+FkLVhdTuujpBx/LkGCmbF
-         pGXg==
-X-Gm-Message-State: AOAM533w1UE/fc48PSgW0rCCmJWMaE0mjuTFY8NFieLdMlTGZ0dLb+Lc
-        SuGFjpghWtndZmFkmKVW942tfrO4/eKT8sFrNZ6jEA==
-X-Google-Smtp-Source: ABdhPJxuieUCZuZY4/FA3Rv67o1ZRi+jEL8ixsARtgSR69Qd6QooGRmk1cuVPtNz3SmeIRGmGfr/S1QBdrtUKG7Qc+w=
-X-Received: by 2002:a19:9c7:: with SMTP id 190mr2795765lfj.545.1605391398863;
- Sat, 14 Nov 2020 14:03:18 -0800 (PST)
+        Sat, 14 Nov 2020 17:10:00 -0500
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=[192.168.0.209])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1ke3k4-0006jr-3q; Sat, 14 Nov 2020 22:09:56 +0000
+Subject: Re: [PATCH][V2] PCI: Fix a potential uninitentional integer overflow
+ issue
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        linux-pci@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20201114215329.GA1197070@bjorn-Precision-5520>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <69ad6ee1-60d5-61e1-8c07-fc81e9425722@canonical.com>
+Date:   Sat, 14 Nov 2020 22:09:55 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20201113205233.827493-1-rkir@google.com> <20201113210730.GA1992396@bogus>
- <CAOGAQeq29S06+6M58qF0e4ivjzkZDg4+M7ffSK+FapbgmCBrLQ@mail.gmail.com>
- <CAL_Jsq+QjQxDh3_KDhgE_2A6DjA+gSyvknjrVfRFLMLz-p_M9A@mail.gmail.com>
- <CAOGAQepCsj63yZzJJHKCdHTenkWNLc_v=Ab6PgvS3hzqZMwH8A@mail.gmail.com>
- <CAOGAQepW3pbbjK9KpPZR1BwGY-CGF7V_pTY_9dw98XPgUKYFHg@mail.gmail.com>
- <X68aZ/Dgm7CObQmH@kroah.com> <tencent_3801BEAE39670E174105E007@qq.com>
- <X6+SKQS6QJr25kF0@kroah.com> <d1d47715-482c-f598-a958-499d9fde21e0@flygoat.com>
- <X6+wGMUCCpu2liYR@kroah.com>
-In-Reply-To: <X6+wGMUCCpu2liYR@kroah.com>
-From:   Roman Kiryanov <rkir@google.com>
-Date:   Sat, 14 Nov 2020 14:03:07 -0800
-Message-ID: <CAOGAQeoqSXwWyo_hgY4ru+WyxLjHuMv9m0cmoA7O+-pEUEZryg@mail.gmail.com>
-Subject: Re: Re: [PATCH] drivers: rtc: retire RTC_DRV_GOLDFISH
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        =?UTF-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lingfeng Yang <lfy@google.com>, Rob Herring <robh@kernel.org>,
-        anup.patel@wdc.com, Alistair.Francis@wdc.com, qemu-riscv@nongnu.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201114215329.GA1197070@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Thus I do think it shouldn't be retired as for now. If nobody comes in I'd
-> > also willing to maintain
-> > it.
->
-> Ok, can someone submit a patch to update the MAINTAINERS file for this
-> so we know who to route issues to over time?
+On 14/11/2020 21:53, Bjorn Helgaas wrote:
+> [+cc Dan]
+> 
+> On Tue, Nov 10, 2020 at 10:10:48PM +0000, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The shift of 1 by align_order is evaluated using 32 bit arithmetic
+>> and the result is assigned to a resource_size_t type variable that
+>> is a 64 bit unsigned integer on 64 bit platforms. Fix an overflow
+>> before widening issue by making the 1 a ULL.
+>>
+>> Addresses-Coverity: ("Unintentional integer overflow")
+>> Fixes: 07d8d7e57c28 ("PCI: Make specifying PCI devices in kernel parameters reusable")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Applied to pci/misc for v5.11 with Logan's Reviewed-by and also the
+> Fixes: correction.
+> 
+> I first applied the patch below to bounds-check the alignment as noted
+> by Dan.
+> 
+>> ---
+>>
+>> V2: Use ULL instead of BIT_ULL(), fix spelling mistake and capitalize first
+>>     word of patch subject.
+>>
+>> ---
+>>  drivers/pci/pci.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+>> index 3ef63a101fa1..248044a7ef8c 100644
+>> --- a/drivers/pci/pci.c
+>> +++ b/drivers/pci/pci.c
+>> @@ -6214,7 +6214,7 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+>>  			if (align_order == -1)
+>>  				align = PAGE_SIZE;
+>>  			else
+>> -				align = 1 << align_order;
+>> +				align = 1ULL << align_order;
+>>  			break;
+>>  		} else if (ret < 0) {
+>>  			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
+> 
+> commit d6ca242c448f ("PCI: Bounds-check command-line resource alignment requests")
+> Author: Bjorn Helgaas <bhelgaas@google.com>
+> Date:   Thu Nov 5 14:51:36 2020 -0600
+> 
+>     PCI: Bounds-check command-line resource alignment requests
+>     
+>     32-bit BARs are limited to 2GB size (2^31).  By extension, I assume 64-bit
+>     BARs are limited to 2^63 bytes.  Limit the alignment requested by the
+>     "pci=resource_alignment=" command-line parameter to 2^63.
+>     
+>     Link: https://lore.kernel.org/r/20201007123045.GS4282@kadam
+>     Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 8b9bea8ba751..26c1b2d0bacd 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -6197,19 +6197,21 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+>  	while (*p) {
+>  		count = 0;
+>  		if (sscanf(p, "%d%n", &align_order, &count) == 1 &&
+> -							p[count] == '@') {
+> +		    p[count] == '@') {
+>  			p += count + 1;
+> +			if (align_order > 63) {
+> +				pr_err("PCI: Invalid requested alignment (order %d)\n",
+> +				       align_order);
+> +				align_order = PAGE_SHIFT;
+> +			}
+>  		} else {
+> -			align_order = -1;
+> +			align_order = PAGE_SHIFT;
+>  		}
+>  
+>  		ret = pci_dev_str_match(dev, p, &p);
+>  		if (ret == 1) {
+>  			*resize = true;
+> -			if (align_order == -1)
+> -				align = PAGE_SIZE;
+> -			else
+> -				align = 1 << align_order;
+> +			align = 1 << align_order;
+>  			break;
+>  		} else if (ret < 0) {
+>  			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
+> 
 
-I will send a patch to update MAINTAINERS for goldfish-rtc.
+Thanks.
