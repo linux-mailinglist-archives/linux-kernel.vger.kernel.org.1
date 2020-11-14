@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9057D2B29D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8742B29D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgKNAXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:23:54 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:41558 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKNAXw (ORCPT
+        id S1726248AbgKNA0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKNA0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:23:52 -0500
-Received: by mail-lf1-f66.google.com with SMTP id w142so16670736lff.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:23:50 -0800 (PST)
+        Fri, 13 Nov 2020 19:26:12 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5210CC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:26:12 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id s2so5331375plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:26:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Eyi3ibuvYWMCo7i6ODa9MSLY3tsErf7jEpym/+H+ah4=;
+        b=bHZo0ee3XBP9p4M+ZN66+nahhWFE7yUfvbiG5bA6o1mruvmC3Yww3mynB3xOxEvtZM
+         dXMICkYjdvO2ADU7o7Cgg6Ittbb0fNtX2JmKSb9Zews8kBA2YRq3+H3PMffKmJy8R98Z
+         b9I43agtiQZjKyzPjHkpenN1Mc2Bf3LvlxVMk54MoRm5RnQYy/oAKsvpqbfWjMimZRib
+         Ua2BZf3WMCDbmFyGy8BFT6X24fM1a7+f9f/v5F50CZGeyanXn+znzPjnizEY1N9Hh1sn
+         cgBzOe2WIZiAC7+98J0+loMccJvGk4jxhzYg9JAw8HD0lURkU29EyqHZBaF2uf+/1P4O
+         SlNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AJHk4qfWuVzx38s7nu/Sl1qnsKktld+vhnX7xT/2xW0=;
-        b=PV99L0ogiDY1JXSvMhJ0BNquFPW6vsn4gQgwDpps95N/oREFzgdPxrbGqqt8YgF7o6
-         EasxCDtx0ZmAXKdCW1ywbzvhYcOFJr3Y5ov2Fl4CM4JuwolctAO41VhhIf55sRn8k9xb
-         izIwEbHC7vXEIZyAium/HQR7WY1bZFcpLeWjbmYVtglw+vyMOEqQci8l9xSKsjP7uGpQ
-         T+UXycwG1E+RcJpeD2YBISj0ltc0wuqwQfSchepUNQqJ1pAosjhLbiLlCzuabmEK3+Ay
-         Gah6NU78MgTnPsE1D11mhIlcj9Q2gRuKqWbGmRVC8QXDI94ZgDKn5b3prP7IloVHgo4O
-         bDDg==
-X-Gm-Message-State: AOAM533K+lcqZxCdDtmMM4dYLc9H/2hPoh1sezH73ro4G+fVGiGSNIaX
-        ueSw7E7TJsO2FR8QoCDfg2tRqs8vjb3EkMmt6Hs=
-X-Google-Smtp-Source: ABdhPJyJSpVgBZzTFmIKkHCWgL04d9KS0GLYp+UNS8xuvwRX0HqaSterGmHsS/eJvHGV121lrHlvzwp9KeVbzN3HjmU=
-X-Received: by 2002:a19:838c:: with SMTP id f134mr1758007lfd.540.1605313429798;
- Fri, 13 Nov 2020 16:23:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Eyi3ibuvYWMCo7i6ODa9MSLY3tsErf7jEpym/+H+ah4=;
+        b=CKwKNxYouRlTtFlTGYH4QsxvbKiJldKt/KHKwt0e/gHyYd3V4DcxD1N5VJm6llvof9
+         Kcp1TWGutoSU76ogDW+oWYf7/V1mH9xHKfpNvo3bS2LZ809GuTvEhgscjak0I9009t8E
+         2egXB157Dp0109wR33xm9dgSp1pOYM8ar7oZAdm88ZwSb9mjz5RTJdporYxvLmU97TiJ
+         2q+RBkX3SAeOZqckSDi6P+cim1aYEB3HF5mRU3aM/8SvGmcR0wvn3Do31bMBdzbxDf/7
+         v8XrxRr0rdRunqmIASJiTsLe7+p4gtLsPidOU7N+50HxClgr6OTzRVck3V+HgfhucLd9
+         9e8A==
+X-Gm-Message-State: AOAM532Eea3c5G//PyXLetCeZSksBhYaDGk+R1ciEPqccbxGs60H6OnJ
+        ++V5u3cG2SQxC9KjpbwrdSk2bA==
+X-Google-Smtp-Source: ABdhPJywVAaDqs9IyJIDm5Sl7H77CxDksVRaFSoKiKT8KoxP5BJQn/Gqp6ooi5bqKBGdE2M/Av1EOw==
+X-Received: by 2002:a17:902:8341:b029:d8:d123:2297 with SMTP id z1-20020a1709028341b02900d8d1232297mr3991532pln.65.1605313571693;
+        Fri, 13 Nov 2020 16:26:11 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id n9sm4436027pjk.1.2020.11.13.16.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 16:26:10 -0800 (PST)
+Date:   Fri, 13 Nov 2020 16:26:09 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+cc:     Vipin Sharma <vipinsh@google.com>,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>, pbonzini@redhat.com,
+        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>,
+        "Van Tassell, Eric" <eric.vantassell@amd.com>, gingell@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+In-Reply-To: <20201103020623.GJ21563@linux.intel.com>
+Message-ID: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
+References: <20200922004024.3699923-1-vipinsh@google.com> <20200922014836.GA26507@linux.intel.com> <20200922211404.GA4141897@google.com> <20200924192116.GC9649@linux.intel.com> <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com> <20200925222220.GA977797@google.com>
+ <20201002204810.GA3179405@google.com> <20201103020623.GJ21563@linux.intel.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-References: <20201113050236.175141-1-namhyung@kernel.org> <20201113221601.GE842058@krava>
-In-Reply-To: <20201113221601.GE842058@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 14 Nov 2020 09:23:39 +0900
-Message-ID: <CAM9d7ch_A37EAbbfRabSiJQpzCJ4XDrusBL=z+Rj28Db81aQkA@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: Use proper cpu for shadow stats
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>, Sam Xi <xyzsam@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 7:16 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, Nov 13, 2020 at 02:02:36PM +0900, Namhyung Kim wrote:
-> > Currently perf stat shows some metrics (like IPC) for defined events.
-> > But when no aggregation mode is used (-A option), it shows incorrect
-> > values since it used a value from a different cpu.
-> >
-> > Before:
-> >
-> >   $ perf stat -aA -e cycles,instructions sleep 1
-> >
-> >    Performance counter stats for 'system wide':
-> >
-> >   CPU0      116,057,380      cycles
-> >   CPU1       86,084,722      cycles
-> >   CPU2       99,423,125      cycles
-> >   CPU3       98,272,994      cycles
-> >   CPU0       53,369,217      instructions      #    0.46  insn per cycle
-> >   CPU1       33,378,058      instructions      #    0.29  insn per cycle
-> >   CPU2       58,150,086      instructions      #    0.50  insn per cycle
-> >   CPU3       40,029,703      instructions      #    0.34  insn per cycle
-> >
-> >        1.001816971 seconds time elapsed
-> >
-> > So the IPC for CPU1 should be 0.38 (= 33,378,058 / 86,084,722)
-> > but it was 0.29 (= 33,378,058 / 116,057,380) and so on.
-> >
-> > After:
-> >
-> >   $ perf stat -aA -e cycles,instructions sleep 1
-> >
-> >    Performance counter stats for 'system wide':
-> >
-> >   CPU0      109,621,384      cycles
-> >   CPU1      159,026,454      cycles
-> >   CPU2       99,460,366      cycles
-> >   CPU3      124,144,142      cycles
-> >   CPU0       44,396,706      instructions      #    0.41  insn per cycle
-> >   CPU1      120,195,425      instructions      #    0.76  insn per cycle
-> >   CPU2       44,763,978      instructions      #    0.45  insn per cycle
-> >   CPU3       69,049,079      instructions      #    0.56  insn per cycle
-> >
-> >        1.001910444 seconds time elapsed
-> >
-> > Reported-by: Sam Xi <xyzsam@google.com>
-> > Fixes: 44d49a600259 ("perf stat: Support metrics in --per-core/socket mode")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
->
-> nice catch! would be great to have test for this
->
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+On Mon, 2 Nov 2020, Sean Christopherson wrote:
 
-Thanks!  Will add a test later.
+> On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:
+> > On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:
+> > > I agree with you that the abstract name is better than the concrete
+> > > name, I also feel that we must provide HW extensions. Here is one
+> > > approach:
+> > > 
+> > > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to
+> > > suggestions)
+> > > 
+> > > Control files: slots.{max, current, events}
+> 
+> I don't particularly like the "slots" name, mostly because it could be confused
+> with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
+> love those names either, but "encryption" and "IDs" are the two obvious
+> commonalities betwee TDX's encryption key IDs and SEV's encryption address
+> space IDs.
+> 
 
-Thanks,
-Namhyung
+Looping Janosch and Christian back into the thread.
+
+I interpret this suggestion as
+encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel 
+offerings, which was my thought on this as well.
+
+Certainly the kernel could provide a single interface for all of these and 
+key value pairs depending on the underlying encryption technology but it 
+seems to only introduce additional complexity in the kernel in string 
+parsing that can otherwise be avoided.  I think we all agree that a single 
+interface for all encryption keys or one-value-per-file could be done in 
+the kernel and handled by any userspace agent that is configuring these 
+values.
+
+I think Vipin is adding a root level file that describes how many keys we 
+have available on the platform for each technology.  So I think this comes 
+down to, for example, a single encryption.max file vs 
+encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned 
+separately so we treat them as their own resource here.
+
+So which is easier?
+
+$ cat encryption.sev.max
+10
+$ echo -n 15 > encryption.sev.max
+
+or
+
+$ cat encryption.max
+sev 10
+sev_es 10
+keyid 0
+$ echo -n "sev 10" > encryption.max
+
+I would argue the former is simplest (always preferring 
+one-value-per-file) and avoids any string parsing or resource controller 
+lookups that need to match on that string in the kernel.
+
+The set of encryption.{sev,sev_es,keyid} files that exist would depend on
+CONFIG_CGROUP_ENCRYPTION and whether CONFIG_AMD_MEM_ENCRYPT or 
+CONFIG_INTEL_TDX is configured.  Both can be configured so we have all 
+three files, but the root file will obviously indicate 0 keys available 
+for one of them (can't run on AMD and Intel at the same time :).
+
+So I'm inclined to suggest that the one-value-per-file format is the ideal 
+way to go unless there are objections to it.
