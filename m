@@ -2,34 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547562B2C69
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32F02B2C6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgKNJ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 04:26:07 -0500
-Received: from verein.lst.de ([213.95.11.211]:49816 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbgKNJ0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 04:26:06 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 91B6D67373; Sat, 14 Nov 2020 10:26:04 +0100 (CET)
-Date:   Sat, 14 Nov 2020 10:26:04 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] configfs: fix kernel-doc markup issue
-Message-ID: <20201114092604.GA18764@lst.de>
-References: <1605257895-5536-1-git-send-email-alex.shi@linux.alibaba.com> <1605257895-5536-4-git-send-email-alex.shi@linux.alibaba.com>
+        id S1726746AbgKNJ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 04:26:53 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7539 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbgKNJ0w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 04:26:52 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CY92P0hcCzhh4p;
+        Sat, 14 Nov 2020 17:26:37 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 14 Nov 2020 17:26:37 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <vishal@chelsio.com>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] cxgb4: Remove unused variable ret
+Date:   Sat, 14 Nov 2020 17:38:26 +0800
+Message-ID: <1605346706-23782-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605257895-5536-4-git-send-email-alex.shi@linux.alibaba.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+This patch fixes below warning reported by coccicheck:
 
-applied.
+./drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:3284:5-8: Unneeded variable: "ret". Return "0" on line 3301
+
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/net/ethernet/chelsio/cxgb4/t4_hw.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+index 98d01a7..426d15e 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+@@ -3281,8 +3281,6 @@ int t4_get_scfg_version(struct adapter *adapter, u32 *vers)
+  */
+ int t4_get_version_info(struct adapter *adapter)
+ {
+-	int ret = 0;
+-
+ 	#define FIRST_RET(__getvinfo) \
+ 	do { \
+ 		int __ret = __getvinfo; \
+@@ -3298,7 +3296,7 @@ int t4_get_version_info(struct adapter *adapter)
+ 	FIRST_RET(t4_get_vpd_version(adapter, &adapter->params.vpd_vers));
+ 
+ 	#undef FIRST_RET
+-	return ret;
++	return 0;
+ }
+ 
+ /**
+-- 
+2.6.2
+
