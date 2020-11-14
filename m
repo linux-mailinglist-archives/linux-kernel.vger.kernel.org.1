@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252B32B2A69
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AA92B2A6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 02:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgKNBSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 20:18:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgKNBSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 20:18:13 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE51F22261;
-        Sat, 14 Nov 2020 01:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605316691;
-        bh=uXpBMD7/3ZId9Cgo0JGEfZTnwcfVEbN6QzkoH7cWI8Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zxlg/VaU83wqoKZ51iKRh8GpONjw13R13IY5RSHC6EK5QCSz0OOoyTSYf49uxKT6U
-         3nIzTyS52dgcSNVsTtonHBnarvphseyiPprIMgSDUe0aPRNvOyQ34wlzIULqH1WGq3
-         PAmhHwN8STrTtJh50/O+VNUWTYp/lou0WK54cI6w=
-Date:   Fri, 13 Nov 2020 17:18:10 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-Message-Id: <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
-In-Reply-To: <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
-References: <20201113173448.1863419-1-surenb@google.com>
-        <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
-        <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
-        <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
-        <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726189AbgKNBTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 20:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgKNBTo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 20:19:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951FDC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 17:19:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Cjg03gP8/jRknfS65AD/9a+9L27EhRjv5GIR2T2lnWo=; b=L7wgoNZYJ2CWIBsd0u7YjBjAKM
+        t/U2x45MmC9wNr31WpXX52lozTZLiP6KaHVJaC92JRg9PKR3P9W7liWGZIB9C5j0Gc/vcG5cS1P/R
+        RkDT3tiaSg3Gqiye4V4o8kWgrHtTHZQX5kLx9FCzye7yT4cIldIvwhV72ZcU8XR2ucuAxaF8UCQ7C
+        zj44pUHRyw+j2pAHTGqvbnABQbZaIUbNhHsm4gd8rllDGaT355PINiO+AJPxWRUjf8ru9DLBryH1X
+        aWjS3QTHGa7OPuQgzrGWjpIosbdDszOMkpCO34c3ltb20IFbgNNsiyOGdanxeKLkg/aJMG2OSTrn0
+        sEWe2JfA==;
+Received: from [2601:1c0:6280:3f0::662d]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdkEA-0002In-54; Sat, 14 Nov 2020 01:19:42 +0000
+Subject: Re: [PATCH v2 2/2] x86/e820: fix the function type for
+ e820__mapped_all
+To:     Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>
+References: <20201114002306.4166604-1-samitolvanen@google.com>
+ <20201114002306.4166604-2-samitolvanen@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <15282e4d-5535-825c-b5be-8a0114b3e356@infradead.org>
+Date:   Fri, 13 Nov 2020 17:19:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201114002306.4166604-2-samitolvanen@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
-
-> > > > Seems to me that the ability to reap another process's memory is a
-> > > > generally useful one, and that it should not be tied to delivering a
-> > > > signal in this fashion.
-> > > >
-> > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
-> > > > few changes and tweaks, but can't that be used to solve this problem?
-> > >
-> > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
-> > > one of the options recently discussed in
-> > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > > . The thread describes some of the issues with that approach but if we
-> > > limit it to processes with pending SIGKILL only then I think that
-> > > would be doable.
-> >
-> > Why would it be necessary to read /proc/pid/maps?  I'd have thought
-> > that a starting effort would be
-> >
-> >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
-> >
-> > (after translation into process_madvise() speak).  Which is equivalent
-> > to the proposed process_madvise(MADV_DONTNEED_MM)?
+On 11/13/20 4:23 PM, Sami Tolvanen wrote:
+> e820__mapped_all is passed as a callback to is_mmconf_reserved, which
+> expects a function of type:
 > 
-> Yep, this is very similar to option #3 in
-> https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> and I actually have a tested prototype for that.
+> typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned int type);
+> 
+> This trips indirect call checking with Clang's Control-Flow Integrity
+> (CFI). Change the last argument from enum e820_type to unsigned to fix
+> the type mismatch.
+> 
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
-which spans the whole address range?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-> If that's the
-> preferred method then I can post it quite quickly.
+Thanks.
 
-I assume you've tested that prototype.  How did its usefulness compare
-with this SIGKILL-based approach?
+> ---
+>  arch/x86/include/asm/e820/api.h | 2 +-
+>  arch/x86/kernel/e820.c          | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/e820/api.h b/arch/x86/include/asm/e820/api.h
+> index e8f58ddd06d9..a122ca2784b2 100644
+> --- a/arch/x86/include/asm/e820/api.h
+> +++ b/arch/x86/include/asm/e820/api.h
+> @@ -12,7 +12,7 @@ extern unsigned long pci_mem_start;
+>  
+>  extern bool e820__mapped_raw_any(u64 start, u64 end, enum e820_type type);
+>  extern bool e820__mapped_any(u64 start, u64 end, enum e820_type type);
+> -extern bool e820__mapped_all(u64 start, u64 end, enum e820_type type);
+> +extern bool e820__mapped_all(u64 start, u64 end, unsigned int type);
+>  
+>  extern void e820__range_add   (u64 start, u64 size, enum e820_type type);
+>  extern u64  e820__range_update(u64 start, u64 size, enum e820_type old_type, enum e820_type new_type);
+> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+> index 22aad412f965..24b82ff53513 100644
+> --- a/arch/x86/kernel/e820.c
+> +++ b/arch/x86/kernel/e820.c
+> @@ -145,7 +145,7 @@ static struct e820_entry *__e820__mapped_all(u64 start, u64 end,
+>  /*
+>   * This function checks if the entire range <start,end> is mapped with type.
+>   */
+> -bool __init e820__mapped_all(u64 start, u64 end, enum e820_type type)
+> +bool __init e820__mapped_all(u64 start, u64 end, unsigned int type)
+>  {
+>  	return __e820__mapped_all(start, end, type);
+>  }
+> 
+
+
+-- 
+~Randy
 
