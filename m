@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870232B296F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE5D2B297B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgKNAAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:00:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34552 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgKNAAd (ORCPT
+        id S1726113AbgKNAGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:06:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgKNAGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:00:33 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADNXUgl102002;
-        Fri, 13 Nov 2020 19:00:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=KbDra3b4iMFEa4HfdicQdCImsu4ywafeeEhug4M4Rcg=;
- b=lFSc3YW6DPz5SFos/vuyX/ollqiiXHpeexQ5wPA31EBkS7xBYbHF84YcefX07BaPta1X
- 6E2hOJ0wrodtLfLDk3lDMdvLIMgZDM9cpeZEnYMy3tY4EzIG8pANKvS4MWxFm7ECzjGZ
- Y1oNrUh0NucCgJgpW7kBh6zucIDFgXsKsc0a/W6LvHkZsS/lE2Yz6OH230iNsGXZpXGO
- om20eVNCsvaxeZN0bCN3kbg4YH3iVWfND+eOuaRJ8j1wUegMHS8eVzSSoUOrI0dXekKj
- Y78Xv1eI7UScRKHrppZMGNpLq/9nXoz8r6lBnywGVxoQsCXRgjQWgQ5N3oxeSLxspsWv fA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sxt519wp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 19:00:28 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ADNkNaf146020;
-        Fri, 13 Nov 2020 19:00:28 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34sxt519v1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Nov 2020 19:00:28 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ADNuYBA005583;
-        Sat, 14 Nov 2020 00:00:26 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 34nk78q789-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 14 Nov 2020 00:00:26 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AE00NSW5964370
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Nov 2020 00:00:23 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E2DFE42041;
-        Sat, 14 Nov 2020 00:00:22 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3032D4204F;
-        Sat, 14 Nov 2020 00:00:22 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.46.164])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Sat, 14 Nov 2020 00:00:22 +0000 (GMT)
-Date:   Sat, 14 Nov 2020 01:00:20 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     Harald Freudenberger <freude@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        mjrosato@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v11 04/14] s390/zcrypt: driver callback to indicate
- resource in use
-Message-ID: <20201114010020.381277c2.pasic@linux.ibm.com>
-In-Reply-To: <dcdb9c78-daf8-1f25-f59a-903f0db96ada@linux.ibm.com>
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
-        <20201022171209.19494-5-akrowiak@linux.ibm.com>
-        <42f3f4f9-6263-cb1e-d882-30b62236a594@linux.ibm.com>
-        <dcdb9c78-daf8-1f25-f59a-903f0db96ada@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Fri, 13 Nov 2020 19:06:39 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CEDC0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:06:37 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id b6so12057495wrt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:06:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YMwx6LSJmhzHC8ZwI/8VJ7EjLxTfqp/OPgMA3Bg83jQ=;
+        b=nrKE/pW+KWhWL7CSJSxYp2bfQtrqaK67kOP6ChC/xDuQNJQPHtUu39mOKt5BQ/1Iyz
+         cw/kthSZj4IYEDbey39LpdtlAmtJCw+iPxwM54LuojmucBh71oasiBOML7kI/Ik6bCZM
+         wM5o5Xw4uqi7GB1JyXD6HXyZwYjpxMD3xmUmkez13aSUzi7snYzTXK6FGdciN6zVJuXe
+         lXg2h7Q1qwiiVkxjoFnfGowHd1G1J+ASGEyOfkuDoGo26bwX+xAgRca3Dm/q8D0ph26L
+         EoO3sgfQMnfcLn1kWx7OFTffF22K5ZrS/67y4dvmFqLSLBL4j1nXG1j5jZL93hiD5flD
+         syKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YMwx6LSJmhzHC8ZwI/8VJ7EjLxTfqp/OPgMA3Bg83jQ=;
+        b=eRruWB8buioPBrgV3dY+zoyCJeiUSbSBXdD/7wQlloGumUuQf0pX2MLlIqin5684cr
+         mquoD9JIJimJ393N/66xYCdM7wpMzyHz90KDQOtvg4FQ0s98T/njjETjRr4/bQuIidmc
+         ez6vlt/WXbgtoOtw69qyXCvErkWn17AGUF4dgxSneyU/JPh2Z4ycvH2LB3Lj7GZp9onZ
+         00b4L9hgfQSJ/5nH0qZxyLsq/nyYsHbjPKgn2Q0B2wHkkLFdnsrHNIRwJfXPiJ3gA+Yq
+         kpHsMlnP1GzAO6PUTtPwjWQ2nI1wVcO67PEN66Nn2o5OWlTbTZlYob1FTAquHN24G3vU
+         oxbA==
+X-Gm-Message-State: AOAM53238uoCMit2gCCnexKNssTnptVHcZCVauX8lSV1gxgWLv13FLna
+        LAZoxQgXetaWiRTLmAD7/3NbBr5Wso1q9Gtup6SdRQ==
+X-Google-Smtp-Source: ABdhPJwWY4RJZxOCag2JXa57h3SCp1jATWMjlVteiWIgM6nKnyg8a1mu6hL4Duzswr0lpdXyinvH5OHjmlUhGdYZgU0=
+X-Received: by 2002:adf:9069:: with SMTP id h96mr6694004wrh.358.1605312396203;
+ Fri, 13 Nov 2020 16:06:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_21:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 adultscore=0 impostorscore=0
- mlxlogscore=999 clxscore=1015 suspectscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011130151
+References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+In-Reply-To: <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 13 Nov 2020 16:06:25 -0800
+Message-ID: <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 16:30:31 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Fri, Nov 13, 2020 at 3:55 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 13 Nov 2020 09:34:48 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > When a process is being killed it might be in an uninterruptible sleep
+> > which leads to an unpredictable delay in its memory reclaim. In low memory
+> > situations, when it's important to free up memory quickly, such delay is
+> > problematic. Kernel solves this problem with oom-reaper thread which
+> > performs memory reclaim even when the victim process is not runnable.
+> > Userspace currently lacks such mechanisms and the need and potential
+> > solutions were discussed before (see links below).
+> > This patch provides a mechanism to perform memory reclaim in the context
+> > of the process that sends SIGKILL signal. New SYNC_REAP_MM flag for
+> > pidfd_send_signal syscall can be used only when sending SIGKILL signal
+> > and will lead to the caller synchronously reclaiming the memory that
+> > belongs to the victim and can be easily reclaimed.
+>
+> hm.
+>
+> Seems to me that the ability to reap another process's memory is a
+> generally useful one, and that it should not be tied to delivering a
+> signal in this fashion.
+>
+> And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
+> few changes and tweaks, but can't that be used to solve this problem?
 
-> We will be using the mutex_trylock() function in our sysfs 
-> assignment
-> interfaces which make the call to the AP bus to check permissions (which 
-> also
-> locks ap_perms). If the mutex_trylock() fails, we return from the assignment
-> function with -EBUSY. This should resolve that potential deadlock issue.
-
-It resolves the deadlock issue only if in_use() is also doing
-mutex_trylock(), but the if in_use doesn't take the lock it
-needs to back off (and so does it's client code) i.e. a boolean as
-return value won't do.
-
-Regards,
-Halil
+Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
+one of the options recently discussed in
+https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+. The thread describes some of the issues with that approach but if we
+limit it to processes with pending SIGKILL only then I think that
+would be doable.
