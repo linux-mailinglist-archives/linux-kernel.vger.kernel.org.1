@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E142B2FED
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DFF2B2FEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgKNS6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 13:58:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKNS6S (ORCPT
+        id S1726295AbgKNS5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 13:57:49 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:21892 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726219AbgKNS5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 13:58:18 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC1CC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 10:58:17 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id t5so9780345qtp.2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 10:58:17 -0800 (PST)
+        Sat, 14 Nov 2020 13:57:48 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AEIvlni004718;
+        Sat, 14 Nov 2020 10:57:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pfpt0220; bh=CUPNMQ3boJ5tE4rYKPaec8CIxHLEPMyAMNKd4dFfBUA=;
+ b=ZT4RKQSQG8/zBRLeph4Cxt5y3l4Ac+T9MmGBbZ+Xhw5qAYfuWpoeQVPppiIl9XW1nNAi
+ MuLIMdO+JCxtxehey/WjhAS2ic3+UELBfm1YEX3vBGJ5IIt8QLNfxm9lTG0mvF+xrbS1
+ TXCilAtEE+CUzCRftChi2oqq7kn2d9GEokaIBT/c7kZmd2uDtoxZJzXDnGzFwsw/Fou4
+ x5tT1OP0qWL8dJKYKUmpLUz1/HaRkWM8hSokNUkXjWQ0FjAmTpfOQ+xuzJwEVpILu1JG
+ CFd1nzS5yMbw8tq8N72Ti0+XfA7CtyDVBFjL9QmsLXpFhYF+jHQs6u6R4GhveSkyc8eE eA== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 34tdftrvvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sat, 14 Nov 2020 10:57:47 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 14 Nov
+ 2020 10:57:46 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Sat, 14 Nov 2020 10:57:46 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FCLC5oe2cLj+yXxLsRVDWQPmxRRQa4OOpBwElxGGjq8EcOt0q4m+ri9LJGWAs1skkNEHKx6S/297H0A32hqdQQj6LnCX4jkVC1OjF98hgOMqHDRcdHikEhAxjBmXv089h7VLG4cX878M25jRcKS2Ae1ebwBPL/ELVuVMfiIR73YMcF/f8YIuj9NUok4Yhstn4e9owejlwJkEFUg8a9SoLRYSasNR9BbTvp/5PPL3DZ2tiPCzBqXWavPaVgtbXtnunK8jaEMPfxLsumdQNX76PtKPpT1gsTlUOFtOduXQTzKG0vZK9QIrnIFYpbM71LNYmrpP4aP1DPRdsU3sBqFq+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CUPNMQ3boJ5tE4rYKPaec8CIxHLEPMyAMNKd4dFfBUA=;
+ b=LaK+CFHa6rbieMSvwZ1w548763wgEPQ6d9E7qFAkqGv2aOKLwKllbJl8qxgcweVEm7JqgUXG5y3MyfKSECyxVfMVTAb8BAOE0QkiFRd/oLHQD167Ig3iTMWYkW1NdWbiUkehr1WlyNR4U0v+gwj1iwngFqeaSklv3Ahhp274Zq4ig4Cxhh1yDhz1XWwgNpNqD8Udejzr96OscodZTlzUwgMAUcc97dXwIeMSRwG4HPef+z5UdBZGqNhjQqe7CPJSTPqWzyQREF9+R5hwNgGoF7XnIL30QQUV27hIj3goqdJl3bQEB5XOcz7hXBpimoPn3bW8/E/VhpVgYzLCtETEWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TMf2jxejJABWBtAoBfzp32PpWj6QOIcuhJX0eJtviss=;
-        b=l1maGaFvkD5AOSuo4Qexi7zHiWYdaj6mZj2RJOfDhVQJdWMuucB6Hr5X1kBAyG7IXc
-         b4Bk0SezvyTtO1bRuZtyjUV74IcDoI97SV3WFMTzfwQUSUOBjEZOS6Tl0cVoW3/k2zD6
-         CX1HIEnu1WI98EbO5aPl2oacD3VJlkshZz9xG+OXKNfsLXkGbrD+kRemaa6hbfF0CPHa
-         QMavRtqLiyqc9sBWY8Bre5p9H3ldMvinRQw5osIF0Athr1lP5EgKy/08eZt03yajtXWF
-         aPwQAB1tipFG+1TtJ9KG8zyY6ZT+ho6viCkEQzkWP0pLpu6G7aTxQgr0EQTC1wR2dQin
-         FX7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TMf2jxejJABWBtAoBfzp32PpWj6QOIcuhJX0eJtviss=;
-        b=fbJPtrApaKWFdPbextSu7yHru4T1h8yrh1a5rq16nqq6AV2tL7qQdRb73/1biMJIIR
-         /oX8akgw+8LOlnFUQmQh6JbZ7jNPEAL70+bGhnU3nBDy4OnEH0mp1qVU8HHZtD8MYvIz
-         d+gbX3F1OF1KoMv4/7exlEBxnRi6GE/Rv3eRGBRNZwYDEKmy2+KJyiMjqhV+vVQyfWdI
-         ceBuEdgVkY+sf4FYOMYc4x2s6P1JmjEDRL+/Vh9t33I1ep6okbY1Q+lreRCBZNNxfzgJ
-         Yuj7c5txOxW07VHqTZTc2+DwjfeNLjTx41GyXk2pKjZu3wb0IFlrCTjuq6+KczxMYf/l
-         kUpA==
-X-Gm-Message-State: AOAM532tFBpF63p9UxBf+yECuhmmKbPhFzfe4K9+asYlG1NdsQdZwG9I
-        rTmr3d7YMEUwCn1bM5bcOP3IyZL26Yq72jM1ogE=
-X-Google-Smtp-Source: ABdhPJxqZ5MRkhVOHMMlYoXt6FMs0Q1n0lO/hML4Gxe4LBfm06kaYgpkAO5Oe++wwspoHS1AbdrdUA==
-X-Received: by 2002:ac8:7559:: with SMTP id b25mr7495604qtr.51.1605380295552;
-        Sat, 14 Nov 2020 10:58:15 -0800 (PST)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id z133sm4788908qka.20.2020.11.14.10.58.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Nov 2020 10:58:14 -0800 (PST)
-Subject: Re: [RESEND PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for
- non-coherent cache maintenance
-To:     Rob Clark <robdclark@gmail.com>, Christoph Hellwig <hch@lst.de>
-Cc:     freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201114151717.5369-1-jonathan@marek.ca>
- <20201114151717.5369-5-jonathan@marek.ca> <20201114162406.GC24411@lst.de>
- <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <50ddcadb-c630-2ef6-cdc4-724d9823fba7@marek.ca>
-Date:   Sat, 14 Nov 2020 13:54:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CUPNMQ3boJ5tE4rYKPaec8CIxHLEPMyAMNKd4dFfBUA=;
+ b=Po7dfMTaWIipe7a3N3NRN9NxrRgsWiJwy+6zz4Xpz8pmoT+yRiaofnWh5R6d/cR9/KaWvtbmtPWCIMl9HgbpnbDtzs28DH9AYO1f6wTpHclDG1yK/mtnVLDDtJ6qU3xrcSfdccvli7/V1f8swtZmapKDCpACAWbu/wS+wE6cleg=
+Received: from DM6PR18MB3212.namprd18.prod.outlook.com (2603:10b6:5:14a::15)
+ by DM6PR18MB2442.namprd18.prod.outlook.com (2603:10b6:5:181::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Sat, 14 Nov
+ 2020 18:57:43 +0000
+Received: from DM6PR18MB3212.namprd18.prod.outlook.com
+ ([fe80::a1ad:948b:abf5:a5ef]) by DM6PR18MB3212.namprd18.prod.outlook.com
+ ([fe80::a1ad:948b:abf5:a5ef%7]) with mapi id 15.20.3541.025; Sat, 14 Nov 2020
+ 18:57:43 +0000
+From:   Naveen Mamindlapalli <naveenm@marvell.com>
+To:     Saeed Mahameed <saeed@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "Linu Cherian" <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>
+Subject: Re: [PATCH v3 net-next 07/13] octeontx2-af: Add debugfs entry to dump
+ the MCAM rules
+Thread-Topic: [PATCH v3 net-next 07/13] octeontx2-af: Add debugfs entry to
+ dump the MCAM rules
+Thread-Index: Ada6t8Lx8rvbvkCYR2y97vX471qM6A==
+Date:   Sat, 14 Nov 2020 18:57:43 +0000
+Message-ID: <DM6PR18MB321287B069E8AC8147B2162CA2E50@DM6PR18MB3212.namprd18.prod.outlook.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [49.206.46.49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 04add446-4fed-4fb7-7229-08d888cf2b23
+x-ms-traffictypediagnostic: DM6PR18MB2442:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR18MB2442DDC8884EE7CCB0F27861A2E50@DM6PR18MB2442.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FJ28U9iABKO5unjZN3i4Fuf/ukHvUD+Mn/3tqFWbXgIvP6S4ItlSBjl2WBHOEpWP/DbKk728vepyrOlRp/hyh+4jwQHLCrdW3cOtd59T1OugfCqGBWm5FoHpOoI+cWvuS4h48odSXoZ8+FLSrk9yrxJi6bjo++ltWqvr5qsqEeN5iRQhFmm89oYjjxASr/MTa8u2UXKwc4LujB3Yx5uXcl7BHZuhf/wcHslVvuHdXnpxAaPIb0tfQ63oTPJA3Ts8T2sTqusSWtphMlOla8eO6IjedWcaCGF08DmBgH7nvdb+YYWL3P/Z6MDPQm3+3l+T1hH9SVYpu7/37rcDZqwo8Sgg3Mkq5kJZ8qxr6HoLnmxsZezdiCt9Z+qJl6dnD22dadk+tCr11D3dKoowosHtMA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB3212.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(39850400004)(376002)(55236004)(53546011)(186003)(55016002)(9686003)(6506007)(26005)(4001150100001)(33656002)(107886003)(316002)(5660300002)(8676002)(71200400001)(54906003)(110136005)(66446008)(966005)(83380400001)(8936002)(86362001)(478600001)(66556008)(2906002)(64756008)(66946007)(52536014)(66476007)(7696005)(76116006)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: w4vQBgKOeKH1zaIL/xo9xk4eTuCnw749YNpsXDPI4U04/6Zxsd9chTA0rszjsM03QD9ltN8n4wR80W7zUSP9mvFXT7XUJ3aLPBdfhce8z14zOycb7RL6o8xwvJXvillMuz5G5caimrFH1/n4hBOfXXfXQJ549G84ZOo4uLV/pXoZZo1E2rQm2k5evLZKwC1PlgELCW+Nzw8m5rldXCP+0UoGY9WDQFtf7A8oyQorJRk9uBosoDb1vlITuJSiUKrhzLOzu2dorXPGL3Wg+HYNMQOF4L7r2M3dhC6/dEOKoqGs+M7xSnekKVsLRsqyTf4iGc+2vKt2xZmvAupnbzWx6xR+PPV0RHRK10+tYhOcoXxoBBOrHONR2BiXiB5g16xomWjUw28dRuE3VPbsb+T9IqNECwS/MeyOb0t/+RZNZ057jI0B6HevAiP9H/07FshgS8IEdzMdV97fJHFO5aE0nCZpnIQOC4dnTR3d/5F1yNwnFEria3Zm0/ln6QQ4w0uCINUKhjrY7Xk+422LCtmROE4NT9vzs13lvU6PcGI0J4l622DrxeQXYGeBJ/xpSxb6h0uMU+0NepW27ypuJsEBDafpKxgQw83kC0N99NKo0w5ZHgkH0Qgt9w6KMGYhbkwkJYu0U0kzzUBQDGBDZX4FoA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB3212.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04add446-4fed-4fb7-7229-08d888cf2b23
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2020 18:57:43.4687
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RbGCkr1n1AchWlP4H4yIWi8wdwv4alicj4etmxMU0KsF9IIBYUa3pUe6B4SvYk+lOEFSUx2BveJqT9iascbFRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB2442
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-14_07:2020-11-13,2020-11-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/20 1:46 PM, Rob Clark wrote:
-> On Sat, Nov 14, 2020 at 8:24 AM Christoph Hellwig <hch@lst.de> wrote:
->>
->> On Sat, Nov 14, 2020 at 10:17:12AM -0500, Jonathan Marek wrote:
->>> +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
->>> +             size_t range_start, size_t range_end)
->>> +{
->>> +     struct msm_gem_object *msm_obj = to_msm_bo(obj);
->>> +     struct device *dev = msm_obj->base.dev->dev;
->>> +
->>> +     /* exit early if get_pages() hasn't been called yet */
->>> +     if (!msm_obj->pages)
->>> +             return;
->>> +
->>> +     /* TODO: sync only the specified range */
->>> +
->>> +     if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
->>> +             dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
->>> +                             msm_obj->sgt->nents, DMA_TO_DEVICE);
->>> +     }
->>> +
->>> +     if (flags & MSM_GEM_SYNC_FOR_CPU) {
->>> +             dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
->>> +                             msm_obj->sgt->nents, DMA_FROM_DEVICE);
->>> +     }
->>
->> Splitting this helper from the only caller is rather strange, epecially
->> with the two unused arguments.  And I think the way this is specified
->> to take a range, but ignoring it is actively dangerous.  User space will
->> rely on it syncing everything sooner or later and then you are stuck.
->> So just define a sync all primitive for now, and if you really need a
->> range sync and have actually implemented it add a new ioctl for that.
-> 
-> We do already have a split of ioctl "layer" which enforces valid ioctl
-> params, etc, and gem (or other) module code which is called by the
-> ioctl func.  So I think it is fine to keep this split here.  (Also, I
-> think at some point there will be a uring type of ioctl alternative
-> which would re-use the same gem func.)
-> 
-> But I do agree that the range should be respected or added later..
-> drm_ioctl() dispatch is well prepared for extending ioctls.
-> 
-> And I assume there should be some validation that the range is aligned
-> to cache-line?  Or can we flush a partial cache line?
-> 
-
-The range is intended to be "sync at least this range", so that 
-userspace doesn't have to worry about details like that.
-
-> BR,
-> -R
-> 
+SGkgU2FlZWQsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2FlZWQg
+TWFoYW1lZWQgPHNhZWVkQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZyaWRheSwgTm92ZW1iZXIgMTMs
+IDIwMjAgMToxOCBBTQ0KPiBUbzogTmF2ZWVuIE1hbWluZGxhcGFsbGkgPG5hdmVlbm1AbWFydmVs
+bC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnDQo+IENjOiBrdWJhQGtlcm5lbC5vcmc7IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IFN1bmls
+IEtvdnZ1cmkgR291dGhhbQ0KPiA8c2dvdXRoYW1AbWFydmVsbC5jb20+OyBMaW51IENoZXJpYW4g
+PGxjaGVyaWFuQG1hcnZlbGwuY29tPjsNCj4gR2VldGhhc293amFueWEgQWt1bGEgPGdha3VsYUBt
+YXJ2ZWxsLmNvbT47IEplcmluIEphY29iIEtvbGxhbnVra2FyYW4NCj4gPGplcmluakBtYXJ2ZWxs
+LmNvbT47IFN1YmJhcmF5YSBTdW5kZWVwIEJoYXR0YSA8c2JoYXR0YUBtYXJ2ZWxsLmNvbT47DQo+
+IEhhcmlwcmFzYWQgS2VsYW0gPGhrZWxhbUBtYXJ2ZWxsLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSCB2MyBuZXQtbmV4dCAwNy8xM10gb2N0ZW9udHgyLWFmOiBBZGQgZGVidWdmcyBlbnRyeQ0K
+PiB0byBkdW1wIHRoZSBNQ0FNIHJ1bGVzDQo+IA0KPiBPbiBXZWQsIDIwMjAtMTEtMTEgYXQgMTI6
+NDMgKzA1MzAsIE5hdmVlbiBNYW1pbmRsYXBhbGxpIHdyb3RlOg0KPiA+IEZyb206IFN1YmJhcmF5
+YSBTdW5kZWVwIDxzYmhhdHRhQG1hcnZlbGwuY29tPg0KPiA+DQo+ID4gQWRkIGRlYnVnZnMgc3Vw
+cG9ydCB0byBkdW1wIHRoZSBNQ0FNIHJ1bGVzIGluc3RhbGxlZCB1c2luZw0KPiA+IE5QQ19JTlNU
+QUxMX0ZMT1cgbWJveCBtZXNzYWdlLiBEZWJ1Z2ZzIGZpbGUgY2FuIGRpc3BsYXkgbWNhbSBlbnRy
+eSwNCj4gPiBjb3VudGVyIGlmIGFueSwgZmxvdyB0eXBlIGFuZCBjb3VudGVyIGhpdHMuDQo+ID4N
+Cj4gPiBFdGh0b29sIHdpbGwgZHVtcCB0aGUgbnR1cGxlIGZsb3dzIHJlbGF0ZWQgdG8gdGhlIFBG
+IG9ubHkuDQo+ID4gVGhlIGRlYnVnZnMgZmlsZSBnaXZlcyBzeXN0ZW13aWRlIHZpZXcgb2YgdGhl
+IE1DQU0gcnVsZXMgaW5zdGFsbGVkIGJ5DQo+ID4gYWxsIHRoZSBQRidzLg0KPiA+DQo+ID4gQmVs
+b3cgaXMgdGhlIGV4YW1wbGUgb3V0cHV0IHdoZW4gdGhlIGRlYnVnZnMgZmlsZSBpcyByZWFkOg0K
+PiA+IH4gIyBtb3VudCAtdCBkZWJ1Z2ZzIG5vbmUgL3N5cy9rZXJuZWwvZGVidWcgfiAjIGNhdA0K
+PiA+IC9zeXMva2VybmVsL2RlYnVnL29jdGVvbnR4Mi9ucGMvbWNhbV9ydWxlcw0KPiA+DQo+ID4g
+CUluc3RhbGxlZCBieTogUEYxDQo+ID4gCWRpcmVjdGlvbjogUlgNCj4gPiAgICAgICAgIG1jYW0g
+ZW50cnk6IDIyNw0KPiA+IAl1ZHAgc291cmNlIHBvcnQgMjMgbWFzayAweGZmZmYNCj4gPiAJRm9y
+d2FyZCB0bzogUEYxIFZGMA0KPiA+ICAgICAgICAgYWN0aW9uOiBEaXJlY3QgdG8gcXVldWUgMA0K
+PiA+IAllbmFibGVkOiB5ZXMNCj4gPiAgICAgICAgIGNvdW50ZXI6IDENCj4gPiAgICAgICAgIGhp
+dHM6IDANCj4gPg0KPiANCj4gSSBkb24ndCB3YW50IHRvIGJsb2NrIHRoaXMgc2VyaWVzIG9yIGFu
+eXRoaW5nLCBidXQgeW91IG1pZ2h0IHdhbnQgdG8gdXNlIGRldmxpbmsNCj4gZHBpcGUgaW50ZXJm
+YWNlIGZvciB0aGlzOg0KPiANCj4gaHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29tL3Yy
+L3VybD91PWh0dHBzLQ0KPiAzQV9fd3d3Lmtlcm5lbC5vcmdfZG9jX2h0bWxfbGF0ZXN0X25ldHdv
+cmtpbmdfZGV2bGlua19kZXZsaW5rLQ0KPiAyRGRwaXBlLmh0bWwmZD1Ed0lDYVEmYz1uS2pXZWMy
+YjZSMG1PeVBhejd4dGZRJnI9VHdyZXF3VjZtUThLOQ0KPiB3SXBxd0ZPOHlqaWtPX3cxalVPZTJN
+ekNoZzRSbWcmbT1RM2JJYVZCQXZDSEdVODE3VGFwOFQ5b29CRlJQDQo+IENKaFA5a3ZGT0R0VW5K
+ZyZzPVlWN1EydzBKSHhnOVJVZHdKdk1makMwNjNVbWV2OUhwYjZZdk5TYmUzN0EmZQ0KPiA9DQo+
+IA0KPiBBcyBhIGZ1dHVyZSBwYXRjaCBvZiBjb3Vyc2UuDQoNClRoYW5rcyBmb3IgdGhlIHBvaW50
+ZXJzLiBXZSB3aWxsIGRlZmluaXRlbHkgbG9vayBpbnRvIGFkZGluZyB0aGUgZGV2bGluayBkcGlw
+ZSBzdXBwb3J0IGluIGZ1dHVyZS4NCg0KPiANCj4gVGhhbmtzLA0KPiBTYWVlZC4NCg0K
