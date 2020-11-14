@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6780E2B2BE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 08:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A522B2BE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 08:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgKNHDs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 14 Nov 2020 02:03:48 -0500
-Received: from mailoutvs35.siol.net ([185.57.226.226]:34057 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726380AbgKNHDs (ORCPT
+        id S1726610AbgKNHEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 02:04:40 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7498 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgKNHEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 02:03:48 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 41EFB521477;
-        Sat, 14 Nov 2020 08:03:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id n-aETWd7PJg2; Sat, 14 Nov 2020 08:03:45 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id EFE7B521479;
-        Sat, 14 Nov 2020 08:03:44 +0100 (CET)
-Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net [89.212.178.211])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id CC7B4521477;
-        Sat, 14 Nov 2020 08:03:43 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: Re: [PATCH] ARM: configs: sunxi: enable Realtek PHY
-Date:   Sat, 14 Nov 2020 08:03:43 +0100
-Message-ID: <3172346.gfnfIrP1Mj@jernej-laptop>
-In-Reply-To: <20201112202652.27676-1-clabbe@baylibre.com>
-References: <20201112202652.27676-1-clabbe@baylibre.com>
+        Sat, 14 Nov 2020 02:04:39 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CY5tN0dnRzhl02;
+        Sat, 14 Nov 2020 15:04:28 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 14 Nov 2020 15:04:24 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <airlied@linux.ie>, <kraxel@redhat.com>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm/virtio: Make virtgpu_dmabuf_ops with static keyword
+Date:   Sat, 14 Nov 2020 15:16:13 +0800
+Message-ID: <1605338173-22100-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne četrtek, 12. november 2020 ob 21:26:52 CET je Corentin Labbe napisal(a):
-> Lot of sunxi boards has a Realtek PHY, so let's enable it.
-> 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  arch/arm/configs/sunxi_defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/configs/sunxi_defconfig
-> b/arch/arm/configs/sunxi_defconfig index 244126172fd6..05f7f4ed8ded 100644
-> --- a/arch/arm/configs/sunxi_defconfig
-> +++ b/arch/arm/configs/sunxi_defconfig
-> @@ -51,6 +51,7 @@ CONFIG_STMMAC_ETH=y
->  # CONFIG_NET_VENDOR_VIA is not set
->  # CONFIG_NET_VENDOR_WIZNET is not set
->  CONFIG_MICREL_PHY=y
-> +CONFIG_REALTEK_PHY=y
->  # CONFIG_WLAN is not set
->  CONFIG_INPUT_EVDEV=y
->  CONFIG_KEYBOARD_SUN4I_LRADC=y
+Fix the following sparse warning:
 
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
+./virtgpu_prime.c:46:33: warning: symbol 'virtgpu_dmabuf_ops' was not declared. Should it be static?
 
-Thanks!
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/gpu/drm/virtio/virtgpu_prime.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Jernej
-
+diff --git a/drivers/gpu/drm/virtio/virtgpu_prime.c b/drivers/gpu/drm/virtio/virtgpu_prime.c
+index 1ef1e2f..807a27a 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_prime.c
++++ b/drivers/gpu/drm/virtio/virtgpu_prime.c
+@@ -43,7 +43,7 @@ static int virtgpu_virtio_get_uuid(struct dma_buf *buf,
+ 	return 0;
+ }
+ 
+-const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
++static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+ 	.ops = {
+ 		.cache_sgt_mapping = true,
+ 		.attach = virtio_dma_buf_attach,
+-- 
+2.6.2
 
