@@ -2,62 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A362B309F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 870602B30A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgKNUf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:35:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33444 "EHLO mail.kernel.org"
+        id S1726315AbgKNUgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:36:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKNUf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:35:29 -0500
-Received: from kernel.org (unknown [104.132.1.79])
+        id S1726265AbgKNUgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 15:36:14 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8C60223EA;
-        Sat, 14 Nov 2020 20:35:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BD43223EA;
+        Sat, 14 Nov 2020 20:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605386128;
-        bh=7vnaB3VFxpvaHHYts3jclhQxPRL+APAK9cgp7E6I5H0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=LvcivOj0XV9O4mPgbisHUZs/geMn7U1K76ejPdJJ4Q6M8jjRRje6weWtOwpZSPGDg
-         Yl2Mgr8PyuUSEQz28ACRTBQqrySnOdCQFZr0X4lw8v4qNsxuzz59FFv/QHCCyhuXw0
-         AcpPCx6MEG8wOiISU0qDcgxH6up3GEihN2pM9W+w=
-Content-Type: text/plain; charset="utf-8"
+        s=default; t=1605386174;
+        bh=ZdY8nPUPIIA8CI/+vJjOcvrkMUrXAxTH/bkxfEqtSek=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wnMlnHXLQG7hL0zyMjIGXQf07Bdddqg1nXbCrnxR1d2yZ2/rUaTIQDMHEYqqrvyVW
+         0EqXmJHLp+vnBZeYVuTS3zcA1/hB76ZKk9qImTI8V/GUDyERN70HoAhE3fSUej2KQm
+         nISzOh6dXJ9ed95RMmb4t2M75m0dzAJaDMsvHN4M=
+Date:   Sat, 14 Nov 2020 12:36:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <harini.katakam@xilinx.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: macb: Fix passing zero to 'PTR_ERR'
+Message-ID: <20201114123613.2e52fb49@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201112144936.54776-1-yuehaibing@huawei.com>
+References: <20201112144936.54776-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201106093819.GE2621@vkoul-mobl>
-References: <20201105104817.15715-1-manivannan.sadhasivam@linaro.org> <20201105104817.15715-3-manivannan.sadhasivam@linaro.org> <20201106093819.GE2621@vkoul-mobl>
-Subject: Re: [PATCH v2 2/4] clk: qcom: Add SDX55 GCC support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, robh+dt@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Naveen Yadav <naveenky@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>
-Date:   Sat, 14 Nov 2020 12:35:27 -0800
-Message-ID: <160538612750.60232.17440819605514427384@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Vinod Koul (2020-11-06 01:38:19)
-> On 05-11-20, 16:18, Manivannan Sadhasivam wrote:
-> > +#include "reset.h"
-> > +
-> > +enum {
-> > +     P_BI_TCXO,
-> > +     P_CORE_BI_PLL_TEST_SE,
->=20
-> This is for test and we removed this for upstream, so can you do that as
-> well (not parent will decrease for clks below)
->=20
-> With that updated:
->=20
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
->=20
+On Thu, 12 Nov 2020 22:49:36 +0800 YueHaibing wrote:
+> Check PTR_ERR with IS_ERR to fix this.
+> 
+> Fixes: cd5afa91f078 ("net: macb: Add null check for PCLK and HCLK")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-I half understood that. Just an FYI that I'm waiting for this update.
+Looks like a cleanup PTR_ERR() should return 0 for NULL AFAICS.
+
+Applied to net-next, thanks!
