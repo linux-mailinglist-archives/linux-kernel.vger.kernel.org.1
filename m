@@ -2,129 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D5C2B2BA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 06:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F5D2B2BA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 06:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgKNFsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 00:48:37 -0500
-Received: from m12-16.163.com ([220.181.12.16]:49014 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgKNFsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 00:48:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=Yf5KW
-        EBlfPvY8UckWvudcwjucfSNaBU4AKahUmFqssw=; b=QkHRXbqeoYY95xp26u3pf
-        f+eSoD1rIVspusLI0lxyGE00YcNkiV2TCLxg+cY6rK9i7KCujTOHTB+hNW0eHyaE
-        88aNwDmTb86csVZSiRXhekOJOi8em5KLBEdW1/DQD0CHKmkhv/l5+T3htNj+GWVu
-        WFlyaAIQ5wgvUSJPCtbYY8=
-Received: from localhost (unknown [101.86.213.176])
-        by smtp12 (Coremail) with SMTP id EMCowACXRmOOb69f3D00Lw--.16686S2;
-        Sat, 14 Nov 2020 13:47:58 +0800 (CST)
-Date:   Sat, 14 Nov 2020 13:47:58 +0800
-From:   Hui Su <sh_def@163.com>
-To:     kernel test robot <lkp@intel.com>, hughd@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-Subject: Re: [PATCH] mm/shmem.c: make shmem_mapping() inline
-Message-ID: <20201114054758.GA185928@rlk>
-References: <20201113135427.GA167783@rlk>
- <202011140010.ETcSkyze-lkp@intel.com>
+        id S1726507AbgKNFuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 00:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgKNFux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 00:50:53 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BBEC0613D1;
+        Fri, 13 Nov 2020 21:50:53 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdoSW-005cUH-Ok; Sat, 14 Nov 2020 05:50:49 +0000
+Date:   Sat, 14 Nov 2020 05:50:48 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201114055048.GN3576660@ZenIV.linux.org.uk>
+References: <20201110213511.GW3576660@ZenIV.linux.org.uk>
+ <20201110232028.GX3576660@ZenIV.linux.org.uk>
+ <CAHk-=whTqr4Lp0NYR6k3yc2EbiF0RR17=TJPa4JBQATMR__XqA@mail.gmail.com>
+ <20201111215220.GA3576660@ZenIV.linux.org.uk>
+ <20201111222116.GA919131@ZenIV.linux.org.uk>
+ <20201113235453.GA227700@ubuntu-m3-large-x86>
+ <20201114011754.GL3576660@ZenIV.linux.org.uk>
+ <20201114030124.GA236@Ryzen-9-3900X.localdomain>
+ <20201114035453.GM3576660@ZenIV.linux.org.uk>
+ <20201114041420.GA231@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202011140010.ETcSkyze-lkp@intel.com>
-X-CM-TRANSID: EMCowACXRmOOb69f3D00Lw--.16686S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCrykCF48Jw4rZF15Gr4fGrg_yoWrWry7pa
-        4qyw1UKrs5JrW0vFWxZay0v34Yqrs5Jry8tFyfGr9IyF1qqry7KwsIkFyY9ryYkrWkWay2
-        vFyUG3sY9w4UJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UqApOUUUUU=
-X-Originating-IP: [101.86.213.176]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiWQ-cX1WBtZx2uwAAsl
+In-Reply-To: <20201114041420.GA231@Ryzen-9-3900X.localdomain>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 12:54:47AM +0800, kernel test robot wrote:
-> Hi Hui,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on mmotm/master]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Hui-Su/mm-shmem-c-make-shmem_mapping-inline/20201113-215549
-> base:   git://git.cmpxchg.org/linux-mmotm.git master
-> config: arm-randconfig-s032-20201113 (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-107-gaf3512a6-dirty
->         # https://github.com/0day-ci/linux/commit/0434762d5523a3d702cd589a7f8e3771fee7b3b2
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Hui-Su/mm-shmem-c-make-shmem_mapping-inline/20201113-215549
->         git checkout 0434762d5523a3d702cd589a7f8e3771fee7b3b2
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=arm 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> "sparse warnings: (new ones prefixed by >>)"
->    mm/filemap.c: note: in included file:
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> --
->    mm/truncate.c: note: in included file:
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> --
->    mm/memfd.c: note: in included file:
-> >> include/linux/shmem_fs.h:66:33: sparse: sparse: marked inline, but without a definition
-> 
-> vim +66 include/linux/shmem_fs.h
-> 
->     48	
->     49	/*
->     50	 * Functions in mm/shmem.c called directly from elsewhere:
->     51	 */
->     52	extern const struct fs_parameter_description shmem_fs_parameters;
->     53	extern int shmem_init(void);
->     54	extern int shmem_init_fs_context(struct fs_context *fc);
->     55	extern struct file *shmem_file_setup(const char *name,
->     56						loff_t size, unsigned long flags);
->     57	extern struct file *shmem_kernel_file_setup(const char *name, loff_t size,
->     58						    unsigned long flags);
->     59	extern struct file *shmem_file_setup_with_mnt(struct vfsmount *mnt,
->     60			const char *name, loff_t size, unsigned long flags);
->     61	extern int shmem_zero_setup(struct vm_area_struct *);
->     62	extern unsigned long shmem_get_unmapped_area(struct file *, unsigned long addr,
->     63			unsigned long len, unsigned long pgoff, unsigned long flags);
->     64	extern int shmem_lock(struct file *file, int lock, struct user_struct *user);
->     65	#ifdef CONFIG_SHMEM
->   > 66	extern inline bool shmem_mapping(struct address_space *mapping);
->     67	#else
->     68	static inline bool shmem_mapping(struct address_space *mapping)
->     69	{
->     70		return false;
->     71	}
->     72	#endif /* CONFIG_SHMEM */
->     73	extern void shmem_unlock_mapping(struct address_space *mapping);
->     74	extern struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
->     75						pgoff_t index, gfp_t gfp_mask);
->     76	extern void shmem_truncate_range(struct inode *inode, loff_t start, loff_t end);
->     77	extern int shmem_unuse(unsigned int type, bool frontswap,
->     78			       unsigned long *fs_pages_to_unuse);
->     79	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Fri, Nov 13, 2020 at 09:14:20PM -0700, Nathan Chancellor wrote:
 
-Thanks for your test.
+> Unfortunately that patch does not solve my issue. Is there any other
+> debugging I should add?
 
-I will resend a PATCH V2 later.
-
+Hmm...  I wonder which file it is; how about
+		if (WARN_ON(!iovec.iov_len))
+			printk(KERN_ERR "odd readv on %pd4\n", file);
+in the loop in fs/read_write.c:do_loop_readv_writev()?
