@@ -2,64 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE3A2B2A09
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B002B2A1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgKNAkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:40:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726143AbgKNAkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:40:05 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605314405;
-        bh=xAg9nuWRDww5yEWzkrEMowKkStHRVPFNcyOOq3vc5i8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bNlcny4V0YjrgOHdmzCWD17HCxawZwc2xO7xT+fhJnoHRDVC15M1C/sxrwxAZKQBi
-         1pM6f6o6ufU26Ry8jNxEdvESaTyt5P5UktKYNj/DwrcpMQ5TmN3SN8smsJNdOPSnSI
-         5Hsu5dxvrYCBp3AG949ZE9nZoeTW3flCxESBrQmg=
+        id S1726116AbgKNAtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:49:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26934 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725866AbgKNAtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Nov 2020 19:49:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605314962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Pgbto6s6aJWzu/I6GVSYjwAc7k98Nrj4vzE4Tm0+xE=;
+        b=U5MKCADaOuG8m/mb1un4swbcxlRHiQ6nbY3V4lD/wxXWCoaazjI3L1igTvQMo9O+t+AH3+
+        CmWB1O8MRMIPSA6wYwAJQSgOFjyRUDxrcuRBZY98eooz6BqWGa/lLOXcgmlYlAAPPNKVXK
+        vUhXpaRvT5FwfafnShdlsINDwnCoX1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-cJKt-FEhN_unyUcxBk_KIQ-1; Fri, 13 Nov 2020 19:49:20 -0500
+X-MC-Unique: cJKt-FEhN_unyUcxBk_KIQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6AEE5F9D1;
+        Sat, 14 Nov 2020 00:49:17 +0000 (UTC)
+Received: from treble (ovpn-117-69.rdu2.redhat.com [10.10.117.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0594A60C15;
+        Sat, 14 Nov 2020 00:49:13 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 18:49:11 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <20201114004911.aip52eimk6c2uxd4@treble>
+References: <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com>
+ <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble>
+ <20201110174606.mp5m33lgqksks4mt@treble>
+ <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+ <20201113195408.atbpjizijnhuinzy@treble>
+ <CABCJKufA-aOcsOqb1NiMQeBGm9Q-JxjoPjsuNpHh0kL4LzfO0w@mail.gmail.com>
+ <20201113223412.inono2ekrs7ky7rm@treble>
+ <CABCJKueeL+1ydcZsm2BS4qrX4Wxy7zY7FUQdoN_WLuUxFfqcmQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] net: stmmac: platform: use optional clk/reset
- get APIs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160531440558.7757.14538401894553749571.git-patchwork-notify@kernel.org>
-Date:   Sat, 14 Nov 2020 00:40:05 +0000
-References: <20201112092606.5173aa6f@xhacker.debian>
-In-Reply-To: <20201112092606.5173aa6f@xhacker.debian>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, p.zabel@pengutronix.de,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABCJKueeL+1ydcZsm2BS4qrX4Wxy7zY7FUQdoN_WLuUxFfqcmQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu, 12 Nov 2020 09:27:37 +0800 you wrote:
-> Use the devm_reset_control_get_optional() and devm_clk_get_optional()
-> rather than open coding them.
+On Fri, Nov 13, 2020 at 03:31:34PM -0800, Sami Tolvanen wrote:
+> >  #else /* !CONFIG_STACK_VALIDATION */
+> > @@ -123,6 +129,8 @@ struct unwind_hint {
+> >  .macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
+> >  .endm
+> >  #endif
+> > +.macro STACK_FRAME_NON_STANDARD func:req
+> > +.endm
 > 
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> ---
-> Since v1:
->  - keep wrapped as suggested by Jakub
-> 
-> [...]
+> This macro needs to be before the #endif, so it's defined only for
+> assembly code. This breaks my arm64 builds even though x86 curiously
+> worked just fine.
 
-Here is the summary with links:
-  - [v2,net-next] net: stmmac: platform: use optional clk/reset get APIs
-    https://git.kernel.org/netdev/net-next/c/bb3222f71b57
+Yeah, I noticed that after syncing objtool.h with the tools copy.  Fixed
+now.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I've got fixes for some of the other warnings, but I'll queue them up
+and post when they're all ready.
 
+-- 
+Josh
 
