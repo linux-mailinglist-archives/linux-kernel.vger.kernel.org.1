@@ -2,81 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10BE2B2E0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 480CF2B2E13
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 16:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgKNPg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 10:36:59 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35267 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgKNPg7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 10:36:59 -0500
-Received: by mail-wr1-f67.google.com with SMTP id k2so13664552wrx.2;
-        Sat, 14 Nov 2020 07:36:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6P1mcO2kNRJbbh/T0XZ9QtQQ26OuRe5uLfwAgAsxH8Q=;
-        b=K9Cbseo2cRhdtKcdjgY1tdqr1Pra1M/ugDiNOp7DpHDDHqX6pJaeWQsAjRUItgw5l+
-         cJWdTDDyat1pfIGY7k83khLeq4jUumPVwiGsLHcZRhgVwv+WGu7BQJoK2z4jQ3NOuT3T
-         WWV1iNycrxb41i/S8Bi9M0052mhNimFFm6ugGhnTOWmbD/szA+0jdiRfirOz15z2kN4I
-         3ZBXmVNHTPeSPDwhMf0Qlyh4arw9U09cyT2r5VafDhb95UBeOhWc20fK/SaH/Ihnt5SS
-         zfghxe8SRLrBc7YCKEyMsvz9JeXN5q6nPa05rXH34aqXEzIYAPfOByYNQq5pCK4s88U4
-         541Q==
-X-Gm-Message-State: AOAM530WDUDKcgkWGIrCoLr4qx3UDumjNKLIYpoJcFLF1F7y/0t7G2JX
-        I1cykHLGBKQRunnECiMl6wstLb7RSTy6UA==
-X-Google-Smtp-Source: ABdhPJw/ztErj0PDs063eF71cDChBodWTwASgTPBkCh49ytR3SgplH/2PxKc4YKX8d3OpILcg9/WqA==
-X-Received: by 2002:a5d:660f:: with SMTP id n15mr10404788wru.345.1605368217307;
-        Sat, 14 Nov 2020 07:36:57 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id l16sm14975132wrx.5.2020.11.14.07.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 07:36:55 -0800 (PST)
-Date:   Sat, 14 Nov 2020 16:36:54 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v8 01/26] memory: tegra: Correct stub of
- devm_tegra_memory_controller_get()
-Message-ID: <20201114153654.GA4106@kozik-lap>
-References: <20201111011456.7875-1-digetx@gmail.com>
- <20201111011456.7875-2-digetx@gmail.com>
+        id S1727116AbgKNPhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 10:37:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726955AbgKNPhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 10:37:20 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63A6F2225E;
+        Sat, 14 Nov 2020 15:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605368239;
+        bh=0QQjOZf4D4SVwccLj/aJIBnygTFf1R5dUqD3/D9jq0M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=14M7Fah1YRrTNNkq2dUW4ypphcd3dv/uPxQNfQ99a7mcjrzDgiWeWIHAWtMOG6SEy
+         YrGwDV0zU2Sl3d+26H0n4SVSHyTVjxsq+kcnafViS5DDW1HafZn00+hu/fGGxpPoO0
+         MXZaxI3daAjIkZIQwLM5yeIGAySelZv4y+tA3sk0=
+Date:   Sat, 14 Nov 2020 09:37:18 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] AER: aer_root_reset() non-native handling
+Message-ID: <20201114153718.GA1170994@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111011456.7875-2-digetx@gmail.com>
+In-Reply-To: <20201104232244.434115-1-sean.v.kelley@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 04:14:31AM +0300, Dmitry Osipenko wrote:
-> Correct typo in a stub of devm_tegra_memory_controller_get() to fix a
-> non-ARM kernel compile-testing.
+On Wed, Nov 04, 2020 at 03:22:44PM -0800, Sean V Kelley wrote:
+> If an OS has not been granted AER control via _OSC, then
+> the OS should not make changes to PCI_ERR_ROOT_COMMAND and
+> PCI_ERR_ROOT_STATUS related registers. Per section 4.5.1 of
+> the System Firmware Intermediary (SFI) _OSC and DPC Updates
+> ECN [1], this bit also covers these aspects of the PCI
+> Express Advanced Error Reporting. Based on the above and
+> earlier discussion [2], make the following changes:
 > 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Add a check for the native case (i.e., AER control via _OSC)
+> 
+> Note that the current "clear, reset, enable" order suggests that the
+> reset might cause errors that we should ignore. Lacking historical
+> context, these will be retained.
+> 
+> [1] System Firmware Intermediary (SFI) _OSC and DPC Updates ECN, Feb 24,
+>     2020, affecting PCI Firmware Specification, Rev. 3.2
+>     https://members.pcisig.com/wg/PCI-SIG/document/14076
+> [2] https://lore.kernel.org/linux-pci/20201020162820.GA370938@bjorn-Precision-5520/
+> 
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+
+What do I do with this patch in combination with "[PATCH v10 00/16]
+Add RCEC handling to PCI/AER"?  I tried applying this and the RCEC
+series on top, but they conflict.
+
+I was thinking it would be easiest to include this as the first patch
+in the series so I wouldn't have to resolve the conflicts, but maybe
+you had something else in mind?
+
 > ---
->  include/soc/tegra/mc.h | 2 +-
+> Changes since V2 :
+> 
+> Fixed an unfortunate copy/paste error.
+> 
+> Changes since V1 [1]:
+> 
+> Noted lack of historical context on isolation of both the
+> pci_bus_error_reset() and the clearing of Root Error Status. In fact,
+> the call to aer_enable_rootport() likewise disables system error generation
+> in response to error messages around the clearing of the error status. So
+> retained the wrapping of the  "clear, reset, enable".
+> 
+> [1] https://lore.kernel.org/linux-pci/20201030223443.165783-1-sean.v.kelley@intel.com/
+> 
+> Thanks,
+> 
+> Sean
+> ---
+>  drivers/pci/pcie/aer.c | 31 +++++++++++++++++--------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 65dff5f3457a..4ab379fa1506 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -1358,26 +1358,29 @@ static int aer_probe(struct pcie_device *dev)
+>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>  {
+>  	int aer = dev->aer_cap;
+> +	int rc = 0;
 
-Thanks, applied.
+Unnecessary init, I think.
 
-Best regards,
-Krzysztof
-
+>  	u32 reg32;
+> -	int rc;
+> -
+> 
+> -	/* Disable Root's interrupt in response to error messages */
+> -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> -	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+> -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> +	if (pcie_aer_is_native(dev)) {
+> +		/* Disable Root's interrupt in response to error messages */
+> +		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> +		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+> +		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> +	}
+> 
+>  	rc = pci_bus_error_reset(dev);
+> -	pci_info(dev, "Root Port link has been reset\n");
+> +	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+> 
+> -	/* Clear Root Error Status */
+> -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+> -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
+> +	if (pcie_aer_is_native(dev)) {
+> +		/* Clear Root Error Status */
+> +		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+> +		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
+> 
+> -	/* Enable Root Port's interrupt in response to error messages */
+> -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> -	reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+> -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> +		/* Enable Root Port's interrupt in response to error messages */
+> +		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> +		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+> +		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> +	}
+> 
+>  	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
+>  }
+> --
+> 2.29.2
+> 
