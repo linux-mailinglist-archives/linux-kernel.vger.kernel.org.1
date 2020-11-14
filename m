@@ -2,50 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870602B30A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA5C2B30A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgKNUgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:36:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
+        id S1726334AbgKNUj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:39:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgKNUgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:36:14 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        id S1726217AbgKNUj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 15:39:27 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BD43223EA;
-        Sat, 14 Nov 2020 20:36:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0343223EA;
+        Sat, 14 Nov 2020 20:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605386174;
-        bh=ZdY8nPUPIIA8CI/+vJjOcvrkMUrXAxTH/bkxfEqtSek=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wnMlnHXLQG7hL0zyMjIGXQf07Bdddqg1nXbCrnxR1d2yZ2/rUaTIQDMHEYqqrvyVW
-         0EqXmJHLp+vnBZeYVuTS3zcA1/hB76ZKk9qImTI8V/GUDyERN70HoAhE3fSUej2KQm
-         nISzOh6dXJ9ed95RMmb4t2M75m0dzAJaDMsvHN4M=
-Date:   Sat, 14 Nov 2020 12:36:13 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
-        <davem@davemloft.net>, <harini.katakam@xilinx.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: macb: Fix passing zero to 'PTR_ERR'
-Message-ID: <20201114123613.2e52fb49@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201112144936.54776-1-yuehaibing@huawei.com>
-References: <20201112144936.54776-1-yuehaibing@huawei.com>
+        s=default; t=1605386367;
+        bh=phzN4c8T4A83NSrUwrdPTsK4VSESQBGRl/KVZH9nF4s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=vqAjbm3N3JcxQm7JAhD7Apa3Sj84OFUG3OgpJPu5sjvS2baSLfNNtXN9MVWvXIXXy
+         TkrT8EbTVz2lk0OWIZIvPFjHBUkC4ithkJI6QnxcaidiyMYihY97Gf81EPRKQ5FgEr
+         5Jdzu02eibYttU73MDsdsEzK2m6yIV8dx9CAWiYY=
+Date:   Sat, 14 Nov 2020 14:39:25 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
+        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
+        ddstreet@canonical.com, gavin.guo@canonical.com,
+        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
+        shan.gavin@linux.alibaba.com,
+        Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+Message-ID: <20201114203925.GA1182595@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d00gltb9.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 22:49:36 +0800 YueHaibing wrote:
-> Check PTR_ERR with IS_ERR to fix this.
+On Sat, Nov 14, 2020 at 12:40:10AM +0100, Thomas Gleixner wrote:
+> Bjorn,
 > 
-> Fixes: cd5afa91f078 ("net: macb: Add null check for PCLK and HCLK")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> On Sat, Nov 14 2020 at 00:31, Thomas Gleixner wrote:
+> > On Fri, Nov 13 2020 at 10:46, Bjorn Helgaas wrote:
+> >> pci_device_shutdown() still clears the Bus Master Enable bit if we're
+> >> doing a kexec and the device is in D0-D3hot, which should also disable
+> >> MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
+> >> device causing the storm was in PCI_UNKNOWN state?
+> >
+> > That's indeed a really good question.
+> 
+> So we do that on kexec, but is that true when starting a kdump kernel
+> from a kernel crash? I doubt it.
 
-Looks like a cleanup PTR_ERR() should return 0 for NULL AFAICS.
+Ah, right, I bet that's it, thanks.  The kdump path is basically this:
 
-Applied to net-next, thanks!
+  crash_kexec
+    machine_kexec
+
+while the usual kexec path is:
+
+  kernel_kexec
+    kernel_restart_prepare
+      device_shutdown
+        while (!list_empty(&devices_kset->list))
+          dev->bus->shutdown
+            pci_device_shutdown            # pci_bus_type.shutdown
+    machine_kexec
+
+So maybe we need to explore doing some or all of device_shutdown() in
+the crash_kexec() path as well as in the kernel_kexec() path.
