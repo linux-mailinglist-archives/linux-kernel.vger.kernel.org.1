@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B7A2B30D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3282B30D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgKNU50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 15:57:26 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:43723 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbgKNU50 (ORCPT
+        id S1726456AbgKNU5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 15:57:48 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56874 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgKNU5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:57:26 -0500
-Received: by mail-pl1-f194.google.com with SMTP id u2so6193499pls.10;
-        Sat, 14 Nov 2020 12:57:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=16xSpaXhAEOF0N0U9OOB7ZCXwUuMywa2m2HceEa9Iw4=;
-        b=tU9OtLBUbtIpY0BAlF9ddBuoAKPE72vMrtV7BHSzoV1E82gfqbtiF8zeX2yVvy9ZVU
-         YvS37Im0ley4KITvrhyvGqlmWtTBjLax2xwoB0/vuxuyrVB8SwEHdvPXL2WOcWFYyx/e
-         bDl6OoZ6oseH+gvkyRTEDuVATC09CLNAO1Mf29Ew5I/jMKWQQ8lN8jr/IkolRKR8jk1U
-         LKBNCdo5yvTYhEQYVP/B9yx3xz+Tk/ACHD26Z8MGqYrCH8Zv/UmY9kUkYtcz4hW54Dar
-         moNIYYXnlzoq5x4PV6wnAYwkH3BPYcsUYJberJz0C3PyDUvX9kDFWpip7cubj9hN1JHb
-         QfqA==
-X-Gm-Message-State: AOAM531AXOidRLFqdTPIhvFOlO2+PNGiPbVN0DWNrAi3nHzIrYrc5uJl
-        7ftFIM5q01ljzrka+4XX1m0=
-X-Google-Smtp-Source: ABdhPJxN95asfd2nvQMo510YjA+Wku+VpWqlMQg1JxXwovicCEenAsosTW2ocPXCqEjyuH7KN1z7vA==
-X-Received: by 2002:a17:90a:7409:: with SMTP id a9mr9219187pjg.48.1605387445013;
-        Sat, 14 Nov 2020 12:57:25 -0800 (PST)
-Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id g1sm14268854pjt.40.2020.11.14.12.57.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Nov 2020 12:57:23 -0800 (PST)
-Subject: Re: [PATCH RFC v1 1/1] scsi: pm: Leave runtime resume along if block
- layer PM is enabled
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <1605249009-13752-1-git-send-email-cang@codeaurora.org>
- <1605249009-13752-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <97dea590-5f2e-b4e3-ac64-7c346761c523@acm.org>
-Date:   Sat, 14 Nov 2020 12:57:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Sat, 14 Nov 2020 15:57:47 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 76D6B1C0B7A; Sat, 14 Nov 2020 21:57:44 +0100 (CET)
+Date:   Sat, 14 Nov 2020 21:57:44 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, tony@atomide.com, sre@kernel.org,
+        nekit1000@gmail.com, mpartap@gmx.net, merlijn@wizzup.org,
+        martin_rysavy@centrum.cz
+Subject: v5.10-rc3 vs. Droid 4
+Message-ID: <20201114205744.GA7436@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <1605249009-13752-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 10:30 PM, Can Guo wrote:
-> If block layer runtime PM is enabled for one SCSI device, then there is
-> no need to forcibly change the SCSI device and its request queue's runtime
-> PM status to active in scsi_dev_type_resume(), since block layer PM shall
-> resume the SCSI device on the demand of bios.
 
-Please change "along" into "alone" in the subject of this patch (if that
-is what you meant).
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	if (scsi_is_sdev_device(dev)) {
-> +		struct scsi_device *sdev;
->  
-> +		sdev = to_scsi_device(dev);
+Hi!
 
-A minor comment: I think that "struct scsi_device *sdev =
-to_scsi_device(dev);" fits on a single line.
+Does anyone have Droid 4 working with 5.10-rc3?
 
-> +		 * If block layer runtime PM is enabled for the SCSI device,
-> +		 * let block layer PM handle its runtime PM routines.
+I tried it with the original config; I got message about culomb
+counter calibration done scrolling (and boot progressing very slowly
+or not at all) . So ... I disabled cpcap battery & charger
+support. But init still drops me to emergency shell.
 
-Please change "its runtime PM routines" into "runtime resume" or
-similar. I think that will make the comment more clear.
+I may try some more, but if someone know what is going on, let me
+know.
 
-> +		if (sdev->request_queue->dev)
-> +			return err;
-> +	}
+Best regards,
 
-The 'dev' member only exists in struct request_queue if CONFIG_PM=y so
-the above won't compile if CONFIG_PM=n. How about adding a function in
-include/linux/blk-pm.h to check whether or not runtime PM has been enabled?
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Otherwise this patch looks good to me.
+--0OAP2g/MAC+5xKAE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
 
-Bart.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7BEyAAKCRAw5/Bqldv6
+8nU0AKCUr1S/ighczyl1ewXmZrdJuaNQaACfbDktonMBsc/0K45ZiNiAc5ptzB8=
+=FJiT
+-----END PGP SIGNATURE-----
+
+--0OAP2g/MAC+5xKAE--
