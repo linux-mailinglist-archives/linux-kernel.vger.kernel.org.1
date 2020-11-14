@@ -2,423 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAF22B2D25
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 559672B2D29
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgKNMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:38:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKNMif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:38:35 -0500
-Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09E91206F9;
-        Sat, 14 Nov 2020 12:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605357514;
-        bh=zWXg7qJz+2Sg2saXECILVeerquBsEIlBLdhabO0MzaY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FM9lC0CAEnQNPpIUCiz8iiNcJ/e7wL642Xk/pn9ths1/bJk5ecpOswdqegpS4Cz4y
-         8vTGz2ZeiS3GSQi2U1CuPX2llkz0tfX8bOcfON/Lzwv4Ulwahf/ZyOj8pgEmF/zf50
-         +2i2v8/jkJGdR+XZUcpv6/Hl9e47HcpykBxJ19EE=
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Alon Mizrahi <amizrahi@habana.ai>
-Subject: [PATCH] habanalabs: firmware returns 64bit argument
-Date:   Sat, 14 Nov 2020 14:38:28 +0200
-Message-Id: <20201114123828.20817-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726844AbgKNMja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKNMj3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 07:39:29 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE461C0613D1;
+        Sat, 14 Nov 2020 04:39:27 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id h12so401666pjv.2;
+        Sat, 14 Nov 2020 04:39:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kdqJjRzk4yjHovnyTNeFJ9lrFAFtjkdfjru+LbxUuGA=;
+        b=c0PTWga1dJYo8S/ecSfk0t4L+jEFAQNif8wmowUdhDXtvY37MJ1SfA7UtLuG2jWTEg
+         aCptv+6Rp2h9Sk+5Qi2saac6LyySbzf+u4UaItA1wD8V6vlxcjNmu1xWOai8DS51jvYt
+         VLxUUbSATXB2KQX51kqR7UoZeMH7rz+wLuDnBRWNG3+Y2rUrse02X6MdVTCZ8pZgPJ3W
+         LxdBVdFrRLMMjuOHM2TOnMoinReVmZdEiD9gb+m7FhQX4sUmfq2PtoXo3F5P5lPfABpI
+         G6mJh7ldGedPhpD6wnac0AIzRUQOEsPEZHm6kn+Gk9Fq10EW3Dc6Ofpqru5CJHN9cQ2Z
+         liMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kdqJjRzk4yjHovnyTNeFJ9lrFAFtjkdfjru+LbxUuGA=;
+        b=r3GjhjwjrHRAo6CT4FTWx+rkLT/Qz3XOFZefOKACWR7Pkswgbzzi5/WPAYZlgo7MvW
+         9YJI8c9XwjzPM15af5z09fLK0e/46gOIL9dSt2Aj+f1ubU5ycPKvnGCXXYMmHgUvT9tQ
+         aBxbEk8dJw1yA01HM2HgZ8ynMR0oWEz4y+75Nv+3IOjTWwuorO6DfzB3JojTDnJUT3fe
+         0fk3t3eYb3zMwUnJ9wB+LvjRHovS4ZXU+RyojR7MsFq5f4LjX0EvDeP29+hpQKqwQ4zv
+         gNkKoOIZnNWLpDMq6OcsKfDIYhdOpYGrX2vn1NPHdjLmBd+WIWkIGEuXH5dWgvppriN1
+         a9bg==
+X-Gm-Message-State: AOAM5310BNBcCf4XCmO7PwjdpYoh7gEUHKnmVGcGiDiM8iJov5FIo94Q
+        Z1p9nlZge4u5XRdnFJVCWJY=
+X-Google-Smtp-Source: ABdhPJzFyyZb8gZymRwXGBhqvGDur/pj0xGGprxKWpAQDXPx1yIrU4qaBmJ251ntlasE/6mWKXpkTQ==
+X-Received: by 2002:a17:90a:d201:: with SMTP id o1mr7809866pju.46.1605357567498;
+        Sat, 14 Nov 2020 04:39:27 -0800 (PST)
+Received: from arpitha-Inspiron-7570.lan ([106.51.242.81])
+        by smtp.gmail.com with ESMTPSA id g8sm2214714pgn.47.2020.11.14.04.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 04:39:26 -0800 (PST)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        elver@google.com, yzaikin@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, Tim.Bird@sony.com, davidgow@google.com
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH v7 2/2] fs: ext4: Modify inode-test.c to use KUnit parameterized testing feature
+Date:   Sat, 14 Nov 2020 18:08:47 +0530
+Message-Id: <20201114123847.97990-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201114123648.97857-1-98.arpi@gmail.com>
+References: <20201114123648.97857-1-98.arpi@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alon Mizrahi <amizrahi@habana.ai>
+Modify fs/ext4/inode-test.c to use the parameterized testing
+feature of KUnit.
 
-F/W message returns 64bit value but up until now we casted it to
-a 32bit variable, instead of receiving 64bit in the first place.
-
-Signed-off-by: Alon Mizrahi <amizrahi@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- drivers/misc/habanalabs/common/debugfs.c     |  5 +++-
- drivers/misc/habanalabs/common/firmware_if.c | 26 ++++++++++----------
- drivers/misc/habanalabs/common/habanalabs.h  |  4 +--
- drivers/misc/habanalabs/common/hwmon.c       | 25 +++++++++++++++----
- drivers/misc/habanalabs/common/sysfs.c       | 10 ++++----
- drivers/misc/habanalabs/gaudi/gaudi.c        |  2 +-
- drivers/misc/habanalabs/goya/goya.c          |  6 ++---
- drivers/misc/habanalabs/goya/goyaP.h         |  2 +-
- 8 files changed, 49 insertions(+), 31 deletions(-)
+Changes v6->v7:
+- Introduce timestamp_expectation_to_desc() to convert param to
+  description.
+Changes v5->v6:
+- No change to this patch of the patch series
+Changes v4->v5:
+- No change to this patch of the patch series
+Changes v3->v4:
+- Modification based on latest implementation of KUnit parameterized testing
+Changes v2->v3:
+- Marked hardcoded test data const
+- Modification based on latest implementation of KUnit parameterized testing
+Changes v1->v2:
+- Modification based on latest implementation of KUnit parameterized testing
 
-diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
-index 1db804de45ba..b47a62da0b41 100644
---- a/drivers/misc/habanalabs/common/debugfs.c
-+++ b/drivers/misc/habanalabs/common/debugfs.c
-@@ -22,6 +22,7 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
- 				u8 i2c_reg, long *val)
- {
- 	struct cpucp_packet pkt;
-+	u64 result;
- 	int rc;
+ fs/ext4/inode-test.c | 320 ++++++++++++++++++++++---------------------
+ 1 file changed, 164 insertions(+), 156 deletions(-)
+
+diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+index d62d802c9c12..97390ab13681 100644
+--- a/fs/ext4/inode-test.c
++++ b/fs/ext4/inode-test.c
+@@ -80,6 +80,145 @@ struct timestamp_expectation {
+ 	bool lower_bound;
+ };
  
- 	if (!hl_device_operational(hdev, NULL))
-@@ -36,7 +37,9 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
- 	pkt.i2c_reg = i2c_reg;
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, val);
-+						0, &result);
++static const struct timestamp_expectation test_data[] = {
++	{
++		.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
++		.msb_set = true,
++		.lower_bound = true,
++		.extra_bits = 0,
++		.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
++	},
 +
-+	*val = (long) result;
- 
- 	if (rc)
- 		dev_err(hdev->dev, "Failed to read from I2C, error %d\n", rc);
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index e37d451e6415..8f70d0bbe5e1 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -88,7 +88,7 @@ int hl_fw_send_pci_access_msg(struct hl_device *hdev, u32 opcode)
++	{
++		.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
++		.msb_set = true,
++		.lower_bound = false,
++		.extra_bits = 0,
++		.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 0,
++		.expected = {0LL, 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 0,
++		.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
++		.msb_set = true,
++		.lower_bound = true,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
++		.msb_set = true,
++		.lower_bound = false,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
++		.msb_set = true,
++		.lower_bound = true,
++		.extra_bits =  2,
++		.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
++		.msb_set = true,
++		.lower_bound = false,
++		.extra_bits = 2,
++		.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 2,
++		.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 2,
++		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 6,
++		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 0xFFFFFFFF,
++		.expected = {.tv_sec = 0x300000000LL,
++			     .tv_nsec = MAX_NANOSECONDS},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 3,
++		.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 3,
++		.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
++	}
++};
++
++static void timestamp_expectation_to_desc(const struct timestamp_expectation *t,
++					  char *desc)
++{
++	strcpy(desc, t->test_case_name);
++}
++
++KUNIT_ARRAY_PARAM(ext4_inode, test_data, timestamp_expectation_to_desc);
++
+ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+ {
+ 	if (test->msb_set) {
+@@ -101,166 +240,35 @@ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+  */
+ static void inode_test_xtimestamp_decoding(struct kunit *test)
+ {
+-	const struct timestamp_expectation test_data[] = {
+-		{
+-			.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = true,
+-			.lower_bound = true,
+-			.extra_bits = 0,
+-			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = true,
+-			.lower_bound = false,
+-			.extra_bits = 0,
+-			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 0,
+-			.expected = {0LL, 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 0,
+-			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = true,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = false,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = true,
+-			.extra_bits =  2,
+-			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = false,
+-			.extra_bits = 2,
+-			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 2,
+-			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 2,
+-			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 6,
+-			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 0xFFFFFFFF,
+-			.expected = {.tv_sec = 0x300000000LL,
+-				     .tv_nsec = MAX_NANOSECONDS},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 3,
+-			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 3,
+-			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+-		}
+-	};
+-
+ 	struct timespec64 timestamp;
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
+-		timestamp.tv_sec = get_32bit_time(&test_data[i]);
+-		ext4_decode_extra_time(&timestamp,
+-				       cpu_to_le32(test_data[i].extra_bits));
+-
+-		KUNIT_EXPECT_EQ_MSG(test,
+-				    test_data[i].expected.tv_sec,
+-				    timestamp.tv_sec,
+-				    CASE_NAME_FORMAT,
+-				    test_data[i].test_case_name,
+-				    test_data[i].msb_set,
+-				    test_data[i].lower_bound,
+-				    test_data[i].extra_bits);
+-		KUNIT_EXPECT_EQ_MSG(test,
+-				    test_data[i].expected.tv_nsec,
+-				    timestamp.tv_nsec,
+-				    CASE_NAME_FORMAT,
+-				    test_data[i].test_case_name,
+-				    test_data[i].msb_set,
+-				    test_data[i].lower_bound,
+-				    test_data[i].extra_bits);
+-	}
++
++	struct timestamp_expectation *test_param =
++			(struct timestamp_expectation *)(test->param_value);
++
++	timestamp.tv_sec = get_32bit_time(test_param);
++	ext4_decode_extra_time(&timestamp,
++			       cpu_to_le32(test_param->extra_bits));
++
++	KUNIT_EXPECT_EQ_MSG(test,
++			    test_param->expected.tv_sec,
++			    timestamp.tv_sec,
++			    CASE_NAME_FORMAT,
++			    test_param->test_case_name,
++			    test_param->msb_set,
++			    test_param->lower_bound,
++			    test_param->extra_bits);
++	KUNIT_EXPECT_EQ_MSG(test,
++			    test_param->expected.tv_nsec,
++			    timestamp.tv_nsec,
++			    CASE_NAME_FORMAT,
++			    test_param->test_case_name,
++			    test_param->msb_set,
++			    test_param->lower_bound,
++			    test_param->extra_bits);
  }
  
- int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
--				u16 len, u32 timeout, long *result)
-+				u16 len, u32 timeout, u64 *result)
- {
- 	struct cpucp_packet *pkt;
- 	dma_addr_t pkt_dma_addr;
-@@ -143,7 +143,7 @@ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
- 						>> CPUCP_PKT_CTL_OPCODE_SHIFT);
- 		rc = -EIO;
- 	} else if (result) {
--		*result = (long) le64_to_cpu(pkt->result);
-+		*result = le64_to_cpu(pkt->result);
- 	}
+ static struct kunit_case ext4_inode_test_cases[] = {
+-	KUNIT_CASE(inode_test_xtimestamp_decoding),
++	KUNIT_CASE_PARAM(inode_test_xtimestamp_decoding, ext4_inode_gen_params),
+ 	{}
+ };
  
- out:
-@@ -157,7 +157,7 @@ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
- int hl_fw_unmask_irq(struct hl_device *hdev, u16 event_type)
- {
- 	struct cpucp_packet pkt;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -180,7 +180,7 @@ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
- {
- 	struct cpucp_unmask_irq_arr_packet *pkt;
- 	size_t total_pkt_size;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	total_pkt_size = sizeof(struct cpucp_unmask_irq_arr_packet) +
-@@ -219,7 +219,7 @@ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
- int hl_fw_test_cpu_queue(struct hl_device *hdev)
- {
- 	struct cpucp_packet test_pkt = {};
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	test_pkt.ctl = cpu_to_le32(CPUCP_PACKET_TEST <<
-@@ -232,7 +232,7 @@ int hl_fw_test_cpu_queue(struct hl_device *hdev)
- 	if (!rc) {
- 		if (result != CPUCP_PACKET_FENCE_VAL)
- 			dev_err(hdev->dev,
--				"CPU queue test failed (0x%08lX)\n", result);
-+				"CPU queue test failed (%#08llx)\n", result);
- 	} else {
- 		dev_err(hdev->dev, "CPU queue test failed, error %d\n", rc);
- 	}
-@@ -263,7 +263,7 @@ void hl_fw_cpu_accessible_dma_pool_free(struct hl_device *hdev, size_t size,
- int hl_fw_send_heartbeat(struct hl_device *hdev)
- {
- 	struct cpucp_packet hb_pkt = {};
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	hb_pkt.ctl = cpu_to_le32(CPUCP_PACKET_TEST <<
-@@ -285,7 +285,7 @@ int hl_fw_cpucp_info_get(struct hl_device *hdev)
- 	struct cpucp_packet pkt = {};
- 	void *cpucp_info_cpu_addr;
- 	dma_addr_t cpucp_info_dma_addr;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	cpucp_info_cpu_addr =
-@@ -336,7 +336,7 @@ int hl_fw_get_eeprom_data(struct hl_device *hdev, void *data, size_t max_size)
- 	struct cpucp_packet pkt = {};
- 	void *eeprom_info_cpu_addr;
- 	dma_addr_t eeprom_info_dma_addr;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	eeprom_info_cpu_addr =
-@@ -379,7 +379,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- 		struct hl_info_pci_counters *counters)
- {
- 	struct cpucp_packet pkt = {};
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PCIE_THROUGHPUT_GET <<
-@@ -426,7 +426,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- int hl_fw_cpucp_total_energy_get(struct hl_device *hdev, u64 *total_energy)
- {
- 	struct cpucp_packet pkt = {};
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_TOTAL_ENERGY_GET <<
-@@ -452,7 +452,7 @@ int hl_fw_cpucp_pll_info_get(struct hl_device *hdev,
- 		u32 *pll_info)
- {
- 	struct cpucp_packet pkt;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -467,7 +467,7 @@ int hl_fw_cpucp_pll_info_get(struct hl_device *hdev,
- 	if (rc)
- 		dev_err(hdev->dev, "Failed to read PLL info, error %d\n", rc);
- 
--	*pll_info = result;
-+	*pll_info = (u32) result;
- 
- 	return rc;
- }
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index b8ad5bfa6359..43aa8cbd8969 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -925,7 +925,7 @@ struct hl_asic_funcs {
- 	int (*get_eeprom_data)(struct hl_device *hdev, void *data,
- 				size_t max_size);
- 	int (*send_cpu_message)(struct hl_device *hdev, u32 *msg,
--				u16 len, u32 timeout, long *result);
-+				u16 len, u32 timeout, u64 *result);
- 	int (*pci_bars_map)(struct hl_device *hdev);
- 	int (*init_iatu)(struct hl_device *hdev);
- 	u32 (*rreg)(struct hl_device *hdev, u32 reg);
-@@ -2178,7 +2178,7 @@ int hl_fw_load_fw_to_device(struct hl_device *hdev, const char *fw_name,
- 				void __iomem *dst, u32 src_offset, u32 size);
- int hl_fw_send_pci_access_msg(struct hl_device *hdev, u32 opcode);
- int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
--				u16 len, u32 timeout, long *result);
-+				u16 len, u32 timeout, u64 *result);
- int hl_fw_unmask_irq(struct hl_device *hdev, u16 event_type);
- int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
- 		size_t irq_arr_size);
-diff --git a/drivers/misc/habanalabs/common/hwmon.c b/drivers/misc/habanalabs/common/hwmon.c
-index ab96401c3752..6b421d76b311 100644
---- a/drivers/misc/habanalabs/common/hwmon.c
-+++ b/drivers/misc/habanalabs/common/hwmon.c
-@@ -312,6 +312,7 @@ int hl_get_temperature(struct hl_device *hdev,
- 			int sensor_index, u32 attr, long *value)
- {
- 	struct cpucp_packet pkt;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -322,7 +323,9 @@ int hl_get_temperature(struct hl_device *hdev,
- 	pkt.type = __cpu_to_le16(attr);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, value);
-+						0, &result);
-+
-+	*value = (long) result;
- 
- 	if (rc) {
- 		dev_err(hdev->dev,
-@@ -363,6 +366,7 @@ int hl_get_voltage(struct hl_device *hdev,
- 			int sensor_index, u32 attr, long *value)
- {
- 	struct cpucp_packet pkt;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -373,7 +377,9 @@ int hl_get_voltage(struct hl_device *hdev,
- 	pkt.type = __cpu_to_le16(attr);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, value);
-+						0, &result);
-+
-+	*value = (long) result;
- 
- 	if (rc) {
- 		dev_err(hdev->dev,
-@@ -389,6 +395,7 @@ int hl_get_current(struct hl_device *hdev,
- 			int sensor_index, u32 attr, long *value)
- {
- 	struct cpucp_packet pkt;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -399,7 +406,9 @@ int hl_get_current(struct hl_device *hdev,
- 	pkt.type = __cpu_to_le16(attr);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, value);
-+						0, &result);
-+
-+	*value = (long) result;
- 
- 	if (rc) {
- 		dev_err(hdev->dev,
-@@ -415,6 +424,7 @@ int hl_get_fan_speed(struct hl_device *hdev,
- 			int sensor_index, u32 attr, long *value)
- {
- 	struct cpucp_packet pkt;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -425,7 +435,9 @@ int hl_get_fan_speed(struct hl_device *hdev,
- 	pkt.type = __cpu_to_le16(attr);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, value);
-+						0, &result);
-+
-+	*value = (long) result;
- 
- 	if (rc) {
- 		dev_err(hdev->dev,
-@@ -441,6 +453,7 @@ int hl_get_pwm_info(struct hl_device *hdev,
- 			int sensor_index, u32 attr, long *value)
- {
- 	struct cpucp_packet pkt;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -451,7 +464,9 @@ int hl_get_pwm_info(struct hl_device *hdev,
- 	pkt.type = __cpu_to_le16(attr);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, value);
-+						0, &result);
-+
-+	*value = (long) result;
- 
- 	if (rc) {
- 		dev_err(hdev->dev,
-diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
-index 94ca68e62000..4366d8f93842 100644
---- a/drivers/misc/habanalabs/common/sysfs.c
-+++ b/drivers/misc/habanalabs/common/sysfs.c
-@@ -12,7 +12,7 @@
- long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
- {
- 	struct cpucp_packet pkt;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -32,10 +32,10 @@ long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
- 		dev_err(hdev->dev,
- 			"Failed to get frequency of PLL %d, error %d\n",
- 			pll_index, rc);
--		result = rc;
-+		return rc;
- 	}
- 
--	return result;
-+	return (long) result;
- }
- 
- void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
-@@ -62,7 +62,7 @@ void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
- u64 hl_get_max_power(struct hl_device *hdev)
- {
- 	struct cpucp_packet pkt;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-@@ -75,7 +75,7 @@ u64 hl_get_max_power(struct hl_device *hdev)
- 
- 	if (rc) {
- 		dev_err(hdev->dev, "Failed to get max power, error %d\n", rc);
--		result = rc;
-+		return (u64) rc;
- 	}
- 
- 	return result;
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index f1b8d20cf2ce..9c9df5f020a6 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4572,7 +4572,7 @@ static void *gaudi_get_int_queue_base(struct hl_device *hdev,
- }
- 
- static int gaudi_send_cpu_message(struct hl_device *hdev, u32 *msg,
--				u16 len, u32 timeout, long *result)
-+				u16 len, u32 timeout, u64 *result)
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
- 
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 3398b4cc1298..55d174d3cac8 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -2954,7 +2954,7 @@ static int goya_send_job_on_qman0(struct hl_device *hdev, struct hl_cs_job *job)
- }
- 
- int goya_send_cpu_message(struct hl_device *hdev, u32 *msg, u16 len,
--				u32 timeout, long *result)
-+				u32 timeout, u64 *result)
- {
- 	struct goya_device *goya = hdev->asic_specific;
- 
-@@ -4540,7 +4540,7 @@ static int goya_unmask_irq_arr(struct hl_device *hdev, u32 *irq_arr,
- {
- 	struct cpucp_unmask_irq_arr_packet *pkt;
- 	size_t total_pkt_size;
--	long result;
-+	u64 result;
- 	int rc;
- 	int irq_num_entries, irq_arr_index;
- 	__le32 *goya_irq_arr;
-@@ -4599,7 +4599,7 @@ static int goya_soft_reset_late_init(struct hl_device *hdev)
- static int goya_unmask_irq(struct hl_device *hdev, u16 event_type)
- {
- 	struct cpucp_packet pkt;
--	long result;
-+	u64 result;
- 	int rc;
- 
- 	memset(&pkt, 0, sizeof(pkt));
-diff --git a/drivers/misc/habanalabs/goya/goyaP.h b/drivers/misc/habanalabs/goya/goyaP.h
-index ef4298f84a0a..8b3408211af6 100644
---- a/drivers/misc/habanalabs/goya/goyaP.h
-+++ b/drivers/misc/habanalabs/goya/goyaP.h
-@@ -192,7 +192,7 @@ int goya_test_queue(struct hl_device *hdev, u32 hw_queue_id);
- int goya_test_queues(struct hl_device *hdev);
- int goya_test_cpu_queue(struct hl_device *hdev);
- int goya_send_cpu_message(struct hl_device *hdev, u32 *msg, u16 len,
--				u32 timeout, long *result);
-+				u32 timeout, u64 *result);
- 
- long goya_get_temperature(struct hl_device *hdev, int sensor_index, u32 attr);
- long goya_get_voltage(struct hl_device *hdev, int sensor_index, u32 attr);
 -- 
-2.17.1
+2.25.1
 
