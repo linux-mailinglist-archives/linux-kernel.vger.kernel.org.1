@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031A92B2BF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 08:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547332B2BF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 08:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgKNHac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 02:30:32 -0500
-Received: from mail.ispras.ru ([83.149.199.84]:52808 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgKNHab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 02:30:31 -0500
-Received: from mail.ispras.ru (unknown [83.149.199.84])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 31E4C40D3BFF;
-        Sat, 14 Nov 2020 07:30:29 +0000 (UTC)
+        id S1726506AbgKNH0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 02:26:17 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7897 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbgKNH0R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 02:26:17 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CY6MF3c42z75b3;
+        Sat, 14 Nov 2020 15:26:01 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 14 Nov 2020 15:26:05 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <subbu.seetharaman@broadcom.com>, <ketan.mukadam@broadcom.com>,
+        <jitendra.bhivare@broadcom.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] scsi: be2iscsi: Mark beiscsi_attrs with static keyword
+Date:   Sat, 14 Nov 2020 15:37:54 +0800
+Message-ID: <1605339474-22329-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Date:   Sat, 14 Nov 2020 10:30:29 +0300
-From:   baskov@ispras.ru
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH] s5p-jpeg: hangle error condition in s5p_jpeg_probe
-In-Reply-To: <f8c9ea26-fc55-d65d-e2b3-734af8b97c95@gmail.com>
-References: <20201113160625.1281-1-baskov@ispras.ru>
- <f8c9ea26-fc55-d65d-e2b3-734af8b97c95@gmail.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <8fa69eb90dd4710bb7ae6ba2a3148ef7@ispras.ru>
-X-Sender: baskov@ispras.ru
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-14 00:35, Jacek Anaszewski wrote:
-> There is a typo in the subject: s/hangle/handle/
+Fix the following sparse warning:
 
-Thanks for pointing out, sorry for that.
+./be_main.c:167:25: warning: symbol 'beiscsi_attrs' was not declared. Should it be static?
 
-Apparently, there is also a typo in my name -> s/Evgeiny/Evgeniy/
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/scsi/be2iscsi/be_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---
-Respectfully,
-Baskov Evgeniy
+diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
+index 202ba92..50e4642 100644
+--- a/drivers/scsi/be2iscsi/be_main.c
++++ b/drivers/scsi/be2iscsi/be_main.c
+@@ -164,7 +164,7 @@ DEVICE_ATTR(beiscsi_active_session_count, S_IRUGO,
+ 	     beiscsi_active_session_disp, NULL);
+ DEVICE_ATTR(beiscsi_free_session_count, S_IRUGO,
+ 	     beiscsi_free_session_disp, NULL);
+-struct device_attribute *beiscsi_attrs[] = {
++static struct device_attribute *beiscsi_attrs[] = {
+ 	&dev_attr_beiscsi_log_enable,
+ 	&dev_attr_beiscsi_drvr_ver,
+ 	&dev_attr_beiscsi_adapter_family,
+-- 
+2.6.2
+
