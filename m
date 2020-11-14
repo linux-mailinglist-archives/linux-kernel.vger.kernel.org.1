@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069042B30BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 213792B30BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 21:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgKNUvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726310AbgKNUvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 14 Nov 2020 15:51:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726291AbgKNUvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 15:51:11 -0500
-Subject: Re: [GIT PULL] SCSI fixes for 5.10-rc3
+        id S1726136AbgKNUvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 15:51:10 -0500
+Subject: Re: [GIT PULL] um fixes for 5.10-rc4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1605387070;
-        bh=7m8xNhtGjkjWPUEfXbeoGZcvGAuC+jPU2z7/UOdN3B8=;
+        bh=ny9al+eXJIKo9ouUcGssO4cAEeJpdHNGIUENKOa5hk8=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ishXo/DXUS59s1Y2lBIhxYerieYDZneQMXJOKo9sCSNitDSNWrTcNeMp/EcMCVFQE
-         avx6n9kTvy7EwxeWLebKCa+rYTExp2yRgKz3EvtDrb4kghhSrkagfaxGn7GZp07l9S
-         bihmx0F2O7eRMOFRaPT15zA4+F6Q9gJyLgjvUw8M=
+        b=RrHYCAouoAmmVmBLib6Ky1aN0Uk864uyfgbc1RTkYJ8S11Ry4iUdZOm15mg/agv6N
+         63Vw67d8fpVVOnmDNPwBA6N+dOzWNDwIcaR7XLMyIrqhmtEf2lXR1MdUqXD/7szUhK
+         O8OpQwI4Rv9UAFmZO6EB+1sLqizUxHR7R00bR/j4=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
-References: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
+In-Reply-To: <588878911.301948.1605306004530.JavaMail.zimbra@nod.at>
+References: <588878911.301948.1605306004530.JavaMail.zimbra@nod.at>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <595dbda885e4d8f0666fe49aaf52a54f2b0c8c73.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 2e6f11a797a24d1e2141a214a6dd6dfbe709f55d
+X-PR-Tracked-Message-Id: <588878911.301948.1605306004530.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.10-rc4
+X-PR-Tracked-Commit-Id: 9a5085b3fad5d5d6019a3d160cdd70357d35c8b1
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0c0451112b629946c93ed2102b7ae47d4d1dc0bc
-Message-Id: <160538707067.24878.9576594385078780770.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 4aea779d35120d5062647d288817678decb28c10
+Message-Id: <160538707005.24878.6761595780198110576.pr-tracker-bot@kernel.org>
 Date:   Sat, 14 Nov 2020 20:51:10 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     Richard Weinberger <richard@nod.at>
+Cc:     torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Nov 2020 16:20:13 -0800:
+The pull request you sent on Fri, 13 Nov 2020 23:20:04 +0100 (CET):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.10-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0c0451112b629946c93ed2102b7ae47d4d1dc0bc
+https://git.kernel.org/torvalds/c/4aea779d35120d5062647d288817678decb28c10
 
 Thank you!
 
