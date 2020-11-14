@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3782B2EF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAF22B2EF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 18:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgKNR11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 12:27:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgKNR10 (ORCPT
+        id S1726281AbgKNR2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 12:28:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23929 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgKNR2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 12:27:26 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739A4C0613D1;
-        Sat, 14 Nov 2020 09:27:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nFIjmU3PyYTtN+/KPAaiBpQ9mhotPT9InWONOcxLEKw=; b=VP6O6FTLaPgIzlW2qwuSOXOyzW
-        Kolh+nSrb8DTpSIiSxLmzjsPU3KGkOCYELDJBlIBZHa7zSwz3Oyu5Ku2oDCjNOucmmYnEjMoN6fe/
-        aPDqJyQs+QbhNchsftgaET7gT43vvPiV7iv/+CE4bWdndy5XCMhLtTe6SYUO8tOEbgeN0h6YMlgvT
-        4faDo3sLezINoU/WmkX5iX2VcmP/mHpyZpgYzv8yEjVBemVItqcMnQIDrU0q/jFk3MhJ6dbWBslV7
-        3LRH/AV/7IJM27h7IqM5UwczPd1T4+DTgLUxTlJ2hR2fS6QFXJ67ONDYAWqAqCJwBJLlPUgwM5s1a
-        wcvG93Iw==;
-Received: from [2601:1c0:6280:3f0::f32]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kdzKb-0006hj-7C; Sat, 14 Nov 2020 17:27:21 +0000
-Subject: Re: [PATCH net-next] net: linux/skbuff.h: combine NET + KCOV handling
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-next@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201114011110.21906-1-rdunlap@infradead.org>
- <52502fe4-8f41-0630-5b9c-be2e07b6932c@tessares.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8198558c-55f0-0ea3-3a23-e3dafb2cb09d@infradead.org>
-Date:   Sat, 14 Nov 2020 09:27:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sat, 14 Nov 2020 12:28:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605374882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yUMNWuTzcp6lgo8BaPHSOcXsQblkWlhKvdzAMy4JmaU=;
+        b=Z7RS3bV8jtEgGSNDxdQCQjiXL/McMhJpYgHYZ9sS64iQlrzcrU6dTyQ8rIpP6Cr7Wc3Ng1
+        06rRwDIFLxWeEMPBsU4aDDKokIerrdV35lPOebxE3zFLEhVng/4hggQLNKXxWhgE0BuYTg
+        kt5vlZWZyHihk6daqzXT9T3k9gzLtqc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-l2S-yheAPe2DDlEtxI6nGQ-1; Sat, 14 Nov 2020 12:28:00 -0500
+X-MC-Unique: l2S-yheAPe2DDlEtxI6nGQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFA8A8E79E7;
+        Sat, 14 Nov 2020 17:27:58 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EE61360C13;
+        Sat, 14 Nov 2020 17:27:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix afs_write_end() when called with copied == 0 [ver
+ #3]
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 14 Nov 2020 17:27:57 +0000
+Message-ID: <160537487717.3083111.4734306195916947822.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <52502fe4-8f41-0630-5b9c-be2e07b6932c@tessares.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/20 12:01 AM, Matthieu Baerts wrote:
-> Hi Randy,
-> 
-> On 14/11/2020 02:11, Randy Dunlap wrote:
->> The previous Kconfig patch led to some other build errors as
->> reported by the 0day bot and my own overnight build testing.
-> 
-> Thank you for looking at that!
-> 
-> I had the same issue and I was going to propose a similar fix with one small difference, please see below.
-> 
->> --- linux-next-20201113.orig/include/linux/skbuff.h
->> +++ linux-next-20201113/include/linux/skbuff.h
->> @@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
->>   #endif
->>   }
->>   -#ifdef CONFIG_KCOV
->> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_NET)
->>   static inline void skb_set_kcov_handle(struct sk_buff *skb,
-> Should we have here CONFIG_SKB_EXTENSIONS instead of CONFIG_NET?
-> 
-> It is valid to use NET thanks to your commit 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET") that links SKB_EXTENSIONS with NET for KCOV but it looks strange to me to use a "non direct" dependence :)
-> I mean: here below, skb_ext_add() and skb_ext_find() are called but they are defined only if SKB_EXTENSIONS is enabled, not only NET.
-> 
-> But as I said, this patch fixes the issue. It's fine for me if we prefer to use CONFIG_NET.
+When afs_write_end() is called with copied == 0, it tries to set the dirty
+region, but there's no way to actually encode a 0-length region in the
+encoding in page->private.  "0,0", for example, indicates a 1-byte region
+at offset 0.  The maths miscalculates this and sets it incorrectly.
 
-I think it would be safer to use CONFIG_SKB_EXTENSIONS.
+Fix it to just do nothing but unlock and put the page in this case.  We
+don't actually need to mark the page dirty as nothing presumably changed.
 
->> @@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
->>   static inline void skb_set_kcov_handle(struct sk_buff *skb,
->>                          const u64 kcov_handle) { }
->>   static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
->> -#endif /* CONFIG_KCOV */
->> +#endif /* CONFIG_KCOV &&  CONFIG_NET */
-> 
-> (Small detail if you post a v2: there is an extra space between "&&" and "CONFIG_NET")
+Fixes: 65dd2d6072d3 ("afs: Alter dirty range encoding in page->private")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Oops. Fixed in v2. Thanks for looking.
+ fs/afs/write.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-v2 on the way.
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 50371207f327..c9195fc67fd8 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -169,11 +169,14 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 	unsigned int f, from = pos & (PAGE_SIZE - 1);
+ 	unsigned int t, to = from + copied;
+ 	loff_t i_size, maybe_i_size;
+-	int ret;
++	int ret = 0;
+ 
+ 	_enter("{%llx:%llu},{%lx}",
+ 	       vnode->fid.vid, vnode->fid.vnode, page->index);
+ 
++	if (copied == 0)
++		goto out;
++
+ 	maybe_i_size = pos + copied;
+ 
+ 	i_size = i_size_read(&vnode->vfs_inode);
 
--- 
-~Randy
 
