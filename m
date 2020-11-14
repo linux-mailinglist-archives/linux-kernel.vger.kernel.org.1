@@ -2,70 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D4A2B2D11
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECE32B2D16
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 13:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgKNMPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 07:15:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33672 "EHLO mail.kernel.org"
+        id S1726830AbgKNMRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 07:17:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726756AbgKNMPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 07:15:24 -0500
-Received: from gaia (unknown [2.26.170.190])
+        id S1726618AbgKNMRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 07:17:11 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D4BE221EB;
-        Sat, 14 Nov 2020 12:15:20 +0000 (UTC)
-Date:   Sat, 14 Nov 2020 12:15:17 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: Re: [PATCH v2 09/13] arm, arm64: move free_unused_memmap() to
- generic mm
-Message-ID: <20201114121516.GA2837@gaia>
-References: <20201101170454.9567-1-rppt@kernel.org>
- <20201101170454.9567-10-rppt@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id A419C22240;
+        Sat, 14 Nov 2020 12:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605356231;
+        bh=j0DSarFbsVLsjQPuCm5CwA5GVvdprYRqIia4pc4AM2w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PHNGwpxVYNZRVTkv4iQsYkQ+a2QRNhXlzj1AkXHhCLMHre7YcmLbMbBesS8g6jJF3
+         oQpu7E+FSKKAiF6a+2OCxrEYI6BpgpRWgcX4zRWmKzPwbef3OUK1KXGe1+myDG2QW/
+         FZhMp/J4wMiRpv796OfdoCXPm1LL/YO7R3M50Bvc=
+Date:   Sat, 14 Nov 2020 13:18:05 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
+ FNTCHARCNT() in fbcon.c
+Message-ID: <X6/K/S9V7rj2hI5p@kroah.com>
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
+ <20201113211633.GY401619@phenom.ffwll.local>
+ <X68NFzaAuImemnqh@kroah.com>
+ <20201114081021.GA11811@PWN>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201101170454.9567-10-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201114081021.GA11811@PWN>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 07:04:50PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Sat, Nov 14, 2020 at 03:10:21AM -0500, Peilin Ye wrote:
+> > On Fri, Nov 13, 2020 at 10:16:33PM +0100, Daniel Vetter wrote:
+> > > On Thu, Nov 12, 2020 at 07:02:21AM -0500, Peilin Ye wrote:
+> > > > Peilin Ye (5):
+> > > >   console: Delete unused con_font_copy() callback implementations
+> > > >   console: Delete dummy con_font_set() and con_font_default() callback implementations
+> > > >   Fonts: Add charcount field to font_desc
+> > > >   parisc/sticore: Avoid hard-coding built-in font charcount
+> > > >   fbcon: Avoid using FNTCHARCNT() and hard-coded built-in font charcount
+> > > 
+> > > Patches all look good to me, if Greg is ok with me applying the entire
+> > > pile to drm-misc-next I'll do that next week.
 > 
-> ARM and ARM64 free unused parts of the memory map just before the
-> initialization of the page allocator. To allow holes in the memory map both
-> architectures overload pfn_valid() and define HAVE_ARCH_PFN_VALID.
+> On Fri, Nov 13, 2020 at 11:47:51PM +0100, Greg Kroah-Hartman wrote:
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> Allowing holes in the memory map for FLATMEM may be useful for small
-> machines, such as ARC and m68k and will enable those architectures to cease
-> using DISCONTIGMEM and still support more than one memory bank.
+> Thanks for reviewing!  Questions about the last patch [5/5] though, it
+> depends on the following assumption:
 > 
-> Move the functions that free unused memory map to generic mm and enable
-> them in case HAVE_ARCH_PFN_VALID=y.
+> """
+> For each console `idx`, `vc_cons[idx].d->vc_font.data` and
+> `fb_display[idx].fontdata` always point to the same buffer.
+> """
 > 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Is this true?  I think it is true by grepping for `fontdata`.  I also
+> noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
+> interchangeably, see fbcon_get_requirement():
+> 
+> 		vc = vc_cons[fg_console].d;
+> 		[...]
+> 			p = &fb_display[fg_console];
+> 			caps->x = 1 << (vc->vc_font.width - 1);
+> 					^^^^^^^^^^^
+> 			caps->y = 1 << (vc->vc_font.height - 1);
+> 					^^^^^^^^^^^
+> 			caps->len = (p->userfont) ?
+> 				FNTCHARCNT(p->fontdata) : 256;
+> 					   ^^^^^^^^^^^
+> 
+> If it is true, then what is the point of using `fontdata` in `struct
+> fbcon_display`?  Just for the `userfont` flag?  Should we delete
+> `fontdata`, when we no longer need the `userfont` flag?
 
-For arm64:
+Yes, after a quick look, I think your analysis here is correct.  So if
+you can delete that, it would be nice if possible.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> In this sense I think [5/5] needs more testing.  Do we have test files
+> for fbcon, or should I try to write some tests from scratch?
+
+I don't know of any direct tests, I usually just booted into that mode
+and saw if everything looked like it did before.  There must be some
+tool that you can use to change the current font, as it seems to happen
+at boot time on some distros.  I can't remember what it's called at the
+moment...
+
+thanks,
+
+greg k-h
